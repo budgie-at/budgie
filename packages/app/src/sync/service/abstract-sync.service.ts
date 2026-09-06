@@ -14,6 +14,10 @@ import type { SyncAccountInterface } from '@budgie/sync';
 export abstract class AbstractSyncService {
     readonly supportsTokenAuth: boolean = false;
 
+    readonly supportsFileImport: boolean = false;
+
+    readonly supportsAddAccounts: boolean = false;
+
     protected abstract readonly provider: ExternalSourceEnum;
 
     protected abstract readonly providerTitle: string;

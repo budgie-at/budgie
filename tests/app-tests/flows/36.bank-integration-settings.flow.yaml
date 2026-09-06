@@ -85,3 +85,139 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'AccountSyncCard.Switch'
       checked: true
+
+# 9. Tapping an account row opens its editor; back returns to the integration page
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://bank-integration/1'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 10000
+- assertVisible:
+      id: 'BankIntegration.AccountRow.1'
+- tapOn:
+      id: 'BankIntegration.AccountRow.1'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.ScrollView'
+      timeout: 10000
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 10000
+
+# 10. Overflow menu exposes Details/Edit/Archive; Details opens the account details screen
+- tapOn:
+      id: 'BankIntegration.AccountRow.1.Menu'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.AccountRow.1.Menu.Details'
+      timeout: 3000
+- assertVisible:
+      id: 'BankIntegration.AccountRow.1.Menu.Edit'
+- assertVisible:
+      id: 'BankIntegration.AccountRow.1.Menu.Archive'
+- tapOn:
+      id: 'BankIntegration.AccountRow.1.Menu.Details'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.Page'
+      timeout: 10000
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 10000
+
+# 11. Add-deposit row sits after the account rows; live Monobank footer offers Add accounts, not Import file
+- scrollUntilVisible:
+      element:
+          id: 'BankIntegration.AddDepositButton'
+      direction: DOWN
+- waitForAnimationToEnd
+- assertVisible:
+      id: 'BankIntegration.AccountRow.15'
+- assertVisible:
+      id: 'BankIntegration.AddDepositButton'
+- assertVisible:
+      id: 'BankIntegration.AddAccountsButton'
+- assertNotVisible:
+      id: 'BankIntegration.ImportFileButton'
+
+# 12. Privatbank is a file-import integration: toggle shown per account, footer offers Import file, not Add accounts
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://bank-integration/3'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 10000
+- assertVisible:
+      id: 'BankIntegration.AccountRow.8'
+- assertVisible:
+      id: 'BankIntegration.AccountRow.8.Toggle'
+      checked: false
+- assertVisible:
+      id: 'BankIntegration.AccountRow.9'
+- assertVisible:
+      id: 'BankIntegration.AccountRow.9.Toggle'
+      checked: false
+- assertVisible:
+      id: 'BankIntegration.ImportFileButton'
+- assertNotVisible:
+      id: 'BankIntegration.AddAccountsButton'
+
+# 13. Add deposit is offered for the file-import integration too
+- scrollUntilVisible:
+      element:
+          id: 'BankIntegration.AddDepositButton'
+      direction: DOWN
+- waitForAnimationToEnd
+- assertVisible:
+      id: 'BankIntegration.AddDepositButton'
+- tapOn:
+      id: 'BankIntegration.AddDepositButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountForm.NameInput'
+      timeout: 10000
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 10000
+
+# 14. Archiving an account from the overflow menu removes it from the integration page
+- assertVisible:
+      id: 'BankIntegration.AccountRow.9'
+- tapOn:
+      id: 'BankIntegration.AccountRow.9.Menu'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.AccountRow.9.Menu.Archive'
+      timeout: 3000
+- tapOn:
+      id: 'BankIntegration.AccountRow.9.Menu.Archive'
+- extendedWaitUntil:
+      visible: 'Archive Account?'
+      timeout: 10000
+- tapOn:
+      text: '^Archive$'
+- extendedWaitUntil:
+      notVisible: 'Archive Account?'
+      timeout: 10000
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 10000
+- assertNotVisible:
+      id: 'BankIntegration.AccountRow.9'
+- assertVisible:
+      id: 'BankIntegration.AccountRow.8'

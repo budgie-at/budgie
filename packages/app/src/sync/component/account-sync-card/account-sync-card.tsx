@@ -53,6 +53,7 @@ export const AccountSyncCard = ({ accountId }: Props) => {
 
     const providerService = syncProviderRegistryService.getServiceForProvider(sync.provider);
     const supportsTokenAuth = providerService?.supportsTokenAuth === true;
+    const syncLabel = providerService?.supportsFileImport === true ? t`Include in file imports` : t`Sync`;
     const tokenSection =
         sync.provider === ExternalSourceEnum.BINANCE ? (
             <BinanceSyncTokenSection accountId={accountId} />
@@ -65,13 +66,16 @@ export const AccountSyncCard = ({ accountId }: Props) => {
             <View className="flex-row items-center justify-between gap-2">
                 <ResyncAccount accountId={accountId} testID={AccountSyncCardSelector.ResyncButton} />
                 <View className="content-center items-center">
-                    <Text className="text-primary font-semibold text-base">
-                        <Trans>Sync</Trans>
-                    </Text>
+                    <Text className="text-primary font-semibold text-base">{syncLabel}</Text>
                     <Text className={statusTextVariants({ status: sync.status })}>{statusLabel}</Text>
                 </View>
                 <View className="content-center">
-                    <ThemedSwitch value={sync.enabled} onValueChange={handleToggle} testID={AccountSyncCardSelector.Switch} />
+                    <ThemedSwitch
+                        value={sync.enabled}
+                        onValueChange={handleToggle}
+                        accessibilityLabel={syncLabel}
+                        testID={AccountSyncCardSelector.Switch}
+                    />
                 </View>
             </View>
 
