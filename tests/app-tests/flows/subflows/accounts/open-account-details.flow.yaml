@@ -5,7 +5,8 @@ appId: ${APP_ID}
     element:
       id: 'AccountCard.${ACCOUNT_NAME}'
     direction: DOWN
-    visibilityPercentage: 40
+    visibilityPercentage: 90
+    centerElement: true
 - waitForAnimationToEnd
 
 - tapOn:
