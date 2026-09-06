@@ -47,6 +47,10 @@
             "deepLink": "budgie://settings?anchor=ai"
         },
         {
+            "name": "ai-merchant-translation-1",
+            "flow": "flows/media/ai-merchant-translation-1.flow.yaml"
+        },
+        {
             "name": "on-device-ai-budget-app-1",
             "deepLink": "budgie://settings?anchor=ai"
         },
