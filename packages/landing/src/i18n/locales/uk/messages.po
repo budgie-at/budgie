@@ -2844,6 +2844,10 @@ msgstr ""
 msgid "Analytics, charts, and reports work entirely on-device"
 msgstr "Аналітика, графіки та звіти працюють повністю на пристрої"
 
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "And the lock that enforces it"
+msgstr "І блокування, яке його забезпечує"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Annual cost over 5 years"
 msgstr "Річні витрати за 5 років"
@@ -6829,6 +6833,10 @@ msgstr "Кожен запис має суму, рахунок, категорі�
 msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
 msgstr ""
 
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Every promise here has a file behind it"
+msgstr "За кожною обіцянкою тут стоїть файл"
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Every rule can be switched off without being deleted"
 msgstr "Кожне правило можна вимкнути без видалення"
@@ -7473,6 +7481,10 @@ msgstr "Нормалізатор іноземних назв продавців 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Foreign merchant names from Cyrillic, Greek, or Arabic bank statements get normalized to readable Latin — on your device, without sending anything to a server."
 msgstr "Іноземні назви продавців із кириличних, грецьких або арабських банківських виписок нормалізуються до читабельної латиниці — на вашому пристрої, без надсилання чогось на сервер."
+
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Fork it if we disappear. The database format and the app are both yours to keep."
+msgstr "Форкніть його, якщо ми зникнемо. Формат бази даних і сам застосунок залишаються вашими."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Fork the repository on GitHub"
@@ -10747,6 +10759,10 @@ msgstr "Один чек, кілька категорій."
 msgid "One screen per bank"
 msgstr "Один екран на банк"
 
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "One settings screen, and a public repository where every line of it can be checked."
+msgstr "Один екран налаштувань — і публічний репозиторій, де можна перевірити кожен його рядок."
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "One settings screen, and the thing worth noticing is the row that never appears on it."
 msgstr "Один екран налаштувань, і найпримітніше тут — рядок, якого на ньому ніколи немає."
@@ -11749,6 +11765,14 @@ msgstr "Спершу читайте, редагуйте свідомо"
 msgid "Read More on the Blog"
 msgstr "Читати більше в блозі"
 
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Read the code behind this claim"
+msgstr "Прочитайте код за цим твердженням"
+
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Read the code that holds your money. The repository is the product, and nothing about how Budgie stores or protects your data is compiled in secret."
+msgstr "Читайте код, який зберігає ваші гроші. Репозиторій і є продуктом, і ніщо в тому, як Budgie зберігає та захищає ваші дані, не компілюється потайки."
+
 #: src/app/[lang]/open-source/page.tsx
 msgid "Read the Code, Verify the Claims"
 msgstr "Читайте код, верифікуйте твердження"
@@ -12214,6 +12238,10 @@ msgstr "знімки екрана"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Scroll down to “Export Budget”"
 msgstr "Прокрутіть вниз до \"Export Budget\""
+
+#: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
+msgid "Scroll Settings end to end and there is no analytics group, because there is no telemetry to switch off."
+msgstr "Прогорніть Налаштування від початку до кінця — групи аналітики там немає, бо немає й телеметрії, яку треба вимикати."
 
 #: src/blog/component/blog-search/blog-search.tsx
 msgid "Search articles..."
