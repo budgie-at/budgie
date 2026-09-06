@@ -8,9 +8,9 @@ export const OpenSourceVisualHeader = () => (
         </div>
 
         <div>
-            <h4 className="text-xl font-bold">
+            <h3 className="text-xl font-bold">
                 <Trans>Budgie</Trans>
-            </h4>
+            </h3>
 
             <p className="text-gray-400 text-sm">
                 <Trans>Offline-first budgeting app</Trans>

@@ -16,7 +16,7 @@ const initialProps = { opacity: 0, y: -20 };
 
 export const MobileMenu = ({ onClose, lang }: Props) => (
     <Motion
-        className="md:hidden absolute top-16 inset-x-0 bg-background/95 backdrop-blur-lg border-b"
+        className="lg:hidden absolute top-16 inset-x-0 bg-background/95 backdrop-blur-lg border-b"
         exit={exitProps}
         initial={initialProps}
     >

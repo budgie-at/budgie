@@ -18,7 +18,7 @@ export const Footer = async ({ lang }: Props) => {
     return (
         <footer className="w-full border-t bg-background/95 backdrop-blur-xs">
             <div className="container flex flex-col gap-8 px-4 py-10 md:px-6 lg:py-16">
-                <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-5">
+                <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
                     <div className="space-y-4">
                         <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={`/${lang}`}>
                             <Logo />
@@ -70,9 +70,9 @@ export const Footer = async ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold">
+                        <h2 className="text-sm font-bold">
                             <Trans>App</Trans>
-                        </h4>
+                        </h2>
 
                         <ul className="space-y-2 text-sm">
                             <li>
@@ -94,9 +94,9 @@ export const Footer = async ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold">
+                        <h2 className="text-sm font-bold">
                             <Trans>Features</Trans>
-                        </h4>
+                        </h2>
 
                         <ul className="space-y-2 text-sm">
                             <li>
@@ -148,9 +148,9 @@ export const Footer = async ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold">
+                        <h2 className="text-sm font-bold">
                             <Trans>Resources</Trans>
-                        </h4>
+                        </h2>
 
                         <ul className="space-y-2 text-sm">
                             <li>
@@ -194,9 +194,9 @@ export const Footer = async ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold">
+                        <h2 className="text-sm font-bold">
                             <Trans>Legal</Trans>
-                        </h4>
+                        </h2>
 
                         <ul className="space-y-2 text-sm">
                             <li>
@@ -232,7 +232,7 @@ export const Footer = async ({ lang }: Props) => {
                         <Trans>&copy; {year} Budgie. All rights reserved.</Trans>
                     </p>
 
-                    <div className="flex gap-4">
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
                         <Link
                             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                             href={`/${lang}/legal/privacy-policy`}

@@ -11,7 +11,7 @@ export const OpenSourceFeature = ({ icon, title, description }: Props) => (
         <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">{icon}</div>
 
         <div>
-            <h4 className="font-semibold mb-1">{title}</h4>
+            <h3 className="font-semibold mb-1">{title}</h3>
 
             <p className="text-sm text-muted-foreground">{description}</p>
         </div>
