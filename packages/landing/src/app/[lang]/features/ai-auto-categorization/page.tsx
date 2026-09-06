@@ -189,8 +189,9 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     question={<Trans>How big is the model download?</Trans>}
                     answer={
                         <Trans>
-                            Roughly 1 GB combined: Qwen3 1.7B Q4 for the language model and a 768-dim Nomic embedding model. The download
-                            happens on first use of AI features and is fully optional — you can keep using Budgie without AI.
+                            Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B
+                            Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo
+                            if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI.
                         </Trans>
                     }
                 />
