@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.15.0](https://github.com/budgie-at/budgie/compare/v6.14.0...v6.15.0) (2026-09-06)
+
+
+### Features
+
+* **landing:** tell the offline-first expense tracker story in steps ([9997622](https://github.com/budgie-at/budgie/commit/999762257cf4abe7ad1ea957f5eb99a9d73a6499))
+
+
+
+
+
 # [6.14.0](https://github.com/budgie-at/budgie/compare/v6.13.0...v6.14.0) (2026-09-06)
 
 
