@@ -14,7 +14,7 @@ interface Props {
 
 const FeatureStoryRoot = ({ children }: Props) => (
     <section className="w-full py-16 md:py-24">
-        <div className="container px-4 md:px-6 max-w-6xl">
+        <div className="container px-4 md:px-6 max-w-7xl">
             <FeatureStoryStage>{children}</FeatureStoryStage>
         </div>
     </section>
