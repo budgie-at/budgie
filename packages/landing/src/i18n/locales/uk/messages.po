@@ -50,10 +50,6 @@ msgstr "«Ми серйозно ставимося до безпеки» (як �
 msgid "“Your data is secure” (against what threat models? tested by whom?)"
 msgstr "«Ваші дані в безпеці» (від яких загроз? хто тестував?)"
 
-#: src/generic/component/hero-section/hero-section-header.tsx
-msgid "(Beta testers)"
-msgstr "(Бета-тестери)"
-
 #: src/generic/component/waitlist-form/waitlist-form.tsx
 msgid "{initialCount, plural, one {#+ person already waiting} other {#+ people already waiting}}"
 msgstr "{initialCount, plural, one {#+ людина вже очікує} few {#+ людини вже очікують} many {#+ людей вже очікують} other {#+ людини вже очікують}}"
@@ -1876,10 +1872,13 @@ msgstr ""
 
 #: src/app/[lang]/opengraph-image.tsx
 #: src/generic/component/comparison-section/comparison-table-body.tsx
-#: src/generic/component/hero-section/hero-section-header.tsx
 #: src/generic/component/usp-pillars-section/usp-pillars-section.tsx
 msgid "100% Offline"
 msgstr "100% офлайн"
+
+#: src/generic/component/trust-banner/trust-banner.tsx
+msgid "100% on-device"
+msgstr "100% на пристрої"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "11. Contact Us"
@@ -3443,10 +3442,6 @@ msgstr "Банк, готівка, депозити, крипто, борги —
 msgid "Bank, cash, deposit, crypto, stocks, debt — all on one home screen."
 msgstr "Банк, готівка, депозит, крипто, акції, борг — усе на одному головному екрані."
 
-#: src/generic/component/hero-section/hero-section-badges.tsx
-msgid "Bank, Crypto & Cash"
-msgstr "Банк, крипто та готівка"
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Basic API access available"
 msgstr "Базовий доступ до API"
@@ -3597,10 +3592,6 @@ msgstr "Біометрична аутентифікація"
 #: src/app/[lang]/features/biometric-authentication/metadata.ts
 msgid "Biometric Authentication — Budgie"
 msgstr "Біометрична автентифікація — Budgie"
-
-#: src/generic/component/hero-section/hero-section-header.tsx
-msgid "Biometric Encrypted"
-msgstr "Біометричний замок"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "biometric finance app"
@@ -4086,10 +4077,6 @@ msgstr "Budgie об’єднує очевидні пари переказів і
 msgid "Budgie missing categories screen listing only the transactions that still need a category"
 msgstr "Екран відсутніх категорій Budgie зі списком лише тих транзакцій, яким усе ще бракує категорії"
 
-#: src/generic/component/hero-section/hero-section-image.tsx
-msgid "Budgie mobile app interface showing balance overview with multi-currency bank accounts including Monobank cards and various account types"
-msgstr "Інтерфейс мобільного додатку Budgie з оглядом балансу та мультивалютними банківськими рахунками, включаючи картки Monobank та різні типи рахунків"
-
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie Monobank screen listing the connected Black, White and Jar cards with their balances"
 msgstr "Екран Monobank у Budgie зі списком підключених карток Black, White і Jar та їхніми балансами"
@@ -4197,6 +4184,10 @@ msgstr "Budgie поширюється під source-available ліцензією
 #: src/app/[lang]/privacy/page.tsx
 msgid "Budgie ships with zero third-party analytics or advertising SDKs. Crash reporting is opt-in and anonymized; financial data is never included."
 msgstr "Budgie постачається без жодних сторонніх аналітичних або рекламних SDK. Звітування про збої є необов'язковим та анонімізованим; фінансові дані ніколи не включаються."
+
+#: src/generic/component/hero-section/hero-section-image.tsx
+msgid "Budgie showing a total balance, a monthly budget bar and bank, cash and savings accounts on one screen"
+msgstr "Budgie показує загальний баланс, місячний бюджет і банківські, готівкові та ощадні рахунки на одному екрані"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Budgie spots subscription patterns and renewals, plots them on a month calendar, and forecasts what's coming."
@@ -8552,10 +8543,6 @@ msgstr "Миттєва продуктивність"
 msgid "Instant Spending Analysis"
 msgstr "Миттєвий аналіз витрат"
 
-#: src/generic/component/hero-section/hero-section-badges.tsx
-msgid "Instant Spending Insights"
-msgstr "Миттєва аналітика витрат"
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Integration with spreadsheets or databases"
 msgstr "Інтеграція з електронними таблицями або базами даних"
@@ -8592,8 +8579,8 @@ msgstr ""
 msgid "Investment tracking matters"
 msgstr "Відстеження інвестицій має значення"
 
-#: src/generic/component/hero-section/hero-section-header.tsx
-msgid "iOS & Android"
+#: src/generic/component/trust-banner/trust-banner.tsx
+msgid "iOS and Android"
 msgstr "iOS та Android"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
@@ -8739,10 +8726,6 @@ msgstr "Приєднайтеся до списку очікування Budgie �
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx
 msgid "Join the waitlist — be first to try the offline-first expense tracker."
 msgstr "Приєднайтеся до листа очікування — будьте першими, хто спробує трекер витрат з офлайн-пріоритетом."
-
-#: src/generic/component/trust-banner/trust-banner.tsx
-msgid "Join the waitlist for early access"
-msgstr "Приєднатись до списку очікування для раннього доступу"
 
 #: src/blog/component/blog-article-cta/blog-article-cta.tsx
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx
@@ -10409,6 +10392,10 @@ msgstr "Офлайн-можливості важливі"
 msgid "offline expense tracker"
 msgstr ""
 
+#: src/generic/component/hero-section/hero-section-header.tsx
+msgid "Offline expense tracking that never phones home."
+msgstr "Облік витрат офлайн, який ніколи не зв'язується із сервером."
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Offline use"
 msgstr "Офлайн-використання"
@@ -10545,10 +10532,6 @@ msgstr "Під час кожної консолідації Budgie порівн�
 msgid "On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept, edit, or reject) feeds back into the embedding index without any network call."
 msgstr "При першому запуску Budgie завантажує Qwen3 1.7B Q4 та 768-вимірну модель вкладень Nomic з Hugging Face hub. Обидві зберігаються у пісочниці вашого додатку. Для кожної нової транзакції спочатку запускається модель вкладень — якщо у вашій історії є сильний найближчий сусід, результат є миттєвим. Якщо ні, Qwen3 1.7B генерує підказку. Ваша відповідь (прийняти, відредагувати або відхилити) потрапляє назад до індексу вкладень без жодного мережевого виклику."
 
-#: src/generic/component/trust-banner/trust-banner.tsx
-msgid "on GitHub"
-msgstr "на GitHub"
-
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "On iOS 18 and later, restart your iPhone once after installing if the app fails to open."
 msgstr "На iOS 18 і новіших версіях перезавантажте iPhone один раз після встановлення, якщо застосунок не відкривається."
@@ -10568,10 +10551,6 @@ msgstr "на пристрої"
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "On-device — no merchant string ever leaves your phone"
 msgstr "На пристрої — жоден рядок назви торговця ніколи не залишає ваш телефон"
-
-#: src/generic/component/trust-banner/trust-banner.tsx
-msgid "On-Device — No Servers"
-msgstr "На пристрої — без серверів"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "on-device AI"
@@ -10845,7 +10824,6 @@ msgid "open source"
 msgstr "Відкритого вихідного коду для перевірки"
 
 #: src/app/[lang]/opengraph-image.tsx
-#: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Open Source"
 msgstr "Відкритий код"
 
@@ -11560,8 +11538,8 @@ msgstr "Власні MCC-мітки PrivatBank автоматично зіста
 msgid "private AI budget app"
 msgstr ""
 
-#: src/generic/component/trust-banner/trust-banner.tsx
-msgid "Private Beta"
+#: src/generic/component/hero-section/hero-section-header.tsx
+msgid "Private beta"
 msgstr "Закрита бета"
 
 #: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
@@ -12644,10 +12622,6 @@ msgstr "Вихідний код є загальнодоступним — чит
 msgid "source-available"
 msgstr "доступний код"
 
-#: src/generic/component/trust-banner/trust-banner.tsx
-msgid "Source-Available"
-msgstr "Source-Available"
-
 #: src/app/[lang]/features/open-source-budget-app-mobile/metadata.ts
 #: src/app/[lang]/features/open-source-budget-app-mobile/opengraph-image.tsx
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
@@ -12679,6 +12653,10 @@ msgstr "Source-available ліцензія — без прив'язки до по
 #: src/app/[lang]/features/open-source-budget-app-mobile/metadata.ts
 msgid "Source-Available Mobile Budget App — Auditable Privacy — Budgie"
 msgstr "Мобільний бюджетний застосунок із доступним кодом — Перевірювана приватність — Budgie"
+
+#: src/generic/component/trust-banner/trust-banner.tsx
+msgid "Source-available on GitHub"
+msgstr "Відкритий код на GitHub"
 
 #: src/app/[lang]/open-source/metadata.ts
 #: src/app/[lang]/open-source/page.tsx
@@ -13678,10 +13656,6 @@ msgstr "Проблеми конфіденційності, описані вищ
 #: src/generic/component/footer/footer.tsx
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device."
 msgstr "Приватний трекер витрат, який тримає ваші фінансові дані саме там, де їм місце: на вашому пристрої."
-
-#: src/generic/component/hero-section/hero-section-header.tsx
-msgid "The privacy-first offline expense tracker — open source budget app for iOS & Android."
-msgstr "Приватний offline-first трекер витрат для iOS і Android."
 
 #: src/generic/component/problem-solution-section/problem-solution-card.tsx
 msgid "The private approach"
@@ -14708,10 +14682,6 @@ msgstr "Переглянути всі інтеграції"
 msgid "View on GitHub"
 msgstr "Переглянути на GitHub"
 
-#: src/generic/component/hero-section/hero-section-header.tsx
-msgid "View Source Code"
-msgstr "Переглянути вихідний код"
-
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Violate any laws in your jurisdiction"
 msgstr ""
@@ -15007,6 +14977,10 @@ msgstr "Що таке транзакції без категорій?"
 #: src/generic/component/testimonials-section/testimonials-header.tsx
 msgid "What Beta Testers Are Saying"
 msgstr "Що кажуть бета-тестувальники"
+
+#: src/generic/component/trust-banner/trust-banner.tsx
+msgid "What Budgie guarantees"
+msgstr "Що гарантує Budgie"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "What Changes Architecturally"
@@ -16129,10 +16103,6 @@ msgstr "Працює в режимі польоту. Інтернет не по�
 msgid "Works offline"
 msgstr "Працює офлайн"
 
-#: src/generic/component/hero-section/hero-section-badges.tsx
-msgid "Works Offline"
-msgstr "Працює офлайн"
-
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Works offline and on every form variant — expense, income, and transfer"
 msgstr "Працює офлайн і для кожного варіанту форми — витрата, дохід і переказ"
@@ -16150,7 +16120,6 @@ msgid "Works with offline-only banks"
 msgstr "Працює з банками, що підтримують лише офлайн-режим"
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx
-#: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Works without internet"
 msgstr "Працює без інтернету"
 
@@ -16835,10 +16804,6 @@ msgstr "Баланси ваших банківських рахунків та �
 msgid "Your bank credentials are encrypted on your device"
 msgstr "Ваші банківські облікові дані зашифровані на вашому пристрої"
 
-#: src/generic/component/hero-section/hero-section-header.tsx
-msgid "Your bank knows everything. Mint sold your data. YNAB stores it on their servers. Budgie keeps your finances on your device—encrypted, offline, and yours alone."
-msgstr "Більшість фінансових застосунків пропонують обміняти приватність на зручність. Budgie тримає ваші фінанси на вашому пристрої — зашифрованими, офлайн і тільки вашими."
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Your banking credentials are encrypted and stored locally on your device"
 msgstr "Ваші банківські облікові дані шифруються та зберігаються локально на вашому пристрої"
@@ -16871,7 +16836,6 @@ msgstr "Ваші дані — це ваші дані. Budgie підтримує 
 msgid "Your data never leaves your device unless you explicitly sync with your own cloud storage. We don't have servers storing your financial information, and we can't see your transactions. Everything is encrypted locally on your device."
 msgstr "Ваші дані не залишають пристрій, якщо ви самі не синхронізуєте їх із власним хмарним сховищем. Ми не маємо серверів для зберігання вашої фінансової інформації і не можемо бачити ваші транзакції. Усе шифрується локально на вашому пристрої."
 
-#: src/generic/component/hero-section/hero-section-badges.tsx
 #: src/generic/component/security-section/security-section-visual.tsx
 msgid "Your Data Stays Yours"
 msgstr "Ваші дані залишаються вашими"
@@ -16899,10 +16863,6 @@ msgstr "Лише ваш пристрій"
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Your device UDID must already be registered in the ad-hoc provisioning profile."
 msgstr "UDID вашого пристрою вже має бути зареєстровано в ad-hoc профілі забезпечення."
-
-#: src/generic/component/hero-section/hero-section-header.tsx
-msgid "Your Device."
-msgstr "Ваш Пристрій."
 
 #: src/generic/component/security-section/security-section-cards.tsx
 msgid "Your encryption key lives in iOS Keychain or Android Keystore — both hardware-backed where available. SQLCipher AES-256 encrypts the database file so raw storage access reveals nothing."
@@ -16936,10 +16896,6 @@ msgstr "Ваші фінансові дані розповідають повну
 msgid "Your financial data tells the story of your life—where you shop, what you value, how you spend your time. That story belongs to you."
 msgstr "Ваші фінансові дані розповідають історію вашого життя — де ви купуєте, що цінуєте, як проводите час. Ця історія належить вам."
 
-#: src/generic/component/hero-section/hero-section-header.tsx
-msgid "Your Financial Data."
-msgstr "Ваші Фінансові Дані."
-
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your health conditions (through medical bills)"
 msgstr "Ваші стани здоров'я (через медичні рахунки)"
@@ -16964,6 +16920,10 @@ msgstr "Ваші гроші, ваші дані, ваш контроль. Це о
 msgid "Your money. Your data. Your control."
 msgstr "Ваші гроші. Ваші дані. Ваш контроль."
 
+#: src/generic/component/hero-section/hero-section-header.tsx
+msgid "Your money. Your phone. Nobody else's server."
+msgstr "Ваші гроші. Ваш телефон. Жодного чужого сервера."
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your political and religious affiliations"
 msgstr "Ваші політичні та релігійні приналежності"
@@ -16979,10 +16939,6 @@ msgstr "Ваші стосунки та соціальні зв'язки"
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Your right to use the Service will immediately cease"
 msgstr ""
-
-#: src/generic/component/hero-section/hero-section-header.tsx
-msgid "Your Rules."
-msgstr "Ваші Правила."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your shopping habits and preferences"
@@ -17043,10 +16999,6 @@ msgstr "Без хмари"
 #: src/generic/component/security-section/security-section-cards.tsx
 msgid "Zero Cloud Storage"
 msgstr "Без хмарного сховища"
-
-#: src/generic/component/hero-section/hero-section-header.tsx
-msgid "Zero data collection"
-msgstr "Без збору даних"
 
 #: src/generic/component/security-section/security-section-visual.tsx
 msgid "Zero Tracking"
