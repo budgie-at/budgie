@@ -5,14 +5,15 @@ import { useResyncWindowPickerModal } from '../../context/resync-window-picker-m
 
 interface Props {
     readonly accountId: number;
+    readonly testID?: string;
 }
 
-export const ResyncAccount = ({ accountId }: Props) => {
+export const ResyncAccount = ({ accountId, testID }: Props) => {
     const [openResyncWindowPicker] = useResyncWindowPickerModal();
 
     const handleResync = () => {
         void openResyncWindowPicker({ accountId });
     };
 
-    return <Button onPress={handleResync} size="sm" variant="positive" leftIcon={UserIconNameEnum.RotateCw} />;
+    return <Button onPress={handleResync} size="sm" variant="positive" leftIcon={UserIconNameEnum.RotateCw} testID={testID} />;
 };

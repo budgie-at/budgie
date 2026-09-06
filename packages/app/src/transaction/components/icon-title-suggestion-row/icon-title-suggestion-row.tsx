@@ -1,6 +1,7 @@
 import { SuggestionStatus } from '@budgie/ai';
 import { UserIconNameEnum } from '@budgie/contracts';
 
+import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { SuggestionPillContent } from '../suggestion-pill-content/suggestion-pill-content';
 import { SuggestionPill } from '../suggestion-pill/suggestion-pill';
 import { SuggestionRow } from '../suggestion-row/suggestion-row';
@@ -13,14 +14,14 @@ interface Props<T> {
     readonly getKey: (item: T) => string | number;
     readonly getIcon: (item: T) => UserIconNameEnum;
     readonly getTitle: (item: T) => string;
-    readonly getBadge?: (item: T) => string | undefined;
+    readonly testIDPrefix: string;
 }
 
 const ANIMATION_DURATION = 200;
 const STAGGER_DELAY = 60;
 
 export const IconTitleSuggestionRow = <T,>(props: Props<T>) => {
-    const { suggestions, status, enabled, onSelect, getKey, getIcon, getTitle, getBadge } = props;
+    const { suggestions, status, enabled, onSelect, getKey, getIcon, getTitle, testIDPrefix } = props;
 
     const renderPill = (item: T, index: number, onPillSelect: () => void) => (
         <SuggestionPill
@@ -29,8 +30,9 @@ export const IconTitleSuggestionRow = <T,>(props: Props<T>) => {
             animationDuration={ANIMATION_DURATION}
             staggerDelay={STAGGER_DELAY}
             onPress={onPillSelect}
+            {...testIDProps(testIDPrefix, index)}
         >
-            <SuggestionPillContent icon={getIcon(item)} title={getTitle(item)} badge={getBadge?.(item)} />
+            <SuggestionPillContent icon={getIcon(item)} title={getTitle(item)} />
         </SuggestionPill>
     );
 
