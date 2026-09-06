@@ -12,14 +12,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -82,14 +81,66 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie transaction list rendered straight from the on-device database with no network call`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Turn the radio off, nothing changes</Trans>}>
+                    <Trans>Three screens with nothing behind them — the list, the entry, and a Settings page with no account on it.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Airplane mode changes nothing</Trans>}>
+                    <Trans>The full list renders with the radio off. No spinner, no retry.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie transaction list showing eighty-one transactions read straight from the on-device database`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="offline-first-expense-tracker-1"
                     slug="offline-first-expense-tracker"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.205}>
+                        <Trans>81 transactions, no request</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.45}>
+                        <Trans>The whole list, no spinner</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Saving is instant</Trans>}>
+                    <Trans>The row lands and the balance updates before a network app finishes its request.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie new expense screen with the amount keypad, account row and confirm button`}
+                    index={1}
+                    locale={lang}
+                    scene="expense-tracking-1"
+                    slug="expense-tracking"
+                >
+                    <FeatureStory.Callout y={0.307}>
+                        <Trans>Amount first, no form</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.884}>
+                        <Trans>Writes straight to the device</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Nothing to sign into</Trans>}>
+                    <Trans>No account row anywhere in Settings — because there is no account.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie settings screen with security, language, currency and default account rows and no sign-in row`}
+                    index={2}
+                    locale={lang}
+                    scene="offline-first-expense-tracker-2"
+                    slug="offline-first-expense-tracker"
+                >
+                    <FeatureStory.Callout y={0.17}>
+                        <Trans>No cloud sync, no tracking</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.3}>
+                        <Trans>A PIN, not a login</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -135,20 +186,6 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        On first launch, Budgie creates an encrypted SQLite database in your app sandbox. Every transaction, category,
-                        account, and tag becomes a row in that file. The optional bank sync fetches statements directly from your
-                        bank&apos;s API to your device — never via a third-party data aggregator. AI category suggestions run on a
-                        1.7B-parameter model loaded into memory on your phone.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
                     <Trans>Cloud apps vs. Budgie</Trans>
                 </FeaturePageHeading>
                 <FeaturePageComparisonTable rivalLabel={<Trans>Cloud app</Trans>}>
@@ -174,15 +211,6 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                     />
                 </FeaturePageComparisonTable>
             </FeaturePageSection>
-
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie settings screen with the app lock, language, currency and default account options`}
-                    locale={lang}
-                    scene="offline-first-expense-tracker-2"
-                    slug="offline-first-expense-tracker"
-                />
-            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
