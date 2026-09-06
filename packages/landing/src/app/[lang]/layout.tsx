@@ -7,7 +7,7 @@ import { Header } from '../../generic/component/header/header';
 import { JsonLd } from '../../generic/component/json-ld/json-ld';
 import { BASE_URL, OG_LOCALE_MAP } from '../../generic/constant/seo.constant';
 import { buildAlternates } from '../../generic/util/build-alternates.util';
-import { allMessages, getI18nInstance } from '../../i18n/app-router-i18n';
+import { clientMessages, getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 import { LinguiClientProvider } from '../../i18n/lingui-client.provider';
 import { SUPPORTED_LOCALES } from '../../i18n/supported-locales.constant.mjs';
@@ -24,19 +24,9 @@ const fixelDisplay = localFont({
             style: 'normal'
         },
         {
-            path: '../fonts/fixel-display/fixel-display-regular-italic.woff2',
-            weight: '400',
-            style: 'italic'
-        },
-        {
             path: '../fonts/fixel-display/fixel-display-medium.woff2',
             weight: '500',
             style: 'normal'
-        },
-        {
-            path: '../fonts/fixel-display/fixel-display-medium-italic.woff2',
-            weight: '500',
-            style: 'italic'
         },
         {
             path: '../fonts/fixel-display/fixel-display-semi-bold.woff2',
@@ -44,19 +34,9 @@ const fixelDisplay = localFont({
             style: 'normal'
         },
         {
-            path: '../fonts/fixel-display/fixel-display-semi-bold-italic.woff2',
-            weight: '600',
-            style: 'italic'
-        },
-        {
             path: '../fonts/fixel-display/fixel-display-bold.woff2',
             weight: '700',
             style: 'normal'
-        },
-        {
-            path: '../fonts/fixel-display/fixel-display-bold-italic.woff2',
-            weight: '700',
-            style: 'italic'
         }
     ],
     display: 'swap'
@@ -159,7 +139,7 @@ export default async function RootLayout({ params, children }: Props) {
                 <JsonLd data={organizationData} />
                 <JsonLd data={websiteData} />
 
-                <LinguiClientProvider initialLocale={lang} initialMessages={allMessages[lang]}>
+                <LinguiClientProvider initialLocale={lang} initialMessages={clientMessages[lang]}>
                     <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>
                         <div className="flex min-h-dvh flex-col">
                             <Header lang={lang} />
