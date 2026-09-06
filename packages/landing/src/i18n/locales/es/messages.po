@@ -2209,6 +2209,10 @@ msgstr "Un PIN de 4 a 6 dígitos desbloquea la app y la base de datos SQLCipher.
 msgid "A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches."
 msgstr "Un análisis en segundo plano examina el historial de transacciones buscando patrones de importe y cadencia: mismo proveedor, importe similar, intervalo regular. Netflix a 12,99 € cada 30 días es un patrón."
 
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "A backup of everything"
+msgstr "Una copia de todo"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "A bank token is not a property of one account — it is a property of your relationship with the bank. Budgie models it that way: a connection holds the provider and the credential, and every account you sync from that bank points at it."
 msgstr "Un token bancario no es una propiedad de una cuenta: es una propiedad de tu relación con el banco. Budgie lo modela así: una conexión guarda el proveedor y la credencial, y cada cuenta que sincronizas desde ese banco apunta a ella."
@@ -4165,6 +4169,10 @@ msgstr "Budgie ejecuta Qwen3 1.7B y un modelo de embedding de 768 dimensiones lo
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
 msgstr "Pantalla de ajustes de Budgie con las opciones de privacidad, seguridad y generales que incluye la aplicación"
+
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Budgie settings screen showing the data management section with Export CSV and Export Database rows"
+msgstr "Pantalla de configuración de Budgie con la sección de gestión de datos y las filas Exportar CSV y Exportar base de datos"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Budgie settings screen showing the full option set with no paywall and no subscription prompt"
@@ -6882,6 +6890,10 @@ msgstr "Cada título de transacción, a menudo más"
 msgid "Every transaction you make, including amounts, merchants, and locations"
 msgstr "Cada transacción que realizas, incluyendo montos, comercios y ubicaciones"
 
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Every transaction, one file"
+msgstr "Cada transacción, un archivo"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Every well-maintained open-source project has an issue tracker where bugs, feature requests, and concerns are discussed. This is a goldmine of information about how the project operates:"
 msgstr "Todo proyecto de código abierto bien mantenido tiene un sistema de seguimiento de problemas donde se discuten bugs, solicitudes de funciones y preocupaciones. Es una mina de oro de información sobre cómo opera el proyecto:"
@@ -6991,6 +7003,14 @@ msgstr "Exportación y portabilidad"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Export anytime in CSV or JSON"
 msgstr "Exporta en cualquier momento a CSV o JSON"
+
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Export CSV takes the whole ledger in a single tap. There is no range to pick and no partial file to reconcile later."
+msgstr "Exportar CSV se lleva todo el registro con un solo toque. No hay rango que elegir ni archivo parcial que cuadrar después."
+
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Export Database writes the whole database to one file. The Import Database row directly above it restores from that same file on any device."
+msgstr "Exportar base de datos escribe toda la base de datos en un archivo. La fila Importar base de datos, justo encima, la restaura desde ese mismo archivo en cualquier dispositivo."
 
 #: src/app/[lang]/features/data-export/metadata.ts
 #: src/app/[lang]/features/data-export/page.tsx
@@ -8119,7 +8139,6 @@ msgstr "¿En qué se diferencia esto de la página de análisis de etiquetas?"
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/custom-categories/page.tsx
 #: src/app/[lang]/features/dark-mode/page.tsx
-#: src/app/[lang]/features/data-export/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
@@ -9849,6 +9868,10 @@ msgstr "¿Necesitas sincronización bancaria? Budgie utiliza una arquitectura de
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Need for Reliable Access"
 msgstr "Necesidad de acceso fiable"
+
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Neither row is gated. No upgrade prompt, no vendor account, no plan — you save the file through the OS share sheet to wherever you keep things."
+msgstr "Ninguna de las dos filas está bloqueada. Sin aviso de mejora, sin cuenta de proveedor, sin plan: guardas el archivo con el menú de compartir del sistema donde tú quieras."
 
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx
@@ -12445,10 +12468,6 @@ msgstr "Configura tu nueva aplicación con los saldos actuales"
 msgid "Settings → Export → Backup. Budgie writes a .db file with SQLCipher encryption intact. To restore, install Budgie on the new device, tap Restore on the welcome screen, point at the file, enter the PIN."
 msgstr "Ajustes → Exportar → Backup. Budgie escribe un archivo .db con el cifrado SQLCipher intacto. Para restaurar, instala Budgie en el nuevo dispositivo y selecciona el archivo."
 
-#: src/app/[lang]/features/data-export/page.tsx
-msgid "Settings → Export. Pick CSV or Database. Every transaction goes into the file. Save through the OS share sheet to Files, iCloud Drive, Google Drive, or any storage app."
-msgstr "Ajustes → Exportar. Elige CSV o Base de datos. Todas las transacciones acaban en el archivo. Guárdalo con el menú de compartir del sistema en Archivos, iCloud Drive, Google Drive o cualquier app de almacenamiento."
-
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Settings → Privacy → Screenshot protection. Toggle individual screens. The runtime applies FLAG_SECURE on Android and a blur layer on iOS in app-switcher state."
 msgstr "Ajustes → Privacidad → Protección de capturas de pantalla. Activa/desactiva pantallas individuales. En tiempo de ejecución aplica FLAG_SECURE en Android y una superposición de desenfoque en iOS."
@@ -12456,6 +12475,10 @@ msgstr "Ajustes → Privacidad → Protección de capturas de pantalla. Activa/d
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Settings → Theme → Light / Dark / System. The app uses platform appearance APIs and persists the choice. All charts recompute their palette to match."
 msgstr "Ajustes → Tema → Claro / Oscuro / Sistema. La app usa las API de apariencia de la plataforma y persiste la elección. Todos los gráficos se recomputan al instante."
+
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
+msgstr "La configuración tiene los dos exportes como filas normales, cada una junto al import que vuelve a leer el archivo."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Settle by transfer to a real account — no awkward \"expense\" workarounds"
@@ -14526,6 +14549,10 @@ msgstr "De abrir a guardar en dos toques."
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Two taps to saved"
 msgstr ""
+
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Two ways out, one screen"
+msgstr "Dos salidas, una pantalla"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Two-stage categorization flow"

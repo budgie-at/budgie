@@ -16,6 +16,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -79,6 +80,49 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 }
             />
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Two ways out, one screen</Trans>}>
+                    <Trans>
+                        Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Point index={0}>
+                    <Trans>
+                        Export CSV takes the whole ledger in a single tap. There is no range to pick and no partial file to reconcile later.
+                    </Trans>
+                </FeatureStory.Point>
+
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie settings screen showing the data management section with Export CSV and Export Database rows`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="database-backup-1"
+                    slug="database-backup"
+                >
+                    <FeatureStory.Callout index={0} y={0.365}>
+                        <Trans>Every transaction, one file</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.538}>
+                        <Trans>A backup of everything</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Point index={1}>
+                    <Trans>
+                        Export Database writes the whole database to one file. The Import Database row directly above it restores from that
+                        same file on any device.
+                    </Trans>
+                </FeatureStory.Point>
+                <FeatureStory.Point index={2}>
+                    <Trans>
+                        Neither row is gated. No upgrade prompt, no vendor account, no plan — you save the file through the OS share sheet
+                        to wherever you keep things.
+                    </Trans>
+                </FeatureStory.Point>
+            </FeatureStory>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why an expense app must respect the export</Trans>
@@ -122,18 +166,6 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                         <Trans>No vendor account required — your data, your storage of choice</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Settings → Export. Pick CSV or Database. Every transaction goes into the file. Save through the OS share sheet to
-                        Files, iCloud Drive, Google Drive, or any storage app.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
