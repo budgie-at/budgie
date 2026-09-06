@@ -2772,6 +2772,10 @@ msgstr "Betrags- und Zeitfensterabgleich erkennt Überweisungen und Rückerstatt
 msgid "Amount first, no form"
 msgstr "Erst der Betrag, kein Formular"
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Amounts aligned right"
+msgstr "Beträge rechtsbündig"
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "An amount-range chip in the same filter row, with a From value, a To value, or both"
 msgstr "Ein Betragsbereich-Chip in derselben Filterzeile, mit einem Von-Wert, einem Bis-Wert oder beidem"
@@ -4289,6 +4293,10 @@ msgstr "Budgie-Transaktionsliste, in der eine erkannte eingehende Überweisung a
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Budgie transaction list where every row shows its primary tag next to the category"
 msgstr "Budgie-Transaktionsliste, in der jede Zeile ihren wichtigsten Tag neben der Kategorie zeigt"
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Budgie transaction list with a long-press context menu offering edit, convert to transfer, attach debt and delete"
+msgstr "Budgie-Transaktionsliste mit einem Kontextmenü per langem Drücken: bearbeiten, in Umbuchung umwandeln, Schuld verknüpfen und löschen"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie transaction list with tag chips shown on every tagged row"
@@ -6558,6 +6566,10 @@ msgstr "Early-Access-Mitglieder erhalten 50% Rabatt auf lebenslangen Zugriff"
 msgid "Easy to make formula errors"
 msgstr "Formelfehler passieren leicht"
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by accident."
+msgstr "Bearbeiten, in eine Umbuchung umwandeln, eine Schuld verknüpfen oder löschen. Ein einfacher Tipp öffnet die Zeile nur zum Lesen, sodass sich nichts versehentlich ändert."
+
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Edit, Delete, Split, Convert to Transfer, and Convert to Refund. The exact set depends on the transaction type — only income can become a refund, for example."
 msgstr "Bearbeiten, Löschen, Aufteilen, In Überweisung umwandeln und In Rückerstattung umwandeln. Die genaue Auswahl hängt vom Transaktionstyp ab – nur Einnahmen können zum Beispiel zu einer Rückerstattung werden."
@@ -6772,6 +6784,10 @@ msgstr "Selbst wenn jemand die Verbindung abfängt, kann er sie nicht entschlüs
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Even if you delete your account with a budgeting app, the aggregator (Plaid, Yodlee, etc.) may retain your data. You have a relationship with the app and a separate relationship with the aggregator. Deleting one does not necessarily affect the other."
 msgstr "Selbst wenn Sie Ihr Konto bei einer Budget-App löschen, kann der Aggregator (Plaid, Yodlee usw.) Ihre Daten behalten. Sie haben eine Beziehung zur App und eine separate Beziehung zum Aggregator. Das Löschen der einen beeinflusst nicht unbedingt die andere."
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Every action on a long-press"
+msgstr "Alle Aktionen per langem Drücken"
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Every AI correction improves future suggestions via on-device learning"
@@ -7505,6 +7521,10 @@ msgstr "Freiberufliche Designerin"
 msgid "Frequently Asked Questions"
 msgstr "Häufig gestellte Fragen"
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "From an empty sheet to a list you can read"
+msgstr "Vom leeren Formular zur lesbaren Liste"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "From bank connections, yes. Crypto exchange connections do not offer deposit accounts, since the concept does not map onto them."
 msgstr "Bei Bankverbindungen ja. Krypto-Börsen-Verbindungen bieten keine Festgeldkonten an, da sich das Konzept dort nicht abbilden lässt."
@@ -7688,6 +7708,10 @@ msgstr "Regierungsbehörden keinen Zugang anfordern"
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "Graduate student"
 msgstr "Doktorand"
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Grouped by month"
+msgstr "Nach Monat gruppiert"
 
 #: src/generic/component/security-section/security-section-cards.tsx
 msgid "Hardware-Backed Encryption Key"
@@ -8098,7 +8122,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/debt-tracking/page.tsx
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
-#: src/app/[lang]/features/expense-tracking/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -9056,6 +9079,10 @@ msgstr "Drücke eine Transaktionskarte lange, um zu bearbeiten, zu löschen, auf
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Long-press any transaction in Budgie for a native context menu: edit, delete, split, convert to transfer, or convert income to refund. Two taps where the rest of the market needs five."
 msgstr "Drücke eine beliebige Transaktion in Budgie lange, um ein natives Kontextmenü zu öffnen: bearbeiten, löschen, aufteilen, in Überweisung umwandeln oder Einnahme in Rückerstattung umwandeln. Häufige Korrekturen brauchen nur ein paar Taps."
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Long-press for every action"
+msgstr "Lang drücken für alle Aktionen"
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
@@ -11275,6 +11302,10 @@ msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein."
 msgid "Please report it responsibly by emailing security@budgie.at"
 msgstr ""
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Plus, amount, save. The account, today's date and the likely category are already filled in for you."
+msgstr "Plus, Betrag, speichern. Konto, heutiges Datum und die wahrscheinliche Kategorie sind bereits für Sie ausgefüllt."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "PostgreSQL or MySQL backend (your choice)"
 msgstr "PostgreSQL- oder MySQL-Backend (Ihre Wahl)"
@@ -12052,6 +12083,10 @@ msgstr "Zusammen etwa 1 GB: Qwen3 1.7B Q4 für das Sprachmodell und ein 768-dim 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features."
 msgstr "Zusammen etwa 1 GB. Der Download ist einmalig, opt-in und wird nur ausgelöst, wenn Sie KI-Funktionen einschalten."
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Rows group under the month, each one carrying its category icon, its tags and the account it came from."
+msgstr "Die Zeilen gruppieren sich nach Monat und tragen jeweils ihr Kategoriesymbol, ihre Tags und das Konto, von dem sie stammen."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Rule-based automation for categorization"
@@ -13480,6 +13515,10 @@ msgstr "Das Sprachmodell und das Embedding-Modell benötigen zusammen etwa 900 M
 msgid "The lifecycle of your financial data extends far beyond your active use of an app."
 msgstr "Der Lebenszyklus Ihrer Finanzdaten reicht weit über Ihre aktive Nutzung einer App hinaus."
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "The list stays scannable"
+msgstr "Die Liste bleibt überschaubar"
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "The LLM is slower than the embedding lookup but handles novel inputs well. It understands that a charge from a pharmacy should go under healthcare, even if it has never seen that specific merchant before, because it has learned the semantic relationship between merchant types and spending categories."
 msgstr "Das LLM ist langsamer als der Embedding-Lookup, behandelt aber neue Eingaben gut. Es versteht, dass eine Belastung einer Apotheke unter Gesundheit gehen sollte, selbst wenn es diesen spezifischen Händler noch nie gesehen hat, weil es die semantische Beziehung zwischen Händlertypen und Ausgabenkategorien erlernt hat."
@@ -13852,6 +13891,10 @@ msgstr "Thema"
 msgid "Then layer sync on top. Modern sync engines make this incremental approach practical. You do not need to design for distributed systems from day one."
 msgstr "Dann schichten Sie die Synchronisation darüber. Moderne Sync-Engines machen diesen inkrementellen Ansatz praktikabel. Sie müssen nicht von Tag eins an für verteilte Systeme entwerfen."
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Then tap save"
+msgstr "Dann auf Speichern tippen"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Then things started to deteriorate."
 msgstr "Dann begann der Niedergang."
@@ -14084,13 +14127,13 @@ msgstr "Drei Bildschirme ohne Server dahinter — die Liste, die Eingabe und Ein
 msgid "Three screens, from the total on your home screen down to what you owe and what you are owed."
 msgstr "Drei Bildschirme – von der Summe auf der Startseite bis zu dem, was du schuldest und was dir geschuldet wird."
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
+msgstr "Drei Bildschirme: eine Ausgabe speichern, zu einer bereits gespeicherten zurückkehren und die Liste, in der alle landen."
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Three steps from speech to saved"
 msgstr "Drei Schritte von der Sprache bis zum Speichern"
-
-#: src/app/[lang]/features/expense-tracking/page.tsx
-msgid "Three transaction types: expense (debits an account), income (credits an account), transfer (moves between two of your accounts). Categories are user-defined, optionally MCC-backed when imported via bank sync."
-msgstr "Drei Transaktionstypen: Ausgabe (belastet ein Konto), Einnahme (schreibt einem Konto gut), Überweisung (bewegt zwischen zwei Ihrer Konten). Kategorien sind benutzerdefiniert, optional MCC-gestützt beim Import über Bank-Sync."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Time series"
@@ -14452,6 +14495,10 @@ msgstr "Zwei Tipp-Aktionen vom Öffnen bis zum Speichern – ein Bottom-Sheet-Sc
 msgid "Two taps from open to saved."
 msgstr "Zwei Tipp-Aktionen vom Öffnen bis zum Speichern."
 
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Two taps to saved"
+msgstr "Mit zwei Tipps gespeichert"
+
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Two-stage categorization flow"
 msgstr "Zweistufiger Kategorisierungsablauf"
@@ -14459,6 +14506,10 @@ msgstr "Zweistufiger Kategorisierungsablauf"
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Two-tap entry: smart defaults for account, category, and date pick the right values out of the box"
 msgstr "Zwei-Tipp-Eingabe: Smarte Standardwerte für Konto, Kategorie und Datum wählen von Anfang an die richtigen Werte"
+
+#: src/app/[lang]/features/expense-tracking/page.tsx
+msgid "Type the amount"
+msgstr "Betrag eingeben"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "TypeScript codebase, easy to contribute to"
