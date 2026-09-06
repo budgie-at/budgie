@@ -3835,6 +3835,10 @@ msgstr "Екран правил категоризації Budgie зі спис�
 msgid "Budgie Commercial Licensing"
 msgstr ""
 
+#: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
+msgid "Budgie Connect Monobank screen with a token field, setup steps and a note that the token is stored securely"
+msgstr "Екран Budgie «Підключити Монобанк» із полем токена, кроками налаштування та приміткою, що токен зберігається безпечно"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie Connect Monobank screen with the Get API Token row and the token field"
 msgstr "Екран Budgie «Підключити Монобанк» із рядком «Отримати API-токен» і полем токена"
@@ -9640,6 +9644,10 @@ msgid "Monobank exposes a clean public API, so Budgie talks to it directly from 
 msgstr "Monobank надає чистий публічний API, тому Budgie звертається до нього напряму з вашого телефону за допомогою вашого токена — без Plaid, без брокера даних. Кожна транзакція потрапляє у вашу локальну базу SQLite одразу після надходження."
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
+msgid "Monobank issues a personal API token on its own site. The first row opens that page for you; Budgie only ever receives the token you paste back."
+msgstr "Монобанк видає персональний API-токен на власному сайті. Перший рядок відкриває цю сторінку для Вас; Budgie отримує лише той токен, який Ви вставите назад."
+
+#: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Monobank today; we add direct integrations as banks publish stable APIs. For everything else, statement import (PDF, CSV, Excel) covers the gap."
 msgstr "Монобанк сьогодні; ми додаємо прямі інтеграції в міру того, як банки публікують стабільні API. Для всього іншого імпорт виписок (PDF, CSV, Excel) закриває прогалину."
 
@@ -10165,6 +10173,10 @@ msgstr "Немає обміну даними з третіми сторонам�
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "No Third-Party SDKs with Tracking"
 msgstr "Жодних сторонніх SDK з відстеженням"
+
+#: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
+msgid "No token, no connection at all: Erste PDF, PrivatBank Excel and generic CSV statements import from a file you download yourself."
+msgstr "Немає токена — немає й з’єднання: виписки Erste у PDF, PrivatBank у Excel і звичайні CSV імпортуються з файлу, який Ви завантажуєте самі."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No tracking or analytics"
@@ -10779,6 +10791,10 @@ msgstr "Один чек, кілька категорій."
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One screen per bank"
 msgstr "Один екран на банк"
+
+#: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
+msgid "One screen, one field. Budgie never asks for your bank password, and no aggregator ever holds your credentials."
+msgstr "Один екран, одне поле. Budgie ніколи не просить пароль від банку, і жоден агрегатор не зберігає Ваші облікові дані."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "One settings screen, and a public repository where every line of it can be checked."
@@ -13327,6 +13343,10 @@ msgstr "Альтернатива: архітектура Offline-First"
 msgid "The answer varies by company, but the patterns are consistent:"
 msgstr "Відповідь залежить від компанії, але патерни однакові:"
 
+#: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
+msgid "The app calls your bank from your phone. There is no aggregator in the middle, so your transaction history is never mirrored to a third-party service."
+msgstr "Застосунок звертається до Вашого банку з Вашого телефона. Посередника-агрегатора немає, тож історія транзакцій ніколи не дублюється до стороннього сервісу."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The app might be sending your transaction data to a third-party analytics service for “product improvement.” It might be fingerprinting your device and linking your financial behavior to advertising profiles. You would never know, because you cannot see the code."
 msgstr "Додаток може надсилати ваші дані про транзакції до стороннього аналітичного сервісу для «покращення продукту». Він може створювати цифровий відбиток вашого пристрою та пов'язувати вашу фінансову поведінку з рекламними профілями. Ви б ніколи про це не дізналися, оскільки не можете побачити код."
@@ -14251,6 +14271,10 @@ msgstr "Змінити тему"
 msgid "Token control"
 msgstr "Керування токеном"
 
+#: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
+msgid "Token stays on your device"
+msgstr "Токен залишається на Вашому пристрої"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Tools like GitHub’s dependency graph and security advisories make this information visible even to non-technical users. A project with dozens of outdated dependencies and unaddressed security warnings should raise concerns."
 msgstr "Такі інструменти, як графік залежностей GitHub та рекомендації з безпеки, роблять цю інформацію видимою навіть для нетехнічних користувачів. Проєкт із десятками застарілих залежностей та необробленими попередженнями безпеки повинен викликати занепокоєння."
@@ -15051,6 +15075,10 @@ msgstr "Що гарантує Budgie"
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "What Changes Architecturally"
 msgstr "Що змінюється архітектурно"
+
+#: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
+msgid "What connecting a bank actually asks for"
+msgstr "Що насправді потрібно для підключення банку"
 
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "What cryptocurrencies and assets can I track?"
@@ -16689,6 +16717,10 @@ msgstr "Ви можете перевірити код без будь-яких �
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "You can’t control who sees your information"
 msgstr "Ви не можете контролювати, хто бачить вашу інформацію"
+
+#: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
+msgid "You create it on Monobank"
+msgstr "Ви створюєте його в Монобанку"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "You don’t mind bank sync"
