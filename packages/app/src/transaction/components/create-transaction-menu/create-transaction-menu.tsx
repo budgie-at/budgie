@@ -164,6 +164,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
                         isLoading={isAiLoading}
                         isInitializing={isAiInitializing}
                         downloadProgress={aiDownloadProgress}
+                        testID={CreateTransactionMenuSelector.AiButton}
                     />
                 </Animated.View>
             )}

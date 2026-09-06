@@ -13,6 +13,8 @@ import { RESYNC_WINDOW_OPTIONS } from '../sync/constant/resync-window-options.co
 import { useResyncWindowPickerModal } from '../sync/context/resync-window-picker-modal.context';
 import { resyncService } from '../sync/service/resync.service';
 
+import { ResyncWindowPickerSelector } from './resync-window-picker.selector';
+
 import type { ResyncWindowOptionInterface } from '../sync/interface/resync-window-option.interface';
 
 const SEVEN_DAYS = 7;
@@ -101,6 +103,7 @@ export default function ResyncWindowPickerModal() {
                         ? 'text-md font-semibold text-destructive-foreground'
                         : 'text-md font-semibold text-primary';
                     const iconVariant = isDestructive ? 'destructive' : 'primary';
+                    const optionTestID = ResyncWindowPickerSelector.Option(option.sinceDays ?? 'all');
 
                     return (
                         <HorizontalCell
@@ -108,6 +111,7 @@ export default function ResyncWindowPickerModal() {
                             size="md"
                             onPress={handleOptionPress(option)}
                             left={<CircleIcon icon={option.icon} variant={iconVariant} size={40} iconSize={18} />}
+                            testID={optionTestID}
                         >
                             <Text className={labelClassName}>{label}</Text>
                             {isDestructive ? (
