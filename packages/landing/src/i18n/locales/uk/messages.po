@@ -2748,10 +2748,6 @@ msgstr "Завжди. Кожна транзакція дозволяє прий�
 msgid "Always. Imported transactions are normal Budgie transactions — edit, split, tag, or convert to transfer just like manual entries."
 msgstr "Завжди. Імпортовані транзакції є звичайними транзакціями Budgie — їх можна редагувати, розділяти, додавати теги або перетворювати на переказ, як і ручні записи."
 
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Always. Tap any aggregated number to drill into the per-leg native amounts."
-msgstr "Завжди. Торкніться будь-якого підсумкового числа, щоб переглянути нативні суми по кожній частині."
-
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Always. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list gives you a context menu with Edit, Delete, Split, Convert to Transfer, and Convert to Refund actions when they apply."
 msgstr "Завжди. Дотик до рядка відкриває детальний перегляд лише для читання з кнопкою «Редагувати», а довге натискання в списку відкриває контекстне меню з діями «Редагувати», «Видалити», «Розділити», «Конвертувати в переказ» і «Конвертувати в повернення», коли вони застосовні."
@@ -6852,6 +6848,10 @@ msgstr "Всі транзакції у вашій базі даних. Кори�
 msgid "Every transaction is stored locally. No Wi-Fi required to add expenses, view balances, or import bank data. Works anywhere."
 msgstr "Кожна транзакція зберігається локально. Для додавання витрат, перегляду балансів або імпорту банківських даних не потрібен Wi-Fi. Працює будь-де."
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Every transaction is valued at the rate of the day it happened, not today's rate"
+msgstr "Кожна транзакція оцінюється за курсом того дня, коли вона відбулася, а не за сьогоднішнім"
+
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Every transaction lives on your device. No cloud account, no sign-up — your finances stay in your pocket, even on a plane or in a tunnel."
 msgstr "Кожна транзакція знаходиться на вашому пристрої. Без хмарного акаунту, без реєстрації — ваші фінанси залишаються у вашій кишені, навіть у літаку або в тунелі."
@@ -7597,8 +7597,8 @@ msgid "FX preserved"
 msgstr "FX зберігається"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
-msgid "FX rates are pulled once a day from a public-domain source. Conversions are reversible — tap any aggregated number to see the per-leg native amounts."
-msgstr "Курси FX завантажуються раз на добу з відкритого джерела. Конверсії зворотні — торкніть будь-яку зведену цифру, щоб побачити суми кожної ноги в рідній валюті."
+msgid "FX rates are pulled once a day from a public-domain source. Nothing is converted in place: every account, transaction, and transfer leg keeps its original currency and amount, and the base-currency figure is derived on top of it."
+msgstr "Курси валют завантажуються раз на день із суспільного надбання. Нічого не перезаписується: кожен рахунок, кожна транзакція та кожна сторона переказу зберігають початкову валюту й початкову суму, а значення в базовій валюті обчислюється поверх них."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "FX support"
@@ -13165,10 +13165,6 @@ msgstr "Візьміть контроль над фінансовою конфі
 msgid "Tap a calendar day to see the transactions due. The forecasted upcoming list extends out into the next 60 days. Cross-currency recurring shows in your home currency; original amount on tap."
 msgstr "Торкніть день у календарі, щоб побачити транзакції, що підлягають оплаті. Список прогнозованих майбутніх розширюється на наступні 60 днів. Міжвалютні регулярні платежі відображаються в основній валюті; оригінальна сума — при натисканні."
 
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Tap any aggregated number to drill into the per-leg native amounts"
-msgstr "Торкніть будь-яке зведене число, щоб деталізувати суми кожної ноги в рідній валюті"
-
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Tap any category row to open exactly the transactions behind that number for this period"
 msgstr "Торкніться будь-якого рядка категорії, щоб відкрити саме ті транзакції, що стоять за цим числом за цей період"
@@ -16201,6 +16197,10 @@ msgstr "Так — за замовчуванням жоден не є перви
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Yes — cards, jars, and deposit accounts from the same bank all attach to one connection and appear together on its screen."
 msgstr "Так — картки, банки й депозитні рахунки одного банку прив'язуються до одного підключення й з'являються разом на його екрані."
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Yes — each account, transaction, and transfer leg keeps its original currency and amount, and that is what you see on the account and transaction screens. Only the aggregated totals are shown in your base currency."
+msgstr "Так — кожен рахунок, кожна транзакція та кожна сторона переказу зберігають початкову валюту й початкову суму, і саме це ви бачите на екранах рахунків і транзакцій. У базовій валюті показуються лише зведені підсумки."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Yes — each asset is a normal account, so it rolls into net worth next to your bank accounts, deposits, and debts."
