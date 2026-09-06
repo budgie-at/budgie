@@ -5,8 +5,6 @@ import { Text, View } from 'react-native';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
 import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
 import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
@@ -23,8 +21,6 @@ interface Props {
 
 export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
     const protectAmount = useProtectedAmountLabel();
 
     const { outstandingAmount, paidAmount, percentage, totalAmount } = summary;
@@ -36,9 +32,9 @@ export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Prop
         paidLabel: t(DEBT_SETTLED_LABEL[debtType]),
         totalLabel: borrowed ? t`Borrowed` : t`Lent`
     };
-    const formattedPaidAmount = formatDigits(paidAmount, instrumentSymbol);
-    const formattedTotalAmount = formatDigits(totalAmount, instrumentSymbol);
-    const accessibilityLabel = `${labels.directionLabel}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${labels.paidLabel}: ${protectAmount(paidAmount, instrumentSymbol)}. ${labels.totalLabel}: ${protectAmount(totalAmount, instrumentSymbol)}. ${percentage}%`;
+    const formattedPaidAmount = protectAmount(paidAmount, instrumentSymbol);
+    const formattedTotalAmount = protectAmount(totalAmount, instrumentSymbol);
+    const accessibilityLabel = `${labels.directionLabel}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${labels.paidLabel}: ${formattedPaidAmount}. ${labels.totalLabel}: ${formattedTotalAmount}. ${percentage}%`;
 
     return (
         <View
