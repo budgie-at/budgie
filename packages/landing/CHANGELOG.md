@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.20.0](https://github.com/budgie-at/budgie/compare/v6.19.0...v6.20.0) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** correct expense-tracking story translations ([15f705f](https://github.com/budgie-at/budgie/commit/15f705f6aa090c24f5d75e99784b5d9041221634)), closes [#814](https://github.com/budgie-at/budgie/issues/814)
+
+
+### Features
+
+* **landing:** tell the expense tracking story in steps ([df3c316](https://github.com/budgie-at/budgie/commit/df3c3162995ab3bf158bf98b61cba23bd20601ab))
+
+
+
+
+
 # [6.19.0](https://github.com/budgie-at/budgie/compare/v6.18.0...v6.19.0) (2026-09-06)
 
 
