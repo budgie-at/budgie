@@ -1122,7 +1122,7 @@
 .bento-shot {
     position: relative;
     margin-top: auto;
-    padding-top: 1.25rem;
+    padding-top: 1rem;
     overflow: hidden;
 }
 
@@ -1146,7 +1146,7 @@
 }
 
 .bento-shot-small {
-    height: 8.75rem;
+    height: 7.5rem;
 }
 
 .bento-shot-small .bento-shot-inner {
@@ -1154,7 +1154,7 @@
 }
 
 .bento-shot-anchor {
-    height: 13rem;
+    height: 12rem;
 }
 
 .bento-shot-anchor .bento-shot-inner {
@@ -1299,4 +1299,34 @@
 
 .dark .accent-link {
     color: color-mix(in srgb, hsl(var(--primary)) 55%, white);
+}
+
+section[data-density='COMPACT'] {
+    padding-block: 2rem;
+}
+
+section[data-density='COMPACT'] .story-grid {
+    --story-step-scroll: 66svh;
+}
+
+section[data-density='COMPACT'] .story-intro {
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    section[data-density='COMPACT'] {
+        padding-block: 5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    section[data-density='COMPACT'] .story-intro {
+        margin-bottom: 3.5rem;
+    }
+
+    section[data-density='COMPACT'] .story-step,
+    section[data-density='COMPACT'] .story-step:nth-child(1 of .story-step),
+    section[data-density='COMPACT'] .story-step:nth-last-child(1 of .story-step) {
+        min-height: 70vh;
+    }
 }

@@ -11,7 +11,7 @@ interface Props {
 }
 
 const CapabilityBentoRoot = ({ heading, lede, children }: Props) => (
-    <section className="w-full py-16 md:py-24" id="features">
+    <section className="w-full py-8 md:py-20" id="features">
         <div className="container px-4 md:px-6 max-w-7xl">
             <div className="max-w-2xl">
                 <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-balance">{heading}</h2>

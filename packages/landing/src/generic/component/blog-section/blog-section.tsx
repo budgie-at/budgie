@@ -30,7 +30,7 @@ export const BlogSection = ({ locale }: Props) => {
         .slice(0, HOME_ARTICLE_COUNT);
 
     return (
-        <section className="w-full bg-muted/30 py-16 md:py-24">
+        <section className="w-full bg-muted/30 py-8 md:py-20">
             <div className="container px-4 md:px-6 max-w-7xl">
                 <div className="max-w-2xl mb-8 md:mb-12">
                     <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-balance">
