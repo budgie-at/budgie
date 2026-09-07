@@ -159,7 +159,12 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can I disable suggestions?</Trans>}
-                    answer={<Trans>Yes — toggle them off in Settings → AI. Manual entry stays exactly the way it was before.</Trans>}
+                    answer={
+                        <Trans>
+                            Suggestions are proposals — nothing is applied until you tap one, and every form works exactly the same if you
+                            ignore them. Settings → AI shows what each on-device model is doing and how far along its backfill is.
+                        </Trans>
+                    }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does this work for income and transfers too?</Trans>}
