@@ -1,0 +1,30 @@
+appId: ${APP_ID}
+env:
+    TRANSACTION_ID: ${TRANSACTION_ID}
+    CANDIDATE_ROW_ID: ${CANDIDATE_ROW_ID}
+---
+- runFlow:
+      file: ../navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/${TRANSACTION_ID}/income'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.TriggerButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.ConvertToRefundButton'
+      timeout: 5000
+
+- tapOn:
+      id: 'TransactionActionsMenu.ConvertToRefundButton'
+
+- extendedWaitUntil:
+      visible:
+          id: '${CANDIDATE_ROW_ID}'
+      timeout: 15000
