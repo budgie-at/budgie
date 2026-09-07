@@ -159,8 +159,8 @@ jobs:
               with:
                   node-version: 22.22.1
 
-            - name: Install sqlite3
-              run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends sqlite3
+            - name: Install sqlite3 and ruby
+              run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends sqlite3 ruby
 
             - name: Run E2E script self-tests
               run: |
