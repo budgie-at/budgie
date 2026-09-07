@@ -4262,8 +4262,8 @@ msgid "Budgie stores all financial data in an SQLCipher-backed SQLite database e
 msgstr "Budgie speichert alle Finanzdaten in einer SQLCipher-gestützten SQLite-Datenbank, die mit AES-256 verschlüsselt ist. Der Verschlüsselungsschlüssel wird aus Ihrem Geräteschlüsselbund abgeleitet und nie vom Gerät übertragen."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
-msgid "Budgie suggests category, tags, and amount from your own SQL patterns and 768-dim embeddings. Faster manual entry than any AI cloud assistant."
-msgstr "Budgie schlägt Kategorie, Tags und Betrag aus Ihren eigenen SQL-Mustern und 768-dim Embeddings vor. Schnellere manuelle Eingabe als jeder KI-Cloud-Assistent."
+msgid "Budgie suggests category, tags, comment, and amount from your own SQL patterns and three separate on-device embedding indexes. Faster manual entry than any AI cloud assistant."
+msgstr "Budgie schlägt Kategorie, Tags, Kommentar und Betrag anhand deiner eigenen SQL-Muster und drei separater geräteeigener Embedding-Indizes vor. Schnellere manuelle Eingabe als jeder KI-Cloud-Assistent."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Budgie supports both direct bank sync and manual import, with a consistent commitment to keeping your data on your device at every stage."
@@ -10822,8 +10822,8 @@ msgid "One-tap drill-down into only the uncategorized transactions that match yo
 msgstr "Drill-down mit einem Tippen nur in die nicht kategorisierten Transaktionen, die Ihren aktuellen Filtern entsprechen"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
-msgid "One-tap form fill — category, tags, amount, and account pre-populated from your own history"
-msgstr "Formular-Befüllung mit einem Tippen – Kategorie, Tags, Betrag und Konto aus Ihrer eigenen Historie vorausgefüllt"
+msgid "One-tap form fill — category, tags, comment, amount, and account pre-populated from your own history"
+msgstr "Formular mit einem Tippen ausfüllen – Kategorie, Tags, Kommentar, Betrag und Konto aus deinem eigenen Verlauf vorausgefüllt"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Ongoing Practices"
@@ -13561,6 +13561,10 @@ msgstr "Das Ökosystem wird durch geteiltes Wissen stärker"
 msgid "The embedding fallback runs in milliseconds and proposes the same tags from a 768-dim nearest-neighbor lookup over your history."
 msgstr "Der Embedding-Fallback läuft in Millisekunden und schlägt dieselben Tags aus einem 768-dim Nächster-Nachbar-Lookup über Ihre Historie vor."
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "The embedding lookup is not a single index — Budgie keeps three separate ones, each matching a different field against your own history and returning up to three candidates. The transaction index matches the title you are typing against your past entries to suggest category and tags. The merchant index matches shop names across spelling variants — the same index that lets the same store resolve consistently even when different banks spell it differently, which is the visible result behind merchant name translation. The comment index matches your own free-text notes, so a comment you typed once for a coffee shop comes back as a suggestion the next time you visit it."
+msgstr "Die Embedding-Suche ist kein einzelner Index – Budgie führt drei separate, die jeweils ein anderes Feld mit deinem eigenen Verlauf abgleichen und bis zu drei Kandidaten liefern. Der Transaktionsindex gleicht den Titel, den du gerade eingibst, mit deinen früheren Einträgen ab, um Kategorie und Tags vorzuschlagen. Der Händlerindex gleicht Ladennamen über Schreibvarianten hinweg ab – derselbe Index, der dafür sorgt, dass derselbe Laden konsistent erkannt wird, auch wenn ihn verschiedene Banken unterschiedlich schreiben, was das sichtbare Ergebnis hinter der Händlernamen-Übersetzung ist. Der Kommentarindex gleicht deine eigenen Freitextnotizen ab, sodass ein Kommentar, den du einmal für ein Café eingegeben hast, beim nächsten Besuch als Vorschlag zurückkommt."
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "The embedding model is approximately 90 MB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features and cached on-device."
 msgstr "Das Embedding-Modell ist etwa 90 MB. Qwen3 1.7B in quantisierter Form ist etwa 1,1 GB. Beide werden beim ersten Gebrauch der KI-Funktionen einmalig heruntergeladen und auf dem Gerät zwischengespeichert."
@@ -14314,6 +14318,10 @@ msgstr "Diese Woche und Letzte Woche bedeuten immer die zuletzt abgeschlossene S
 msgid "This Week and Last Week always run Monday to Sunday, no matter your locale"
 msgstr "Diese Woche und Letzte Woche laufen immer von Montag bis Sonntag, unabhängig von Ihrer Ländereinstellung"
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Three embedding indexes, not one"
+msgstr "Drei Embedding-Indizes, nicht einer"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three first-class transaction types: expense, income, transfer — never confused, never miscounted"
 msgstr "Drei erstklassige Transaktionstypen: Ausgabe, Einnahme, Überweisung – nie verwechselt, nie falsch gezählt"
@@ -14369,6 +14377,10 @@ msgstr "Drei Bildschirme: die Regelliste, die Schnellregel-Pille auf einer gerad
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Three screens: the transfer form that names both accounts, the cross-currency pair with the rate it converted at, and the analytics that counted neither side."
 msgstr "Drei Bildschirme: das Überweisungsformular, das beide Konten nennt, das Währungspaar mit dem verwendeten Kurs und die Auswertung, die keine der beiden Seiten gezählt hat."
+
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Three separate embedding indexes — transaction, merchant, and comment — each surfacing up to three candidates"
+msgstr "Drei separate Embedding-Indizes – Transaktion, Händler und Kommentar –, jeder mit bis zu drei Kandidaten"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
