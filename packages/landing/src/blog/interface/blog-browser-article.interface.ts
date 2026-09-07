@@ -1,3 +1,5 @@
+import type { BlogCoverShotInterface } from './blog-cover-shot.interface';
+
 export interface BlogBrowserArticleInterface {
     readonly slug: string;
     readonly title: string;
@@ -6,4 +8,5 @@ export interface BlogBrowserArticleInterface {
     readonly author: string;
     readonly tags: readonly string[];
     readonly readingTimeMinutes: number;
+    readonly shot?: BlogCoverShotInterface;
 }

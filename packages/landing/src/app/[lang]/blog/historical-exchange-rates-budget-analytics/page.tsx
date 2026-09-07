@@ -65,7 +65,7 @@ export default async function HistoricalExchangeRatesBudgetAnalyticsArticle(prop
                 title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero article={ARTICLE_METADATA}>
+            <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
                 <BlogBreadcrumbs>
                     <BlogBreadcrumbLink href={`/${lang}`} position={1}>
                         <Trans>Home</Trans>
