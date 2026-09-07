@@ -4096,8 +4096,8 @@ msgid "Budgie merges obvious transfer pairs and merchant refunds so bank imports
 msgstr "Budgie об’єднує очевидні пари переказів і повернення від продавців, щоб банківські імпорти не завищували витрати або доходи. Зіставлення за IBAN контрагента, сумою, датою і назвою виконується на пристрої."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "Budgie missing categories screen listing only the transactions that still need a category"
-msgstr "Екран відсутніх категорій Budgie зі списком лише тих транзакцій, яким усе ще бракує категорії"
+msgid "Budgie Missing categories screen listing income and expense rows that still have no category"
+msgstr "Екран Budgie «Без категорій» зі списком доходів і витрат, які ще не мають категорії"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
@@ -4324,8 +4324,8 @@ msgid "Budgie transaction list with a long-press context menu offering edit, con
 msgstr "Список транзакцій Budgie з контекстним меню за довгим натисканням: редагувати, перетворити на переказ, прикріпити борг і видалити"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "Budgie transaction list with the missing categories pill above the uncategorised rows"
-msgstr "Список транзакцій Budgie з міткою відсутніх категорій над рядками без категорії"
+msgid "Budgie transaction list with a missing categories pill between the filter chips and the rows"
+msgstr "Список транзакцій Budgie із плашкою «Без категорій» між фільтрами та рядками"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
@@ -7390,6 +7390,10 @@ msgstr "П'ять попередніх налаштувань вікна: 7, 30,
 msgid "Fix bugs and submit pull requests"
 msgstr "Виправляйте помилки та надсилайте pull requests"
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Fix one, the count drops"
+msgstr "Виправте один — лічильник зменшиться"
+
 #: src/app/[lang]/features/deposit-tracking/metadata.ts
 msgid "Fixed-term savings kept separate from everyday spending, with maturity dates and expected payout math."
 msgstr "Строкові заощадження, відокремлені від повсякденних витрат, із датами погашення та розрахунком очікуваної виплати."
@@ -7608,10 +7612,6 @@ msgstr "Так, для банківських підключень. Підклю
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "From one token to your home screen"
 msgstr "Від одного токена до головного екрана"
-
-#: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "From there, edit the transactions, apply your custom categories, accept AI category suggestions, or rely on MCC mapping for bank-synced rows. The goal is simple: every report should explain where your money actually went."
-msgstr "Звідти редагуйте транзакції, застосовуйте власні категорії, приймайте пропозиції категорій від ШІ або використовуйте MCC-мапінг для рядків, синхронізованих із банком. Мета проста: кожен звіт має пояснювати, куди насправді пішли гроші."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Full"
@@ -8221,7 +8221,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-#: src/app/[lang]/features/uncategorized-transactions/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "How it works"
 msgstr "Як це працює"
@@ -8789,6 +8788,10 @@ msgstr "Чи безпечно використовувати YNAB?"
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
 msgstr "Це не так. І шаблон агрегатора несе ризики, які рідко чітко розкриваються користувачам. У цій статті пояснюється, що роблять агрегатори, чому масова агрегація створює цінну ціль для злому та як офлайн-перша архітектура забезпечує структурно безпечнішу альтернативу."
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "It sits above the list and counts only the transactions without a category inside your active account, date, type, tag and amount filters."
+msgstr "Вона стоїть над списком і рахує лише транзакції без категорії в межах активних фільтрів рахунку, дати, типу, тегу та суми."
 
 #: src/generic/component/analytics-section/analytics-section-chart-header.tsx
 msgid "January 2025"
@@ -9541,6 +9544,10 @@ msgstr "Закриття Mint стало нагадуванням про те, �
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
 msgid "missing categories"
 msgstr "відсутні категорії"
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Missing categories in this filter"
+msgstr "Без категорій у цьому фільтрі"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Missing Features Developers Need"
@@ -10897,6 +10904,10 @@ msgstr "Лише якщо ви цього хочете. Budgie може запр
 msgid "Only that account is affected. Archiving or deleting it never removes the connection, so its siblings keep syncing with the same credential."
 msgstr "Це стосується лише цього рахунку. Архівування чи видалення ніколи не видаляє підключення, тож решта рахунків продовжує синхронізуватися з тими самими обліковими даними."
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Only the rows without a category"
+msgstr "Лише рядки без категорії"
+
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically after sync or manual entry."
 msgstr "Лише за потреби. Торговці з латинським шрифтом пропускають переклад. Не-латинські рядки автоматично проходять через чергу після синхронізації або ручного введення."
@@ -10908,6 +10919,10 @@ msgstr "Лише ви бачите свої дані"
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Open a deposit straight from the connection, so it inherits the bank it belongs to"
 msgstr "Відкривайте депозит прямо з підключення, щоб він успадкував банк, якому належить"
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual refresh."
+msgstr "Відкрийте рядок, задайте категорію — і цей список, і плашка за ним оновляться самі, без перезавантаження та ручного оновлення."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Open any list of Mint alternatives and you will find subscription-based cloud services, ad-supported web apps, and venture-funded startups. Each of them recreates the same architecture: your credentials go to an aggregator, your transactions flow to a server, a company stores your financial history indefinitely."
@@ -11001,10 +11016,6 @@ msgstr "Відкрийте аркуш, введіть суму, натисніт
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Open this page in Safari — other browsers cannot trigger an OTA install."
 msgstr "Відкрийте цю сторінку в Safari — інші браузери не можуть запустити OTA-встановлення."
-
-#: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "Open Transactions or an account's transaction list. Apply any filters you need. If Budgie finds matching transactions without categories, the missing-category pill appears above the list. Tap it to open a focused cleanup page that preserves those filters."
-msgstr "Відкрийте Транзакції або список транзакцій рахунку. Застосуйте потрібні фільтри. Якщо Budgie знайде відповідні транзакції без категорій, над списком з'явиться плашка відсутніх категорій. Торкніться її, щоб відкрити сфокусовану сторінку очищення, яка зберігає ці фільтри."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/features/open-source-budget-app-mobile/opengraph-image.tsx
@@ -13274,6 +13285,10 @@ msgstr "Візьміть контроль над фінансовою конфі
 msgid "Tap a calendar day to see the transactions due. The forecasted upcoming list extends out into the next 60 days. Cross-currency recurring shows in your home currency; original amount on tap."
 msgstr "Торкніть день у календарі, щоб побачити транзакції, що підлягають оплаті. Список прогнозованих майбутніх розширюється на наступні 60 днів. Міжвалютні регулярні платежі відображаються в основній валюті; оригінальна сума — при натисканні."
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Tap a row to categorize it"
+msgstr "Торкніться рядка, щоб задати категорію"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Tap any category row to open exactly the transactions behind that number for this period"
 msgstr "Торкніться будь-якого рядка категорії, щоб відкрити саме ті транзакції, що стоять за цим числом за цей період"
@@ -13297,6 +13312,10 @@ msgstr "Торкніть Імпорт → CSV. Оберіть файл. Нала
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every transaction into a new or existing Erste account."
 msgstr "Торкніть Імпорт → Erste PDF. Оберіть файл із Файлів. Budgie обробляє документ, показує попередній перегляд і вставляє кожну транзакцію в новий або наявний рахунок Erste."
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Tap it for a focused list"
+msgstr "Торкніться, щоб отримати окремий список"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Tap the mic in the quick-entry sheet"
@@ -13524,6 +13543,10 @@ msgstr ""
 msgid "The core of Budgie AI categorization is a 1.7-billion-parameter language model. A few years ago, running a model this size on a phone would have been impractical. Three advances made it possible:"
 msgstr "Ядром AI-категоризації Budgie є мовна модель на 1,7 млрд параметрів. Кілька років тому запуск моделі такого розміру на телефоні був би неможливим. Три прориви зробили це можливим:"
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "The count above your list, the focused list behind it, and the row you open to fix."
+msgstr "Лічильник над списком, зосереджений список за ним і рядок, який ви відкриваєте, щоб виправити."
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The CRDT research community has developed structures for various use cases: maps, graphs, JSON documents, and rich text. Libraries like Yjs, Automerge, and CRDTs provide production-ready implementations."
 msgstr "Дослідницька спільнота CRDT розробила структури для різних випадків використання: карти, графи, JSON-документи та форматований текст. Бібліотеки на кшталт Yjs, Automerge та CRDTs надають готові до виробництва реалізації."
@@ -13694,6 +13717,10 @@ msgstr "Меню відкривається просто там"
 msgid "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
 msgstr "Транзакції об'єднаної категорії переназначаються до цільової категорії, і порожня категорія видаляється. Зворотне виконання лише через ручну перекатегоризацію."
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "The Missing categories screen opens with only those rows, carrying your account, date, type and tag filters across."
+msgstr "Екран «Без категорій» відкривається лише з цими рядками та переносить ваші фільтри рахунку, дати, типу й тегу."
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Money Data upgrade scans entries where the base currency value is missing and groups them by date, account currency, and base currency."
 msgstr ""
@@ -13753,6 +13780,10 @@ msgstr "Вибір враховує локаль. День початку тиж
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "The picker searches same-currency expenses across accounts and sorts likely matches by date and amount. Choose the expense, confirm, and Budgie shows whether the refund is full or partial."
 msgstr "Пікер шукає витрати в тій самій валюті на різних рахунках і сортує ймовірні збіги за датою та сумою. Виберіть витрату, підтвердьте, і Budgie покаже, чи повернення повне, чи часткове."
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "The pill counts what you missed"
+msgstr "Плашка рахує те, що ви пропустили"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "The PIN entry screen appears as a fallback. After five biometric failures, the OS itself prompts the device passcode."
@@ -13871,6 +13902,10 @@ msgstr ""
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The Rules screen has a ranked search that looks at every condition, every action, and the related category, tag, and account names, so you can find the rule responsible for a category in a couple of keystrokes."
 msgstr "Екран «Правила» має ранжований пошук, що переглядає кожну умову, кожну дію та пов'язані назви категорій, тегів і рахунків, тож ви знайдете правило, відповідальне за категорію, за кілька натискань клавіш."
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "The same Budgie Missing categories list with its first uncategorised row ready to open"
+msgstr "Той самий список Budgie «Без категорій», у якому перший рядок без категорії готовий до відкриття"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
@@ -14263,6 +14298,10 @@ msgstr "Ця прозорість дозволяє вам приймати об�
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three first-class transaction types: expense, income, transfer — never confused, never miscounted"
 msgstr "Три першокласних типи транзакцій: витрата, дохід, переказ — ніколи не плутаються, ніколи не рахуються неправильно"
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Three screens to a clean report"
+msgstr "Три екрани до чистого звіту"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Three screens with nothing behind them — the list, the entry, and a Settings page with no account on it."
