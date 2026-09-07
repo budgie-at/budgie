@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.22.1](https://github.com/budgie-at/budgie/compare/v6.22.0...v6.22.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* **app:** attach fee-bearing synced expenses to debts and resync debt events on edit ([1b7a4fa](https://github.com/budgie-at/budgie/commit/1b7a4faa4ab2eba446e00a2514f98627752aba4e))
+* **app:** repoint stale debt event entry references in a repair migration ([36e910e](https://github.com/budgie-at/budgie/commit/36e910e008c8c17363ddc8e16910acfc26e1ede3))
+* **landing:** drop the phantom per-leg drill-down from multi-currency ([c97a575](https://github.com/budgie-at/budgie/commit/c97a57589995e27761fcbe8dce5a4af85b3718a2))
+
+
+
+
+
 # [6.22.0](https://github.com/budgie-at/budgie/compare/v6.21.5...v6.22.0) (2026-09-07)
 
 
