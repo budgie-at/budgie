@@ -3693,6 +3693,10 @@ msgstr "An ihre Datenschutzrichtlinie gebunden"
 msgid "Breaking security changes are clearly communicated"
 msgstr "Grundlegende Sicherheitsänderungen werden klar kommuniziert"
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Brighter red and green"
+msgstr "Kräftigeres Rot und Grün"
+
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx
 msgid "Browse All Features"
 msgstr "Alle Funktionen durchsuchen"
@@ -4298,6 +4302,10 @@ msgstr "Budgie-Datumsfilter für Transaktionen mit dem Monatsraster über den Sc
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie transaction list grouped by month with the category, tag and account on every row"
 msgstr "Budgie-Transaktionsliste, nach Monaten gruppiert, mit Kategorie, Tag und Konto in jeder Zeile"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Budgie transaction list in dark mode with a solid black background and bright red and green amounts"
+msgstr "Budgie-Transaktionsliste im Dunkelmodus mit tiefschwarzem Hintergrund und kräftigen roten und grünen Beträgen"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie transaction list showing eighty-one transactions read straight from the on-device database"
@@ -6991,6 +6999,10 @@ msgstr "Wechselkurse werden anonymous abgerufen"
 msgid "exchange-rates"
 msgstr ""
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Expense and income amounts shift to brighter red and green in dark mode, not the muted tones carried over from light mode."
+msgstr "Ausgaben- und Einnahmenbeträge wechseln im Dunkelmodus zu kräftigerem Rot und Grün statt der gedämpften Töne aus dem hellen Modus."
+
 #: src/app/[lang]/features/offline-first-expense-tracker/opengraph-image.tsx
 msgid "expense tracker"
 msgstr "Ausgabentracker"
@@ -8203,7 +8215,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/custom-categories/page.tsx
-#: src/app/[lang]/features/dark-mode/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
@@ -10824,6 +10835,10 @@ msgstr "Eine Auswähler-Komponente, verwendet in Analysen-, Transaktions- und Wi
 msgid "One PIN. Real encryption."
 msgstr "Eine PIN. Echte Verschlüsselung."
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "One real screen, rendered in whichever theme this page is in right now."
+msgstr "Ein echter Bildschirm, dargestellt im Design, das diese Seite gerade verwendet."
+
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "One receipt, multiple categories."
 msgstr "Ein Beleg, mehrere Kategorien."
@@ -12565,10 +12580,6 @@ msgstr "Einstellungen → Export → Backup. Budgie schreibt eine .db-Datei mit 
 msgid "Settings → Privacy → Screenshot protection. Toggle individual screens. The runtime applies FLAG_SECURE on Android and a blur layer on iOS in app-switcher state."
 msgstr "Einstellungen → Datenschutz → Screenshot-Schutz. Einzelne Bildschirme umschalten. Die Laufzeit wendet FLAG_SECURE auf Android und eine Unschärfe-Ebene auf iOS im App-Wechsler-Zustand an."
 
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "Settings → Theme → Light / Dark / System. The app uses platform appearance APIs and persists the choice. All charts recompute their palette to match."
-msgstr "Einstellungen → Thema → Hell / Dunkel / System. Die App verwendet Plattform-Erscheinungs-APIs und speichert die Auswahl. Alle Diagramme berechnen ihre Palette neu, um zu passen."
-
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
 msgstr "Die Einstellungen enthalten beide Exporte als schlichte Zeilen, jede direkt neben dem Import, der die Datei wieder einliest."
@@ -12710,6 +12721,10 @@ msgstr "Datenschutz als Architektur"
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "Software engineer"
 msgstr "Softwareentwickler"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Solid black surface"
+msgstr "Tiefschwarze Oberfläche"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Some advanced features still in development"
@@ -13164,6 +13179,10 @@ msgstr "Sprache wechseln"
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
 msgstr "Wechseln Sie zum Tags-Reiter in der Statistik für sortierbare Summen pro Tag – Einnahmen, Ausgaben und Netto – plus ein aufklappbarer Nicht-markiert-Bereich, der genau zeigt, welche Transaktionen kein Label haben."
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Switching modes is one tap on the Dark Mode toggle in Settings — a manual switch, not an automatic handoff."
+msgstr "Der Wechsel ist ein Tap auf den Dunkelmodus-Schalter in den Einstellungen — manuell, kein automatischer Wechsel."
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Switching to Budgie CSV import eliminates the aggregator entirely. Download your statement from your bank website as you normally would and import it into Budgie. You gain full transaction history without any ongoing credential exposure to a third party."
 msgstr "Der Wechsel zum Budgie-CSV-Import eliminiert den Aggregator vollständig. Laden Sie Ihren Kontoauszug wie gewohnt von Ihrer Bank-Website herunter und importieren Sie ihn in Budgie. Sie erhalten vollständige Transaktionshistorie ohne anhaltende Zugangsdatenexposition gegenüber Dritten."
@@ -13462,6 +13481,10 @@ msgstr "Die Architektur: SQLite und Local-First-Design"
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The average user logs the same merchant more than thirty times a year. Typing the category, picking a tag, entering the usual amount, and choosing the right account for the same coffee shop is wasted effort — the information is already in your history. Budgie surfaces it as tappable pill-shaped chips the moment you open the form, so confirming a familiar expense takes one tap instead of seven."
 msgstr "Der durchschnittliche Nutzer erfasst denselben Händler mehr als dreißig Mal im Jahr. Die Kategorie eintippen, ein Tag auswählen, den üblichen Betrag eingeben und das richtige Konto für dasselbe Café wählen ist verschwendete Mühe – die Information ist bereits in Ihrer Historie. Budgie bringt sie als tippbare pillenförmige Chips zum Vorschein, sobald Sie das Formular öffnen, sodass das Bestätigen einer vertrauten Ausgabe einen Tippen statt sieben kostet."
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "The background is solid black, not a dimmed grey panel layered over a light design."
+msgstr "Der Hintergrund ist tiefschwarz, kein abgedunkeltes graues Panel über einem hellen Design."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Bottom Line"
@@ -15475,6 +15498,10 @@ msgstr "Was Budgie besonders macht:"
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "What the screen offers next depends on the bank. Connections that talk to a live API can pull the bank's account list and add whatever you left out the first time. Statement-based banks offer an import action instead. Both can open a new deposit account that starts out attached to the same bank."
 msgstr "Was der Bildschirm als Nächstes anbietet, hängt von der Bank ab. Verbindungen mit einer Live-API können die Kontoliste der Bank abrufen und alles hinzufügen, was Sie beim ersten Mal ausgelassen haben. Beleg-basierte Banken bieten stattdessen eine Importfunktion an. Beide können ein neues Festgeldkonto eröffnen, das von Anfang an derselben Bank zugeordnet ist."
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "What the transaction list actually shows"
+msgstr "Was sich in der Transaktionsliste wirklich ändert"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "What to Look for in a Privacy-Focused Budget App"
