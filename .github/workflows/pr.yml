@@ -159,8 +159,8 @@ jobs:
               with:
                   node-version: 22.22.1
 
-            - name: Verify sqlite3 is available
-              run: sqlite3 --version
+            - name: Install sqlite3
+              run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends sqlite3
 
             - name: Run E2E script self-tests
               run: |
@@ -235,6 +235,7 @@ jobs:
               uses: expo/expo-github-action@v9
               with:
                   eas-version: ${{ env.EAS_CLI_VERSION }}
+                  packager: npm
                   token: ${{ secrets.EXPO_TOKEN }}
 
             - name: Install dependencies
