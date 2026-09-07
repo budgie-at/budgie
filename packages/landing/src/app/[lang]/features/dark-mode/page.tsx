@@ -144,7 +144,7 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                         <Trans>OLED-friendly true black canvas — saves battery on modern phones</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>System / Light / Dark — three-way switch in Settings</Trans>
+                        <Trans>A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Chart palettes auto-recompute for legibility on dark canvas</Trans>
