@@ -40,8 +40,13 @@ jobs:
                         const mobileSuiteExempt = files.length > 0 && files.every(({ filename }) =>
                           filename.startsWith('packages/landing/') ||
                           filename.startsWith('docs/') ||
-                          filename === 'README.md' ||
+                          filename.endsWith('.md') ||
                           filename === 'LICENSE' ||
+                          filename === '.gitattributes' ||
+                          filename === '.gitignore' ||
+                          filename === '.editorconfig' ||
+                          filename === '.github/CODEOWNERS' ||
+                          filename === '.github/dependabot.yml' ||
                           filename.startsWith('tests/app-tests/flows/media/') ||
                           filename.startsWith('tests/app-tests/fixtures/screenshots/') ||
                           filename.startsWith('packages/app/fastlane/') ||
