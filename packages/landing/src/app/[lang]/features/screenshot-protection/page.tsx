@@ -16,6 +16,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -73,24 +74,69 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                 locale={lang}
                 tagline={
                     <Trans>
-                        Sensitive balances and amounts blur automatically in screenshots and the app switcher — accidental shares stay
-                        private.
+                        Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground — one switch in
+                        Settings → Security.
                     </Trans>
                 }
             />
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>What the switch actually hides</Trans>}>
+                    <Trans>
+                        Screenshot Protection lives in Settings → Security, right under the PIN-lock card. It doesn&apos;t stop the device
+                        from taking a screenshot — it changes what Budgie renders while the app isn&apos;t active.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Point index={0}>
+                    <Trans>One switch, off by default, sitting directly under the PIN-lock card in the Security section.</Trans>
+                </FeatureStory.Point>
+
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="screenshot-protection-1"
+                    slug="screenshot-protection"
+                >
+                    <FeatureStory.Callout index={0} y={0.382}>
+                        <Trans>PIN lock, right above</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.522}>
+                        <Trans>Screenshot Protection switch</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Point index={1}>
+                    <Trans>
+                        Turn it on and account balances and net worth swap to a placeholder the moment Budgie stops being the active app —
+                        most visible in the app switcher.
+                    </Trans>
+                </FeatureStory.Point>
+                <FeatureStory.Point index={2}>
+                    <Trans>
+                        It doesn&apos;t intercept the screenshot itself — the masking is a rendering change, so it covers every protected
+                        amount, not only the home screen.
+                    </Trans>
+                </FeatureStory.Point>
+            </FeatureStory>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why one careless screenshot is a real privacy leak</Trans>
+                    <Trans>Why a glance at the app switcher is a real privacy leak</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        One careless screenshot of your transactions is a privacy leak. Budgie applies platform screenshot-prevention APIs
-                        to balance fields and amount cells, plus a blur in the iOS/Android task switcher preview.
+                        Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including account
+                        balances and net worth. Screenshot Protection replaces those numbers with a placeholder for as long as Budgie
+                        isn&apos;t the active app.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
-                    <Trans>Configurable per-screen — disable for receipts you actually want to share, leave on for the home screen.</Trans>
+                    <Trans>Off by default. Turn it on in Settings → Security and it applies immediately, with no per-screen setup.</Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
@@ -100,69 +146,57 @@ export default async function ScreenshotProtectionFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>FLAG_SECURE on Android — no OS-level screenshot, no screen recording</Trans>
+                        <Trans>One switch in Settings → Security, right under the PIN-lock card</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>App-switcher blur on iOS — passersby see only a smudge</Trans>
+                        <Trans>Masks account balances and net worth the instant the app stops being active</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Per-screen toggle — disable for receipts you actually want to share</Trans>
+                        <Trans>Covers every protected amount Budgie renders, not just the home screen</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Off by default for the categories and analytics screens — sharing budget views is fine</Trans>
+                        <Trans>Off by default — nothing is hidden until you turn it on</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Combines with PIN lock and biometric unlock for layered defense</Trans>
+                        <Trans>Pairs with the PIN lock for a fuller privacy seal</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Settings → Privacy → Screenshot protection. Toggle individual screens. The runtime applies FLAG_SECURE on Android
-                        and a blur layer on iOS in app-switcher state.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>What does screenshot protection actually do?</Trans>}
+                    question={<Trans>What does Screenshot Protection actually hide?</Trans>}
                     answer={
                         <Trans>
-                            On Android, FLAG_SECURE prevents the OS from capturing screenshots. On iOS, sensitive views render a blur
-                            overlay in the app-switcher preview when Budgie goes to background.
+                            Account balances and net worth switch to a placeholder wherever Budgie renders them, for as long as the app
+                            isn&apos;t the active app — most visible when you open the app switcher.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I disable it for receipts I want to share?</Trans>}
+                    question={<Trans>Does it block screenshots or screen recordings?</Trans>}
                     answer={
                         <Trans>
-                            Yes — Settings → Privacy → Screenshot protection. Toggle individual screens. The transaction-list screen and
-                            home screen are the typical &quot;always on&quot; candidates.
+                            No. The switch changes what Budgie renders while it isn&apos;t active; it doesn&apos;t intercept a screenshot or
+                            recording taken of the device.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Does it survive screen-recording apps?</Trans>}
+                    question={<Trans>Where do I turn it on?</Trans>}
                     answer={
                         <Trans>
-                            On Android, FLAG_SECURE blocks screen recording too. On iOS, the OS-level recording bypasses app-switcher blur,
-                            so this is more of a &quot;passersby&quot; defense than a &quot;rootkit&quot; defense.
+                            Settings → Security, directly below the PIN-lock card. It&apos;s a single switch, off by default, with no
+                            per-screen configuration.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Will Face ID still work with the blur on?</Trans>}
+                    question={<Trans>Does it work alongside the PIN lock?</Trans>}
                     answer={
                         <Trans>
-                            Yes. The blur applies to the app-switcher preview, not the foreground rendering. Face ID continues to work
-                            normally.
+                            Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls
+                            what balances show while it&apos;s in the background.
                         </Trans>
                     }
                 />

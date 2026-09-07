@@ -2373,6 +2373,14 @@ msgstr "Las capturas accidentales quedan privadas."
 msgid "Account balances and banking information (if bank sync is enabled)"
 msgstr ""
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Account balances and net worth switch to a placeholder the instant Budgie leaves the foreground — one switch in Settings → Security."
+msgstr "Los saldos de las cuentas y el patrimonio neto cambian a un marcador de posición en cuanto Budgie pasa a segundo plano, con un solo interruptor en Ajustes → Seguridad."
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Account balances and net worth switch to a placeholder wherever Budgie renders them, for as long as the app isn't the active app — most visible when you open the app switcher."
+msgstr "Los saldos de las cuentas y el patrimonio neto se sustituyen por un marcador de posición allí donde Budgie los muestra, mientras la app no esté activa — algo muy visible en el selector de aplicaciones."
+
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Account detail → Re-sync. The window picker opens. Pick a range. The sync engine fetches just that window from the bank API, runs a diff, and presents conflicts before write."
 msgstr "Detalle de cuenta → Resincronizar. Se abre el selector de ventana. Elige un rango. El motor de sincronización obtiene solo ese tramo del banco y lo compara con las filas existentes. Selector de conflictos para transacciones editadas manualmente."
@@ -2926,10 +2934,6 @@ msgstr "Bloqueo de app: PIN y Face ID"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "App requests connection to your bank"
 msgstr "La aplicacion solicita conexion a tu banco"
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "App-switcher blur on iOS — passersby see only a smudge"
-msgstr "Desenfoque en el selector de apps de iOS: los curiosos solo ven una mancha"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Apple Notes and Reminders"
@@ -4205,6 +4209,10 @@ msgstr "Pantalla de configuración de Budgie con la sección de gestión de dato
 msgid "Budgie settings screen showing the full option set with no paywall and no subscription prompt"
 msgstr "Pantalla de ajustes de Budgie que muestra todas las opciones sin muro de pago ni aviso de suscripción"
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch"
+msgstr "Pantalla de Ajustes de Budgie con la sección Seguridad: la tarjeta de bloqueo por PIN sobre un interruptor de Protección de capturas activado"
+
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Budgie settings screen stating that every piece of financial data stays on the device with no cloud sync or tracking"
 msgstr "Pantalla de ajustes de Budgie que indica que todos los datos financieros permanecen en el dispositivo, sin sincronización en la nube ni seguimiento"
@@ -4637,10 +4645,6 @@ msgstr "¿Puedo personalizar el inicio de semana?"
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Can I disable biometrics?"
 msgstr "¿Puedo desactivar la biometría?"
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Can I disable it for receipts I want to share?"
-msgstr "¿Puedo desactivarlo para los recibos que quiero compartir?"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Can I disable suggestions?"
@@ -5211,10 +5215,6 @@ msgstr "Solo nube (sin funcionalidad sin conexión)"
 msgid "Combined with the date presets it turns \"where did the money go last month?\" into a two-chip question: Last Month plus everything above a threshold, and the list in front of you is the answer."
 msgstr "Combinado con los preajustes de fecha, convierte «¿adónde fue el dinero el mes pasado?» en una pregunta de dos chips: Último mes más todo lo que supere un umbral, y la lista que tienes delante es la respuesta."
 
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Combines with PIN lock and biometric unlock for layered defense"
-msgstr "Se combina con el bloqueo por PIN y el desbloqueo biométrico para una defensa en capas"
-
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Comments grow vertically up to two lines so receipts and references fit without truncation"
 msgstr "Los comentarios crecen verticalmente hasta dos líneas para que los recibos y las referencias quepan sin truncarse"
@@ -5356,10 +5356,6 @@ msgstr "Condiciones sobre título, comentario, importe, MCC, cuenta, tipo de tra
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Conditions you wrote yourself"
 msgstr "Condiciones que escribes tú"
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Configurable per-screen — disable for receipts you actually want to share, leave on for the home screen."
-msgstr "Configurable por pantalla: desactívalo para los recibos que quieras compartir, déjalo activado para la pantalla de inicio."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Confirm or correct the pre-filled form, then save"
@@ -5559,6 +5555,10 @@ msgstr "IBAN contrario almacenado desde el campo corr_iban, habilitando consolid
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Counter-IBAN stored per leg — primary signal for cross-account matching"
 msgstr "IBAN de contraparte almacenado por tramo: señal principal para la coincidencia entre cuentas"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Covers every protected amount Budgie renders, not just the home screen"
+msgstr "Cubre todos los importes protegidos que muestra Budgie, no solo la pantalla de inicio"
 
 #: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
@@ -6352,17 +6352,21 @@ msgstr "¿La importación de CSV conserva la fecha original de la transacción?"
 msgid "Does export work offline?"
 msgstr "¿La exportación funciona sin conexión?"
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Does it block screenshots or screen recordings?"
+msgstr "¿Bloquea las capturas de pantalla o las grabaciones de pantalla?"
+
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Does it require a relaunch?"
 msgstr "¿Requiere reiniciar la app?"
 
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Does it survive screen-recording apps?"
-msgstr "¿Resiste a las apps de grabación de pantalla?"
-
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Does it switch automatically?"
 msgstr "¿Cambia automáticamente?"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Does it work alongside the PIN lock?"
+msgstr "¿Funciona junto con el bloqueo por PIN?"
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
@@ -7344,10 +7348,6 @@ msgstr "Corrige una y el recuento baja"
 msgid "Fixed-term savings kept separate from everyday spending, with maturity dates and expected payout math."
 msgstr "Ahorros a plazo fijo separados del gasto diario, con fechas de vencimiento y cálculo del pago esperado."
 
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "FLAG_SECURE on Android — no OS-level screenshot, no screen recording"
-msgstr "FLAG_SECURE en Android: sin captura de pantalla del sistema operativo, sin grabación de pantalla"
-
 #: src/app/[lang]/legal/license/page.tsx
 msgid "For a complete list of all open source dependencies and their respective licenses, please refer to the package.json files in our <0>GitHub repository</0>. Each component is used in accordance with its respective license terms."
 msgstr ""
@@ -8112,7 +8112,6 @@ msgstr "¿En qué se diferencia esto de la página de análisis de etiquetas?"
 #: src/app/[lang]/features/multi-language-app/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-#: src/app/[lang]/features/screenshot-protection/page.tsx
 #: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
@@ -8663,6 +8662,10 @@ msgstr ""
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Is YNAB safe to use?"
 msgstr "¿Es seguro usar YNAB?"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "It doesn't intercept the screenshot itself — the masking is a rendering change, so it covers every protected amount, not only the home screen."
+msgstr "No intercepta la propia captura de pantalla — el enmascarado es un cambio de renderizado, así que cubre todos los importes protegidos, no solo la pantalla de inicio."
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "It files itself"
@@ -9236,6 +9239,10 @@ msgstr "Historial de mercado sin un ticker en vivo"
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Marketing copy only"
 msgstr "Solo texto de marketing"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Masks account balances and net worth the instant the app stops being active"
+msgstr "Enmascara los saldos de las cuentas y el patrimonio neto en cuanto la app deja de estar activa"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Match all or match any, with contains, equals, comparison, list, and regular-expression operators"
@@ -10241,6 +10248,10 @@ msgstr "No. La plataforma gestiona la coincidencia biométrica en el Secure Encl
 msgid "No. The suggestion engine only proposes values from transactions you have already logged or imported."
 msgstr "No. El motor de sugerencias solo propone valores de transacciones que ya has registrado o importado."
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "No. The switch changes what Budgie renders while it isn't active; it doesn't intercept a screenshot or recording taken of the device."
+msgstr "No. El interruptor cambia lo que Budgie muestra mientras no está activa; no intercepta una captura de pantalla ni una grabación del dispositivo."
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "No. The token lives on the connection, so updating it from any account's sync settings restores every account sharing that connection at once."
 msgstr "No. El token vive en la conexión, así que actualizarlo desde los ajustes de sincronización de cualquier cuenta restaura de una vez a todas las cuentas que comparten esa conexión."
@@ -10377,8 +10388,12 @@ msgid "Obsidian is a note-taking application that stores notes as plain Markdown
 msgstr "Obsidian es una aplicación de toma de notas que almacena las notas como archivos Markdown simples en tu sistema de archivos local. No hay servidor. Tus notas son archivos en tu disco que puedes abrir con cualquier editor de texto."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Off by default for the categories and analytics screens — sharing budget views is fine"
-msgstr "Desactivado por defecto para las pantallas de categorías y análisis: compartir vistas de presupuesto está bien"
+msgid "Off by default — nothing is hidden until you turn it on"
+msgstr "Desactivado de forma predeterminada — nada se oculta hasta que lo actives"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Off by default. Turn it on in Settings → Security and it applies immediately, with no per-screen setup."
+msgstr "Desactivado de forma predeterminada. Actívalo en Ajustes → Seguridad y se aplica de inmediato, sin configuración por pantalla."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Offer comprehensive export functionality (CSV, JSON, SQL)"
@@ -10532,14 +10547,6 @@ msgstr "Lienzo de negro verdadero compatible con OLED: ahorra batería en teléf
 msgid "On a server that mirrors your transactions"
 msgstr "En un servidor que refleja tus transacciones"
 
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "On Android, FLAG_SECURE blocks screen recording too. On iOS, the OS-level recording bypasses app-switcher blur, so this is more of a \"passersby\" defense than a \"rootkit\" defense."
-msgstr "En Android, FLAG_SECURE bloquea también la grabación de pantalla. En iOS, la grabación del sistema operativo elude el desenfoque del selector de apps, por lo que esto tiene limitaciones."
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "On Android, FLAG_SECURE prevents the OS from capturing screenshots. On iOS, sensitive views render a blur overlay in the app-switcher preview when Budgie goes to background."
-msgstr "En Android, FLAG_SECURE impide que el sistema operativo capture capturas de pantalla. En iOS, las vistas sensibles renderizan una superposición de desenfoque en el selector de apps."
-
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "On bank import, each transaction's MCC is read from the source. Budgie looks up the MCC in the lookup table; the resulting category fills the form. AI category suggestions take over for transactions without an MCC."
 msgstr "En cada importación bancaria, el MCC de cada transacción se lee desde la fuente. Budgie lo busca en la tabla de consulta; el resultado se convierte en la categoría inicial."
@@ -10666,10 +10673,6 @@ msgstr "Un distintivo. Escanea una lista larga de un vistazo."
 msgid "One bank connection holds the credential and backs every account under it — cards, jars, and deposits. Change the token once and all of them follow; close one account and the rest keep syncing."
 msgstr "Una conexión bancaria guarda la credencial y respalda a todas las cuentas que dependen de ella — tarjetas, huchas y depósitos. Cambia el token una vez y todas la siguen; cierra una cuenta y las demás siguen sincronizándose."
 
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "One careless screenshot of your transactions is a privacy leak. Budgie applies platform screenshot-prevention APIs to balance fields and amount cells, plus a blur in the iOS/Android task switcher preview."
-msgstr "Una captura de pantalla descuidada de tus transacciones es una filtración de privacidad. Budgie aplica las API de prevención de capturas de pantalla de la plataforma en las pantallas más sensibles."
-
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One connection behind many accounts — cards, jars, and deposits from the same bank"
 msgstr "Una conexión detrás de muchas cuentas — tarjetas, huchas y depósitos del mismo banco"
@@ -10757,6 +10760,14 @@ msgstr "Una pantalla de ajustes, y lo que merece atención es la fila que nunca 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "One settings screen, and the two rows that stand in for everything a hosted server would do."
 msgstr "Una pantalla de ajustes, y las dos filas que sustituyen todo lo que haría un servidor alojado."
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "One switch in Settings → Security, right under the PIN-lock card"
+msgstr "Un interruptor en Ajustes → Seguridad, justo debajo de la tarjeta de bloqueo por PIN"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "One switch, off by default, sitting directly under the PIN-lock card in the Security section."
+msgstr "Un interruptor, desactivado de forma predeterminada, justo debajo de la tarjeta de bloqueo por PIN en la sección Seguridad."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag chip, plus a count"
@@ -11105,6 +11116,10 @@ msgstr "Página no encontrada"
 msgid "Pairs match if the implied FX rate falls within a plausible tolerance band — the check runs within a 3-day time window. The original amounts in both currencies are preserved on each leg."
 msgstr "Los pares coinciden si el tipo de cambio implícito cae dentro de una banda de tolerancia plausible — la verificación se ejecuta dentro de una ventana de tiempo de 3 días. Los importes originales en ambas divisas se preservan en cada tramo."
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Pairs with the PIN lock for a fuller privacy seal"
+msgstr "Se combina con el bloqueo por PIN para una protección de privacidad más completa"
+
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Partial and full refunds — Budgie compares the refund amount with the original expense"
 msgstr "Reembolsos parciales y totales: Budgie compara el importe reembolsado con el gasto original"
@@ -11156,10 +11171,6 @@ msgstr "Anulaciones por MCC para preferencias personales: configura una vez, se 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Per-MCC overrides let you bend the default mapping — point all 4111 (transit) into your \"Commute\" category instead of \"Travel\" once and never touch it again."
 msgstr "Las anulaciones por MCC te permiten ajustar el mapeo predeterminado: dirige todos los 4111 (tránsito) a tu categoría «Transporte» en lugar del predeterminado."
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Per-screen toggle — disable for receipts you actually want to share"
-msgstr "Opción por pantalla: desactívalo para los recibos que realmente quieras compartir"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Per-tag income, expense, and net totals — each tag row broken out separately"
@@ -11259,6 +11270,10 @@ msgstr "Bloqueo PIN aplicado antes de que cualquier transacción o saldo sea vis
 #: src/app/[lang]/features/pin-app-lock/metadata.ts
 msgid "PIN Lock Finance App — Private Expense Tracker — Budgie"
 msgstr "App financiera con bloqueo PIN — Rastreador de gastos privado — Budgie"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "PIN lock, right above"
+msgstr "Bloqueo por PIN, justo arriba"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Pin the side you type"
@@ -12254,6 +12269,14 @@ msgstr "Protección de capturas de pantalla — Budgie"
 msgid "Screenshot Protection — Hide Bank Balance from Previews"
 msgstr "Protección de capturas de pantalla — Oculta el saldo bancario de las vistas previas"
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Screenshot Protection lives in Settings → Security, right under the PIN-lock card. It doesn't stop the device from taking a screenshot — it changes what Budgie renders while the app isn't active."
+msgstr "Protección de capturas se encuentra en Ajustes → Seguridad, justo debajo de la tarjeta de bloqueo por PIN. No impide que el dispositivo tome una captura de pantalla — cambia lo que Budgie muestra mientras la app no está activa."
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Screenshot Protection switch"
+msgstr "Interruptor de Protección de capturas"
+
 #: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
 msgid "screenshots"
 msgstr "capturas de pantalla"
@@ -12412,10 +12435,6 @@ msgstr "Auto-mejora — las sugerencias aceptadas o corregidas ajustan el índic
 msgid "Send important updates about the Service (security notices, policy changes)"
 msgstr ""
 
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Sensitive balances and amounts blur automatically in screenshots and the app switcher — accidental shares stay private."
-msgstr "Los saldos e importes sensibles se difuminan automáticamente en capturas de pantalla y en la vista previa del selector de apps: las capturas accidentales quedan privadas."
-
 #: src/app/[lang]/features/screenshot-protection/metadata.ts
 msgid "Sensitive balances and amounts blur automatically in screenshots and the app switcher preview. Configurable per screen."
 msgstr "Los saldos e importes sensibles se difuminan automáticamente en capturas de pantalla y en la vista previa del selector de apps. Configurable por pantalla."
@@ -12473,8 +12492,8 @@ msgid "Settings → Export → Backup. Budgie writes a .db file with SQLCipher e
 msgstr "Ajustes → Exportar → Backup. Budgie escribe un archivo .db con el cifrado SQLCipher intacto. Para restaurar, instala Budgie en el nuevo dispositivo y selecciona el archivo."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Settings → Privacy → Screenshot protection. Toggle individual screens. The runtime applies FLAG_SECURE on Android and a blur layer on iOS in app-switcher state."
-msgstr "Ajustes → Privacidad → Protección de capturas de pantalla. Activa/desactiva pantallas individuales. En tiempo de ejecución aplica FLAG_SECURE en Android y una superposición de desenfoque en iOS."
+msgid "Settings → Security, directly below the PIN-lock card. It's a single switch, off by default, with no per-screen configuration."
+msgstr "Ajustes → Seguridad, justo debajo de la tarjeta de bloqueo por PIN. Es un único interruptor, desactivado de forma predeterminada, sin configuración por pantalla."
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
@@ -13034,6 +13053,10 @@ msgstr "Las sugerencias están impulsadas por dos sistemas complementarios en el
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Support for 150+ currencies"
 msgstr "Soporte para más de 150 monedas"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including account balances and net worth. Screenshot Protection replaces those numbers with a placeholder for as long as Budgie isn't the active app."
+msgstr "Desliza hacia arriba para cambiar de app y lo que había en pantalla hace un momento sigue visible en la vista previa — incluidos los saldos de las cuentas y el patrimonio neto. Protección de capturas sustituye esas cifras por un marcador de posición mientras Budgie no sea la app activa."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Switch apps without losing history"
@@ -14594,6 +14617,10 @@ msgstr "Verdadera privacidad por diseño"
 msgid "Try adjusting your search query or browse all articles."
 msgstr "Intenta ajustar tu consulta de búsqueda o navega por todos los artículos."
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Turn it on and account balances and net worth swap to a placeholder the moment Budgie stops being the active app — most visible in the app switcher."
+msgstr "Actívalo y los saldos de las cuentas y el patrimonio neto se sustituyen por un marcador de posición en cuanto Budgie deja de ser la app activa — algo muy visible en el selector de aplicaciones."
+
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Turn the radio off, nothing changes"
 msgstr "Apaga la radio y nada cambia"
@@ -15180,8 +15207,8 @@ msgid "What does merging two categories do?"
 msgstr "¿Qué ocurre al fusionar dos categorías?"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "What does screenshot protection actually do?"
-msgstr "¿Qué hace exactamente la protección de capturas de pantalla?"
+msgid "What does Screenshot Protection actually hide?"
+msgstr "¿Qué oculta realmente Protección de capturas?"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "What Durable Means for a Finance App"
@@ -15406,6 +15433,10 @@ msgstr "Lo que distingue a Budgie:"
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "What the screen offers next depends on the bank. Connections that talk to a live API can pull the bank's account list and add whatever you left out the first time. Statement-based banks offer an import action instead. Both can open a new deposit account that starts out attached to the same bank."
 msgstr "Lo que la pantalla ofrece a continuación depende del banco. Las conexiones que hablan con una API en vivo pueden traer la lista de cuentas del banco y añadir lo que dejaste fuera la primera vez. Los bancos basados en extractos ofrecen en su lugar una acción de importación. Ambos pueden abrir una nueva cuenta de depósito que empieza vinculada al mismo banco."
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "What the switch actually hides"
+msgstr "Qué oculta realmente el interruptor"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "What the transaction list actually shows"
@@ -15700,6 +15731,10 @@ msgstr "Dónde viven los datos"
 msgid "Where do exchange rates come from?"
 msgstr "¿De dónde vienen los tipos de cambio?"
 
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Where do I turn it on?"
+msgstr "¿Dónde lo activo?"
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Where do prices come from?"
 msgstr "¿De dónde vienen los precios?"
@@ -15863,6 +15898,10 @@ msgstr "Por qué importa una app financiera a medianoche"
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Why a full re-sync is the wrong fix"
 msgstr "Por qué una resincronización completa es la solución equivocada"
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Why a glance at the app switcher is a real privacy leak"
+msgstr "Por qué un vistazo al selector de aplicaciones es una filtración de privacidad real"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/metadata.ts
 msgid "Why a multi-currency expense tracker needs transaction-date valuation, not today's exchange rate, and how Budgie keeps imported history comparable in your base currency."
@@ -16048,10 +16087,6 @@ msgstr "Por qué el offline-first importa para un rastreador de gastos"
 msgid "Why on-device AI is the only AI that protects your statements"
 msgstr "Por qué la IA en el dispositivo es la única IA que protege tus extractos"
 
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Why one careless screenshot is a real privacy leak"
-msgstr "Por qué una captura de pantalla descuidada es una filtración de privacidad real"
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Why People Are Looking for YNAB Alternatives"
 msgstr "Por qué la gente busca alternativas a YNAB"
@@ -16140,10 +16175,6 @@ msgstr "¿Por qué convertiría un ingreso en reembolso?"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Will Budgie ever charge for features?"
 msgstr "¿Cobrará Budgie alguna vez por funcionalidades?"
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Will Face ID still work with the blur on?"
-msgstr "¿Face ID seguirá funcionando con el desenfoque activado?"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Will it suggest things I never bought?"
@@ -16388,10 +16419,6 @@ msgstr "Sí: Ajustes → Pantalla → Inicio de semana. Anula el valor predeterm
 msgid "Yes — Settings → PIN → toggle off “Unlock with biometrics”. The PIN remains active."
 msgstr "Sí: Ajustes → PIN → desactiva \"Desbloquear con biometría\". El PIN sigue activo."
 
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Yes — Settings → Privacy → Screenshot protection. Toggle individual screens. The transaction-list screen and home screen are the typical \"always on\" candidates."
-msgstr "Sí: Ajustes → Privacidad → Protección de capturas de pantalla. Activa/desactiva pantallas individuales. La pantalla de lista de transacciones y la de inicio están activadas por defecto."
-
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Yes — system theme by default. Override to Light or Dark in Settings if you prefer."
 msgstr "Sí: tema del sistema por defecto. Cámbialo a Claro u Oscuro en Ajustes si lo prefieres."
@@ -16431,6 +16458,10 @@ msgstr "Sí: la estadística de gasto original desaparece de inmediato porque la
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Yes — the Tags tab respects whatever range is active globally (Last Week, Last Month, Custom)."
 msgstr "Sí — la pestaña de Etiquetas respeta el rango que esté activo globalmente (Última semana, Último mes, Personalizado)."
+
+#: src/app/[lang]/features/screenshot-protection/page.tsx
+msgid "Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls what balances show while it's in the background."
+msgstr "Sí — los dos ajustes son independientes. El bloqueo por PIN controla quién puede abrir la app; Protección de capturas controla qué saldos se muestran mientras está en segundo plano."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Yes — toggle them off in Settings → AI. Manual entry stays exactly the way it was before."
@@ -16619,10 +16650,6 @@ msgstr "Sí. La capa de servicios de IA — incluida la integración del modelo 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Yes. The backup file is the SQLCipher database with your PIN-derived key intact. Restore on any device by entering the same PIN."
 msgstr "Sí. El archivo de backup es la base de datos SQLCipher con tu clave derivada del PIN intacta. Restáuralo en cualquier dispositivo introduciendo el mismo PIN."
-
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-msgid "Yes. The blur applies to the app-switcher preview, not the foreground rendering. Face ID continues to work normally."
-msgstr "Sí. El desenfoque se aplica a la vista previa del selector de apps, no al renderizado en primer plano. Face ID sigue funcionando con normalidad."
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Yes. The dual-amount input opens after picking the destination account. Original amount is preserved on the source leg; destination leg gets your specified amount."
