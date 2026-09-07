@@ -13049,6 +13049,10 @@ msgstr "suggestions"
 msgid "Suggestions are powered by two complementary on-device systems. The first is a SQL pattern engine that scans your weekly and monthly transaction history to surface the most likely category, amount, and account for a given merchant name. The second is a 768-dimensional embedding lookup that encodes the current title and finds the nearest historical entries in vector space — catching name variations and abbreviations that a keyword match would miss."
 msgstr "Suggestions are powered by two complementary on-device systems. The first is a SQL pattern engine that scans your weekly and monthly transaction history to surface the most likely category, amount, and account for a given merchant name. The second is a 768-dimensional embedding lookup that encodes the current title and finds the nearest historical entries in vector space — catching name variations and abbreviations that a keyword match would miss."
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Suggestions are proposals — nothing is applied until you tap one, and every form works exactly the same if you ignore them. Settings → AI shows what each on-device model is doing and how far along its backfill is."
+msgstr "Suggestions are proposals — nothing is applied until you tap one, and every form works exactly the same if you ignore them. Settings → AI shows what each on-device model is doing and how far along its backfill is."
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Support for 150+ currencies"
 msgstr "Support for 150+ currencies"
@@ -16461,10 +16465,6 @@ msgstr "Yes — the Tags tab respects whatever range is active globally (Last We
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls what balances show while it's in the background."
 msgstr "Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls what balances show while it's in the background."
-
-#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
-msgid "Yes — toggle them off in Settings → AI. Manual entry stays exactly the way it was before."
-msgstr "Yes — toggle them off in Settings → AI. Manual entry stays exactly the way it was before."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Yes — typing a new tag still works in parallel; the suggestions are additive, not exclusive."
