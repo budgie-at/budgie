@@ -13,9 +13,10 @@ interface Props {
     locale: string;
     alt: string;
     fallback?: ReactNode;
+    priority?: boolean;
 }
 
-export const AppClip = ({ slug, scene, locale, alt, fallback }: Props) => {
+export const AppClip = ({ slug, scene, locale, alt, fallback, priority = false }: Props) => {
     const { light: lightAsset, dark: darkAsset } = resolveMediaAsset(slug, scene, locale, MediaKindEnum.MOTION);
 
     if (!isDefined(lightAsset) || !isDefined(darkAsset)) {
@@ -24,8 +25,8 @@ export const AppClip = ({ slug, scene, locale, alt, fallback }: Props) => {
 
     return (
         <>
-            <AppClipMedia alt={alt} asset={lightAsset} className="block dark:hidden" />
-            <AppClipMedia alt={alt} asset={darkAsset} className="hidden dark:block" />
+            <AppClipMedia alt={alt} asset={lightAsset} className="block dark:hidden" priority={priority} />
+            <AppClipMedia alt={alt} asset={darkAsset} className="hidden dark:block" priority={priority} />
         </>
     );
 };

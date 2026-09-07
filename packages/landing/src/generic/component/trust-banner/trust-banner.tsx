@@ -1,56 +1,44 @@
 import { Trans } from '@lingui/react/macro';
-import { GitBranch, Shield, Zap } from 'lucide-react';
+import { GitBranch, Shield, Smartphone } from 'lucide-react';
 import Link from 'next/link';
-
-import { Motion } from '../motion/motion';
-
-const initialMotion = { opacity: 0, y: 10 };
-const animatedMotion = { opacity: 1, y: 0 };
-const transitionMotion = { duration: 0.4 };
 
 export const TrustBanner = () => (
     <section className="w-full py-6 border-b border-border/40 bg-muted/20">
-        <Motion animate={animatedMotion} className="container px-4 md:px-6" initial={initialMotion} transition={transitionMotion}>
-            <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 text-sm">
+        <h2 className="sr-only">
+            <Trans>What Budgie guarantees</Trans>
+        </h2>
+
+        <div className="container px-4 md:px-6">
+            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 md:gap-x-12 text-sm">
                 <div className="flex items-center gap-2">
                     <Shield className="size-4 text-green-500" />
 
-                    <span className="font-semibold">100%</span>
-
-                    <span className="text-muted-foreground">
-                        <Trans>On-Device — No Servers</Trans>
+                    <span>
+                        <Trans>100% on-device</Trans>
                     </span>
                 </div>
 
                 <Link
                     className="flex items-center gap-2 hover:text-foreground transition-colors"
-                    href="https://github.com/rnw-community/budgie"
+                    href="https://github.com/budgie-at/budgie"
                     rel="noopener noreferrer" // oxlint-disable-line lingui/no-unlocalized-strings
                     target="_blank"
                 >
                     <GitBranch className="size-4" />
 
-                    <span className="font-semibold">
-                        <Trans>Source-Available</Trans>
-                    </span>
-
-                    <span className="text-muted-foreground">
-                        <Trans>on GitHub</Trans>
+                    <span>
+                        <Trans>Source-available on GitHub</Trans>
                     </span>
                 </Link>
 
                 <div className="flex items-center gap-2">
-                    <Zap className="size-4 text-orange-500" />
+                    <Smartphone className="size-4 text-primary" />
 
-                    <span className="font-semibold">
-                        <Trans>Private Beta</Trans>
-                    </span>
-
-                    <span className="text-muted-foreground">
-                        <Trans>Join the waitlist for early access</Trans>
+                    <span>
+                        <Trans>iOS and Android</Trans>
                     </span>
                 </div>
             </div>
-        </Motion>
+        </div>
     </section>
 );
