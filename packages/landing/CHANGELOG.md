@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.32.0](https://github.com/budgie-at/budgie/compare/v6.31.2...v6.32.0) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** correct primary-tag UI claims on transaction-tags page ([d55371b](https://github.com/budgie-at/budgie/commit/d55371bdec17ff3847a6fcda073e1668c8ed2455)), closes [#905](https://github.com/budgie-at/budgie/issues/905)
+
+
+### Features
+
+* **landing:** tell the account-management story in three steps ([6e47f0b](https://github.com/budgie-at/budgie/commit/6e47f0b5debfdb0b2e38fd26d6e14f057e09452a))
+* **landing:** tell the custom categories story in three steps ([38ed722](https://github.com/budgie-at/budgie/commit/38ed7225a49f4f17f538294959b2cb85dd38a98c))
+
+
+
+
+
 ## [6.31.2](https://github.com/budgie-at/budgie/compare/v6.31.1...v6.31.2) (2026-09-07)
 
 

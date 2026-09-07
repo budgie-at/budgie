@@ -16,6 +16,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -76,6 +77,83 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                 }
             />
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>The categories you actually use</Trans>}>
+                    <Trans>
+                        Three screens: the list that holds only the categories you made, the form where one gets renamed, and the picker
+                        that folds two of them into one.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>This list is yours alone</Trans>}>
+                    <Trans>
+                        Settings &rsaquo; Categories shows the categories you created and nothing else — the built-in tree stays out of the
+                        way until you need it. The ones you tag most transactions with sort to the top.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie Categories screen listing user-created categories with their icons above a search field`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="custom-categories-1"
+                    slug="custom-categories"
+                >
+                    <FeatureStory.Callout y={0.216}>
+                        <Trans>Only the ones you created</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.832}>
+                        <Trans>Search as the list grows</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Edit it until it fits</Trans>}>
+                    <Trans>
+                        Change the name, tap the tile for a different icon. Renaming unlinks nothing — transactions hold on to the category
+                        by id. Budgie keeps an English translation and a handful of search keywords beside the name, so the selector still
+                        finds the category whatever you type into it.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Edit Category form showing the icon tile, the name field and the AI-generated translation and search keywords`}
+                    index={1}
+                    locale={lang}
+                    scene="custom-categories-2"
+                    slug="custom-categories"
+                >
+                    <FeatureStory.Callout y={0.342}>
+                        <Trans>Rename it, nothing unlinks</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.487}>
+                        <Trans>Keywords the selector searches on</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Merge without losing transactions</Trans>}>
+                    <Trans>
+                        Two categories that mean the same thing become one: pick the category to keep and every transaction moves across
+                        before the other one goes. The picker offers the built-in tree alongside your own, or a new category made on the
+                        spot.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie category picker open over the Edit Category form, listing the categories to merge into`}
+                    index={2}
+                    locale={lang}
+                    scene="custom-categories-3"
+                    slug="custom-categories"
+                >
+                    <FeatureStory.Callout y={0.64}>
+                        <Trans>Search, or add one here</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.788}>
+                        <Trans>Pick the one to keep</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why pre-baked category trees never fit</Trans>
@@ -115,18 +193,6 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                         <Trans>Safe deletion: prompts you to migrate or wipe transactions, never silently orphans</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Each category has a name, an icon, a color, and an optional MCC mapping. The Categories screen in Settings supports
-                        drag-to-reorder and bulk merge. Deleting a category prompts you to migrate its transactions or wipe them.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
