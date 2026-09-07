@@ -1,6 +1,5 @@
 import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
 import { cn } from 'cn';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
@@ -13,6 +12,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
@@ -22,26 +22,14 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly balance: number;
     readonly className?: string;
     readonly instrumentSymbol: string;
+    readonly accessibilityLabel?: string;
     readonly circleVariant?: ColorPaletteVariant;
-    readonly deadlinePriority?: 'high' | 'normal';
     readonly topRight?: ReactNode;
     readonly bottomRight?: ReactNode;
     readonly balanceContent?: ReactNode;
     readonly children?: ReactNode;
     readonly onLongPress?: OnEventFn;
 }
-
-const cardVariants = cva('relative flex-none gap-3 active:scale-xs overflow-hidden', {
-    variants: {
-        deadlinePriority: {
-            high: 'border-dark-warning-corner',
-            normal: 'border-secondary-corner'
-        }
-    },
-    defaultVariants: {
-        deadlinePriority: 'normal'
-    }
-});
 
 export const AccountCardBase = (props: Props) => {
     const {
@@ -51,8 +39,8 @@ export const AccountCardBase = (props: Props) => {
         balance,
         className,
         instrumentSymbol,
+        accessibilityLabel,
         circleVariant = 'ghost',
-        deadlinePriority = 'normal',
         topRight,
         bottomRight,
         balanceContent,
@@ -62,6 +50,7 @@ export const AccountCardBase = (props: Props) => {
 
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
+    const protectAmount = useProtectedAmountLabel();
 
     const navigateToAccount = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
     const navigateToEditAccount = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(id) } });
@@ -74,10 +63,10 @@ export const AccountCardBase = (props: Props) => {
         <Card
             accessible
             testID={accountCardTestID}
-            accessibilityLabel={`${title}, ${accountBalance}`}
+            accessibilityLabel={accessibilityLabel ?? `${title}, ${protectAmount(balance, instrumentSymbol)}`}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
-            className={cn(cardVariants({ deadlinePriority }), className)}
+            className={cn('relative flex-none gap-3 active:scale-xs overflow-hidden border-secondary-corner', className)}
         >
             <View className="gap-3">
                 <View className="flex-row items-center justify-between">

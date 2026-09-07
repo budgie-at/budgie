@@ -4,8 +4,9 @@ import { Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
+import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
 import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
 
 import { DebtAccountBalanceSelector } from './debt-account-balance.selector';
@@ -18,26 +19,22 @@ interface Props {
     readonly summary: DebtAccountProgressSummaryInterface;
 }
 
-const isBorrowed = (debtType: AccountDebtTypeEnum): boolean => debtType === AccountDebtTypeEnum.BORROW;
-
 export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const protectAmount = useProtectedAmountLabel();
 
     const { outstandingAmount, paidAmount, percentage, totalAmount } = summary;
-    const borrowed = isBorrowed(debtType);
+    const borrowed = debtType === AccountDebtTypeEnum.BORROW;
 
     const labels = {
         directionIcon: borrowed ? UserIconNameEnum.ArrowDownLeft : UserIconNameEnum.ArrowUpRight,
-        directionLabel: borrowed ? t`Left to repay` : t`Left to receive`,
-        paidLabel: borrowed ? t`Repaid` : t`Returned`,
+        directionLabel: t(DEBT_REMAINING_LABEL[debtType]),
+        paidLabel: t(DEBT_SETTLED_LABEL[debtType]),
         totalLabel: borrowed ? t`Borrowed` : t`Lent`
     };
-    const formattedOutstandingAmount = formatDigits(outstandingAmount, instrumentSymbol);
-    const formattedPaidAmount = formatDigits(paidAmount, instrumentSymbol);
-    const formattedTotalAmount = formatDigits(totalAmount, instrumentSymbol);
-    const accessibilityLabel = `${labels.directionLabel}: ${formattedOutstandingAmount}. ${labels.paidLabel}: ${formattedPaidAmount}. ${labels.totalLabel}: ${formattedTotalAmount}. ${percentage}%`;
+    const formattedPaidAmount = protectAmount(paidAmount, instrumentSymbol);
+    const formattedTotalAmount = protectAmount(totalAmount, instrumentSymbol);
+    const accessibilityLabel = `${labels.directionLabel}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${labels.paidLabel}: ${formattedPaidAmount}. ${labels.totalLabel}: ${formattedTotalAmount}. ${percentage}%`;
 
     return (
         <View

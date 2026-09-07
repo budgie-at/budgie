@@ -1,11 +1,13 @@
 appId: ${APP_ID}
 ---
 
+- waitForAnimationToEnd
 - scrollUntilVisible:
     element:
       id: 'AccountCard.${ACCOUNT_NAME}'
     direction: DOWN
-    visibilityPercentage: 40
+    visibilityPercentage: 100
+    waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
 
 - tapOn:
