@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.26.1](https://github.com/budgie-at/budgie/compare/v6.26.0...v6.26.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** frame story clips like stills and prefer staged shots ([c017a0e](https://github.com/budgie-at/budgie/commit/c017a0e3f2267132ab16caf628dd6f91a1f7f3c2)), closes [#892](https://github.com/budgie-at/budgie/issues/892)
+
+
+
+
+
 # [6.26.0](https://github.com/budgie-at/budgie/compare/v6.25.0...v6.26.0) (2026-09-07)
 
 
