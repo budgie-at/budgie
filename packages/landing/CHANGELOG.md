@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.35.0](https://github.com/budgie-at/budgie/compare/v6.34.0...v6.35.0) (2026-09-07)
+
+
+### Features
+
+* **landing:** tell the spending analytics story in three steps ([48c8398](https://github.com/budgie-at/budgie/commit/48c83987d06e2f4526eeb56ac647c2f0dad3e6c9))
+
+
+
+
+
 # [6.34.0](https://github.com/budgie-at/budgie/compare/v6.33.0...v6.34.0) (2026-09-07)
 
 
