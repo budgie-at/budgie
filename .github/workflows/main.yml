@@ -21,7 +21,7 @@ permissions:
 jobs:
   release:
     name: Publish a release
-    runs-on: [self-hosted, linux-tiered, linux-medium]
+    runs-on: [self-hosted, trf-linux-amd64-2x4]
     timeout-minutes: 30
     steps:
       - name: Checkout repository
