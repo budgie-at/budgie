@@ -3752,10 +3752,6 @@ msgstr "Pestaña de análisis Categorías de Budgie con los chips de filtro de f
 msgid "Budgie Categories screen listing user-created categories with their icons above a search field"
 msgstr "Pantalla de Categorías de Budgie con las categorías creadas por el usuario y sus iconos sobre un campo de búsqueda"
 
-#: src/app/[lang]/features/categorization-rules/page.tsx
-msgid "Budgie categorization rules screen listing the merchant rules that assign categories automatically"
-msgstr "Pantalla de reglas de categorización de Budgie con las reglas de comercios que asignan categorías automáticamente"
-
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Budgie category picker open over the Edit Category form, listing the categories to merge into"
 msgstr "Selector de categorías de Budgie abierto sobre el formulario Editar categoría, con las categorías para fusionar"
@@ -3828,6 +3824,10 @@ msgstr "Formulario Editar categoría de Budgie con el mosaico del icono, el camp
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie Edit Expense screen showing the Silpo merchant recognised and the Groceries category already filled in"
 msgstr "Pantalla de Budgie para editar un gasto con el comercio Silpo reconocido y la categoría Alimentación ya rellenada"
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Budgie edit expense screen with a Quick rule pill above the amount, moments after the category was changed"
+msgstr "Pantalla de edición de gasto de Budgie con la píldora Regla rápida sobre el importe, justo después de cambiar la categoría"
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Budgie edit expense screen with the category already filled in from the bank MCC code"
@@ -4126,6 +4126,10 @@ msgstr "Calendario de pagos recurrentes de Budgie con las próximas suscripcione
 msgid "Budgie recurring payments calendar with the monthly total above the upcoming subscriptions"
 msgstr "Calendario de pagos recurrentes de Budgie con el total mensual sobre las próximas suscripciones"
 
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Budgie Rules screen: four rules, each with its conditions above the category and tag it sets, and an on-off switch"
+msgstr "Pantalla de Reglas de Budgie: cuatro reglas, cada una con sus condiciones sobre la categoría y la etiqueta que asigna, y un interruptor"
+
 #: src/app/[lang]/features/on-device-ai-budget-app/metadata.ts
 msgid "Budgie runs a 1.7B-parameter LLM and 768-dim embedding model on your phone for categorization, tag suggestions, and voice entry. No cloud AI, ever."
 msgstr "Budgie ejecuta un LLM de 1700 millones de parámetros y un modelo de embedding de 768 dimensiones en tu teléfono para categorización, sugerencias de etiquetas y entrada por voz. Sin IA en la nube, nunca."
@@ -4297,6 +4301,10 @@ msgstr "Lista de transacciones de Budgie donde cada fila muestra una etiqueta ju
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Budgie transaction list where multi-tag rows show a bordered tag chip with a sibling count and single-tag rows show a plain chip"
 msgstr "Lista de transacciones de Budgie donde las filas con varias etiquetas muestran un chip de etiqueta con borde y un contador de las demás, y las filas con una sola etiqueta muestran un chip simple"
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Budgie transaction list with a 14 missing categories pill above rows that carry no category chip"
+msgstr "Lista de transacciones de Budgie con la píldora «14 categorías faltantes» sobre filas sin chip de categoría"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete"
@@ -4892,6 +4900,10 @@ msgstr "El análisis basado en categorías responde qué tipo de gasto es una tr
 msgid "Category, tag, trend — drill into anything."
 msgstr "Categoría, etiqueta, tendencia: accede al detalle de cualquier dato."
 
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Change the category or the tags of an existing transaction and a Quick rule pill appears above the amount. It builds the conditions from the merchant name — reference numbers, amounts, dates and company suffixes stripped out, the comment used when the name is too generic — pins the merchant code when the transaction carries one, and attaches exactly the category and tags you just picked. Tap the pill and the rule exists; swipe it away and it is gone."
+msgstr "Cambia la categoría o las etiquetas de una transacción existente y aparece una píldora Regla rápida sobre el importe. Construye las condiciones a partir del nombre del comercio —quitando números de referencia, importes, fechas y sufijos de empresa, y usando el comentario cuando el nombre es demasiado genérico—, fija el código de comercio cuando la transacción lo trae y adjunta exactamente la categoría y las etiquetas que acabas de elegir. Toca la píldora y la regla existe; deslízala y desaparece."
+
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Change the name, tap the tile for a different icon. Renaming unlinks nothing — transactions hold on to the category by id. Budgie keeps an English translation and a handful of search keywords beside the name, so the selector still finds the category whatever you type into it."
 msgstr "Cambia el nombre, toca el mosaico para elegir otro icono. Renombrar no desvincula nada: las transacciones se aferran a la categoría por su id. Budgie guarda junto al nombre una traducción al inglés y unas cuantas palabras clave de búsqueda, para que el selector encuentre la categoría escribas lo que escribas."
@@ -5283,12 +5295,20 @@ msgid "Concern"
 msgstr "Preocupación"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Conditions built from this name"
+msgstr "Condiciones creadas con este nombre"
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Conditions can look at the title, the comment, the amount, the merchant category code, the account, the transaction type, or the import source it came from. Combine them with \"match all\" or \"match any\", and pick the operator that fits: equals, contains, does not contain, greater than, less than, between, in a list, or a regular expression. Text comparisons ignore letter case."
 msgstr "Las condiciones pueden evaluar el título, el comentario, el importe, el código de categoría del comercio, la cuenta, el tipo de transacción o el origen de la importación. Combínalas con \"coincidir con todas\" o \"coincidir con alguna\", y elige el operador que encaje: igual a, contiene, no contiene, mayor que, menor que, entre, en una lista, o una expresión regular. Las comparaciones de texto no distinguen mayúsculas y minúsculas."
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Conditions on title, comment, amount, MCC, account, transaction type, and import source"
 msgstr "Condiciones sobre título, comentario, importe, MCC, cuenta, tipo de transacción y origen de importación"
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Conditions you wrote yourself"
+msgstr "Condiciones que escribes tú"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Configurable per-screen — disable for receipts you actually want to share, leave on for the home screen."
@@ -7479,6 +7499,10 @@ msgstr "Gratis, sin cuenta, sin suscripción"
 msgid "Frequently Asked Questions"
 msgstr "Preguntas Frecuentes"
 
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "From a rule you wrote to what is left for the AI"
+msgstr "De una regla que escribiste a lo que le queda a la IA"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "From an empty sheet to a list you can read"
 msgstr "De un formulario vacío a una lista fácil de leer"
@@ -8047,7 +8071,6 @@ msgstr "¿En qué se diferencia esto de la página de análisis de etiquetas?"
 #: src/app/[lang]/features/binance-sync/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
-#: src/app/[lang]/features/categorization-rules/page.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
@@ -8172,10 +8195,6 @@ msgstr ""
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If negotiation fails, binding arbitration in accordance with Austrian law"
 msgstr ""
-
-#: src/app/[lang]/features/categorization-rules/page.tsx
-msgid "If one of your existing rules already covers that merchant, the pill offers to extend that rule instead of creating a near-duplicate, and warns you when the edit you just made contradicts a rule you already have. Accept it, swipe it away, or open it and adjust every condition first."
-msgstr "Si una de tus reglas existentes ya cubre ese comercio, la etiqueta ofrece ampliar esa regla en lugar de crear una casi duplicada, y te avisa cuando la edición que acabas de hacer contradice una regla que ya tienes. Acéptala, deslízala para descartarla, o ábrela y ajusta antes cada condición."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "If privacy matters to you, we built Budgie for exactly that reason. No servers storing your transactions. No third parties with access to your spending habits. Just you and your budget, on your device."
@@ -10766,10 +10785,6 @@ msgstr "Abre Budgie y ve a Ajustes > Importar datos"
 msgid "Open privat24.ua in a browser, go to Statements, pick the date range, and use the XLSX export button. Save the file and import via Budgie's Import → PrivatBank flow."
 msgstr "Abre privat24.ua en un navegador, ve a Extractos, elige el rango de fechas y usa el botón de exportación XLSX. Guarda el archivo y ábrelo en Budgie."
 
-#: src/app/[lang]/features/categorization-rules/page.tsx
-msgid "Open Settings, then Rules. Add conditions, choose match all or match any, attach one or more actions, and save. Incoming bank and import transactions are evaluated before they are written, and existing transactions are updated in the background in batches so the app stays responsive."
-msgstr "Abre Ajustes y luego Reglas. Añade condiciones, elige coincidir con todas o con alguna, adjunta una o más acciones, y guarda. Las transacciones entrantes de bancos e importaciones se evalúan antes de escribirse, y las transacciones existentes se actualizan en segundo plano por lotes para que la app siga respondiendo con fluidez."
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "open source"
@@ -12031,10 +12046,6 @@ msgstr "Revisa la vista previa de la importación"
 msgid "Revoke access through your bank’s connected apps settings"
 msgstr "Revocar el acceso a traves de la configuracion de aplicaciones conectadas de tu banco"
 
-#: src/app/[lang]/features/categorization-rules/page.tsx
-msgid "Right after you change the category or tags of an existing transaction, a Quick rule pill slides into the edit screen with a ready-made rule. It builds the conditions from the merchant name — stripping reference numbers, amounts, dates, and company suffixes, falling back to the comment, and refusing to build anything from generic titles like a bare card purchase — and it pins the merchant category code when the transaction has one."
-msgstr "Justo después de cambiar la categoría o las etiquetas de una transacción existente, una etiqueta de regla rápida se desliza en la pantalla de edición con una regla ya lista. Construye las condiciones a partir del nombre del comercio — eliminando números de referencia, importes, fechas y sufijos de empresa, recurriendo al comentario si es necesario, y negándose a construir nada a partir de títulos genéricos como una simple compra con tarjeta — y fija el código de categoría del comercio cuando la transacción tiene uno."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Roadmap Transparency"
 msgstr "Transparencia de la hoja de ruta"
@@ -12050,6 +12061,10 @@ msgstr "Aproximadamente 1 GB en total. La descarga es de una sola vez, opcional 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Rows group under the month, each one carrying its category icon, its tags and the account it came from."
 msgstr "Las filas se agrupan por mes, y cada una lleva su icono de categoría, sus etiquetas y la cuenta de la que procede."
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Rows still without a category"
+msgstr "Filas aún sin categoría"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Rule-based automation for categorization"
@@ -12068,8 +12083,16 @@ msgid "Rules are deterministic: the same conditions produce the same category ev
 msgstr "Las reglas son deterministas: las mismas condiciones producen la misma categoría siempre, que es justo lo que necesitas para el alquiler, el salario, las suscripciones y cualquier cosa con un nombre de comercio estable. La categorización con IA en el dispositivo es la herramienta opuesta — hace suposiciones sensatas para comercios que nunca has visto antes. Son sistemas separados, y la mayoría de las configuraciones acaban usando ambos."
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Rules are evaluated on Monobank sync, on bank file sync and on file import, so most rows land already categorized — and a category a rule assigned is never second-guessed by a suggestion. What no rule covered is counted in the missing-categories pill above the list; open one of those rows and the on-device suggestion offers a category for it."
+msgstr "Las reglas se evalúan en la sincronización con Monobank, en la sincronización de archivos bancarios y en la importación de archivos, así que la mayoría de las filas llegan ya categorizadas, y una categoría asignada por una regla nunca la cuestiona una sugerencia. Lo que ninguna regla cubrió se cuenta en la píldora de categorías faltantes sobre la lista; abre una de esas filas y la sugerencia en el dispositivo te propone una categoría."
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Rules run automatically on Monobank sync, bank file sync, and CSV import"
 msgstr "Las reglas se ejecutan automáticamente en la sincronización con Monobank, la sincronización de archivos bancarios y la importación de CSV"
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Rules run before the AI does"
+msgstr "Las reglas van antes que la IA"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Running a cloud-first application requires servers, databases, and ongoing operational costs that scale with users. Local-first applications offload computation and storage to user devices. The marginal cost of an additional user approaches zero."
@@ -12545,6 +12568,10 @@ msgstr "Algunas aplicaciones genuinamente necesitan capacidades de servidor, com
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Some categorization should be a rule, not a suggestion"
 msgstr "Parte de la categorización debería ser una regla, no una sugerencia"
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Some things should not be guessed"
+msgstr "Hay cosas que no se adivinan"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Sometimes a sync drifts — a transaction reconciles late, a refund posts wrong. The naive fix is a full re-sync, which wipes your edits. Budgie's window picker re-pulls only the slice you ask for."
@@ -13120,6 +13147,10 @@ msgstr "Toca Importar → PDF de Erste. Elige el archivo desde Archivos. Budgie 
 msgid "Tap it for a focused list"
 msgstr "Tócala para ver una lista enfocada"
 
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Tap it, the rule exists"
+msgstr "Tócala y la regla existe"
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Tap the mic in the quick-entry sheet"
 msgstr "Toca el micrófono en el formulario de entrada rápida"
@@ -13305,6 +13336,10 @@ msgstr "El movimiento de efectivo puede seguir siendo una transferencia, mientra
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "The categories you actually use"
 msgstr "Las categorías que realmente usas"
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "The category it sets"
+msgstr "La categoría que asigna"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "The category selector reorders by popularity over time, so the categories you use most surface first. Bank-synced transactions can pre-fill via MCC mapping; you can override at any time."
@@ -13691,6 +13726,10 @@ msgid "The question isn’t whether you should use an offline-first financial ap
 msgstr "La pregunta no es si deberías usar una aplicación financiera sin conexión. La pregunta es: ¿por qué confiarías tu privacidad financiera a otra cosa?"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "The Quick rule pill writes it for you"
+msgstr "La píldora Regla rápida la escribe por ti"
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The Quick rule pill writes the rule for you"
 msgstr "La etiqueta de regla rápida escribe la regla por ti"
 
@@ -13733,6 +13772,10 @@ msgstr ""
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The Rules screen has a ranked search that looks at every condition, every action, and the related category, tag, and account names, so you can find the rule responsible for a category in a couple of keystrokes."
 msgstr "La pantalla de Reglas tiene una búsqueda ordenada por relevancia que revisa cada condición, cada acción y los nombres de categoría, etiqueta y cuenta relacionados, para que puedas encontrar la regla responsable de una categoría en un par de pulsaciones."
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "The Rules screen shows what you decided, rule by rule: the conditions on top — Title contains “Spotify” and Type equals EXPENSE — and under them the category and the tag the match sets. A condition can also read the merchant code, the amount, the account or the import source, and every rule has its own switch, so turning one off never means deleting it."
+msgstr "La pantalla de Reglas muestra lo que decidiste, regla por regla: arriba las condiciones —Título contiene «Spotify» y Tipo igual a EXPENSE— y debajo la categoría y la etiqueta que asigna la coincidencia. Una condición también puede leer el código de comercio, el importe, la cuenta o la fuente de importación, y cada regla tiene su propio interruptor, así que apagarla nunca es borrarla."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The same Budgie Missing categories list with its first uncategorised row ready to open"
@@ -14166,6 +14209,10 @@ msgstr "Tres pantallas: la lista que solo contiene las categorías que creaste, 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Three screens: the press that opens the menu, the four actions behind it, and the one screen a conversion needs."
 msgstr "Tres pantallas: la pulsación que abre el menú, las cuatro acciones que hay detrás y la única pantalla que necesita una conversión."
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "Three screens: the Rules list, the Quick rule pill on a transaction you just recategorized, and everything no rule matched."
+msgstr "Tres pantallas: la lista de Reglas, la píldora Regla rápida en una transacción que acabas de recategorizar y todo lo que ninguna regla igualó."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
@@ -15231,6 +15278,10 @@ msgstr "¿Qué licencia?"
 msgid "What makes Budgie different:"
 msgstr "Lo que diferencia a Budgie:"
 
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "What no rule covered"
+msgstr "Lo que ninguna regla cubrió"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "What Open-Source Means for Security"
 msgstr "Lo que el código abierto significa para la seguridad"
@@ -15415,6 +15466,10 @@ msgstr "Cuando los datos son locales, cada operación es rápida. No hay latenci
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "When data lives on user devices, users own their data in a meaningful way. They can back it up, export it, inspect it, and take it with them if they switch applications. There is no vendor lock-in through data captivity."
 msgstr "Cuando los datos viven en los dispositivos de los usuarios, estos poseen sus datos de manera significativa. Pueden hacer copias de seguridad, exportarlos, inspeccionarlos y llevarlos consigo si cambian de aplicación. No hay dependencia del proveedor mediante la cautividad de datos."
+
+#: src/app/[lang]/features/categorization-rules/page.tsx
+msgid "When exactly one of your existing rules already matches the transaction, the pill turns into “Update rule?” and rewrites that rule's category and tag instead of creating a near-duplicate. When the conditions it would write already exist word for word, Budgie says so and lets you open the existing rule or create the new one anyway. Either way the rule is applied to your existing transactions as soon as it is saved."
+msgstr "Cuando exactamente una de tus reglas existentes ya coincide con la transacción, la píldora pasa a ser «¿Actualizar regla?» y reescribe la categoría y la etiqueta de esa regla en lugar de crear un casi duplicado. Cuando las condiciones que escribiría ya existen palabra por palabra, Budgie te lo dice y te deja abrir la regla existente o crear la nueva de todos modos. En cualquier caso, la regla se aplica a tus transacciones existentes en cuanto se guarda."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "When Intuit Mint shut down on March 23, 2024, it left millions of users hunting for a replacement. Many found one quickly — but most landed on apps that share the same fundamental architecture as Mint: your financial data lives on someone else's servers, managed by a company whose priorities can shift without warning."

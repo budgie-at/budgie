@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -81,14 +80,88 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie categorization rules screen listing the merchant rules that assign categories automatically`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>From a rule you wrote to what is left for the AI</Trans>}>
+                    <Trans>
+                        Three screens: the Rules list, the Quick rule pill on a transaction you just recategorized, and everything no rule
+                        matched.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Some things should not be guessed</Trans>}>
+                    <Trans>
+                        The Rules screen shows what you decided, rule by rule: the conditions on top — Title contains &ldquo;Spotify&rdquo;
+                        and Type equals EXPENSE — and under them the category and the tag the match sets. A condition can also read the
+                        merchant code, the amount, the account or the import source, and every rule has its own switch, so turning one off
+                        never means deleting it.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Rules screen: four rules, each with its conditions above the category and tag it sets, and an on-off switch`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="categorization-rules-1"
                     slug="categorization-rules"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.252}>
+                        <Trans>Conditions you wrote yourself</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.496}>
+                        <Trans>The category it sets</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>The Quick rule pill writes it for you</Trans>}>
+                    <Trans>
+                        Change the category or the tags of an existing transaction and a Quick rule pill appears above the amount. It builds
+                        the conditions from the merchant name — reference numbers, amounts, dates and company suffixes stripped out, the
+                        comment used when the name is too generic — pins the merchant code when the transaction carries one, and attaches
+                        exactly the category and tags you just picked. Tap the pill and the rule exists; swipe it away and it is gone.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie edit expense screen with a Quick rule pill above the amount, moments after the category was changed`}
+                    index={1}
+                    locale={lang}
+                    scene="categorization-rules-2"
+                    slug="categorization-rules"
+                >
+                    <FeatureStory.Callout y={0.26}>
+                        <Trans>Tap it, the rule exists</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.416}>
+                        <Trans>Conditions built from this name</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Rules run before the AI does</Trans>}>
+                    <Trans>
+                        Rules are evaluated on Monobank sync, on bank file sync and on file import, so most rows land already categorized —
+                        and a category a rule assigned is never second-guessed by a suggestion. What no rule covered is counted in the
+                        missing-categories pill above the list; open one of those rows and the on-device suggestion offers a category for
+                        it.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie transaction list with a 14 missing categories pill above rows that carry no category chip`}
+                    index={2}
+                    locale={lang}
+                    scene="uncategorized-transactions-1"
+                    slug="uncategorized-transactions"
+                >
+                    <FeatureStory.Callout y={0.205}>
+                        <Trans>What no rule covered</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.287}>
+                        <Trans>Rows still without a category</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -148,17 +221,10 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Right after you change the category or tags of an existing transaction, a Quick rule pill slides into the edit
-                        screen with a ready-made rule. It builds the conditions from the merchant name — stripping reference numbers,
-                        amounts, dates, and company suffixes, falling back to the comment, and refusing to build anything from generic
-                        titles like a bare card purchase — and it pins the merchant category code when the transaction has one.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        If one of your existing rules already covers that merchant, the pill offers to extend that rule instead of creating
-                        a near-duplicate, and warns you when the edit you just made contradicts a rule you already have. Accept it, swipe it
-                        away, or open it and adjust every condition first.
+                        When exactly one of your existing rules already matches the transaction, the pill turns into &ldquo;Update
+                        rule?&rdquo; and rewrites that rule&apos;s category and tag instead of creating a near-duplicate. When the
+                        conditions it would write already exist word for word, Budgie says so and lets you open the existing rule or create
+                        the new one anyway. Either way the rule is applied to your existing transactions as soon as it is saved.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -173,19 +239,6 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         rent, salary, subscriptions, and anything with a stable merchant name. On-device AI categorization is the opposite
                         tool — it guesses sensibly for merchants you have never seen before. They are separate systems, and most setups end
                         up using both.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Open Settings, then Rules. Add conditions, choose match all or match any, attach one or more actions, and save.
-                        Incoming bank and import transactions are evaluated before they are written, and existing transactions are updated
-                        in the background in batches so the app stays responsive.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
