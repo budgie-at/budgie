@@ -3,6 +3,156 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.22.0](https://github.com/budgie-at/budgie/compare/v6.21.5...v6.22.0) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** ship real brand icons for tabs, pinned tabs, home screens and the manifest ([ee87346](https://github.com/budgie-at/budgie/commit/ee873462ee6ac0fabbf9a1fbe268930dd9d6e65e))
+* **landing:** use an idiomatic German story heading ([8dabe31](https://github.com/budgie-at/budgie/commit/8dabe316d2cfb859bee7c92715523265cb26a6d8))
+
+
+### Features
+
+* **landing:** tell the Monobank sync story in steps ([6f9b9be](https://github.com/budgie-at/budgie/commit/6f9b9be7d097ed0dc1daf2389d918e1826c68166))
+
+
+
+
+
+## [6.21.5](https://github.com/budgie-at/budgie/compare/v6.21.4...v6.21.5) (2026-09-07)
+
+
+### Bug Fixes
+
+* **app:** keep debt card footer percentage legible at large text sizes ([9a5dcc3](https://github.com/budgie-at/budgie/commit/9a5dcc38c4798fcc18fe3a5ea9fe0fa269b76948)), closes [#821](https://github.com/budgie-at/budgie/issues/821)
+* **app:** mask debt details footer amounts under screenshot protection ([5c4a1d5](https://github.com/budgie-at/budgie/commit/5c4a1d5384036a5a8c5ae38240164293f7cd710d)), closes [#821](https://github.com/budgie-at/budgie/issues/821)
+* **app:** put remaining balance first on debt cards and label settled progress ([d6aa40c](https://github.com/budgie-at/budgie/commit/d6aa40c3f530fae536794108c8c66554c36ca29f)), closes [#821](https://github.com/budgie-at/budgie/issues/821)
+* **app:** wrap debt card footer percentage instead of breaking the label ([e15ac64](https://github.com/budgie-at/budgie/commit/e15ac6494198f1152202be944899ea27932c6e3f)), closes [#821](https://github.com/budgie-at/budgie/issues/821)
+
+
+
+
+
+## [6.21.4](https://github.com/budgie-at/budgie/compare/v6.21.3...v6.21.4) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** name the Whisper model the app actually downloads ([1ad4065](https://github.com/budgie-at/budgie/commit/1ad406556a3684c66e49ce2355a41241ab88e408))
+
+
+
+
+
+## [6.21.3](https://github.com/budgie-at/budgie/compare/v6.21.2...v6.21.3) (2026-09-06)
+
+
+### Performance Improvements
+
+* **landing:** emit only the active theme's media in AppShot and AppClip ([b6c9e1f](https://github.com/budgie-at/budgie/commit/b6c9e1f35eda87d5d0031b46ef0212b39beff367)), closes [#853](https://github.com/budgie-at/budgie/issues/853) [#852](https://github.com/budgie-at/budgie/issues/852) [#818](https://github.com/budgie-at/budgie/issues/818)
+
+
+
+
+
+## [6.21.2](https://github.com/budgie-at/budgie/compare/v6.21.1...v6.21.2) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** list the CSV columns the exporter actually writes ([c3c192c](https://github.com/budgie-at/budgie/commit/c3c192cdaa4a18ffc01bd4b4af950e9a214fa652))
+
+
+
+
+
+## [6.21.1](https://github.com/budgie-at/budgie/compare/v6.21.0...v6.21.1) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** scope crypto page claims to crypto and fiat ([62b66e4](https://github.com/budgie-at/budgie/commit/62b66e40585b20c8bb63d3ca5056891587fef491))
+
+
+
+
+
+# [6.21.0](https://github.com/budgie-at/budgie/compare/v6.20.0...v6.21.0) (2026-09-06)
+
+
+### Features
+
+* **landing:** tell the source-available budget app story ([86644f4](https://github.com/budgie-at/budgie/commit/86644f40dbe1698a1b3d667c6626f1344f545eda))
+
+
+### Performance Improvements
+
+* **landing:** keep the feature and article registries out of client bundles ([6084e01](https://github.com/budgie-at/budgie/commit/6084e01c911803fe6034a8dfdef68220697da81a))
+
+
+
+
+
+# [6.20.0](https://github.com/budgie-at/budgie/compare/v6.19.0...v6.20.0) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** correct expense-tracking story translations ([15f705f](https://github.com/budgie-at/budgie/commit/15f705f6aa090c24f5d75e99784b5d9041221634)), closes [#814](https://github.com/budgie-at/budgie/issues/814)
+
+
+### Features
+
+* **landing:** tell the expense tracking story in steps ([df3c316](https://github.com/budgie-at/budgie/commit/df3c3162995ab3bf158bf98b61cba23bd20601ab))
+
+
+
+
+
+# [6.19.0](https://github.com/budgie-at/budgie/compare/v6.18.0...v6.19.0) (2026-09-06)
+
+
+### Features
+
+* **landing:** pin the story stage and move callouts outside the frame on every device ([3205f3d](https://github.com/budgie-at/budgie/commit/3205f3d68601f3da49622c62cc6684240bdf68d0))
+
+
+
+
+
+# [6.18.0](https://github.com/budgie-at/budgie/compare/v6.17.1...v6.18.0) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** address CodeRabbit review on subscription-free story ([94b49c2](https://github.com/budgie-at/budgie/commit/94b49c2628eb99524cdeb63db559b5699cf05b5e))
+
+
+### Features
+
+* **landing:** tell the subscription-free budget app story ([96dd7b5](https://github.com/budgie-at/budgie/commit/96dd7b58f6e4f6f210741c3da41add4457bec425))
+
+
+
+
+
+## [6.17.1](https://github.com/budgie-at/budgie/compare/v6.17.0...v6.17.1) (2026-09-06)
+
+
+### Bug Fixes
+
+* **landing:** keep shared chrome inside the viewport and fix its heading order ([aa22516](https://github.com/budgie-at/budgie/commit/aa22516456cafbe9d81a1f54d951efa771fc40e7))
+
+
+### Performance Improvements
+
+* **landing:** ship a client-only message catalog and drop unused italic fonts ([ac6a582](https://github.com/budgie-at/budgie/commit/ac6a582ae2f871a48487bacd349e9008df971188))
+
+
+
+
+
 # [6.17.0](https://github.com/budgie-at/budgie/compare/v6.16.0...v6.17.0) (2026-09-06)
 
 

@@ -158,10 +158,12 @@ Wrap with `LinguiClientProvider`:
 
 ```typescript
 // In layout.tsx
-<LinguiClientProvider initialLocale={lang} initialMessages={messages}>
+<LinguiClientProvider initialLocale={lang} initialMessages={clientMessages[lang]}>
     {children}
 </LinguiClientProvider>
 ```
+
+`clientMessages` is the generated client subset of the catalog, never `allMessages` — see `docs/lingui-rsc.md` section 5.
 
 ### Supported Locales
 

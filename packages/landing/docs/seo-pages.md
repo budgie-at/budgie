@@ -152,7 +152,11 @@ App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`. Never
 
 A feature page carries at most one `FeatureStory`, with **2–5 steps** (steps variant) or **one shot plus 2–4 points** (basic variant). Step titles, value copy, and callout labels are inline `<Trans>` in the route page; `alt` uses `t(i18n)`. Passing steps as `steps={[…]}`, as a registry field, or as any array of copy is prohibited — it is the same violation as §2 and §6.
 
-Scene ids, `slug`, `locale`, and callout `y` values are page-local literals. They never enter `metadata.ts` or the feature registry; the allowed registry field list is unchanged. A callout `y` is the vertical centre of the highlight band as a fraction of the framed screenshot height — one number, no `x`, so a translated label never collides with UI.
+Scene ids, `slug`, `locale`, and callout coordinates are page-local literals. They never enter `metadata.ts` or the feature registry; the allowed registry field list is unchanged.
+
+A callout is a numbered dot on the screenshot plus a label rendered **outside** the frame — never a band or pill over app pixels. `y` is the dot's vertical centre as a fraction of the framed screenshot height; the optional `x` is the same fraction horizontally and defaults to the device's right edge, so the dot marks a row without covering content. Keep labels to six words: they sit beside the frame on desktop (alternating sides from 1280px, right-hand side below that, joined by a hairline leader drawn outside the device bounds) and in a numbered caption rail under the frame on mobile. Numbering is a CSS counter, so callout order in the page is the only source of truth. Never use pixel coordinates.
+
+The stage is pinned on every viewport: sticky and top-aligned under the header on mobile with the step copy scrolling in the band beneath it, sticky beside the copy column on desktop. Shots crossfade per active step, parallax and the progress rail run on `animation-timeline` where supported and on one passive scroll listener writing `--story-progress` where it is not, and `prefers-reduced-motion` keeps the crossfade only.
 
 The story renders a server compound root; only its inner observer island is `"use client"`, it renders `{children}`, and it holds no translatable text, so every step string stays server-rendered in the SSG'd HTML for all five locales. `FeaturePageMedia` is retained only for a supplementary single shot; a page with a story does not also open with a `FeaturePageMedia` hero shot, and it drops its "How it works" prose section.
 
@@ -457,7 +461,7 @@ Check this list before authoring a new SEO component.
 | Narration step              | `FeatureStory.Step index title` + children                              |
 | Sticky screenshot           | `FeatureStory.Shot index slug scene locale alt priority` + callouts     |
 | Sticky motion clip          | `FeatureStory.Clip index slug scene locale alt` + callouts              |
-| Screenshot highlight        | `FeatureStory.Callout y index` + children                               |
+| Screenshot highlight        | `FeatureStory.Callout y x index` + children                             |
 | Basic-variant bullet        | `FeatureStory.Point index` + children                                   |
 
 ### Generic primitives

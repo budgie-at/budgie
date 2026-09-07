@@ -91,8 +91,9 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        CSV columns map cleanly to most spreadsheet pivots: date, account, category, tags, amount, currency, comment. The
-                        database backup carries the SQLCipher key wrapped in your PIN — restore on any device.
+                        CSV columns map cleanly to most spreadsheet pivots: title, both account legs with their amounts and currencies,
+                        category, MCC, date, comment, and the bank&apos;s own transaction id. The database backup carries the SQLCipher key
+                        wrapped in your PIN — restore on any device.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -103,13 +104,16 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>CSV export with date, account, category, tags, amount, currency, comment columns</Trans>
+                        <Trans>
+                            CSV export with title, both account legs and amounts, currencies, category, MCC, date, comment, and the
+                            bank&apos;s transaction id
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Encrypted database backup file for full restore on any device</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Filter by date range before exporting — last month, this year, or anything custom</Trans>
+                        <Trans>One tap exports the whole history — no range to pick, no partial file to reconcile later</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Save through the OS share sheet — Files, iCloud, Drive, anything</Trans>
@@ -126,8 +130,8 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Settings → Export. Pick CSV or Database. Pick a date range. Save through the OS share sheet to Files, iCloud Drive,
-                        Google Drive, or any storage app.
+                        Settings → Export. Pick CSV or Database. Every transaction goes into the file. Save through the OS share sheet to
+                        Files, iCloud Drive, Google Drive, or any storage app.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>

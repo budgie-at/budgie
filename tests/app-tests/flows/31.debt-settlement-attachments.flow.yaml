@@ -416,6 +416,11 @@ appId: ${APP_ID}
       visible:
           id: 'HomePage.TotalBalance'
       timeout: 10000
+- scrollUntilVisible:
+      element:
+          id: 'AccountCard.E2E Borrowed Debt'
+      direction: UP
+      visibilityPercentage: 100
 
 - runFlow:
       file: subflows/accounts/open-account-details.flow.yaml
@@ -526,6 +531,11 @@ appId: ${APP_ID}
       visible:
           id: 'HomePage.TotalBalance'
       timeout: 10000
+- scrollUntilVisible:
+      element:
+          id: 'AccountCard.E2E Borrowed Debt'
+      direction: UP
+      visibilityPercentage: 100
 
 - runFlow:
       file: subflows/accounts/open-account-details.flow.yaml
