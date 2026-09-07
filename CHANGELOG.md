@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.30.0](https://github.com/budgie-at/budgie/compare/v6.29.0...v6.30.0) (2026-09-07)
+
+
+### Bug Fixes
+
+* **app:** resolve EAS Update runtime version as the production variant ([0e22b50](https://github.com/budgie-at/budgie/commit/0e22b50152fa5a4c372a5123cd4a64b600737020))
+
+
+### Features
+
+* **landing:** primary-tag basic story — 3 steps ([a8cfd64](https://github.com/budgie-at/budgie/commit/a8cfd640d4a7870834e8e54bba5f34894defa0f6)), closes [#905](https://github.com/budgie-at/budgie/issues/905) [#905](https://github.com/budgie-at/budgie/issues/905) [#798](https://github.com/budgie-at/budgie/issues/798)
+
+
+
+
+
 # [6.29.0](https://github.com/budgie-at/budgie/compare/v6.28.0...v6.29.0) (2026-09-07)
 
 
