@@ -67,6 +67,10 @@
             "deepLink": "budgie://"
         },
         {
+            "name": "binance-sync-1",
+            "deepLink": "budgie://create-account/BINANCE"
+        },
+        {
             "name": "net-worth-tracker-1",
             "deepLink": "budgie://"
         },
@@ -261,6 +265,38 @@
         {
             "name": "uncategorized-transactions-2",
             "flow": "flows/media/uncategorized-transactions-2.flow.yaml"
+        },
+        {
+            "name": "bank-fee-tracking-1",
+            "flow": "flows/media/bank-fee-tracking-1.flow.yaml"
+        },
+        {
+            "name": "bank-resync-window-1",
+            "flow": "flows/media/bank-resync-window-1.flow.yaml"
+        },
+        {
+            "name": "debt-tracking-3",
+            "flow": "flows/media/debt-tracking-3.flow.yaml"
+        },
+        {
+            "name": "deposit-tracking-2",
+            "flow": "flows/media/deposit-tracking-2.flow.yaml"
+        },
+        {
+            "name": "mcc-auto-category-2",
+            "flow": "flows/media/mcc-auto-category-2.flow.yaml"
+        },
+        {
+            "name": "recurring-payments-calendar-2",
+            "flow": "flows/media/recurring-payments-calendar-2.flow.yaml"
+        },
+        {
+            "name": "split-transactions-1",
+            "flow": "flows/media/split-transactions-1.flow.yaml"
+        },
+        {
+            "name": "split-transactions-2",
+            "flow": "flows/media/split-transactions-2.flow.yaml"
         },
         {
             "name": "voice-transaction-entry-clip-1",
