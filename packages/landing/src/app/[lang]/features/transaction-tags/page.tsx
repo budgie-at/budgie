@@ -161,8 +161,9 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Promote one tag per transaction to &ldquo;primary&rdquo; — it shows as a corner badge on the transaction list so you
-                        can scan at a glance. Long-press a tag chip on the card to rotate which one is primary.
+                        Promote one tag per transaction to &ldquo;primary&rdquo; — it shows as a highlighted pill on the transaction list so
+                        you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card
+                        there.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -176,7 +177,7 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                         <Trans>Tags are flat, reusable, and combine freely — no rigid hierarchy</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>One tag per transaction can be promoted to &ldquo;primary&rdquo; with a corner-star badge</Trans>
+                        <Trans>One tag per transaction can be promoted to &ldquo;primary&rdquo; and stands out as a highlighted pill</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Selector stays open across multi-selections; commit with a Done pill</Trans>
@@ -204,8 +205,8 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     question={<Trans>How many tags can I add to a transaction?</Trans>}
                     answer={
                         <Trans>
-                            No limit. Layer as many as you need; one of them can be promoted to &ldquo;primary&rdquo; for the at-a-glance
-                            badge on the transaction list.
+                            No limit. Layer as many as you need; one of them can be promoted to &ldquo;primary&rdquo; so it stands out as a
+                            highlighted pill on the transaction list.
                         </Trans>
                     }
                 />
@@ -213,8 +214,8 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     question={<Trans>What does &ldquo;primary tag&rdquo; mean?</Trans>}
                     answer={
                         <Trans>
-                            The primary tag shows as a corner-star badge on the transaction list so you can scan a long list for #vacation
-                            or #shared without opening rows. Long-press to rotate which tag is primary.
+                            The primary tag shows as a highlighted pill on the transaction list so you can scan a long list for #vacation or
+                            #shared without opening rows. Open the tag selector and long-press a tag card there to make it primary.
                         </Trans>
                     }
                 />

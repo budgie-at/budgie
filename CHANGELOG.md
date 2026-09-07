@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.31.2](https://github.com/budgie-at/budgie/compare/v6.31.1...v6.31.2) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** render both logo theme variants to avoid hydration mismatch ([92e99c0](https://github.com/budgie-at/budgie/commit/92e99c0293a1771f976f5318c610db2c9ee11940)), closes [#899](https://github.com/budgie-at/budgie/issues/899)
+
+
+
+
+
 ## [6.31.1](https://github.com/budgie-at/budgie/compare/v6.31.0...v6.31.1) (2026-09-07)
 
 **Note:** Version bump only for package @budgie-at/root

@@ -10188,8 +10188,8 @@ msgid "No limit. Add as many split rows as you need; the total must equal the or
 msgstr "Kein Limit. Fügen Sie so viele Aufteilungszeilen hinzu, wie Sie benötigen; die Summe muss dem ursprünglichen Transaktionsbetrag entsprechen."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” for the at-a-glance badge on the transaction list."
-msgstr "Kein Limit. Schichten Sie so viele auf, wie Sie benötigen; einer davon kann zum „primären“ für das Auf-einen-Blick-Abzeichen in der Transaktionsliste befördert werden."
+msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” so it stands out as a highlighted pill on the transaction list."
+msgstr "Kein Limit. Fügen Sie so viele hinzu, wie Sie benötigen; einer davon kann zum „primären“ befördert werden, sodass er als hervorgehobenes Pill in der Transaktionsliste auffällt."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No lock icons, no tiers"
@@ -10930,8 +10930,8 @@ msgid "One tag needs no border"
 msgstr "Ein Tag braucht keine Umrandung"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
-msgstr "Ein Tag pro Transaktion kann mit einem Eckstern-Abzeichen zum „primären“ befördert werden"
+msgid "One tag per transaction can be promoted to “primary” and stands out as a highlighted pill"
+msgstr "Ein Tag pro Transaktion kann zum „primären“ befördert werden und sticht als hervorgehobenes Pill hervor"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
@@ -11809,8 +11809,8 @@ msgid "Promote one tag per transaction to \"primary\" — it pins as a corner-st
 msgstr "Einen Tag pro Transaktion zum „primären\" befördern – er heftet sich als Eckstern-Abzeichen, sodass Sie #vacation oder #shared auf einen Blick scannen können, ohne Zeilen zu öffnen."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "Promote one tag per transaction to “primary” — it shows as a corner badge on the transaction list so you can scan at a glance. Long-press a tag chip on the card to rotate which one is primary."
-msgstr "Einen Tag pro Transaktion zum „primären“ befördern – er wird als Eckabzeichen in der Transaktionsliste angezeigt, sodass Sie auf einen Blick scannen können. Lange auf einen Tag-Chip auf der Karte drücken, um zu wechseln, welcher primär ist."
+msgid "Promote one tag per transaction to “primary” — it shows as a highlighted pill on the transaction list so you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card there."
+msgstr "Befördern Sie einen Tag pro Transaktion zum „primären“ – er wird als hervorgehobenes Pill in der Transaktionsliste angezeigt, sodass Sie auf einen Blick scannen können. Um zu ändern, welcher Tag primär ist, öffnen Sie die Tag-Auswahl und drücken lange auf eine andere Tag-Karte."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Promote one tag per transaction to \"primary\"; it pins as a corner-star badge on the list so you can scan #vacation or #shared without opening anything."
@@ -13933,8 +13933,8 @@ msgid "The primary engine is the on-device Qwen3 1.7B language model. It ranks t
 msgstr "Das Primärmodell ist das geräteeigene Qwen3 1.7B Sprachmodell. Es ordnet Tag-Kandidaten aus Ihrem bestehenden Tag-Vokabular nach semantischer Ähnlichkeit mit dem Transaktionskontext – Formulierungsvarianten erfassend, die ein einfacher Text-Lookup übersehen würde. Wenn das LLM noch lädt oder mit einer anderen Inferenz beschäftigt ist, übernimmt der Embedding-Fallback: ein Nächster-Nachbar-Lookup über 768-dimensionale Embeddings Ihrer vergangenen getaggten Transaktionen, der in Millisekunden läuft, ohne auf das LLM zu warten."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "The primary tag shows as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Long-press to rotate which tag is primary."
-msgstr "Der primäre Tag wird als Eckstern-Abzeichen in der Transaktionsliste angezeigt, sodass Sie eine lange Liste nach #vacation oder #shared durchsuchen können, ohne Zeilen zu öffnen. Lange drücken, um zu wechseln, welcher Tag primär ist."
+msgid "The primary tag shows as a highlighted pill on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Open the tag selector and long-press a tag card there to make it primary."
+msgstr "Der primäre Tag wird als hervorgehobenes Pill in der Transaktionsliste angezeigt, sodass Sie eine lange Liste nach #vacation oder #shared durchsuchen können, ohne Zeilen zu öffnen. Öffnen Sie die Tag-Auswahl und drücken Sie lange auf eine Tag-Karte, um sie zur primären zu machen."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The principle of minimal data collection guides all decisions"
