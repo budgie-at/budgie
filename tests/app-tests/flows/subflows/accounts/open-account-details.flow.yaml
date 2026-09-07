@@ -7,7 +7,6 @@ appId: ${APP_ID}
       id: 'AccountCard.${ACCOUNT_NAME}'
     direction: DOWN
     visibilityPercentage: 100
-    centerElement: true
     waitToSettleTimeoutMs: 500
 - waitForAnimationToEnd
 
