@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.27.0](https://github.com/budgie-at/budgie/compare/v6.26.1...v6.27.0) (2026-09-07)
+
+
+### Bug Fixes
+
+* **app:** expose integration row controls to accessibility tree ([4112bff](https://github.com/budgie-at/budgie/commit/4112bffaa11779a0fbef04e85760682998463c3a))
+* **app:** make integration row title activatable for screen readers ([3e12f06](https://github.com/budgie-at/budgie/commit/3e12f0664245f5fcee450db7d221eccf8f447787))
+
+
+### Features
+
+* **app:** bring full account management to bank settings ([9d350ca](https://github.com/budgie-at/budgie/commit/9d350ca912bff1ad103d1c1a6de1a9046af53fb2)), closes [#822](https://github.com/budgie-at/budgie/issues/822)
+
+
+
+
+
 ## [6.26.1](https://github.com/budgie-at/budgie/compare/v6.26.0...v6.26.1) (2026-09-07)
 
 
