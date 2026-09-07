@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.27.1](https://github.com/budgie-at/budgie/compare/v6.27.0...v6.27.1) (2026-09-07)
+
+
+### Performance Improvements
+
+* **landing:** trim Vercel image and ISR usage ([fdb1600](https://github.com/budgie-at/budgie/commit/fdb1600d0546fa8e420ec7ce1281e757257b847d))
+
+
+
+
+
 ## [6.26.1](https://github.com/budgie-at/budgie/compare/v6.26.0...v6.26.1) (2026-09-07)
 
 
