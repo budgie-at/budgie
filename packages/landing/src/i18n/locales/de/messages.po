@@ -2214,6 +2214,10 @@ msgstr "Ein Budget besteht aus einem Gesamtlimit plus beliebig vielen Kategoriel
 msgid "A cash withdrawal is a transfer from your bank account to cash, but the ATM commission is still a real expense. If both are forced into one category, either transfers pollute spending or fees disappear from analytics."
 msgstr "Eine Bargeldabhebung ist eine Übertragung von Ihrem Bankkonto ins Bargeld, aber die ATM-Gebühr bleibt eine echte Ausgabe. Wenn beides in eine Kategorie gezwungen wird, verfälschen entweder Transfers die Ausgaben oder Gebühren verschwinden aus der Analyse."
 
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "A category says what you bought. A tag says which trip, which project, which person — chosen on the same form, from your own flat list."
+msgstr "Eine Kategorie sagt, was du gekauft hast. Ein Tag sagt, welche Reise, welches Projekt, welche Person — ausgewählt im selben Formular, aus deiner eigenen flachen Liste."
+
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "A cloud assistant ships your transaction titles to a remote model and trusts the provider's privacy policy. Budgie's models live on your device — there's no provider to trust."
 msgstr "Ein Cloud-Assistent sendet Ihre Transaktionsbeschreibungen an ein Remote-Modell und vertraut der Datenschutzrichtlinie des Anbieters. Budgies Modelle leben auf Ihrem Gerät – es gibt keinen Anbieter, dem Sie vertrauen müssen."
@@ -2330,6 +2334,10 @@ msgstr "Eine Source-Available-Lizenz, die es Ihnen erlaubt, den Code zu lesen, z
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "A spending report should compare what money meant on the day you spent it. Budgie values each imported and newly saved transaction in your base currency using the exchange rate from the transaction date."
 msgstr ""
+
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "A Tags tab beside Categories"
+msgstr "Tab „Tags“ neben Kategorien"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
 msgid "A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
@@ -2808,6 +2816,10 @@ msgstr "Analytik- und Absturzbericht-SDKs, die Nutzerverhaltensdaten sammeln"
 #: src/app/[lang]/features/statistics-tags-tab/metadata.ts
 msgid "Analytics by Tag — Per-Tag Spending Tab — Budgie"
 msgstr "Analyse nach Tag – Ausgaben-Reiter pro Tag – Budgie"
+
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Analytics carries a Tags tab beside Categories: income and spending per tag, each with its share of the period."
+msgstr "Die Analyse hat neben Kategorien einen Tab „Tags“: Einnahmen und Ausgaben pro Tag, jeweils mit ihrem Anteil am Zeitraum."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Analytics counts each split toward its own category — no double-counting"
@@ -3777,6 +3789,10 @@ msgstr "Budgie-Auswertungen mit den nach Kategorie sortierten Ausgaben, darunter
 msgid "Budgie analytics screen with the spent, income and balance totals above the per-category spending bars"
 msgstr "Budgie-Auswertungen mit den Summen für Ausgaben, Einnahmen und Saldo über den Ausgabenbalken der einzelnen Kategorien"
 
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Budgie analytics Tags tab listing income and spending totals for each tag"
+msgstr "Budgie-Analyse, Tab „Tags“ mit Einnahmen- und Ausgabensummen für jeden Tag"
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Budgie analytics tags tab ranking income and spending by tag over the selected period"
 msgstr "Budgie-Auswertungen im Tags-Tab mit den nach Tag sortierten Einnahmen und Ausgaben im gewählten Zeitraum"
@@ -4087,6 +4103,10 @@ msgstr "Budgie-Bildschirm für fehlende Kategorien, der nur die Transaktionen au
 msgid "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
 msgstr "Budgie-Monobank-Bildschirm mit zwei Karten und einem Auto-Topf, jeweils mit Saldo und Schalter"
 
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
+msgstr "Budgie-Formular für eine neue Ausgabe mit geöffnetem Tag-Sheet und durchsuchbarem Raster aus Tag-Chips"
+
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie new expense screen with the amount keypad, account row and confirm button"
 msgstr "Budgie-Bildschirm für neue Ausgabe mit Zifferntastatur für den Betrag, Kontozeile und Bestätigungsschaltfläche"
@@ -4235,10 +4255,6 @@ msgstr "Budgie unterstützt Sprach-Transaktionseingabe auf Basis von Whisper.rn 
 msgid "Budgie surfaces missing categories directly inside your filtered transaction list, then opens a focused cleanup view with the same account, date, tag, and type filters."
 msgstr "Budgie zeigt fehlende Kategorien direkt in Ihrer gefilterten Transaktionsliste an und öffnet dann eine fokussierte Bereinigungsansicht mit denselben Konto-, Datums-, Tag- und Typfiltern."
 
-#: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "Budgie tag selector attaching several tags to a single transaction"
-msgstr "Budgie-Tag-Auswahl, die mehrere Tags an eine einzelne Transaktion anfügt"
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie takes a different approach to bank data import."
 msgstr "Budgie verfolgt beim Bankdatenimport einen anderen Ansatz."
@@ -4291,6 +4307,10 @@ msgstr "Budgie-Transaktionsliste mit einundachtzig Transaktionen, direkt aus der
 msgid "Budgie transaction list where a matched incoming transfer is shown as a single transfer row"
 msgstr "Budgie-Transaktionsliste, in der eine erkannte eingehende Überweisung als einzelne Überweisungszeile erscheint"
 
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Budgie transaction list where each row shows a tag chip beside its category and date"
+msgstr "Budgie-Transaktionsliste, in der jede Zeile neben Kategorie und Datum einen Tag-Chip zeigt"
+
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Budgie transaction list where every row shows its primary tag next to the category"
 msgstr "Budgie-Transaktionsliste, in der jede Zeile ihren wichtigsten Tag neben der Kategorie zeigt"
@@ -4302,10 +4322,6 @@ msgstr "Budgie-Transaktionsliste mit einem Kontextmenü auf einer Karte: bearbei
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie transaction list with a long-press context menu offering edit, convert to transfer, attach debt and delete"
 msgstr "Budgie-Transaktionsliste mit einem Kontextmenü per langem Drücken: bearbeiten, in Umbuchung umwandeln, Schuld verknüpfen und löschen"
-
-#: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "Budgie transaction list with tag chips shown on every tagged row"
-msgstr "Budgie-Transaktionsliste mit Tag-Chips in jeder getaggten Zeile"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Budgie transaction list with the missing categories pill above the uncategorised rows"
@@ -6869,6 +6885,14 @@ msgstr "Hinter jedem Versprechen hier steht eine Datei"
 msgid "Every rule can be switched off without being deleted"
 msgstr "Jede Regel lässt sich deaktivieren, ohne gelöscht zu werden"
 
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Every tag, ranked by spend"
+msgstr "Jeder Tag, nach Ausgaben sortiert"
+
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Every tagged row carries one tag chip and a count of the rest, so a long list stays scannable without opening a single transaction."
+msgstr "Jede getaggte Zeile zeigt einen Tag-Chip und die Anzahl der übrigen, damit auch eine lange Liste lesbar bleibt, ohne eine einzige Transaktion zu öffnen."
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Every time you accept, edit, or reject a category suggestion, the embedding model index updates locally. The more you use Budgie, the more accurately the embedding model mirrors your personal spending patterns."
 msgstr "Jedes Mal, wenn Sie einen Kategorievorschlag akzeptieren, bearbeiten oder ablehnen, wird der Embedding-Modell-Index lokal aktualisiert. Je mehr Sie Budgie nutzen, desto genauer spiegelt das Embedding-Modell Ihre persönlichen Ausgabemuster wider."
@@ -8196,7 +8220,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/spending-analytics/page.tsx
 #: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
-#: src/app/[lang]/features/transaction-tags/page.tsx
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
@@ -10819,12 +10842,20 @@ msgid "One settings screen, and the thing worth noticing is the row that never a
 msgstr "Ein Einstellungsbildschirm — und das Bemerkenswerteste daran ist die Zeile, die dort nie auftaucht."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "One tag chip, plus a count"
+msgstr "Ein Tag-Chip plus Anzahl"
+
+#: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
 msgstr "Ein Tag pro Transaktion kann mit einem Eckstern-Abzeichen zum „primären“ befördert werden"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
 msgstr "Ein Tippen exportiert die gesamte Historie — kein Zeitraum zum Auswählen, keine Teildatei, die Sie später abgleichen müssen"
+
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "One transaction, two ways to file it"
+msgstr "Eine Transaktion, zwei Arten sie einzuordnen"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "One uncategorized grocery run can make your food budget look better than it is. A few missing categories across income and expenses can distort category charts, month-end reviews, and spending trends."
@@ -12309,6 +12340,10 @@ msgstr "Scrollen Sie die Einstellungen von oben bis unten durch: Es gibt keine A
 msgid "Search articles..."
 msgstr "Artikel suchen..."
 
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Search, or add a new one"
+msgstr "Suchen oder neu anlegen"
+
 #: src/app/[lang]/security/metadata.ts
 msgid "secure expense tracker"
 msgstr ""
@@ -13191,16 +13226,20 @@ msgid "Tags answer \"for which project, person, or purpose\" — separate from c
 msgstr "Tags beantworten „für welches Projekt, welche Person oder welchen Zweck\" – getrennt von Kategorien. Schnell mehrfach auswählen, einen primären Tag für das Auf-einen-Blick-Scannen befördern und Analysen nach Tag aufschlüsseln."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "Tags are flat (no hierarchy), reusable across all transactions, and merge-able like categories. The tag selector stays open across multi-selections; commit with a Done pill. Tag-based analytics shows totals by tag plus an “Untagged” bucket."
-msgstr "Tags sind flach (keine Hierarchie), über alle Transaktionen wiederverwendbar und wie Kategorien zusammenführbar. Der Tag-Auswähler bleibt bei Mehrfachauswahlen geöffnet; mit einer Fertig-Schaltfläche bestätigen. Tag-basierte Analysen zeigen Gesamtsummen nach Tag plus einen „Ohne Tag“-Bereich."
-
-#: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Tags are flat, reusable, and combine freely — no rigid hierarchy"
 msgstr "Tags sind flach, wiederverwendbar und kombinierbar – keine starre Hierarchie"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Tags are the most powerful dimension in Budgie analytics — they let you slice spending by project, trip, person, or purpose rather than just merchant or category. But their value only materializes when tagging is consistent. Keyboards are slow, spelling varies, and the right tag name is easy to forget. The result is an analytics view full of labeling gaps that make the data less actionable."
 msgstr "Tags sind eine der schärfsten Möglichkeiten, Ausgaben in Budgie zu verstehen. Du kannst nach Projekt, Reise, Person oder Zweck schneiden, statt nur nach Händler oder Kategorie. Der Haken ist Konsistenz: Tastaturen sind langsam, Schreibweisen driften, und der richtige Tag-Name ist leicht vergessen. Schnell hat die Analyseansicht Label-Lücken, die die Daten weniger nützlich machen."
+
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Tags are the second dimension"
+msgstr "Tags sind die zweite Dimension"
+
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Tags sit next to Category"
+msgstr "Tags stehen neben Kategorie"
 
 #: src/app/[lang]/features/statistics-tags-tab/metadata.ts
 #: src/app/[lang]/features/statistics-tags-tab/opengraph-image.tsx
@@ -13605,6 +13644,10 @@ msgstr "Das Sprachmodell und das Embedding-Modell benötigen zusammen etwa 900 M
 msgid "The lifecycle of your financial data extends far beyond your active use of an app."
 msgstr "Der Lebenszyklus Ihrer Finanzdaten reicht weit über Ihre aktive Nutzung einer App hinaus."
 
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "The list keeps them visible"
+msgstr "Die Liste zeigt sie weiter"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "The list stays scannable"
 msgstr "Die Liste bleibt überschaubar"
@@ -13993,6 +14036,10 @@ msgstr "Dann schichten Sie die Synchronisation darüber. Moderne Sync-Engines ma
 msgid "Then tap save"
 msgstr "Dann auf Speichern tippen"
 
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Then the totals follow"
+msgstr "Dann folgen die Summen"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Then things started to deteriorate."
 msgstr "Dann begann der Niedergang."
@@ -14228,6 +14275,10 @@ msgstr "Drei Bildschirme – von der Summe auf der Startseite bis zu dem, was du
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Three screens: paste a personal token, pick the cards and jars you want, and watch them land on Home."
 msgstr "Drei Bildschirme: Fügen Sie ein persönliches Token ein, wählen Sie die gewünschten Karten und Töpfe aus und sehen Sie zu, wie sie auf dem Startbildschirm landen."
+
+#: src/app/[lang]/features/transaction-tags/page.tsx
+msgid "Three screens: pick tags on the expense form, read them back on the list, then total them up under Analytics."
+msgstr "Drei Screens: Tags im Ausgabenformular auswählen, sie in der Liste wiederfinden und in der Analyse zusammenzählen."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."

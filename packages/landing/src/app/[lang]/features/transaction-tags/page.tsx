@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -81,14 +80,73 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie tag selector attaching several tags to a single transaction`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>One transaction, two ways to file it</Trans>}>
+                    <Trans>
+                        Three screens: pick tags on the expense form, read them back on the list, then total them up under Analytics.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Tags are the second dimension</Trans>}>
+                    <Trans>
+                        A category says what you bought. A tag says which trip, which project, which person — chosen on the same form, from
+                        your own flat list.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie new expense form with the tag sheet open on a searchable grid of tag chips`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="transaction-tags-1"
                     slug="transaction-tags"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.49}>
+                        <Trans>Tags sit next to Category</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.637}>
+                        <Trans>Search, or add a new one</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>The list keeps them visible</Trans>}>
+                    <Trans>
+                        Every tagged row carries one tag chip and a count of the rest, so a long list stays scannable without opening a
+                        single transaction.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie transaction list where each row shows a tag chip beside its category and date`}
+                    index={1}
+                    locale={lang}
+                    scene="transaction-tags-2"
+                    slug="transaction-tags"
+                >
+                    <FeatureStory.Callout y={0.344}>
+                        <Trans>One tag chip, plus a count</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Then the totals follow</Trans>}>
+                    <Trans>
+                        Analytics carries a Tags tab beside Categories: income and spending per tag, each with its share of the period.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie analytics Tags tab listing income and spending totals for each tag`}
+                    index={2}
+                    locale={lang}
+                    scene="statistics-tags-tab-1"
+                    slug="statistics-tags-tab"
+                >
+                    <FeatureStory.Callout y={0.123}>
+                        <Trans>A Tags tab beside Categories</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.568}>
+                        <Trans>Every tag, ranked by spend</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -131,28 +189,6 @@ export default async function TransactionTagsFeaturePage(props: PageLangParam) {
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Tags are flat (no hierarchy), reusable across all transactions, and merge-able like categories. The tag selector
-                        stays open across multi-selections; commit with a Done pill. Tag-based analytics shows totals by tag plus an
-                        &ldquo;Untagged&rdquo; bucket.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie transaction list with tag chips shown on every tagged row`}
-                    locale={lang}
-                    scene="transaction-tags-2"
-                    slug="transaction-tags"
-                />
-            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
