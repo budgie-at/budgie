@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.21.5](https://github.com/budgie-at/budgie/compare/v6.21.4...v6.21.5) (2026-09-07)
+
+
+### Bug Fixes
+
+* **app:** keep debt card footer percentage legible at large text sizes ([9a5dcc3](https://github.com/budgie-at/budgie/commit/9a5dcc38c4798fcc18fe3a5ea9fe0fa269b76948)), closes [#821](https://github.com/budgie-at/budgie/issues/821)
+* **app:** mask debt details footer amounts under screenshot protection ([5c4a1d5](https://github.com/budgie-at/budgie/commit/5c4a1d5384036a5a8c5ae38240164293f7cd710d)), closes [#821](https://github.com/budgie-at/budgie/issues/821)
+* **app:** put remaining balance first on debt cards and label settled progress ([d6aa40c](https://github.com/budgie-at/budgie/commit/d6aa40c3f530fae536794108c8c66554c36ca29f)), closes [#821](https://github.com/budgie-at/budgie/issues/821)
+* **app:** wrap debt card footer percentage instead of breaking the label ([e15ac64](https://github.com/budgie-at/budgie/commit/e15ac6494198f1152202be944899ea27932c6e3f)), closes [#821](https://github.com/budgie-at/budgie/issues/821)
+
+
+
+
+
 ## [6.21.4](https://github.com/budgie-at/budgie/compare/v6.21.3...v6.21.4) (2026-09-06)
 
 

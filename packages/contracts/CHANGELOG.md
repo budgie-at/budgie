@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.21.5](https://github.com/budgie-at/budgie/compare/v6.21.4...v6.21.5) (2026-09-07)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
 ## [6.10.2](https://github.com/budgie-at/budgie/compare/v6.10.1...v6.10.2) (2026-09-04)
 
 
