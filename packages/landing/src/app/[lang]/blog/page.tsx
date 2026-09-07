@@ -65,7 +65,6 @@ export default async function BlogPage(props: PageLangParam) {
         date: entry.date,
         author: entry.author,
         tags: entry.tags,
-        image: `/${lang}/blog/${entry.slug}/opengraph-image`,
         readingTimeMinutes: entry.readingTimeMinutes
     })).sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime());
 
