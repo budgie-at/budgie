@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.23.0](https://github.com/budgie-at/budgie/compare/v6.22.1...v6.23.0) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** break the hero headline at sentence boundaries ([8bb0537](https://github.com/budgie-at/budgie/commit/8bb053777792f76784fe76e2506e1bd9b11a4174))
+* **landing:** stop implying open-source licensing in uk trust banner ([259b597](https://github.com/budgie-at/budgie/commit/259b5976ffd7d250538b1854b09a72feec419cdb))
+
+
+### Features
+
+* **landing:** put the product on screen in the home hero ([adf0dd2](https://github.com/budgie-at/budgie/commit/adf0dd2f1028e8e4ecb8b8abf45a992f71c0a02e)), closes [#854](https://github.com/budgie-at/budgie/issues/854) [#852](https://github.com/budgie-at/budgie/issues/852)
+* **landing:** tell the data export story in steps ([b3f3e05](https://github.com/budgie-at/budgie/commit/b3f3e0583a21cd3cffccd6bc8a546b03cb4d095e))
+
+
+
+
+
 ## [6.22.1](https://github.com/budgie-at/budgie/compare/v6.22.0...v6.22.1) (2026-09-07)
 
 
