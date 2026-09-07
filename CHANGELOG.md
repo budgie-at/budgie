@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.38.0](https://github.com/budgie-at/budgie/compare/v6.37.0...v6.38.0) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** correct date-filter-presets count and week-start claims ([72c3eed](https://github.com/budgie-at/budgie/commit/72c3eed079ea928bf1c0d08ee79747dfd25d2e80)), closes [#843](https://github.com/budgie-at/budgie/issues/843)
+
+
+### Features
+
+* **landing:** add screenshot-protection basic story with corrected copy ([c9c29e9](https://github.com/budgie-at/budgie/commit/c9c29e92c908529ec4f7304f050c9acecb7de251)), closes [#799](https://github.com/budgie-at/budgie/issues/799) [#746](https://github.com/budgie-at/budgie/issues/746) [#799](https://github.com/budgie-at/budgie/issues/799)
+
+
+
+
+
 # [6.37.0](https://github.com/budgie-at/budgie/compare/v6.36.0...v6.37.0) (2026-09-07)
 
 
