@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.26.0](https://github.com/budgie-at/budgie/compare/v6.25.0...v6.26.0) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** repair blog chrome and ship generated article covers ([3c3327a](https://github.com/budgie-at/budgie/commit/3c3327aefa66cee1602b1af742b1a2797f51b15c)), closes [#888](https://github.com/budgie-at/budgie/issues/888) [#889](https://github.com/budgie-at/budgie/issues/889) [#890](https://github.com/budgie-at/budgie/issues/890)
+
+
+### Features
+
+* **landing:** key blog cover art to article topic ([512a8d7](https://github.com/budgie-at/budgie/commit/512a8d7fcfd56344b1054ab3021e9262f9f2149b)), closes [#889](https://github.com/budgie-at/budgie/issues/889)
+
+
+
+
+
 # [6.25.0](https://github.com/budgie-at/budgie/compare/v6.24.0...v6.25.0) (2026-09-07)
 
 
