@@ -123,11 +123,28 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
 
             <FeaturePageSection>
                 <FeaturePageHeading>
+                    <Trans>Three embedding indexes, not one</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        The embedding lookup is not a single index — Budgie keeps three separate ones, each matching a different field
+                        against your own history and returning up to three candidates. The transaction index matches the title you are
+                        typing against your past entries to suggest category and tags. The merchant index matches shop names across spelling
+                        variants — the same index that lets the same store resolve consistently even when different banks spell it
+                        differently, which is the visible result behind merchant name translation. The comment index matches your own
+                        free-text notes, so a comment you typed once for a coffee shop comes back as a suggestion the next time you visit
+                        it.
+                    </Trans>
+                </FeaturePageProse>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
                     <Trans>What you get</Trans>
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>One-tap form fill — category, tags, amount, and account pre-populated from your own history</Trans>
+                        <Trans>One-tap form fill — category, tags, comment, amount, and account pre-populated from your own history</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Fully private — both engines run on-device, no network call, no profiling</Trans>
@@ -137,6 +154,11 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Works offline and on every form variant — expense, income, and transfer</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4}>
+                        <Trans>
+                            Three separate embedding indexes — transaction, merchant, and comment — each surfacing up to three candidates
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>

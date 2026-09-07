@@ -11,7 +11,7 @@ export const FEATURE_METADATA = {
     title: msg`Smart Transaction Suggestions — Tap and Done`,
     tagline: msg`Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, amount, account, all pre-filled.`,
     metaTitle: msg`Smart Expense Suggestions for Mobile — Budgie`,
-    metaDescription: msg`Budgie suggests category, tags, and amount from your own SQL patterns and 768-dim embeddings. Faster manual entry than any AI cloud assistant.`,
+    metaDescription: msg`Budgie suggests category, tags, comment, and amount from your own SQL patterns and three separate on-device embedding indexes. Faster manual entry than any AI cloud assistant.`,
     primaryKeyword: 'smart expense suggestions',
     seoKeywords: [
         'smart expense suggestions',
@@ -25,10 +25,11 @@ export const FEATURE_METADATA = {
         'recurring-payments-calendar',
         'expense-tracking',
         'ai-tag-suggestions',
-        'transaction-tags'
+        'transaction-tags',
+        'ai-merchant-translation'
     ],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-05-07',
+    updatedAt: '2026-09-07',
     ogTags: ['ai', 'suggestions', 'expense-tracking']
 } satisfies FeatureRegistryEntryInterface;
