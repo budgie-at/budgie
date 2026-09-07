@@ -142,7 +142,7 @@ Do not rebuild page body content from registries in listing components.
 
 ### 11. OG image on every SEO route
 
-Every `page.tsx` SEO route (feature page, blog article, hub) must ship a sibling `opengraph-image.tsx`. Build it with the shared OG image builders (`createFeatureOgImage` / `createBlogOgImage`) instead of hand-rolling a new OG renderer.
+Every `page.tsx` SEO route (feature page, blog article, hub) must ship a sibling `opengraph-image.tsx`. Build it with the shared OG image builders (`createFeatureOgImage` / `createBlogOgImage`) instead of hand-rolling a new OG renderer. OG images are for social sharing only: on-site blog artwork (card thumbnails and the article hero) is rendered by `BlogCover`, which derives a deterministic accent hue, motif family, and composition from the article slug and tags, and peeks a framed product still resolved from `relatedFeatureSlugs` through `resolveArticleShot`. Never point an on-site `<Image>` at an `opengraph-image` route.
 
 The metadata builders never set `openGraph.images` / `twitter.images` — config-based images override file-based conventions, and the file must own `og:image`. When a route has no file yet, the root layout's static fallback applies.
 
@@ -217,7 +217,7 @@ export default async function SomeArticlePage(props: PageLangParam) {
                 slug={meta.slug}
                 title={i18n._(meta.title)}
             />
-            <BlogArticleHero image={meta.image} imageAlt={t(i18n)`Article image`}>
+            <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
                 <BlogBreadcrumbs>
                     <BlogBreadcrumbLink href={`/${lang}`} position={1}>
                         <Trans>Home</Trans>
@@ -425,7 +425,7 @@ Check this list before authoring a new SEO component.
 
 | Concern                              | Primitive                                                                                          |
 | ------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| Article hero block                   | `BlogArticleHero image imageAlt` + children                                                        |
+| Article hero block                   | `BlogArticleHero article locale` + children                                                        |
 | Breadcrumb trail                     | `BlogBreadcrumbs` + `BlogBreadcrumbLink href position` + `BlogBreadcrumbCurrent position` children |
 | Article metadata                     | `BlogArticleMeta date author locale readingTimeMinutes tags`                                       |
 | Content wrapper                      | `BlogArticleContent`                                                                               |

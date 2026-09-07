@@ -1,7 +1,6 @@
 /* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
-import Link from 'next/link';
 
 import { BlogArticleContent } from '../../../../blog/component/blog-article-content/blog-article-content';
 import { BlogArticleCta } from '../../../../blog/component/blog-article-cta/blog-article-cta';
@@ -65,14 +64,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                 title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`} imageAlt={i18n._(ARTICLE_METADATA.title)}>
-                <Link
-                    className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-                    href={`/${lang}/blog`}
-                >
-                    <Trans>← Back to Blog</Trans>
-                </Link>
-
+            <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
                 <BlogBreadcrumbs>
                     <BlogBreadcrumbLink href={`/${lang}`} position={1}>
                         <Trans>Home</Trans>

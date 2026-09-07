@@ -70,20 +70,6 @@ msgstr "#vacation, #shared, #reimbursable — cuantificados."
 msgid "© {year} Budgie. All rights reserved."
 msgstr ""
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-#: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
-#: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
-#: src/app/[lang]/blog/local-first-movement-developers/page.tsx
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-#: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
-#: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-#: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "← Back to Blog"
-msgstr "← Volver al blog"
-
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "< $30 one-time"
 msgstr "< $30 pago único"
