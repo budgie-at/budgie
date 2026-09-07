@@ -2351,6 +2351,10 @@ msgstr "Ein technischer Blick auf Budgies Offline-first-Architektur: SQLite, AES
 msgid "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
 msgstr "Eine Transaktion kann mehr als ein Tag tragen. In der Liste ist nur Platz für einen Chip, also entscheidet Budgie, welcher angezeigt wird."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "A transfer, not an expense"
+msgstr "Eine Überweisung, keine Ausgabe"
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively."
 msgstr "Ein virtuelles Tag, das jede Transaktion ohne Tags aggregiert. Das Antippen listet jede beitragende Transaktion auf, damit Sie sie nachträglich beschriften können."
@@ -3866,13 +3870,13 @@ msgstr "Budgie konsolidiert eindeutige Überweisungen und Händlererstattungen a
 msgid "Budgie context menu open over the dimmed transaction list, with delete last and marked in red"
 msgstr "Budgie-Kontextmenü über der abgedunkelten Transaktionsliste, Löschen zuletzt und in Rot markiert"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Budgie Convert to Transfer screen with the amount carried over and the account picker open over the from and to row"
+msgstr "Budgie-Bildschirm „In Überweisung umwandeln“ mit übernommenem Betrag und geöffneter Kontoauswahl über der Zeile mit Quell- und Zielkonto"
+
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie convert to transfer screen with the amount prefilled and the account picker open over the from and to selectors"
 msgstr "Budgie-Bildschirm „In Überweisung umwandeln“ mit vorausgefülltem Betrag und geöffneter Kontoauswahl über den Von- und Nach-Feldern"
-
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "Budgie convert to transfer screen with the destination account picker open"
-msgstr "Budgie-Bildschirm zum Umwandeln in eine Überweisung mit geöffneter Zielkontoauswahl"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Budgie CSV and PDF import parses statement files on your device. No file content is uploaded to any server during import. The parser runs locally, extracts transactions, and writes them to the local database. Deduplication ensures that importing overlapping date ranges does not create duplicate records."
@@ -4319,6 +4323,10 @@ msgstr "Budgie-Transaktionsliste, nach Monaten gruppiert, mit Kategorie, Tag und
 msgid "Budgie transaction list in dark mode with a solid black background and bright red and green amounts"
 msgstr "Budgie-Transaktionsliste im Dunkelmodus mit tiefschwarzem Hintergrund und kräftigen roten und grünen Beträgen"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Budgie transaction list showing a transfer row in green with its destination account instead of a category"
+msgstr "Budgie-Transaktionsliste mit einer grünen Überweisungszeile, die statt einer Kategorie das Zielkonto zeigt"
+
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie transaction list showing eighty-one transactions read straight from the on-device database"
 msgstr "Budgie-Transaktionsliste mit einundachtzig Transaktionen, direkt aus der Datenbank auf dem Gerät gelesen"
@@ -4346,6 +4354,10 @@ msgstr "Budgie-Transaktionsliste mit einem Kontextmenü per langem Drücken: bea
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Budgie transaction list with a missing categories pill between the filter chips and the rows"
 msgstr "Budgie-Transaktionsliste mit einer Pille für fehlende Kategorien zwischen den Filter-Chips und den Zeilen"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Budgie transaction list with the context menu open on an expense row, Convert to Transfer among the actions"
+msgstr "Budgie-Transaktionsliste mit geöffnetem Kontextmenü auf einer Ausgabenzeile, „In Überweisung umwandeln“ unter den Aktionen"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
@@ -5557,6 +5569,10 @@ msgstr "Korrekturschleife – jeder akzeptierte oder bearbeitete Vorschlag aktua
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Cost of budgeting"
 msgstr "Kosten des Budgetierens"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Counted as money spent"
+msgstr "Zählt als ausgegebenes Geld"
 
 #: src/generic/component/integrations-section/integrations-section-transfer-card.tsx
 msgid "Counter-IBAN"
@@ -8227,7 +8243,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
 #: src/app/[lang]/features/categorization-rules/page.tsx
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/custom-categories/page.tsx
@@ -8815,9 +8830,17 @@ msgstr "Ist YNAB sicher zu verwenden?"
 msgid "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
 msgstr "Das ist es nicht. Und das Aggregatormuster birgt Risiken, die Nutzern selten klar offengelegt werden. Dieser Artikel erklärt, was Aggregatoren tun, warum Massenaggregation ein hochdotiertes Angriffsziel schafft und wie eine Offline-First-Architektur eine strukturell sicherere Alternative bietet."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "It reads as a transfer afterwards"
+msgstr "Danach liest es sich als Überweisung"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "It sits above the list and counts only the transactions without a category inside your active account, date, type, tag and amount filters."
 msgstr "Sie sitzt über der Liste und zählt nur die Transaktionen ohne Kategorie innerhalb deiner aktiven Konto-, Datums-, Typ-, Tag- und Betragsfilter."
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "It was money moving between your own accounts, so it inflated your spending. Long-press the row and Convert to Transfer is already in the menu."
+msgstr "Es war Geld, das zwischen Ihren eigenen Konten bewegt wurde, und hat so Ihre Ausgaben aufgebläht. Halten Sie die Zeile gedrückt — „In Überweisung umwandeln“ steht bereits im Menü."
 
 #: src/generic/component/analytics-section/analytics-section-chart-header.tsx
 msgid "January 2025"
@@ -9190,10 +9213,6 @@ msgstr "Lang drücken für alle Aktionen"
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "Long-Press Quick Actions on Every Transaction"
 msgstr "Langes Drücken für schnelle Aktionen bei jeder Transaktion"
-
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "Long-press the transaction → Convert to Transfer → pick the counter-account. Budgie creates the destination leg, links the pair, and updates analytics in place."
-msgstr "Transaktion lange drücken → In Überweisung umwandeln → Gegenkonto auswählen. Budgie erstellt die Ziel-Buchungsseite, verknüpft das Paar und aktualisiert die Analysen direkt."
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Long-press the transfer in the list and Edit or Delete. The corresponding leg in the destination account stays linked and updates with you."
@@ -9929,6 +9948,10 @@ msgstr "Zahlreiche Drittanbieter-Integrationen verfügbar"
 msgid "My friend repaid me by bank transfer — do I have to re-enter it?"
 msgstr "Ein Freund hat mir das Geld per Überweisung zurückgezahlt — muss ich das erneut erfassen?"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Name the account on the other side"
+msgstr "Nennen Sie das Konto auf der Gegenseite"
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Narrow by amount, not just by date"
 msgstr "Nicht nur nach Datum, sondern auch nach Betrag eingrenzen"
@@ -10183,6 +10206,10 @@ msgstr "Keine offizielle Banksynchronisierung (Community-Importer verfügbar)"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "No official mobile app (third-party options exist)"
 msgstr "Keine offizielle mobile App (Drittanbieter-Optionen existieren)"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
+msgstr "Es entsteht keine zweite Transaktion — die ursprüngliche Zeile wechselt den Typ. Eine Überweisung nennt das Zielkonto und bleibt aus Ihrer Ausgabenanalyse heraus."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "No Security Through Obscurity"
@@ -10862,6 +10889,10 @@ msgstr "Ein echter Bildschirm, dargestellt im Design, das diese Seite gerade ver
 msgid "One receipt, multiple categories."
 msgstr "Ein Beleg, mehrere Kategorien."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "One row, reclassified"
+msgstr "Eine Zeile, neu eingeordnet"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One screen per bank"
 msgstr "Ein Bildschirm pro Bank"
@@ -11127,6 +11158,10 @@ msgstr "Optional, direkte API-Token"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Options include:"
 msgstr "Optionen umfassen:"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Or fund a new deposit"
+msgstr "Oder ein neues Einlagenkonto eröffnen"
 
 #: src/app/[lang]/features/custom-categories/opengraph-image.tsx
 #: src/app/[lang]/features/transaction-tags/opengraph-image.tsx
@@ -12007,6 +12042,10 @@ msgstr "Jüngste Preiserhöhungen haben langjährige Nutzer frustriert"
 msgid "reclassify"
 msgstr "umklassifizieren"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Reclassify without an edit form"
+msgstr "Umbuchen ohne Bearbeitungsformular"
+
 #: src/app/[lang]/features/convert-to-transfer/metadata.ts
 msgid "Reclassify, don't re-enter — turn an expense into a transfer in one tap."
 msgstr "Umklassifizieren, nicht erneut eingeben – eine Ausgabe in einer Tipp-Aktion in eine Überweisung umwandeln."
@@ -12786,6 +12825,10 @@ msgid "Sometimes the simplest solution is the most private. Spreadsheets offer c
 msgstr "Manchmal ist die einfachste Lösung die privateste. Tabellenkalkulationen bieten vollständige Kontrolle — wenn Sie bereit sind, die Arbeit zu investieren."
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Source account already filled in"
+msgstr "Quellkonto bereits ausgefüllt"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Source and destination legs link automatically — no double-entry by you"
 msgstr "Quell- und Ziel-Buchungsseiten werden automatisch verknüpft – kein doppeltes Eingeben von Ihnen"
 
@@ -13461,6 +13504,10 @@ msgstr "Das sind sehr viele Kopien Ihrer Finanzdaten, die im Umlauf sind."
 msgid "The absence of professional audits isn’t necessarily disqualifying, especially for smaller projects. But for apps handling sensitive financial data, some form of external security validation is reassuring."
 msgstr "Das Fehlen professioneller Audits ist nicht unbedingt disqualifizierend, besonders bei kleineren Projekten. Aber bei Apps, die sensible Finanzdaten verarbeiten, ist eine Form der externen Sicherheitsvalidierung beruhigend."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "The account it landed in"
+msgstr "Das Konto, auf dem es landete"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "The account keeps its own"
 msgstr "Das Konto behält seine eigene"
@@ -13476,6 +13523,10 @@ msgstr "Das Aggregator-Persistenzproblem"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Alternative: Offline-First Architecture"
 msgstr "Die Alternative: Offline-First-Architektur"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "The amount and the source account come across from the row you pressed. Search for where the money landed, or open a new deposit account funded by exactly this amount."
+msgstr "Betrag und Quellkonto werden aus der gedrückten Zeile übernommen. Suchen Sie, wo das Geld gelandet ist, oder eröffnen Sie ein neues Einlagenkonto, das genau mit diesem Betrag gespeist wird."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "The amount carries over"
@@ -14388,6 +14439,10 @@ msgstr "Drei Screens: Tags im Ausgabenformular auswählen, sie in der Liste wied
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
 msgstr "Drei Bildschirme: eine Ausgabe speichern, zu einer bereits gespeicherten zurückkehren und die Liste, in der alle landen."
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Three screens: the expense that was never spending, the picker that names the other account, and the transfer the row turns into."
+msgstr "Drei Bildschirme: die Ausgabe, die nie eine war, die Auswahl, die das zweite Konto benennt, und die Überweisung, zu der die Zeile wird."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Three screens: the press that opens the menu, the four actions behind it, and the one screen a conversion needs."
@@ -16963,6 +17018,10 @@ msgstr ""
 #: src/app/[lang]/legal/license/page.tsx
 msgid "You have the right to make the contribution and grant us the rights to use it"
 msgstr ""
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "You logged it as an expense"
+msgstr "Sie haben es als Ausgabe erfasst"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You may not assign or transfer these Terms or your rights hereunder, in whole or in part, without our prior written consent. We may assign these Terms at any time without notice."

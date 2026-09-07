@@ -2350,6 +2350,10 @@ msgstr "A technical deep-dive into Budgie’s offline-first architecture, explai
 msgid "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
 msgstr "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "A transfer, not an expense"
+msgstr "A transfer, not an expense"
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively."
 msgstr "A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively."
@@ -3865,13 +3869,13 @@ msgstr "Budgie consolidates obvious transfers and merchant refunds automatically
 msgid "Budgie context menu open over the dimmed transaction list, with delete last and marked in red"
 msgstr "Budgie context menu open over the dimmed transaction list, with delete last and marked in red"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Budgie Convert to Transfer screen with the amount carried over and the account picker open over the from and to row"
+msgstr "Budgie Convert to Transfer screen with the amount carried over and the account picker open over the from and to row"
+
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie convert to transfer screen with the amount prefilled and the account picker open over the from and to selectors"
 msgstr "Budgie convert to transfer screen with the amount prefilled and the account picker open over the from and to selectors"
-
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "Budgie convert to transfer screen with the destination account picker open"
-msgstr "Budgie convert to transfer screen with the destination account picker open"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Budgie CSV and PDF import parses statement files on your device. No file content is uploaded to any server during import. The parser runs locally, extracts transactions, and writes them to the local database. Deduplication ensures that importing overlapping date ranges does not create duplicate records."
@@ -4318,6 +4322,10 @@ msgstr "Budgie transaction list grouped by month with the category, tag and acco
 msgid "Budgie transaction list in dark mode with a solid black background and bright red and green amounts"
 msgstr "Budgie transaction list in dark mode with a solid black background and bright red and green amounts"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Budgie transaction list showing a transfer row in green with its destination account instead of a category"
+msgstr "Budgie transaction list showing a transfer row in green with its destination account instead of a category"
+
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie transaction list showing eighty-one transactions read straight from the on-device database"
 msgstr "Budgie transaction list showing eighty-one transactions read straight from the on-device database"
@@ -4345,6 +4353,10 @@ msgstr "Budgie transaction list with a long-press context menu offering edit, co
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Budgie transaction list with a missing categories pill between the filter chips and the rows"
 msgstr "Budgie transaction list with a missing categories pill between the filter chips and the rows"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Budgie transaction list with the context menu open on an expense row, Convert to Transfer among the actions"
+msgstr "Budgie transaction list with the context menu open on an expense row, Convert to Transfer among the actions"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
@@ -5556,6 +5568,10 @@ msgstr "Correction loop — every accepted or edited suggestion updates the embe
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Cost of budgeting"
 msgstr "Cost of budgeting"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Counted as money spent"
+msgstr "Counted as money spent"
 
 #: src/generic/component/integrations-section/integrations-section-transfer-card.tsx
 msgid "Counter-IBAN"
@@ -8226,7 +8242,6 @@ msgstr "How is this different from the Tag Analytics page?"
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
 #: src/app/[lang]/features/categorization-rules/page.tsx
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/custom-categories/page.tsx
@@ -8814,9 +8829,17 @@ msgstr "Is YNAB safe to use?"
 msgid "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
 msgstr "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "It reads as a transfer afterwards"
+msgstr "It reads as a transfer afterwards"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "It sits above the list and counts only the transactions without a category inside your active account, date, type, tag and amount filters."
 msgstr "It sits above the list and counts only the transactions without a category inside your active account, date, type, tag and amount filters."
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "It was money moving between your own accounts, so it inflated your spending. Long-press the row and Convert to Transfer is already in the menu."
+msgstr "It was money moving between your own accounts, so it inflated your spending. Long-press the row and Convert to Transfer is already in the menu."
 
 #: src/generic/component/analytics-section/analytics-section-chart-header.tsx
 msgid "January 2025"
@@ -9189,10 +9212,6 @@ msgstr "Long-press for every action"
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "Long-Press Quick Actions on Every Transaction"
 msgstr "Long-Press Quick Actions on Every Transaction"
-
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "Long-press the transaction → Convert to Transfer → pick the counter-account. Budgie creates the destination leg, links the pair, and updates analytics in place."
-msgstr "Long-press the transaction → Convert to Transfer → pick the counter-account. Budgie creates the destination leg, links the pair, and updates analytics in place."
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Long-press the transfer in the list and Edit or Delete. The corresponding leg in the destination account stays linked and updates with you."
@@ -9928,6 +9947,10 @@ msgstr "Multiple third-party integrations available"
 msgid "My friend repaid me by bank transfer — do I have to re-enter it?"
 msgstr "My friend repaid me by bank transfer — do I have to re-enter it?"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Name the account on the other side"
+msgstr "Name the account on the other side"
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Narrow by amount, not just by date"
 msgstr "Narrow by amount, not just by date"
@@ -10182,6 +10205,10 @@ msgstr "No official bank sync (community importers available)"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "No official mobile app (third-party options exist)"
 msgstr "No official mobile app (third-party options exist)"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
+msgstr "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "No Security Through Obscurity"
@@ -10861,6 +10888,10 @@ msgstr "One real screen, rendered in whichever theme this page is in right now."
 msgid "One receipt, multiple categories."
 msgstr "One receipt, multiple categories."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "One row, reclassified"
+msgstr "One row, reclassified"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One screen per bank"
 msgstr "One screen per bank"
@@ -11126,6 +11157,10 @@ msgstr "Optional, direct API tokens"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Options include:"
 msgstr "Options include:"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Or fund a new deposit"
+msgstr "Or fund a new deposit"
 
 #: src/app/[lang]/features/custom-categories/opengraph-image.tsx
 #: src/app/[lang]/features/transaction-tags/opengraph-image.tsx
@@ -12006,6 +12041,10 @@ msgstr "Recent price increases have frustrated long-time users"
 msgid "reclassify"
 msgstr "reclassify"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Reclassify without an edit form"
+msgstr "Reclassify without an edit form"
+
 #: src/app/[lang]/features/convert-to-transfer/metadata.ts
 msgid "Reclassify, don't re-enter — turn an expense into a transfer in one tap."
 msgstr "Reclassify, don't re-enter — turn an expense into a transfer in one tap."
@@ -12785,6 +12824,10 @@ msgid "Sometimes the simplest solution is the most private. Spreadsheets offer c
 msgstr "Sometimes the simplest solution is the most private. Spreadsheets offer complete control—if you’re willing to put in the work."
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Source account already filled in"
+msgstr "Source account already filled in"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Source and destination legs link automatically — no double-entry by you"
 msgstr "Source and destination legs link automatically — no double-entry by you"
 
@@ -13460,6 +13503,10 @@ msgstr "That’s a lot of copies of your financial data floating around."
 msgid "The absence of professional audits isn’t necessarily disqualifying, especially for smaller projects. But for apps handling sensitive financial data, some form of external security validation is reassuring."
 msgstr "The absence of professional audits isn’t necessarily disqualifying, especially for smaller projects. But for apps handling sensitive financial data, some form of external security validation is reassuring."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "The account it landed in"
+msgstr "The account it landed in"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "The account keeps its own"
 msgstr "The account keeps its own"
@@ -13475,6 +13522,10 @@ msgstr "The Aggregator Persistence Problem"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Alternative: Offline-First Architecture"
 msgstr "The Alternative: Offline-First Architecture"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "The amount and the source account come across from the row you pressed. Search for where the money landed, or open a new deposit account funded by exactly this amount."
+msgstr "The amount and the source account come across from the row you pressed. Search for where the money landed, or open a new deposit account funded by exactly this amount."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "The amount carries over"
@@ -14387,6 +14438,10 @@ msgstr "Three screens: pick tags on the expense form, read them back on the list
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
 msgstr "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Three screens: the expense that was never spending, the picker that names the other account, and the transfer the row turns into."
+msgstr "Three screens: the expense that was never spending, the picker that names the other account, and the transfer the row turns into."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Three screens: the press that opens the menu, the four actions behind it, and the one screen a conversion needs."
@@ -16962,6 +17017,10 @@ msgstr "You have the following rights regarding your data:"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "You have the right to make the contribution and grant us the rights to use it"
 msgstr "You have the right to make the contribution and grant us the rights to use it"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "You logged it as an expense"
+msgstr "You logged it as an expense"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You may not assign or transfer these Terms or your rights hereunder, in whole or in part, without our prior written consent. We may assign these Terms at any time without notice."

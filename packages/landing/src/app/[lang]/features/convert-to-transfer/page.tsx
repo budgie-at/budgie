@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -81,14 +80,84 @@ export default async function ConvertToTransferFeaturePage(props: PageLangParam)
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie convert to transfer screen with the destination account picker open`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>One row, reclassified</Trans>}>
+                    <Trans>
+                        Three screens: the expense that was never spending, the picker that names the other account, and the transfer the
+                        row turns into.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>You logged it as an expense</Trans>}>
+                    <Trans>
+                        It was money moving between your own accounts, so it inflated your spending. Long-press the row and Convert to
+                        Transfer is already in the menu.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie transaction list with the context menu open on an expense row, Convert to Transfer among the actions`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="transaction-long-press-menu-1"
+                    slug="transaction-long-press-menu"
+                >
+                    <FeatureStory.Callout y={0.276}>
+                        <Trans>Counted as money spent</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.457}>
+                        <Trans>Reclassify without an edit form</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Name the account on the other side</Trans>}>
+                    <Trans>
+                        The amount and the source account come across from the row you pressed. Search for where the money landed, or open a
+                        new deposit account funded by exactly this amount.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Convert to Transfer screen with the amount carried over and the account picker open over the from and to row`}
+                    index={1}
                     locale={lang}
                     scene="convert-to-transfer-1"
                     slug="convert-to-transfer"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.585}>
+                        <Trans>Source account already filled in</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.719}>
+                        <Trans>Or fund a new deposit</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>It reads as a transfer afterwards</Trans>}>
+                    <Trans>
+                        No second transaction is created — the original row changes type. A transfer names the account it moved to and stays
+                        out of your expense analytics.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie transaction list showing a transfer row in green with its destination account instead of a category`}
+                    index={2}
+                    locale={lang}
+                    scene="transfer-pair-detection-1"
+                    slug="transfer-pair-detection"
+                >
+                    <FeatureStory.Callout y={0.667}>
+                        <Trans>A transfer, not an expense</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.731}>
+                        <Trans>The account it landed in</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -130,18 +199,6 @@ export default async function ConvertToTransferFeaturePage(props: PageLangParam)
                         <Trans>Reversible: split a transfer back into two separate transactions if needed</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Long-press the transaction → Convert to Transfer → pick the counter-account. Budgie creates the destination leg,
-                        links the pair, and updates analytics in place.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
