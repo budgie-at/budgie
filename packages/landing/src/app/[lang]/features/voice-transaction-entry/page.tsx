@@ -73,8 +73,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 locale={lang}
                 tagline={
                     <Trans>
-                        Say &ldquo;twelve dollars coffee this morning&rdquo; and Budgie logs it. whisper.rn (whisper.cpp backend) and the
-                        on-device LLM both run locally — no audio leaves your phone.
+                        Say &ldquo;twelve for coffee, forty for the taxi, and eight euros for parking&rdquo; and Budgie logs all three.
+                        whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone.
                     </Trans>
                 }
             />
@@ -92,8 +92,9 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The result is a pre-filled transaction form: amount, category, account, and merchant — with the same AI category
-                        suggestion pill you get for typed entries. Confirm, edit if needed, save.
+                        One sentence can log several transactions at once — &ldquo;twelve for coffee, forty for the taxi, and eight euros
+                        for parking&rdquo; comes back as three separate rows, not one merged entry. A review sheet shows every extracted row
+                        with its amount, category, and account before anything is written to the database.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -109,15 +110,27 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>On-device LLM extracts amount, merchant, date, and category from natural speech</Trans>
+                        <Trans>On-device LLM splits natural speech into multiple transactions, each with its own amount and category</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Audio never leaves the device — no Siri-style cloud round-trip</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Pre-fills the same quick-entry form you would use by typing — confirm or correct</Trans>
+                        <Trans>
+                            A review sheet lists every row before saving — &ldquo;Select all categories&rdquo; and &ldquo;Enter all
+                            amounts&rdquo; fix a whole batch at once
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
+                        <Trans>
+                            Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up
+                            with half a sentence logged
+                        </Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>The spoken currency picks the matching account automatically</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={6}>
                         <Trans>Works during the AI model loading phase too — visual progress indicator built-in</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -130,25 +143,32 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 <FeaturePageProse>
                     <Trans>
                         Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM
-                        extracts amount, merchant, and date hints from the transcription and applies the same on-device category suggestion
-                        pipeline used for typed transactions.
+                        extracts one or more transactions from the transcription — each with its own amount, category, and account — and
+                        opens a review sheet before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if
+                        the transcription went wrong.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Three steps from speech to saved</Trans>
+                    <Trans>From speech to a saved batch</Trans>
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0} key="step-0">
                         <Trans>Tap the mic in the quick-entry sheet</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1} key="step-1">
-                        <Trans>Speak naturally — &ldquo;twelve dollars coffee at the airport&rdquo;</Trans>
+                        <Trans>Speak naturally — &ldquo;twelve for coffee, forty for the taxi, and eight euros for parking&rdquo;</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2} key="step-2">
-                        <Trans>Confirm or correct the pre-filled form, then save</Trans>
+                        <Trans>Review the table of three extracted rows, each with its own amount and category</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3} key="step-3">
+                        <Trans>Fix a row, or use &ldquo;Select all categories&rdquo; to fix the whole batch at once</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4} key="step-4">
+                        <Trans>Tap Save 3 — all three transactions commit together in one database transaction</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -177,7 +197,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     question={<Trans>What if Whisper mishears me?</Trans>}
                     answer={
                         <Trans>
-                            The transcription appears in the form before you save. Edit any field manually, or tap the mic again to retry.
+                            Every extracted row appears in the review sheet before you save. Edit any row manually, or tap re-record to
+                            replace the whole batch and try again.
                         </Trans>
                     }
                 />
