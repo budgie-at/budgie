@@ -399,7 +399,7 @@ Blog articles are static routes under `app/[lang]/blog/<slug>/page.tsx`. Each ar
 ```tsx
 <main className="flex-1">
     <BlogPostingJsonLd ... />
-    <BlogArticleHero article={ARTICLE_METADATA}>
+    <BlogArticleHero article={ARTICLE_METADATA} locale={lang}>
         <BlogBreadcrumbs> ... </BlogBreadcrumbs>
         <h1><Trans>Article Title</Trans></h1>
         <BlogArticleMeta date="..." author="..." locale={lang} />

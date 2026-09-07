@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
+import { resolveArticleShot } from '../../../blog/util/resolve-article-shot.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { Button } from '../../../ui/button';
 import { BlogCard } from '../blog-card/blog-card';
@@ -21,7 +22,8 @@ export const BlogSection = ({ locale }: Props) => {
         date: entry.date,
         author: entry.author,
         tags: entry.tags,
-        readingTimeMinutes: entry.readingTimeMinutes
+        readingTimeMinutes: entry.readingTimeMinutes,
+        shot: resolveArticleShot(entry.slug, entry.relatedFeatureSlugs, locale)
     }))
         .sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime())
         .slice(0, 3);
@@ -43,17 +45,7 @@ export const BlogSection = ({ locale }: Props) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     {recentArticles.map((article, index) => (
-                        <BlogCard
-                            key={article.slug}
-                            date={article.date}
-                            description={article.description}
-                            index={index}
-                            locale={locale}
-                            readingTimeMinutes={article.readingTimeMinutes}
-                            slug={article.slug}
-                            tags={article.tags}
-                            title={article.title}
-                        />
+                        <BlogCard key={article.slug} article={article} index={index} locale={locale} />
                     ))}
                 </div>
 
