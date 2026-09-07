@@ -3463,10 +3463,6 @@ msgstr "Schöne, moderne Oberfläche"
 msgid "Beautiful, native Apple design"
 msgstr "Schönes, natives Apple-Design"
 
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Because a jar is a normal account, moving money from your card into it is a transfer between two accounts you own — and the same consolidation that merges cross-bank transfers merges the two legs of a jar top-up into one entry instead of an expense that never happened."
-msgstr "Da ein Topf ein normales Konto ist, ist das Verschieben von Geld von Ihrer Karte dorthin eine Überweisung zwischen zwei eigenen Konten — und dieselbe Konsolidierung, die bankübergreifende Überweisungen zusammenführt, verschmilzt auch die beiden Seiten einer Topf-Einzahlung zu einem einzigen Eintrag, statt zu einer Ausgabe, die nie stattgefunden hat."
-
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Because data is local, every interaction is immediate. Adding a transaction, categorizing expenses, viewing reports: all of these happen at local speed. There are no loading spinners waiting for network responses."
 msgstr "Weil die Daten lokal sind, ist jede Interaktion unmittelbar. Eine Transaktion hinzufügen, Ausgaben kategorisieren, Berichte ansehen: all das geschieht mit lokaler Geschwindigkeit. Es gibt keine Ladebalken, die auf Netzwerkantworten warten."
@@ -3836,6 +3832,10 @@ msgstr "Budgie-Bitcoin-Wallet mit dem Coin-Bestand über dem Kaufverlauf"
 msgid "Budgie budget details screen with the monthly progress bar above the per-category limit cards"
 msgstr "Budgie-Budgetdetails mit dem Monatsfortschrittsbalken über den Limitkarten der einzelnen Kategorien"
 
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password."
+msgstr "Budgie ruft die Monobank-API direkt mit einem Token auf, das Sie selbst erzeugen. Kein Aggregator, kein Bankpasswort."
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Budgie categorization rules screen listing the merchant rules that assign categories automatically"
 msgstr "Budgie-Bildschirm für Kategorisierungsregeln mit den Händlerregeln, die automatisch Kategorien zuweisen"
@@ -3843,6 +3843,10 @@ msgstr "Budgie-Bildschirm für Kategorisierungsregeln mit den Händlerregeln, di
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie Commercial Licensing"
 msgstr ""
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Budgie Connect Monobank screen with the Get API Token row and the token field"
+msgstr "Budgie-Bildschirm „Monobank verbinden“ mit der Zeile „API-Token abrufen“ und dem Token-Feld"
 
 #: src/app/[lang]/features/transfer-pair-detection/metadata.ts
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
@@ -4095,8 +4099,8 @@ msgid "Budgie mobile app interface showing balance overview with multi-currency 
 msgstr "Budgie Mobile-App-Interface mit Saldoübersicht mit Multi-Währungs-Bankkonten einschließlich Monobank-Karten und verschiedenen Kontotypen"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Budgie Monobank screen listing the connected Black, White and Jar cards with their balances"
-msgstr "Budgie-Monobank-Bildschirm mit den verbundenen Black-, White- und Jar-Karten und ihren Salden"
+msgid "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
+msgstr "Budgie-Monobank-Bildschirm mit zwei Karten und einem Auto-Topf, jeweils mit Saldo und Schalter"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie new expense screen with the amount keypad, account row and confirm button"
@@ -4806,6 +4810,10 @@ msgstr "Erfassen Sie Ihre gesamte Budgie-Datenbank in einer einzigen verschlüss
 #: src/app/[lang]/features/database-backup/metadata.ts
 msgid "Capture your entire Budgie database in one encrypted file. Save to iCloud or Drive on your terms; restore on a new device with one tap and your PIN."
 msgstr "Erfassen Sie Ihre gesamte Budgie-Datenbank in einer einzigen verschlüsselten Datei. Zu Ihren Bedingungen in iCloud oder Drive speichern; auf einem neuen Gerät mit einer Tipp-Aktion und Ihrer PIN wiederherstellen."
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Cards and jars arrive"
+msgstr "Karten und Töpfe kommen an"
 
 #: src/app/[lang]/features/bank-integration-management/metadata.ts
 #: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
@@ -6529,6 +6537,10 @@ msgstr "Jedes Konto hält eine feste native Währung – Fiat, Krypto oder ander
 msgid "Each bank section on the home screen has a shortcut into its connection. Inside you get the accounts that belong to it, each with its icon, title, and current balance, and a switch to pause syncing for that account alone while its siblings keep going."
 msgstr "Jeder Bankabschnitt auf dem Startbildschirm hat eine Verknüpfung zu seiner Verbindung. Darin finden Sie die zugehörigen Konten, jedes mit Symbol, Titel und aktuellem Saldo, sowie einen Schalter, um die Synchronisierung nur für dieses eine Konto zu pausieren, während die übrigen weiterlaufen."
 
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Each card with its balance"
+msgstr "Jede Karte mit ihrem Saldo"
+
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Each category has a name, an icon, a color, and an optional MCC mapping. The Categories screen in Settings supports drag-to-reorder and bulk merge. Deleting a category prompts you to migrate its transactions or wipe them."
 msgstr "Jede Kategorie hat einen Namen, ein Symbol, eine Farbe und eine optionale MCC-Zuordnung. Der Kategorienbildschirm in den Einstellungen unterstützt Drag-to-Reorder und Massen-Zusammenführung. Beim Löschen einer Kategorie werden Sie aufgefordert, die Transaktionen zu migrieren oder zu löschen."
@@ -6835,6 +6847,10 @@ msgstr "Jeder Eintrag besteht aus Betrag, Konto, Kategorie, Tags, Kommentar und 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
 msgstr ""
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out."
+msgstr "Jede Monobank-Karte und jeder Topf kommt als eigenes Konto zurück – mit einem Schalter, um einzelne wegzulassen."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Every promise here has a file behind it"
@@ -7536,6 +7552,10 @@ msgstr "Vom leeren Formular zur lesbaren Liste"
 msgid "From bank connections, yes. Crypto exchange connections do not offer deposit accounts, since the concept does not map onto them."
 msgstr "Bei Bankverbindungen ja. Krypto-Börsen-Verbindungen bieten keine Festgeldkonten an, da sich das Konzept dort nicht abbilden lässt."
 
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "From one token to your home screen"
+msgstr "Von einem Token zu Ihrem Startbildschirm"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "From there, edit the transactions, apply your custom categories, accept AI category suggestions, or rely on MCC mapping for bank-synced rows. The goal is simple: every report should explain where your money actually went."
 msgstr "Von dort aus bearbeiten Sie die Transaktionen, wenden eigene Kategorien an, akzeptieren KI-Kategorievorschläge oder nutzen MCC-Zuordnung für bank-synchronisierte Zeilen. Das Ziel ist einfach: Jeder Bericht soll erklären, wohin Ihr Geld wirklich gegangen ist."
@@ -7617,8 +7637,8 @@ msgid "General Data Protection Regulation (GDPR) - European Union"
 msgstr ""
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Generate a personal API token from the Monobank app, paste it into Budgie, choose which Monobank accounts to import, and select an initial sync window. A background task syncs every 30 minutes when you're online; you control the cadence and can pause anytime."
-msgstr "Generieren Sie ein persönliches API-Token aus der Monobank-App, fügen Sie es in Budgie ein, wählen Sie aus, welche Monobank-Konten importiert werden sollen, und wählen Sie ein erstes Synchronisierungsfenster. Eine Hintergrundaufgabe synchronisiert alle 30 Minuten, wenn Sie online sind; Sie steuern den Rhythmus und können jederzeit pausieren."
+msgid "Generate it in Monobank"
+msgstr "In Monobank erzeugen"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Genuine Offline Capability"
@@ -7719,6 +7739,10 @@ msgstr "Doktorand"
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Grouped by month"
 msgstr "Nach Monat gruppiert"
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Grouped under the bank"
+msgstr "Unter der Bank gruppiert"
 
 #: src/generic/component/security-section/security-section-cards.tsx
 msgid "Hardware-Backed Encryption Key"
@@ -7868,6 +7892,10 @@ msgstr "Startseite"
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Home and analytics screens convert to your base currency automatically"
 msgstr "Startbildschirm und Analysen rechnen automatisch in Ihre Basiswährung um"
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
+msgstr "Der Startbildschirm hält die gesamte Verbindung in einer Monobank-Gruppe, und das Zahnrad daneben öffnet die Konten wieder."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Home-screen widget with the period dates, an overall progress bar, and your closest-to-the-limit categories"
@@ -8130,7 +8158,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
-#: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/multi-language-app/page.tsx
 #: src/app/[lang]/features/pin-app-lock/page.tsx
@@ -8725,8 +8752,8 @@ msgid "January 2025"
 msgstr "Januar 2025"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Jars are accounts, not a footnote"
-msgstr "Töpfe sind Konten, keine Randnotiz"
+msgid "Jars come across too"
+msgstr "Töpfe kommen ebenfalls mit"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Jars sync next to your cards, each one selectable on its own, with top-ups merged into transfers"
@@ -8767,6 +8794,10 @@ msgstr "Halten Sie ATM-Gebühren, Transfergebühren und Kartenprovisionen in den
 #: src/app/[lang]/features/bank-fee-tracking/opengraph-image.tsx
 msgid "Keep ATM fees, transfer fees, and card commissions visible without polluting transfers."
 msgstr "Halten Sie ATM-Gebühren, Transfergebühren und Kartenprovisionen sichtbar, ohne Transfers zu verfälschen."
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Kept in your local database"
+msgstr "Bleibt in Ihrer lokalen Datenbank"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Key features:"
@@ -9605,10 +9636,6 @@ msgstr "Monobank Ausgaben-Tracker – direkte API-Synchronisation, kein Plaid"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Monobank exposes a clean public API, so Budgie talks to it directly from your phone using your token — no Plaid, no data broker. Every transaction lands in your local SQLite database the moment it arrives."
 msgstr "Monobank bietet eine saubere öffentliche API, sodass Budgie direkt von Ihrem Telefon aus mit Ihrem Token damit kommuniziert – kein Plaid, kein Datenmakler. Jede Transaktion landet in Ihrer lokalen SQLite-Datenbank, sobald sie eintrifft."
-
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Monobank jars sync in the same pass as your cards. During setup they get their own section in the account picker, so you can bring in the holiday fund and leave the rest behind, and each imported jar becomes a real account with its own balance, history, and place in net worth."
-msgstr "Monobank-Töpfe werden im selben Durchgang wie Ihre Karten synchronisiert. Bei der Einrichtung erhalten sie einen eigenen Abschnitt in der Kontoauswahl, sodass Sie zum Beispiel nur die Urlaubskasse mitnehmen und den Rest weglassen können, und jeder importierte Topf wird zu einem echten Konto mit eigenem Saldo, eigener Historie und eigenem Platz im Nettovermögen."
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Monobank today; we add direct integrations as banks publish stable APIs. For everything else, statement import (PDF, CSV, Excel) covers the gap."
@@ -11095,6 +11122,10 @@ msgstr "Teil- und Vollrückerstattungen – Budgie vergleicht den Rückerstattun
 msgid "Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone — then merges your P2P buys with the bank payment that funded them."
 msgstr "Fügen Sie einen Nur-Lese-API-Schlüssel ein, und Budgie holt Ihre Binance-Salden und -Historie direkt auf Ihr Smartphone — und führt anschließend Ihre P2P-Käufe mit der Bankzahlung zusammen, die sie finanziert hat."
 
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Paste one personal token"
+msgstr "Ein persönliches Token einfügen"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
 msgstr "Zahlen Sie einmal für Bankabgleich und geräteinterne KI, wenn Sie sie möchten. Der Tracker selbst läuft nie ab."
@@ -12193,8 +12224,8 @@ msgid "Screen recording of Budgie opening a spending category from the analytics
 msgstr "Bildschirmaufnahme von Budgie beim Öffnen einer Ausgabenkategorie aus den Auswertungen und dem Zurückgehen"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Screen recording of Budgie opening the Monobank integration from the home account list"
-msgstr "Bildschirmaufnahme von Budgie beim Öffnen der Monobank-Integration aus der Kontoliste des Startbildschirms"
+msgid "Screen recording of the Monobank group on the Budgie home screen opening its synced accounts"
+msgstr "Bildschirmaufnahme: Die Monobank-Gruppe auf dem Budgie-Startbildschirm öffnet ihre synchronisierten Konten"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Screen scraping means a third party can do anything you can do in your bank account. They choose not to, but the technical capability exists."
@@ -13751,6 +13782,10 @@ msgstr ""
 msgid "The Rules screen has a ranked search that looks at every condition, every action, and the related category, tag, and account names, so you can find the rule responsible for a category in a couple of keystrokes."
 msgstr "Der Regeln-Bildschirm bietet eine gewichtete Suche, die jede Bedingung, jede Aktion sowie die zugehörigen Kategorie-, Tag- und Kontonamen durchsucht, sodass Sie die für eine Kategorie verantwortliche Regel mit wenigen Tastenanschlägen finden."
 
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
+msgstr "Derselbe Abgleich läuft zwischen zwei Banken und zwischen einer Karte und einem Ihrer Töpfe: Beide Seiten werden über die Gegen-IBAN und den Wechselkurs erkannt und dann zu einer einzigen Überweisung zusammengeführt – keine Doppelzählung in Ihrer Ausgabenstatistik, keine manuelle Nacharbeit."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The security architecture is designed for users who understand the risks described in this article and want an alternative."
 msgstr "Die [Sicherheitsarchitektur](/{lang}#security) ist für Nutzer konzipiert, die die in diesem Artikel beschriebenen Risiken verstehen und eine Alternative suchen."
@@ -14142,6 +14177,10 @@ msgstr "Drei Bildschirme ohne Server dahinter — die Liste, die Eingabe und Ein
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Three screens, from the total on your home screen down to what you owe and what you are owed."
 msgstr "Drei Bildschirme – von der Summe auf der Startseite bis zu dem, was du schuldest und was dir geschuldet wird."
+
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "Three screens: paste a personal token, pick the cards and jars you want, and watch them land on Home."
+msgstr "Drei Bildschirme: Fügen Sie ein persönliches Token ein, wählen Sie die gewünschten Karten und Töpfe aus und sehen Sie zu, wie sie auf dem Startbildschirm landen."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
@@ -15520,10 +15559,6 @@ msgstr ""
 #: src/generic/component/integrations-section/integrations-section-transfer-card.tsx
 msgid "When you send money between two banks, Budgie auto-pairs both legs using counter-IBAN matching plus exchange-rate tolerance — no duplicate expenses, no manual merging."
 msgstr "Wenn du Geld zwischen zwei Banken sendest, ordnet Budgie beide Seiten automatisch zu – mithilfe von Counter-IBAN-Abgleich und Wechselkurstoleranz – keine doppelten Ausgaben, kein manuelles Zusammenführen."
-
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "When you transfer between two banks, both legs are automatically detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
-msgstr "Wenn Sie zwischen zwei Banken überweisen, werden beide Seiten automatisch über Gegen-IBAN und Wechselkursabgleich erkannt und zu einer einzigen Überweisung konsolidiert – keine Doppelzählung in Ihren Ausgabenstatistiken, kein manuelles Aufräumen nötig."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "When you use a closed-source financial app, you have no way to verify what actually happens to your data. The company might claim your information is encrypted, stored securely, and never shared. But how do you know? Their privacy policy is a legal document written by lawyers, not a technical specification you can verify against actual code."
