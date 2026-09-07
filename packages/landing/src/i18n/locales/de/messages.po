@@ -3882,6 +3882,10 @@ msgstr "Budgies CSV- und PDF-Import analysiert Kontoauszugsdateien auf Ihrem Ger
 msgid "Budgie CSV column mapping screen with the saved bank import presets above the field selectors"
 msgstr "Budgie-Bildschirm zur CSV-Spaltenzuordnung mit den gespeicherten Bank-Importvorlagen über den Feldauswahlen"
 
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Budgie data management settings showing Import Database and Export Database rows"
+msgstr "Budgie-Einstellungen zur Datenverwaltung mit den Zeilen „Datenbank importieren“ und „Datenbank exportieren“"
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Budgie data management settings with the import, export, backup and restore actions"
 msgstr "Budgie-Einstellungen zur Datenverwaltung mit den Aktionen Importieren, Exportieren, Sichern und Wiederherstellen"
@@ -6951,6 +6955,10 @@ msgstr "Jeder Transaktions-Titel, oft mehr"
 msgid "Every transaction you make, including amounts, merchants, and locations"
 msgstr "Jede Ihrer Transaktionen, einschließlich Beträge, Händler und Standorte"
 
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Every transaction, account and category lives in an encrypted database on your phone — there is no backend to deploy."
+msgstr "Jede Transaktion, jedes Konto und jede Kategorie liegt in einer verschlüsselten Datenbank auf deinem Handy — es gibt kein Backend, das du bereitstellen musst."
+
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Every transaction, one file"
 msgstr "Jede Transaktion, eine Datei"
@@ -7072,6 +7080,10 @@ msgstr "Exportieren Sie jederzeit als CSV oder JSON"
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Export CSV takes the whole ledger in a single tap. There is no range to pick and no partial file to reconcile later."
 msgstr "„CSV exportieren“ nimmt das gesamte Journal mit einem einzigen Tippen. Es gibt keinen Zeitraum auszuwählen und keine Teildatei, die Sie später abgleichen müssten."
+
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Export Database writes one encrypted file with everything. Import Database restores it on a new phone in seconds."
+msgstr "Datenbank exportieren schreibt eine verschlüsselte Datei mit allem. Datenbank importieren stellt sie in Sekunden auf einem neuen Handy wieder her."
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Export Database writes the whole database to one file. The Import Database row directly above it restores from that same file on any device."
@@ -10184,6 +10196,10 @@ msgstr "Keine Self-Hosting-Option"
 msgid "No server round-trips. Every action is instant. The app works even in airplane mode."
 msgstr "Alles passiert auf deinem Gerät, sodass Budgie selbst im Flugmodus schnell bleibt."
 
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "No server to patch, renew certificates for, or pay for — just a file only you hold."
+msgstr "Kein Server zum Patchen, keine Zertifikate zu erneuern, keine Kosten — nur eine Datei, die dir gehört."
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No servers to hack"
 msgstr "Keine Server zum Hacken"
@@ -10865,6 +10881,10 @@ msgstr "Ein Einstellungsbildschirm und ein öffentliches Repository, in dem sich
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "One settings screen, and the thing worth noticing is the row that never appears on it."
 msgstr "Ein Einstellungsbildschirm — und das Bemerkenswerteste daran ist die Zeile, die dort nie auftaucht."
+
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "One settings screen, and the two rows that stand in for everything a hosted server would do."
+msgstr "Ein Einstellungsbildschirm, und die zwei Zeilen, die alles ersetzen, was ein gehosteter Server tun würde."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag chip, plus a count"
@@ -12181,6 +12201,10 @@ msgstr "Reaktionsschneller Solo-Entwickler"
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
 msgid "restore"
 msgstr "Wiederherstellen"
+
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Restore from a backup file"
+msgstr "Aus einer Sicherungsdatei wiederherstellen"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Restore is a one-tap flow on a fresh install — pick the file, enter your PIN"
@@ -15831,6 +15855,10 @@ msgstr "Wo der Fortschritt berechnet wird"
 msgid "Where that data is transmitted"
 msgstr "Wohin diese Daten übertragen werden"
 
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Where the backup file replaces the server"
+msgstr "Wo die Sicherungsdatei den Server ersetzt"
+
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Where transactions live"
 msgstr "Wo Transaktionen leben"
@@ -16394,6 +16422,10 @@ msgstr "Funktioniert ohne Internetverbindung"
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Write the rule once and every future import obeys it: match on what the transaction actually says, then set the category, add a tag, or turn it into a transfer."
 msgstr "Schreiben Sie die Regel einmal, und jeder zukünftige Import befolgt sie: Abgleich anhand dessen, was die Transaktion tatsächlich aussagt, dann Kategorie setzen, Tag hinzufügen oder in eine Überweisung umwandeln."
+
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "Write your backup file here"
+msgstr "Sicherungsdatei hier erstellen"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Writes straight to the device"
