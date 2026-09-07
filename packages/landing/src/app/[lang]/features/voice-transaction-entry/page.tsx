@@ -73,8 +73,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 locale={lang}
                 tagline={
                     <Trans>
-                        Say &ldquo;twelve dollars coffee this morning&rdquo; and Budgie logs it. whisper.rn (whisper.cpp backend) and the
-                        on-device LLM both run locally — no audio leaves your phone.
+                        Say &ldquo;twelve for coffee, forty for the taxi, and eight euros for parking&rdquo; and Budgie logs all three.
+                        whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone.
                     </Trans>
                 }
             />
@@ -144,8 +144,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     <Trans>
                         Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM
                         extracts one or more transactions from the transcription — each with its own amount, category, and account — and
-                        opens a review sheet before anything is saved. Editing a row, or tapping re-record, replaces the whole batch if the
-                        transcription went wrong.
+                        opens a review sheet before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if
+                        the transcription went wrong.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>

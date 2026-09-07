@@ -10755,7 +10755,7 @@ msgstr "Una pantalla, un campo. Budgie nunca te pide la contraseña del banco, y
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "One sentence can log several transactions at once — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, not one merged entry. A review sheet shows every extracted row with its amount, category, and account before anything is written to the database."
-msgstr "Una sola frase puede registrar varias transacciones a la vez: «doce de café, cuarenta de taxi y ocho euros de aparcamiento» vuelve como tres filas independientes, no como una entrada combinada. Una hoja de revisión muestra cada fila extraída con su importe, categoría y cuenta antes de escribir nada en la base de datos."
+msgstr "Una sola frase puede registrar varias transacciones a la vez: «doce de café, cuarenta de taxi y ocho euros de aparcamiento» se convierte en tres filas independientes, no como una entrada combinada. Una hoja de revisión muestra cada fila extraída con su importe, categoría y cuenta antes de escribir nada en la base de datos."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "One settings screen, and a public repository where every line of it can be checked."
@@ -12223,8 +12223,8 @@ msgid "Saving is instant"
 msgstr "Guardar es instantáneo"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Say “twelve dollars coffee this morning” and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
-msgstr "Di «doce dólares café esta mañana» y Budgie lo registra. whisper.rn (backend whisper.cpp) y el LLM en el dispositivo se ejecutan localmente — ningún audio sale de tu teléfono."
+msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
+msgstr "Di «doce de café, cuarenta de taxi y ocho euros de aparcamiento» y Budgie registra las tres. whisper.rn (backend whisper.cpp) y el LLM en el dispositivo funcionan localmente: el audio nunca sale de tu teléfono."
 
 #: src/app/[lang]/features/voice-transaction-entry/metadata.ts
 msgid "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\" and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM extract a reviewable batch — no audio ever streams to a server."
@@ -13268,8 +13268,8 @@ msgid "Tap the mic in the quick-entry sheet"
 msgstr "Toca el micrófono en el formulario de entrada rápida"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Editing a row, or tapping re-record, replaces the whole batch if the transcription went wrong."
-msgstr "Toca el micrófono en la hoja de entrada rápida. whisper.rn transcribe localmente con el motor whisper.cpp. El LLM local extrae una o varias transacciones de la transcripción, cada una con su propio importe, categoría y cuenta, y abre una hoja de revisión antes de guardar nada. Editar una fila, o tocar volver a grabar, reemplaza todo el lote si la transcripción salió mal."
+msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the transcription went wrong."
+msgstr "Toca el micrófono en la hoja de entrada rápida. whisper.rn transcribe localmente con el motor whisper.cpp. El LLM local extrae una o varias transacciones de la transcripción, cada una con su propio importe, categoría y cuenta, y abre una hoja de revisión antes de guardar nada. Edita cualquier fila manualmente, o toca volver a grabar para reemplazar todo el lote si la transcripción salió mal."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"

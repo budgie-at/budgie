@@ -12223,8 +12223,8 @@ msgid "Saving is instant"
 msgstr "Збереження миттєве"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Say “twelve dollars coffee this morning” and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
-msgstr "Скажіть «дванадцять доларів кава сьогодні вранці» і Budgie записує це. whisper.rn (бекенд whisper.cpp) та LLM на пристрої обидва працюють локально — жодного аудіо не покидає ваш телефон."
+msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
+msgstr "Скажіть «дванадцять за каву, сорок за таксі і вісім євро за парковку», і Budgie запише всі три. whisper.rn (на основі whisper.cpp) і локальна LLM працюють повністю локально — аудіо ніколи не залишає ваш телефон."
 
 #: src/app/[lang]/features/voice-transaction-entry/metadata.ts
 msgid "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\" and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM extract a reviewable batch — no audio ever streams to a server."
@@ -13268,8 +13268,8 @@ msgid "Tap the mic in the quick-entry sheet"
 msgstr "Торкніть мікрофон на аркуші швидкого введення"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Editing a row, or tapping re-record, replaces the whole batch if the transcription went wrong."
-msgstr "Торкніться мікрофона на екрані швидкого введення. whisper.rn розпізнає мову локально за допомогою двигуна whisper.cpp. Локальна LLM видобуває одну або кілька транзакцій із розшифровки — кожну з власною сумою, категорією та рахунком — і відкриває екран перевірки, перш ніж щось буде збережено. Редагування рядка або натискання «Перезаписати» замінює весь пакет, якщо розшифровка виявилася невдалою."
+msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the transcription went wrong."
+msgstr "Торкніться мікрофона на екрані швидкого введення. whisper.rn розпізнає мову локально за допомогою механізму whisper.cpp. Локальна LLM видобуває одну або кілька транзакцій із розшифровки — кожну з власною сумою, категорією та рахунком — і відкриває екран перевірки, перш ніж щось буде збережено. Відредагуйте будь-який рядок вручну, або натисніть «Перезаписати», щоб замінити весь пакет, якщо розшифровка виявилася невдалою."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"

@@ -12223,8 +12223,8 @@ msgid "Saving is instant"
 msgstr "L'enregistrement est instantané"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Say “twelve dollars coffee this morning” and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
-msgstr "Dites « douze dollars café ce matin » et Budgie l'enregistre. whisper.rn (backend whisper.cpp) et le LLM sur l'appareil s'exécutent tous les deux localement — aucun audio ne quitte votre téléphone."
+msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
+msgstr "Dites « douze pour le café, quarante pour le taxi et huit euros pour le parking » et Budgie enregistre les trois. whisper.rn (backend whisper.cpp) et le LLM embarqué fonctionnent tous deux localement — l’audio ne quitte jamais votre téléphone."
 
 #: src/app/[lang]/features/voice-transaction-entry/metadata.ts
 msgid "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\" and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM extract a reviewable batch — no audio ever streams to a server."
@@ -13268,8 +13268,8 @@ msgid "Tap the mic in the quick-entry sheet"
 msgstr "Touchez le micro dans la feuille de saisie rapide"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Editing a row, or tapping re-record, replaces the whole batch if the transcription went wrong."
-msgstr "Appuyez sur le micro dans la feuille de saisie rapide. whisper.rn transcrit localement avec le moteur whisper.cpp. Le LLM local extrait une ou plusieurs transactions de la transcription — chacune avec son propre montant, sa catégorie et son compte — et ouvre une feuille de vérification avant tout enregistrement. Modifier une ligne, ou appuyer sur réenregistrer, remplace tout le lot si la transcription a échoué."
+msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the transcription went wrong."
+msgstr "Appuyez sur le micro dans la feuille de saisie rapide. whisper.rn transcrit localement avec le moteur whisper.cpp. Le LLM local extrait une ou plusieurs transactions de la transcription — chacune avec son propre montant, sa catégorie et son compte — et ouvre une feuille de vérification avant tout enregistrement. Modifiez n’importe quelle ligne manuellement, ou appuyez sur réenregistrer pour remplacer tout le lot si la transcription a échoué."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"
