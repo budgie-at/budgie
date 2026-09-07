@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.32.1](https://github.com/budgie-at/budgie/compare/v6.32.0...v6.32.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** wrap /beta GitHub fetch in a Suspense boundary ([7eb1967](https://github.com/budgie-at/budgie/commit/7eb1967aae220f9f31389cc3ced0c671f5769906)), closes [#910](https://github.com/budgie-at/budgie/issues/910)
+
+
+
+
+
 # [6.32.0](https://github.com/budgie-at/budgie/compare/v6.31.2...v6.32.0) (2026-09-07)
 
 
