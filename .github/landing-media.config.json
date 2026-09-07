@@ -107,6 +107,14 @@
             "deepLink": "budgie://settings/archived"
         },
         {
+            "name": "account-transfers-1",
+            "flow": "flows/media/account-transfers-1.flow.yaml"
+        },
+        {
+            "name": "account-transfers-2",
+            "flow": "flows/media/account-transfers-2.flow.yaml"
+        },
+        {
             "name": "biometric-authentication-1",
             "deepLink": "budgie://settings/pin?mode=CHANGE"
         },
@@ -209,6 +217,30 @@
         {
             "name": "date-filter-presets-1",
             "flow": "flows/media/date-filter-presets-1.flow.yaml"
+        },
+        {
+            "name": "date-filter-presets-2",
+            "flow": "flows/media/date-filter-presets-2.flow.yaml"
+        },
+        {
+            "name": "account-management-3",
+            "flow": "flows/media/account-management-3.flow.yaml"
+        },
+        {
+            "name": "custom-categories-2",
+            "flow": "flows/media/custom-categories-2.flow.yaml"
+        },
+        {
+            "name": "custom-categories-3",
+            "flow": "flows/media/custom-categories-3.flow.yaml"
+        },
+        {
+            "name": "categorization-rules-2",
+            "flow": "flows/media/categorization-rules-2.flow.yaml"
+        },
+        {
+            "name": "spending-analytics-2",
+            "flow": "flows/media/spending-analytics-2.flow.yaml"
         },
         {
             "name": "transaction-long-press-menu-1",
