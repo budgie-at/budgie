@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.25.0](https://github.com/budgie-at/budgie/compare/v6.24.0...v6.25.0) (2026-09-07)
+
+
+### Features
+
+* **landing:** tell the long-press menu story in steps ([0d1fac5](https://github.com/budgie-at/budgie/commit/0d1fac5baa076a09aa79c52742384d19bfadd625))
+
+
+
+
+
 # [6.24.0](https://github.com/budgie-at/budgie/compare/v6.23.0...v6.24.0) (2026-09-07)
 
 
