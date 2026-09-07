@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.29.0](https://github.com/budgie-at/budgie/compare/v6.28.0...v6.29.0) (2026-09-07)
+
+
+### Features
+
+* **landing:** add dark-mode basic story with real transaction-list shot ([dc8efc2](https://github.com/budgie-at/budgie/commit/dc8efc2313e454ca1f617312214aa016ac8fb397))
+
+
+
+
+
+# [6.28.0](https://github.com/budgie-at/budgie/compare/v6.27.1...v6.28.0) (2026-09-07)
+
+
+### Features
+
+* **landing:** tell the transaction tags page as a three-step story ([3a83d85](https://github.com/budgie-at/budgie/commit/3a83d85ad0f505a268bf2bc4aa692d9a55fddd46))
+* **landing:** tell the uncategorized-transactions story in three steps ([5840a3f](https://github.com/budgie-at/budgie/commit/5840a3fe701457b3e3ec0f4d05c4484d08d5d7eb))
+
+
+
+
+
+## [6.27.1](https://github.com/budgie-at/budgie/compare/v6.27.0...v6.27.1) (2026-09-07)
+
+
+### Performance Improvements
+
+* **landing:** trim Vercel image and ISR usage ([fdb1600](https://github.com/budgie-at/budgie/commit/fdb1600d0546fa8e420ec7ce1281e757257b847d))
+
+
+
+
+
 ## [6.26.1](https://github.com/budgie-at/budgie/compare/v6.26.0...v6.26.1) (2026-09-07)
 
 

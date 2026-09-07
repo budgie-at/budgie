@@ -26,7 +26,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function BetaPage(props: PageLangParam) {
     const { lang } = await props.params;
     initLingui(lang);
-    const release = await iosDevReleaseFetchApi({ next: { revalidate: 60 } });
+    const release = await iosDevReleaseFetchApi({ next: { revalidate: 600 } });
 
     return (
         <main className="flex-1">
