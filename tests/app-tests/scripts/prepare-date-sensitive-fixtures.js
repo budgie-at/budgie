@@ -600,7 +600,7 @@ const generateConsolidationFixture = () => {
     const eurId = 2;
 
     const monobankIntegrationToken = 'e2e-consolidation-monobank-token';
-    const privatbankIntegrationToken = 'e2e-consolidation-privatbank-token';
+    const privatbankIntegrationToken = '';
 
     const u1030 = 1_030_000_000;
     const u200 = 200_000_000;
