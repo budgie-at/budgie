@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.22.1](https://github.com/budgie-at/budgie/compare/v6.22.0...v6.22.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* **app:** attach fee-bearing synced expenses to debts and resync debt events on edit ([1b7a4fa](https://github.com/budgie-at/budgie/commit/1b7a4faa4ab2eba446e00a2514f98627752aba4e))
+
+
+
+
+
 ## [6.21.5](https://github.com/budgie-at/budgie/compare/v6.21.4...v6.21.5) (2026-09-07)
 
 **Note:** Version bump only for package @budgie/contracts
