@@ -12710,7 +12710,7 @@ msgstr "Мобільний бюджетний застосунок із дост
 
 #: src/generic/component/trust-banner/trust-banner.tsx
 msgid "Source-available on GitHub"
-msgstr "Відкритий код на GitHub"
+msgstr "Вихідний код доступний на GitHub"
 
 #: src/app/[lang]/open-source/metadata.ts
 #: src/app/[lang]/open-source/page.tsx
