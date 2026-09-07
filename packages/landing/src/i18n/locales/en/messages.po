@@ -4968,6 +4968,10 @@ msgstr "Charts read from your own database, so they keep working with no connect
 msgid "Check the Issues and Discussions"
 msgstr "Check the Issues and Discussions"
 
+#: src/app/[lang]/beta/page.tsx
+msgid "Checking for the latest build…"
+msgstr "Checking for the latest build…"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Actual Budget if:"
 msgstr "Choose Actual Budget if:"

@@ -4969,6 +4969,10 @@ msgstr "Los gráficos se leen de tu propia base de datos, así que siguen funcio
 msgid "Check the Issues and Discussions"
 msgstr "Revisa los Issues y las discusiones"
 
+#: src/app/[lang]/beta/page.tsx
+msgid "Checking for the latest build…"
+msgstr "Buscando la última versión…"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Actual Budget if:"
 msgstr "Elige Actual Budget si:"

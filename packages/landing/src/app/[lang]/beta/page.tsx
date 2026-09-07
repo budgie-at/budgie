@@ -1,13 +1,12 @@
 import { msg } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Suspense } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { BetaEmptyState } from '../../../beta/component/beta-empty-state/beta-empty-state';
-import { BetaReleaseCard } from '../../../beta/component/beta-release-card/beta-release-card';
-import { iosDevReleaseFetchApi } from '../../../beta/util/ios-dev-release-fetch.util';
+import { BetaReleaseSection } from '../../../beta/component/beta-release-section/beta-release-section';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../i18n/init-lingui';
+import { Card } from '../../../ui/card/card';
+import { CardContent } from '../../../ui/card/card-content';
 
 import type { Metadata } from 'next';
 
@@ -26,7 +25,6 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
 export default async function BetaPage(props: PageLangParam) {
     const { lang } = await props.params;
     initLingui(lang);
-    const release = await iosDevReleaseFetchApi({ next: { revalidate: 600 } });
 
     return (
         <main className="flex-1">
@@ -38,16 +36,17 @@ export default async function BetaPage(props: PageLangParam) {
                     <p className="text-muted-foreground mb-8">
                         <Trans>Install the latest development build over-the-air on a registered iPhone.</Trans>
                     </p>
-                    {isDefined(release) ? (
-                        <BetaReleaseCard
-                            locale={lang}
-                            publishedAt={release.published_at}
-                            releaseName={release.name}
-                            releaseNotes={release.body}
-                        />
-                    ) : (
-                        <BetaEmptyState />
-                    )}
+                    <Suspense
+                        fallback={
+                            <Card>
+                                <CardContent className="pt-6 text-center text-sm text-muted-foreground">
+                                    <Trans>Checking for the latest build&hellip;</Trans>
+                                </CardContent>
+                            </Card>
+                        }
+                    >
+                        <BetaReleaseSection locale={lang} />
+                    </Suspense>
                 </div>
             </section>
         </main>
