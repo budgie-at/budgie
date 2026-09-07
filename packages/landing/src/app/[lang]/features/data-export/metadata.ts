@@ -23,6 +23,6 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['database-backup', 'csv-import'],
     relatedArticleSlugs: ['open-source-budgeting-transparency', 'local-first-movement-developers'],
     publishedAt: '2025-12-21',
-    updatedAt: '2026-05-03',
+    updatedAt: '2026-09-06',
     ogTags: ['export', 'csv', 'backup']
 } satisfies FeatureRegistryEntryInterface;

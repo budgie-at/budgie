@@ -35,9 +35,7 @@ export const ProblemSolutionCard = ({ variant }: Props) => {
         ? 'text-xl font-bold text-red-700 dark:text-red-400'
         : 'text-xl font-bold text-green-700 dark:text-green-400';
 
-    const subtitleClassName = isProblem
-        ? 'text-sm text-red-600/70 dark:text-red-400/70'
-        : 'text-sm text-green-600/70 dark:text-green-400/70';
+    const subtitleClassName = isProblem ? 'text-sm text-red-700 dark:text-red-400' : 'text-sm text-green-700 dark:text-green-400';
 
     const icon: ReactNode = isProblem ? <Cloud className="size-6 text-red-600" /> : <Smartphone className="size-6 text-green-600" />;
     const title = isProblem ? <Trans>Cloud-Based Apps</Trans> : <Trans>Budgie (Offline-First)</Trans>;

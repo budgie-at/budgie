@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'net-worth-tracker',
     tier: FeatureTierEnum.HERO,
     title: msg`Net Worth Tracker for Mobile`,
-    tagline: msg`Bank, cash, crypto, stocks, debt — one number on your home screen.`,
+    tagline: msg`Bank, cash, deposit, crypto, debt — one number on your home screen.`,
     metaTitle: msg`Net Worth Tracker for Mobile — Budgie`,
-    metaDescription: msg`Roll up every bank account, cash wallet, crypto holding, stock position, and liability into a single net-worth number. Multi-currency conversion baked in.`,
+    metaDescription: msg`Roll up every bank account, cash wallet, deposit, crypto holding, and liability into a single net-worth number. Multi-currency conversion baked in.`,
     primaryKeyword: 'net worth tracker app',
     seoKeywords: [
         'net worth tracker app',
@@ -23,6 +23,6 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['account-management', 'multi-currency', 'debt-tracking', 'crypto-investment-tracking'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
     publishedAt: '2026-01-03',
-    updatedAt: '2026-05-03',
+    updatedAt: '2026-09-06',
     ogTags: ['net worth', 'multi-currency', 'dashboard']
 } satisfies FeatureRegistryEntryInterface;

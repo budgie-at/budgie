@@ -75,7 +75,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Bank, cash, crypto, stocks, ETFs, and debt — all roll up into a single net-worth number on your home screen, with
+                        Bank, cash, deposit, crypto, and debt accounts all roll up into a single net-worth number on your home screen, with
                         multi-currency conversion baked in.
                     </Trans>
                 }
@@ -175,7 +175,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                         <Trans>Liability and debt accounts subtract automatically; receivables add</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Crypto, stocks, ETFs, and commodities sit alongside fiat with the same UX</Trans>
+                        <Trans>Crypto holdings sit alongside your fiat accounts with the same UX</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -186,7 +186,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageComparisonTable rivalLabel={<Trans>Most expense apps</Trans>}>
                     <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Bank + cash + crypto + stocks + ETFs + debt</Trans>}
+                        budgie={<Trans>Bank + cash + deposit + crypto + debt</Trans>}
                         concern={<Trans>Asset coverage</Trans>}
                         rival={<Trans>Bank only</Trans>}
                     />

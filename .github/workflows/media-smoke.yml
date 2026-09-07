@@ -36,7 +36,7 @@ jobs:
                 EXPO_PUBLIC_AI_DISABLE=true
                 EXPO_PUBLIC_LOGGING_DISABLE=true
             flows-dir: tests/app-tests/flows/media
-            flows-exclude-pattern: 'pin-app-lock-clip-1.flow.yaml'
+            flows-exclude-pattern: '[ap]*-clip-1.flow.yaml'
             shard-count: 1
             maestro-config: tests/app-tests/config.yaml
             pre-run-flow: tests/app-tests/flows/setup/prime-deep-links.flow.yaml

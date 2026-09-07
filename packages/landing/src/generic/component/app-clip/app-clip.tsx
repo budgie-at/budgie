@@ -24,13 +24,8 @@ export const AppClip = ({ slug, scene, locale, alt, fallback }: Props) => {
 
     return (
         <>
-            <div className="block dark:hidden">
-                <AppClipMedia alt={alt} asset={lightAsset} />
-            </div>
-
-            <div className="hidden dark:block">
-                <AppClipMedia alt={alt} asset={darkAsset} />
-            </div>
+            <AppClipMedia alt={alt} asset={lightAsset} className="block dark:hidden" />
+            <AppClipMedia alt={alt} asset={darkAsset} className="hidden dark:block" />
         </>
     );
 };

@@ -50,7 +50,7 @@ export const Header = ({ lang }: Props) => {
                     </span>
                 </Link>
 
-                <nav className="hidden md:flex gap-8">
+                <nav className="hidden lg:flex gap-8">
                     <Link
                         className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         href={`/${lang}/features`}
@@ -86,14 +86,14 @@ export const Header = ({ lang }: Props) => {
                     <LanguageSwitcher />
                     <ThemeSwitcher />
 
-                    <Button asChild className="hidden rounded-full md:flex">
+                    <Button asChild className="hidden rounded-full lg:flex">
                         <Link href={`/${lang}#waitlist`} onClick={handleScrollToWaitlist}>
                             <Trans>Join Waitlist</Trans>
                             <ChevronRight className="ml-1 size-4" />
                         </Link>
                     </Button>
 
-                    <Button className="md:hidden" onClick={handleMenuToggle} size="icon" variant="ghost">
+                    <Button className="lg:hidden" onClick={handleMenuToggle} size="icon" variant="ghost">
                         {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
 
                         <span className="sr-only">

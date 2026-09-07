@@ -12,14 +12,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -82,14 +81,41 @@ export default async function OpenSourceBudgetAppMobilePage(props: PageLangParam
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Every promise here has a file behind it</Trans>}>
+                    <Trans>One settings screen, and a public repository where every line of it can be checked.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Point index={0}>
+                    <Trans>
+                        Read the code that holds your money. The repository is the product, and nothing about how Budgie stores or protects
+                        your data is compiled in secret.
+                    </Trans>
+                </FeatureStory.Point>
+
+                <FeatureStory.Shot
                     alt={t(i18n)`Budgie settings screen listing the privacy, security and general options the app ships with`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="open-source-budget-app-mobile-1"
                     slug="open-source-budget-app-mobile"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout index={0} y={0.262}>
+                        <Trans>Read the code behind this claim</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.403}>
+                        <Trans>And the lock that enforces it</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Point index={1}>
+                    <Trans>Scroll Settings end to end and there is no analytics group, because there is no telemetry to switch off.</Trans>
+                </FeatureStory.Point>
+                <FeatureStory.Point index={2}>
+                    <Trans>Fork it if we disappear. The database format and the app are both yours to keep.</Trans>
+                </FeatureStory.Point>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
