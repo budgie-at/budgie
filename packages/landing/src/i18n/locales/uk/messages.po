@@ -2311,6 +2311,10 @@ msgstr "Проєкт, який ігнорує питання безпеки аб
 msgid "A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device."
 msgstr "Загальнодоступний FX-потік. Жодного облікового запису постачальника, жодного брокера курсів; денний курс можна перевірити на вашому пристрої."
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
+msgstr "Один перемикач темного режиму в Налаштуваннях — за замовчуванням стежить за темою системи, вручну перемикається будь-коли"
+
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "A source-available license that lets you read, fork, and modify the code. The official app builds remain ours to monetize, which keeps development sustainable."
 msgstr "Ліцензія з доступним вихідним кодом, що дозволяє читати, форкати та змінювати код. Офіційні збірки додатку залишаються нашою власністю для монетизації, що забезпечує стійкий розвиток."
@@ -13055,10 +13059,6 @@ msgstr "Метод синхронізації"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Sync protocol implementation"
 msgstr "Реалізацію протоколу синхронізації"
-
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "System / Light / Dark — three-way switch in Settings"
-msgstr "Системна / Світла / Темна — тристоронній перемикач в Налаштуваннях"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "System-adaptive dark theme that respects OLED displays and switches with your device — or lock to dark or light."
