@@ -11,15 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppClip } from '../../../../generic/component/app-clip/app-clip';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -75,21 +73,77 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 heading={<Trans>Spending Analytics That Actually Help</Trans>}
                 locale={lang}
                 tagline={
-                    <Trans>
-                        Category breakdown, tag breakdown, monthly trends, and balance timelines — with drill-down from any chart slice to
-                        the underlying transactions.
-                    </Trans>
+                    <Trans>Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it.</Trans>
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie analytics screen with the spent, income and balance totals above the per-category spending bars`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>From the month&apos;s total to one receipt</Trans>}>
+                    <Trans>
+                        Two screens do the work: the Categories tab, where the period&apos;s totals sit above every category ranked by what
+                        it took, and the transaction list behind any one of those rows.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Set the period, read the totals</Trans>}>
+                    <Trans>
+                        Statistics opens on This Month. The date chip swaps in Today, This or Last Week, Last Month, This Year and All Time,
+                        or any range you draw on the calendar. Amount, Category, Tag and Account chips narrow it further, and both tabs read
+                        the same filter.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Categories analytics tab with the date and amount filter chips, the Spent, Income and Balance tiles, and per-category spending bars`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="spending-analytics-1"
                     slug="spending-analytics"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout x={0.43} y={0.167}>
+                        <Trans>Seven presets, or your own range</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.3}>
+                        <Trans>Spent and earned this period</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.62}>
+                        <Trans>Its share of the period</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Every category, ranked by what it took</Trans>}>
+                    <Trans>
+                        Income by category and Spending by category list each one with its total and its share of the period, biggest first.
+                        Categories with no activity drop out of the list, and anything you never filed collects in an Uncategorized row.
+                    </Trans>
+                </FeatureStory.Step>
+
+                <FeatureStory.Step index={2} title={<Trans>Tap a row, get the transactions</Trans>}>
+                    <Trans>
+                        A category row opens the transactions behind it, carrying the same period across and grouping them by month — each
+                        one with its account, its tags and its time. Tags drill down the same way, and the Untagged bucket shows what
+                        slipped through.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie transaction list for a single spending category, showing the period date range above rows grouped by month`}
+                    index={2}
+                    locale={lang}
+                    scene="spending-analytics-2"
+                    slug="spending-analytics"
+                >
+                    <FeatureStory.Callout x={0.3} y={0.17}>
+                        <Trans>The period comes with you</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.247}>
+                        <Trans>Every transaction behind the total</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -97,14 +151,14 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Most apps show a pie chart and call it analytics. Budgie&apos;s analytics screen splits into Categories, Tags, and
-                        Recurring tabs, each with drill-down: tap a category to see every transaction in it for the current period.
+                        Most apps show a pie chart and call it analytics. Budgie&apos;s analytics screen splits into Categories and Tags
+                        tabs, each with drill-down: tap a category to see every transaction in it for the current period.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Date filters cover Today, Yesterday, This/Last Week, This/Last Month, This Year, and All Time. The
-                        &ldquo;Untagged&rdquo; and &ldquo;Uncategorized&rdquo; buckets surface the gaps in your bookkeeping so you can
+                        Date filters cover Today, This and Last Week, This and Last Month, This Year and All Time, plus any custom range.
+                        The &ldquo;Untagged&rdquo; and &ldquo;Uncategorized&rdquo; buckets surface the gaps in your bookkeeping so you can
                         tighten them up.
                     </Trans>
                 </FeaturePageProse>
@@ -116,19 +170,19 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Categories tab: per-category totals, with drill-down to every transaction in the slice</Trans>
+                        <Trans>Categories tab: per-category totals, with drill-down to every transaction in the row</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Tags tab: per-tag income and expense, plus an &ldquo;Untagged&rdquo; bucket for the gaps</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Recurring tab: subscription cadence and forecasted upcoming bills</Trans>
+                        <Trans>Amount, category, tag and account chips narrow both tabs from the same filter row</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Eight date presets: Today through All Time, plus a custom range fallback</Trans>
+                        <Trans>Seven date presets, from Today to All Time, plus any range you pick on the calendar</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Compact tile mode shows weekly/monthly net flow alongside category totals</Trans>
+                        <Trans>Overview tiles: spent and earned across the period, beside your balance over every account</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
                         <Trans>Bank-fee entries are included in category analytics even when attached to transfers</Trans>
@@ -136,33 +190,12 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Analytics renders directly from the transaction table — no separate aggregation pipeline. Filters apply to all tabs
-                        simultaneously. Compact tile mode shows weekly/monthly net flow alongside category totals.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageMedia>
-                <AppClip
-                    alt={t(i18n)`Screen recording of Budgie opening a spending category from the analytics screen and going back`}
-                    locale={lang}
-                    scene="spending-analytics-clip-1"
-                    slug="spending-analytics"
-                />
-            </FeaturePageMedia>
-
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>Can I drill down from a chart to the transactions?</Trans>}
+                    question={<Trans>Can I drill down from the breakdown to the transactions?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Tap any category or tag slice to see every transaction that contributed to it during the current period.
+                            Yes. Tap any category or tag row to see every transaction that contributed to it during the current period.
                         </Trans>
                     }
                 />
@@ -179,8 +212,8 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                     question={<Trans>Can I compare months?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Switch the date filter between presets like This Month, Last Month, This Year. Compact tile mode also shows
-                            period-over-period deltas.
+                            Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on
+                            the calendar — the totals and every category row redraw for the period you chose.
                         </Trans>
                     }
                 />
