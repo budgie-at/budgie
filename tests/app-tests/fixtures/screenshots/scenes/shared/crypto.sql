@@ -14,9 +14,10 @@ SELECT
 FROM settings;
 
 CREATE TEMP TABLE overlay_coin AS
-SELECT 34 AS instrument_id, 118420.55 AS usd_price, 421500 AS holding, 9 AS account_id, 'Bitcoin' AS coin_title
+SELECT 34 AS instrument_id, 118420.55 AS usd_price, 421500 AS holding, 9 AS account_id, 'Bitcoin' AS coin_title,
+       19900000 AS circulating_supply, 218000 AS daily_volume_units
 UNION ALL
-SELECT 51, 412.80, 12500000, 10, 'Monero';
+SELECT 51, 412.80, 12500000, 10, 'Monero', 18460000, 94000;
 
 DELETE FROM transaction_tags WHERE transaction_id BETWEEN 1400 AND 1499;
 DELETE FROM transaction_entries WHERE transaction_id BETWEEN 1400 AND 1499;
@@ -90,6 +91,7 @@ CREATE TEMP TABLE overlay_transaction (
     days_ago INTEGER,
     minute INTEGER,
     amount INTEGER,
+    buy_price_factor REAL,
     title_en TEXT,
     title_fr TEXT,
     title_de TEXT,
@@ -97,11 +99,11 @@ CREATE TEMP TABLE overlay_transaction (
     title_uk TEXT
 );
 
-INSERT INTO overlay_transaction (id, account_id, days_ago, minute, amount, title_en, title_fr, title_de, title_es, title_uk) VALUES
-    (1400, 9, 12,  840,  62000, 'Bitcoin buy',  'Achat Bitcoin', 'Bitcoin-Kauf', 'Compra de Bitcoin', 'Купівля Bitcoin'),
-    (1401, 9, 47,  915,  88500, 'Bitcoin buy',  'Achat Bitcoin', 'Bitcoin-Kauf', 'Compra de Bitcoin', 'Купівля Bitcoin'),
-    (1402, 10, 23, 1020, 2500000, 'Monero buy',  'Achat Monero',  'Monero-Kauf',  'Compra de Monero',  'Купівля Monero'),
-    (1403, 10, 68,  690, 4000000, 'Monero buy',  'Achat Monero',  'Monero-Kauf',  'Compra de Monero',  'Купівля Monero');
+INSERT INTO overlay_transaction (id, account_id, days_ago, minute, amount, buy_price_factor, title_en, title_fr, title_de, title_es, title_uk) VALUES
+    (1400, 9, 12,  840,  155000, 0.91, 'Bitcoin buy',  'Achat Bitcoin', 'Bitcoin-Kauf', 'Compra de Bitcoin', 'Купівля Bitcoin'),
+    (1401, 9, 47,  915,  266500, 0.74, 'Bitcoin buy',  'Achat Bitcoin', 'Bitcoin-Kauf', 'Compra de Bitcoin', 'Купівля Bitcoin'),
+    (1402, 10, 23, 1020, 5000000, 0.88, 'Monero buy',  'Achat Monero',  'Monero-Kauf',  'Compra de Monero',  'Купівля Monero'),
+    (1403, 10, 68,  690, 7500000, 0.69, 'Monero buy',  'Achat Monero',  'Monero-Kauf',  'Compra de Monero',  'Купівля Monero');
 
 INSERT INTO transactions (id, created_at, updated_at, type, title, operated_at, comment, from_account_id, to_account_id, exchange_rate, needs_embedding)
 SELECT
@@ -125,7 +127,7 @@ SELECT
 FROM overlay_transaction
 CROSS JOIN overlay_locale;
 
-INSERT INTO transaction_entries (id, created_at, updated_at, type, account_id, category_id, transaction_id, amount, exchange_rate, category_source, kind)
+INSERT INTO transaction_entries (id, created_at, updated_at, type, account_id, category_id, transaction_id, amount, exchange_rate, category_source, kind, base_instrument_id, base_exchange_rate, base_amount)
 SELECT
     overlay_transaction.id * 10,
     unixepoch(date('now')) - overlay_transaction.days_ago * 86400 + overlay_transaction.minute * 60,
@@ -137,8 +139,13 @@ SELECT
     overlay_transaction.amount,
     1.0,
     'USER',
-    'PRIMARY'
-FROM overlay_transaction;
+    'PRIMARY',
+    overlay_locale.instrument_id,
+    overlay_coin.usd_price * overlay_locale.usd_to_base * overlay_transaction.buy_price_factor,
+    CAST(overlay_transaction.amount * overlay_coin.usd_price * overlay_locale.usd_to_base * overlay_transaction.buy_price_factor AS INTEGER)
+FROM overlay_transaction
+INNER JOIN overlay_coin ON overlay_coin.account_id = overlay_transaction.account_id
+CROSS JOIN overlay_locale;
 
 INSERT INTO account_balances (id, created_at, updated_at, account_id, amount)
 SELECT
@@ -154,7 +161,7 @@ SELECT
     ), 0)
 FROM overlay_coin;
 
-INSERT OR REPLACE INTO instrument_daily_market_prices (instrument_id, quote_instrument_id, price_date, price, source)
+INSERT OR REPLACE INTO instrument_daily_market_prices (instrument_id, quote_instrument_id, price_date, price, market_cap, volume, source)
 WITH RECURSIVE day_offset(days_ago) AS (
     SELECT 0
     UNION ALL
@@ -164,7 +171,9 @@ SELECT
     overlay_coin.instrument_id,
     overlay_locale.instrument_id,
     date('now', '-' || day_offset.days_ago || ' days'),
-    overlay_coin.usd_price * overlay_locale.usd_to_base * (1.0 - day_offset.days_ago * 0.0016),
+    overlay_coin.usd_price * overlay_locale.usd_to_base * (1.0 - day_offset.days_ago * 0.0016) * (1.0 + (((day_offset.days_ago * 37 + 9) % 23) - 11) / 420.0),
+    overlay_coin.usd_price * overlay_locale.usd_to_base * (1.0 - day_offset.days_ago * 0.0016) * overlay_coin.circulating_supply,
+    overlay_coin.usd_price * overlay_locale.usd_to_base * (1.0 - day_offset.days_ago * 0.0016) * overlay_coin.daily_volume_units,
     'COINGECKO'
 FROM day_offset
 CROSS JOIN overlay_coin
