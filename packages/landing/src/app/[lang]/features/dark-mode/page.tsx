@@ -16,6 +16,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -78,6 +79,44 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                 }
             />
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>What the transaction list actually shows</Trans>}>
+                    <Trans>One real screen, rendered in whichever theme this page is in right now.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Point index={0}>
+                    <Trans>The background is solid black, not a dimmed grey panel layered over a light design.</Trans>
+                </FeatureStory.Point>
+
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie transaction list in dark mode with a solid black background and bright red and green amounts`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="expense-tracking-2"
+                    slug="expense-tracking"
+                >
+                    <FeatureStory.Callout index={0} y={0.09}>
+                        <Trans>Solid black surface</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.422}>
+                        <Trans>Brighter red and green</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Point index={1}>
+                    <Trans>
+                        Expense and income amounts shift to brighter red and green in dark mode, not the muted tones carried over from light
+                        mode.
+                    </Trans>
+                </FeatureStory.Point>
+                <FeatureStory.Point index={2}>
+                    <Trans>
+                        Switching modes is one tap on the Dark Mode toggle in Settings — a manual switch, not an automatic handoff.
+                    </Trans>
+                </FeatureStory.Point>
+            </FeatureStory>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why a finance app at midnight matters</Trans>
@@ -117,18 +156,6 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                         <Trans>Persists across app relaunch and device restarts</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Settings → Theme → Light / Dark / System. The app uses platform appearance APIs and persists the choice. All charts
-                        recompute their palette to match.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>

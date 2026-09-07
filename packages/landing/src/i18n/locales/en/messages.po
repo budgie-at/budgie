@@ -3692,6 +3692,10 @@ msgstr "Bound by their privacy policy"
 msgid "Breaking security changes are clearly communicated"
 msgstr "Breaking security changes are clearly communicated"
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Brighter red and green"
+msgstr "Brighter red and green"
+
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx
 msgid "Browse All Features"
 msgstr "Browse All Features"
@@ -4297,6 +4301,10 @@ msgstr "Budgie transaction date filter with the month grid above the preset rang
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie transaction list grouped by month with the category, tag and account on every row"
 msgstr "Budgie transaction list grouped by month with the category, tag and account on every row"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Budgie transaction list in dark mode with a solid black background and bright red and green amounts"
+msgstr "Budgie transaction list in dark mode with a solid black background and bright red and green amounts"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie transaction list showing eighty-one transactions read straight from the on-device database"
@@ -6990,6 +6998,10 @@ msgstr "Exchange rates are fetched anonymously"
 msgid "exchange-rates"
 msgstr "exchange-rates"
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Expense and income amounts shift to brighter red and green in dark mode, not the muted tones carried over from light mode."
+msgstr "Expense and income amounts shift to brighter red and green in dark mode, not the muted tones carried over from light mode."
+
 #: src/app/[lang]/features/offline-first-expense-tracker/opengraph-image.tsx
 msgid "expense tracker"
 msgstr "expense tracker"
@@ -8202,7 +8214,6 @@ msgstr "How is this different from the Tag Analytics page?"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/custom-categories/page.tsx
-#: src/app/[lang]/features/dark-mode/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
@@ -10823,6 +10834,10 @@ msgstr "One picker component, used across analytics, transactions, and recurring
 msgid "One PIN. Real encryption."
 msgstr "One PIN. Real encryption."
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "One real screen, rendered in whichever theme this page is in right now."
+msgstr "One real screen, rendered in whichever theme this page is in right now."
+
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "One receipt, multiple categories."
 msgstr "One receipt, multiple categories."
@@ -12564,10 +12579,6 @@ msgstr "Settings → Export → Backup. Budgie writes a .db file with SQLCipher 
 msgid "Settings → Privacy → Screenshot protection. Toggle individual screens. The runtime applies FLAG_SECURE on Android and a blur layer on iOS in app-switcher state."
 msgstr "Settings → Privacy → Screenshot protection. Toggle individual screens. The runtime applies FLAG_SECURE on Android and a blur layer on iOS in app-switcher state."
 
-#: src/app/[lang]/features/dark-mode/page.tsx
-msgid "Settings → Theme → Light / Dark / System. The app uses platform appearance APIs and persists the choice. All charts recompute their palette to match."
-msgstr "Settings → Theme → Light / Dark / System. The app uses platform appearance APIs and persists the choice. All charts recompute their palette to match."
-
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
 msgstr "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
@@ -12709,6 +12720,10 @@ msgstr "software architecture"
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "Software engineer"
 msgstr "Software engineer"
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Solid black surface"
+msgstr "Solid black surface"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Some advanced features still in development"
@@ -13163,6 +13178,10 @@ msgstr "Switch language"
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
 msgstr "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
 
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "Switching modes is one tap on the Dark Mode toggle in Settings — a manual switch, not an automatic handoff."
+msgstr "Switching modes is one tap on the Dark Mode toggle in Settings — a manual switch, not an automatic handoff."
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Switching to Budgie CSV import eliminates the aggregator entirely. Download your statement from your bank website as you normally would and import it into Budgie. You gain full transaction history without any ongoing credential exposure to a third party."
 msgstr "Switching to Budgie CSV import eliminates the aggregator entirely. Download your statement from your bank website as you normally would and import it into Budgie. You gain full transaction history without any ongoing credential exposure to a third party."
@@ -13461,6 +13480,10 @@ msgstr "The Architecture: SQLite and Local-First Design"
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The average user logs the same merchant more than thirty times a year. Typing the category, picking a tag, entering the usual amount, and choosing the right account for the same coffee shop is wasted effort — the information is already in your history. Budgie surfaces it as tappable pill-shaped chips the moment you open the form, so confirming a familiar expense takes one tap instead of seven."
 msgstr "The average user logs the same merchant more than thirty times a year. Typing the category, picking a tag, entering the usual amount, and choosing the right account for the same coffee shop is wasted effort — the information is already in your history. Budgie surfaces it as tappable pill-shaped chips the moment you open the form, so confirming a familiar expense takes one tap instead of seven."
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "The background is solid black, not a dimmed grey panel layered over a light design."
+msgstr "The background is solid black, not a dimmed grey panel layered over a light design."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Bottom Line"
@@ -15474,6 +15497,10 @@ msgstr "What Sets Budgie Apart:"
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "What the screen offers next depends on the bank. Connections that talk to a live API can pull the bank's account list and add whatever you left out the first time. Statement-based banks offer an import action instead. Both can open a new deposit account that starts out attached to the same bank."
 msgstr "What the screen offers next depends on the bank. Connections that talk to a live API can pull the bank's account list and add whatever you left out the first time. Statement-based banks offer an import action instead. Both can open a new deposit account that starts out attached to the same bank."
+
+#: src/app/[lang]/features/dark-mode/page.tsx
+msgid "What the transaction list actually shows"
+msgstr "What the transaction list actually shows"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "What to Look for in a Privacy-Focused Budget App"
