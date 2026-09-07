@@ -17,6 +17,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -79,6 +80,44 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Where the backup file replaces the server</Trans>}>
+                    <Trans>One settings screen, and the two rows that stand in for everything a hosted server would do.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Point index={0}>
+                    <Trans>
+                        Every transaction, account and category lives in an encrypted database on your phone — there is no backend to
+                        deploy.
+                    </Trans>
+                </FeatureStory.Point>
+
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie data management settings showing Import Database and Export Database rows`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="database-backup-1"
+                    slug="database-backup"
+                >
+                    <FeatureStory.Callout index={0} y={0.458}>
+                        <Trans>Restore from a backup file</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.53}>
+                        <Trans>Write your backup file here</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Point index={1}>
+                    <Trans>
+                        Export Database writes one encrypted file with everything. Import Database restores it on a new phone in seconds.
+                    </Trans>
+                </FeatureStory.Point>
+                <FeatureStory.Point index={2}>
+                    <Trans>No server to patch, renew certificates for, or pay for — just a file only you hold.</Trans>
+                </FeatureStory.Point>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
