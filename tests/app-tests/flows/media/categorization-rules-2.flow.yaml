@@ -1,0 +1,54 @@
+appId: ${APP_ID}
+---
+- runFlow: ../subflows/navigation/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'UncategorizedTransactionsPill.Button'
+      timeout: 15000
+
+- tapOn:
+      id: 'UncategorizedTransactionsPill.Button'
+
+- extendedWaitUntil:
+      visible:
+          id: '^TransactionCard[.]Label[.].+$'
+      timeout: 10000
+
+- tapOn:
+      id: '^TransactionCard[.]Label[.].+$'
+      index: 0
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 10000
+
+- tapOn:
+      id: 'TransactionInfo.EditButton.Label'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionForm.CategorySelector.Title'
+      timeout: 10000
+
+- tapOn:
+      id: 'TransactionForm.CategorySelector.Title'
+
+- extendedWaitUntil:
+      visible:
+          id: '^CategoryPickerBottomSheet[.]Card[.].+[.]Label$'
+      timeout: 10000
+
+- tapOn:
+      id: '^CategoryPickerBottomSheet[.]Card[.].+[.]Label$'
+      index: 0
+
+- extendedWaitUntil:
+      visible:
+          id: 'SuggestRule.Card'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene
