@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -81,14 +80,80 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie home screen with the bank, cash and savings accounts and their balances`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Many accounts, one balance sheet</Trans>}>
+                    <Trans>
+                        Three screens: the home list grouped by type, the form a new account type brings with it, and the archive that keeps
+                        the accounts you closed.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Accounts group themselves by type</Trans>}>
+                    <Trans>
+                        Bank, cash, crypto, deposit and debt each get their own section on the home screen, and every section heading
+                        carries the subtotal for the accounts under it.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="account-management-1"
                     slug="account-management"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.177}>
+                        <Trans>Total balance up top</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.436}>
+                        <Trans>Every group carries a subtotal</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Each type brings its own form</Trans>}>
+                    <Trans>
+                        Picking Deposit opens the deposit form: opening balance, name, currency — then an interest rate and a maturity date
+                        that only this type asks for.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie new deposit account form with currency, interest rate and maturity date fields`}
+                    index={1}
+                    locale={lang}
+                    scene="account-management-3"
+                    slug="account-management"
+                >
+                    <FeatureStory.Callout y={0.473}>
+                        <Trans>Currency is fixed per account</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.595}>
+                        <Trans>Interest rate, deposits only</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Archive instead of deleting</Trans>}>
+                    <Trans>
+                        An archived account leaves the home screen and the totals but keeps every transaction. Settings lists them, ready to
+                        search and restore.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie archived accounts screen listing two archived accounts, each with a restore button`}
+                    index={2}
+                    locale={lang}
+                    scene="account-management-2"
+                    slug="account-management"
+                >
+                    <FeatureStory.Callout y={0.221}>
+                        <Trans>Restore in one tap</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.832}>
+                        <Trans>Search what you archived</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -133,27 +198,6 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Deposit, Crypto, Stocks,
-                        Debt. Reorder, rename, archive, or permanently delete from the account detail page.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie archived accounts screen listing accounts hidden from the main balance view`}
-                    locale={lang}
-                    scene="account-management-2"
-                    slug="account-management"
-                />
-            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
