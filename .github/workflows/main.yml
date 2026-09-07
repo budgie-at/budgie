@@ -89,6 +89,8 @@ jobs:
     needs: release
     runs-on: [self-hosted, trf-linux-amd64-4x8]
     timeout-minutes: 30
+    env:
+      APP_VARIANT: production
     steps:
       - name: Check for EXPO_TOKEN
         run: |
