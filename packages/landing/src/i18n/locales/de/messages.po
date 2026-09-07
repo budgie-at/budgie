@@ -3801,6 +3801,10 @@ msgstr "Budgie-Einstellungen zur Datenverwaltung mit den Zeilen „Datenbank imp
 msgid "Budgie data management settings with the import, export, backup and restore actions"
 msgstr "Budgie-Einstellungen zur Datenverwaltung mit den Aktionen Importieren, Exportieren, Sichern und Wiederherstellen"
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Budgie date filter sheet with an August calendar above the row of preset range chips"
+msgstr "Budgie-Datumsfilter-Sheet mit einem August-Kalender über der Reihe der voreingestellten Zeitraum-Chips"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie debt account screen with the amount left to receive above the repayment history"
 msgstr "Budgie-Schuldenkonto mit dem noch ausstehenden Betrag über dem Rückzahlungsverlauf"
@@ -4255,8 +4259,8 @@ msgid "Budgie Terms of Service - Read our terms and conditions for using our pri
 msgstr "Budgie Terms of Service - Bedingungen für die Nutzung von Budgie, der privaten Ausgaben-App"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "Budgie transaction date filter with the month grid above the preset range buttons"
-msgstr "Budgie-Datumsfilter für Transaktionen mit dem Monatsraster über den Schaltflächen für voreingestellte Zeiträume"
+msgid "Budgie transaction list filtered to Last Month, showing the active chip and 73 matching transactions"
+msgstr "Budgie-Transaktionsliste gefiltert auf „Letzter Monat“, mit aktivem Chip und 73 passenden Transaktionen"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie transaction list grouped by month with the category, tag and account on every row"
@@ -6748,6 +6752,10 @@ msgstr "Jede Monobank-Karte und jeder Topf kommt als eigenes Konto zurück – m
 msgid "Every promise here has a file behind it"
 msgstr "Hinter jedem Versprechen hier steht eine Datei"
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Every row now from August"
+msgstr "Jede Zeile jetzt aus August"
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Every rule can be switched off without being deleted"
 msgstr "Jede Regel lässt sich deaktivieren, ohne gelöscht zu werden"
@@ -8031,7 +8039,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
-#: src/app/[lang]/features/date-filter-presets/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
@@ -8670,6 +8677,10 @@ msgstr "Sprachen"
 msgid "Last 7 days. Larger windows (30, 90, custom) are also one-tap presets. Custom range opens a date picker."
 msgstr "Letzte 7 Tage. Größere Fenster (30, 90, benutzerdefiniert) sind ebenfalls Ein-Tipp-Voreinstellungen. Benutzerdefinierter Bereich öffnet eine Datumsauswahl."
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Last Month lands as a chip in the filter row and the count above the list drops from 761 transactions to 73, every row now dated inside August. Clear All puts the whole list back, and the date chip stacks with the type, amount, category, tag and account chips beside it."
+msgstr "„Letzter Monat“ landet als Chip in der Filterzeile und die Zahl über der Liste fällt von 761 Transaktionen auf 73 — jede Zeile liegt jetzt im August. „Alle löschen“ holt die ganze Liste zurück, und der Datums-Chip lässt sich mit den Chips für Typ, Betrag, Kategorien, Tags und Konten daneben kombinieren."
+
 #: src/app/[lang]/legal/license/page.tsx
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 #: src/app/[lang]/legal/terms-of-service/page.tsx
@@ -9150,6 +9161,10 @@ msgstr "Nur Marketing-Text"
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Match all or match any, with contains, equals, comparison, list, and regular-expression operators"
 msgstr "Alle oder eine erfüllen, mit Operatoren für enthält, gleich, Vergleich, Liste und reguläre Ausdrücke"
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Matching count, re-queried"
+msgstr "Trefferzahl, neu abgefragt"
 
 #: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
 msgid "maturity"
@@ -10592,10 +10607,6 @@ msgstr "Ein Gesamtlimit, Kategorielimits und eine Obergrenze für alles Übrige 
 msgid "One per transaction — never ambiguous, always quick to scan"
 msgstr "Einer pro Transaktion – nie mehrdeutig, immer schnell zu scannen"
 
-#: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "One picker component, used across analytics, transactions, and recurring screens. Customize the start-of-week in Settings if your locale default doesn't match."
-msgstr "Eine Auswähler-Komponente, verwendet in Analysen-, Transaktions- und Wiederholungsbildschirmen. Passen Sie den Wochenbeginn in den Einstellungen an, wenn Ihr Gerätestandard nicht passt."
-
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "One PIN. Real encryption."
 msgstr "Eine PIN. Echte Verschlüsselung."
@@ -11083,6 +11094,10 @@ msgstr ""
 msgid "Pick a window: last 7 days, last 30, last 90, or a custom range. Budgie diffs the bank's response against existing rows; new rows insert, deleted rows soft-delete, edited rows show a conflict picker."
 msgstr "Ein Fenster auswählen: letzte 7 Tage, letzte 30, letzte 90 oder ein benutzerdefinierter Bereich. Budgie vergleicht die Antwort der Bank mit bestehenden Zeilen; neue Zeilen werden eingefügt, gelöschte Zeilen werden weich gelöscht, bearbeitete Zeilen zeigen einen Konfliktauswähler."
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Pick any range by hand"
+msgstr "Beliebigen Zeitraum selbst wählen"
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Pick source account, pick destination account, enter amount. If currencies differ, the dual-amount input opens automatically. Counter-FX is preserved per-leg so balance reconciliation stays exact."
 msgstr "Quellkonto auswählen, Zielkonto auswählen, Betrag eingeben. Wenn Währungen unterschiedlich sind, öffnet sich die Doppelbetrags-Eingabe automatisch. Der Gegen-Wechselkurs wird pro Buchungsseite gespeichert, damit der Saldoabgleich exakt bleibt."
@@ -11253,6 +11268,10 @@ msgstr "Bewahrt mehr Ihrer Kategoriestruktur"
 #: src/app/[lang]/features/date-filter-presets/opengraph-image.tsx
 msgid "presets"
 msgstr "Voreinstellungen"
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Presets, one tap each"
+msgstr "Voreinstellungen, je ein Tipp"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Press and hold a row"
@@ -12366,6 +12385,10 @@ msgstr "Die Einrichtung erfolgt in zwei Schritten: Schlüssel und Secret eingebe
 msgid "Setup time"
 msgstr "Einrichtungszeit"
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Seven presets, one tap"
+msgstr "Sieben Voreinstellungen, ein Tipp"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Several production-ready libraries provide local-first infrastructure:"
 msgstr "Mehrere produktionsreife Bibliotheken bieten Local-First-Infrastruktur:"
@@ -13328,6 +13351,10 @@ msgstr "Der Datenerfassungs-Stack"
 msgid "The database uses Drizzle ORM for type-safe operations"
 msgstr "Die Datenbank verwendet Drizzle ORM für typsichere Operationen"
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "The Date chip opens a month calendar with the presets in a row underneath it: Today, This Week, Last Week, This Month, Last Month, This Year, All Time. When none of them is the window you want, pick a start and an end date on the calendar instead and tap Show selected range."
+msgstr "Der Chip „Datum“ öffnet einen Monatskalender, darunter die Voreinstellungen in einer Reihe: Heute, Diese Woche, Letzte Woche, Dieser Monat, Letzter Monat, Dieses Jahr, Gesamte Zeit. Passt keine davon, wählst du stattdessen ein Start- und ein Enddatum im Kalender und tippst auf „Ausgewählten Bereich anzeigen“."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Developer’s Guide to Mint Alternatives: Complete Comparison"
 msgstr "Der Entwickler-Leitfaden zu Mint-Alternativen: Vollständiger Vergleich"
@@ -13431,6 +13458,10 @@ msgstr "Der Lebenszyklus Ihrer Finanzdaten reicht weit über Ihre aktive Nutzung
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "The list keeps them visible"
 msgstr "Die Liste zeigt sie weiter"
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "The list re-queries instantly"
+msgstr "Die Liste lädt sofort neu"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "The list stays scannable"
@@ -14421,6 +14452,10 @@ msgstr "Zwei geräteeigene Modelle – Qwen3 1.7B für Chat und ein 768-dim Nomi
 msgid "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device's secure keystore; (2) PDF/CSV/Excel statement imports for anything else."
 msgstr "Zwei Wege: (1) Direkte API-Token für unterstützte Banken wie Monobank, wo das Token im sicheren Schlüsselspeicher Ihres Geräts lebt; (2) PDF/CSV/Excel-Kontoauszugsimporte für alles andere."
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Two screens: the sheet where a month calendar and the preset chips sit together, and the list a moment after one of those chips is tapped."
+msgstr "Zwei Screens: das Sheet, in dem ein Monatskalender und die Voreinstellungs-Chips zusammenliegen, und die Liste einen Moment nachdem einer dieser Chips angetippt wurde."
+
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Two sources: (1) weekly/monthly SQL patterns over your own transactions, and (2) a 768-dim embedding lookup matching the current title against your nearest historical entries. No cloud calls."
 msgstr "Zwei Quellen: (1) wöchentliche/monatliche SQL-Muster über Ihre eigenen Transaktionen und (2) ein 768-dim Embedding-Lookup, der den aktuellen Titel mit Ihren nächsten historischen Einträgen abgleicht. Keine Cloud-Aufrufe."
@@ -14444,6 +14479,10 @@ msgstr "Zwei Tipp-Aktionen vom Öffnen bis zum Speichern."
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Two taps to saved"
 msgstr "Mit zwei Tipps gespeichert"
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Two taps to the window you want"
+msgstr "Zwei Tipps bis zum gewünschten Zeitraum"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Two ways out, one screen"

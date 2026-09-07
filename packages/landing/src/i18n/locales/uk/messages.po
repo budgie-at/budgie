@@ -3801,6 +3801,10 @@ msgstr "Налаштування керування даними Budgie з ря�
 msgid "Budgie data management settings with the import, export, backup and restore actions"
 msgstr "Налаштування керування даними Budgie з діями імпорту, експорту, резервного копіювання та відновлення"
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Budgie date filter sheet with an August calendar above the row of preset range chips"
+msgstr "Аркуш фільтра дати Budgie з календарем серпня над рядом чипів готових періодів"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie debt account screen with the amount left to receive above the repayment history"
 msgstr "Екран боргового рахунку Budgie із сумою, яку залишилося отримати, над історією погашення"
@@ -4255,8 +4259,8 @@ msgid "Budgie Terms of Service - Read our terms and conditions for using our pri
 msgstr "Умови користування Budgie - умови використання Budgie, приватного застосунку для обліку витрат"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "Budgie transaction date filter with the month grid above the preset range buttons"
-msgstr "Фільтр транзакцій за датою в Budgie із сіткою місяця над кнопками готових діапазонів"
+msgid "Budgie transaction list filtered to Last Month, showing the active chip and 73 matching transactions"
+msgstr "Список транзакцій Budgie з фільтром «Минулий місяць», активним чипом і 73 відповідними транзакціями"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie transaction list grouped by month with the category, tag and account on every row"
@@ -6748,6 +6752,10 @@ msgstr "Кожна картка Monobank і кожна банка поверта
 msgid "Every promise here has a file behind it"
 msgstr "За кожною обіцянкою тут стоїть файл"
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Every row now from August"
+msgstr "Кожен рядок тепер із серпня"
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Every rule can be switched off without being deleted"
 msgstr "Кожне правило можна вимкнути без видалення"
@@ -8031,7 +8039,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
-#: src/app/[lang]/features/date-filter-presets/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
@@ -8670,6 +8677,10 @@ msgstr "мови"
 msgid "Last 7 days. Larger windows (30, 90, custom) are also one-tap presets. Custom range opens a date picker."
 msgstr "Останні 7 днів. Більші вікна (30, 90, довільне) — також однодотикові пресети. Довільний діапазон відкриває вибір дати."
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Last Month lands as a chip in the filter row and the count above the list drops from 761 transactions to 73, every row now dated inside August. Clear All puts the whole list back, and the date chip stacks with the type, amount, category, tag and account chips beside it."
+msgstr "«Минулий місяць» стає чипом у рядку фільтрів, а лічильник над списком падає з 761 транзакції до 73 — кожен рядок тепер із серпня. «Очистити все» повертає весь список, а чип дати поєднується з чипами типу, суми, категорій, тегів і рахунків поруч."
+
 #: src/app/[lang]/legal/license/page.tsx
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 #: src/app/[lang]/legal/terms-of-service/page.tsx
@@ -9150,6 +9161,10 @@ msgstr "Лише маркетинговий текст"
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Match all or match any, with contains, equals, comparison, list, and regular-expression operators"
 msgstr "Збіг за всіма умовами або за будь-якою, з операторами «містить», «дорівнює», порівняння, список і регулярний вираз"
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Matching count, re-queried"
+msgstr "Кількість збігів, перезапитано"
 
 #: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
 msgid "maturity"
@@ -10592,10 +10607,6 @@ msgstr "Один загальний ліміт, ліміти по категор
 msgid "One per transaction — never ambiguous, always quick to scan"
 msgstr "Один на транзакцію — ніколи не неоднозначний, завжди легко переглянути"
 
-#: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "One picker component, used across analytics, transactions, and recurring screens. Customize the start-of-week in Settings if your locale default doesn't match."
-msgstr "Один компонент вибору, що використовується в аналітиці, транзакціях та регулярних екранах. Налаштуйте початок тижня в Налаштуваннях, якщо стандарт вашої локалі не підходить."
-
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "One PIN. Real encryption."
 msgstr "Один PIN. Справжнє шифрування."
@@ -11083,6 +11094,10 @@ msgstr ""
 msgid "Pick a window: last 7 days, last 30, last 90, or a custom range. Budgie diffs the bank's response against existing rows; new rows insert, deleted rows soft-delete, edited rows show a conflict picker."
 msgstr "Оберіть вікно: останні 7 днів, 30, 90 або довільний діапазон. Budgie порівнює відповідь банку з наявними рядками; нові рядки вставляються, видалені — м'яко видаляються, відредаговані — показують вибір конфлікту."
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Pick any range by hand"
+msgstr "Будь-який діапазон вручну"
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Pick source account, pick destination account, enter amount. If currencies differ, the dual-amount input opens automatically. Counter-FX is preserved per-leg so balance reconciliation stays exact."
 msgstr "Оберіть рахунок-джерело, рахунок призначення, введіть суму. Якщо валюти відрізняються, двосуме введення відкривається автоматично. Зустрічний курс FX зберігається для кожної ноги для точного узгодження балансу."
@@ -11253,6 +11268,10 @@ msgstr "Зберігає більше вашої структури катего
 #: src/app/[lang]/features/date-filter-presets/opengraph-image.tsx
 msgid "presets"
 msgstr "пресети"
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Presets, one tap each"
+msgstr "Пресети, по одному дотику"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Press and hold a row"
@@ -12366,6 +12385,10 @@ msgstr "Налаштування — це два кроки: введіть кл
 msgid "Setup time"
 msgstr "Час налаштування"
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Seven presets, one tap"
+msgstr "Сім пресетів, один дотик"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Several production-ready libraries provide local-first infrastructure:"
 msgstr "Кілька готових до виробництва бібліотек надають інфраструктуру local-first:"
@@ -13328,6 +13351,10 @@ msgstr "Стек збору даних"
 msgid "The database uses Drizzle ORM for type-safe operations"
 msgstr "База даних використовує Drizzle ORM для типобезпечних операцій"
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "The Date chip opens a month calendar with the presets in a row underneath it: Today, This Week, Last Week, This Month, Last Month, This Year, All Time. When none of them is the window you want, pick a start and an end date on the calendar instead and tap Show selected range."
+msgstr "Чип «Дата» відкриває календар місяця, а під ним — ряд пресетів: Сьогодні, Цього тижня, Минулий тиждень, Цього місяця, Минулий місяць, Цього року, Весь час. Якщо жоден не підходить, виберіть на календарі дату початку й дату кінця та натисніть «Показати вибраний діапазон»."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Developer’s Guide to Mint Alternatives: Complete Comparison"
 msgstr "Гід розробника по альтернативах Mint: Повне порівняння"
@@ -13431,6 +13458,10 @@ msgstr "Життєвий цикл ваших фінансових даних в�
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "The list keeps them visible"
 msgstr "Список тримає їх на видноті"
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "The list re-queries instantly"
+msgstr "Список миттєво перезапитує дані"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "The list stays scannable"
@@ -14421,6 +14452,10 @@ msgstr "Дві моделі на пристрої — Qwen3 1.7B для чату
 msgid "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device's secure keystore; (2) PDF/CSV/Excel statement imports for anything else."
 msgstr "Два шляхи: (1) прямі API-токени для підтримуваних банків, як-от Монобанк, де токен зберігається у безпечному сховищі вашого пристрою; (2) імпорт виписок у форматах PDF/CSV/Excel для всього іншого."
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Two screens: the sheet where a month calendar and the preset chips sit together, and the list a moment after one of those chips is tapped."
+msgstr "Два екрани: аркуш, де календар місяця й чипи пресетів стоять поруч, і список за мить після дотику до одного з цих чипів."
+
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Two sources: (1) weekly/monthly SQL patterns over your own transactions, and (2) a 768-dim embedding lookup matching the current title against your nearest historical entries. No cloud calls."
 msgstr "Два джерела: (1) тижневі/місячні SQL-шаблони по вашим власним транзакціям та (2) 768-вимірний пошук вкладень, що зіставляє поточну назву з вашими найближчими історичними записами. Без хмарних запитів."
@@ -14444,6 +14479,10 @@ msgstr "Два дотики від відкриття до збереження.
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Two taps to saved"
 msgstr ""
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Two taps to the window you want"
+msgstr "Два дотики до потрібного періоду"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Two ways out, one screen"
