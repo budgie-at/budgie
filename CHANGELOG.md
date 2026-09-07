@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.37.0](https://github.com/budgie-at/budgie/compare/v6.36.0...v6.37.0) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** correct convert-to-transfer linked-legs and undo claims ([ae1f4a5](https://github.com/budgie-at/budgie/commit/ae1f4a501ce573e067f591e5cded65c8eaf9d55c)), closes [#913](https://github.com/budgie-at/budgie/issues/913)
+* **landing:** correct dark-mode three-way-switch claim ([9cc26d3](https://github.com/budgie-at/budgie/commit/9cc26d3c19ac8c3bb78d7303d5c927cb1a164e63)), closes [#912](https://github.com/budgie-at/budgie/issues/912)
+
+
+### Features
+
+* **landing:** pin-app-lock steps story ([b6437da](https://github.com/budgie-at/budgie/commit/b6437da0a6c3e3f46971372dd7d3e6aae18a2515))
+
+
+
+
+
 # [6.36.0](https://github.com/budgie-at/budgie/compare/v6.35.0...v6.36.0) (2026-09-07)
 
 
