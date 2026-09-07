@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.24.0](https://github.com/budgie-at/budgie/compare/v6.23.0...v6.24.0) (2026-09-07)
+
+
+### Features
+
+* **landing:** tell the no-bank-login story in steps ([9be7887](https://github.com/budgie-at/budgie/commit/9be788751b24b0bcdc74529bd59f701eefb6f0e6))
+
+
+
+
+
 # [6.23.0](https://github.com/budgie-at/budgie/compare/v6.22.1...v6.23.0) (2026-09-07)
 
 
