@@ -8,6 +8,7 @@ import { ARTICLE_METADATA as OfflineFirstBankDataSafetyArticleMetadata } from '.
 import { ARTICLE_METADATA as OfflineFirstPrivacyFinancialAppArticleMetadata } from '../../app/[lang]/blog/offline-first-privacy-financial-app/metadata';
 import { ARTICLE_METADATA as OnDeviceAiBudgetAppExplainerArticleMetadata } from '../../app/[lang]/blog/on-device-ai-budget-app-explainer/metadata';
 import { ARTICLE_METADATA as OpenSourceBudgetingTransparencyArticleMetadata } from '../../app/[lang]/blog/open-source-budgeting-transparency/metadata';
+import { ARTICLE_METADATA as WhatsNewAugustSeptember2026ArticleMetadata } from '../../app/[lang]/blog/whats-new-august-september-2026/metadata';
 import { ARTICLE_METADATA as YnabAlternativesPrivacyArticleMetadata } from '../../app/[lang]/blog/ynab-alternatives-privacy/metadata';
 
 import type { ArticleRegistryEntryInterface } from '../interface/article-registry-entry.interface';
@@ -23,5 +24,6 @@ export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
     MintShutdownPrivateAlternativeArticleMetadata,
     OnDeviceAiBudgetAppExplainerArticleMetadata,
     OfflineFirstBankDataSafetyArticleMetadata,
-    HistoricalExchangeRatesBudgetAnalyticsArticleMetadata
+    HistoricalExchangeRatesBudgetAnalyticsArticleMetadata,
+    WhatsNewAugustSeptember2026ArticleMetadata
 ];
