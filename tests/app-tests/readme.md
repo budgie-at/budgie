@@ -87,6 +87,20 @@ AI-enabled build (see #718). There is no
 CSV import clip: the flow recorded the iOS Files picker, which both needs
 E2EFixtures on the CI runner and exposes `01.db`…`09.db` fixture filenames.
 
+Screenshot protection blanks Maestro's `takeScreenshot`, not `simctl io
+screenshot`. A `deepLink` scene seeded with `is_screenshot_protection_enabled = 1`
+captures normally, so `screenshot-protection-1` shows the switch in its enabled
+state; a `flow` scene under the same flag returns an all-black frame. That is why
+`pin-app-lock-1` carries its own `scenes/pin-app-lock-1.sql` overlay, which turns
+the PIN and biometric flags on and leaves screenshot protection off, instead of
+reusing `shared/security-locked.sql`.
+
+A seeded database is plain SQLite and the PIN lives in SecureStore, so no PIN
+unlocks a seeded lock screen. Every scene behind the lock — the Settings security
+card with App Lock active, `biometric-authentication-1` — stays unreachable until
+the seed hook can produce a SQLCipher database with a known key; the simulator
+also has no enrolled Face ID, which the biometric rows are gated on.
+
 ## Future Test Coverage
 
 - [ ] Multiple account types (Savings, Debt)
