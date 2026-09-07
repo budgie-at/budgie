@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'account-management',
     tier: FeatureTierEnum.CORE,
     title: msg`Multi-Account Money Management`,
-    tagline: msg`Bank, cash, deposit, crypto, stocks, debt — all on one home screen.`,
+    tagline: msg`Bank, cash, deposit, crypto, debt — all on one home screen, each with its own color.`,
     metaTitle: msg`Multi-Account Money Management — Budgie`,
-    metaDescription: msg`Track bank, cash, deposit, crypto, stocks, and debt accounts in one private app. Multi-currency, offline-first, with per-account net worth control.`,
+    metaDescription: msg`Track bank, cash, deposit, crypto, and debt accounts in one private app. Crypto groups by currency, archive or mark inactive, and multi-currency net worth control.`,
     primaryKeyword: 'money management app',
     seoKeywords: [
         'money management app',
@@ -23,6 +23,6 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['net-worth-tracker', 'multi-currency', 'deposit-tracking', 'debt-tracking', 'crypto-investment-tracking'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
     publishedAt: '2025-11-17',
-    updatedAt: '2026-08-13',
+    updatedAt: '2026-09-07',
     ogTags: ['accounts', 'management', 'multi-account']
 } satisfies FeatureRegistryEntryInterface;

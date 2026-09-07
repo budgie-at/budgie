@@ -2968,13 +2968,21 @@ msgstr "arquitectura"
 msgid "Archive instead of deleting"
 msgstr "Archiva en vez de eliminar"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Archive is not the same as inactive"
+msgstr "Archivar no es lo mismo que inactivo"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Archive means you are done with the account — it leaves the home screen and the totals for good, but every transaction stays searchable and restorable from Settings. Inactive means the account is still real but should not clutter the home screen right now — it can be re-activated at any time from the same Settings screen."
+msgstr "Archivar significa que has terminado con la cuenta: desaparece definitivamente de la pantalla de inicio y de los totales, pero cada transacción sigue siendo buscable y recuperable desde Ajustes. Inactiva significa que la cuenta sigue siendo real, pero no debería saturar la pantalla de inicio ahora mismo; puede reactivarse en cualquier momento desde la misma pantalla de Ajustes."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Archive when settled — debt drops off the home screen but stays in history"
 msgstr "Archivar al liquidar: la deuda desaparece de la pantalla de inicio pero permanece en el historial"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Archive without deleting — old accounts disappear from the home but stay searchable"
-msgstr "Archivar sin eliminar: las cuentas antiguas desaparecen de la pantalla de inicio pero siguen siendo buscables"
+msgid "Archive without deleting, or mark inactive without archiving — both keep the full history"
+msgstr "Archiva sin eliminar, o marca como inactiva sin archivar: ambas conservan el historial completo"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Archiving or deleting one account leaves the rest of the connection syncing untouched"
@@ -3373,8 +3381,8 @@ msgid "Bank-synced accounts auto-group by provider on the home screen"
 msgstr "Las cuentas sincronizadas con el banco se agrupan automáticamente por proveedor en la pantalla de inicio"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Bank-synced accounts auto-group by provider on the home screen. Liability and debt accounts support negative balances. Archived accounts disappear from the home but stay searchable."
-msgstr "Las cuentas sincronizadas con el banco se agrupan automáticamente por proveedor en la pantalla de inicio. Las cuentas de pasivos y deudas admiten saldos negativos. Archiva en lugar de eliminar."
+msgid "Bank-synced accounts auto-group by provider on the home screen. Self-custodied crypto holdings group by currency instead — several accounts holding the same coin collapse into one row with a combined balance, an expand toggle, and a link straight to that coin’s market screen. Liability and debt accounts support negative balances. Archived accounts disappear from the home but stay searchable."
+msgstr "Las cuentas sincronizadas con el banco se agrupan automáticamente por proveedor en la pantalla de inicio. Las tenencias de cripto autocustodiadas se agrupan en cambio por moneda: varias cuentas con la misma moneda se combinan en una sola fila con un saldo conjunto, un interruptor para expandir y un enlace directo a la pantalla de mercado de esa moneda. Las cuentas de pasivo y deuda admiten saldos negativos. Las cuentas archivadas desaparecen del inicio pero siguen siendo buscables."
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically — first import, no setup."
@@ -3400,13 +3408,13 @@ msgstr "Banco, efectivo, cripto, depósito y deuda tienen cada uno su propia sec
 msgid "Bank, cash, deposit, crypto, and debt accounts all roll up into a single net-worth number on your home screen, with multi-currency conversion baked in."
 msgstr "Las cuentas de banco, efectivo, depósito, cripto y deuda se suman en una única cifra de patrimonio neto en tu pantalla de inicio, con conversión multidivisa incluida."
 
+#: src/app/[lang]/features/account-management/metadata.ts
+msgid "Bank, cash, deposit, crypto, debt — all on one home screen, each with its own color."
+msgstr "Banco, efectivo, depósito, cripto, deuda: todo en una pantalla de inicio, cada uno con su propio color."
+
 #: src/app/[lang]/features/net-worth-tracker/metadata.ts
 msgid "Bank, cash, deposit, crypto, debt — one number on your home screen."
 msgstr "Banco, efectivo, depósito, cripto, deuda: una sola cifra en tu pantalla de inicio."
-
-#: src/app/[lang]/features/account-management/metadata.ts
-msgid "Bank, cash, deposit, crypto, stocks, debt — all on one home screen."
-msgstr "Banco, efectivo, depósito, cripto, acciones, deuda — todo en una sola pantalla de inicio."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Basic API access available"
@@ -6747,6 +6755,10 @@ msgstr "Incluso si alguien intercepta la conexión, no puede descifrarla"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Even if you delete your account with a budgeting app, the aggregator (Plaid, Yodlee, etc.) may retain your data. You have a relationship with the app and a separate relationship with the aggregator. Deleting one does not necessarily affect the other."
 msgstr "Incluso si eliminas tu cuenta de una aplicacion de presupuesto, el agregador (Plaid, Yodlee, etc.) puede retener tus datos. Tienes una relacion con la aplicacion y una relacion separada con el agregador. Eliminar una no afecta necesariamente a la otra."
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Every account type carries its own color and icon, so a home screen with a dozen accounts still reads at a glance"
+msgstr "Cada tipo de cuenta tiene su propio color e icono, así que una pantalla de inicio con una docena de cuentas sigue siendo legible de un vistazo"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Every action on a long-press"
@@ -12395,6 +12407,10 @@ msgstr "El selector se reordena por frecuencia de uso: las categorías que más 
 msgid "Selector stays open across multi-selections; commit with a Done pill"
 msgstr "El selector permanece abierto en selecciones múltiples; confirma con la pastilla Hecho"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Self-custodied coins group by currency with one combined balance and a tap through to that coin’s market screen; exchange-synced coins stay under their exchange"
+msgstr "Las monedas autocustodiadas se agrupan por moneda con un saldo conjunto y acceso directo a la pantalla de mercado de esa moneda; las monedas sincronizadas con un exchange permanecen bajo su exchange"
+
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 msgid "self-hosted"
 msgstr ""
@@ -14479,8 +14495,8 @@ msgid "Track bank fees as first-class transaction entries. ATM fees, transfer fe
 msgstr "Registre las comisiones bancarias como entradas de transacción de primer nivel. Las comisiones de cajero, transferencias y tarjetas siguen visibles en las analíticas aunque el movimiento principal sea una transferencia."
 
 #: src/app/[lang]/features/account-management/metadata.ts
-msgid "Track bank, cash, deposit, crypto, stocks, and debt accounts in one private app. Multi-currency, offline-first, with per-account net worth control."
-msgstr "Rastree cuentas bancarias, efectivo, depósitos, cripto, acciones y deuda en una sola app privada. Multidivisa, offline-first, con control de patrimonio neto por cuenta."
+msgid "Track bank, cash, deposit, crypto, and debt accounts in one private app. Crypto groups by currency, archive or mark inactive, and multi-currency net worth control."
+msgstr "Controla cuentas de banco, efectivo, depósito, cripto y deuda en una sola app privada. Cripto se agrupa por moneda, archiva o marca como inactiva, y control de patrimonio neto multidivisa."
 
 #: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
 msgid "Track Bitcoin, Ethereum, and 200 crypto assets alongside your bank accounts in one net-worth view. The largest ship with a year of daily price history."
@@ -14524,8 +14540,8 @@ msgid "Track money lent to friends or borrowed from others as first-class debt a
 msgstr "Rastrea el dinero prestado a amigos o tomado prestado de otros como cuentas de deuda de primera clase, con dirección explícita, saldos objetivo, fechas de devolución y enlaces a contactos. Vincula un pago que ya registraste, y valora las deudas en divisas cruzadas al tipo de cambio histórico."
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Track unlimited bank accounts, cash wallets, deposits, crypto, stocks, and debt — grouped, archived, and renamed however you want."
-msgstr "Rastree cuentas bancarias ilimitadas, billeteras de efectivo, depósitos, cripto, acciones y deuda — agrupadas, archivadas y renombradas como quiera."
+msgid "Track unlimited bank accounts, cash wallets, deposits, crypto, and debt — grouped, colored, archived, and renamed however you want."
+msgstr "Controla un número ilimitado de cuentas bancarias, monederos en efectivo, depósitos, cripto y deuda: agrupados, coloreados, archivados y renombrados como quieras."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Tracked as fee entries"
@@ -14754,6 +14770,10 @@ msgstr "Dos toques hasta el periodo que quieres"
 msgid "Two ways out, one screen"
 msgstr "Dos salidas, una pantalla"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Two ways to get an account out of the way, for two different reasons. Archive it when you are done with it — an archived account leaves the home screen and the totals but keeps every transaction, ready to search and restore. Mark it inactive when it is still real but should not clutter the home screen — an inactive account stays out of the daily list without being treated as closed. Both keep the full history."
+msgstr "Dos formas de apartar una cuenta, por dos motivos distintos. Archívala cuando hayas terminado con ella: una cuenta archivada desaparece de la pantalla de inicio y de los totales, pero conserva cada transacción, lista para buscar y restaurar. Márcala como inactiva cuando siga siendo real pero no deba saturar la pantalla de inicio: una cuenta inactiva queda fuera de la lista diaria sin tratarse como cerrada. Ambas conservan el historial completo."
+
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Two-stage categorization flow"
 msgstr "Flujo de categorización en dos etapas"
@@ -14816,8 +14836,8 @@ msgid "Unlike some projects that publish only portions of their code while keepi
 msgstr "A diferencia de algunos proyectos que publican solo partes de su código mientras mantienen componentes críticos como propietarios, Budgie mantiene público el código fuente de su producto:"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Unlimited accounts: Bank, Cash, Deposit, Crypto, Stocks, Debt — each with its own currency and balance"
-msgstr "Cuentas ilimitadas: Banco, Efectivo, Depósito, Cripto, Acciones, Deuda — cada una con su propia divisa y saldo"
+msgid "Unlimited accounts: Checking, Savings (cash), Crypto, Debt, Deposit — plus bank and Binance sync — each with its own currency and balance"
+msgstr "Cuentas ilimitadas: Corriente, Ahorro (efectivo), Cripto, Deuda, Depósito, además de sincronización bancaria y de Binance, cada una con su propia moneda y saldo"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Unlimited splits per transaction — every category gets its accurate share"
@@ -15429,6 +15449,10 @@ msgstr "Lo que no aparece en esta pantalla"
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "What Is On-Device AI?"
 msgstr "¿Qué es la IA en el dispositivo?"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "What is the difference between archived and inactive?"
+msgstr "¿Cuál es la diferencia entre archivada e inactiva?"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "What is the difference between local-first and offline-first?"
