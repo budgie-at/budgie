@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.31.0](https://github.com/budgie-at/budgie/compare/v6.30.0...v6.31.0) (2026-09-07)
+
+
+### Features
+
+* **landing:** add self-hosted finance app basic story ([baaf870](https://github.com/budgie-at/budgie/commit/baaf870cf5b8f4828be678a27dccd3f5f027b95a))
+* **landing:** tell the convert-to-transfer story in three steps ([72905ce](https://github.com/budgie-at/budgie/commit/72905ceefeba7f403a6dece00ba468593418f9e9))
+
+
+
+
+
 # [6.30.0](https://github.com/budgie-at/budgie/compare/v6.29.0...v6.30.0) (2026-09-07)
 
 
