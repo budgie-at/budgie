@@ -252,11 +252,7 @@
 
 .hero-frame {
     position: relative;
-    overflow: hidden;
-    border-radius: 1.5rem;
-    outline: 1px solid color-mix(in srgb, hsl(var(--foreground)) 12%, transparent);
-    outline-offset: -1px;
-    box-shadow: 0 1.5rem 3rem -1rem color-mix(in srgb, hsl(var(--foreground)) 30%, transparent);
+    filter: drop-shadow(0 1.5rem 3rem color-mix(in srgb, hsl(var(--foreground)) 30%, transparent));
 }
 
 .hero-bloom {
@@ -374,6 +370,31 @@
         order: 2;
         justify-self: end;
     }
+}
+
+.device-frame {
+    --device-frame-inset: 5.102%;
+    --device-frame-radius: 12.556cqw;
+
+    position: relative;
+    container-type: inline-size;
+    aspect-ratio: 900 / 1955;
+}
+
+.device-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/device-frame.webp');
+    background-size: 100% 100%;
+    pointer-events: none;
+}
+
+.device-frame-screen {
+    position: absolute;
+    inset: var(--device-frame-inset);
+    overflow: hidden;
+    border-radius: var(--device-frame-radius);
 }
 
 .story-grid {
