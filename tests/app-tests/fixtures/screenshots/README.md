@@ -70,6 +70,59 @@ Overlays deliberately do **not** set `settings.language` or `settings.theme` —
 the seed hook owns both, because the same overlay is reused for the `light` and
 `dark` cells.
 
+## Scene overlays
+
+`showcase.db` alone only covers the 8 store scenes. Landing feature pages need
+states the curated dataset does not have — an active PIN lock, a budget over
+its limit, unsynced Monobank data, and so on. `seed-screenshot-scene.sh`
+applies an optional per-scene overlay after the locale overlay and before
+`shift-dates.sql`, so the extra rows still get re-anchored on the capture day.
+
+The overlay for a scene is resolved by filename convention against
+`scenes/`, trying each of these in order and using the first match, or none:
+
+1. `scenes/<SCENE>.sql` — exact match.
+2. `scenes/<SCENE minus trailing -N>.sql` — lets `pin-app-lock-2` and
+   `pin-app-lock-clip-1` share `scenes/pin-app-lock.sql`.
+
+A scene overlay file is either the SQL itself or a one-line
+`.read shared/<state>.sql`, so multiple scenes that need the same state (for
+example every scene under the PIN/biometric/screenshot-protection lock) share
+one implementation in `scenes/shared/`. A scene overlay can also chain several
+`.read shared/<state>.sql` lines to compose more than one state, as
+`home-hero-1.sql` and `bank-fee-tracking-2.sql` do.
+
+The seed hook forces `is_pin_enabled`, `is_biometric_enabled` and
+`is_screenshot_protection_enabled` to `0` before the scene overlay runs, so a
+scene with no overlay always keeps the lock flags off. `scenes/shared/security-locked.sql`
+turns all three on; `verify_database` only asserts the lock flags are off when
+no scene overlay was applied, and otherwise leaves the asserted values to the
+overlay.
+
+| `scenes/shared/*.sql` | State it produces |
+| --- | --- |
+| `security-locked.sql` | PIN, biometric and screenshot-protection lock flags on |
+| `budget-near-limit.sql` | one budget pinned near its overall limit, one category over its limit |
+| `uncategorized.sql` | a batch of the newest expenses with no category |
+| `tags-rich.sql` | extra tags plus a wide, multi-tagged transaction set |
+| `bank-sync-connected.sql` | a connected Monobank integration with synced accounts and MCC-categorized transactions |
+| `bank-fees.sql` | bank fee entries on an expense, an income and a transfer |
+| `multi-currency.sql` | two accounts in currencies the locale does not already use, with matching rates |
+| `debt.sql` | a lent and a borrowed debt account, one partially settled |
+| `deposit.sql` | a term deposit account with maturity date and accrued interest |
+| `crypto.sql` | crypto accounts with holdings, rates and price history |
+| `transfer-pair.sql` | a loose transfer pair and an already-consolidated pair |
+| `rules.sql` | categorisation rules including a conflicting, partially disabled pair |
+| `archived.sql` | archived and inactive accounts with short ledgers |
+| `import-presets.sql` | a CSV-imported bank integration and account |
+| `cyrillic-taxonomy.sql` | Cyrillic-titled categories and tags with AI-generated English titles |
+| `long-history.sql` | the newest base transactions replayed monthly over 17 months |
+| `net-worth-full.sql` | every live account included in net worth, with fresh rate timestamps |
+
+Every overlay keeps amounts in micro-units (`PRECISION = 1_000_000`) and dates
+in epoch seconds, and is safe to apply more than once, matching
+`shift-dates.sql`'s idempotence guarantee.
+
 ## Regenerating
 
 ```bash

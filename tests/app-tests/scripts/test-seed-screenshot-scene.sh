@@ -99,6 +99,56 @@ assert_equals \
     '' \
     "$(sqlite3 "$HERO_DATABASE_PATH" 'PRAGMA foreign_key_check;')"
 
+BUDGET_DATABASE_PATH="$TEMP_DIR/budget-planning-2.db"
+
+SCENE=budget-planning-2 LOCALE=en APPEARANCE=light \
+    bash "$SEED_SCRIPT" --dry-run --output "$BUDGET_DATABASE_PATH" >/dev/null
+
+assert_equals \
+    'budget-planning-2 seeds the budget-near-limit expenses' \
+    '3' \
+    "$(sqlite3 "$BUDGET_DATABASE_PATH" 'SELECT COUNT(*) FROM transactions WHERE id BETWEEN 1000 AND 1099;')"
+
+UNCATEGORIZED_DATABASE_PATH="$TEMP_DIR/uncategorized-transactions-1.db"
+
+SCENE=uncategorized-transactions-1 LOCALE=en APPEARANCE=light \
+    bash "$SEED_SCRIPT" --dry-run --output "$UNCATEGORIZED_DATABASE_PATH" >/dev/null
+
+assert_equals \
+    'uncategorized-transactions-1 clears the category on 14 recent expense entries' \
+    '14' \
+    "$(sqlite3 "$UNCATEGORIZED_DATABASE_PATH" 'SELECT COUNT(*) FROM transaction_entries WHERE category_id IS NULL;')"
+
+TAGS_DATABASE_PATH="$TEMP_DIR/transaction-tags-1.db"
+
+SCENE=transaction-tags-1 LOCALE=en APPEARANCE=light \
+    bash "$SEED_SCRIPT" --dry-run --output "$TAGS_DATABASE_PATH" >/dev/null
+
+assert_equals \
+    'transaction-tags-1 grows the base 5 tags with the tags-rich overlay' \
+    '1' \
+    "$(sqlite3 "$TAGS_DATABASE_PATH" 'SELECT (SELECT COUNT(*) FROM tags) > 5;')"
+
+MONOBANK_DATABASE_PATH="$TEMP_DIR/monobank-sync-1.db"
+
+SCENE=monobank-sync-1 LOCALE=en APPEARANCE=light \
+    bash "$SEED_SCRIPT" --dry-run --output "$MONOBANK_DATABASE_PATH" >/dev/null
+
+assert_equals \
+    'monobank-sync-1 connects a Monobank bank integration' \
+    '1' \
+    "$(sqlite3 "$MONOBANK_DATABASE_PATH" "SELECT COUNT(*) FROM bank_integrations WHERE provider = 'MONOBANK';")"
+
+IDEMPOTENCE_DATABASE_PATH="$TEMP_DIR/tags-rich-idempotence.db"
+
+cp "$TAGS_DATABASE_PATH" "$IDEMPOTENCE_DATABASE_PATH"
+sqlite3 "$IDEMPOTENCE_DATABASE_PATH" < "$SHARED_DIR/tags-rich.sql"
+
+assert_equals \
+    'applying shared/tags-rich.sql a second time is a no-op' \
+    "$(sqlite3 "$TAGS_DATABASE_PATH" "SELECT (SELECT COUNT(*) FROM tags) || '|' || (SELECT COUNT(*) FROM transactions);")" \
+    "$(sqlite3 "$IDEMPOTENCE_DATABASE_PATH" "SELECT (SELECT COUNT(*) FROM tags) || '|' || (SELECT COUNT(*) FROM transactions);")"
+
 REFERENCED_SHARED_NAMES=$(sed -n 's/^\.read shared\///p' "$SCENES_DIR"/*.sql | sort -u)
 ORPHAN_SHARED_COUNT=0
 
