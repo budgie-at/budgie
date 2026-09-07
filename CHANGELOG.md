@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.22.0](https://github.com/budgie-at/budgie/compare/v6.21.5...v6.22.0) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** ship real brand icons for tabs, pinned tabs, home screens and the manifest ([ee87346](https://github.com/budgie-at/budgie/commit/ee873462ee6ac0fabbf9a1fbe268930dd9d6e65e))
+* **landing:** use an idiomatic German story heading ([8dabe31](https://github.com/budgie-at/budgie/commit/8dabe316d2cfb859bee7c92715523265cb26a6d8))
+
+
+### Features
+
+* **landing:** tell the Monobank sync story in steps ([6f9b9be](https://github.com/budgie-at/budgie/commit/6f9b9be7d097ed0dc1daf2389d918e1826c68166))
+
+
+
+
+
 ## [6.21.5](https://github.com/budgie-at/budgie/compare/v6.21.4...v6.21.5) (2026-09-07)
 
 
