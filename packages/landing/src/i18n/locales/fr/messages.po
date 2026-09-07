@@ -3861,9 +3861,17 @@ msgstr "Écran de détail du budget de Budgie avec la barre de progression mensu
 msgid "Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password."
 msgstr "Budgie appelle l’API Monobank directement avec un jeton que vous générez. Pas d’agrégateur, pas de mot de passe bancaire."
 
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Budgie Categories screen listing user-created categories with their icons above a search field"
+msgstr "Écran Catégories de Budgie listant les catégories créées par l'utilisateur avec leurs icônes au-dessus d'un champ de recherche"
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Budgie categorization rules screen listing the merchant rules that assign categories automatically"
 msgstr "Écran des règles de catégorisation de Budgie listant les règles par commerçant qui attribuent des catégories automatiquement"
+
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Budgie category picker open over the Edit Category form, listing the categories to merge into"
+msgstr "Sélecteur de catégories de Budgie ouvert par-dessus le formulaire Modifier la catégorie, listant les catégories de fusion"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie Commercial Licensing"
@@ -3921,6 +3929,10 @@ msgstr "Budgie déduplique par identifiant de transaction. Les lignes existantes
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model."
 msgstr "Budgie télécharge le modèle Whisper large-v3-turbo une seule fois et le conserve sur l'appareil. Il couvre l'anglais, l'ukrainien, l'allemand, le français et l'espagnol comme langues principales, ainsi que des dizaines d'autres. La qualité de la transcription dépend de la couverture de chaque langue dans le modèle."
+
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Budgie Edit Category form showing the icon tile, the name field and the AI-generated translation and search keywords"
+msgstr "Formulaire Modifier la catégorie de Budgie avec la vignette d'icône, le champ de nom, la traduction et les mots-clés générés par IA"
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Budgie edit expense screen with the category already filled in from the bank MCC code"
@@ -4964,6 +4976,10 @@ msgstr "Les analyses basées sur les catégories répondent à quel type de dép
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx
 msgid "Category, tag, trend — drill into anything."
 msgstr "Catégorie, étiquette, tendance — explorez tout."
+
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Change the name, tap the tile for a different icon. Renaming unlinks nothing — transactions hold on to the category by id. Budgie keeps an English translation and a handful of search keywords beside the name, so the selector still finds the category whatever you type into it."
+msgstr "Changez le nom, touchez la vignette pour changer d'icône. Renommer ne délie rien : les transactions retiennent la catégorie par son identifiant. Budgie conserve à côté du nom une traduction anglaise et quelques mots-clés de recherche, pour que le sélecteur retrouve la catégorie quoi que vous saisissiez."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Change the token once and every account on that connection follows"
@@ -6614,10 +6630,6 @@ msgstr "Chaque section bancaire de l'écran d'accueil possède un raccourci vers
 msgid "Each card with its balance"
 msgstr "Chaque carte avec son solde"
 
-#: src/app/[lang]/features/custom-categories/page.tsx
-msgid "Each category has a name, an icon, a color, and an optional MCC mapping. The Categories screen in Settings supports drag-to-reorder and bulk merge. Deleting a category prompts you to migrate its transactions or wipe them."
-msgstr "Chaque catégorie a un nom, une icône, une couleur et un mapping MCC optionnel. L'écran Catégories dans les paramètres prend en charge le glisser pour réorganiser et la fusion en masse. La suppression d'une catégorie vous invite à migrer ou effacer ses transactions."
-
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Each crypto instrument has its own market screen: the current price, a sparkline of where it has been, metrics for the period, and your holding valued against it. The app ships with a year of daily prices for the nine largest crypto assets, quoted in both euro and dollar, so the charts have something to show the moment you open them."
 msgstr "Chaque instrument crypto a son propre écran de marché : le prix actuel, un sparkline de son évolution, des indicateurs sur la période, et votre position valorisée en fonction de lui. L'application est livrée avec un an de prix quotidiens pour les neuf plus grands actifs crypto, cotés en euro et en dollar, afin que les graphiques aient quelque chose à montrer dès que vous les ouvrez."
@@ -6661,6 +6673,10 @@ msgstr "Les membres en accès anticipé bénéficient de 50% de réduction sur l
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Easy to make formula errors"
 msgstr "Facile de faire des erreurs de formules"
+
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Edit it until it fits"
+msgstr "Modifiez-la jusqu'à ce qu'elle colle"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by accident."
@@ -8272,7 +8288,6 @@ msgstr "En quoi est-ce différent de la page Analyses d'étiquettes ?"
 #: src/app/[lang]/features/categorization-rules/page.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
-#: src/app/[lang]/features/custom-categories/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
@@ -8925,6 +8940,10 @@ msgstr "Conservé dans votre base locale"
 msgid "Key features:"
 msgstr "Fonctionnalités clés :"
 
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Keywords the selector searches on"
+msgstr "Mots-clés utilisés par le sélecteur"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Labels"
 msgstr "Labels"
@@ -9520,6 +9539,10 @@ msgstr "Fusionnez les étiquettes dans toute la base de données — même logiq
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Merge two categories into one with mass-reassignment of transactions"
 msgstr "Fusionnez deux catégories en une avec réassignation en masse des transactions"
+
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Merge without losing transactions"
+msgstr "Fusionner sans perdre de transactions"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Method 1: Plaid and Data Aggregation APIs"
@@ -11012,6 +11035,10 @@ msgstr "Seulement si vous le souhaitez. Budgie peut suggérer un budget de dépa
 msgid "Only that account is affected. Archiving or deleting it never removes the connection, so its siblings keep syncing with the same credential."
 msgstr "Seul ce compte est affecté. L'archiver ou le supprimer ne retire jamais la connexion, si bien que les autres comptes continuent de se synchroniser avec le même identifiant."
 
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Only the ones you created"
+msgstr "Uniquement celles que vous avez créées"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Only the rows without a category"
 msgstr "Uniquement les lignes sans catégorie"
@@ -11414,6 +11441,10 @@ msgstr "Choisissez le compte source, le compte de destination, saisissez le mont
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Pick the destination account"
 msgstr "Choisissez le compte de destination"
+
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Pick the one to keep"
+msgstr "Choisissez celle qui reste"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Picking Deposit opens the deposit form: opening balance, name, currency — then an interest rate and a maturity date that only this type asks for."
@@ -12191,6 +12222,10 @@ msgstr "La pastille de budget restant affiche ce qui reste à allouer lors de la
 msgid "Remove, alter, or obscure any proprietary notices or labels"
 msgstr ""
 
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Rename it, nothing unlinks"
+msgstr "Renommez, rien ne se délie"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long before you think about the debt. Instead of deleting it and re-entering a transfer, attach that transaction to the debt: it is recorded as a settlement against the debt account and the balance moves accordingly, while the original transaction stays exactly where your bank put it."
 msgstr "Les remboursements arrivent rarement étiquetés. Un ami vous renvoie de l'argent et cela atterrit dans votre compte comme un revenu ordinaire, bien avant que vous ne pensiez à la dette. Plutôt que de le supprimer et de ressaisir un virement, rattachez cette transaction à la dette : elle est enregistrée comme un règlement de ce compte de dette et le solde évolue en conséquence, tandis que la transaction d'origine reste exactement là où votre banque l'a placée."
@@ -12483,6 +12518,10 @@ msgstr "Parcourez les Réglages de bout en bout : aucun groupe analytique, parce
 msgid "Search articles..."
 msgstr "Rechercher des articles..."
 
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Search as the list grows"
+msgstr "Recherchez quand la liste s'allonge"
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Search what you archived"
 msgstr "Rechercher dans les archives"
@@ -12490,6 +12529,10 @@ msgstr "Rechercher dans les archives"
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Search, or add a new one"
 msgstr "Cherchez, ou créez-en une"
+
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Search, or add one here"
+msgstr "Cherchez, ou ajoutez-en une ici"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "secure expense tracker"
@@ -12692,6 +12735,10 @@ msgstr "Configurez les comptes pour correspondre à vos banques"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Set up your new app with current balances"
 msgstr "Configurez votre nouvelle application avec les soldes actuels"
+
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Settings › Categories shows the categories you created and nothing else — the built-in tree stays out of the way until you need it. The ones you tag most transactions with sort to the top."
+msgstr "Réglages › Catégories n'affiche que les catégories que vous avez créées — l'arborescence intégrée reste à l'écart jusqu'à ce que vous en ayez besoin. Celles qui portent le plus de transactions remontent en haut."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Settings → Export → Backup. Budgie writes a .db file with SQLCipher encryption intact. To restore, install Budgie on the new device, tap Restore on the welcome screen, point at the file, enter the PIN."
@@ -13648,6 +13695,10 @@ msgid "The cash movement can stay a transfer, while the ATM commission is stored
 msgstr "Le mouvement d’espèces peut rester un transfert, tandis que la commission du distributeur est stockée comme entrée de frais bancaires pour les analyses."
 
 #: src/app/[lang]/features/custom-categories/page.tsx
+msgid "The categories you actually use"
+msgstr "Les catégories que vous utilisez vraiment"
+
+#: src/app/[lang]/features/custom-categories/page.tsx
 msgid "The category selector reorders by popularity over time, so the categories you use most surface first. Bank-synced transactions can pre-fill via MCC mapping; you can override at any time."
 msgstr "Le sélecteur de catégories se réorganise par popularité au fil du temps, de sorte que les catégories que vous utilisez le plus apparaissent en premier. Les transactions synchronisées peuvent être pré-remplies via le mapping MCC ; vous pouvez remplacer à tout moment."
 
@@ -14407,6 +14458,10 @@ msgstr "C'est le sujet qui fâche. YNAB est une application cloud-first, ce qui 
 msgid "This isn’t hidden. Credit Karma is upfront that they make money when you accept offers. But the implications are significant:"
 msgstr "Ce n'est pas caché. Credit Karma est transparent sur le fait qu'ils gagnent de l'argent lorsque vous acceptez des offres. Mais les implications sont significatives :"
 
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "This list is yours alone"
+msgstr "Cette liste n'appartient qu'à vous"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "This makes the implementation simpler too. Without real-time collaboration requirements, the sync layer can focus on device-to-device synchronization for the same user rather than multi-user conflict resolution."
 msgstr "Cela simplifie également l'implémentation. Sans exigences de collaboration en temps réel, la couche de synchronisation peut se concentrer sur la synchronisation appareil-à-appareil pour le même utilisateur plutôt que sur la résolution de conflits multi-utilisateurs."
@@ -14494,6 +14549,10 @@ msgstr "Trois écrans : la dépense qui n'en était pas une, le sélecteur qui n
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Three screens: the home list grouped by type, the form a new account type brings with it, and the archive that keeps the accounts you closed."
 msgstr "Trois écrans : la liste d'accueil groupée par type, le formulaire propre à chaque nouveau type de compte, et l'archive qui conserve les comptes fermés."
+
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Three screens: the list that holds only the categories you made, the form where one gets renamed, and the picker that folds two of them into one."
+msgstr "Trois écrans : la liste qui ne contient que les catégories que vous avez créées, le formulaire où l'une est renommée, et le sélecteur qui en fusionne deux en une."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Three screens: the press that opens the menu, the four actions behind it, and the one screen a conversion needs."
@@ -14829,6 +14888,10 @@ msgstr "Coupez la radio, rien ne change"
 #: src/generic/component/footer/footer.tsx
 msgid "Twitter"
 msgstr "Twitter"
+
+#: src/app/[lang]/features/custom-categories/page.tsx
+msgid "Two categories that mean the same thing become one: pick the category to keep and every transaction moves across before the other one goes. The picker offers the built-in tree alongside your own, or a new category made on the spot."
+msgstr "Deux catégories qui veulent dire la même chose n'en font plus qu'une : choisissez celle à conserver et chaque transaction bascule avant que l'autre ne disparaisse. Le sélecteur propose l'arborescence intégrée à côté des vôtres, ou une nouvelle catégorie créée sur-le-champ."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Two complementary signals: vector lookup over your history plus a generative LLM suggestion"
