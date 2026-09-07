@@ -2311,6 +2311,10 @@ msgstr "Ein Projekt, das Sicherheitsprobleme ignoriert oder Nutzerbedenken abwei
 msgid "A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device."
 msgstr "Ein öffentlicher Wechselkurs-Feed. Kein Anbieterkonto, kein Kursmakler; der Tageskurs ist auf Ihrem Gerät nachvollziehbar."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "A review sheet lists every row before saving — “Select all categories” and “Enter all amounts” fix a whole batch at once"
+msgstr "Ein Prüfbildschirm listet jede Zeile vor dem Speichern auf – „Alle Kategorien auswählen“ und „Alle Beträge eingeben“ korrigieren einen ganzen Stapel auf einmal"
+
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
 msgstr "Ein einziger Dunkelmodus-Schalter in den Einstellungen – folgt standardmäßig Ihrem Systemthema, jederzeit manuell umschaltbar"
@@ -5357,10 +5361,6 @@ msgstr "Bedingungen für Titel, Kommentar, Betrag, MCC, Konto, Transaktionstyp u
 msgid "Conditions you wrote yourself"
 msgstr "Bedingungen, die du selbst schreibst"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Confirm or correct the pre-filled form, then save"
-msgstr "Vorausgefülltes Formular bestätigen oder korrigieren, dann speichern"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Confirm the fixed version is released"
 msgstr "Bestätigen, dass die korrigierte Version veröffentlicht wird"
@@ -6792,6 +6792,10 @@ msgstr "Jede Abhängigkeit in Budgie wird vor der Aufnahme auf Datenschutzimplik
 msgid "Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a context menu. Edit, delete, split, convert to a transfer, or link income back to a refunded expense without leaving the screen."
 msgstr "Jeder Eintrag besteht aus Betrag, Konto, Kategorie, Tags, Kommentar und Datum. Drücke eine Transaktion in der Liste lange, um ein Kontextmenü zu öffnen. Bearbeiten, löschen, aufteilen, in eine Überweisung umwandeln oder Einnahmen mit einer erstatteten Ausgabe verknüpfen – ohne den Bildschirm zu verlassen."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Every extracted row appears in the review sheet before you save. Edit any row manually, or tap re-record to replace the whole batch and try again."
+msgstr "Jede extrahierte Zeile erscheint im Prüfbildschirm, bevor du speicherst. Bearbeite jede Zeile manuell oder tippe auf Neu aufnehmen, um den ganzen Stapel zu ersetzen und es erneut zu versuchen."
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
 msgstr ""
@@ -7324,6 +7328,10 @@ msgstr "Fünf Tipps sind vier Tipps zu viel"
 msgid "Five window presets: 7, 30, 90 days, plus custom range"
 msgstr "Fünf Fenstervoreinstellungen: 7, 30, 90 Tage, plus benutzerdefinierter Bereich"
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
+msgstr "Korrigiere eine Zeile oder nutze „Alle Kategorien auswählen“, um den ganzen Stapel auf einmal zu korrigieren"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Fix bugs and submit pull requests"
 msgstr "Beheben Sie Bugs und reichen Sie Pull Requests ein"
@@ -7541,6 +7549,10 @@ msgstr "Bei Bankverbindungen ja. Krypto-Börsen-Verbindungen bieten keine Festge
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "From one token to your home screen"
 msgstr "Von einem Token zu Ihrem Startbildschirm"
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "From speech to a saved batch"
+msgstr "Von der Sprache zum gespeicherten Stapel"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "From the month's total to one receipt"
@@ -10329,6 +10341,10 @@ msgstr "Nichts passiert – Ihre Daten sind sicher auf dem Gerät. Sie können w
 msgid "Nothing happens to your data because Budgie does not have your data. Everything is stored locally on your device. If Budgie as a company ceased to exist, your app would continue to function with all your data intact. You can export data at any time in standard formats. There is no server to shut down, no migration to worry about, no acquisition that could change data handling. Your data remains yours permanently."
 msgstr "Mit deinen Daten passiert nichts, weil Budgie deine Daten nicht hat. Alles wird lokal auf deinem Gerät gespeichert. Wenn Budgie als Unternehmen aufhören würde zu existieren, würde deine App mit allen Daten intakt weiter funktionieren. Du kannst Daten jederzeit in Standardformaten exportieren. Es gibt keinen Server zum Abschalten, keine Migration, um die du dich sorgen musst, keine Übernahme, die den Umgang mit Daten ändern könnte. Deine Daten bleiben dauerhaft deine."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up with half a sentence logged"
+msgstr "Es wird nichts gespeichert, bevor du auf Speichern tippst – der gesamte Stapel wird in einer einzigen Datenbanktransaktion geschrieben, sodass nie nur ein halber Satz erfasst wird"
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Nothing opens before the PIN"
 msgstr "Vor der PIN öffnet sich nichts"
@@ -10634,8 +10650,8 @@ msgid "on-device expense tracker"
 msgstr ""
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "On-device LLM extracts amount, merchant, date, and category from natural speech"
-msgstr "LLM auf dem Gerät extrahiert Betrag, Händler, Datum und Kategorie aus natürlicher Sprache"
+msgid "On-device LLM splits natural speech into multiple transactions, each with its own amount and category"
+msgstr "Das LLM auf dem Gerät teilt natürliche Sprache in mehrere Transaktionen auf, jede mit eigenem Betrag und eigener Kategorie"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/opengraph-image.tsx
 msgid "on-device-ai"
@@ -10736,6 +10752,10 @@ msgstr "Ein Bildschirm, und fertig"
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "One screen, one field. Budgie never asks for your bank password, and no aggregator ever holds your credentials."
 msgstr "Ein Bildschirm, ein Feld. Budgie fragt nie nach Ihrem Bankpasswort, und kein Aggregator hält jemals Ihre Zugangsdaten."
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "One sentence can log several transactions at once — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, not one merged entry. A review sheet shows every extracted row with its amount, category, and account before anything is written to the database."
+msgstr "Ein einziger Satz kann mehrere Transaktionen auf einmal erfassen – „zwölf für Kaffee, vierzig für das Taxi und acht Euro fürs Parken“ kommt als drei getrennte Zeilen zurück, nicht als ein zusammengeführter Eintrag. Ein Prüfbildschirm zeigt jede extrahierte Zeile mit Betrag, Kategorie und Konto, bevor irgendetwas in die Datenbank geschrieben wird."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "One settings screen, and a public repository where every line of it can be checked."
@@ -11374,10 +11394,6 @@ msgstr "Praktische Schritte zum Schutz der Privatsphäre"
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Pre-baked category trees never fit. Budgie lets you build, rename, merge two categories into one (with mass-reassignment), and delete with safe transaction migration."
 msgstr "Vorgefertigte Kategoriebäume passen nie. Budgie ermöglicht es Ihnen, zu bauen, umzubenennen, zwei Kategorien zu einer zusammenzuführen (mit Massenneuzuweisung) und mit sicherer Transaktionsmigration zu löschen."
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Pre-fills the same quick-entry form you would use by typing — confirm or correct"
-msgstr "Füllt dasselbe Schnelleingabe-Formular vor, das Sie beim Tippen verwenden würden – bestätigen oder korrigieren"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Preserves more of your category structure"
@@ -12118,6 +12134,10 @@ msgstr "Überprüfen Sie unsere kryptografischen Implementierungen"
 msgid "Review the import preview"
 msgstr "Überprüfen Sie die Import-Vorschau"
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Review the table of three extracted rows, each with its own amount and category"
+msgstr "Prüfe die Tabelle der drei extrahierten Zeilen, jede mit eigenem Betrag und eigener Kategorie"
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Revoke access through your bank’s connected apps settings"
 msgstr "Den Zugriff über die Einstellungen für verbundene Apps Ihrer Bank widerrufen"
@@ -12202,13 +12222,13 @@ msgstr "Das Speichern einer Regel wendet sie rückwirkend auf passende Transakti
 msgid "Saving is instant"
 msgstr "Speichern ist sofort"
 
-#: src/app/[lang]/features/voice-transaction-entry/metadata.ts
-msgid "Say \"twelve dollars coffee this morning\" and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio ever streams to a server."
-msgstr "Sagen Sie \"zwölf Dollar Kaffee heute Morgen\" und Budgie erfasst es. whisper.rn (whisper.cpp-Backend) und das geräteeigene LLM laufen beide lokal – kein Audio wird jemals an einen Server gestreamt."
-
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Say “twelve dollars coffee this morning” and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
 msgstr "Sagen Sie „zwölf Dollar Kaffee heute Morgen“ und Budgie erfasst es. whisper.rn (whisper.cpp-Backend) und das geräteeigene LLM laufen beide lokal – kein Audio verlässt Ihr Smartphone."
+
+#: src/app/[lang]/features/voice-transaction-entry/metadata.ts
+msgid "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\" and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM extract a reviewable batch — no audio ever streams to a server."
+msgstr "Sag „zwölf für Kaffee, vierzig für das Taxi und acht Euro fürs Parken“, und Budgie erfasst alle drei. whisper.rn (whisper.cpp-Backend) und das geräteeigene LLM extrahieren einen prüfbaren Stapel – kein Audio wird jemals an einen Server gestreamt."
 
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "scanning"
@@ -12757,8 +12777,8 @@ msgid "Speak it. Budgie logs it. whisper.rn (whisper.cpp backend) transcribes on
 msgstr "Sprechen Sie es. Budgie erfasst es. whisper.rn (whisper.cpp-Backend) transkribiert auf dem Gerät – Audio verlässt Ihr Smartphone nie."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Speak naturally — “twelve dollars coffee at the airport”"
-msgstr "Sprechen Sie natürlich – „zwölf Dollar Kaffee am Flughafen“"
+msgid "Speak naturally — “twelve for coffee, forty for the taxi, and eight euros for parking”"
+msgstr "Sprich natürlich – „zwölf für Kaffee, vierzig für das Taxi und acht Euro fürs Parken“"
 
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx
 msgid "Spending Analytics & Charts"
@@ -13240,12 +13260,16 @@ msgid "Tap it, the rule exists"
 msgstr "Antippen, und die Regel steht"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Tap Save 3 — all three transactions commit together in one database transaction"
+msgstr "Tippe auf „3 speichern“ – alle drei Transaktionen werden gemeinsam in einer Datenbanktransaktion gespeichert"
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Tap the mic in the quick-entry sheet"
 msgstr "Auf das Mikrofon im Schnelleingabe-Blatt tippen"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts amount, merchant, and date hints from the transcription and applies the same on-device category suggestion pipeline used for typed transactions."
-msgstr "Tippen Sie auf das Mikrofon im Schnelleingabeblatt. whisper.rn transkribiert lokal mit der whisper.cpp-Engine. Das lokale LLM extrahiert Betrag, Händler und Datumhinweise aus der Transkription und wendet dieselbe geräteeigene Kategorievorschlagspipeline an, die für eingetippte Transaktionen verwendet wird."
+msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Editing a row, or tapping re-record, replaces the whole batch if the transcription went wrong."
+msgstr "Tippe auf das Mikrofon im Schnelleingabe-Formular. whisper.rn transkribiert lokal mit der whisper.cpp-Engine. Das lokale LLM extrahiert eine oder mehrere Transaktionen aus der Transkription – jede mit eigenem Betrag, eigener Kategorie und eigenem Konto – und öffnet einen Prüfbildschirm, bevor etwas gespeichert wird. Das Bearbeiten einer Zeile oder das Antippen von Neu aufnehmen ersetzt den gesamten Stapel, falls die Transkription daneben ging."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"
@@ -13857,10 +13881,6 @@ msgstr "Das Repository enthält die vollständige React Native App, die KI-Servi
 msgid "The repository includes:"
 msgstr "Das Repository umfasst:"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "The result is a pre-filled transaction form: amount, category, account, and merchant — with the same AI category suggestion pill you get for typed entries. Confirm, edit if needed, save."
-msgstr "Das Ergebnis ist ein vorausgefülltes Transaktionsformular: Betrag, Kategorie, Konto und Händler – mit derselben KI-Kategorievorschlags-Schaltfläche, die Sie für getippte Einträge erhalten. Bestätigen, bei Bedarf bearbeiten, speichern."
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "The result is that Budgie can run a capable language model in the background, suggest a category within a fraction of a second, and do so entirely offline — with no network latency and no server costs."
 msgstr "Das Ergebnis ist, dass Budgie ein leistungsfähiges Sprachmodell im Hintergrund ausführen, eine Kategorie in einem Bruchteil einer Sekunde vorschlagen und dies vollständig offline tun kann – ohne Netzwerklatenz und ohne Serverkosten."
@@ -13961,6 +13981,10 @@ msgstr ""
 msgid "The source is public, but the licence is not OSI-approved open source. Budgie ships under the O'SAASY licence: you can read every line on GitHub, fork it and contribute, while commercial redistribution stays with the project."
 msgstr "Der Quellcode ist öffentlich, die Lizenz ist aber keine von der OSI anerkannte Open-Source-Lizenz. Budgie erscheint unter der O'SAASY-Lizenz: Du kannst jede Zeile auf GitHub lesen, forken und beitragen, während die kommerzielle Weitergabe beim Projekt bleibt."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "The spoken currency picks the matching account automatically"
+msgstr "Die gesprochene Währung wählt automatisch das passende Konto aus"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
 msgstr "Die SQLite-Datenbankdatei wird in einem geschützten Verzeichnis gespeichert, auf das nur Budgie zugreifen kann. Unter iOS ist dies das sandboxierte Documents-Verzeichnis der App. Unter Android ist es der interne App-Speicher, den andere Anwendungen nicht lesen können."
@@ -14008,10 +14032,6 @@ msgstr "Die Transaktion wird in eine SQLite-Datenbank geschrieben, die im sicher
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "The transcribed text is passed to the two-stage categorization stack described above."
 msgstr "Der transkribierte Text wird an den oben beschriebenen zweistufigen Kategorisierungsstapel weitergegeben."
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "The transcription appears in the form before you save. Edit any field manually, or tap the mic again to retry."
-msgstr "Die Transkription erscheint im Formular, bevor Sie speichern. Bearbeiten Sie ein beliebiges Feld manuell, oder tippen Sie erneut auf das Mikrofon, um es zu wiederholen."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Trust Factor"
@@ -14353,10 +14373,6 @@ msgstr "Drei Bildschirme: das Überweisungsformular, das beide Konten nennt, das
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
 msgstr "Drei separate Dateien, die jeweils beim ersten Einsatz der zugehörigen Funktion geladen werden: rund 1,1 GB für das Sprachmodell Qwen3 1.7B Q4, 0,5 GB für das 768-dimensionale Nomic-Embedding-Modell und weitere 0,9 GB für Whisper large-v3-turbo, wenn Sie die Spracheingabe aktivieren. Jede davon ist optional — Sie können Budgie auch ohne KI nutzen."
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Three steps from speech to saved"
-msgstr "Drei Schritte von der Sprache bis zum Speichern"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Time series"
