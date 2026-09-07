@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.36.0](https://github.com/budgie-at/budgie/compare/v6.35.0...v6.36.0) (2026-09-07)
+
+
+### Features
+
+* **landing:** account transfers steps story ([148d5d6](https://github.com/budgie-at/budgie/commit/148d5d6f3280ada80186a9cefa4a2c46a70b317f))
+* **landing:** home-route metadata sidecar, query-shaped headings and JSON-LD ([6135b4e](https://github.com/budgie-at/budgie/commit/6135b4e33bfeab8a338bba5910493696d5e3dcea)), closes [#861](https://github.com/budgie-at/budgie/issues/861) [#862](https://github.com/budgie-at/budgie/issues/862) [#863](https://github.com/budgie-at/budgie/issues/863)
+* **landing:** tell the categorization rules story in three steps ([f9bfb24](https://github.com/budgie-at/budgie/commit/f9bfb24adc77024b1d059507e71ac0bdfcb3bdbe))
+
+
+
+
+
 # [6.35.0](https://github.com/budgie-at/budgie/compare/v6.34.0...v6.35.0) (2026-09-07)
 
 
