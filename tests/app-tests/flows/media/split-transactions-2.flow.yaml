@@ -10,8 +10,8 @@ appId: ${APP_ID}
       id: 'SplitEntryRow.Delete.2'
 
 - extendedWaitUntil:
-      visible:
-          id: 'SplitEntries.AddItemButton'
+      notVisible:
+          id: 'SplitEntryRow.Amount.2'
       timeout: 5000
 
 - waitForAnimationToEnd
