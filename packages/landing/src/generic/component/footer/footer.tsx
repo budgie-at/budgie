@@ -70,9 +70,9 @@ export const Footer = async ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h2 className="text-sm font-bold">
+                        <p className="text-sm font-bold">
                             <Trans>App</Trans>
-                        </h2>
+                        </p>
 
                         <ul className="space-y-2 text-sm">
                             <li>
@@ -94,9 +94,9 @@ export const Footer = async ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h2 className="text-sm font-bold">
+                        <p className="text-sm font-bold">
                             <Trans>Features</Trans>
-                        </h2>
+                        </p>
 
                         <ul className="space-y-2 text-sm">
                             <li>
@@ -148,9 +148,9 @@ export const Footer = async ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h2 className="text-sm font-bold">
+                        <p className="text-sm font-bold">
                             <Trans>Resources</Trans>
-                        </h2>
+                        </p>
 
                         <ul className="space-y-2 text-sm">
                             <li>
@@ -194,9 +194,9 @@ export const Footer = async ({ lang }: Props) => {
                     </div>
 
                     <div className="space-y-4">
-                        <h2 className="text-sm font-bold">
+                        <p className="text-sm font-bold">
                             <Trans>Legal</Trans>
-                        </h2>
+                        </p>
 
                         <ul className="space-y-2 text-sm">
                             <li>

@@ -9,67 +9,69 @@ import { JsonLd } from '../json-ld/json-ld';
 export const FaqSectionAccordion = () => {
     const { i18n } = useLingui();
 
-    const privacyQuestion = <Trans>How is my financial data kept private?</Trans>;
-    const privacyAnswer = (
+    const storageQuestion = <Trans>Where is my financial data stored?</Trans>;
+    const storageAnswer = (
         <Trans>
-            Your data never leaves your device unless you explicitly sync with your own cloud storage. We don&apos;t have servers storing
-            your financial information, and we can&apos;t see your transactions. Everything is encrypted locally on your device.
+            In a SQLite database on your phone, and nowhere else. Budgie has no account system and no server of its own, so there is nothing
+            to upload and nothing for us to read. Set a PIN and the database is encrypted on the device with SQLCipher using that PIN.
         </Trans>
     );
-    const bankSyncQuestion = <Trans>Does bank sync work offline?</Trans>;
-    const bankSyncAnswer = (
+    const offlineQuestion = <Trans>Does Budgie work without an internet connection?</Trans>;
+    const offlineAnswer = (
         <Trans>
-            Bank sync requires an internet connection to fetch new transactions, but once synced, you can view and categorize everything
-            offline. The app works completely offline for manual expense entry and viewing your data.
+            Yes. Adding transactions, budgets, tags, analytics and every screen that reads your history run entirely from the local
+            database, so the app behaves the same in aeroplane mode. Only bank sync and exchange-rate refreshes need a connection, and they
+            catch up when you are back online.
         </Trans>
     );
-    const assetsQuestion = <Trans>What cryptocurrencies and assets can I track?</Trans>;
-    const assetsAnswer = (
+    const bankLoginQuestion = <Trans>Can I sync my bank without giving Budgie my bank login?</Trans>;
+    const bankLoginAnswer = (
         <Trans>
-            Budgie supports manual tracking of Bitcoin, Ethereum, other crypto, stocks, ETFs, and traditional bank accounts. Import
-            positions and transactions via CSV. There are no automatic exchange or brokerage API integrations — your data stays on-device.
+            Yes. Monobank sync uses a personal API token that you generate yourself in your bank, and the request goes from your phone
+            straight to the bank. For other banks you import a statement file instead. Budgie never asks for a banking password and there is
+            no aggregator such as Plaid in between.
         </Trans>
     );
-    const multiDeviceQuestion = <Trans>Can I use Budgie across multiple devices?</Trans>;
-    const multiDeviceAnswer = (
+    const openSourceQuestion = <Trans>Is Budgie open source?</Trans>;
+    const openSourceAnswer = (
         <Trans>
-            Yes — export your encrypted database as a single file, save it to any storage you control (iCloud, Google Drive, Dropbox,
-            anywhere), and import it on another device. The file stays encrypted with your PIN; we never see it because we have no servers.
+            The source is public, but the licence is not OSI-approved open source. Budgie ships under the O&apos;SAASY licence: you can read
+            every line on GitHub, fork it and contribute, while commercial redistribution stays with the project.
         </Trans>
     );
-    const licenseQuestion = <Trans>How does the source-available license work?</Trans>;
-    const licenseAnswer = (
+    const subscriptionQuestion = <Trans>Is there a subscription?</Trans>;
+    const subscriptionAnswer = (
         <Trans>
-            Budgie uses a custom source-available license that lets you read, fork, and contribute to the code, while reserving commercial
-            distribution to the project. The full source is on GitHub — you can audit every line.
+            No. The expense tracker itself never expires and has no paywall. Bank sync and on-device AI are an optional one-time unlock, not
+            a recurring charge.
         </Trans>
     );
     const faqPage = buildFaqSectionJsonLd({
-        privacyQuestion: extractTransMessage(privacyQuestion, i18n),
-        privacyAnswer: extractTransMessage(privacyAnswer, i18n),
-        bankSyncQuestion: extractTransMessage(bankSyncQuestion, i18n),
-        bankSyncAnswer: extractTransMessage(bankSyncAnswer, i18n),
-        assetsQuestion: extractTransMessage(assetsQuestion, i18n),
-        assetsAnswer: extractTransMessage(assetsAnswer, i18n),
-        multiDeviceQuestion: extractTransMessage(multiDeviceQuestion, i18n),
-        multiDeviceAnswer: extractTransMessage(multiDeviceAnswer, i18n),
-        licenseQuestion: extractTransMessage(licenseQuestion, i18n),
-        licenseAnswer: extractTransMessage(licenseAnswer, i18n)
+        storageQuestion: extractTransMessage(storageQuestion, i18n),
+        storageAnswer: extractTransMessage(storageAnswer, i18n),
+        offlineQuestion: extractTransMessage(offlineQuestion, i18n),
+        offlineAnswer: extractTransMessage(offlineAnswer, i18n),
+        bankLoginQuestion: extractTransMessage(bankLoginQuestion, i18n),
+        bankLoginAnswer: extractTransMessage(bankLoginAnswer, i18n),
+        openSourceQuestion: extractTransMessage(openSourceQuestion, i18n),
+        openSourceAnswer: extractTransMessage(openSourceAnswer, i18n),
+        subscriptionQuestion: extractTransMessage(subscriptionQuestion, i18n),
+        subscriptionAnswer: extractTransMessage(subscriptionAnswer, i18n)
     });
 
     return (
         <>
             <JsonLd data={faqPage} />
             <Accordion className="w-full" collapsible type="single">
-                <FaqSectionItem answer={privacyAnswer} index={0} question={privacyQuestion} />
+                <FaqSectionItem answer={storageAnswer} index={0} question={storageQuestion} />
 
-                <FaqSectionItem answer={bankSyncAnswer} index={1} question={bankSyncQuestion} />
+                <FaqSectionItem answer={offlineAnswer} index={1} question={offlineQuestion} />
 
-                <FaqSectionItem answer={assetsAnswer} index={2} question={assetsQuestion} />
+                <FaqSectionItem answer={bankLoginAnswer} index={2} question={bankLoginQuestion} />
 
-                <FaqSectionItem answer={multiDeviceAnswer} index={3} question={multiDeviceQuestion} />
+                <FaqSectionItem answer={openSourceAnswer} index={3} question={openSourceQuestion} />
 
-                <FaqSectionItem answer={licenseAnswer} index={4} question={licenseQuestion} />
+                <FaqSectionItem answer={subscriptionAnswer} index={4} question={subscriptionQuestion} />
             </Accordion>
         </>
     );

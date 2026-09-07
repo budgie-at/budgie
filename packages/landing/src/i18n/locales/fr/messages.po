@@ -3284,10 +3284,6 @@ msgstr ""
 msgid "Bank sync reliability varies by institution"
 msgstr "La fiabilité de la synchronisation bancaire varie selon l'établissement"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Bank sync requires an internet connection to fetch new transactions, but once synced, you can view and categorize everything offline. The app works completely offline for manual expense entry and viewing your data."
-msgstr "La synchronisation bancaire nécessite une connexion Internet pour récupérer les nouvelles transactions, mais une fois la synchronisation effectuée, vous pouvez tout consulter et catégoriser hors ligne. L'application fonctionne entièrement hors ligne pour la saisie manuelle des dépenses et la consultation de vos données."
-
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Bank sync requires internet to fetch new transactions, but everything else continues working offline. Once synced, your bank data lives on-device alongside manual entries."
 msgstr "La synchronisation bancaire nécessite internet pour récupérer les nouvelles transactions, mais tout le reste continue de fonctionner hors ligne. Une fois synchronisées, vos données bancaires résident sur l’appareil aux côtés des saisies manuelles."
@@ -3704,7 +3700,6 @@ msgid "Budgie"
 msgstr "Budgie"
 
 #: src/app/[lang]/layout.tsx
-#: src/app/[lang]/page.tsx
 msgid "Budgie - Privacy-First Expense Tracker"
 msgstr "Budgie – Gestionnaire de dépenses axé sur la confidentialité"
 
@@ -3961,6 +3956,10 @@ msgstr "Budgie est un tracker de dépenses 100% offline-first. Vos données fina
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "Budgie is a fully offline budget app. Add expenses, view analytics, and import bank statements without any internet connection. Your data stays on your device."
 msgstr "Budgie est une application de budget entièrement hors ligne. Ajoutez des dépenses, consultez les analyses et importez des relevés bancaires sans aucune connexion internet. Vos données restent sur votre appareil."
+
+#: src/app/[lang]/metadata.ts
+msgid "Budgie is a privacy-first, offline expense tracker for iOS and Android. Bank sync, multi-currency and on-device AI, with your data never leaving the phone."
+msgstr "Budgie est un suivi de dépenses hors ligne et respectueux de la vie privée pour iOS et Android. Synchro bancaire, multidevise et IA sur l'appareil."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Budgie is a privacy-first, offline-first mobile application designed to help users track expenses, manage budgets, sync bank accounts (optional), monitor investments (stocks and cryptocurrency), track debts and loans, set financial goals, and access AI-powered financial insights. The Service operates primarily on your device, with optional cloud features that require explicit user consent."
@@ -4246,10 +4245,6 @@ msgstr "Budgie prend en charge les sauvegardes locales cryptées que vous contr�
 msgid "Budgie supports exporting your complete financial history in standard formats (CSV, JSON). You own your data, and you can take it with you. The export happens locally, producing a file you can use with any other application."
 msgstr "Budgie prend en charge l'exportation de votre historique financier complet dans des formats standards (CSV, JSON). Vous etes proprietaire de vos donnees et vous pouvez les emporter avec vous. L'exportation se fait localement, produisant un fichier que vous pouvez utiliser avec n'importe quelle autre application."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Budgie supports manual tracking of Bitcoin, Ethereum, other crypto, stocks, ETFs, and traditional bank accounts. Import positions and transactions via CSV. There are no automatic exchange or brokerage API integrations — your data stays on-device."
-msgstr "Budgie prend en charge le suivi manuel de Bitcoin, Ethereum, d'autres cryptomonnaies, d'actions, d'ETF et de comptes bancaires classiques. Importez vos positions et transactions via CSV. Aucune intégration automatique avec des API de courtage ou d'échange — vos données restent sur l'appareil."
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Budgie supports voice transaction entry powered by Whisper.rn — a React Native port of OpenAI Whisper, the open-source speech recognition model. Whisper runs entirely on-device. When you speak a transaction, the audio is processed locally and transcribed without being sent to any speech recognition API."
 msgstr "Budgie prend en charge la saisie vocale des transactions alimentée par Whisper.rn — un port React Native d'OpenAI Whisper, le modèle de reconnaissance vocale open source. Whisper s'exécute entièrement sur l'appareil. Lorsque vous dictez une transaction, l'audio est traité localement et transcrit sans être envoyé à aucune API de reconnaissance vocale."
@@ -4366,10 +4361,6 @@ msgstr "Budgie traite séparément le mouvement principal et les frais bancaires
 msgid "Budgie turns that cleanup into a visible workflow. When the current filter contains uncategorized transactions, a compact missing-category pill appears above the list with the exact count."
 msgstr "Budgie transforme ce nettoyage en flux visible. Lorsque le filtre actuel contient des transactions non catégorisées, une pastille compacte de catégories manquantes apparaît au-dessus de la liste avec le nombre exact."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Budgie uses a custom source-available license that lets you read, fork, and contribute to the code, while reserving commercial distribution to the project. The full source is on GitHub — you can audit every line."
-msgstr "Budgie utilise une licence Source-Available personnalisée qui vous permet de lire, de forker et de contribuer au code, tout en réservant la distribution commerciale au projet. Le code source complet est sur GitHub — vous pouvez auditer chaque ligne."
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:"
 msgstr "Budgie utilise une approche differente basee sur les types de donnees repliquees sans conflit (CRDT) et les transformations operationnelles. Chaque modification est enregistree comme une operation avec un horodatage et un identifiant d'appareil. Lors de la synchronisation :"
@@ -4398,6 +4389,10 @@ msgstr "Budgie utilise deux techniques d'IA complémentaires pour la catégorisa
 msgid "Budgie uses two on-device models: Qwen3 1.7B for natural-language understanding and chat, and a 768-dimensional embedding model for nearest-neighbor categorization from your own transaction history. Both run locally with no external API call."
 msgstr "Budgie utilise deux modèles sur l'appareil : Qwen3 1.7B pour la compréhension du langage naturel et le chat, et un modèle d'embedding 768 dimensions pour la catégorisation par plus proche voisin à partir de votre propre historique de transactions. Les deux s'exécutent localement sans appel API externe."
 
+#: src/generic/component/comparison-section/comparison-section-header.tsx
+msgid "Budgie vs cloud budgeting apps"
+msgstr "Budgie face aux applications de budget dans le cloud"
+
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
@@ -4410,6 +4405,10 @@ msgstr "Budgie vs. la catégorie"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie works fully offline. You can track expenses on a flight, review your budget in a remote cabin, or manage finances in areas with no cell coverage. Every feature works without network access."
 msgstr "Budgie fonctionne entièrement hors ligne. Vous pouvez suivre vos dépenses dans un avion, consulter votre budget dans un chalet isolé ou gérer vos finances dans des zones sans couverture cellulaire. Chaque fonctionnalité est opérationnelle sans accès réseau."
+
+#: src/app/[lang]/metadata.ts
+msgid "Budgie, the offline expense tracker that never phones home"
+msgstr "Budgie, le suivi de dépenses hors ligne qui ne rappelle jamais"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie: Built by Developers, for Developers"
@@ -4755,6 +4754,10 @@ msgstr "Peut-on auto-héberger Budgie ?"
 msgid "Can I spend from a deposit account?"
 msgstr "Puis-je dépenser depuis un compte de dépôt ?"
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Can I sync my bank without giving Budgie my bank login?"
+msgstr "Puis-je synchroniser ma banque sans donner mes identifiants bancaires à Budgie ?"
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Can I track an account in a different currency?"
 msgstr "Puis-je suivre un compte dans une devise différente ?"
@@ -4782,10 +4785,6 @@ msgstr "Puis-je annuler un virement ?"
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Can I undo the conversion?"
 msgstr "Puis-je annuler la conversion ?"
-
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Can I use Budgie across multiple devices?"
-msgstr "Puis-je utiliser Budgie sur plusieurs appareils ?"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Can I use multiple Monobank accounts?"
@@ -6276,10 +6275,6 @@ msgstr "Voulez-vous vraiment que tout cela soit sur le serveur de quelqu'un d'au
 msgid "Docker deployment with compose files provided"
 msgstr "Déploiement Docker avec fichiers compose fournis"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Does bank sync work offline?"
-msgstr "La synchronisation bancaire fonctionne-t-elle hors ligne ?"
-
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Does Budgie auto-backup?"
 msgstr "Budgie effectue-t-il des sauvegardes automatiques ?"
@@ -6321,6 +6316,7 @@ msgid "Does Budgie use Plaid for bank sync?"
 msgstr "Budgie utilise-t-il Plaid pour la synchronisation bancaire ?"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "Does Budgie work without an internet connection?"
 msgstr "Budgie fonctionne-t-il sans connexion internet ?"
 
@@ -6886,17 +6882,9 @@ msgstr "Tout — accès complet"
 msgid "Everything above runs from a database on the device. Aeroplane mode changes nothing about what you can see or do."
 msgstr "Tout ce qui précède fonctionne depuis une base de données sur l’appareil. Le mode avion ne change rien à ce que vous pouvez voir ou faire."
 
-#: src/app/[lang]/page.tsx
-msgid "Everything the app does, on your device"
-msgstr "Tout ce que fait l’application, sur votre appareil"
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Everything we have described in this article can be verified by examining our source code. Budgie is open source, and we believe this transparency is essential for any application that handles sensitive financial data."
 msgstr "Tout ce que nous avons decrit dans cet article peut etre verifie en examinant notre code source. Budgie est open source, et nous croyons que cette transparence est essentielle pour toute application qui traite des donnees financieres sensibles."
-
-#: src/generic/component/faq-section/faq-section.tsx
-msgid "Everything you need to know about Budgie's privacy-first approach to expense tracking."
-msgstr "Comment Budgie garde le suivi des dépenses privé par défaut."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Excalidraw"
@@ -7519,7 +7507,6 @@ msgstr "Gratuit, sans compte, sans abonnement"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/feature/component/feature-page-faq-section/feature-page-faq-section.tsx
-#: src/generic/component/faq-section/faq-section.tsx
 msgid "Frequently Asked Questions"
 msgstr "Foire aux questions"
 
@@ -7872,6 +7859,10 @@ msgstr "Le budget familial est important"
 msgid "How a 1.7B-Parameter LLM Fits on a Phone"
 msgstr "Comment un LLM de 1,7 milliard de paramètres tient sur un téléphone"
 
+#: src/generic/component/home-tour-section/home-tour-section.tsx
+msgid "How a transaction moves through Budgie"
+msgstr "Le parcours d'une transaction dans Budgie"
+
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "How are tags chosen?"
 msgstr "Comment les étiquettes sont-elles choisies ?"
@@ -7887,10 +7878,6 @@ msgstr "Quelle est la taille du téléchargement ?"
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "How big is the model download?"
 msgstr "Quelle est la taille du téléchargement du modèle ?"
-
-#: src/generic/component/comparison-section/comparison-section-header.tsx
-msgid "How Budgie compares to a cloud budgeting app"
-msgstr "Comment Budgie se compare à une application de budget dans le cloud"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "How Budgie Differs"
@@ -8026,10 +8013,6 @@ msgstr "Comment le code source public rend-il Budgie plus privé ?"
 msgid "How does the popularity sort work?"
 msgstr "Comment fonctionne le tri par popularité ?"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "How does the source-available license work?"
-msgstr "Comment fonctionne la licence Source-Available ?"
-
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "How far back does the history go?"
 msgstr "Jusqu'où remonte l'historique ?"
@@ -8053,10 +8036,6 @@ msgstr "En quoi Budgie est-il différent d'une application de budget cloud ?"
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "How is Budgie different from cloud-based PFM apps?"
 msgstr "En quoi Budgie est-il différent des applications de gestion financière personnelle basées sur le cloud ?"
-
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "How is my financial data kept private?"
-msgstr "Comment la confidentialité de mes données financières est-elle garantie ?"
 
 #: src/app/[lang]/security/page.tsx
 msgid "How is the database encrypted?"
@@ -8402,6 +8381,10 @@ msgstr "En 2019, un laboratoire de recherche appelé Ink & Switch a publié un a
 msgid "In 2022, Plaid settled a $58 million class action lawsuit over allegations that they collected more data than users authorized and retained it longer than necessary. The settlement included claims that Plaid obtained login credentials through interfaces designed to look like bank login pages, leading users to believe they were logging directly into their banks."
 msgstr "En 2022, Plaid a regle un recours collectif de 58 millions de dollars pour des allegations selon lesquelles ils auraient collecte plus de donnees que ce que les utilisateurs avaient autorise et les auraient conservees plus longtemps que necessaire. Le reglement incluait des accusations selon lesquelles Plaid obtenait des identifiants via des interfaces concues pour ressembler a des pages de connexion bancaires, amenant les utilisateurs a croire qu'ils se connectaient directement a leur banque."
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "In a SQLite database on your phone, and nowhere else. Budgie has no account system and no server of its own, so there is nothing to upload and nothing for us to read. Set a PIN and the database is encrypted on the device with SQLCipher using that PIN."
+msgstr "Dans une base de données SQLite sur votre téléphone, et nulle part ailleurs. Budgie n'a ni système de comptes ni serveur, donc rien à envoyer et rien que nous puissions lire. Définissez un code PIN et la base est chiffrée sur l'appareil avec SQLCipher à l'aide de ce code."
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "In an era where data breaches and privacy violations make headlines daily, the way we handle our financial information has never been more critical. When it comes to managing your money, <0>your privacy isn’t just a feature—it’s a fundamental right</0>."
 msgstr "À une époque où les violations de données et les atteintes à la vie privée font quotidiennement la une des journaux, la façon dont nous gérons nos informations financières n'a jamais été aussi critique. En matière de gestion de votre argent, <0>votre vie privée n'est pas seulement une fonctionnalité — c'est un droit fondamental</0>."
@@ -8542,6 +8525,10 @@ msgstr "La synchronisation bancaire fonctionne-t-elle toujours hors ligne ?"
 msgid "Is biometric the same as PIN security?"
 msgstr "La biométrie offre-t-elle le même niveau de sécurité que le PIN ?"
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Is Budgie open source?"
+msgstr "Budgie est-il open source ?"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Is Budgie really free to use?"
 msgstr "Budgie est-il vraiment gratuit ?"
@@ -8629,6 +8616,10 @@ msgstr "Le projet utilise-t-il des bibliothèques bien maintenues ou abandonnée
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Is there a limit on the number of accounts?"
 msgstr "Y a-t-il une limite au nombre de comptes ?"
+
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Is there a subscription?"
+msgstr "Y a-t-il un abonnement ?"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Is there active discussion about privacy and data handling?"
@@ -10199,6 +10190,10 @@ msgstr ""
 msgid "No. The app only calls Binance read endpoints, and the setup instructions ask you to create a key with reading permission only. Permissions are set on Binance's side, so a key without trading or withdrawal rights simply cannot be used for either."
 msgstr "Non. L'application n'appelle que des points d'accès en lecture chez Binance, et les instructions de configuration vous demandent de créer une clé avec la permission de lecture uniquement. Les permissions sont définies du côté de Binance, si bien qu'une clé sans droits de trading ou de retrait ne peut tout simplement pas servir à l'un ou l'autre."
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "No. The expense tracker itself never expires and has no paywall. Bank sync and on-device AI are an optional one-time unlock, not a recurring charge."
+msgstr "Non. Le suivi de dépenses lui-même n'expire jamais et n'a aucun paywall. La synchro bancaire et l'IA sur l'appareil sont un déblocage unique et facultatif, pas un abonnement."
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "No. The microphone stream feeds whisper.rn directly in-process; the audio buffer is discarded after transcription. Nothing is saved, sent, or logged."
 msgstr "Non. Le flux du microphone alimente whisper.rn directement en cours de processus ; le tampon audio est supprimé après la transcription. Rien n'est sauvegardé, envoyé ou enregistré."
@@ -10374,6 +10369,14 @@ msgstr "La capacité hors ligne compte"
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "offline expense tracker"
 msgstr ""
+
+#: src/generic/component/faq-section/faq-section.tsx
+msgid "Offline expense tracker FAQ"
+msgstr "FAQ du suivi de dépenses hors ligne"
+
+#: src/app/[lang]/metadata.ts
+msgid "Offline Expense Tracker That Never Leaves Your Phone"
+msgstr "Suivi de dépenses hors ligne qui reste sur le mobile"
 
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Offline expense tracking that never phones home."
@@ -10646,10 +10649,6 @@ msgstr "Une seule devise, souvent codée en dur"
 #: src/app/[lang]/security/page.tsx
 msgid "One encrypted file. No account. Restore on any device in seconds."
 msgstr "Un fichier chiffré. Sans compte. Restaurez sur n’importe quel appareil en quelques secondes."
-
-#: src/generic/component/home-tour-section/home-tour-section.tsx
-msgid "One expense, from your thumb to your charts"
-msgstr "Une dépense, de votre pouce jusqu’à vos graphiques"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "One number, everything in it"
@@ -13892,6 +13891,10 @@ msgstr "La fermeture n'était pas qu'une question de produit défaillant. C'éta
 msgid "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr ""
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "The source is public, but the licence is not OSI-approved open source. Budgie ships under the O'SAASY licence: you can read every line on GitHub, fork it and contribute, while commercial redistribution stays with the project."
+msgstr "Le code est public, mais la licence n'est pas une licence open source approuvée par l'OSI. Budgie est publié sous licence O'SAASY : vous pouvez lire chaque ligne sur GitHub, forker et contribuer, la redistribution commerciale restant au projet."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
 msgstr "Le fichier de base de donnees SQLite est stocke dans un repertoire protege auquel seul Budgie peut acceder. Sur iOS, il s'agit du repertoire Documents isole de l'application. Sur Android, c'est le stockage interne de l'application que les autres applications ne peuvent pas lire."
@@ -14556,10 +14559,6 @@ msgstr "Deux montants, un seul taux"
 msgid "Two categories that mean the same thing become one: pick the category to keep and every transaction moves across before the other one goes. The picker offers the built-in tree alongside your own, or a new category made on the spot."
 msgstr "Deux catégories qui veulent dire la même chose n'en font plus qu'une : choisissez celle à conserver et chaque transaction bascule avant que l'autre ne disparaisse. Le sélecteur propose l'arborescence intégrée à côté des vôtres, ou une nouvelle catégorie créée sur-le-champ."
 
-#: src/generic/component/proof-band/proof-band.tsx
-msgid "Two claims you can check yourself"
-msgstr "Deux affirmations que vous pouvez vérifier vous-même"
-
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Two complementary signals: vector lookup over your history plus a generative LLM suggestion"
 msgstr "Deux signaux complémentaires : recherche vectorielle sur votre historique plus une suggestion de LLM génératif"
@@ -15061,6 +15060,10 @@ msgstr "Qu'en est-il des agrégateurs tiers ?"
 msgid "What actions are available?"
 msgstr "Quelles actions sont disponibles ?"
 
+#: src/app/[lang]/page.tsx
+msgid "What an offline expense tracker can do"
+msgstr "Ce que peut faire un suivi de dépenses hors ligne"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "What analytics services are embedded in the app"
 msgstr "Quels services d'analyse sont intégrés dans l'application"
@@ -15084,10 +15087,6 @@ msgstr "Ce qui change architecturalement"
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "What connecting a bank actually asks for"
 msgstr "Ce qu’une connexion bancaire demande vraiment"
-
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "What cryptocurrencies and assets can I track?"
-msgstr "Quelles cryptomonnaies et quels actifs puis-je suivre ?"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "What data do you collect through the app store?"
@@ -15662,6 +15661,10 @@ msgstr "D'où viennent les suggestions ?"
 msgid "Where does my Monobank token live?"
 msgstr "Où est stocké mon jeton Monobank ?"
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Where is my financial data stored?"
+msgstr "Où sont stockées mes données financières ?"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Where progress is calculated"
 msgstr "Où la progression est calculée"
@@ -15673,6 +15676,10 @@ msgstr "Où ces données sont transmises"
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Where the backup file replaces the server"
 msgstr "Là où le fichier de sauvegarde remplace le serveur"
+
+#: src/generic/component/faq-section/faq-section.tsx
+msgid "Where the data lives, what works offline, how bank sync avoids your login, and what it costs."
+msgstr "Où vivent les données, ce qui fonctionne hors ligne, comment la synchro bancaire évite vos identifiants et ce que cela coûte."
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Where transactions live"
@@ -15963,6 +15970,10 @@ msgstr "Pourquoi ne pas simplement auto-héberger une application financière ex
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Why not use end-to-end encrypted cloud sync?"
 msgstr "Pourquoi ne pas utiliser une synchronisation cloud chiffree de bout en bout ?"
+
+#: src/generic/component/proof-band/proof-band.tsx
+msgid "Why offline-first and source-available matter"
+msgstr "Pourquoi le hors-ligne d'abord et le code ouvert comptent"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Why Offline-First Changes Everything"
@@ -16290,10 +16301,6 @@ msgstr "Oui — active la détection des paires de virement"
 msgid "Yes — every backup is a separate file. Snapshot before risky imports or migrations and keep the file around for rollback."
 msgstr "Oui — chaque sauvegarde est un fichier séparé. Prenez un instantané avant des importations ou migrations risquées et conservez le fichier pour un retour en arrière."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Yes — export your encrypted database as a single file, save it to any storage you control (iCloud, Google Drive, Dropbox, anywhere), and import it on another device. The file stays encrypted with your PIN; we never see it because we have no servers."
-msgstr "Oui — exportez votre base de données chiffrée en un seul fichier, enregistrez-la dans le stockage de votre choix (iCloud, Google Drive, Dropbox, partout), et importez-la sur un autre appareil. Le fichier reste chiffré avec votre PIN ; nous ne le voyons jamais car nous n'avons pas de serveurs."
-
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Yes — IBAN extraction is part of the header parse. The IBAN is stored on the account and enables automatic transfer-pair detection between Erste and other accounts you own."
 msgstr "Oui — l'extraction de l'IBAN fait partie de l'analyse de l'en-tête. L'IBAN est stocké sur le compte et permet la détection automatique des paires de virement entre Erste et vos autres comptes."
@@ -16410,6 +16417,10 @@ msgstr "Oui. Une règle contient plusieurs actions, si bien que la même corresp
 msgid "Yes. A transfer can remain a transfer while its fee is counted in the selected fee category for analytics."
 msgstr "Oui. Un transfert peut rester un transfert tandis que ses frais sont comptés dans la catégorie de frais choisie pour les analyses."
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Yes. Adding transactions, budgets, tags, analytics and every screen that reads your history run entirely from the local database, so the app behaves the same in aeroplane mode. Only bank sync and exchange-rate refreshes need a connection, and they catch up when you are back online."
+msgstr "Oui. L'ajout de transactions, les budgets, les étiquettes, les analyses et chaque écran qui lit votre historique fonctionnent entièrement depuis la base locale : l'application se comporte pareil en mode avion. Seules la synchro bancaire et l'actualisation des taux de change ont besoin d'une connexion, et elles rattrapent leur retard une fois de retour en ligne."
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Yes. All core functionality — adding transactions, viewing reports, managing budgets, and reviewing your history — works completely offline. Internet access is only used when you explicitly trigger a bank sync or fetch current exchange rates."
 msgstr "Oui. Toutes les fonctionnalités principales — ajout de transactions, consultation des rapports, gestion des budgets et révision de votre historique — fonctionnent entièrement hors ligne. L'accès à Internet n'est utilisé que lorsque vous déclenchez explicitement une synchronisation bancaire ou récupérez les taux de change actuels."
@@ -16501,6 +16512,10 @@ msgstr "Oui. Comme les autres comptes, les dépôts disposent d’un réglage «
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Yes. Long-press the transfer and choose \"Split back into two transactions\"; both halves return to their original types."
 msgstr "Oui. Appuyez longuement sur le virement et choisissez « Rédiviser en deux transactions » ; les deux moitiés reviennent à leurs types d'origine."
+
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Yes. Monobank sync uses a personal API token that you generate yourself in your bank, and the request goes from your phone straight to the bank. For other banks you import a statement file instead. Budgie never asks for a banking password and there is no aggregator such as Plaid in between."
+msgstr "Oui. La synchro Monobank utilise un jeton d'API personnel que vous générez vous-même dans votre banque, et la requête part de votre téléphone directement vers la banque. Pour les autres banques, vous importez un fichier de relevé. Budgie ne demande jamais de mot de passe bancaire et aucun agrégateur comme Plaid ne s'interpose."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Yes. One picker component is reused across analytics tabs, the transaction list, and the recurring calendar. Filters apply consistently."
@@ -16938,10 +16953,6 @@ msgstr "Vos donnees n'existent que sur votre appareil. Si vous perdez votre tele
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Your data is yours. Budgie supports exporting your financial data in standard formats. If you ever want to switch to a different application or analyze your data in a spreadsheet, you have full access."
 msgstr "Vos données vous appartiennent. Budgie prend en charge l'exportation de vos données financières dans des formats standards. Si vous souhaitez un jour passer à une autre application ou analyser vos données dans un tableur, vous y avez pleinement accès."
-
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Your data never leaves your device unless you explicitly sync with your own cloud storage. We don't have servers storing your financial information, and we can't see your transactions. Everything is encrypted locally on your device."
-msgstr "Vos données ne quittent jamais votre appareil sauf si vous synchronisez explicitement avec votre propre stockage cloud. Nous n'avons pas de serveurs stockant vos informations financières et nous ne pouvons pas voir vos transactions. Tout est chiffré localement sur votre appareil."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your data won’t be sold to third parties"
