@@ -12,15 +12,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppClip } from '../../../../generic/component/app-clip/app-clip';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -83,14 +81,59 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie Monobank screen listing the connected Black, White and Jar cards with their balances`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>From one token to your home screen</Trans>}>
+                    <Trans>Three screens: paste a personal token, pick the cards and jars you want, and watch them land on Home.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Paste one personal token</Trans>}>
+                    <Trans>Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie Connect Monobank screen with the Get API Token row and the token field`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="no-bank-login-budget-app-1"
+                    slug="no-bank-login-budget-app"
+                >
+                    <FeatureStory.Callout y={0.22}>
+                        <Trans>Generate it in Monobank</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.506}>
+                        <Trans>Kept in your local database</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Cards and jars arrive</Trans>}>
+                    <Trans>Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch`}
+                    index={1}
                     locale={lang}
                     scene="monobank-sync-1"
                     slug="monobank-sync"
+                >
+                    <FeatureStory.Callout y={0.218}>
+                        <Trans>Each card with its balance</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.387}>
+                        <Trans>Jars come across too</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Grouped under the bank</Trans>}>
+                    <Trans>Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Clip
+                    alt={t(i18n)`Screen recording of the Monobank group on the Budgie home screen opening its synced accounts`}
+                    index={2}
+                    locale={lang}
+                    scene="monobank-sync-clip-1"
+                    slug="monobank-sync"
                 />
-            </FeaturePageMedia>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -160,42 +203,9 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        When you transfer between two banks, both legs are automatically detected via counter-IBAN and exchange-rate
-                        matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup
-                        needed.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Jars are accounts, not a footnote</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Monobank jars sync in the same pass as your cards. During setup they get their own section in the account picker, so
-                        you can bring in the holiday fund and leave the rest behind, and each imported jar becomes a real account with its
-                        own balance, history, and place in net worth.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Because a jar is a normal account, moving money from your card into it is a transfer between two accounts you own —
-                        and the same consolidation that merges cross-bank transfers merges the two legs of a jar top-up into one entry
-                        instead of an expense that never happened.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Generate a personal API token from the Monobank app, paste it into Budgie, choose which Monobank accounts to import,
-                        and select an initial sync window. A background task syncs every 30 minutes when you&apos;re online; you control the
-                        cadence and can pause anytime.
+                        The same matching runs between two banks and between a card and one of your jars: both legs are detected via
+                        counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your
+                        spending stats, no manual cleanup needed.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -276,15 +286,6 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     }
                 />
             </FeaturePageFaqSection>
-
-            <FeaturePageMedia>
-                <AppClip
-                    alt={t(i18n)`Screen recording of Budgie opening the Monobank integration from the home account list`}
-                    locale={lang}
-                    scene="monobank-sync-clip-1"
-                    slug="monobank-sync"
-                />
-            </FeaturePageMedia>
 
             <FeaturePageRelated locale={lang} slugs={FEATURE_METADATA.relatedFeatureSlugs} />
             <FeaturePageRelatedArticles locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
