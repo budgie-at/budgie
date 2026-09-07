@@ -15,14 +15,13 @@ on: pull_request
 jobs:
     detect-mobile-impact:
         name: Detect mobile impact
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 15
         permissions:
             contents: read
             pull-requests: read
         outputs:
             mobile: ${{ steps.gate.outputs.mobile }}
-            landing-only: ${{ steps.gate.outputs.landing-only }}
         steps:
             - name: Compute mobile-impact gate
               id: gate
@@ -30,7 +29,6 @@ jobs:
               with:
                   script: |
                       let mobile = true;
-                      let landingOnly = false;
 
                       try {
                         const files = await github.paginate(github.rest.pulls.listFiles, {
@@ -55,26 +53,16 @@ jobs:
                             (/^test-|media|compose/.test(filename.slice('tests/app-tests/scripts/'.length))))
                         );
                         mobile = !mobileSuiteExempt;
-                        const totalFiles = context.payload.pull_request.changed_files;
-                        const isFileListComplete = files.length === totalFiles;
-                        landingOnly = isFileListComplete && files.length > 0 && files.every(({ filename, previous_filename }) =>
-                          filename.startsWith('packages/landing/') &&
-                          (previous_filename === undefined || previous_filename.startsWith('packages/landing/'))
-                        );
-                        core.info(`Inspected ${files.length}/${totalFiles} changed files; mobile affected: ${mobile}; landing only: ${landingOnly}`);
+                        core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}`);
                       } catch (error) {
                         core.warning(`Could not inspect PR files; defaulting to mobile=true: ${error.message}`);
                       }
 
                       core.setOutput('mobile', mobile ? 'true' : 'false');
-                      core.setOutput('landing-only', landingOnly ? 'true' : 'false');
 
     code-quality:
-        needs: [detect-mobile-impact]
         name: Code quality checks
-        # Landing-only pull requests route to a hosted runner so they never queue
-        # behind the Mac mini fleet, whose Linux envelope is shared with iOS Maestro.
-        runs-on: ${{ needs.detect-mobile-impact.outputs.landing-only == 'true' && 'ubuntu-24.04' || fromJSON('["self-hosted","linux-tiered","linux-large"]') }}
+        runs-on: [self-hosted, trf-linux-amd64-4x8]
         timeout-minutes: 60
         permissions:
             contents: read
@@ -144,7 +132,7 @@ jobs:
 
     e2e-script-tests:
         name: E2E script self-tests
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 10
         permissions:
             contents: read
@@ -159,8 +147,8 @@ jobs:
               with:
                   node-version: 22.22.1
 
-            - name: Verify sqlite3 is available
-              run: sqlite3 --version
+            - name: Install sqlite3 and ruby
+              run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends sqlite3 ruby
 
             - name: Run E2E script self-tests
               run: |
@@ -174,7 +162,7 @@ jobs:
         if: ${{ needs.code-quality.outputs.coverage-artifact-id != '' }}
         needs: [code-quality]
         name: Upload coverage reports
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 10
         permissions:
             contents: read
@@ -201,10 +189,7 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: EAS Update Preview
-        # Expo's Hermes compiler package ships an x86-64 Linux host binary.
-        # Keep this export on the hosted x86-64 image and reserve the Mac mini
-        # for the native iOS build and simulator stages below.
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-4x8]
         timeout-minutes: 60
         permissions:
             contents: read
@@ -238,6 +223,7 @@ jobs:
               uses: expo/expo-github-action@v9
               with:
                   eas-version: ${{ env.EAS_CLI_VERSION }}
+                  packager: npm
                   token: ${{ secrets.EXPO_TOKEN }}
 
             - name: Install dependencies
@@ -297,7 +283,7 @@ jobs:
     store-screenshots-gallery:
         name: Store screenshots gallery
         if: github.event.pull_request.head.repo.full_name == github.repository
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 10
         permissions:
             pull-requests: write

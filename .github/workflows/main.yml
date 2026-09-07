@@ -21,7 +21,7 @@ permissions:
 jobs:
   release:
     name: Publish a release
-    runs-on: [self-hosted, linux-tiered, linux-medium]
+    runs-on: [self-hosted, trf-linux-amd64-2x4]
     timeout-minutes: 30
     steps:
       - name: Checkout repository
@@ -87,9 +87,7 @@ jobs:
   eas-update:
     name: EAS Update
     needs: release
-    # Expo's Hermes compiler package ships an x86-64 Linux host binary.
-    # Keep the export on the hosted x86-64 image and off the ARM64 fleet.
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, trf-linux-amd64-4x8]
     timeout-minutes: 30
     steps:
       - name: Check for EXPO_TOKEN
@@ -122,6 +120,7 @@ jobs:
         uses: expo/expo-github-action@v9
         with:
           eas-version: latest
+          packager: npm
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
