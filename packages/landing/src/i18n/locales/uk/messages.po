@@ -2347,6 +2347,10 @@ msgstr "Технічний погляд на offline-first архітектур�
 msgid "A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
 msgstr "Технічний погляд на offline-first архітектуру Budgie: SQLite, шифрування AES-256 і синхронізація між пристроями, які тримають ваші фінансові дані на вашому пристрої."
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
+msgstr "Транзакція може мати кілька тегів. У списку є місце лише для одного чипа, тож Budgie вирішує, який показати."
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively."
 msgstr "Віртуальний тег, що об'єднує всі транзакції без жодного тегу. Натиснувши на нього, отримаєте список кожної транзакції, щоб позначити їх ретроспективно."
@@ -3653,6 +3657,10 @@ msgstr "Блог"
 msgid "Booking date and value date both captured per transaction"
 msgstr "Дата проведення та дата валютування фіксуються для кожної транзакції"
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "Bordered chip, plus a count"
+msgstr "Чип із рамкою плюс лічильник"
+
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
 msgstr "Обидва можуть бути безпечними при правильному впровадженні. Різниця — у поверхні загрози: прямі токени — від банку до вас; агрегаторний OAuth додає третю сторону з вашими обліковими даними та потоком транзакцій."
@@ -4320,8 +4328,8 @@ msgid "Budgie transaction list where each row shows a tag chip beside its catego
 msgstr "Список транзакцій Budgie, де кожен рядок показує тег поруч із категорією та датою"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Budgie transaction list where every row shows its primary tag next to the category"
-msgstr "Список транзакцій Budgie, де в кожному рядку поряд із категорією показано основний тег"
+msgid "Budgie transaction list where multi-tag rows show a bordered tag chip with a sibling count and single-tag rows show a plain chip"
+msgstr "Список транзакцій Budgie, де рядки з кількома тегами показують чип тега з рамкою та лічильником інших, а рядки з одним тегом показують звичайний чип"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete"
@@ -6602,10 +6610,6 @@ msgstr "Кожен рядок розділення враховується у �
 msgid "Each split row keeps its own tags and comment — fully independent"
 msgstr "Кожен рядок розділення зберігає власні теги та коментар — повністю незалежний"
 
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Each transaction's tag list has an isPrimary flag on at most one tag. The badge component renders the primary tag in a corner star. The selector UI surfaces the rotate-primary action on long-press."
-msgstr "Список тегів кожної транзакції має прапорець isPrimary не більш ніж на одному тегу. Компонент значка відображає основний тег у вигляді зірочки в куті. UI селектора показує дію ротації основного тегу при довгому натисненні."
-
 #: src/generic/component/waitlist-form/waitlist-success.tsx
 msgid "Early access members get 50% off lifetime"
 msgstr "Учасники раннього доступу отримують 50% знижки на довічний доступ"
@@ -8224,7 +8228,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/multi-language-app/page.tsx
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-#: src/app/[lang]/features/primary-tag/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 #: src/app/[lang]/features/screenshot-protection/page.tsx
@@ -10867,6 +10870,10 @@ msgstr "Один екран налаштувань, і найпримітніш�
 msgid "One tag chip, plus a count"
 msgstr "Один тег і лічильник решти"
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "One tag needs no border"
+msgstr "Один тег не потребує рамки"
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
 msgstr "Один тег на транзакцію може бути підвищений до «первинного» зі значком зірки в куті"
@@ -11027,6 +11034,10 @@ msgstr "Відкрийте форму витрат, і Budgie запропону
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Open the sheet, type the amount, tap save — that's the typical flow once defaults are tuned to your habits. The form picks your default account, the most-likely category, and today's date automatically."
 msgstr "Відкрийте аркуш, введіть суму, натисніть зберегти — це типовий процес після налаштування параметрів за замовчуванням під ваші звички. Форма автоматично вибирає ваш рахунок за замовчуванням, найімовірнішу категорію та сьогоднішню дату."
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "Open the tag picker and long-press any tag to make it the one the list shows — no separate settings screen."
+msgstr "Відкрийте вибір тегів і довго натисніть на будь-який тег, щоб саме він показувався у списку — без окремого екрана налаштувань."
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Open this page in Safari — other browsers cannot trigger an OTA install."
@@ -13227,6 +13238,10 @@ msgstr "Системна адаптивна темна тема, що врахо
 msgid "System-adaptive dark theme that respects OLED displays. Switch with your device, or lock to dark or light. Charts recompute palette for legibility."
 msgstr "Системна адаптивна темна тема, що враховує OLED-дисплеї. Перемикайтеся разом із пристроєм або зафіксуйте темну чи світлу. Графіки перераховують палітру для зручності читання."
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "Tag a transaction more than once and the list still shows one chip — bordered, with a count for the rest."
+msgstr "Додайте транзакції більше одного тега, і список все одно покаже один чип — із рамкою та лічильником решти."
+
 #: src/app/[lang]/features/tag-analytics/opengraph-image.tsx
 msgid "Tag Analytics"
 msgstr "Аналітика тегів"
@@ -13513,6 +13528,10 @@ msgstr "Рух готівки може залишатися переказом, 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "The category selector reorders by popularity over time, so the categories you use most surface first. Bank-synced transactions can pre-fill via MCC mapping; you can override at any time."
 msgstr "Селектор категорій перебудовується за популярністю з плином часу, тому категорії, якими ви користуєтеся найчастіше, відображаються першими. Синхронізовані з банком транзакції можуть автоматично заповнюватися через маппінг MCC; ви можете змінити в будь-який час."
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "The choice lives on the transaction itself, so editing anything else about it never resets which tag is shown."
+msgstr "Вибір належить самій транзакції, тож редагування чогось іншого в ній ніколи не скидає, який тег показано."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "The Cloud Dependency Problem"
@@ -15875,6 +15894,10 @@ msgstr "Які моделі Budgie запускає на пристрої?"
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Which scripts are supported?"
 msgstr "Які шрифти підтримуються?"
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "Which tag chip the list shows"
+msgstr "Який чип тега показує список"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Which YNAB alternative has the best mobile app?"
