@@ -949,6 +949,16 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
+    { slug: 'pin-app-lock', locale: 'de', scene: 'pin-app-lock-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'pin-app-lock', locale: 'de', scene: 'pin-app-lock-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'pin-app-lock', locale: 'en', scene: 'pin-app-lock-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'pin-app-lock', locale: 'en', scene: 'pin-app-lock-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'pin-app-lock', locale: 'es', scene: 'pin-app-lock-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'pin-app-lock', locale: 'es', scene: 'pin-app-lock-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'pin-app-lock', locale: 'fr', scene: 'pin-app-lock-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'pin-app-lock', locale: 'fr', scene: 'pin-app-lock-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'pin-app-lock', locale: 'uk', scene: 'pin-app-lock-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'pin-app-lock', locale: 'uk', scene: 'pin-app-lock-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'pin-app-lock', locale: 'de', scene: 'pin-app-lock-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
     { slug: 'pin-app-lock', locale: 'de', scene: 'pin-app-lock-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'pin-app-lock', locale: 'en', scene: 'pin-app-lock-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
@@ -1036,6 +1046,76 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
         slug: 'recurring-payments-calendar',
         locale: 'uk',
         scene: 'recurring-payments-calendar-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'screenshot-protection',
+        locale: 'de',
+        scene: 'screenshot-protection-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'screenshot-protection',
+        locale: 'de',
+        scene: 'screenshot-protection-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'screenshot-protection',
+        locale: 'en',
+        scene: 'screenshot-protection-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'screenshot-protection',
+        locale: 'en',
+        scene: 'screenshot-protection-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'screenshot-protection',
+        locale: 'es',
+        scene: 'screenshot-protection-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'screenshot-protection',
+        locale: 'es',
+        scene: 'screenshot-protection-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'screenshot-protection',
+        locale: 'fr',
+        scene: 'screenshot-protection-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'screenshot-protection',
+        locale: 'fr',
+        scene: 'screenshot-protection-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'screenshot-protection',
+        locale: 'uk',
+        scene: 'screenshot-protection-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'screenshot-protection',
+        locale: 'uk',
+        scene: 'screenshot-protection-1',
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
