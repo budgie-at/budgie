@@ -30,7 +30,7 @@ export const Footer = async ({ lang }: Props) => {
 
                         <p className="text-sm text-muted-foreground">
                             <Trans>
-                                The privacy-first expense tracker that keeps your financial data exactly where it belongs—on your device.
+                                The privacy-first expense tracker that keeps your financial data exactly where it belongs, on your device.
                             </Trans>
                         </p>
 
