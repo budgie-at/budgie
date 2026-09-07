@@ -15,7 +15,7 @@ on: pull_request
 jobs:
     detect-mobile-impact:
         name: Detect mobile impact
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 15
         permissions:
             contents: read
@@ -74,7 +74,7 @@ jobs:
         name: Code quality checks
         # Landing-only pull requests route to a hosted runner so they never queue
         # behind the Mac mini fleet, whose Linux envelope is shared with iOS Maestro.
-        runs-on: ${{ needs.detect-mobile-impact.outputs.landing-only == 'true' && 'ubuntu-24.04' || fromJSON('["self-hosted","linux-tiered","linux-large"]') }}
+        runs-on: ${{ needs.detect-mobile-impact.outputs.landing-only == 'true' && fromJSON('["self-hosted","trf-linux-amd64-4x8"]') || fromJSON('["self-hosted","linux-tiered","linux-large"]') }}
         timeout-minutes: 60
         permissions:
             contents: read
@@ -144,7 +144,7 @@ jobs:
 
     e2e-script-tests:
         name: E2E script self-tests
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 10
         permissions:
             contents: read
@@ -174,7 +174,7 @@ jobs:
         if: ${{ needs.code-quality.outputs.coverage-artifact-id != '' }}
         needs: [code-quality]
         name: Upload coverage reports
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 10
         permissions:
             contents: read
@@ -201,10 +201,7 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: EAS Update Preview
-        # Expo's Hermes compiler package ships an x86-64 Linux host binary.
-        # Keep this export on the hosted x86-64 image and reserve the Mac mini
-        # for the native iOS build and simulator stages below.
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-4x8]
         timeout-minutes: 60
         permissions:
             contents: read
@@ -297,7 +294,7 @@ jobs:
     store-screenshots-gallery:
         name: Store screenshots gallery
         if: github.event.pull_request.head.repo.full_name == github.repository
-        runs-on: ubuntu-24.04
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 10
         permissions:
             pull-requests: write
