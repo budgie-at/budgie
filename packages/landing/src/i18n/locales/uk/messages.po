@@ -1989,10 +1989,6 @@ msgstr ""
 msgid "3.2 Account Security"
 msgstr ""
 
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "4 to 6 digit PIN, configurable in Settings"
-msgstr "PIN-код від 4 до 6 цифр, налаштовується в Налаштуваннях"
-
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "4. Data Storage and Security"
 msgstr ""
@@ -2167,8 +2163,12 @@ msgid "A \"matching rules\" pill on a transaction shows which rules apply to it"
 msgstr "Пігулка «застосовані правила» на транзакції показує, які правила до неї застосовуються"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "A 4–6 digit PIN unlocks the app and unlocks the SQLCipher database. Without the PIN, the database file is unreadable — even with full filesystem access."
-msgstr "PIN-код із 4–6 цифр розблоковує додаток і відкриває базу даних SQLCipher. Без PIN-коду файл бази даних нечитабельний — навіть за повного доступу до файлової системи."
+msgid "A 4-digit PIN unlocks the app and unlocks the SQLCipher database. Without the PIN, the database file is unreadable — even with full filesystem access."
+msgstr "4-значний PIN розблоковує застосунок і базу даних SQLCipher. Без PIN файл бази даних неможливо прочитати — навіть із повним доступом до файлової системи."
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "A 4-digit PIN, set from Settings → Security"
+msgstr "4-значний PIN, який задається в Налаштуваннях → Безпека"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches."
@@ -2912,16 +2912,20 @@ msgid "App"
 msgstr "Додаток"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "App goes to background → lock kicks in. Wrong PIN doesn't lock you out forever, but a forgotten one is a real wipe (your call: keep the PIN safe)."
-msgstr "Додаток переходить у фон → спрацьовує блокування. Неправильний PIN не блокує назавжди, але забутий — це справжнє очищення (ваш вибір: зберігайте PIN у безпеці)."
+msgid "App goes to background → lock kicks in. A wrong PIN doesn't lock you out forever, but there is no reset that hands the data back (your call: keep the PIN safe)."
+msgstr "Застосунок іде у фон → блокування вмикається. Хибний PIN не блокує вас назавжди, але жодне скидання не поверне дані (тож бережіть PIN)."
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID or Touch ID enrolled Budgie offers to unlock with it — the keypad stays as the fallback. Screenshot Protection is its own switch directly underneath."
+msgstr "Блокування застосунку — у групі Безпека. Натисніть Увімкнути, оберіть чотири цифри, і якщо на пристрої налаштовано Face ID або Touch ID, Budgie запропонує розблоковувати ним — клавіатура залишається запасним способом. Захист від знімків екрана — окремий перемикач одразу під ним."
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "App Lock: PIN and Face ID"
+msgstr "Блокування: PIN і Face ID"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "App requests connection to your bank"
 msgstr "Додаток запитує підключення до вашого банку"
-
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "App-background timer re-locks automatically"
-msgstr "Таймер фонового режиму блокує автоматично"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "App-switcher blur on iOS — passersby see only a smudge"
@@ -3162,6 +3166,10 @@ msgstr "Резервні копії надходять до вашого осо�
 #: src/app/[lang]/privacy/page.tsx
 msgid "Backups to your own iCloud Drive, Google Drive, or Dropbox"
 msgstr "Резервне копіювання у ваш особистий iCloud Drive, Google Drive або Dropbox"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Balances hidden from screenshots"
+msgstr "Баланси приховані на знімках"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Balances taken from Binance itself, covering Spot, Funding, and Flexible and Locked Simple Earn"
@@ -3535,13 +3543,13 @@ msgstr "Фрагмент біометричного ключа зберігає�
 msgid "Biometric lock + AES-256 encrypted storage"
 msgstr "Біометричне блокування + зашифроване сховище AES-256"
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Biometric unlock is the platform's Face ID / Touch ID check standing in for typing the PIN. The PIN itself stays in the device keychain, marked this-device-only, and remains the database key — biometrics are a faster path to the same lock, not a second one."
+msgstr "Біометричне розблокування — це перевірка Face ID / Touch ID від платформи замість введення PIN. Сам PIN залишається у сховищі ключів пристрою з позначкою «лише цей пристрій» і залишається ключем бази даних — біометрія лише швидший шлях до того самого замка, а не другий."
+
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Biometrics are the right balance for an expense app you open ten times a day. Budgie hooks into the platform Secure Enclave / TEE so the device, not Budgie, vouches for you."
 msgstr "Біометрія має сенс для застосунку витрат, який ви відкриваєте часто. Budgie використовує платформні Secure Enclave / TEE, тож біометрична перевірка залишається на пристрої."
-
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Biometrics unlock a key fragment in the platform Secure Enclave / Keystore that combines with your PIN-derived key. The platform vouches for biometric matching using the same hardware your bank app uses."
-msgstr "Біометрія розблоковує фрагмент ключа в платформних Secure Enclave / Keystore, а Budgie поєднує його з ключем, похідним від вашого PIN. Біометрична перевірка проходить тим самим апаратно захищеним шляхом, на який спирається ваш банківський застосунок."
 
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "bitcoin"
@@ -4053,6 +4061,14 @@ msgstr ""
 msgid "Budgie links refund income back to the original expense, supports partial refunds, searches same-currency expenses across accounts, and keeps analytics clean."
 msgstr "Budgie пов’язує дохід від повернення з початковою витратою, підтримує часткові повернення, шукає витрати в тій самій валюті на всіх рахунках і зберігає аналітику чистою."
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Budgie lock screen on launch, showing Enter your PIN above four empty dots and a number keypad"
+msgstr "Екран блокування Budgie під час запуску: «Введіть PIN» над чотирма порожніми крапками та цифрова клавіатура"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Budgie lock screen with two of the four PIN dots filled in while the PIN is typed"
+msgstr "Екран блокування Budgie: дві з чотирьох крапок PIN заповнені під час введення"
+
 #: src/generic/component/logo/logo.tsx
 msgid "Budgie logo"
 msgstr "Логотип Budgie"
@@ -4124,10 +4140,6 @@ msgstr ""
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie parses and categorizes the transactions locally"
 msgstr "Budgie розбирає та категоризує транзакції локально"
-
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Budgie PIN entry screen shown on launch while the app lock is enabled"
-msgstr "Екран введення PIN-коду Budgie, що показується під час запуску, коли увімкнено блокування застосунку"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Budgie presents a pre-filled transaction form with the extracted amount and suggested category for your review before saving."
@@ -4204,6 +4216,10 @@ msgstr "Екран налаштувань Budgie з рядками безпек�
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle"
 msgstr "Екран налаштувань Budgie з повідомленням про офлайн-роботу та приватність над перемикачем автоматичного призначення категорій за MCC-кодом"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
+msgstr "Екран налаштувань Budgie з групою Безпека: картка блокування застосунку й увімкнений перемикач захисту від знімків екрана"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie ships historical daily exchange-rate seeds in the local database migration."
@@ -7488,6 +7504,10 @@ msgstr "Доступний для форку"
 msgid "Four actions, no form"
 msgstr "Чотири дії, без форми"
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Four slots, nothing typed"
+msgstr "Чотири поля, нічого не введено"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Free core, optional one-time unlock"
 msgstr "Безкоштовна основа, необов'язкове одноразове розблокування"
@@ -8090,7 +8110,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/multi-language-app/page.tsx
-#: src/app/[lang]/features/pin-app-lock/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 #: src/app/[lang]/features/screenshot-protection/page.tsx
@@ -10062,6 +10081,10 @@ msgstr "Немає збоїв сервісу, що впливають на ва�
 msgid "No sign-up, no email, no account — install and start logging"
 msgstr "Жодної реєстрації, пошти, облікового запису — встановіть і починайте записувати"
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "No skip, no PIN reset"
+msgstr "Ні пропуску, ні скидання PIN"
+
 #: src/generic/component/waitlist-form/waitlist-form.tsx
 msgid "No spam, ever. Unsubscribe anytime."
 msgstr "Без спаму. Відписатись можна будь-коли."
@@ -10306,6 +10329,10 @@ msgstr "Нічого не трапляється — ваші дані в без
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Nothing happens to your data because Budgie does not have your data. Everything is stored locally on your device. If Budgie as a company ceased to exist, your app would continue to function with all your data intact. You can export data at any time in standard formats. There is no server to shut down, no migration to worry about, no acquisition that could change data handling. Your data remains yours permanently."
 msgstr "З вашими даними нічого не станеться, бо Budgie їх не має. Усе зберігається локально на вашому пристрої. Якщо Budgie як компанія припинить існування, застосунок продовжить працювати з усіма вашими даними. Ви можете будь-коли експортувати дані у стандартних форматах. Немає сервера, який можна вимкнути, немає міграції, про яку треба хвилюватися, немає поглинання, що могло б змінити обробку даних. Ваші дані назавжди залишаються вашими."
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Nothing opens before the PIN"
+msgstr "Нічого не відкриється до PIN"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Nothing to sign into"
@@ -10961,13 +10988,13 @@ msgstr "Необов'язкова банківська синхронізаці�
 msgid "Optional Bank Synchronization"
 msgstr "Необов'язкова банківська синхронізація"
 
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Optional biometric unlock binds to the same encryption key"
-msgstr "Необов'язкове біометричне розблокування прив'язане до того самого ключа шифрування"
-
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Optional contact name — track inter-personal loans without spreadsheets"
 msgstr "Необов'язкове ім'я контакту — відстежуйте особисті позики без таблиць"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Optional Face ID or Touch ID unlock, with the PIN as fallback"
+msgstr "Додаткове розблокування Face ID або Touch ID, PIN — запасний варіант"
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Optional, direct API tokens"
@@ -11723,8 +11750,8 @@ msgid "Re-import detects duplicates by externalId — safe to re-pull the same s
 msgstr "Повторний імпорт виявляє дублікати за externalId — безпечно повторно завантажувати ту саму виписку"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Re-lock fires when the app goes to background. The inactivity timer is configurable in Settings."
-msgstr "Блокування спрацьовує, коли додаток переходить у фоновий режим. Таймер неактивності налаштовується в Налаштуваннях."
+msgid "Re-locks the moment the app goes to background"
+msgstr "Знову блокується, щойно застосунок іде у фон"
 
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx
 msgid "Re-pull a slice. Keep your edits."
@@ -12456,10 +12483,6 @@ msgstr "Налаштування містять обидва експорти з
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Settle by transfer to a real account — no awkward \"expense\" workarounds"
 msgstr "Погасіть переказом на реальний рахунок — без незручних обхідних шляхів через \"витрати\""
-
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Setup in Settings → PIN. Choose 4-6 digits. Optional biometric unlock binds Face ID / Touch ID to the same encryption key. The lock screen appears every cold launch and after a configurable inactivity window."
-msgstr "Налаштуйте в Налаштування → PIN. Оберіть 4-6 цифр. Опційне біометричне розблокування прив’язує Face ID / Touch ID до того самого ключа шифрування. Екран блокування з’являється під час кожного холодного запуску й після вибраного вами періоду неактивності."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Setup is non-trivial"
@@ -13315,6 +13338,10 @@ msgstr "Додаток може надсилати ваші дані про тр
 msgid "The app needs to work:"
 msgstr "Додаток повинен працювати:"
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "The app opens on the lock screen"
+msgstr "Застосунок відкривається на екрані блокування"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "The app source is public. Even if Budgie disappeared, the community could keep building it. That's not true of subscription apps with closed servers."
 msgstr "Вихідний код застосунку публічний. Навіть якщо Budgie зникне, спільнота зможе продовжити розробку. Це не так для підпискових застосунків із закритими серверами."
@@ -13519,6 +13546,14 @@ msgstr ""
 msgid "The following uses require explicit permission or a separate commercial license:"
 msgstr ""
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "The four digits are the key"
+msgstr "Чотири цифри — це ключ"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "The fourth digit submits"
+msgstr "Четверта цифра підтверджує"
+
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "The full list renders with the radio off. No spinner, no retry."
 msgstr "Повний список показується з вимкненим радіо. Без спінера, без повторних спроб."
@@ -13629,6 +13664,10 @@ msgstr "Транзакції об'єднаної категорії перена
 msgid "The Missing categories screen opens with only those rows, carrying your account, date, type and tag filters across."
 msgstr "Екран «Без категорій» відкривається лише з цими рядками та переносить ваші фільтри рахунку, дати, типу й тегу."
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "The moment the app goes to the background. There is no grace period and no inactivity setting to get wrong — the next time you come back, the keypad is there."
+msgstr "Щойно застосунок іде у фон. Немає ні пільгового часу, ні налаштування неактивності, яке можна виставити неправильно — щойно ви повернетесь, клавіатура вже там."
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Money Data upgrade scans entries where the base currency value is missing and groups them by date, account currency, and base currency."
 msgstr ""
@@ -13704,6 +13743,10 @@ msgstr "Екран введення PIN з'являється як резерв�
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
 msgstr "PIN є ключем шифрування — механізму відновлення немає за задумом. Зберігайте PIN у безпечному місці (менеджер паролів підходить) або використовуйте функцію резервної копії бази даних для відновлення зі відомого справного стану."
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "The PIN is what SQLCipher opens the database with. Budgie keeps it in the device keychain, marked this-device-only, and hands it to the database as the encryption key; changing the PIN re-encrypts the whole file under the new one. The fourth digit submits on its own — a wrong PIN clears the dots and says so, and there is no reset that hands the data back."
+msgstr "PIN — це те, чим SQLCipher відкриває базу даних. Budgie зберігає його у сховищі ключів пристрою з позначкою «лише цей пристрій» і передає базі як ключ шифрування; зміна PIN перешифровує весь файл під новий. Четверта цифра підтверджує сама — хибний PIN очищає крапки й повідомляє про це, і жодне скидання не поверне дані."
 
 #: src/app/[lang]/features/pin-app-lock/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
@@ -14224,6 +14267,10 @@ msgstr "Ця прозорість дозволяє вам приймати об�
 msgid "Three first-class transaction types: expense, income, transfer — never confused, never miscounted"
 msgstr "Три першокласних типи транзакцій: витрата, дохід, переказ — ніколи не плутаються, ніколи не рахуються неправильно"
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Three frames: the keypad the app opens on, the four digits that open the encrypted database, and the Settings group where you switch the lock on."
+msgstr "Три кадри: клавіатура, з якої відкривається застосунок, чотири цифри, що відкривають зашифровану базу, і група налаштувань, де вмикається блокування."
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Three screens to a clean report"
 msgstr "Три екрани до чистого звіту"
@@ -14586,6 +14633,10 @@ msgstr "Двісті криптоактивів на одній панелі."
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Two hundred crypto instruments ship with the app, ranked by market cap. Manual price updates are fine for low-frequency tracking, and the major assets come with real daily market history built in. Stocks and ETFs are not supported yet."
 msgstr "Двісті криптоінструментів постачаються разом із застосунком і впорядковані за ринковою капіталізацією. Ручного оновлення цін достатньо для нечастого обліку, а найбільші активи мають справжню денну ринкову історію. Акції та ETF поки не підтримуються."
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Two of four digits in"
+msgstr "Дві з чотирьох цифр"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/metadata.ts
@@ -16131,6 +16182,10 @@ msgstr "Повторна синхронізація банку у вікні"
 msgid "Windowed re-sync to fix drift without losing manual edits"
 msgstr "Повторна синхронізація у вікні для виправлення зміщення без втрати ручних змін"
 
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "With App Lock on, every route in the app redirects to this keypad until the PIN checks out — on every cold launch, and again the moment the app goes to the background. There is nothing behind it to read: no balances, no transaction list, no skip."
+msgstr "Коли блокування ввімкнене, будь-який екран застосунку перенаправляє на цю клавіатуру, доки PIN не збігається — за кожного холодного запуску і знову, щойно застосунок іде у фон. Позаду нічого не прочитати: ні балансів, ні списку транзакцій, ні кнопки пропустити."
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "With Budgie, your financial data never leaves your device:"
 msgstr "З Budgie ваші фінансові дані ніколи не залишають ваш пристрій:"
@@ -16829,6 +16884,10 @@ msgstr ""
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You should cease all use of the Service"
 msgstr ""
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "You switch it on in Settings"
+msgstr "Ви вмикаєте це в Налаштуваннях"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "You tap the voice input button and speak the transaction details — amount, merchant, and optional notes."
