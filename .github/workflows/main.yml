@@ -120,6 +120,7 @@ jobs:
         uses: expo/expo-github-action@v9
         with:
           eas-version: latest
+          packager: npm
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
