@@ -4262,8 +4262,8 @@ msgid "Budgie stores all financial data in an SQLCipher-backed SQLite database e
 msgstr "Budgie зберігає всі фінансові дані в базі SQLite із підтримкою SQLCipher, зашифрованій за допомогою AES-256. Ключ шифрування виводиться з вашого брелока пристрою і ніколи не передається за межі пристрою."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
-msgid "Budgie suggests category, tags, and amount from your own SQL patterns and 768-dim embeddings. Faster manual entry than any AI cloud assistant."
-msgstr "Budgie пропонує категорію, теги та суму на основі ваших власних SQL-шаблонів і 768-вимірних вкладень. Швидше ручне введення, ніж будь-який хмарний AI-асистент."
+msgid "Budgie suggests category, tags, comment, and amount from your own SQL patterns and three separate on-device embedding indexes. Faster manual entry than any AI cloud assistant."
+msgstr "Budgie пропонує категорію, теги, коментар і суму на основі ваших власних SQL-шаблонів і трьох окремих локальних індексів ембеддингів. Ручне введення швидше, ніж у будь-якого хмарного ШІ-асистента."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Budgie supports both direct bank sync and manual import, with a consistent commitment to keeping your data on your device at every stage."
@@ -10822,8 +10822,8 @@ msgid "One-tap drill-down into only the uncategorized transactions that match yo
 msgstr "Деталізація в один дотик лише для транзакцій без категорій, що відповідають поточним фільтрам"
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
-msgid "One-tap form fill — category, tags, amount, and account pre-populated from your own history"
-msgstr "Заповнення форми одним дотиком — категорія, теги, сума та рахунок попередньо заповнені з вашої власної історії"
+msgid "One-tap form fill — category, tags, comment, amount, and account pre-populated from your own history"
+msgstr "Заповнення форми одним дотиком — категорія, теги, коментар, сума та рахунок заповнюються з вашої власної історії"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Ongoing Practices"
@@ -13561,6 +13561,10 @@ msgstr "Екосистема стає сильнішою завдяки обмі
 msgid "The embedding fallback runs in milliseconds and proposes the same tags from a 768-dim nearest-neighbor lookup over your history."
 msgstr "Резервний пошук за вкладеннями виконується за мілісекунди і пропонує ті самі теги з 768-вимірного пошуку найближчих сусідів по вашій історії."
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "The embedding lookup is not a single index — Budgie keeps three separate ones, each matching a different field against your own history and returning up to three candidates. The transaction index matches the title you are typing against your past entries to suggest category and tags. The merchant index matches shop names across spelling variants — the same index that lets the same store resolve consistently even when different banks spell it differently, which is the visible result behind merchant name translation. The comment index matches your own free-text notes, so a comment you typed once for a coffee shop comes back as a suggestion the next time you visit it."
+msgstr "Пошук за ембеддингами — це не один індекс: Budgie підтримує три окремі, кожен зіставляє інше поле з вашою власною історією та повертає до трьох кандидатів. Індекс транзакцій зіставляє назву, яку ви вводите, з вашими попередніми записами, щоб запропонувати категорію та теги. Індекс продавців зіставляє назви магазинів попри варіанти написання — той самий індекс, який дозволяє однаково розпізнавати той самий заклад, навіть якщо різні банки пишуть його по-різному, і саме це є видимим результатом перекладу назв продавців. Індекс коментарів зіставляє ваші власні довільні нотатки, тож коментар, який ви одного разу написали для кав’ярні, з’явиться як підказка під час наступного відвідування."
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "The embedding model is approximately 90 MB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features and cached on-device."
 msgstr "Модель вкладень займає приблизно 90 МБ. Qwen3 1.7B у квантизованій формі займає приблизно 1,1 ГБ. Обидві завантажуються один раз при першому використанні AI-функцій і кешуються на пристрої."
@@ -14314,6 +14318,10 @@ msgstr "Цей тиждень і Минулий тиждень завжди оз
 msgid "This Week and Last Week always run Monday to Sunday, no matter your locale"
 msgstr "Цей тиждень і Минулий тиждень завжди тривають з понеділка по неділю, незалежно від вашої локалі"
 
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Three embedding indexes, not one"
+msgstr "Три індекси ембеддингів, а не один"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three first-class transaction types: expense, income, transfer — never confused, never miscounted"
 msgstr "Три першокласних типи транзакцій: витрата, дохід, переказ — ніколи не плутаються, ніколи не рахуються неправильно"
@@ -14369,6 +14377,10 @@ msgstr "Три екрани: список правил, значок «Швид�
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Three screens: the transfer form that names both accounts, the cross-currency pair with the rate it converted at, and the analytics that counted neither side."
 msgstr "Три екрани: форма переказу, що називає обидва рахунки, валютна пара з курсом конвертації та аналітика, яка не врахувала жодної зі сторін."
+
+#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+msgid "Three separate embedding indexes — transaction, merchant, and comment — each surfacing up to three candidates"
+msgstr "Три окремі індекси ембеддингів — транзакції, продавця та коментаря — кожен показує до трьох варіантів"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
