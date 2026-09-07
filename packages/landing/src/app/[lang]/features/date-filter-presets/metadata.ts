@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'date-filter-presets',
     tier: FeatureTierEnum.CORE,
     title: msg`Date Filter Presets — Past Periods, One Tap`,
-    tagline: msg`Eight presets, locale-aware week start, custom range fallback, and an amount range beside them.`,
+    tagline: msg`Seven presets, a Monday-to-Sunday week for This Week and Last Week, custom range fallback, and an amount range beside them.`,
     metaTitle: msg`Date Filter Presets — Budgie`,
-    metaDescription: msg`Today, Yesterday, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window. Plus a From/To amount range in the same filter row.`,
+    metaDescription: msg`Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window. Plus a From/To amount range in the same filter row.`,
     primaryKeyword: 'filter transactions by date',
     seoKeywords: [
         'filter transactions by date',
