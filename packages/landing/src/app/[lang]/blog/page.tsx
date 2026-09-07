@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 
 import { BlogBrowser } from '../../../blog/component/blog-browser/blog-browser';
 import { ARTICLE_REGISTRY } from '../../../blog/constant/article-registry.constant';
+import { resolveArticleShot } from '../../../blog/util/resolve-article-shot.util';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
 import { Motion } from '../../../generic/component/motion/motion';
 import { BASE_URL, OG_LOCALE_MAP, TITLE_TEMPLATE_SUFFIX } from '../../../generic/constant/seo.constant';
@@ -65,8 +66,8 @@ export default async function BlogPage(props: PageLangParam) {
         date: entry.date,
         author: entry.author,
         tags: entry.tags,
-        image: `/${lang}/blog/${entry.slug}/opengraph-image`,
-        readingTimeMinutes: entry.readingTimeMinutes
+        readingTimeMinutes: entry.readingTimeMinutes,
+        shot: resolveArticleShot(entry.slug, entry.relatedFeatureSlugs, lang)
     })).sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime());
 
     /* oxlint-disable lingui/no-unlocalized-strings */
