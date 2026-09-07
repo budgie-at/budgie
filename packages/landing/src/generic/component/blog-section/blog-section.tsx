@@ -7,10 +7,11 @@ import { resolveArticleShot } from '../../../blog/util/resolve-article-shot.util
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 import { Button } from '../../../ui/button';
 import { BlogCard } from '../blog-card/blog-card';
-import { Motion } from '../motion/motion';
+
+const HOME_ARTICLE_COUNT = 3;
 
 interface Props {
-    locale: string;
+    readonly locale: string;
 }
 
 export const BlogSection = ({ locale }: Props) => {
@@ -26,37 +27,35 @@ export const BlogSection = ({ locale }: Props) => {
         shot: resolveArticleShot(entry.slug, entry.relatedFeatureSlugs, locale)
     }))
         .sort((article1, article2) => new Date(article2.date).getTime() - new Date(article1.date).getTime())
-        .slice(0, 3);
+        .slice(0, HOME_ARTICLE_COUNT);
 
     return (
-        <section className="w-full py-20 md:py-32 bg-muted/30">
-            <div className="container px-4 md:px-6">
-                <Motion index={0} className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+        <section className="w-full bg-muted/30 py-16 md:py-24">
+            <div className="container px-4 md:px-6 max-w-7xl">
+                <div className="max-w-2xl mb-8 md:mb-12">
+                    <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-balance">
                         <Trans>Latest from Our Blog</Trans>
                     </h2>
 
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+                    <p className="mt-3 text-base md:text-lg text-muted-foreground text-pretty">
                         <Trans>
                             Discover insights about financial privacy, security best practices, and how to take control of your money.
                         </Trans>
                     </p>
-                </Motion>
+                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    {recentArticles.map((article, index) => (
-                        <BlogCard key={article.slug} article={article} index={index} locale={locale} />
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
+                    {recentArticles.map(article => (
+                        <BlogCard article={article} key={article.slug} locale={locale} />
                     ))}
                 </div>
 
-                <Motion index={1} className="text-center">
-                    <Link href={`/${locale}/blog`}>
-                        <Button className="rounded-full h-12 px-8" size="lg" variant="outline">
-                            <Trans>View All Articles</Trans>
-                            <ArrowRight className="ml-2 size-4" />
-                        </Button>
-                    </Link>
-                </Motion>
+                <Link className="mt-8 inline-block" href={`/${locale}/blog`}>
+                    <Button className="rounded-full h-12 px-8" size="lg" variant="outline">
+                        <Trans>View All Articles</Trans>
+                        <ArrowRight aria-hidden="true" className="ml-2 size-4" />
+                    </Button>
+                </Link>
             </div>
         </section>
     );

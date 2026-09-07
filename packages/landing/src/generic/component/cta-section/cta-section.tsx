@@ -10,7 +10,7 @@ export const CtaSection = () => (
                     <Trans>Take control of your money without handing it over</Trans>
                 </h2>
 
-                <p className="text-base md:text-lg text-primary-foreground/80 text-pretty">
+                <p className="text-base md:text-lg text-primary-foreground/90 text-pretty">
                     <Trans>Budgie is in private beta. Join the waitlist and we will write to you when your build is ready.</Trans>
                 </p>
 
