@@ -296,6 +296,7 @@ class TransactionService {
             );
 
             await upsertTransactionEntriesAndTags({ transactionId: id, input, operatedAt: transaction.operatedAt, isConsolidated }, tx);
+            await transactionDebtSettlementService.resyncInTransaction(id, tx);
 
             await accountBalanceIncrementalService.updateBalancesByAccountIds(
                 [

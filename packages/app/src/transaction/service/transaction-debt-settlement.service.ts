@@ -26,11 +26,13 @@ import {
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import type { AttachDebtSettlementParamsInterface } from '../interface/attach-debt-settlement-params.interface';
 import type {
     AccountEntityInterface,
     DB,
+    DebtEventCreateEntityInterface,
     TransactionEntityInterface,
     TransactionEntryEntityInterface,
     TransactionWithEntriesEntityInterface
@@ -109,6 +111,31 @@ class TransactionDebtSettlementService {
     }
 
     @Log(
+        transactionId => `enter transactionId=${transactionId}`,
+        'done',
+        (error, transactionId) => `throw transactionId=${transactionId} error=${getErrorMessage(error)}`
+    )
+    async resyncInTransaction(transactionId: number, tx: DB): Promise<void> {
+        const debtEvent = await debtEventRepository.findByTransactionId(transactionId, tx);
+
+        if (!isDefined(debtEvent) || debtEvent.source !== DebtEventSourceEnum.INCOME_ATTACHMENT) {
+            return;
+        }
+
+        const transaction = await this.getTransactionOrFail(transactionId, tx);
+        const debtAccount = await this.getDebtAccountOrFail(debtEvent.debtAccountId, tx);
+
+        this.assertTransactionSupportsDebtSettlement(transaction);
+        const primaryEntry = this.getPrimaryEntryOrFail(transaction);
+        this.assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
+
+        const fields = await this.buildSettlementEventFields(transaction, debtAccount, primaryEntry, tx);
+
+        await debtEventRepository.updateById(debtEvent.id, fields, tx);
+        await accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id], tx);
+    }
+
+    @Log(
         (transaction, primaryEntry) =>
             `enter transactionId=${transaction.id} entryId=${primaryEntry.id} currentCategoryId=${primaryEntry.categoryId ?? 'null'}`,
         (result, transaction) => `done assigned=${String(result)} transactionId=${transaction.id}`,
@@ -147,26 +174,14 @@ class TransactionDebtSettlementService {
         const primaryEntry = this.getPrimaryEntryOrFail(transaction);
         this.assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
 
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-            accountId: debtAccount.id,
-            amount: primaryEntry.amount,
-            operatedAt: transaction.operatedAt,
-            externalSource: transaction.externalSource,
-            tx
-        });
+        const fields = await this.buildSettlementEventFields(transaction, debtAccount, primaryEntry, tx);
 
         await debtEventRepository.create(
             {
                 debtAccountId: debtAccount.id,
                 transactionId: transaction.id,
-                transactionEntryId: primaryEntry.id,
-                direction: this.getDebtEventDirection(transaction, debtAccount),
                 source: DebtEventSourceEnum.INCOME_ATTACHMENT,
-                amount: primaryEntry.amount,
-                baseInstrumentId: valuation.baseInstrumentId,
-                baseExchangeRate: valuation.baseExchangeRate,
-                baseAmount: valuation.baseAmount,
-                operatedAt: transaction.operatedAt
+                ...fields
             },
             tx
         );
@@ -177,6 +192,36 @@ class TransactionDebtSettlementService {
         return debtAccount;
     }
 
+    private async buildSettlementEventFields(
+        transaction: Pick<TransactionWithEntriesEntityInterface, 'type' | 'operatedAt' | 'externalSource'>,
+        debtAccount: AccountEntityInterface,
+        primaryEntry: TransactionEntryEntityInterface,
+        tx: DB
+    ): Promise<
+        Pick<
+            DebtEventCreateEntityInterface,
+            'direction' | 'amount' | 'baseInstrumentId' | 'baseExchangeRate' | 'baseAmount' | 'operatedAt' | 'transactionEntryId'
+        >
+    > {
+        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
+            accountId: debtAccount.id,
+            amount: primaryEntry.amount,
+            operatedAt: transaction.operatedAt,
+            externalSource: transaction.externalSource,
+            tx
+        });
+
+        return {
+            transactionEntryId: primaryEntry.id,
+            direction: this.getDebtEventDirection(transaction, debtAccount),
+            amount: primaryEntry.amount,
+            baseInstrumentId: valuation.baseInstrumentId,
+            baseExchangeRate: valuation.baseExchangeRate,
+            baseAmount: valuation.baseAmount,
+            operatedAt: transaction.operatedAt
+        };
+    }
+
     private isCategorizableExpenseSettlement(
         transaction: Pick<TransactionWithEntriesEntityInterface, 'type'>,
         primaryEntry: Pick<TransactionEntryEntityInterface, 'categoryId'>
@@ -185,7 +230,7 @@ class TransactionDebtSettlementService {
     }
 
     private async revertDebtPaymentCategory(transaction: TransactionWithEntriesEntityInterface, tx: DB): Promise<void> {
-        const primaryEntry = transaction.entries.find(entry => entry.kind === TransactionEntryKindEnum.PRIMARY);
+        const [primaryEntry] = this.getPrimaryEntries(transaction);
 
         if (
             !isDefined(primaryEntry) ||
@@ -219,7 +264,7 @@ class TransactionDebtSettlementService {
     }
 
     private getPrimaryEntryOrFail(transaction: TransactionWithEntriesEntityInterface): TransactionEntryEntityInterface {
-        const primaryEntries = transaction.entries.filter(entry => entry.kind === TransactionEntryKindEnum.PRIMARY);
+        const primaryEntries = this.getPrimaryEntries(transaction);
         const [primaryEntry] = primaryEntries;
 
         if (!isDefined(primaryEntry) || primaryEntries.length !== 1) {
@@ -227,6 +272,10 @@ class TransactionDebtSettlementService {
         }
 
         return primaryEntry;
+    }
+
+    private getPrimaryEntries(transaction: Pick<TransactionWithEntriesEntityInterface, 'entries'>): TransactionEntryEntityInterface[] {
+        return getTransactionCategoryEntries(transaction.entries).filter(entry => entry.kind === TransactionEntryKindEnum.PRIMARY);
     }
 
     private async assertNoSettlement(transaction: TransactionWithEntriesEntityInterface, tx: DB): Promise<void> {
