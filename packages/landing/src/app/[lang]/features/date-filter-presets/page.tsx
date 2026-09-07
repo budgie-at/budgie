@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -81,14 +80,59 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie transaction date filter with the month grid above the preset range buttons`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Two taps to the window you want</Trans>}>
+                    <Trans>
+                        Two screens: the sheet where a month calendar and the preset chips sit together, and the list a moment after one of
+                        those chips is tapped.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Seven presets, one tap</Trans>}>
+                    <Trans>
+                        The Date chip opens a month calendar with the presets in a row underneath it: Today, This Week, Last Week, This
+                        Month, Last Month, This Year, All Time. When none of them is the window you want, pick a start and an end date on
+                        the calendar instead and tap Show selected range.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie date filter sheet with an August calendar above the row of preset range chips`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="date-filter-presets-1"
                     slug="date-filter-presets"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.498}>
+                        <Trans>Pick any range by hand</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.845}>
+                        <Trans>Presets, one tap each</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>The list re-queries instantly</Trans>}>
+                    <Trans>
+                        Last Month lands as a chip in the filter row and the count above the list drops from 761 transactions to 73, every
+                        row now dated inside August. Clear All puts the whole list back, and the date chip stacks with the type, amount,
+                        category, tag and account chips beside it.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie transaction list filtered to Last Month, showing the active chip and 73 matching transactions`}
+                    index={1}
+                    locale={lang}
+                    scene="date-filter-presets-2"
+                    slug="date-filter-presets"
+                >
+                    <FeatureStory.Callout y={0.198}>
+                        <Trans>Matching count, re-queried</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.395}>
+                        <Trans>Every row now from August</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -151,18 +195,6 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                     <Trans>
                         Combined with the date presets it turns &quot;where did the money go last month?&quot; into a two-chip question:
                         Last Month plus everything above a threshold, and the list in front of you is the answer.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        One picker component, used across analytics, transactions, and recurring screens. Customize the start-of-week in
-                        Settings if your locale default doesn&apos;t match.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
