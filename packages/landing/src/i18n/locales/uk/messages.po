@@ -2194,6 +2194,10 @@ msgstr "Бюджет — це один загальний ліміт плюс с
 msgid "A cash withdrawal is a transfer from your bank account to cash, but the ATM commission is still a real expense. If both are forced into one category, either transfers pollute spending or fees disappear from analytics."
 msgstr "Зняття готівки — це переказ із банківського рахунку в готівку, але комісія банкомата все одно є реальною витратою. Якщо змусити обидві частини жити в одній категорії, перекази забруднюють витрати або комісії зникають з аналітики."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "A category row opens the transactions behind it, carrying the same period across and grouping them by month — each one with its account, its tags and its time. Tags drill down the same way, and the Untagged bucket shows what slipped through."
+msgstr "Рядок категорії відкриває транзакції, що стоять за ним, переносить той самий період і групує їх за місяцями — кожну з рахунком, тегами й часом. Теги розгортаються так само, а кошик «Без тегів» показує те, що прослизнуло повз."
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "A category says what you bought. A tag says which trip, which project, which person — chosen on the same form, from your own flat list."
 msgstr "Категорія каже, що ви купили. Тег каже, яка подорож, який проєкт, яка людина — обирається в тій самій формі з вашого власного плоского списку."
@@ -2746,6 +2750,10 @@ msgstr "Зіставлення за сумою і часовим вікном з
 msgid "Amount first, no form"
 msgstr "Спершу сума, без форми"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Amount, category, tag and account chips narrow both tabs from the same filter row"
+msgstr "Чипи суми, категорії, тегу й рахунку звужують обидві вкладки з одного рядка фільтрів"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Amounts aligned right"
 msgstr "Суми вирівняні праворуч"
@@ -2813,10 +2821,6 @@ msgstr "Аналітика враховує кожну частину розді
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Analytics includes fees in their own category, even when the main transaction is a transfer"
 msgstr "Аналітика враховує комісії в окремій категорії, навіть коли основна транзакція є переказом"
-
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Analytics renders directly from the transaction table — no separate aggregation pipeline. Filters apply to all tabs simultaneously. Compact tile mode shows weekly/monthly net flow alongside category totals."
-msgstr "Аналітика відображається безпосередньо з таблиці транзакцій — без окремого агрегаційного конвеєра. Фільтри застосовуються до всіх вкладок одночасно. Компактний плитковий режим показує тижневий/місячний чистий потік поруч із підсумками категорій."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Analytics services (anonymous, opt-in only)"
@@ -3700,10 +3704,6 @@ msgstr "Екран аналітики Budgie з розподілом витра�
 msgid "Budgie analytics screen ranking spending by category, bank fees and charges among them"
 msgstr "Екран аналітики Budgie з рейтингом витрат за категоріями, серед яких банківські комісії та збори"
 
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Budgie analytics screen with the spent, income and balance totals above the per-category spending bars"
-msgstr "Екран аналітики Budgie з підсумками витрат, доходів і балансу над стовпчиками витрат за категоріями"
-
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie analytics Tags tab listing income and spending totals for each tag"
 msgstr "Вкладка «Теги» в аналітиці Budgie із сумами доходів і витрат за кожним тегом"
@@ -3743,6 +3743,10 @@ msgstr "Екран деталей бюджету Budgie з місячною см
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password."
 msgstr "Budgie звертається до API Monobank напряму за токеном, який ви створюєте самі. Без агрегатора, без банківського пароля."
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Budgie Categories analytics tab with the date and amount filter chips, the Spent, Income and Balance tiles, and per-category spending bars"
+msgstr "Вкладка аналітики «Категорії» в Budgie з чипами фільтрів дати й суми, плитками «Витрачено», «Дохід» і «Баланс» та смугами витрат за категоріями"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Budgie Categories screen listing user-created categories with their icons above a search field"
@@ -4262,6 +4266,10 @@ msgstr "Умови користування Budgie - умови використ
 msgid "Budgie transaction list filtered to Last Month, showing the active chip and 73 matching transactions"
 msgstr "Список транзакцій Budgie з фільтром «Минулий місяць», активним чипом і 73 відповідними транзакціями"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Budgie transaction list for a single spending category, showing the period date range above rows grouped by month"
+msgstr "Список транзакцій Budgie для однієї категорії витрат із діапазоном дат періоду над рядками, згрупованими за місяцями"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie transaction list grouped by month with the category, tag and account on every row"
 msgstr "Список транзакцій Budgie, згрупований за місяцями, з категорією, тегом і рахунком у кожному рядку"
@@ -4583,13 +4591,13 @@ msgstr "Чи можна вимкнути для чеків, якими я хоч
 msgid "Can I disable suggestions?"
 msgstr "Чи можна вимкнути підказки?"
 
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Can I drill down from a chart to the transactions?"
-msgstr "Чи можна перейти з графіка до транзакцій?"
-
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Can I drill down from a tag?"
 msgstr "Чи можна деталізувати інформацію по тегу?"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Can I drill down from the breakdown to the transactions?"
+msgstr "Чи можна перейти від розподілу до транзакцій?"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Can I drill into a tag's transactions?"
@@ -4822,8 +4830,8 @@ msgid "Categories answer “what kind of expense”; tags answer “for which pr
 msgstr "Категорії відповідають на питання «яка витрата»; теги — «для якого проєкту, особи чи мети». Використовуйте обидва разом — одна транзакція може бути Продукти (категорія) ТА #vacation #shared (теги)."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Categories tab: per-category totals, with drill-down to every transaction in the slice"
-msgstr "Вкладка «Категорії»: підсумки за категоріями з деталізацією до кожної транзакції у зрізі"
+msgid "Categories tab: per-category totals, with drill-down to every transaction in the row"
+msgstr "Вкладка «Категорії»: підсумки за категоріями з переходом до кожної транзакції рядка"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Categories tell you what kind of expense. Tags tell you for what purpose — \"Italy trip total\", \"shared rent\", \"reimbursable meals\". Switch to the Tags tab in Analytics and every tag becomes its own row with income, expense, and net broken out separately."
@@ -4860,13 +4868,13 @@ msgstr "Графіки розбивки за категоріями та тег�
 msgid "Category and tag breakdowns for any period, each one drilling into its transactions."
 msgstr "Розподіл за категоріями й тегами для будь-якого періоду, кожен відкриває свої транзакції."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it."
+msgstr "Розподіли за категоріями й тегами для будь-якого періоду з переходом із будь-якого рядка до транзакцій за ним."
+
 #: src/app/[lang]/features/spending-analytics/metadata.ts
 msgid "Category breakdown, tag breakdown, monthly trends — drill into any chart slice."
 msgstr "Розбивка за категоріями, розбивка за тегами, місячні тенденції — деталізуйте будь-який зріз графіка."
-
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Category breakdown, tag breakdown, monthly trends, and balance timelines — with drill-down from any chart slice to the underlying transactions."
-msgstr "Розбивка за категоріями, розбивка за тегами, місячні тенденції та часові лінії балансу — з деталізацією від будь-якого зрізу графіка до відповідних транзакцій."
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Category chosen on device"
@@ -5199,10 +5207,6 @@ msgstr "Доступні скрипти спільноти для конверт
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Community-verified security practices"
 msgstr "Практики безпеки, підтверджені спільнотою"
-
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Compact tile mode shows weekly/monthly net flow alongside category totals"
-msgstr "Компактний плитковий режим відображає тижневий/місячний чистий потік поруч із підсумками категорій"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Companies can change their privacy policies anytime"
@@ -5913,8 +5917,8 @@ msgid "Date Filter Presets — Past Periods, One Tap"
 msgstr "Попередні налаштування фільтрів дати — минулі періоди одним дотиком"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Date filters cover Today, Yesterday, This/Last Week, This/Last Month, This Year, and All Time. The “Untagged” and “Uncategorized” buckets surface the gaps in your bookkeeping so you can tighten them up."
-msgstr "Фільтри дат охоплюють: Сьогодні, Вчора, Цей/Минулий тиждень, Цей/Минулий місяць, Цей рік та Весь час. Категорії «Без мітки» та «Без категорії» виявляють прогалини у вашому обліку, щоб ви могли їх усунути."
+msgid "Date filters cover Today, This and Last Week, This and Last Month, This Year and All Time, plus any custom range. The “Untagged” and “Uncategorized” buckets surface the gaps in your bookkeeping so you can tighten them up."
+msgstr "Фільтри дат охоплюють Сьогодні, Цей і Минулий тиждень, Цей і Минулий місяць, Цей рік та Увесь час, а також будь-який власний діапазон. Кошики «Без тегів» і «Без категорії» показують прогалини у вашому обліку, щоб ви їх закрили."
 
 #: src/app/[lang]/features/date-filter-presets/opengraph-image.tsx
 msgid "dates"
@@ -6502,10 +6506,6 @@ msgstr "правки"
 msgid "Efficient Inference Runtimes"
 msgstr "Ефективні середовища виконання виводу"
 
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Eight date presets: Today through All Time, plus a custom range fallback"
-msgstr "Вісім попередніх налаштувань дат: від Сьогодні до Весь час, плюс власний діапазон"
-
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Eight Features That Make It a Durable Mint Replacement"
 msgstr "Вісім функцій, що роблять його надійною заміною Mint"
@@ -6712,6 +6712,10 @@ msgstr "Усі функції Budgie в одному місці: синхрон�
 msgid "Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization — in one place."
 msgstr "Всі можливості офлайн-трекера витрат Budgie — від банківської синхронізації до категоризації ШІ на пристрої — в одному місці."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Every category, ranked by what it took"
+msgstr "Кожна категорія — за розміром витрат"
+
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Every change starts on the list"
 msgstr "Кожна зміна починається у списку"
@@ -6771,6 +6775,10 @@ msgstr "Кожен рядок із тегами показує один тег �
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Every time you accept, edit, or reject a category suggestion, the embedding model index updates locally. The more you use Budgie, the more accurately the embedding model mirrors your personal spending patterns."
 msgstr "Щоразу, коли ви приймаєте, редагуєте або відхиляєте підказку категорії, індекс моделі вкладень оновлюється локально. Що більше ви використовуєте Budgie, то точніше модель вкладень відображає ваші особисті шаблони витрат."
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Every transaction behind the total"
+msgstr "Кожна транзакція за підсумком"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Every transaction in your database. Useful for full-history analytics or one-off audits."
@@ -7483,6 +7491,10 @@ msgstr "Так, для банківських підключень. Підклю
 msgid "From one token to your home screen"
 msgstr "Від одного токена до головного екрана"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "From the month's total to one receipt"
+msgstr "Від місячного підсумку до одного чека"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Full"
 msgstr "Повний"
@@ -8049,7 +8061,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-#: src/app/[lang]/features/spending-analytics/page.tsx
 #: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
@@ -8389,6 +8400,10 @@ msgstr "У захищеному сховищі ключів вашої плат�
 msgid "In-app switcher — no reinstall, no relaunch"
 msgstr "Перемикач у додатку — без перевстановлення, без перезапуску"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Income by category and Spending by category list each one with its total and its share of the period, biggest first. Categories with no activity drop out of the list, and anything you never filed collects in an Uncategorized row."
+msgstr "«Доходи за категоріями» і «Витрати за категоріями» показують кожну з її сумою та часткою періоду, найбільшу першою. Категорії без руху зникають зі списку, а все нерозкладене збирається в рядку «Без категорії»."
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Indexed local SQLite queries, so the insight stays fast on long transaction histories"
 msgstr "Індексовані локальні SQLite-запити, щоб інсайт залишався швидким навіть у довгих історіях транзакцій"
@@ -8608,6 +8623,10 @@ msgstr "Вона стоїть над списком і рахує лише тр�
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "It was money moving between your own accounts, so it inflated your spending. Long-press the row and Convert to Transfer is already in the menu."
 msgstr "Це були гроші, що рухалися між вашими власними рахунками, тож вони роздували витрати. Утримайте рядок — «Перетворити на переказ» уже в меню."
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Its share of the period"
+msgstr "Її частка періоду"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Jars come across too"
@@ -9543,8 +9562,8 @@ msgid "Most app locks are decoration — a screen you can bypass by reading the 
 msgstr "Більшість блокувань додатків — це декорація, екран, який можна обійти, зчитавши рівень сховища. PIN у Budgie пов'язаний із SQLCipher, тому ті самі цифри, що проходять екран блокування, також є ключем шифрування бази даних."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Most apps show a pie chart and call it analytics. Budgie's analytics screen splits into Categories, Tags, and Recurring tabs, each with drill-down: tap a category to see every transaction in it for the current period."
-msgstr "Більшість додатків показують кругову діаграму і називають це аналітикою. Екран аналітики Budgie розбивається на вкладки «Категорії», «Теги» та «Регулярні», кожна з деталізацією: торкніть категорію, щоб побачити всі транзакції в ній за поточний період."
+msgid "Most apps show a pie chart and call it analytics. Budgie's analytics screen splits into Categories and Tags tabs, each with drill-down: tap a category to see every transaction in it for the current period."
+msgstr "Більшість застосунків показують кругову діаграму й називають це аналітикою. Екран аналітики Budgie ділиться на вкладки «Категорії» й «Теги», кожна з переходом углиб: торкніться категорії, щоб побачити всі її транзакції за поточний період."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Most apps use Plaid, which requires sharing your bank credentials with a third party. Actual Budget uses SimpleFIN, which is somewhat more privacy-respecting. Budgie uses zero-knowledge sync where credentials are encrypted on your device and never visible to us. Firefly III typically relies on manual imports or community-built importers."
@@ -10978,6 +10997,10 @@ msgstr ""
 msgid "Override per-MCC: point all 4111 (transit) into your \"Commute\" instead of the default \"Travel\". Override once, applies forever."
 msgstr "Перевизначте для конкретних MCC: направте всі 4111 (транспорт) у вашу \"Поїздку на роботу\" замість стандартних \"Подорожей\". Перевизначте один раз — застосовується назавжди."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Overview tiles: spent and earned across the period, beside your balance over every account"
+msgstr "Плитки огляду: витрачено й зароблено за період поряд із балансом за всіма рахунками"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "P2P without double-counting"
 msgstr "P2P без подвійного обліку"
@@ -11816,10 +11839,6 @@ msgstr "Календар регулярних платежів"
 msgid "Recurring Payments Calendar — Budgie"
 msgstr "Календар регулярних платежів — Budgie"
 
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Recurring tab: subscription cadence and forecasted upcoming bills"
-msgstr "Вкладка регулярних: ритм підписок та прогнозовані майбутні рахунки"
-
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Reduced Infrastructure Costs"
 msgstr "Зменшені витрати на інфраструктуру"
@@ -12108,10 +12127,6 @@ msgstr "Заплановані транзакції"
 msgid "Screen recording of Budgie analytics filtering spending by category and drilling into a period"
 msgstr "Запис екрана аналітики Budgie з фільтруванням витрат за категоріями та переходом у період"
 
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Screen recording of Budgie opening a spending category from the analytics screen and going back"
-msgstr "Запис екрана: Budgie відкриває категорію витрат з екрана аналітики та повертається назад"
-
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Screen recording of the Monobank group on the Budgie home screen opening its synced accounts"
@@ -12341,6 +12356,10 @@ msgstr "Встановіть загальний місячний ліміт і �
 msgid "Set one overall monthly limit, add per-category limits, cap everything else, and watch the cycle fill up from your home screen. Every number is computed on your device."
 msgstr "Встановіть один загальний місячний ліміт, додайте ліміти по категоріях, обмежте все інше й стежте, як цикл заповнюється, прямо з головного екрана. Кожне число обчислюється на вашому пристрої."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Set the period, read the totals"
+msgstr "Оберіть період, прочитайте підсумки"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Set up accounts to match your banks"
 msgstr "Налаштуйте рахунки відповідно до ваших банків"
@@ -12385,9 +12404,17 @@ msgstr "Налаштування — це два кроки: введіть кл
 msgid "Setup time"
 msgstr "Час налаштування"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Seven date presets, from Today to All Time, plus any range you pick on the calendar"
+msgstr "Сім готових періодів — від «Сьогодні» до «Увесь час» — плюс будь-який діапазон із календаря"
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Seven presets, one tap"
 msgstr "Сім пресетів, один дотик"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Seven presets, or your own range"
+msgstr "Сім готових періодів або власний"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Several production-ready libraries provide local-first infrastructure:"
@@ -12663,6 +12690,10 @@ msgstr "Витрати на рахунках в інших валютах кон
 msgid "Spending only"
 msgstr "Лише витрати"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Spent and earned this period"
+msgstr "Витрачено й зароблено за період"
+
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "split"
 msgstr "розбивка"
@@ -12756,6 +12787,10 @@ msgstr "Статичний, плюс ваші дані навчають їхню
 #: src/app/[lang]/features/statistics-tags-tab/opengraph-image.tsx
 msgid "statistics"
 msgstr ""
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Statistics opens on This Month. The date chip swaps in Today, This or Last Week, Last Month, This Year and All Time, or any range you draw on the calendar. Amount, Category, Tag and Account chips narrow it further, and both tabs read the same filter."
+msgstr "Статистика відкривається на «Цього місяця». Чип дати перемикається на Сьогодні, Цей або Минулий тиждень, Минулий місяць, Цей рік та Увесь час — або на будь-який діапазон із календаря. Чипи суми, категорії, тегу й рахунку звужують далі, а обидві вкладки читають той самий фільтр."
 
 #: src/app/[lang]/blog/page.tsx
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
@@ -13052,6 +13087,10 @@ msgstr "Торкніть день у календарі, щоб побачити
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Tap a row to categorize it"
 msgstr "Торкніться рядка, щоб задати категорію"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Tap a row, get the transactions"
+msgstr "Торкніться рядка — побачите транзакції"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Tap any category row to open exactly the transactions behind that number for this period"
@@ -13564,6 +13603,10 @@ msgstr "Результат стає очевидним того дня, коли
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The pendulum is swinging back from maximum centralization toward a more balanced architecture where local and cloud computing each handle what they do best."
 msgstr "Маятник хитається від максимальної централізації до більш збалансованої архітектури, де локальні та хмарні обчислення виконують те, що кожне з них робить найкраще."
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "The period comes with you"
+msgstr "Період переходить разом із вами"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The personal finance app market has exploded. Mint, YNAB, Copilot, Monarch Money, Lunch Money, and dozens of others promise to help you manage your money. Most offer free tiers or low monthly subscriptions that seem reasonable for the value provided."
@@ -14451,6 +14494,10 @@ msgstr "Дві моделі на пристрої — Qwen3 1.7B для чату
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device's secure keystore; (2) PDF/CSV/Excel statement imports for anything else."
 msgstr "Два шляхи: (1) прямі API-токени для підтримуваних банків, як-от Монобанк, де токен зберігається у безпечному сховищі вашого пристрою; (2) імпорт виписок у форматах PDF/CSV/Excel для всього іншого."
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Two screens do the work: the Categories tab, where the period's totals sit above every category ranked by what it took, and the transaction list behind any one of those rows."
+msgstr "Працюють два екрани: вкладка «Категорії», де підсумки періоду стоять над кожною категорією, впорядкованою за розміром витрат, і список транзакцій за будь-яким із цих рядків."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Two screens: the sheet where a month calendar and the preset chips sit together, and the list a moment after one of those chips is tapped."
@@ -16366,8 +16413,8 @@ msgid "Yes. Rename is non-destructive — every transaction in the category keep
 msgstr "Так. Перейменування є незнищувальним — кожна транзакція в категорії зберігає зв'язок через ID категорії, а не назву."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Yes. Switch the date filter between presets like This Month, Last Month, This Year. Compact tile mode also shows period-over-period deltas."
-msgstr "Так. Перемикайте фільтр дат між пресетами як «Цей місяць», «Минулий місяць», «Цей рік». Компактний режим плиток також показує зміни від періоду до періоду."
+msgid "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose."
+msgstr "Так. Перемикайте фільтр дати між готовими періодами на кшталт «Цього місяця», «Минулого місяця» та «Цього року» або окресліть власний діапазон у календарі — підсумки й кожен рядок категорії перерахуються для обраного періоду."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Yes. Switch to split inside the income form just like the expense form."
@@ -16378,8 +16425,8 @@ msgid "Yes. Tap a pattern to adjust amount, cadence, or merchant. Manual edits a
 msgstr "Так. Торкніть шаблон, щоб відрегулювати суму, ритм або торговця. Ручні зміни зберігаються — наступне сканування їх враховує."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Yes. Tap any category or tag slice to see every transaction that contributed to it during the current period."
-msgstr "Так. Торкніть будь-який фрагмент категорії або тегу, щоб побачити всі транзакції, що зробили внесок до нього за поточний період."
+msgid "Yes. Tap any category or tag row to see every transaction that contributed to it during the current period."
+msgstr "Так. Торкніться будь-якого рядка категорії чи тегу, щоб побачити кожну транзакцію, яка внесла до нього внесок за поточний період."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the public repository. The underlying models (Qwen3, whisper.rn) are separately licensed projects."
