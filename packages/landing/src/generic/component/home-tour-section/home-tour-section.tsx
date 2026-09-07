@@ -15,7 +15,7 @@ export const HomeTourSection = ({ locale }: Props) => {
 
     return (
         <FeatureStory density={StoryDensityEnum.COMPACT}>
-            <FeatureStory.Intro heading={<Trans>One expense, from your thumb to your charts</Trans>}>
+            <FeatureStory.Intro heading={<Trans>How a transaction moves through Budgie</Trans>}>
                 <Trans>Five screens of the real app, in the order you actually meet them.</Trans>
             </FeatureStory.Intro>
 

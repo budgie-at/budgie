@@ -3284,10 +3284,6 @@ msgstr ""
 msgid "Bank sync reliability varies by institution"
 msgstr "Надійність банківської синхронізації варіюється залежно від установи"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Bank sync requires an internet connection to fetch new transactions, but once synced, you can view and categorize everything offline. The app works completely offline for manual expense entry and viewing your data."
-msgstr "Синхронізація з банком потребує підключення до Інтернету для отримання нових транзакцій, але після синхронізації ви можете переглядати й категоризувати все офлайн. Додаток повністю працює офлайн для ручного введення витрат і перегляду даних."
-
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Bank sync requires internet to fetch new transactions, but everything else continues working offline. Once synced, your bank data lives on-device alongside manual entries."
 msgstr "Банківська синхронізація потребує інтернету для отримання нових транзакцій, але все інше продовжує працювати офлайн. Після синхронізації банківські дані зберігаються на пристрої поряд із ручними записами."
@@ -3704,7 +3700,6 @@ msgid "Budgie"
 msgstr "Budgie"
 
 #: src/app/[lang]/layout.tsx
-#: src/app/[lang]/page.tsx
 msgid "Budgie - Privacy-First Expense Tracker"
 msgstr "Budgie — трекер витрат із пріоритетом приватності"
 
@@ -3961,6 +3956,10 @@ msgstr "Budgie — це 100% офлайн-перший трекер витрат
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "Budgie is a fully offline budget app. Add expenses, view analytics, and import bank statements without any internet connection. Your data stays on your device."
 msgstr "Budgie — повністю офлайн-додаток для обліку витрат. Додавайте витрати, переглядайте аналітику та імпортуйте банківські виписки без будь-якого інтернет-підключення. Ваші дані залишаються на вашому пристрої."
+
+#: src/app/[lang]/metadata.ts
+msgid "Budgie is a privacy-first, offline expense tracker for iOS and Android. Bank sync, multi-currency and on-device AI, with your data never leaving the phone."
+msgstr "Budgie: офлайн-трекер витрат із пріоритетом приватності для iOS та Android. Синхронізація з банком, мультивалютність і ШІ просто на пристрої."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Budgie is a privacy-first, offline-first mobile application designed to help users track expenses, manage budgets, sync bank accounts (optional), monitor investments (stocks and cryptocurrency), track debts and loans, set financial goals, and access AI-powered financial insights. The Service operates primarily on your device, with optional cloud features that require explicit user consent."
@@ -4246,10 +4245,6 @@ msgstr "Budgie підтримує зашифровані локальні рез
 msgid "Budgie supports exporting your complete financial history in standard formats (CSV, JSON). You own your data, and you can take it with you. The export happens locally, producing a file you can use with any other application."
 msgstr "Budgie підтримує експорт вашої повної фінансової історії у стандартних форматах (CSV, JSON). Ви є власником своїх даних і можете забрати їх із собою. Експорт відбувається локально, створюючи файл, який ви можете використовувати з будь-яким іншим додатком."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Budgie supports manual tracking of Bitcoin, Ethereum, other crypto, stocks, ETFs, and traditional bank accounts. Import positions and transactions via CSV. There are no automatic exchange or brokerage API integrations — your data stays on-device."
-msgstr "Budgie підтримує ручне відстеження Bitcoin, Ethereum, іншої крипти, акцій, ETF та традиційних банківських рахунків. Імпортуйте позиції та транзакції через CSV. Автоматичних інтеграцій з біржами або брокерами через API немає — ваші дані залишаються на пристрої."
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Budgie supports voice transaction entry powered by Whisper.rn — a React Native port of OpenAI Whisper, the open-source speech recognition model. Whisper runs entirely on-device. When you speak a transaction, the audio is processed locally and transcribed without being sent to any speech recognition API."
 msgstr "Budgie підтримує введення транзакцій голосом на базі Whisper.rn — React Native порту OpenAI Whisper, моделі розпізнавання мовлення з відкритим вихідним кодом. Whisper працює повністю на пристрої. Коли ви вимовляєте транзакцію, аудіо обробляється локально і транскрибується без надсилання до будь-якого API розпізнавання мовлення."
@@ -4366,10 +4361,6 @@ msgstr "Budgie обробляє основний рух коштів і банк
 msgid "Budgie turns that cleanup into a visible workflow. When the current filter contains uncategorized transactions, a compact missing-category pill appears above the list with the exact count."
 msgstr "Budgie перетворює це очищення на видимий процес. Коли поточний фільтр містить транзакції без категорій, над списком з'являється компактна плашка відсутніх категорій з точною кількістю."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Budgie uses a custom source-available license that lets you read, fork, and contribute to the code, while reserving commercial distribution to the project. The full source is on GitHub — you can audit every line."
-msgstr "Budgie використовує власну Source-Available ліцензію, яка дозволяє читати, форкати та долучатися до коду, зберігаючи комерційне розповсюдження за проєктом. Повний вихідний код на GitHub — ви можете перевірити кожен рядок."
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:"
 msgstr "Budgie використовує інший підхід, заснований на безконфліктних реплікованих типах даних (CRDT) та операційних трансформаціях. Кожна зміна записується як операція з міткою часу та ідентифікатором пристрою. Під час синхронізації:"
@@ -4398,6 +4389,10 @@ msgstr "Budgie використовує дві взаємодоповнювал�
 msgid "Budgie uses two on-device models: Qwen3 1.7B for natural-language understanding and chat, and a 768-dimensional embedding model for nearest-neighbor categorization from your own transaction history. Both run locally with no external API call."
 msgstr "Budgie використовує дві моделі на пристрої: Qwen3 1.7B для розуміння природної мови та чату, і 768-вимірну модель вкладень для категоризації за найближчим сусідом з вашої власної історії транзакцій. Обидві працюють локально без зовнішніх API-викликів."
 
+#: src/generic/component/comparison-section/comparison-section-header.tsx
+msgid "Budgie vs cloud budgeting apps"
+msgstr "Budgie проти хмарних застосунків для бюджету"
+
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
@@ -4410,6 +4405,10 @@ msgstr "Budgie проти категорії"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie works fully offline. You can track expenses on a flight, review your budget in a remote cabin, or manage finances in areas with no cell coverage. Every feature works without network access."
 msgstr "Budgie працює повністю офлайн. Ви можете відстежувати витрати в літаку, переглядати бюджет у віддаленій хатинці або управляти фінансами в районах без мобільного покриття. Кожна функція працює без мережевого доступу."
+
+#: src/app/[lang]/metadata.ts
+msgid "Budgie, the offline expense tracker that never phones home"
+msgstr "Budgie: офлайн-трекер витрат, який нічого не надсилає"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie: Built by Developers, for Developers"
@@ -4755,6 +4754,10 @@ msgstr "Чи можна розгорнути Budgie на власному сер
 msgid "Can I spend from a deposit account?"
 msgstr "Чи можна витрачати з депозитного рахунку?"
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Can I sync my bank without giving Budgie my bank login?"
+msgstr "Чи можу я синхронізувати банк, не даючи Budgie свій банківський логін?"
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Can I track an account in a different currency?"
 msgstr "Чи можна відстежувати рахунок в іншій валюті?"
@@ -4782,10 +4785,6 @@ msgstr "Чи можна скасувати переказ?"
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Can I undo the conversion?"
 msgstr "Чи можна скасувати конвертацію?"
-
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Can I use Budgie across multiple devices?"
-msgstr "Чи можу я використовувати Budgie на кількох пристроях?"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Can I use multiple Monobank accounts?"
@@ -6276,10 +6275,6 @@ msgstr "Чи дійсно ви хочете, щоб усе це було на ч
 msgid "Docker deployment with compose files provided"
 msgstr "Розгортання через Docker з готовими compose-файлами"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Does bank sync work offline?"
-msgstr "Чи працює синхронізація з банком офлайн?"
-
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Does Budgie auto-backup?"
 msgstr "Чи робить Budgie резервні копії автоматично?"
@@ -6321,6 +6316,7 @@ msgid "Does Budgie use Plaid for bank sync?"
 msgstr "Чи використовує Budgie Plaid для синхронізації з банком?"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "Does Budgie work without an internet connection?"
 msgstr "Чи працює Budgie без інтернет-підключення?"
 
@@ -6886,17 +6882,9 @@ msgstr "Все — повний доступ"
 msgid "Everything above runs from a database on the device. Aeroplane mode changes nothing about what you can see or do."
 msgstr "Усе описане вище працює з бази даних на пристрої. Режим польоту нічого не змінює в тому, що ви бачите й робите."
 
-#: src/app/[lang]/page.tsx
-msgid "Everything the app does, on your device"
-msgstr "Усе, що вміє застосунок, на вашому пристрої"
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Everything we have described in this article can be verified by examining our source code. Budgie is open source, and we believe this transparency is essential for any application that handles sensitive financial data."
 msgstr "Все, що ми описали в цій статті, можна перевірити, вивчивши наш вихідний код. Budgie має відкритий код, і ми вважаємо, що ця прозорість необхідна для будь-якого додатку, що працює з конфіденційними фінансовими даними."
-
-#: src/generic/component/faq-section/faq-section.tsx
-msgid "Everything you need to know about Budgie's privacy-first approach to expense tracking."
-msgstr "Як Budgie робить облік витрат приватним за замовчуванням."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Excalidraw"
@@ -7519,7 +7507,6 @@ msgstr "Безкоштовно, без облікового запису, без
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/feature/component/feature-page-faq-section/feature-page-faq-section.tsx
-#: src/generic/component/faq-section/faq-section.tsx
 msgid "Frequently Asked Questions"
 msgstr "Часті запитання"
 
@@ -7872,6 +7859,10 @@ msgstr "Сімейне бюджетування важливе"
 msgid "How a 1.7B-Parameter LLM Fits on a Phone"
 msgstr "Як LLM на 1,7 млрд параметрів поміщається на телефоні"
 
+#: src/generic/component/home-tour-section/home-tour-section.tsx
+msgid "How a transaction moves through Budgie"
+msgstr "Як транзакція проходить через Budgie"
+
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "How are tags chosen?"
 msgstr "Як вибираються теги?"
@@ -7887,10 +7878,6 @@ msgstr "Який розмір завантаження?"
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "How big is the model download?"
 msgstr "Який розмір завантаження моделі?"
-
-#: src/generic/component/comparison-section/comparison-section-header.tsx
-msgid "How Budgie compares to a cloud budgeting app"
-msgstr "Як Budgie порівнюється з хмарним застосунком для бюджету"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "How Budgie Differs"
@@ -8026,10 +8013,6 @@ msgstr "Як публічний вихідний код робить Budgie пр
 msgid "How does the popularity sort work?"
 msgstr "Як працює сортування за популярністю?"
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "How does the source-available license work?"
-msgstr "Як працює Source-Available ліцензія?"
-
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "How far back does the history go?"
 msgstr "Наскільки далеко сягає історія?"
@@ -8053,10 +8036,6 @@ msgstr "Чим Budgie відрізняється від хмарного бюд�
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "How is Budgie different from cloud-based PFM apps?"
 msgstr "Чим Budgie відрізняється від хмарних PFM-додатків?"
-
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "How is my financial data kept private?"
-msgstr "Як захищаються мої фінансові дані?"
 
 #: src/app/[lang]/security/page.tsx
 msgid "How is the database encrypted?"
@@ -8402,6 +8381,10 @@ msgstr "У 2019 році дослідницька лабораторія Ink & S
 msgid "In 2022, Plaid settled a $58 million class action lawsuit over allegations that they collected more data than users authorized and retained it longer than necessary. The settlement included claims that Plaid obtained login credentials through interfaces designed to look like bank login pages, leading users to believe they were logging directly into their banks."
 msgstr "У 2022 році Plaid врегулював колективний позов на 58 мільйонів доларів через звинувачення у збиранні більшого обсягу даних, ніж авторизували користувачі, та їх зберіганні довше, ніж потрібно. Врегулювання включало заяви про те, що Plaid отримував облікові дані через інтерфейси, стилізовані під сторінки входу банків, змушуючи користувачів вважати, що вони входять безпосередньо у свої банки."
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "In a SQLite database on your phone, and nowhere else. Budgie has no account system and no server of its own, so there is nothing to upload and nothing for us to read. Set a PIN and the database is encrypted on the device with SQLCipher using that PIN."
+msgstr "У базі даних SQLite на вашому телефоні, і більше ніде. У Budgie немає системи облікових записів і власного сервера, тож нічого завантажувати й нічого читати. Встановіть PIN, і база даних шифрується на пристрої за допомогою SQLCipher цим самим PIN."
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "In an era where data breaches and privacy violations make headlines daily, the way we handle our financial information has never been more critical. When it comes to managing your money, <0>your privacy isn’t just a feature—it’s a fundamental right</0>."
 msgstr "У епоху, коли витоки даних та порушення конфіденційності щодня потрапляють у заголовки новин, спосіб обробки нашої фінансової інформації ніколи не був більш критичним. Коли справа стосується управління вашими грошима, <0>ваша конфіденційність — це не просто функція, це фундаментальне право</0>."
@@ -8542,6 +8525,10 @@ msgstr "Чи залишається банківська синхронізац�
 msgid "Is biometric the same as PIN security?"
 msgstr "Чи рівнозначна біометрія безпеці PIN-коду?"
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Is Budgie open source?"
+msgstr "Чи є Budgie з відкритим кодом?"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Is Budgie really free to use?"
 msgstr "Чи справді Budgie безкоштовний для використання?"
@@ -8629,6 +8616,10 @@ msgstr "Чи використовує проєкт добре підтримув
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Is there a limit on the number of accounts?"
 msgstr "Чи є обмеження на кількість рахунків?"
+
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Is there a subscription?"
+msgstr "Чи є підписка?"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Is there active discussion about privacy and data handling?"
@@ -10199,6 +10190,10 @@ msgstr ""
 msgid "No. The app only calls Binance read endpoints, and the setup instructions ask you to create a key with reading permission only. Permissions are set on Binance's side, so a key without trading or withdrawal rights simply cannot be used for either."
 msgstr "Ні. Застосунок звертається лише до кінцевих точок читання Binance, а інструкції з налаштування просять створити ключ лише з дозволом на читання. Дозволи встановлюються на боці Binance, тож ключ без прав на торгівлю чи виведення коштів просто неможливо використати для жодного з них."
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "No. The expense tracker itself never expires and has no paywall. Bank sync and on-device AI are an optional one-time unlock, not a recurring charge."
+msgstr "Ні. Сам трекер витрат ніколи не припиняє працювати й не має платної стіни. Синхронізація з банком і ШІ на пристрої це необов'язкове одноразове розблокування, а не регулярний платіж."
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "No. The microphone stream feeds whisper.rn directly in-process; the audio buffer is discarded after transcription. Nothing is saved, sent, or logged."
 msgstr "Ні. Потік мікрофона подається безпосередньо у whisper.rn у процесі; аудіобуфер видаляється після транскрипції. Нічого не зберігається, надсилається або журналюється."
@@ -10374,6 +10369,14 @@ msgstr "Офлайн-можливості важливі"
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "offline expense tracker"
 msgstr ""
+
+#: src/generic/component/faq-section/faq-section.tsx
+msgid "Offline expense tracker FAQ"
+msgstr "Питання про офлайн-трекер витрат"
+
+#: src/app/[lang]/metadata.ts
+msgid "Offline Expense Tracker That Never Leaves Your Phone"
+msgstr "Офлайн-трекер витрат, що не покидає ваш телефон"
 
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Offline expense tracking that never phones home."
@@ -10646,10 +10649,6 @@ msgstr "Одна валюта, часто жорстко закодована"
 #: src/app/[lang]/security/page.tsx
 msgid "One encrypted file. No account. Restore on any device in seconds."
 msgstr "Один зашифрований файл. Без облікового запису. Відновлення на будь-якому пристрої за секунди."
-
-#: src/generic/component/home-tour-section/home-tour-section.tsx
-msgid "One expense, from your thumb to your charts"
-msgstr "Одна витрата: від дотику до графіка"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "One number, everything in it"
@@ -13892,6 +13891,10 @@ msgstr "Закриття стосувалося не лише невдачі п�
 msgid "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr ""
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "The source is public, but the licence is not OSI-approved open source. Budgie ships under the O'SAASY licence: you can read every line on GitHub, fork it and contribute, while commercial redistribution stays with the project."
+msgstr "Код відкритий для читання, але ліцензія не є open source, схваленою OSI. Budgie виходить під ліцензією O'SAASY: ви можете прочитати кожен рядок на GitHub, зробити форк і зробити внесок, а комерційне розповсюдження лишається за проєктом."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
 msgstr "Файл бази даних SQLite зберігається в захищеній директорії, доступ до якої має лише Budgie. На iOS це ізольована директорія Documents додатка. На Android це внутрішнє сховище додатка, яке інші програми не можуть прочитати."
@@ -14556,10 +14559,6 @@ msgstr "Дві суми, один курс"
 msgid "Two categories that mean the same thing become one: pick the category to keep and every transaction moves across before the other one goes. The picker offers the built-in tree alongside your own, or a new category made on the spot."
 msgstr "Дві категорії з однаковим змістом стають однією: оберіть ту, що залишиться, і кожна транзакція перейде до неї, перш ніж інша зникне. У вибірці є і вбудоване дерево, і ваші власні категорії — або нова, створена на місці."
 
-#: src/generic/component/proof-band/proof-band.tsx
-msgid "Two claims you can check yourself"
-msgstr "Два твердження, які ви можете перевірити самі"
-
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Two complementary signals: vector lookup over your history plus a generative LLM suggestion"
 msgstr "Два взаємодоповнювальних сигнали: векторний пошук по вашій історії плюс підказка генеративного LLM"
@@ -15061,6 +15060,10 @@ msgstr "Що щодо сторонніх агрегаторів?"
 msgid "What actions are available?"
 msgstr "Які дії доступні?"
 
+#: src/app/[lang]/page.tsx
+msgid "What an offline expense tracker can do"
+msgstr "Що вміє офлайн-трекер витрат"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "What analytics services are embedded in the app"
 msgstr "Які аналітичні сервіси вбудовані в додаток"
@@ -15084,10 +15087,6 @@ msgstr "Що змінюється архітектурно"
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "What connecting a bank actually asks for"
 msgstr "Що насправді потрібно для підключення банку"
-
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "What cryptocurrencies and assets can I track?"
-msgstr "Які криптовалюти й активи можна відстежувати?"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "What data do you collect through the app store?"
@@ -15662,6 +15661,10 @@ msgstr "Звідки беруться підказки?"
 msgid "Where does my Monobank token live?"
 msgstr "Де зберігається мій токен Monobank?"
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Where is my financial data stored?"
+msgstr "Де зберігаються мої фінансові дані?"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Where progress is calculated"
 msgstr "Де обчислюється прогрес"
@@ -15673,6 +15676,10 @@ msgstr "Куди ці дані передаються"
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Where the backup file replaces the server"
 msgstr "Де файл резервної копії замінює сервер"
+
+#: src/generic/component/faq-section/faq-section.tsx
+msgid "Where the data lives, what works offline, how bank sync avoids your login, and what it costs."
+msgstr "Де живуть дані, що працює офлайн, як синхронізація з банком обходиться без вашого логіна та скільки це коштує."
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Where transactions live"
@@ -15963,6 +15970,10 @@ msgstr "Чому б просто не самохостувати існуючи�
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Why not use end-to-end encrypted cloud sync?"
 msgstr "Чому не використовувати наскрізне зашифровану хмарну синхронізацію?"
+
+#: src/generic/component/proof-band/proof-band.tsx
+msgid "Why offline-first and source-available matter"
+msgstr "Чому офлайн-підхід і відкритий код мають значення"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Why Offline-First Changes Everything"
@@ -16290,10 +16301,6 @@ msgstr "Так — дозволяє виявлення пар переказів
 msgid "Yes — every backup is a separate file. Snapshot before risky imports or migrations and keep the file around for rollback."
 msgstr "Так — кожна резервна копія є окремим файлом. Зробіть знімок перед ризикованими імпортами або міграціями та зберігайте файл для відкату."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Yes — export your encrypted database as a single file, save it to any storage you control (iCloud, Google Drive, Dropbox, anywhere), and import it on another device. The file stays encrypted with your PIN; we never see it because we have no servers."
-msgstr "Так — експортуйте зашифровану базу даних як єдиний файл, збережіть у будь-яке сховище під вашим контролем (iCloud, Google Drive, Dropbox, будь-де) та імпортуйте на інший пристрій. Файл залишається зашифрованим вашим PIN; ми його ніколи не бачимо, бо у нас немає серверів."
-
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Yes — IBAN extraction is part of the header parse. The IBAN is stored on the account and enables automatic transfer-pair detection between Erste and other accounts you own."
 msgstr "Так — вилучення IBAN є частиною обробки заголовка. IBAN зберігається на рахунку та дозволяє автоматичне виявлення пар переказів між Erste та іншими вашими рахунками."
@@ -16410,6 +16417,10 @@ msgstr "Так. Правило може містити кілька дій, то
 msgid "Yes. A transfer can remain a transfer while its fee is counted in the selected fee category for analytics."
 msgstr "Так. Переказ може залишатися переказом, а його комісія враховується в обраній категорії комісій для аналітики."
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Yes. Adding transactions, budgets, tags, analytics and every screen that reads your history run entirely from the local database, so the app behaves the same in aeroplane mode. Only bank sync and exchange-rate refreshes need a connection, and they catch up when you are back online."
+msgstr "Так. Додавання транзакцій, бюджети, теги, аналітика й кожен екран, що читає вашу історію, працюють повністю з локальної бази даних, тож у режимі польоту застосунок поводиться так само. З'єднання потрібне лише для синхронізації з банком і оновлення курсів валют, і вони наздоганяють, щойно ви знову онлайн."
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Yes. All core functionality — adding transactions, viewing reports, managing budgets, and reviewing your history — works completely offline. Internet access is only used when you explicitly trigger a bank sync or fetch current exchange rates."
 msgstr "Так. Всі основні функції — додавання транзакцій, перегляд звітів, управління бюджетами та перегляд вашої історії — повністю офлайн. Доступ до інтернету використовується лише тоді, коли ви явно запускаєте синхронізацію з банком або завантажуєте поточні обмінні курси."
@@ -16501,6 +16512,10 @@ msgstr "Так. Як і інші рахунки, депозити мають н�
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Yes. Long-press the transfer and choose \"Split back into two transactions\"; both halves return to their original types."
 msgstr "Так. Утримуйте переказ і оберіть \"Розбити на дві транзакції\"; обидві половини повертаються до своїх оригінальних типів."
+
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "Yes. Monobank sync uses a personal API token that you generate yourself in your bank, and the request goes from your phone straight to the bank. For other banks you import a statement file instead. Budgie never asks for a banking password and there is no aggregator such as Plaid in between."
+msgstr "Так. Синхронізація з Monobank використовує персональний API-токен, який ви створюєте самі у своєму банку, і запит іде з вашого телефона просто до банку. Для інших банків ви натомість імпортуєте файл виписки. Budgie ніколи не питає банківський пароль, і між вами й банком немає агрегатора на кшталт Plaid."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Yes. One picker component is reused across analytics tabs, the transaction list, and the recurring calendar. Filters apply consistently."
@@ -16938,10 +16953,6 @@ msgstr "Ваші дані існують лише на вашому пристр
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Your data is yours. Budgie supports exporting your financial data in standard formats. If you ever want to switch to a different application or analyze your data in a spreadsheet, you have full access."
 msgstr "Ваші дані — це ваші дані. Budgie підтримує експорт ваших фінансових даних у стандартних форматах. Якщо ви коли-небудь захочете перейти на інший застосунок або проаналізувати дані в електронній таблиці, у вас є повний доступ."
-
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "Your data never leaves your device unless you explicitly sync with your own cloud storage. We don't have servers storing your financial information, and we can't see your transactions. Everything is encrypted locally on your device."
-msgstr "Ваші дані не залишають пристрій, якщо ви самі не синхронізуєте їх із власним хмарним сховищем. Ми не маємо серверів для зберігання вашої фінансової інформації і не можемо бачити ваші транзакції. Усе шифрується локально на вашому пристрої."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your data won’t be sold to third parties"

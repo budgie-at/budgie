@@ -1,4 +1,4 @@
-import { msg, t } from '@lingui/core/macro';
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { BlogSection } from '../../generic/component/blog-section/blog-section';
@@ -16,6 +16,8 @@ import { buildLandingJsonLd } from '../../generic/util/build-landing-json-ld.uti
 import { getI18nInstance } from '../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../i18n/init-lingui';
 
+import { HOME_PAGE_METADATA } from './metadata';
+
 import type { Metadata } from 'next';
 
 // eslint-disable-next-line func-style
@@ -24,7 +26,15 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     const i18n = getI18nInstance(lang);
 
     return {
-        title: { absolute: i18n._(msg`Budgie - Privacy-First Expense Tracker`) }
+        title: { absolute: i18n._(HOME_PAGE_METADATA.metaTitle) },
+        description: i18n._(HOME_PAGE_METADATA.metaDescription),
+        keywords: null,
+        openGraph: {
+            title: i18n._(HOME_PAGE_METADATA.openGraphTitle),
+            description: i18n._(HOME_PAGE_METADATA.metaDescription),
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
+            siteName: 'Budgie'
+        }
     };
 }
 
@@ -35,7 +45,7 @@ export default async function LandingPage(props: PageLangParam) {
     initLingui(lang);
 
     const i18n = getI18nInstance(lang);
-    const softwareApplication = buildLandingJsonLd(i18n);
+    const softwareApplication = buildLandingJsonLd(i18n, lang);
 
     return (
         <main className="flex-1">
@@ -47,7 +57,8 @@ export default async function LandingPage(props: PageLangParam) {
             <HomeTourSection locale={lang} />
 
             <CapabilityBento
-                heading={<Trans>Everything the app does, on your device</Trans>}
+                heading={<Trans>What an offline expense tracker can do</Trans>}
+                locale={lang}
                 lede={<Trans>Accounts, budgets, analytics and bank imports, all running from the same local database.</Trans>}
             >
                 <CapabilityBento.Anchor
