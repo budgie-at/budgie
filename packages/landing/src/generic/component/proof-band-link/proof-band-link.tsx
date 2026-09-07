@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const ProofBandLink = ({ href, children }: Props) => (
-    <Link className="inline-flex items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline" href={href}>
+    <Link className="inline-flex items-center gap-1.5 accent-link text-sm font-medium underline-offset-4 hover:underline" href={href}>
         {children}
         <ArrowUpRight aria-hidden="true" className="size-4" />
     </Link>

@@ -34,7 +34,7 @@ const inputVariants = cva(
     }
 );
 
-const buttonVariants = cva('rounded-full h-14 px-8 text-lg font-semibold transition-all', {
+const buttonVariants = cva('rounded-full h-14 px-5 sm:px-8 text-base sm:text-lg font-semibold transition-all', {
     variants: {
         variant: {
             hero: 'bg-primary text-primary-foreground hover:bg-primary/90',
@@ -47,7 +47,7 @@ const countTextVariants = cva('flex items-center gap-2 text-sm', {
     variants: {
         variant: {
             hero: 'text-muted-foreground',
-            cta: 'text-white/70'
+            cta: 'text-white/90'
         }
     }
 });
@@ -56,7 +56,7 @@ const disclaimerVariants = cva('text-xs', {
     variants: {
         variant: {
             hero: 'text-muted-foreground',
-            cta: 'text-white/50'
+            cta: 'text-white/90'
         }
     }
 });
@@ -128,7 +128,6 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
             other: '#+ people already waiting'
         })
     });
-    const isButtonDisabled = isLoading || !isNotEmptyString(email);
 
     return (
         <div className="flex flex-col items-center gap-4">
@@ -143,7 +142,7 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
                     value={email}
                 />
 
-                <Button className={buttonVariants({ variant })} disabled={isButtonDisabled} size="lg" type="submit">
+                <Button className={buttonVariants({ variant })} disabled={isLoading} size="lg" type="submit">
                     {isLoading ? (
                         <Loader2 className="size-5 animate-spin" />
                     ) : (

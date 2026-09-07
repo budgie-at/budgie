@@ -49,8 +49,8 @@ export const BlogBrowser = ({ articles, locale }: Props) => {
             {isNotEmptyArray(paginatedArticles) ? (
                 <>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                        {paginatedArticles.map((article, index) => (
-                            <BlogCard key={article.slug} article={article} index={index} locale={locale} />
+                        {paginatedArticles.map(article => (
+                            <BlogCard key={article.slug} article={article} locale={locale} />
                         ))}
                     </div>
 
