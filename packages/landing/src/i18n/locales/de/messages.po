@@ -4969,6 +4969,10 @@ msgstr "Diagramme werden aus Ihrer eigenen Datenbank gelesen und funktionieren d
 msgid "Check the Issues and Discussions"
 msgstr "Prüfen Sie die Issues und Diskussionen"
 
+#: src/app/[lang]/beta/page.tsx
+msgid "Checking for the latest build…"
+msgstr "Suche nach dem neuesten Build…"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Actual Budget if:"
 msgstr "Wählen Sie Actual Budget, wenn:"
