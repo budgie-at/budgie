@@ -6574,18 +6574,6 @@ msgstr "Effiziente Inferenz-Runtimes"
 msgid "Eight Features That Make It a Durable Mint Replacement"
 msgstr "Acht Funktionen, die es zu einem dauerhaften Mint-Ersatz machen"
 
-#: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "Eight presets cover the windows you actually use, from Today to All Time"
-msgstr "Acht Voreinstellungen decken die Zeiträume ab, die Sie tatsächlich nutzen, von Heute bis Gesamtzeitraum"
-
-#: src/app/[lang]/features/date-filter-presets/metadata.ts
-msgid "Eight presets, locale-aware week start, custom range fallback, and an amount range beside them."
-msgstr "Acht Voreinstellungen, ein gebietsschemabewusster Wochenstart, ein benutzerdefinierter Bereich als Fallback und ein Betragsbereich daneben."
-
-#: src/app/[lang]/features/date-filter-presets/opengraph-image.tsx
-msgid "Eight presets. Locale-aware."
-msgstr "Acht Voreinstellungen. Gebietsschemabewusst."
-
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Either by manual price update or by importing your brokerage's CSV export. Live ticker integration is opt-in to keep the offline-first guarantee."
 msgstr "Entweder durch manuelle Kursaktualisierung oder durch Importieren des CSV-Exports Ihres Brokers. Die Live-Ticker-Integration ist optional, um die Offline-First-Garantie zu wahren."
@@ -8980,10 +8968,6 @@ msgstr "Local-First-Systeme wählen Verfügbarkeit. Sie können immer arbeiten, 
 msgid "local-llm"
 msgstr ""
 
-#: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "Locale-aware week start (Monday in EU, Sunday in en-US)"
-msgstr "Gebietsschemabewusster Wochenbeginn (Montag in der EU, Sonntag in en-US)"
-
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use."
 msgstr "Ausgaben, Einnahmen und Überweisungen in Sekunden mit einem Bottom-Sheet-Schnelleingabeformular protokollieren, das für die einhändige Bedienung ausgelegt ist."
@@ -9137,8 +9121,8 @@ msgid "Manual budgeting is simpler than it sounds. Check accounts daily—it tak
 msgstr "Manuelles Budgetieren ist einfacher als es klingt. Prüfen Sie Konten täglich – es dauert 2-3 Minuten, neue Transaktionen einzugeben. Nutzen Sie Quittungen und erfassen Sie Transaktionen beim Einkaufen. Machen Sie wöchentliche Abstimmungen, um Ihre App mit Kontoauszügen abzugleichen. Nutzen Sie das Bewusstsein – manuelle Eingabe macht Sie bewusster beim Ausgeben. Viele Nutzer finden, dass manuelle Eingabe ihr Finanzbewusstsein im Vergleich zur automatischen Synchronisierung tatsächlich verbessert."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "Manual date pickers are slow. Budgie wraps them with the eight presets you actually use, plus a custom-range fallback. Every transaction list, every analytics tab, every recurring view shares the same picker."
-msgstr "Manuelle Datumsauswähler sind langsam. Budgie hüllt sie in die acht Voreinstellungen ein, die Sie tatsächlich nutzen, plus einen benutzerdefinierten Bereich als Fallback. Jede Transaktionsliste, jeder Analysen-Reiter, jede Wiederholungsansicht teilt denselben Auswähler."
+msgid "Manual date pickers are slow. Budgie wraps them with the seven presets you actually use, plus a custom-range fallback. Every transaction list, every analytics tab, every recurring view shares the same picker."
+msgstr "Manuelle Datumsauswahl ist langsam. Budgie umschließt sie mit den sieben Presets, die Sie tatsächlich nutzen, plus einem benutzerdefinierten Zeitraum als Fallback. Jede Transaktionsliste, jeder Analytics-Tab, jede wiederkehrende Ansicht teilt sich denselben Picker."
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Manual edits in the window are preserved — conflict picker for every edited row"
@@ -10259,6 +10243,10 @@ msgstr "Nein. Das Token gehört zur Verbindung, daher stellt eine Aktualisierung
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "No. They are local notifications scheduled by the app itself from data already on your device. Nothing is sent to a server, and no account is required."
 msgstr "Nein. Es handelt sich um lokale Benachrichtigungen, die die App selbst anhand bereits auf Ihrem Gerät vorhandener Daten plant. Es wird nichts an einen Server gesendet, und es ist kein Konto erforderlich."
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "No. This Week and Last Week always use a Monday-to-Sunday week, regardless of your locale — there is no locale-based or manual override today."
+msgstr "Nein. Diese Woche und Letzte Woche verwenden immer eine Woche von Montag bis Sonntag, unabhängig von Ihrer Ländereinstellung – eine Überschreibung nach Locale oder manuell gibt es derzeit nicht."
 
 #: src/app/[lang]/ai-features/page.tsx
 msgid "No. Voice entry uses whisper.rn — a React Native binding for whisper.cpp — which transcribes audio directly on your device. Your voice recordings are never streamed to any external server."
@@ -12520,12 +12508,24 @@ msgid "Seven date presets, from Today to All Time, plus any range you pick on th
 msgstr "Sieben Datumsvorgaben von Heute bis Gesamter Zeitraum, plus jeder Bereich aus dem Kalender"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "Seven presets cover the windows you actually use, from Today to All Time"
+msgstr "Sieben Presets decken die Zeiträume ab, die Sie tatsächlich nutzen, von Heute bis Gesamter Zeitraum"
+
+#: src/app/[lang]/features/date-filter-presets/metadata.ts
+msgid "Seven presets, a Monday-to-Sunday week for This Week and Last Week, custom range fallback, and an amount range beside them."
+msgstr "Sieben Presets, eine Woche von Montag bis Sonntag für Diese Woche und Letzte Woche, ein benutzerdefinierter Zeitraum als Fallback und ein Betragsbereich daneben."
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Seven presets, one tap"
 msgstr "Sieben Voreinstellungen, ein Tipp"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Seven presets, or your own range"
 msgstr "Sieben Vorgaben oder eigener Bereich"
+
+#: src/app/[lang]/features/date-filter-presets/opengraph-image.tsx
+msgid "Seven presets. Monday-to-Sunday weeks."
+msgstr "Sieben Presets. Wochen von Montag bis Sonntag."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Several production-ready libraries provide local-first infrastructure:"
@@ -13747,10 +13747,6 @@ msgstr "Der Zeitraum kommt mit"
 msgid "The personal finance app market has exploded. Mint, YNAB, Copilot, Monarch Money, Lunch Money, and dozens of others promise to help you manage your money. Most offer free tiers or low monthly subscriptions that seem reasonable for the value provided."
 msgstr "Der Markt für persönliche Finanz-Apps ist explodiert. Mint, YNAB, Copilot, Monarch Money, Lunch Money und Dutzende weitere versprechen, Ihnen bei der Verwaltung Ihres Geldes zu helfen. Die meisten bieten kostenlose Stufen oder günstige monatliche Abonnements, die für den gebotenen Wert angemessen erscheinen."
 
-#: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "The picker is locale-aware. Week-start day comes from your device locale. Last Week always means \"the most recent completed Monday-to-Sunday\" (or Sunday-to-Saturday for en-US users)."
-msgstr "Der Auswähler ist gebietsschemabewusst. Der Wochenstarttag kommt von Ihrem Gerätestandard. Letzte Woche bedeutet immer „die zuletzt abgeschlossene Montag-bis-Sonntag-Woche\" (oder Sonntag-bis-Samstag für en-US-Nutzer)."
-
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "The picker searches same-currency expenses across accounts and sorts likely matches by date and amount. Choose the expense, confirm, and Budgie shows whether the refund is full or partial."
 msgstr "Der Picker sucht kontenübergreifend nach Ausgaben in derselben Währung und sortiert wahrscheinliche Treffer nach Datum und Betrag. Wähle die Ausgabe, bestätige, und Budgie zeigt, ob die Rückerstattung vollständig oder teilweise ist."
@@ -14286,6 +14282,14 @@ msgstr "Dies schränkt unsere Auswahl im Vergleich zu Entwicklern, die den Daten
 msgid "This transparency lets you make informed decisions about whether Budgie is right for you. If a planned feature concerns you, you can raise those concerns before it’s implemented. If a feature you need is missing, you can advocate for it or contribute it yourself."
 msgstr "Diese Transparenz ermöglicht es Ihnen, fundierte Entscheidungen darüber zu treffen, ob Budgie das Richtige für Sie ist. Wenn eine geplante Funktion Sie beunruhigt, können Sie diese Bedenken äußern, bevor sie implementiert wird. Wenn eine Funktion, die Sie benötigen, fehlt, können Sie sich dafür einsetzen oder sie selbst beitragen."
 
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "This Week and Last Week always mean the most recently completed Monday-to-Sunday span. The week boundary itself does not follow your device locale today."
+msgstr "Diese Woche und Letzte Woche bedeuten immer die zuletzt abgeschlossene Spanne von Montag bis Sonntag. Die Wochengrenze selbst richtet sich derzeit nicht nach der Ländereinstellung Ihres Geräts."
+
+#: src/app/[lang]/features/date-filter-presets/page.tsx
+msgid "This Week and Last Week always run Monday to Sunday, no matter your locale"
+msgstr "Diese Woche und Letzte Woche laufen immer von Montag bis Sonntag, unabhängig von Ihrer Ländereinstellung"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three first-class transaction types: expense, income, transfer — never confused, never miscounted"
 msgstr "Drei erstklassige Transaktionstypen: Ausgabe, Einnahme, Überweisung – nie verwechselt, nie falsch gezählt"
@@ -14391,12 +14395,12 @@ msgid "To your own iCloud / Google Drive"
 msgstr "In Ihr eigenes iCloud / Google Drive"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "Today, Yesterday, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window."
-msgstr "Heute, Gestern, Diese Woche, Letzte Woche, Diesen Monat, Letzten Monat, Dieses Jahr, Gesamtzeitraum – jeder Bildschirm mit einer Liste, zwei Tipp-Aktionen bis zum richtigen Fenster."
+msgid "Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window."
+msgstr "Heute, Diese Woche, Letzte Woche, Dieser Monat, Letzter Monat, Dieses Jahr, Gesamter Zeitraum – auf jedem Bildschirm mit einer Liste sind es zwei Fingertipps bis zum richtigen Zeitfenster."
 
 #: src/app/[lang]/features/date-filter-presets/metadata.ts
-msgid "Today, Yesterday, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window. Plus a From/To amount range in the same filter row."
-msgstr "Heute, Gestern, Diese Woche, Letzte Woche, Diesen Monat, Letzten Monat, Dieses Jahr, Gesamtzeitraum — jeder Bildschirm mit einer Liste, zwei Tipp-Aktionen bis zum richtigen Fenster. Dazu ein Von-Bis-Betragsbereich in derselben Filterzeile."
+msgid "Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window. Plus a From/To amount range in the same filter row."
+msgstr "Heute, Diese Woche, Letzte Woche, Dieser Monat, Letzter Monat, Dieses Jahr, Gesamter Zeitraum – auf jedem Bildschirm mit einer Liste sind es zwei Fingertipps bis zum richtigen Zeitfenster. Dazu ein Von/Bis-Betragsbereich in derselben Filterzeile."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Toggle “include in net worth” per account. A daily background task pulls fresh exchange rates so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency."
@@ -16410,10 +16414,6 @@ msgstr "Ja – ein Token gewährt Zugang zu all Ihren Monobank-Konten. Wählen S
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Yes — see Smart Transfer Consolidation. Bank-synced debits and credits matching by amount, time window, and counter-IBAN auto-merge into a single transfer."
 msgstr "Ja – siehe Intelligente Überweisungspaarzusammenführung. Banksynchronisierte Belastungen und Gutschriften, die nach Betrag, Zeitfenster und Gegenpartei-IBAN übereinstimmen, werden automatisch zu einer Überweisung zusammengeführt."
-
-#: src/app/[lang]/features/date-filter-presets/page.tsx
-msgid "Yes — Settings → Display → Start of Week. Override the locale default with Monday or Sunday."
-msgstr "Ja – Einstellungen → Anzeige → Wochenbeginn. Überschreiben Sie den Gerätestandard mit Montag oder Sonntag."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Yes — Settings → PIN → toggle off “Unlock with biometrics”. The PIN remains active."
