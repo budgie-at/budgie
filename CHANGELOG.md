@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.28.0](https://github.com/budgie-at/budgie/compare/v6.27.1...v6.28.0) (2026-09-07)
+
+
+### Features
+
+* **landing:** tell the transaction tags page as a three-step story ([3a83d85](https://github.com/budgie-at/budgie/commit/3a83d85ad0f505a268bf2bc4aa692d9a55fddd46))
+* **landing:** tell the uncategorized-transactions story in three steps ([5840a3f](https://github.com/budgie-at/budgie/commit/5840a3fe701457b3e3ec0f4d05c4484d08d5d7eb))
+
+
+
+
+
 ## [6.27.1](https://github.com/budgie-at/budgie/compare/v6.27.0...v6.27.1) (2026-09-07)
 
 
