@@ -2194,6 +2194,10 @@ msgstr "Un presupuesto es un límite general más tantos límites por categoría
 msgid "A cash withdrawal is a transfer from your bank account to cash, but the ATM commission is still a real expense. If both are forced into one category, either transfers pollute spending or fees disappear from analytics."
 msgstr "Una retirada de efectivo es una transferencia de su cuenta bancaria a efectivo, pero la comisión del cajero sigue siendo un gasto real. Si ambas cosas se fuerzan en una sola categoría, las transferencias contaminan el gasto o las comisiones desaparecen de las analíticas."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "A category row opens the transactions behind it, carrying the same period across and grouping them by month — each one with its account, its tags and its time. Tags drill down the same way, and the Untagged bucket shows what slipped through."
+msgstr "Una fila de categoría abre las transacciones que hay detrás, mantiene el mismo periodo y las agrupa por mes: cada una con su cuenta, sus etiquetas y su hora. Las etiquetas se desglosan igual, y el grupo «Sin etiqueta» muestra lo que se te escapó."
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "A category says what you bought. A tag says which trip, which project, which person — chosen on the same form, from your own flat list."
 msgstr "Una categoría dice qué compraste. Una etiqueta dice qué viaje, qué proyecto, qué persona: se elige en el mismo formulario, desde tu propia lista plana."
@@ -2746,6 +2750,10 @@ msgstr "La coincidencia por importe y ventana de tiempo detecta transferencias y
 msgid "Amount first, no form"
 msgstr "Primero el importe, sin formulario"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Amount, category, tag and account chips narrow both tabs from the same filter row"
+msgstr "Los chips de importe, categoría, etiqueta y cuenta acotan ambas pestañas desde la misma fila de filtros"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Amounts aligned right"
 msgstr "Importes alineados a la derecha"
@@ -2813,10 +2821,6 @@ msgstr "El análisis contabiliza cada división en su propia categoría, sin dob
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Analytics includes fees in their own category, even when the main transaction is a transfer"
 msgstr "Las analíticas incluyen las comisiones en su propia categoría, incluso cuando la transacción principal es una transferencia"
-
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Analytics renders directly from the transaction table — no separate aggregation pipeline. Filters apply to all tabs simultaneously. Compact tile mode shows weekly/monthly net flow alongside category totals."
-msgstr "El análisis se genera directamente desde la tabla de transacciones, sin una canalización de agregación separada. Los filtros se aplican a todas las pestañas simultáneamente."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Analytics services (anonymous, opt-in only)"
@@ -3700,10 +3704,6 @@ msgstr "Pantalla de analíticas de Budgie que desglosa el gasto por categoría c
 msgid "Budgie analytics screen ranking spending by category, bank fees and charges among them"
 msgstr "Pantalla de analíticas de Budgie que ordena el gasto por categoría, con las comisiones y los cargos bancarios entre ellas"
 
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Budgie analytics screen with the spent, income and balance totals above the per-category spending bars"
-msgstr "Pantalla de analíticas de Budgie con los totales de gasto, ingresos y saldo sobre las barras de gasto por categoría"
-
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie analytics Tags tab listing income and spending totals for each tag"
 msgstr "Pestaña Etiquetas de los análisis de Budgie con los totales de ingresos y gastos de cada etiqueta"
@@ -3743,6 +3743,10 @@ msgstr "Pantalla de detalle del presupuesto de Budgie con la barra mensual y lí
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password."
 msgstr "Budgie llama a la API de Monobank directamente con un token que generas tú. Sin agregador, sin contraseña bancaria."
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Budgie Categories analytics tab with the date and amount filter chips, the Spent, Income and Balance tiles, and per-category spending bars"
+msgstr "Pestaña de análisis Categorías de Budgie con los chips de filtro de fecha e importe, los mosaicos Gastado, Ingresos y Saldo, y las barras de gasto por categoría"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Budgie Categories screen listing user-created categories with their icons above a search field"
@@ -4262,6 +4266,10 @@ msgstr "Budgie Terms of Service - Condiciones para usar Budgie, la app privada d
 msgid "Budgie transaction list filtered to Last Month, showing the active chip and 73 matching transactions"
 msgstr "Lista de transacciones de Budgie filtrada por «Mes pasado», con el chip activo y 73 transacciones coincidentes"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Budgie transaction list for a single spending category, showing the period date range above rows grouped by month"
+msgstr "Lista de transacciones de Budgie para una sola categoría de gasto, con el rango de fechas del periodo sobre las filas agrupadas por mes"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie transaction list grouped by month with the category, tag and account on every row"
 msgstr "Lista de transacciones de Budgie agrupada por mes con la categoría, la etiqueta y la cuenta en cada fila"
@@ -4583,13 +4591,13 @@ msgstr "¿Puedo desactivarlo para los recibos que quiero compartir?"
 msgid "Can I disable suggestions?"
 msgstr "¿Puedo desactivar las sugerencias?"
 
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Can I drill down from a chart to the transactions?"
-msgstr "¿Puedo acceder a los detalles de un gráfico?"
-
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Can I drill down from a tag?"
 msgstr "¿Puedo desglosar desde una etiqueta?"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Can I drill down from the breakdown to the transactions?"
+msgstr "¿Puedo pasar del desglose a las transacciones?"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Can I drill into a tag's transactions?"
@@ -4822,8 +4830,8 @@ msgid "Categories answer “what kind of expense”; tags answer “for which pr
 msgstr "Las categorías responden a \"¿qué tipo de gasto?\"; las etiquetas a \"¿para qué proyecto, persona o propósito?\". Úsalas juntas: un ticket puede ser Supermercado y también #vacaciones y #compartido."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Categories tab: per-category totals, with drill-down to every transaction in the slice"
-msgstr "Pestaña Categorías: totales por categoría con desglose hasta cada transacción del tramo"
+msgid "Categories tab: per-category totals, with drill-down to every transaction in the row"
+msgstr "Pestaña Categorías: totales por categoría, con acceso a cada transacción de la fila"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Categories tell you what kind of expense. Tags tell you for what purpose — \"Italy trip total\", \"shared rent\", \"reimbursable meals\". Switch to the Tags tab in Analytics and every tag becomes its own row with income, expense, and net broken out separately."
@@ -4860,13 +4868,13 @@ msgstr "Gráficos de desglose por categoría y etiqueta, tendencias mensuales y 
 msgid "Category and tag breakdowns for any period, each one drilling into its transactions."
 msgstr "Desgloses por categoría y etiqueta para cualquier periodo, cada uno abre sus transacciones."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it."
+msgstr "Desgloses por categoría y etiqueta para cualquier periodo, con acceso desde cualquier fila a las transacciones que hay detrás."
+
 #: src/app/[lang]/features/spending-analytics/metadata.ts
 msgid "Category breakdown, tag breakdown, monthly trends — drill into any chart slice."
 msgstr "Desglose por categoría, por etiqueta, tendencias mensuales: accede al detalle desde cualquier sector del gráfico."
-
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Category breakdown, tag breakdown, monthly trends, and balance timelines — with drill-down from any chart slice to the underlying transactions."
-msgstr "Desglose por categoría, por etiqueta, tendencias mensuales y líneas de tiempo de saldo, con desglose desde cualquier sector del gráfico hasta las transacciones individuales."
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Category chosen on device"
@@ -5199,10 +5207,6 @@ msgstr "Scripts de la comunidad disponibles para conversión desde YNAB"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Community-verified security practices"
 msgstr "Prácticas de seguridad verificadas por la comunidad"
-
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Compact tile mode shows weekly/monthly net flow alongside category totals"
-msgstr "El modo de tesela compacto muestra el flujo neto semanal/mensual junto a los totales por categoría"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Companies can change their privacy policies anytime"
@@ -5913,8 +5917,8 @@ msgid "Date Filter Presets — Past Periods, One Tap"
 msgstr "Preajustes de filtro de fechas — periodos pasados, un toque"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Date filters cover Today, Yesterday, This/Last Week, This/Last Month, This Year, and All Time. The “Untagged” and “Uncategorized” buckets surface the gaps in your bookkeeping so you can tighten them up."
-msgstr "Los filtros de fechas incluyen Hoy, Ayer, Esta/Última semana, Este/Último mes, Este año y Todo el tiempo. Los selectores «Sin etiqueta» y «Sin categoría» también usan los mismos preajustes."
+msgid "Date filters cover Today, This and Last Week, This and Last Month, This Year and All Time, plus any custom range. The “Untagged” and “Uncategorized” buckets surface the gaps in your bookkeeping so you can tighten them up."
+msgstr "Los filtros de fecha cubren Hoy, Esta y La semana pasada, Este y El mes pasado, Este año y Todo el tiempo, además de cualquier rango personalizado. Los grupos «Sin etiqueta» y «Sin categoría» sacan a la luz los huecos de tu contabilidad para que los cierres."
 
 #: src/app/[lang]/features/date-filter-presets/opengraph-image.tsx
 msgid "dates"
@@ -6502,10 +6506,6 @@ msgstr "ediciones"
 msgid "Efficient Inference Runtimes"
 msgstr "Tiempos de ejecución de inferencia eficientes"
 
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Eight date presets: Today through All Time, plus a custom range fallback"
-msgstr "Ocho preajustes de fechas: de Hoy a Todo el tiempo, más un rango personalizado como alternativa"
-
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Eight Features That Make It a Durable Mint Replacement"
 msgstr "Ocho funciones que lo convierten en un reemplazo duradero de Mint"
@@ -6712,6 +6712,10 @@ msgstr "Todas las funciones de Budgie en un solo lugar: sincronización bancaria
 msgid "Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization — in one place."
 msgstr "Todas las capacidades del rastreador de gastos offline-first de Budgie, desde sincronización bancaria hasta categorización con IA en el dispositivo, en un solo lugar."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Every category, ranked by what it took"
+msgstr "Cada categoría, ordenada por lo que se llevó"
+
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Every change starts on the list"
 msgstr "Todo cambio empieza en la lista"
@@ -6771,6 +6775,10 @@ msgstr "Cada fila etiquetada muestra una etiqueta y el número de las demás, as
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Every time you accept, edit, or reject a category suggestion, the embedding model index updates locally. The more you use Budgie, the more accurately the embedding model mirrors your personal spending patterns."
 msgstr "Cada vez que aceptas, editas o rechazas una sugerencia de categoría, el índice del modelo de embedding se actualiza localmente. Cuanto más uses Budgie, más fielmente refleja el modelo de embedding tus patrones personales de gasto."
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Every transaction behind the total"
+msgstr "Cada transacción tras el total"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Every transaction in your database. Useful for full-history analytics or one-off audits."
@@ -7483,6 +7491,10 @@ msgstr "Desde conexiones bancarias, sí. Las conexiones de exchanges cripto no o
 msgid "From one token to your home screen"
 msgstr "De un token a tu pantalla de inicio"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "From the month's total to one receipt"
+msgstr "Del total del mes a un solo recibo"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Full"
 msgstr "Completo"
@@ -8049,7 +8061,6 @@ msgstr "¿En qué se diferencia esto de la página de análisis de etiquetas?"
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 #: src/app/[lang]/features/screenshot-protection/page.tsx
-#: src/app/[lang]/features/spending-analytics/page.tsx
 #: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
@@ -8389,6 +8400,10 @@ msgstr "En el almacén de claves seguro de tu plataforma (iOS Keychain / Android
 msgid "In-app switcher — no reinstall, no relaunch"
 msgstr "Cambio de idioma dentro de la app, sin reinstalación ni reinicio"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Income by category and Spending by category list each one with its total and its share of the period, biggest first. Categories with no activity drop out of the list, and anything you never filed collects in an Uncategorized row."
+msgstr "«Ingresos por categoría» y «Gastos por categoría» muestran cada una con su total y su porcentaje del periodo, de mayor a menor. Las categorías sin actividad desaparecen de la lista y todo lo que nunca clasificaste se acumula en una fila «Sin categoría»."
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Indexed local SQLite queries, so the insight stays fast on long transaction histories"
 msgstr "Consultas SQLite locales indexadas para que la información siga siendo rápida en historiales de transacciones largos"
@@ -8608,6 +8623,10 @@ msgstr "Aparece encima de la lista y cuenta solo las transacciones sin categorí
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "It was money moving between your own accounts, so it inflated your spending. Long-press the row and Convert to Transfer is already in the menu."
 msgstr "Era dinero que se movía entre tus propias cuentas, así que inflaba tus gastos. Mantén pulsada la fila y Convertir a transferencia ya está en el menú."
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Its share of the period"
+msgstr "Su parte del periodo"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Jars come across too"
@@ -9543,8 +9562,8 @@ msgid "Most app locks are decoration — a screen you can bypass by reading the 
 msgstr "La mayoría de bloqueos de apps son decorativos: una pantalla que se puede eludir leyendo la capa de almacenamiento. El PIN de Budgie está conectado a SQLCipher como clave de cifrado real."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Most apps show a pie chart and call it analytics. Budgie's analytics screen splits into Categories, Tags, and Recurring tabs, each with drill-down: tap a category to see every transaction in it for the current period."
-msgstr "La mayoría de apps muestran un gráfico circular y lo llaman análisis. La pantalla de análisis de Budgie se divide en Categorías, Etiquetas y Recurrentes con desglose en cualquier sector."
+msgid "Most apps show a pie chart and call it analytics. Budgie's analytics screen splits into Categories and Tags tabs, each with drill-down: tap a category to see every transaction in it for the current period."
+msgstr "La mayoría de apps muestran un gráfico circular y lo llaman análisis. La pantalla de análisis de Budgie se divide en las pestañas Categorías y Etiquetas, ambas con acceso al detalle: toca una categoría para ver todas sus transacciones del periodo actual."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Most apps use Plaid, which requires sharing your bank credentials with a third party. Actual Budget uses SimpleFIN, which is somewhat more privacy-respecting. Budgie uses zero-knowledge sync where credentials are encrypted on your device and never visible to us. Firefly III typically relies on manual imports or community-built importers."
@@ -10978,6 +10997,10 @@ msgstr ""
 msgid "Override per-MCC: point all 4111 (transit) into your \"Commute\" instead of the default \"Travel\". Override once, applies forever."
 msgstr "Anulación por MCC: dirige todos los 4111 (tránsito) a tu categoría «Transporte» en lugar del predeterminado «Viajes». Anula una vez, se aplica para siempre."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Overview tiles: spent and earned across the period, beside your balance over every account"
+msgstr "Mosaicos de resumen: gastado e ingresado en el periodo, junto a tu saldo de todas las cuentas"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "P2P without double-counting"
 msgstr "P2P sin duplicar el conteo"
@@ -11816,10 +11839,6 @@ msgstr "Calendario de pagos recurrentes"
 msgid "Recurring Payments Calendar — Budgie"
 msgstr "Calendario de pagos recurrentes — Budgie"
 
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Recurring tab: subscription cadence and forecasted upcoming bills"
-msgstr "Pestaña Recurrentes: cadencia de suscripciones y próximas facturas previstas"
-
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Reduced Infrastructure Costs"
 msgstr "Costes de infraestructura reducidos"
@@ -12108,10 +12127,6 @@ msgstr "Transacciones programadas"
 msgid "Screen recording of Budgie analytics filtering spending by category and drilling into a period"
 msgstr "Grabación de pantalla de las analíticas de Budgie filtrando el gasto por categoría y entrando en un periodo"
 
-#: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Screen recording of Budgie opening a spending category from the analytics screen and going back"
-msgstr "Grabación de pantalla de Budgie abriendo una categoría de gasto desde la pantalla de analíticas y volviendo atrás"
-
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Screen recording of the Monobank group on the Budgie home screen opening its synced accounts"
@@ -12341,6 +12356,10 @@ msgstr "Define un límite mensual general más límites por categoría, empieza 
 msgid "Set one overall monthly limit, add per-category limits, cap everything else, and watch the cycle fill up from your home screen. Every number is computed on your device."
 msgstr "Define un límite mensual general, añade límites por categoría, pon un tope al resto, y observa cómo se llena el ciclo desde tu pantalla de inicio. Cada cifra se calcula en tu dispositivo."
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Set the period, read the totals"
+msgstr "Elige el periodo, lee los totales"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Set up accounts to match your banks"
 msgstr "Configura cuentas para que coincidan con tus bancos"
@@ -12385,9 +12404,17 @@ msgstr "La configuración son dos pasos: introduce la clave y el secreto, luego 
 msgid "Setup time"
 msgstr "Tiempo de configuración"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Seven date presets, from Today to All Time, plus any range you pick on the calendar"
+msgstr "Siete periodos predefinidos, de Hoy a Todo el tiempo, más cualquier rango del calendario"
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Seven presets, one tap"
 msgstr "Siete periodos predefinidos, un toque"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Seven presets, or your own range"
+msgstr "Siete periodos o tu propio rango"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Several production-ready libraries provide local-first infrastructure:"
@@ -12663,6 +12690,10 @@ msgstr "El gasto en cuentas de otras divisas se convierte a la moneda de tu pres
 msgid "Spending only"
 msgstr "Solo gastos"
 
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Spent and earned this period"
+msgstr "Gastado e ingresado en el periodo"
+
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "split"
 msgstr "dividir"
@@ -12756,6 +12787,10 @@ msgstr "Estático, además tus datos entrenan su modelo"
 #: src/app/[lang]/features/statistics-tags-tab/opengraph-image.tsx
 msgid "statistics"
 msgstr ""
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Statistics opens on This Month. The date chip swaps in Today, This or Last Week, Last Month, This Year and All Time, or any range you draw on the calendar. Amount, Category, Tag and Account chips narrow it further, and both tabs read the same filter."
+msgstr "Las estadísticas abren en «Este mes». El chip de fecha cambia a Hoy, Esta o La semana pasada, El mes pasado, Este año y Todo el tiempo, o a cualquier rango que traces en el calendario. Los chips de importe, categoría, etiqueta y cuenta acotan más, y ambas pestañas leen el mismo filtro."
 
 #: src/app/[lang]/blog/page.tsx
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
@@ -13052,6 +13087,10 @@ msgstr "Toca un día del calendario para ver las transacciones pendientes. La li
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Tap a row to categorize it"
 msgstr "Toca una fila para categorizarla"
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Tap a row, get the transactions"
+msgstr "Toca una fila y ve las transacciones"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Tap any category row to open exactly the transactions behind that number for this period"
@@ -13564,6 +13603,10 @@ msgstr "El beneficio se nota el día en que tu token caduca. Introduce el nuevo 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The pendulum is swinging back from maximum centralization toward a more balanced architecture where local and cloud computing each handle what they do best."
 msgstr "El péndulo oscila de vuelta desde la centralización máxima hacia una arquitectura más equilibrada donde la computación local y en la nube gestionan cada una lo que mejor saben hacer."
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "The period comes with you"
+msgstr "El periodo te acompaña"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The personal finance app market has exploded. Mint, YNAB, Copilot, Monarch Money, Lunch Money, and dozens of others promise to help you manage your money. Most offer free tiers or low monthly subscriptions that seem reasonable for the value provided."
@@ -14451,6 +14494,10 @@ msgstr "Dos modelos en el dispositivo — Qwen3 1.7B para chat y un modelo de em
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device's secure keystore; (2) PDF/CSV/Excel statement imports for anything else."
 msgstr "Dos caminos: (1) tokens de API directa para bancos compatibles como Monobank, donde el token vive en el llavero seguro de tu dispositivo; (2) importaciones de extractos PDF/CSV/Excel para todo lo demás."
+
+#: src/app/[lang]/features/spending-analytics/page.tsx
+msgid "Two screens do the work: the Categories tab, where the period's totals sit above every category ranked by what it took, and the transaction list behind any one of those rows."
+msgstr "Dos pantallas hacen el trabajo: la pestaña Categorías, con los totales del periodo sobre cada categoría ordenada por lo que se llevó, y la lista de transacciones que hay detrás de cualquiera de esas filas."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Two screens: the sheet where a month calendar and the preset chips sit together, and the list a moment after one of those chips is tapped."
@@ -16366,8 +16413,8 @@ msgid "Yes. Rename is non-destructive — every transaction in the category keep
 msgstr "Sí. El cambio de nombre no es destructivo: cada transacción en la categoría conserva su vínculo a través del ID de categoría, no del nombre."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Yes. Switch the date filter between presets like This Month, Last Month, This Year. Compact tile mode also shows period-over-period deltas."
-msgstr "Sí. Cambia el filtro de fechas entre preajustes como Este mes, Último mes, Este año. El modo de tesela compacto también muestra el flujo neto por período."
+msgid "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose."
+msgstr "Sí. Cambia el filtro de fecha entre periodos como Este mes, El mes pasado y Este año, o traza un rango personalizado en el calendario: los totales y cada fila de categoría se recalculan para el periodo elegido."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Yes. Switch to split inside the income form just like the expense form."
@@ -16378,8 +16425,8 @@ msgid "Yes. Tap a pattern to adjust amount, cadence, or merchant. Manual edits a
 msgstr "Sí. Toca un patrón para ajustar el importe, la cadencia o el comercio. Las ediciones manuales son persistentes: el próximo análisis las respeta."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Yes. Tap any category or tag slice to see every transaction that contributed to it during the current period."
-msgstr "Sí. Toca cualquier sector de categoría o etiqueta para ver cada transacción que contribuyó a él durante el período actual."
+msgid "Yes. Tap any category or tag row to see every transaction that contributed to it during the current period."
+msgstr "Sí. Toca cualquier fila de categoría o etiqueta para ver todas las transacciones que contribuyeron a ella en el periodo actual."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the public repository. The underlying models (Qwen3, whisper.rn) are separately licensed projects."
