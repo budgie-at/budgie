@@ -7160,6 +7160,10 @@ msgstr "features"
 msgid "Features"
 msgstr "Features"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Fee entries on the original transaction carry over to the transfer automatically"
+msgstr "Fee entries on the original transaction carry over to the transfer automatically"
+
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Fee pills keep the transaction list readable without hiding the cost"
 msgstr "Fee pills keep the transaction list readable without hiding the cost"
@@ -10026,6 +10030,10 @@ msgid "No official mobile app (third-party options exist)"
 msgstr "No official mobile app (third-party options exist)"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating the expense or income entry yourself."
+msgstr "No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating the expense or income entry yourself."
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
 msgstr "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
 
@@ -10737,6 +10745,10 @@ msgstr "One tag per transaction can be promoted to “primary” and stands out 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
 msgstr "One tap exports the whole history — no range to pick, no partial file to reconcile later"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "One transaction carries both account entries automatically — no double-entry by you"
+msgstr "One transaction carries both account entries automatically — no double-entry by you"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One transaction, two ways to file it"
@@ -12059,10 +12071,6 @@ msgstr "Restore is a single tap on a fresh install — pick the file, enter the 
 msgid "Reversible audit trail — Revert restores the original income and expense rows"
 msgstr "Reversible audit trail — Revert restores the original income and expense rows"
 
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "Reversible: split a transfer back into two separate transactions if needed"
-msgstr "Reversible: split a transfer back into two separate transactions if needed"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Review Dependencies"
 msgstr "Review Dependencies"
@@ -12626,10 +12634,6 @@ msgstr "Sometimes the simplest solution is the most private. Spreadsheets offer 
 msgid "Source account already filled in"
 msgstr "Source account already filled in"
 
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "Source and destination legs link automatically — no double-entry by you"
-msgstr "Source and destination legs link automatically — no double-entry by you"
-
 #: src/app/[lang]/open-source/metadata.ts
 msgid "source available personal finance"
 msgstr "source available personal finance"
@@ -12699,10 +12703,6 @@ msgstr "Source-Available Personal Finance — Transparent by Design"
 #: src/app/[lang]/open-source/metadata.ts
 msgid "Source-Available Personal Finance App — Budgie"
 msgstr "Source-Available Personal Finance App — Budgie"
-
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "Source-side and destination-side records are linked, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
-msgstr "Source-side and destination-side records are linked, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
 
 #: src/app/[lang]/features/voice-transaction-entry/opengraph-image.tsx
 msgid "Speak it. Budgie logs it. Audio never leaves your phone."
@@ -13502,10 +13502,6 @@ msgstr "The entire flow — from audio to saved transaction — happens offline.
 msgid "The exchange rate is saved with the transfer, so both balances reconcile exactly"
 msgstr "The exchange rate is saved with the transfer, so both balances reconcile exactly"
 
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "The expense (or income) becomes the source leg of a transfer; you pick the destination account, and Budgie creates the destination leg automatically. Both legs are linked."
-msgstr "The expense (or income) becomes the source leg of a transfer; you pick the destination account, and Budgie creates the destination leg automatically. Both legs are linked."
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "The export includes:"
 msgstr "The export includes:"
@@ -13830,6 +13826,10 @@ msgstr "The same Budgie Missing categories list with its first uncategorised row
 msgid "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
 msgstr "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with a credit and a debit against the two accounts — no second transaction is created."
+msgstr "The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with a credit and a debit against the two accounts — no second transaction is created."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The security architecture is designed for users who understand the risks described in this article and want an alternative."
 msgstr "The security architecture is designed for users who understand the risks described in this article and want an alternative."
@@ -13929,6 +13929,10 @@ msgstr "The tradeoff is model size. Cloud providers can run billion-parameter mo
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The Tradeoff: Sync Convenience vs. Privacy"
 msgstr "The Tradeoff: Sync Convenience vs. Privacy"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "The transaction becomes a single transfer with a credit entry and a debit entry against the two accounts, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
+msgstr "The transaction becomes a single transfer with a credit entry and a debit entry against the two accounts, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The transaction is written to a SQLite database stored in your device’s secure app storage"
@@ -16507,10 +16511,6 @@ msgstr "Yes. Jars are fetched alongside your cards and listed in their own secti
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Yes. Like other accounts, deposits have an “include in net worth” setting, so you can decide whether a locked deposit belongs in your net worth view."
 msgstr "Yes. Like other accounts, deposits have an “include in net worth” setting, so you can decide whether a locked deposit belongs in your net worth view."
-
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "Yes. Long-press the transfer and choose \"Split back into two transactions\"; both halves return to their original types."
-msgstr "Yes. Long-press the transfer and choose \"Split back into two transactions\"; both halves return to their original types."
 
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "Yes. Monobank sync uses a personal API token that you generate yourself in your bank, and the request goes from your phone straight to the bank. For other banks you import a statement file instead. Budgie never asks for a banking password and there is no aggregator such as Plaid in between."
