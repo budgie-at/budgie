@@ -2,6 +2,7 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeatureStory } from '../../../feature/component/feature-story/feature-story';
+import { StoryDensityEnum } from '../../../feature/enum/story-density.enum';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 
 interface Props {
@@ -13,7 +14,7 @@ export const HomeTourSection = ({ locale }: Props) => {
     const i18n = getI18nInstance(locale);
 
     return (
-        <FeatureStory>
+        <FeatureStory density={StoryDensityEnum.COMPACT}>
             <FeatureStory.Intro heading={<Trans>One expense, from your thumb to your charts</Trans>}>
                 <Trans>Five screens of the real app, in the order you actually meet them.</Trans>
             </FeatureStory.Intro>
