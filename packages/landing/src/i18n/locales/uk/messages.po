@@ -2430,6 +2430,10 @@ msgstr "Тип рахунку — Борг з підтипом «Я винен»
 msgid "accounts"
 msgstr "рахунки"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Accounts group themselves by type"
+msgstr "Рахунки групуються за типом"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Acknowledge receipt of security reports within 48 hours"
 msgstr "Підтвердження отримання звітів про безпеку протягом 48 годин"
@@ -2781,6 +2785,10 @@ msgstr "Суми вирівняні праворуч"
 msgid "An amount-range chip in the same filter row, with a From value, a To value, or both"
 msgstr "Чіп діапазону суми в тому самому рядку фільтрів — зі значенням «Від», «До» або обома одразу"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "An archived account leaves the home screen and the totals but keeps every transaction. Settings lists them, ready to search and restore."
+msgstr "Архівований рахунок зникає з головного екрана й підсумків, але зберігає всі транзакції. Налаштування показують їх — можна знайти та відновити."
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "An expense tracker lives or dies by entry friction. Budgie's quick-entry sheet picks the right account, the most-likely category, and the current date by default — typically two taps to a saved transaction."
 msgstr "Трекер витрат залежить від того, наскільки легко вносити дані. Швидкий аркуш введення Budgie автоматично обирає правильний рахунок, найімовірнішу категорію та поточну дату — зазвичай два дотики до збереженої транзакції."
@@ -2958,6 +2966,10 @@ msgstr "Вбудовані застосунки продуктивності App
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "architecture"
 msgstr "архітектура"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Archive instead of deleting"
+msgstr "Архівуйте замість видалення"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Archive when settled — debt drops off the home screen but stays in history"
@@ -3432,6 +3444,10 @@ msgstr "Банк, готівка, крипто — все на одному ек
 msgid "Bank, cash, crypto and debt are already inside the figure at the top of Home."
 msgstr "Банк, готівка, крипто та борги вже враховані в числі вгорі головного екрана."
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Bank, cash, crypto, deposit and debt each get their own section on the home screen, and every section heading carries the subtotal for the accounts under it."
+msgstr "Банк, готівка, крипто, депозит і борг мають власні секції на головному екрані, а заголовок кожної секції показує проміжний підсумок рахунків у ній."
+
 #: src/generic/component/features-section/features-section-grid.tsx
 msgid "Bank, cash, crypto, stocks, debt — one number on your home screen with daily FX conversion."
 msgstr "Банк, готівка, крипто, акції, борги — одне число на головному екрані з денною конвертацією валют."
@@ -3814,8 +3830,8 @@ msgid "Budgie analytics tags tab ranking income and spending by tag over the sel
 msgstr "Вкладка тегів в аналітиці Budgie з рейтингом доходів і витрат за тегами за вибраний період"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Budgie archived accounts screen listing accounts hidden from the main balance view"
-msgstr "Екран архівних рахунків Budgie зі списком рахунків, прихованих із головного екрана балансу"
+msgid "Budgie archived accounts screen listing two archived accounts, each with a restore button"
+msgstr "Екран архівованих рахунків Budgie з двома архівованими рахунками, кожен із кнопкою відновлення"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Budgie asks for an API key and secret, and the setup screen tells you exactly how to create it: keep only \"Enable Reading\" switched on, never trading, never withdrawals. Every request is signed on your device with HMAC-SHA256 over the query string, and the app only ever calls read endpoints — there is no order or withdrawal code in it to call."
@@ -3963,8 +3979,8 @@ msgid "Budgie home screen with a euro-denominated account listed under a total b
 msgstr "Головний екран Budgie з рахунком у євро під загальним балансом у доларах"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Budgie home screen with the bank, cash and savings accounts and their balances"
-msgstr "Головний екран Budgie з банківськими, готівковими та накопичувальними рахунками і їхніми балансами"
+msgid "Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal"
+msgstr "Головний екран Budgie з рахунками, згрупованими в секції «Банк» і «Готівка», кожен заголовок із власним проміжним підсумком"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie home screen with the net balance across the bank, cash and savings account sections"
@@ -4122,6 +4138,10 @@ msgstr "Екран Budgie «Без категорій» зі списком до
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
 msgstr "Екран Monobank у Budgie із двома картками та банкою на авто — кожна з балансом і перемикачем"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Budgie new deposit account form with currency, interest rate and maturity date fields"
+msgstr "Форма нового депозитного рахунку Budgie з полями валюти, відсоткової ставки та дати погашення"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
@@ -5623,10 +5643,6 @@ msgstr "Створіть рахунок типу «Депозит» вручну
 msgid "Create a feature branch for your changes"
 msgstr ""
 
-#: src/app/[lang]/features/account-management/page.tsx
-msgid "Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Deposit, Crypto, Stocks, Debt. Reorder, rename, archive, or permanently delete from the account detail page."
-msgstr "Створюйте рахунки вручну або через банківську синхронізацію. Кожен рахунок належить до одного з типів: Банк, Готівка, Депозит, Крипто, Акції, Борг. Змінюйте порядок, перейменовуйте, архівуйте або назавжди видаляйте їх зі сторінки деталей рахунку."
-
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Create an account in Budgie for each bank account or credit card you track. Set the correct currency for each account. You do not need to connect anything to your bank at this stage — the accounts are just containers for imported transactions."
 msgstr "Створіть рахунок у Budgie для кожного банківського рахунку або кредитної картки, яку ви відстежуєте. Встановіть правильну валюту для кожного рахунку. Вам не потрібно підключати щось до вашого банку на цьому етапі — рахунки є лише контейнерами для імпортованих транзакцій."
@@ -5826,6 +5842,10 @@ msgstr "Імпорт/експорт CSV"
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "CSV is for spreadsheets, tax software, and other apps that want flat data. The database backup preserves every relationship and account state for full restore on a new device."
 msgstr "CSV призначений для таблиць, податкового ПЗ та інших програм, яким потрібні плоскі дані. Резервна копія бази даних зберігає кожен зв'язок та стан рахунку для повного відновлення на новому пристрої."
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Currency is fixed per account"
+msgstr "Валюта фіксована для рахунку"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Currency-mode pill switches whether you drive from send or receive direction"
@@ -6630,6 +6650,10 @@ msgstr "Кожен рядок розділення враховується у �
 msgid "Each split row keeps its own tags and comment — fully independent"
 msgstr "Кожен рядок розділення зберігає власні теги та коментар — повністю незалежний"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Each type brings its own form"
+msgstr "Кожен тип має власну форму"
+
 #: src/generic/component/waitlist-form/waitlist-success.tsx
 msgid "Early access members get 50% off lifetime"
 msgstr "Учасники раннього доступу отримують 50% знижки на довічний доступ"
@@ -6904,6 +6928,10 @@ msgstr "Кожен запис має суму, рахунок, категорі�
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
 msgstr ""
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Every group carries a subtotal"
+msgstr "Кожна група має проміжний підсумок"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out."
@@ -8232,7 +8260,6 @@ msgstr "Чим це відрізняється від додатків на ос
 msgid "How is this different from the Tag Analytics page?"
 msgstr "Чим це відрізняється від сторінки аналітики тегів?"
 
-#: src/app/[lang]/features/account-management/page.tsx
 #: src/app/[lang]/features/account-transfers/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
@@ -8689,6 +8716,10 @@ msgstr "відсотки"
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Interest rate and maturity date fields for each deposit account"
 msgstr "Поля відсоткової ставки та дати погашення для кожного депозитного рахунку"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Interest rate, deposits only"
+msgstr "Відсоткова ставка, лише депозити"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Intuit’s official recommendation was to migrate to Credit Karma. On the surface, it makes sense: same parent company, established platform, free to use. But for developers and privacy-conscious users, Credit Karma has fundamental problems."
@@ -9367,6 +9398,10 @@ msgstr "Ручні знімки сервера"
 #: src/generic/component/integrations-section/integrations-section-investments-card.tsx
 msgid "Manually track Bitcoin, Ethereum, stocks, ETFs, and any asset. Import positions via CSV. No exchange API connections — your data stays on-device."
 msgstr "Відстежуйте вручну Bitcoin, Ethereum, акції, ETF та будь-які активи. Імпортуйте позиції через CSV. Жодних підключень до бірж через API — ваші дані залишаються на пристрої."
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Many accounts, one balance sheet"
+msgstr "Багато рахунків, один баланс"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Many apps collect far more data than users realize. Analytics platforms, crash reporting services, advertising SDKs, and third-party integrations often run silently in the background. Each of these systems may be collecting and transmitting data about your usage patterns, device information, and potentially even your financial activities."
@@ -11380,6 +11415,10 @@ msgstr "Оберіть рахунок-джерело, рахунок призн�
 msgid "Pick the destination account"
 msgstr "Оберіть рахунок призначення"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Picking Deposit opens the deposit form: opening balance, name, currency — then an interest rate and a maturity date that only this type asks for."
+msgstr "Вибір «Депозит» відкриває його форму: початковий баланс, назва, валюта — а також відсоткова ставка й дата погашення, які запитує лише цей тип."
+
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "pin"
 msgstr "PIN"
@@ -12245,6 +12284,10 @@ msgstr "відновлення"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Restore in one tap"
+msgstr "Відновлення одним дотиком"
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Restore is a one-tap flow on a fresh install — pick the file, enter your PIN"
 msgstr "Відновлення — це процес одного дотику при новому встановленні — оберіть файл, введіть PIN"
@@ -12439,6 +12482,10 @@ msgstr "Прогорніть Налаштування від початку до
 #: src/blog/component/blog-search/blog-search.tsx
 msgid "Search articles..."
 msgstr "Пошук статей..."
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Search what you archived"
+msgstr "Пошук серед архівованого"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Search, or add a new one"
@@ -14444,6 +14491,10 @@ msgstr "Три екрани: збереження витрати, поверне
 msgid "Three screens: the expense that was never spending, the picker that names the other account, and the transfer the row turns into."
 msgstr "Три екрани: витрата, яка нею не була, вибір рахунку з іншого боку і переказ, на який перетворюється рядок."
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Three screens: the home list grouped by type, the form a new account type brings with it, and the archive that keeps the accounts you closed."
+msgstr "Три екрани: головний список, згрупований за типом, форма, яку приносить кожен новий тип рахунку, і архів, що зберігає закриті рахунки."
+
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Three screens: the press that opens the menu, the four actions behind it, and the one screen a conversion needs."
 msgstr "Три екрани: натискання, що відкриває меню, чотири дії за ним і один екран, потрібний для перетворення."
@@ -14531,6 +14582,10 @@ msgstr "Такі інструменти, як графік залежносте�
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Total — no provider exists"
 msgstr "Повна — жодного провайдера не існує"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Total balance up top"
+msgstr "Загальний баланс угорі"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Total in your base currency"
