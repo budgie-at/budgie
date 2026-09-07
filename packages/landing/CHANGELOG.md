@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.34.0](https://github.com/budgie-at/budgie/compare/v6.33.0...v6.34.0) (2026-09-07)
+
+
+### Features
+
+* **landing:** date filter presets steps story ([7528b4a](https://github.com/budgie-at/budgie/commit/7528b4a83a5dbb5bbda89ba3f76c4ad9005b0914))
+
+
+
+
+
 # [6.33.0](https://github.com/budgie-at/budgie/compare/v6.32.1...v6.33.0) (2026-09-07)
 
 
