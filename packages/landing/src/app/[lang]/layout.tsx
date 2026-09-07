@@ -143,7 +143,8 @@ export default async function RootLayout({ params, children }: Props) {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: 'Budgie',
-        url: BASE_URL
+        url: BASE_URL,
+        inLanguage: lang
     };
     /* oxlint-enable lingui/no-unlocalized-strings */
 
