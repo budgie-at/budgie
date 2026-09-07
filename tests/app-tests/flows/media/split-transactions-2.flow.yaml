@@ -1,0 +1,19 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/transactions/open-split-entries.flow.yaml
+      env:
+          TRANSACTION_ID: '2400'
+          LAST_ROW_ID: 'SplitEntryRow.Amount.2'
+
+- tapOn:
+      id: 'SplitEntryRow.Delete.2'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SplitEntries.AddItemButton'
+      timeout: 5000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene
