@@ -139,6 +139,10 @@
             "deepLink": "budgie://settings"
         },
         {
+            "name": "pin-app-lock-1",
+            "flow": "flows/media/pin-app-lock-1.flow.yaml"
+        },
+        {
             "name": "pin-app-lock-2",
             "deepLink": "budgie://settings?anchor=security"
         },
