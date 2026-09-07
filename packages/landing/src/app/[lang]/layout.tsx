@@ -90,6 +90,20 @@ export async function generateMetadata(props: Props) {
         // oxlint-disable-next-line lingui/no-unlocalized-strings
         robots: 'index, follow',
         alternates: buildAlternates(lang, ''),
+        icons: {
+            icon: [
+                // oxlint-disable-next-line lingui/no-unlocalized-strings
+                { url: '/icon.svg', type: 'image/svg+xml' },
+                // oxlint-disable-next-line lingui/no-unlocalized-strings
+                { url: '/icon0.png', sizes: '32x32', type: 'image/png' },
+                // oxlint-disable-next-line lingui/no-unlocalized-strings
+                { url: '/icon1.png', sizes: '48x48', type: 'image/png' }
+            ],
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
+            apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
+            other: [{ rel: 'mask-icon', url: '/mask-icon.svg', color: '#464ee7' }]
+        },
         openGraph: {
             title: siteTitle,
             description: shortDescription,
