@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -81,14 +80,65 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie transaction list with the missing categories pill above the uncategorised rows`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Three screens to a clean report</Trans>}>
+                    <Trans>The count above your list, the focused list behind it, and the row you open to fix.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>The pill counts what you missed</Trans>}>
+                    <Trans>
+                        It sits above the list and counts only the transactions without a category inside your active account, date, type,
+                        tag and amount filters.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie transaction list with a missing categories pill between the filter chips and the rows`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="uncategorized-transactions-1"
                     slug="uncategorized-transactions"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.204}>
+                        <Trans>Missing categories in this filter</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Tap it for a focused list</Trans>}>
+                    <Trans>
+                        The Missing categories screen opens with only those rows, carrying your account, date, type and tag filters across.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie Missing categories screen listing income and expense rows that still have no category`}
+                    index={1}
+                    locale={lang}
+                    scene="uncategorized-transactions-2"
+                    slug="uncategorized-transactions"
+                >
+                    <FeatureStory.Callout y={0.128}>
+                        <Trans>Only the rows without a category</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Fix one, the count drops</Trans>}>
+                    <Trans>
+                        Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual
+                        refresh.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`The same Budgie Missing categories list with its first uncategorised row ready to open`}
+                    index={2}
+                    locale={lang}
+                    scene="uncategorized-transactions-2"
+                    slug="uncategorized-transactions"
+                >
+                    <FeatureStory.Callout y={0.285}>
+                        <Trans>Tap a row to categorize it</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -130,34 +180,6 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Open Transactions or an account&apos;s transaction list. Apply any filters you need. If Budgie finds matching
-                        transactions without categories, the missing-category pill appears above the list. Tap it to open a focused cleanup
-                        page that preserves those filters.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        From there, edit the transactions, apply your custom categories, accept AI category suggestions, or rely on MCC
-                        mapping for bank-synced rows. The goal is simple: every report should explain where your money actually went.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie missing categories screen listing only the transactions that still need a category`}
-                    locale={lang}
-                    scene="uncategorized-transactions-2"
-                    slug="uncategorized-transactions"
-                />
-            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem

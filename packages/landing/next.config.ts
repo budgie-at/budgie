@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     cacheComponents: true,
     partialPrefetching: true,
     images: {
-        formats: ['image/avif', 'image/webp']
+        formats: ['image/webp'],
+        minimumCacheTTL: 2_678_400
     },
     experimental: {
         inlineCss: true,
