@@ -2335,6 +2335,10 @@ msgstr "Технічний погляд на offline-first архітектур�
 msgid "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
 msgstr "Транзакція може мати кілька тегів. У списку є місце лише для одного чипа, тож Budgie вирішує, який показати."
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "A transfer is its own type"
+msgstr "Переказ — це окремий тип"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "A transfer, not an expense"
 msgstr "Переказ, а не витрата"
@@ -2821,6 +2825,10 @@ msgstr "Аналітика враховує кожну частину розді
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Analytics includes fees in their own category, even when the main transaction is a transfer"
 msgstr "Аналітика враховує комісії в окремій категорії, навіть коли основна транзакція є переказом"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Analytics reads income and expense transactions only, so a transfer never inflates either total and never turns up as a category. The one part that does count is a fee you attach to the transfer, because that money really did leave."
+msgstr "Аналітика читає лише транзакції доходів і витрат, тож переказ ніколи не завищує жодну із сум і не з’являється як категорія. Враховується лише комісія, яку ви додали до переказу, бо ці гроші справді пішли."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Analytics services (anonymous, opt-in only)"
@@ -3569,6 +3577,14 @@ msgstr "Дата проведення та дата валютування фі�
 msgid "Bordered chip, plus a count"
 msgstr "Чип із рамкою плюс лічильник"
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Both accounts on one row"
+msgstr "Обидва рахунки в одному рядку"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Both amounts are shown together (e.g. $1000 → €925). Pin either side; the exchange rate is saved on the transfer so reconciliation across currencies stays exact."
+msgstr "Обидві суми показані разом (напр. $1000 → €925). Закріпіть будь-яку зі сторін; курс зберігається разом із переказом, тож звірка між валютами лишається точною."
+
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
 msgstr "Обидва можуть бути безпечними при правильному впровадженні. Різниця — у поверхні загрози: прямі токени — від банку до вас; агрегаторний OAuth додає третю сторону з вашими обліковими даними та потоком транзакцій."
@@ -3703,6 +3719,10 @@ msgstr "Екран аналітики Budgie з розподілом витра�
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Budgie analytics screen ranking spending by category, bank fees and charges among them"
 msgstr "Екран аналітики Budgie з рейтингом витрат за категоріями, серед яких банківські комісії та збори"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Budgie analytics screen where the spent and income totals and the category breakdown contain no transfer entries"
+msgstr "Екран аналітики Budgie, де в сумах витрат і доходів та в розподілі за категоріями немає жодного переказу"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie analytics Tags tab listing income and spending totals for each tag"
@@ -4077,6 +4097,14 @@ msgstr "Екран нової витрати в Budgie з цифровою кл�
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts"
 msgstr "Екран нової витрати в Budgie з клавіатурою для суми, вибором рахунку та швидкими кнопками дати, нотатки, тегів і категорії"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Budgie New Transfer screen converting 250 US dollars into euros, with the sending-currency pill and the conversion rate row"
+msgstr "Екран «Новий переказ» у Budgie, що конвертує 250 доларів США в євро, із пігулкою валюти відправлення та рядком курсу конвертації"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Budgie New Transfer screen with 250 entered above a row naming Main Checking as the source and Cash Wallet as the destination"
+msgstr "Екран «Новий переказ» у Budgie з введеними 250 над рядком, де Main Checking — джерело, а Cash Wallet — призначення"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie offers full offline functionality. Actual Budget works offline when self-hosted locally. Firefly III works offline on your local network. All cloud-based options (Lunch Money, YNAB, Monarch, Copilot) require internet connectivity for full functionality."
@@ -6434,10 +6462,6 @@ msgstr "деталізація"
 msgid "Drillable Untagged bucket that lists every transaction missing a label for easy retroactive tagging"
 msgstr "Деталізоване відро «Без тегів», що перераховує кожну транзакцію без мітки для легкого ретроспективного тегування"
 
-#: src/app/[lang]/features/account-transfers/page.tsx
-msgid "Dual-amount input shows both legs (e.g. $1000 → €925). Pin either side; the FX rate is preserved per leg so reconciliation across currencies stays exact."
-msgstr "Введення подвійної суми показує обидві частини (наприклад, $1000 → €925). Зафіксуйте будь-яку сторону; курс FX зберігається для кожної частини, щоб звірка між валютами залишалась точною."
-
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Each account has a fixed currency. The exchange-rate service stores daily snapshots; the home/analytics screens read the latest rate when summing. Cross-currency transfers preserve both legs and the rate at the time."
 msgstr "Кожен рахунок має фіксовану валюту. Сервіс обмінних курсів зберігає щоденні знімки; головний екран та аналітика зчитують останній курс при підсумовуванні. Крос-валютні перекази зберігають обидві частини та курс на момент переказу."
@@ -8062,7 +8086,6 @@ msgstr "Чим це відрізняється від додатків на ос
 msgid "How is this different from the Tag Analytics page?"
 msgstr "Чим це відрізняється від сторінки аналітики тегів?"
 
-#: src/app/[lang]/features/account-transfers/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-how-it-works-section/bank-fee-tracking-how-it-works-section.tsx
@@ -9007,8 +9030,8 @@ msgid "Long-Press Quick Actions on Every Transaction"
 msgstr "Швидкі дії за довгим натисканням для кожної транзакції"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
-msgid "Long-press the transfer in the list and Edit or Delete. The corresponding leg in the destination account stays linked and updates with you."
-msgstr "Утримуйте переказ у списку та оберіть «Редагувати» або «Видалити». Відповідна нога у рахунку призначення залишається пов'язаною та оновлюється разом."
+msgid "Long-press the transfer in the list and Edit or Delete. There is no second transaction to chase — editing or deleting the transfer moves both account balances back together."
+msgstr "Утримайте переказ у списку й виберіть «Редагувати» або «Видалити». Немає другої транзакції, яку треба шукати — редагування чи видалення переказу повертає баланси обох рахунків разом."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Long-press to rotate which tag is primary — single gesture"
@@ -9483,6 +9506,10 @@ msgstr "Monarch Money: Духовний наступник Mint"
 msgid "Money moved between your own accounts is not income or expense. Treating transfers as expenses double-counts your spending. Budgie's first-class Transfer type keeps your stats accurate."
 msgstr "Гроші, переміщені між вашими власними рахунками, не є доходом або витратою. Якщо вважати перекази витратами, ваші витрати подвоюються. Першокласний тип «Переказ» у Budgie зберігає точну статистику."
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Money moved, not money spent"
+msgstr "Переміщені гроші — не витрачені"
+
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx
 msgid "Money out, money in — first class."
 msgstr "Гроші вийшли, гроші прийшли — першокласний тип."
@@ -9777,6 +9804,10 @@ msgstr "Потреба в надійному доступі"
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Neither row is gated. No upgrade prompt, no vendor account, no plan — you save the file through the OS share sheet to wherever you keep things."
 msgstr "Жоден із цих рядків не заблоковано. Немає пропозиції оновлення, немає облікового запису постачальника, немає тарифу — Ви зберігаєте файл через системне меню «Поділитися» туди, де тримаєте свої файли."
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Neither side counts as spending"
+msgstr "Жодна зі сторін не є витратою"
 
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx
@@ -10577,6 +10608,10 @@ msgstr ""
 msgid "One account per asset, so each coin has its own balance, history, and place in net worth"
 msgstr "Один рахунок на кожен актив, тож кожна монета має власний баланс, історію та місце в чистих активах"
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "One amount, entered once"
+msgstr "Одна сума, введена один раз"
+
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "One badge. Scan a list at a glance."
 msgstr "Один значок. Перегляньте список одним поглядом."
@@ -10740,6 +10775,10 @@ msgstr "Лише настільки, наскільки підтримує API �
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Only if you want to. Budgie can suggest a starting budget derived from your own recent transactions, offer a generic starter split across common categories, or hand you an empty canvas."
 msgstr "Лише якщо ви цього хочете. Budgie може запропонувати початковий бюджет на основі ваших нещодавніх транзакцій, запропонувати типовий стартовий розподіл по поширених категоріях або дати вам порожнє полотно."
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Only real income appears here"
+msgstr "Тут лише справжні доходи"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Only that account is affected. Archiving or deleting it never removes the connection, so its siblings keep syncing with the same credential."
@@ -10948,10 +10987,6 @@ msgstr "Початкові записи залишаються пов’язан
 msgid "Original FX kept per leg"
 msgstr "Оригінальний курс FX зберігається для кожної ноги"
 
-#: src/app/[lang]/features/account-transfers/page.tsx
-msgid "Original FX rate stored per leg for exact balance reconciliation"
-msgstr "Оригінальний курс FX зберігається для кожної ноги для точного узгодження балансу"
-
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Original merchant string preserved for receipt-matching and audit"
 msgstr "Оригінальний рядок торговця зберігається для зіставлення чеків та аудиту"
@@ -11136,10 +11171,6 @@ msgstr "Оберіть вікно: останні 7 днів, 30, 90 або до
 msgid "Pick any range by hand"
 msgstr "Будь-який діапазон вручну"
 
-#: src/app/[lang]/features/account-transfers/page.tsx
-msgid "Pick source account, pick destination account, enter amount. If currencies differ, the dual-amount input opens automatically. Counter-FX is preserved per-leg so balance reconciliation stays exact."
-msgstr "Оберіть рахунок-джерело, рахунок призначення, введіть суму. Якщо валюти відрізняються, двосуме введення відкривається автоматично. Зустрічний курс FX зберігається для кожної ноги для точного узгодження балансу."
-
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Pick the destination account"
 msgstr "Оберіть рахунок призначення"
@@ -11186,6 +11217,10 @@ msgstr "PIN-блокування застосовується до того, я�
 #: src/app/[lang]/features/pin-app-lock/metadata.ts
 msgid "PIN Lock Finance App — Private Expense Tracker — Budgie"
 msgstr "Фінансовий додаток із PIN-блокуванням — приватний трекер витрат — Budgie"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Pin the side you type"
+msgstr "Закріпіть сторону, яку вводите"
 
 #: src/app/[lang]/security/page.tsx
 msgid "PIN, biometrics, screenshot protection, and AES-256 encrypted storage. Budgie secures your financial data at every layer."
@@ -12721,6 +12756,10 @@ msgstr "Лише витрати"
 msgid "Spent and earned this period"
 msgstr "Витрачено й зароблено за період"
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Spent and income stay clean"
+msgstr "Витрати й доходи лишаються чистими"
+
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "split"
 msgstr "розбивка"
@@ -13461,6 +13500,10 @@ msgstr "Кінець епохи: Що сталося з Mint"
 msgid "The entire flow — from audio to saved transaction — happens offline. It works in airplane mode, in areas with no signal, and in any language Whisper supports."
 msgstr "Весь процес — від аудіо до збереженої транзакції — відбувається офлайн. Він працює в режимі польоту, у зонах без сигналу та будь-якою мовою, яку підтримує Whisper."
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "The exchange rate is saved with the transfer, so both balances reconcile exactly"
+msgstr "Курс зберігається разом із переказом, тож обидва баланси сходяться точно"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "The expense (or income) becomes the source leg of a transfer; you pick the destination account, and Budgie creates the destination leg automatically. Both legs are linked."
 msgstr "Витрата (або дохід) стає вихідною ногою переказу; ви обираєте рахунок призначення, а Budgie автоматично створює ногу призначення. Обидві ноги пов'язані."
@@ -13732,6 +13775,10 @@ msgstr "Значок «Швидке правило» напише його за 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The Quick rule pill writes the rule for you"
 msgstr "Пігулка \"Швидке правило\" пише правило за вас"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "The rate it converted at"
+msgstr "Курс, за яким конвертовано"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The Real-World Impact of Financial Privacy"
@@ -14214,6 +14261,10 @@ msgstr "Три екрани: натискання, що відкриває ме�
 msgid "Three screens: the Rules list, the Quick rule pill on a transaction you just recategorized, and everything no rule matched."
 msgstr "Три екрани: список правил, значок «Швидке правило» на щойно перекатегоризованій транзакції та все, що не збіглося з жодним правилом."
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Three screens: the transfer form that names both accounts, the cross-currency pair with the rate it converted at, and the analytics that counted neither side."
+msgstr "Три екрани: форма переказу, що називає обидва рахунки, валютна пара з курсом конвертації та аналітика, яка не врахувала жодної зі сторін."
+
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
 msgstr "Три окремі файли, кожен завантажується під час першого використання відповідної функції: близько 1,1 ГБ для мовної моделі Qwen3 1.7B Q4, 0,5 ГБ для 768-вимірної моделі ембедингів Nomic і ще 0,9 ГБ для Whisper large-v3-turbo, якщо ви ввімкнете голосове введення. Кожен із них необовʼязковий — ви можете користуватися Budgie і без ШІ."
@@ -14496,6 +14547,10 @@ msgstr "Вимкніть зв'язок — нічого не зміниться"
 #: src/generic/component/footer/footer.tsx
 msgid "Twitter"
 msgstr "Twitter"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Two amounts, one rate"
+msgstr "Дві суми, один курс"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Two categories that mean the same thing become one: pick the category to keep and every transaction moves across before the other one goes. The picker offers the built-in tree alongside your own, or a new category made on the spot."
@@ -15478,6 +15533,10 @@ msgstr "Коли Intuit Mint закрився 23 березня 2024 року, �
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "When source code is public, anyone with the relevant expertise can examine it. Security researchers, privacy advocates, concerned users, and professional auditors can all review the code for potential issues. This distributed auditing creates multiple layers of oversight that closed-source companies simply cannot match."
 msgstr "Коли вихідний код публічний, будь-хто з відповідною експертизою може його вивчити. Дослідники безпеки, захисники конфіденційності, зацікавлені користувачі та професійні аудитори — всі вони можуть перевірити код на потенційні проблеми. Цей розподілений аудит створює багатошаровий контроль, який компанії із закритим кодом просто не можуть забезпечити."
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "When the accounts hold different currencies, what will land on the other side appears under the figure you typed. The pill says which side you are driving — tap it to type the receiving amount instead — and the rate that produced the pair is saved with the transfer."
+msgstr "Коли рахунки мають різні валюти, під введеною сумою з’являється те, що надійде на інший бік. Пігулка показує, якою стороною ви керуєте — торкніться її, щоб натомість ввести суму отримання, — а курс, який дав цю пару, зберігається разом із переказом."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "When the deposit matures, choose the destination account and close it. Budgie transfers the remaining balance from the deposit account and archives the deposit so it leaves the home screen without losing history."
@@ -16691,6 +16750,10 @@ msgstr "Ви вводите облікові дані на сторонньом�
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "You enter credentials or authorize via OAuth"
 msgstr "Ви вводите облікові дані або авторизуєтесь через OAuth"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "You enter the amount once and pick both accounts on one row. Budgie saves a single transfer that debits one account and credits the other — not an expense here and an income there that you have to remember to cancel out."
+msgstr "Ви вводите суму один раз і обираєте обидва рахунки в одному рядку. Budgie зберігає єдиний переказ, що списує з одного рахунку й зараховує на інший — а не витрату тут і дохід там, які треба пам’ятати взаємно погасити."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "You have the following rights regarding your data:"
