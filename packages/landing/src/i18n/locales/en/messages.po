@@ -10187,8 +10187,8 @@ msgid "No limit. Add as many split rows as you need; the total must equal the or
 msgstr "No limit. Add as many split rows as you need; the total must equal the original transaction amount."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” for the at-a-glance badge on the transaction list."
-msgstr "No limit. Layer as many as you need; one of them can be promoted to “primary” for the at-a-glance badge on the transaction list."
+msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” so it stands out as a highlighted pill on the transaction list."
+msgstr "No limit. Layer as many as you need; one of them can be promoted to “primary” so it stands out as a highlighted pill on the transaction list."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No lock icons, no tiers"
@@ -10929,8 +10929,8 @@ msgid "One tag needs no border"
 msgstr "One tag needs no border"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
-msgstr "One tag per transaction can be promoted to “primary” with a corner-star badge"
+msgid "One tag per transaction can be promoted to “primary” and stands out as a highlighted pill"
+msgstr "One tag per transaction can be promoted to “primary” and stands out as a highlighted pill"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
@@ -11808,8 +11808,8 @@ msgid "Promote one tag per transaction to \"primary\" — it pins as a corner-st
 msgstr "Promote one tag per transaction to \"primary\" — it pins as a corner-star badge so you can scan #vacation or #shared at a glance without opening rows."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "Promote one tag per transaction to “primary” — it shows as a corner badge on the transaction list so you can scan at a glance. Long-press a tag chip on the card to rotate which one is primary."
-msgstr "Promote one tag per transaction to “primary” — it shows as a corner badge on the transaction list so you can scan at a glance. Long-press a tag chip on the card to rotate which one is primary."
+msgid "Promote one tag per transaction to “primary” — it shows as a highlighted pill on the transaction list so you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card there."
+msgstr "Promote one tag per transaction to “primary” — it shows as a highlighted pill on the transaction list so you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card there."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Promote one tag per transaction to \"primary\"; it pins as a corner-star badge on the list so you can scan #vacation or #shared without opening anything."
@@ -13932,8 +13932,8 @@ msgid "The primary engine is the on-device Qwen3 1.7B language model. It ranks t
 msgstr "The primary engine is the on-device Qwen3 1.7B language model. It ranks tag candidates from your existing tag vocabulary by semantic similarity to the transaction context — matching phrasing variations that a simple text lookup would miss. When the LLM is still loading or busy with another inference, the embedding fallback takes over: a nearest-neighbor lookup over 768-dimensional embeddings of your past tagged transactions, running in milliseconds without waiting for the LLM."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "The primary tag shows as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Long-press to rotate which tag is primary."
-msgstr "The primary tag shows as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Long-press to rotate which tag is primary."
+msgid "The primary tag shows as a highlighted pill on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Open the tag selector and long-press a tag card there to make it primary."
+msgstr "The primary tag shows as a highlighted pill on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Open the tag selector and long-press a tag card there to make it primary."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The principle of minimal data collection guides all decisions"

@@ -10188,8 +10188,8 @@ msgid "No limit. Add as many split rows as you need; the total must equal the or
 msgstr "Без обмежень. Додайте стільки рядків розбивки, скільки потрібно; загальна сума повинна дорівнювати вихідній сумі транзакції."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” for the at-a-glance badge on the transaction list."
-msgstr "Без обмежень. Накладайте стільки, скільки потрібно; один із них можна підвищити до «первинного» для значка швидкого перегляду в списку транзакцій."
+msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” so it stands out as a highlighted pill on the transaction list."
+msgstr "Без обмежень. Додавайте стільки, скільки потрібно; один із них можна зробити «основним», щоб він виділявся як підсвічена пігулка у списку транзакцій."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No lock icons, no tiers"
@@ -10930,8 +10930,8 @@ msgid "One tag needs no border"
 msgstr "Один тег не потребує рамки"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
-msgstr "Один тег на транзакцію може бути підвищений до «первинного» зі значком зірки в куті"
+msgid "One tag per transaction can be promoted to “primary” and stands out as a highlighted pill"
+msgstr "Один тег на транзакцію можна зробити «основним», і він виділятиметься як підсвічена пігулка"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
@@ -11809,8 +11809,8 @@ msgid "Promote one tag per transaction to \"primary\" — it pins as a corner-st
 msgstr "Підвищте один тег на транзакцію до \"первинного\" — він закріплюється як значок зірки в куті, щоб можна було переглядати #відпустка або #спільне одним поглядом без відкриття рядків."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "Promote one tag per transaction to “primary” — it shows as a corner badge on the transaction list so you can scan at a glance. Long-press a tag chip on the card to rotate which one is primary."
-msgstr "Підвищте один тег на транзакцію до «первинного» — він відображається як значок в куті в списку транзакцій, щоб можна було переглядати одним поглядом. Утримуйте чіп тегу на картці, щоб змінити первинний."
+msgid "Promote one tag per transaction to “primary” — it shows as a highlighted pill on the transaction list so you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card there."
+msgstr "Зробіть один тег транзакції «основним» — він відображатиметься як підсвічена пігулка у списку транзакцій, щоб ви могли швидко його помітити. Щоб змінити основний тег, відкрийте вибір тегів і виконайте довге натискання на іншу картку тега."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Promote one tag per transaction to \"primary\"; it pins as a corner-star badge on the list so you can scan #vacation or #shared without opening anything."
@@ -13933,8 +13933,8 @@ msgid "The primary engine is the on-device Qwen3 1.7B language model. It ranks t
 msgstr "Основним рушієм є мовна модель Qwen3 1.7B на пристрої. Вона ранжує кандидатів тегів з вашого наявного словника тегів за семантичною схожістю з контекстом транзакції — уловлюючи варіації формулювань, що пропустить простий текстовий пошук. Коли LLM все ще завантажується або зайнятий іншим виводом, резервний пошук за вкладеннями перехоплює управління: пошук найближчих сусідів по 768-вимірних вкладеннях ваших минулих помічених транзакцій, що виконується за мілісекунди без очікування LLM."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "The primary tag shows as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Long-press to rotate which tag is primary."
-msgstr "Первинний тег відображається у вигляді значка зірки в куті в списку транзакцій, щоб можна було переглянути довгий список для #відпустка або #спільне без відкриття рядків. Утримуйте, щоб змінити первинний тег."
+msgid "The primary tag shows as a highlighted pill on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Open the tag selector and long-press a tag card there to make it primary."
+msgstr "Основний тег відображається як підсвічена пігулка у списку транзакцій, тож ви можете переглянути довгий список у пошуках #vacation або #shared, не відкриваючи рядки. Відкрийте вибір тегів і виконайте довге натискання на картку тега, щоб зробити його основним."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The principle of minimal data collection guides all decisions"
