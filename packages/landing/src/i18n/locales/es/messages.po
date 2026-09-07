@@ -2335,6 +2335,10 @@ msgstr "Una mirada técnica a la arquitectura offline-first de Budgie: SQLite, c
 msgid "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
 msgstr "Una transacción puede llevar más de una etiqueta. La lista solo tiene espacio para un chip, así que Budgie decide cuál mostrar."
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "A transfer is its own type"
+msgstr "Una transferencia es un tipo propio"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "A transfer, not an expense"
 msgstr "Una transferencia, no un gasto"
@@ -2821,6 +2825,10 @@ msgstr "El análisis contabiliza cada división en su propia categoría, sin dob
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Analytics includes fees in their own category, even when the main transaction is a transfer"
 msgstr "Las analíticas incluyen las comisiones en su propia categoría, incluso cuando la transacción principal es una transferencia"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Analytics reads income and expense transactions only, so a transfer never inflates either total and never turns up as a category. The one part that does count is a fee you attach to the transfer, because that money really did leave."
+msgstr "La analítica solo lee transacciones de ingresos y gastos, así que una transferencia nunca infla ninguno de los dos totales ni aparece como categoría. Lo que sí cuenta es la comisión que añadas a la transferencia, porque ese dinero sí salió."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Analytics services (anonymous, opt-in only)"
@@ -3569,6 +3577,14 @@ msgstr "Fecha de operación y fecha valor ambas capturadas por transacción"
 msgid "Bordered chip, plus a count"
 msgstr "Chip con borde, más un contador"
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Both accounts on one row"
+msgstr "Ambas cuentas en una misma fila"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Both amounts are shown together (e.g. $1000 → €925). Pin either side; the exchange rate is saved on the transfer so reconciliation across currencies stays exact."
+msgstr "Ambos importes se muestran juntos (p. ej. 1000 $ → 925 €). Fija el lado que quieras; el tipo de cambio se guarda en la transferencia, así que la conciliación entre divisas sigue siendo exacta."
+
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
 msgstr "Ambos pueden ser seguros cuando se implementan correctamente. La diferencia es la superficie de amenaza: los tokens directos van del banco a ti; el OAuth de agregador añade un tercero con tus credenciales y tu flujo de transacciones."
@@ -3703,6 +3719,10 @@ msgstr "Pantalla de analíticas de Budgie que desglosa el gasto por categoría c
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Budgie analytics screen ranking spending by category, bank fees and charges among them"
 msgstr "Pantalla de analíticas de Budgie que ordena el gasto por categoría, con las comisiones y los cargos bancarios entre ellas"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Budgie analytics screen where the spent and income totals and the category breakdown contain no transfer entries"
+msgstr "Pantalla de analítica de Budgie donde los totales de gastos e ingresos y el desglose por categorías no contienen ninguna transferencia"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie analytics Tags tab listing income and spending totals for each tag"
@@ -4077,6 +4097,14 @@ msgstr "Pantalla de nuevo gasto de Budgie con el teclado numérico del importe, 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts"
 msgstr "Pantalla de nuevo gasto de Budgie con el teclado de importe, el selector de cuenta y los accesos directos de fecha, nota, etiquetas y categoría"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Budgie New Transfer screen converting 250 US dollars into euros, with the sending-currency pill and the conversion rate row"
+msgstr "Pantalla Nueva transferencia de Budgie convirtiendo 250 dólares estadounidenses a euros, con la píldora de moneda de envío y la fila del tipo de cambio"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Budgie New Transfer screen with 250 entered above a row naming Main Checking as the source and Cash Wallet as the destination"
+msgstr "Pantalla Nueva transferencia de Budgie con 250 introducidos sobre una fila que indica Main Checking como origen y Cash Wallet como destino"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie offers full offline functionality. Actual Budget works offline when self-hosted locally. Firefly III works offline on your local network. All cloud-based options (Lunch Money, YNAB, Monarch, Copilot) require internet connectivity for full functionality."
@@ -6434,10 +6462,6 @@ msgstr "desglose"
 msgid "Drillable Untagged bucket that lists every transaction missing a label for easy retroactive tagging"
 msgstr "Apartado de Sin Etiquetar que lista cada transacción sin etiqueta para un etiquetado retroactivo fácil"
 
-#: src/app/[lang]/features/account-transfers/page.tsx
-msgid "Dual-amount input shows both legs (e.g. $1000 → €925). Pin either side; the FX rate is preserved per leg so reconciliation across currencies stays exact."
-msgstr "La entrada de doble importe muestra ambos tramos (p. ej., $1000 → €925). Fija cualquier lado; el tipo de cambio se conserva por tramo para la conciliación."
-
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Each account has a fixed currency. The exchange-rate service stores daily snapshots; the home/analytics screens read the latest rate when summing. Cross-currency transfers preserve both legs and the rate at the time."
 msgstr "Cada cuenta tiene una divisa fija. El servicio de tipos de cambio almacena instantáneas diarias; las pantallas de inicio y análisis leen el tipo más reciente disponible."
@@ -8062,7 +8086,6 @@ msgstr "¿En qué se diferencia de las apps basadas en Plaid?"
 msgid "How is this different from the Tag Analytics page?"
 msgstr "¿En qué se diferencia esto de la página de análisis de etiquetas?"
 
-#: src/app/[lang]/features/account-transfers/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-how-it-works-section/bank-fee-tracking-how-it-works-section.tsx
@@ -9007,8 +9030,8 @@ msgid "Long-Press Quick Actions on Every Transaction"
 msgstr "Acciones rápidas mediante pulsación larga en cada transacción"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
-msgid "Long-press the transfer in the list and Edit or Delete. The corresponding leg in the destination account stays linked and updates with you."
-msgstr "Mantén pulsada la transferencia en la lista y elige Editar o Eliminar. El tramo correspondiente en la cuenta de destino permanece vinculado y se actualiza."
+msgid "Long-press the transfer in the list and Edit or Delete. There is no second transaction to chase — editing or deleting the transfer moves both account balances back together."
+msgstr "Mantén pulsada la transferencia en la lista y elige Editar o Eliminar. No hay una segunda transacción que perseguir: al editarla o eliminarla, los saldos de ambas cuentas se mueven juntos."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Long-press to rotate which tag is primary — single gesture"
@@ -9483,6 +9506,10 @@ msgstr "Monarch Money: El sucesor espiritual de Mint"
 msgid "Money moved between your own accounts is not income or expense. Treating transfers as expenses double-counts your spending. Budgie's first-class Transfer type keeps your stats accurate."
 msgstr "El dinero movido entre tus propias cuentas no es ingreso ni gasto. Tratar las transferencias como gastos dobla tu gasto real. Budgie tiene Transferencia como tipo de primera clase."
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Money moved, not money spent"
+msgstr "Dinero movido, no dinero gastado"
+
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx
 msgid "Money out, money in — first class."
 msgstr "Dinero que sale, dinero que entra: de primera clase."
@@ -9777,6 +9804,10 @@ msgstr "Necesidad de acceso fiable"
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Neither row is gated. No upgrade prompt, no vendor account, no plan — you save the file through the OS share sheet to wherever you keep things."
 msgstr "Ninguna de las dos filas está bloqueada. Sin aviso de mejora, sin cuenta de proveedor, sin plan: guardas el archivo con el menú de compartir del sistema donde tú quieras."
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Neither side counts as spending"
+msgstr "Ningún lado cuenta como gasto"
 
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 #: src/app/[lang]/features/net-worth-tracker/opengraph-image.tsx
@@ -10577,6 +10608,10 @@ msgstr ""
 msgid "One account per asset, so each coin has its own balance, history, and place in net worth"
 msgstr "Una cuenta por activo, de modo que cada moneda tiene su propio saldo, historial y lugar en el patrimonio neto"
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "One amount, entered once"
+msgstr "Un importe, introducido una vez"
+
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "One badge. Scan a list at a glance."
 msgstr "Un distintivo. Escanea una lista de un vistazo."
@@ -10740,6 +10775,10 @@ msgstr "Solo hasta donde llega la API del banco. Monobank tiene meses de histori
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Only if you want to. Budgie can suggest a starting budget derived from your own recent transactions, offer a generic starter split across common categories, or hand you an empty canvas."
 msgstr "Solo si quieres. Budgie puede sugerir un presupuesto inicial derivado de tus propias transacciones recientes, ofrecer un reparto inicial genérico entre categorías comunes, o darte un lienzo en blanco."
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Only real income appears here"
+msgstr "Aquí solo aparecen ingresos reales"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Only that account is affected. Archiving or deleting it never removes the connection, so its siblings keep syncing with the same credential."
@@ -10948,10 +10987,6 @@ msgstr "Los registros originales quedan vinculados bajo la transacción consolid
 msgid "Original FX kept per leg"
 msgstr "FX original conservado por tramo"
 
-#: src/app/[lang]/features/account-transfers/page.tsx
-msgid "Original FX rate stored per leg for exact balance reconciliation"
-msgstr "Tipo de cambio FX original almacenado por tramo para una conciliación exacta del saldo"
-
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Original merchant string preserved for receipt-matching and audit"
 msgstr "Cadena de comercio original conservada para coincidencia de recibos y auditoría"
@@ -11136,10 +11171,6 @@ msgstr "Elige una ventana: últimos 7 días, últimos 30, últimos 90 o un rango
 msgid "Pick any range by hand"
 msgstr "Elige cualquier rango a mano"
 
-#: src/app/[lang]/features/account-transfers/page.tsx
-msgid "Pick source account, pick destination account, enter amount. If currencies differ, the dual-amount input opens automatically. Counter-FX is preserved per-leg so balance reconciliation stays exact."
-msgstr "Elige la cuenta de origen, elige la cuenta de destino, introduce el importe. Si las divisas difieren, el campo de doble importe se abre automáticamente."
-
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Pick the destination account"
 msgstr "Elige la cuenta de destino"
@@ -11186,6 +11217,10 @@ msgstr "Bloqueo PIN aplicado antes de que cualquier transacción o saldo sea vis
 #: src/app/[lang]/features/pin-app-lock/metadata.ts
 msgid "PIN Lock Finance App — Private Expense Tracker — Budgie"
 msgstr "App financiera con bloqueo PIN — Rastreador de gastos privado — Budgie"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Pin the side you type"
+msgstr "Fija el lado que estás escribiendo"
 
 #: src/app/[lang]/security/page.tsx
 msgid "PIN, biometrics, screenshot protection, and AES-256 encrypted storage. Budgie secures your financial data at every layer."
@@ -12721,6 +12756,10 @@ msgstr "Solo gastos"
 msgid "Spent and earned this period"
 msgstr "Gastado e ingresado en el periodo"
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Spent and income stay clean"
+msgstr "Gastos e ingresos quedan limpios"
+
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "split"
 msgstr "dividir"
@@ -13461,6 +13500,10 @@ msgstr "El fin de una era: Qué pasó con Mint"
 msgid "The entire flow — from audio to saved transaction — happens offline. It works in airplane mode, in areas with no signal, and in any language Whisper supports."
 msgstr "Todo el flujo — desde el audio hasta la transacción guardada — ocurre sin conexión. Funciona en modo avión, en zonas sin señal y en cualquier idioma que Whisper admita."
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "The exchange rate is saved with the transfer, so both balances reconcile exactly"
+msgstr "El tipo de cambio se guarda con la transferencia, así ambos saldos cuadran exactamente"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "The expense (or income) becomes the source leg of a transfer; you pick the destination account, and Budgie creates the destination leg automatically. Both legs are linked."
 msgstr "El gasto (o ingreso) se convierte en el tramo de origen de una transferencia; tú eliges la cuenta de destino, y Budgie crea el tramo de destino y vincula ambas entradas."
@@ -13732,6 +13775,10 @@ msgstr "La píldora Regla rápida la escribe por ti"
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The Quick rule pill writes the rule for you"
 msgstr "La etiqueta de regla rápida escribe la regla por ti"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "The rate it converted at"
+msgstr "El tipo de cambio aplicado"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The Real-World Impact of Financial Privacy"
@@ -14214,6 +14261,10 @@ msgstr "Tres pantallas: la pulsación que abre el menú, las cuatro acciones que
 msgid "Three screens: the Rules list, the Quick rule pill on a transaction you just recategorized, and everything no rule matched."
 msgstr "Tres pantallas: la lista de Reglas, la píldora Regla rápida en una transacción que acabas de recategorizar y todo lo que ninguna regla igualó."
 
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Three screens: the transfer form that names both accounts, the cross-currency pair with the rate it converted at, and the analytics that counted neither side."
+msgstr "Tres pantallas: el formulario de transferencia que nombra ambas cuentas, el par entre divisas con el tipo de cambio aplicado y la analítica que no contó ninguno de los dos lados."
+
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
 msgstr "Tres archivos independientes, cada uno descargado la primera vez que usas la función que lo necesita: unos 1,1 GB para el modelo de lenguaje Qwen3 1.7B Q4, 0,5 GB para el modelo de embeddings Nomic de 768 dimensiones y 0,9 GB más para Whisper large-v3-turbo si activas la entrada por voz. Todos son opcionales: puedes seguir usando Budgie sin IA."
@@ -14496,6 +14547,10 @@ msgstr "Apaga la radio y nada cambia"
 #: src/generic/component/footer/footer.tsx
 msgid "Twitter"
 msgstr "Twitter"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "Two amounts, one rate"
+msgstr "Dos importes, un tipo de cambio"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Two categories that mean the same thing become one: pick the category to keep and every transaction moves across before the other one goes. The picker offers the built-in tree alongside your own, or a new category made on the spot."
@@ -15478,6 +15533,10 @@ msgstr "Cuando Intuit Mint cerró el 23 de marzo de 2024, dejó a millones de us
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "When source code is public, anyone with the relevant expertise can examine it. Security researchers, privacy advocates, concerned users, and professional auditors can all review the code for potential issues. This distributed auditing creates multiple layers of oversight that closed-source companies simply cannot match."
 msgstr "Cuando el código fuente es público, cualquier persona con la experiencia relevante puede examinarlo. Investigadores de seguridad, defensores de la privacidad, usuarios preocupados y auditores profesionales pueden revisar el código en busca de problemas potenciales. Esta auditoría distribuida crea múltiples capas de supervisión que las empresas de código cerrado simplemente no pueden igualar."
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "When the accounts hold different currencies, what will land on the other side appears under the figure you typed. The pill says which side you are driving — tap it to type the receiving amount instead — and the rate that produced the pair is saved with the transfer."
+msgstr "Cuando las cuentas tienen divisas distintas, lo que llegará al otro lado aparece bajo la cifra que has escrito. La píldora indica qué lado estás controlando —tócala para escribir el importe recibido— y el tipo de cambio que generó el par se guarda con la transferencia."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "When the deposit matures, choose the destination account and close it. Budgie transfers the remaining balance from the deposit account and archives the deposit so it leaves the home screen without losing history."
@@ -16691,6 +16750,10 @@ msgstr "Introduces credenciales en un servicio de terceros (Plaid, Yodlee, etc.)
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "You enter credentials or authorize via OAuth"
 msgstr "Introduces credenciales o autorizas via OAuth"
+
+#: src/app/[lang]/features/account-transfers/page.tsx
+msgid "You enter the amount once and pick both accounts on one row. Budgie saves a single transfer that debits one account and credits the other — not an expense here and an income there that you have to remember to cancel out."
+msgstr "Introduces el importe una vez y eliges ambas cuentas en una misma fila. Budgie guarda una única transferencia que carga en una cuenta y abona en la otra, no un gasto aquí y un ingreso allá que tengas que acordarte de compensar."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "You have the following rights regarding your data:"
