@@ -10184,8 +10184,8 @@ msgid "No limit. Add as many split rows as you need; the total must equal the or
 msgstr "Aucune limite. Ajoutez autant de lignes de division que nécessaire ; le total doit être égal au montant de la transaction d’origine."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” for the at-a-glance badge on the transaction list."
-msgstr "Aucune limite. Superposez autant que nécessaire ; l’une d’elles peut être promue « principale » pour le badge en un coup d’œil sur la liste des transactions."
+msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” so it stands out as a highlighted pill on the transaction list."
+msgstr "Aucune limite. Ajoutez-en autant que nécessaire ; l'une d'elles peut être promue « principale » pour se démarquer sous forme de pastille mise en évidence dans la liste des transactions."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No lock icons, no tiers"
@@ -10926,8 +10926,8 @@ msgid "One tag needs no border"
 msgstr "Un seul tag n'a pas besoin de bordure"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
-msgstr "Une étiquette par transaction peut être promue « principale » avec un badge étoile dans le coin"
+msgid "One tag per transaction can be promoted to “primary” and stands out as a highlighted pill"
+msgstr "Une étiquette par transaction peut être promue « principale » et se démarquer sous forme de pastille mise en évidence"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
@@ -11805,8 +11805,8 @@ msgid "Promote one tag per transaction to \"primary\" — it pins as a corner-st
 msgstr "Promouvez une étiquette par transaction « principale » — elle s’épingle en badge étoile dans le coin pour scanner #vacation ou #shared en un coup d’œil sans ouvrir les lignes."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "Promote one tag per transaction to “primary” — it shows as a corner badge on the transaction list so you can scan at a glance. Long-press a tag chip on the card to rotate which one is primary."
-msgstr "Promouvez une étiquette par transaction « principale » — elle apparaît comme badge dans le coin sur la liste des transactions pour scanner en un coup d’œil. Appuyez longuement sur une puce d’étiquette sur la carte pour faire pivoter laquelle est principale."
+msgid "Promote one tag per transaction to “primary” — it shows as a highlighted pill on the transaction list so you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card there."
+msgstr "Promouvez une étiquette par transaction au rang de « principale » — elle apparaît sous forme de pastille mise en évidence dans la liste des transactions pour un repérage en un coup d'œil. Pour changer l'étiquette principale, ouvrez le sélecteur d'étiquettes et effectuez un appui long sur une autre carte d'étiquette."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Promote one tag per transaction to \"primary\"; it pins as a corner-star badge on the list so you can scan #vacation or #shared without opening anything."
@@ -13929,8 +13929,8 @@ msgid "The primary engine is the on-device Qwen3 1.7B language model. It ranks t
 msgstr "Le moteur principal est le modèle de langage Qwen3 1.7B sur l'appareil. Il classe les candidats d'étiquettes de votre vocabulaire existant par similarité sémantique au contexte de la transaction — capturant les variations de formulation qu'une recherche textuelle simple manquerait. Quand le LLM est encore en chargement ou occupé par une autre inférence, la solution de secours par embedding prend le relais : une recherche du plus proche voisin sur des embeddings à 768 dimensions de vos transactions étiquetées passées, s'exécutant en millisecondes sans attendre le LLM."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "The primary tag shows as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Long-press to rotate which tag is primary."
-msgstr "L'étiquette principale apparaît comme badge étoile dans le coin sur la liste des transactions pour scanner une longue liste pour #vacation ou #shared sans ouvrir les lignes. Appuyez longuement pour faire pivoter quelle étiquette est principale."
+msgid "The primary tag shows as a highlighted pill on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Open the tag selector and long-press a tag card there to make it primary."
+msgstr "L'étiquette principale apparaît sous forme de pastille mise en évidence dans la liste des transactions, ce qui permet de repérer #vacation ou #shared dans une longue liste sans ouvrir les lignes. Ouvrez le sélecteur d'étiquettes et effectuez un appui long sur une carte d'étiquette pour la rendre principale."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The principle of minimal data collection guides all decisions"

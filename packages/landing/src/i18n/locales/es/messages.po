@@ -10184,8 +10184,8 @@ msgid "No limit. Add as many split rows as you need; the total must equal the or
 msgstr "Sin límite. Añade todas las filas de división que necesites; el total debe ser igual al importe de la transacción original."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” for the at-a-glance badge on the transaction list."
-msgstr "Sin límite. Añade todas las que necesites; una de ellas puede promoverse a \"principal\" para el distintivo a primera vista en la tarjeta de transacción."
+msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” so it stands out as a highlighted pill on the transaction list."
+msgstr "Sin límite. Añade tantas como necesites; una de ellas puede promoverse a «principal» para destacar como una píldora resaltada en la lista de transacciones."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No lock icons, no tiers"
@@ -10926,8 +10926,8 @@ msgid "One tag needs no border"
 msgstr "Una etiqueta no necesita borde"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
-msgstr "Una etiqueta por transacción puede promoverse a \"principal\" con un distintivo de estrella en la esquina"
+msgid "One tag per transaction can be promoted to “primary” and stands out as a highlighted pill"
+msgstr "Una etiqueta por transacción puede promoverse a «principal» y destacar como una píldora resaltada"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
@@ -11805,8 +11805,8 @@ msgid "Promote one tag per transaction to \"primary\" — it pins as a corner-st
 msgstr "Promueve una etiqueta por transacción a «principal»: se fija como distintivo de estrella en la esquina para que puedas escanear #vacaciones o #compartido de un vistazo."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "Promote one tag per transaction to “primary” — it shows as a corner badge on the transaction list so you can scan at a glance. Long-press a tag chip on the card to rotate which one is primary."
-msgstr "Promueve una etiqueta por transacción a \"principal\": aparece como distintivo en la esquina de la lista para que puedas escanear de un vistazo."
+msgid "Promote one tag per transaction to “primary” — it shows as a highlighted pill on the transaction list so you can scan at a glance. To change which tag is primary, open the tag selector and long-press a different tag card there."
+msgstr "Promueve una etiqueta por transacción a «principal»: se muestra como una píldora resaltada en la lista de transacciones para que puedas escanear de un vistazo. Para cambiar qué etiqueta es la principal, abre el selector de etiquetas y mantén pulsada otra tarjeta de etiqueta."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Promote one tag per transaction to \"primary\"; it pins as a corner-star badge on the list so you can scan #vacation or #shared without opening anything."
@@ -13929,8 +13929,8 @@ msgid "The primary engine is the on-device Qwen3 1.7B language model. It ranks t
 msgstr "El motor principal es el modelo de lenguaje Qwen3 1.7B en el dispositivo. Clasifica los candidatos de etiquetas de tu vocabulario de etiquetas existente por similitud semántica al contexto de la transacción — coincidiendo variaciones de frases que una simple búsqueda de texto pasaría por alto. Cuando el LLM aún se está cargando o está ocupado con otra inferencia, la alternativa de embedding toma el control: una búsqueda de vecino más cercano sobre embeddings de 768 dimensiones de tus transacciones etiquetadas anteriores, ejecutándose en milisegundos sin esperar al LLM."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
-msgid "The primary tag shows as a corner-star badge on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Long-press to rotate which tag is primary."
-msgstr "La etiqueta principal aparece como distintivo de estrella en la esquina de la lista de transacciones para que puedas escanear una lista larga buscando #vacaciones o #compartido."
+msgid "The primary tag shows as a highlighted pill on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Open the tag selector and long-press a tag card there to make it primary."
+msgstr "La etiqueta principal se muestra como una píldora resaltada en la lista de transacciones para que puedas escanear una lista larga en busca de #vacation o #shared sin abrir filas. Abre el selector de etiquetas y mantén pulsada una tarjeta de etiqueta para convertirla en principal."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The principle of minimal data collection guides all decisions"
