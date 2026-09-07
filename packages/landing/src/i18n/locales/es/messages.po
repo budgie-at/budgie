@@ -2430,6 +2430,10 @@ msgstr "Tipo de cuenta Deuda con subtipo «Yo debo» u «Me deben». Vinculado a
 msgid "accounts"
 msgstr "cuentas"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Accounts group themselves by type"
+msgstr "Las cuentas se agrupan por tipo"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Acknowledge receipt of security reports within 48 hours"
 msgstr "Confirmar la recepción de reportes de seguridad en un plazo de 48 horas"
@@ -2781,6 +2785,10 @@ msgstr "Importes alineados a la derecha"
 msgid "An amount-range chip in the same filter row, with a From value, a To value, or both"
 msgstr "Un chip de rango de importe en la misma fila de filtros, con un valor Desde, un valor Hasta, o ambos"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "An archived account leaves the home screen and the totals but keeps every transaction. Settings lists them, ready to search and restore."
+msgstr "Una cuenta archivada desaparece de la pantalla de inicio y de los totales, pero conserva todas sus transacciones. Ajustes las lista, listas para buscar y restaurar."
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "An expense tracker lives or dies by entry friction. Budgie's quick-entry sheet picks the right account, the most-likely category, and the current date by default — typically two taps to a saved transaction."
 msgstr "Un rastreador de gastos vive o muere por la fricción de entrada. El formulario rápido de Budgie selecciona la cuenta correcta, la categoría más probable y la fecha de hoy: de abrir a guardar en dos toques."
@@ -2958,6 +2966,10 @@ msgstr "Las aplicaciones de productividad integradas de Apple usan una arquitect
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "architecture"
 msgstr "arquitectura"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Archive instead of deleting"
+msgstr "Archiva en vez de eliminar"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Archive when settled — debt drops off the home screen but stays in history"
@@ -3432,6 +3444,10 @@ msgstr "Banco, efectivo, cripto: todo en una sola pantalla."
 msgid "Bank, cash, crypto and debt are already inside the figure at the top of Home."
 msgstr "Banco, efectivo, cripto y deuda ya están dentro de la cifra al principio de Inicio."
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Bank, cash, crypto, deposit and debt each get their own section on the home screen, and every section heading carries the subtotal for the accounts under it."
+msgstr "Banco, efectivo, cripto, depósito y deuda tienen cada uno su propia sección en la pantalla de inicio, y cada encabezado muestra el subtotal de las cuentas que contiene."
+
 #: src/generic/component/features-section/features-section-grid.tsx
 msgid "Bank, cash, crypto, stocks, debt — one number on your home screen with daily FX conversion."
 msgstr "Banco, efectivo, cripto, acciones, deuda — un solo número en tu pantalla principal con conversión de divisas diaria."
@@ -3814,8 +3830,8 @@ msgid "Budgie analytics tags tab ranking income and spending by tag over the sel
 msgstr "Pestaña de etiquetas de las analíticas de Budgie que ordena los ingresos y el gasto por etiqueta durante el periodo seleccionado"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Budgie archived accounts screen listing accounts hidden from the main balance view"
-msgstr "Pantalla de cuentas archivadas de Budgie con las cuentas ocultas de la vista principal de saldos"
+msgid "Budgie archived accounts screen listing two archived accounts, each with a restore button"
+msgstr "Pantalla de cuentas archivadas de Budgie con dos cuentas archivadas, cada una con un botón de restaurar"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Budgie asks for an API key and secret, and the setup screen tells you exactly how to create it: keep only \"Enable Reading\" switched on, never trading, never withdrawals. Every request is signed on your device with HMAC-SHA256 over the query string, and the app only ever calls read endpoints — there is no order or withdrawal code in it to call."
@@ -3963,8 +3979,8 @@ msgid "Budgie home screen with a euro-denominated account listed under a total b
 msgstr "Pantalla de inicio de Budgie con una cuenta en euros bajo un saldo total mostrado en dólares"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Budgie home screen with the bank, cash and savings accounts and their balances"
-msgstr "Pantalla de inicio de Budgie con las cuentas de banco, efectivo y ahorro y sus saldos"
+msgid "Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal"
+msgstr "Pantalla de inicio de Budgie con las cuentas agrupadas en las secciones Banco y Efectivo, cada encabezado con su propio subtotal"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie home screen with the net balance across the bank, cash and savings account sections"
@@ -4122,6 +4138,10 @@ msgstr "Pantalla «Categorías sin asignar» de Budgie con filas de ingresos y g
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
 msgstr "Pantalla Monobank de Budgie con dos tarjetas y una hucha para el coche, cada una con saldo e interruptor"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Budgie new deposit account form with currency, interest rate and maturity date fields"
+msgstr "Formulario de nueva cuenta de depósito de Budgie con campos de moneda, tipo de interés y fecha de vencimiento"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
@@ -5623,10 +5643,6 @@ msgstr "Cree una cuenta de Depósito manualmente o desde una integración bancar
 msgid "Create a feature branch for your changes"
 msgstr ""
 
-#: src/app/[lang]/features/account-management/page.tsx
-msgid "Create accounts manually or via bank sync. Each account belongs to one of: Bank, Cash, Deposit, Crypto, Stocks, Debt. Reorder, rename, archive, or permanently delete from the account detail page."
-msgstr "Cree cuentas manualmente o mediante sincronización bancaria. Cada cuenta pertenece a una de estas categorías: Banco, Efectivo, Depósito, Cripto, Acciones, Deuda. Reordene, renombre, archive o elimine permanentemente desde la página de detalle de la cuenta."
-
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Create an account in Budgie for each bank account or credit card you track. Set the correct currency for each account. You do not need to connect anything to your bank at this stage — the accounts are just containers for imported transactions."
 msgstr "Crea una cuenta en Budgie para cada cuenta bancaria o tarjeta de crédito que rastrees. Establece la moneda correcta para cada cuenta. No necesitas conectar nada a tu banco en esta etapa — las cuentas son simplemente contenedores para las transacciones importadas."
@@ -5826,6 +5842,10 @@ msgstr "Importación/exportación CSV"
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "CSV is for spreadsheets, tax software, and other apps that want flat data. The database backup preserves every relationship and account state for full restore on a new device."
 msgstr "CSV es para hojas de cálculo, software fiscal y otras apps que necesitan datos planos. El backup de base de datos conserva todas las relaciones para una restauración completa."
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Currency is fixed per account"
+msgstr "La moneda es fija por cuenta"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Currency-mode pill switches whether you drive from send or receive direction"
@@ -6630,6 +6650,10 @@ msgstr "Cada fila de división se cuenta en su propia categoría en análisis: l
 msgid "Each split row keeps its own tags and comment — fully independent"
 msgstr "Cada fila de división conserva sus propias etiquetas y comentario, completamente independientes"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Each type brings its own form"
+msgstr "Cada tipo trae su propio formulario"
+
 #: src/generic/component/waitlist-form/waitlist-success.tsx
 msgid "Early access members get 50% off lifetime"
 msgstr "Los miembros de acceso anticipado obtienen 50% de descuento en el acceso de por vida"
@@ -6904,6 +6928,10 @@ msgstr "Cada registro incluye importe, cuenta, categoría, etiquetas, comentario
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
 msgstr ""
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Every group carries a subtotal"
+msgstr "Cada grupo muestra un subtotal"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out."
@@ -8232,7 +8260,6 @@ msgstr "¿En qué se diferencia de las apps basadas en Plaid?"
 msgid "How is this different from the Tag Analytics page?"
 msgstr "¿En qué se diferencia esto de la página de análisis de etiquetas?"
 
-#: src/app/[lang]/features/account-management/page.tsx
 #: src/app/[lang]/features/account-transfers/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
@@ -8689,6 +8716,10 @@ msgstr "interés"
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Interest rate and maturity date fields for each deposit account"
 msgstr "Campos de tasa de interés y fecha de vencimiento para cada cuenta de depósito"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Interest rate, deposits only"
+msgstr "Tipo de interés, solo depósitos"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Intuit’s official recommendation was to migrate to Credit Karma. On the surface, it makes sense: same parent company, established platform, free to use. But for developers and privacy-conscious users, Credit Karma has fundamental problems."
@@ -9367,6 +9398,10 @@ msgstr "Instantáneas manuales del servidor"
 #: src/generic/component/integrations-section/integrations-section-investments-card.tsx
 msgid "Manually track Bitcoin, Ethereum, stocks, ETFs, and any asset. Import positions via CSV. No exchange API connections — your data stays on-device."
 msgstr "Registra manualmente Bitcoin, Ethereum, acciones, ETFs y cualquier activo. Importa posiciones mediante CSV. Sin conexiones a APIs de exchanges — tus datos permanecen en el dispositivo."
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Many accounts, one balance sheet"
+msgstr "Muchas cuentas, un solo balance"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Many apps collect far more data than users realize. Analytics platforms, crash reporting services, advertising SDKs, and third-party integrations often run silently in the background. Each of these systems may be collecting and transmitting data about your usage patterns, device information, and potentially even your financial activities."
@@ -11380,6 +11415,10 @@ msgstr "Elige la cuenta de origen, elige la cuenta de destino, introduce el impo
 msgid "Pick the destination account"
 msgstr "Elige la cuenta de destino"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Picking Deposit opens the deposit form: opening balance, name, currency — then an interest rate and a maturity date that only this type asks for."
+msgstr "Elegir Depósito abre su formulario: saldo inicial, nombre, moneda — y además un tipo de interés y una fecha de vencimiento que solo pide este tipo."
+
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 msgid "pin"
 msgstr "pin"
@@ -12245,6 +12284,10 @@ msgstr "restaurar"
 msgid "Restore from a backup file"
 msgstr "Restaurar desde un archivo de copia de seguridad"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Restore in one tap"
+msgstr "Restaura con un toque"
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Restore is a one-tap flow on a fresh install — pick the file, enter your PIN"
 msgstr "La restauración es un flujo de un toque en una instalación nueva: elige el archivo, introduce tu PIN"
@@ -12439,6 +12482,10 @@ msgstr "Recorre Configuración de principio a fin: no hay grupo de analítica, p
 #: src/blog/component/blog-search/blog-search.tsx
 msgid "Search articles..."
 msgstr "Buscar artículos..."
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Search what you archived"
+msgstr "Busca lo que archivaste"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Search, or add a new one"
@@ -14444,6 +14491,10 @@ msgstr "Tres pantallas: guardar un gasto, volver a uno ya guardado y la lista en
 msgid "Three screens: the expense that was never spending, the picker that names the other account, and the transfer the row turns into."
 msgstr "Tres pantallas: el gasto que nunca fue gasto, el selector que indica la otra cuenta y la transferencia en que se convierte la fila."
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Three screens: the home list grouped by type, the form a new account type brings with it, and the archive that keeps the accounts you closed."
+msgstr "Tres pantallas: la lista de inicio agrupada por tipo, el formulario que trae consigo cada nuevo tipo de cuenta y el archivo que conserva las cuentas que cerraste."
+
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Three screens: the press that opens the menu, the four actions behind it, and the one screen a conversion needs."
 msgstr "Tres pantallas: la pulsación que abre el menú, las cuatro acciones que hay detrás y la única pantalla que necesita una conversión."
@@ -14531,6 +14582,10 @@ msgstr "Herramientas como el gráfico de dependencias y las alertas de seguridad
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Total — no provider exists"
 msgstr "Total — no existe ningún proveedor"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Total balance up top"
+msgstr "Saldo total arriba"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Total in your base currency"
