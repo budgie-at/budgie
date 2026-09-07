@@ -74,7 +74,7 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 locale={lang}
                 tagline={
                     <Trans>
-                        Track unlimited bank accounts, cash wallets, deposits, crypto, stocks, and debt — grouped, archived, and renamed
+                        Track unlimited bank accounts, cash wallets, deposits, crypto, and debt — grouped, colored, archived, and renamed
                         however you want.
                     </Trans>
                 }
@@ -168,8 +168,24 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Bank-synced accounts auto-group by provider on the home screen. Liability and debt accounts support negative
-                        balances. Archived accounts disappear from the home but stay searchable.
+                        Bank-synced accounts auto-group by provider on the home screen. Self-custodied crypto holdings group by currency
+                        instead — several accounts holding the same coin collapse into one row with a combined balance, an expand toggle,
+                        and a link straight to that coin&rsquo;s market screen. Liability and debt accounts support negative balances.
+                        Archived accounts disappear from the home but stay searchable.
+                    </Trans>
+                </FeaturePageProse>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Archive is not the same as inactive</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        Two ways to get an account out of the way, for two different reasons. Archive it when you are done with it — an
+                        archived account leaves the home screen and the totals but keeps every transaction, ready to search and restore.
+                        Mark it inactive when it is still real but should not clutter the home screen — an inactive account stays out of the
+                        daily list without being treated as closed. Both keep the full history.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -181,19 +197,32 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
-                            Unlimited accounts: Bank, Cash, Deposit, Crypto, Stocks, Debt — each with its own currency and balance
+                            Unlimited accounts: Checking, Savings (cash), Crypto, Debt, Deposit — plus bank and Binance sync — each with its
+                            own currency and balance
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Bank-synced accounts auto-group by provider on the home screen</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Deposit accounts track maturity details; liability and debt accounts support negative balances</Trans>
+                        <Trans>
+                            Self-custodied coins group by currency with one combined balance and a tap through to that coin&rsquo;s market
+                            screen; exchange-synced coins stay under their exchange
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Archive without deleting — old accounts disappear from the home but stay searchable</Trans>
+                        <Trans>Deposit accounts track maturity details; liability and debt accounts support negative balances</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
+                        <Trans>Archive without deleting, or mark inactive without archiving — both keep the full history</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>
+                            Every account type carries its own color and icon, so a home screen with a dozen accounts still reads at a
+                            glance
+                        </Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={6}>
                         <Trans>&ldquo;Include in net worth&rdquo; toggle per account for partial-truth balance sheets</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -241,6 +270,16 @@ export default async function AccountManagementFeaturePage(props: PageLangParam)
                         <Trans>
                             Yes. Debt is a dedicated account type with explicit &ldquo;I owe&rdquo; / &ldquo;owes me&rdquo; direction. See
                             Debt &amp; Loan Tracking for details.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What is the difference between archived and inactive?</Trans>}
+                    answer={
+                        <Trans>
+                            Archive means you are done with the account — it leaves the home screen and the totals for good, but every
+                            transaction stays searchable and restorable from Settings. Inactive means the account is still real but should
+                            not clutter the home screen right now — it can be re-activated at any time from the same Settings screen.
                         </Trans>
                     }
                 />
