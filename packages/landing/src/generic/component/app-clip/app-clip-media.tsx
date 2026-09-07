@@ -22,34 +22,36 @@ export const AppClipMedia = ({ asset, alt, className, priority }: Props) => {
     const fetchPriority = priority ? 'high' : 'auto';
 
     return (
-        <div className={cn('relative', className)}>
+        <div className={cn('device-frame', className)}>
             {priority ? <link as="image" fetchPriority="high" href={posterSrc} media={colorScheme} rel="preload" /> : null}
 
-            <img
-                alt={alt}
-                className="h-auto w-full"
-                decoding="async"
-                fetchPriority={fetchPriority}
-                height={MEDIA_ASSET_HEIGHT}
-                loading="lazy"
-                src={posterSrc}
-                width={MEDIA_ASSET_WIDTH}
-            />
+            <div className="device-frame-screen">
+                <img
+                    alt={alt}
+                    className="size-full"
+                    decoding="async"
+                    fetchPriority={fetchPriority}
+                    height={MEDIA_ASSET_HEIGHT}
+                    loading="lazy"
+                    src={posterSrc}
+                    width={MEDIA_ASSET_WIDTH}
+                />
 
-            <video
-                aria-hidden="true"
-                autoPlay
-                className="absolute inset-0 size-full motion-reduce:hidden"
-                height={MEDIA_ASSET_HEIGHT}
-                loop
-                muted
-                playsInline
-                preload="none"
-                width={MEDIA_ASSET_WIDTH}
-            >
-                <source media={playableMedia} src={`${basePath}.webm`} type="video/webm" />
-                <source media={playableMedia} src={`${basePath}.mp4`} type="video/mp4" />
-            </video>
+                <video
+                    aria-hidden="true"
+                    autoPlay
+                    className="absolute inset-0 size-full motion-reduce:hidden"
+                    height={MEDIA_ASSET_HEIGHT}
+                    loop
+                    muted
+                    playsInline
+                    preload="none"
+                    width={MEDIA_ASSET_WIDTH}
+                >
+                    <source media={playableMedia} src={`${basePath}.webm`} type="video/webm" />
+                    <source media={playableMedia} src={`${basePath}.mp4`} type="video/mp4" />
+                </video>
+            </div>
         </div>
     );
 };
