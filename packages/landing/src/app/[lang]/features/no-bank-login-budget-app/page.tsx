@@ -17,6 +17,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -79,6 +80,52 @@ export default async function NoBankLoginBudgetAppPage(props: PageLangParam) {
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>What connecting a bank actually asks for</Trans>}>
+                    <Trans>
+                        One screen, one field. Budgie never asks for your bank password, and no aggregator ever holds your credentials.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Point index={0}>
+                    <Trans>
+                        Monobank issues a personal API token on its own site. The first row opens that page for you; Budgie only ever
+                        receives the token you paste back.
+                    </Trans>
+                </FeatureStory.Point>
+
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Connect Monobank screen with a token field, setup steps and a note that the token is stored securely`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="no-bank-login-budget-app-1"
+                    slug="no-bank-login-budget-app"
+                >
+                    <FeatureStory.Callout index={0} y={0.21}>
+                        <Trans>You create it on Monobank</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.496}>
+                        <Trans>Token stays on your device</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Point index={1}>
+                    <Trans>
+                        The app calls your bank from your phone. There is no aggregator in the middle, so your transaction history is never
+                        mirrored to a third-party service.
+                    </Trans>
+                </FeatureStory.Point>
+                <FeatureStory.Point index={2}>
+                    <Trans>
+                        No token, no connection at all: Erste PDF, PrivatBank Excel and generic CSV statements import from a file you
+                        download yourself.
+                    </Trans>
+                </FeatureStory.Point>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
