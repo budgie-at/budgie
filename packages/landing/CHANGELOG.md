@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.38.1](https://github.com/budgie-at/budgie/compare/v6.38.0...v6.38.1) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** correct ai-transaction-suggestions disable-AI claim ([5ba4277](https://github.com/budgie-at/budgie/commit/5ba42777509095566c5f98f3cdf2386ba40ef395)), closes [#844](https://github.com/budgie-at/budgie/issues/844)
+
+
+
+
+
 # [6.38.0](https://github.com/budgie-at/budgie/compare/v6.37.0...v6.38.0) (2026-09-07)
 
 
