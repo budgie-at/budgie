@@ -172,8 +172,8 @@ export default async function ConvertToTransferFeaturePage(props: PageLangParam)
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Source-side and destination-side records are linked, balances reconcile in both, and the original spending stat
-                        falls out of the analytics. No double-entry surgery from you.
+                        The transaction becomes a single transfer with a credit entry and a debit entry against the two accounts, balances
+                        reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -187,7 +187,7 @@ export default async function ConvertToTransferFeaturePage(props: PageLangParam)
                         <Trans>One-tap action from any transaction&apos;s long-press menu</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Source and destination legs link automatically — no double-entry by you</Trans>
+                        <Trans>One transaction carries both account entries automatically — no double-entry by you</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Spending analytics updates in place — old expense falls out cleanly</Trans>
@@ -196,7 +196,7 @@ export default async function ConvertToTransferFeaturePage(props: PageLangParam)
                         <Trans>Cross-currency conversion supported — dual-amount input after destination pick</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Reversible: split a transfer back into two separate transactions if needed</Trans>
+                        <Trans>Fee entries on the original transaction carry over to the transfer automatically</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -206,8 +206,8 @@ export default async function ConvertToTransferFeaturePage(props: PageLangParam)
                     question={<Trans>What does &quot;Convert to Transfer&quot; actually do?</Trans>}
                     answer={
                         <Trans>
-                            The expense (or income) becomes the source leg of a transfer; you pick the destination account, and Budgie
-                            creates the destination leg automatically. Both legs are linked.
+                            The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with
+                            a credit and a debit against the two accounts — no second transaction is created.
                         </Trans>
                     }
                 />
@@ -223,8 +223,8 @@ export default async function ConvertToTransferFeaturePage(props: PageLangParam)
                     question={<Trans>Can I undo the conversion?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Long-press the transfer and choose &quot;Split back into two transactions&quot;; both halves return to
-                            their original types.
+                            No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating
+                            the expense or income entry yourself.
                         </Trans>
                     }
                 />
