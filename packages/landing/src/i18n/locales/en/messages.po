@@ -2310,6 +2310,10 @@ msgstr "A project that ignores security issues or dismisses user concerns is sen
 msgid "A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device."
 msgstr "A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "A review sheet lists every row before saving — “Select all categories” and “Enter all amounts” fix a whole batch at once"
+msgstr "A review sheet lists every row before saving — “Select all categories” and “Enter all amounts” fix a whole batch at once"
+
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
 msgstr "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
@@ -5356,10 +5360,6 @@ msgstr "Conditions on title, comment, amount, MCC, account, transaction type, an
 msgid "Conditions you wrote yourself"
 msgstr "Conditions you wrote yourself"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Confirm or correct the pre-filled form, then save"
-msgstr "Confirm or correct the pre-filled form, then save"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Confirm the fixed version is released"
 msgstr "Confirm the fixed version is released"
@@ -6791,6 +6791,10 @@ msgstr "Every dependency in Budgie is evaluated for privacy implications before 
 msgid "Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a context menu. Edit, delete, split, convert to a transfer, or link income back to a refunded expense without leaving the screen."
 msgstr "Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a context menu. Edit, delete, split, convert to a transfer, or link income back to a refunded expense without leaving the screen."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Every extracted row appears in the review sheet before you save. Edit any row manually, or tap re-record to replace the whole batch and try again."
+msgstr "Every extracted row appears in the review sheet before you save. Edit any row manually, or tap re-record to replace the whole batch and try again."
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
 msgstr "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
@@ -7323,6 +7327,10 @@ msgstr "Five taps is four taps too many"
 msgid "Five window presets: 7, 30, 90 days, plus custom range"
 msgstr "Five window presets: 7, 30, 90 days, plus custom range"
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
+msgstr "Fix a row, or use “Select all categories” to fix the whole batch at once"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Fix bugs and submit pull requests"
 msgstr "Fix bugs and submit pull requests"
@@ -7540,6 +7548,10 @@ msgstr "From bank connections, yes. Crypto exchange connections do not offer dep
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "From one token to your home screen"
 msgstr "From one token to your home screen"
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "From speech to a saved batch"
+msgstr "From speech to a saved batch"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "From the month's total to one receipt"
@@ -10328,6 +10340,10 @@ msgstr "Nothing happens — your data is safe on-device. You can keep adding tra
 msgid "Nothing happens to your data because Budgie does not have your data. Everything is stored locally on your device. If Budgie as a company ceased to exist, your app would continue to function with all your data intact. You can export data at any time in standard formats. There is no server to shut down, no migration to worry about, no acquisition that could change data handling. Your data remains yours permanently."
 msgstr "Nothing happens to your data because Budgie does not have your data. Everything is stored locally on your device. If Budgie as a company ceased to exist, your app would continue to function with all your data intact. You can export data at any time in standard formats. There is no server to shut down, no migration to worry about, no acquisition that could change data handling. Your data remains yours permanently."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up with half a sentence logged"
+msgstr "Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up with half a sentence logged"
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Nothing opens before the PIN"
 msgstr "Nothing opens before the PIN"
@@ -10633,8 +10649,8 @@ msgid "on-device expense tracker"
 msgstr "on-device expense tracker"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "On-device LLM extracts amount, merchant, date, and category from natural speech"
-msgstr "On-device LLM extracts amount, merchant, date, and category from natural speech"
+msgid "On-device LLM splits natural speech into multiple transactions, each with its own amount and category"
+msgstr "On-device LLM splits natural speech into multiple transactions, each with its own amount and category"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/opengraph-image.tsx
 msgid "on-device-ai"
@@ -10735,6 +10751,10 @@ msgstr "One screen to finish it"
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "One screen, one field. Budgie never asks for your bank password, and no aggregator ever holds your credentials."
 msgstr "One screen, one field. Budgie never asks for your bank password, and no aggregator ever holds your credentials."
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "One sentence can log several transactions at once — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, not one merged entry. A review sheet shows every extracted row with its amount, category, and account before anything is written to the database."
+msgstr "One sentence can log several transactions at once — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, not one merged entry. A review sheet shows every extracted row with its amount, category, and account before anything is written to the database."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "One settings screen, and a public repository where every line of it can be checked."
@@ -11373,10 +11393,6 @@ msgstr "Practical Steps for Privacy Protection"
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Pre-baked category trees never fit. Budgie lets you build, rename, merge two categories into one (with mass-reassignment), and delete with safe transaction migration."
 msgstr "Pre-baked category trees never fit. Budgie lets you build, rename, merge two categories into one (with mass-reassignment), and delete with safe transaction migration."
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Pre-fills the same quick-entry form you would use by typing — confirm or correct"
-msgstr "Pre-fills the same quick-entry form you would use by typing — confirm or correct"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Preserves more of your category structure"
@@ -12117,6 +12133,10 @@ msgstr "Review our cryptographic implementations"
 msgid "Review the import preview"
 msgstr "Review the import preview"
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Review the table of three extracted rows, each with its own amount and category"
+msgstr "Review the table of three extracted rows, each with its own amount and category"
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Revoke access through your bank’s connected apps settings"
 msgstr "Revoke access through your bank’s connected apps settings"
@@ -12201,13 +12221,13 @@ msgstr "Saving a rule applies it retroactively to matching transactions you alre
 msgid "Saving is instant"
 msgstr "Saving is instant"
 
-#: src/app/[lang]/features/voice-transaction-entry/metadata.ts
-msgid "Say \"twelve dollars coffee this morning\" and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio ever streams to a server."
-msgstr "Say \"twelve dollars coffee this morning\" and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio ever streams to a server."
-
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Say “twelve dollars coffee this morning” and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
-msgstr "Say “twelve dollars coffee this morning” and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
+msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
+msgstr "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
+
+#: src/app/[lang]/features/voice-transaction-entry/metadata.ts
+msgid "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\" and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM extract a reviewable batch — no audio ever streams to a server."
+msgstr "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\" and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM extract a reviewable batch — no audio ever streams to a server."
 
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "scanning"
@@ -12756,8 +12776,8 @@ msgid "Speak it. Budgie logs it. whisper.rn (whisper.cpp backend) transcribes on
 msgstr "Speak it. Budgie logs it. whisper.rn (whisper.cpp backend) transcribes on-device — audio never leaves your phone."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Speak naturally — “twelve dollars coffee at the airport”"
-msgstr "Speak naturally — “twelve dollars coffee at the airport”"
+msgid "Speak naturally — “twelve for coffee, forty for the taxi, and eight euros for parking”"
+msgstr "Speak naturally — “twelve for coffee, forty for the taxi, and eight euros for parking”"
 
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx
 msgid "Spending Analytics & Charts"
@@ -13239,12 +13259,16 @@ msgid "Tap it, the rule exists"
 msgstr "Tap it, the rule exists"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "Tap Save 3 — all three transactions commit together in one database transaction"
+msgstr "Tap Save 3 — all three transactions commit together in one database transaction"
+
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Tap the mic in the quick-entry sheet"
 msgstr "Tap the mic in the quick-entry sheet"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts amount, merchant, and date hints from the transcription and applies the same on-device category suggestion pipeline used for typed transactions."
-msgstr "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts amount, merchant, and date hints from the transcription and applies the same on-device category suggestion pipeline used for typed transactions."
+msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the transcription went wrong."
+msgstr "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the transcription went wrong."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"
@@ -13856,10 +13880,6 @@ msgstr "The repository includes the full React Native app, the AI service layer 
 msgid "The repository includes:"
 msgstr "The repository includes:"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "The result is a pre-filled transaction form: amount, category, account, and merchant — with the same AI category suggestion pill you get for typed entries. Confirm, edit if needed, save."
-msgstr "The result is a pre-filled transaction form: amount, category, account, and merchant — with the same AI category suggestion pill you get for typed entries. Confirm, edit if needed, save."
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "The result is that Budgie can run a capable language model in the background, suggest a category within a fraction of a second, and do so entirely offline — with no network latency and no server costs."
 msgstr "The result is that Budgie can run a capable language model in the background, suggest a category within a fraction of a second, and do so entirely offline — with no network latency and no server costs."
@@ -13960,6 +13980,10 @@ msgstr "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND, EXPRES
 msgid "The source is public, but the licence is not OSI-approved open source. Budgie ships under the O'SAASY licence: you can read every line on GitHub, fork it and contribute, while commercial redistribution stays with the project."
 msgstr "The source is public, but the licence is not OSI-approved open source. Budgie ships under the O'SAASY licence: you can read every line on GitHub, fork it and contribute, while commercial redistribution stays with the project."
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "The spoken currency picks the matching account automatically"
+msgstr "The spoken currency picks the matching account automatically"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
 msgstr "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
@@ -14007,10 +14031,6 @@ msgstr "The transaction is written to a SQLite database stored in your device’
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "The transcribed text is passed to the two-stage categorization stack described above."
 msgstr "The transcribed text is passed to the two-stage categorization stack described above."
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "The transcription appears in the form before you save. Edit any field manually, or tap the mic again to retry."
-msgstr "The transcription appears in the form before you save. Edit any field manually, or tap the mic again to retry."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Trust Factor"
@@ -14352,10 +14372,6 @@ msgstr "Three screens: the transfer form that names both accounts, the cross-cur
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
 msgstr "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
-
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Three steps from speech to saved"
-msgstr "Three steps from speech to saved"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Time series"
