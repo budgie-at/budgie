@@ -6794,7 +6794,7 @@ msgstr "Jeder Eintrag besteht aus Betrag, Konto, Kategorie, Tags, Kommentar und 
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Every extracted row appears in the review sheet before you save. Edit any row manually, or tap re-record to replace the whole batch and try again."
-msgstr "Jede extrahierte Zeile erscheint im Prüfbildschirm, bevor du speicherst. Bearbeite jede Zeile manuell oder tippe auf Neu aufnehmen, um den ganzen Stapel zu ersetzen und es erneut zu versuchen."
+msgstr "Jede extrahierte Zeile erscheint im Prüfbildschirm, bevor du speicherst. Bearbeite eine beliebige Zeile manuell oder tippe auf Neu aufnehmen, um den ganzen Stapel zu ersetzen und es erneut zu versuchen."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Every financial app has to choose what the transaction row means. Budgie separates two ideas that are often mixed together:"
@@ -12223,8 +12223,8 @@ msgid "Saving is instant"
 msgstr "Speichern ist sofort"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Say “twelve dollars coffee this morning” and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
-msgstr "Sagen Sie „zwölf Dollar Kaffee heute Morgen“ und Budgie erfasst es. whisper.rn (whisper.cpp-Backend) und das geräteeigene LLM laufen beide lokal – kein Audio verlässt Ihr Smartphone."
+msgid "Say “twelve for coffee, forty for the taxi, and eight euros for parking” and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone."
+msgstr "Sag „zwölf für Kaffee, vierzig für das Taxi und acht Euro fürs Parken“, und Budgie erfasst alle drei. whisper.rn (whisper.cpp-Backend) und das geräteeigene LLM laufen beide lokal – kein Audio verlässt dein Smartphone."
 
 #: src/app/[lang]/features/voice-transaction-entry/metadata.ts
 msgid "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\" and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM extract a reviewable batch — no audio ever streams to a server."
@@ -13268,8 +13268,8 @@ msgid "Tap the mic in the quick-entry sheet"
 msgstr "Auf das Mikrofon im Schnelleingabe-Blatt tippen"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Editing a row, or tapping re-record, replaces the whole batch if the transcription went wrong."
-msgstr "Tippe auf das Mikrofon im Schnelleingabe-Formular. whisper.rn transkribiert lokal mit der whisper.cpp-Engine. Das lokale LLM extrahiert eine oder mehrere Transaktionen aus der Transkription – jede mit eigenem Betrag, eigener Kategorie und eigenem Konto – und öffnet einen Prüfbildschirm, bevor etwas gespeichert wird. Das Bearbeiten einer Zeile oder das Antippen von Neu aufnehmen ersetzt den gesamten Stapel, falls die Transkription daneben ging."
+msgid "Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts one or more transactions from the transcription — each with its own amount, category, and account — and opens a review sheet before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the transcription went wrong."
+msgstr "Tippe auf das Mikrofon im Schnelleingabe-Formular. whisper.rn transkribiert lokal mit der whisper.cpp-Engine. Das lokale LLM extrahiert eine oder mehrere Transaktionen aus der Transkription – jede mit eigenem Betrag, eigener Kategorie und eigenem Konto – und öffnet einen Prüfbildschirm, bevor etwas gespeichert wird. Bearbeite eine beliebige Zeile von Hand, oder tippe auf Neu aufnehmen, um den ganzen Stapel zu ersetzen, falls die Transkription danebenging."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"
