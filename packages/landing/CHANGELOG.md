@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.33.0](https://github.com/budgie-at/budgie/compare/v6.32.1...v6.33.0) (2026-09-07)
+
+
+### Features
+
+* **landing:** rebuild the home page around a scroll-driven product tour ([91516bf](https://github.com/budgie-at/budgie/commit/91516bf396327eeb88ddad8ec27adf7ad6cbe687)), closes [#855](https://github.com/budgie-at/budgie/issues/855) [#856](https://github.com/budgie-at/budgie/issues/856) [#857](https://github.com/budgie-at/budgie/issues/857) [#858](https://github.com/budgie-at/budgie/issues/858) [#859](https://github.com/budgie-at/budgie/issues/859) [#860](https://github.com/budgie-at/budgie/issues/860) [#864](https://github.com/budgie-at/budgie/issues/864)
+
+
+### Performance Improvements
+
+* **landing:** compact story density and tighter home section rhythm ([1d98751](https://github.com/budgie-at/budgie/commit/1d98751e907ea1f4e4c3bb92424518c2f7d93eeb))
+* **landing:** retire framer-motion and fix contrast on the home tree ([7106a58](https://github.com/budgie-at/budgie/commit/7106a58ae285fd4f4f5709877a9e252337790106))
+
+
+
+
+
 ## [6.32.1](https://github.com/budgie-at/budgie/compare/v6.32.0...v6.32.1) (2026-09-07)
 
 
