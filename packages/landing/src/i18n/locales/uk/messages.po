@@ -2351,6 +2351,10 @@ msgstr "Технічний погляд на offline-first архітектур�
 msgid "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
 msgstr "Транзакція може мати кілька тегів. У списку є місце лише для одного чипа, тож Budgie вирішує, який показати."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "A transfer, not an expense"
+msgstr "Переказ, а не витрата"
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively."
 msgstr "Віртуальний тег, що об'єднує всі транзакції без жодного тегу. Натиснувши на нього, отримаєте список кожної транзакції, щоб позначити їх ретроспективно."
@@ -3866,13 +3870,13 @@ msgstr "Budgie автоматично консолідує очевидні пе
 msgid "Budgie context menu open over the dimmed transaction list, with delete last and marked in red"
 msgstr "Контекстне меню Budgie поверх притемненого списку транзакцій, видалення останнє й позначене червоним"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Budgie Convert to Transfer screen with the amount carried over and the account picker open over the from and to row"
+msgstr "Екран Budgie «Перетворити на переказ» із перенесеною сумою та відкритим вибором рахунку над рядком «звідки» і «куди»"
+
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie convert to transfer screen with the amount prefilled and the account picker open over the from and to selectors"
 msgstr "Екран Budgie «Перетворити на переказ» із заздалегідь заповненою сумою та відкритим вибором рахунків над полями «звідки» і «куди»"
-
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "Budgie convert to transfer screen with the destination account picker open"
-msgstr "Екран перетворення на переказ у Budgie з відкритим вибором рахунку призначення"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Budgie CSV and PDF import parses statement files on your device. No file content is uploaded to any server during import. The parser runs locally, extracts transactions, and writes them to the local database. Deduplication ensures that importing overlapping date ranges does not create duplicate records."
@@ -4319,6 +4323,10 @@ msgstr "Список транзакцій Budgie, згрупований за м
 msgid "Budgie transaction list in dark mode with a solid black background and bright red and green amounts"
 msgstr "Список транзакцій Budgie в темному режимі з суцільно чорним фоном та яскравими червоними й зеленими сумами"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Budgie transaction list showing a transfer row in green with its destination account instead of a category"
+msgstr "Список транзакцій Budgie із зеленим рядком переказу, що показує рахунок призначення замість категорії"
+
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie transaction list showing eighty-one transactions read straight from the on-device database"
 msgstr "Список транзакцій Budgie із вісімдесятьма однією транзакцією, прочитаною просто з бази даних на пристрої"
@@ -4346,6 +4354,10 @@ msgstr "Список транзакцій Budgie з контекстним ме�
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Budgie transaction list with a missing categories pill between the filter chips and the rows"
 msgstr "Список транзакцій Budgie із плашкою «Без категорій» між фільтрами та рядками"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Budgie transaction list with the context menu open on an expense row, Convert to Transfer among the actions"
+msgstr "Список транзакцій Budgie з відкритим контекстним меню на рядку витрати та дією «Перетворити на переказ»"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
@@ -5557,6 +5569,10 @@ msgstr "Цикл корекції — кожна прийнята або від�
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Cost of budgeting"
 msgstr "Вартість ведення бюджету"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Counted as money spent"
+msgstr "Зараховано як витрачені гроші"
 
 #: src/generic/component/integrations-section/integrations-section-transfer-card.tsx
 msgid "Counter-IBAN"
@@ -8227,7 +8243,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
 #: src/app/[lang]/features/categorization-rules/page.tsx
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/custom-categories/page.tsx
@@ -8815,9 +8830,17 @@ msgstr "Чи безпечно використовувати YNAB?"
 msgid "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
 msgstr "Це не так. І шаблон агрегатора несе ризики, які рідко чітко розкриваються користувачам. У цій статті пояснюється, що роблять агрегатори, чому масова агрегація створює цінну ціль для злому та як офлайн-перша архітектура забезпечує структурно безпечнішу альтернативу."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "It reads as a transfer afterwards"
+msgstr "Після цього це відображається як переказ"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "It sits above the list and counts only the transactions without a category inside your active account, date, type, tag and amount filters."
 msgstr "Вона стоїть над списком і рахує лише транзакції без категорії в межах активних фільтрів рахунку, дати, типу, тегу та суми."
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "It was money moving between your own accounts, so it inflated your spending. Long-press the row and Convert to Transfer is already in the menu."
+msgstr "Це були гроші, що рухалися між вашими власними рахунками, тож вони роздували витрати. Утримайте рядок — «Перетворити на переказ» уже в меню."
 
 #: src/generic/component/analytics-section/analytics-section-chart-header.tsx
 msgid "January 2025"
@@ -9190,10 +9213,6 @@ msgstr "Довге натискання — усі дії"
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "Long-Press Quick Actions on Every Transaction"
 msgstr "Швидкі дії за довгим натисканням для кожної транзакції"
-
-#: src/app/[lang]/features/convert-to-transfer/page.tsx
-msgid "Long-press the transaction → Convert to Transfer → pick the counter-account. Budgie creates the destination leg, links the pair, and updates analytics in place."
-msgstr "Утримуйте транзакцію → Конвертувати в переказ → оберіть рахунок призначення. Budgie створює другу ногу, пов'язує пару та оновлює аналітику на місці."
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Long-press the transfer in the list and Edit or Delete. The corresponding leg in the destination account stays linked and updates with you."
@@ -9929,6 +9948,10 @@ msgstr "Численні сторонні інтеграції"
 msgid "My friend repaid me by bank transfer — do I have to re-enter it?"
 msgstr "Друг повернув мені гроші банківським переказом — чи потрібно вводити це вручну ще раз?"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Name the account on the other side"
+msgstr "Вкажіть рахунок з іншого боку"
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Narrow by amount, not just by date"
 msgstr "Звужуйте пошук за сумою, а не лише за датою"
@@ -10183,6 +10206,10 @@ msgstr "Немає офіційної банківської синхроніз�
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "No official mobile app (third-party options exist)"
 msgstr "Без офіційного мобільного додатку (існують сторонні варіанти)"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
+msgstr "Друга транзакція не створюється — початковий рядок змінює тип. Переказ називає рахунок призначення й не потрапляє до аналітики витрат."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "No Security Through Obscurity"
@@ -10862,6 +10889,10 @@ msgstr "Реальний екран, показаний у тій темі, як
 msgid "One receipt, multiple categories."
 msgstr "Один чек, кілька категорій."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "One row, reclassified"
+msgstr "Один рядок, перекласифікований"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One screen per bank"
 msgstr "Один екран на банк"
@@ -11127,6 +11158,10 @@ msgstr "Необов'язково, прямі API-токени"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Options include:"
 msgstr "Варіанти включають:"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Or fund a new deposit"
+msgstr "Або поповніть новий депозит"
 
 #: src/app/[lang]/features/custom-categories/opengraph-image.tsx
 #: src/app/[lang]/features/transaction-tags/opengraph-image.tsx
@@ -12007,6 +12042,10 @@ msgstr "Нещодавні підвищення цін розчарували д
 msgid "reclassify"
 msgstr "перекласифікувати"
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Reclassify without an edit form"
+msgstr "Перекласифікувати без форми редагування"
+
 #: src/app/[lang]/features/convert-to-transfer/metadata.ts
 msgid "Reclassify, don't re-enter — turn an expense into a transfer in one tap."
 msgstr "Перекласифікуйте, не вводьте заново — перетворіть витрату на переказ одним дотиком."
@@ -12786,6 +12825,10 @@ msgid "Sometimes the simplest solution is the most private. Spreadsheets offer c
 msgstr "Іноді найпростіше рішення є найбільш приватним. Електронні таблиці пропонують повний контроль — якщо ви готові докласти зусиль."
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Source account already filled in"
+msgstr "Рахунок джерела вже заповнено"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Source and destination legs link automatically — no double-entry by you"
 msgstr "Ноги джерела та призначення пов'язуються автоматично — жодного подвійного введення з вашого боку"
 
@@ -13461,6 +13504,10 @@ msgstr "Це дуже багато копій ваших фінансових д
 msgid "The absence of professional audits isn’t necessarily disqualifying, especially for smaller projects. But for apps handling sensitive financial data, some form of external security validation is reassuring."
 msgstr "Відсутність професійних аудитів не обов'язково є дискваліфікуючим фактором, особливо для менших проєктів. Але для додатків, що обробляють чутливі фінансові дані, певна форма зовнішньої валідації безпеки дає впевненість."
 
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "The account it landed in"
+msgstr "Рахунок, куди воно надійшло"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "The account keeps its own"
 msgstr "Рахунок зберігає свою"
@@ -13476,6 +13523,10 @@ msgstr "Проблема стійкості агрегаторів"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Alternative: Offline-First Architecture"
 msgstr "Альтернатива: архітектура Offline-First"
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "The amount and the source account come across from the row you pressed. Search for where the money landed, or open a new deposit account funded by exactly this amount."
+msgstr "Сума та рахунок джерела переносяться з рядка, який ви утримали. Знайдіть, куди пішли гроші, або відкрийте новий депозитний рахунок, поповнений саме цією сумою."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "The amount carries over"
@@ -14388,6 +14439,10 @@ msgstr "Три екрани: обрати теги у формі витрати,
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
 msgstr "Три екрани: збереження витрати, повернення до вже збереженої витрати та список, у якому вони всі опиняються."
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "Three screens: the expense that was never spending, the picker that names the other account, and the transfer the row turns into."
+msgstr "Три екрани: витрата, яка нею не була, вибір рахунку з іншого боку і переказ, на який перетворюється рядок."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Three screens: the press that opens the menu, the four actions behind it, and the one screen a conversion needs."
@@ -16963,6 +17018,10 @@ msgstr ""
 #: src/app/[lang]/legal/license/page.tsx
 msgid "You have the right to make the contribution and grant us the rights to use it"
 msgstr ""
+
+#: src/app/[lang]/features/convert-to-transfer/page.tsx
+msgid "You logged it as an expense"
+msgstr "Ви записали це як витрату"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "You may not assign or transfer these Terms or your rights hereunder, in whole or in part, without our prior written consent. We may assign these Terms at any time without notice."
