@@ -5005,6 +5005,10 @@ msgstr "Графіки читаються з Вашої власної бази 
 msgid "Check the Issues and Discussions"
 msgstr "Перевірте Issues та обговорення"
 
+#: src/app/[lang]/beta/page.tsx
+msgid "Checking for the latest build…"
+msgstr "Пошук останньої збірки…"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Actual Budget if:"
 msgstr "Оберіть Actual Budget, якщо:"
