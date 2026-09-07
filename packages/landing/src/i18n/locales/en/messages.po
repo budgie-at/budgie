@@ -2346,6 +2346,10 @@ msgstr "A technical deep-dive into Budgie's offline-first architecture, explaini
 msgid "A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
 msgstr "A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
+msgstr "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively."
 msgstr "A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively."
@@ -3652,6 +3656,10 @@ msgstr "Blog"
 msgid "Booking date and value date both captured per transaction"
 msgstr "Booking date and value date both captured per transaction"
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "Bordered chip, plus a count"
+msgstr "Bordered chip, plus a count"
+
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
 msgstr "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
@@ -4319,8 +4327,8 @@ msgid "Budgie transaction list where each row shows a tag chip beside its catego
 msgstr "Budgie transaction list where each row shows a tag chip beside its category and date"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Budgie transaction list where every row shows its primary tag next to the category"
-msgstr "Budgie transaction list where every row shows its primary tag next to the category"
+msgid "Budgie transaction list where multi-tag rows show a bordered tag chip with a sibling count and single-tag rows show a plain chip"
+msgstr "Budgie transaction list where multi-tag rows show a bordered tag chip with a sibling count and single-tag rows show a plain chip"
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete"
@@ -6601,10 +6609,6 @@ msgstr "Each split row counts toward its own category in analytics — the paren
 msgid "Each split row keeps its own tags and comment — fully independent"
 msgstr "Each split row keeps its own tags and comment — fully independent"
 
-#: src/app/[lang]/features/primary-tag/page.tsx
-msgid "Each transaction's tag list has an isPrimary flag on at most one tag. The badge component renders the primary tag in a corner star. The selector UI surfaces the rotate-primary action on long-press."
-msgstr "Each transaction's tag list has an isPrimary flag on at most one tag. The badge component renders the primary tag in a corner star. The selector UI surfaces the rotate-primary action on long-press."
-
 #: src/generic/component/waitlist-form/waitlist-success.tsx
 msgid "Early access members get 50% off lifetime"
 msgstr "Early access members get 50% off lifetime"
@@ -8223,7 +8227,6 @@ msgstr "How is this different from the Tag Analytics page?"
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/multi-language-app/page.tsx
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-#: src/app/[lang]/features/primary-tag/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 #: src/app/[lang]/features/screenshot-protection/page.tsx
@@ -10866,6 +10869,10 @@ msgstr "One settings screen, and the thing worth noticing is the row that never 
 msgid "One tag chip, plus a count"
 msgstr "One tag chip, plus a count"
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "One tag needs no border"
+msgstr "One tag needs no border"
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag per transaction can be promoted to “primary” with a corner-star badge"
 msgstr "One tag per transaction can be promoted to “primary” with a corner-star badge"
@@ -11026,6 +11033,10 @@ msgstr "Open the expense form and Budgie offers pill-shaped suggestions from you
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Open the sheet, type the amount, tap save — that's the typical flow once defaults are tuned to your habits. The form picks your default account, the most-likely category, and today's date automatically."
 msgstr "Open the sheet, type the amount, tap save — that's the typical flow once defaults are tuned to your habits. The form picks your default account, the most-likely category, and today's date automatically."
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "Open the tag picker and long-press any tag to make it the one the list shows — no separate settings screen."
+msgstr "Open the tag picker and long-press any tag to make it the one the list shows — no separate settings screen."
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Open this page in Safari — other browsers cannot trigger an OTA install."
@@ -13226,6 +13237,10 @@ msgstr "System-adaptive dark theme that respects OLED displays and switches with
 msgid "System-adaptive dark theme that respects OLED displays. Switch with your device, or lock to dark or light. Charts recompute palette for legibility."
 msgstr "System-adaptive dark theme that respects OLED displays. Switch with your device, or lock to dark or light. Charts recompute palette for legibility."
 
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "Tag a transaction more than once and the list still shows one chip — bordered, with a count for the rest."
+msgstr "Tag a transaction more than once and the list still shows one chip — bordered, with a count for the rest."
+
 #: src/app/[lang]/features/tag-analytics/opengraph-image.tsx
 msgid "Tag Analytics"
 msgstr "Tag Analytics"
@@ -13512,6 +13527,10 @@ msgstr "The cash movement can stay a transfer, while the ATM commission is store
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "The category selector reorders by popularity over time, so the categories you use most surface first. Bank-synced transactions can pre-fill via MCC mapping; you can override at any time."
 msgstr "The category selector reorders by popularity over time, so the categories you use most surface first. Bank-synced transactions can pre-fill via MCC mapping; you can override at any time."
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "The choice lives on the transaction itself, so editing anything else about it never resets which tag is shown."
+msgstr "The choice lives on the transaction itself, so editing anything else about it never resets which tag is shown."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "The Cloud Dependency Problem"
@@ -15874,6 +15893,10 @@ msgstr "Which models does Budgie run on-device?"
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Which scripts are supported?"
 msgstr "Which scripts are supported?"
+
+#: src/app/[lang]/features/primary-tag/page.tsx
+msgid "Which tag chip the list shows"
+msgstr "Which tag chip the list shows"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Which YNAB alternative has the best mobile app?"
