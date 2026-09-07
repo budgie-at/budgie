@@ -22,7 +22,6 @@ jobs:
             pull-requests: read
         outputs:
             mobile: ${{ steps.gate.outputs.mobile }}
-            landing-only: ${{ steps.gate.outputs.landing-only }}
         steps:
             - name: Compute mobile-impact gate
               id: gate
@@ -30,7 +29,6 @@ jobs:
               with:
                   script: |
                       let mobile = true;
-                      let landingOnly = false;
 
                       try {
                         const files = await github.paginate(github.rest.pulls.listFiles, {
@@ -55,26 +53,16 @@ jobs:
                             (/^test-|media|compose/.test(filename.slice('tests/app-tests/scripts/'.length))))
                         );
                         mobile = !mobileSuiteExempt;
-                        const totalFiles = context.payload.pull_request.changed_files;
-                        const isFileListComplete = files.length === totalFiles;
-                        landingOnly = isFileListComplete && files.length > 0 && files.every(({ filename, previous_filename }) =>
-                          filename.startsWith('packages/landing/') &&
-                          (previous_filename === undefined || previous_filename.startsWith('packages/landing/'))
-                        );
-                        core.info(`Inspected ${files.length}/${totalFiles} changed files; mobile affected: ${mobile}; landing only: ${landingOnly}`);
+                        core.info(`Inspected ${files.length} changed files; mobile affected: ${mobile}`);
                       } catch (error) {
                         core.warning(`Could not inspect PR files; defaulting to mobile=true: ${error.message}`);
                       }
 
                       core.setOutput('mobile', mobile ? 'true' : 'false');
-                      core.setOutput('landing-only', landingOnly ? 'true' : 'false');
 
     code-quality:
-        needs: [detect-mobile-impact]
         name: Code quality checks
-        # Landing-only pull requests route to a hosted runner so they never queue
-        # behind the Mac mini fleet, whose Linux envelope is shared with iOS Maestro.
-        runs-on: ${{ needs.detect-mobile-impact.outputs.landing-only == 'true' && fromJSON('["self-hosted","trf-linux-amd64-4x8"]') || fromJSON('["self-hosted","linux-tiered","linux-large"]') }}
+        runs-on: [self-hosted, trf-linux-amd64-4x8]
         timeout-minutes: 60
         permissions:
             contents: read
