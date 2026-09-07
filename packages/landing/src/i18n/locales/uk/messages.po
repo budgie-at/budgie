@@ -2968,13 +2968,21 @@ msgstr "архітектура"
 msgid "Archive instead of deleting"
 msgstr "Архівуйте замість видалення"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Archive is not the same as inactive"
+msgstr "Архівувати — це не те саме, що неактивний"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Archive means you are done with the account — it leaves the home screen and the totals for good, but every transaction stays searchable and restorable from Settings. Inactive means the account is still real but should not clutter the home screen right now — it can be re-activated at any time from the same Settings screen."
+msgstr "Архівування означає, що ви закінчили з рахунком — він назавжди зникає з головного екрана та підсумків, але кожна транзакція залишається доступною для пошуку й відновлення в Налаштуваннях. Неактивний означає, що рахунок усе ще реальний, але наразі не має захаращувати головний екран — його можна повторно активувати будь-коли на тому самому екрані Налаштувань."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Archive when settled — debt drops off the home screen but stays in history"
 msgstr "Архівуйте після погашення — борг зникає з головного екрана, але залишається в історії"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Archive without deleting — old accounts disappear from the home but stay searchable"
-msgstr "Архівуйте без видалення — старі рахунки зникають з головного екрана, але залишаються у пошуку"
+msgid "Archive without deleting, or mark inactive without archiving — both keep the full history"
+msgstr "Архівуйте, не видаляючи, або позначте неактивним, не архівуючи — обидва варіанти зберігають повну історію"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Archiving or deleting one account leaves the rest of the connection syncing untouched"
@@ -3373,8 +3381,8 @@ msgid "Bank-synced accounts auto-group by provider on the home screen"
 msgstr "Рахунки з банківською синхронізацією автоматично групуються за провайдером на головному екрані"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Bank-synced accounts auto-group by provider on the home screen. Liability and debt accounts support negative balances. Archived accounts disappear from the home but stay searchable."
-msgstr "Рахунки з банківською синхронізацією автоматично групуються за провайдером на головному екрані. Рахунки зобов'язань і боргів підтримують від'ємні баланси. Архівовані рахунки зникають з головного екрана, але залишаються у пошуку."
+msgid "Bank-synced accounts auto-group by provider on the home screen. Self-custodied crypto holdings group by currency instead — several accounts holding the same coin collapse into one row with a combined balance, an expand toggle, and a link straight to that coin’s market screen. Liability and debt accounts support negative balances. Archived accounts disappear from the home but stay searchable."
+msgstr "Синхронізовані з банком рахунки автоматично групуються за провайдером на головному екрані. Натомість самостійно збережені криптоактиви групуються за валютою — кілька рахунків з однією й тією ж монетою об’єднуються в один рядок із загальним балансом, перемикачем розгортання та прямим посиланням на екран ринку цієї монети. Рахунки зобов’язань і боргів підтримують від’ємні баланси. Архівовані рахунки зникають із головного екрана, але залишаються доступними для пошуку."
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Bank-synced transactions carry Merchant Category Codes; Budgie maps them to your category tree automatically — first import, no setup."
@@ -3400,13 +3408,13 @@ msgstr "Банк, готівка, крипто, депозит і борг ма�
 msgid "Bank, cash, deposit, crypto, and debt accounts all roll up into a single net-worth number on your home screen, with multi-currency conversion baked in."
 msgstr "Банківські рахунки, готівка, депозити, крипто та борги збираються в одне число чистих активів на головному екрані, і конвертація валют уже вбудована."
 
+#: src/app/[lang]/features/account-management/metadata.ts
+msgid "Bank, cash, deposit, crypto, debt — all on one home screen, each with its own color."
+msgstr "Банк, готівка, депозит, крипта, борг — усе на одному головному екрані, кожен зі своїм кольором."
+
 #: src/app/[lang]/features/net-worth-tracker/metadata.ts
 msgid "Bank, cash, deposit, crypto, debt — one number on your home screen."
 msgstr "Банк, готівка, депозити, крипто, борги — одне число на головному екрані."
-
-#: src/app/[lang]/features/account-management/metadata.ts
-msgid "Bank, cash, deposit, crypto, stocks, debt — all on one home screen."
-msgstr "Банк, готівка, депозит, крипто, акції, борг — усе на одному головному екрані."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Basic API access available"
@@ -6747,6 +6755,10 @@ msgstr "Навіть якщо хтось перехопить з'єднання,
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Even if you delete your account with a budgeting app, the aggregator (Plaid, Yodlee, etc.) may retain your data. You have a relationship with the app and a separate relationship with the aggregator. Deleting one does not necessarily affect the other."
 msgstr "Навіть якщо ви видалите свій акаунт у бюджетному додатку, агрегатор (Plaid, Yodlee тощо) може зберегти ваші дані. У вас є відносини з додатком і окремі відносини з агрегатором. Видалення одних не обов'язково впливає на інші."
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Every account type carries its own color and icon, so a home screen with a dozen accounts still reads at a glance"
+msgstr "Кожен тип рахунку має свій колір і значок, тож головний екран з десятком рахунків залишається легко читабельним"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Every action on a long-press"
@@ -12395,6 +12407,10 @@ msgstr "Селектор перебудовується за частотою в
 msgid "Selector stays open across multi-selections; commit with a Done pill"
 msgstr "Селектор залишається відкритим при множинному виборі; підтвердіть кнопкою «Готово»"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Self-custodied coins group by currency with one combined balance and a tap through to that coin’s market screen; exchange-synced coins stay under their exchange"
+msgstr "Самостійно збережені монети групуються за валютою із загальним балансом і переходом на екран ринку цієї монети; монети, синхронізовані з біржею, залишаються під своєю біржею"
+
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/opengraph-image.tsx
 msgid "self-hosted"
 msgstr ""
@@ -14479,8 +14495,8 @@ msgid "Track bank fees as first-class transaction entries. ATM fees, transfer fe
 msgstr "Обліковуйте банківські комісії як повноцінні записи транзакцій. Комісії банкоматів, переказів і карток залишаються видимими в аналітиці, навіть коли основний рух коштів є переказом."
 
 #: src/app/[lang]/features/account-management/metadata.ts
-msgid "Track bank, cash, deposit, crypto, stocks, and debt accounts in one private app. Multi-currency, offline-first, with per-account net worth control."
-msgstr "Відстежуйте банківські рахунки, готівку, депозити, крипто, акції та борги в одному приватному застосунку. Мультивалютність, offline-first і контроль чистих активів для кожного рахунку."
+msgid "Track bank, cash, deposit, crypto, and debt accounts in one private app. Crypto groups by currency, archive or mark inactive, and multi-currency net worth control."
+msgstr "Відстежуйте банківські, готівкові, депозитні, криптовалютні рахунки та борги в одному приватному застосунку. Крипта групується за валютою, архівуйте або позначайте неактивним, і контроль чистого капіталу в кількох валютах."
 
 #: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
 msgid "Track Bitcoin, Ethereum, and 200 crypto assets alongside your bank accounts in one net-worth view. The largest ship with a year of daily price history."
@@ -14524,8 +14540,8 @@ msgid "Track money lent to friends or borrowed from others as first-class debt a
 msgstr "Відстежуйте гроші, позичені друзям або взяті в борг у інших, як повноцінні боргові рахунки з чітким напрямком, цільовими балансами, датами повернення та зв'язками з контактами. Прив'яжіть погашення, яке Ви вже записали, і оцінюйте міжвалютні борги за історичним курсом."
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Track unlimited bank accounts, cash wallets, deposits, crypto, stocks, and debt — grouped, archived, and renamed however you want."
-msgstr "Відстежуйте необмежену кількість банківських рахунків, готівкових гаманців, депозитів, крипто, акцій і боргів — групуйте, архівуйте та перейменовуйте їх як Вам зручно."
+msgid "Track unlimited bank accounts, cash wallets, deposits, crypto, and debt — grouped, colored, archived, and renamed however you want."
+msgstr "Відстежуйте необмежену кількість банківських рахунків, готівкових гаманців, депозитів, крипти та боргів — згруповані, розфарбовані, заархівовані та перейменовані як завгодно."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Tracked as fee entries"
@@ -14754,6 +14770,10 @@ msgstr "Два дотики до потрібного періоду"
 msgid "Two ways out, one screen"
 msgstr "Два виходи, один екран"
 
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "Two ways to get an account out of the way, for two different reasons. Archive it when you are done with it — an archived account leaves the home screen and the totals but keeps every transaction, ready to search and restore. Mark it inactive when it is still real but should not clutter the home screen — an inactive account stays out of the daily list without being treated as closed. Both keep the full history."
+msgstr "Два способи прибрати рахунок з дороги — з двох різних причин. Архівуйте його, коли з ним покінчено — заархівований рахунок зникає з головного екрана та підсумків, але зберігає кожну транзакцію, готову до пошуку й відновлення. Позначте неактивним, коли він усе ще реальний, але не має захаращувати головний екран — неактивний рахунок залишається поза щоденним списком, не вважаючись закритим. Обидва варіанти зберігають повну історію."
+
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Two-stage categorization flow"
 msgstr "Двоетапний потік категоризації"
@@ -14816,8 +14836,8 @@ msgid "Unlike some projects that publish only portions of their code while keepi
 msgstr "На відміну від деяких проєктів, які публікують лише частини коду, залишаючи критичні компоненти пропрієтарними, Budgie тримає вихідний код продукту публічним:"
 
 #: src/app/[lang]/features/account-management/page.tsx
-msgid "Unlimited accounts: Bank, Cash, Deposit, Crypto, Stocks, Debt — each with its own currency and balance"
-msgstr "Необмежена кількість рахунків: Банк, Готівка, Депозит, Крипто, Акції, Борг — кожен зі своєю валютою та балансом"
+msgid "Unlimited accounts: Checking, Savings (cash), Crypto, Debt, Deposit — plus bank and Binance sync — each with its own currency and balance"
+msgstr "Необмежена кількість рахунків: поточний, ощадний (готівка), крипто, борг, депозит — а також синхронізація з банком і Binance — кожен зі своєю валютою та балансом"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Unlimited splits per transaction — every category gets its accurate share"
@@ -15429,6 +15449,10 @@ msgstr "Чого немає на цьому екрані"
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "What Is On-Device AI?"
 msgstr "Що таке AI на пристрої?"
+
+#: src/app/[lang]/features/account-management/page.tsx
+msgid "What is the difference between archived and inactive?"
+msgstr "У чому різниця між заархівованим і неактивним?"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "What is the difference between local-first and offline-first?"
