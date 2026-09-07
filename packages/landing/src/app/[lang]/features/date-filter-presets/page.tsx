@@ -74,8 +74,8 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                 locale={lang}
                 tagline={
                     <Trans>
-                        Today, Yesterday, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two
-                        taps to the right window.
+                        Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the
+                        right window.
                     </Trans>
                 }
             />
@@ -140,14 +140,14 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Manual date pickers are slow. Budgie wraps them with the eight presets you actually use, plus a custom-range
+                        Manual date pickers are slow. Budgie wraps them with the seven presets you actually use, plus a custom-range
                         fallback. Every transaction list, every analytics tab, every recurring view shares the same picker.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The picker is locale-aware. Week-start day comes from your device locale. Last Week always means &quot;the most
-                        recent completed Monday-to-Sunday&quot; (or Sunday-to-Saturday for en-US users).
+                        This Week and Last Week always mean the most recently completed Monday-to-Sunday span. The week boundary itself does
+                        not follow your device locale today.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -158,7 +158,7 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Eight presets cover the windows you actually use, from Today to All Time</Trans>
+                        <Trans>Seven presets cover the windows you actually use, from Today to All Time</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Custom range fallback for anything else</Trans>
@@ -167,7 +167,7 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
                         <Trans>Same picker across analytics, transactions, and recurring screens</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Locale-aware week start (Monday in EU, Sunday in en-US)</Trans>
+                        <Trans>This Week and Last Week always run Monday to Sunday, no matter your locale</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>
@@ -202,7 +202,12 @@ export default async function DateFilterPresetsFeaturePage(props: PageLangParam)
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     question={<Trans>Can I customize the week start?</Trans>}
-                    answer={<Trans>Yes — Settings → Display → Start of Week. Override the locale default with Monday or Sunday.</Trans>}
+                    answer={
+                        <Trans>
+                            No. This Week and Last Week always use a Monday-to-Sunday week, regardless of your locale — there is no
+                            locale-based or manual override today.
+                        </Trans>
+                    }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Are the presets the same on every screen?</Trans>}
