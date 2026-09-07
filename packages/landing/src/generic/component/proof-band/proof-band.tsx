@@ -13,7 +13,7 @@ export const ProofBand = ({ locale }: Props) => (
     <section className="w-full border-y border-border/60 bg-muted/30 py-8 md:py-20" id="proof">
         <div className="container px-4 md:px-6 max-w-7xl">
             <h2 className="max-w-2xl text-2xl md:text-4xl font-bold tracking-tight text-balance">
-                <Trans>Two claims you can check yourself</Trans>
+                <Trans>Why offline-first and source-available matter</Trans>
             </h2>
 
             <div className="mt-8 md:mt-12 grid gap-10 md:grid-cols-2 md:gap-16">
