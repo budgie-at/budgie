@@ -1,40 +1,18 @@
-import { Star } from 'lucide-react';
-
-import { Card } from '../../../ui/card/card';
-import { CardContent } from '../../../ui/card/card-content';
-
 import type { ReactNode } from 'react';
 
 interface Props {
-    quote: ReactNode;
-    author: ReactNode;
-    role: ReactNode;
-    avatarLetter: string;
-    rating: number;
+    readonly quote: ReactNode;
+    readonly author: ReactNode;
+    readonly role: ReactNode;
 }
 
-export const TestimonialCard = ({ quote, author, role, avatarLetter, rating }: Props) => (
-    <Card className="min-w-[320px] max-w-[400px] flex-shrink-0 snap-start overflow-hidden border-border/40 bg-linear-to-b from-background to-muted/10 backdrop-blur-sm transition-all hover:shadow-md">
-        <CardContent className="p-6 flex flex-col h-full">
-            <div className="flex mb-4">
-                {Array.from({ length: rating }, (_, number) => number).map(number => (
-                    <Star className="size-4 text-yellow-500 fill-yellow-500" key={number} />
-                ))}
-            </div>
+export const TestimonialCard = ({ quote, author, role }: Props) => (
+    <figure className="flex h-full flex-col rounded-2xl border border-border/60 bg-card p-6">
+        <blockquote className="grow text-base leading-relaxed text-pretty">{quote}</blockquote>
 
-            <p className="text-lg mb-6 grow">{quote}</p>
-
-            <div className="flex items-center gap-4 mt-auto pt-4 border-t border-border/40">
-                <div className="size-10 rounded-full bg-muted flex items-center justify-center text-foreground font-medium">
-                    {avatarLetter}
-                </div>
-
-                <div>
-                    <p className="font-medium">{author}</p>
-
-                    <p className="text-sm text-muted-foreground">{role}</p>
-                </div>
-            </div>
-        </CardContent>
-    </Card>
+        <figcaption className="mt-6 border-t border-border/60 pt-4 text-sm">
+            <span className="block font-medium">{author}</span>
+            <span className="block text-muted-foreground">{role}</span>
+        </figcaption>
+    </figure>
 );

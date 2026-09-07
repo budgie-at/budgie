@@ -37,8 +37,8 @@ const inputVariants = cva(
 const buttonVariants = cva('rounded-full h-14 px-8 text-lg font-semibold transition-all', {
     variants: {
         variant: {
-            hero: 'bg-linear-to-r from-primary to-primary/80 hover:opacity-90',
-            cta: 'bg-white text-red-600 hover:bg-white/90'
+            hero: 'bg-primary text-primary-foreground hover:bg-primary/90',
+            cta: 'bg-white text-primary hover:bg-white/90'
         }
     }
 });
@@ -65,7 +65,7 @@ const errorVariants = cva('text-sm', {
     variants: {
         variant: {
             hero: 'text-red-500',
-            cta: 'text-white-500'
+            cta: 'text-white'
         }
     }
 });

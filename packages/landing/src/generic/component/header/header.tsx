@@ -3,7 +3,9 @@
 import { Trans } from '@lingui/react/macro';
 import { ChevronRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../ui/button';
 import { useSmoothScroll } from '../../hook/use-smooth-scroll.hook';
@@ -16,16 +18,32 @@ interface Props {
     lang: string;
 }
 
+const HEADER_SCROLL_THRESHOLD = 10;
+
 export const Header = ({ lang }: Props) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
+    const headerRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
+        const header = headerRef.current;
+
+        if (!isDefined(header)) {
+            return emptyFn;
+        }
+
+        let isScrolled = false;
+
         const handleScroll = (): void => {
-            setIsScrolled(window.scrollY > 10);
+            const nextScrolled = window.scrollY > HEADER_SCROLL_THRESHOLD;
+
+            if (nextScrolled !== isScrolled) {
+                isScrolled = nextScrolled;
+                header.toggleAttribute('data-scrolled', nextScrolled);
+            }
         };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
 
         return (): void => {
             window.removeEventListener('scroll', handleScroll);
@@ -38,9 +56,7 @@ export const Header = ({ lang }: Props) => {
     const { handleScrollToTestimonials, handleScrollToWaitlist, handleScrollToFaq } = useSmoothScroll();
 
     return (
-        <header
-            className={`sticky top-0 z-50 w-full backdrop-blur-lg transition-all duration-300 ${isScrolled ? 'bg-background/80 shadow-xs' : 'bg-transparent'}`}
-        >
+        <header className="site-header" ref={headerRef}>
             <div className="container flex h-16 items-center justify-between">
                 <Link className="flex items-center gap-2 font-bold hover:opacity-80 transition-opacity" href={`/${lang}`}>
                     <Logo />
