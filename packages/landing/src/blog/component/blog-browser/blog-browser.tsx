@@ -54,7 +54,6 @@ export const BlogBrowser = ({ articles, locale }: Props) => {
                                 key={article.slug}
                                 date={article.date}
                                 description={article.description}
-                                image={article.image}
                                 index={index}
                                 locale={locale}
                                 readingTimeMinutes={article.readingTimeMinutes}

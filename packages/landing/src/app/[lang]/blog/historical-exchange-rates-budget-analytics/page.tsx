@@ -65,14 +65,7 @@ export default async function HistoricalExchangeRatesBudgetAnalyticsArticle(prop
                 title={i18n._(ARTICLE_METADATA.title)}
             />
 
-            <BlogArticleHero image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`} imageAlt={i18n._(ARTICLE_METADATA.title)}>
-                <Link
-                    className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-                    href={`/${lang}/blog`}
-                >
-                    <Trans>← Back to Blog</Trans>
-                </Link>
-
+            <BlogArticleHero article={ARTICLE_METADATA}>
                 <BlogBreadcrumbs>
                     <BlogBreadcrumbLink href={`/${lang}`} position={1}>
                         <Trans>Home</Trans>
