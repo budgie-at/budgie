@@ -4095,8 +4095,8 @@ msgid "Budgie merges obvious transfer pairs and merchant refunds so bank imports
 msgstr "Budgie merges obvious transfer pairs and merchant refunds so bank imports do not inflate spending or income. Counter-IBAN, amount, date, and title matching run on-device."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "Budgie missing categories screen listing only the transactions that still need a category"
-msgstr "Budgie missing categories screen listing only the transactions that still need a category"
+msgid "Budgie Missing categories screen listing income and expense rows that still have no category"
+msgstr "Budgie Missing categories screen listing income and expense rows that still have no category"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch"
@@ -4323,8 +4323,8 @@ msgid "Budgie transaction list with a long-press context menu offering edit, con
 msgstr "Budgie transaction list with a long-press context menu offering edit, convert to transfer, attach debt and delete"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "Budgie transaction list with the missing categories pill above the uncategorised rows"
-msgstr "Budgie transaction list with the missing categories pill above the uncategorised rows"
+msgid "Budgie transaction list with a missing categories pill between the filter chips and the rows"
+msgstr "Budgie transaction list with a missing categories pill between the filter chips and the rows"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports partial refunds, and keeps the audit trail visible from the transaction detail screen."
@@ -7389,6 +7389,10 @@ msgstr "Five window presets: 7, 30, 90 days, plus custom range"
 msgid "Fix bugs and submit pull requests"
 msgstr "Fix bugs and submit pull requests"
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Fix one, the count drops"
+msgstr "Fix one, the count drops"
+
 #: src/app/[lang]/features/deposit-tracking/metadata.ts
 msgid "Fixed-term savings kept separate from everyday spending, with maturity dates and expected payout math."
 msgstr "Fixed-term savings kept separate from everyday spending, with maturity dates and expected payout math."
@@ -7607,10 +7611,6 @@ msgstr "From bank connections, yes. Crypto exchange connections do not offer dep
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "From one token to your home screen"
 msgstr "From one token to your home screen"
-
-#: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "From there, edit the transactions, apply your custom categories, accept AI category suggestions, or rely on MCC mapping for bank-synced rows. The goal is simple: every report should explain where your money actually went."
-msgstr "From there, edit the transactions, apply your custom categories, accept AI category suggestions, or rely on MCC mapping for bank-synced rows. The goal is simple: every report should explain where your money actually went."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Full"
@@ -8220,7 +8220,6 @@ msgstr "How is this different from the Tag Analytics page?"
 #: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-#: src/app/[lang]/features/uncategorized-transactions/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "How it works"
 msgstr "How it works"
@@ -8788,6 +8787,10 @@ msgstr "Is YNAB safe to use?"
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
 msgstr "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "It sits above the list and counts only the transactions without a category inside your active account, date, type, tag and amount filters."
+msgstr "It sits above the list and counts only the transactions without a category inside your active account, date, type, tag and amount filters."
 
 #: src/generic/component/analytics-section/analytics-section-chart-header.tsx
 msgid "January 2025"
@@ -9540,6 +9543,10 @@ msgstr "Mint’s shutdown was a reminder that free services have hidden costs. Y
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
 msgid "missing categories"
 msgstr "missing categories"
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Missing categories in this filter"
+msgstr "Missing categories in this filter"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Missing Features Developers Need"
@@ -10896,6 +10903,10 @@ msgstr "Only if you want to. Budgie can suggest a starting budget derived from y
 msgid "Only that account is affected. Archiving or deleting it never removes the connection, so its siblings keep syncing with the same credential."
 msgstr "Only that account is affected. Archiving or deleting it never removes the connection, so its siblings keep syncing with the same credential."
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Only the rows without a category"
+msgstr "Only the rows without a category"
+
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically after sync or manual entry."
 msgstr "Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically after sync or manual entry."
@@ -10907,6 +10918,10 @@ msgstr "Only you see your data"
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Open a deposit straight from the connection, so it inherits the bank it belongs to"
 msgstr "Open a deposit straight from the connection, so it inherits the bank it belongs to"
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual refresh."
+msgstr "Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual refresh."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Open any list of Mint alternatives and you will find subscription-based cloud services, ad-supported web apps, and venture-funded startups. Each of them recreates the same architecture: your credentials go to an aggregator, your transactions flow to a server, a company stores your financial history indefinitely."
@@ -11000,10 +11015,6 @@ msgstr "Open the sheet, type the amount, tap save — that's the typical flow on
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Open this page in Safari — other browsers cannot trigger an OTA install."
 msgstr "Open this page in Safari — other browsers cannot trigger an OTA install."
-
-#: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "Open Transactions or an account's transaction list. Apply any filters you need. If Budgie finds matching transactions without categories, the missing-category pill appears above the list. Tap it to open a focused cleanup page that preserves those filters."
-msgstr "Open Transactions or an account's transaction list. Apply any filters you need. If Budgie finds matching transactions without categories, the missing-category pill appears above the list. Tap it to open a focused cleanup page that preserves those filters."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/features/open-source-budget-app-mobile/opengraph-image.tsx
@@ -13273,6 +13284,10 @@ msgstr "Taking Control of Your Financial Privacy"
 msgid "Tap a calendar day to see the transactions due. The forecasted upcoming list extends out into the next 60 days. Cross-currency recurring shows in your home currency; original amount on tap."
 msgstr "Tap a calendar day to see the transactions due. The forecasted upcoming list extends out into the next 60 days. Cross-currency recurring shows in your home currency; original amount on tap."
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Tap a row to categorize it"
+msgstr "Tap a row to categorize it"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Tap any category row to open exactly the transactions behind that number for this period"
 msgstr "Tap any category row to open exactly the transactions behind that number for this period"
@@ -13296,6 +13311,10 @@ msgstr "Tap Import → CSV. Pick the file. Map columns. Save the mapping as a pr
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every transaction into a new or existing Erste account."
 msgstr "Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every transaction into a new or existing Erste account."
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Tap it for a focused list"
+msgstr "Tap it for a focused list"
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Tap the mic in the quick-entry sheet"
@@ -13523,6 +13542,10 @@ msgstr "The core features of the Service are provided free of charge. We may off
 msgid "The core of Budgie AI categorization is a 1.7-billion-parameter language model. A few years ago, running a model this size on a phone would have been impractical. Three advances made it possible:"
 msgstr "The core of Budgie AI categorization is a 1.7-billion-parameter language model. A few years ago, running a model this size on a phone would have been impractical. Three advances made it possible:"
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "The count above your list, the focused list behind it, and the row you open to fix."
+msgstr "The count above your list, the focused list behind it, and the row you open to fix."
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The CRDT research community has developed structures for various use cases: maps, graphs, JSON documents, and rich text. Libraries like Yjs, Automerge, and CRDTs provide production-ready implementations."
 msgstr "The CRDT research community has developed structures for various use cases: maps, graphs, JSON documents, and rich text. Libraries like Yjs, Automerge, and CRDTs provide production-ready implementations."
@@ -13693,6 +13716,10 @@ msgstr "The menu opens right there"
 msgid "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
 msgstr "The merged-from category's transactions are reassigned to the merged-into category, and the empty category is deleted. Reversible only by re-categorizing manually."
 
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "The Missing categories screen opens with only those rows, carrying your account, date, type and tag filters across."
+msgstr "The Missing categories screen opens with only those rows, carrying your account, date, type and tag filters across."
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Money Data upgrade scans entries where the base currency value is missing and groups them by date, account currency, and base currency."
 msgstr "The Money Data upgrade scans entries where the base currency value is missing and groups them by date, account currency, and base currency."
@@ -13752,6 +13779,10 @@ msgstr "The picker is locale-aware. Week-start day comes from your device locale
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "The picker searches same-currency expenses across accounts and sorts likely matches by date and amount. Choose the expense, confirm, and Budgie shows whether the refund is full or partial."
 msgstr "The picker searches same-currency expenses across accounts and sorts likely matches by date and amount. Choose the expense, confirm, and Budgie shows whether the refund is full or partial."
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "The pill counts what you missed"
+msgstr "The pill counts what you missed"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "The PIN entry screen appears as a fallback. After five biometric failures, the OS itself prompts the device passcode."
@@ -13870,6 +13901,10 @@ msgstr "The Rule: Store Original Truth and Reporting Value"
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The Rules screen has a ranked search that looks at every condition, every action, and the related category, tag, and account names, so you can find the rule responsible for a category in a couple of keystrokes."
 msgstr "The Rules screen has a ranked search that looks at every condition, every action, and the related category, tag, and account names, so you can find the rule responsible for a category in a couple of keystrokes."
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "The same Budgie Missing categories list with its first uncategorised row ready to open"
+msgstr "The same Budgie Missing categories list with its first uncategorised row ready to open"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
@@ -14262,6 +14297,10 @@ msgstr "This transparency lets you make informed decisions about whether Budgie 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three first-class transaction types: expense, income, transfer — never confused, never miscounted"
 msgstr "Three first-class transaction types: expense, income, transfer — never confused, never miscounted"
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Three screens to a clean report"
+msgstr "Three screens to a clean report"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Three screens with nothing behind them — the list, the entry, and a Settings page with no account on it."
