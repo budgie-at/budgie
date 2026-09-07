@@ -1986,16 +1986,6 @@ msgid "Left"
 msgstr "Left"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
-#: src/account/component/debt-account-card/debt-account-card.tsx
-msgid "Left to receive"
-msgstr "Left to receive"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
-#: src/account/component/debt-account-card/debt-account-card.tsx
-msgid "Left to repay"
-msgstr "Left to repay"
-
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Lent"
@@ -2283,6 +2273,10 @@ msgstr "No currencies found"
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No Custom Categories"
 msgstr "No Custom Categories"
+
+#: src/account/component/debt-account-card-empty/debt-account-card-empty.tsx
+msgid "No debt yet"
+msgstr "No debt yet"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No enabled accounts were found in this file"
@@ -2753,7 +2747,7 @@ msgstr "Remove split"
 msgid "Remove split?"
 msgstr "Remove split?"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
 msgstr "Repaid"
 
@@ -2796,7 +2790,7 @@ msgstr "Restore from a backup file"
 msgid "Resuming AI…"
 msgstr "Resuming AI…"
 
-#: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/constant/debt-settled-label.constant.ts
 msgid "Returned"
 msgstr "Returned"
 
@@ -3083,6 +3077,10 @@ msgstr "Set Return Date"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
 msgstr "Settings"
+
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Settled"
+msgstr "Settled"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show $1,234.56 instead of $1,235"
@@ -3417,6 +3415,14 @@ msgstr "To Account"
 msgid "To Currency"
 msgstr "To Currency"
 
+#: src/account/constant/debt-remaining-label.constant.ts
+msgid "To receive"
+msgstr "To receive"
+
+#: src/account/constant/debt-remaining-label.constant.ts
+msgid "To repay"
+msgstr "To repay"
+
 #: src/@generic/constant/date-period.constant.ts
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Today"
@@ -3426,6 +3432,8 @@ msgstr "Today"
 msgid "Token required"
 msgstr "Token required"
 
+#: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"

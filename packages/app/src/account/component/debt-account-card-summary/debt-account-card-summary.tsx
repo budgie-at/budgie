@@ -1,63 +1,56 @@
-import { View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { abbreviateNumber } from '../../../@generic/utils/abbriviate-number.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
+import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
+import { useDebtAccountCard } from '../../context/debt-account-card.context';
 
 import { DebtAccountCardSummarySelector } from './debt-account-card-summary.selector';
 
-interface Props {
-    readonly instrumentSymbol: string;
-    readonly outstandingAmount: number;
-    readonly paidAmount: number;
-    readonly title: string;
-    readonly totalAmount: number;
-}
+export const DebtAccountCardSummary = () => {
+    const { debtType, instrumentSymbol, summary, title } = useDebtAccountCard();
+    const { t } = useLingui();
+    const formatDigits = useDisplayFormatDigits();
 
-export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, paidAmount, title, totalAmount }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
-    const formatMoney = useFormatDigits(decimalPlaces);
-    const amountLeft = formatMoney(outstandingAmount, instrumentSymbol);
-    const compactPaidAmountLabel = `${instrumentSymbol}${abbreviateNumber(paidAmount, 2)}`;
-    const totalAmountLabel = `${instrumentSymbol}${abbreviateNumber(totalAmount, 2)}`;
-    const outstandingAmountSelector = DebtAccountCardSummarySelector.OutstandingAmount(title, outstandingAmount);
-    const paidAmountSelector = DebtAccountCardSummarySelector.PaidAmount(title, paidAmount);
-    const totalAmountSelector = DebtAccountCardSummarySelector.TotalAmount(title, totalAmount);
+    const fractionCaption = `${t(DEBT_SETTLED_LABEL[debtType])} / ${t`Total`}`;
 
     return (
-        <View className="flex-row items-center">
-            <View className="flex-1 min-w-0 pr-md">
+        <View className="flex-row flex-wrap items-end justify-between gap-x-md gap-y-sm">
+            <View className="min-w-[55%] shrink grow gap-y-xxs">
+                <Text className="text-secondary-foreground text-xxs" numberOfLines={2}>
+                    {t(DEBT_REMAINING_LABEL[debtType])}
+                </Text>
                 <ProtectedText
                     adjustsFontSizeToFit
-                    className="text-primary font-medium"
-                    ellipsizeMode="tail"
-                    minimumFontScale={0.72}
+                    className="text-primary font-medium tabular-nums"
+                    minimumFontScale={0.85}
                     numberOfLines={1}
-                    testID={outstandingAmountSelector}
+                    testID={DebtAccountCardSummarySelector.OutstandingAmount(title, summary.outstandingAmount)}
                 >
-                    {amountLeft}
+                    {formatDigits(summary.outstandingAmount, instrumentSymbol)}
                 </ProtectedText>
             </View>
 
-            <View className="shrink-0 items-end max-w-[45%]">
+            <View className="grow items-end gap-y-[2px]">
+                <Text className="text-secondary-foreground text-xxs text-right" numberOfLines={2}>
+                    {fractionCaption}
+                </Text>
                 <ProtectedText
-                    adjustsFontSizeToFit
-                    className="text-secondary-foreground text-xxs font-medium text-right border-b border-b-primary pb-[2px]"
-                    minimumFontScale={0.72}
+                    className="text-secondary-foreground text-xxs font-medium text-right tabular-nums"
                     numberOfLines={1}
-                    testID={paidAmountSelector}
+                    testID={DebtAccountCardSummarySelector.PaidAmount(title, summary.paidAmount)}
                 >
-                    {compactPaidAmountLabel}
+                    {formatDigits(summary.paidAmount, instrumentSymbol)}
                 </ProtectedText>
+                <View className="h-px w-full bg-secondary-corner" />
                 <ProtectedText
-                    adjustsFontSizeToFit
-                    className="text-primary text-xxs font-semibold text-right"
-                    minimumFontScale={0.72}
+                    className="text-primary text-xxs font-semibold text-right tabular-nums"
                     numberOfLines={1}
-                    testID={totalAmountSelector}
+                    testID={DebtAccountCardSummarySelector.TotalAmount(title, summary.totalAmount)}
                 >
-                    {totalAmountLabel}
+                    {formatDigits(summary.totalAmount, instrumentSymbol)}
                 </ProtectedText>
             </View>
         </View>

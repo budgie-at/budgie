@@ -24,6 +24,8 @@ appId: ${APP_ID}
       id: 'DebtAccountCardSummary.PaidAmount.E2E_Borrowed_Account.0'
 - assertVisible:
       id: 'DebtAccountCardSummary.TotalAmount.E2E_Borrowed_Account.800'
+- assertVisible:
+      id: 'DebtAccountCardFooter.Percentage.E2E_Borrowed_Account.0'
 
 - runFlow:
       file: subflows/accounts/exercise-debt-account.flow.yaml
