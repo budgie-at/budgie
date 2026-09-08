@@ -235,6 +235,26 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
     { slug: 'categorization-rules', locale: 'fr', scene: 'categorization-rules-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'categorization-rules', locale: 'uk', scene: 'categorization-rules-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
     { slug: 'categorization-rules', locale: 'uk', scene: 'categorization-rules-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'de', scene: 'convert-to-refund-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'de', scene: 'convert-to-refund-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'en', scene: 'convert-to-refund-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'en', scene: 'convert-to-refund-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'es', scene: 'convert-to-refund-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'es', scene: 'convert-to-refund-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'fr', scene: 'convert-to-refund-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'fr', scene: 'convert-to-refund-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'uk', scene: 'convert-to-refund-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'uk', scene: 'convert-to-refund-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'de', scene: 'convert-to-refund-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'de', scene: 'convert-to-refund-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'en', scene: 'convert-to-refund-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'en', scene: 'convert-to-refund-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'es', scene: 'convert-to-refund-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'es', scene: 'convert-to-refund-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'fr', scene: 'convert-to-refund-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'fr', scene: 'convert-to-refund-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'uk', scene: 'convert-to-refund-2', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'convert-to-refund', locale: 'uk', scene: 'convert-to-refund-2', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'convert-to-transfer', locale: 'de', scene: 'convert-to-transfer-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
     { slug: 'convert-to-transfer', locale: 'de', scene: 'convert-to-transfer-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'convert-to-transfer', locale: 'en', scene: 'convert-to-transfer-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
@@ -382,6 +402,76 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
         slug: 'crypto-investment-tracking',
         locale: 'uk',
         scene: 'crypto-investment-tracking-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        locale: 'de',
+        scene: 'crypto-investment-tracking-3',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        locale: 'de',
+        scene: 'crypto-investment-tracking-3',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        locale: 'en',
+        scene: 'crypto-investment-tracking-3',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        locale: 'en',
+        scene: 'crypto-investment-tracking-3',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        locale: 'es',
+        scene: 'crypto-investment-tracking-3',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        locale: 'es',
+        scene: 'crypto-investment-tracking-3',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        locale: 'fr',
+        scene: 'crypto-investment-tracking-3',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        locale: 'fr',
+        scene: 'crypto-investment-tracking-3',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        locale: 'uk',
+        scene: 'crypto-investment-tracking-3',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'crypto-investment-tracking',
+        locale: 'uk',
+        scene: 'crypto-investment-tracking-3',
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
@@ -1390,6 +1480,76 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
         slug: 'transfer-pair-detection',
         locale: 'uk',
         scene: 'transfer-pair-detection-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'transfer-pair-detection',
+        locale: 'de',
+        scene: 'transfer-pair-detection-2',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'transfer-pair-detection',
+        locale: 'de',
+        scene: 'transfer-pair-detection-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'transfer-pair-detection',
+        locale: 'en',
+        scene: 'transfer-pair-detection-2',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'transfer-pair-detection',
+        locale: 'en',
+        scene: 'transfer-pair-detection-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'transfer-pair-detection',
+        locale: 'es',
+        scene: 'transfer-pair-detection-2',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'transfer-pair-detection',
+        locale: 'es',
+        scene: 'transfer-pair-detection-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'transfer-pair-detection',
+        locale: 'fr',
+        scene: 'transfer-pair-detection-2',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'transfer-pair-detection',
+        locale: 'fr',
+        scene: 'transfer-pair-detection-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'transfer-pair-detection',
+        locale: 'uk',
+        scene: 'transfer-pair-detection-2',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'transfer-pair-detection',
+        locale: 'uk',
+        scene: 'transfer-pair-detection-2',
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
