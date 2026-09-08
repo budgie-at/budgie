@@ -517,6 +517,26 @@ describe('debt settlement statistics', () => {
         expectDebtProgressSummary(summary, 500 * PRECISION, 0, 500 * PRECISION, 0);
     });
 
+    it('keeps a returned amount above the target when transaction events opened more than the target', async () => {
+        const debtAccount = await createTransferOpenedLentDebt();
+
+        insertOne(DebtEventEntityTable, {
+            debtAccountId: debtAccount.id,
+            direction: DebtEventDirectionEnum.OPEN,
+            source: DebtEventSourceEnum.INCOME_ATTACHMENT,
+            amount: 500 * PRECISION,
+            operatedAt: new Date()
+        });
+
+        await accountService.updateDebtById(debtAccount.id, {
+            debtType: AccountDebtTypeEnum.LENT,
+            currentBalance: 750,
+            targetBalance: 500
+        });
+
+        expectDebtProgressSummary(buildSummaryFromDebtAccount(debtAccount), 250 * PRECISION, 750 * PRECISION, 1_000 * PRECISION, 75);
+    });
+
     it('keeps a transfer opened lent debt total unchanged when its account settings are saved', async () => {
         const debtAccount = await createTransferOpenedLentDebt();
 

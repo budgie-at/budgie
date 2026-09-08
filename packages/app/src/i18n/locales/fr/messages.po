@@ -411,7 +411,7 @@ msgstr "Déjà remboursé"
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Already returned"
-msgstr "Déjà remboursé"
+msgstr "Déjà reçu"
 
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
