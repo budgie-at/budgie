@@ -748,10 +748,10 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Lent Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.13291'
+      id: 'DebtAccountBalance.OutstandingAmount.13491'
 - assertVisible:
-      id: 'DebtAccountBalance.PaidAmount.2209'
+      id: 'DebtAccountBalance.PaidAmount.2109'
 - assertVisible:
-      id: 'DebtAccountBalance.TotalAmount.15500'
+      id: 'DebtAccountBalance.TotalAmount.15600'
 - assertVisible:
-      id: 'DebtAccountBalance.Percentage.14_25'
+      id: 'DebtAccountBalance.Percentage.13_52'
