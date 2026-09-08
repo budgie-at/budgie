@@ -4132,8 +4132,8 @@ msgid "Budgie isn’t the only open-source option for financial management. A he
 msgstr "Budgie n'est pas la seule option open source pour la gestion financière. Un écosystème sain d'alternatives existe, et nous croyons qu'il est juste de les mentionner honnêtement. Différents outils conviennent à différents besoins, et le meilleur choix dépend de vos exigences spécifiques."
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Budgie language selector offering English, French, Ukrainian, German and Spanish"
-msgstr "Sélecteur de langue de Budgie proposant l’anglais, le français, l’ukrainien, l’allemand et l’espagnol"
+msgid "Budgie language selector sheet with a search box and English, French and Ukrainian rows, each with a flag and language code"
+msgstr "Feuille de sélection de langue de Budgie avec une barre de recherche et les lignes Anglais, Français et Ukrainien, chacune avec un drapeau et un code de langue"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie leaves the base value empty until a suitable rate exists. That is safer than inventing a value, because analytics can identify unvalued rows instead of silently mixing guessed totals with real totals."
@@ -4302,6 +4302,10 @@ msgstr "Écran des paramètres de Budgie indiquant que toutes les données finan
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie settings screen with security, language, currency and default account rows and no sign-in row"
 msgstr "Écran des paramètres de Budgie avec les lignes sécurité, langue, devise et compte par défaut, et aucune ligne de connexion"
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Budgie settings screen with the General section showing the Language row set to the active language above Main Currency and Default Account"
+msgstr "Écran des paramètres de Budgie avec la section Général affichant la ligne Langue réglée sur la langue active, au-dessus de Devise principale et Compte par défaut"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle"
@@ -6816,6 +6820,10 @@ msgstr "Le chiffrement de bout en bout explique"
 msgid "English (source), Ukrainian, French, German, Spanish. More on the roadmap as the community contributes translations."
 msgstr "Anglais (source), ukrainien, français, allemand, espagnol. D'autres langues sont prévues au fur et à mesure des contributions de la communauté."
 
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "English, Ukrainian, French, German and Spanish."
+msgstr "Anglais, ukrainien, français, allemand et espagnol."
+
 #: src/app/[lang]/features/multi-language-app/metadata.ts
 msgid "English, Ukrainian, French, German, Spanish — full UI, locale-aware formatting."
 msgstr "Anglais, ukrainien, français, allemand, espagnol — interface complète, formatage adapté à la locale."
@@ -7448,6 +7456,10 @@ msgid "First, good-faith negotiation between the parties"
 msgstr ""
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Five languages, all first-class"
+msgstr "Cinq langues, toutes de premier plan"
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Five languages: English, Ukrainian, French, German, Spanish — full UI"
 msgstr "Cinq langues : anglais, ukrainien, français, allemand, espagnol — interface complète"
 
@@ -7482,6 +7494,10 @@ msgstr "Les dépôts à terme ont désormais leur propre type de compte avec un 
 #: src/app/[lang]/features/deposit-tracking/metadata.ts
 msgid "Fixed-term savings kept separate from everyday spending, with maturity dates and expected payout math."
 msgstr "Épargne à terme séparée des dépenses du quotidien, avec dates d’échéance et calcul du montant attendu."
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Flag, name and code per row"
+msgstr "Drapeau, nom et code sur chaque ligne"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "For a complete list of all open source dependencies and their respective licenses, please refer to the package.json files in our <0>GitHub repository</0>. Each component is used in accordance with its respective license terms."
@@ -8246,7 +8262,6 @@ msgstr "En quoi est-ce différent de la page Analyses d'étiquettes ?"
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
-#: src/app/[lang]/features/multi-language-app/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 #: src/app/[lang]/features/split-transactions/page.tsx
@@ -8888,8 +8903,12 @@ msgid "Language"
 msgstr "Langue"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Language switching is in-app — no reinstall. Numbers, dates, and currency formats follow the device locale even when the UI language differs."
-msgstr "Le changement de langue se fait dans l'application — sans réinstallation. Les nombres, dates et formats de devise suivent la locale de l'appareil même quand la langue de l'interface diffère."
+msgid "Language row shows your pick"
+msgstr "La ligne Langue affiche votre choix"
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Language switching is in-app — no reinstall. Numbers and dates format using whichever language you have selected; there is no separate locale setting to keep in sync."
+msgstr "Le changement de langue se fait dans l'application — pas de réinstallation. Les nombres et les dates suivent la langue sélectionnée ; il n'existe pas de paramètre régional distinct à synchroniser."
 
 #: src/app/[lang]/features/multi-language-app/opengraph-image.tsx
 msgid "languages"
@@ -9025,10 +9044,6 @@ msgstr "Linear est un outil de gestion de projet qui a atteint des performances 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Linear uses a custom sync engine to propagate changes. When you create an issue, it exists locally immediately and syncs to the server and other team members’ devices in the background. If you are offline, you keep working. Changes merge automatically when you reconnect."
 msgstr "Linear utilise un moteur de synchronisation personnalisé pour propager les modifications. Lorsque vous créez un ticket, il existe localement immédiatement et se synchronise avec le serveur et les appareils des autres membres de l'équipe en arrière-plan. Si vous êtes hors ligne, vous continuez à travailler. Les modifications fusionnent automatiquement lors de la reconnexion."
-
-#: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Lingui-driven message catalogs ship at install. Settings → Language switches the runtime locale; the app re-renders without reload. Locale-bound formatting (numbers, dates) follows device defaults."
-msgstr "Les catalogues de messages pilotés par Lingui sont livrés à l'installation. Paramètres → Langue change la locale d'exécution ; l'application se réaffiche sans rechargement. Le formatage lié à la locale (nombres, dates) suit les paramètres de l'appareil."
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Link it to what it reverses"
@@ -10516,12 +10531,12 @@ msgid "November 6, 2024"
 msgstr ""
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Number, date, and currency format follow the device locale independently"
-msgstr "Le format des nombres, dates et devises suit la locale de l’appareil indépendamment"
+msgid "Number and date formatting follows the language you choose in Settings"
+msgstr "Le format des nombres et des dates suit la langue choisie dans les Paramètres"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Numbers, dates, and currency formats follow the device locale even when the UI language differs. Set them independently in Settings if you prefer."
-msgstr "Les nombres, dates et formats de devise suivent la locale de l’appareil même quand la langue de l’interface diffère. Configurez-les indépendamment dans les paramètres si vous préférez."
+msgid "Numbers and dates format according to whichever language is active in Settings — there is no separate locale setting to configure."
+msgstr "Les nombres et les dates suivent le format de la langue active dans les Paramètres — il n'y a pas de paramètre régional distinct à configurer."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "O'Saasy License Agreement"
@@ -11391,6 +11406,10 @@ msgstr "Choisissez une fenêtre : 7 derniers jours, 30, 90, ou une plage personn
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Pick any range by hand"
 msgstr "Choisir n'importe quelle plage"
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Pick one and the whole UI re-renders in place — Settings included."
+msgstr "Choisissez-en une et toute l'interface se réaffiche aussitôt — Paramètres compris."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Pick the destination account"
@@ -12481,6 +12500,10 @@ msgstr "Rechercher des articles..."
 msgid "Search as the list grows"
 msgstr "Recherchez quand la liste s'allonge"
 
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Search bar above the list"
+msgstr "Barre de recherche au-dessus de la liste"
+
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Search by merchant or account"
 msgstr "Recherchez par commerçant ou compte"
@@ -13289,6 +13312,10 @@ msgstr "Changer de langue"
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
 msgstr "Passez à l'onglet Étiquettes dans Statistiques pour des totaux triables par étiquette — revenus, dépenses et net — plus un compartiment Non étiqueté explorable qui montre exactement quelles transactions n'ont pas d'étiquette."
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Switches without a relaunch"
+msgstr "Change sans redémarrage"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Switching modes is one tap on the Dark Mode toggle in Settings — a manual switch, not an automatic handoff."
@@ -14125,6 +14152,10 @@ msgstr "L'écran Règles dispose d'une recherche classée qui examine chaque con
 msgid "The Rules screen shows what you decided, rule by rule: the conditions on top — Title contains “Spotify” and Type equals EXPENSE — and under them the category and the tag the match sets. A condition can also read the merchant code, the amount, the account or the import source, and every rule has its own switch, so turning one off never means deleting it."
 msgstr "L'écran Règles montre ce que tu as décidé, règle par règle : les conditions en haut — Titre contient « Spotify » et Type égal à EXPENSE — et en dessous la catégorie et le tag que la correspondance applique. Une condition peut aussi lire le code marchand, le montant, le compte ou la source d'import, et chaque règle a son propre interrupteur : la désactiver n'est jamais la supprimer."
 
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "The same app, five languages deep"
+msgstr "La même application, cinq langues en profondeur"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The same Budgie Missing categories list with its first uncategorised row ready to open"
 msgstr "La même liste « Catégories manquantes » de Budgie, sa première ligne sans catégorie prête à être ouverte"
@@ -14949,6 +14980,10 @@ msgstr "Deux lignes, un seul mouvement"
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Two screens do the work: the Categories tab, where the period's totals sit above every category ranked by what it took, and the transaction list behind any one of those rows."
 msgstr "Deux écrans font le travail : l'onglet Catégories, où les totaux de la période surplombent chaque catégorie classée selon ce qu'elle a pris, et la liste des transactions derrière n'importe laquelle de ces lignes."
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Two screens: the language sheet that lists all five, and the Settings page it hands you back to."
+msgstr "Deux écrans : la feuille des langues qui les liste toutes les cinq, et la page Paramètres vers laquelle elle vous ramène."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Two screens: the list where a matched pair reads as a single transfer, and the sheet that still holds both originals behind it."

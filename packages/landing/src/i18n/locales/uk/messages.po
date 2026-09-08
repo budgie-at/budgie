@@ -4132,8 +4132,8 @@ msgid "Budgie isn’t the only open-source option for financial management. A he
 msgstr "Budgie — не єдиний варіант з відкритим кодом для управління фінансами. Існує здорова екосистема альтернатив, і ми вважаємо за правильне чесно їх згадати. Різні інструменти підходять для різних потреб, і найкращий вибір залежить від ваших конкретних вимог."
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Budgie language selector offering English, French, Ukrainian, German and Spanish"
-msgstr "Вибір мови в Budgie з англійською, французькою, українською, німецькою та іспанською"
+msgid "Budgie language selector sheet with a search box and English, French and Ukrainian rows, each with a flag and language code"
+msgstr "Аркуш вибору мови Budgie з полем пошуку та рядками «Англійська», «Французька» й «Українська», кожен із прапором і кодом мови"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie leaves the base value empty until a suitable rate exists. That is safer than inventing a value, because analytics can identify unvalued rows instead of silently mixing guessed totals with real totals."
@@ -4302,6 +4302,10 @@ msgstr "Екран налаштувань Budgie, який повідомляє,
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie settings screen with security, language, currency and default account rows and no sign-in row"
 msgstr "Екран налаштувань Budgie з рядками безпеки, мови, валюти та рахунку за замовчуванням і без рядка входу"
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Budgie settings screen with the General section showing the Language row set to the active language above Main Currency and Default Account"
+msgstr "Екран налаштувань Budgie з розділом «Загальне», де рядок «Мова» показує активну мову над пунктами «Основна валюта» та «Рахунок за замовчуванням»"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle"
@@ -6816,6 +6820,10 @@ msgstr "Наскрізне шифрування: пояснення"
 msgid "English (source), Ukrainian, French, German, Spanish. More on the roadmap as the community contributes translations."
 msgstr "Англійська (оригінал), українська, французька, німецька, іспанська. Більше мов у планах, коли спільнота додасть переклади."
 
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "English, Ukrainian, French, German and Spanish."
+msgstr "Англійська, українська, французька, німецька та іспанська."
+
 #: src/app/[lang]/features/multi-language-app/metadata.ts
 msgid "English, Ukrainian, French, German, Spanish — full UI, locale-aware formatting."
 msgstr "Англійська, українська, французька, німецька, іспанська — повний UI, форматування з урахуванням мовних налаштувань."
@@ -7448,6 +7456,10 @@ msgid "First, good-faith negotiation between the parties"
 msgstr ""
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Five languages, all first-class"
+msgstr "П'ять мов, і жодна не другорядна"
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Five languages: English, Ukrainian, French, German, Spanish — full UI"
 msgstr "П'ять мов: англійська, українська, французька, німецька, іспанська — повний UI"
 
@@ -7482,6 +7494,10 @@ msgstr "Строкові депозити тепер мають власний �
 #: src/app/[lang]/features/deposit-tracking/metadata.ts
 msgid "Fixed-term savings kept separate from everyday spending, with maturity dates and expected payout math."
 msgstr "Строкові заощадження, відокремлені від повсякденних витрат, із датами погашення та розрахунком очікуваної виплати."
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Flag, name and code per row"
+msgstr "Прапор, назва та код у кожному рядку"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "For a complete list of all open source dependencies and their respective licenses, please refer to the package.json files in our <0>GitHub repository</0>. Each component is used in accordance with its respective license terms."
@@ -8246,7 +8262,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
-#: src/app/[lang]/features/multi-language-app/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 #: src/app/[lang]/features/split-transactions/page.tsx
@@ -8888,8 +8903,12 @@ msgid "Language"
 msgstr "Мова"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Language switching is in-app — no reinstall. Numbers, dates, and currency formats follow the device locale even when the UI language differs."
-msgstr "Перемикання мови — в додатку без перевстановлення. Числа, дати та формати валют відповідають локалі пристрою навіть якщо мова інтерфейсу відрізняється."
+msgid "Language row shows your pick"
+msgstr "Рядок «Мова» показує ваш вибір"
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Language switching is in-app — no reinstall. Numbers and dates format using whichever language you have selected; there is no separate locale setting to keep in sync."
+msgstr "Перемикання мови відбувається прямо в додатку — без перевстановлення. Числа та дати форматуються відповідно до обраної мови; окремого налаштування регіону, яке довелося б синхронізувати, немає."
 
 #: src/app/[lang]/features/multi-language-app/opengraph-image.tsx
 msgid "languages"
@@ -9025,10 +9044,6 @@ msgstr "Linear — це інструмент управління проєкта
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Linear uses a custom sync engine to propagate changes. When you create an issue, it exists locally immediately and syncs to the server and other team members’ devices in the background. If you are offline, you keep working. Changes merge automatically when you reconnect."
 msgstr "Linear використовує власний синхронізаційний рушій для поширення змін. Коли ви створюєте завдання, воно існує локально миттєво і синхронізується із сервером та пристроями інших членів команди у фоновому режимі. Якщо ви офлайн, ви продовжуєте працювати. Зміни об'єднуються автоматично при повторному підключенні."
-
-#: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Lingui-driven message catalogs ship at install. Settings → Language switches the runtime locale; the app re-renders without reload. Locale-bound formatting (numbers, dates) follows device defaults."
-msgstr "Каталоги повідомлень на основі Lingui поставляються разом із встановленням. Налаштування → Мова перемикає локаль під час роботи; додаток перерендеровується без перезавантаження. Форматування, прив'язане до локалі (числа, дати), відповідає стандартам пристрою."
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Link it to what it reverses"
@@ -10516,12 +10531,12 @@ msgid "November 6, 2024"
 msgstr ""
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Number, date, and currency format follow the device locale independently"
-msgstr "Формат числа, дати та валюти відповідає локалі пристрою незалежно"
+msgid "Number and date formatting follows the language you choose in Settings"
+msgstr "Формат чисел і дат залежить від мови, обраної в налаштуваннях"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
-msgid "Numbers, dates, and currency formats follow the device locale even when the UI language differs. Set them independently in Settings if you prefer."
-msgstr "Числа, дати та формати валют відповідають локалі пристрою навіть якщо мова інтерфейсу відрізняється. За бажанням налаштуйте їх незалежно в Налаштуваннях."
+msgid "Numbers and dates format according to whichever language is active in Settings — there is no separate locale setting to configure."
+msgstr "Числа та дати форматуються відповідно до мови, активної в налаштуваннях, — окремого налаштування регіону немає."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "O'Saasy License Agreement"
@@ -11391,6 +11406,10 @@ msgstr "Оберіть вікно: останні 7 днів, 30, 90 або до
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Pick any range by hand"
 msgstr "Будь-який діапазон вручну"
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Pick one and the whole UI re-renders in place — Settings included."
+msgstr "Оберіть одну — і весь інтерфейс одразу перемалюється, разом із налаштуваннями."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Pick the destination account"
@@ -12481,6 +12500,10 @@ msgstr "Пошук статей..."
 msgid "Search as the list grows"
 msgstr "Пошук, коли список росте"
 
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Search bar above the list"
+msgstr "Рядок пошуку над списком"
+
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Search by merchant or account"
 msgstr "Пошук за продавцем або рахунком"
@@ -13289,6 +13312,10 @@ msgstr "Змінити мову"
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
 msgstr "Перейдіть до вкладки Теги у Статистиці для сортованих підсумків по тегах — доходи, витрати та баланс — плюс деталізоване відро «Без тегів», що показує точно, які транзакції не мають мітки."
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Switches without a relaunch"
+msgstr "Перемикається без перезапуску"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Switching modes is one tap on the Dark Mode toggle in Settings — a manual switch, not an automatic handoff."
@@ -14125,6 +14152,10 @@ msgstr "Екран «Правила» має ранжований пошук, щ
 msgid "The Rules screen shows what you decided, rule by rule: the conditions on top — Title contains “Spotify” and Type equals EXPENSE — and under them the category and the tag the match sets. A condition can also read the merchant code, the amount, the account or the import source, and every rule has its own switch, so turning one off never means deleting it."
 msgstr "Екран правил показує те, що ти вирішив, правило за правилом: угорі умови — «Назва містить „Spotify“» і «Тип дорівнює EXPENSE», — а під ними категорія й тег, які ставить збіг. Умова може читати й код торговця, суму, рахунок або джерело імпорту, а кожне правило має власний перемикач, тож вимкнути — це ніколи не видалити."
 
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "The same app, five languages deep"
+msgstr "Той самий додаток, п'ять мов углиб"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The same Budgie Missing categories list with its first uncategorised row ready to open"
 msgstr "Той самий список Budgie «Без категорій», у якому перший рядок без категорії готовий до відкриття"
@@ -14949,6 +14980,10 @@ msgstr "Два рядки, один рух"
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Two screens do the work: the Categories tab, where the period's totals sit above every category ranked by what it took, and the transaction list behind any one of those rows."
 msgstr "Працюють два екрани: вкладка «Категорії», де підсумки періоду стоять над кожною категорією, впорядкованою за розміром витрат, і список транзакцій за будь-яким із цих рядків."
+
+#: src/app/[lang]/features/multi-language-app/page.tsx
+msgid "Two screens: the language sheet that lists all five, and the Settings page it hands you back to."
+msgstr "Два екрани: аркуш мов з усіма п'ятьма варіантами та сторінка налаштувань, куди він повертає."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Two screens: the list where a matched pair reads as a single transfer, and the sheet that still holds both originals behind it."

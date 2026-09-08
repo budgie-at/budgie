@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -80,14 +79,49 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie language selector offering English, French, Ukrainian, German and Spanish`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>The same app, five languages deep</Trans>}>
+                    <Trans>Two screens: the language sheet that lists all five, and the Settings page it hands you back to.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Five languages, all first-class</Trans>}>
+                    <Trans>English, Ukrainian, French, German and Spanish.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie language selector sheet with a search box and English, French and Ukrainian rows, each with a flag and language code`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="multi-language-app-1"
                     slug="multi-language-app"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.62}>
+                        <Trans>Search bar above the list</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.69}>
+                        <Trans>Flag, name and code per row</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Switches without a relaunch</Trans>}>
+                    <Trans>Pick one and the whole UI re-renders in place — Settings included.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie settings screen with the General section showing the Language row set to the active language above Main Currency and Default Account`}
+                    index={1}
+                    locale={lang}
+                    scene="offline-first-expense-tracker-2"
+                    slug="offline-first-expense-tracker"
+                >
+                    <FeatureStory.Callout y={0.518}>
+                        <Trans>Language row shows your pick</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -101,8 +135,8 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Language switching is in-app — no reinstall. Numbers, dates, and currency formats follow the device locale even when
-                        the UI language differs.
+                        Language switching is in-app — no reinstall. Numbers and dates format using whichever language you have selected;
+                        there is no separate locale setting to keep in sync.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -122,24 +156,12 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                         <Trans>In-app switcher — no reinstall, no relaunch</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Number, date, and currency format follow the device locale independently</Trans>
+                        <Trans>Number and date formatting follows the language you choose in Settings</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Open-source translations — community can contribute new locales</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Lingui-driven message catalogs ship at install. Settings → Language switches the runtime locale; the app re-renders
-                        without reload. Locale-bound formatting (numbers, dates) follows device defaults.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -164,8 +186,8 @@ export default async function MultiLanguageAppFeaturePage(props: PageLangParam) 
                     question={<Trans>What about number / date formats?</Trans>}
                     answer={
                         <Trans>
-                            Numbers, dates, and currency formats follow the device locale even when the UI language differs. Set them
-                            independently in Settings if you prefer.
+                            Numbers and dates format according to whichever language is active in Settings — there is no separate locale
+                            setting to configure.
                         </Trans>
                     }
                 />
