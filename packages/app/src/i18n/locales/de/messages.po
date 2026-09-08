@@ -404,12 +404,14 @@ msgid "Allocated"
 msgstr "Zugewiesen"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
-msgid "Already received"
-msgstr "Bereits erhalten"
+#: src/account/component/update-debt-account/update-debt-account.tsx
+msgid "Already repaid"
+msgstr "Bereits zurückgezahlt"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Already returned"
-msgstr "Bereits zurückgezahlt"
+msgstr "Bereits erhalten"
 
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
@@ -2536,6 +2538,11 @@ msgstr "Gesamtbudget: {threshold}% ausgegeben"
 msgid "Overall monthly limit"
 msgstr "Monatliches Gesamtlimit"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Overpaid"
+msgstr "Überzahlt"
+
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Overview"
 msgstr "Übersicht"
@@ -3471,7 +3478,6 @@ msgstr "Heute"
 msgid "Token required"
 msgstr "Token erforderlich"
 
-#: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx

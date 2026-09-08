@@ -36,23 +36,20 @@ export const DebtAccountCard = (props: Props) => {
     const protectAmount = useProtectedAmountLabel();
 
     const summary: DebtAccountProgressSummaryInterface = debtProgressSummary ?? {
-        closedAmount: 0,
-        creditAmount: 0,
-        debitAmount: 0,
-        openedAmount: targetBalance,
         outstandingAmount: targetBalance,
+        overpaidAmount: 0,
         paidAmount: 0,
         percentage: 0,
         totalAmount: targetBalance
     };
     const isUrgent = isDefined(deadline) && isDebtDeadlineUrgent(createdAt, deadline);
+    const isSettled = !isPositiveNumber(summary.outstandingAmount) && summary.percentage >= 100;
+    const progressLabel = isSettled ? t`Settled` : t(DEBT_SETTLED_LABEL[debtType]);
     const displayPercentage = summary.percentage >= 100 ? 100 : Math.floor(summary.percentage);
     const contextValue = {
-        debtType,
         displayPercentage,
         instrumentSymbol,
-        settledLabel:
-            !isPositiveNumber(summary.outstandingAmount) && displayPercentage === 100 ? t`Settled` : t(DEBT_SETTLED_LABEL[debtType]),
+        settledLabel: isPositiveNumber(summary.overpaidAmount) ? t`Overpaid` : progressLabel,
         summary,
         title
     };

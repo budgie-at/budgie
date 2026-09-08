@@ -25,6 +25,7 @@ import { seed } from '../../harness/seed/seed';
 
 import { LegacyDebtContractFixture } from './legacy-debt-contract-fixture';
 
+import type { DebtProgressContractInterface } from './interface/debt-progress-contract.interface';
 import type { AccountEntityInterface, DebtEventEntityInterface } from '@budgie/contracts';
 
 const OPERATED_AT = new Date('2026-06-02T12:00:00.000Z');
@@ -103,13 +104,11 @@ const findCloseDebtEvent = (accountId: number): DebtEventEntityInterface => {
     return settlement;
 };
 
-const expectDebtProgressContract = (
-    accountId: number,
-    expected: { readonly outstandingAmount: number; readonly paidAmount: number; readonly totalAmount: number; readonly percentage: number }
-): void => {
+const expectDebtProgressContract = (accountId: number, expected: DebtProgressContractInterface): void => {
     const progress = readProgress(accountId);
 
     expect(convertFromMicroUnits(progress.outstandingAmount)).toBe(expected.outstandingAmount);
+    expect(convertFromMicroUnits(progress.overpaidAmount)).toBe(expected.overpaidAmount ?? 0);
     expect(convertFromMicroUnits(progress.paidAmount)).toBe(expected.paidAmount);
     expect(convertFromMicroUnits(progress.totalAmount)).toBe(expected.totalAmount);
     expect(progress.percentage).toBe(expected.percentage);
@@ -217,11 +216,24 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
         expectDebtProgressContract(account.id, { outstandingAmount: 13_000, paidAmount: 0, totalAmount: 13_000, percentage: 0 });
     });
 
-    it('pins current behaviour: an overpayment inflates the total instead of capping it at the principal', () => {
+    it('keeps the total at the principal and reports the excess as overpaid', () => {
         const account = seedDebtAccount(debtType, convertToMicroUnits(1_000));
         insertDebtEvent(account.id, DebtEventDirectionEnum.OPEN, convertToMicroUnits(1_000));
         insertDebtEvent(account.id, DebtEventDirectionEnum.CLOSE, convertToMicroUnits(1_200));
 
-        expectDebtProgressContract(account.id, { outstandingAmount: 0, paidAmount: 1_200, totalAmount: 1_200, percentage: 100 });
+        expectDebtProgressContract(account.id, {
+            outstandingAmount: 0,
+            overpaidAmount: 200,
+            paidAmount: 1_200,
+            totalAmount: 1_000,
+            percentage: 100
+        });
+    });
+
+    it('grows the total when more is lent or borrowed after the opening amount', () => {
+        const account = seedPartiallySettledDebt(debtType);
+        insertDebtEvent(account.id, DebtEventDirectionEnum.OPEN, convertToMicroUnits(500));
+
+        expectDebtProgressContract(account.id, { outstandingAmount: 1_250, paidAmount: 250, totalAmount: 1_500, percentage: 16.67 });
     });
 });

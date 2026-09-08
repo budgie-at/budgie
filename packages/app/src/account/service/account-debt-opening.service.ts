@@ -108,7 +108,9 @@ class AccountDebtOpeningService {
     private async createZeroTargetDebtAccount(input: DebtAccountCreateInputInterface, tx: DB): Promise<AccountEntityInterface> {
         const [{ count }] = await accountRepository.count();
 
-        return accountRepository.create({ ...input, targetBalance: 0, order: count + 1, nature: AccountNatureEnum.LIABILITY }, tx);
+        const nature = input.debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
+
+        return accountRepository.create({ ...input, targetBalance: 0, order: count + 1, nature }, tx);
     }
 
     private async createOpeningDebtTransfer({
