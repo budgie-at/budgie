@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -75,19 +74,79 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 locale={lang}
                 tagline={
                     <Trans>
-                        Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review.
+                        Budgie consolidates obvious transfers and merchant refunds automatically, and leaves anything ambiguous exactly as
+                        it imported it.
                     </Trans>
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie transaction list where a matched incoming transfer is shown as a single transfer row`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Two rows, one movement</Trans>}>
+                    <Trans>
+                        Two screens: the list where a matched pair reads as a single transfer, and the sheet that still holds both originals
+                        behind it.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Both accounts report the same move</Trans>}>
+                    <Trans>
+                        Sync the account the money left and the account it landed in, and each one imports its own leg — an expense on one
+                        side, an income on the other. Left alone, one movement lands in your ledger twice.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie transaction list where a matched transfer pair appears as one incoming transfer row naming the destination account`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="transfer-pair-detection-1"
                     slug="transfer-pair-detection"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout index={0} y={0.667}>
+                        <Trans>One transfer row, not two</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.732}>
+                        <Trans>Named by its destination account</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>The obvious pairs merge on import</Trans>}>
+                    <Trans>
+                        An expense pairs with an income when the counter-IBAN lines up, or when the amounts match — same currency, or an
+                        implied exchange rate inside a tolerance band — and both legs fall within twelve hours of each other. The match
+                        becomes one transfer carrying a debit and a credit entry, so it stops counting as spending. Pairs Budgie is not sure
+                        about are left alone as two rows rather than guessed at.
+                    </Trans>
+                </FeatureStory.Step>
+
+                <FeatureStory.Step index={2} title={<Trans>See what merged, and undo it</Trans>}>
+                    <Trans>
+                        A merged transfer keeps a Consolidation row. &quot;View source transactions&quot; opens both originals with their
+                        amounts, dates and accounts still intact. Revert puts them back and removes the merged transfer.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie merged transfer screen with the consolidation source sheet listing both original legs above Done and Revert`}
+                    index={2}
+                    locale={lang}
+                    scene="transfer-pair-detection-2"
+                    slug="transfer-pair-detection"
+                >
+                    <FeatureStory.Callout y={0.596}>
+                        <Trans>Every merge keeps its sources</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.816}>
+                        <Trans>The other leg, still there</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.878}>
+                        <Trans>Revert restores both originals</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -102,8 +161,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 <FeaturePageProse>
                     <Trans>
                         Refunds have the opposite problem: a merchant credit can look like income even though it reverses an earlier
-                        expense. Budgie consolidates clear refund matches automatically and keeps uncertain cases available for manual
-                        review.
+                        expense. Budgie consolidates clear refund matches automatically and leaves uncertain cases exactly as they arrived.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -120,28 +178,15 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                         <Trans>Amount + time-window matching catches transfers and refunds without perfect bank metadata</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Cross-currency: $1000 → €925 within 3 days matches when the FX rate is plausible</Trans>
+                        <Trans>Cross-currency: $1000 → €925 matches when the implied exchange rate is plausible</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Manual review for ambiguous refund matches instead of silent guesses</Trans>
+                        <Trans>Ambiguous matches stay as two untouched rows instead of a silent guess</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Original entries stay linked under the consolidated transaction for full audit trail</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        On every consolidation run, Budgie scans new entries against existing ones for matching counter-IBAN, amount, sign,
-                        title, and time window. Transfer matches become one transfer. Refund matches link income back to the expense they
-                        reverse.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -169,8 +214,9 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     question={<Trans>What about cross-currency transfers?</Trans>}
                     answer={
                         <Trans>
-                            Pairs match if the implied FX rate falls within a plausible tolerance band — the check runs within a 3-day time
-                            window. The original amounts in both currencies are preserved on each leg.
+                            Pairs match if the implied FX rate falls within a plausible tolerance band. Cross-currency legs have to land
+                            within a minute of each other; same-currency pairs get a twelve-hour window. The original amounts in both
+                            currencies are preserved on each leg.
                         </Trans>
                     }
                 />
