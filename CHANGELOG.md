@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.39.0](https://github.com/budgie-at/budgie/compare/v6.38.6...v6.39.0) (2026-09-08)
+
+
+### Features
+
+* **landing:** steps story for transfer pair detection ([5525efa](https://github.com/budgie-at/budgie/commit/5525efa40d0965bc02a324d3e5b9eaec0470fcd8))
+
+
+
+
+
 ## [6.38.6](https://github.com/budgie-at/budgie/compare/v6.38.5...v6.38.6) (2026-09-08)
 
 **Note:** Version bump only for package @budgie-at/root
