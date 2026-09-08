@@ -11,12 +11,19 @@ export const FEATURE_METADATA = {
     title: msg`Voice Transaction Entry`,
     tagline: msg`Speak it. Budgie logs it. whisper.rn (whisper.cpp backend) transcribes on-device — audio never leaves your phone.`,
     metaTitle: msg`Voice-to-Expense, On-Device — Budgie`,
-    metaDescription: msg`Say "twelve dollars coffee this morning" and Budgie logs it. whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio ever streams to a server.`,
+    metaDescription: msg`Say "twelve for coffee, forty for the taxi, and eight euros for parking" and Budgie logs all three. whisper.rn (whisper.cpp backend) and the on-device LLM extract a reviewable batch — no audio ever streams to a server.`,
     primaryKeyword: 'voice expense tracker',
-    seoKeywords: ['voice expense tracker', 'voice budget app', 'speech-to-text expenses', 'voice transaction logging', 'on-device whisper'],
+    seoKeywords: [
+        'voice expense tracker',
+        'voice budget app',
+        'speech-to-text expenses',
+        'voice transaction logging',
+        'on-device whisper',
+        'multi-transaction voice entry'
+    ],
     relatedFeatureSlugs: ['ai-auto-categorization', 'expense-tracking', 'ai-merchant-translation'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
     publishedAt: '2026-01-22',
-    updatedAt: '2026-05-07',
+    updatedAt: '2026-09-07',
     ogTags: ['voice', 'on-device', 'ai']
 } satisfies FeatureRegistryEntryInterface;

@@ -199,6 +199,10 @@
             "deepLink": "budgie://account/9/details"
         },
         {
+            "name": "crypto-investment-tracking-3",
+            "deepLink": "budgie://currency/34"
+        },
+        {
             "name": "primary-tag-1",
             "deepLink": "budgie://transactions"
         },
@@ -265,6 +269,18 @@
         {
             "name": "uncategorized-transactions-2",
             "flow": "flows/media/uncategorized-transactions-2.flow.yaml"
+        },
+        {
+            "name": "convert-to-refund-1",
+            "flow": "flows/media/convert-to-refund-1.flow.yaml"
+        },
+        {
+            "name": "convert-to-refund-2",
+            "flow": "flows/media/convert-to-refund-2.flow.yaml"
+        },
+        {
+            "name": "transfer-pair-detection-2",
+            "flow": "flows/media/transfer-pair-detection-2.flow.yaml"
         },
         {
             "name": "bank-fee-tracking-1",

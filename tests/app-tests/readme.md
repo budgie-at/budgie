@@ -95,6 +95,13 @@ state; a `flow` scene under the same flag returns an all-black frame. That is wh
 the PIN and biometric flags on and leaves screenshot protection off, instead of
 reusing `shared/security-locked.sql`.
 
+The consolidation-source modal lists `transaction_entries` whose
+`original_transaction_id` points at a source transaction, so a seed that only
+sets `consolidation_parent_transaction_id` renders its empty state. That is what
+`scenes/transfer-pair-detection-2.sql` fixes: it moves the paired legs onto the
+canonical transfer the way `moveToConsolidatedTransaction` does, leaving
+`shared/transfer-pair.sql` untouched for the scenes that want the loose pair.
+
 Two scene overlays exist only because a picker's option ids are localized.
 `shared/recurring.sql` pins three subscriptions to the 15th of every month so
 `recurring-payments-calendar-2` can tap `RecurringCalendar.Day.CurrentMonth.15`
