@@ -335,19 +335,14 @@ class AccountService {
             0
         );
 
-        await this.upsertManualDebtEvent(
-            account,
-            manualDebtEvents,
-            DebtEventDirectionEnum.OPEN,
-            openedAmount - transactionOpenedAmount,
-            operatedAt,
-            tx
-        );
+        const manualOpenedAmount = Math.max(openedAmount - transactionOpenedAmount, 0);
+
+        await this.upsertManualDebtEvent(account, manualDebtEvents, DebtEventDirectionEnum.OPEN, manualOpenedAmount, operatedAt, tx);
         await this.upsertManualDebtEvent(
             account,
             manualDebtEvents,
             DebtEventDirectionEnum.CLOSE,
-            getDebtClosedAmount(returnedAmount, openedAmount),
+            getDebtClosedAmount(returnedAmount, transactionOpenedAmount + manualOpenedAmount),
             operatedAt,
             tx
         );
