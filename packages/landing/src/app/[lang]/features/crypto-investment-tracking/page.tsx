@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -80,14 +79,93 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie home screen with a crypto section showing the Bitcoin holding converted to the base currency`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>One coin, three screens</Trans>}>
+                    <Trans>
+                        Where the holding sits in your account list, the buys that built it, and the market screen that prices it.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>In the same list as your bank</Trans>}>
+                    <Trans>
+                        Crypto is not a separate tab. Holdings group by instrument under their own heading, after the bank and cash
+                        accounts, on the screen you already open. The total at the top counts them like everything else, and the two chips
+                        underneath split it into what you hold in cash and what you hold in coin.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="crypto-investment-tracking-1"
                     slug="crypto-investment-tracking"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout index={0} x={0.72} y={0.226}>
+                        <Trans>Cash and coin, split apart</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.437}>
+                        <Trans>Bank accounts first</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={2} y={0.753}>
+                        <Trans>Crypto right below them</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Every buy keeps what it cost</Trans>}>
+                    <Trans>
+                        The wallet itself reads in the coin: a balance in BTC, and under it the purchases that add up to it. Each row
+                        carries the coin amount it bought, the amount you actually paid in your own currency, and the rate that implies — so
+                        the cost stays recorded at the moment of the trade instead of being recomputed from today&apos;s price.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Bitcoin wallet screen with the balance in BTC above two crypto purchase rows showing the amount paid and the rate`}
+                    index={1}
+                    locale={lang}
+                    scene="crypto-investment-tracking-2"
+                    slug="crypto-investment-tracking"
+                >
+                    <FeatureStory.Callout index={0} y={0.237}>
+                        <Trans>Balance in the coin itself</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.404}>
+                        <Trans>Coin bought, amount paid, rate</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>What it cost, and what it is worth</Trans>}>
+                    <Trans>
+                        Every instrument has its own market screen: the stored price with its last move, a sparkline of the history behind
+                        it, and your position valued against it — quantity, converted value, average cost, cost basis and unrealized gain.
+                        Market cap, volume and the date of the snapshot sit underneath. There is no ticker to subscribe to; the screen reads
+                        from the daily prices already in your database.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Bitcoin market screen with the price, a sparkline, and a holdings card listing average cost, cost basis and unrealized profit`}
+                    index={2}
+                    locale={lang}
+                    scene="crypto-investment-tracking-3"
+                    slug="crypto-investment-tracking"
+                >
+                    <FeatureStory.Callout index={0} y={0.212}>
+                        <Trans>Price, and its last move</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.475}>
+                        <Trans>Your quantity, valued in your currency</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={2} y={0.586}>
+                        <Trans>Unrealized gain over cost basis</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -101,9 +179,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Two hundred crypto instruments ship with the app, ranked by market cap. Manual price updates are fine for
-                        low-frequency tracking, and the major assets come with real daily market history built in. Stocks and ETFs are not
-                        supported yet.
+                        Two hundred crypto instruments ship with the app, ranked by market cap, and the major assets come with real daily
+                        market history built in. Stocks and ETFs are not supported yet.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -117,7 +194,7 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         <Trans>Crypto holdings are first-class instruments: symbol, quantity, and a daily price</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Manual or imported price updates — your call on cadence and source</Trans>
+                        <Trans>Daily prices backfilled only for the crypto accounts you actually hold</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Holdings roll up into net worth alongside fiat accounts</Trans>
@@ -161,27 +238,6 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 </FeaturePageProse>
             </FeaturePageSection>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Account type Crypto. Each holding is an instrument + quantity. Prices come from the built-in daily history for major
-                        crypto assets, or from your own manual edits. Net-worth converts via the latest price snapshot.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie Bitcoin wallet screen with the coin balance above its purchase history`}
-                    locale={lang}
-                    scene="crypto-investment-tracking-2"
-                    slug="crypto-investment-tracking"
-                />
-            </FeaturePageMedia>
-
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     question={<Trans>Which assets can I track?</Trans>}
@@ -196,8 +252,9 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>Where do prices come from?</Trans>}
                     answer={
                         <Trans>
-                            The nine largest crypto assets ship with a year of daily prices in euro and dollar. Longer history is pulled
-                            from CoinGecko&apos;s public market data for the crypto accounts you hold, and everything else you set by hand.
+                            The nine largest crypto assets ship with a year of daily prices in euro and dollar. Anything beyond that is
+                            pulled from CoinGecko&apos;s public market data, one missing day at a time, and only for the crypto accounts you
+                            hold.
                         </Trans>
                     }
                 />
@@ -223,8 +280,8 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     question={<Trans>Can I record buy / sell history?</Trans>}
                     answer={
                         <Trans>
-                            Yes — buys are inflows to the holding account; sells are outflows with the realized FX. P&amp;L drilling on the
-                            way for a future release.
+                            Yes — buys are inflows to the holding account; sells are outflows with the realized FX. The market screen turns
+                            that history into an average cost, a cost basis and an unrealized gain for the position.
                         </Trans>
                     }
                 />
