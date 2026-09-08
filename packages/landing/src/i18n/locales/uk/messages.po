@@ -2319,6 +2319,10 @@ msgstr "Проєкт, який ігнорує питання безпеки аб
 msgid "A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device."
 msgstr "Загальнодоступний FX-потік. Жодного облікового запису постачальника, жодного брокера курсів; денний курс можна перевірити на вашому пристрої."
 
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "A refund is not income"
+msgstr "Повернення коштів — це не дохід"
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "A review sheet lists every row before saving — “Select all categories” and “Enter all amounts” fix a whole batch at once"
 msgstr "Екран перевірки показує кожен рядок перед збереженням — «Вибрати всі категорії» та «Ввести всі суми» виправляють весь пакет одразу"
@@ -3162,10 +3166,6 @@ msgstr "Автоматичні підказки тегів усувають те
 msgid "Automatic Transfer Consolidation — both legs of a cross-bank transfer are detected via counter-IBAN and exchange-rate matching, then merged into a single transfer entry"
 msgstr "Автоматичне об'єднання переказів — обидві сторони міжбанківського переказу виявляються через збіг IBAN контрагента та обмінного курсу, потім об'єднуються в один запис переказу"
 
-#: src/app/[lang]/features/convert-to-refund/page.tsx
-msgid "Automatic when obvious, manual when it needs review"
-msgstr "Автоматично, коли очевидно; вручну, коли потрібна перевірка"
-
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 msgid "automation"
 msgstr ""
@@ -3877,6 +3877,14 @@ msgstr "Budgie автоматично консолідує очевидні пе
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie context menu open over the dimmed transaction list, with delete last and marked in red"
 msgstr "Контекстне меню Budgie поверх притемненого списку транзакцій, видалення останнє й позначене червоним"
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Budgie Convert to Refund picker listing same-currency expenses with a search field and a disabled Convert button"
+msgstr "Екран «Перетворити на повернення» у Budgie зі списком витрат у тій самій валюті, полем пошуку та неактивною кнопкою «Конвертувати»"
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Budgie Convert to Refund picker with one expense row selected and checked, and the Convert button now enabled"
+msgstr "Екран «Перетворити на повернення» у Budgie з обраним і позначеним рядком витрати та вже активною кнопкою «Конвертувати»"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Budgie Convert to Transfer screen with the amount carried over and the account picker open over the from and to row"
@@ -5540,6 +5548,10 @@ msgstr "Конвертувати транзакцію на переказ"
 msgid "Convert any expense or income to a transfer retroactively — no re-entry needed"
 msgstr "Конвертуйте будь-які витрати або доходи у переказ заднім числом — без повторного введення"
 
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Convert enables on selection"
+msgstr "Кнопка активується після вибору"
+
 #: src/app/[lang]/features/convert-to-transfer/metadata.ts
 msgid "Convert Expense to Transfer Between Accounts — Budgie"
 msgstr "Конвертація витрати в переказ між рахунками — Budgie"
@@ -5637,6 +5649,10 @@ msgstr "IBAN контрагента зберігається з поля corr_ib
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Counter-IBAN stored per leg — primary signal for cross-account matching"
 msgstr "Контр-IBAN зберігається для кожної частини — основний сигнал для міжрахункового зіставлення"
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Counting a merchant refund as earnings inflates every income report you run. Long-press the income row, choose Convert to Refund, and Budgie lists the expenses it could be reversing — same currency, any account, and never smaller than the refund itself."
+msgstr "Якщо рахувати повернення від продавця як заробіток, це завищує кожен звіт про доходи. Утримайте рядок доходу, оберіть «Перетворити на повернення», і Budgie покаже витрати, які воно може скасовувати, — та сама валюта, будь-який рахунок і ніколи не менші за саме повернення."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Covers every protected amount Budgie renders, not just the home screen"
@@ -7866,10 +7882,6 @@ msgstr "Прихована телеметрія та відстеження"
 msgid "High — shutdown = data loss risk"
 msgstr "Високий — закриття = ризик втрати даних"
 
-#: src/app/[lang]/features/convert-to-refund/page.tsx
-msgid "High-confidence refund matches consolidate automatically during the same matching pass that handles transfers. When the match is ambiguous, open the income transaction and choose Convert to Refund."
-msgstr "Збіги повернень із високою впевненістю консолідуються автоматично під час того самого проходу, який обробляє перекази. Якщо збіг неоднозначний, відкрийте транзакцію доходу й виберіть Перетворити на повернення."
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Highly customizable"
 msgstr "Високий рівень налаштування"
@@ -8974,6 +8986,10 @@ msgstr "Ліцензія"
 msgid "License Choice and Why"
 msgstr "Вибір ліцензії та причини"
 
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Likeliest match sorted first"
+msgstr "Найімовірніший збіг — угорі"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Limit alerts"
 msgstr "Сповіщення про ліміт"
@@ -9013,6 +9029,10 @@ msgstr "Linear використовує власний синхронізаці�
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Lingui-driven message catalogs ship at install. Settings → Language switches the runtime locale; the app re-renders without reload. Locale-bound formatting (numbers, dates) follows device defaults."
 msgstr "Каталоги повідомлень на основі Lingui поставляються разом із встановленням. Налаштування → Мова перемикає локаль під час роботи; додаток перерендеровується без перезавантаження. Форматування, прив'язане до локалі (числа, дати), відповідає стандартам пристрою."
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Link it to what it reverses"
+msgstr "Прив'яжіть його до того, що воно скасовує"
 
 #: src/app/[lang]/features/convert-to-refund/metadata.ts
 #: src/app/[lang]/features/convert-to-refund/opengraph-image.tsx
@@ -11376,6 +11396,14 @@ msgstr "Будь-який діапазон вручну"
 msgid "Pick the destination account"
 msgstr "Оберіть рахунок призначення"
 
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Pick the expense and convert. The refund stops standing on its own: it attaches to that purchase, the expense is marked Refunded, and analytics counts the purchase net of what came back — under its original category, not as new income. Tap Revert on the refunded transaction to pull the two rows apart again."
+msgstr "Оберіть витрату й конвертуйте. Повернення більше не існує окремо: воно прикріплюється до тієї покупки, витрата позначається як «Повернено», а аналітика рахує покупку за вирахуванням поверненого — у її початковій категорії, а не як новий дохід. Натисніть «Відновити» на поверненій транзакції, щоб знову розділити ці два рядки."
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Pick the expense it reverses"
+msgstr "Оберіть витрату, яку воно скасовує"
+
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Pick the one to keep"
 msgstr "Оберіть ту, що залишиться"
@@ -12452,6 +12480,10 @@ msgstr "Пошук статей..."
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Search as the list grows"
 msgstr "Пошук, коли список росте"
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Search by merchant or account"
+msgstr "Пошук за продавцем або рахунком"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Search what you archived"
@@ -13899,6 +13931,10 @@ msgstr "Екран «Без категорій» відкривається ли
 msgid "The moment the app goes to the background. There is no grace period and no inactivity setting to get wrong — the next time you come back, the keypad is there."
 msgstr "Щойно застосунок іде у фон. Немає ні пільгового часу, ні налаштування неактивності, яке можна виставити неправильно — щойно ви повернетесь, клавіатура вже там."
 
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "The money came back — it was never earned"
+msgstr "Гроші повернулися — їх ніколи не заробляли"
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Money Data upgrade scans entries where the base currency value is missing and groups them by date, account currency, and base currency."
 msgstr ""
@@ -13962,10 +13998,6 @@ msgstr "Період переходить разом із вами"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The personal finance app market has exploded. Mint, YNAB, Copilot, Monarch Money, Lunch Money, and dozens of others promise to help you manage your money. Most offer free tiers or low monthly subscriptions that seem reasonable for the value provided."
 msgstr "Ринок додатків для особистих фінансів стрімко зріс. Mint, YNAB, Copilot, Monarch Money, Lunch Money та десятки інших обіцяють допомогти вам управляти грошима. Більшість пропонують безкоштовні тарифи або невеликі щомісячні підписки, які здаються прийнятними за надану цінність."
-
-#: src/app/[lang]/features/convert-to-refund/page.tsx
-msgid "The picker searches same-currency expenses across accounts and sorts likely matches by date and amount. Choose the expense, confirm, and Budgie shows whether the refund is full or partial."
-msgstr "Пікер шукає витрати в тій самій валюті на різних рахунках і сортує ймовірні збіги за датою та сумою. Виберіть витрату, підтвердьте, і Budgie покаже, чи повернення повне, чи часткове."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The pill counts what you missed"
@@ -14921,6 +14953,10 @@ msgstr "Працюють два екрани: вкладка «Категорі�
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Two screens: the list where a matched pair reads as a single transfer, and the sheet that still holds both originals behind it."
 msgstr "Два екрани: список, де виявлена пара читається як один переказ, і аркуш, що досі тримає позаду обидва оригінали."
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Two screens: the same-currency expenses this income could be paying back, and the one you pick for it to cancel out."
+msgstr "Два екрани: витрати в тій самій валюті, які може скасувати це повернення, і саме та витрата, яку ви обираєте для взаємозаліку."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Two screens: the sheet where a month calendar and the preset chips sit together, and the list a moment after one of those chips is tapped."
