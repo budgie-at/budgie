@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.38.5](https://github.com/budgie-at/budgie/compare/v6.38.4...v6.38.5) (2026-09-07)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.38.4](https://github.com/budgie-at/budgie/compare/v6.38.3...v6.38.4) (2026-09-07)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.38.3](https://github.com/budgie-at/budgie/compare/v6.38.2...v6.38.3) (2026-09-07)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.38.2](https://github.com/budgie-at/budgie/compare/v6.38.1...v6.38.2) (2026-09-07)
+
+
+### Bug Fixes
+
+* **landing:** resolve voice-transaction-entry hero/translation review findings ([de81c58](https://github.com/budgie-at/budgie/commit/de81c58c168857f68fc24724ed4d06c67d2ceead))
+
+
+
+
+
 ## [6.38.1](https://github.com/budgie-at/budgie/compare/v6.38.0...v6.38.1) (2026-09-07)
 
 
