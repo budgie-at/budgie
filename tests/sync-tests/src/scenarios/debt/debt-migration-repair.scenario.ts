@@ -25,6 +25,8 @@ import type { AccountBalanceEntityInterface, DebtEventEntityInterface, Transacti
 export class DebtMigrationRepairScenario {
     private static readonly AMBIGUOUS_ACCOUNT_ID = Number('102');
     private static readonly AMBIGUOUS_ADJUSTMENT_AMOUNT = 1_000_000_000;
+
+    private static readonly AMBIGUOUS_LEDGER_BALANCE = -9_000_000_000;
     private static readonly AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID = Number('1010');
     private static readonly AMBIGUOUS_OPENING_AMOUNT = Number('10000000000');
     private static readonly REPAIR_MIGRATION_PATH = resolve(
@@ -74,7 +76,7 @@ export class DebtMigrationRepairScenario {
 
         expect({ accountId: accountBalance.accountId, amount: accountBalance.amount, deletedAt: accountBalance.deletedAt }).toEqual({
             accountId: DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID,
-            amount: DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_AMOUNT,
+            amount: DebtMigrationRepairScenario.AMBIGUOUS_LEDGER_BALANCE,
             deletedAt: null
         });
     }

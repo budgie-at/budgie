@@ -19,24 +19,28 @@ describe('getDebtLedgerBalance', () => {
         expect(getDebtLedgerBalance(50_000, AccountDebtTypeEnum.BORROW, 45_000)).toBe(0);
     });
 
-    it('stores a lent debt as the received amount', () => {
-        expect(getDebtLedgerBalance(2_000, AccountDebtTypeEnum.LENT, 15_000)).toBe(2_000);
+    it('stores a lent debt as the positive remaining balance', () => {
+        expect(getDebtLedgerBalance(2_000, AccountDebtTypeEnum.LENT, 15_000)).toBe(13_000);
     });
 
-    it('caps the lent ledger balance at the target once overpaid', () => {
-        expect(getDebtLedgerBalance(20_000, AccountDebtTypeEnum.LENT, 15_000)).toBe(15_000);
-        expect(getDebtLedgerBalance(-20_000, AccountDebtTypeEnum.LENT, 15_000)).toBe(15_000);
+    it('stores a fresh lent debt without returns as the full target', () => {
+        expect(getDebtLedgerBalance(0, AccountDebtTypeEnum.LENT, 15_000)).toBe(15_000);
+    });
+
+    it('clamps the lent ledger balance at zero once fully returned', () => {
+        expect(getDebtLedgerBalance(20_000, AccountDebtTypeEnum.LENT, 15_000)).toBe(0);
+        expect(getDebtLedgerBalance(-20_000, AccountDebtTypeEnum.LENT, 15_000)).toBe(0);
     });
 
     it('reproduces the same balance when replayed from the capped closed amount', () => {
         const cappedClosedAmount = getDebtClosedAmount(20_000, 15_000);
 
-        expect(getDebtLedgerBalance(cappedClosedAmount, AccountDebtTypeEnum.LENT, 15_000)).toBe(15_000);
+        expect(getDebtLedgerBalance(cappedClosedAmount, AccountDebtTypeEnum.LENT, 15_000)).toBe(0);
         expect(getDebtLedgerBalance(cappedClosedAmount, AccountDebtTypeEnum.BORROW, 15_000)).toBe(0);
     });
 
     it('ignores the sign of the entered returned amount', () => {
         expect(getDebtLedgerBalance(-7_934, AccountDebtTypeEnum.BORROW, 45_000)).toBe(-37_066);
-        expect(getDebtLedgerBalance(-2_000, AccountDebtTypeEnum.LENT, 15_000)).toBe(2_000);
+        expect(getDebtLedgerBalance(-2_000, AccountDebtTypeEnum.LENT, 15_000)).toBe(13_000);
     });
 });

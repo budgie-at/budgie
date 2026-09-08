@@ -1,13 +1,14 @@
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { DebtEventDirectionEnum } from '../enum/debt-event-direction.enum';
+import { DebtEventSourceEnum } from '../enum/debt-event-source.enum';
 import { DebtEventEntityTable } from '../table/debt-event-entity.table';
 
 import type { DB } from '../../@generic/type/db.type';
 import type { DebtEventCreateEntityInterface } from '../entity/debt-event-create-entity.interface';
 import type { DebtEventEntityInterface } from '../entity/debt-event-entity.interface';
-import type { DebtEventSourceEnum } from '../enum/debt-event-source.enum';
 
 export class DebtEventRepository {
     constructor(private db: DB) {}
@@ -52,6 +53,20 @@ export class DebtEventRepository {
         });
     }
 
+    getManualSettledAmountByAccountId(accountId: number) {
+        return this.db
+            .select({ amount: sql<number>`COALESCE(SUM(${DebtEventEntityTable.amount}), 0)`.mapWith(Number) })
+            .from(DebtEventEntityTable)
+            .where(
+                and(
+                    eq(DebtEventEntityTable.debtAccountId, accountId),
+                    eq(DebtEventEntityTable.source, DebtEventSourceEnum.MANUAL),
+                    eq(DebtEventEntityTable.direction, DebtEventDirectionEnum.CLOSE),
+                    isNull(DebtEventEntityTable.deletedAt)
+                )
+            );
+    }
+
     async updateById(
         id: number,
         input: Partial<
@@ -66,6 +81,14 @@ export class DebtEventRepository {
             .update(DebtEventEntityTable)
             .set({ ...input, updatedAt: new Date() })
             .where(eq(DebtEventEntityTable.id, id));
+    }
+
+    async deleteByIds(ids: number[], tx?: DB): Promise<void> {
+        if (!isNotEmptyArray(ids)) {
+            return;
+        }
+
+        await (tx ?? this.db).delete(DebtEventEntityTable).where(inArray(DebtEventEntityTable.id, ids));
     }
 
     async deleteByTransactionId(transactionId: number, tx?: DB): Promise<void> {

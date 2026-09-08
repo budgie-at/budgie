@@ -97,21 +97,15 @@ export const useHomePageDataQuery = () => {
     const balanceSummary: HomeAccountBalanceSummaryInterface = data.reduce((summary, row) => {
         const bankProviderGroup = resolveBankProviderGroup(row.account.integrationId, integrationProviders);
         const convertedDebtProgressSummary = {
-            closedAmount: convertFromMicroUnits(row.convertedDebtClosedAmount),
-            creditAmount: convertFromMicroUnits(row.convertedCreditAmount),
-            debitAmount: convertFromMicroUnits(row.convertedDebitAmount),
-            openedAmount: convertFromMicroUnits(row.convertedDebtOpenedAmount),
             outstandingAmount: convertFromMicroUnits(row.convertedDebtOutstandingAmount),
+            overpaidAmount: convertFromMicroUnits(row.convertedDebtOverpaidAmount),
             paidAmount: convertFromMicroUnits(row.convertedDebtPaidAmount),
             percentage: row.debtProgressPercentage,
             totalAmount: convertFromMicroUnits(row.convertedDebtTotalAmount)
         };
         const debtProgressSummary = {
-            closedAmount: convertFromMicroUnits(row.debtClosedAmount),
-            creditAmount: convertFromMicroUnits(row.creditAmount),
-            debitAmount: convertFromMicroUnits(row.debitAmount),
-            openedAmount: convertFromMicroUnits(row.debtOpenedAmount),
             outstandingAmount: convertFromMicroUnits(row.debtOutstandingAmount),
+            overpaidAmount: convertFromMicroUnits(row.debtOverpaidAmount),
             paidAmount: convertFromMicroUnits(row.debtPaidAmount),
             percentage: row.debtProgressPercentage,
             totalAmount: convertFromMicroUnits(row.debtTotalAmount)

@@ -23,6 +23,8 @@ import type { AccountBalanceEntityInterface, DB } from '@budgie/contracts';
 export class DebtMigrationPersistenceAssertions {
     private static readonly AMBIGUOUS_ACCOUNT_ID = Number('102');
     private static readonly AMBIGUOUS_ADJUSTMENT_AMOUNT = 1_000_000_000;
+
+    private static readonly AMBIGUOUS_LEDGER_BALANCE = -9_000_000_000;
     private static readonly AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID = Number('1010');
     private static readonly AMBIGUOUS_OPENING_AMOUNT = Number('10000000000');
     private static readonly CANONICAL_ACCOUNT_ID = Number('101');
@@ -221,11 +223,11 @@ export class DebtMigrationPersistenceAssertions {
         expect(snapshot.balances).toEqual([
             {
                 accountId: DebtMigrationPersistenceAssertions.AMBIGUOUS_ACCOUNT_ID,
-                amount: DebtMigrationPersistenceAssertions.AMBIGUOUS_ADJUSTMENT_AMOUNT,
+                amount: DebtMigrationPersistenceAssertions.AMBIGUOUS_LEDGER_BALANCE,
                 createdAt: 1_780_358_400,
                 deletedAt: null,
                 id: 100,
-                updatedAt: 1_780_358_400
+                updatedAt: expect.any(Number)
             }
         ]);
     }

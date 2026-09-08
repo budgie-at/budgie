@@ -60,7 +60,7 @@ export const CreateDebtAccount = () => {
     const isOpeningFromAccount = isLentDebt && isDefined(openingAccountId);
     const variant = ACCOUNT_COLOR.DEBT;
     const stickyInstrument = useStickyDefinedValue(instrument);
-    const balanceFieldLabel = isLentDebt ? t`Already received` : t`Already returned`;
+    const balanceFieldLabel = isLentDebt ? t`Already returned` : t`Already repaid`;
 
     const handleCreateDebtAccountSubmit = () => {
         if (isOpeningFromAccount) {
