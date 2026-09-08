@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.40.0](https://github.com/budgie-at/budgie/compare/v6.39.0...v6.40.0) (2026-09-08)
+
+
+### Features
+
+* **landing:** convert-to-refund steps story ([3ec6b25](https://github.com/budgie-at/budgie/commit/3ec6b25f051ee40a46d94583fce26683d4a961cc))
+
+
+
+
+
 # [6.39.0](https://github.com/budgie-at/budgie/compare/v6.38.6...v6.39.0) (2026-09-08)
 
 
