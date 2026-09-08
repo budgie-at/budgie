@@ -2439,10 +2439,6 @@ msgstr "Virements entre comptes — Budgie"
 msgid "Account Transfers — Done Right"
 msgstr "Virements entre comptes — Bien faits"
 
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Account type Crypto. Each holding is an instrument + quantity. Prices come from the built-in daily history for major crypto assets, or from your own manual edits. Net-worth converts via the latest price snapshot."
-msgstr "Type de compte Crypto. Chaque position est un instrument + une quantité. Les prix proviennent de l'historique quotidien intégré des principaux actifs crypto ou de vos propres modifications manuelles. Le patrimoine net est converti à partir du dernier instantané de prix."
-
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Account type Debt with sub-type \"I owe\" or \"owes me\". Linked to a contact name (optional). Settlement happens as transfers between the debt account and a real cash/bank account."
 msgstr "Type de compte Dette avec sous-type « Je dois » ou « me doit ». Lié à un nom de contact (facultatif). Le règlement s'effectue par virements entre le compte de dette et un compte réel (espèces/banque)."
@@ -3203,6 +3199,10 @@ msgstr "Les sauvegardes vont dans votre stockage cloud personnel — iCloud Driv
 msgid "Backups to your own iCloud Drive, Google Drive, or Dropbox"
 msgstr "Sauvegardes vers votre propre iCloud Drive, Google Drive ou Dropbox"
 
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Balance in the coin itself"
+msgstr "Solde dans la pièce elle-même"
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Balances hidden from screenshots"
 msgstr "Soldes masqués sur les captures"
@@ -3222,6 +3222,10 @@ msgstr "Banque + espèces + dépôts + crypto + dettes"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Bank account synchronization"
 msgstr "Synchronisation des comptes bancaires"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Bank accounts first"
+msgstr "Les comptes bancaires d'abord"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Bank breach impact"
@@ -3831,8 +3835,12 @@ msgid "Budgie automatically attempts to match categories and can learn from your
 msgstr "Budgie tente automatiquement de faire correspondre les catégories et peut apprendre de vos corrections pour améliorer la catégorisation future."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Budgie Bitcoin wallet screen with the coin balance above its purchase history"
-msgstr "Écran du portefeuille Bitcoin de Budgie avec le solde de la cryptomonnaie au-dessus de son historique d’achats"
+msgid "Budgie Bitcoin market screen with the price, a sparkline, and a holdings card listing average cost, cost basis and unrealized profit"
+msgstr "Écran de marché Bitcoin de Budgie avec le cours, une sparkline et une carte de position indiquant le coût moyen, le prix de revient et le gain latent"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Budgie Bitcoin wallet screen with the balance in BTC above two crypto purchase rows showing the amount paid and the rate"
+msgstr "Écran du portefeuille Bitcoin de Budgie avec le solde en BTC au-dessus de deux lignes d'achat crypto indiquant le montant payé et le taux"
 
 #: src/app/[lang]/page.tsx
 msgid "Budgie budget details screen with a monthly budget bar and per-category limits"
@@ -3986,10 +3994,6 @@ msgstr "Budgie se prend vite en main parce qu’elle ressemble à une app mobile
 msgid "Budgie home screen scrolled to the savings, you owe and owed to you groups with a subtotal on each one"
 msgstr "Écran d'accueil de Budgie défilé jusqu'aux groupes épargne, ce que vous devez et ce qu'on vous doit, chacun avec un sous-total"
 
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Budgie home screen with a crypto section showing the Bitcoin holding converted to the base currency"
-msgstr "Écran d’accueil de Budgie avec une section cryptomonnaies affichant l’avoir en Bitcoin converti dans la devise de référence"
-
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with a euro-denominated account listed under a total balance shown in dollars"
 msgstr "Écran d'accueil de Budgie avec un compte en euros sous un solde total affiché en dollars"
@@ -4013,6 +4017,10 @@ msgstr "Écran d’accueil de Budgie avec les soldes des cartes synchronisées a
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with the total balance header above every account section"
 msgstr "Écran d’accueil de Budgie avec l’en-tête du solde total au-dessus de chaque section de comptes"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups"
+msgstr "Écran d'accueil de Budgie avec le solde total réparti entre une pastille espèces et une pastille crypto, au-dessus des groupes de comptes bancaires, espèces et crypto"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Budgie implements offline-first architecture with no compromises:"
@@ -4949,6 +4957,10 @@ msgstr "Les cartes et les cagnottes arrivent"
 msgid "Cards, jars, and deposits share a single connection, so a token change is a one-time job."
 msgstr "Cartes, cagnottes et dépôts partagent une seule connexion, si bien que changer de jeton se fait en une seule fois."
 
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Cash and coin, split apart"
+msgstr "Espèces et crypto, séparées"
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Cash App (Block) - 2022"
 msgstr "Cash App (Block) - 2022"
@@ -5300,6 +5312,10 @@ msgstr "Les applications financières hébergées dans le cloud représentent de
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Cloud-only (no offline functionality)"
 msgstr "Cloud uniquement (pas de fonctionnalité hors ligne)"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Coin bought, amount paid, rate"
+msgstr "Crypto achetée, montant payé, taux"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Combined with the date presets it turns \"where did the money go last month?\" into a two-chip question: Last Month plus everything above a threshold, and the list in front of you is the answer."
@@ -5801,6 +5817,10 @@ msgstr "Les avoirs crypto sont des instruments à part entière : symbole, quant
 msgid "Crypto holdings sit alongside your fiat accounts with the same UX"
 msgstr "Les avoirs crypto côtoient vos comptes fiat avec la même expérience"
 
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Crypto is not a separate tab. Holdings group by instrument under their own heading, after the bank and cash accounts, on the screen you already open. The total at the top counts them like everything else, and the two chips underneath split it into what you hold in cash and what you hold in coin."
+msgstr "La crypto n'a pas d'onglet séparé. Les positions sont regroupées par instrument sous leur propre en-tête, après les comptes bancaires et les espèces, sur l'écran que vous ouvrez déjà. Le total en haut les compte comme tout le reste, et les deux pastilles en dessous le répartissent entre ce que vous détenez en espèces et ce que vous détenez en crypto."
+
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "Crypto Portfolio"
 msgstr "Portefeuille crypto"
@@ -5812,6 +5832,10 @@ msgstr "Suivi de portefeuille crypto"
 #: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
 msgid "Crypto Portfolio Tracking — Budgie"
 msgstr "Suivi de portefeuille crypto — Budgie"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Crypto right below them"
+msgstr "La crypto juste en dessous"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Crypto today — two hundred assets ship with the app, each holding a row of (instrument, quantity, price). Stocks, ETFs, and commodities are not supported yet."
@@ -5974,6 +5998,10 @@ msgstr "L’actualisation quotidienne des taux de change en arrière-plan conver
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Daily FX-rate snapshots stored on-device for accurate historical conversion"
 msgstr "Instantanés quotidiens des taux de change stockés sur l’appareil pour une conversion historique précise"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Daily prices backfilled only for the crypto accounts you actually hold"
+msgstr "Les cours quotidiens ne sont complétés que pour les comptes crypto que vous détenez réellement"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Daily, in the background. Each day gets its own snapshot stored on-device for accurate historical conversion."
@@ -6895,6 +6923,10 @@ msgstr "Chaque correction IA améliore les futures suggestions via l'apprentissa
 msgid "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and encrypted backups — all 100% offline-first."
 msgstr "Toutes les fonctionnalités de Budgie en un seul endroit : synchronisation bancaire, IA sur l'appareil, saisie vocale, multi-devises, détection des récurrences et sauvegardes chiffrées — tout 100% hors ligne d'abord."
 
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Every buy keeps what it cost"
+msgstr "Chaque achat conserve son coût"
+
 #: src/app/[lang]/features/page.tsx
 msgid "Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization — in one place."
 msgstr "Toutes les fonctionnalités du gestionnaire de dépenses hors ligne Budgie — de la synchronisation bancaire à la catégorisation par IA sur l'appareil — en un seul endroit."
@@ -6938,6 +6970,10 @@ msgstr ""
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Every group carries a subtotal"
 msgstr "Chaque groupe affiche un sous-total"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Every instrument has its own market screen: the stored price with its last move, a sparkline of the history behind it, and your position valued against it — quantity, converted value, average cost, cost basis and unrealized gain. Market cap, volume and the date of the snapshot sit underneath. There is no ticker to subscribe to; the screen reads from the daily prices already in your database."
+msgstr "Chaque instrument a son propre écran de marché : le cours enregistré avec son dernier mouvement, une sparkline de l'historique et votre position valorisée en regard — quantité, valeur convertie, coût moyen, prix de revient et gain latent. La capitalisation, le volume et la date de l'instantané figurent en dessous. Aucun ticker auquel s'abonner : l'écran lit les cours quotidiens déjà présents dans votre base de données."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Every merge keeps its sources"
@@ -8254,7 +8290,6 @@ msgstr "En quoi est-ce différent de la page Analyses d'étiquettes ?"
 #: src/app/[lang]/features/binance-sync/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
@@ -8581,6 +8616,10 @@ msgstr "En decembre 2023, Intuit a annonce la fermeture de Mint apres 17 ans. Le
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "In practice, for most personal applications, this is rarely visible to users. Sync is fast enough that inconsistency windows are short. But your code should not assume instant consistency."
 msgstr "En pratique, pour la plupart des applications personnelles, cela est rarement visible par les utilisateurs. La synchronisation est suffisamment rapide pour que les fenêtres d'incohérence soient courtes. Mais votre code ne doit pas présumer d'une cohérence instantanée."
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "In the same list as your bank"
+msgstr "Dans la même liste que votre banque"
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "In the vendor cloud"
@@ -9326,10 +9365,6 @@ msgstr "L'importation manuelle demande plus d'efforts, mais elle garantit que vo
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Manual Import: The Privacy-First Option"
 msgstr "Importation manuelle : l'option qui privilegie la confidentialite"
-
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Manual or imported price updates — your call on cadence and source"
-msgstr "Mises à jour de prix manuelles ou importées — votre choix sur la cadence et la source"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Manual or scheduled"
@@ -10844,6 +10879,10 @@ msgstr "Un badge. Scannez une longue liste en un coup d’œil."
 msgid "One bank connection holds the credential and backs every account under it — cards, jars, and deposits. Change the token once and all of them follow; close one account and the rest keep syncing."
 msgstr "Une connexion bancaire détient l'identifiant et alimente tous les comptes qui en dépendent — cartes, cagnottes et dépôts. Changez le jeton une seule fois et tous suivent ; fermez un compte et les autres continuent de se synchroniser."
 
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "One coin, three screens"
+msgstr "Une pièce, trois écrans"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One connection behind many accounts — cards, jars, and deposits from the same bank"
 msgstr "Une connexion derrière plusieurs comptes — cartes, cagnottes et dépôts de la même banque"
@@ -11609,6 +11648,10 @@ msgstr "Aperçu de chaque transaction analysée avant écriture — sans surpris
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Preview every row before write so you can spot mis-mappings instantly"
 msgstr "Aperçu de chaque ligne avant écriture pour détecter instantanément les erreurs de mapping"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Price, and its last move"
+msgstr "Le cours et son dernier mouvement"
 
 #: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 msgid "pricing"
@@ -13975,8 +14018,8 @@ msgid "The native splash screen reads the OS theme directly so the transition in
 msgstr "L'écran de démarrage natif lit directement le thème du système pour que la transition vers l'application React Native reste en mode sombre sans état clair intermédiaire."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "The nine largest crypto assets ship with a year of daily prices in euro and dollar. Longer history is pulled from CoinGecko's public market data for the crypto accounts you hold, and everything else you set by hand."
-msgstr "Les neuf plus grands actifs crypto sont livrés avec un an de prix quotidiens en euro et en dollar. Un historique plus long est récupéré depuis les données de marché publiques de CoinGecko pour les comptes crypto que vous détenez, et tout le reste se règle manuellement."
+msgid "The nine largest crypto assets ship with a year of daily prices in euro and dollar. Anything beyond that is pulled from CoinGecko's public market data, one missing day at a time, and only for the crypto accounts you hold."
+msgstr "Les neuf plus grands actifs crypto sont livrés avec un an de cours quotidiens en euro et en dollar. Au-delà, les données proviennent des données de marché publiques de CoinGecko, un jour manquant à la fois, et uniquement pour les comptes crypto que vous détenez."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The O'Saasy license allows you to:"
@@ -14315,6 +14358,10 @@ msgstr "Le total Non étiqueté se recalcule en direct à mesure que vous étiqu
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Upgrade Flow"
 msgstr ""
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "The wallet itself reads in the coin: a balance in BTC, and under it the purchases that add up to it. Each row carries the coin amount it bought, the amount you actually paid in your own currency, and the rate that implies — so the cost stays recorded at the moment of the trade instead of being recomputed from today's price."
+msgstr "Le portefeuille lui-même s'exprime dans la pièce : un solde en BTC et, en dessous, les achats qui le composent. Chaque ligne porte la quantité achetée, le montant réellement payé dans votre devise et le taux que cela implique — le coût reste donc enregistré au moment de la transaction au lieu d'être recalculé à partir du cours du jour."
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 #: src/generic/component/home-tour-section/home-tour-section.tsx
@@ -14953,8 +15000,8 @@ msgid "Two hundred crypto assets in one dashboard."
 msgstr "Deux cents actifs crypto dans un seul tableau de bord."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Two hundred crypto instruments ship with the app, ranked by market cap. Manual price updates are fine for low-frequency tracking, and the major assets come with real daily market history built in. Stocks and ETFs are not supported yet."
-msgstr "Deux cents instruments crypto sont fournis avec l'application, classés par capitalisation boursière. Les mises à jour manuelles des prix suffisent pour un suivi peu fréquent, et les principaux actifs intègrent un véritable historique de marché quotidien. Les actions et les ETF ne sont pas encore pris en charge."
+msgid "Two hundred crypto instruments ship with the app, ranked by market cap, and the major assets come with real daily market history built in. Stocks and ETFs are not supported yet."
+msgstr "Deux cents instruments crypto sont fournis avec l'application, classés par capitalisation, et les principaux actifs intègrent un véritable historique de marché quotidien. Les actions et les ETF ne sont pas encore pris en charge."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Two of four digits in"
@@ -15101,6 +15148,10 @@ msgstr "Comptes illimités : Courant, Épargne (espèces), Crypto, Dette, Dépô
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Unlimited splits per transaction — every category gets its accurate share"
 msgstr "Ventilations illimitées par transaction — chaque catégorie obtient sa part exacte"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Unrealized gain over cost basis"
+msgstr "Gain latent par rapport au prix de revient"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Untagged bucket surfaces every transaction missing a label — drill in and fix gaps"
@@ -15721,6 +15772,10 @@ msgstr "Quelle est la différence entre archivé et inactif ?"
 msgid "What is the difference between local-first and offline-first?"
 msgstr "Quelle est la différence entre local-first et offline-first ?"
 
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "What it cost, and what it is worth"
+msgstr "Ce qu'elle a coûté et ce qu'elle vaut"
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "What languages does the AI support?"
 msgstr "Quelles langues l'IA prend-elle en charge ?"
@@ -16102,6 +16157,10 @@ msgstr "Là où le fichier de sauvegarde remplace le serveur"
 #: src/generic/component/faq-section/faq-section.tsx
 msgid "Where the data lives, what works offline, how bank sync avoids your login, and what it costs."
 msgstr "Où vivent les données, ce qui fonctionne hors ligne, comment la synchro bancaire évite vos identifiants et ce que cela coûte."
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Where the holding sits in your account list, the buys that built it, and the market screen that prices it."
+msgstr "Où la position figure dans votre liste de comptes, les achats qui l'ont constituée et l'écran de marché qui la valorise."
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Where transactions live"
@@ -16688,8 +16747,8 @@ msgid "Yes — Budgie's source is public. Read the network code yourself: github
 msgstr "Oui — le code source de Budgie est public. Lisez vous-même le code réseau : github.com/budgie-at/budgie."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Yes — buys are inflows to the holding account; sells are outflows with the realized FX. P&L drilling on the way for a future release."
-msgstr "Oui — les achats sont des entrées vers le compte de position ; les ventes sont des sorties avec le FX réalisé. L'exploration des profits et pertes est prévue dans une prochaine version."
+msgid "Yes — buys are inflows to the holding account; sells are outflows with the realized FX. The market screen turns that history into an average cost, a cost basis and an unrealized gain for the position."
+msgstr "Oui — les achats sont des entrées sur le compte de position, les ventes des sorties avec le change réalisé. L'écran de marché transforme cet historique en coût moyen, prix de revient et gain latent pour la position."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Yes — by default, none is primary. The badge appears only when you explicitly promote one."
@@ -17443,6 +17502,10 @@ msgstr "Votre propre jeton appelle directement l’API de la banque. Pas de Plai
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your political and religious affiliations"
 msgstr "Vos affiliations politiques et religieuses"
+
+#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+msgid "Your quantity, valued in your currency"
+msgstr "Votre quantité, valorisée dans votre devise"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Your recurring subscriptions and financial commitments"
