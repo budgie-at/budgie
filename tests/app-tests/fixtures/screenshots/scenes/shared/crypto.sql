@@ -166,18 +166,30 @@ WITH RECURSIVE day_offset(days_ago) AS (
     SELECT 0
     UNION ALL
     SELECT days_ago + 1 FROM day_offset WHERE days_ago < 89
+),
+daily_price AS (
+    SELECT
+        overlay_coin.instrument_id AS instrument_id,
+        overlay_locale.instrument_id AS quote_instrument_id,
+        overlay_coin.circulating_supply AS circulating_supply,
+        overlay_coin.daily_volume_units AS daily_volume_units,
+        date('now', '-' || day_offset.days_ago || ' days') AS price_date,
+        overlay_coin.usd_price * overlay_locale.usd_to_base
+            * (1.0 - day_offset.days_ago * 0.0016)
+            * (1.0 + (((day_offset.days_ago * 37 + 9) % 23) - 11) / 420.0) AS price
+    FROM day_offset
+    CROSS JOIN overlay_coin
+    CROSS JOIN overlay_locale
 )
 SELECT
-    overlay_coin.instrument_id,
-    overlay_locale.instrument_id,
-    date('now', '-' || day_offset.days_ago || ' days'),
-    overlay_coin.usd_price * overlay_locale.usd_to_base * (1.0 - day_offset.days_ago * 0.0016) * (1.0 + (((day_offset.days_ago * 37 + 9) % 23) - 11) / 420.0),
-    overlay_coin.usd_price * overlay_locale.usd_to_base * (1.0 - day_offset.days_ago * 0.0016) * overlay_coin.circulating_supply,
-    overlay_coin.usd_price * overlay_locale.usd_to_base * (1.0 - day_offset.days_ago * 0.0016) * overlay_coin.daily_volume_units,
+    daily_price.instrument_id,
+    daily_price.quote_instrument_id,
+    daily_price.price_date,
+    daily_price.price,
+    daily_price.price * daily_price.circulating_supply,
+    daily_price.price * daily_price.daily_volume_units,
     'COINGECKO'
-FROM day_offset
-CROSS JOIN overlay_coin
-CROSS JOIN overlay_locale;
+FROM daily_price;
 
 DROP TABLE overlay_transaction;
 DROP TABLE overlay_coin;
