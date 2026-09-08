@@ -16,6 +16,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -79,6 +80,63 @@ export default async function ConvertToRefundFeaturePage(props: PageLangParam) {
                 }
             />
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>The money came back — it was never earned</Trans>}>
+                    <Trans>
+                        Two screens: the same-currency expenses this income could be paying back, and the one you pick for it to cancel out.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>A refund is not income</Trans>}>
+                    <Trans>
+                        Counting a merchant refund as earnings inflates every income report you run. Long-press the income row, choose
+                        Convert to Refund, and Budgie lists the expenses it could be reversing — same currency, any account, and never
+                        smaller than the refund itself.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Convert to Refund picker listing same-currency expenses with a search field and a disabled Convert button`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="convert-to-refund-1"
+                    slug="convert-to-refund"
+                >
+                    <FeatureStory.Callout y={0.249}>
+                        <Trans>Likeliest match sorted first</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.855}>
+                        <Trans>Search by merchant or account</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Link it to what it reverses</Trans>}>
+                    <Trans>
+                        Pick the expense and convert. The refund stops standing on its own: it attaches to that purchase, the expense is
+                        marked Refunded, and analytics counts the purchase net of what came back — under its original category, not as new
+                        income. Tap Revert on the refunded transaction to pull the two rows apart again.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Convert to Refund picker with one expense row selected and checked, and the Convert button now enabled`}
+                    index={1}
+                    locale={lang}
+                    scene="convert-to-refund-2"
+                    slug="convert-to-refund"
+                >
+                    <FeatureStory.Callout y={0.249}>
+                        <Trans>Pick the expense it reverses</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.907}>
+                        <Trans>Convert enables on selection</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why refunds pollute income analytics</Trans>
@@ -94,24 +152,6 @@ export default async function ConvertToRefundFeaturePage(props: PageLangParam) {
                     <Trans>
                         Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports
                         partial refunds, and keeps the audit trail visible from the transaction detail screen.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Automatic when obvious, manual when it needs review</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        High-confidence refund matches consolidate automatically during the same matching pass that handles transfers. When
-                        the match is ambiguous, open the income transaction and choose Convert to Refund.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The picker searches same-currency expenses across accounts and sorts likely matches by date and amount. Choose the
-                        expense, confirm, and Budgie shows whether the refund is full or partial.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
