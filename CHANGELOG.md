@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.41.1](https://github.com/budgie-at/budgie/compare/v6.41.0...v6.41.1) (2026-09-08)
+
+
+### Bug Fixes
+
+* **app:** cap the manual settlement by the effective opened total ([9b7843e](https://github.com/budgie-at/budgie/commit/9b7843e3f6efefb23b434445d55d293de7e97475))
+* **app:** make debt progress idempotent and direction-correct for lent and borrowed debts ([d91789c](https://github.com/budgie-at/budgie/commit/d91789ceb8a3434def01a7065df370348d613636)), closes [#938](https://github.com/budgie-at/budgie/issues/938)
+
+
+
+
+
 # [6.41.0](https://github.com/budgie-at/budgie/compare/v6.40.0...v6.41.0) (2026-09-08)
 
 

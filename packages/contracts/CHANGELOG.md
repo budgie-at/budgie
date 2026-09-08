@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.41.1](https://github.com/budgie-at/budgie/compare/v6.41.0...v6.41.1) (2026-09-08)
+
+
+### Bug Fixes
+
+* **app:** make debt progress idempotent and direction-correct for lent and borrowed debts ([d91789c](https://github.com/budgie-at/budgie/commit/d91789ceb8a3434def01a7065df370348d613636)), closes [#938](https://github.com/budgie-at/budgie/issues/938)
+
+
+
+
+
 ## [6.22.1](https://github.com/budgie-at/budgie/compare/v6.22.0...v6.22.1) (2026-09-07)
 
 
