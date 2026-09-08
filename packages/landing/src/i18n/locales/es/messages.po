@@ -2299,6 +2299,10 @@ msgstr "Entre agosto y septiembre de 2026 se publicó mucho sin ningún anuncio.
 msgid "A market screen per instrument with a price card, a sparkline, and period metrics"
 msgstr "Una pantalla de mercado por instrumento con una tarjeta de precio, un minigráfico y métricas del período"
 
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "A merged transfer keeps a Consolidation row. \"View source transactions\" opens both originals with their amounts, dates and accounts still intact. Revert puts them back and removes the merged transfer."
+msgstr "Una transferencia fusionada conserva una fila «Consolidación». «Ver transacciones de origen» abre ambos originales con sus importes, fechas y cuentas intactos. «Revertir» los restaura y elimina la transferencia fusionada."
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "A P2P purchase and the bank payment behind it merge into one cross-currency transfer"
 msgstr "Una compra P2P y el pago bancario que hay detrás se fusionan en una única transferencia entre divisas"
@@ -2761,6 +2765,10 @@ msgstr "Siempre. Las transacciones importadas son transacciones normales de Budg
 msgid "Always. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list gives you a context menu with Edit, Delete, Split, Convert to Transfer, and Convert to Refund actions when they apply."
 msgstr "Siempre. Tocar una fila abre su vista de detalle de solo lectura con un botón Editar, y mantenerla pulsada en la lista abre un menú contextual con las acciones Editar, Eliminar, Dividir, Convertir en transferencia y Convertir en reembolso cuando corresponden."
 
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Ambiguous matches stay as two untouched rows instead of a silent guess"
+msgstr "Las coincidencias ambiguas se quedan como dos filas intactas en vez de una suposición silenciosa"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Among privacy-focused options, Budgie offers the best mobile experience as it was built mobile-first. Copilot has an excellent iOS app but requires Apple ecosystem and bank sync. Most open-source alternatives (Actual, Firefly III) have web interfaces that work on mobile but aren’t native apps, which can feel less polished on a phone."
 msgstr "Entre las opciones centradas en privacidad, Budgie es la más nativa para móvil porque nació mobile-first. Copilot tiene una excelente app para iOS, pero asume Apple y sincronización bancaria. La mayoría de alternativas open-source, incluidas Actual y Firefly III, funcionan en móvil a través de la web, lo que puede sentirse menos pulido en un teléfono."
@@ -2793,6 +2801,10 @@ msgstr "Un chip de rango de importe en la misma fila de filtros, con un valor De
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "An archived account leaves the home screen and the totals but keeps every transaction. Settings lists them, ready to search and restore."
 msgstr "Una cuenta archivada desaparece de la pantalla de inicio y de los totales, pero conserva todas sus transacciones. Ajustes las lista, listas para buscar y restaurar."
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "An expense pairs with an income when the counter-IBAN lines up, or when the amounts match — same currency, or an implied exchange rate inside a tolerance band — and both legs fall within twelve hours of each other. The match becomes one transfer carrying a debit and a credit entry, so it stops counting as spending. Pairs Budgie is not sure about are left alone as two rows rather than guessed at."
+msgstr "Un gasto se empareja con un ingreso cuando el IBAN de contrapartida coincide, o cuando los importes cuadran —misma moneda, o un tipo de cambio implícito dentro de una banda de tolerancia— y ambos tramos caen dentro de doce horas. La coincidencia se convierte en una sola transferencia con un apunte al debe y otro al haber, así que deja de contar como gasto. Los pares de los que Budgie no está seguro se dejan como dos filas en lugar de adivinarlos."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "An expense tracker lives or dies by entry friction. Budgie's quick-entry sheet picks the right account, the most-likely category, and the current date by default — typically two taps to a saved transaction."
@@ -3644,6 +3656,10 @@ msgstr "Chip con borde, más un contador"
 msgid "Both accounts on one row"
 msgstr "Ambas cuentas en una misma fila"
 
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Both accounts report the same move"
+msgstr "Ambas cuentas informan del mismo movimiento"
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Both amounts are shown together (e.g. $1000 → €925). Pin either side; the exchange rate is saved on the transfer so reconciliation across currencies stays exact."
 msgstr "Ambos importes se muestran juntos (p. ej. 1000 $ → 925 €). Fija el lado que quieras; el tipo de cambio se guarda en la transferencia, así que la conciliación entre divisas sigue siendo exacta."
@@ -3850,8 +3866,11 @@ msgstr "Pantalla de Budgie para conectar Monobank con el campo del token, los pa
 msgid "Budgie Connect Monobank screen with the Get API Token row and the token field"
 msgstr "Pantalla Conectar Monobank de Budgie con la fila Obtener token API y el campo del token"
 
-#: src/app/[lang]/features/transfer-pair-detection/metadata.ts
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Budgie consolidates obvious transfers and merchant refunds automatically, and leaves anything ambiguous exactly as it imported it."
+msgstr "Budgie consolida automáticamente las transferencias evidentes y los reembolsos de comercios, y deja todo lo ambiguo tal y como lo importó."
+
+#: src/app/[lang]/features/transfer-pair-detection/metadata.ts
 msgid "Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review."
 msgstr "Budgie consolida automáticamente las transferencias y reembolsos de comercios evidentes, y deja las coincidencias ambiguas para revisión."
 
@@ -4136,6 +4155,10 @@ msgstr "Budgie mapea cada etiqueta de categoría de PrivatBank al código MCC IS
 msgid "Budgie matches the two legs automatically. It prefers the fiat figures Binance itself quotes on the order, accepting a bank amount within a small tolerance, and falls back to comparing the implied rate against the exchange rates on your device — triangulating through your base currency, so a hryvnia payment for USDT resolves without a direct currency pair. Both legs must sit within an hour of each other, and up to three bank payments can add up to a single P2P purchase. When two candidates are equally plausible, nothing is merged: an ambiguous guess is worse than a manual fix."
 msgstr "Budgie hace coincidir ambas partes automáticamente. Prioriza las cifras en moneda fiat que el propio Binance indica en la orden, aceptando un importe bancario dentro de un pequeño margen, y si no puede, compara el tipo implícito con los tipos de cambio de tu dispositivo — triangulando a través de tu moneda base, de modo que un pago en grivnas por USDT se resuelve sin necesidad de un par de divisas directo. Ambas partes deben ocurrir dentro de una hora, y hasta tres pagos bancarios pueden sumar una sola compra P2P. Cuando dos candidatos son igual de plausibles, no se fusiona nada: una suposición ambigua es peor que una corrección manual."
 
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Budgie merged transfer screen with the consolidation source sheet listing both original legs above Done and Revert"
+msgstr "Pantalla de transferencia fusionada de Budgie con la hoja de transacciones de origen que lista ambos tramos originales sobre Listo y Revertir"
+
 #: src/app/[lang]/features/transfer-pair-detection/metadata.ts
 msgid "Budgie merges obvious transfer pairs and merchant refunds so bank imports do not inflate spending or income. Counter-IBAN, amount, date, and title matching run on-device."
 msgstr "Budgie une pares de transferencias y reembolsos de comercios evidentes para que las importaciones bancarias no inflen gastos ni ingresos. La coincidencia por contra-IBAN, importe, fecha y título se ejecuta en el dispositivo."
@@ -4393,8 +4416,8 @@ msgid "Budgie transaction list showing eighty-one transactions read straight fro
 msgstr "Lista de transacciones de Budgie con ochenta y una transacciones leídas directamente de la base de datos del dispositivo"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Budgie transaction list where a matched incoming transfer is shown as a single transfer row"
-msgstr "Lista de transacciones de Budgie donde una transferencia entrante emparejada se muestra como una sola fila de transferencia"
+msgid "Budgie transaction list where a matched transfer pair appears as one incoming transfer row naming the destination account"
+msgstr "Lista de transacciones de Budgie donde un par de transferencias detectado aparece como una sola fila de transferencia entrante que nombra la cuenta de destino"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie transaction list where each row shows a tag chip beside its category and date"
@@ -5725,8 +5748,8 @@ msgid "Cross-currency, dual-amount, exact."
 msgstr "Entre divisas, doble importe, exacto."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Cross-currency: $1000 → €925 within 3 days matches when the FX rate is plausible"
-msgstr "Entre divisas: $1000 → €925 en 3 días coinciden cuando el tipo de cambio es plausible"
+msgid "Cross-currency: $1000 → €925 matches when the implied exchange rate is plausible"
+msgstr "Multidivisa: 1000 $ → 925 € coincide cuando el tipo de cambio implícito es plausible"
 
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
@@ -6891,6 +6914,10 @@ msgstr ""
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Every group carries a subtotal"
 msgstr "Cada grupo muestra un subtotal"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Every merge keeps its sources"
+msgstr "Cada fusión conserva sus orígenes"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Every Monobank card and every jar comes back as its own account, with a switch to leave any of them out."
@@ -8212,7 +8239,6 @@ msgstr "¿En qué se diferencia esto de la página de análisis de etiquetas?"
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 #: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "How it works"
 msgstr "Cómo funciona"
@@ -9290,10 +9316,6 @@ msgstr "Anulación manual por comercio si el LLM se equivoca"
 msgid "Manual refund search can find same-currency expenses across accounts. Budgie sorts likely matches by amount and date so the closest refund target appears first."
 msgstr "La búsqueda manual de reembolsos puede encontrar gastos en la misma moneda entre cuentas. Budgie ordena las coincidencias probables por importe y fecha para que el objetivo de reembolso más cercano aparezca primero."
 
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Manual review for ambiguous refund matches instead of silent guesses"
-msgstr "Revisión manual para coincidencias de reembolso ambiguas en lugar de suposiciones silenciosas"
-
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Manual server snapshots"
 msgstr "Instantáneas manuales del servidor"
@@ -9899,6 +9921,10 @@ msgstr "Mi amigo me devolvió el dinero por transferencia bancaria — ¿tengo q
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Name the account on the other side"
 msgstr "Indica la cuenta del otro lado"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Named by its destination account"
+msgstr "Nombrada por su cuenta de destino"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Narrow by amount, not just by date"
@@ -10665,10 +10691,6 @@ msgstr "En un servidor que refleja tus transacciones"
 msgid "On bank import, each transaction's MCC is read from the source. Budgie looks up the MCC in the lookup table; the resulting category fills the form. AI category suggestions take over for transactions without an MCC."
 msgstr "En cada importación bancaria, el MCC de cada transacción se lee desde la fuente. Budgie lo busca en la tabla de consulta; el resultado se convierte en la categoría inicial."
 
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "On every consolidation run, Budgie scans new entries against existing ones for matching counter-IBAN, amount, sign, title, and time window. Transfer matches become one transfer. Refund matches link income back to the expense they reverse."
-msgstr "En cada ejecución de consolidación, Budgie compara los registros nuevos con los existentes por contra-IBAN, importe, signo, título y ventana temporal. Las coincidencias de transferencia se convierten en una transferencia. Las coincidencias de reembolso vinculan el ingreso con el gasto que revierten."
-
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept, edit, or reject) feeds back into the embedding index without any network call."
 msgstr "En la primera ejecución, Budgie descarga Qwen3 1.7B Q4 y un modelo de embedding Nomic de 768 dimensiones desde el hub de Hugging Face. Ambos se almacenan en el sandbox de tu app. Para cada nueva transacción, el modelo de embedding se ejecuta primero — si existe un vecino más cercano sólido en tu historial, el resultado es instantáneo. Si no, Qwen3 1.7B genera una sugerencia. Tu respuesta (aceptar, editar o rechazar) se retroalimenta en el índice de embedding sin ninguna llamada de red."
@@ -10910,6 +10932,10 @@ msgstr "Una única transacción contiene automáticamente ambas entradas de cuen
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One transaction, two ways to file it"
 msgstr "Una transacción, dos formas de clasificarla"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "One transfer row, not two"
+msgstr "Una fila de transferencia, no dos"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "One uncategorized grocery run can make your food budget look better than it is. A few missing categories across income and expenses can distort category charts, month-end reviews, and spending trends."
@@ -11231,8 +11257,8 @@ msgid "Page Not Found"
 msgstr "Página no encontrada"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Pairs match if the implied FX rate falls within a plausible tolerance band — the check runs within a 3-day time window. The original amounts in both currencies are preserved on each leg."
-msgstr "Los pares coinciden si el tipo de cambio implícito cae dentro de una banda de tolerancia plausible — la verificación se ejecuta dentro de una ventana de tiempo de 3 días. Los importes originales en ambas divisas se preservan en cada tramo."
+msgid "Pairs match if the implied FX rate falls within a plausible tolerance band. Cross-currency legs have to land within a minute of each other; same-currency pairs get a twelve-hour window. The original amounts in both currencies are preserved on each leg."
+msgstr "Los pares coinciden si el tipo de cambio implícito cae dentro de una banda de tolerancia plausible. Los tramos multidivisa tienen que llegar con menos de un minuto de diferencia; los pares en la misma moneda disponen de una ventana de doce horas. Los importes originales en ambas monedas se conservan en cada tramo."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Pairs with the PIN lock for a fuller privacy seal"
@@ -12081,8 +12107,8 @@ msgid "Refunds are subject to the policies of the app store (Apple App Store or 
 msgstr ""
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Refunds have the opposite problem: a merchant credit can look like income even though it reverses an earlier expense. Budgie consolidates clear refund matches automatically and keeps uncertain cases available for manual review."
-msgstr "Los reembolsos tienen el problema contrario: un abono de comercio puede parecer ingreso aunque revierta un gasto anterior. Budgie consolida automáticamente las coincidencias claras y deja los casos inciertos para revisión manual."
+msgid "Refunds have the opposite problem: a merchant credit can look like income even though it reverses an earlier expense. Budgie consolidates clear refund matches automatically and leaves uncertain cases exactly as they arrived."
+msgstr "Los reembolsos tienen el problema contrario: un abono de un comercio puede parecer un ingreso aunque revierta un gasto anterior. Budgie consolida automáticamente los reembolsos claros y deja los casos dudosos tal y como llegaron."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Refunds reduce what you have spent, so a returned purchase gives the budget its money back"
@@ -12231,6 +12257,10 @@ msgstr "La restauración es un solo toque en una instalación nueva: elige el ar
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Reversible audit trail — Revert restores the original income and expense rows"
 msgstr "Pista de auditoría reversible: Revertir restaura las filas originales de ingreso y gasto"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Revert restores both originals"
+msgstr "Revertir restaura ambos originales"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Review Dependencies"
@@ -12496,6 +12526,10 @@ msgstr "Los cambios sensibles en materia de seguridad reciben escrutinio adicion
 #: src/app/[lang]/features/tag-analytics/metadata.ts
 msgid "See income, expense, and net per tag in a dedicated analytics tab. The Untagged bucket finds every transaction missing a label so nothing falls through."
 msgstr "Consulta ingresos, gastos y neto por etiqueta en una pestaña de análisis dedicada. El apartado Sin Etiquetar encuentra cada transacción sin etiqueta para que nada se pierda."
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "See what merged, and undo it"
+msgstr "Mira qué se fusionó y deshazlo"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/metadata.ts
 msgid "See what shipped in Budgie between August and September 2026: bank integration settings, Binance sync, deposit and debt account types, amount-range filtering, consolidation accuracy fixes, and startup performance work."
@@ -13260,6 +13294,10 @@ msgstr "Método de sincronización"
 msgid "Sync protocol implementation"
 msgstr "Implementacion del protocolo de sincronizacion"
 
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Sync the account the money left and the account it landed in, and each one imports its own leg — an expense on one side, an income on the other. Left alone, one movement lands in your ledger twice."
+msgstr "Sincroniza la cuenta de la que salió el dinero y la cuenta en la que entró, y cada una importa su propio tramo: un gasto en un lado, un ingreso en el otro. Sin hacer nada, un mismo movimiento entra dos veces en tu contabilidad."
+
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "System-adaptive dark theme that respects OLED displays and switches with your device — or lock to dark or light."
 msgstr "Tema oscuro adaptable al sistema que respeta las pantallas OLED y cambia con tu dispositivo, o bloquéalo en oscuro o claro."
@@ -13881,9 +13919,17 @@ msgstr "Los nueve mayores activos cripto incluyen un año de precios diarios en 
 msgid "The O'Saasy license allows you to:"
 msgstr ""
 
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "The obvious pairs merge on import"
+msgstr "Los pares evidentes se fusionan al importar"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The open-source security community includes:"
 msgstr "La comunidad de seguridad de código abierto incluye:"
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "The other leg, still there"
+msgstr "El otro tramo, ahí sigue"
 
 #: src/app/[lang]/not-found.tsx
 msgid "The page you are looking for does not exist or has been moved."
@@ -14864,9 +14910,17 @@ msgstr "Dos modelos en el dispositivo — Qwen3 1.7B para chat y un modelo de em
 msgid "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device's secure keystore; (2) PDF/CSV/Excel statement imports for anything else."
 msgstr "Dos caminos: (1) tokens de API directa para bancos compatibles como Monobank, donde el token vive en el llavero seguro de tu dispositivo; (2) importaciones de extractos PDF/CSV/Excel para todo lo demás."
 
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Two rows, one movement"
+msgstr "Dos filas, un movimiento"
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Two screens do the work: the Categories tab, where the period's totals sit above every category ranked by what it took, and the transaction list behind any one of those rows."
 msgstr "Dos pantallas hacen el trabajo: la pestaña Categorías, con los totales del periodo sobre cada categoría ordenada por lo que se llevó, y la lista de transacciones que hay detrás de cualquiera de esas filas."
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Two screens: the list where a matched pair reads as a single transfer, and the sheet that still holds both originals behind it."
+msgstr "Dos pantallas: la lista donde un par detectado se lee como una única transferencia, y la hoja que sigue guardando ambos originales detrás."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Two screens: the sheet where a month calendar and the preset chips sit together, and the list a moment after one of those chips is tapped."
