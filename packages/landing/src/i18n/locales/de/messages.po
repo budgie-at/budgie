@@ -2319,6 +2319,10 @@ msgstr "Ein Projekt, das Sicherheitsprobleme ignoriert oder Nutzerbedenken abwei
 msgid "A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device."
 msgstr "Ein öffentlicher Wechselkurs-Feed. Kein Anbieterkonto, kein Kursmakler; der Tageskurs ist auf Ihrem Gerät nachvollziehbar."
 
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "A refund is not income"
+msgstr "Eine Erstattung ist kein Einkommen"
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "A review sheet lists every row before saving — “Select all categories” and “Enter all amounts” fix a whole batch at once"
 msgstr "Ein Prüfbildschirm listet jede Zeile vor dem Speichern auf – „Alle Kategorien auswählen“ und „Alle Beträge eingeben“ korrigieren einen ganzen Stapel auf einmal"
@@ -3162,10 +3166,6 @@ msgstr "Automatische Tag-Vorschläge beseitigen den Aufwand, ohne die Kontrolle 
 msgid "Automatic Transfer Consolidation — both legs of a cross-bank transfer are detected via counter-IBAN and exchange-rate matching, then merged into a single transfer entry"
 msgstr "Automatische Überweisungskonsolidierung – beide Seiten einer bankübergreifenden Überweisung werden über Gegen-IBAN und Wechselkursabgleich erkannt und zu einem einzigen Überweisungseintrag zusammengeführt"
 
-#: src/app/[lang]/features/convert-to-refund/page.tsx
-msgid "Automatic when obvious, manual when it needs review"
-msgstr "Automatisch, wenn eindeutig; manuell, wenn eine Prüfung nötig ist"
-
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 msgid "automation"
 msgstr ""
@@ -3877,6 +3877,14 @@ msgstr "Budgie konsolidiert eindeutige Überweisungen und Händlererstattungen a
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Budgie context menu open over the dimmed transaction list, with delete last and marked in red"
 msgstr "Budgie-Kontextmenü über der abgedunkelten Transaktionsliste, Löschen zuletzt und in Rot markiert"
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Budgie Convert to Refund picker listing same-currency expenses with a search field and a disabled Convert button"
+msgstr "Budgie-Auswahl „In Rückerstattung umwandeln“ mit Ausgaben in derselben Währung, einem Suchfeld und einer deaktivierten Schaltfläche „Umwandeln“"
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Budgie Convert to Refund picker with one expense row selected and checked, and the Convert button now enabled"
+msgstr "Budgie-Auswahl „In Rückerstattung umwandeln“ mit einer ausgewählten und abgehakten Ausgabenzeile und der nun aktiven Schaltfläche „Umwandeln“"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Budgie Convert to Transfer screen with the amount carried over and the account picker open over the from and to row"
@@ -5540,6 +5548,10 @@ msgstr "Eine Transaktion in eine Überweisung umwandeln"
 msgid "Convert any expense or income to a transfer retroactively — no re-entry needed"
 msgstr "Jede Ausgabe oder Einnahme nachträglich in eine Überweisung umwandeln – kein erneutes Eingeben erforderlich"
 
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Convert enables on selection"
+msgstr "Umwandeln wird nach der Auswahl aktiv"
+
 #: src/app/[lang]/features/convert-to-transfer/metadata.ts
 msgid "Convert Expense to Transfer Between Accounts — Budgie"
 msgstr "Ausgabe in Überweisung zwischen Konten umwandeln – Budgie"
@@ -5637,6 +5649,10 @@ msgstr "Gegen-IBAN aus dem Feld corr_iban gespeichert, ermöglicht intelligente 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Counter-IBAN stored per leg — primary signal for cross-account matching"
 msgstr "Gegenpartei-IBAN pro Buchungsseite gespeichert – primäres Signal für kontoübergreifenden Abgleich"
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Counting a merchant refund as earnings inflates every income report you run. Long-press the income row, choose Convert to Refund, and Budgie lists the expenses it could be reversing — same currency, any account, and never smaller than the refund itself."
+msgstr "Wenn eine Händlererstattung als Verdienst zählt, bläht das jede Einnahmenauswertung auf. Halte die Einnahmenzeile gedrückt, wähle „In Rückerstattung umwandeln“, und Budgie listet die Ausgaben auf, die diese Erstattung zurücknehmen könnte — gleiche Währung, beliebiges Konto und nie kleiner als die Erstattung selbst."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Covers every protected amount Budgie renders, not just the home screen"
@@ -7866,10 +7882,6 @@ msgstr "Versteckte Telemetrie und Tracking"
 msgid "High — shutdown = data loss risk"
 msgstr "Hoch – Abschaltung = Datenverlustrisiko"
 
-#: src/app/[lang]/features/convert-to-refund/page.tsx
-msgid "High-confidence refund matches consolidate automatically during the same matching pass that handles transfers. When the match is ambiguous, open the income transaction and choose Convert to Refund."
-msgstr "Rückerstattungstreffer mit hoher Sicherheit werden automatisch im selben Abgleich konsolidiert, der auch Überweisungen verarbeitet. Wenn der Treffer mehrdeutig ist, öffne die Einnahmentransaktion und wähle In Rückerstattung umwandeln."
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Highly customizable"
 msgstr "Hochgradig anpassbar"
@@ -8974,6 +8986,10 @@ msgstr "Lizenz"
 msgid "License Choice and Why"
 msgstr "Lizenzwahl und Gründe"
 
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Likeliest match sorted first"
+msgstr "Wahrscheinlichste Übereinstimmung steht oben"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Limit alerts"
 msgstr "Limit-Benachrichtigungen"
@@ -9013,6 +9029,10 @@ msgstr "Linear verwendet eine eigene Sync-Engine zur Verbreitung von Änderungen
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Lingui-driven message catalogs ship at install. Settings → Language switches the runtime locale; the app re-renders without reload. Locale-bound formatting (numbers, dates) follows device defaults."
 msgstr "Lingui-gesteuerte Nachrichtenkataloge werden bei der Installation geliefert. Einstellungen → Sprache wechselt die Laufzeit-Spracheinstellung; die App wird ohne Neuladen neu gerendert. Gebietsschema-gebundene Formatierung (Zahlen, Datumsangaben) folgt den Gerätestandards."
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Link it to what it reverses"
+msgstr "Verknüpfe sie mit dem, was sie zurücknimmt"
 
 #: src/app/[lang]/features/convert-to-refund/metadata.ts
 #: src/app/[lang]/features/convert-to-refund/opengraph-image.tsx
@@ -11376,6 +11396,14 @@ msgstr "Beliebigen Zeitraum selbst wählen"
 msgid "Pick the destination account"
 msgstr "Zielkonto auswählen"
 
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Pick the expense and convert. The refund stops standing on its own: it attaches to that purchase, the expense is marked Refunded, and analytics counts the purchase net of what came back — under its original category, not as new income. Tap Revert on the refunded transaction to pull the two rows apart again."
+msgstr "Wähle die Ausgabe und wandle um. Die Erstattung steht nicht mehr für sich: Sie hängt an diesem Kauf, die Ausgabe wird als „Erstattet“ markiert, und die Auswertung zählt den Kauf abzüglich des zurückgezahlten Betrags — in seiner ursprünglichen Kategorie, nicht als neue Einnahme. Tippe bei der erstatteten Transaktion auf „Rückgängig machen“, um die beiden Zeilen wieder zu trennen."
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Pick the expense it reverses"
+msgstr "Wähle die Ausgabe, die sie zurücknimmt"
+
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Pick the one to keep"
 msgstr "Wähle die Kategorie, die bleibt"
@@ -12452,6 +12480,10 @@ msgstr "Artikel suchen..."
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Search as the list grows"
 msgstr "Suchen, wenn die Liste wächst"
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Search by merchant or account"
+msgstr "Nach Händler oder Konto suchen"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Search what you archived"
@@ -13899,6 +13931,10 @@ msgstr "Der Screen „Fehlende Kategorien“ öffnet sich nur mit diesen Zeilen 
 msgid "The moment the app goes to the background. There is no grace period and no inactivity setting to get wrong — the next time you come back, the keypad is there."
 msgstr "In dem Moment, in dem die App in den Hintergrund geht. Es gibt keine Karenzzeit und keine Inaktivitätseinstellung, die man falsch setzen könnte — beim nächsten Öffnen ist das Tastenfeld da."
 
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "The money came back — it was never earned"
+msgstr "Das Geld kam zurück — verdient war es nie"
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Money Data upgrade scans entries where the base currency value is missing and groups them by date, account currency, and base currency."
 msgstr ""
@@ -13962,10 +13998,6 @@ msgstr "Der Zeitraum kommt mit"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The personal finance app market has exploded. Mint, YNAB, Copilot, Monarch Money, Lunch Money, and dozens of others promise to help you manage your money. Most offer free tiers or low monthly subscriptions that seem reasonable for the value provided."
 msgstr "Der Markt für persönliche Finanz-Apps ist explodiert. Mint, YNAB, Copilot, Monarch Money, Lunch Money und Dutzende weitere versprechen, Ihnen bei der Verwaltung Ihres Geldes zu helfen. Die meisten bieten kostenlose Stufen oder günstige monatliche Abonnements, die für den gebotenen Wert angemessen erscheinen."
-
-#: src/app/[lang]/features/convert-to-refund/page.tsx
-msgid "The picker searches same-currency expenses across accounts and sorts likely matches by date and amount. Choose the expense, confirm, and Budgie shows whether the refund is full or partial."
-msgstr "Der Picker sucht kontenübergreifend nach Ausgaben in derselben Währung und sortiert wahrscheinliche Treffer nach Datum und Betrag. Wähle die Ausgabe, bestätige, und Budgie zeigt, ob die Rückerstattung vollständig oder teilweise ist."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The pill counts what you missed"
@@ -14921,6 +14953,10 @@ msgstr "Zwei Bildschirme erledigen das: der Tab „Kategorien“, in dem die Sum
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Two screens: the list where a matched pair reads as a single transfer, and the sheet that still holds both originals behind it."
 msgstr "Zwei Bildschirme: die Liste, in der ein erkanntes Paar als eine einzige Überweisung erscheint, und das Blatt, das beide Originale dahinter weiterhin bereithält."
+
+#: src/app/[lang]/features/convert-to-refund/page.tsx
+msgid "Two screens: the same-currency expenses this income could be paying back, and the one you pick for it to cancel out."
+msgstr "Zwei Screens: die Ausgaben in derselben Währung, die durch diese Erstattung ausgeglichen werden könnten, und die eine Ausgabe, die du dafür auswählst."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Two screens: the sheet where a month calendar and the preset chips sit together, and the list a moment after one of those chips is tapped."
