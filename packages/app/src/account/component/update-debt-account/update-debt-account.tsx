@@ -1,4 +1,5 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountDebtTypeEnum, AccountEntityInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { useMemo } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -8,7 +9,7 @@ import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
-import { useDebtAccountProgressSummaryQuery } from '../../query/use-debt-account-progress-summary.query';
+import { useDebtAccountManualSettledAmountQuery } from '../../query/use-debt-account-manual-settled-amount.query';
 import { accountService } from '../../service/account.service';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
@@ -21,9 +22,9 @@ interface Props {
 }
 
 export const UpdateDebtAccount = ({ account }: Props) => {
-    const debtProgressSummary = useDebtAccountProgressSummaryQuery(account.id);
+    const { t } = useLingui();
     const targetBalance = convertFromMicroUnits(account.targetBalance);
-    const currentBalance = debtProgressSummary.paidAmount;
+    const currentBalance = useDebtAccountManualSettledAmountQuery(account.id);
     const initialValues = useMemo(
         () => ({
             iban: account.iban,
@@ -62,6 +63,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
     );
 
     const stickyInstrument = useStickyDefinedValue(instrument);
+    const balanceFieldLabel = account.debtType === AccountDebtTypeEnum.LENT ? t`Already returned` : t`Already repaid`;
 
     if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
@@ -72,6 +74,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
     return (
         <UpdateAccountScreen
             instrumentSymbol={instrumentSymbol}
+            balanceFieldLabel={balanceFieldLabel}
             onSubmit={handleSubmit}
             account={account}
             control={control}

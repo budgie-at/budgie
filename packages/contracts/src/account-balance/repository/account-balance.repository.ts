@@ -127,17 +127,15 @@ export class AccountBalanceRepository {
                 creditAmount: sql<number>`(${creditAmountSql})`.mapWith(Number),
                 convertedBalance: convertedBalanceSql,
                 convertedCreditAmount: convertedCreditAmountSql,
-                convertedDebtClosedAmount: convertedDebtProgressSql.closedAmount,
-                convertedDebtOpenedAmount: convertedDebtProgressSql.openedAmount,
                 convertedDebtOutstandingAmount: convertedDebtProgressSql.outstandingAmount,
+                convertedDebtOverpaidAmount: convertedDebtProgressSql.overpaidAmount,
                 convertedDebtPaidAmount: convertedDebtProgressSql.paidAmount,
                 convertedDebtTotalAmount: convertedDebtProgressSql.totalAmount,
                 convertedDebitAmount: convertedDebitAmountSql,
                 convertedTargetBalance: convertedTargetBalanceSql,
                 debitAmount: sql<number>`(${debitAmountSql})`.mapWith(Number),
-                debtClosedAmount: debtProgressSql.closedAmount,
-                debtOpenedAmount: debtProgressSql.openedAmount,
                 debtOutstandingAmount: debtProgressSql.outstandingAmount,
+                debtOverpaidAmount: debtProgressSql.overpaidAmount,
                 debtPaidAmount: debtProgressSql.paidAmount,
                 debtProgressPercentage: debtProgressSql.percentage,
                 debtTotalAmount: debtProgressSql.totalAmount,
@@ -165,11 +163,12 @@ export class AccountBalanceRepository {
     }
 
     getDebtAccountProgressByAccountId(accountId: number) {
-        const accountIdReference = sql`${accountId}`;
-        const debtProgressSqlInput = this.getDebtProgressSqlInput(null, null, AccountEntityTable.targetBalance, accountIdReference);
-
         return this.db
-            .select(accountBalanceDebtProgressSqlBuilder.getDebtProgressSelectSql(debtProgressSqlInput))
+            .select(
+                accountBalanceDebtProgressSqlBuilder.getDebtProgressSql(
+                    this.getDebtProgressSqlInput(null, null, AccountEntityTable.targetBalance, sql`${accountId}`)
+                )
+            )
             .from(AccountEntityTable)
             .where(eq(AccountEntityTable.id, accountId))
             .limit(1);

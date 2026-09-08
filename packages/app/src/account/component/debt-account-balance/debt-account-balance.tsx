@@ -2,6 +2,8 @@ import { AccountDebtTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
@@ -23,18 +25,22 @@ export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Prop
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
 
-    const { outstandingAmount, paidAmount, percentage, totalAmount } = summary;
+    const { outstandingAmount, overpaidAmount, paidAmount, percentage, totalAmount } = summary;
     const borrowed = debtType === AccountDebtTypeEnum.BORROW;
+    const isOverpaid = isPositiveNumber(overpaidAmount);
 
     const labels = {
         directionIcon: borrowed ? UserIconNameEnum.ArrowDownLeft : UserIconNameEnum.ArrowUpRight,
         directionLabel: t(DEBT_REMAINING_LABEL[debtType]),
+        overpaidLabel: t`Overpaid`,
         paidLabel: t(DEBT_SETTLED_LABEL[debtType]),
         totalLabel: borrowed ? t`Borrowed` : t`Lent`
     };
+    const formattedOverpaidAmount = protectAmount(overpaidAmount, instrumentSymbol);
     const formattedPaidAmount = protectAmount(paidAmount, instrumentSymbol);
     const formattedTotalAmount = protectAmount(totalAmount, instrumentSymbol);
-    const accessibilityLabel = `${labels.directionLabel}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${labels.paidLabel}: ${formattedPaidAmount}. ${labels.totalLabel}: ${formattedTotalAmount}. ${percentage}%`;
+    const overpaidAccessibilityLabel = isOverpaid ? ` ${labels.overpaidLabel}: ${formattedOverpaidAmount}.` : '';
+    const accessibilityLabel = `${labels.directionLabel}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${labels.paidLabel}: ${formattedPaidAmount}. ${labels.totalLabel}: ${formattedTotalAmount}.${overpaidAccessibilityLabel} ${percentage}%`;
 
     return (
         <View
@@ -76,6 +82,12 @@ export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Prop
                     {labels.totalLabel}: {formattedTotalAmount}
                 </Text>
             </View>
+
+            {isOverpaid ? (
+                <Text className="text-warning-foreground text-sm" testID={DebtAccountBalanceSelector.OverpaidAmount(overpaidAmount)}>
+                    {labels.overpaidLabel}: {formattedOverpaidAmount}
+                </Text>
+            ) : null}
         </View>
     );
 };

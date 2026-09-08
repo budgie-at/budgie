@@ -404,10 +404,12 @@ msgid "Allocated"
 msgstr "Alloué"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
-msgid "Already received"
-msgstr "Déjà reçu"
+#: src/account/component/update-debt-account/update-debt-account.tsx
+msgid "Already repaid"
+msgstr "Déjà remboursé"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Already returned"
 msgstr "Déjà remboursé"
 
@@ -2536,6 +2538,11 @@ msgstr "Budget global: {threshold}% dépensé"
 msgid "Overall monthly limit"
 msgstr "Limite mensuelle totale"
 
+#: src/account/component/debt-account-balance/debt-account-balance.tsx
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Overpaid"
+msgstr "Trop remboursé"
+
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Overview"
 msgstr "Aperçu"
@@ -3471,7 +3478,6 @@ msgstr "Aujourd'hui"
 msgid "Token required"
 msgstr "Jeton requis"
 
-#: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx

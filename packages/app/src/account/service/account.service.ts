@@ -1,4 +1,5 @@
 import {
+    AccountDebtTypeEnum,
     AccountNatureEnum,
     DebtEventDirectionEnum,
     DebtEventSourceEnum,
@@ -36,6 +37,7 @@ import type {
     AccountEntityInterface,
     DB,
     DebtAccountCreateInputInterface,
+    DebtEventEntityInterface,
     DepositAccountCreateInputInterface,
     LiabilityAccountCreateInputInterface
 } from '@budgie/contracts';
@@ -63,7 +65,12 @@ class AccountService {
             const [{ count }] = await accountRepository.count();
             const operatedAt = new Date();
             const targetBalance = convertToMicroUnits(input.targetBalance);
-            const createdAccount = await this.createAccountRecord({ ...input, targetBalance }, count, tx);
+            const createdAccount = await this.createAccountRecord(
+                { ...input, targetBalance },
+                count,
+                tx,
+                this.getDebtNature(input.debtType)
+            );
             const valuedAccount = await updateDebtTargetBaseValuation(createdAccount, operatedAt, tx);
             const returnedAmount = convertToMicroUnits(input.currentBalance);
             const ledgerBalance = convertFromMicroUnits(getDebtLedgerBalance(returnedAmount, input.debtType, targetBalance));
@@ -260,6 +267,10 @@ class AccountService {
         return updatedAccount;
     }
 
+    private getDebtNature(debtType: AccountDebtTypeEnum): AccountNatureEnum {
+        return debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
+    }
+
     private shouldSyncManualDebtEvents(input: Partial<DebtAccountCreateInputInterface>): boolean {
         return isNumber(input.currentBalance) || isNumber(input.targetBalance) || isNumber(input.instrumentId);
     }
@@ -313,53 +324,82 @@ class AccountService {
     }
 
     private async syncManualDebtEvents(account: AccountEntityInterface, returnedAmount: number, operatedAt: Date, tx: DB): Promise<void> {
-        await debtEventRepository.deleteByAccountIdAndSource(account.id, DebtEventSourceEnum.MANUAL, tx);
+        const debtEvents = await debtEventRepository.findByAccountId(account.id, tx);
+        const manualDebtEvents = debtEvents.filter(debtEvent => debtEvent.source === DebtEventSourceEnum.MANUAL);
+        const openedAmount = isPositiveNumber(account.targetBalance) ? account.targetBalance : 0;
+        const transactionOpenedAmount = debtEvents.reduce(
+            (sum, debtEvent) =>
+                debtEvent.source !== DebtEventSourceEnum.MANUAL && debtEvent.direction === DebtEventDirectionEnum.OPEN
+                    ? sum + debtEvent.amount
+                    : sum,
+            0
+        );
 
-        if (!isPositiveNumber(account.targetBalance)) {
-            return;
-        }
-
-        await debtEventRepository.bulkCreate(
-            [
-                {
-                    debtAccountId: account.id,
-                    transactionId: null,
-                    transactionEntryId: null,
-                    direction: DebtEventDirectionEnum.OPEN,
-                    source: DebtEventSourceEnum.MANUAL,
-                    amount: account.targetBalance,
-                    baseInstrumentId: account.targetBaseInstrumentId,
-                    baseExchangeRate: account.targetBaseExchangeRate,
-                    baseAmount: account.targetBaseAmount,
-                    operatedAt
-                },
-                ...this.getManualDebtCloseEvent(account, returnedAmount, operatedAt)
-            ],
+        await this.upsertManualDebtEvent(
+            account,
+            manualDebtEvents,
+            DebtEventDirectionEnum.OPEN,
+            openedAmount - transactionOpenedAmount,
+            operatedAt,
+            tx
+        );
+        await this.upsertManualDebtEvent(
+            account,
+            manualDebtEvents,
+            DebtEventDirectionEnum.CLOSE,
+            getDebtClosedAmount(returnedAmount, openedAmount),
+            operatedAt,
             tx
         );
     }
 
-    private getManualDebtCloseEvent(account: AccountEntityInterface, returnedAmount: number, operatedAt: Date) {
-        const amount = getDebtClosedAmount(returnedAmount, account.targetBalance);
+    // eslint-disable-next-line @typescript-eslint/max-params -- Existing private orchestration keeps positional arguments
+    private async upsertManualDebtEvent(
+        account: AccountEntityInterface,
+        manualDebtEvents: DebtEventEntityInterface[],
+        direction: DebtEventDirectionEnum,
+        amount: number,
+        operatedAt: Date,
+        tx: DB
+    ): Promise<void> {
+        const [currentDebtEvent, ...duplicateDebtEvents] = manualDebtEvents.filter(debtEvent => debtEvent.direction === direction);
+
+        await debtEventRepository.deleteByIds(
+            duplicateDebtEvents.map(debtEvent => debtEvent.id),
+            tx
+        );
 
         if (!isPositiveNumber(amount)) {
-            return [];
+            await debtEventRepository.deleteByIds(isDefined(currentDebtEvent) ? [currentDebtEvent.id] : [], tx);
+
+            return;
         }
 
-        return [
+        const fields = {
+            amount,
+            baseInstrumentId: account.targetBaseInstrumentId,
+            baseExchangeRate: account.targetBaseExchangeRate,
+            baseAmount: this.getManualDebtBaseAmount(account, amount),
+            operatedAt
+        };
+
+        if (isDefined(currentDebtEvent)) {
+            await debtEventRepository.updateById(currentDebtEvent.id, fields, tx);
+
+            return;
+        }
+
+        await debtEventRepository.create(
             {
                 debtAccountId: account.id,
                 transactionId: null,
                 transactionEntryId: null,
-                direction: DebtEventDirectionEnum.CLOSE,
+                direction,
                 source: DebtEventSourceEnum.MANUAL,
-                amount,
-                baseInstrumentId: account.targetBaseInstrumentId,
-                baseExchangeRate: account.targetBaseExchangeRate,
-                baseAmount: this.getManualDebtBaseAmount(account, amount),
-                operatedAt
-            }
-        ];
+                ...fields
+            },
+            tx
+        );
     }
 
     private getManualDebtBaseAmount(account: AccountEntityInterface, amount: number): number | null {
@@ -373,7 +413,10 @@ class AccountService {
     private async getDebtReturnedAmount(account: AccountEntityInterface, tx: DB): Promise<number> {
         const manualDebtEvents = await debtEventRepository.findByAccountIdAndSource(account.id, DebtEventSourceEnum.MANUAL, tx);
 
-        return manualDebtEvents.reduce((sum, event) => (event.direction === DebtEventDirectionEnum.CLOSE ? sum + event.amount : sum), 0);
+        return manualDebtEvents.reduce(
+            (sum, debtEvent) => (debtEvent.direction === DebtEventDirectionEnum.CLOSE ? sum + debtEvent.amount : sum),
+            0
+        );
     }
 
     private async createAccountRecord(

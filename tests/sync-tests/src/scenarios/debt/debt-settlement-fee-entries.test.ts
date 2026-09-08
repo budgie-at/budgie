@@ -42,13 +42,24 @@ const OPERATED_AT = new Date('2026-06-05T09:00:00.000Z');
 
 const seedFeeCashAccount = () => seed.account({ title: 'Fee cash account', type: AccountTypeEnum.BANK_SYNC });
 
-const seedLentDebtAccount = () =>
-    seed.account({
+const seedLentDebtAccount = () => {
+    const account = seed.account({
         title: 'Fee debt account',
         type: AccountTypeEnum.DEBT,
         debtType: AccountDebtTypeEnum.LENT,
         targetBalance: 300 * PRECISION
     });
+
+    insertOne(DebtEventEntityTable, {
+        debtAccountId: account.id,
+        direction: DebtEventDirectionEnum.OPEN,
+        source: DebtEventSourceEnum.MANUAL,
+        amount: 300 * PRECISION,
+        operatedAt: OPERATED_AT
+    });
+
+    return account;
+};
 
 const seedSyncedExpenseTransaction = (cashAccountId: number) =>
     insertOne(TransactionEntityTable, {
@@ -153,14 +164,14 @@ const fetchLiveDebtEvent = (transactionId: number): DebtEventEntityInterface | u
         .where(and(eq(DebtEventEntityTable.transactionId, transactionId), isNull(DebtEventEntityTable.deletedAt)))
         .get();
 
-const fetchDebtPaidAmount = (debtAccountId: number): number => {
+const fetchDebtProgress = (debtAccountId: number) => {
     const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccountId).get();
 
     if (!isDefined(progress)) {
         throw new Error(`Debt progress for account ${debtAccountId} not found`);
     }
 
-    return convertFromMicroUnits(progress.paidAmount);
+    return { paidAmount: convertFromMicroUnits(progress.paidAmount), totalAmount: convertFromMicroUnits(progress.totalAmount) };
 };
 
 describe('debt settlement fee entries', () => {
@@ -178,7 +189,7 @@ describe('debt settlement fee entries', () => {
 
         expect(debtEvent?.transactionEntryId).toBe(creditEntry.id);
         expect(debtEvent?.amount).toBe(PRIMARY_ENTRY_AMOUNT);
-        expect(debtEvent?.direction).toBe(DebtEventDirectionEnum.CLOSE);
+        expect(debtEvent?.direction).toBe(DebtEventDirectionEnum.OPEN);
         expect(debtEvent?.source).toBe(DebtEventSourceEnum.INCOME_ATTACHMENT);
 
         const updatedCreditEntry = fetchEntryById(creditEntry.id);
@@ -188,7 +199,7 @@ describe('debt settlement fee entries', () => {
         expect(updatedCreditEntry?.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
         expect(updatedFeeEntry?.categoryId).toBe(BANK_FEE_CATEGORY_ID);
         expect(updatedFeeEntry?.categorySource).toBe(CategorySourceEnum.FEE);
-        expect(fetchDebtPaidAmount(debtAccount.id)).toBe(100);
+        expect(fetchDebtProgress(debtAccount.id)).toEqual({ paidAmount: 0, totalAmount: 400 });
     });
 
     it('rejects a transaction with two non-fee primary entries', async () => {
@@ -240,6 +251,6 @@ describe('debt settlement fee entries', () => {
         expect(debtEvent?.transactionEntryId).toBe(newPrimaryEntry?.id);
         expect(debtEvent?.amount).toBe(UPDATED_ENTRY_AMOUNT * PRECISION);
         expect(debtEvent?.baseAmount).toBe(UPDATED_ENTRY_AMOUNT * PRECISION);
-        expect(fetchDebtPaidAmount(debtAccount.id)).toBe(UPDATED_ENTRY_AMOUNT);
+        expect(fetchDebtProgress(debtAccount.id)).toEqual({ paidAmount: 0, totalAmount: 300 + UPDATED_ENTRY_AMOUNT });
     });
 });

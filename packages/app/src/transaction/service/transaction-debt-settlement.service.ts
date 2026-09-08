@@ -304,11 +304,13 @@ class TransactionDebtSettlementService {
         transaction: Pick<TransactionWithEntriesEntityInterface, 'type'>,
         debtAccount: Pick<AccountEntityInterface, 'debtType'>
     ): DebtEventDirectionEnum {
-        if (transaction.type === TransactionTypeEnum.EXPENSE) {
-            return DebtEventDirectionEnum.CLOSE;
+        const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
+
+        if (debtAccount.debtType === AccountDebtTypeEnum.LENT) {
+            return isExpense ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
         }
 
-        return debtAccount.debtType === AccountDebtTypeEnum.BORROW ? DebtEventDirectionEnum.OPEN : DebtEventDirectionEnum.CLOSE;
+        return isExpense ? DebtEventDirectionEnum.CLOSE : DebtEventDirectionEnum.OPEN;
     }
 
     private getTransferDebtEventDirection(debtType: AccountDebtTypeEnum, entryType: TransactionEntryTypeEnum): DebtEventDirectionEnum {
