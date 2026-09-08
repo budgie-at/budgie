@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.41.0](https://github.com/budgie-at/budgie/compare/v6.40.0...v6.41.0) (2026-09-08)
+
+
+### Features
+
+* **landing:** add multi-language-app steps story ([dbaedfe](https://github.com/budgie-at/budgie/commit/dbaedfe19eec06e3f5b81df81ad03e86c035a645)), closes [#797](https://github.com/budgie-at/budgie/issues/797) [#746](https://github.com/budgie-at/budgie/issues/746) [#797](https://github.com/budgie-at/budgie/issues/797)
+* **landing:** crypto investment tracking steps story ([6c6a9e0](https://github.com/budgie-at/budgie/commit/6c6a9e041cef8a473921cbc5972b29ae100343ca))
+
+
+
+
+
 # [6.40.0](https://github.com/budgie-at/budgie/compare/v6.39.0...v6.40.0) (2026-09-08)
 
 
