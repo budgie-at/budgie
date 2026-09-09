@@ -220,6 +220,7 @@ msgid "Account"
 msgstr "Cuenta"
 
 #: src/money-data/service/entry-base-valuation.service.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
 msgstr "Cuenta {accountId} no encontrada"
 
