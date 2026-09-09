@@ -76,3 +76,7 @@ packages/app/fastlane/screenshots/**/*.staging*
 packages/app/fastlane/screenshots/landing-raw/
 packages/app/fastlane/report.xml
 packages/app/fastlane/Preview.html
+
+# Social post drafts (unverified renders)
+marketing/social/**/draft/
+marketing/social/**/final/*-light.png

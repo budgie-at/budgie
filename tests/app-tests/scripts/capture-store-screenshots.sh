@@ -409,7 +409,7 @@ capture_flow_cell() {
     while IFS= read -r candidate; do
         shot_count=$((shot_count + 1))
         shot_file="$candidate"
-    done < <(find "$shot_cwd" -type f -name '*.png'; find "$test_output_dir" -type f -path '*takeScreenshot/*.png' -not -path "$shot_cwd/*")
+    done < <(find "$shot_cwd" -type f -name '*.png'; find "$test_output_dir" -type f \( -path '*takeScreenshot/*.png' -o -path '*/screenshots/*.png' \) -not -path "$shot_cwd/*")
     if [ "$shot_count" -ne 1 ]; then
         echo "  $locale/$appearance/$scene: expected exactly 1 takeScreenshot PNG, found $shot_count" >&2
 
