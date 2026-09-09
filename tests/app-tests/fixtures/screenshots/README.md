@@ -7,13 +7,13 @@ Seeded app state for App Store / Play Store screenshot capture. Consumed by
 
 ## Files
 
-| File | Purpose |
-| --- | --- |
-| `showcase.db` | The curated dataset. Committed, fully migrated, anchored on 2026-09-01. |
-| `showcase.sql` | The SQL that produces `showcase.db` from the base fixture. |
-| `build-showcase.sh` | Regenerates `showcase.db`: base fixture -> pending migrations -> `showcase.sql` -> `VACUUM`. |
-| `shift-dates.sql` | Re-anchors every date on the capture day and re-points the monthly budget periods. |
-| `en.sql` `fr.sql` `de.sql` `es.sql` `uk.sql` | Locale overlays: user-visible strings and display currency. |
+| File                                         | Purpose                                                                                      |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `showcase.db`                                | The curated dataset. Committed, fully migrated, anchored on 2026-09-01.                      |
+| `showcase.sql`                               | The SQL that produces `showcase.db` from the base fixture.                                   |
+| `build-showcase.sh`                          | Regenerates `showcase.db`: base fixture -> pending migrations -> `showcase.sql` -> `VACUUM`. |
+| `shift-dates.sql`                            | Re-anchors every date on the capture day and re-points the monthly budget periods.           |
+| `en.sql` `fr.sql` `de.sql` `es.sql` `uk.sql` | Locale overlays: user-visible strings and display currency.                                  |
 
 ## Dataset
 
@@ -53,13 +53,13 @@ month would show every budget reset to zero.
 
 ## Locale overlays
 
-| Locale | Currency | Instrument | Amount scale | Sample merchants |
-| --- | --- | --- | --- | --- |
-| `en` | USD | 1 | 1x (base) | Whole Foods Market, Uber, Trader Joe's |
-| `fr` | EUR | 2 | 0.92x | Carrefour Market, Navigo RATP, Monoprix |
-| `de` | EUR | 2 | 0.92x | REWE, Deutsche Bahn, EDEKA |
-| `es` | EUR | 2 | 0.92x | Mercadona, Renfe Cercanias, Cabify |
-| `uk` | UAH | 33 | 15x, rounded to whole hryvnia | Silpo, Nova Poshta, Uklon |
+| Locale | Currency | Instrument | Amount scale                  | Sample merchants                        |
+| ------ | -------- | ---------- | ----------------------------- | --------------------------------------- |
+| `en`   | USD      | 1          | 1x (base)                     | Whole Foods Market, Uber, Trader Joe's  |
+| `fr`   | EUR      | 2          | 0.92x                         | Carrefour Market, Navigo RATP, Monoprix |
+| `de`   | EUR      | 2          | 0.92x                         | REWE, Deutsche Bahn, EDEKA              |
+| `es`   | EUR      | 2          | 0.92x                         | Mercadona, Renfe Cercanias, Cabify      |
+| `uk`   | UAH      | 33         | 15x, rounded to whole hryvnia | Silpo, Nova Poshta, Uklon               |
 
 Each overlay rewrites account titles, tag titles, budget names and every
 transaction title, and repoints `accounts`, `budgets` and
@@ -99,25 +99,26 @@ turns all three on; `verify_database` only asserts the lock flags are off when
 no scene overlay was applied, and otherwise leaves the asserted values to the
 overlay.
 
-| `scenes/shared/*.sql` | State it produces |
-| --- | --- |
-| `security-locked.sql` | PIN, biometric and screenshot-protection lock flags on |
-| `budget-near-limit.sql` | one budget pinned near its overall limit, one category over its limit |
-| `uncategorized.sql` | a batch of the newest expenses with no category |
-| `tags-rich.sql` | extra tags plus a wide, multi-tagged transaction set |
-| `bank-sync-connected.sql` | a connected Monobank integration with synced accounts and MCC-categorized transactions |
-| `bank-fees.sql` | bank fee entries on an expense, an income and a transfer |
-| `multi-currency.sql` | two accounts in currencies the locale does not already use, with matching rates |
-| `debt.sql` | a lent and a borrowed debt account, one partially settled |
-| `deposit.sql` | a term deposit account with maturity date and accrued interest |
-| `crypto.sql` | crypto accounts with holdings, rates and price history |
-| `transfer-pair.sql` | a loose transfer pair and an already-consolidated pair |
-| `rules.sql` | categorisation rules including a conflicting, partially disabled pair |
-| `archived.sql` | archived and inactive accounts with short ledgers |
-| `import-presets.sql` | a CSV-imported bank integration and account |
-| `cyrillic-taxonomy.sql` | Cyrillic-titled categories and tags with AI-generated English titles |
-| `long-history.sql` | the newest base transactions replayed monthly over 17 months |
-| `net-worth-full.sql` | every live account included in net worth, with fresh rate timestamps |
+| `scenes/shared/*.sql`        | State it produces                                                                                                 |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `security-locked.sql`        | PIN, biometric and screenshot-protection lock flags on                                                            |
+| `budget-near-limit.sql`      | one budget pinned near its overall limit, one category over its limit                                             |
+| `uncategorized.sql`          | a batch of the newest expenses with no category                                                                   |
+| `tags-rich.sql`              | extra tags plus a wide, multi-tagged transaction set                                                              |
+| `bank-sync-connected.sql`    | a connected Monobank integration with synced accounts and MCC-categorized transactions                            |
+| `binance-sync-connected.sql` | a connected Binance integration with `CRYPTO_SYNC` spot/funding wallets, spot trades, Earn rewards and P2P orders |
+| `bank-fees.sql`              | bank fee entries on an expense, an income and a transfer                                                          |
+| `multi-currency.sql`         | two accounts in currencies the locale does not already use, with matching rates                                   |
+| `debt.sql`                   | a lent and a borrowed debt account, one partially settled                                                         |
+| `deposit.sql`                | a term deposit account with maturity date and accrued interest                                                    |
+| `crypto.sql`                 | crypto accounts with holdings, rates and price history                                                            |
+| `transfer-pair.sql`          | a loose transfer pair and an already-consolidated pair                                                            |
+| `rules.sql`                  | categorisation rules including a conflicting, partially disabled pair                                             |
+| `archived.sql`               | archived and inactive accounts with short ledgers                                                                 |
+| `import-presets.sql`         | a CSV-imported bank integration and account                                                                       |
+| `cyrillic-taxonomy.sql`      | Cyrillic-titled categories and tags with AI-generated English titles                                              |
+| `long-history.sql`           | the newest base transactions replayed monthly over 17 months                                                      |
+| `net-worth-full.sql`         | every live account included in net worth, with fresh rate timestamps                                              |
 
 Every overlay keeps amounts in micro-units (`PRECISION = 1_000_000`) and dates
 in epoch seconds, and is safe to apply more than once, matching
