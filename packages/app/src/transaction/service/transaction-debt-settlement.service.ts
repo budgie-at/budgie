@@ -205,8 +205,10 @@ class TransactionDebtSettlementService {
         >
     > {
         const entryInstrumentId = await this.getAccountInstrumentOrFail(primaryEntry.accountId, tx);
-        const conversion = await exchangeRatesService.convert(entryInstrumentId, debtAccount.instrumentId, primaryEntry.amount);
-        const amount = Math.round(conversion.amount);
+        const isSameInstrument = entryInstrumentId === debtAccount.instrumentId;
+        const amount = isSameInstrument
+            ? primaryEntry.amount
+            : await this.convertToDebtInstrumentAmount(primaryEntry, entryInstrumentId, debtAccount);
         const valuation = await entryBaseValuationService.valueMicroUnitEntry({
             accountId: debtAccount.id,
             amount,
@@ -224,6 +226,20 @@ class TransactionDebtSettlementService {
             baseAmount: valuation.baseAmount,
             operatedAt: transaction.operatedAt
         };
+    }
+
+    private async convertToDebtInstrumentAmount(
+        primaryEntry: TransactionEntryEntityInterface,
+        entryInstrumentId: number,
+        debtAccount: AccountEntityInterface
+    ): Promise<number> {
+        const conversion = await exchangeRatesService.convertStrict(entryInstrumentId, debtAccount.instrumentId, primaryEntry.amount);
+
+        if (!isDefined(conversion)) {
+            throw new Error(t`Exchange rate not found`);
+        }
+
+        return conversion.amount;
     }
 
     private isCategorizableExpenseSettlement(
