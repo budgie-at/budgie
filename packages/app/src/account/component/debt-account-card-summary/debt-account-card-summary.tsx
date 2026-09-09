@@ -7,7 +7,7 @@ import { useDebtAccountCard } from '../../context/debt-account-card.context';
 import { DebtAccountCardSummarySelector } from './debt-account-card-summary.selector';
 
 export const DebtAccountCardSummary = () => {
-    const { instrumentSymbol, summary, title } = useDebtAccountCard();
+    const { instrumentSymbol, settledLabel, summary, title } = useDebtAccountCard();
     const formatDigits = useDisplayFormatDigits();
 
     return (
@@ -23,6 +23,14 @@ export const DebtAccountCardSummary = () => {
             </ProtectedText>
 
             <View className="flex-row items-baseline gap-x-xxs">
+                <Text
+                    className="text-secondary-foreground text-xxs shrink"
+                    numberOfLines={1}
+                    testID={DebtAccountCardSummarySelector.SettledLabel(title)}
+                >
+                    {settledLabel}
+                </Text>
+
                 <ProtectedText
                     adjustsFontSizeToFit
                     className="text-secondary-foreground text-xxs shrink font-medium tabular-nums"
