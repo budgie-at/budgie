@@ -121,7 +121,7 @@ const EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_BASE_SQL = `
                     AND target_account.is_active = 0
                 CROSS JOIN transactions income_tx INDEXED BY transactions_visible_type_operated_idx
                     ON income_tx.type = '${TransactionTypeEnum.INCOME}'
-                    AND income_tx.external_source = '${ExternalSourceEnum.PRIVATBANK}'
+                    AND income_tx.external_source IN ('${ExternalSourceEnum.PRIVATBANK}', '${ExternalSourceEnum.MONOBANK}')
                     AND income_tx.deleted_at IS NULL
                     AND income_tx.consolidation_parent_transaction_id IS NULL
                     AND income_tx.operated_at BETWEEN existing_transfer.operated_at - ${EXISTING_TRANSFER_DUPLICATE_TIME_WINDOW_SECONDS}

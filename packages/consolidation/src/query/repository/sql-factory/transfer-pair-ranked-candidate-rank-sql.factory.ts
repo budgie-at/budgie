@@ -23,6 +23,19 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                         THEN 1
                         ELSE 0
                     END as impliedRateMatch,
+                    CASE
+                        WHEN incomeEntryToIban IS NOT NULL
+                            AND incomeEntryToIban != ''
+                            AND incomeEntryToIban != COALESCE(
+                                (SELECT iban FROM accounts WHERE id = expenseAccountId AND deleted_at IS NULL),
+                                ''
+                            )
+                        THEN 1
+                        WHEN incomeTransactionTitle LIKE '%єврового%' AND incomeCurrency != 'EUR' THEN 1
+                        WHEN incomeTransactionTitle LIKE '%доларового%' AND incomeCurrency != 'USD' THEN 1
+                        WHEN incomeTransactionTitle LIKE '%гривневого%' AND incomeCurrency != 'UAH' THEN 1
+                        ELSE 0
+                    END as isBridgeClaimedIncome,
                     SUM(
                         CASE
                             WHEN interbankHintedFeeAmountMatch = 1
@@ -50,6 +63,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                         THEN 'AUTO_IBAN_AMOUNT'
                         WHEN hasTransferMcc = 1
                             AND sameCurrencyAmountMatch = 1
+                            AND isBridgeClaimedIncome = 0
                         THEN 'AUTO_SAME_CURRENCY_AMOUNT'
                         WHEN hasTransferMcc = 1
                             AND operationAmountMatch = 1
