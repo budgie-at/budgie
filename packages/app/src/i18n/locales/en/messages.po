@@ -203,6 +203,10 @@ msgstr "100% Offline & Private"
 msgid "A balanced starter budget with common categories"
 msgstr "A balanced starter budget with common categories"
 
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "A rule matches incoming bank transactions and applies a category and tags for you."
+msgstr "A rule matches incoming bank transactions and applies a category and tags for you."
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
 msgstr "A rule with the same conditions already exists."
@@ -306,6 +310,10 @@ msgstr "Add a note..."
 msgid "Add a per-category cap"
 msgstr "Add a per-category cap"
 
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+msgid "Add a transaction"
+msgstr "Add a transaction"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add Account"
 msgstr "Add Account"
@@ -334,10 +342,6 @@ msgstr "Add item"
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Add Tag"
 msgstr "Add Tag"
-
-#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
-msgid "Add transactions to see how your spending breaks down by category."
-msgstr "Add transactions to see how your spending breaks down by category."
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -683,6 +687,14 @@ msgstr "Categories"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Categories ({selectedCategoriesCount})"
 
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+msgid "Categories break your spending down automatically. Add a transaction, or widen the period to see earlier ones."
+msgstr "Categories break your spending down automatically. Add a transaction, or widen the period to see earlier ones."
+
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "Categorise imports automatically"
+msgstr "Categorise imports automatically"
+
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
@@ -806,6 +818,14 @@ msgstr "Confirm Split"
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
 msgstr "Confirm tag selection"
+
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "Connect a bank"
+msgstr "Connect a bank"
+
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "Connect a bank or import a statement first, then rules can categorise and tag every transaction as it arrives."
+msgstr "Connect a bank or import a statement first, then rules can categorise and tag every transaction as it arrives."
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Connect Binance"
@@ -1127,6 +1147,14 @@ msgstr "Create a PIN"
 msgid "Create a read-only API key and secret"
 msgstr "Create a read-only API key and secret"
 
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "Create a rule"
+msgstr "Create a rule"
+
+#: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
+msgid "Create a tag"
+msgstr "Create a tag"
+
 #: src/app/transaction-account-filter.tsx
 msgid "Create Accounts"
 msgstr "Create Accounts"
@@ -1165,17 +1193,9 @@ msgstr "Create one to get started."
 msgid "Create Rule"
 msgstr "Create Rule"
 
-#: src/rule/components/rule-empty-state/rule-empty-state.tsx
-msgid "Create rules to automatically categorize and tag your bank transactions"
-msgstr "Create rules to automatically categorize and tag your bank transactions"
-
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create Tag"
 msgstr "Create Tag"
-
-#: src/tag/components/tag-empty-state/tag-empty-state.tsx
-msgid "Create tags to organize your transactions"
-msgstr "Create tags to organize your transactions"
 
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
 msgid "Create your budget"
@@ -2279,10 +2299,6 @@ msgstr "No archived accounts match your search"
 msgid "No categories found"
 msgstr "No categories found"
 
-#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
-msgid "No categories in this period"
-msgstr "No categories in this period"
-
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No categories match your search"
 msgstr "No categories match your search"
@@ -2382,13 +2398,13 @@ msgstr "No recurring payments detected"
 msgid "No Results"
 msgstr "No Results"
 
-#: src/rule/components/rule-empty-state/rule-empty-state.tsx
-msgid "No Rules Yet"
-msgstr "No Rules Yet"
-
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "No source transactions"
 msgstr "No source transactions"
+
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+msgid "No spending in this period"
+msgstr "No spending in this period"
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."
@@ -2398,17 +2414,9 @@ msgstr "No sync repairs found."
 msgid "No tags found"
 msgstr "No tags found"
 
-#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
-msgid "No tags in this period"
-msgstr "No tags in this period"
-
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "No tags match your search"
 msgstr "No tags match your search"
-
-#: src/tag/components/tag-empty-state/tag-empty-state.tsx
-msgid "No Tags Yet"
-msgstr "No Tags Yet"
 
 #: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx
 msgid "No title"
@@ -2500,6 +2508,10 @@ msgstr "Operator"
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "or"
+
+#: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
+msgid "Organise spending your own way"
+msgstr "Organise spending your own way"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organization"
@@ -2873,6 +2885,10 @@ msgstr "Rule updated"
 msgid "Rules"
 msgstr "Rules"
 
+#: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
+msgid "Rules work on imported transactions"
+msgstr "Rules work on imported transactions"
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
@@ -2972,6 +2988,10 @@ msgstr "Secure your app with PIN & Face ID"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"
 msgstr "Security"
+
+#: src/tag/components/tags-feature-intro/tags-feature-intro.tsx
+msgid "See spending by context, not just category"
+msgstr "See spending by context, not just category"
 
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 msgid "Select"
@@ -3321,13 +3341,13 @@ msgstr "Tag"
 msgid "Tag → {tagTitle}"
 msgstr "Tag → {tagTitle}"
 
+#: src/tag/components/tags-feature-intro/tags-feature-intro.tsx
+msgid "Tag a transaction"
+msgstr "Tag a transaction"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Tag Name"
 msgstr "Tag Name"
-
-#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
-msgid "Tag transactions to see how your spending breaks down by context."
-msgstr "Tag transactions to see how your spending breaks down by context."
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
@@ -3340,6 +3360,11 @@ msgstr "Tags"
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
 msgid "Tags ({selectedTagsCount})"
 msgstr "Tags ({selectedTagsCount})"
+
+#: src/tag/components/tags-feature-intro/tags-feature-intro.tsx
+#: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
+msgid "Tags cut across categories — track a trip, a project or a person and see the true total."
+msgstr "Tags cut across categories — track a trip, a project or a person and see the true total."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Key\" above and sign in to Binance"
