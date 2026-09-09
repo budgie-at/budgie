@@ -81,15 +81,26 @@ export const OnboardingStepLayout = (props: Props) => {
                 <View className="px-5xl">
                     <OnboardingProgressBar step={step} />
 
-                    {isSkipVisible ? (
-                        <View className="items-end">
+                    <View className="items-end">
+                        {isSkipVisible ? (
                             <HapticPressable testID={OnboardingStepLayoutSelector.SkipButton} onPress={handleSkip} className="py-3xl">
                                 <Text className="text-secondary-foreground/50 text-sm font-medium">
                                     <Trans>Skip</Trans>
                                 </Text>
                             </HapticPressable>
-                        </View>
-                    ) : null}
+                        ) : (
+                            <View
+                                className="py-3xl"
+                                pointerEvents="none"
+                                accessibilityElementsHidden
+                                importantForAccessibility="no-hide-descendants"
+                            >
+                                <Text className="text-sm font-medium opacity-0">
+                                    <Trans>Skip</Trans>
+                                </Text>
+                            </View>
+                        )}
+                    </View>
                 </View>
             }
             footer={

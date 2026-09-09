@@ -199,6 +199,10 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
 
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "100% on-device"
+msgstr "100% on-device"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "A balanced starter budget with common categories"
 msgstr "A balanced starter budget with common categories"
@@ -339,6 +343,10 @@ msgstr "Add deposit"
 msgid "Add item"
 msgstr "Add item"
 
+#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
+msgid "Add my first expense"
+msgstr "Add my first expense"
+
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Add Tag"
 msgstr "Add Tag"
@@ -346,6 +354,10 @@ msgstr "Add Tag"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Add your first account to start tracking your finances"
+
+#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
+msgid "Add your first expense"
+msgstr "Add your first expense"
 
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Adjustment"
@@ -434,6 +446,10 @@ msgstr "Amount"
 msgid "Amount exceeds debt account balance"
 msgstr "Amount exceeds debt account balance"
 
+#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
+msgid "Amount first. Budgie picks the account and guesses the category."
+msgstr "Amount first. Budgie picks the account and guesses the category."
+
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "and"
 msgstr "and"
@@ -446,6 +462,10 @@ msgstr "API Token"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "App Lock"
 msgstr "App Lock"
+
+#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
+msgid "App locked and encrypted"
+msgstr "App locked and encrypted"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "App Version"
@@ -540,6 +560,10 @@ msgstr "Balance Adjustment"
 msgid "Bank"
 msgstr "Bank"
 
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "Bank account"
+msgstr "Bank account"
+
 #: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
 msgid "Bank integration settings"
 msgstr "Bank integration settings"
@@ -624,6 +648,14 @@ msgstr "Budgie can find duplicated bank sync imports and repair transfer consoli
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 
+#: src/app/onboarding/done.tsx
+msgid "Budgie is ready to go. You can revisit any of these steps later from Settings."
+msgstr "Budgie is ready to go. You can revisit any of these steps later from Settings."
+
+#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
+msgid "Budgie warns you before you cross it, and shows what's left right on the home screen."
+msgstr "Budgie warns you before you cross it, and shows what's left right on the home screen."
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
 msgstr "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -672,6 +704,7 @@ msgid "Cancel"
 msgstr "Cancel"
 
 #: src/account/constant/account-type.constant.ts
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Cash"
 msgstr "Cash"
 
@@ -717,13 +750,13 @@ msgstr "Category limits"
 msgid "Category Name"
 msgstr "Category Name"
 
-#: src/settings/components/onboarding-currency-strip/onboarding-currency-strip.tsx
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
 #: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Change"
 msgstr "Change"
 
-#: src/settings/components/onboarding-currency-strip/onboarding-currency-strip.tsx
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Change currency"
 msgstr "Change currency"
 
@@ -831,6 +864,7 @@ msgstr "Connect a bank or import a statement first, then rules can categorise an
 msgid "Connect Binance"
 msgstr "Connect Binance"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
@@ -860,6 +894,12 @@ msgid "Contains"
 msgstr "Contains"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
+#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
+#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
+#: src/onboarding/component/onboarding-placeholder-step/onboarding-placeholder-step.tsx
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Continue"
 msgstr "Continue"
 
@@ -1211,6 +1251,7 @@ msgid "Credentials required"
 msgstr "Credentials required"
 
 #: src/account/constant/account-type.constant.ts
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Crypto"
 msgstr "Crypto"
 
@@ -1292,6 +1333,10 @@ msgstr "Debt account cannot match transaction account"
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account not found"
 msgstr "Debt account not found"
+
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "Debts & loans"
+msgstr "Debts & loans"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
@@ -1535,6 +1580,10 @@ msgstr "Enter all amounts"
 msgid "Enter amount..."
 msgstr "Enter amount..."
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Enter balances by hand"
+msgstr "Enter balances by hand"
+
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Enter current PIN"
@@ -1735,6 +1784,14 @@ msgstr "Filter categories"
 msgid "Filter tags"
 msgstr "Filter tags"
 
+#: src/app/onboarding/done.tsx
+msgid "Finish"
+msgstr "Finish"
+
+#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
+msgid "First expense added"
+msgstr "First expense added"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Fix Errors"
@@ -1856,6 +1913,10 @@ msgstr "How to export"
 #: src/@generic/component/icon/icon.tsx
 msgid "Icon importer not found: {icon}"
 msgstr "Icon importer not found: {icon}"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Import a statement"
+msgstr "Import a statement"
 
 #: src/app/(main)/create-account/index.tsx
 #: src/sync/component/create-erste-account/create-erste-account.tsx
@@ -2084,6 +2145,10 @@ msgstr "Loading models"
 msgid "Loading..."
 msgstr "Loading..."
 
+#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
+msgid "Lock it down"
+msgstr "Lock it down"
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
 msgstr "Main Currency"
@@ -2181,6 +2246,10 @@ msgstr "MCC categories are not loaded"
 msgid "MCC Code"
 msgstr "MCC Code"
 
+#: src/app/onboarding/ai.tsx
+msgid "Meet your AI assistant"
+msgstr "Meet your AI assistant"
+
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Merchant code"
@@ -2229,6 +2298,10 @@ msgstr "Monthly budget"
 msgid "Monthly Budget"
 msgstr "Monthly Budget"
 
+#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
+msgid "Monthly budget set"
+msgstr "Monthly budget set"
+
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Monthly Costs"
 msgstr "Monthly Costs"
@@ -2268,6 +2341,10 @@ msgstr "New Income"
 #: src/app/(main)/create-transaction/transfer.tsx
 msgid "New Transfer"
 msgstr "New Transfer"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "No account. No sign-up. Everything lives in an encrypted database on this device."
+msgstr "No account. No sign-up. Everything lives in an encrypted database on this device."
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/transaction-account-filter.tsx
@@ -2422,6 +2499,10 @@ msgstr "No tags match your search"
 msgid "No title"
 msgstr "No title"
 
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "No tracking"
+msgstr "No tracking"
+
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "No transactions yet"
 msgstr "No transactions yet"
@@ -2458,6 +2539,10 @@ msgstr "not set"
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
 msgstr "Note"
+
+#: src/app/onboarding/ai.tsx
+msgid "On-device AI features will be introduced from this screen."
+msgstr "On-device AI features will be introduced from this screen."
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
@@ -2606,6 +2691,10 @@ msgstr "Pick a category to set a limit"
 #: src/app/resync-window-picker.tsx
 msgid "Pick a window. Existing data is preserved."
 msgstr "Pick a window. Existing data is preserved."
+
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "Pick any. We'll create the accounts for you — rename or remove them later."
+msgstr "Pick any. We'll create the accounts for you — rename or remove them later."
 
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -3112,9 +3201,17 @@ msgstr "Selected"
 msgid "Sending {fromCode}"
 msgstr "Sending {fromCode}"
 
+#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
+msgid "Set a budget"
+msgstr "Set a budget"
+
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Set a default currency in Settings first"
+
+#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
+msgid "Set a monthly ceiling"
+msgstr "Set a monthly ceiling"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Set a monthly limit and track spending"
@@ -3123,6 +3220,10 @@ msgstr "Set a monthly limit and track spending"
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
 msgid "Set a monthly limit and track your spending"
 msgstr "Set a monthly limit and track your spending"
+
+#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
+msgid "Set a PIN"
+msgstr "Set a PIN"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
@@ -3140,6 +3241,10 @@ msgstr "Set Maturity Date"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
 msgstr "Set Return Date"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Set up Budgie"
+msgstr "Set up Budgie"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
@@ -3186,6 +3291,7 @@ msgstr "Show transactions when any main amount is inside this range, regardless 
 msgid "Similar transactions"
 msgstr "Similar transactions"
 
+#: src/onboarding/component/onboarding-step-layout/onboarding-step-layout.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Skip"
@@ -3257,6 +3363,10 @@ msgstr "Start Sync"
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Start with a blank canvas"
+msgstr "Start with a blank canvas"
 
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "Starting up AI…"
@@ -3532,9 +3642,9 @@ msgstr "Total lent"
 msgid "Touch ID"
 msgstr "Touch ID"
 
-#: src/settings/components/onboarding-currency-strip/onboarding-currency-strip.tsx
-msgid "Tracking in {defaultInstrumentCode} · {defaultAccountTitle}"
-msgstr "Tracking in {defaultInstrumentCode} · {defaultAccountTitle}"
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "Tracking in {defaultInstrumentCode}"
+msgstr "Tracking in {defaultInstrumentCode}"
 
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
@@ -3778,6 +3888,10 @@ msgstr "Waiting"
 msgid "We will retry this quietly."
 msgstr "We will retry this quietly."
 
+#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+msgid "What do you want to track?"
+msgstr "What do you want to track?"
+
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "When does the deposit mature?"
 msgstr "When does the deposit mature?"
@@ -3801,6 +3915,10 @@ msgstr "Who owes you?"
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Works offline"
+msgstr "Works offline"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "XLSX export"
@@ -3835,6 +3953,14 @@ msgstr "You owe"
 msgid "You received money"
 msgstr "You received money"
 
+#: src/app/onboarding/done.tsx
+msgid "You're all set"
+msgstr "You're all set"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Your bank, with nobody in between"
+msgstr "Your bank, with nobody in between"
+
 #: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."
 msgstr "Your database backup is ready to share."
@@ -3842,6 +3968,18 @@ msgstr "Your database backup is ready to share."
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Your holdings"
 msgstr "Your holdings"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Your money. Your phone. Nobody else's server."
+msgstr "Your money. Your phone. Nobody else's server."
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Your own token talks to the bank directly. No Plaid, no aggregator, no third party holding your data."
+msgstr "Your own token talks to the bank directly. No Plaid, no aggregator, no third party holding your data."
+
+#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
+msgid "Your PIN unlocks the database itself — it is the encryption key. Without it the file is unreadable, even to us."
+msgstr "Your PIN unlocks the database itself — it is the encryption key. Without it the file is unreadable, even to us."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Your token is stored securely in the database. Sync continues in the background."
