@@ -10,7 +10,6 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
-import { OnboardingCurrencyStrip } from '../../../settings/components/onboarding-currency-strip/onboarding-currency-strip';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
@@ -57,8 +56,6 @@ export default function CreateExpenseTransactionPage() {
     return (
         <FormProvider {...form}>
             <FullPage header={<PageHeader title={t`New Expense`} onGoBack={handleGoBack} />}>
-                <OnboardingCurrencyStrip />
-
                 <SimpleQuickForm
                     variant="destructive"
                     transactionType={TransactionTypeEnum.EXPENSE}

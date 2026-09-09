@@ -132,6 +132,7 @@ export const RootLayoutContent = () => {
                                                                         screenLayout={ScreenLayout}
                                                                     >
                                                                         <Stack.Screen name="(tabs)" />
+                                                                        <Stack.Screen name="onboarding" />
                                                                         <Stack.Screen name="(main)/pin" />
                                                                         <Stack.Screen name="(main)/create-account" />
                                                                         <Stack.Screen name="(main)/account/[id]/details" />
