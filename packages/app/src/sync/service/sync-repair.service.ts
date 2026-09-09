@@ -60,7 +60,10 @@ class SyncRepairService {
 
     @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
     private async repairConsolidationDuplicates(): Promise<number> {
-        return consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
+        const incomeDuplicateRepairCount = await consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
+        const bridgeClaimRepairCount = await consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
+
+        return incomeDuplicateRepairCount + bridgeClaimRepairCount;
     }
 
     @Log(
@@ -91,13 +94,18 @@ class SyncRepairService {
 
     private async buildPreview(): Promise<SyncDuplicateRepairPreviewInterface> {
         const candidates = await this.findDuplicateCandidates(db);
-        const consolidationRepairCount = await this.countConsolidationRepairCandidates();
+        const consolidationRepairCount =
+            (await this.countConsolidationRepairCandidates()) + (await this.countBridgeClaimRepairCandidates());
 
         return this.buildPreviewFromCandidates(candidates, consolidationRepairCount);
     }
 
     private async countConsolidationRepairCandidates(): Promise<number> {
         return consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates();
+    }
+
+    private async countBridgeClaimRepairCandidates(): Promise<number> {
+        return consolidationCoordinatorService.countBridgeClaimRepairCandidates();
     }
 
     private buildPreviewFromCandidates(
