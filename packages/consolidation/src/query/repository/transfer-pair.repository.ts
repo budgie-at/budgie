@@ -1,6 +1,7 @@
 import { buildP2pFiatAtomicCandidateSql } from './sql-factory/p2p-fiat-atomic-candidate-sql.factory';
 import { buildP2pFiatAuthoritativeCandidateSql } from './sql-factory/p2p-fiat-authoritative-candidate-sql.factory';
 import { buildP2pFiatAuthoritativeRepairCandidateSql } from './sql-factory/p2p-fiat-authoritative-repair-candidate-sql.factory';
+import { BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL } from './sql-factory/transfer-pair-bridge-claim-repair-sql.factory';
 import {
     buildTransferPairCandidatesSql,
     buildTransferPairManualReviewCandidatesSql
@@ -10,6 +11,7 @@ import type { P2pFiatAtomicCandidateInterface } from '../interface/p2p-fiat-atom
 import type { P2pFiatAuthoritativeCandidateInterface } from '../interface/p2p-fiat-authoritative-candidate.interface';
 import type { P2pFiatAuthoritativeRepairCandidateInterface } from '../interface/p2p-fiat-authoritative-repair-candidate.interface';
 import type {
+    BridgeClaimRepairCandidateInterface,
     ConsolidationScanScopeInterface,
     DB,
     TransferPairCandidateInterface,
@@ -23,6 +25,10 @@ export class TransferPairRepository {
         const sql = buildTransferPairCandidatesSql(scope);
 
         return this.db.$client.getAllAsync<TransferPairCandidateInterface>(sql);
+    }
+
+    async findBridgeClaimedRepairCandidates(): Promise<BridgeClaimRepairCandidateInterface[]> {
+        return this.db.$client.getAllAsync<BridgeClaimRepairCandidateInterface>(BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL);
     }
 
     async findP2pFiatAtomicCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<P2pFiatAtomicCandidateInterface[]> {
