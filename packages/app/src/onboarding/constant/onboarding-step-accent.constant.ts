@@ -2,7 +2,7 @@ import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.t
 import { OnboardingStepEnum } from '../enum/onboarding-step.enum';
 
 export const ONBOARDING_STEP_ACCENT: Record<OnboardingStepEnum, ColorPaletteVariant> = {
-    [OnboardingStepEnum.WELCOME]: 'primary',
+    [OnboardingStepEnum.WELCOME]: 'cta',
     [OnboardingStepEnum.TRACK]: 'cyan',
     [OnboardingStepEnum.BALANCES]: 'violet',
     [OnboardingStepEnum.EXPENSE]: 'destructive',

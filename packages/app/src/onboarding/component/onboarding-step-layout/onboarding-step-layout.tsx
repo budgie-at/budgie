@@ -10,6 +10,7 @@ import { EmptyFn, isDefined } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { FullPage } from '../../../@generic/component/page/full-page';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ONBOARDING_STEP_ACCENT } from '../../constant/onboarding-step-accent.constant';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
@@ -70,23 +71,38 @@ export const OnboardingStepLayout = (props: Props) => {
     }));
 
     const accent = ONBOARDING_STEP_ACCENT[step];
-    const isProgressBarVisible = step !== OnboardingStepEnum.WELCOME;
-    const isSkipVisible = step !== OnboardingStepEnum.DONE;
+    const isSkipVisible = step !== OnboardingStepEnum.WELCOME && step !== OnboardingStepEnum.DONE;
 
     return (
-        <View testID={OnboardingStepLayoutSelector.Root} className="flex-1 bg-background px-5xl">
-            {isProgressBarVisible ? <OnboardingProgressBar step={step} /> : null}
+        <FullPage
+            testID={OnboardingStepLayoutSelector.Root}
+            className="bg-background"
+            header={
+                <View className="px-5xl">
+                    <OnboardingProgressBar step={step} />
 
-            {isSkipVisible ? (
-                <View className="items-end">
-                    <HapticPressable testID={OnboardingStepLayoutSelector.SkipButton} onPress={handleSkip} className="py-3xl">
-                        <Text className="text-secondary-foreground/50 text-sm font-medium">
-                            <Trans>Skip</Trans>
-                        </Text>
-                    </HapticPressable>
+                    {isSkipVisible ? (
+                        <View className="items-end">
+                            <HapticPressable testID={OnboardingStepLayoutSelector.SkipButton} onPress={handleSkip} className="py-3xl">
+                                <Text className="text-secondary-foreground/50 text-sm font-medium">
+                                    <Trans>Skip</Trans>
+                                </Text>
+                            </HapticPressable>
+                        </View>
+                    ) : null}
                 </View>
-            ) : null}
-
+            }
+            footer={
+                <Button
+                    testID={OnboardingStepLayoutSelector.PrimaryButton}
+                    variant="cta"
+                    content={primaryLabel}
+                    onPress={handlePrimaryPress}
+                    disabled={isPrimaryDisabled}
+                    className="mx-5xl mb-5xl"
+                />
+            }
+        >
             <Animated.View key={step} style={contentStyle} className="flex-1">
                 {isDefined(icon) ? (
                     <CircleIcon
@@ -103,15 +119,6 @@ export const OnboardingStepLayout = (props: Props) => {
 
                 <View className="flex-1">{children}</View>
             </Animated.View>
-
-            <Button
-                testID={OnboardingStepLayoutSelector.PrimaryButton}
-                variant={accent}
-                content={primaryLabel}
-                onPress={handlePrimaryPress}
-                disabled={isPrimaryDisabled}
-                className="mb-5xl"
-            />
-        </View>
+        </FullPage>
     );
 };
