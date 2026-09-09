@@ -3,8 +3,8 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { Button } from '../button/button';
+import { CircleIcon } from '../circle-icon/circle-icon';
 
 interface Props {
     readonly icon: UserIconNameEnum;
@@ -14,7 +14,7 @@ interface Props {
     readonly description: string;
 }
 
-export const TransactionFilterEmptyState = ({ icon, title, description, onCreate, buttonText }: Props) => (
+export const FeatureIntro = ({ icon, title, description, onCreate, buttonText }: Props) => (
     <View className="rounded-5xl border border-secondary-corner bg-secondary-background py-12.5 px-5xl items-center">
         <CircleIcon icon={icon} variant="ghost" size={64} iconSize={32} className="rounded-3xl mb-3xl" />
 
