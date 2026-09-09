@@ -47,7 +47,6 @@ executionOrder:
         - 34.matching-rules-navigation.flow
         - 36.bank-integration-settings.flow
         - 37.deposit-lifecycle.flow
-        - 38.onboarding-first-run.flow
 
 platform:
     ios:
