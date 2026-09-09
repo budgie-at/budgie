@@ -1,4 +1,4 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, LanguageEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { getLocales } from 'expo-localization';
 
@@ -11,15 +11,21 @@ import { DEFAULT_INSTRUMENT } from '../constants/default-instrument.constant';
 import { updateSettingsMutation } from '../mutation/update-settings.mutation';
 
 class OnboardingService {
+    /* oxlint-disable lingui/no-unlocalized-strings -- persisted account title, resolved once at provisioning and never re-rendered */
+    private static readonly CASH_ACCOUNT_TITLES: Record<LanguageEnum, string> = {
+        [LanguageEnum.EN]: 'Cash',
+        [LanguageEnum.DE]: 'Bargeld',
+        [LanguageEnum.ES]: 'Efectivo',
+        [LanguageEnum.FR]: 'Espèces',
+        [LanguageEnum.UK]: 'Готівка'
+    };
+    /* oxlint-enable lingui/no-unlocalized-strings */
+
     private provisioningPromise: Promise<boolean> | null = null;
 
-    @Log(
-        cashAccountTitle => `enter cashAccountTitle="${cashAccountTitle}"`,
-        (result, cashAccountTitle) => `done didProvision=${result} cashAccountTitle="${cashAccountTitle}"`,
-        (error, cashAccountTitle) => `throw cashAccountTitle="${cashAccountTitle}" error=${getErrorMessage(error)}`
-    )
-    async provisionFirstAccount(cashAccountTitle: string): Promise<boolean> {
-        this.provisioningPromise ??= this.runProvisioning(cashAccountTitle).finally(() => {
+    @Log('enter', result => `done didProvision=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    async provisionFirstAccount(): Promise<boolean> {
+        this.provisioningPromise ??= this.runProvisioning().finally(() => {
             this.provisioningPromise = null;
         });
 
@@ -42,25 +48,26 @@ class OnboardingService {
         await updateSettingsMutation({ isOnboardingCompleted: true });
     }
 
-    private async runProvisioning(cashAccountTitle: string): Promise<boolean> {
+    private async runProvisioning(): Promise<boolean> {
         const [{ count }] = await accountRepository.count();
 
         if (isPositiveNumber(count)) {
             return false;
         }
 
+        const language = i18nGetOSLocale();
         const instrumentId = await this.resolveDeviceInstrumentId();
 
         await accountService.create({
             type: AccountTypeEnum.CASH,
-            title: cashAccountTitle,
+            title: OnboardingService.CASH_ACCOUNT_TITLES[language],
             currentBalance: 0,
             icon: UserIconNameEnum.Wallet,
             includeInNetWorth: true,
             instrumentId
         });
 
-        await updateSettingsMutation({ defaultInstrumentId: instrumentId, language: i18nGetOSLocale() });
+        await updateSettingsMutation({ defaultInstrumentId: instrumentId, language });
 
         return true;
     }
