@@ -704,10 +704,15 @@ msgstr "Ліміти за категоріями"
 msgid "Category Name"
 msgstr "Назва категорії"
 
+#: src/settings/components/onboarding-currency-strip/onboarding-currency-strip.tsx
 #: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Change"
 msgstr "Змінити"
+
+#: src/settings/components/onboarding-currency-strip/onboarding-currency-strip.tsx
+msgid "Change currency"
+msgstr "Змінити валюту"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Change PIN"
@@ -3500,6 +3505,10 @@ msgstr "Усього надано в борг"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Touch ID"
 msgstr "Touch ID"
+
+#: src/settings/components/onboarding-currency-strip/onboarding-currency-strip.tsx
+msgid "Tracking in {defaultInstrumentCode} · {defaultAccountTitle}"
+msgstr "Облік у {defaultInstrumentCode} · {defaultAccountTitle}"
 
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"

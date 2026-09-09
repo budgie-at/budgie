@@ -705,10 +705,15 @@ msgstr "Category limits"
 msgid "Category Name"
 msgstr "Category Name"
 
+#: src/settings/components/onboarding-currency-strip/onboarding-currency-strip.tsx
 #: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Change"
 msgstr "Change"
+
+#: src/settings/components/onboarding-currency-strip/onboarding-currency-strip.tsx
+msgid "Change currency"
+msgstr "Change currency"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Change PIN"
@@ -3501,6 +3506,10 @@ msgstr "Total lent"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Touch ID"
 msgstr "Touch ID"
+
+#: src/settings/components/onboarding-currency-strip/onboarding-currency-strip.tsx
+msgid "Tracking in {defaultInstrumentCode} · {defaultAccountTitle}"
+msgstr "Tracking in {defaultInstrumentCode} · {defaultAccountTitle}"
 
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
