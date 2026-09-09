@@ -49,6 +49,7 @@ import m0045 from './0045_add_transaction_entry_quote.sql';
 import m0046 from './0046_repoint_debt_event_entries.sql';
 import m0047 from './0047_repair_double_counted_manual_debt_events.sql';
 import m0048 from './0048_add_onboarding_completed.sql';
+import m0049 from './0049_add_onboarding_step_and_ai_consent.sql';
 import journal from './meta/_journal.json';
 
 export default {
@@ -102,6 +103,7 @@ export default {
         m0045,
         m0046,
         m0047,
-        m0048
+        m0048,
+        m0049
     }
 };
