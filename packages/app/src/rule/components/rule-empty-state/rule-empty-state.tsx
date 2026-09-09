@@ -5,6 +5,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { SearchablePageEmptyState } from '../../../@generic/component/searchagle-page-empty-state/searchagle-page-empty-state';
 import { RulesPageSelector } from '../../selector/rules-page.selector';
+import { RulesFeatureIntro } from '../rules-feature-intro/rules-feature-intro';
 
 interface Props {
     readonly search: string;
@@ -13,12 +14,16 @@ interface Props {
 export const RuleEmptyState = ({ search }: Props) => {
     const { t } = useLingui();
 
-    const isSearching = isNotEmptyString(search);
-    const icon = isSearching ? UserIconNameEnum.Search : UserIconNameEnum.Zap;
-    const title = isSearching ? t`No Results` : t`No Rules Yet`;
-    const description = isSearching
-        ? t`Try a different search term`
-        : t`Create rules to automatically categorize and tag your bank transactions`;
+    if (isNotEmptyString(search)) {
+        return (
+            <SearchablePageEmptyState
+                testID={RulesPageSelector.EmptyState}
+                icon={UserIconNameEnum.Search}
+                title={t`No Results`}
+                description={t`Try a different search term`}
+            />
+        );
+    }
 
-    return <SearchablePageEmptyState testID={RulesPageSelector.EmptyState} icon={icon} title={title} description={description} />;
+    return <RulesFeatureIntro />;
 };
