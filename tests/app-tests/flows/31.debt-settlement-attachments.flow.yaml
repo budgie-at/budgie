@@ -755,3 +755,85 @@ appId: ${APP_ID}
       id: 'DebtAccountBalance.TotalAmount.15600'
 - assertVisible:
       id: 'DebtAccountBalance.Percentage.13_52'
+
+- runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- runFlow:
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Expense'
+          FORM_TITLE: 'New Expense'
+
+- tapOn:
+      id: 'TransactionKeypad.Digit.1'
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+- tapOn:
+      id: 'TransactionKeypad.Digit.0'
+
+- runFlow:
+      file: subflows/transactions/select-account.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Txn Account'
+
+- runFlow:
+      file: subflows/categories/select-category.flow.yaml
+      env:
+          CATEGORY_NAME: 'E2E Debt Attachment Category'
+
+- runFlow:
+      file: subflows/transactions/enter-comment.flow.yaml
+      env:
+          COMMENT: 'E2E Cross Currency Debt Attach'
+
+- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Cross_Currency_Debt_Attach'
+      timeout: 5000
+
+- longPressOn:
+      id: 'TransactionCard.Label.E2E_Cross_Currency_Debt_Attach'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionContextMenu.AttachDebtSettlementButton'
+- tapOn:
+      id: 'TransactionContextMenu.AttachDebtSettlementButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.Input'
+      timeout: 10000
+- runFlow:
+      file: subflows/shared/select-account-by-search.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Borrowed Debt'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Cross_Currency_Debt_Attach'
+      timeout: 5000
+- assertVisible: 'Debt · E2E Borrowed Debt'
+
+- tapOn:
+      id: 'TabBar.Home'
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 10000
+
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Borrowed Debt'
+
+- assertVisible:
+      id: 'DebtAccountBalance.OutstandingAmount.15022_7'
+- assertVisible:
+      id: 'DebtAccountBalance.PaidAmount.2086_3'
+- assertVisible:
+      id: 'DebtAccountBalance.TotalAmount.15109'
+- assertVisible:
+      id: 'DebtAccountBalance.Percentage.13_81'
