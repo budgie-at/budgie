@@ -205,13 +205,13 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Lent Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.12891'
+      id: 'DebtAccountBalance.OutstandingAmount.14905_933'
 - assertVisible:
-      id: 'DebtAccountBalance.PaidAmount.2109'
+      id: 'DebtAccountBalance.PaidAmount.2094_067'
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.15000'
 - assertVisible:
-      id: 'DebtAccountBalance.Percentage.14_06'
+      id: 'DebtAccountBalance.Percentage.13_96'
 
 - scrollUntilVisible:
       element:
@@ -225,13 +225,13 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
       element:
-          id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.12891'
+          id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.14905_933'
       direction: DOWN
 
 - assertVisible:
-      id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.12891'
+      id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.14905_933'
 - assertVisible:
-      id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_Debt.2109'
+      id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_Debt.2094_067'
 - assertVisible:
       id: 'DebtAccountCardSummary.TotalAmount.E2E_Lent_Debt.15000'
 
@@ -309,25 +309,25 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Lent Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.13391'
+      id: 'DebtAccountBalance.OutstandingAmount.15405_933'
 - assertVisible:
-      id: 'DebtAccountBalance.PaidAmount.2109'
+      id: 'DebtAccountBalance.PaidAmount.2094_067'
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.15500'
 - assertVisible:
-      id: 'DebtAccountBalance.Percentage.13_61'
+      id: 'DebtAccountBalance.Percentage.13_51'
 
 - runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
 
 - scrollUntilVisible:
       element:
-          id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.13391'
+          id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.15405_933'
       direction: DOWN
 
 - assertVisible:
-      id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.13391'
+      id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.15405_933'
 - assertVisible:
-      id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_Debt.2109'
+      id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_Debt.2094_067'
 - assertVisible:
       id: 'DebtAccountCardSummary.TotalAmount.E2E_Lent_Debt.15500'
 
@@ -543,13 +543,13 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Borrowed Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.13109'
+      id: 'DebtAccountBalance.OutstandingAmount.13094_067'
 - assertVisible:
       id: 'DebtAccountBalance.PaidAmount.2000'
 - assertVisible:
-      id: 'DebtAccountBalance.TotalAmount.15109'
+      id: 'DebtAccountBalance.TotalAmount.15094_067'
 - assertVisible:
-      id: 'DebtAccountBalance.Percentage.13_24'
+      id: 'DebtAccountBalance.Percentage.13_25'
 
 - runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
 
@@ -650,14 +650,14 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'DebtAccountBalance.Percentage.100'
+          id: 'DebtAccountBalance.PaidAmount.258_9'
       timeout: 10000
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.0'
-- assertVisible:
-      id: 'DebtAccountBalance.PaidAmount.300'
+      id: 'DebtAccountBalance.OutstandingAmount.41_1'
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.300'
+- assertVisible:
+      id: 'DebtAccountBalance.Percentage.86_3'
 
 - runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
 
@@ -748,13 +748,13 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Lent Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.13491'
+      id: 'DebtAccountBalance.OutstandingAmount.13405_933'
 - assertVisible:
-      id: 'DebtAccountBalance.PaidAmount.2109'
+      id: 'DebtAccountBalance.PaidAmount.2180_367'
 - assertVisible:
-      id: 'DebtAccountBalance.TotalAmount.15600'
+      id: 'DebtAccountBalance.TotalAmount.15586_3'
 - assertVisible:
-      id: 'DebtAccountBalance.Percentage.13_52'
+      id: 'DebtAccountBalance.Percentage.13_99'
 
 - runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
 
@@ -830,10 +830,10 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Borrowed Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.13022_7'
+      id: 'DebtAccountBalance.OutstandingAmount.15007_767'
 - assertVisible:
       id: 'DebtAccountBalance.PaidAmount.2086_3'
 - assertVisible:
-      id: 'DebtAccountBalance.TotalAmount.15109'
+      id: 'DebtAccountBalance.TotalAmount.15094_067'
 - assertVisible:
-      id: 'DebtAccountBalance.Percentage.13_81'
+      id: 'DebtAccountBalance.Percentage.13_82'
