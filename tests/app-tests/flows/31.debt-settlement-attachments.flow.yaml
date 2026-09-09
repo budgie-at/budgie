@@ -830,7 +830,7 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Borrowed Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.15022_7'
+      id: 'DebtAccountBalance.OutstandingAmount.13022_7'
 - assertVisible:
       id: 'DebtAccountBalance.PaidAmount.2086_3'
 - assertVisible:

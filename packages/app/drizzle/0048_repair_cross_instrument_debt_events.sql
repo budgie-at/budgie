@@ -7,113 +7,74 @@ CREATE TEMP TABLE cross_instrument_debt_event_repair_migration (
     repaired_base_exchange_rate real NOT NULL
 );
 --> statement-breakpoint
+WITH base_instruments(default_instrument_id) AS (
+    SELECT COALESCE(
+        NULLIF((SELECT settings.default_instrument_id FROM settings LIMIT 1), 0),
+        (SELECT fallback_instruments.id FROM instruments fallback_instruments WHERE fallback_instruments.code = 'USD' AND fallback_instruments.deleted_at IS NULL LIMIT 1)
+    )
+),
+candidate_rates AS (
+    SELECT
+        debt_events.id AS debt_event_id,
+        transaction_entries.base_amount AS base_amount,
+        COALESCE(
+            NULLIF((
+                SELECT historical_rates.rate * 1.0
+                FROM historical_exchange_rates historical_rates
+                WHERE historical_rates.source_instrument_id = debt_accounts.instrument_id
+                  AND historical_rates.target_instrument_id = base_instruments.default_instrument_id
+                  AND historical_rates.deleted_at IS NULL
+                  AND historical_rates.rate_date <= date(debt_events.operated_at, 'unixepoch')
+                ORDER BY historical_rates.rate_date DESC
+                LIMIT 1
+            ), 0),
+            1.0 / NULLIF((
+                SELECT inverse_rates.rate
+                FROM historical_exchange_rates inverse_rates
+                WHERE inverse_rates.source_instrument_id = base_instruments.default_instrument_id
+                  AND inverse_rates.target_instrument_id = debt_accounts.instrument_id
+                  AND inverse_rates.deleted_at IS NULL
+                  AND inverse_rates.rate_date <= date(debt_events.operated_at, 'unixepoch')
+                ORDER BY inverse_rates.rate_date DESC
+                LIMIT 1
+            ), 0),
+            NULLIF((
+                SELECT current_rates.rate * 1.0
+                FROM exchange_rates current_rates
+                WHERE current_rates.base_instrument_id = debt_accounts.instrument_id
+                  AND current_rates.quote_instrument_id = base_instruments.default_instrument_id
+                  AND current_rates.deleted_at IS NULL
+                ORDER BY current_rates.created_at DESC
+                LIMIT 1
+            ), 0),
+            1.0 / NULLIF((
+                SELECT inverse_current_rates.rate
+                FROM exchange_rates inverse_current_rates
+                WHERE inverse_current_rates.base_instrument_id = base_instruments.default_instrument_id
+                  AND inverse_current_rates.quote_instrument_id = debt_accounts.instrument_id
+                  AND inverse_current_rates.deleted_at IS NULL
+                ORDER BY inverse_current_rates.created_at DESC
+                LIMIT 1
+            ), 0)
+        ) AS rate
+    FROM debt_events
+    INNER JOIN transaction_entries ON transaction_entries.id = debt_events.transaction_entry_id AND transaction_entries.deleted_at IS NULL
+    INNER JOIN accounts entry_accounts ON entry_accounts.id = transaction_entries.account_id
+    INNER JOIN accounts debt_accounts ON debt_accounts.id = debt_events.debt_account_id
+    CROSS JOIN base_instruments
+    WHERE debt_events.deleted_at IS NULL
+      AND entry_accounts.instrument_id <> debt_accounts.instrument_id
+      AND transaction_entries.base_instrument_id = base_instruments.default_instrument_id
+      AND transaction_entries.base_amount > 0
+)
 INSERT INTO cross_instrument_debt_event_repair_migration (debt_event_id, repaired_amount, repaired_base_amount, repaired_base_exchange_rate)
 SELECT
-    debt_events.id,
-    CAST(ROUND(transaction_entries.base_amount / COALESCE(
-        (
-            SELECT historical_rates.rate * 1.0
-            FROM historical_exchange_rates historical_rates
-            WHERE historical_rates.source_instrument_id = debt_accounts.instrument_id
-              AND historical_rates.target_instrument_id = base_instruments.default_instrument_id
-              AND historical_rates.deleted_at IS NULL
-              AND historical_rates.rate_date <= date(debt_events.operated_at, 'unixepoch')
-            ORDER BY historical_rates.rate_date DESC
-            LIMIT 1
-        ),
-        (
-            SELECT 1.0 / (
-                SELECT inverse_rates.rate
-                FROM historical_exchange_rates inverse_rates
-                WHERE inverse_rates.source_instrument_id = base_instruments.default_instrument_id
-                  AND inverse_rates.target_instrument_id = debt_accounts.instrument_id
-                  AND inverse_rates.deleted_at IS NULL
-                  AND inverse_rates.rate_date <= date(debt_events.operated_at, 'unixepoch')
-                ORDER BY inverse_rates.rate_date DESC
-                LIMIT 1
-            )
-        ),
-        (
-            SELECT current_rates.rate * 1.0
-            FROM exchange_rates current_rates
-            WHERE current_rates.base_instrument_id = debt_accounts.instrument_id
-              AND current_rates.quote_instrument_id = base_instruments.default_instrument_id
-              AND current_rates.deleted_at IS NULL
-            ORDER BY current_rates.created_at DESC
-            LIMIT 1
-        ),
-        (
-            SELECT 1.0 / (
-                SELECT inverse_current_rates.rate
-                FROM exchange_rates inverse_current_rates
-                WHERE inverse_current_rates.base_instrument_id = base_instruments.default_instrument_id
-                  AND inverse_current_rates.quote_instrument_id = debt_accounts.instrument_id
-                  AND inverse_current_rates.deleted_at IS NULL
-                ORDER BY inverse_current_rates.created_at DESC
-                LIMIT 1
-            )
-        ),
-        1.0
-    )) AS INTEGER),
-    transaction_entries.base_amount,
-    COALESCE(
-        (
-            SELECT historical_rates.rate * 1.0
-            FROM historical_exchange_rates historical_rates
-            WHERE historical_rates.source_instrument_id = debt_accounts.instrument_id
-              AND historical_rates.target_instrument_id = base_instruments.default_instrument_id
-              AND historical_rates.deleted_at IS NULL
-              AND historical_rates.rate_date <= date(debt_events.operated_at, 'unixepoch')
-            ORDER BY historical_rates.rate_date DESC
-            LIMIT 1
-        ),
-        (
-            SELECT 1.0 / (
-                SELECT inverse_rates.rate
-                FROM historical_exchange_rates inverse_rates
-                WHERE inverse_rates.source_instrument_id = base_instruments.default_instrument_id
-                  AND inverse_rates.target_instrument_id = debt_accounts.instrument_id
-                  AND inverse_rates.deleted_at IS NULL
-                  AND inverse_rates.rate_date <= date(debt_events.operated_at, 'unixepoch')
-                ORDER BY inverse_rates.rate_date DESC
-                LIMIT 1
-            )
-        ),
-        (
-            SELECT current_rates.rate * 1.0
-            FROM exchange_rates current_rates
-            WHERE current_rates.base_instrument_id = debt_accounts.instrument_id
-              AND current_rates.quote_instrument_id = base_instruments.default_instrument_id
-              AND current_rates.deleted_at IS NULL
-            ORDER BY current_rates.created_at DESC
-            LIMIT 1
-        ),
-        (
-            SELECT 1.0 / (
-                SELECT inverse_current_rates.rate
-                FROM exchange_rates inverse_current_rates
-                WHERE inverse_current_rates.base_instrument_id = base_instruments.default_instrument_id
-                  AND inverse_current_rates.quote_instrument_id = debt_accounts.instrument_id
-                  AND inverse_current_rates.deleted_at IS NULL
-                ORDER BY inverse_current_rates.created_at DESC
-                LIMIT 1
-            )
-        ),
-        1.0
-    )
-FROM debt_events
-INNER JOIN transaction_entries ON transaction_entries.id = debt_events.transaction_entry_id AND transaction_entries.deleted_at IS NULL
-INNER JOIN accounts entry_accounts ON entry_accounts.id = transaction_entries.account_id
-INNER JOIN accounts debt_accounts ON debt_accounts.id = debt_events.debt_account_id
-INNER JOIN (
-    SELECT settings.default_instrument_id AS default_instrument_id
-    FROM settings
-    LIMIT 1
-) base_instruments
-WHERE debt_events.deleted_at IS NULL
-  AND entry_accounts.instrument_id <> debt_accounts.instrument_id
-  AND transaction_entries.base_instrument_id = base_instruments.default_instrument_id
-  AND transaction_entries.base_amount > 0;
+    candidate_rates.debt_event_id,
+    CAST(ROUND(candidate_rates.base_amount / candidate_rates.rate) AS INTEGER),
+    candidate_rates.base_amount,
+    candidate_rates.rate
+FROM candidate_rates
+WHERE candidate_rates.rate IS NOT NULL;
 --> statement-breakpoint
 UPDATE debt_events
 SET amount = (
