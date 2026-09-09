@@ -344,6 +344,13 @@
             "when": 1786900000000,
             "tag": "0048_add_onboarding_completed",
             "breakpoints": true
+        },
+        {
+            "idx": 49,
+            "version": "6",
+            "when": 1787000000000,
+            "tag": "0049_add_onboarding_step_and_ai_consent",
+            "breakpoints": true
         }
     ]
 }

@@ -17,5 +17,7 @@ export const DEFAULT_SETTINGS = {
     applyMccDefaultCategory: true,
     isBudgetWidgetEnabled: true,
     isBudgetPushEnabled: false,
-    isOnboardingCompleted: false
+    isOnboardingCompleted: false,
+    onboardingStep: 0,
+    isAiEnabled: false
 } satisfies SettingsEntityInterface;
