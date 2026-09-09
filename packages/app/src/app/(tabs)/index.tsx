@@ -21,8 +21,8 @@ import { buildIntegrationProviderMap } from '../../account/utils/build-integrati
 import { pairAccountsIntoRows } from '../../account/utils/pair-accounts-into-rows.util';
 import { resolveBankProviderGroup } from '../../account/utils/resolve-bank-provider-group.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
+import { onboardingService } from '../../onboarding/service/onboarding.service';
 import { useSetting } from '../../settings/hook/use-setting.hook';
-import { onboardingService } from '../../settings/service/onboarding.service';
 
 const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: Value): void => {
     const groupValues = groups.get(key);
@@ -155,10 +155,8 @@ export default function HomePage() {
             return;
         }
 
-        const didProvision = await onboardingService.provisionFirstAccount();
-
-        if (didProvision) {
-            router.push('/create-transaction/expense');
+        if (await onboardingService.shouldStart()) {
+            router.replace('/onboarding');
         }
     });
 

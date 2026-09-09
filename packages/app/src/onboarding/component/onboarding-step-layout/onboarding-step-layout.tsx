@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
-import { useRouter } from 'expo-router';
 import { ReactNode, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -13,8 +12,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ONBOARDING_STEP_ACCENT } from '../../constant/onboarding-step-accent.constant';
-import { ONBOARDING_STEP_ORDER } from '../../constant/onboarding-step-order.constant';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
+import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
 import { OnboardingProgressBar } from '../onboarding-progress-bar/onboarding-progress-bar';
 
 import { OnboardingStepLayoutSelector } from './onboarding-step-layout.selector';
@@ -42,9 +41,9 @@ interface Props {
 export const OnboardingStepLayout = (props: Props) => {
     const { step, title, description, icon, children, primaryLabel, onPrimary, isPrimaryDisabled } = props;
 
-    const router = useRouter();
     const reducedMotion = useReducedMotion();
     const [, hapticImpact] = useVibration();
+    const { goToNextStep } = useOnboardingNavigation();
 
     const contentTranslateX = useSharedValue(reducedMotion ? ZERO_TRANSLATE_X : CONTENT_TRANSLATE_X);
     const contentOpacity = useSharedValue(ZERO_OPACITY);
@@ -58,12 +57,7 @@ export const OnboardingStepLayout = (props: Props) => {
         contentOpacity.value = withTiming(FULL_OPACITY, { duration });
     }, [step, reducedMotion, contentTranslateX, contentOpacity]);
 
-    const handleSkip = () => {
-        const currentIndex = ONBOARDING_STEP_ORDER.indexOf(step);
-        const nextStep = ONBOARDING_STEP_ORDER[currentIndex + 1];
-
-        void router.push(`./${nextStep.toLowerCase()}`);
-    };
+    const handleSkip = () => void goToNextStep(step);
 
     const handlePrimaryPress = () => {
         hapticImpact(ImpactFeedbackStyle.Medium);
