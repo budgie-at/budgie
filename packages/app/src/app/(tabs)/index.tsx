@@ -158,7 +158,7 @@ export default function HomePage() {
         const didProvision = await onboardingService.provisionFirstAccount();
 
         if (didProvision) {
-            router.replace('/create-transaction/expense');
+            router.push('/create-transaction/expense');
         }
     });
 
