@@ -205,7 +205,7 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Lent Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.14905_933'
+      id: 'DebtAccountBalance.OutstandingAmount.12905_933'
 - assertVisible:
       id: 'DebtAccountBalance.PaidAmount.2094_067'
 - assertVisible:
@@ -225,11 +225,11 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
       element:
-          id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.14905_933'
+          id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.12905_933'
       direction: DOWN
 
 - assertVisible:
-      id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.14905_933'
+      id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Debt.12905_933'
 - assertVisible:
       id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_Debt.2094_067'
 - assertVisible:
