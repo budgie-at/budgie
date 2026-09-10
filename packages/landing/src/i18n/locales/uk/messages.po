@@ -2343,6 +2343,10 @@ msgstr "Ліцензія з доступним вихідним кодом, що
 msgid "A spending report should compare what money meant on the day you spent it. Budgie values each imported and newly saved transaction in your base currency using the exchange rate from the transaction date."
 msgstr ""
 
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "A supermarket run can carry groceries, a phone charger and a light fixture. Budgie splits the one transaction across as many category rows as the receipt needs."
+msgstr "Похід до супермаркету може включати продукти, зарядний пристрій і лампу. Budgie розділяє одну транзакцію на стільки рядків категорій, скільки потрібно для чека."
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "A Tags tab beside Categories"
 msgstr "Вкладка «Теги» поруч із категоріями"
@@ -2527,6 +2531,14 @@ msgstr "Actual Budget: Мрія ентузіаста самохостингу"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 msgstr "Actual — це орієнтований на конфіденційність інструмент бюджетування з сильним підходом local-first. Він пропонує методологію конвертного бюджетування, можливості синхронізації з банком та варіанти як для самостійного розгортання, так і для хмари. Якщо ви віддаєте перевагу конвертному стилю бюджетування та хочете десктопний досвід, Actual варто розглянути."
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Add a row and the remaining amount updates; keep going until nothing is left to assign. The parent stays a single transaction, and analytics counts each row under its own category."
+msgstr "Додайте рядок — і залишок оновиться; продовжуйте, доки не залишиться нічого призначати. Батьківська транзакція залишається однією, а аналітика рахує кожен рядок за його власною категорією."
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Add another category row"
+msgstr "Додати ще один рядок категорії"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Add it in three taps"
@@ -3966,6 +3978,10 @@ msgstr "Budgie існує, тому що ми вважаємо, що вам не
 msgid "Budgie exists because we wanted a financial app that treats users as customers, not products. One that works offline, respects privacy, and gives you complete control over your data. If that resonates with you, we’d love to have you try it."
 msgstr "Budgie існує тому, що ми хотіли фінансовий додаток, який ставиться до користувачів як до клієнтів, а не продуктів. Такий, що працює офлайн, поважає приватність та дає вам повний контроль над вашими даними. Якщо це резонує з вами, ми будемо раді, якщо ви його спробуєте."
 
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Budgie expense editor showing a $100 Whole Foods Market transaction split into Home Maintenance, Electronics & Gadgets and Groceries rows"
+msgstr "Редактор витрат Budgie з транзакцією на 100 $ у Whole Foods Market, розділеною на рядки «Домашнє обслуговування», «Електроніка та гаджети» й «Продукти»"
+
 #: src/app/[lang]/features/uncategorized-transactions/metadata.ts
 msgid "Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device."
 msgstr "Budgie знаходить транзакції без категорій у ваших активних фільтрах. Торкніться плашки відсутніх категорій, щоб швидко прибрати прогалини офлайн."
@@ -4342,6 +4358,10 @@ msgstr "Budgie постачається без жодних сторонніх �
 #: src/generic/component/hero-section/hero-section-image.tsx
 msgid "Budgie showing a total balance, a monthly budget bar and bank, cash and savings accounts on one screen"
 msgstr "Budgie показує загальний баланс, місячний бюджет і банківські, готівкові та ощадні рахунки на одному екрані"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Budgie split sheet with Home Maintenance and Electronics & Gadgets rows, an Add item button and a $62.50 left to assign label"
+msgstr "Аркуш розподілу Budgie з рядками «Домашнє обслуговування» та «Електроніка й гаджети», кнопкою «Додати елемент» і позначкою «62,50 $ залишилось призначити»"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Budgie spots subscription patterns and renewals, plots them on a month calendar, and forecasts what's coming."
@@ -5462,6 +5482,10 @@ msgstr "Умови за назвою, коментарем, сумою, MCC, р�
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Conditions you wrote yourself"
 msgstr "Умови, які ти написав сам"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Confirm once it adds up"
+msgstr "Підтвердіть, коли сума зійдеться"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Confirm the fixed version is released"
@@ -6680,6 +6704,10 @@ msgstr "Кожен рядок розділення враховується у �
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Each split row keeps its own tags and comment — fully independent"
 msgstr "Кожен рядок розділення зберігає власні теги та коментар — повністю незалежний"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Each split, its own category"
+msgstr "Кожен поділ — власна категорія"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Each type brings its own form"
@@ -8299,7 +8327,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-#: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "How it works"
@@ -8664,10 +8691,6 @@ msgstr "Оцінка інфраструктури"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Initially, there is additional complexity in understanding CRDTs and sync. However, local-first can be cheaper overall because you do not need to build and maintain server infrastructure at scale. For indie developers and small teams, the reduced operational costs can outweigh the initial learning curve. Modern libraries and frameworks also significantly reduce implementation complexity."
 msgstr "Спочатку є додаткова складність у розумінні CRDT та синхронізації. Однак local-first може бути дешевшим загалом, тому що вам не потрібно будувати та підтримувати серверну інфраструктуру у масштабі. Для незалежних розробників та невеликих команд зменшені операційні витрати можуть переважити початкову криву навчання. Сучасні бібліотеки та фреймворки також значно зменшують складність реалізації."
-
-#: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Inside expense or income entry, switch to split mode. Add rows of (category, amount). The system enforces total = transaction amount. Each split keeps its own tags and comment."
-msgstr "У записі витрати або доходу перейдіть до режиму розбивки. Додайте рядки (категорія, сума). Система стежить за тим, щоб загальна сума дорівнювала сумі транзакції. Кожна частина зберігає власні теги й коментар."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Install + open"
@@ -10943,6 +10966,10 @@ msgstr "Реальний екран, показаний у тій темі, як
 msgid "One receipt, multiple categories."
 msgstr "Один чек, кілька категорій."
 
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "One receipt, three categories"
+msgstr "Один чек — три категорії"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "One row, reclassified"
 msgstr "Один рядок, перекласифікований"
@@ -12121,6 +12148,10 @@ msgstr "Розумне ціноутворення"
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown. Budgie's split modal lets you allocate fractions of the same transaction across as many categories as you like."
 msgstr "Чеки змішують категорії. Без розбивки доводиться хитрувати — вибирати домінуючу категорію та втрачати деталізацію. Модальне вікно розбивки Budgie дозволяє розподіляти частини однієї транзакції на скільки завгодно категорій."
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Receipts rarely fit one category"
+msgstr "Чеки рідко вміщаються в одну категорію"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Receive credit for discovered vulnerabilities (if desired)"
@@ -13352,6 +13383,10 @@ msgstr "Змінюйте додатки без втрати історії"
 msgid "Switch language"
 msgstr "Змінити мову"
 
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Switch the expense to split mode and add a row per category. Each row carries its own amount, while the original transaction becomes the parent that holds them together."
+msgstr "Переведіть витрату в режим поділу й додайте рядок для кожної категорії. Кожен рядок має власну суму, а початкова транзакція стає батьківською, що їх об'єднує."
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
 msgstr "Перейдіть до вкладки Теги у Статистиці для сортованих підсумків по тегах — доходи, витрати та баланс — плюс деталізоване відро «Без тегів», що показує точно, які транзакції не мають мітки."
@@ -14158,6 +14193,10 @@ msgstr "Курс, за яким конвертовано"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The Real-World Impact of Financial Privacy"
 msgstr "Реальний вплив фінансової конфіденційності"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "The remainder counts down"
+msgstr "Залишок зменшується"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "The remaining-budget pill shows what's left to allocate as you go. Save with Done; the original transaction becomes a parent with linked split entries underneath."
@@ -15751,6 +15790,10 @@ msgstr "Що якщо Whisper неправильно почує мене?"
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "What Intuit Mint Actually Was"
 msgstr "Чим насправді був Intuit Mint"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "What is left to assign"
+msgstr "Що залишилось призначити"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "What Is Local-First Software?"

@@ -16,6 +16,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -79,6 +80,62 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                 }
             />
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Receipts rarely fit one category</Trans>}>
+                    <Trans>
+                        A supermarket run can carry groceries, a phone charger and a light fixture. Budgie splits the one transaction across
+                        as many category rows as the receipt needs.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>One receipt, three categories</Trans>}>
+                    <Trans>
+                        Switch the expense to split mode and add a row per category. Each row carries its own amount, while the original
+                        transaction becomes the parent that holds them together.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie expense editor showing a $100 Whole Foods Market transaction split into Home Maintenance, Electronics & Gadgets and Groceries rows`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="split-transactions-1"
+                    slug="split-transactions"
+                >
+                    <FeatureStory.Callout y={0.721}>
+                        <Trans>Each split, its own category</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.908}>
+                        <Trans>Confirm once it adds up</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>The remainder counts down</Trans>}>
+                    <Trans>
+                        Add a row and the remaining amount updates; keep going until nothing is left to assign. The parent stays a single
+                        transaction, and analytics counts each row under its own category.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie split sheet with Home Maintenance and Electronics & Gadgets rows, an Add item button and a $62.50 left to assign label`}
+                    index={1}
+                    locale={lang}
+                    scene="split-transactions-2"
+                    slug="split-transactions"
+                >
+                    <FeatureStory.Callout y={0.852}>
+                        <Trans>Add another category row</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.908}>
+                        <Trans>What is left to assign</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>Why receipts mix categories</Trans>
@@ -118,18 +175,6 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                         <Trans>Analytics counts each split toward its own category — no double-counting</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Inside expense or income entry, switch to split mode. Add rows of (category, amount). The system enforces total =
-                        transaction amount. Each split keeps its own tags and comment.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
