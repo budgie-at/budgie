@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.41.2](https://github.com/budgie-at/budgie/compare/v6.41.1...v6.41.2) (2026-09-10)
+
+
+### Bug Fixes
+
+* **app:** convert debt settlement amounts into the debt instrument ([49dd9b4](https://github.com/budgie-at/budgie/commit/49dd9b4f518071a63eceebdda3a2e1bf52df31bc))
+* **app:** reject missing rates and harden cross-instrument debt repair ([73ed458](https://github.com/budgie-at/budgie/commit/73ed458ff09c0ef0df49c05c619b6f7b6c070cb6))
+
+
+
+
+
 ## [6.41.1](https://github.com/budgie-at/budgie/compare/v6.41.0...v6.41.1) (2026-09-08)
 
 
