@@ -2311,6 +2311,10 @@ msgstr "Ринковий екран для кожного інструменту
 msgid "A merged transfer keeps a Consolidation row. \"View source transactions\" opens both originals with their amounts, dates and accounts still intact. Revert puts them back and removes the merged transfer."
 msgstr "Об'єднаний переказ зберігає рядок «Консолідація». «Переглянути вихідні транзакції» відкриває обидва оригінали з їхніми сумами, датами й рахунками. «Відновити» повертає їх і прибирає об'єднаний переказ."
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "A month grid of what bills"
+msgstr "Сітка місяця з майбутніми списаннями"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "A P2P purchase and the bank payment behind it merge into one cross-currency transfer"
 msgstr "P2P-покупка та банківський платіж, що стоїть за нею, об'єднуються в один міжвалютний переказ"
@@ -3998,6 +4002,10 @@ msgstr "Форма витрати Budgie для транзакції Silpo на 
 msgid "Budgie expense form for a $78.4 Silpo transaction with a Quick rule pill above the amount and Restaurants set as the category"
 msgstr "Форма витрати Budgie для транзакції Silpo на 78,4 $ з позначкою «Quick rule» над сумою й категорією «Ресторани»"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Budgie finds the pattern itself — same merchant, similar amount, regular interval — and marks the days those charges fall on."
+msgstr "Budgie сам визначає закономірність — той самий продавець, схожа сума, регулярний інтервал — і позначає дні цих платежів."
+
 #: src/app/[lang]/features/uncategorized-transactions/metadata.ts
 msgid "Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device."
 msgstr "Budgie знаходить транзакції без категорій у ваших активних фільтрах. Торкніться плашки відсутніх категорій, щоб швидко прибрати прогалини офлайн."
@@ -4296,8 +4304,12 @@ msgid "Budgie recurring payments calendar showing upcoming subscriptions on a mo
 msgstr "Календар регулярних платежів Budgie з майбутніми підписками у місячній сітці"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Budgie recurring payments calendar with the monthly total above the upcoming subscriptions"
-msgstr "Календар регулярних платежів Budgie з місячним підсумком над найближчими підписками"
+msgid "Budgie Recurring screen showing a September 2026 calendar with detected payment days marked and an upcoming charges list"
+msgstr "Екран «Повторювані» у Budgie з календарем на вересень 2026 року, позначеними днями платежів і списком майбутніх списань"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Budgie Recurring screen with Day 15 selected and a list of Gym Membership, Netflix and Spotify charges"
+msgstr "Екран «Повторювані» у Budgie з вибраним 15-м днем і списком списань: спортзал, Netflix і Spotify"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Budgie Rules screen: four rules, each with its conditions above the category and tag it sets, and an on-off switch"
@@ -4318,6 +4330,10 @@ msgstr "Budgie запускає Qwen3 1.7B та 768-вимірну модель 
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "Budgie runs Qwen3 1.7B and a 768-dim embedding model locally. AI auto-categorization, voice transaction entry, and merchant translation without sending data to the cloud."
 msgstr "Budgie запускає Qwen3 1.7B і 768-вимірну модель вкладень локально. AI-автокатегоризація, введення транзакцій голосом і переклад назв продавців без надсилання даних у хмару."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Budgie scans your history for amount and cadence patterns and plots every recurring charge on a month calendar."
+msgstr "Budgie сканує вашу історію на предмет сум і періодичності та позначає кожен повторюваний платіж у календарі на місяць."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
@@ -5116,6 +5132,10 @@ msgstr "журнал змін"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Changes to Core Features"
 msgstr "Зміни в основних функціях"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Charges for that day"
+msgstr "Списання за цей день"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Chart palettes auto-recompute for legibility on dark canvas"
@@ -6306,8 +6326,12 @@ msgid "Detected subscriptions laid out by date, so renewals stop surprising you.
 msgstr "Виявлені підписки за датами, щоб поновлення більше не заставали зненацька."
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Detection runs as a background task on your transaction table. The pattern interface stores merchant fingerprint, average amount, cadence, and last-seen date. Manual edits to a pattern are sticky."
-msgstr "Виявлення виконується як фонове завдання у вашій таблиці транзакцій. Інтерфейс шаблону зберігає відбиток продавця, середню суму, ритм та дату останньої появи. Ручні правки шаблону зберігаються."
+msgid "Detected, not added"
+msgstr "Виявлено, а не додано"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Detected, not declared"
+msgstr "Виявлено, а не додано вручну"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
@@ -7042,6 +7066,10 @@ msgstr "Кожна група має проміжний підсумок"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Every instrument has its own market screen: the stored price with its last move, a sparkline of the history behind it, and your position valued against it — quantity, converted value, average cost, cost basis and unrealized gain. Market cap, volume and the date of the snapshot sit underneath. There is no ticker to subscribe to; the screen reads from the daily prices already in your database."
 msgstr "Кожен інструмент має власний ринковий екран: збережену ціну з її останнім рухом, спарклайн історії за нею та вашу позицію, оцінену за нею, — кількість, конвертовану вартість, середню ціну, собівартість і нереалізований прибуток. Капіталізація, обсяг і дата зрізу — нижче. Немає жодного тікера, на який треба підписуватися: екран читає щоденні ціни, які вже є у вашій базі даних."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Every marked day is a real recurring charge. The upcoming list totals what is still to come this month."
+msgstr "Кожен позначений день — це справжнє повторюване списання. Список майбутніх підсумовує те, що ще належить цього місяця."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Every merge keeps its sources"
@@ -8368,7 +8396,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "How it works"
@@ -12962,6 +12989,10 @@ msgstr "Фокус на одному пристрої означає відсу�
 msgid "Six monthly bars on that view show what you usually spend at the same place, in the same category"
 msgstr "Шість місячних стовпців на цьому екрані показують, скільки Ви зазвичай витрачаєте в тому самому місці й у тій самій категорії"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Sixty days ahead"
+msgstr "На шістдесят днів уперед"
+
 #: src/app/[lang]/features/no-bank-login-budget-app/metadata.ts
 msgid "Skip the aggregator. Budgie syncs Monobank via your personal API token and imports any bank's PDF or CSV statement directly. Your credentials never leave you."
 msgstr "Оминайте агрегатора. Budgie синхронізує Монобанк через ваш особистий API-токен і імпортує PDF або CSV-виписку будь-якого банку безпосередньо. Ваші облікові дані ніколи не покидають вас."
@@ -13601,6 +13632,10 @@ msgstr "Торкніться рядка — побачите транзакці�
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Tap any category row to open exactly the transactions behind that number for this period"
 msgstr "Торкніться будь-якого рядка категорії, щоб відкрити саме ті транзакції, що стоять за цим числом за цей період"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Tap any marked day to see exactly what bills — here Day 15 lists the gym, Netflix and Spotify."
+msgstr "Торкніться позначеного дня, щоб побачити, що саме списується — тут 15-й день містить спортзал, Netflix і Spotify."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Tap any tag row to open the filtered transaction list with all sorts and filters available"
@@ -14387,6 +14422,10 @@ msgstr "Закриття не було несподіванкою для тих,
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The shutdown wasn’t just about a product failing. It was a wake-up call about the risks of trusting your financial data to a free, ad-supported service owned by a corporation whose priorities can shift overnight."
 msgstr "Закриття стосувалося не лише невдачі продукту. Це був тривожний сигнал про ризики довіри своїх фінансових даних безкоштовному, рекламному сервісу, який належить корпорації, пріоритети якої можуть змінитися за одну ніч."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "The slow leak in every budget"
+msgstr "Повільний витік у кожному бюджеті"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
@@ -15281,6 +15320,10 @@ msgstr "Відро «Без тегів» відображає кожну тра�
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 msgstr "До трьох підказок тегів у вигляді натискних пігулок після вибору категорії — жодного введення з клавіатури"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Upcoming charges"
+msgstr "Майбутні списання"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."
