@@ -428,9 +428,9 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Borrowed Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.13000'
+      id: 'DebtAccountBalance.OutstandingAmount.13274'
 - assertVisible:
-      id: 'DebtAccountBalance.PaidAmount.2000'
+      id: 'DebtAccountBalance.PaidAmount.1726'
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.15000'
 
@@ -543,13 +543,13 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Borrowed Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.13094_067'
+      id: 'DebtAccountBalance.OutstandingAmount.13368_067'
 - assertVisible:
-      id: 'DebtAccountBalance.PaidAmount.2000'
+      id: 'DebtAccountBalance.PaidAmount.1726'
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.15094_067'
 - assertVisible:
-      id: 'DebtAccountBalance.Percentage.13_25'
+      id: 'DebtAccountBalance.Percentage.11_43'
 
 - runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
 
@@ -748,13 +748,13 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Lent Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.13405_933'
+      id: 'DebtAccountBalance.OutstandingAmount.13492_233'
 - assertVisible:
-      id: 'DebtAccountBalance.PaidAmount.2180_367'
+      id: 'DebtAccountBalance.PaidAmount.2094_067'
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.15586_3'
 - assertVisible:
-      id: 'DebtAccountBalance.Percentage.13_99'
+      id: 'DebtAccountBalance.Percentage.13_44'
 
 - runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
 
@@ -830,10 +830,10 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Borrowed Debt'
 
 - assertVisible:
-      id: 'DebtAccountBalance.OutstandingAmount.15007_767'
+      id: 'DebtAccountBalance.OutstandingAmount.13281_767'
 - assertVisible:
-      id: 'DebtAccountBalance.PaidAmount.2086_3'
+      id: 'DebtAccountBalance.PaidAmount.1812_3'
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.15094_067'
 - assertVisible:
-      id: 'DebtAccountBalance.Percentage.13_82'
+      id: 'DebtAccountBalance.Percentage.12_01'
