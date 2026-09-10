@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.43.0](https://github.com/budgie-at/budgie/compare/v6.42.0...v6.43.0) (2026-09-10)
+
+
+### Bug Fixes
+
+* **landing:** polish deposit-tracking catalog wording ([d432ef7](https://github.com/budgie-at/budgie/commit/d432ef7c8134719d2131a9b8ac589252e82debf2))
+
+
+### Features
+
+* **landing:** deposit-tracking steps story ([1acb9b9](https://github.com/budgie-at/budgie/commit/1acb9b912456d026e88d640fe5392d8be116bb58))
+
+
+
+
+
 # [6.42.0](https://github.com/budgie-at/budgie/compare/v6.41.4...v6.42.0) (2026-09-10)
 
 
