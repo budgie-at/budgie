@@ -25,6 +25,7 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
@@ -203,9 +204,14 @@ class TransactionDebtSettlementService {
             'direction' | 'amount' | 'baseInstrumentId' | 'baseExchangeRate' | 'baseAmount' | 'operatedAt' | 'transactionEntryId'
         >
     > {
+        const entryInstrumentId = await this.getAccountInstrumentOrFail(primaryEntry.accountId, tx);
+        const isSameInstrument = entryInstrumentId === debtAccount.instrumentId;
+        const amount = isSameInstrument
+            ? primaryEntry.amount
+            : await this.convertToDebtInstrumentAmount(primaryEntry, entryInstrumentId, debtAccount);
         const valuation = await entryBaseValuationService.valueMicroUnitEntry({
             accountId: debtAccount.id,
-            amount: primaryEntry.amount,
+            amount,
             operatedAt: transaction.operatedAt,
             externalSource: transaction.externalSource,
             tx
@@ -214,12 +220,26 @@ class TransactionDebtSettlementService {
         return {
             transactionEntryId: primaryEntry.id,
             direction: this.getDebtEventDirection(transaction, debtAccount),
-            amount: primaryEntry.amount,
+            amount,
             baseInstrumentId: valuation.baseInstrumentId,
             baseExchangeRate: valuation.baseExchangeRate,
             baseAmount: valuation.baseAmount,
             operatedAt: transaction.operatedAt
         };
+    }
+
+    private async convertToDebtInstrumentAmount(
+        primaryEntry: TransactionEntryEntityInterface,
+        entryInstrumentId: number,
+        debtAccount: AccountEntityInterface
+    ): Promise<number> {
+        const conversion = await exchangeRatesService.convertStrict(entryInstrumentId, debtAccount.instrumentId, primaryEntry.amount);
+
+        if (!isDefined(conversion)) {
+            throw new Error(t`Exchange rate not found`);
+        }
+
+        return conversion.amount;
     }
 
     private isCategorizableExpenseSettlement(
@@ -261,6 +281,16 @@ class TransactionDebtSettlementService {
         }
 
         return account;
+    }
+
+    private async getAccountInstrumentOrFail(accountId: number, tx: DB): Promise<number> {
+        const account = await accountRepository.findById(accountId, tx);
+
+        if (!isDefined(account)) {
+            throw new Error(t`Account ${accountId} not found`);
+        }
+
+        return account.instrumentId;
     }
 
     private getPrimaryEntryOrFail(transaction: TransactionWithEntriesEntityInterface): TransactionEntryEntityInterface {

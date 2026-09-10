@@ -220,6 +220,7 @@ msgid "Account"
 msgstr "Рахунок"
 
 #: src/money-data/service/entry-base-valuation.service.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
 msgstr "Рахунок {accountId} не знайдено"
 
@@ -1593,6 +1594,10 @@ msgstr "Обмінний курс"
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
 msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} не знайдено"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Exchange rate not found"
+msgstr ""
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
