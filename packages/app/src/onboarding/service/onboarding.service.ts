@@ -46,8 +46,11 @@ class OnboardingService {
     async provisionAccounts(accounts: OnboardingAccountInputInterface[]): Promise<void> {
         const { defaultInstrumentId } = await settingsRepository.getSettings();
         const instrumentId = defaultInstrumentId ?? DEFAULT_INSTRUMENT.id;
+        const existingAccounts = await accountRepository.getAllActiveAccounts();
+        const existingTypes = new Set(existingAccounts.map(existingAccount => existingAccount.type));
+        const accountsToCreate = accounts.filter(account => !existingTypes.has(account.type));
 
-        await accounts.reduce(
+        await accountsToCreate.reduce(
             (previousAccountPromise, account) => previousAccountPromise.then(() => this.createOnboardingAccount(account, instrumentId)),
             Promise.resolve()
         );
