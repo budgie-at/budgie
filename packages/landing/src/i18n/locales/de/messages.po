@@ -3948,7 +3948,7 @@ msgstr "Budgie dedupliziert anhand der Transaktions-ID. Vorhandene Zeilen werden
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout"
-msgstr "Budgie-Kontoansicht einer Festanlage mit einem Saldo von 15.408,40 $, einem Zinssatz von 4,35 %, einem Fälligkeitsdatum am 1. Januar 2027, 120 verbleibenden Tagen und einer erwarteten Auszahlung von 15.628,76 $"
+msgstr "Budgie-Kontoansicht einer Festanlage mit einem Saldo von 15.408,40 $, einem Zinssatz von 4,35 %, einem Fälligkeitsdatum am 1. Januar 2027, 120 verbleibenden Tagen und einer voraussichtlichen Auszahlung von 15.628,76 $"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Budgie deposit account screen with the account menu open showing the Edit and Close Deposit actions"
@@ -4169,7 +4169,7 @@ msgstr "Budgie ist nicht die einzige Open-Source-Option für Finanzmanagement. E
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Budgie keeps a term deposit separate from the accounts you spend from, and shows what it will pay at maturity."
-msgstr "Budgie führt eine Festgeldanlage getrennt von den Konten, von denen Sie ausgeben, und zeigt, was sie bei Fälligkeit auszahlt."
+msgstr "Budgie führt eine Festgeldanlage getrennt von den Konten, die Sie für Ihre Ausgaben nutzen, und zeigt, welchen Betrag sie bei Fälligkeit auszahlt."
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Budgie language selector sheet with a search box and English, French and Ukrainian rows, each with a flag and language code"
@@ -5201,7 +5201,7 @@ msgstr "Schließen und Saldo übertragen"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Close it and the money moves"
-msgstr "Schließen – und das Geld bewegt sich"
+msgstr "Schließen – und das Geld wird übertragen"
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Closed"
@@ -7159,7 +7159,7 @@ msgstr ""
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Expected payout estimate"
-msgstr "Geschätzte erwartete Auszahlung"
+msgstr "Voraussichtliche Auszahlung"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Expense and income amounts shift to brighter red and green in dark mode, not the muted tones carried over from light mode."
@@ -13695,7 +13695,7 @@ msgstr "Das Konto behält seine eigene"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "The account screen carries the current balance, the interest rate, the maturity date, the days remaining and a calculated expected payout."
-msgstr "Der Kontobildschirm zeigt den aktuellen Saldo, den Zinssatz, das Fälligkeitsdatum, die verbleibenden Tage und eine berechnete erwartete Auszahlung."
+msgstr "Der Kontobildschirm zeigt den aktuellen Saldo, den Zinssatz, das Fälligkeitsdatum, die verbleibenden Tage und eine voraussichtliche Auszahlung."
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "The accuracy fixes apply going forward and to the specific edge cases the backfills targeted. They do not rewrite unrelated transaction history."

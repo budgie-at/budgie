@@ -2285,7 +2285,7 @@ msgstr "Un agregador de datos financieros que atiende a millones de usuarios gua
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "A fixed term, tracked like an account"
-msgstr "Un plazo fijo, seguido como una cuenta"
+msgstr "Un plazo fijo, gestionado como una cuenta"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "A full re-sync wipes your manual category overrides and edits. Windowed re-sync diffs only the slice you ask for, so old edits stay safe."
@@ -5197,11 +5197,11 @@ msgstr "Cierre un depósito en una cuenta de destino seleccionada mediante una t
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Close and move the balance"
-msgstr "Cerrar y mover el saldo"
+msgstr "Cerrar y transferir el saldo"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Close it and the money moves"
-msgstr "Ciérralo y el dinero se mueve"
+msgstr "Ciérralo y el dinero se transfiere"
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Closed"
