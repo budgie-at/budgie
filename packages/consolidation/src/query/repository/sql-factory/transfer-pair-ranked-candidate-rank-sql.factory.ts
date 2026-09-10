@@ -5,6 +5,7 @@ import {
     TRANSFER_PAIR_SAME_BANK_HINTED_FEE_TIME_WINDOW_SECONDS
 } from '../../../shared/constant/transfer-pair-hinted-fee.constant';
 import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../../shared/constant/transfer-pair-implied-rate-tolerance.constant';
+import { buildBridgeClaimTitleConditionSql } from '../../../shared/util/build-bridge-claim-title-condition-sql.util';
 
 export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs AS (
                 SELECT
@@ -31,9 +32,7 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                                 ''
                             )
                         THEN 1
-                        WHEN incomeTransactionTitle LIKE '%єврового%' AND incomeCurrency != 'EUR' THEN 1
-                        WHEN incomeTransactionTitle LIKE '%доларового%' AND incomeCurrency != 'USD' THEN 1
-                        WHEN incomeTransactionTitle LIKE '%гривневого%' AND incomeCurrency != 'UAH' THEN 1
+                        WHEN ${buildBridgeClaimTitleConditionSql('incomeTransactionTitle', 'incomeCurrency')} THEN 1
                         ELSE 0
                     END as isBridgeClaimedIncome,
                     SUM(
