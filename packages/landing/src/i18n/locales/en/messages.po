@@ -2247,6 +2247,10 @@ msgid "A deliberate gap-finder. Transactions without tags accumulate in this buc
 msgstr "A deliberate gap-finder. Transactions without tags accumulate in this bucket so you can spot bookkeeping gaps and tighten them up."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "A deposit is not a savings account"
+msgstr "A deposit is not a savings account"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from normal spending accounts while still appearing in your broader account list."
 msgstr "A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from normal spending accounts while still appearing in your broader account list."
 
@@ -2277,6 +2281,10 @@ msgstr "A finance app you check at midnight should not blast your retinas. Budgi
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "A financial data aggregator that services millions of users holds credentials or access tokens for millions of bank accounts in one system. From an attacker perspective, this is a far more attractive target than any individual bank, because:"
 msgstr "A financial data aggregator that services millions of users holds credentials or access tokens for millions of bank accounts in one system. From an attacker perspective, this is a far more attractive target than any individual bank, because:"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "A fixed term, tracked like an account"
+msgstr "A fixed term, tracked like an account"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "A full re-sync wipes your manual category overrides and edits. Windowed re-sync diffs only the slice you ask for, so old edits stay safe."
@@ -3937,6 +3945,14 @@ msgstr "Budgie debt account screen with the amount left to receive above the rep
 msgid "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
 msgstr "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout"
+msgstr "Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Budgie deposit account screen with the account menu open showing the Edit and Close Deposit actions"
+msgstr "Budgie deposit account screen with the account menu open showing the Edit and Close Deposit actions"
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model."
 msgstr "Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model."
@@ -4149,6 +4165,10 @@ msgstr "Budgie is our contribution to this future: a personal finance applicatio
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
 msgstr "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Budgie keeps a term deposit separate from the accounts you spend from, and shows what it will pay at maturity."
+msgstr "Budgie keeps a term deposit separate from the accounts you spend from, and shows what it will pay at maturity."
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Budgie language selector sheet with a search box and English, French and Ukrainian rows, each with a flag and language code"
@@ -4417,10 +4437,6 @@ msgstr "Budgie takes offline-first seriously. Here’s how we protect your finan
 #: src/app/[lang]/layout.tsx
 msgid "Budgie Team"
 msgstr "Budgie Team"
-
-#: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "Budgie term deposit screen with the interest rate, maturity date and expected payout"
-msgstr "Budgie term deposit screen with the interest rate, maturity date and expected payout"
 
 #: src/app/[lang]/legal/terms-of-service/metadata.ts
 msgid "Budgie Terms of Service - Read our terms and conditions for using our privacy-first expense tracking app"
@@ -5178,6 +5194,14 @@ msgstr "Clone the repository for local development"
 msgid "Close a deposit into a selected destination account with a transfer, then archive it"
 msgstr "Close a deposit into a selected destination account with a transfer, then archive it"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Close and move the balance"
+msgstr "Close and move the balance"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Close it and the money moves"
+msgstr "Close it and the money moves"
+
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Closed"
 msgstr "Closed"
@@ -5717,10 +5741,6 @@ msgstr "CRDTs solve the conflict resolution problem but leave open questions abo
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Create a budget, pick the day the cycle starts, and set an overall limit in your default currency. Add limits to the categories you care about and a cap for the rest. The detail screen breaks the period down category by category; the home widget keeps the headline numbers one glance away, and can be hidden from Settings whenever you want the home screen quiet."
 msgstr "Create a budget, pick the day the cycle starts, and set an overall limit in your default currency. Add limits to the categories you care about and a cap for the rest. The detail screen breaks the period down category by category; the home widget keeps the headline numbers one glance away, and can be hidden from Settings whenever you want the home screen quiet."
-
-#: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "Create a Deposit account manually or from a bank integration. Add its current balance, currency, interest rate, and maturity date so Budgie can show the deposit details alongside your other accounts."
-msgstr "Create a Deposit account manually or from a bank integration. Add its current balance, currency, interest rate, and maturity date so Budgie can show the deposit details alongside your other accounts."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Create a feature branch for your changes"
@@ -6720,6 +6740,10 @@ msgstr "Easy to make formula errors"
 msgid "Edit it until it fits"
 msgstr "Edit it until it fits"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Edit the deposit details"
+msgstr "Edit the deposit details"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by accident."
 msgstr "Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by accident."
@@ -7131,6 +7155,10 @@ msgstr "Exchange rates are fetched anonymously"
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 msgid "exchange-rates"
 msgstr "exchange-rates"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Expected payout estimate"
+msgstr "Expected payout estimate"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Expense and income amounts shift to brighter red and green in dark mode, not the muted tones carried over from light mode."
@@ -8316,7 +8344,6 @@ msgstr "How is this different from the Tag Analytics page?"
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
-#: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -9463,6 +9490,10 @@ msgstr "Matching count, re-queried"
 #: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
 msgid "maturity"
 msgstr "maturity"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Maturity date and days left"
+msgstr "Maturity date and days left"
 
 #: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
 msgid "Maturity date, payout, and close flow."
@@ -11167,6 +11198,10 @@ msgstr "Open Source: Verify Our Claims Yourself"
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Open Statistics and tap the Tags tab. Each tag becomes a sortable row showing income, expense, and net for the active date range. The Untagged row aggregates every transaction without a tag. Tap any row to drill into the full transaction list filtered to that tag."
 msgstr "Open Statistics and tap the Tags tab. Each tag becomes a sortable row showing income, expense, and net for the active date range. The Untagged row aggregates every transaction without a tag. Tap any row to drill into the full transaction list filtered to that tag."
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Open the account menu and choose Close Deposit. Budgie moves the remaining balance to the destination you pick and archives the deposit."
+msgstr "Open the account menu and choose Close Deposit. Budgie moves the remaining balance to the destination you pick and archives the deposit."
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
@@ -13657,6 +13692,10 @@ msgstr "The account it landed in"
 msgid "The account keeps its own"
 msgstr "The account keeps its own"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "The account screen carries the current balance, the interest rate, the maturity date, the days remaining and a calculated expected payout."
+msgstr "The account screen carries the current balance, the interest rate, the maturity date, the days remaining and a calculated expected payout."
+
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "The accuracy fixes apply going forward and to the specific edge cases the backfills targeted. They do not rewrite unrelated transaction history."
 msgstr "The accuracy fixes apply going forward and to the specific edge cases the backfills targeted. They do not rewrite unrelated transaction history."
@@ -16051,10 +16090,6 @@ msgstr "When source code is public, anyone with the relevant expertise can exami
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "When the accounts hold different currencies, what will land on the other side appears under the figure you typed. The pill says which side you are driving — tap it to type the receiving amount instead — and the rate that produced the pair is saved with the transfer."
 msgstr "When the accounts hold different currencies, what will land on the other side appears under the figure you typed. The pill says which side you are driving — tap it to type the receiving amount instead — and the rate that produced the pair is saved with the transfer."
-
-#: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "When the deposit matures, choose the destination account and close it. Budgie transfers the remaining balance from the deposit account and archives the deposit so it leaves the home screen without losing history."
-msgstr "When the deposit matures, choose the destination account and close it. Budgie transfers the remaining balance from the deposit account and archives the deposit so it leaves the home screen without losing history."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "When the embedding stage produces low-confidence results — for example, with a new merchant or an ambiguous description — the full language model takes over. The LLM receives the transaction description and your category list as context, and generates a ranked suggestion."
