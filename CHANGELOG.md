@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.45.0](https://github.com/budgie-at/budgie/compare/v6.44.0...v6.45.0) (2026-09-10)
+
+
+### Features
+
+* **landing:** recurring-payments-calendar steps story ([c587724](https://github.com/budgie-at/budgie/commit/c587724c30b8d1af25d79b4f9b22dd8eb357346a))
+
+
+
+
+
 # [6.44.0](https://github.com/budgie-at/budgie/compare/v6.43.0...v6.44.0) (2026-09-10)
 
 
