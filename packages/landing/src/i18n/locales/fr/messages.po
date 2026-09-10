@@ -2311,6 +2311,10 @@ msgstr "Un écran de marché par instrument avec une fiche de prix, un sparkline
 msgid "A merged transfer keeps a Consolidation row. \"View source transactions\" opens both originals with their amounts, dates and accounts still intact. Revert puts them back and removes the merged transfer."
 msgstr "Un virement fusionné conserve une ligne « Consolidation ». « Voir les transactions source » ouvre les deux originaux avec leurs montants, dates et comptes intacts. « Annuler » les rétablit et supprime le virement fusionné."
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "A month grid of what bills"
+msgstr "Une grille mensuelle des prélèvements"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "A P2P purchase and the bank payment behind it merge into one cross-currency transfer"
 msgstr "Un achat P2P et le paiement bancaire qui le finance fusionnent en un seul transfert multidevise"
@@ -3998,6 +4002,10 @@ msgstr "Formulaire de dépense Budgie pour une transaction Silpo de 78,4 $ avec 
 msgid "Budgie expense form for a $78.4 Silpo transaction with a Quick rule pill above the amount and Restaurants set as the category"
 msgstr "Formulaire de dépense Budgie pour une transaction Silpo de 78,4 $ avec une pastille Quick rule au-dessus du montant et la catégorie Restaurants"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Budgie finds the pattern itself — same merchant, similar amount, regular interval — and marks the days those charges fall on."
+msgstr "Budgie détecte lui-même le schéma — même commerçant, montant similaire, intervalle régulier — et marque les jours où tombent ces prélèvements."
+
 #: src/app/[lang]/features/uncategorized-transactions/metadata.ts
 msgid "Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device."
 msgstr "Budgie trouve les transactions non catégorisées dans vos filtres actifs. Touchez la pastille de catégories manquantes pour corriger vite, hors ligne."
@@ -4296,8 +4304,12 @@ msgid "Budgie recurring payments calendar showing upcoming subscriptions on a mo
 msgstr "Calendrier des paiements récurrents de Budgie affichant les abonnements à venir sur une grille mensuelle"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Budgie recurring payments calendar with the monthly total above the upcoming subscriptions"
-msgstr "Calendrier des paiements récurrents de Budgie avec le total mensuel au-dessus des abonnements à venir"
+msgid "Budgie Recurring screen showing a September 2026 calendar with detected payment days marked and an upcoming charges list"
+msgstr "Écran Récurrents de Budgie avec un calendrier de septembre 2026, les jours de paiement détectés marqués et une liste des prochains prélèvements"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Budgie Recurring screen with Day 15 selected and a list of Gym Membership, Netflix and Spotify charges"
+msgstr "Écran Récurrents de Budgie avec le 15 sélectionné et une liste des prélèvements pour la salle de sport, Netflix et Spotify"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Budgie Rules screen: four rules, each with its conditions above the category and tag it sets, and an on-off switch"
@@ -4318,6 +4330,10 @@ msgstr "Budgie exécute Qwen3 1.7B + un modèle d'embedding 768 dimensions sur v
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "Budgie runs Qwen3 1.7B and a 768-dim embedding model locally. AI auto-categorization, voice transaction entry, and merchant translation without sending data to the cloud."
 msgstr "Budgie exécute Qwen3 1.7B et un modèle d'embedding 768 dimensions localement. Catégorisation automatique par IA, saisie vocale des transactions et traduction des commerçants sans envoyer de données dans le cloud."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Budgie scans your history for amount and cadence patterns and plots every recurring charge on a month calendar."
+msgstr "Budgie analyse votre historique à la recherche de montants et de rythmes récurrents et place chaque prélèvement récurrent sur un calendrier mensuel."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
@@ -5116,6 +5132,10 @@ msgstr "journal des modifications"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Changes to Core Features"
 msgstr "Modifications des fonctionnalités principales"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Charges for that day"
+msgstr "Prélèvements du jour"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Chart palettes auto-recompute for legibility on dark canvas"
@@ -6306,8 +6326,12 @@ msgid "Detected subscriptions laid out by date, so renewals stop surprising you.
 msgstr "Les abonnements détectés sont classés par date, pour que les renouvellements ne vous surprennent plus."
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Detection runs as a background task on your transaction table. The pattern interface stores merchant fingerprint, average amount, cadence, and last-seen date. Manual edits to a pattern are sticky."
-msgstr "La détection s'exécute en tâche de fond sur votre table de transactions. L'interface des schémas stocke l'empreinte du marchand, le montant moyen, la cadence et la date de dernière occurrence. Les modifications manuelles d'un schéma sont persistantes."
+msgid "Detected, not added"
+msgstr "Détecté, pas ajouté"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Detected, not declared"
+msgstr "Détecté, pas déclaré"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
@@ -7042,6 +7066,10 @@ msgstr "Chaque groupe affiche un sous-total"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Every instrument has its own market screen: the stored price with its last move, a sparkline of the history behind it, and your position valued against it — quantity, converted value, average cost, cost basis and unrealized gain. Market cap, volume and the date of the snapshot sit underneath. There is no ticker to subscribe to; the screen reads from the daily prices already in your database."
 msgstr "Chaque instrument a son propre écran de marché : le cours enregistré avec son dernier mouvement, une sparkline de l'historique et votre position valorisée en regard — quantité, valeur convertie, coût moyen, prix de revient et gain latent. La capitalisation, le volume et la date de l'instantané figurent en dessous. Aucun ticker auquel s'abonner : l'écran lit les cours quotidiens déjà présents dans votre base de données."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Every marked day is a real recurring charge. The upcoming list totals what is still to come this month."
+msgstr "Chaque jour marqué est un prélèvement récurrent réel. La liste à venir totalise ce qui reste à venir ce mois-ci."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Every merge keeps its sources"
@@ -8368,7 +8396,6 @@ msgstr "En quoi est-ce différent de la page Analyses d'étiquettes ?"
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "How it works"
@@ -12962,6 +12989,10 @@ msgstr "L'orientation mono-appareil signifie pas de synchronisation automatique 
 msgid "Six monthly bars on that view show what you usually spend at the same place, in the same category"
 msgstr "Six barres mensuelles sur cette vue montrent ce que vous dépensez habituellement au même endroit, dans la même catégorie"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Sixty days ahead"
+msgstr "Soixante jours à l'avance"
+
 #: src/app/[lang]/features/no-bank-login-budget-app/metadata.ts
 msgid "Skip the aggregator. Budgie syncs Monobank via your personal API token and imports any bank's PDF or CSV statement directly. Your credentials never leave you."
 msgstr "Contournez l'agrégateur. Budgie synchronise Monobank via votre jeton API personnel et importe directement le relevé PDF ou CSV de n'importe quelle banque. Vos identifiants ne vous quittent jamais."
@@ -13601,6 +13632,10 @@ msgstr "Touchez une ligne, voyez les transactions"
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Tap any category row to open exactly the transactions behind that number for this period"
 msgstr "Touchez n'importe quelle ligne de catégorie pour ouvrir exactement les transactions derrière ce chiffre pour cette période"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Tap any marked day to see exactly what bills — here Day 15 lists the gym, Netflix and Spotify."
+msgstr "Touchez un jour marqué pour voir exactement ce qui est prélevé — ici le 15 liste la salle de sport, Netflix et Spotify."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Tap any tag row to open the filtered transaction list with all sorts and filters available"
@@ -14387,6 +14422,10 @@ msgstr "La fermeture n'a pas été une surprise pour ceux qui suivaient l'actual
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The shutdown wasn’t just about a product failing. It was a wake-up call about the risks of trusting your financial data to a free, ad-supported service owned by a corporation whose priorities can shift overnight."
 msgstr "La fermeture n'était pas qu'une question de produit défaillant. C'était un signal d'alarme sur les risques de confier ses données financières à un service gratuit, financé par la publicité, appartenant à une entreprise dont les priorités peuvent changer du jour au lendemain."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "The slow leak in every budget"
+msgstr "La fuite lente de chaque budget"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
@@ -15281,6 +15320,10 @@ msgstr "Le compartiment Non étiqueté fait remonter chaque transaction sans ét
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 msgstr "Jusqu'à trois suggestions d'étiquettes sous forme de pastilles cliquables après la sélection de la catégorie — aucune saisie requise"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Upcoming charges"
+msgstr "Prochains prélèvements"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."
