@@ -337,6 +337,13 @@
             "when": 1786800000000,
             "tag": "0047_repair_double_counted_manual_debt_events",
             "breakpoints": true
+        },
+        {
+            "idx": 48,
+            "version": "6",
+            "when": 1786900000000,
+            "tag": "0048_repair_cross_instrument_debt_events",
+            "breakpoints": true
         }
     ]
 }
