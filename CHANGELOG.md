@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.42.0](https://github.com/budgie-at/budgie/compare/v6.41.4...v6.42.0) (2026-09-10)
+
+
+### Bug Fixes
+
+* **landing:** scope split-transactions story copy to visible UI and polish catalog wording ([08ed740](https://github.com/budgie-at/budgie/commit/08ed740ea7bc0f5c923f255a0b08a8758c8281f2))
+
+
+### Features
+
+* **landing:** split-transactions steps story ([ed89c4d](https://github.com/budgie-at/budgie/commit/ed89c4dcdd5a06fb47131b847fdc0d4d6a0d0c8d))
+
+
+
+
+
 ## [6.41.4](https://github.com/budgie-at/budgie/compare/v6.41.3...v6.41.4) (2026-09-10)
 
 
