@@ -1,12 +1,10 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
-import { router } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { Redirect } from 'expo-router';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
@@ -21,7 +19,7 @@ import { buildIntegrationProviderMap } from '../../account/utils/build-integrati
 import { pairAccountsIntoRows } from '../../account/utils/pair-accounts-into-rows.util';
 import { resolveBankProviderGroup } from '../../account/utils/resolve-bank-provider-group.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
-import { onboardingService } from '../../onboarding/service/onboarding.service';
+import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
 const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: Value): void => {
@@ -140,8 +138,6 @@ const buildHomePageSections = (
     return sections;
 };
 
-const logger = getLogger('HomePage');
-
 export default function HomePage() {
     const { accounts, balanceSummary } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
@@ -149,23 +145,11 @@ export default function HomePage() {
     const language = useSetting('language');
     const isBudgetWidgetEnabled = useSetting('isBudgetWidgetEnabled');
     const focusKey = useFocusKey();
-    const isOnboardingCompleted = useSetting('isOnboardingCompleted');
-    const runFirstLaunchRef = useRef(async () => {
-        if (isOnboardingCompleted) {
-            return;
-        }
+    const onboardingHref = useOnboardingRedirect();
 
-        if (await onboardingService.shouldStart()) {
-            router.replace('/onboarding');
-        }
-    });
-
-    // oxlint-disable-next-line react/exhaustive-deps -- mount-only first-launch check; the ref captures the value at mount
-    useEffect(() => {
-        void runFirstLaunchRef.current().catch((error: unknown) => {
-            logger.error('first launch failed', { errorMessage: getErrorMessage(error) });
-        });
-    }, []);
+    if (isDefined(onboardingHref)) {
+        return <Redirect href={onboardingHref} />;
+    }
 
     const activeAccounts = accounts.filter(account => account.isActive);
     const integrationProviders = buildIntegrationProviderMap(accounts);
