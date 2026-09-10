@@ -2533,10 +2533,6 @@ msgid "Actual is a privacy-focused budgeting tool with a strong local-first appr
 msgstr "Actual — це орієнтований на конфіденційність інструмент бюджетування з сильним підходом local-first. Він пропонує методологію конвертного бюджетування, можливості синхронізації з банком та варіанти як для самостійного розгортання, так і для хмари. Якщо ви віддаєте перевагу конвертному стилю бюджетування та хочете десктопний досвід, Actual варто розглянути."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Add a row and the remaining amount updates; keep going until nothing is left to assign. The parent stays a single transaction, and analytics counts each row under its own category."
-msgstr "Додайте рядок — і залишок оновиться; продовжуйте, доки не залишиться нічого призначати. Батьківська транзакція залишається однією, а аналітика рахує кожен рядок за його власною категорією."
-
-#: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Додати ще один рядок категорії"
 
@@ -12151,7 +12147,7 @@ msgstr "Чеки змішують категорії. Без розбивки д
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Receipts rarely fit one category"
-msgstr "Чеки рідко вміщаються в одну категорію"
+msgstr "Чеки рідко належать лише до однієї категорії"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Receive credit for discovered vulnerabilities (if desired)"
@@ -13384,8 +13380,8 @@ msgid "Switch language"
 msgstr "Змінити мову"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Switch the expense to split mode and add a row per category. Each row carries its own amount, while the original transaction becomes the parent that holds them together."
-msgstr "Переведіть витрату в режим поділу й додайте рядок для кожної категорії. Кожен рядок має власну суму, а початкова транзакція стає батьківською, що їх об'єднує."
+msgid "Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount."
+msgstr "Переведіть витрату в режим поділу й додайте рядок для кожної категорії. Кожен рядок має власну іконку, категорію та суму."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
@@ -15199,6 +15195,10 @@ msgstr "Відро «Без тегів» відображає кожну тра�
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 msgstr "До трьох підказок тегів у вигляді натискних пігулок після вибору категорії — жодного введення з клавіатури"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."
+msgstr "Натисніть «Додати елемент», щоб додати ще один рядок; підпис під рядками показує, скільки ще залишилось призначити."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"

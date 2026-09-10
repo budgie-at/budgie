@@ -2532,10 +2532,6 @@ msgid "Actual is a privacy-focused budgeting tool with a strong local-first appr
 msgstr "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Add a row and the remaining amount updates; keep going until nothing is left to assign. The parent stays a single transaction, and analytics counts each row under its own category."
-msgstr "Add a row and the remaining amount updates; keep going until nothing is left to assign. The parent stays a single transaction, and analytics counts each row under its own category."
-
-#: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Add another category row"
 
@@ -13383,8 +13379,8 @@ msgid "Switch language"
 msgstr "Switch language"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Switch the expense to split mode and add a row per category. Each row carries its own amount, while the original transaction becomes the parent that holds them together."
-msgstr "Switch the expense to split mode and add a row per category. Each row carries its own amount, while the original transaction becomes the parent that holds them together."
+msgid "Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount."
+msgstr "Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
@@ -15198,6 +15194,10 @@ msgstr "Untagged bucket surfaces every transaction missing a label — drill in 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 msgstr "Up to three tag suggestions as tappable pills after category selection — zero typing required"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."
+msgstr "Use Add item to add another row; the label under the rows shows how much is still left to assign."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"

@@ -2533,10 +2533,6 @@ msgid "Actual is a privacy-focused budgeting tool with a strong local-first appr
 msgstr "Actual ist ein datenschutzorientiertes Budgetierungstool mit starkem Local-First-Ansatz. Es bietet die Umschlagmethode, Banksynchronisation und sowohl selbst gehostete als auch Cloud-Optionen. Wenn Sie die Umschlag-Budgetierung bevorzugen und ein Desktop-fokussiertes Erlebnis wünschen, ist Actual eine Überlegung wert."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Add a row and the remaining amount updates; keep going until nothing is left to assign. The parent stays a single transaction, and analytics counts each row under its own category."
-msgstr "Füge eine Zeile hinzu, und der verbleibende Betrag aktualisiert sich; mach weiter, bis nichts mehr zuzuordnen ist. Die übergeordnete Transaktion bleibt eine einzige, und die Analyse zählt jede Zeile unter ihrer eigenen Kategorie."
-
-#: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Weitere Kategoriezeile hinzufügen"
 
@@ -3980,7 +3976,7 @@ msgstr "Budgie existiert, weil wir eine Finanz-App wollten, die Nutzer als Kunde
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Budgie expense editor showing a $100 Whole Foods Market transaction split into Home Maintenance, Electronics & Gadgets and Groceries rows"
-msgstr "Budgie-Ausgaben-Editor mit einer 100-$-Transaktion von Whole Foods Market, aufgeteilt in die Zeilen Hauswartung, Elektronik & Gadgets und Lebensmittel"
+msgstr "Budgie-Ausgaben-Editor mit einer Transaktion über 100 $ von Whole Foods Market, aufgeteilt in die Zeilen Hauswartung, Elektronik & Gadgets und Lebensmittel"
 
 #: src/app/[lang]/features/uncategorized-transactions/metadata.ts
 msgid "Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device."
@@ -13384,8 +13380,8 @@ msgid "Switch language"
 msgstr "Sprache wechseln"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Switch the expense to split mode and add a row per category. Each row carries its own amount, while the original transaction becomes the parent that holds them together."
-msgstr "Schalte die Ausgabe in den Aufteilungsmodus und füge eine Zeile pro Kategorie hinzu. Jede Zeile trägt ihren eigenen Betrag, während die ursprüngliche Transaktion zur übergeordneten Transaktion wird, die sie zusammenhält."
+msgid "Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount."
+msgstr "Schalten Sie die Ausgabe in den Aufteilungsmodus und fügen Sie eine Zeile pro Kategorie hinzu. Jede Zeile trägt ihr eigenes Symbol, ihre eigene Kategorie und ihren eigenen Betrag."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
@@ -15199,6 +15195,10 @@ msgstr "Nicht-markiert-Bereich zeigt jede Transaktion ohne Label – einsteigen 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 msgstr "Bis zu drei Tag-Vorschläge als tippbare Chips nach der Kategorienauswahl – kein Tippen erforderlich"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."
+msgstr "Tippen Sie auf „Eintrag hinzufügen“, um eine weitere Zeile hinzuzufügen; die Beschriftung unter den Zeilen zeigt, wie viel noch zuzuordnen ist."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"
