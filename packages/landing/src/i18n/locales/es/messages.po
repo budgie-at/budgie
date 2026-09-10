@@ -2533,10 +2533,6 @@ msgid "Actual is a privacy-focused budgeting tool with a strong local-first appr
 msgstr "Actual es una herramienta de presupuesto enfocada en la privacidad con un fuerte enfoque local-first. Ofrece la metodología de presupuesto por sobres, capacidades de sincronización bancaria y opciones tanto auto-alojadas como en la nube. Si prefieres el presupuesto por sobres y quieres una experiencia centrada en escritorio, Actual vale la pena considerarlo."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Add a row and the remaining amount updates; keep going until nothing is left to assign. The parent stays a single transaction, and analytics counts each row under its own category."
-msgstr "Añade una fila y el importe restante se actualiza; continúa hasta que no quede nada por asignar. La transacción principal sigue siendo una sola, y el análisis cuenta cada fila bajo su propia categoría."
-
-#: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Añadir otra fila de categoría"
 
@@ -3980,7 +3976,7 @@ msgstr "Budgie existe porque queríamos una app financiera que trate a los usuar
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Budgie expense editor showing a $100 Whole Foods Market transaction split into Home Maintenance, Electronics & Gadgets and Groceries rows"
-msgstr "Editor de gastos de Budgie con una transacción de 100 $ de Whole Foods Market dividida en las filas Mantenimiento del hogar, Electrónica y gadgets y Supermercado"
+msgstr "Editor de gastos de Budgie con una transacción de 100 $ de Whole Foods Market dividida en las filas «Mantenimiento del hogar», «Electrónica y gadgets» y «Supermercado»"
 
 #: src/app/[lang]/features/uncategorized-transactions/metadata.ts
 msgid "Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device."
@@ -4361,7 +4357,7 @@ msgstr "Budgie muestra el saldo total, el presupuesto mensual y las cuentas banc
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Budgie split sheet with Home Maintenance and Electronics & Gadgets rows, an Add item button and a $62.50 left to assign label"
-msgstr "Hoja de división de Budgie con las filas Mantenimiento del hogar y Electrónica y gadgets, un botón Añadir elemento y una etiqueta de 62,50 $ por asignar"
+msgstr "Hoja de división de Budgie con las filas «Mantenimiento del hogar» y «Electrónica y gadgets», un botón Añadir elemento y una etiqueta que indica que quedan 62,50 $ por asignar"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Budgie spots subscription patterns and renewals, plots them on a month calendar, and forecasts what's coming."
@@ -13384,8 +13380,8 @@ msgid "Switch language"
 msgstr "Cambiar idioma"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Switch the expense to split mode and add a row per category. Each row carries its own amount, while the original transaction becomes the parent that holds them together."
-msgstr "Cambia el gasto al modo de división y añade una fila por categoría. Cada fila lleva su propio importe, mientras que la transacción original se convierte en la principal que las agrupa."
+msgid "Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount."
+msgstr "Cambia el gasto al modo de división y añade una fila por categoría. Cada fila lleva su propio icono, categoría e importe."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
@@ -15199,6 +15195,10 @@ msgstr "El apartado Sin Etiquetar muestra cada transacción sin etiqueta — des
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 msgstr "Hasta tres sugerencias de etiquetas como píldoras pulsables después de la selección de categoría — sin necesidad de escribir"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."
+msgstr "Usa Añadir elemento para agregar otra fila; la etiqueta bajo las filas muestra cuánto queda todavía por asignar."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"

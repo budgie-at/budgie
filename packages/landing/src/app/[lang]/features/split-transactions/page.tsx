@@ -90,8 +90,7 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
 
                 <FeatureStory.Step index={0} title={<Trans>One receipt, three categories</Trans>}>
                     <Trans>
-                        Switch the expense to split mode and add a row per category. Each row carries its own amount, while the original
-                        transaction becomes the parent that holds them together.
+                        Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -113,10 +112,7 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                 </FeatureStory.Shot>
 
                 <FeatureStory.Step index={1} title={<Trans>The remainder counts down</Trans>}>
-                    <Trans>
-                        Add a row and the remaining amount updates; keep going until nothing is left to assign. The parent stays a single
-                        transaction, and analytics counts each row under its own category.
-                    </Trans>
+                    <Trans>Use Add item to add another row; the label under the rows shows how much is still left to assign.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(

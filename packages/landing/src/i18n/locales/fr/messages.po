@@ -2533,10 +2533,6 @@ msgid "Actual is a privacy-focused budgeting tool with a strong local-first appr
 msgstr "Actual est un outil de budget axé sur la confidentialité avec une forte approche local-first. Il propose la méthode des enveloppes budgétaires, des capacités de synchronisation bancaire, et des options auto-hébergées et cloud. Si vous préférez le budget par enveloppes et souhaitez une expérience orientée bureau, Actual mérite d'être considéré."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Add a row and the remaining amount updates; keep going until nothing is left to assign. The parent stays a single transaction, and analytics counts each row under its own category."
-msgstr "Ajoutez une ligne et le montant restant se met à jour ; continuez jusqu'à ce qu'il ne reste rien à attribuer. La transaction parente reste unique, et l'analyse compte chaque ligne dans sa propre catégorie."
-
-#: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Ajouter une autre ligne de catégorie"
 
@@ -6707,7 +6703,7 @@ msgstr "Chaque ligne de division conserve ses propres étiquettes et commentaire
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Each split, its own category"
-msgstr "Chaque fraction, sa propre catégorie"
+msgstr "Chaque répartition, sa propre catégorie"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Each type brings its own form"
@@ -13384,8 +13380,8 @@ msgid "Switch language"
 msgstr "Changer de langue"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Switch the expense to split mode and add a row per category. Each row carries its own amount, while the original transaction becomes the parent that holds them together."
-msgstr "Passez la dépense en mode répartition et ajoutez une ligne par catégorie. Chaque ligne porte son propre montant, tandis que la transaction d'origine devient la transaction parente qui les regroupe."
+msgid "Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount."
+msgstr "Passez la dépense en mode répartition et ajoutez une ligne par catégorie. Chaque ligne porte sa propre icône, sa propre catégorie et son propre montant."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
@@ -14196,7 +14192,7 @@ msgstr "L'impact réel de la confidentialité financière"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "The remainder counts down"
-msgstr "Le reste décompte"
+msgstr "Le montant restant diminue"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "The remaining-budget pill shows what's left to allocate as you go. Save with Done; the original transaction becomes a parent with linked split entries underneath."
@@ -15199,6 +15195,10 @@ msgstr "Le compartiment Non étiqueté fait remonter chaque transaction sans ét
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 msgstr "Jusqu'à trois suggestions d'étiquettes sous forme de pastilles cliquables après la sélection de la catégorie — aucune saisie requise"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."
+msgstr "Utilisez Ajouter un élément pour ajouter une ligne ; l'étiquette sous les lignes indique ce qu'il reste à attribuer."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"
