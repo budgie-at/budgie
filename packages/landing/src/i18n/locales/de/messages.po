@@ -3970,10 +3970,6 @@ msgstr "Budgie-Bildschirm „Ausgabe bearbeiten“ mit erkanntem Händler Silpo 
 msgid "Budgie edit expense screen with a Quick rule pill above the amount, moments after the category was changed"
 msgstr "Budgie-Ausgabenbearbeitung mit der Schnellregel-Pille über dem Betrag, kurz nachdem die Kategorie geändert wurde"
 
-#: src/app/[lang]/features/mcc-auto-category/page.tsx
-msgid "Budgie edit expense screen with the category already filled in from the bank MCC code"
-msgstr "Budgie-Bearbeitungsmaske für eine Ausgabe mit der bereits aus dem MCC-Code der Bank übernommenen Kategorie"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie embodies this transparent approach. Every line of code is public. Every decision is documented. Every claim is verifiable. We don’t ask you to trust us because we say so. We ask you to trust us because you can see exactly what we do."
 msgstr "Budgie verkörpert diesen transparenten Ansatz. Jede Codezeile ist öffentlich. Jede Entscheidung ist dokumentiert. Jede Behauptung ist überprüfbar. Wir bitten Sie nicht, uns zu vertrauen, weil wir es sagen. Wir bitten Sie, uns zu vertrauen, weil Sie genau sehen können, was wir tun."
@@ -3993,6 +3989,14 @@ msgstr "Budgie existiert, weil wir eine Finanz-App wollten, die Nutzer als Kunde
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Budgie expense editor showing a $100 Whole Foods Market transaction split into Home Maintenance, Electronics & Gadgets and Groceries rows"
 msgstr "Budgie-Ausgaben-Editor mit einer Transaktion über 100 $ von Whole Foods Market, aufgeteilt in die Zeilen Hauswartung, Elektronik & Gadgets und Lebensmittel"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Budgie expense form for a $78.4 Silpo transaction showing the Grocery merchant category code under the merchant name and Groceries set as the category"
+msgstr "Budgie-Ausgabenformular für eine Silpo-Transaktion über 78,4 $ mit dem Händlerkategoriecode „Grocery“ unter dem Händlernamen und der Kategorie „Lebensmittel“"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Budgie expense form for a $78.4 Silpo transaction with a Quick rule pill above the amount and Restaurants set as the category"
+msgstr "Budgie-Ausgabenformular für eine Silpo-Transaktion über 78,4 $ mit einem Schnellregel-Hinweis über dem Betrag und der Kategorie „Restaurants“"
 
 #: src/app/[lang]/features/uncategorized-transactions/metadata.ts
 msgid "Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device."
@@ -4515,6 +4519,10 @@ msgstr "Budgie behandelt die Hauptbewegung und die Bankgebühr getrennt. Der Tra
 msgid "Budgie turns that cleanup into a visible workflow. When the current filter contains uncategorized transactions, a compact missing-category pill appears above the list with the exact count."
 msgstr "Budgie macht diese Bereinigung zu einem sichtbaren Workflow. Wenn der aktuelle Filter nicht kategorisierte Transaktionen enthält, erscheint über der Liste ein kompakter Fehlende-Kategorien-Hinweis mit der genauen Anzahl."
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Budgie turns the merchant category code the bank attaches to each card transaction into one of your own categories."
+msgstr "Budgie wandelt den Händlerkategoriecode, den die Bank jeder Kartenzahlung beifügt, in eine Ihrer eigenen Kategorien um."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:"
 msgstr "Budgie verwendet einen anderen Ansatz, basierend auf konfliktfreien replizierten Datentypen (CRDTs) und operationalen Transformationen. Jede Aenderung wird als Operation mit Zeitstempel und Geräteidentifikator aufgezeichnet. Bei der Synchronisierung:"
@@ -5018,6 +5026,10 @@ msgstr "Kategorien beantworten „welche Art von Ausgabe“; Tags beantworten �
 msgid "Categories answer “what kind of expense”; tags answer “for which project, person, or purpose.” Use both together — one transaction can be Groceries (category) AND #vacation #shared (tags)."
 msgstr "Kategorien beantworten „welche Art von Ausgabe“; Tags beantworten „für welches Projekt, welche Person oder welchen Zweck“. Nutzen Sie beides zusammen – eine Transaktion kann Lebensmittel (Kategorie) UND #vacation #shared (Tags) sein."
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Categories before you type"
+msgstr "Kategorien, bevor Sie tippen"
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Categories tab: per-category totals, with drill-down to every transaction in the row"
 msgstr "Tab „Kategorien“: Summen je Kategorie, mit Absprung zu jeder Transaktion der Zeile"
@@ -5080,6 +5092,10 @@ msgstr "Kategorienbasierte Analysen beantworten, welche Art von Ausgabe eine Tra
 #: src/app/[lang]/features/spending-analytics/opengraph-image.tsx
 msgid "Category, tag, trend — drill into anything."
 msgstr "Kategorie, Tag, Trend – navigieren Sie in alles."
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Change the category and a Quick rule pill appears above the amount, offering to keep the override for that merchant."
+msgstr "Ändern Sie die Kategorie, und über dem Betrag erscheint ein Schnellregel-Hinweis, der die Änderung für diesen Händler beibehalten möchte."
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Change the category or the tags of an existing transaction and a Quick rule pill appears above the amount. It builds the conditions from the merchant name — reference numbers, amounts, dates and company suffixes stripped out, the comment used when the name is too generic — pins the merchant code when the transaction carries one, and attaches exactly the category and tags you just picked. Tap the pill and the rule exists; swipe it away and it is gone."
@@ -6979,6 +6995,10 @@ msgstr "Jeder Kauf behält seinen Preis"
 msgid "Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization — in one place."
 msgstr "Alle Funktionen des Budgie Offline-First-Ausgabentrackers – vom Bank-Sync bis zur KI-Kategorisierung auf dem Gerät – an einem Ort."
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Every card transaction carries a merchant category code. Silpo arrives on the expense form with its Grocery code shown under the merchant name."
+msgstr "Jede Kartenzahlung trägt einen Händlerkategoriecode. Silpo erscheint im Ausgabenformular mit dem Code „Grocery“ unter dem Händlernamen."
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Every category, ranked by what it took"
 msgstr "Jede Kategorie, sortiert nach ihrem Anteil"
@@ -8346,7 +8366,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
-#: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
@@ -9459,6 +9478,14 @@ msgstr "Spalten flexibel zuordnen: Datum, Betrag, Beschreibung, Gegenpartei – 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Map the columns to Budgie’s fields"
 msgstr "Ordnen Sie die Spalten den Budgie-Feldern zu"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Mapped to your category"
+msgstr "Ihrer Kategorie zugeordnet"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Mapped to your tree"
+msgstr "Auf Ihren Baum abgebildet"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Market data and pricing information"
@@ -10807,10 +10834,6 @@ msgstr "OLED-freundliche echte schwarze Canvas – spart Akku auf modernen Telef
 msgid "On a server that mirrors your transactions"
 msgstr "Auf einem Server, der Ihre Transaktionen spiegelt"
 
-#: src/app/[lang]/features/mcc-auto-category/page.tsx
-msgid "On bank import, each transaction's MCC is read from the source. Budgie looks up the MCC in the lookup table; the resulting category fills the form. AI category suggestions take over for transactions without an MCC."
-msgstr "Beim Bankimport wird der MCC jeder Transaktion aus der Quelle gelesen. Budgie sucht den MCC in der Nachschlagetabelle; die resultierende Kategorie füllt das Formular aus. KI-Kategorievorschläge übernehmen für Transaktionen ohne MCC."
-
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept, edit, or reject) feeds back into the embedding index without any network call."
 msgstr "Beim ersten Start lädt Budgie Qwen3 1.7B Q4 und ein 768-dim Nomic-Embedding-Modell vom Hugging Face Hub herunter. Beide werden in Ihrer App-Sandbox gespeichert. Für jede neue Transaktion läuft zuerst das Embedding-Modell – wenn ein starker nächster Nachbar in Ihrer Historie vorhanden ist, ist das Ergebnis sofort. Andernfalls generiert Qwen3 1.7B einen Vorschlag. Ihre Antwort (akzeptieren, bearbeiten oder ablehnen) fließt ohne Netzwerkaufruf in den Embedding-Index zurück."
@@ -11373,8 +11396,16 @@ msgid "OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATED TO THE 
 msgstr ""
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Override once, remember forever"
+msgstr "Einmal überschreiben, dauerhaft merken"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Override per-MCC: point all 4111 (transit) into your \"Commute\" instead of the default \"Travel\". Override once, applies forever."
 msgstr "Pro-MCC überschreiben: alle 4111 (Nahverkehr) in Ihre „Pendeln\"-Kategorie statt der Standard-„Reise\"-Kategorie leiten. Einmal überschreiben, gilt für immer."
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Override the category"
+msgstr "Kategorie überschreiben"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Overview tiles: spent and earned across the period, beside your balance over every account"
@@ -12027,6 +12058,10 @@ msgstr "Quantisierung"
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Quick Edit Transaction App — Long-Press Menu — Budgie"
 msgstr "Schnelles Transaktions-Bearbeitungs-App – Langedrücken-Menü – Budgie"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Quick rule offered"
+msgstr "Schnellregel angeboten"
 
 #: src/generic/component/testimonials-section/testimonials-header.tsx
 msgid "Quotes from anonymized beta tester feedback. Names and locations have been changed to protect privacy."
@@ -13773,6 +13808,14 @@ msgstr "Der durchschnittliche Nutzer erfasst denselben Händler mehr als dreißi
 msgid "The background is solid black, not a dimmed grey panel layered over a light design."
 msgstr "Der Hintergrund ist tiefschwarz, kein abgedunkeltes graues Panel über einem hellen Design."
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "The bank already told you what it was"
+msgstr "Die Bank hat es Ihnen schon gesagt"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "The bank's category code"
+msgstr "Der Kategoriecode der Bank"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Bottom Line"
 msgstr "Das Fazit"
@@ -13816,6 +13859,10 @@ msgstr "Die Wahl gehört zur Transaktion selbst, daher setzt das Bearbeiten von 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "The Cloud Dependency Problem"
 msgstr "Das Cloud-Abhängigkeitsproblem"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "The code resolves to one of your categories — here Groceries — before you open the form."
+msgstr "Der Code wird einer Ihrer Kategorien zugeordnet — hier Lebensmittel —, bevor Sie das Formular öffnen."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "The code stays public. The community can keep building. Your data stays on your device regardless."
