@@ -5201,7 +5201,7 @@ msgstr "Закрити й переказати залишок"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Close it and the money moves"
-msgstr "Закрийте вклад — і гроші перемістяться"
+msgstr "Закрийте вклад — і гроші буде переказано"
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Closed"

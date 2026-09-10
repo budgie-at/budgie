@@ -5201,7 +5201,7 @@ msgstr "Clôturer et transférer le solde"
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Close it and the money moves"
-msgstr "Clôturez-le et l'argent bouge"
+msgstr "Clôturez-le et le solde est transféré"
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Closed"
