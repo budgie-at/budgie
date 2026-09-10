@@ -2,6 +2,7 @@ import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/c
 
 import { TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS } from '../../../shared/constant/transfer-pair-fast-time-window.constant';
 import { TRANSFER_PAIR_IMPLIED_RATE_TOLERANCE } from '../../../shared/constant/transfer-pair-implied-rate-tolerance.constant';
+import { buildBridgeClaimTitleConditionSql } from '../../../shared/util/build-bridge-claim-title-condition-sql.util';
 
 const BRIDGE_CLAIM_REPAIR_CANDIDATES_BASE_SQL = `
             WITH latest_exchange_rates AS (
@@ -120,9 +121,7 @@ const BRIDGE_CLAIM_REPAIR_CANDIDATES_BASE_SQL = `
                                     ''
                                 )
                             )
-                            OR (claimed_income.title LIKE '%єврового%' AND income_instrument.code != 'EUR')
-                            OR (claimed_income.title LIKE '%доларового%' AND income_instrument.code != 'USD')
-                            OR (claimed_income.title LIKE '%гривневого%' AND income_instrument.code != 'UAH')
+                            OR ${buildBridgeClaimTitleConditionSql('claimed_income.title', 'income_instrument.code')}
                         )
                         AND (
                             SELECT rate FROM available_exchange_rates

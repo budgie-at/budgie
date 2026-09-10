@@ -4,6 +4,7 @@ import { Log } from '@budgie/logger';
 import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { db } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 
@@ -35,6 +36,7 @@ class SyncRepairService {
         return this.runExclusive(() => this.buildPreview());
     }
 
+    @InvalidateDatabaseLiveQuery()
     @Log(
         'enter',
         result => `done repairedTransactionCount=${result.repairedTransactionCount}`,
