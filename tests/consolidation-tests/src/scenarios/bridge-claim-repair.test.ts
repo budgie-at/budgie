@@ -15,6 +15,33 @@ import { consolidationCoordinatorService, testQueryService, testSeedService } fr
 
 const repair = async (): Promise<number> => consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
 
+const seedCanonicalPair = async (params: {
+    readonly sourceAccountId: number;
+    readonly sourceAmount: number;
+    readonly targetAccountId: number;
+    readonly targetAmount: number;
+    readonly title: string;
+    readonly firstSourceId: number;
+    readonly secondSourceId: number;
+}): Promise<number> => {
+    const canonical = testSeedService.directTransfer({
+        consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
+        exchangeRate: 1,
+        operatedAt: new Date(BRIDGE_THEFT_FX_OPERATED_AT.getTime() + 131_000),
+        sourceAccountId: params.sourceAccountId,
+        sourceAmount: params.sourceAmount,
+        sourceEntryExchangeRate: 1,
+        targetAccountId: params.targetAccountId,
+        targetAmount: params.targetAmount,
+        title: params.title,
+        toIban: null
+    });
+    await parentConsolidationSource(params.firstSourceId, canonical.id);
+    await parentConsolidationSource(params.secondSourceId, canonical.id);
+
+    return canonical.id;
+};
+
 const seedStolenPairFixture = async (): Promise<{
     readonly bridgeUahAccountId: number;
     readonly canonicalId: number;
@@ -25,25 +52,19 @@ const seedStolenPairFixture = async (): Promise<{
     readonly sourceEurAccountId: number;
 }> => {
     const fixture = seedBridgeTheftFixture();
-
-    const canonical = testSeedService.directTransfer({
-        consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
-        exchangeRate: 1,
-        operatedAt: new Date(BRIDGE_THEFT_FX_OPERATED_AT.getTime() + 131_000),
+    const canonicalId = await seedCanonicalPair({
+        firstSourceId: fixture.interbankExpense.id,
+        secondSourceId: fixture.fxBridgeIncome.id,
         sourceAccountId: fixture.interbankExpenseAccountId,
         sourceAmount: BRIDGE_THEFT_FX_UAH_AMOUNT,
-        sourceEntryExchangeRate: 1,
         targetAccountId: fixture.bridgeUahAccountId,
         targetAmount: BRIDGE_THEFT_FX_UAH_AMOUNT,
-        title: BRIDGE_THEFT_INTERBANK_EXPENSE_TITLE,
-        toIban: null
+        title: BRIDGE_THEFT_INTERBANK_EXPENSE_TITLE
     });
-    await parentConsolidationSource(fixture.interbankExpense.id, canonical.id);
-    await parentConsolidationSource(fixture.fxBridgeIncome.id, canonical.id);
 
     return {
         bridgeUahAccountId: fixture.bridgeUahAccountId,
-        canonicalId: canonical.id,
+        canonicalId,
         fxBridgeIncomeId: fixture.fxBridgeIncome.id,
         fxExpenseId: fixture.fxExpense.id,
         interbankExpenseAccountId: fixture.interbankExpenseAccountId,
@@ -85,5 +106,24 @@ describe('consolidation/bridge-claim-repair', () => {
 
         expect(repairedCount).toBe(0);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
+    });
+
+    it('does not unpair a legitimate fx bridge pair whose source expense is already consolidated', async () => {
+        const fixture = seedBridgeTheftFixture();
+        const canonicalId = await seedCanonicalPair({
+            firstSourceId: fixture.fxExpense.id,
+            secondSourceId: fixture.fxBridgeIncome.id,
+            sourceAccountId: fixture.sourceEurAccountId,
+            sourceAmount: BRIDGE_THEFT_FX_EUR_AMOUNT,
+            targetAccountId: fixture.bridgeUahAccountId,
+            targetAmount: BRIDGE_THEFT_FX_UAH_AMOUNT,
+            title: BRIDGE_THEFT_INTERBANK_EXPENSE_TITLE
+        });
+
+        const repairedCount = await repair();
+
+        expect(repairedCount).toBe(0);
+        expect(testQueryService.findTransactionById(canonicalId)).toBeDefined();
+        expect(testQueryService.findTransactionById(fixture.fxBridgeIncome.id)?.consolidationParentTransactionId).toBe(canonicalId);
     });
 });

@@ -71,12 +71,16 @@ export class ConsolidationRepairExecutorService {
         return this.dependencies.runTransaction(this.dependencies.database, async tx => {
             const canonical = await this.dependencies.transactionRepository.getByIdRaw(candidate.canonicalTransferId, tx);
             const claimedIncome = await this.dependencies.transactionRepository.getByIdRaw(candidate.claimedIncomeTransactionId, tx);
+            const interbankExpense = await this.dependencies.transactionRepository.getByIdRaw(candidate.interbankExpenseTransactionId, tx);
 
             if (
                 !isDefined(canonical) ||
                 canonical.consolidationType !== TransactionConsolidationTypeEnum.TRANSFER_PAIR ||
                 !isDefined(claimedIncome) ||
-                claimedIncome.consolidationParentTransactionId !== candidate.canonicalTransferId
+                claimedIncome.consolidationParentTransactionId !== candidate.canonicalTransferId ||
+                !isDefined(interbankExpense) ||
+                isDefined(interbankExpense.deletedAt) ||
+                isDefined(interbankExpense.consolidationParentTransactionId)
             ) {
                 return false;
             }
