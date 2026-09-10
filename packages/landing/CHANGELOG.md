@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.41.3](https://github.com/budgie-at/budgie/compare/v6.41.2...v6.41.3) (2026-09-10)
+
+
+### Bug Fixes
+
+* **landing:** resolve latest iOS dev release via tag refs prefix filter ([41b1a75](https://github.com/budgie-at/budgie/commit/41b1a75663e22db4ad863a1a67661d63c4838925))
+
+
+
+
+
 # [6.41.0](https://github.com/budgie-at/budgie/compare/v6.40.0...v6.41.0) (2026-09-08)
 
 
