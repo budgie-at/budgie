@@ -13,6 +13,7 @@ import { UnconsolidationService } from './unconsolidation.service';
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
 import type {
+    BridgeClaimRepairCandidateInterface,
     DB,
     ExistingTransferChainReclaimCandidateInterface,
     ExistingTransferIncomeDuplicateCandidateInterface,
@@ -53,6 +54,38 @@ export class ConsolidationRepairExecutorService {
             }
 
             await this.unconsolidationService.unconsolidateById(canonicalTransactionId, tx);
+
+            return true;
+        });
+    }
+
+    @Log(
+        candidate =>
+            `enter canonicalTransferId=${candidate.canonicalTransferId} claimedIncomeTransactionId=${candidate.claimedIncomeTransactionId}`,
+        (result, candidate) =>
+            `done result=${String(result)} canonicalTransferId=${candidate.canonicalTransferId} claimedIncomeTransactionId=${candidate.claimedIncomeTransactionId}`,
+        (error, candidate) =>
+            `throw canonicalTransferId=${candidate.canonicalTransferId} claimedIncomeTransactionId=${candidate.claimedIncomeTransactionId} error=${getErrorMessage(error)}`
+    )
+    async unconsolidateBridgeClaimedTransferPair(candidate: BridgeClaimRepairCandidateInterface): Promise<boolean> {
+        return this.dependencies.runTransaction(this.dependencies.database, async tx => {
+            const canonical = await this.dependencies.transactionRepository.getByIdRaw(candidate.canonicalTransferId, tx);
+            const claimedIncome = await this.dependencies.transactionRepository.getByIdRaw(candidate.claimedIncomeTransactionId, tx);
+            const interbankExpense = await this.dependencies.transactionRepository.getByIdRaw(candidate.interbankExpenseTransactionId, tx);
+
+            if (
+                !isDefined(canonical) ||
+                canonical.consolidationType !== TransactionConsolidationTypeEnum.TRANSFER_PAIR ||
+                !isDefined(claimedIncome) ||
+                claimedIncome.consolidationParentTransactionId !== candidate.canonicalTransferId ||
+                !isDefined(interbankExpense) ||
+                isDefined(interbankExpense.deletedAt) ||
+                isDefined(interbankExpense.consolidationParentTransactionId)
+            ) {
+                return false;
+            }
+
+            await this.unconsolidationService.unconsolidateById(candidate.canonicalTransferId, tx);
 
             return true;
         });
