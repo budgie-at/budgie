@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.44.0](https://github.com/budgie-at/budgie/compare/v6.43.0...v6.44.0) (2026-09-10)
+
+
+### Features
+
+* **landing:** mcc-auto-category steps story ([8f03e26](https://github.com/budgie-at/budgie/commit/8f03e2647844d7730857202ec549ba30eede8ab5))
+
+
+
+
+
 # [6.43.0](https://github.com/budgie-at/budgie/compare/v6.42.0...v6.43.0) (2026-09-10)
 
 
