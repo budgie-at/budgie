@@ -609,8 +609,10 @@
     transition: opacity var(--dur-base) var(--ease-out) 120ms;
 }
 
-.story-callout:nth-child(1 of .story-callout) {
-    margin-top: 1.125rem;
+@media (max-width: 1023px) {
+    .story-callout:nth-child(1 of .story-callout) {
+        margin-top: 1.125rem;
+    }
 }
 
 .story-callout:nth-child(even of .story-callout) {
