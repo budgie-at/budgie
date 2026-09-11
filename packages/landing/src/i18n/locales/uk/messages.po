@@ -2469,6 +2469,7 @@ msgstr "Перекази між рахунками — зроблено прав
 
 #: src/app/[lang]/features/account-management/opengraph-image.tsx
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx
+#: src/app/[lang]/features/balance-adjustment/opengraph-image.tsx
 #: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx
 msgid "accounts"
@@ -2571,6 +2572,14 @@ msgstr ""
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Additive interface — suggestions sit alongside the text field, never replacing it"
 msgstr "Адитивний інтерфейс — підказки відображаються поруч із текстовим полем, ніколи не замінюючи його"
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Adjustments are a first-class transaction type with their own read and edit screens"
+msgstr "Коригування — це повноцінний тип транзакції з власними екранами перегляду та редагування"
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Adjustments are excluded from categorization rules, so reconciling never fires a rule built for spending"
+msgstr "Коригування виключено з правил категоризації, тож звірка ніколи не запускає правило, створене для витрат"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Advertising SDKs that build user profiles"
@@ -2829,6 +2838,10 @@ msgstr "Чіп діапазону суми в тому самому рядку �
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "An archived account leaves the home screen and the totals but keeps every transaction. Settings lists them, ready to search and restore."
 msgstr "Архівований рахунок зникає з головного екрана й підсумків, але зберігає всі транзакції. Налаштування показують їх — можна знайти та відновити."
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "An audited trail — the past is corrected in the open, never silently overwritten"
+msgstr "Прозорий слід — минуле виправляється відкрито, а не тихо перезаписується"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "An expense pairs with an income when the counter-IBAN lines up, or when the amounts match — same currency, or an implied exchange rate inside a tolerance band — and both legs fall within twelve hours of each other. The match becomes one transfer carrying a debit and a credit entry, so it stops counting as spending. Pairs Budgie is not sure about are left alone as two rows rather than guessed at."
@@ -3242,6 +3255,19 @@ msgstr "Резервні копії надходять до вашого осо�
 #: src/app/[lang]/privacy/page.tsx
 msgid "Backups to your own iCloud Drive, Google Drive, or Dropbox"
 msgstr "Резервне копіювання у ваш особистий iCloud Drive, Google Drive або Dropbox"
+
+#: src/app/[lang]/features/balance-adjustment/opengraph-image.tsx
+msgid "balance"
+msgstr "баланс"
+
+#: src/app/[lang]/features/balance-adjustment/metadata.ts
+#: src/app/[lang]/features/balance-adjustment/opengraph-image.tsx
+msgid "Balance Adjustment"
+msgstr "Коригування балансу"
+
+#: src/app/[lang]/features/balance-adjustment/metadata.ts
+msgid "Balance Adjustment — Budgie"
+msgstr "Коригування балансу — Budgie"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Balance in the coin itself"
@@ -3985,6 +4011,10 @@ msgstr "Екран вкладу Budgie із балансом 15 408,40 $, від
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Budgie deposit account screen with the account menu open showing the Edit and Close Deposit actions"
 msgstr "Екран вкладу Budgie з відкритим меню рахунку, що показує дії «Редагувати» та «Закрити вклад»"
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Budgie does the opposite. You type the true balance; Budgie compares it with the current one and books the difference as a dated Adjustment transaction. The correction is visible, dated, and editable like any other row."
+msgstr "Budgie робить навпаки. Ви вводите справжній баланс; Budgie порівнює його з поточним і проводить різницю як датовану транзакцію коригування. Виправлення видиме, датоване й редаговане, як будь-який інший рядок."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model."
@@ -4859,6 +4889,10 @@ msgstr "Чи можна редагувати виявлений шаблон?"
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Can I edit a transaction after saving?"
 msgstr "Чи можна редагувати транзакцію після збереження?"
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Can I edit or remove an adjustment?"
+msgstr "Чи можна редагувати або видаляти коригування?"
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Can I edit transactions after CSV import?"
@@ -5762,6 +5796,10 @@ msgstr "Основні функції"
 msgid "Corner-star badge on the transaction list — scan without opening rows"
 msgstr "Значок зірочки в куті списку транзакцій — перегляд без відкриття рядків"
 
+#: src/app/[lang]/features/balance-adjustment/metadata.ts
+msgid "Correct an account balance without pretending it was income or an expense."
+msgstr "Виправляйте баланс рахунку, не видаючи це за дохід чи витрату."
+
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Correction loop — every accepted or edited suggestion updates the embedding index immediately so the next similar transaction lands closer without re-training"
 msgstr "Цикл корекції — кожна прийнята або відредагована підказка негайно оновлює індекс вкладень, щоб наступна подібна транзакція потрапила ближче без повторного навчання"
@@ -6570,6 +6608,10 @@ msgstr "Чи дійсно ви хочете, щоб усе це було на ч
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Docker deployment with compose files provided"
 msgstr "Розгортання через Docker з готовими compose-файлами"
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Does an adjustment count as income or spending?"
+msgstr "Чи вважається коригування доходом чи витратою?"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Does Budgie auto-backup?"
@@ -7439,6 +7481,7 @@ msgstr "функції"
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+#: src/app/[lang]/features/balance-adjustment/page.tsx
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 #: src/app/[lang]/features/bank-resync-window/page.tsx
@@ -8133,6 +8176,7 @@ msgstr "Позиції об'єднуються в чисті активи раз
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+#: src/app/[lang]/features/balance-adjustment/page.tsx
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 #: src/app/[lang]/features/bank-resync-window/page.tsx
@@ -8867,6 +8911,10 @@ msgstr "iOS та Android"
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Is “subscription-free” really durable?"
 msgstr ""
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Is an adjustment just another transaction?"
+msgstr "Коригування — це просто ще одна транзакція?"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Is bank sync still offline?"
@@ -10536,6 +10584,10 @@ msgstr "Ні. Додайте стільки, скільки потрібно —
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "No. All of this ships in the regular app update. Deposit and debt accounts are opt-in — you only see the new fields when you create or edit that account type."
 msgstr "Ні. Усе це виходить у звичайному оновленні застосунку. Депозитні та боргові рахунки — опціональні: нові поля з’являються лише при створенні або редагуванні такого типу рахунку."
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "No. An adjustment is reconciliation, not cash flow. Budgie deliberately excludes adjustments from rule matching, so correcting a balance never contaminates a rule you wrote for real income or expenses."
+msgstr "Ні. Коригування — це звірка, а не рух коштів. Budgie навмисно виключає коригування із застосування правил, тож виправлення балансу ніколи не спотворює правило, написане для справжніх доходів чи витрат."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "No. Attach the income that already arrived to the debt and it counts as a settlement against that debt account. The transaction itself is untouched."
@@ -12309,9 +12361,17 @@ msgstr "У реальному житті рахунків багато. Пото
 msgid "Real-World Examples of Local-First Apps"
 msgstr "Реальні приклади Local-First застосунків"
 
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Reality drifts from the ledger: a cash amount you forgot to record, a starting balance you estimated, a bank that reports a number your history cannot reproduce. Most apps fix that by quietly overwriting the balance, rewriting the past without a trace."
+msgstr "Реальність розходиться з обліком: забута готівкова сума, приблизний початковий баланс, банк, що показує цифру, яку ваша історія не відтворює. Більшість застосунків виправляють це, тихо перезаписуючи баланс і непомітно переписуючи минуле."
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Reasonable pricing"
 msgstr "Розумне ціноутворення"
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Recalculate Balances in Settings rebuilds every cached balance from the transaction ledger"
+msgstr "«Перерахувати баланси» в Налаштуваннях відновлює кожен кешований баланс із журналу транзакцій"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown. Budgie's split modal lets you allocate fractions of the same transaction across as many categories as you like."
@@ -12344,6 +12404,14 @@ msgstr "Перекласифікуйте, не вводьте заново — �
 #: src/app/[lang]/features/convert-to-transfer/opengraph-image.tsx
 msgid "Reclassify, don't re-enter."
 msgstr "Перекласифікуйте, не вводьте заново."
+
+#: src/app/[lang]/features/balance-adjustment/opengraph-image.tsx
+msgid "reconcile"
+msgstr "звірка"
+
+#: src/app/[lang]/features/balance-adjustment/opengraph-image.tsx
+msgid "Reconcile without fake income."
+msgstr "Звіряйте без фіктивних доходів."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Recreate your category structure (often an opportunity to simplify)"
@@ -12936,6 +13004,10 @@ msgstr "Збої в обслуговуванні залишають вас бе�
 msgid "Set a monthly ceiling and per-category limits that reset when you get paid."
 msgstr "Встановіть місячну межу та ліміти за категоріями, які оновлюються з зарплатою."
 
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Set a target balance on any account and Budgie writes the difference as an Adjustment"
+msgstr "Задайте цільовий баланс для будь-якого рахунку, і Budgie проведе різницю як коригування"
+
 #: src/app/[lang]/features/budget-planning/metadata.ts
 msgid "Set an overall monthly limit plus per-category limits, start the cycle on your payday, watch progress from the home screen, and get on-device alerts at 80% and 100%. No server involved."
 msgstr "Встановіть загальний місячний ліміт і ліміти по категоріях, почніть цикл у день своєї зарплати, стежте за прогресом з головного екрана й отримуйте сповіщення на пристрої при 80% і 100%. Без жодного сервера."
@@ -12943,6 +13015,10 @@ msgstr "Встановіть загальний місячний ліміт і �
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Set one overall monthly limit, add per-category limits, cap everything else, and watch the cycle fill up from your home screen. Every number is computed on your device."
 msgstr "Встановіть один загальний місячний ліміт, додайте ліміти по категоріях, обмежте все інше й стежте, як цикл заповнюється, прямо з головного екрана. Кожне число обчислюється на вашому пристрої."
+
+#: src/app/[lang]/features/balance-adjustment/metadata.ts
+msgid "Set the balance your bank shows and Budgie books the difference as a dated Adjustment transaction, not a silent edit. First-class, editable, and excluded from your rules."
+msgstr "Укажіть баланс, який показує ваш банк, і Budgie проведе різницю як датовану транзакцію коригування, а не тиху зміну. Повноцінна, редагована й виключена з ваших правил."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Set the period, read the totals"
@@ -12963,6 +13039,10 @@ msgstr "Налаштування › Категорії показують ли�
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Settings → Export → Backup. Budgie writes a .db file with SQLCipher encryption intact. To restore, install Budgie on the new device, tap Restore on the welcome screen, point at the file, enter the PIN."
 msgstr "Налаштування → Експорт → Резервна копія. Budgie записує файл .db зі збереженим шифруванням SQLCipher. Для відновлення встановіть Budgie на новий пристрій, торкніть «Відновити» на екрані привітання, вкажіть файл, введіть PIN."
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Settings → Recalculate Balances clears the cached balance for every account and rebuilds it from the transactions themselves — useful after an import or a run of edits when a cached figure has drifted."
+msgstr "Налаштування → Перерахувати баланси очищає кешований баланс кожного рахунку й відновлює його з самих транзакцій — корисно після імпорту чи серії змін, коли кешоване значення розійшлося."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Settings → Security, directly below the PIN-lock card. It's a single switch, off by default, with no per-screen configuration."
@@ -14033,6 +14113,10 @@ msgstr ""
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "The core of Budgie AI categorization is a 1.7-billion-parameter language model. A few years ago, running a model this size on a phone would have been impractical. Three advances made it possible:"
 msgstr "Ядром AI-категоризації Budgie є мовна модель на 1,7 млрд параметрів. Кілька років тому запуск моделі такого розміру на телефоні був би неможливим. Три прориви зробили це можливим:"
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "The correction carries the exchange rate of the day it was booked, so net worth stays consistent"
+msgstr "Виправлення зберігає курс дня, коли його було проведено, тож чистий капітал залишається узгодженим"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The count above your list, the focused list behind it, and the row you open to fix."
@@ -15343,6 +15427,10 @@ msgstr "Введення двома дотиками: розумні парам�
 msgid "Type the amount"
 msgstr "Введіть суму"
 
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Type the balance your bank shows and Budgie books the difference as a dated Adjustment transaction — not a silent edit to your history."
+msgstr "Введіть баланс, який показує ваш банк, і Budgie проведе різницю як датовану транзакцію коригування, а не тиху зміну вашої історії."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "TypeScript codebase, easy to contribute to"
 msgstr "Кодова база на TypeScript, легко зробити свій внесок"
@@ -15835,6 +15923,10 @@ msgstr "Що насправді робить \"первинний\"?"
 msgid "What does merging two categories do?"
 msgstr "Що робить об'єднання двох категорій?"
 
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "What does Recalculate Balances do?"
+msgstr "Що робить «Перерахувати баланси»?"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "What does Screenshot Protection actually hide?"
 msgstr "Що насправді приховує захист від скриншотів?"
@@ -16101,6 +16193,7 @@ msgstr "Які компроміси розглядаються"
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
+#: src/app/[lang]/features/balance-adjustment/page.tsx
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 #: src/app/[lang]/features/bank-resync-window/page.tsx
@@ -16265,6 +16358,10 @@ msgstr "Коли транзакції вже відповідає рівно о�
 msgid "When Intuit Mint shut down on March 23, 2024, it left millions of users hunting for a replacement. Many found one quickly — but most landed on apps that share the same fundamental architecture as Mint: your financial data lives on someone else's servers, managed by a company whose priorities can shift without warning."
 msgstr "Коли Intuit Mint закрився 23 березня 2024 року, він залишив мільйони користувачів у пошуку заміни. Багато знайшли одну швидко — але більшість опинились на додатках із тією самою фундаментальною архітектурою, що й Mint: ваші фінансові дані живуть на серверах когось іншого, якими керує компанія, пріоритети якої можуть змінитися без попередження."
 
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "When should I set a target balance?"
+msgstr "Коли слід задавати цільовий баланс?"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "When source code is public, anyone with the relevant expertise can examine it. Security researchers, privacy advocates, concerned users, and professional auditors can all review the code for potential issues. This distributed auditing creates multiple layers of oversight that closed-source companies simply cannot match."
 msgstr "Коли вихідний код публічний, будь-хто з відповідною експертизою може його вивчити. Дослідники безпеки, захисники конфіденційності, зацікавлені користувачі та професійні аудитори — всі вони можуть перевірити код на потенційні проблеми. Цей розподілений аудит створює багатошаровий контроль, який компанії із закритим кодом просто не можуть забезпечити."
@@ -16272,6 +16369,10 @@ msgstr "Коли вихідний код публічний, будь-хто з 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "When the accounts hold different currencies, what will land on the other side appears under the figure you typed. The pill says which side you are driving — tap it to type the receiving amount instead — and the rate that produced the pair is saved with the transfer."
 msgstr "Коли рахунки мають різні валюти, під введеною сумою з’являється те, що надійде на інший бік. Пігулка показує, якою стороною ви керуєте — торкніться її, щоб натомість ввести суму отримання, — а курс, який дав цю пару, зберігається разом із переказом."
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "When the displayed balance does not match reality — a cash withdrawal you forgot to log, a starting balance you estimated, or a bank figure your history cannot reproduce. Type the true number and Budgie books the difference."
+msgstr "Коли показаний баланс не відповідає реальності — забуте зняття готівки, приблизний початковий баланс або банківська цифра, яку ваша історія не відтворює. Введіть справжнє число, і Budgie проведе різницю."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "When the embedding stage produces low-confidence results — for example, with a new merchant or an ambiguous description — the full language model takes over. The LLM receives the transaction description and your category list as context, and generates a ranked suggestion."
@@ -16532,6 +16633,10 @@ msgstr "Хто має до них доступ"
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Why a backup file beats a vendor backup"
 msgstr "Чому файл резервної копії перевершує резервну копію постачальника"
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Why a correction is not an expense"
+msgstr "Чому коригування — не витрата"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Why a date picker should never be the bottleneck"
@@ -17001,6 +17106,10 @@ msgstr "XLSX, маппінг MCC, два дотики."
 msgid "Yes"
 msgstr "Так"
 
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Yes — a first-class one. It has its own transaction type, its own detail and edit screens, and its own icon. It exists to correct a balance, so Budgie keeps it out of the categorization rules you write for real spending."
+msgstr "Так — повноцінна. Вона має власний тип транзакції, власні екрани перегляду й редагування та власну іконку. Вона слугує для виправлення балансу, тож Budgie тримає її поза правилами категоризації, які ви пишете для справжніх витрат."
+
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Yes — Budgie's source is public. Read the network code yourself: github.com/budgie-at/budgie."
 msgstr "Так — вихідний код Budgie публічний. Читайте мережевий код самі: github.com/budgie-at/budgie."
@@ -17160,6 +17269,10 @@ msgstr "Так. Додавання транзакцій, бюджети, тег�
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Yes. All core functionality — adding transactions, viewing reports, managing budgets, and reviewing your history — works completely offline. Internet access is only used when you explicitly trigger a bank sync or fetch current exchange rates."
 msgstr "Так. Всі основні функції — додавання транзакцій, перегляд звітів, управління бюджетами та перегляд вашої історії — повністю офлайн. Доступ до інтернету використовується лише тоді, коли ви явно запускаєте синхронізацію з банком або завантажуєте поточні обмінні курси."
+
+#: src/app/[lang]/features/balance-adjustment/page.tsx
+msgid "Yes. An adjustment opens in its own detail screen and edits like any other transaction, so you can change the amount or remove it without touching the rest of your history."
+msgstr "Так. Коригування відкривається на власному екрані деталей і редагується, як будь-яка інша транзакція, тож ви можете змінити суму або видалити його, не торкаючись решти історії."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Analytics reads directly from your local SQLite database — every chart works without internet."
