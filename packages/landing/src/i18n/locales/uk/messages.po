@@ -5832,8 +5832,8 @@ msgid "Create an account in Budgie for each bank account or credit card you trac
 msgstr "Створіть рахунок у Budgie для кожного банківського рахунку або кредитної картки, яку ви відстежуєте. Встановіть правильну валюту для кожного рахунку. Вам не потрібно підключати щось до вашого банку на цьому етапі — рахунки є лише контейнерами для імпортованих транзакцій."
 
 #: src/app/[lang]/features/custom-categories/page.tsx
-msgid "Create unlimited categories with custom names, icons, and colors"
-msgstr "Створюйте необмежену кількість категорій із власними назвами, іконками та кольорами"
+msgid "Create unlimited categories with a custom name and icon, plus AI-generated translation and search keywords"
+msgstr "Створюйте необмежену кількість категорій із власною назвою та іконкою, а також згенерованим ШІ перекладом і ключовими словами для пошуку"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Create, merge, reassign, and reorder categories until they match how you actually think about money."
