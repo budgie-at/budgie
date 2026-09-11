@@ -342,14 +342,21 @@
             "idx": 48,
             "version": "6",
             "when": 1786900000000,
-            "tag": "0048_add_onboarding_completed",
+            "tag": "0048_repair_cross_instrument_debt_events",
             "breakpoints": true
         },
         {
             "idx": 49,
             "version": "6",
             "when": 1787000000000,
-            "tag": "0049_add_onboarding_step_and_ai_consent",
+            "tag": "0049_add_onboarding_completed",
+            "breakpoints": true
+        },
+        {
+            "idx": 50,
+            "version": "6",
+            "when": 1787100000000,
+            "tag": "0050_add_onboarding_step_and_ai_consent",
             "breakpoints": true
         }
     ]

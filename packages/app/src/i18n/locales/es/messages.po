@@ -233,6 +233,7 @@ msgid "Account"
 msgstr "Cuenta"
 
 #: src/money-data/service/entry-base-valuation.service.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
 msgstr "Cuenta {accountId} no encontrada"
 
@@ -1693,6 +1694,10 @@ msgstr "Tipo de cambio"
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
 msgstr "Tipo de cambio {sourceInstrumentId}->{targetInstrumentId} no encontrado"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Exchange rate not found"
+msgstr ""
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
@@ -3310,7 +3315,7 @@ msgstr "Mostrar transacciones cuando cualquier importe principal esté dentro de
 msgid "Similar transactions"
 msgstr "Transacciones similares"
 
-#: src/onboarding/component/onboarding-step-layout/onboarding-step-layout.tsx
+#: src/onboarding/component/onboarding-step-header/onboarding-step-header.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Saltar"

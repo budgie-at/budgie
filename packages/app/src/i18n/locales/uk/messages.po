@@ -233,6 +233,7 @@ msgid "Account"
 msgstr "Рахунок"
 
 #: src/money-data/service/entry-base-valuation.service.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
 msgstr "Рахунок {accountId} не знайдено"
 
@@ -1693,6 +1694,10 @@ msgstr "Обмінний курс"
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
 msgstr "Обмінний курс {sourceInstrumentId}->{targetInstrumentId} не знайдено"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Exchange rate not found"
+msgstr ""
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
@@ -3310,7 +3315,7 @@ msgstr "Показувати транзакції, коли будь-яка ос
 msgid "Similar transactions"
 msgstr "Схожі транзакції"
 
-#: src/onboarding/component/onboarding-step-layout/onboarding-step-layout.tsx
+#: src/onboarding/component/onboarding-step-header/onboarding-step-header.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Пропустити"
