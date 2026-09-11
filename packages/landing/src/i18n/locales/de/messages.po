@@ -3161,8 +3161,8 @@ msgid "Authentication systems that remain secure even when examined"
 msgstr "Authentifizierungssysteme, die auch bei Überprüfung sicher bleiben"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
-msgid "Authentication tokens for optional bank sync services (stored securely in device keychain)"
-msgstr ""
+msgid "Authentication tokens for optional bank sync services (stored in the local database, encrypted when a PIN is set)"
+msgstr "Authentifizierungstoken für optionale Bank-Synchronisierungsdienste (in der lokalen Datenbank gespeichert, verschlüsselt, wenn eine PIN festgelegt ist)"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Auto-detected from device locale on first launch"
