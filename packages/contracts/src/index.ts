@@ -319,6 +319,7 @@ export type { AtmCashWithdrawalCandidateInterface } from './transaction/interfac
 export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
 export type { ExistingTransferBridgeCandidateInterface } from './transaction/interface/existing-transfer-bridge-candidate.interface';
 export type { ExistingTransferChainReclaimCandidateInterface } from './transaction/interface/existing-transfer-chain-reclaim-candidate.interface';
+export type { BridgeClaimRepairCandidateInterface } from './transaction/interface/bridge-claim-repair-candidate.interface';
 export type { ExistingTransferIncomeDuplicateCandidateInterface } from './transaction/interface/existing-transfer-income-duplicate-candidate.interface';
 export type { IbanBridgeCanonicalDuplicateCandidateInterface } from './transaction/interface/iban-bridge-canonical-duplicate-candidate.interface';
 export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';
