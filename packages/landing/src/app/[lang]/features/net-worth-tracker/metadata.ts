@@ -20,7 +20,14 @@ export const FEATURE_METADATA = {
         'crypto net worth tracker',
         'mobile net worth app'
     ],
-    relatedFeatureSlugs: ['balance-adjustment', 'account-management', 'multi-currency', 'debt-tracking', 'crypto-investment-tracking'],
+    relatedFeatureSlugs: [
+        'crypto-price-history',
+        'balance-adjustment',
+        'account-management',
+        'multi-currency',
+        'debt-tracking',
+        'crypto-investment-tracking'
+    ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
     publishedAt: '2026-01-03',
     updatedAt: '2026-09-06',
