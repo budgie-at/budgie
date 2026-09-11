@@ -12591,8 +12591,8 @@ msgid "Roll up every bank account, cash wallet, deposit, crypto holding, and lia
 msgstr "Fassen Sie jedes Bankkonto, jedes Bargeld-Wallet, jede Einlage, jeden Krypto-Bestand und jede Verbindlichkeit zu einer einzigen Nettovermögenszahl zusammen. Mehrwährungsumrechnung inklusive."
 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
-msgid "Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features."
-msgstr "Zusammen etwa 1 GB. Der Download ist einmalig, opt-in und wird nur ausgelöst, wenn Sie KI-Funktionen einschalten."
+msgid "Roughly 1.6 GB for the language and embedding models, or 2.5 GB with voice entry. The download is one-time, opt-in, and only triggers if you turn on AI features."
+msgstr "Etwa 1,6 GB für das Sprach- und das Embedding-Modell oder 2,5 GB mit Spracheingabe. Der Download erfolgt einmalig, ist optional und startet nur, wenn Sie die KI-Funktionen aktivieren."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Rows group under the month, each one carrying its category icon, its tags and the account it came from."
@@ -14086,8 +14086,8 @@ msgid "The embedding lookup is not a single index — Budgie keeps three separat
 msgstr "Die Embedding-Suche ist kein einzelner Index – Budgie führt drei separate, die jeweils ein anderes Feld mit deinem eigenen Verlauf abgleichen und bis zu drei Kandidaten liefern. Der Transaktionsindex gleicht den Titel, den du gerade eingibst, mit deinen früheren Einträgen ab, um Kategorie und Tags vorzuschlagen. Der Händlerindex gleicht Ladennamen über Schreibvarianten hinweg ab – derselbe Index, der dafür sorgt, dass derselbe Laden konsistent erkannt wird, auch wenn ihn verschiedene Banken unterschiedlich schreiben, was das sichtbare Ergebnis hinter der Händlernamen-Übersetzung ist. Der Kommentarindex gleicht deine eigenen Freitextnotizen ab, sodass ein Kommentar, den du einmal für ein Café eingegeben hast, beim nächsten Besuch als Vorschlag zurückkommt."
 
 #: src/app/[lang]/ai-features/page.tsx
-msgid "The embedding model is approximately 90 MB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features and cached on-device."
-msgstr "Das Embedding-Modell ist etwa 90 MB. Qwen3 1.7B in quantisierter Form ist etwa 1,1 GB. Beide werden beim ersten Gebrauch der KI-Funktionen einmalig heruntergeladen und auf dem Gerät zwischengespeichert."
+msgid "The embedding model is approximately 0.5 GB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features and cached on-device."
+msgstr "Das Embedding-Modell ist etwa 0,5 GB groß. Qwen3 1.7B in quantisierter Form ist etwa 1,1 GB groß. Beide werden beim ersten Einsatz der KI-Funktionen einmalig heruntergeladen und auf dem Gerät zwischengespeichert."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The encryption key never leaves your device and never touches our servers because we do not have servers that handle user data. Here is how key management works:"
@@ -14170,8 +14170,8 @@ msgid "The keypad opens first. Type the amount, keep the account Budgie already 
 msgstr "Das Zahlenfeld öffnet sich zuerst. Betrag eintippen, das von Budgie gewählte Konto behalten und speichern."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "The language model and the embedding model together require approximately 900 MB to 1.2 GB of storage depending on the quantization level selected during installation. This is a one-time download. Once installed, no additional model downloads are required for normal use."
-msgstr "Das Sprachmodell und das Embedding-Modell benötigen zusammen etwa 900 MB bis 1,2 GB Speicher, abhängig vom bei der Installation gewählten Quantisierungsgrad. Dies ist ein einmaliger Download. Nach der Installation sind für die normale Nutzung keine weiteren Modell-Downloads erforderlich."
+msgid "The language model and the embedding model together require approximately 1.6 GB of storage. Adding voice entry brings the total to about 2.5 GB. This is a one-time download. Once installed, no additional model downloads are required for normal use."
+msgstr "Das Sprachmodell und das Embedding-Modell benötigen zusammen etwa 1,6 GB Speicher. Mit Spracheingabe steigt die Summe auf etwa 2,5 GB. Dies ist ein einmaliger Download. Nach der Installation sind für den normalen Gebrauch keine weiteren Modell-Downloads nötig."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The lifecycle of your financial data extends far beyond your active use of an app."

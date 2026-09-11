@@ -12591,8 +12591,8 @@ msgid "Roll up every bank account, cash wallet, deposit, crypto holding, and lia
 msgstr "Зведіть кожен банківський рахунок, готівковий гаманець, депозит, криптоактив і борг в одне число чистих активів. Конвертація валют уже вбудована."
 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
-msgid "Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features."
-msgstr "Приблизно 1 ГБ разом. Завантаження є одноразовим, необов'язковим і запускається лише якщо ви вмикаєте AI-функції."
+msgid "Roughly 1.6 GB for the language and embedding models, or 2.5 GB with voice entry. The download is one-time, opt-in, and only triggers if you turn on AI features."
+msgstr "Приблизно 1,6 ГБ для мовної моделі та моделі embeddings або 2,5 ГБ із голосовим введенням. Завантаження одноразове, за бажанням, і запускається лише якщо ви ввімкнете функції ШІ."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Rows group under the month, each one carrying its category icon, its tags and the account it came from."
@@ -14086,8 +14086,8 @@ msgid "The embedding lookup is not a single index — Budgie keeps three separat
 msgstr "Пошук за ембеддингами — це не один індекс: Budgie підтримує три окремі, кожен зіставляє інше поле з вашою власною історією та повертає до трьох кандидатів. Індекс транзакцій зіставляє назву, яку ви вводите, з вашими попередніми записами, щоб запропонувати категорію та теги. Індекс продавців зіставляє назви магазинів попри варіанти написання — той самий індекс, який дозволяє однаково розпізнавати той самий заклад, навіть якщо різні банки пишуть його по-різному, і саме це є видимим результатом перекладу назв продавців. Індекс коментарів зіставляє ваші власні довільні нотатки, тож коментар, який ви одного разу написали для кав’ярні, з’явиться як підказка під час наступного відвідування."
 
 #: src/app/[lang]/ai-features/page.tsx
-msgid "The embedding model is approximately 90 MB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features and cached on-device."
-msgstr "Модель вкладень займає приблизно 90 МБ. Qwen3 1.7B у квантизованій формі займає приблизно 1,1 ГБ. Обидві завантажуються один раз при першому використанні AI-функцій і кешуються на пристрої."
+msgid "The embedding model is approximately 0.5 GB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features and cached on-device."
+msgstr "Модель embeddings займає приблизно 0,5 ГБ. Qwen3 1.7B у квантованому вигляді — приблизно 1,1 ГБ. Обидві завантажуються один раз під час першого використання функцій ШІ та кешуються на пристрої."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The encryption key never leaves your device and never touches our servers because we do not have servers that handle user data. Here is how key management works:"
@@ -14170,8 +14170,8 @@ msgid "The keypad opens first. Type the amount, keep the account Budgie already 
 msgstr "Спершу відкривається клавіатура. Введіть суму, залиште рахунок, який обрав Budgie, і збережіть."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "The language model and the embedding model together require approximately 900 MB to 1.2 GB of storage depending on the quantization level selected during installation. This is a one-time download. Once installed, no additional model downloads are required for normal use."
-msgstr "Мовна модель та модель вкладень разом вимагають приблизно 900 МБ до 1,2 ГБ сховища залежно від рівня квантизації, вибраного під час встановлення. Це одноразове завантаження. Після встановлення жодних додаткових завантажень моделей для звичайного використання не потрібно."
+msgid "The language model and the embedding model together require approximately 1.6 GB of storage. Adding voice entry brings the total to about 2.5 GB. This is a one-time download. Once installed, no additional model downloads are required for normal use."
+msgstr "Мовна модель і модель embeddings разом потребують приблизно 1,6 ГБ пам’яті. Із голосовим введенням загальний обсяг зростає до близько 2,5 ГБ. Це одноразове завантаження. Після встановлення додаткові завантаження моделей для звичайного використання не потрібні."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The lifecycle of your financial data extends far beyond your active use of an app."
