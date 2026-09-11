@@ -16,5 +16,6 @@ export const DEFAULT_SETTINGS = {
     isScreenshotProtectionEnabled: false,
     applyMccDefaultCategory: true,
     isBudgetWidgetEnabled: true,
+    isRunwayWidgetEnabled: true,
     isBudgetPushEnabled: false
 } satisfies SettingsEntityInterface;
