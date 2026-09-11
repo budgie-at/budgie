@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -81,14 +80,82 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie debt account screen with the amount left to receive above the repayment history`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Loans between people are accounts too</Trans>}>
+                    <Trans>
+                        Budgie tracks money you owe and money owed to you as first-class accounts, with a direction, a due date and a
+                        running balance.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Money you owe, money owed to you</Trans>}>
+                    <Trans>
+                        Home groups debts by direction: You owe and Owed to you, each with its own subtotal and a bar for how far the debt
+                        has been settled.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="debt-tracking-1"
+                    slug="debt-tracking"
+                >
+                    <FeatureStory.Callout y={0.321}>
+                        <Trans>Money you owe</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.565}>
+                        <Trans>Money owed to you</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>A due date and a target</Trans>}>
+                    <Trans>
+                        Open a debt to see what is still to receive, how much has come back and the total you lent, against the target
+                        balance and return date.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals`}
+                    index={1}
                     locale={lang}
                     scene="debt-tracking-2"
                     slug="debt-tracking"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.238}>
+                        <Trans>Still to receive</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.287}>
+                        <Trans>Returned vs lent</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Attach a repayment you already logged</Trans>}>
+                    <Trans>
+                        When a repayment lands as ordinary income, open the transaction and pick the debt it belongs to. Budgie lists your
+                        debt accounts so you can attach it instead of recording a second transaction.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie income transaction detail with a debt account picker listing Lent to Daniel and Borrowed from Mom`}
+                    index={2}
+                    locale={lang}
+                    scene="debt-tracking-3"
+                    slug="debt-tracking"
+                >
+                    <FeatureStory.Callout y={0.708}>
+                        <Trans>Attach to a debt</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.798}>
+                        <Trans>Lent or borrowed</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -166,27 +233,6 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Account type Debt with sub-type &quot;I owe&quot; or &quot;owes me&quot;. Linked to a contact name (optional).
-                        Settlement happens as transfers between the debt account and a real cash/bank account.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie home screen with the net balance across the bank, cash and savings account sections`}
-                    locale={lang}
-                    scene="debt-tracking-1"
-                    slug="debt-tracking"
-                />
-            </FeaturePageMedia>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
