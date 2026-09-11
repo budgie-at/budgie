@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.47.5](https://github.com/budgie-at/budgie/compare/v6.47.4...v6.47.5) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** clear stale crypto-and-investments copy ([2405911](https://github.com/budgie-at/budgie/commit/24059118ecb67add568b31114ab7b9215c221b11))
+* **landing:** drop unsupported stocks and ETF claims ([35adc2c](https://github.com/budgie-at/budgie/commit/35adc2c73c78901a799df71cbb45d3b008d75840))
+
+
+
+
+
 ## [6.47.4](https://github.com/budgie-at/budgie/compare/v6.47.3...v6.47.4) (2026-09-11)
 
 
