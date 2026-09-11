@@ -3114,7 +3114,7 @@ msgstr "En el corazon de Budgie se encuentra una arquitectura local-first constr
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Attach a repayment you already logged"
-msgstr "Vincular un reembolso ya registrado"
+msgstr "Vincular un pago ya registrado"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Attach a repayment you already recorded"
@@ -3972,7 +3972,7 @@ msgstr "Hoja de filtro de fecha de Budgie con un calendario de agosto sobre la f
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals"
-msgstr "Pantalla de deuda de Budgie para Prestado a Daniel con 750 $ por recibir al 37,5 % devuelto, con los totales devuelto y prestado"
+msgstr "Pantalla de deuda de Budgie para Prestado a Daniel con 750 $ aún por recibir y un 37,5 % ya devuelto, con los totales devueltos y prestados"
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
@@ -9160,7 +9160,7 @@ msgstr "Evaluacion legal"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Lent or borrowed"
-msgstr "Prestado o tomado"
+msgstr "Prestado o tomado en préstamo"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Let’s dive deeper into each option."
@@ -16242,7 +16242,7 @@ msgstr "Cuando un comercio reembolsa una compra, el dinero reaparece en tu tarje
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "When a repayment lands as ordinary income, open the transaction and pick the debt it belongs to. Budgie lists your debt accounts so you can attach it instead of recording a second transaction."
-msgstr "Cuando un reembolso llega como ingreso ordinario, abre la transacción y elige la deuda a la que pertenece. Budgie lista tus cuentas de deuda para que la vincules en lugar de registrar una segunda transacción."
+msgstr "Cuando un pago llega como ingreso ordinario, abre la transacción y elige la deuda a la que pertenece. Budgie lista tus cuentas de deuda para que la vincules en lugar de registrar una segunda transacción."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "When both engines agree, the suggestion chips appear immediately. When they diverge, the SQL pattern wins for structured fields like amount and category while the embedding adds tag and comment hints. Every accepted or corrected suggestion feeds the embedding index so the next similar entry is even closer."

@@ -11243,7 +11243,7 @@ msgstr "Nur wenn nötig. Händler mit lateinischer Schrift überspringen die Üb
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Open a debt to see what is still to receive, how much has come back and the total you lent, against the target balance and return date."
-msgstr "Öffnen Sie eine Schuld, um zu sehen, was noch zu erhalten ist, wie viel zurückgekommen ist und wie viel Sie insgesamt verliehen haben — gegenüber Zielsaldo und Rückgabedatum."
+msgstr "Öffnen Sie eine Schuld, um zu sehen, was noch zu erhalten ist, wie viel zurückgekommen ist und wie viel Sie insgesamt verliehen haben — im Vergleich zum Zielsaldo und zum Rückgabedatum."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Open a deposit straight from the connection, so it inherits the bank it belongs to"
@@ -16242,7 +16242,7 @@ msgstr "Wenn ein Händler einen Kauf erstattet, erscheint das Geld auf deiner Ka
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "When a repayment lands as ordinary income, open the transaction and pick the debt it belongs to. Budgie lists your debt accounts so you can attach it instead of recording a second transaction."
-msgstr "Wenn eine Rückzahlung als gewöhnliche Einnahme eingeht, öffnen Sie die Transaktion und wählen Sie die zugehörige Schuld. Budgie listet Ihre Schuldenkonten, damit Sie sie anhängen können, statt eine zweite Transaktion zu erfassen."
+msgstr "Wenn eine Rückzahlung als gewöhnliche Einnahme eingeht, öffnen Sie die Transaktion und wählen Sie die zugehörige Schuld. Budgie listet Ihre Schuldenkonten, damit Sie die Rückzahlung stattdessen an eine Schuld anhängen können, statt eine zweite Transaktion zu erfassen."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "When both engines agree, the suggestion chips appear immediately. When they diverge, the SQL pattern wins for structured fields like amount and category while the embedding adds tag and comment hints. Every accepted or corrected suggestion feeds the embedding index so the next similar entry is even closer."
