@@ -835,6 +835,8 @@ msgid "Contains"
 msgstr "Містить"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
 msgstr "Продовжити"
 
@@ -1349,6 +1351,10 @@ msgstr "Вимкнути блокування"
 msgid "Display the budget card on the home screen"
 msgstr "Показувати картку бюджету на головному екрані"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Do not sync history"
+msgstr "Не синхронізувати історію"
+
 #: src/app/import-column-mapper.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -1669,9 +1675,17 @@ msgstr "Не вдалося завантажити контакти."
 msgid "Failed to save PIN. Please try again."
 msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Fast first sync"
+msgstr "Швидка перша синхронізація"
+
 #: src/ai/service/ai-system-status.service.ts
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Швидке індексування {done} з {total} • торкніться, щоб призупинити"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Fastest first sync"
+msgstr "Найшвидша перша синхронізація"
 
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
@@ -1977,9 +1991,21 @@ msgstr "Залиште увімкненим лише \"Дозволити чит
 msgid "Language"
 msgstr "Мова"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 1 month"
+msgstr "Останній місяць"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 3 months"
+msgstr "Останні 3 місяці"
+
 #: src/app/resync-window-picker.tsx
 msgid "Last 30 days"
 msgstr "Останні 30 днів"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 6 months"
+msgstr "Останні 6 місяців"
 
 #: src/app/resync-window-picker.tsx
 msgid "Last 7 days"
@@ -2004,6 +2030,10 @@ msgstr "Остання синхронізація"
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
 msgstr "Минулий тиждень"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last year"
+msgstr "Останній рік"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
 msgid "Learning"
@@ -2062,6 +2092,14 @@ msgstr "Завантаження моделей"
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx
 msgid "Loading..."
 msgstr "Завантаження..."
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Longer first sync"
+msgstr "Довша перша синхронізація"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Longest first sync — can take hours on old accounts"
+msgstr "Найдовша перша синхронізація — може тривати години на старих рахунках"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
@@ -2199,6 +2237,10 @@ msgstr "Позичені або надані гроші"
 msgid "Monobank"
 msgstr "Монобанк"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Monobank limits how fast past transactions can be read, so the longer the period you pick, the longer the first sync takes. You can always re-sync more history later from the account menu."
+msgstr "Monobank обмежує швидкість читання минулих транзакцій, тому чим довший обраний період, тим довше триватиме перша синхронізація. Ви завжди можете додатково синхронізувати історію пізніше через меню рахунку."
+
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
 msgid "Monthly budget"
@@ -2215,6 +2257,10 @@ msgstr "Місячні витрати"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Monthly Total"
 msgstr "Місячний підсумок"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Much longer first sync"
+msgstr "Значно довша перша синхронізація"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -2462,6 +2508,10 @@ msgstr "Можна конвертувати лише витратні транз
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only income transactions can be converted"
 msgstr "Можна конвертувати лише дохідні транзакції"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Only new transactions from now on, nothing from the past"
+msgstr "Лише нові транзакції відтепер, без минулих"
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
@@ -3767,6 +3817,10 @@ msgstr "Кому ви винні?"
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Who owes you?"
 msgstr "Хто винен вам гроші?"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Whole period"
+msgstr "Весь період"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"

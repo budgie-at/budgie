@@ -12,6 +12,7 @@ import { ruleApplicationDrainerService } from '../../rule/service/rule-applicati
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
+import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
@@ -54,12 +55,18 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
     @InvalidateDatabaseLiveQuery()
     @Log(
-        (token, externalIds) => `enter tokenLen=${token.length} externalIdCount=${externalIds.length}`,
-        (result, token, externalIds) => `done tokenLen=${token.length} externalIdCount=${externalIds.length} result=${String(result)}`,
-        (error, token, externalIds) =>
-            `throw tokenLen=${token.length} externalIdCount=${externalIds.length} error=${getErrorMessage(error)}`
+        (token, externalIds, historyDepth) =>
+            `enter tokenLen=${token.length} externalIdCount=${externalIds.length} historyDepth=${historyDepth}`,
+        (result, token, externalIds, historyDepth) =>
+            `done tokenLen=${token.length} externalIdCount=${externalIds.length} historyDepth=${historyDepth} result=${String(result)}`,
+        (error, token, externalIds, historyDepth) =>
+            `throw tokenLen=${token.length} externalIdCount=${externalIds.length} historyDepth=${historyDepth} error=${getErrorMessage(error)}`
     )
-    override async setupAccountSyncBatch(token: string, externalIds: string[]): Promise<void> {
+    override async setupAccountSyncBatch(
+        token: string,
+        externalIds: string[],
+        historyDepth: SyncHistoryDepthEnum = SyncHistoryDepthEnum.FULL
+    ): Promise<void> {
         await loadSyncModule();
         const bankAccounts = await this.fetchBankAccountsAndJars(token);
 
@@ -67,7 +74,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             const bankAccount = bankAccounts.find(acc => acc.id === externalId);
             if (isDefined(bankAccount)) {
                 const account = await this.getOrCreateSyncAccount(bankAccount);
-                await this.createOrUpdateSync(account.id, token);
+                await this.createOrUpdateSync(account.id, token, historyDepth);
             }
         }
 
@@ -280,7 +287,12 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
         return isForward
             ? await service.syncTransactionsForward(externalAccountId, sync.forwardSyncFromAt ?? new Date())
-            : await service.syncTransactionsBackward(externalAccountId, sync.backwardSyncFromAt ?? new Date(), sync.backwardSyncedAt);
+            : await service.syncTransactionsBackward(
+                  externalAccountId,
+                  sync.backwardSyncFromAt ?? new Date(),
+                  sync.backwardSyncedAt,
+                  sync.backwardSyncLimitAt
+              );
     }
 
     @Log(

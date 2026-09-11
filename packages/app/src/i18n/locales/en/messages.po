@@ -836,6 +836,8 @@ msgid "Contains"
 msgstr "Contains"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
 msgstr "Continue"
 
@@ -1350,6 +1352,10 @@ msgstr "Disable App Lock"
 msgid "Display the budget card on the home screen"
 msgstr "Display the budget card on the home screen"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Do not sync history"
+msgstr "Do not sync history"
+
 #: src/app/import-column-mapper.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -1670,9 +1676,17 @@ msgstr "Failed to load contacts."
 msgid "Failed to save PIN. Please try again."
 msgstr "Failed to save PIN. Please try again."
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Fast first sync"
+msgstr "Fast first sync"
+
 #: src/ai/service/ai-system-status.service.ts
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Fast-indexing {done} of {total} • tap to pause"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Fastest first sync"
+msgstr "Fastest first sync"
 
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
@@ -1978,9 +1992,21 @@ msgstr "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgid "Language"
 msgstr "Language"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 1 month"
+msgstr "Last 1 month"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 3 months"
+msgstr "Last 3 months"
+
 #: src/app/resync-window-picker.tsx
 msgid "Last 30 days"
 msgstr "Last 30 days"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 6 months"
+msgstr "Last 6 months"
 
 #: src/app/resync-window-picker.tsx
 msgid "Last 7 days"
@@ -2005,6 +2031,10 @@ msgstr "Last sync"
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
 msgstr "Last Week"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last year"
+msgstr "Last year"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
 msgid "Learning"
@@ -2063,6 +2093,14 @@ msgstr "Loading models"
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx
 msgid "Loading..."
 msgstr "Loading..."
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Longer first sync"
+msgstr "Longer first sync"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Longest first sync — can take hours on old accounts"
+msgstr "Longest first sync — can take hours on old accounts"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
@@ -2200,6 +2238,10 @@ msgstr "Money lent or borrowed"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Monobank limits how fast past transactions can be read, so the longer the period you pick, the longer the first sync takes. You can always re-sync more history later from the account menu."
+msgstr "Monobank limits how fast past transactions can be read, so the longer the period you pick, the longer the first sync takes. You can always re-sync more history later from the account menu."
+
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
 msgid "Monthly budget"
@@ -2216,6 +2258,10 @@ msgstr "Monthly Costs"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Monthly Total"
 msgstr "Monthly Total"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Much longer first sync"
+msgstr "Much longer first sync"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -2463,6 +2509,10 @@ msgstr "Only expense transactions can be converted"
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only income transactions can be converted"
 msgstr "Only income transactions can be converted"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Only new transactions from now on, nothing from the past"
+msgstr "Only new transactions from now on, nothing from the past"
 
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
@@ -3768,6 +3818,10 @@ msgstr "Who do you owe?"
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Who owes you?"
 msgstr "Who owes you?"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Whole period"
+msgstr "Whole period"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
