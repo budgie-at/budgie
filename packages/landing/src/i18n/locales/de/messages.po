@@ -2263,6 +2263,10 @@ msgstr "Eine detaillierte technische Analyse, wie cloudbasierte Budget-Apps Ihre
 msgid "A deterministic merge algorithm combines the operations"
 msgstr "Ein deterministischer Zusammenführungsalgorithmus kombiniert die Operationen"
 
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "A due date and a target"
+msgstr "Ein Fälligkeitsdatum und ein Ziel"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "A durable personal finance app has properties that do not depend on any company staying in business or staying honest. Here is what that looks like in practice:"
 msgstr "Eine langlebige persönliche Finanz-App hat Eigenschaften, die nicht davon abhängen, dass ein Unternehmen im Geschäft bleibt oder ehrlich bleibt. So sieht das in der Praxis aus:"
@@ -2462,10 +2466,6 @@ msgstr "Kontoüberweisungen — Budgie"
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Account Transfers — Done Right"
 msgstr "Kontoüberweisungen — richtig gemacht"
-
-#: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Account type Debt with sub-type \"I owe\" or \"owes me\". Linked to a contact name (optional). Settlement happens as transfers between the debt account and a real cash/bank account."
-msgstr "Kontotyp Schulden mit Untertyp „Ich schulde\" oder „schuldet mir\". Optional mit einem Kontaktnamen verknüpft. Die Begleichung erfolgt als Überweisung zwischen dem Schulden-Konto und einem echten Geld-/Bankkonto."
 
 #: src/app/[lang]/features/account-management/opengraph-image.tsx
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx
@@ -3113,12 +3113,20 @@ msgid "At the heart of Budgie is a local-first architecture built on SQLite, the
 msgstr "Im Kern von Budgie steht eine Local-First-Architektur, die auf SQLite aufgebaut ist — der am weitesten verbreiteten Datenbank-Engine der Welt. SQLite läuft auf Milliarden von Geräten und hat sich über mehr als zwei Jahrzehnte bewährt. Es ist dieselbe Datenbank, die Ihren Browserverlauf, Ihre mobilen Kontakte und zahllose andere Anwendungen antreibt, die zuverlässigen lokalen Speicher benötigen."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Attach a repayment you already logged"
+msgstr "Eine bereits erfasste Rückzahlung anhängen"
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Attach a repayment you already recorded"
 msgstr "Eine bereits erfasste Rückzahlung verknüpfen"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Attach an existing income or expense to a debt as a settlement, without inventing a second transaction"
 msgstr "Eine bestehende Einnahme oder Ausgabe als Begleichung mit einer Schuld verknüpfen, ohne eine zweite Transaktion zu erfinden"
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Attach to a debt"
+msgstr "An eine Schuld anhängen"
 
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Attached to the transfer"
@@ -3963,8 +3971,8 @@ msgid "Budgie date filter sheet with an August calendar above the row of preset 
 msgstr "Budgie-Datumsfilter-Sheet mit einem August-Kalender über der Reihe der voreingestellten Zeitraum-Chips"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Budgie debt account screen with the amount left to receive above the repayment history"
-msgstr "Budgie-Schuldenkonto mit dem noch ausstehenden Betrag über dem Rückzahlungsverlauf"
+msgid "Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals"
+msgstr "Budgie-Schuldenkonto „Verliehen an Daniel“ mit 750 $, die noch zu erhalten sind, bei 37,5 % zurückgezahlt, samt zurückgezahltem und verliehenem Gesamtbetrag"
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
@@ -4058,6 +4066,10 @@ msgstr "Budgie ist schnell gelernt, weil es sich wie eine normale Mobile-App anf
 msgid "Budgie home screen scrolled to the savings, you owe and owed to you groups with a subtotal on each one"
 msgstr "Budgie-Startbildschirm gescrollt zu den Gruppen Sparen, Du schuldest und Dir wird geschuldet, jede mit Zwischensumme"
 
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar"
+msgstr "Budgie-Startbildschirm, gescrollt zu den Schuldenbereichen „Sie schulden“ und „Ihnen geschuldet“, jeweils mit Zwischensumme und Fortschrittsbalken"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with a euro-denominated account listed under a total balance shown in dollars"
 msgstr "Budgie-Startbildschirm mit einem Euro-Konto unter einem in Dollar angezeigten Gesamtsaldo"
@@ -4069,10 +4081,6 @@ msgstr "Budgie-Startbildschirm mit Gesamtsaldo, Sparkonten sowie geliehenem und 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal"
 msgstr "Budgie-Startseite mit Konten, gruppiert in die Abschnitte Bank und Bargeld, jede Überschrift mit eigener Zwischensumme"
-
-#: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Budgie home screen with the net balance across the bank, cash and savings account sections"
-msgstr "Budgie-Startbildschirm mit dem Nettosaldo über die Bereiche für Bank-, Bargeld- und Sparkonten"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Budgie home screen with the synced card balances above the cash and savings sections"
@@ -4098,6 +4106,10 @@ msgstr "Budgie in fünf Sprachen"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie includes zero analytics SDKs. We do not use Firebase Analytics, Mixpanel, Amplitude, or any similar service. We do not collect crash reports through third-party services. We do not record which features you use, how often you open the app, or what categories you spend money in."
 msgstr "Budgie enthält keinerlei Analyse-SDKs. Wir verwenden weder Firebase Analytics, Mixpanel, Amplitude noch einen ähnlichen Dienst. Wir sammeln keine Absturzberichte über Drittanbieterdienste. Wir erfassen nicht, welche Funktionen Sie nutzen, wie oft Sie die App öffnen oder in welchen Kategorien Sie Geld ausgeben."
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Budgie income transaction detail with a debt account picker listing Lent to Daniel and Borrowed from Mom"
+msgstr "Budgie-Einnahmetransaktion mit einer Schuldenkonto-Auswahl, die „Verliehen an Daniel“ und „Geliehen von Mama“ auflistet"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie incorporates and depends on numerous open source libraries and frameworks. We are deeply grateful to the open source community for their contributions. The following are some of the key open source components used in Budgie:"
@@ -4486,6 +4498,10 @@ msgstr "Budgie-Team"
 #: src/app/[lang]/legal/terms-of-service/metadata.ts
 msgid "Budgie Terms of Service - Read our terms and conditions for using our privacy-first expense tracking app"
 msgstr "Budgie Terms of Service - Bedingungen für die Nutzung von Budgie, der privaten Ausgaben-App"
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Budgie tracks money you owe and money owed to you as first-class accounts, with a direction, a due date and a running balance."
+msgstr "Budgie führt Geld, das Sie schulden, und Geld, das Ihnen geschuldet wird, als vollwertige Konten — mit Richtung, Fälligkeitsdatum und laufendem Saldo."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Budgie transaction list filtered to Last Month, showing the active chip and 73 matching transactions"
@@ -8180,6 +8196,10 @@ msgstr "Startseite"
 msgid "Home and analytics screens convert to your base currency automatically"
 msgstr "Startbildschirm und Analysen rechnen automatisch in Ihre Basiswährung um"
 
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Home groups debts by direction: You owe and Owed to you, each with its own subtotal and a bar for how far the debt has been settled."
+msgstr "Home gruppiert Schulden nach Richtung: „Sie schulden“ und „Ihnen geschuldet“, jeweils mit eigener Zwischensumme und einem Balken für den Stand der Tilgung."
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
 msgstr "Der Startbildschirm hält die gesamte Verbindung in einer Monobank-Gruppe, und das Zahnrad daneben öffnet die Konten wieder."
@@ -8419,7 +8439,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/budget-planning/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
-#: src/app/[lang]/features/debt-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
@@ -9139,6 +9158,10 @@ msgstr "Rechtliches"
 msgid "Legal Assessment"
 msgstr "Rechtliche Bewertung"
 
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Lent or borrowed"
+msgstr "Verliehen oder geliehen"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Let’s dive deeper into each option."
 msgstr "Schauen wir uns jede Option im Detail an."
@@ -9231,6 +9254,10 @@ msgstr "LLM-gestützte Rangfolge mit Embedding-Fallback hält Vorschläge auf je
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx
 msgid "loans"
 msgstr "Kredite"
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Loans between people are accounts too"
+msgstr "Privatdarlehen sind auch Konten"
 
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "local expense tracker"
@@ -9863,6 +9890,18 @@ msgstr "Geld raus, Geld rein – erstklassig."
 #: src/app/[lang]/features/debt-tracking/metadata.ts
 msgid "Money out, money in — first-class accounts with target balances, return dates, and contact assignment."
 msgstr "Geld raus, Geld rein – erstklassige Konten mit Zielsalden, Rückgabedaten und Kontaktzuweisung."
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Money owed to you"
+msgstr "Geld, das Ihnen geschuldet wird"
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Money you owe"
+msgstr "Geld, das Sie schulden"
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Money you owe, money owed to you"
+msgstr "Geld, das Sie schulden, Geld, das Ihnen geschuldet wird"
 
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx
 msgid "monobank"
@@ -11202,6 +11241,10 @@ msgstr "Nur die Zeilen ohne Kategorie"
 msgid "Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically after sync or manual entry."
 msgstr "Nur wenn nötig. Händler mit lateinischer Schrift überspringen die Übersetzung. Nicht-lateinische Zeichenketten durchlaufen die Warteschlange automatisch nach der Synchronisierung oder manuellen Eingabe."
 
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Open a debt to see what is still to receive, how much has come back and the total you lent, against the target balance and return date."
+msgstr "Öffnen Sie eine Schuld, um zu sehen, was noch zu erhalten ist, wie viel zurückgekommen ist und wie viel Sie insgesamt verliehen haben — im Vergleich zum Zielsaldo und zum Rückgabedatum."
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Open a deposit straight from the connection, so it inherits the bank it belongs to"
 msgstr "Ein Festgeld direkt aus der Verbindung heraus eröffnen, sodass es automatisch der richtigen Bank zugeordnet ist"
@@ -12503,6 +12546,10 @@ msgstr "Die Wiederherstellung ist ein Ein-Tipp-Ablauf bei einer Neuinstallation 
 msgid "Restore is a single tap on a fresh install — pick the file, enter the original PIN, the database is back. Migrate to a new phone in under a minute without an account."
 msgstr "Die Wiederherstellung ist eine einzige Tipp-Aktion bei einer Neuinstallation – Datei auswählen, ursprüngliche PIN eingeben, die Datenbank ist zurück. In unter einer Minute ohne Konto auf ein neues Telefon migrieren."
 
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Returned vs lent"
+msgstr "Zurückgezahlt vs. verliehen"
+
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Reversible audit trail — Revert restores the original income and expense rows"
 msgstr "Rückgängig machbare Prüfhistorie – Rückgängig stellt die ursprünglichen Einnahmen- und Ausgabenzeilen wieder her"
@@ -13399,6 +13446,10 @@ msgstr "Schritt 5: Optional – direkte Banksynchronisation aktivieren"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 5: Run Parallel for One Month"
 msgstr "Schritt 5: Führen Sie einen Monat lang parallel"
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Still to receive"
+msgstr "Noch zu erhalten"
 
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
 msgid "Stop paying monthly to track your money. Budgie's core features are free; the optional one-time unlock is yours forever. Offline-first and private."
@@ -16188,6 +16239,10 @@ msgstr "Wenn ein Fintech-Unternehmen übernommen wird, sind Nutzerdaten typische
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "When a merchant refunds a purchase, the money reappears on your card as a positive transaction. Most expense trackers record it as income — which is technically accurate in a cash-flow sense but misleading for actual income analysis."
 msgstr "Wenn ein Händler einen Kauf erstattet, erscheint das Geld auf deiner Karte als positive Transaktion. Die meisten Ausgabentracker erfassen das als Einnahme – im Cashflow-Sinn technisch korrekt, für die echte Einkommensanalyse aber irreführend."
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "When a repayment lands as ordinary income, open the transaction and pick the debt it belongs to. Budgie lists your debt accounts so you can attach it instead of recording a second transaction."
+msgstr "Wenn eine Rückzahlung als gewöhnliche Einnahme eingeht, öffnen Sie die Transaktion und wählen Sie die zugehörige Schuld. Budgie listet Ihre Schuldenkonten, damit Sie die Rückzahlung stattdessen an eine Schuld anhängen können, statt eine zweite Transaktion zu erfassen."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "When both engines agree, the suggestion chips appear immediately. When they diverge, the SQL pattern wins for structured fields like amount and category while the embedding adds tag and comment hints. Every accepted or corrected suggestion feeds the embedding index so the next similar entry is even closer."
