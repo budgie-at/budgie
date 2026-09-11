@@ -42,6 +42,7 @@ allowBuilds:
   '@parcel/watcher': false
 
 patchedDependencies:
+  expo-modules-jsi@57.0.6: patches/expo-modules-jsi@57.0.6.patch
   expo-pdf-text-extract@1.1.0: patches/expo-pdf-text-extract@1.1.0.patch
 
 minimumReleaseAgeExclude:
