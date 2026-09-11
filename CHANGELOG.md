@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.47.1](https://github.com/budgie-at/budgie/compare/v6.47.0...v6.47.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** drop the custom-categories colour claim ([d2a3183](https://github.com/budgie-at/budgie/commit/d2a3183874ea0f360ad40230dfb8c7c3079dffcf))
+* **landing:** reword custom-categories German benefit copy ([5d96ef3](https://github.com/budgie-at/budgie/commit/5d96ef30ad7d262005c0ba69d1d8cec38dc19560))
+
+
+
+
+
 # [6.47.0](https://github.com/budgie-at/budgie/compare/v6.46.0...v6.47.0) (2026-09-11)
 
 
