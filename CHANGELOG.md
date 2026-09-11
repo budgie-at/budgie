@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.48.0](https://github.com/budgie-at/budgie/compare/v6.47.5...v6.48.0) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** use Paramètres for Settings in the French balance-adjustment copy ([72632f0](https://github.com/budgie-at/budgie/commit/72632f0e47d2aed71e99973cc1824131da29b595))
+
+
+### Features
+
+* **landing:** add the balance-adjustment feature page ([f1d5dc0](https://github.com/budgie-at/budgie/commit/f1d5dc024ca6262dc51a8730e8185c2ef2e2fca0))
+
+
+
+
+
 ## [6.47.5](https://github.com/budgie-at/budgie/compare/v6.47.4...v6.47.5) (2026-09-11)
 
 
