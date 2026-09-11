@@ -20,7 +20,14 @@ export const FEATURE_METADATA = {
         'crypto and bank tracker',
         'mobile money manager'
     ],
-    relatedFeatureSlugs: ['net-worth-tracker', 'multi-currency', 'deposit-tracking', 'debt-tracking', 'crypto-investment-tracking'],
+    relatedFeatureSlugs: [
+        'balance-adjustment',
+        'net-worth-tracker',
+        'multi-currency',
+        'deposit-tracking',
+        'debt-tracking',
+        'crypto-investment-tracking'
+    ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
     publishedAt: '2025-11-17',
     updatedAt: '2026-09-07',
