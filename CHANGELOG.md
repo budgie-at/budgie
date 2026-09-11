@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.47.3](https://github.com/budgie-at/budgie/compare/v6.47.2...v6.47.3) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** correct stale on-device model sizes ([557281f](https://github.com/budgie-at/budgie/commit/557281fead3864f297df55d8f676863fce3fb45d))
+
+
+
+
+
 ## [6.47.2](https://github.com/budgie-at/budgie/compare/v6.47.1...v6.47.2) (2026-09-11)
 
 
