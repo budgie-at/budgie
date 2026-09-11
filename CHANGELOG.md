@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.46.0](https://github.com/budgie-at/budgie/compare/v6.45.1...v6.46.0) (2026-09-11)
+
+
+### Features
+
+* **landing:** bank-fee-tracking steps story ([a174459](https://github.com/budgie-at/budgie/commit/a1744596d0a5314dc93dd5b2567815813a575acd))
+
+
+
+
+
 ## [6.45.1](https://github.com/budgie-at/budgie/compare/v6.45.0...v6.45.1) (2026-09-11)
 
 **Note:** Version bump only for package @budgie-at/root
