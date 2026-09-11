@@ -3161,8 +3161,8 @@ msgid "Authentication systems that remain secure even when examined"
 msgstr "Authentifizierungssysteme, die auch bei Überprüfung sicher bleiben"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
-msgid "Authentication tokens for optional bank sync services (stored securely in device keychain)"
-msgstr ""
+msgid "Authentication tokens for optional bank sync services (stored in the local database, encrypted when a PIN is set)"
+msgstr "Authentifizierungstoken für optionale Bank-Synchronisierungsdienste (in der lokalen Datenbank gespeichert, verschlüsselt, wenn eine PIN festgelegt ist)"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Auto-detected from device locale on first launch"
@@ -8747,6 +8747,10 @@ msgstr "In einer Ära, in der Datenlecks und Datenschutzverletzungen täglich Sc
 msgid "In an offline-first application:"
 msgstr "In einer Offline-First-Anwendung:"
 
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "In Budgie's local database on your device. When you set a PIN, that database is encrypted with a SQLCipher key held in your platform's keystore; the token itself is never sent to a Budgie server (we have none)."
+msgstr "In Budgies lokaler Datenbank auf Ihrem Gerät. Wenn Sie eine PIN festlegen, wird diese Datenbank mit einem SQLCipher-Schlüssel verschlüsselt, der im Keystore Ihrer Plattform liegt; der Token selbst wird nie an einen Budgie-Server gesendet (wir haben keinen)."
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "In connection with a merger, acquisition, or sale of assets (users will be notified)"
 msgstr ""
@@ -8774,10 +8778,6 @@ msgstr "In diesem Artikel werden wir genau erläutern, wie Budgie Ihre Finanzdat
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "In this comprehensive guide, we’ll explore why people are leaving YNAB, what to look for in a privacy-focused alternative, and provide honest reviews of the top options available in 2025. Whether you’re concerned about cloud data storage, subscription fatigue, or simply want more control over your financial information, we’ve got you covered."
 msgstr "Dieser Guide zeigt, warum Menschen YNAB verlassen, was du von einer datenschutzorientierten Alternative erwarten kannst und wie die stärksten Optionen 2025 abschneiden. Wenn Cloud-Speicherung, Abo-Müdigkeit oder Datenkontrolle dein Thema ist, fang hier an."
-
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "In your platform's secure keystore (iOS Keychain / Android Keystore), never in plaintext or our servers (we have none)."
-msgstr "Im sicheren Schlüsselbund Ihrer Plattform (iOS Keychain / Android Keystore), niemals im Klartext oder auf unseren Servern (wir haben keine)."
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "In-app switcher — no reinstall, no relaunch"
@@ -15271,8 +15271,8 @@ msgid "Two on-device models — Qwen3 1.7B for chat and a 768-dim Nomic embeddin
 msgstr "Zwei geräteeigene Modelle – Qwen3 1.7B für Chat und ein 768-dim Nomic-Embedding-Modell – kategorisieren Transaktionen, schlagen Tags vor und lernen aus Ihren Korrekturen. Ihre Kontoauszüge verlassen das Smartphone nie."
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
-msgid "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device's secure keystore; (2) PDF/CSV/Excel statement imports for anything else."
-msgstr "Zwei Wege: (1) Direkte API-Token für unterstützte Banken wie Monobank, wo das Token im sicheren Schlüsselspeicher Ihres Geräts lebt; (2) PDF/CSV/Excel-Kontoauszugsimporte für alles andere."
+msgid "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in Budgie's local database; (2) PDF/CSV/Excel statement imports for anything else."
+msgstr "Zwei Wege: (1) direkte API-Token für unterstützte Banken wie Monobank, bei denen der Token in Budgies lokaler Datenbank liegt; (2) PDF/CSV/Excel-Kontoauszugsimporte für alles andere."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Two rows, one movement"
@@ -17794,8 +17794,8 @@ msgid "Your spending patterns are analyzed to determine your creditworthiness"
 msgstr "Ihre Ausgabemuster werden analysiert, um Ihre Kreditwürdigkeit zu bewerten"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Your token, in your keystore"
-msgstr "Ihr Token, in Ihrem Keystore"
+msgid "Your token, in your local database"
+msgstr "Ihr Token in Ihrer lokalen Datenbank"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Your transaction data contributes to products sold to landlords evaluating rental applications, lenders assessing loan risk, and employers verifying income claims. The infrastructure provider became a data company."
