@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.49.0](https://github.com/budgie-at/budgie/compare/v6.48.0...v6.49.0) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** clarify sync-data-repairs copy and French soft-delete wording ([79c2edd](https://github.com/budgie-at/budgie/commit/79c2eddfe1e8f19438e7145dbe2d5fe207b68497))
+
+
+### Features
+
+* **landing:** add the sync-data-repairs feature page ([dd042ea](https://github.com/budgie-at/budgie/commit/dd042ea0a5426ab53fca7823e6786c10e99b317e))
+
+
+
+
+
 # [6.48.0](https://github.com/budgie-at/budgie/compare/v6.47.5...v6.48.0) (2026-09-11)
 
 
