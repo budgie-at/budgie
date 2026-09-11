@@ -92,6 +92,10 @@ msgstr "{count, plural, one {This tag has # transaction. Select another tag to r
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "{formattedAmount} / mo"
+msgstr "{formattedAmount} / mo"
+
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
@@ -125,9 +129,17 @@ msgstr "{matchingRulesCount, plural, one {# matching rule} other {# matching rul
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# month} other {# months}}"
 
+#: src/runway/component/runway-horizon-chip/runway-horizon-chip.tsx
+msgid "{months} mo"
+msgstr "{months} mo"
+
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
+
+#: src/runway/component/runway-history-chart/runway-history-chart.tsx
+msgid "{peakLabel} spiked to {peakAmount} — the median ignores it."
+msgstr "{peakLabel} spiked to {peakAmount} — the median ignores it."
 
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
@@ -171,6 +183,11 @@ msgstr "{splitEntryCount, plural, one {# item} other {# items}}"
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 
+#: src/runway/component/runway-hero/runway-hero.tsx
+#: src/runway/component/runway-widget/runway-widget.tsx
+msgid "+{formattedNet} / mo"
+msgstr "+{formattedNet} / mo"
+
 #: src/budget/components/budget-widget-category-list/budget-widget-category-list.tsx
 msgid "+{hiddenCategoryCount} more"
 msgstr "+{hiddenCategoryCount} more"
@@ -198,6 +215,18 @@ msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 #: src/app/(tabs)/settings/index.tsx
 msgid "100% Offline & Private"
 msgstr "100% Offline & Private"
+
+#: src/runway/component/runway-hero/runway-hero.tsx
+msgid "12"
+msgstr "12"
+
+#: src/runway/component/runway-hero/runway-hero.tsx
+msgid "3"
+msgstr "3"
+
+#: src/runway/component/runway-hero/runway-hero.tsx
+msgid "6"
+msgstr "6"
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "A balanced starter budget with common categories"
@@ -532,6 +561,10 @@ msgstr "Balance"
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
 
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Balance forecast"
+msgstr "Balance forecast"
+
 #: src/account/constant/account-type.constant.ts
 msgid "Bank"
 msgstr "Bank"
@@ -636,6 +669,14 @@ msgstr "Budgie will notify you when it finishes"
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 
+#: src/runway/component/runway-widget/runway-widget.tsx
+msgid "Building"
+msgstr "Building"
+
+#: src/runway/component/runway-overview/runway-overview.tsx
+msgid "Burn"
+msgstr "Burn"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
@@ -673,6 +714,7 @@ msgstr "Cash"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/categories.tsx
+#: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-category-filter/transaction-category-filter.tsx
 #: src/transaction/components/transaction-list/transaction-list.tsx
@@ -1093,13 +1135,21 @@ msgstr "Could not update token"
 msgid "Could not update transaction."
 msgstr "Could not update transaction."
 
-#: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
+#: src/settings/hook/use-widget-setting-toggle.hook.ts
 msgid "Could not update widget setting"
 msgstr "Could not update widget setting"
 
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
 msgid "Count this account in your net worth calculation"
 msgstr "Count this account in your net worth calculation"
+
+#: src/runway/component/runway-hero/runway-hero.tsx
+msgid "Covered by {coverMonths} months of expenses"
+msgstr "Covered by {coverMonths} months of expenses"
+
+#: src/runway/component/runway-hero/runway-hero.tsx
+msgid "Covered by your liquid balance"
+msgstr "Covered by your liquid balance"
 
 #: src/export/components/export-database/export-database.tsx
 msgid "Create a backup of all your data"
@@ -1349,6 +1399,10 @@ msgstr "Disable App Lock"
 msgid "Display the budget card on the home screen"
 msgstr "Display the budget card on the home screen"
 
+#: src/settings/components/runway-widget-toggle/runway-widget-toggle.tsx
+msgid "Display the runway card on the home screen"
+msgstr "Display the runway card on the home screen"
+
 #: src/app/import-column-mapper.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -1402,6 +1456,10 @@ msgstr "e.g. Groceries, Entertainment"
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
+
+#: src/runway/component/runway-overview/runway-overview.tsx
+msgid "Earn"
+msgstr "Earn"
 
 #: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
@@ -1905,6 +1963,10 @@ msgstr "Include in file imports"
 msgid "Include in Net Worth"
 msgstr "Include in Net Worth"
 
+#: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
+msgid "Include one-offs"
+msgstr "Include one-offs"
+
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Included in file imports"
 msgstr "Included in file imports"
@@ -2156,6 +2218,14 @@ msgstr "MCC categories are not loaded"
 msgid "MCC Code"
 msgstr "MCC Code"
 
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "median · p25–p75"
+msgstr "median · p25–p75"
+
+#: src/runway/component/runway-history-chart/runway-history-chart.tsx
+msgid "median {medianLabel}"
+msgstr "median {medianLabel}"
+
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Merchant code"
@@ -2208,9 +2278,17 @@ msgstr "Monthly Budget"
 msgid "Monthly Costs"
 msgstr "Monthly Costs"
 
+#: src/runway/component/runway-history-chart/runway-history-chart.tsx
+msgid "Monthly history"
+msgstr "Monthly history"
+
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Monthly Total"
 msgstr "Monthly Total"
+
+#: src/runway/component/runway-hero/runway-hero.tsx
+msgid "months left"
+msgstr "months left"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -2219,6 +2297,10 @@ msgstr "Navigate to Account → Statements"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Navigate to Menu → Statements"
 msgstr "Navigate to Menu → Statements"
+
+#: src/runway/component/runway-overview/runway-overview.tsx
+msgid "Net"
+msgstr "Net"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
@@ -2385,6 +2467,10 @@ msgstr "No Rules Yet"
 msgid "No source transactions"
 msgstr "No source transactions"
 
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "No spending in this window."
+msgstr "No spending in this window."
+
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."
 msgstr "No sync repairs found."
@@ -2425,6 +2511,11 @@ msgstr "not contains"
 msgid "Not Contains"
 msgstr "Not Contains"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+#: src/runway/component/runway-widget/runway-widget.tsx
+msgid "Not enough history yet"
+msgstr "Not enough history yet"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "not equals"
 msgstr "not equals"
@@ -2445,6 +2536,19 @@ msgstr "not set"
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
 msgstr "Note"
+
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+#: src/runway/component/runway-meter/runway-meter.tsx
+msgid "now"
+msgstr "now"
+
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "One-off"
+msgstr "One-off"
+
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "One-offs are excluded from the base rate."
+msgstr "One-offs are excluded from the base rate."
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
@@ -2544,6 +2648,7 @@ msgstr "Overall monthly limit"
 msgid "Overpaid"
 msgstr "Overpaid"
 
+#: src/runway/component/runway-overview/runway-overview.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Overview"
 msgstr "Overview"
@@ -2868,6 +2973,20 @@ msgstr "Rule updated"
 msgid "Rules"
 msgstr "Rules"
 
+#: src/runway/component/runway-hero/runway-hero.tsx
+#: src/runway/component/runway-widget/runway-widget.tsx
+msgid "Runs out around {runOutDate}"
+msgstr "Runs out around {runOutDate}"
+
+#: src/@generic/component/analytics-page-header/analytics-page-header.tsx
+#: src/runway/component/runway-widget/runway-widget.tsx
+msgid "Runway"
+msgstr "Runway"
+
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
+msgstr "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
@@ -3144,6 +3263,10 @@ msgstr "Show budget on home"
 msgid "Show Cents"
 msgstr "Show Cents"
 
+#: src/settings/components/runway-widget-toggle/runway-widget-toggle.tsx
+msgid "Show runway on home"
+msgstr "Show runway on home"
+
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
@@ -3326,6 +3449,7 @@ msgstr "Tag transactions to see how your spending breaks down by context."
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
+#: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tag-filter/transaction-tag-filter.tsx
@@ -3360,6 +3484,10 @@ msgstr "Tap to select"
 #: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx
 msgid "Target balance"
 msgstr "Target balance"
+
+#: src/runway/component/runway-hero/runway-hero.tsx
+msgid "The answer"
+msgstr "The answer"
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
@@ -3627,6 +3755,7 @@ msgid "Ukrainian"
 msgstr "Ukrainian"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "Uncategorized"
 msgstr "Uncategorized"
 
@@ -3744,6 +3873,10 @@ msgstr "Waiting"
 msgid "We will retry this quietly."
 msgstr "We will retry this quietly."
 
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "What's driving it"
+msgstr "What's driving it"
+
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "When does the deposit mature?"
 msgstr "When does the deposit mature?"
@@ -3776,6 +3909,10 @@ msgstr "XLSX export"
 msgid "Yesterday"
 msgstr "Yesterday"
 
+#: src/runway/component/runway-hero/runway-hero.tsx
+msgid "You are building, not burning."
+msgstr "You are building, not burning."
+
 #: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You gave money"
 msgstr "You gave money"
@@ -3800,6 +3937,10 @@ msgstr "You owe"
 #: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You received money"
 msgstr "You received money"
+
+#: src/runway/component/runway-hero/runway-hero.tsx
+msgid "You spend more than you earn."
+msgstr "You spend more than you earn."
 
 #: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."
