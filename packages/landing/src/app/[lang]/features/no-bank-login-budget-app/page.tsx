@@ -146,8 +146,8 @@ export default async function NoBankLoginBudgetAppPage(props: PageLangParam) {
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
-                            Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device&apos;s
-                            secure keystore; (2) PDF/CSV/Excel statement imports for anything else.
+                            Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in Budgie&apos;s local
+                            database; (2) PDF/CSV/Excel statement imports for anything else.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
@@ -214,8 +214,8 @@ export default async function NoBankLoginBudgetAppPage(props: PageLangParam) {
                     question={<Trans>How does Budgie sync without an aggregator?</Trans>}
                     answer={
                         <Trans>
-                            Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device&apos;s
-                            secure keystore; (2) PDF/CSV/Excel statement imports for anything else.
+                            Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in Budgie&apos;s local
+                            database; (2) PDF/CSV/Excel statement imports for anything else.
                         </Trans>
                     }
                 />

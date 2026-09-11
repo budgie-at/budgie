@@ -152,7 +152,7 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            The embedding model is approximately 90 MB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are
+                            The embedding model is approximately 0.5 GB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are
                             downloaded once on first use of AI features and cached on-device.
                         </Trans>
                     }

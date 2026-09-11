@@ -539,28 +539,30 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 11. Use `serve-sim tap` for taps. Use normalized coordinates only.
 12. Do not use Maestro for dev-client checks. Maestro is only acceptance evidence against a clean E2E build.
 
-## Remote macOS Simulator Fleet
+## Remote Mac Fleet
 
-This Linux box has no iOS simulator, but it drives macOS fleet machines over SSH (aliases in `~/.ssh/config`):
+The dev box is Linux and cannot boot iOS simulators. It reaches two Macs over SSH for simulator, Maestro, and media-capture work:
 
-- `ssh macmini` — LAN `192.168.1.35`, user `vitalii`. **Preferred sim host.** Xcode 26.6 + iOS 26.5 runtime, iPhone 17 simulators, ~175 GB free. Has Homebrew Node; pnpm is not preinstalled (`npm i -g pnpm@11.24.0`). `sudo` requires a password.
-- `ssh macstudio` — user `macstudio`, reached through a Cloudflare Tunnel (`cloudflared access ssh` ProxyCommand). Has a Budgie E2E checkout at `~/budgie-e2e`, but **treat it as off-limits while it is overloaded**.
+- `macstudio` (`ssh macstudio`) — the capture machine: macOS + Xcode, reached through the Cloudflare tunnel `macstudio.vitaliiyehorov.dev` (`ProxyCommand cloudflared access ssh`). Homebrew tools (`magick`, `ffmpeg`) and `maestro` (`~/.maestro/bin`) are not on a non-interactive SSH `PATH`; export `PATH="/opt/homebrew/bin:$HOME/.maestro/bin:$PATH"` first. Treat it as off-limits while it is overloaded.
+- `macmini` (`ssh macmini`, `192.168.1.35`) — LAN machine, now on Xcode 26.6 + iOS 26.5 runtime with iPhone 17 simulators, so it is the preferred host for interactive simulator runs. Homebrew Node is present; install pnpm with `npm i -g pnpm@11.24.0`. `sudo` requires a password.
 
-Use `serve-sim` (Evan Bacon) — the maintained "npx serve of Apple Simulators" (`npx --yes serve-sim`). `slimsim` does not exist on npm; do not reach for it.
+Rules:
 
-Verified iOS E2E path (macmini, Xcode 26):
+1. Use the repo's own pipeline, not hand-driven sims, to produce committed assets: `capture-store-screenshots.sh` with `--config .github/landing-media.config.json` (the default config is the store one — always pass it), then compose and manifest. `serve-sim` (`.agents/skills/serve-sim/SKILL.md`) is for interactive tapping/preview, not for capture.
+2. The Mac's `/bin/bash` is 3.2 and has no `mapfile`, so `compose-web-media.sh` runs on this Linux box: copy the raw tree back (`landing-raw/raw/ios/<device-slug>/<locale>/<appearance>/`), then `bash packages/app/fastlane/screenshots/design/compose-web-media.sh --raw-dir <raw> --output packages/landing/public/media --scenes <a,b>` and `pnpm --filter @budgie-at/landing media:manifest`.
+3. Reuse the installed E2E app with `--skip-install` when it is current (bundle id `com.vitalyiegorov.budgie.e2e`); otherwise pass a packaged `Base.app` with `--app`. Force a rebuild when app UI changed.
+4. Check the data volume before capturing: `df -h /System/Volumes/Data`. DerivedData and stale simulator devices fill it, and a full volume makes Maestro fail with `No space left on device`. Delete `~/Library/Developer/Xcode/DerivedData/*` and stale `*-derived` trees when low.
+5. A single-scene run replaces the whole device raw directory, so pass every scene you need to one invocation; copy assets and repo changes back with `scp` or `git pull`.
+6. **Interactive simulator runs (dev checks)** — use `serve-sim` (Evan Bacon): `npx --yes serve-sim`; `slimsim` does not exist on npm. Verified path on macmini (Xcode 26.6 + iOS 26.5 runtime):
+    1. Sync the worktree with a tar pipe — macmini's `rsync` is `openrsync` and rejects GNU flags: `tar czf - --exclude=.git --exclude=node_modules --exclude=dist … . | ssh macmini 'tar xzf - -C ~/budgie-runway'`.
+    2. `pnpm install && pnpm build` with `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` (install pnpm first: `npm i -g pnpm@11.24.0`).
+    3. `cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean`.
+    4. `xcodebuild -workspace ios/budgieE2E.xcworkspace -scheme budgieE2E -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,id=<udid>' -derivedDataPath ~/runway-derived CODE_SIGNING_ALLOWED=NO build`. Do not use `expo run:ios` — it mis-detects the simulator UDID as a physical device and demands code signing.
+    5. `xcrun simctl install <udid> …/budgieE2E.app`; inject a DB at `<app-container>/Documents/SQLite/budgie.db`; `xcrun simctl launch <udid> com.vitalyiegorov.budgie.e2e`; deep-link `budgie://<route>` and tap the system "Open?" prompt via serve-sim.
+    6. Stream on the Mac (`npx --yes serve-sim -p <port> <udid>`), expose with `cloudflared tunnel --url http://127.0.0.1:<port>`, and open the `*.trycloudflare.com` URL in the T3 preview. Drive with `serve-sim tap -d <udid> <x> <y>` and `serve-sim gesture -d <udid> '{"type":"begin","x":..,"y":..}'`.
+7. **Xcode 26 toolchain** — `expo-modules-jsi@57.0.6` ships invalid `SWIFT_RETURNS_RETAINED` annotations on the `RuntimeScheduler` constructors that newer clang (Xcode 26.2/26.3/26.6) rejects. The repo carries `patches/expo-modules-jsi@57.0.6.patch` (via `pnpm-workspace.yaml` `patchedDependencies`) removing them — do not remove it, and do not try to bump the dependency (all released versions, including 58.0.0, still ship the bug).
 
-1. Install pnpm: `npm i -g pnpm@11.24.0`.
-2. Sync the worktree with a tar pipe — macmini's `rsync` is `openrsync` and rejects GNU flags: `tar czf - --exclude=.git --exclude=node_modules --exclude=dist … . | ssh macmini 'tar xzf - -C ~/budgie-runway'`.
-3. `pnpm install && pnpm build` with `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8`.
-4. `cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean` (installs CocoaPods).
-5. `xcodebuild -workspace ios/budgieE2E.xcworkspace -scheme budgieE2E -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,id=<udid>' -derivedDataPath ~/runway-derived CODE_SIGNING_ALLOWED=NO build`. Do **not** use `expo run:ios` — it mis-detects the simulator UDID as a physical device and demands code signing.
-6. `xcrun simctl install <udid> …/budgieE2E.app`, inject a DB at `<app-container>/Documents/SQLite/budgie.db`, `xcrun simctl launch <udid> com.vitalyiegorov.budgie.e2e`, then deep-link `xcrun simctl openurl <udid> "budgie://analytics?tab=runway"` and tap the system "Open?" prompt via serve-sim.
-7. Stream: on the Mac `npx --yes serve-sim -p <port> <udid>`, then `cloudflared tunnel --url http://127.0.0.1:<port>` and open the `*.trycloudflare.com` URL in the T3 preview. Drive it with `serve-sim tap -d <udid> <x> <y>` (normalized 0..1) and `serve-sim gesture -d <udid> '{"type":"begin","x":..,"y":..}'`.
-
-Xcode 26 toolchain: `expo-modules-jsi@57.0.6` ships invalid `SWIFT_RETURNS_RETAINED` annotations on the `RuntimeScheduler` constructors that newer clang (Xcode 26.2/26.3/26.6) rejects. The repo carries `patches/expo-modules-jsi@57.0.6.patch` (via `pnpm-workspace.yaml` `patchedDependencies`) removing them — do not remove it, and do not try to bump the dependency (all released versions, including 58.0.0, still ship the bug).
-
-Hygiene: never print `~/.cloudflared` secrets or tunnel tokens; kill Metro/serve-sim/cloudflared when done (`pkill -f 'metro|serve-sim|cloudflared'`); restore any shared Mac checkout you touched (`git checkout -f <branch> && git clean -fd`).
+Never print `~/.cloudflared` secrets or tunnel tokens; kill Metro/serve-sim/cloudflared when done; restore any shared Mac checkout you touched (`git checkout -f <branch> && git clean -fd`).
 
 ## E2E Testing
 

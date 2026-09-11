@@ -102,6 +102,13 @@ sets `consolidation_parent_transaction_id` renders its empty state. That is what
 canonical transfer the way `moveToConsolidatedTransaction` does, leaving
 `shared/transfer-pair.sql` untouched for the scenes that want the loose pair.
 
+Two scene overlays exist only because a picker's option ids are localized.
+`shared/recurring.sql` pins three subscriptions to the 15th of every month so
+`recurring-payments-calendar-2` can tap `RecurringCalendar.Day.CurrentMonth.15`
+in every locale, and `mcc-auto-category-2` searches the category picker for
+`restaurants`, which matches `categories.title_search` — the English title kept
+on the row while `default_category_translations` supplies the displayed one.
+
 A seeded database is plain SQLite and the PIN lives in SecureStore, so no PIN
 unlocks a seeded lock screen. Every scene behind the lock — the Settings security
 card with App Lock active, `biometric-authentication-1` — stays unreachable until
