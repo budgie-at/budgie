@@ -10514,6 +10514,10 @@ msgstr "No official mobile app (third-party options exist)"
 msgid "No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating the expense or income entry yourself."
 msgstr "No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating the expense or income entry yourself."
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "No repair runs until you confirm on the repair card — no background cleanup"
+msgstr "No repair runs until you confirm on the repair card — no background cleanup"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
 msgstr "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
@@ -10822,10 +10826,6 @@ msgstr "Nothing is written until you tap Save — the whole batch commits in one
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Nothing opens before the PIN"
 msgstr "Nothing opens before the PIN"
-
-#: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "Nothing runs until you confirm on the repair card — no background cleanup"
-msgstr "Nothing runs until you confirm on the repair card — no background cleanup"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Nothing to sign into"

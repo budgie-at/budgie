@@ -10515,6 +10515,10 @@ msgstr "Без офіційного мобільного додатку (існ�
 msgid "No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating the expense or income entry yourself."
 msgstr "Немає скасування в один дотик. Перетворення на переказ перезаписує початкові записи, тож скасувати це можна лише вручну відтворивши запис витрати чи доходу самостійно."
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "No repair runs until you confirm on the repair card — no background cleanup"
+msgstr "Жоден ремонт не запускається, доки ви не підтвердите на картці ремонту — жодного фонового очищення"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
 msgstr "Друга транзакція не створюється — початковий рядок змінює тип. Переказ називає рахунок призначення й не потрапляє до аналітики витрат."
@@ -10823,10 +10827,6 @@ msgstr "Нічого не записується, доки ви не натис�
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Nothing opens before the PIN"
 msgstr "Нічого не відкриється до PIN"
-
-#: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "Nothing runs until you confirm on the repair card — no background cleanup"
-msgstr "Нічого не запускається, доки ви не підтвердите на картці ремонту — жодного фонового очищення"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Nothing to sign into"
@@ -13740,7 +13740,7 @@ msgstr "Перехід на імпорт CSV у Budgie повністю усув
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
 msgid "sync"
-msgstr ""
+msgstr "синхронізація"
 
 #: src/app/[lang]/features/sync-data-repairs/metadata.ts
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx

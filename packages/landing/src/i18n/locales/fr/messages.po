@@ -2240,7 +2240,7 @@ msgstr "Un écran dédié dans les Paramètres analyse chaque source de synchron
 
 #: src/app/[lang]/features/sync-data-repairs/metadata.ts
 msgid "A dedicated Settings screen scans every bank-sync source for duplicate imported transactions, shows the count per source, and soft-deletes only the imported copies after you confirm. Manual transactions stay untouched."
-msgstr "Un écran dédié dans les Paramètres analyse chaque source de synchronisation bancaire à la recherche de transactions importées en double, affiche le nombre par source et supprime uniquement les copies importées après votre confirmation. Les transactions manuelles restent intactes."
+msgstr "Un écran dédié dans les Paramètres analyse chaque source de synchronisation bancaire à la recherche de transactions importées en double, affiche le nombre par source et effectue une suppression logique uniquement des copies importées après votre confirmation. Les transactions manuelles restent intactes."
 
 #: src/app/[lang]/features/tag-analytics/metadata.ts
 msgid "A dedicated Tags tab in analytics with per-tag totals and a drillable Untagged bucket that surfaces every gap in your labeling."
@@ -3319,7 +3319,7 @@ msgstr "Les comptes bancaires d'abord"
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "Bank APIs can re-deliver a transaction after a retry or an overlapping resync window. The repair finds those repeated imported rows and removes the copies, not the original event."
-msgstr "Les API bancaires peuvent renvoyer une transaction après une nouvelle tentative ou une fenêtre de resynchronisation chevauchante. La réparation trouve ces lignes importées répétées et supprime les copies, pas l'événement d'origine."
+msgstr "Les API bancaires peuvent renvoyer une transaction après une nouvelle tentative ou une fenêtre de resynchronisation chevauchante. La réparation trouve ces lignes importées répétées et effectue une suppression logique des copies, pas de l'événement d'origine."
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Bank breach impact"
@@ -7660,7 +7660,7 @@ msgstr ""
 
 #: src/app/[lang]/features/sync-data-repairs/metadata.ts
 msgid "Find duplicate imported bank transactions and soft-delete only the copies — your manual entries are never touched."
-msgstr "Trouvez les transactions bancaires importées en double et supprimez uniquement les copies — vos saisies manuelles ne sont jamais touchées."
+msgstr "Trouvez les transactions bancaires importées en double et effectuez une suppression logique uniquement des copies — vos saisies manuelles ne sont jamais touchées."
 
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
 msgid "Find missing categories before charts lie."
@@ -9096,7 +9096,7 @@ msgstr "Ensuite, cela se lit comme un virement"
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "It scans each bank-sync source for duplicate imported transactions and soft-deletes the duplicated rows. Only imported copies are candidates; the repair shows the count per source first so you can decide."
-msgstr "Il analyse chaque source de synchronisation bancaire à la recherche de transactions importées en double et supprime les lignes dupliquées. Seules les copies importées sont candidates ; la réparation affiche d'abord le nombre par source pour que vous décidiez."
+msgstr "Il analyse chaque source de synchronisation bancaire à la recherche de transactions importées en double et effectue une suppression logique des lignes dupliquées. Seules les copies importées sont candidates ; la réparation affiche d'abord le nombre par source pour que vous décidiez."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "It sits above the list and counts only the transactions without a category inside your active account, date, type, tag and amount filters."
@@ -10515,6 +10515,10 @@ msgstr "Pas d'application mobile officielle (des options tierces existent)"
 msgid "No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating the expense or income entry yourself."
 msgstr "Pas d'annulation en un geste. La conversion en virement écrase les écritures d'origine ; pour revenir en arrière, il faut recréer manuellement la dépense ou le revenu vous-même."
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "No repair runs until you confirm on the repair card — no background cleanup"
+msgstr "Aucune réparation ne s'exécute tant que vous ne confirmez pas sur la carte de réparation — aucun nettoyage en arrière-plan"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
 msgstr "Aucune seconde transaction n'est créée : la ligne d'origine change de type. Un virement nomme le compte d'arrivée et reste hors de vos analyses de dépenses."
@@ -10823,10 +10827,6 @@ msgstr "Rien n’est écrit tant que vous n’appuyez pas sur Enregistrer — to
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Nothing opens before the PIN"
 msgstr "Rien ne s'ouvre avant le code PIN"
-
-#: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "Nothing runs until you confirm on the repair card — no background cleanup"
-msgstr "Rien ne s'exécute tant que vous ne confirmez pas sur la carte de réparation — aucun nettoyage en arrière-plan"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Nothing to sign into"
@@ -13270,7 +13270,7 @@ msgstr "Suppression logique pour les lignes que la banque ne signale plus — r�
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "Soft-deletes duplicated imported rows only — anything you typed yourself is left exactly as it is"
-msgstr "Supprime uniquement les lignes importées dupliquées — tout ce que vous avez saisi vous-même reste exactement tel quel"
+msgstr "Suppression logique des lignes importées dupliquées uniquement — tout ce que vous avez saisi vous-même reste exactement tel quel"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "software architecture"
@@ -13740,7 +13740,7 @@ msgstr "Passer à l'import CSV de Budgie élimine totalement l'agrégateur. Tél
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
 msgid "sync"
-msgstr ""
+msgstr "synchronisation"
 
 #: src/app/[lang]/features/sync-data-repairs/metadata.ts
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
@@ -14700,7 +14700,7 @@ msgstr "Le fichier de base de donnees SQLite est stocke dans un repertoire prote
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "The Sync Data Repairs screen is where you see that damage and undo it. It scans each bank-sync source, shows the duplicate count per source before changing anything, and soft-deletes only the duplicated imported rows once you confirm."
-msgstr "L'écran Réparation des données de synchronisation est l'endroit où vous voyez ces dégâts et les annulez. Il analyse chaque source de synchronisation bancaire, affiche le nombre de doublons par source avant de modifier quoi que ce soit, et supprime uniquement les lignes importées dupliquées après votre confirmation."
+msgstr "L'écran Réparation des données de synchronisation est l'endroit où vous voyez ces dégâts et les annulez. Il analyse chaque source de synchronisation bancaire, affiche le nombre de doublons par source avant de modifier quoi que ce soit, et effectue une suppression logique uniquement des lignes importées dupliquées après votre confirmation."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "The Tags tab in Budgie Statistics puts per-tag totals on the same screen as category breakdowns, reachable with a single tap on the tab switcher. Each row shows income, expense, and net for the currently selected date range. Tapping any row drills into the full filtered transaction list for that tag, with sorting and date filters available. The Untagged bucket surfaces every transaction that would otherwise be invisible to tag-based analysis."
@@ -16417,7 +16417,7 @@ msgstr "Quel est votre budget ?"
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "When a bank sync re-delivers the same transaction, Budgie finds the duplicate imported rows and soft-deletes only the copies — your own entries stay exactly as they are."
-msgstr "Quand une synchronisation bancaire renvoie la même transaction, Budgie trouve les lignes importées en double et supprime uniquement les copies — vos propres saisies restent exactement telles quelles."
+msgstr "Quand une synchronisation bancaire renvoie la même transaction, Budgie trouve les lignes importées en double et effectue une suppression logique uniquement des copies — vos propres saisies restent exactement telles quelles."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "When a company shuts down, the data does not necessarily disappear. It often becomes an asset sold to the acquiring company or retained in archives with unclear access policies."
