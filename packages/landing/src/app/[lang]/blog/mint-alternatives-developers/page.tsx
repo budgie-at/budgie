@@ -915,8 +915,8 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Crypto and stock tracking</strong>: Beyond traditional accounts, Budgie tracks cryptocurrency
-                                holdings and investment portfolios, all with the same privacy guarantees.
+                                <strong>Crypto tracking</strong>: Beyond traditional accounts, Budgie tracks cryptocurrency holdings with
+                                the same privacy guarantees.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
