@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.47.2](https://github.com/budgie-at/budgie/compare/v6.47.1...v6.47.2) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** correct token storage in the privacy policy ([e644144](https://github.com/budgie-at/budgie/commit/e644144fa21adb1cdfa834c23a4d7e45736ef846))
+* **landing:** describe real bank-token storage ([32153ba](https://github.com/budgie-at/budgie/commit/32153ba86b5093013efb56c7a9371792adea320e))
+
+
+
+
+
 ## [6.47.1](https://github.com/budgie-at/budgie/compare/v6.47.0...v6.47.1) (2026-09-11)
 
 
