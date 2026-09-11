@@ -2178,6 +2178,10 @@ msgstr "Une analyse en arrière-plan examine l'historique de vos transactions à
 msgid "A backup of everything"
 msgstr "Une sauvegarde de tout"
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "A bank API can hand back the same transaction twice: a retried request, a resync window that overlaps the last one, a connection that re-downloads a statement. Neither row is wrong on its own — they simply describe the same event, and you see it twice."
+msgstr "Une API bancaire peut renvoyer la même transaction deux fois : une requête réessayée, une fenêtre de resynchronisation qui chevauche la précédente, une connexion qui retélécharge un relevé. Aucune ligne n'est fausse en soi — elles décrivent le même événement, et vous le voyez deux fois."
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "A bank token is not a property of one account — it is a property of your relationship with the bank. Budgie models it that way: a connection holds the provider and the credential, and every account you sync from that bank points at it."
 msgstr "Un jeton bancaire n'est pas la propriété d'un seul compte — c'est la propriété de votre relation avec la banque. Budgie le modélise ainsi : une connexion détient le fournisseur et l'identifiant, et chaque compte que vous synchronisez depuis cette banque y renvoie."
@@ -2229,6 +2233,14 @@ msgstr "Une tâche quotidienne en arrière-plan récupère les taux depuis une s
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "A dedicated Rules screen with search across conditions, actions, categories, tags, and accounts"
 msgstr "Un écran Règles dédié avec une recherche portant sur les conditions, les actions, les catégories, les étiquettes et les comptes"
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "A dedicated Settings screen scans every bank-sync source and shows the duplicate count before it changes anything"
+msgstr "Un écran dédié dans les Paramètres analyse chaque source de synchronisation bancaire et affiche le nombre de doublons avant de modifier quoi que ce soit"
+
+#: src/app/[lang]/features/sync-data-repairs/metadata.ts
+msgid "A dedicated Settings screen scans every bank-sync source for duplicate imported transactions, shows the count per source, and soft-deletes only the imported copies after you confirm. Manual transactions stay untouched."
+msgstr "Un écran dédié dans les Paramètres analyse chaque source de synchronisation bancaire à la recherche de transactions importées en double, affiche le nombre par source et effectue une suppression logique uniquement des copies importées après votre confirmation. Les transactions manuelles restent intactes."
 
 #: src/app/[lang]/features/tag-analytics/metadata.ts
 msgid "A dedicated Tags tab in analytics with per-tag totals and a drillable Untagged bucket that surfaces every gap in your labeling."
@@ -2326,6 +2338,10 @@ msgstr "Une grille mensuelle des prélèvements"
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "A P2P purchase and the bank payment behind it merge into one cross-currency transfer"
 msgstr "Un achat P2P et le paiement bancaire qui le finance fusionnent en un seul transfert multidevise"
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "A per-source list so you can see which connection produced the duplicates"
+msgstr "Une liste par source pour voir quelle connexion a produit les doublons"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "A PIN, not a login"
@@ -2851,6 +2867,10 @@ msgstr "Une dépense est appariée à un revenu lorsque l'IBAN de contrepartie c
 msgid "An expense tracker lives or dies by entry friction. Budgie's quick-entry sheet picks the right account, the most-likely category, and the current date by default — typically two taps to a saved transaction."
 msgstr "Un gestionnaire de dépenses se distingue par la facilité de saisie. La fiche de saisie rapide de Budgie sélectionne le bon compte, la catégorie la plus probable et la date actuelle par défaut — généralement deux touches pour enregistrer une transaction."
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "An explicit empty state, “No sync repairs found”, when there is nothing to fix"
+msgstr "Un état vide explicite, « Aucune réparation de synchronisation trouvée », quand il n'y a rien à corriger"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "An Offline-First Answer: Budgie"
 msgstr "Une réponse hors ligne d'abord : Budgie"
@@ -3296,6 +3316,10 @@ msgstr "Synchronisation des comptes bancaires"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Bank accounts first"
 msgstr "Les comptes bancaires d'abord"
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Bank APIs can re-deliver a transaction after a retry or an overlapping resync window. The repair finds those repeated imported rows and removes the copies, not the original event."
+msgstr "Les API bancaires peuvent renvoyer une transaction après une nouvelle tentative ou une fenêtre de resynchronisation chevauchante. La réparation trouve ces lignes importées répétées et effectue une suppression logique des copies, pas de l'événement d'origine."
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Bank breach impact"
@@ -6678,6 +6702,10 @@ msgstr "Bloque-t-il les captures d'écran ou les enregistrements d'écran ?"
 msgid "Does it require a relaunch?"
 msgstr "Faut-il relancer l'application ?"
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Does it run automatically?"
+msgstr "S'exécute-t-il automatiquement ?"
+
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Does it switch automatically?"
 msgstr "Bascule-t-il automatiquement ?"
@@ -6799,6 +6827,10 @@ msgstr "exploration détaillée"
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Drillable Untagged bucket that lists every transaction missing a label for easy retroactive tagging"
 msgstr "Compartiment Non étiqueté explorable qui liste chaque transaction sans libellé pour un étiquetage rétroactif facile"
+
+#: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
+msgid "duplicates"
+msgstr "doublons"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Each account has a fixed currency. The exchange-rate service stores daily snapshots; the home/analytics screens read the latest rate when summing. Cross-currency transfers preserve both legs and the rate at the time."
@@ -7523,6 +7555,7 @@ msgstr "fonctionnalités"
 #: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 #: src/app/[lang]/features/transaction-tags/page.tsx
@@ -7624,6 +7657,10 @@ msgstr "Un logiciel financier qui respecte votre vie privée ne devrait pas exig
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Financial transactions and expense records"
 msgstr ""
+
+#: src/app/[lang]/features/sync-data-repairs/metadata.ts
+msgid "Find duplicate imported bank transactions and soft-delete only the copies — your manual entries are never touched."
+msgstr "Trouvez les transactions bancaires importées en double et effectuez une suppression logique uniquement des copies — vos saisies manuelles ne sont jamais touchées."
 
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
 msgid "Find missing categories before charts lie."
@@ -8218,6 +8255,7 @@ msgstr "Les positions se consolident dans le patrimoine net aux côtés des comp
 #: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 #: src/app/[lang]/features/transaction-tags/page.tsx
@@ -9055,6 +9093,10 @@ msgstr "Non. Et le schéma des agrégateurs comporte des risques qui sont rareme
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "It reads as a transfer afterwards"
 msgstr "Ensuite, cela se lit comme un virement"
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "It scans each bank-sync source for duplicate imported transactions and soft-deletes the duplicated rows. Only imported copies are candidates; the repair shows the count per source first so you can decide."
+msgstr "Il analyse chaque source de synchronisation bancaire à la recherche de transactions importées en double et effectue une suppression logique des lignes dupliquées. Seules les copies importées sont candidates ; la réparation affiche d'abord le nombre par source pour que vous décidiez."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "It sits above the list and counts only the transactions without a category inside your active account, date, type, tag and amount filters."
@@ -10473,6 +10515,10 @@ msgstr "Pas d'application mobile officielle (des options tierces existent)"
 msgid "No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating the expense or income entry yourself."
 msgstr "Pas d'annulation en un geste. La conversion en virement écrase les écritures d'origine ; pour revenir en arrière, il faut recréer manuellement la dépense ou le revenu vous-même."
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "No repair runs until you confirm on the repair card — no background cleanup"
+msgstr "Aucune réparation ne s'exécute tant que vous ne confirmez pas sur la carte de réparation — aucun nettoyage en arrière-plan"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
 msgstr "Aucune seconde transaction n'est créée : la ligne d'origine change de type. Un virement nomme le compte d'arrivée et reste hors de vos analyses de dépenses."
@@ -10665,6 +10711,10 @@ msgstr "Non. Le flux du microphone alimente whisper.rn directement en cours de p
 msgid "No. The platform manages biometric matching in the Secure Enclave (iOS) or Keystore (Android). Budgie only receives a yes/no signal plus access to a stored key fragment."
 msgstr "Non. La plateforme gère la correspondance biométrique dans le Secure Enclave (iOS) ou Keystore (Android). Budgie ne reçoit qu’un signal oui/non plus l’accès à un fragment de clé stocké."
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "No. The repair works on imported rows only. Manual transactions are never touched — that is exactly what the confirmation card promises before you press Repair."
+msgstr "Non. La réparation ne porte que sur les lignes importées. Les transactions manuelles ne sont jamais touchées — c'est exactement ce que promet la carte de confirmation avant que vous appuyiez sur Réparer."
+
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "No. The suggestion engine only proposes values from transactions you have already logged or imported."
 msgstr "Non. Le moteur de suggestions ne propose que des valeurs issues des transactions que vous avez déjà enregistrées ou importées."
@@ -10692,6 +10742,10 @@ msgstr "Non. La saisie vocale utilise whisper.rn — un binding React Native pou
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "No. While anyone can propose changes to the code, you control which version you run. Updates only install when you choose to update the app. If you’re concerned about a particular version, you can review the changes before updating or even build your own version from source. The open nature of the code means changes are visible and reviewable, actually giving you more control rather than less."
 msgstr "Non. Bien que n'importe qui puisse proposer des modifications au code, vous contrôlez quelle version vous utilisez. Les mises à jour ne s'installent que lorsque vous choisissez de mettre à jour l'application. Si une version particulière vous préoccupe, vous pouvez examiner les changements avant de mettre à jour ou même compiler votre propre version à partir du code source. La nature ouverte du code signifie que les changements sont visibles et examinables, vous donnant en réalité plus de contrôle, pas moins."
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "No. You open the screen, review the counts, and confirm on the repair card. Nothing changes before that."
+msgstr "Non. Vous ouvrez l'écran, vérifiez les nombres et confirmez sur la carte de réparation. Rien ne change avant cela."
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
@@ -12503,6 +12557,10 @@ msgstr "Intégrité des données fiable"
 msgid "Remaining-budget pill shows what's left to allocate as you build the split"
 msgstr "La pastille de budget restant affiche ce qui reste à allouer lors de la construction de la division"
 
+#: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
+msgid "Remove duplicate bank imports."
+msgstr "Supprimez les imports bancaires en double."
+
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Remove, alter, or obscure any proprietary notices or labels"
 msgstr ""
@@ -12510,6 +12568,10 @@ msgstr ""
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Rename it, nothing unlinks"
 msgstr "Renommez, rien ne se délie"
+
+#: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
+msgid "repair"
+msgstr "réparation"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long before you think about the debt. Instead of deleting it and re-entering a transfer, attach that transaction to the debt: it is recorded as a settlement against the debt account and the balance moves accordingly, while the original transaction stays exactly where your bank put it."
@@ -12702,6 +12764,10 @@ msgstr "Faire fonctionner une application cloud-first nécessite des serveurs, d
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "Running a large language model and a Whisper speech model on-device raises an obvious question: does the app stay fast to open? This cycle deferred llama and Whisper module evaluation past the first rendered frame, switched lucide icons to per-icon lazy imports, gated Lingui catalog loading behind an activation check instead of loading every locale eagerly, deferred sync services and background task registration off the boot path, dropped unreferenced embedded fonts, switched to date-fns deep subpath imports, and removed the intl-pluralrules polyfill now that Hermes ships it natively. Each change is small; together they keep first paint fast even with two on-device models available."
 msgstr "Faire tourner un grand modèle de langage et un modèle vocal Whisper sur l’appareil pose une question évidente : l’appli reste-t-elle rapide à ouvrir ? Ce cycle a repoussé l’évaluation des modules llama et Whisper après la première image rendue, est passé à des imports paresseux par icône pour lucide, a conditionné le chargement des catalogues Lingui à une vérification d’activation au lieu de charger chaque langue avidement, a repoussé les services de synchronisation et l’enregistrement des tâches en arrière-plan hors du chemin de démarrage, a supprimé les polices intégrées non référencées, est passé à des imports de sous-chemins profonds de date-fns, et a supprimé le polyfill intl-pluralrules maintenant que Hermes le fournit nativement. Chaque changement est petit ; ensemble, ils gardent le premier affichage rapide même avec deux modèles embarqués disponibles."
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Runs against the local database — no upload, no server"
+msgstr "S'exécute sur la base de données locale — aucun envoi, aucun serveur"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Runtimes designed for mobile inference handle memory management, tokenization, and batching in ways optimized for constrained environments. They minimize peak memory usage and keep the thermal footprint low enough for casual use without draining the battery."
@@ -13202,6 +13268,10 @@ msgstr "Les SDK de connexion sociale qui partagent des donnees avec les fourniss
 msgid "Soft-delete for rows the bank no longer reports — recoverable from trash"
 msgstr "Suppression logique pour les lignes que la banque ne signale plus — récupérable depuis la corbeille"
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Soft-deletes duplicated imported rows only — anything you typed yourself is left exactly as it is"
+msgstr "Suppression logique des lignes importées dupliquées uniquement — tout ce que vous avez saisi vous-même reste exactement tel quel"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "software architecture"
 msgstr "La confidentialité comme architecture"
@@ -13668,8 +13738,18 @@ msgid "Switching to Budgie CSV import eliminates the aggregator entirely. Downlo
 msgstr "Passer à l'import CSV de Budgie élimine totalement l'agrégateur. Téléchargez votre relevé depuis le site de votre banque comme d'habitude et importez-le dans Budgie. Vous obtenez l'historique complet de vos transactions sans aucune exposition permanente de vos identifiants à un tiers."
 
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
+#: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
 msgid "sync"
-msgstr ""
+msgstr "synchronisation"
+
+#: src/app/[lang]/features/sync-data-repairs/metadata.ts
+#: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
+msgid "Sync Data Repairs"
+msgstr "Réparation des données de synchronisation"
+
+#: src/app/[lang]/features/sync-data-repairs/metadata.ts
+msgid "Sync Data Repairs — Budgie"
+msgstr "Réparation des données de synchronisation — Budgie"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "sync engines"
@@ -14538,6 +14618,10 @@ msgstr "La même correspondance s’applique entre deux banques et entre une car
 msgid "The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with a credit and a debit against the two accounts — no second transaction is created."
 msgstr "La même transaction change de type pour devenir un virement ; vous choisissez l'autre compte, et Budgie remplace ses écritures par un crédit et un débit sur les deux comptes — aucune seconde transaction n'est créée."
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "The screen says “No sync repairs found” and leaves your data alone."
+msgstr "L'écran affiche « Aucune réparation de synchronisation trouvée » et laisse vos données intactes."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The security architecture is designed for users who understand the risks described in this article and want an alternative."
 msgstr "L'[architecture de securite](/{lang}#security) est concue pour les utilisateurs qui comprennent les risques decrits dans cet article et souhaitent une alternative."
@@ -14613,6 +14697,10 @@ msgstr "La devise prononcée sélectionne automatiquement le compte correspondan
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
 msgstr "Le fichier de base de donnees SQLite est stocke dans un repertoire protege auquel seul Budgie peut acceder. Sur iOS, il s'agit du repertoire Documents isole de l'application. Sur Android, c'est le stockage interne de l'application que les autres applications ne peuvent pas lire."
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "The Sync Data Repairs screen is where you see that damage and undo it. It scans each bank-sync source, shows the duplicate count per source before changing anything, and soft-deletes only the duplicated imported rows once you confirm."
+msgstr "L'écran Réparation des données de synchronisation est l'endroit où vous voyez ces dégâts et les annulez. Il analyse chaque source de synchronisation bancaire, affiche le nombre de doublons par source avant de modifier quoi que ce soit, et effectue une suppression logique uniquement des lignes importées dupliquées après votre confirmation."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "The Tags tab in Budgie Statistics puts per-tag totals on the same screen as category breakdowns, reachable with a single tap on the tab switcher. Each row shows income, expense, and net for the currently selected date range. Tapping any row drills into the full filtered transaction list for that tag, with sorting and date filters available. The Untagged bucket surfaces every transaction that would otherwise be invisible to tag-based analysis."
@@ -15919,6 +16007,10 @@ msgstr "Que signifie « étiquette principale » ?"
 msgid "What does \"primary\" actually do?"
 msgstr "Que fait réellement « principale » ?"
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "What does a sync data repair actually do?"
+msgstr "Que fait réellement une réparation des données de synchronisation ?"
+
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "What does merging two categories do?"
 msgstr "Que se passe-t-il lors de la fusion de deux catégories ?"
@@ -16095,6 +16187,10 @@ msgstr "Que se passe-t-il si le projet est abandonné ? Vais-je perdre l'accès 
 msgid "What if the transaction has no MCC?"
 msgstr "Que se passe-t-il si la transaction n'a pas de MCC ?"
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "What if there is nothing to repair?"
+msgstr "Et s'il n'y a rien à réparer ?"
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "What if Whisper mishears me?"
 msgstr "Que se passe-t-il si Whisper me comprend mal ?"
@@ -16228,6 +16324,7 @@ msgstr "Quels compromis sont envisagés"
 #: src/app/[lang]/features/spending-analytics/page.tsx
 #: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 #: src/app/[lang]/features/transaction-tags/page.tsx
@@ -16317,6 +16414,10 @@ msgstr "Qu'est-ce que le compartiment Non étiqueté ?"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "What’s your budget?"
 msgstr "Quel est votre budget ?"
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "When a bank sync re-delivers the same transaction, Budgie finds the duplicate imported rows and soft-deletes only the copies — your own entries stay exactly as they are."
+msgstr "Quand une synchronisation bancaire renvoie la même transaction, Budgie trouve les lignes importées en double et effectue une suppression logique uniquement des copies — vos propres saisies restent exactement telles quelles."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "When a company shuts down, the data does not necessarily disappear. It often becomes an asset sold to the acquiring company or retained in archives with unclear access policies."
@@ -16724,6 +16825,10 @@ msgstr "Pourquoi les développeurs choisissent Budgie :"
 msgid "Why direct API matters more than convenience"
 msgstr "Pourquoi l'API directe est plus importante que la commodité"
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Why do duplicates appear at all?"
+msgstr "Pourquoi des doublons apparaissent-ils ?"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Why do other apps charge monthly?"
 msgstr "Pourquoi les autres applications facturent-elles mensuellement ?"
@@ -16731,6 +16836,10 @@ msgstr "Pourquoi les autres applications facturent-elles mensuellement ?"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Why does this matter? Consider these scenarios:"
 msgstr "Pourquoi est-ce important ? Considérez ces scénarios :"
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Why duplicates appear at all"
+msgstr "Pourquoi des doublons apparaissent"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Why entry friction kills expense trackers"
@@ -16938,6 +17047,10 @@ msgstr "La consolidation va-t-elle retraiter mes transactions existantes ?"
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Will it suggest things I never bought?"
 msgstr "Va-t-il suggérer des choses que je n'ai jamais achetées ?"
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Will it touch transactions I entered by hand?"
+msgstr "Touchera-t-il aux transactions que j'ai saisies à la main ?"
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Will it work with my bank?"
