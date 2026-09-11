@@ -472,8 +472,8 @@ msgid "<0>Credential storage</0>: Your actual username and password must be stor
 msgstr "<0>Зберігання облікових даних</0>: Ваш реальний логін та пароль мають зберігатися (навіть якщо зашифровані) на серверах третіх сторін"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "<0>Crypto and stock tracking</0>: Beyond traditional accounts, Budgie tracks cryptocurrency holdings and investment portfolios, all with the same privacy guarantees."
-msgstr "<0>Відстеження крипто та акцій</0>: Окрім традиційних рахунків, Budgie відстежує криптовалютні активи та інвестиційні портфелі — все з тими самими гарантіями приватності."
+msgid "<0>Crypto tracking</0>: Beyond traditional accounts, Budgie tracks cryptocurrency holdings with the same privacy guarantees."
+msgstr "<0>Облік криптовалют</0>: окрім традиційних рахунків, Budgie відстежує криптоактиви з тими самими гарантіями приватності."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>CSV and PDF import</0> — Export a statement from any bank website and import it into Budgie. This works with every bank on the planet, requires no API key, and leaves no credential exposure."
@@ -5916,14 +5916,6 @@ msgstr "крипто"
 msgid "Crypto and fiat deposits and withdrawals, P2P buy and sell orders, and Simple Earn rewards"
 msgstr "Криптовалютні та фіатні депозити й виведення коштів, ордери на купівлю та продаж P2P, а також винагороди Simple Earn"
 
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
-msgid "Crypto and stock tracking"
-msgstr "Відстеження криптовалют та акцій"
-
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
-msgid "Crypto and stock tracking included"
-msgstr "Включено відстеження криптовалют та акцій"
-
 #: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Crypto Holdings Alongside Your Cash"
@@ -5932,6 +5924,10 @@ msgstr "Криптоактиви поруч із вашими грошима"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Crypto holdings are first-class instruments: symbol, quantity, and a daily price"
 msgstr "Криптоактиви — повноцінні інструменти: символ, кількість і денна ціна"
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Crypto holdings are valued from the daily market history Budgie stores on device and backfills in the background. Live ticker updates are opt-in to keep the offline-first guarantee."
+msgstr "Криптоактиви оцінюються за щоденною історією ринку, яку Budgie зберігає на пристрої та довантажує у фоновому режимі. Оновлення котирувань у реальному часі — за бажанням, щоб зберегти гарантію роботи офлайн."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Crypto holdings sit alongside your fiat accounts with the same UX"
@@ -5961,9 +5957,14 @@ msgstr "Криптовалюта одразу під ними"
 msgid "Crypto today — two hundred assets ship with the app, each holding a row of (instrument, quantity, price). Stocks, ETFs, and commodities are not supported yet."
 msgstr "Наразі крипто — двісті активів постачаються разом із застосунком, і кожна позиція є рядком (інструмент, кількість, ціна). Акції, ETF і сировинні товари поки не підтримуються."
 
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Crypto tracking"
 msgstr "Облік криптовалют"
+
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
+msgid "Crypto tracking included"
+msgstr "Облік криптовалют включено"
 
 #: src/app/[lang]/features/csv-import/opengraph-image.tsx
 #: src/app/[lang]/features/data-export/opengraph-image.tsx
@@ -6856,10 +6857,6 @@ msgstr "Ефективні середовища виконання виводу"
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Eight Features That Make It a Durable Mint Replacement"
 msgstr "Вісім функцій, що роблять його надійною заміною Mint"
-
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Either by manual price update or by importing your brokerage's CSV export. Live ticker integration is opt-in to keep the offline-first guarantee."
-msgstr "Або через ручне оновлення ціни, або через імпорт CSV-експорту вашого брокера. Інтеграція живого тікера є необов'язковою, щоб зберегти гарантію offline-first."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Email: licensing@budgie.at"
@@ -8283,8 +8280,8 @@ msgid "How do bank connections work in privacy-focused apps?"
 msgstr "Як працюють банківські з'єднання у додатках з фокусом на приватність?"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "How do crypto and stock holdings price?"
-msgstr "Як оцінюються криптовалютні та фондові позиції?"
+msgid "How do crypto holdings price?"
+msgstr "Як оцінюються криптоактиви?"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "How do I budget without bank sync?"
@@ -15055,8 +15052,8 @@ msgid "Track expenses, sync banks, manage crypto & investments — all offline, 
 msgstr "Відстежуйте витрати, банківські дані, крипто й інвестиції — офлайн, зашифровано й на вашому пристрої."
 
 #: src/app/[lang]/layout.tsx
-msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
-msgstr "Відстежуйте витрати, імпортуйте банки, стежте за крипто й акціями — без передачі вашого фінансового життя в хмару."
+msgid "Track expenses, sync banks, manage crypto with complete privacy. Multi-currency support, debt tracking, and AI insights."
+msgstr "Обліковуйте витрати, синхронізуйте банки та керуйте криптовалютами з повною приватністю. Підтримка кількох валют, облік боргів і ШІ-аналітика."
 
 #: src/app/[lang]/features/deposit-tracking/metadata.ts
 msgid "Track fixed-term deposits as a dedicated account type with interest rate, maturity date, days remaining, expected payout, close-to-account transfers, and net worth control."
