@@ -539,6 +539,21 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 11. Use `serve-sim tap` for taps. Use normalized coordinates only.
 12. Do not use Maestro for dev-client checks. Maestro is only acceptance evidence against a clean E2E build.
 
+## Remote Mac Fleet
+
+The dev box is Linux and cannot boot iOS simulators. It reaches two Macs over SSH for simulator, Maestro, and media-capture work:
+
+- `macstudio` (`ssh macstudio`) — the capture machine: macOS + Xcode, reached through the Cloudflare tunnel `macstudio.vitaliiyehorov.dev` (`ProxyCommand cloudflared access ssh`). Homebrew tools (`magick`, `ffmpeg`) and `maestro` (`~/.maestro/bin`) are not on a non-interactive SSH `PATH`; export `PATH="/opt/homebrew/bin:$HOME/.maestro/bin:$PATH"` first.
+- `macmini` (`ssh macmini`, `192.168.1.35`) — LAN machine with an older Xcode.
+
+Rules:
+
+1. Use the repo's own pipeline, not hand-driven sims, to produce committed assets: `capture-store-screenshots.sh` with `--config .github/landing-media.config.json` (the default config is the store one — always pass it), then compose and manifest. `serve-sim` (`.agents/skills/serve-sim/SKILL.md`) is for interactive tapping/preview, not for capture.
+2. The Mac's `/bin/bash` is 3.2 and has no `mapfile`, so `compose-web-media.sh` runs on this Linux box: copy the raw tree back (`landing-raw/raw/ios/<device-slug>/<locale>/<appearance>/`), then `bash packages/app/fastlane/screenshots/design/compose-web-media.sh --raw-dir <raw> --output packages/landing/public/media --scenes <a,b>` and `pnpm --filter @budgie-at/landing media:manifest`.
+3. Reuse the installed E2E app with `--skip-install` when it is current (bundle id `com.vitalyiegorov.budgie.e2e`); otherwise pass a packaged `Base.app` with `--app`. Force a rebuild when app UI changed.
+4. Check the data volume before capturing: `df -h /System/Volumes/Data`. DerivedData and stale simulator devices fill it, and a full volume makes Maestro fail with `No space left on device`. Delete `~/Library/Developer/Xcode/DerivedData/*` and stale `*-derived` trees when low.
+5. A single-scene run replaces the whole device raw directory, so pass every scene you need to one invocation; copy assets and repo changes back with `scp` or `git pull`.
+
 ## E2E Testing
 
 1. Prefer black-box E2E flows over app-owned test hooks.
