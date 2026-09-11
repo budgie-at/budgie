@@ -7,7 +7,7 @@ import { EdgeFade } from '../../@generic/component/edge-fade/edge-fade';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
 import { useCreateActionContext } from '../../@generic/context/create-action.context';
 import { useVoiceInputContext } from '../../ai/context/voice-input.context';
-import { useSetting } from '../../settings/hook/use-setting.hook';
+import { useIsOnboardingActive } from '../../onboarding/hook/use-is-onboarding-active.hook';
 import { CreateTransactionMenu } from '../../transaction/components/create-transaction-menu/create-transaction-menu';
 import { CreateTransactionTrigger } from '../../transaction/components/create-transaction-trigger/create-transaction-trigger';
 
@@ -17,7 +17,7 @@ export default function TabsLayout() {
     const { bottom } = useSafeAreaInsets();
     const { isMenuOpen, openMenu, setIsMenuOpen } = useCreateActionContext();
     const { isOpen: isVoiceInputOpen, close: closeVoiceInput } = useVoiceInputContext();
-    const isOnboardingCompleted = useSetting('isOnboardingCompleted');
+    const isOnboardingActive = useIsOnboardingActive();
 
     const containerStyle = { paddingBottom: bottom };
 
@@ -25,7 +25,7 @@ export default function TabsLayout() {
 
     const isTransactionMenuOpen = isMenuOpen && !isVoiceInputOpen;
     const isBackdropVisible = isMenuOpen || isVoiceInputOpen;
-    const isTabBarVisible = isOnboardingCompleted;
+    const isTabBarVisible = !isOnboardingActive;
     const tabBarWrapperStyle = { zIndex: isBackdropVisible ? 0 : TAB_BAR_Z_INDEX };
 
     const handleBackdropClose = () => {
