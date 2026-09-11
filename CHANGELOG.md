@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.50.0](https://github.com/budgie-at/budgie/compare/v6.49.0...v6.50.0) (2026-09-11)
+
+
+### Features
+
+* **landing:** add the crypto-price-history feature page ([3beffba](https://github.com/budgie-at/budgie/commit/3beffba5e19162fbf1ab5cfe0bc7d38e73e727c9))
+
+
+
+
+
 # [6.49.0](https://github.com/budgie-at/budgie/compare/v6.48.0...v6.49.0) (2026-09-11)
 
 
