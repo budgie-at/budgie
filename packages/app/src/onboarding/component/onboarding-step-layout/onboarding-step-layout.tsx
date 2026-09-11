@@ -1,8 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics/src/Haptics.types';
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInRight, useReducedMotion } from 'react-native-reanimated';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
@@ -11,19 +11,14 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ONBOARDING_STEP_ACCENT } from '../../constant/onboarding-step-accent.constant';
-import { ONBOARDING_STEP_ORDER } from '../../constant/onboarding-step-order.constant';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
 import { OnboardingStepHeader } from '../onboarding-step-header/onboarding-step-header';
 
 import { OnboardingStepLayoutSelector } from './onboarding-step-layout.selector';
 
-const CONTENT_TRANSLATE_X = 16;
 const CONTENT_ANIMATION_DURATION = 260;
 const REDUCED_MOTION_ANIMATION_DURATION = 120;
-const FULL_OPACITY = 1;
-const ZERO_OPACITY = 0;
-const ZERO_TRANSLATE_X = 0;
 const CIRCLE_ICON_SIZE = 64;
 const CIRCLE_ICON_INNER_SIZE = 32;
 
@@ -45,23 +40,9 @@ export const OnboardingStepLayout = (props: Props) => {
     const [, hapticImpact] = useVibration();
     const { goToNextStep, goToPreviousStep } = useOnboardingNavigation();
 
-    const contentTranslateX = useSharedValue(reducedMotion ? ZERO_TRANSLATE_X : CONTENT_TRANSLATE_X);
-    const contentOpacity = useSharedValue(ZERO_OPACITY);
-    const previousStepIndexRef = useRef(ONBOARDING_STEP_ORDER.indexOf(step));
-
-    useEffect(() => {
-        const currentStepIndex = ONBOARDING_STEP_ORDER.indexOf(step);
-        const isBackward = currentStepIndex < previousStepIndexRef.current;
-        const entranceTranslateX = isBackward ? -CONTENT_TRANSLATE_X : CONTENT_TRANSLATE_X;
-        const duration = reducedMotion ? REDUCED_MOTION_ANIMATION_DURATION : CONTENT_ANIMATION_DURATION;
-
-        contentTranslateX.value = reducedMotion ? ZERO_TRANSLATE_X : entranceTranslateX;
-        contentOpacity.value = ZERO_OPACITY;
-        contentTranslateX.value = withTiming(ZERO_TRANSLATE_X, { duration });
-        contentOpacity.value = withTiming(FULL_OPACITY, { duration });
-
-        previousStepIndexRef.current = currentStepIndex;
-    }, [step, reducedMotion, contentTranslateX, contentOpacity]);
+    const contentEntering = reducedMotion
+        ? FadeIn.duration(REDUCED_MOTION_ANIMATION_DURATION)
+        : FadeInRight.duration(CONTENT_ANIMATION_DURATION);
 
     const handleSkip = () => void goToNextStep(step);
     const handleBack = () => void goToPreviousStep(step);
@@ -70,11 +51,6 @@ export const OnboardingStepLayout = (props: Props) => {
         hapticImpact(ImpactFeedbackStyle.Medium);
         onPrimary();
     };
-
-    const contentStyle = useAnimatedStyle(() => ({
-        opacity: contentOpacity.value,
-        transform: [{ translateX: contentTranslateX.value }]
-    }));
 
     const accent = ONBOARDING_STEP_ACCENT[step];
 
@@ -94,7 +70,7 @@ export const OnboardingStepLayout = (props: Props) => {
                 />
             }
         >
-            <Animated.View key={step} style={contentStyle} className="flex-1">
+            <Animated.View key={step} entering={contentEntering} className="flex-1">
                 {isDefined(icon) ? (
                     <CircleIcon
                         icon={icon}

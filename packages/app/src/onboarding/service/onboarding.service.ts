@@ -22,15 +22,15 @@ class OnboardingService {
 
     private initializationPromise: Promise<void> | null = null;
 
-    @Log('enter', result => `done shouldStart=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async shouldStart(): Promise<boolean> {
-        const [{ count }] = await accountRepository.count();
-
-        return !isPositiveNumber(count);
-    }
-
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async initializeLocale(): Promise<void> {
+        const { onboardingStep, isOnboardingCompleted } = await settingsRepository.getSettings();
+        const [{ count }] = await accountRepository.count();
+
+        if (isOnboardingCompleted || isPositiveNumber(onboardingStep) || isPositiveNumber(count)) {
+            return;
+        }
+
         this.initializationPromise ??= this.runInitializeLocale().finally(() => {
             this.initializationPromise = null;
         });

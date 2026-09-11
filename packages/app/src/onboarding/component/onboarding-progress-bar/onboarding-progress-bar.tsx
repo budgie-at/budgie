@@ -1,15 +1,14 @@
 /* oxlint-disable lingui/no-unlocalized-strings -- NativeWind class names, not user-facing copy */
-import { useEffect } from 'react';
 import { View, ViewStyle } from 'react-native';
-import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
 
 import { ONBOARDING_STEP_ORDER } from '../../constant/onboarding-step-order.constant';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 
 const SEGMENT_HEIGHT = 3;
-const FULL_OPACITY = 1;
-const ZERO_OPACITY = 0;
-const FILL_SPRING_CONFIG = { damping: 18, stiffness: 140 };
+const FILL_SPRING_DAMPING = 18;
+const FILL_SPRING_STIFFNESS = 140;
+const REDUCED_MOTION_FADE_DURATION = 120;
 const FILLED_SEGMENT_CLASS_NAME = 'flex-1 rounded-full border border-primary bg-primary';
 const MUTED_SEGMENT_CLASS_NAME = 'flex-1 rounded-full border border-secondary-corner';
 const CONTAINER_STYLE: ViewStyle = { height: SEGMENT_HEIGHT };
@@ -21,20 +20,9 @@ interface Props {
 export const OnboardingProgressBar = ({ step }: Props) => {
     const reducedMotion = useReducedMotion();
     const currentIndex = ONBOARDING_STEP_ORDER.indexOf(step);
-    const currentSegmentFill = useSharedValue(reducedMotion ? FULL_OPACITY : ZERO_OPACITY);
-
-    useEffect(() => {
-        if (reducedMotion) {
-            currentSegmentFill.value = FULL_OPACITY;
-
-            return;
-        }
-
-        currentSegmentFill.value = ZERO_OPACITY;
-        currentSegmentFill.value = withSpring(FULL_OPACITY, FILL_SPRING_CONFIG);
-    }, [currentIndex, reducedMotion, currentSegmentFill]);
-
-    const currentSegmentStyle = useAnimatedStyle(() => ({ opacity: currentSegmentFill.value }));
+    const currentSegmentEntering = reducedMotion
+        ? FadeIn.duration(REDUCED_MOTION_FADE_DURATION)
+        : FadeIn.springify().damping(FILL_SPRING_DAMPING).stiffness(FILL_SPRING_STIFFNESS);
 
     return (
         <View className="flex-row gap-x-xs" style={CONTAINER_STYLE}>
@@ -42,8 +30,11 @@ export const OnboardingProgressBar = ({ step }: Props) => {
                 const isFilled = index <= currentIndex;
                 const isCurrent = index === currentIndex;
                 const segmentClassName = isFilled ? FILLED_SEGMENT_CLASS_NAME : MUTED_SEGMENT_CLASS_NAME;
+                const segmentKey = isCurrent ? `${orderedStep}-${currentIndex}` : orderedStep;
 
-                return <Animated.View key={orderedStep} className={segmentClassName} {...(isCurrent && { style: currentSegmentStyle })} />;
+                return (
+                    <Animated.View key={segmentKey} className={segmentClassName} {...(isCurrent && { entering: currentSegmentEntering })} />
+                );
             })}
         </View>
     );

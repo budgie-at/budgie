@@ -13,7 +13,6 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useGetBankIntegrationCountQuery } from '../../../sync/query/use-get-bank-integration-count.query';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
-import { useNetWorthCountUp } from '../../hook/use-net-worth-count-up.hook';
 import { onboardingService } from '../../service/onboarding.service';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 import { OnboardingSuccessRow } from '../onboarding-success-row/onboarding-success-row';
@@ -30,7 +29,6 @@ export const OnboardingDone = () => {
     const isPinEnabled = useSetting('isPinEnabled');
     const isAiEnabled = useSetting('isAiEnabled');
     const { defaultInstrument } = useSettingsContext();
-    const displayedNetWorth = useNetWorthCountUp(balanceSummary.netWorth);
 
     const handlePrimary = () => {
         void onboardingService
@@ -83,12 +81,11 @@ export const OnboardingDone = () => {
                 </Text>
                 <ProtectedMoney
                     testID={OnboardingDoneSelector.NetWorthValue}
-                    hasAnimation={false}
                     minFontSize={32}
                     maxFontSize={64}
                     instrumentSymbol={defaultInstrument.symbol}
                 >
-                    {displayedNetWorth}
+                    {balanceSummary.netWorth}
                 </ProtectedMoney>
             </View>
 

@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useEffect } from 'react';
 import { Text } from 'react-native';
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 
@@ -35,20 +34,8 @@ export const OnboardingOptionRow = (props: Props) => {
 
     const reducedMotion = useReducedMotion();
     const pressScale = useSharedValue(FULL_SCALE);
-    const selectionProgress = useSharedValue(isSelected ? FULL_OPACITY : ZERO_OPACITY);
-    const tickScale = useSharedValue(isSelected ? FULL_SCALE : TICK_INITIAL_SCALE);
-
-    useEffect(() => {
-        if (reducedMotion) {
-            selectionProgress.value = isSelected ? FULL_OPACITY : ZERO_OPACITY;
-            tickScale.value = isSelected ? FULL_SCALE : TICK_INITIAL_SCALE;
-
-            return;
-        }
-
-        selectionProgress.value = withTiming(isSelected ? FULL_OPACITY : ZERO_OPACITY, { duration: SELECTION_TRANSITION_DURATION });
-        tickScale.value = isSelected ? withSpring(FULL_SCALE, TICK_SPRING_CONFIG) : TICK_INITIAL_SCALE;
-    }, [isSelected, reducedMotion, selectionProgress, tickScale]);
+    const targetOpacity = isSelected ? FULL_OPACITY : ZERO_OPACITY;
+    const targetTickScale = isSelected ? FULL_SCALE : TICK_INITIAL_SCALE;
 
     const handlePressIn = () => {
         pressScale.value = reducedMotion ? PRESS_SCALE : withSpring(PRESS_SCALE, PRESS_SPRING_CONFIG);
@@ -59,8 +46,12 @@ export const OnboardingOptionRow = (props: Props) => {
     };
 
     const pressStyle = useAnimatedStyle(() => ({ transform: [{ scale: pressScale.value }] }));
-    const selectionOverlayStyle = useAnimatedStyle(() => ({ opacity: selectionProgress.value }));
-    const tickStyle = useAnimatedStyle(() => ({ transform: [{ scale: tickScale.value }] }));
+    const selectionOverlayStyle = useAnimatedStyle(() => ({
+        opacity: reducedMotion ? targetOpacity : withTiming(targetOpacity, { duration: SELECTION_TRANSITION_DURATION })
+    }));
+    const tickStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: reducedMotion ? targetTickScale : withSpring(targetTickScale, TICK_SPRING_CONFIG) }]
+    }));
 
     return (
         <Animated.View style={pressStyle}>
