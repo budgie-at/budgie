@@ -472,8 +472,8 @@ msgid "<0>Credential storage</0>: Your actual username and password must be stor
 msgstr "<0>Stockage des identifiants</0> : Votre nom d'utilisateur et votre mot de passe reels doivent etre stockes (meme chiffres) sur des serveurs tiers"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "<0>Crypto and stock tracking</0>: Beyond traditional accounts, Budgie tracks cryptocurrency holdings and investment portfolios, all with the same privacy guarantees."
-msgstr "<0>Suivi crypto et actions</0> : Au-delà des comptes traditionnels, Budgie suit les avoirs en cryptomonnaies et les portefeuilles d'investissement, le tout avec les mêmes garanties de confidentialité."
+msgid "<0>Crypto tracking</0>: Beyond traditional accounts, Budgie tracks cryptocurrency holdings with the same privacy guarantees."
+msgstr "<0>Suivi des cryptomonnaies</0> : au-delà des comptes classiques, Budgie suit vos avoirs en cryptomonnaies avec les mêmes garanties de confidentialité."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>CSV and PDF import</0> — Export a statement from any bank website and import it into Budgie. This works with every bank on the planet, requires no API key, and leaves no credential exposure."
@@ -5916,14 +5916,6 @@ msgstr "crypto"
 msgid "Crypto and fiat deposits and withdrawals, P2P buy and sell orders, and Simple Earn rewards"
 msgstr "Les dépôts et retraits en crypto et en fiat, les ordres d'achat et de vente P2P, et les récompenses Simple Earn"
 
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
-msgid "Crypto and stock tracking"
-msgstr "Suivi crypto et actions"
-
-#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
-msgid "Crypto and stock tracking included"
-msgstr "Suivi crypto et actions inclus"
-
 #: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Crypto Holdings Alongside Your Cash"
@@ -5932,6 +5924,10 @@ msgstr "Vos avoirs crypto à côté de vos liquidités"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Crypto holdings are first-class instruments: symbol, quantity, and a daily price"
 msgstr "Les avoirs crypto sont des instruments à part entière : symbole, quantité et un prix quotidien"
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Crypto holdings are valued from the daily market history Budgie stores on device and backfills in the background. Live ticker updates are opt-in to keep the offline-first guarantee."
+msgstr "Les avoirs en cryptomonnaies sont valorisés à partir de l'historique de marché quotidien que Budgie stocke sur l'appareil et complète en arrière-plan. Les mises à jour de cotations en direct sont facultatives pour préserver la garantie offline-first."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Crypto holdings sit alongside your fiat accounts with the same UX"
@@ -5961,9 +5957,14 @@ msgstr "La crypto juste en dessous"
 msgid "Crypto today — two hundred assets ship with the app, each holding a row of (instrument, quantity, price). Stocks, ETFs, and commodities are not supported yet."
 msgstr "La crypto pour l'instant : deux cents actifs sont fournis avec l'application, et chaque position est une ligne (instrument, quantité, prix). Les actions, les ETF et les matières premières ne sont pas encore pris en charge."
 
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Crypto tracking"
 msgstr "Suivi crypto"
+
+#: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
+msgid "Crypto tracking included"
+msgstr "Suivi des cryptomonnaies inclus"
 
 #: src/app/[lang]/features/csv-import/opengraph-image.tsx
 #: src/app/[lang]/features/data-export/opengraph-image.tsx
@@ -6856,10 +6857,6 @@ msgstr "Runtimes d'inférence efficaces"
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Eight Features That Make It a Durable Mint Replacement"
 msgstr "Huit fonctionnalités qui en font un remplaçant durable de Mint"
-
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Either by manual price update or by importing your brokerage's CSV export. Live ticker integration is opt-in to keep the offline-first guarantee."
-msgstr "Soit par mise à jour manuelle du prix, soit en important l'export CSV de votre courtier. L'intégration en temps réel est optionnelle pour préserver la garantie hors ligne."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Email: licensing@budgie.at"
@@ -8283,8 +8280,8 @@ msgid "How do bank connections work in privacy-focused apps?"
 msgstr "Comment fonctionnent les connexions bancaires dans les applications axées sur la confidentialité ?"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "How do crypto and stock holdings price?"
-msgstr "Comment les positions crypto et actions sont-elles évaluées ?"
+msgid "How do crypto holdings price?"
+msgstr "Comment les avoirs en cryptomonnaies sont-ils valorisés ?"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "How do I budget without bank sync?"
@@ -15055,8 +15052,8 @@ msgid "Track expenses, sync banks, manage crypto & investments — all offline, 
 msgstr "Suivez dépenses, données bancaires, cryptos et investissements — hors ligne, chiffrés et sur votre appareil."
 
 #: src/app/[lang]/layout.tsx
-msgid "Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights."
-msgstr "Suivez les dépenses, importez les banques, surveillez cryptos et actions — sans confier votre vie financière au cloud."
+msgid "Track expenses, sync banks, manage crypto with complete privacy. Multi-currency support, debt tracking, and AI insights."
+msgstr "Suivez vos dépenses, synchronisez vos banques et gérez vos cryptomonnaies en toute confidentialité. Multi-devises, suivi des dettes et analyses par IA."
 
 #: src/app/[lang]/features/deposit-tracking/metadata.ts
 msgid "Track fixed-term deposits as a dedicated account type with interest rate, maturity date, days remaining, expected payout, close-to-account transfers, and net worth control."
