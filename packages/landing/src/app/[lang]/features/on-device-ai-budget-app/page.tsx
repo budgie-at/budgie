@@ -118,7 +118,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>
-                            Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features.
+                            Roughly 1.6 GB for the language and embedding models, or 2.5 GB with voice entry. The download is one-time,
+                            opt-in, and only triggers if you turn on AI features.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
@@ -188,7 +189,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     question={<Trans>How big is the download?</Trans>}
                     answer={
                         <Trans>
-                            Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features.
+                            Roughly 1.6 GB for the language and embedding models, or 2.5 GB with voice entry. The download is one-time,
+                            opt-in, and only triggers if you turn on AI features.
                         </Trans>
                     }
                 />
