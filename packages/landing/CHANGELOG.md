@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.47.4](https://github.com/budgie-at/budgie/compare/v6.47.3...v6.47.4) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** drop the desktop first-callout margin ([c7d07db](https://github.com/budgie-at/budgie/commit/c7d07db24ab79af1a20838038ca69a2a1bce426d))
+
+
+
+
+
 ## [6.47.3](https://github.com/budgie-at/budgie/compare/v6.47.2...v6.47.3) (2026-09-11)
 
 
