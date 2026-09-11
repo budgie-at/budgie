@@ -15048,8 +15048,8 @@ msgid "Track expenses, sync banks, and manage crypto with full privacy. Multi-cu
 msgstr "Suivez vos dépenses, importez les données bancaires, gérez les cryptos et profitez d’une aide IA sur l’appareil — le tout depuis votre téléphone."
 
 #: src/app/[lang]/opengraph-image.tsx
-msgid "Track expenses, sync banks, manage crypto & investments — all offline, encrypted, and on your device."
-msgstr "Suivez dépenses, données bancaires, cryptos et investissements — hors ligne, chiffrés et sur votre appareil."
+msgid "Track expenses, sync banks, manage crypto — all offline, encrypted, and on your device."
+msgstr "Suivez vos dépenses, synchronisez vos banques et gérez vos cryptomonnaies — le tout hors ligne, chiffré et sur votre appareil."
 
 #: src/app/[lang]/layout.tsx
 msgid "Track expenses, sync banks, manage crypto with complete privacy. Multi-currency support, debt tracking, and AI insights."

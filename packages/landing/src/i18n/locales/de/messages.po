@@ -5927,7 +5927,7 @@ msgstr "Krypto-Bestände sind vollwertige Instrumente: Symbol, Menge und ein Tag
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Crypto holdings are valued from the daily market history Budgie stores on device and backfills in the background. Live ticker updates are opt-in to keep the offline-first guarantee."
-msgstr "Krypto-Bestände werden anhand der täglichen Markthistorie bewertet, die Budgie auf dem Gerät speichert und im Hintergrund nachlädt. Live-Ticker-Updates sind optional, um die Offline-First-Garantie zu wahren."
+msgstr "Krypto-Bestände werden anhand der täglichen Markthistorie bewertet, die Budgie auf dem Gerät speichert und im Hintergrund nachlädt. Live-Ticker-Updates sind standardmäßig deaktiviert und können optional aktiviert werden, um die Offline-First-Garantie zu wahren."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Crypto holdings sit alongside your fiat accounts with the same UX"
@@ -15048,12 +15048,12 @@ msgid "Track expenses, sync banks, and manage crypto with full privacy. Multi-cu
 msgstr "Tracke Ausgaben, importiere Bankdaten, verwalte Krypto und nutze On-device-KI — alles auf deinem Smartphone."
 
 #: src/app/[lang]/opengraph-image.tsx
-msgid "Track expenses, sync banks, manage crypto & investments — all offline, encrypted, and on your device."
-msgstr "Tracke Ausgaben, Bankdaten, Krypto und Investments — offline, verschlüsselt und auf deinem Gerät."
+msgid "Track expenses, sync banks, manage crypto — all offline, encrypted, and on your device."
+msgstr "Verfolgen Sie Ausgaben, synchronisieren Sie Banken und verwalten Sie Krypto — alles offline, verschlüsselt und auf Ihrem Gerät."
 
 #: src/app/[lang]/layout.tsx
 msgid "Track expenses, sync banks, manage crypto with complete privacy. Multi-currency support, debt tracking, and AI insights."
-msgstr "Verfolgen Sie Ausgaben, synchronisieren Sie Banken und verwalten Sie Krypto mit vollständiger Privatsphäre. Multi-Währungs-Unterstützung, Schuldenverfolgung und KI-Einblicke."
+msgstr "Verfolgen Sie Ausgaben, synchronisieren Sie Bankkonten und verwalten Sie Krypto mit vollständiger Privatsphäre. Multi-Währungs-Unterstützung, Schuldenverfolgung und KI-Einblicke."
 
 #: src/app/[lang]/features/deposit-tracking/metadata.ts
 msgid "Track fixed-term deposits as a dedicated account type with interest rate, maturity date, days remaining, expected payout, close-to-account transfers, and net worth control."
