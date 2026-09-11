@@ -168,7 +168,7 @@
         },
         {
             "name": "debt-tracking-1",
-            "deepLink": "budgie://"
+            "flow": "flows/media/debt-tracking-1.flow.yaml"
         },
         {
             "name": "debt-tracking-2",
