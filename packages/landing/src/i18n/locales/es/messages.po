@@ -11243,7 +11243,7 @@ msgstr "Solo cuando es necesario. Los comercios en alfabeto latino omiten la tra
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Open a debt to see what is still to receive, how much has come back and the total you lent, against the target balance and return date."
-msgstr "Abre una deuda para ver lo que aún queda por recibir, cuánto ha vuelto y el total prestado, frente al saldo objetivo y la fecha de devolución."
+msgstr "Abre una deuda para ver lo que aún queda por recibir, cuánto se ha devuelto y el total prestado, frente al saldo objetivo y la fecha de devolución."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Open a deposit straight from the connection, so it inherits the bank it belongs to"
