@@ -3,6 +3,79 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.45.1](https://github.com/budgie-at/budgie/compare/v6.45.0...v6.45.1) (2026-09-11)
+
+**Note:** Version bump only for package @budgie-at/landing
+
+
+
+
+
+# [6.45.0](https://github.com/budgie-at/budgie/compare/v6.44.0...v6.45.0) (2026-09-10)
+
+
+### Features
+
+* **landing:** recurring-payments-calendar steps story ([c587724](https://github.com/budgie-at/budgie/commit/c587724c30b8d1af25d79b4f9b22dd8eb357346a))
+
+
+
+
+
+# [6.44.0](https://github.com/budgie-at/budgie/compare/v6.43.0...v6.44.0) (2026-09-10)
+
+
+### Features
+
+* **landing:** mcc-auto-category steps story ([8f03e26](https://github.com/budgie-at/budgie/commit/8f03e2647844d7730857202ec549ba30eede8ab5))
+
+
+
+
+
+# [6.43.0](https://github.com/budgie-at/budgie/compare/v6.42.0...v6.43.0) (2026-09-10)
+
+
+### Bug Fixes
+
+* **landing:** polish deposit-tracking catalog wording ([d432ef7](https://github.com/budgie-at/budgie/commit/d432ef7c8134719d2131a9b8ac589252e82debf2))
+
+
+### Features
+
+* **landing:** deposit-tracking steps story ([1acb9b9](https://github.com/budgie-at/budgie/commit/1acb9b912456d026e88d640fe5392d8be116bb58))
+
+
+
+
+
+# [6.42.0](https://github.com/budgie-at/budgie/compare/v6.41.4...v6.42.0) (2026-09-10)
+
+
+### Bug Fixes
+
+* **landing:** scope split-transactions story copy to visible UI and polish catalog wording ([08ed740](https://github.com/budgie-at/budgie/commit/08ed740ea7bc0f5c923f255a0b08a8758c8281f2))
+
+
+### Features
+
+* **landing:** split-transactions steps story ([ed89c4d](https://github.com/budgie-at/budgie/commit/ed89c4dcdd5a06fb47131b847fdc0d4d6a0d0c8d))
+
+
+
+
+
+## [6.41.3](https://github.com/budgie-at/budgie/compare/v6.41.2...v6.41.3) (2026-09-10)
+
+
+### Bug Fixes
+
+* **landing:** resolve latest iOS dev release via tag refs prefix filter ([41b1a75](https://github.com/budgie-at/budgie/commit/41b1a75663e22db4ad863a1a67661d63c4838925))
+
+
+
+
+
 # [6.41.0](https://github.com/budgie-at/budgie/compare/v6.40.0...v6.41.0) (2026-09-08)
 
 

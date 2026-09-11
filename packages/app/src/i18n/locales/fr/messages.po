@@ -233,6 +233,7 @@ msgid "Account"
 msgstr "Compte"
 
 #: src/money-data/service/entry-base-valuation.service.ts
+#: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
 msgstr "Compte {accountId} introuvable"
 
@@ -1693,6 +1694,10 @@ msgstr "Taux de change"
 #: src/money-data/service/entry-base-valuation.service.ts
 msgid "Exchange rate {sourceInstrumentId}->{targetInstrumentId} not found"
 msgstr "Taux de change {sourceInstrumentId}->{targetInstrumentId} introuvable"
+
+#: src/transaction/service/transaction-debt-settlement.service.ts
+msgid "Exchange rate not found"
+msgstr ""
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
@@ -3310,7 +3315,7 @@ msgstr "Afficher les transactions lorsqu’un montant principal se situe dans ce
 msgid "Similar transactions"
 msgstr "Transactions similaires"
 
-#: src/onboarding/component/onboarding-step-layout/onboarding-step-layout.tsx
+#: src/onboarding/component/onboarding-step-header/onboarding-step-header.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Ignorer"

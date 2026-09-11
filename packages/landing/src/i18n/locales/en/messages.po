@@ -2247,6 +2247,10 @@ msgid "A deliberate gap-finder. Transactions without tags accumulate in this buc
 msgstr "A deliberate gap-finder. Transactions without tags accumulate in this bucket so you can spot bookkeeping gaps and tighten them up."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "A deposit is not a savings account"
+msgstr "A deposit is not a savings account"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from normal spending accounts while still appearing in your broader account list."
 msgstr "A deposit is not everyday cash. Budgie treats it as a distinct account type so the principal stays separate from normal spending accounts while still appearing in your broader account list."
 
@@ -2278,6 +2282,10 @@ msgstr "A finance app you check at midnight should not blast your retinas. Budgi
 msgid "A financial data aggregator that services millions of users holds credentials or access tokens for millions of bank accounts in one system. From an attacker perspective, this is a far more attractive target than any individual bank, because:"
 msgstr "A financial data aggregator that services millions of users holds credentials or access tokens for millions of bank accounts in one system. From an attacker perspective, this is a far more attractive target than any individual bank, because:"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "A fixed term, tracked like an account"
+msgstr "A fixed term, tracked like an account"
+
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "A full re-sync wipes your manual category overrides and edits. Windowed re-sync diffs only the slice you ask for, so old edits stay safe."
 msgstr "A full re-sync wipes your manual category overrides and edits. Windowed re-sync diffs only the slice you ask for, so old edits stay safe."
@@ -2301,6 +2309,10 @@ msgstr "A market screen per instrument with a price card, a sparkline, and perio
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "A merged transfer keeps a Consolidation row. \"View source transactions\" opens both originals with their amounts, dates and accounts still intact. Revert puts them back and removes the merged transfer."
 msgstr "A merged transfer keeps a Consolidation row. \"View source transactions\" opens both originals with their amounts, dates and accounts still intact. Revert puts them back and removes the merged transfer."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "A month grid of what bills"
+msgstr "A month grid of what bills"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "A P2P purchase and the bank payment behind it merge into one cross-currency transfer"
@@ -2341,6 +2353,10 @@ msgstr "A source-available license that lets you read, fork, and modify the code
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "A spending report should compare what money meant on the day you spent it. Budgie values each imported and newly saved transaction in your base currency using the exchange rate from the transaction date."
 msgstr "A spending report should compare what money meant on the day you spent it. Budgie values each imported and newly saved transaction in your base currency using the exchange rate from the transaction date."
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "A supermarket run can carry groceries, a phone charger and a light fixture. Budgie splits the one transaction across as many category rows as the receipt needs."
+msgstr "A supermarket run can carry groceries, a phone charger and a light fixture. Budgie splits the one transaction across as many category rows as the receipt needs."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "A Tags tab beside Categories"
@@ -2526,6 +2542,10 @@ msgstr "Actual Budget: The Self-Hoster’s Dream"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 msgstr "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Add another category row"
+msgstr "Add another category row"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Add it in three taps"
@@ -3929,6 +3949,14 @@ msgstr "Budgie debt account screen with the amount left to receive above the rep
 msgid "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
 msgstr "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout"
+msgstr "Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Budgie deposit account screen with the account menu open showing the Edit and Close Deposit actions"
+msgstr "Budgie deposit account screen with the account menu open showing the Edit and Close Deposit actions"
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model."
 msgstr "Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model."
@@ -3945,10 +3973,6 @@ msgstr "Budgie Edit Expense screen showing the Silpo merchant recognised and the
 msgid "Budgie edit expense screen with a Quick rule pill above the amount, moments after the category was changed"
 msgstr "Budgie edit expense screen with a Quick rule pill above the amount, moments after the category was changed"
 
-#: src/app/[lang]/features/mcc-auto-category/page.tsx
-msgid "Budgie edit expense screen with the category already filled in from the bank MCC code"
-msgstr "Budgie edit expense screen with the category already filled in from the bank MCC code"
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie embodies this transparent approach. Every line of code is public. Every decision is documented. Every claim is verifiable. We don’t ask you to trust us because we say so. We ask you to trust us because you can see exactly what we do."
 msgstr "Budgie embodies this transparent approach. Every line of code is public. Every decision is documented. Every claim is verifiable. We don’t ask you to trust us because we say so. We ask you to trust us because you can see exactly what we do."
@@ -3964,6 +3988,22 @@ msgstr "Budgie exists because we believe you should not have to trade this intim
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie exists because we wanted a financial app that treats users as customers, not products. One that works offline, respects privacy, and gives you complete control over your data. If that resonates with you, we’d love to have you try it."
 msgstr "Budgie exists because we wanted a financial app that treats users as customers, not products. One that works offline, respects privacy, and gives you complete control over your data. If that resonates with you, we’d love to have you try it."
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Budgie expense editor showing a $100 Whole Foods Market transaction split into Home Maintenance, Electronics & Gadgets and Groceries rows"
+msgstr "Budgie expense editor showing a $100 Whole Foods Market transaction split into Home Maintenance, Electronics & Gadgets and Groceries rows"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Budgie expense form for a $78.4 Silpo transaction showing the Grocery merchant category code under the merchant name and Groceries set as the category"
+msgstr "Budgie expense form for a $78.4 Silpo transaction showing the Grocery merchant category code under the merchant name and Groceries set as the category"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Budgie expense form for a $78.4 Silpo transaction with a Quick rule pill above the amount and Restaurants set as the category"
+msgstr "Budgie expense form for a $78.4 Silpo transaction with a Quick rule pill above the amount and Restaurants set as the category"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Budgie finds the pattern itself — same merchant, similar amount, regular interval — and marks the days those charges fall on."
+msgstr "Budgie finds the pattern itself — same merchant, similar amount, regular interval — and marks the days those charges fall on."
 
 #: src/app/[lang]/features/uncategorized-transactions/metadata.ts
 msgid "Budgie finds uncategorized transactions under your active filters. Tap the missing-category pill to clean category gaps fast, offline, and on-device."
@@ -4138,6 +4178,10 @@ msgstr "Budgie is our contribution to this future: a personal finance applicatio
 msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
 msgstr "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Budgie keeps a term deposit separate from the accounts you spend from, and shows what it will pay at maturity."
+msgstr "Budgie keeps a term deposit separate from the accounts you spend from, and shows what it will pay at maturity."
+
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Budgie language selector sheet with a search box and English, French and Ukrainian rows, each with a flag and language code"
 msgstr "Budgie language selector sheet with a search box and English, French and Ukrainian rows, each with a flag and language code"
@@ -4259,8 +4303,12 @@ msgid "Budgie recurring payments calendar showing upcoming subscriptions on a mo
 msgstr "Budgie recurring payments calendar showing upcoming subscriptions on a monthly grid"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Budgie recurring payments calendar with the monthly total above the upcoming subscriptions"
-msgstr "Budgie recurring payments calendar with the monthly total above the upcoming subscriptions"
+msgid "Budgie Recurring screen showing a September 2026 calendar with detected payment days marked and an upcoming charges list"
+msgstr "Budgie Recurring screen showing a September 2026 calendar with detected payment days marked and an upcoming charges list"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Budgie Recurring screen with Day 15 selected and a list of Gym Membership, Netflix and Spotify charges"
+msgstr "Budgie Recurring screen with Day 15 selected and a list of Gym Membership, Netflix and Spotify charges"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Budgie Rules screen: four rules, each with its conditions above the category and tag it sets, and an on-off switch"
@@ -4281,6 +4329,10 @@ msgstr "Budgie runs Qwen3 1.7B + a 768-dim embedding model on your phone. Two-st
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "Budgie runs Qwen3 1.7B and a 768-dim embedding model locally. AI auto-categorization, voice transaction entry, and merchant translation without sending data to the cloud."
 msgstr "Budgie runs Qwen3 1.7B and a 768-dim embedding model locally. AI auto-categorization, voice transaction entry, and merchant translation without sending data to the cloud."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Budgie scans your history for amount and cadence patterns and plots every recurring charge on a month calendar."
+msgstr "Budgie scans your history for amount and cadence patterns and plots every recurring charge on a month calendar."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Budgie settings screen listing the privacy, security and general options the app ships with"
@@ -4342,6 +4394,10 @@ msgstr "Budgie ships with zero third-party analytics or advertising SDKs. Crash 
 msgid "Budgie showing a total balance, a monthly budget bar and bank, cash and savings accounts on one screen"
 msgstr "Budgie showing a total balance, a monthly budget bar and bank, cash and savings accounts on one screen"
 
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Budgie split sheet with Home Maintenance and Electronics & Gadgets rows, an Add item button and a $62.50 left to assign label"
+msgstr "Budgie split sheet with Home Maintenance and Electronics & Gadgets rows, an Add item button and a $62.50 left to assign label"
+
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Budgie spots subscription patterns and renewals, plots them on a month calendar, and forecasts what's coming."
 msgstr "Budgie spots subscription patterns and renewals, plots them on a month calendar, and forecasts what's coming."
@@ -4401,10 +4457,6 @@ msgstr "Budgie takes offline-first seriously. Here’s how we protect your finan
 #: src/app/[lang]/layout.tsx
 msgid "Budgie Team"
 msgstr "Budgie Team"
-
-#: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "Budgie term deposit screen with the interest rate, maturity date and expected payout"
-msgstr "Budgie term deposit screen with the interest rate, maturity date and expected payout"
 
 #: src/app/[lang]/legal/terms-of-service/metadata.ts
 msgid "Budgie Terms of Service - Read our terms and conditions for using our privacy-first expense tracking app"
@@ -4481,6 +4533,10 @@ msgstr "Budgie treats the main movement and the bank fee separately. The transfe
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Budgie turns that cleanup into a visible workflow. When the current filter contains uncategorized transactions, a compact missing-category pill appears above the list with the exact count."
 msgstr "Budgie turns that cleanup into a visible workflow. When the current filter contains uncategorized transactions, a compact missing-category pill appears above the list with the exact count."
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Budgie turns the merchant category code the bank attaches to each card transaction into one of your own categories."
+msgstr "Budgie turns the merchant category code the bank attaches to each card transaction into one of your own categories."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:"
@@ -4985,6 +5041,10 @@ msgstr "Categories answer “what kind of expense”; tags answer “for which p
 msgid "Categories answer “what kind of expense”; tags answer “for which project, person, or purpose.” Use both together — one transaction can be Groceries (category) AND #vacation #shared (tags)."
 msgstr "Categories answer “what kind of expense”; tags answer “for which project, person, or purpose.” Use both together — one transaction can be Groceries (category) AND #vacation #shared (tags)."
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Categories before you type"
+msgstr "Categories before you type"
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Categories tab: per-category totals, with drill-down to every transaction in the row"
 msgstr "Categories tab: per-category totals, with drill-down to every transaction in the row"
@@ -5048,6 +5108,10 @@ msgstr "Category-based analytics answer what kind of expense a transaction is �
 msgid "Category, tag, trend — drill into anything."
 msgstr "Category, tag, trend — drill into anything."
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Change the category and a Quick rule pill appears above the amount, offering to keep the override for that merchant."
+msgstr "Change the category and a Quick rule pill appears above the amount, offering to keep the override for that merchant."
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Change the category or the tags of an existing transaction and a Quick rule pill appears above the amount. It builds the conditions from the merchant name — reference numbers, amounts, dates and company suffixes stripped out, the comment used when the name is too generic — pins the merchant code when the transaction carries one, and attaches exactly the category and tags you just picked. Tap the pill and the rule exists; swipe it away and it is gone."
 msgstr "Change the category or the tags of an existing transaction and a Quick rule pill appears above the amount. It builds the conditions from the merchant name — reference numbers, amounts, dates and company suffixes stripped out, the comment used when the name is too generic — pins the merchant code when the transaction carries one, and attaches exactly the category and tags you just picked. Tap the pill and the rule exists; swipe it away and it is gone."
@@ -5067,6 +5131,10 @@ msgstr "changelog"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Changes to Core Features"
 msgstr "Changes to Core Features"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Charges for that day"
+msgstr "Charges for that day"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Chart palettes auto-recompute for legibility on dark canvas"
@@ -5161,6 +5229,14 @@ msgstr "Clone the repository for local development"
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Close a deposit into a selected destination account with a transfer, then archive it"
 msgstr "Close a deposit into a selected destination account with a transfer, then archive it"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Close and move the balance"
+msgstr "Close and move the balance"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Close it and the money moves"
+msgstr "Close it and the money moves"
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Closed"
@@ -5462,6 +5538,10 @@ msgstr "Conditions on title, comment, amount, MCC, account, transaction type, an
 msgid "Conditions you wrote yourself"
 msgstr "Conditions you wrote yourself"
 
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Confirm once it adds up"
+msgstr "Confirm once it adds up"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Confirm the fixed version is released"
 msgstr "Confirm the fixed version is released"
@@ -5697,10 +5777,6 @@ msgstr "CRDTs solve the conflict resolution problem but leave open questions abo
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Create a budget, pick the day the cycle starts, and set an overall limit in your default currency. Add limits to the categories you care about and a cap for the rest. The detail screen breaks the period down category by category; the home widget keeps the headline numbers one glance away, and can be hidden from Settings whenever you want the home screen quiet."
 msgstr "Create a budget, pick the day the cycle starts, and set an overall limit in your default currency. Add limits to the categories you care about and a cap for the rest. The detail screen breaks the period down category by category; the home widget keeps the headline numbers one glance away, and can be hidden from Settings whenever you want the home screen quiet."
-
-#: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "Create a Deposit account manually or from a bank integration. Add its current balance, currency, interest rate, and maturity date so Budgie can show the deposit details alongside your other accounts."
-msgstr "Create a Deposit account manually or from a bank integration. Add its current balance, currency, interest rate, and maturity date so Budgie can show the deposit details alongside your other accounts."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Create a feature branch for your changes"
@@ -6249,8 +6325,12 @@ msgid "Detected subscriptions laid out by date, so renewals stop surprising you.
 msgstr "Detected subscriptions laid out by date, so renewals stop surprising you."
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Detection runs as a background task on your transaction table. The pattern interface stores merchant fingerprint, average amount, cadence, and last-seen date. Manual edits to a pattern are sticky."
-msgstr "Detection runs as a background task on your transaction table. The pattern interface stores merchant fingerprint, average amount, cadence, and last-seen date. Manual edits to a pattern are sticky."
+msgid "Detected, not added"
+msgstr "Detected, not added"
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Detected, not declared"
+msgstr "Detected, not declared"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
@@ -6680,6 +6760,10 @@ msgstr "Each split row counts toward its own category in analytics — the paren
 msgid "Each split row keeps its own tags and comment — fully independent"
 msgstr "Each split row keeps its own tags and comment — fully independent"
 
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Each split, its own category"
+msgstr "Each split, its own category"
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Each type brings its own form"
 msgstr "Each type brings its own form"
@@ -6695,6 +6779,10 @@ msgstr "Easy to make formula errors"
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Edit it until it fits"
 msgstr "Edit it until it fits"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Edit the deposit details"
+msgstr "Edit the deposit details"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by accident."
@@ -6930,6 +7018,10 @@ msgstr "Every buy keeps what it cost"
 msgid "Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization — in one place."
 msgstr "Every capability of the Budgie offline-first expense tracker — from bank sync to on-device AI categorization — in one place."
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Every card transaction carries a merchant category code. Silpo arrives on the expense form with its Grocery code shown under the merchant name."
+msgstr "Every card transaction carries a merchant category code. Silpo arrives on the expense form with its Grocery code shown under the merchant name."
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Every category, ranked by what it took"
 msgstr "Every category, ranked by what it took"
@@ -6973,6 +7065,10 @@ msgstr "Every group carries a subtotal"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Every instrument has its own market screen: the stored price with its last move, a sparkline of the history behind it, and your position valued against it — quantity, converted value, average cost, cost basis and unrealized gain. Market cap, volume and the date of the snapshot sit underneath. There is no ticker to subscribe to; the screen reads from the daily prices already in your database."
 msgstr "Every instrument has its own market screen: the stored price with its last move, a sparkline of the history behind it, and your position valued against it — quantity, converted value, average cost, cost basis and unrealized gain. Market cap, volume and the date of the snapshot sit underneath. There is no ticker to subscribe to; the screen reads from the daily prices already in your database."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Every marked day is a real recurring charge. The upcoming list totals what is still to come this month."
+msgstr "Every marked day is a real recurring charge. The upcoming list totals what is still to come this month."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Every merge keeps its sources"
@@ -7107,6 +7203,10 @@ msgstr "Exchange rates are fetched anonymously"
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 msgid "exchange-rates"
 msgstr "exchange-rates"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Expected payout estimate"
+msgstr "Expected payout estimate"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Expense and income amounts shift to brighter red and green in dark mode, not the muted tones carried over from light mode."
@@ -8292,13 +8392,9 @@ msgstr "How is this different from the Tag Analytics page?"
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/debt-tracking/page.tsx
-#: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
-#: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-#: src/app/[lang]/features/split-transactions/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "How it works"
@@ -8663,10 +8759,6 @@ msgstr "Infrastructure Assessment"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Initially, there is additional complexity in understanding CRDTs and sync. However, local-first can be cheaper overall because you do not need to build and maintain server infrastructure at scale. For indie developers and small teams, the reduced operational costs can outweigh the initial learning curve. Modern libraries and frameworks also significantly reduce implementation complexity."
 msgstr "Initially, there is additional complexity in understanding CRDTs and sync. However, local-first can be cheaper overall because you do not need to build and maintain server infrastructure at scale. For indie developers and small teams, the reduced operational costs can outweigh the initial learning curve. Modern libraries and frameworks also significantly reduce implementation complexity."
-
-#: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Inside expense or income entry, switch to split mode. Add rows of (category, amount). The system enforces total = transaction amount. Each split keeps its own tags and comment."
-msgstr "Inside expense or income entry, switch to split mode. Add rows of (category, amount). The system enforces total = transaction amount. Each split keeps its own tags and comment."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Install + open"
@@ -9413,6 +9505,14 @@ msgstr "Map columns flexibly: Date, Amount, Description, Counterparty — your b
 msgid "Map the columns to Budgie’s fields"
 msgstr "Map the columns to Budgie’s fields"
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Mapped to your category"
+msgstr "Mapped to your category"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Mapped to your tree"
+msgstr "Mapped to your tree"
+
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Market data and pricing information"
 msgstr "Market data and pricing information"
@@ -9444,6 +9544,10 @@ msgstr "Matching count, re-queried"
 #: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
 msgid "maturity"
 msgstr "maturity"
+
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Maturity date and days left"
+msgstr "Maturity date and days left"
 
 #: src/app/[lang]/features/deposit-tracking/opengraph-image.tsx
 msgid "Maturity date, payout, and close flow."
@@ -10756,10 +10860,6 @@ msgstr "OLED-friendly true black canvas — saves battery on modern phones"
 msgid "On a server that mirrors your transactions"
 msgstr "On a server that mirrors your transactions"
 
-#: src/app/[lang]/features/mcc-auto-category/page.tsx
-msgid "On bank import, each transaction's MCC is read from the source. Budgie looks up the MCC in the lookup table; the resulting category fills the form. AI category suggestions take over for transactions without an MCC."
-msgstr "On bank import, each transaction's MCC is read from the source. Budgie looks up the MCC in the lookup table; the resulting category fills the form. AI category suggestions take over for transactions without an MCC."
-
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept, edit, or reject) feeds back into the embedding index without any network call."
 msgstr "On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept, edit, or reject) feeds back into the embedding index without any network call."
@@ -10941,6 +11041,10 @@ msgstr "One real screen, rendered in whichever theme this page is in right now."
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "One receipt, multiple categories."
 msgstr "One receipt, multiple categories."
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "One receipt, three categories"
+msgstr "One receipt, three categories"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "One row, reclassified"
@@ -11145,6 +11249,10 @@ msgstr "Open Source: Verify Our Claims Yourself"
 msgid "Open Statistics and tap the Tags tab. Each tag becomes a sortable row showing income, expense, and net for the active date range. The Untagged row aggregates every transaction without a tag. Tap any row to drill into the full transaction list filtered to that tag."
 msgstr "Open Statistics and tap the Tags tab. Each tag becomes a sortable row showing income, expense, and net for the active date range. The Untagged row aggregates every transaction without a tag. Tap any row to drill into the full transaction list filtered to that tag."
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "Open the account menu and choose Close Deposit. Budgie moves the remaining balance to the destination you pick and archives the deposit."
+msgstr "Open the account menu and choose Close Deposit. Budgie moves the remaining balance to the destination you pick and archives the deposit."
+
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
@@ -11314,8 +11422,16 @@ msgid "OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATED TO THE 
 msgstr "OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATED TO THE SERVICE SHALL NOT EXCEED THE AMOUNT YOU PAID US IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM, OR ONE HUNDRED DOLLARS ($100), WHICHEVER IS GREATER."
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Override once, remember forever"
+msgstr "Override once, remember forever"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Override per-MCC: point all 4111 (transit) into your \"Commute\" instead of the default \"Travel\". Override once, applies forever."
 msgstr "Override per-MCC: point all 4111 (transit) into your \"Commute\" instead of the default \"Travel\". Override once, applies forever."
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Override the category"
+msgstr "Override the category"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Overview tiles: spent and earned across the period, beside your balance over every account"
@@ -11969,6 +12085,10 @@ msgstr "Quantization"
 msgid "Quick Edit Transaction App — Long-Press Menu — Budgie"
 msgstr "Quick Edit Transaction App — Long-Press Menu — Budgie"
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "Quick rule offered"
+msgstr "Quick rule offered"
+
 #: src/generic/component/testimonials-section/testimonials-header.tsx
 msgid "Quotes from anonymized beta tester feedback. Names and locations have been changed to protect privacy."
 msgstr "Quotes from anonymized beta tester feedback. Names and locations have been changed to protect privacy."
@@ -12120,6 +12240,10 @@ msgstr "Reasonable pricing"
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown. Budgie's split modal lets you allocate fractions of the same transaction across as many categories as you like."
 msgstr "Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown. Budgie's split modal lets you allocate fractions of the same transaction across as many categories as you like."
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Receipts rarely fit one category"
+msgstr "Receipts rarely fit one category"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Receive credit for discovered vulnerabilities (if desired)"
@@ -12864,6 +12988,10 @@ msgstr "Single-device focus means no automatic sync between phone and tablet"
 msgid "Six monthly bars on that view show what you usually spend at the same place, in the same category"
 msgstr "Six monthly bars on that view show what you usually spend at the same place, in the same category"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Sixty days ahead"
+msgstr "Sixty days ahead"
+
 #: src/app/[lang]/features/no-bank-login-budget-app/metadata.ts
 msgid "Skip the aggregator. Budgie syncs Monobank via your personal API token and imports any bank's PDF or CSV statement directly. Your credentials never leave you."
 msgstr "Skip the aggregator. Budgie syncs Monobank via your personal API token and imports any bank's PDF or CSV statement directly. Your credentials never leave you."
@@ -13351,6 +13479,10 @@ msgstr "Switch apps without losing history"
 msgid "Switch language"
 msgstr "Switch language"
 
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount."
+msgstr "Switch the expense to split mode and add a row per category. Each row carries its own icon, category and amount."
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
 msgstr "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
@@ -13500,6 +13632,10 @@ msgstr "Tap a row, get the transactions"
 msgid "Tap any category row to open exactly the transactions behind that number for this period"
 msgstr "Tap any category row to open exactly the transactions behind that number for this period"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Tap any marked day to see exactly what bills — here Day 15 lists the gym, Netflix and Spotify."
+msgstr "Tap any marked day to see exactly what bills — here Day 15 lists the gym, Netflix and Spotify."
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Tap any tag row to open the filtered transaction list with all sorts and filters available"
 msgstr "Tap any tag row to open the filtered transaction list with all sorts and filters available"
@@ -13626,6 +13762,10 @@ msgstr "The account it landed in"
 msgid "The account keeps its own"
 msgstr "The account keeps its own"
 
+#: src/app/[lang]/features/deposit-tracking/page.tsx
+msgid "The account screen carries the current balance, the interest rate, the maturity date, the days remaining and a calculated expected payout."
+msgstr "The account screen carries the current balance, the interest rate, the maturity date, the days remaining and a calculated expected payout."
+
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "The accuracy fixes apply going forward and to the specific edge cases the backfills targeted. They do not rewrite unrelated transaction history."
 msgstr "The accuracy fixes apply going forward and to the specific edge cases the backfills targeted. They do not rewrite unrelated transaction history."
@@ -13702,6 +13842,14 @@ msgstr "The average user logs the same merchant more than thirty times a year. T
 msgid "The background is solid black, not a dimmed grey panel layered over a light design."
 msgstr "The background is solid black, not a dimmed grey panel layered over a light design."
 
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "The bank already told you what it was"
+msgstr "The bank already told you what it was"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "The bank's category code"
+msgstr "The bank's category code"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Bottom Line"
 msgstr "The Bottom Line"
@@ -13745,6 +13893,10 @@ msgstr "The choice lives on the transaction itself, so editing anything else abo
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "The Cloud Dependency Problem"
 msgstr "The Cloud Dependency Problem"
+
+#: src/app/[lang]/features/mcc-auto-category/page.tsx
+msgid "The code resolves to one of your categories — here Groceries — before you open the form."
+msgstr "The code resolves to one of your categories — here Groceries — before you open the form."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "The code stays public. The community can keep building. Your data stays on your device regardless."
@@ -14159,6 +14311,10 @@ msgid "The Real-World Impact of Financial Privacy"
 msgstr "The Real-World Impact of Financial Privacy"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
+msgid "The remainder counts down"
+msgstr "The remainder counts down"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
 msgid "The remaining-budget pill shows what's left to allocate as you go. Save with Done; the original transaction becomes a parent with linked split entries underneath."
 msgstr "The remaining-budget pill shows what's left to allocate as you go. Save with Done; the original transaction becomes a parent with linked split entries underneath."
 
@@ -14265,6 +14421,10 @@ msgstr "The shutdown was not a surprise to anyone paying attention. It was the p
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The shutdown wasn’t just about a product failing. It was a wake-up call about the risks of trusting your financial data to a free, ad-supported service owned by a corporation whose priorities can shift overnight."
 msgstr "The shutdown wasn’t just about a product failing. It was a wake-up call about the risks of trusting your financial data to a free, ad-supported service owned by a corporation whose priorities can shift overnight."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "The slow leak in every budget"
+msgstr "The slow leak in every budget"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "THE SOFTWARE IS PROVIDED \"AS IS,\" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
@@ -15160,6 +15320,14 @@ msgstr "Untagged bucket surfaces every transaction missing a label — drill in 
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 msgstr "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Upcoming charges"
+msgstr "Upcoming charges"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."
+msgstr "Use Add item to add another row; the label under the rows shows how much is still left to assign."
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"
 msgstr "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"
@@ -15751,6 +15919,10 @@ msgstr "What if Whisper mishears me?"
 msgid "What Intuit Mint Actually Was"
 msgstr "What Intuit Mint Actually Was"
 
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "What is left to assign"
+msgstr "What is left to assign"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "What Is Local-First Software?"
 msgstr "What Is Local-First Software?"
@@ -16008,10 +16180,6 @@ msgstr "When source code is public, anyone with the relevant expertise can exami
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "When the accounts hold different currencies, what will land on the other side appears under the figure you typed. The pill says which side you are driving — tap it to type the receiving amount instead — and the rate that produced the pair is saved with the transfer."
 msgstr "When the accounts hold different currencies, what will land on the other side appears under the figure you typed. The pill says which side you are driving — tap it to type the receiving amount instead — and the rate that produced the pair is saved with the transfer."
-
-#: src/app/[lang]/features/deposit-tracking/page.tsx
-msgid "When the deposit matures, choose the destination account and close it. Budgie transfers the remaining balance from the deposit account and archives the deposit so it leaves the home screen without losing history."
-msgstr "When the deposit matures, choose the destination account and close it. Budgie transfers the remaining balance from the deposit account and archives the deposit so it leaves the home screen without losing history."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "When the embedding stage produces low-confidence results — for example, with a new merchant or an ambiguous description — the full language model takes over. The LLM receives the transaction description and your category list as context, and generates a ranked suggestion."

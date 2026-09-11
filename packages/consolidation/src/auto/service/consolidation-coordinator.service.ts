@@ -54,4 +54,21 @@ export class ConsolidationCoordinatorService {
 
         return this.consolidationAutoCandidateService.processExistingTransferIncomeDuplicateCandidates(candidates);
     }
+
+    @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    async countBridgeClaimRepairCandidates(): Promise<number> {
+        return (await this.consolidationCandidateService.findBridgeClaimedRepairCandidates()).length;
+    }
+
+    @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    async repairBridgeClaimedTransferPairs(): Promise<number> {
+        const candidates = await this.consolidationCandidateService.findBridgeClaimedRepairCandidates();
+        const repairedCount = await this.consolidationAutoCandidateService.processBridgeClaimRepairCandidates(candidates);
+
+        if (repairedCount > 0) {
+            await this.consolidationAutoCandidateService.process(null);
+        }
+
+        return repairedCount;
+    }
 }
