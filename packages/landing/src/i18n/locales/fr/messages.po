@@ -12371,7 +12371,7 @@ msgstr "Tarification raisonnable"
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Recalculate Balances in Settings rebuilds every cached balance from the transaction ledger"
-msgstr "« Recalculer les soldes » dans les Réglages reconstruit chaque solde en cache à partir du journal des transactions"
+msgstr "« Recalculer les soldes » dans les Paramètres reconstruit chaque solde en cache à partir du journal des transactions"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Receipts mix categories. Without splits, you fudge — pick the dominant category and lose the breakdown. Budgie's split modal lets you allocate fractions of the same transaction across as many categories as you like."
@@ -13042,7 +13042,7 @@ msgstr "Paramètres → Export → Sauvegarde. Budgie écrit un fichier .db avec
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Settings → Recalculate Balances clears the cached balance for every account and rebuilds it from the transactions themselves — useful after an import or a run of edits when a cached figure has drifted."
-msgstr "Réglages → Recalculer les soldes efface le solde en cache de chaque compte et le reconstruit à partir des transactions elles-mêmes — utile après un import ou une série de modifications lorsqu'un chiffre en cache a dérivé."
+msgstr "Paramètres → Recalculer les soldes efface le solde en cache de chaque compte et le reconstruit à partir des transactions elles-mêmes — utile après un import ou une série de modifications lorsqu'un chiffre en cache a dérivé."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Settings → Security, directly below the PIN-lock card. It's a single switch, off by default, with no per-screen configuration."
