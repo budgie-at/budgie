@@ -8198,7 +8198,7 @@ msgstr "Головний екран та аналітика автоматичн
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Home groups debts by direction: You owe and Owed to you, each with its own subtotal and a bar for how far the debt has been settled."
-msgstr "Home групує борги за напрямком: «Ви винні» та «Вам винні», кожен із власним підсумком і смугою погашення."
+msgstr "Головний екран групує борги за напрямком: «Ви винні» та «Вам винні», кожен із власним підсумком і смугою погашення."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
@@ -9160,7 +9160,7 @@ msgstr "Юридична оцінка"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Lent or borrowed"
-msgstr "Позичено або позичено в"
+msgstr "Позичено або взято в борг"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Let’s dive deeper into each option."
@@ -12548,7 +12548,7 @@ msgstr "Відновлення — це один дотик при новому 
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Returned vs lent"
-msgstr "Повернено та позичено"
+msgstr "Повернено порівняно з позиченим"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Reversible audit trail — Revert restores the original income and expense rows"
