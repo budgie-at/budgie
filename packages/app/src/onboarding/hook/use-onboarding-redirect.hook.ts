@@ -1,40 +1,27 @@
-import { getLogger } from '@budgie/logger';
-import { Href, router } from 'expo-router';
-import { useEffect, useRef } from 'react';
+import { Href, useIsFocused } from 'expo-router';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { accountRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { ONBOARDING_STEP_ORDER } from '../constant/onboarding-step-order.constant';
-import { onboardingService } from '../service/onboarding.service';
-
-const logger = getLogger('useOnboardingRedirect');
 
 export const useOnboardingRedirect = (): Href | null => {
+    const isFocused = useIsFocused();
     const isOnboardingCompleted = useSetting('isOnboardingCompleted');
     const onboardingStep = useSetting('onboardingStep');
-    const startFreshInstallRef = useRef(async () => {
-        if (isOnboardingCompleted) {
-            return;
-        }
+    const { data: accountCounts, updatedAt } = useDatabaseLiveQuery(accountRepository.count());
 
-        if (await onboardingService.shouldStart()) {
-            router.replace('/onboarding');
-        }
-    });
-
-    // oxlint-disable-next-line react/exhaustive-deps -- mount-only fresh-install check; the ref captures the value at mount
-    useEffect(() => {
-        void startFreshInstallRef.current().catch((error: unknown) => {
-            logger.error('fresh install check failed', { errorMessage: getErrorMessage(error) });
-        });
-    }, []);
-
-    const resumedStep = ONBOARDING_STEP_ORDER[onboardingStep];
-
-    if (isOnboardingCompleted || !isPositiveNumber(onboardingStep) || !isDefined(resumedStep)) {
+    if (!isFocused || !isDefined(updatedAt) || isOnboardingCompleted) {
         return null;
     }
 
-    return `/onboarding/${resumedStep.toLowerCase()}`;
+    if (isPositiveNumber(onboardingStep)) {
+        const resumedStep = ONBOARDING_STEP_ORDER[onboardingStep];
+
+        return isDefined(resumedStep) ? `/onboarding/${resumedStep.toLowerCase()}` : null;
+    }
+
+    return isPositiveNumber(accountCounts.at(0)?.count) ? null : '/onboarding';
 };
