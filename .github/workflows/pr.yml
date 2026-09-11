@@ -196,7 +196,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@87564326884753f42a5bc809c1aee75929829ff0 # fix/release-upload-retries pin
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@401d75ad423966db1f43e2bb0b15201018417596 # fix/release-upload-retries pin
         with:
             app-dir: packages/app
             scheme: budgie
