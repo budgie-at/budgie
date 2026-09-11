@@ -2347,6 +2347,14 @@ msgstr "Una lista por fuente para que veas qué conexión produjo los duplicados
 msgid "A PIN, not a login"
 msgstr "Un PIN, no un inicio de sesión"
 
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "A price chart that lives in your own database — price card, sparkline and period metrics for every crypto holding, rendered with the network off."
+msgstr "Un gráfico de precios que vive en tu propia base de datos: tarjeta de precio, minigráfico y métricas por periodo para cada tenencia de criptomonedas, renderizado sin conexión."
+
+#: src/app/[lang]/features/crypto-price-history/metadata.ts
+msgid "A price chart that lives in your own database — price card, sparkline and period metrics, offline."
+msgstr "Un gráfico de precios en tu propia base de datos: tarjeta de precio, minigráfico y métricas por periodo, offline."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "A project that ignores security issues or dismisses user concerns is sending clear signals about its priorities. Conversely, a project with thoughtful, timely responses to concerns demonstrates genuine commitment to its users."
 msgstr "Un proyecto que ignora los problemas de seguridad o descarta las preocupaciones de los usuarios está enviando señales claras sobre sus prioridades. Por el contrario, un proyecto con respuestas reflexivas y oportunas a las preocupaciones demuestra un compromiso genuino con sus usuarios."
@@ -2418,6 +2426,18 @@ msgstr "Una etiqueta virtual que agrupa cada transacción sin etiquetas. Al puls
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "A year of daily prices for BTC, ETH, BNB, SOL, XRP, TRX, USDT, USDC, and HYPE ships with the app, in euro and dollar"
 msgstr "La app incluye un año de precios diarios de BTC, ETH, BNB, SOL, XRP, TRX, USDT, USDC y HYPE, en euros y dólares"
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "A year of daily prices for the nine largest crypto assets ships in the app, in euro and dollar"
+msgstr "Un año de precios diarios de los nueve mayores criptoactivos viene incluido en la app, en euros y dólares"
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "A year of daily prices for the nine largest crypto assets ships inside the app in euro and dollar, so the first chart you open already has something to draw. Older history is filled in from CoinGecko's public market data by a background job queue, one day at a time."
+msgstr "Un año de precios diarios de los nueve mayores criptoactivos viene incluido en la app en euros y dólares, así que el primer gráfico que abras ya tiene algo que dibujar. El historial más antiguo lo completa una cola de trabajos en segundo plano a partir de los datos públicos de mercado de CoinGecko, día a día."
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "A year of daily prices for the nine largest crypto assets ships inside the app in euro and dollar. Older history is backfilled from CoinGecko's public market data, on your device."
+msgstr "Un año de precios diarios de los nueve mayores criptoactivos viene incluido en la app en euros y dólares. El historial más antiguo se completa desde los datos públicos de mercado de CoinGecko, en tu dispositivo."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Academic researchers studying software security"
@@ -5243,6 +5263,10 @@ msgstr "Las paletas de los gráficos se recomputan automáticamente para legibil
 msgid "charts"
 msgstr "gráficos"
 
+#: src/app/[lang]/features/crypto-price-history/opengraph-image.tsx
+msgid "Charts read from your database."
+msgstr "Gráficos leídos de tu base de datos."
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Charts read from your own database, so they keep working with no connection"
 msgstr "Los gráficos se leen de tu propia base de datos, así que siguen funcionando sin conexión"
@@ -5971,6 +5995,7 @@ msgstr "Multidivisa: 1000 $ → 925 € coincide cuando el tipo de cambio implí
 
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
+#: src/app/[lang]/features/crypto-price-history/opengraph-image.tsx
 msgid "crypto"
 msgstr "cripto"
 
@@ -6010,6 +6035,15 @@ msgstr "Seguimiento de cartera cripto"
 #: src/app/[lang]/features/crypto-investment-tracking/metadata.ts
 msgid "Crypto Portfolio Tracking — Budgie"
 msgstr "Seguimiento de cartera cripto — Budgie"
+
+#: src/app/[lang]/features/crypto-price-history/metadata.ts
+#: src/app/[lang]/features/crypto-price-history/opengraph-image.tsx
+msgid "Crypto Price History"
+msgstr "Historial de precios de criptomonedas"
+
+#: src/app/[lang]/features/crypto-price-history/metadata.ts
+msgid "Crypto Price History — Budgie"
+msgstr "Historial de precios de criptomonedas — Budgie"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Crypto right below them"
@@ -6585,6 +6619,10 @@ msgstr "¿Tengo que crear todo el presupuesto a mano?"
 msgid "Do I have to re-add every account when my token expires?"
 msgstr "¿Tengo que volver a añadir cada cuenta cuando mi token caduca?"
 
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "Do I need an account or an API key?"
+msgstr "¿Necesito una cuenta o una clave de API?"
+
 #: src/app/[lang]/privacy/page.tsx
 msgid "Do I need to create an account to use Budgie?"
 msgstr "¿Necesito crear una cuenta para usar Budgie?"
@@ -6742,6 +6780,10 @@ msgstr "¿La IA consume mi batería?"
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Does the AI work offline?"
 msgstr "¿La IA funciona sin conexión?"
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "Does the chart work offline?"
+msgstr "¿El gráfico funciona sin conexión?"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Does the count respect my current filters?"
@@ -7154,6 +7196,14 @@ msgstr "Cada servicio basado en la nube es un objetivo potencial. Solo en 2023, 
 msgid "Every correction updates the embedding index instantly — accuracy improves as you use it"
 msgstr "Cada corrección actualiza el índice de embedding al instante — la precisión mejora cuanto más lo usas"
 
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "Every crypto holding has its own market screen with a price card, a sparkline and period metrics"
+msgstr "Cada tenencia de criptomonedas tiene su propia pantalla de mercado con tarjeta de precio, minigráfico y métricas por periodo"
+
+#: src/app/[lang]/features/crypto-price-history/metadata.ts
+msgid "Every crypto holding has its own market screen with a price card, sparkline and period metrics. A year of daily prices ships in the app; older history backfills from CoinGecko in the background, on-device, one day at a time."
+msgstr "Cada tenencia de criptomonedas tiene su propia pantalla de mercado con tarjeta de precio, minigráfico y métricas por periodo. Un año de precios diarios viene incluido en la app; el historial más antiguo se completa desde CoinGecko en segundo plano, en el dispositivo, día a día."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Every currency, one total"
 msgstr "Cada moneda, un solo total"
@@ -7524,6 +7574,7 @@ msgstr "funciones"
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+#: src/app/[lang]/features/crypto-price-history/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/custom-categories/page.tsx
 #: src/app/[lang]/features/dark-mode/page.tsx
@@ -8224,6 +8275,7 @@ msgstr "Las posiciones se consolidan en el patrimonio neto junto a las cuentas f
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+#: src/app/[lang]/features/crypto-price-history/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/custom-categories/page.tsx
 #: src/app/[lang]/features/dark-mode/page.tsx
@@ -8458,6 +8510,7 @@ msgid "How does the popularity sort work?"
 msgstr "¿Cómo funciona el orden por popularidad?"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
+#: src/app/[lang]/features/crypto-price-history/page.tsx
 msgid "How far back does the history go?"
 msgstr "¿Hasta cuándo se remonta el historial?"
 
@@ -10107,6 +10160,10 @@ msgstr "La mayoría de apps de presupuesto envían cada movimiento y saldo a un 
 msgid "Most budgeting apps treat your phone as a thin client—a window into data stored on remote servers. Budgie flips this model. Your phone isn’t just displaying your budget; it’s storing it. There’s no Budgie server with a copy of your financial life because we never receive it in the first place."
 msgstr "La mayoría de las aplicaciones de presupuesto tratan tu teléfono como un cliente ligero: una ventana a datos almacenados en servidores remotos. Budgie invierte este modelo. Tu teléfono no solo muestra tu presupuesto; lo almacena. No hay ningún servidor de Budgie con una copia de tu vida financiera porque nunca la recibimos."
 
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "Most crypto trackers draw their charts from a live ticker: the app opens a connection to a price provider, and the chart is gone the moment that connection is. Budgie stores prices instead. Every daily close it fetches is written to your own SQLite database, and the chart is read back out of it — so it never flickers while a socket reconnects."
+msgstr "La mayoría de los rastreadores de criptomonedas dibujan sus gráficos desde un ticker en vivo: la app abre una conexión con un proveedor de precios y el gráfico desaparece en cuanto desaparece la conexión. Budgie guarda los precios. Cada cierre diario que obtiene se escribe en tu propia base de datos SQLite, y el gráfico se lee de ahí, así que nunca parpadea mientras un socket se reconecta."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Most expense apps"
 msgstr "La mayoría de apps de gastos"
@@ -10727,6 +10784,10 @@ msgstr "No. El interruptor cambia lo que Budgie muestra mientras no está activa
 msgid "No. The token lives on the connection, so updating it from any account's sync settings restores every account sharing that connection at once."
 msgstr "No. El token vive en la conexión, así que actualizarlo desde los ajustes de sincronización de cualquier cuenta restaura de una vez a todas las cuentas que comparten esa conexión."
 
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "No. There is no ticker connection and no account; the backfill uses CoinGecko's public endpoints and writes the results into your local database."
+msgstr "No. No hay conexión de ticker ni cuenta; el relleno usa los endpoints públicos de CoinGecko y escribe los resultados en tu base de datos local."
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "No. They are local notifications scheduled by the app itself from data already on your device. Nothing is sent to a server, and no account is required."
 msgstr "No. Son notificaciones locales que la propia app programa a partir de datos que ya están en tu dispositivo. No se envía nada a ningún servidor, y no se requiere ninguna cuenta."
@@ -10882,6 +10943,10 @@ msgstr "Desactivado de forma predeterminada. Actívalo en Ajustes → Seguridad 
 msgid "Offer comprehensive export functionality (CSV, JSON, SQL)"
 msgstr "Te dejan exportar limpiamente a CSV, JSON y SQL"
 
+#: src/app/[lang]/features/crypto-price-history/opengraph-image.tsx
+msgid "offline"
+msgstr "offline"
+
 #: src/app/[lang]/ai-features/metadata.ts
 msgid "offline AI finance app"
 msgstr ""
@@ -11013,6 +11078,10 @@ msgstr "A menudo sí"
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Older exports often contain the account currency and amount, but no exchange-rate snapshot. Budgie treats that as incomplete valuation data, not as corrupt transaction data. The entry is still usable; it simply needs a base value before it should affect multi-currency charts."
 msgstr ""
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "Older history backfills from CoinGecko one day at a time, with a visible progress indicator"
+msgstr "El historial más antiguo se completa desde CoinGecko día a día, con un indicador de progreso visible"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "OLED-friendly black for the background. Cards and surfaces are dark gray for hierarchy, but the canvas pixels are off — saves battery on OLED screens."
@@ -11331,6 +11400,10 @@ msgstr "Aquí solo aparecen ingresos reales"
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Only that account is affected. Archiving or deleting it never removes the connection, so its siblings keep syncing with the same credential."
 msgstr "Solo esa cuenta se ve afectada. Archivarla o eliminarla nunca elimina la conexión, así que las demás cuentas siguen sincronizándose con la misma credencial."
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "Only the assets you actually hold are backfilled — no wasted downloads"
+msgstr "Solo se completan los activos que realmente tienes: sin descargas desperdiciadas"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Only the ones you created"
@@ -11950,6 +12023,10 @@ msgstr "Vista previa de cada fila antes de escribir para detectar errores de map
 msgid "Price, and its last move"
 msgstr "El precio y su último movimiento"
 
+#: src/app/[lang]/features/crypto-price-history/opengraph-image.tsx
+msgid "prices"
+msgstr "precios"
+
 #: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 msgid "pricing"
 msgstr ""
@@ -12326,6 +12403,10 @@ msgstr "resincronización"
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx
 msgid "Re-sync Window"
 msgstr "Ventana de resincronización"
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "Reachable straight from the crypto group on the home screen"
+msgstr "Accesible directamente desde el grupo de criptomonedas en la pantalla de inicio"
 
 #: src/blog/component/related-articles/related-articles.tsx
 msgid "Read article"
@@ -14058,6 +14139,10 @@ msgstr "La aplicación necesita funcionar:"
 msgid "The app opens on the lock screen"
 msgstr "La app se abre en la pantalla de bloqueo"
 
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "The app ships a year of daily closes for the nine largest assets. Beyond that, the background queue fills in older days a day at a time until it catches up."
+msgstr "La app incluye un año de cierres diarios de los nueve mayores activos. Más atrás, la cola en segundo plano rellena los días antiguos día a día hasta ponerse al día."
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "The app source is public. Even if Budgie disappeared, the community could keep building it. That's not true of subscription apps with closed servers."
 msgstr "El código fuente de la app es público. Incluso si Budgie desapareciera, la comunidad podría seguir construyéndola. Eso no ocurre con apps de suscripción con servidores cerrados."
@@ -14085,6 +14170,10 @@ msgstr "La arquitectura: SQLite y diseno local-first"
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The average user logs the same merchant more than thirty times a year. Typing the category, picking a tag, entering the usual amount, and choosing the right account for the same coffee shop is wasted effort — the information is already in your history. Budgie surfaces it as tappable pill-shaped chips the moment you open the form, so confirming a familiar expense takes one tap instead of seven."
 msgstr "El usuario promedio registra el mismo comercio más de treinta veces al año. Escribir la categoría, elegir una etiqueta, ingresar el importe habitual y elegir la cuenta correcta para la misma cafetería es un esfuerzo desperdiciado — la información ya está en tu historial. Budgie la presenta como chips en forma de píldora pulsables en el momento en que abres el formulario, para que confirmar un gasto familiar tome un toque en lugar de siete."
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "The backfill reports its progress per asset, so you can see how much of the older history is still filling in and when it has finished."
+msgstr "El relleno informa de su progreso por activo, así que puedes ver cuánto del historial más antiguo se sigue completando y cuándo ha terminado."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "The background is solid black, not a dimmed grey panel layered over a light design."
@@ -14133,6 +14222,10 @@ msgstr "La categoría que asigna"
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "The category selector reorders by popularity over time, so the categories you use most surface first. Bank-synced transactions can pre-fill via MCC mapping; you can override at any time."
 msgstr "El selector de categorías se reordena por popularidad con el tiempo, de modo que las que más usas aparecen primero. Las transacciones sincronizadas con el banco filtran el MCC para preseleccionar."
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "The chart is read from your own SQLite database, so it renders with the network off"
+msgstr "El gráfico se lee de tu propia base de datos SQLite, así que se renderiza sin conexión"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "The choice lives on the transaction itself, so editing anything else about it never resets which tag is shown."
@@ -16023,6 +16116,10 @@ msgstr "¿Qué hace Recalcular saldos?"
 msgid "What does Screenshot Protection actually hide?"
 msgstr "¿Qué oculta realmente Protección de capturas?"
 
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "What does the progress indicator show?"
+msgstr "¿Qué muestra el indicador de progreso?"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "What Durable Means for a Finance App"
 msgstr "Qué significa durable para una app financiera"
@@ -16300,6 +16397,7 @@ msgstr "Qué compromisos se están considerando"
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
+#: src/app/[lang]/features/crypto-price-history/page.tsx
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/custom-categories/page.tsx
 #: src/app/[lang]/features/dark-mode/page.tsx
@@ -16598,6 +16696,10 @@ msgstr "¿De dónde vienen las sugerencias?"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Where does my Monobank token live?"
 msgstr "¿Dónde vive mi token de Monobank?"
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "Where does the price data come from?"
+msgstr "¿De dónde vienen los datos de precios?"
 
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "Where is my financial data stored?"
@@ -16990,6 +17092,10 @@ msgstr ""
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Why subscriptions need their own view"
 msgstr "Por qué las suscripciones necesitan su propia vista"
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "Why the chart lives in your database"
+msgstr "Por qué el gráfico vive en tu base de datos"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Why the credential deserves its own object"
@@ -17490,6 +17596,10 @@ msgstr "Sí. Elige el gasto original y Budgie marca el reembolso como parcial cu
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Yes. Prices are stored in your local database, so the market screen renders from what you already have. A connection is only needed to extend the history further back."
 msgstr "Sí. Los precios se guardan en tu base de datos local, así que la pantalla de mercado se muestra a partir de lo que ya tienes. Solo se necesita una conexión para extender el historial más atrás."
+
+#: src/app/[lang]/features/crypto-price-history/page.tsx
+msgid "Yes. Prices are stored in your own SQLite database and the chart is read from there, so it renders with the network off."
+msgstr "Sí. Los precios se guardan en tu propia base de datos SQLite y el gráfico se lee de ahí, así que se renderiza sin conexión."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Yes. Pull requests, bug reports, and feature suggestions are welcome on the GitHub repository. The project follows a standard fork-and-PR workflow with contribution guidelines in the repository."
