@@ -8746,6 +8746,10 @@ msgstr "In an era where data breaches and privacy violations make headlines dail
 msgid "In an offline-first application:"
 msgstr "In an offline-first application:"
 
+#: src/app/[lang]/features/monobank-sync/page.tsx
+msgid "In Budgie's local database on your device. When you set a PIN, that database is encrypted with a SQLCipher key held in your platform's keystore; the token itself is never sent to a Budgie server (we have none)."
+msgstr "In Budgie's local database on your device. When you set a PIN, that database is encrypted with a SQLCipher key held in your platform's keystore; the token itself is never sent to a Budgie server (we have none)."
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "In connection with a merger, acquisition, or sale of assets (users will be notified)"
 msgstr "In connection with a merger, acquisition, or sale of assets (users will be notified)"
@@ -8773,10 +8777,6 @@ msgstr "In this article, we will walk through exactly how Budgie keeps your fina
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "In this comprehensive guide, we’ll explore why people are leaving YNAB, what to look for in a privacy-focused alternative, and provide honest reviews of the top options available in 2025. Whether you’re concerned about cloud data storage, subscription fatigue, or simply want more control over your financial information, we’ve got you covered."
 msgstr "In this comprehensive guide, we’ll explore why people are leaving YNAB, what to look for in a privacy-focused alternative, and provide honest reviews of the top options available in 2025. Whether you’re concerned about cloud data storage, subscription fatigue, or simply want more control over your financial information, we’ve got you covered."
-
-#: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "In your platform's secure keystore (iOS Keychain / Android Keystore), never in plaintext or our servers (we have none)."
-msgstr "In your platform's secure keystore (iOS Keychain / Android Keystore), never in plaintext or our servers (we have none)."
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "In-app switcher — no reinstall, no relaunch"
@@ -15270,8 +15270,8 @@ msgid "Two on-device models — Qwen3 1.7B for chat and a 768-dim Nomic embeddin
 msgstr "Two on-device models — Qwen3 1.7B for chat and a 768-dim Nomic embedding model — categorize transactions, suggest tags, and learn from your corrections. Your statements never leave the phone."
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
-msgid "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device's secure keystore; (2) PDF/CSV/Excel statement imports for anything else."
-msgstr "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in your device's secure keystore; (2) PDF/CSV/Excel statement imports for anything else."
+msgid "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in Budgie's local database; (2) PDF/CSV/Excel statement imports for anything else."
+msgstr "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in Budgie's local database; (2) PDF/CSV/Excel statement imports for anything else."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Two rows, one movement"
@@ -17793,8 +17793,8 @@ msgid "Your spending patterns are analyzed to determine your creditworthiness"
 msgstr "Your spending patterns are analyzed to determine your creditworthiness"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
-msgid "Your token, in your keystore"
-msgstr "Your token, in your keystore"
+msgid "Your token, in your local database"
+msgstr "Your token, in your local database"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Your transaction data contributes to products sold to landlords evaluating rental applications, lenders assessing loan risk, and employers verifying income claims. The infrastructure provider became a data company."
