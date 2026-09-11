@@ -2271,6 +2271,10 @@ msgstr "Une application de finances personnelles durable possède des propriét�
 msgid "A euro account keeps its own currency. The figure on Home counts what it is worth in yours today."
 msgstr "Un compte en euros garde sa propre devise. Le chiffre sur l'accueil compte ce qu'il vaut aujourd'hui dans la vôtre."
 
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "A fee is not a transfer"
+msgstr "Des frais ne sont pas un virement"
+
 #: src/app/[lang]/features/uncategorized-transactions/metadata.ts
 msgid "A filter-aware missing-category pill surfaces uncategorized transactions before they distort your budget analytics."
 msgstr "Un raccourci compatible avec les filtres affiche les transactions non catégorisées avant qu’elles ne faussent vos rapports budgétaires."
@@ -2374,6 +2378,10 @@ msgstr "Un aperçu technique de l’architecture offline-first de Budgie : SQLit
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
 msgstr "Une transaction peut porter plusieurs tags. La liste n'a de la place que pour une puce, donc Budgie décide laquelle afficher."
+
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "A transfer can carry a cost"
+msgstr "Un virement peut avoir un coût"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "A transfer is its own type"
@@ -2878,6 +2886,10 @@ msgstr "Les statistiques comportent un onglet Étiquettes à côté de Catégori
 msgid "Analytics counts each split toward its own category — no double-counting"
 msgstr "Les analytiques comptabilisent chaque division dans sa propre catégorie — sans double comptage"
 
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Analytics counts only the fee as spending and leaves the movement out, so shuffling $900 between your own accounts never inflates your expenses."
+msgstr "L'analyse ne compte que les frais comme dépense et laisse le mouvement de côté, donc déplacer 900 $ entre vos propres comptes ne gonfle jamais vos dépenses."
+
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Analytics includes fees in their own category, even when the main transaction is a transfer"
 msgstr "Les analyses incluent les frais dans leur propre catégorie, même lorsque la transaction principale est un transfert"
@@ -3107,6 +3119,10 @@ msgstr "Rattachez un remboursement déjà enregistré"
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Attach an existing income or expense to a debt as a settlement, without inventing a second transaction"
 msgstr "Rattachez un revenu ou une dépense existante à une dette en tant que règlement, sans créer une seconde transaction"
+
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Attached to the transfer"
+msgstr "Attachés au virement"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Attempt to gain unauthorized access to any part of the Service"
@@ -3474,6 +3490,10 @@ msgstr "Banque, espèces, dépôt, crypto, dette — tout sur un seul écran d�
 msgid "Bank, cash, deposit, crypto, debt — one number on your home screen."
 msgstr "Banque, espèces, dépôts, crypto, dettes : un seul chiffre sur votre écran d'accueil."
 
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Banks charge for moving your own money. Budgie keeps that charge attached to the transfer instead of inventing a second expense."
+msgstr "Les banques facturent le transfert de votre propre argent. Budgie garde ces frais attachés au virement au lieu d'inventer une seconde dépense."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Basic API access available"
 msgstr "Accès API basique disponible"
@@ -3818,13 +3838,13 @@ msgstr "Budgie (\"we,\" \"our,\" or \"us\") s’engage à protéger votre vie pr
 msgid "Budgie analytics screen breaking spending down by category with amounts and percentages"
 msgstr "Écran d’analyse de Budgie détaillant les dépenses par catégorie avec montants et pourcentages"
 
-#: src/app/[lang]/features/bank-fee-tracking/page.tsx
-msgid "Budgie analytics screen ranking spending by category, bank fees and charges among them"
-msgstr "Écran d’analyses de Budgie classant les dépenses par catégorie, dont les frais et commissions bancaires"
-
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Budgie analytics screen where the spent and income totals and the category breakdown contain no transfer entries"
 msgstr "Écran d’analyse de Budgie où les totaux dépensés et perçus ainsi que la répartition par catégorie ne contiennent aucun virement"
+
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Budgie analytics spending-by-category list with Housing & Utilities first and Bank Fees & Charges second at $565.75"
+msgstr "Liste des dépenses par catégorie de Budgie avec « Logement & Charges » en premier et « Frais & Charges Bancaires » en deuxième à 565,75 $"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie analytics Tags tab listing income and spending totals for each tag"
@@ -3973,6 +3993,10 @@ msgstr "Écran Budgie de modification d’une dépense avec le commerçant Silpo
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Budgie edit expense screen with a Quick rule pill above the amount, moments after the category was changed"
 msgstr "Écran de modification de dépense de Budgie avec la pastille Règle rapide au-dessus du montant, juste après le changement de catégorie"
+
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Budgie Edit Transfer screen for a $900 transfer from Main Checking to Emergency Savings with a Bank Fees & Charges fee sheet showing $4.50 and a Save fee button"
+msgstr "Écran Modifier le virement de Budgie pour un virement de 900 $ de Main Checking vers Emergency Savings avec une feuille de frais « Frais & Charges Bancaires » de 4,50 $ et un bouton Enregistrer les frais"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie embodies this transparent approach. Every line of code is public. Every decision is documented. Every claim is verifiable. We don’t ask you to trust us because we say so. We ask you to trust us because you can see exactly what we do."
@@ -5733,6 +5757,10 @@ msgstr "Le coût du budget"
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Counted as money spent"
 msgstr "Compté comme de l'argent dépensé"
+
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Counted as spending"
+msgstr "Comptés comme dépense"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Counter-IBAN enrichment and transfer consolidation"
@@ -8384,7 +8412,6 @@ msgstr "En quoi est-ce différent de la page Analyses d'étiquettes ?"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
-#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-how-it-works-section/bank-fee-tracking-how-it-works-section.tsx
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 #: src/app/[lang]/features/binance-sync/page.tsx
@@ -11147,6 +11174,10 @@ msgstr "Pratiques continues"
 msgid "Only as far back as the bank's API supports. Monobank has months of history; PrivatBank XLSX is per-export. CSV import is the universal fallback."
 msgstr "Aussi loin que l’API de la banque le prend en charge. Monobank a des mois d’historique ; PrivatBank XLSX est par export. L’importation CSV est la solution universelle de secours."
 
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Only fees are spending"
+msgstr "Seuls les frais sont des dépenses"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Only if you want to. Budgie can suggest a starting budget derived from your own recent transactions, offer a generic starter split across common categories, or hand you an empty canvas."
 msgstr "Seulement si vous le souhaitez. Budgie peut suggérer un budget de départ dérivé de vos transactions récentes, proposer une répartition générique sur des catégories courantes, ou vous laisser une page blanche."
@@ -11271,6 +11302,10 @@ msgstr "Ouvrez la feuille, saisissez le montant, touchez enregistrer — c’est
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Open the tag picker and long-press any tag to make it the one the list shows — no separate settings screen."
 msgstr "Ouvrez le sélecteur de tags et appuyez longuement sur un tag pour qu'il soit celui affiché par la liste — pas d'écran de réglages séparé."
+
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Open the transfer and add a fee. It is filed under Bank Fees & Charges and saved alongside the transfer, so the $900 you moved stays $900."
+msgstr "Ouvrez le virement et ajoutez des frais. Ils sont classés sous « Frais & Charges Bancaires » et enregistrés avec le virement, donc les 900 $ déplacés restent 900 $."
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Open this page in Safari — other browsers cannot trigger an OTA install."
@@ -12575,6 +12610,10 @@ msgstr "Enregistrez un préréglage par banque et ne remappez plus jamais"
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Save through the OS share sheet — Files, iCloud, Drive, anything"
 msgstr "Enregistrez via la feuille de partage du système — Fichiers, iCloud, Drive, n'importe où"
+
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "Saved with the fee"
+msgstr "Enregistrés avec les frais"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Saving a rule applies it retroactively to matching transactions you already have"
@@ -14491,6 +14530,10 @@ msgstr "La liste des transactions prend désormais en charge le filtrage par pla
 msgid "The transcribed text is passed to the two-stage categorization stack described above."
 msgstr "Le texte transcrit est transmis au pipeline de catégorisation en deux étapes décrit ci-dessus."
 
+#: src/app/[lang]/features/bank-fee-tracking/page.tsx
+msgid "The transfer stays a transfer"
+msgstr "Le virement reste un virement"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Trust Factor"
 msgstr "Le facteur confiance"
@@ -16133,10 +16176,6 @@ msgstr "Qu'est-ce que le compartiment Non étiqueté ?"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "What’s your budget?"
 msgstr "Quel est votre budget ?"
-
-#: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-how-it-works-section/bank-fee-tracking-how-it-works-section.tsx
-msgid "When a bank import includes a commission, Budgie stores it as a fee entry attached to the transaction. You can also add or edit a fee manually from the transaction screen. The fee entry keeps its own category and amount while the main transaction keeps its original type."
-msgstr "Lorsqu’un import bancaire inclut une commission, Budgie l’enregistre comme entrée de frais rattachée à la transaction. Vous pouvez aussi ajouter ou modifier des frais manuellement depuis l’écran de transaction. L’entrée de frais conserve sa propre catégorie et son propre montant, tandis que la transaction principale garde son type d’origine."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "When a company shuts down, the data does not necessarily disappear. It often becomes an asset sold to the acquiring company or retained in archives with unclear access policies."
