@@ -10515,6 +10515,10 @@ msgstr "Keine offizielle mobile App (Drittanbieter-Optionen existieren)"
 msgid "No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating the expense or income entry yourself."
 msgstr "Kein Rückgängig mit einem Fingertipp. Die Umwandlung in einen Transfer überschreibt die ursprünglichen Buchungen; das Rückgängigmachen bedeutet, die Ausgaben- oder Einnahmenbuchung manuell selbst neu zu erstellen."
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "No repair runs until you confirm on the repair card — no background cleanup"
+msgstr "Es läuft keine Reparatur, bis Sie auf der Reparaturkarte bestätigen — keine Bereinigung im Hintergrund"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "No second transaction is created — the original row changes type. A transfer names the account it moved to and stays out of your expense analytics."
 msgstr "Es entsteht keine zweite Transaktion — die ursprüngliche Zeile wechselt den Typ. Eine Überweisung nennt das Zielkonto und bleibt aus Ihrer Ausgabenanalyse heraus."
@@ -10823,10 +10827,6 @@ msgstr "Es wird nichts gespeichert, bevor du auf Speichern tippst – der gesamt
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Nothing opens before the PIN"
 msgstr "Vor der PIN öffnet sich nichts"
-
-#: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "Nothing runs until you confirm on the repair card — no background cleanup"
-msgstr "Nichts läuft, bis Sie auf der Reparaturkarte bestätigen — keine Bereinigung im Hintergrund"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Nothing to sign into"
@@ -13740,7 +13740,7 @@ msgstr "Der Wechsel zum Budgie-CSV-Import eliminiert den Aggregator vollständig
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
 msgid "sync"
-msgstr ""
+msgstr "Sync"
 
 #: src/app/[lang]/features/sync-data-repairs/metadata.ts
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx

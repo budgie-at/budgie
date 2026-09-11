@@ -117,7 +117,7 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                         <Trans>A per-source list so you can see which connection produced the duplicates</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Nothing runs until you confirm on the repair card — no background cleanup</Trans>
+                        <Trans>No repair runs until you confirm on the repair card — no background cleanup</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>An explicit empty state, “No sync repairs found”, when there is nothing to fix</Trans>
