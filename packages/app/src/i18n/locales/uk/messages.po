@@ -202,10 +202,6 @@ msgstr "100% офлайн і приватно"
 msgid "A balanced starter budget with common categories"
 msgstr "Збалансований стартовий бюджет із поширеними категоріями"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "A longer period takes longer to sync. You can always re-sync more history later."
-msgstr "Довший період синхронізується довше. Ви завжди можете синхронізувати більше історії пізніше."
-
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
 msgstr "Правило з такими ж умовами вже існує."
@@ -213,6 +209,22 @@ msgstr "Правило з такими ж умовами вже існує."
 #: src/app/(tabs)/settings/index.tsx
 msgid "About"
 msgstr "Про застосунок"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 12 minutes"
+msgstr "Приблизно 12 хвилин"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 3 minutes"
+msgstr "Приблизно 3 хвилини"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 6 minutes"
+msgstr "Приблизно 6 хвилин"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About a minute"
+msgstr "Приблизно хвилина"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -639,6 +651,14 @@ msgstr "Budgie повідомить, коли імпорт завершитьс�
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie позначить як видалені такі записи: {countText}. Ваші ручні транзакції залишаться без змін."
+
+#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+msgid "Can run for hours on old accounts, and much slower while the app is closed."
+msgstr "На старих рахунках може тривати години, і значно повільніше, коли додаток закритий."
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Can take hours"
+msgstr "Може тривати години"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
@@ -1679,17 +1699,9 @@ msgstr "Не вдалося завантажити контакти."
 msgid "Failed to save PIN. Please try again."
 msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Fast first sync"
-msgstr "Швидка перша синхронізація"
-
 #: src/ai/service/ai-system-status.service.ts
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Швидке індексування {done} з {total} • торкніться, щоб призупинити"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Fastest first sync"
-msgstr "Найшвидша перша синхронізація"
 
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
@@ -2097,10 +2109,6 @@ msgstr "Завантаження моделей"
 msgid "Loading..."
 msgstr "Завантаження..."
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Longer first sync"
-msgstr "Довша перша синхронізація"
-
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
 msgstr "Основна валюта"
@@ -2237,6 +2245,10 @@ msgstr "Позичені або надані гроші"
 msgid "Monobank"
 msgstr "Монобанк"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Monobank sends about one month of history per minute, for each account you selected."
+msgstr "Monobank надсилає приблизно місяць історії за хвилину для кожного вибраного вами рахунку."
+
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
 msgid "Monthly budget"
@@ -2253,10 +2265,6 @@ msgstr "Місячні витрати"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Monthly Total"
 msgstr "Місячний підсумок"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Much longer first sync"
-msgstr "Значно довша перша синхронізація"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -2492,6 +2500,10 @@ msgstr "не встановлено"
 msgid "Note"
 msgstr "Нотатка"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Nothing from the past is imported"
+msgstr "Минуле не імпортується"
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Перетворюються лише транзакції витрат і надходжень: витрати переказуються на цей рахунок, надходження — з нього. Інші типи залишаються без змін."
@@ -2513,10 +2525,6 @@ msgstr "Можна конвертувати лише витрати з одни�
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Можна конвертувати лише доходи з одним записом"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Only transactions from now on"
-msgstr "Лише транзакції з цього моменту"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
@@ -2918,6 +2926,10 @@ msgstr "Правило оновлено"
 msgid "Rules"
 msgstr "Правила"
 
+#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+msgid "Runs in the background, and much slower while the app is closed."
+msgstr "Виконується у фоновому режимі і значно повільніше, коли додаток закритий."
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
@@ -3214,10 +3226,6 @@ msgstr "Схожі транзакції"
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Пропустити"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Slowest — can take hours"
-msgstr "Найповільніша — може тривати години"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."

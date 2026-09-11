@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { SYNC_HISTORY_DEPTH_OPTIONS } from '../../constant/sync-history-depth-options.constant';
 import { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
 import { SyncHistoryDepthOption } from '../sync-history-depth-option/sync-history-depth-option';
+import { SyncHistoryDurationNotice } from '../sync-history-duration-notice/sync-history-duration-notice';
 
 interface Props {
     readonly selectedDepth: SyncHistoryDepthEnum;
@@ -22,18 +23,18 @@ export const SyncHistoryDepthStep = ({ selectedDepth, onSelect }: Props) => {
         [SyncHistoryDepthEnum.NEW_ONLY]: t`Do not sync history`
     };
     const hintByDepth: Record<SyncHistoryDepthEnum, string> = {
-        [SyncHistoryDepthEnum.MONTH_1]: t`Fastest first sync`,
-        [SyncHistoryDepthEnum.MONTHS_3]: t`Fast first sync`,
-        [SyncHistoryDepthEnum.MONTHS_6]: t`Longer first sync`,
-        [SyncHistoryDepthEnum.YEAR_1]: t`Much longer first sync`,
-        [SyncHistoryDepthEnum.FULL]: t`Slowest — can take hours`,
-        [SyncHistoryDepthEnum.NEW_ONLY]: t`Only transactions from now on`
+        [SyncHistoryDepthEnum.MONTH_1]: t`About a minute`,
+        [SyncHistoryDepthEnum.MONTHS_3]: t`About 3 minutes`,
+        [SyncHistoryDepthEnum.MONTHS_6]: t`About 6 minutes`,
+        [SyncHistoryDepthEnum.YEAR_1]: t`About 12 minutes`,
+        [SyncHistoryDepthEnum.FULL]: t`Can take hours`,
+        [SyncHistoryDepthEnum.NEW_ONLY]: t`Nothing from the past is imported`
     };
 
     return (
         <>
             <Text className="text-secondary-foreground text-sm px-md">
-                <Trans>A longer period takes longer to sync. You can always re-sync more history later.</Trans>
+                <Trans>Monobank sends about one month of history per minute, for each account you selected.</Trans>
             </Text>
 
             <View className="gap-md">
@@ -48,6 +49,8 @@ export const SyncHistoryDepthStep = ({ selectedDepth, onSelect }: Props) => {
                         onSelect={onSelect}
                     />
                 ))}
+
+                <SyncHistoryDurationNotice depth={selectedDepth} />
             </View>
         </>
     );
