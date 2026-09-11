@@ -202,10 +202,6 @@ msgstr "100% Offline & Privat"
 msgid "A balanced starter budget with common categories"
 msgstr "Ein ausgewogenes Startbudget mit gängigen Kategorien"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "A longer period takes longer to sync. You can always re-sync more history later."
-msgstr "Ein längerer Zeitraum dauert länger. Sie können später jederzeit mehr Verlauf synchronisieren."
-
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
 msgstr "Eine Regel mit denselben Bedingungen existiert bereits."
@@ -213,6 +209,22 @@ msgstr "Eine Regel mit denselben Bedingungen existiert bereits."
 #: src/app/(tabs)/settings/index.tsx
 msgid "About"
 msgstr "Über"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 12 minutes"
+msgstr "Etwa 12 Minuten"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 3 minutes"
+msgstr "Etwa 3 Minuten"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 6 minutes"
+msgstr "Etwa 6 Minuten"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About a minute"
+msgstr "Etwa eine Minute"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -639,6 +651,14 @@ msgstr "Budgie benachrichtigt dich, wenn der Import fertig ist"
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen bleiben unverändert."
+
+#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+msgid "Can run for hours on old accounts, and much slower while the app is closed."
+msgstr "Kann bei alten Konten Stunden dauern und ist deutlich langsamer, wenn die App geschlossen ist."
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Can take hours"
+msgstr "Kann Stunden dauern"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
@@ -1679,17 +1699,9 @@ msgstr "Kontakte konnten nicht geladen werden."
 msgid "Failed to save PIN. Please try again."
 msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Fast first sync"
-msgstr "Schnelle erste Synchronisierung"
-
 #: src/ai/service/ai-system-status.service.ts
 msgid "Fast-indexing {done} of {total} • tap to pause"
 msgstr "Schnellindexierung {done} von {total} • zum Pausieren tippen"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Fastest first sync"
-msgstr "Schnellste erste Synchronisierung"
 
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
@@ -2097,10 +2109,6 @@ msgstr "Modelle werden geladen"
 msgid "Loading..."
 msgstr "Wird geladen..."
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Longer first sync"
-msgstr "Längere erste Synchronisierung"
-
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
 msgstr "Hauptwährung"
@@ -2237,6 +2245,10 @@ msgstr "Verliehenes oder geliehenes Geld"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Monobank sends about one month of history per minute, for each account you selected."
+msgstr "Monobank sendet etwa einen Monat Verlauf pro Minute für jedes von Ihnen ausgewählte Konto."
+
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
 msgid "Monthly budget"
@@ -2253,10 +2265,6 @@ msgstr "Monatliche Kosten"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Monthly Total"
 msgstr "Monatssumme"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Much longer first sync"
-msgstr "Deutlich längere erste Synchronisierung"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -2492,6 +2500,10 @@ msgstr "nicht gesetzt"
 msgid "Note"
 msgstr "Notiz"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Nothing from the past is imported"
+msgstr "Vergangenes wird nicht importiert"
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Nur Ausgaben- und Einnahmentransaktionen werden umgewandelt: Ausgaben werden auf dieses Konto überwiesen, Einnahmen von ihm. Andere Typen bleiben unverändert."
@@ -2513,10 +2525,6 @@ msgstr "Nur Ausgaben mit einem Eintrag können umgewandelt werden"
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Nur Einnahmen mit einem Eintrag können umgewandelt werden"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Only transactions from now on"
-msgstr "Nur Transaktionen ab jetzt"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
@@ -2918,6 +2926,10 @@ msgstr "Regel aktualisiert"
 msgid "Rules"
 msgstr "Regeln"
 
+#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+msgid "Runs in the background, and much slower while the app is closed."
+msgstr "Läuft im Hintergrund und deutlich langsamer, wenn die App geschlossen ist."
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
@@ -3214,10 +3226,6 @@ msgstr "Ähnliche Transaktionen"
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Überspringen"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Slowest — can take hours"
-msgstr "Am langsamsten — kann Stunden dauern"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
