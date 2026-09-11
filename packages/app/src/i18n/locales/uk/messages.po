@@ -202,6 +202,10 @@ msgstr "100% офлайн і приватно"
 msgid "A balanced starter budget with common categories"
 msgstr "Збалансований стартовий бюджет із поширеними категоріями"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "A longer period takes longer to sync. You can always re-sync more history later."
+msgstr "Довший період синхронізується довше. Ви завжди можете синхронізувати більше історії пізніше."
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
 msgstr "Правило з такими ж умовами вже існує."
@@ -2097,10 +2101,6 @@ msgstr "Завантаження..."
 msgid "Longer first sync"
 msgstr "Довша перша синхронізація"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Longest first sync — can take hours on old accounts"
-msgstr "Найдовша перша синхронізація — може тривати години на старих рахунках"
-
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
 msgstr "Основна валюта"
@@ -2236,10 +2236,6 @@ msgstr "Позичені або надані гроші"
 #: src/rule/constant/external-source.constant.ts
 msgid "Monobank"
 msgstr "Монобанк"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Monobank limits how fast past transactions can be read, so the longer the period you pick, the longer the first sync takes. You can always re-sync more history later from the account menu."
-msgstr "Monobank обмежує швидкість читання минулих транзакцій, тому чим довший обраний період, тим довше триватиме перша синхронізація. Ви завжди можете додатково синхронізувати історію пізніше через меню рахунку."
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
@@ -2509,10 +2505,6 @@ msgstr "Можна конвертувати лише витратні транз
 msgid "Only income transactions can be converted"
 msgstr "Можна конвертувати лише дохідні транзакції"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Only new transactions from now on, nothing from the past"
-msgstr "Лише нові транзакції відтепер, без минулих"
-
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
 msgstr "Можна конвертувати лише витрати з одним записом"
@@ -2521,6 +2513,10 @@ msgstr "Можна конвертувати лише витрати з одни�
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Можна конвертувати лише доходи з одним записом"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Only transactions from now on"
+msgstr "Лише транзакції з цього моменту"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
@@ -3218,6 +3214,10 @@ msgstr "Схожі транзакції"
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Пропустити"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Slowest — can take hours"
+msgstr "Найповільніша — може тривати години"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
