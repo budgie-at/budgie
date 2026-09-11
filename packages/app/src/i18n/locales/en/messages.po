@@ -203,6 +203,10 @@ msgstr "100% Offline & Private"
 msgid "A balanced starter budget with common categories"
 msgstr "A balanced starter budget with common categories"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "A longer period takes longer to sync. You can always re-sync more history later."
+msgstr "A longer period takes longer to sync. You can always re-sync more history later."
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
 msgstr "A rule with the same conditions already exists."
@@ -2098,10 +2102,6 @@ msgstr "Loading..."
 msgid "Longer first sync"
 msgstr "Longer first sync"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Longest first sync — can take hours on old accounts"
-msgstr "Longest first sync — can take hours on old accounts"
-
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
 msgstr "Main Currency"
@@ -2237,10 +2237,6 @@ msgstr "Money lent or borrowed"
 #: src/rule/constant/external-source.constant.ts
 msgid "Monobank"
 msgstr "Monobank"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Monobank limits how fast past transactions can be read, so the longer the period you pick, the longer the first sync takes. You can always re-sync more history later from the account menu."
-msgstr "Monobank limits how fast past transactions can be read, so the longer the period you pick, the longer the first sync takes. You can always re-sync more history later from the account menu."
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
@@ -2510,10 +2506,6 @@ msgstr "Only expense transactions can be converted"
 msgid "Only income transactions can be converted"
 msgstr "Only income transactions can be converted"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Only new transactions from now on, nothing from the past"
-msgstr "Only new transactions from now on, nothing from the past"
-
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
 msgstr "Only single-entry expenses can be converted"
@@ -2522,6 +2514,10 @@ msgstr "Only single-entry expenses can be converted"
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Only single-entry incomes can be converted"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Only transactions from now on"
+msgstr "Only transactions from now on"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
@@ -3219,6 +3215,10 @@ msgstr "Similar transactions"
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Skip"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Slowest — can take hours"
+msgstr "Slowest — can take hours"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."

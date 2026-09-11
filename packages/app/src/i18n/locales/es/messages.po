@@ -202,6 +202,10 @@ msgstr "100% Sin conexión y privado"
 msgid "A balanced starter budget with common categories"
 msgstr "Un presupuesto inicial equilibrado con categorías comunes"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "A longer period takes longer to sync. You can always re-sync more history later."
+msgstr "Un período más largo tarda más en sincronizarse. Puedes sincronizar más historial en cualquier momento."
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
 msgstr "Ya existe una regla con las mismas condiciones."
@@ -2097,10 +2101,6 @@ msgstr "Cargando..."
 msgid "Longer first sync"
 msgstr "Primera sincronización más larga"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Longest first sync — can take hours on old accounts"
-msgstr "Primera sincronización más larga — puede tardar horas en cuentas antiguas"
-
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
 msgstr "Moneda principal"
@@ -2236,10 +2236,6 @@ msgstr "Dinero prestado o recibido"
 #: src/rule/constant/external-source.constant.ts
 msgid "Monobank"
 msgstr "Monobank"
-
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Monobank limits how fast past transactions can be read, so the longer the period you pick, the longer the first sync takes. You can always re-sync more history later from the account menu."
-msgstr "Monobank limita la velocidad a la que se pueden leer las transacciones pasadas, así que cuanto más largo sea el período elegido, más tardará la primera sincronización. Siempre puedes volver a sincronizar más historial más adelante desde el menú de la cuenta."
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
@@ -2509,10 +2505,6 @@ msgstr "Solo se pueden convertir transacciones de gasto"
 msgid "Only income transactions can be converted"
 msgstr "Solo se pueden convertir transacciones de ingreso"
 
-#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
-msgid "Only new transactions from now on, nothing from the past"
-msgstr "Solo transacciones nuevas a partir de ahora, nada del pasado"
-
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
 msgstr "Solo se pueden convertir gastos de una sola entrada"
@@ -2521,6 +2513,10 @@ msgstr "Solo se pueden convertir gastos de una sola entrada"
 #: src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Solo se pueden convertir ingresos de una sola entrada"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Only transactions from now on"
+msgstr "Solo transacciones a partir de ahora"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
@@ -3218,6 +3214,10 @@ msgstr "Transacciones similares"
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Saltar"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Slowest — can take hours"
+msgstr "La más lenta — puede tardar horas"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."

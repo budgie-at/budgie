@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { SYNC_HISTORY_DEPTH_OPTIONS } from '../../constant/sync-history-depth-options.constant';
 import { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
@@ -26,30 +26,29 @@ export const SyncHistoryDepthStep = ({ selectedDepth, onSelect }: Props) => {
         [SyncHistoryDepthEnum.MONTHS_3]: t`Fast first sync`,
         [SyncHistoryDepthEnum.MONTHS_6]: t`Longer first sync`,
         [SyncHistoryDepthEnum.YEAR_1]: t`Much longer first sync`,
-        [SyncHistoryDepthEnum.FULL]: t`Longest first sync — can take hours on old accounts`,
-        [SyncHistoryDepthEnum.NEW_ONLY]: t`Only new transactions from now on, nothing from the past`
+        [SyncHistoryDepthEnum.FULL]: t`Slowest — can take hours`,
+        [SyncHistoryDepthEnum.NEW_ONLY]: t`Only transactions from now on`
     };
 
     return (
         <>
             <Text className="text-secondary-foreground text-sm px-md">
-                <Trans>
-                    Monobank limits how fast past transactions can be read, so the longer the period you pick, the longer the first sync
-                    takes. You can always re-sync more history later from the account menu.
-                </Trans>
+                <Trans>A longer period takes longer to sync. You can always re-sync more history later.</Trans>
             </Text>
 
-            {SYNC_HISTORY_DEPTH_OPTIONS.map(option => (
-                <SyncHistoryDepthOption
-                    key={option.depth}
-                    depth={option.depth}
-                    icon={option.icon}
-                    title={titleByDepth[option.depth]}
-                    hint={hintByDepth[option.depth]}
-                    isSelected={option.depth === selectedDepth}
-                    onSelect={onSelect}
-                />
-            ))}
+            <View className="gap-md">
+                {SYNC_HISTORY_DEPTH_OPTIONS.map(option => (
+                    <SyncHistoryDepthOption
+                        key={option.depth}
+                        depth={option.depth}
+                        icon={option.icon}
+                        title={titleByDepth[option.depth]}
+                        hint={hintByDepth[option.depth]}
+                        isSelected={option.depth === selectedDepth}
+                        onSelect={onSelect}
+                    />
+                ))}
+            </View>
         </>
     );
 };
