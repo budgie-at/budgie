@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.47.0](https://github.com/budgie-at/budgie/compare/v6.46.0...v6.47.0) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** address remaining debt-tracking catalog review ([1a79e7c](https://github.com/budgie-at/budgie/commit/1a79e7cba97b76db8449a1ef92fd85c7377a7da4))
+* **landing:** polish debt-tracking catalog wording ([e77e9c7](https://github.com/budgie-at/budgie/commit/e77e9c76ae40c745f289f40e1bf803b74d8cbcf1))
+
+
+### Features
+
+* **landing:** debt-tracking steps story ([9c7c51a](https://github.com/budgie-at/budgie/commit/9c7c51a3259cc7cce07f3f0d49f80f7ad6bc6863))
+
+
+
+
+
 # [6.46.0](https://github.com/budgie-at/budgie/compare/v6.45.1...v6.46.0) (2026-09-11)
 
 
