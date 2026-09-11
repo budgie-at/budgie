@@ -4,7 +4,6 @@ env:
     TURBO_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     PR_NUMBER: ${{ github.event.pull_request.number }}
     PR_TITLE: ${{ github.event.pull_request.title }}
-    EAS_CLI_VERSION: '20.5.1'
 
 concurrency:
     group: pr-${{ github.event.pull_request.number }}
@@ -190,62 +189,24 @@ jobs:
                   directory: coverage-reports
                   use_oidc: true
 
-    eas-update-preview:
+    expo-ota-preview:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
-        name: EAS Update Preview
-        runs-on: [self-hosted, trf-linux-amd64-4x8]
-        timeout-minutes: 60
+        name: Expo OTA preview
         permissions:
-            contents: read
-        steps:
-            - name: Check for EXPO_TOKEN
-              run: |
-                  if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-                    echo "You must provide an EXPO_TOKEN secret linked to this project."
-                    echo "Learn more: https://docs.expo.dev/eas/github-actions"
-                    exit 1
-                  fi
-
-            - name: Verify x86-64 Hermes host
-              run: test "$(uname -m)" = 'x86_64'
-
-            - name: Checkout repository
-              uses: actions/checkout@v7
-              with:
-                  persist-credentials: false
-
-            - name: Setup pnpm
-              uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
-
-            - name: Setup Node
-              uses: actions/setup-node@v7
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-
-            - name: Setup EAS
-              uses: expo/expo-github-action@v9
-              with:
-                  eas-version: ${{ env.EAS_CLI_VERSION }}
-                  packager: npm
-                  token: ${{ secrets.EXPO_TOKEN }}
-
-            - name: Install dependencies
-              run: pnpm install
-
-            - name: Build internal workspace packages
-              run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
-
-            - name: Create preview
-              id: create-preview
-              working-directory: packages/app
-              env:
-                  APP_VARIANT: development
-                  USE_CCACHE: '1'
-              run: |
-                  pnpm exec expo export --output-dir dist --dump-assetmap --platform ios --platform android
-                  eas update --skip-bundler --input-dir dist --channel development --message "PR #$PR_NUMBER - $PR_TITLE"
+            contents: write
+            pull-requests: write
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v1.14.0 # v1.14.0
+        with:
+            app-dir: packages/app
+            scheme: budgie
+            platforms: ios,android
+            package-manager: pnpm
+            install-command: pnpm install --frozen-lockfile
+            runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+            build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
+            release-tag-prefix: ota
+            prune-keep: '10'
 
     ios-maestro:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
