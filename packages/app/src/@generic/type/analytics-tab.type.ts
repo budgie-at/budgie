@@ -1,1 +1,1 @@
-export type AnalyticsTabType = 'categories' | 'tags';
+export type AnalyticsTabType = 'categories' | 'tags' | 'runway';

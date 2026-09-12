@@ -13,7 +13,8 @@ interface Props {
 
 const TABS: readonly TabConfigInterface<AnalyticsTabType>[] = [
     { key: 'categories', label: <Trans>Categories</Trans>, testID: AnalyticsPageSelector.CategoriesTab },
-    { key: 'tags', label: <Trans>Tags</Trans>, testID: AnalyticsPageSelector.TagsTab }
+    { key: 'tags', label: <Trans>Tags</Trans>, testID: AnalyticsPageSelector.TagsTab },
+    { key: 'runway', label: <Trans>Runway</Trans>, testID: AnalyticsPageSelector.RunwayTab }
 ];
 
 export const AnalyticsPageHeader = ({ activeTab, onChangeTab }: Props) => (
