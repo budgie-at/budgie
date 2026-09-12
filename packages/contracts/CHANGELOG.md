@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.53.0](https://github.com/budgie-at/budgie/compare/v6.52.0...v6.53.0) (2026-09-12)
+
+
+### Bug Fixes
+
+* **contracts:** attribute runway tag drivers to the primary tag only ([62f4494](https://github.com/budgie-at/budgie/commit/62f4494f3b51f1c8068101fea2f1fa6a4054d806))
+
+
+### Features
+
+* **app:** add runway cash-flow forecast ([ac5d996](https://github.com/budgie-at/budgie/commit/ac5d9960e54fb114e4448fed5f40f9b3fa3d29c7))
+
+
+
+
+
 # [6.52.0](https://github.com/budgie-at/budgie/compare/v6.51.1...v6.52.0) (2026-09-12)
 
 
