@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.52.0](https://github.com/budgie-at/budgie/compare/v6.51.1...v6.52.0) (2026-09-12)
+
+
+### Features
+
+* **app:** branch the rules empty state on bank integration presence ([480932d](https://github.com/budgie-at/budgie/commit/480932dd0d943a9b99c247d704d9361a218b12c2))
+* **contracts:** add isOnboardingCompleted setting ([9ebb099](https://github.com/budgie-at/budgie/commit/9ebb099ff946c4391c9585d17e24400857cbe335))
+* **contracts:** add onboardingStep and isAiEnabled settings ([e241ea8](https://github.com/budgie-at/budgie/commit/e241ea8fa5f7351b92577019008617580941bfb0))
+
+
+
+
+
 # [6.51.0](https://github.com/budgie-at/budgie/compare/v6.50.1...v6.51.0) (2026-09-12)
 
 
