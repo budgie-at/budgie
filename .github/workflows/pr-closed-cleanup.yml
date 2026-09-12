@@ -21,6 +21,7 @@ jobs:
         runs-on: [self-hosted, trf-linux-amd64-2x4]
         permissions:
             contents: write
+            actions: read
         env:
             GH_TOKEN: ${{ github.token }}
             PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -31,7 +32,7 @@ jobs:
               run: |
                   set -euo pipefail
                   for attempt in $(seq 1 20); do
-                    active="$(gh run list --repo "$GITHUB_REPOSITORY" --branch "$HEAD_REF" --limit 100 --json status --jq '[.[] | select(.status == "queued" or .status == "in_progress")] | length' 2>/dev/null || echo 0)"
+                    active="$(gh run list --repo "$GITHUB_REPOSITORY" --branch "$HEAD_REF" --limit 100 --json status --jq '[.[] | select(.status == "queued" or .status == "in_progress")] | length')"
                     if [ "$active" -eq 0 ]; then
                       echo "No queued or in-progress runs for '$HEAD_REF'."
                       break
