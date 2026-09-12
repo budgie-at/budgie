@@ -240,6 +240,22 @@ msgstr "A rule with the same conditions already exists."
 msgid "About"
 msgstr "About"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 12 minutes"
+msgstr "About 12 minutes"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 3 minutes"
+msgstr "About 3 minutes"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 6 minutes"
+msgstr "About 6 minutes"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About a minute"
+msgstr "About a minute"
+
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -678,6 +694,14 @@ msgstr "Building"
 msgid "Burn"
 msgstr "Burn"
 
+#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+msgid "Can run for hours on old accounts, and much slower while the app is closed."
+msgstr "Can run for hours on old accounts, and much slower while the app is closed."
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Can take hours"
+msgstr "Can take hours"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
@@ -878,6 +902,8 @@ msgid "Contains"
 msgstr "Contains"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
 msgstr "Continue"
 
@@ -1403,6 +1429,10 @@ msgstr "Display the budget card on the home screen"
 #: src/settings/components/runway-widget-toggle/runway-widget-toggle.tsx
 msgid "Display the runway card on the home screen"
 msgstr "Display the runway card on the home screen"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Do not sync history"
+msgstr "Do not sync history"
 
 #: src/app/import-column-mapper.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
@@ -2040,9 +2070,21 @@ msgstr "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgid "Language"
 msgstr "Language"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 1 month"
+msgstr "Last 1 month"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 3 months"
+msgstr "Last 3 months"
+
 #: src/app/resync-window-picker.tsx
 msgid "Last 30 days"
 msgstr "Last 30 days"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 6 months"
+msgstr "Last 6 months"
 
 #: src/app/resync-window-picker.tsx
 msgid "Last 7 days"
@@ -2067,6 +2109,10 @@ msgstr "Last sync"
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
 msgstr "Last Week"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last year"
+msgstr "Last year"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
 msgid "Learning"
@@ -2269,6 +2315,10 @@ msgstr "Money lent or borrowed"
 #: src/rule/constant/external-source.constant.ts
 msgid "Monobank"
 msgstr "Monobank"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Monobank sends about one month of history per minute, for each account you selected."
+msgstr "Monobank sends about one month of history per minute, for each account you selected."
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
@@ -2540,6 +2590,10 @@ msgstr "not set"
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
 msgstr "Note"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Nothing from the past is imported"
+msgstr "Nothing from the past is imported"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 #: src/runway/component/runway-meter/runway-meter.tsx
@@ -2972,6 +3026,10 @@ msgstr "Rule updated"
 #: src/rule/components/rules-list-page/rules-list-page.tsx
 msgid "Rules"
 msgstr "Rules"
+
+#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+msgid "Runs in the background, and much slower while the app is closed."
+msgstr "Runs in the background, and much slower while the app is closed."
 
 #: src/runway/component/runway-hero/runway-hero.tsx
 #: src/runway/component/runway-widget/runway-widget.tsx
@@ -3896,6 +3954,10 @@ msgstr "Who do you owe?"
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Who owes you?"
 msgstr "Who owes you?"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Whole period"
+msgstr "Whole period"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
