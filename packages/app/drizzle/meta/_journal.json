@@ -348,8 +348,15 @@
         {
             "idx": 49,
             "version": "6",
-            "when": 1789069587125,
-            "tag": "0049_soft_cerebro",
+            "when": 1787000000000,
+            "tag": "0049_add_bank_sync_backward_limit",
+            "breakpoints": true
+        },
+        {
+            "idx": 50,
+            "version": "6",
+            "when": 1787000001000,
+            "tag": "0050_soft_cerebro",
             "breakpoints": true
         }
     ]

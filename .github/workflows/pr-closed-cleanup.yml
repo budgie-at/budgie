@@ -13,3 +13,41 @@ jobs:
         permissions:
             actions: write
         uses: rnw-community/mobile-ci/.github/workflows/pr-closed-cleanup-reusable.yml@v1.13.0 # v1.13.0
+
+    ota-preview-cleanup:
+        name: Delete OTA preview releases for the closed PR
+        needs: cleanup
+        if: always()
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        permissions:
+            contents: write
+        env:
+            GH_TOKEN: ${{ github.token }}
+            PR_NUMBER: ${{ github.event.pull_request.number }}
+            HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        steps:
+            - name: Wait for the PR's workflow runs to stop
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  for attempt in $(seq 1 20); do
+                    active="$(gh run list --repo "$GITHUB_REPOSITORY" --branch "$HEAD_REF" --limit 100 --json status --jq '[.[] | select(.status == "queued" or .status == "in_progress")] | length' 2>/dev/null || echo 0)"
+                    if [ "$active" -eq 0 ]; then
+                      echo "No queued or in-progress runs for '$HEAD_REF'."
+                      break
+                    fi
+                    echo "Waiting for $active active run(s) on '$HEAD_REF' (attempt $attempt)."
+                    sleep 15
+                  done
+
+            - name: Delete preview releases
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  gh api --paginate --jq '.[].tag_name' "repos/$GITHUB_REPOSITORY/releases" > "$RUNNER_TEMP/tags.txt"
+                  while IFS= read -r tag; do
+                    [ -n "$tag" ] || continue
+                    case "$tag" in
+                      ota-*-pr-${PR_NUMBER}-*) gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag ;;
+                    esac
+                  done < "$RUNNER_TEMP/tags.txt"

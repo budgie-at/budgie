@@ -239,6 +239,22 @@ msgstr "Правило з такими ж умовами вже існує."
 msgid "About"
 msgstr "Про застосунок"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 12 minutes"
+msgstr "Близько 12 хвилин"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 3 minutes"
+msgstr "Близько 3 хвилин"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About 6 minutes"
+msgstr "Близько 6 хвилин"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "About a minute"
+msgstr "Близько хвилини"
+
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -677,6 +693,14 @@ msgstr "Накопичення"
 msgid "Burn"
 msgstr "Витрати"
 
+#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+msgid "Can run for hours on old accounts, and much slower while the app is closed."
+msgstr "Може тривати годинами для старих рахунків і значно повільніше, коли застосунок закрито."
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Can take hours"
+msgstr "Може тривати годинами"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
@@ -877,6 +901,8 @@ msgid "Contains"
 msgstr "Містить"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
+#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
 msgstr "Продовжити"
 
@@ -1402,6 +1428,10 @@ msgstr "Показувати картку бюджету на головному
 #: src/settings/components/runway-widget-toggle/runway-widget-toggle.tsx
 msgid "Display the runway card on the home screen"
 msgstr "Показувати картку runway на головному екрані"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Do not sync history"
+msgstr "Не синхронізувати історію"
 
 #: src/app/import-column-mapper.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
@@ -2039,9 +2069,21 @@ msgstr "Залиште увімкненим лише \"Дозволити чит
 msgid "Language"
 msgstr "Мова"
 
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 1 month"
+msgstr "Останній 1 місяць"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 3 months"
+msgstr "Останні 3 місяці"
+
 #: src/app/resync-window-picker.tsx
 msgid "Last 30 days"
 msgstr "Останні 30 днів"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last 6 months"
+msgstr "Останні 6 місяців"
 
 #: src/app/resync-window-picker.tsx
 msgid "Last 7 days"
@@ -2066,6 +2108,10 @@ msgstr "Остання синхронізація"
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
 msgstr "Минулий тиждень"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Last year"
+msgstr "Останній рік"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
 msgid "Learning"
@@ -2268,6 +2314,10 @@ msgstr "Позичені або надані гроші"
 #: src/rule/constant/external-source.constant.ts
 msgid "Monobank"
 msgstr "Монобанк"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Monobank sends about one month of history per minute, for each account you selected."
+msgstr "Monobank надсилає близько одного місяця історії за хвилину для кожного вибраного рахунку."
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
@@ -2539,6 +2589,10 @@ msgstr "не встановлено"
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
 msgstr "Нотатка"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Nothing from the past is imported"
+msgstr "Нічого з минулого не імпортується"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 #: src/runway/component/runway-meter/runway-meter.tsx
@@ -2971,6 +3025,10 @@ msgstr "Правило оновлено"
 #: src/rule/components/rules-list-page/rules-list-page.tsx
 msgid "Rules"
 msgstr "Правила"
+
+#: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
+msgid "Runs in the background, and much slower while the app is closed."
+msgstr "Виконується у фоновому режимі й значно повільніше, коли застосунок закрито."
 
 #: src/runway/component/runway-hero/runway-hero.tsx
 #: src/runway/component/runway-widget/runway-widget.tsx
@@ -3895,6 +3953,10 @@ msgstr "Кому ви винні?"
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Who owes you?"
 msgstr "Хто винен вам гроші?"
+
+#: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
+msgid "Whole period"
+msgstr "Увесь період"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
