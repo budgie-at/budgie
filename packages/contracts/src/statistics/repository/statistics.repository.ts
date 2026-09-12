@@ -475,10 +475,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
             .innerJoin(
                 TransactionTagsEntityTable,
-                and(
-                    eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id),
-                    eq(TransactionTagsEntityTable.isPrimary, true)
-                )
+                and(eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id), eq(TransactionTagsEntityTable.isPrimary, true))
             )
             .innerJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
             .where(this.buildStatisticsLedgerWhere(filters, this.buildRunwayCompleteMonthsCondition(months)))
