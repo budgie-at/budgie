@@ -50,7 +50,9 @@ import m0046 from './0046_repoint_debt_event_entries.sql';
 import m0047 from './0047_repair_double_counted_manual_debt_events.sql';
 import m0048 from './0048_repair_cross_instrument_debt_events.sql';
 import m0049 from './0049_add_bank_sync_backward_limit.sql';
-import m0050 from './0050_soft_cerebro.sql';
+import m0050 from './0050_add_onboarding_completed.sql';
+import m0051 from './0051_add_onboarding_step_and_ai_consent.sql';
+import m0052 from './0052_soft_cerebro.sql';
 import journal from './meta/_journal.json';
 
 export default {
@@ -106,6 +108,8 @@ export default {
         m0047,
         m0048,
         m0049,
-        m0050
+        m0050,
+        m0051,
+        m0052
     }
 };

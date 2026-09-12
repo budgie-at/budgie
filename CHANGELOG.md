@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.51.1](https://github.com/budgie-at/budgie/compare/v6.51.0...v6.51.1) (2026-09-12)
+
+
+### Bug Fixes
+
+* **app:** include archived-account transactions in the CSV export ([b403022](https://github.com/budgie-at/budgie/commit/b403022128eb3acc74fee64bd5a33deec1096a8e))
+
+
+
+
+
 # [6.51.0](https://github.com/budgie-at/budgie/compare/v6.50.1...v6.51.0) (2026-09-12)
 
 

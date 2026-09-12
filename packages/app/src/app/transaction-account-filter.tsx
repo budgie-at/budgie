@@ -6,6 +6,7 @@ import { View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { FeatureIntro } from '../@generic/component/feature-intro/feature-intro';
 import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
 import { FilterSheetSkeleton } from '../@generic/component/filter-sheet/filter-sheet-skeleton/filter-sheet-skeleton';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
@@ -13,7 +14,6 @@ import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter
 import { AccountsGroup } from '../account/component/accounts-group/accounts-group';
 import { useSearchAccountsGroupedQuery } from '../account/query/use-search-accounts-grouped.query';
 import { SearchableFilterEmptyResult } from '../transaction/components/searchable-filter-empty-result/searchable-filter-empty-result';
-import { TransactionFilterEmptyState } from '../transaction/components/transaction-filter-empty-state/transaction-filter-empty-state';
 import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
 import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
@@ -139,7 +139,7 @@ export default function TransactionAccountFilterModal() {
                 ) : null}
 
                 {isEmptyArray(accountGroups) && !showEmptySearch && !isLoading ? (
-                    <TransactionFilterEmptyState
+                    <FeatureIntro
                         icon={UserIconNameEnum.Wallet}
                         title={t`No Accounts Yet`}
                         buttonText={t`Create Accounts`}
