@@ -158,7 +158,7 @@ export default function ImportScreen() {
             trailing={rowCountBadge}
             contentClassName="gap-y-xl"
             footer={
-                <View className="flex-row gap-x-md">
+                <View className="flex-row gap-x-md px-5xl">
                     <View className="flex-1">
                         <Button content={t`Cancel`} variant="ghost" onPress={handleCancel} />
                     </View>

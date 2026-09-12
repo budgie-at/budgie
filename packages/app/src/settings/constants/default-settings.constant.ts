@@ -16,5 +16,8 @@ export const DEFAULT_SETTINGS = {
     isScreenshotProtectionEnabled: false,
     applyMccDefaultCategory: true,
     isBudgetWidgetEnabled: true,
-    isBudgetPushEnabled: false
+    isBudgetPushEnabled: false,
+    isOnboardingCompleted: false,
+    onboardingStep: 0,
+    isAiEnabled: false
 } satisfies SettingsEntityInterface;

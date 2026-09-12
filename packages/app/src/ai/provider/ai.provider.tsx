@@ -1,6 +1,7 @@
 import { getLogger } from '@budgie/logger';
 import { ReactNode, useEffect } from 'react';
 
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { aiCoordinatorService } from '../service/ai-coordinator.service';
 import { aiEmbeddingStatusService } from '../service/ai-embedding-status.service';
 import { aiSystemStatusService } from '../service/ai-system-status.service';
@@ -14,9 +15,23 @@ interface Props {
 }
 
 export const AiProvider = ({ children }: Props) => {
+    const isAiEnabled = useSetting('isAiEnabled');
+
+    useEffect(() => {
+        logger.log('provider:coordinator:mount', { isAiEnabled });
+
+        if (isAiEnabled) {
+            aiCoordinatorService.start();
+        }
+
+        return () => {
+            logger.log('provider:coordinator:unmount', { isAiEnabled });
+            aiCoordinatorService.stop();
+        };
+    }, [isAiEnabled]);
+
     useEffect(() => {
         logger.log('provider:mount');
-        aiCoordinatorService.start();
         aiSystemStatusService.start();
         aiUmbrellaStatusService.start();
         aiTranslationStatusService.start();
@@ -28,7 +43,6 @@ export const AiProvider = ({ children }: Props) => {
             aiTranslationStatusService.stop();
             aiUmbrellaStatusService.stop();
             aiSystemStatusService.stop();
-            aiCoordinatorService.stop();
         };
     }, []);
 

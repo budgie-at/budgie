@@ -17,5 +17,8 @@ export const SettingsEntitySchema = createSelectSchema(SettingsEntityTable, {
     isScreenshotProtectionEnabled: schema =>
         schema.describe('Determines whether screenshot protection is enabled to hide sensitive financial data.'),
     isBudgetWidgetEnabled: schema => schema.describe('Determines whether the budget widget is shown on the home screen.'),
-    isBudgetPushEnabled: schema => schema.describe('Determines whether push notifications are sent when a budget threshold is crossed.')
+    isBudgetPushEnabled: schema => schema.describe('Determines whether push notifications are sent when a budget threshold is crossed.'),
+    isOnboardingCompleted: schema => schema.describe('Determines whether the first-launch onboarding has already run.'),
+    onboardingStep: schema => schema.describe('Index of the onboarding step the user has reached.'),
+    isAiEnabled: schema => schema.describe('Determines whether the user has consented to downloading and running on-device AI models.')
 });
