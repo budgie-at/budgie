@@ -1,6 +1,9 @@
+import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
+
+import { isString } from '@rnw-community/shared';
 
 import { AnalyticsPageHeader } from '../../@generic/component/analytics-page-header/analytics-page-header';
 import { Page } from '../../@generic/component/page/page';
@@ -11,10 +14,14 @@ import { AnalyticsPageSelector } from './analytics-page.selector';
 
 import type { AnalyticsTabType } from '../../@generic/type/analytics-tab.type';
 
-const TABS: readonly AnalyticsTabType[] = ['categories', 'tags'];
+const DEFAULT_ANALYTICS_TAB: AnalyticsTabType = 'categories';
+const TABS: readonly AnalyticsTabType[] = [DEFAULT_ANALYTICS_TAB, 'tags', 'runway'];
+
+const isAnalyticsTab = (value: unknown): value is AnalyticsTabType => isString(value) && TABS.some(tab => tab === value);
 
 export default function AnalyticsPage() {
-    const [activeTab, setActiveTab] = useState<AnalyticsTabType>('categories');
+    const { tab } = useLocalSearchParams<{ tab?: string }>();
+    const [activeTab, setActiveTab] = useState<AnalyticsTabType>(isAnalyticsTab(tab) ? tab : DEFAULT_ANALYTICS_TAB);
 
     const swipeGesture = tabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: setActiveTab });
 
