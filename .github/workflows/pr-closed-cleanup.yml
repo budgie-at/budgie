@@ -13,3 +13,24 @@ jobs:
         permissions:
             actions: write
         uses: rnw-community/mobile-ci/.github/workflows/pr-closed-cleanup-reusable.yml@v1.13.0 # v1.13.0
+
+    ota-preview-cleanup:
+        name: Delete OTA preview releases for the closed PR
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        permissions:
+            contents: write
+        steps:
+            - name: Delete preview releases
+              shell: bash
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  PR_NUMBER: ${{ github.event.pull_request.number }}
+              run: |
+                  set -euo pipefail
+                  gh release list --repo "$GITHUB_REPOSITORY" --limit 1000 --json tagName --jq '.[].tagName' > "$RUNNER_TEMP/tags.txt"
+                  while IFS= read -r tag; do
+                    [ -n "$tag" ] || continue
+                    case "$tag" in
+                      ota-*-pr-${PR_NUMBER}-*) gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag ;;
+                    esac
+                  done < "$RUNNER_TEMP/tags.txt"
