@@ -156,12 +156,10 @@ export default function HomePage() {
     const activeAccounts = accounts.filter(account => account.isActive);
     const integrationProviders = buildIntegrationProviderMap(accounts);
     const sections = buildHomePageSections(activeAccounts, integrationProviders);
-    const budgetWidgetRemountKey = `${language}-${isBudgetWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`;
-    const runwayWidgetRemountKey = `${language}-${isRunwayWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`;
     const listHeaderComponent = (
         <View className="mb-3xl gap-y-3xl">
-            <BudgetWidget key={budgetWidgetRemountKey} />
-            <RunwayWidget key={runwayWidgetRemountKey} />
+            <BudgetWidget key={`${language}-${isBudgetWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`} />
+            <RunwayWidget key={`${language}-${isRunwayWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`} />
         </View>
     );
 

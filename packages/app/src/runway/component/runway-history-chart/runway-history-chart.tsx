@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro';
-import { Text, View, ViewStyle } from 'react-native';
+import { Text, View, ViewStyle, ScrollView } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -61,29 +61,31 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
                 </Text>
             </View>
 
-            <View>
-                <View className="relative flex-row items-end justify-between">
-                    <View className="absolute inset-x-0 border-t border-dashed border-secondary-foreground/40" style={medianStyle} />
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View>
+                    <View className="relative flex-row items-end">
+                        <View className="absolute inset-x-0 border-t border-dashed border-secondary-foreground/40" style={medianStyle} />
 
-                    {months.map(month => (
-                        <RunwayHistoryBars
-                            key={month.key}
-                            spend={month.spend}
-                            income={month.income}
-                            maxValue={maxValue}
-                            isSpike={month.isSpike}
-                        />
-                    ))}
-                </View>
+                        {months.map(month => (
+                            <RunwayHistoryBars
+                                key={month.key}
+                                spend={month.spend}
+                                income={month.income}
+                                maxValue={maxValue}
+                                isSpike={month.isSpike}
+                            />
+                        ))}
+                    </View>
 
-                <View className="mt-xs flex-row justify-between">
-                    {months.map(month => (
-                        <View key={month.key} className="w-9 items-center">
-                            <Text className="text-xxs text-secondary-foreground">{month.label}</Text>
-                        </View>
-                    ))}
+                    <View className="mt-xs flex-row">
+                        {months.map(month => (
+                            <View key={month.key} className="w-9 items-center">
+                                <Text className="text-xxs text-secondary-foreground">{month.label}</Text>
+                            </View>
+                        ))}
+                    </View>
                 </View>
-            </View>
+            </ScrollView>
 
             {hasSpike && isDefined(peakRow) ? (
                 <Text className="text-xs text-secondary-foreground">
