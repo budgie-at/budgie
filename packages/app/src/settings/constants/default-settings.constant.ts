@@ -16,7 +16,7 @@ export const DEFAULT_SETTINGS = {
     isScreenshotProtectionEnabled: false,
     applyMccDefaultCategory: true,
     isBudgetWidgetEnabled: true,
-isRunwayWidgetEnabled: true,
+    isRunwayWidgetEnabled: true,
     isBudgetPushEnabled: false,
     isOnboardingCompleted: false,
     onboardingStep: 0,

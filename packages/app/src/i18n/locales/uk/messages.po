@@ -188,7 +188,7 @@ msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
 
 #: src/runway/component/runway-hero/runway-hero.tsx
-#: src/runway/component/runway-widget/runway-widget.tsx
+#: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "+{formattedNet} / mo"
 msgstr "+{formattedNet} / міс."
 
@@ -739,7 +739,7 @@ msgstr "Budgie повідомить, коли імпорт завершитьс�
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie позначить як видалені такі записи: {countText}. Ваші ручні транзакції залишаться без змін."
 
-#: src/runway/component/runway-widget/runway-widget.tsx
+#: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "Building"
 msgstr "Накопичення"
 
@@ -3161,12 +3161,12 @@ msgid "Runs in the background, and much slower while the app is closed."
 msgstr "Виконується у фоновому режимі й значно повільніше, коли застосунок закрито."
 
 #: src/runway/component/runway-hero/runway-hero.tsx
-#: src/runway/component/runway-widget/runway-widget.tsx
+#: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "Runs out around {runOutDate}"
 msgstr "Закінчиться близько {runOutDate}"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
-#: src/runway/component/runway-widget/runway-widget.tsx
+#: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "Runway"
 msgstr "Runway"
 

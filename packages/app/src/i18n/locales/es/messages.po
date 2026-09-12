@@ -188,7 +188,7 @@ msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transacción} other {# transacciones}}"
 
 #: src/runway/component/runway-hero/runway-hero.tsx
-#: src/runway/component/runway-widget/runway-widget.tsx
+#: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "+{formattedNet} / mo"
 msgstr "+{formattedNet} / mes"
 
@@ -739,7 +739,7 @@ msgstr "Budgie te avisará cuando termine"
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie eliminará de forma reversible {countText}. Tus transacciones manuales no se modificarán."
 
-#: src/runway/component/runway-widget/runway-widget.tsx
+#: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "Building"
 msgstr "Construyendo"
 
@@ -3161,12 +3161,12 @@ msgid "Runs in the background, and much slower while the app is closed."
 msgstr "Se ejecuta en segundo plano y mucho más lento con la app cerrada."
 
 #: src/runway/component/runway-hero/runway-hero.tsx
-#: src/runway/component/runway-widget/runway-widget.tsx
+#: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "Runs out around {runOutDate}"
 msgstr "Se agota alrededor de {runOutDate}"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
-#: src/runway/component/runway-widget/runway-widget.tsx
+#: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "Runway"
 msgstr "Runway"
 
