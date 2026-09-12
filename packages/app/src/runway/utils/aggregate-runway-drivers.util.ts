@@ -49,11 +49,9 @@ export const aggregateRunwayDrivers = (rows: readonly RunwayDriverSeriesRowInter
             return {
                 id: isDefined(firstRow) ? firstRow.id : null,
                 title,
-                amount,
                 monthlyAmount: amount / months,
-                monthlyAmounts,
                 isIrregular: isIrregularDriver(monthlyAmounts)
             };
         })
-        .sort((left, right) => right.amount - left.amount);
+        .sort((left, right) => right.monthlyAmount - left.monthlyAmount);
 };
