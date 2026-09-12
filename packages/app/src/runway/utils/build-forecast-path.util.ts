@@ -4,9 +4,31 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { RUNWAY_FORECAST_HORIZONS_MONTHS } from '../constant/runway-forecast.constant';
 
-import type { BuildRunwayForecastPathParamsInterface } from '../interface/build-runway-forecast-path-params.interface';
-import type { RunwayForecastGeometryInterface } from '../interface/runway-forecast-geometry.interface';
-import type { RunwayForecastPointInterface } from '../interface/runway-forecast-point.interface';
+import type { RunwayComputationInterface } from '../interface/runway-computation.interface';
+
+interface RunwayForecastPointInterface {
+    readonly x: number;
+    readonly y: number;
+}
+
+interface RunwayForecastGeometryInterface {
+    readonly medianPath: string;
+    readonly bandPath: string;
+    readonly zeroY: number;
+    readonly runOutX: number | null;
+    readonly runOutY: number | null;
+    readonly tickXs: readonly number[];
+}
+
+interface BuildRunwayForecastPathParamsInterface {
+    readonly computation: RunwayComputationInterface;
+    readonly width: number;
+    readonly height: number;
+    readonly paddingLeft: number;
+    readonly paddingRight: number;
+    readonly paddingTop: number;
+    readonly paddingBottom: number;
+}
 
 const ZERO_VALUE = 0;
 

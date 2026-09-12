@@ -47,13 +47,7 @@ export const RunwayContent = ({ filters }: Props) => {
             <RunwayOverview computation={computation} />
             <RunwayForecastChart computation={computation} />
             <RunwayHistoryChart series={series} burn={computation.burn} />
-            <RunwayDrivers
-                drivers={drivers}
-                dimension={dimension}
-                onChangeDimension={setDimension}
-                isAllIn={isAllIn}
-                onToggleAllIn={handleToggleAllIn}
-            />
+            <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
             <MenuSpacer />
         </ScrollView>
     );

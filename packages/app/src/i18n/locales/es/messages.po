@@ -2549,10 +2549,6 @@ msgstr "ahora"
 msgid "One-off"
 msgstr "Único"
 
-#: src/runway/component/runway-drivers/runway-drivers.tsx
-msgid "One-offs are excluded from the base rate."
-msgstr "Los gastos únicos se excluyen de la tasa base."
-
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Solo se convierten las transacciones de gastos e ingresos: los gastos se transfieren a esta cuenta y los ingresos desde ella. Los demás tipos no se modifican."

@@ -6,7 +6,6 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
-import { RunwayAllInToggle } from '../runway-all-in-toggle/runway-all-in-toggle';
 import { RunwayDriverRow } from '../runway-driver-row/runway-driver-row';
 
 import type { RunwayDriverInterface } from '../../interface/runway-driver.interface';
@@ -15,12 +14,10 @@ interface Props {
     readonly drivers: readonly RunwayDriverInterface[];
     readonly dimension: RunwayDriverDimensionEnum;
     readonly onChangeDimension: (dimension: RunwayDriverDimensionEnum) => void;
-    readonly isAllIn: boolean;
-    readonly onToggleAllIn: () => void;
 }
 
 export const RunwayDrivers = (props: Props) => {
-    const { drivers, dimension, onChangeDimension, isAllIn, onToggleAllIn } = props;
+    const { drivers, dimension, onChangeDimension } = props;
     const { t } = useLingui();
 
     const title = t`What's driving it`;
@@ -51,13 +48,6 @@ export const RunwayDrivers = (props: Props) => {
                     <Trans>No spending in this window.</Trans>
                 </Text>
             )}
-
-            <View className="flex-row items-center justify-between gap-x-md border-t border-secondary-corner pt-xl">
-                <Text className="flex-1 text-xs text-secondary-foreground">
-                    <Trans>One-offs are excluded from the base rate.</Trans>
-                </Text>
-                <RunwayAllInToggle isAllIn={isAllIn} onToggle={onToggleAllIn} />
-            </View>
         </Card>
     );
 };

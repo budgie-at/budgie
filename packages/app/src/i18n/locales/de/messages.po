@@ -2549,10 +2549,6 @@ msgstr "jetzt"
 msgid "One-off"
 msgstr "Einmalig"
 
-#: src/runway/component/runway-drivers/runway-drivers.tsx
-msgid "One-offs are excluded from the base rate."
-msgstr "Einmalige Ausgaben sind von der Basisrate ausgeschlossen."
-
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Nur Ausgaben- und Einnahmentransaktionen werden umgewandelt: Ausgaben werden auf dieses Konto überwiesen, Einnahmen von ihm. Andere Typen bleiben unverändert."
