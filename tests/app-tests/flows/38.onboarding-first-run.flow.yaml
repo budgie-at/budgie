@@ -1,0 +1,73 @@
+appId: ${APP_ID}
+env:
+    FIXTURE_ROW_ID_MATCH: '38-onboarding.db'
+---
+- launchApp:
+      stopApp: true
+      permissions:
+          contacts: allow
+          microphone: allow
+
+- extendedWaitUntil:
+      visible:
+          id: 'OnboardingWelcome.Root'
+      timeout: 30000
+
+- tapOn:
+      id: 'OnboardingWelcome.PrimaryButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'OnboardingTrackOptionRow.CASH'
+      timeout: 3000
+
+- tapOn:
+      id: 'OnboardingTrackOptionRow.CASH'
+- tapOn:
+      id: 'OnboardingTrackOptionRow.BANK'
+
+- tapOn:
+      id: 'OnboardingStepLayout.PrimaryButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'OnboardingBalances.connect-monobank'
+      timeout: 3000
+
+- tapOn:
+      id: 'OnboardingStepLayout.BackButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'OnboardingTrackOptionRow.CASH'
+      timeout: 3000
+
+- tapOn:
+      id: 'OnboardingStepLayout.PrimaryButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'OnboardingBalances.connect-monobank'
+      timeout: 3000
+
+- repeat:
+      times: 5
+      commands:
+          - tapOn:
+                id: 'OnboardingStepLayout.SkipButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'OnboardingDone.accounts'
+      timeout: 3000
+
+- tapOn:
+      id: 'OnboardingStepLayout.PrimaryButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 30000
+
+- assertNotVisible:
+      id: 'AccountsEmptyState.AddAccountButton'

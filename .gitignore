@@ -76,3 +76,4 @@ packages/app/fastlane/screenshots/**/*.staging*
 packages/app/fastlane/screenshots/landing-raw/
 packages/app/fastlane/report.xml
 packages/app/fastlane/Preview.html
+.superpowers/

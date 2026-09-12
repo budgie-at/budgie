@@ -96,9 +96,9 @@ env:
 - assertVisible:
     id: 'RulesPage.EmptyState'
 - assertVisible:
-    text: 'No Rules Yet'
+    text: 'Rules work on imported transactions'
 - assertVisible:
-    text: 'Create rules to automatically categorize and tag your bank transactions'
+    text: 'Connect a bank or import a statement first, then rules can categorise and tag every transaction as it arrives.'
 
 # --- Create Rule with Multiple Conditions (title + comment) ---
 

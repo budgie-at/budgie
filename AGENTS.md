@@ -543,8 +543,8 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 The dev box is Linux and cannot boot iOS simulators. It reaches two Macs over SSH for simulator, Maestro, and media-capture work:
 
-- `macstudio` (`ssh macstudio`) — the capture machine: macOS + Xcode, reached through the Cloudflare tunnel `macstudio.vitaliiyehorov.dev` (`ProxyCommand cloudflared access ssh`). Homebrew tools (`magick`, `ffmpeg`) and `maestro` (`~/.maestro/bin`) are not on a non-interactive SSH `PATH`; export `PATH="/opt/homebrew/bin:$HOME/.maestro/bin:$PATH"` first.
-- `macmini` (`ssh macmini`, `192.168.1.35`) — LAN machine with an older Xcode.
+- `macstudio` (`ssh macstudio`) — the capture machine: macOS + Xcode, reached through the Cloudflare tunnel `macstudio.vitaliiyehorov.dev` (`ProxyCommand cloudflared access ssh`). Homebrew tools (`magick`, `ffmpeg`) and `maestro` (`~/.maestro/bin`) are not on a non-interactive SSH `PATH`; export `PATH="/opt/homebrew/bin:$HOME/.maestro/bin:$PATH"` first. Treat it as off-limits while it is overloaded.
+- `macmini` (`ssh macmini`, `192.168.1.35`) — LAN machine, now on Xcode 26.6 + iOS 26.5 runtime with iPhone 17 simulators, so it is the preferred host for interactive simulator runs. Homebrew Node is present; install pnpm with `npm i -g pnpm@11.24.0`. `sudo` requires a password.
 
 Rules:
 
@@ -553,6 +553,16 @@ Rules:
 3. Reuse the installed E2E app with `--skip-install` when it is current (bundle id `com.vitalyiegorov.budgie.e2e`); otherwise pass a packaged `Base.app` with `--app`. Force a rebuild when app UI changed.
 4. Check the data volume before capturing: `df -h /System/Volumes/Data`. DerivedData and stale simulator devices fill it, and a full volume makes Maestro fail with `No space left on device`. Delete `~/Library/Developer/Xcode/DerivedData/*` and stale `*-derived` trees when low.
 5. A single-scene run replaces the whole device raw directory, so pass every scene you need to one invocation; copy assets and repo changes back with `scp` or `git pull`.
+6. **Interactive simulator runs (dev checks)** — use `serve-sim` (Evan Bacon): `npx --yes serve-sim`; `slimsim` does not exist on npm. Verified path on macmini (Xcode 26.6 + iOS 26.5 runtime):
+    1. Sync the worktree with a tar pipe — macmini's `rsync` is `openrsync` and rejects GNU flags: `tar czf - --exclude=.git --exclude=node_modules --exclude=dist … . | ssh macmini 'tar xzf - -C ~/budgie-runway'`.
+    2. `pnpm install && pnpm build` with `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` (install pnpm first: `npm i -g pnpm@11.24.0`).
+    3. `cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean`.
+    4. `xcodebuild -workspace ios/budgieE2E.xcworkspace -scheme budgieE2E -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,id=<udid>' -derivedDataPath ~/runway-derived CODE_SIGNING_ALLOWED=NO build`. Do not use `expo run:ios` — it mis-detects the simulator UDID as a physical device and demands code signing.
+    5. `xcrun simctl install <udid> …/budgieE2E.app`; inject a DB at `<app-container>/Documents/SQLite/budgie.db`; `xcrun simctl launch <udid> com.vitalyiegorov.budgie.e2e`; deep-link `budgie://<route>` and tap the system "Open?" prompt via serve-sim.
+    6. Stream on the Mac (`npx --yes serve-sim -p <port> <udid>`), expose with `cloudflared tunnel --url http://127.0.0.1:<port>`, and open the `*.trycloudflare.com` URL in the T3 preview. Drive with `serve-sim tap -d <udid> <x> <y>` and `serve-sim gesture -d <udid> '{"type":"begin","x":..,"y":..}'`.
+7. **Xcode 26 toolchain** — `expo-modules-jsi@57.0.6` ships invalid `SWIFT_RETURNS_RETAINED` annotations on the `RuntimeScheduler` constructors that newer clang (Xcode 26.2/26.3/26.6) rejects. The repo carries `patches/expo-modules-jsi@57.0.6.patch` (via `pnpm-workspace.yaml` `patchedDependencies`) removing them — do not remove it, and do not try to bump the dependency (all released versions, including 58.0.0, still ship the bug).
+
+Never print `~/.cloudflared` secrets or tunnel tokens; kill Metro/serve-sim/cloudflared when done; restore any shared Mac checkout you touched (`git checkout -f <branch> && git clean -fd`).
 
 ## E2E Testing
 

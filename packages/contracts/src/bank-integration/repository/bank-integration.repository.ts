@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, count, eq, isNull } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -83,5 +83,9 @@ export class BankIntegrationRepository {
         return (tx ?? this.db).query.BankIntegrationEntityTable.findFirst({
             where: and(eq(BankIntegrationEntityTable.id, id), isNull(BankIntegrationEntityTable.deletedAt))
         });
+    }
+
+    count() {
+        return this.db.select({ count: count() }).from(BankIntegrationEntityTable).where(isNull(BankIntegrationEntityTable.deletedAt));
     }
 }
