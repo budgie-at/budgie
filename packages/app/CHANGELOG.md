@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.51.0](https://github.com/budgie-at/budgie/compare/v6.50.1...v6.51.0) (2026-09-12)
+
+
+### Bug Fixes
+
+* **app:** fit monobank history step on one screen ([99d51c0](https://github.com/budgie-at/budgie/commit/99d51c08a28d80bd38b2d6150a9b59c4526946f9))
+* **app:** pad sync setup page footer from screen edges ([4d4e1cd](https://github.com/budgie-at/budgie/commit/4d4e1cd893e5710acbd04d837879a0e8dd833198))
+
+
+### Features
+
+* **app:** warn that long monobank history can take hours ([1671665](https://github.com/budgie-at/budgie/commit/167166581873ec60c5e3947e38ea9e3a44c2c881))
+* let users pick monobank sync history period ([3b5bc1e](https://github.com/budgie-at/budgie/commit/3b5bc1e0c9b5873f42508fe02cb287c43b7843c5))
+
+
+
+
+
 ## [6.41.4](https://github.com/budgie-at/budgie/compare/v6.41.3...v6.41.4) (2026-09-10)
 
 
