@@ -1,13 +1,12 @@
-import { TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionFilterInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { AnalyticsPageSelector } from '../../../app/(tabs)/analytics-page.selector';
 import { TagStatInterface } from '../../interface/tag-stat.interface';
 import { StatsByTags } from '../stats-by-tags/stats-by-tags';
+import { TagsFeatureIntro } from '../tags-feature-intro/tags-feature-intro';
 
 interface Props {
     readonly filters: TransactionFilterInterface;
@@ -24,14 +23,7 @@ export const StatsByTagsPanel = ({ filters, income, expense, incomeByTag, expens
     const hasExpenseStats = isNotEmptyArray(expenseByTag);
 
     if (!hasIncomeStats && !hasExpenseStats) {
-        return (
-            <EmptyState
-                testID={AnalyticsPageSelector.TagsEmptyState}
-                circleIcon={UserIconNameEnum.Tags}
-                title={t`No tags in this period`}
-                description={t`Tag transactions to see how your spending breaks down by context.`}
-            />
-        );
+        return <TagsFeatureIntro />;
     }
 
     return (

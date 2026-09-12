@@ -355,8 +355,22 @@
         {
             "idx": 50,
             "version": "6",
-            "when": 1787000001000,
-            "tag": "0050_soft_cerebro",
+            "when": 1787000000001,
+            "tag": "0050_add_onboarding_completed",
+            "breakpoints": true
+        },
+        {
+            "idx": 51,
+            "version": "6",
+            "when": 1787100000000,
+            "tag": "0051_add_onboarding_step_and_ai_consent",
+            "breakpoints": true
+        },
+        {
+            "idx": 52,
+            "version": "6",
+            "when": 1787200000000,
+            "tag": "0052_soft_cerebro",
             "breakpoints": true
         }
     ]

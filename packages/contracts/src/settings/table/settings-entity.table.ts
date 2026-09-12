@@ -27,7 +27,10 @@ export const SettingsEntityTable = sqliteTable(
         isScreenshotProtectionEnabled: int('is_screenshot_protection_enabled', { mode: 'boolean' }).notNull().default(false),
         applyMccDefaultCategory: int('apply_mcc_default_category', { mode: 'boolean' }).notNull().default(true),
         isBudgetWidgetEnabled: int('is_budget_widget_enabled', { mode: 'boolean' }).notNull().default(true),
-        isRunwayWidgetEnabled: int('is_runway_widget_enabled', { mode: 'boolean' }).notNull().default(true),
-        isBudgetPushEnabled: int('is_budget_push_enabled', { mode: 'boolean' }).notNull().default(false)
+isRunwayWidgetEnabled: int('is_runway_widget_enabled', { mode: 'boolean' }).notNull().default(true),
+        isBudgetPushEnabled: int('is_budget_push_enabled', { mode: 'boolean' }).notNull().default(false),
+        isOnboardingCompleted: int('is_onboarding_completed', { mode: 'boolean' }).notNull().default(false),
+        onboardingStep: int('onboarding_step', { mode: 'number' }).notNull().default(0),
+        isAiEnabled: int('is_ai_enabled', { mode: 'boolean' }).notNull().default(false)
     })
 );
