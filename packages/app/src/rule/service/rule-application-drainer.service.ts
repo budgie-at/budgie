@@ -8,6 +8,8 @@ import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 
 import { ruleEngineService } from './rule-engine.service';
 
+import type { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
+import type { PendingRuleApplicationInterface } from '../interface/pending-rule-application.interface';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 const logger = getLogger('RuleApplicationDrainerService');
@@ -17,7 +19,7 @@ class RuleApplicationDrainerService {
 
     private cancelIdleCallback: (() => void) | null = null;
     private isRunning = false;
-    private pendingRuleIds: number[] = [];
+    private pendingRuleApplications: PendingRuleApplicationInterface[] = [];
     private pendingTransactionIds: number[] = [];
     private pendingTransactionInputs: TransactionCreateInputInterface[] = [];
     private runPromise: Promise<void> | null = null;
@@ -42,22 +44,22 @@ class RuleApplicationDrainerService {
     }
 
     @Log(
-        ruleId => `enter ruleId=${ruleId}`,
-        (_result, ruleId) => `done ruleId=${ruleId}`,
-        (error, ruleId) => `throw ruleId=${ruleId} error=${getErrorMessage(error)}`
+        (ruleId, onSettled) => `enter ruleId=${ruleId} hasOnSettled=${String(isDefined(onSettled))}`,
+        (_result, ruleId, onSettled) => `done ruleId=${ruleId} hasOnSettled=${String(isDefined(onSettled))}`,
+        (error, ruleId, onSettled) => `throw ruleId=${ruleId} hasOnSettled=${String(isDefined(onSettled))} error=${getErrorMessage(error)}`
     )
-    enqueueRuleApplication(ruleId: number): void {
-        if (this.pendingRuleIds.includes(ruleId)) {
+    enqueueRuleApplication(ruleId: number, onSettled?: (result: ApplyRuleResultInterface | null, error: unknown) => void): void {
+        if (this.pendingRuleApplications.some(pending => pending.ruleId === ruleId)) {
             return;
         }
 
-        this.pendingRuleIds.push(ruleId);
+        this.pendingRuleApplications.push({ ruleId, onSettled });
         this.scheduleDrain();
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     cancelPending(): void {
-        this.pendingRuleIds = [];
+        this.pendingRuleApplications = [];
         this.pendingTransactionIds = [];
         this.pendingTransactionInputs = [];
         this.cancelScheduledDrain();
@@ -94,7 +96,7 @@ class RuleApplicationDrainerService {
     }
 
     private async drainNextBatch(): Promise<void> {
-        if (!isNotEmptyArray(this.pendingTransactionIds) && !isNotEmptyArray(this.pendingRuleIds)) {
+        if (!isNotEmptyArray(this.pendingTransactionIds) && !isNotEmptyArray(this.pendingRuleApplications)) {
             return;
         }
 
@@ -127,20 +129,25 @@ class RuleApplicationDrainerService {
     }
 
     private async processPendingRuleBatch(): Promise<void> {
-        const ruleId = this.pendingRuleIds.shift();
+        const pending = this.pendingRuleApplications.shift();
 
-        if (!isDefined(ruleId)) {
+        if (!isDefined(pending)) {
             return;
         }
 
-        await syncWorkloadService
-            .run('rule-application-rule', () => ruleEngineService.applyRuleToMatchingTransactions(ruleId, null))
-            .catch((error: unknown) => {
-                logger.error('processPendingRuleBatch:throw', {
-                    ruleId,
-                    errorMessage: getErrorMessage(error)
-                });
+        try {
+            const result = await syncWorkloadService.run('rule-application-rule', () =>
+                ruleEngineService.applyRuleToMatchingTransactions(pending.ruleId, null)
+            );
+            pending.onSettled?.(result, null);
+        } catch (error: unknown) {
+            logger.error('processPendingRuleBatch:throw', {
+                ruleId: pending.ruleId,
+                errorMessage: getErrorMessage(error)
             });
+            pending.onSettled?.(null, error);
+        }
+
         await microPause();
         await this.processPendingRuleBatch();
     }
