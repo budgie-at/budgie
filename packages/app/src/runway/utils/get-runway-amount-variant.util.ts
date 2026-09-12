@@ -1,11 +1,13 @@
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
 
-export const getRunwayAmountVariant = (amount: number, epsilon = 1): ColorPaletteVariant => {
-    if (amount > epsilon) {
+const ZERO_AMOUNT_EPSILON = 1;
+
+export const getRunwayAmountVariant = (amount: number): ColorPaletteVariant => {
+    if (amount > ZERO_AMOUNT_EPSILON) {
         return 'positive';
     }
 
-    if (amount < -epsilon) {
+    if (amount < -ZERO_AMOUNT_EPSILON) {
         return 'destructive';
     }
 
