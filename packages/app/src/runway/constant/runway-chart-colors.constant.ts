@@ -1,12 +1,9 @@
 export const RUNWAY_CHART_COLORS = {
-    positive: '#00ff88',
     destructive: '#ff4444',
-    warning: '#f0b100',
     median: '#ffffff',
     bandFill: 'rgba(255, 68, 68, 0.10)',
     bandStroke: 'rgba(255, 68, 68, 0.28)',
     zero: '#333333',
-    grid: '#1c1c1c',
     label: '#666666',
     markerBackground: '#0a0a0a'
 } as const;
