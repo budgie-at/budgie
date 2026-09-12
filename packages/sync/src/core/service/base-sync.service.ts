@@ -3,6 +3,7 @@ import { addMonths } from 'date-fns/addMonths';
 import { addSeconds } from 'date-fns/addSeconds';
 import { fromUnixTime } from 'date-fns/fromUnixTime';
 import { getUnixTime } from 'date-fns/getUnixTime';
+import { max } from 'date-fns/max';
 import { min } from 'date-fns/min';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
@@ -55,14 +56,24 @@ export class BaseSyncService {
     }
 
     @Log(
-        (accountId, to, firstEmptyFromInStreak) =>
-            `enter accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'}`,
+        (accountId, to, firstEmptyFromInStreak, limitAt) =>
+            `enter accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'} limitAt=${limitAt?.toISOString() ?? 'null'}`,
         result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, accountId, to, firstEmptyFromInStreak) =>
-            `throw accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'} error=${getErrorMessage(error)}`
+        (error, ...[accountId, to, firstEmptyFromInStreak, limitAt]) =>
+            `throw accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'} limitAt=${limitAt?.toISOString() ?? 'null'} error=${getErrorMessage(error)}`
     )
-    async syncTransactionsBackward(accountId: string, to: Date, firstEmptyFromInStreak: Date | null): Promise<SyncBatchResultInterface> {
-        const from = addSeconds(to, -this.options.maxPeriodSeconds);
+    async syncTransactionsBackward(
+        accountId: string,
+        to: Date,
+        firstEmptyFromInStreak: Date | null,
+        limitAt: Date | null
+    ): Promise<SyncBatchResultInterface> {
+        if (isDefined(limitAt) && to <= limitAt) {
+            return { nextTo: to, nextFrom: to, transactions: [], completed: true };
+        }
+
+        const windowFrom = addSeconds(to, -this.options.maxPeriodSeconds);
+        const from = isDefined(limitAt) ? max([windowFrom, limitAt]) : windowFrom;
         const transactions = await this.fetchTransactions(accountId, from, to);
         const oldestTransaction = transactions.at(-1);
 
@@ -75,6 +86,7 @@ export class BaseSyncService {
             };
         }
 
+        const reachedHistoryLimit = isDefined(limitAt) && from <= limitAt;
         const reachedDormancyBoundary =
             isEmptyArray(transactions) &&
             isDefined(firstEmptyFromInStreak) &&
@@ -84,7 +96,7 @@ export class BaseSyncService {
             nextTo: from,
             nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
             transactions,
-            completed: reachedDormancyBoundary
+            completed: reachedHistoryLimit || reachedDormancyBoundary
         };
     }
 
