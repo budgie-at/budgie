@@ -48,7 +48,7 @@ describe('rule/rule-application-drainer', () => {
         Object.assign(ruleApplicationDrainerService, {
             cancelIdleCallback: null,
             isRunning: false,
-            pendingRuleIds: [],
+            pendingRuleApplications: [],
             pendingTransactionIds: [],
             pendingTransactionInputs: [],
             runPromise: null,
@@ -79,5 +79,49 @@ describe('rule/rule-application-drainer', () => {
 
         expect(spyOnApplyRulesToTransactions()).toHaveBeenCalledTimes(1);
         expect(spyOnApplyRulesToTransactions()).toHaveBeenCalledWith([42], [buildTransactionInput()]);
+    });
+
+    it('reports the applied result to the enqueueing caller', async () => {
+        const applyRule = vi
+            .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
+            .mockResolvedValue({ applied: 3, failed: 0, total: 3 });
+        const onSettled = vi.fn();
+
+        ruleApplicationDrainerService.enqueueRuleApplication(7, onSettled);
+        await flushScheduledDrain(drainDelayMs);
+
+        expect(applyRule).toHaveBeenCalledWith(7, null);
+        expect(onSettled).toHaveBeenCalledWith({ applied: 3, failed: 0, total: 3 }, null);
+    });
+
+    it('reports failures to the enqueueing caller and keeps draining', async () => {
+        const error = new Error('boom');
+        const applyRule = vi
+            .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
+            .mockRejectedValueOnce(error)
+            .mockResolvedValueOnce({ applied: 1, failed: 0, total: 1 });
+        const onSettled = vi.fn();
+
+        ruleApplicationDrainerService.enqueueRuleApplication(1, onSettled);
+        ruleApplicationDrainerService.enqueueRuleApplication(2, onSettled);
+        await flushScheduledDrain(drainDelayMs);
+
+        expect(applyRule).toHaveBeenCalledTimes(2);
+        expect(onSettled).toHaveBeenNthCalledWith(1, null, error);
+        expect(onSettled).toHaveBeenNthCalledWith(2, { applied: 1, failed: 0, total: 1 }, null);
+    });
+
+    it('does not enqueue the same rule twice', async () => {
+        const applyRule = vi
+            .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
+            .mockResolvedValue({ applied: 0, failed: 0, total: 0 });
+        const onSettled = vi.fn();
+
+        ruleApplicationDrainerService.enqueueRuleApplication(5, onSettled);
+        ruleApplicationDrainerService.enqueueRuleApplication(5, onSettled);
+        await flushScheduledDrain(drainDelayMs);
+
+        expect(applyRule).toHaveBeenCalledTimes(1);
+        expect(onSettled).toHaveBeenCalledTimes(1);
     });
 });

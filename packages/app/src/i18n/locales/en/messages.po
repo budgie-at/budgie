@@ -44,6 +44,10 @@ msgstr "{accountTitle} will be restored to your main view and included in totals
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} will be restored to your main view."
 
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
+msgstr "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
 msgstr "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
@@ -910,6 +914,10 @@ msgstr "Could not activate account."
 #: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
 msgid "Could not add accounts"
 msgstr "Could not add accounts"
+
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "Could not apply rule to existing transactions"
+msgstr "Could not apply rule to existing transactions"
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "Could not archive account"
@@ -2464,6 +2472,10 @@ msgstr "No Tags Yet"
 msgid "No title"
 msgstr "No title"
 
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "No transactions matched"
+msgstr "No transactions matched"
+
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "No transactions yet"
 msgstr "No transactions yet"
@@ -2915,9 +2927,17 @@ msgstr "Revolut"
 msgid "Rule"
 msgstr "Rule"
 
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "Rule applied"
+msgstr "Rule applied"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Rule created"
 msgstr "Rule created"
+
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "Rule partially applied"
+msgstr "Rule partially applied"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Rule updated"
@@ -3424,6 +3444,10 @@ msgstr "Tap to select"
 msgid "Target balance"
 msgstr "Target balance"
 
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "The rule was saved but no existing transactions needed updating."
+msgstr "The rule was saved but no existing transactions needed updating."
+
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 msgstr "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
@@ -3733,6 +3757,10 @@ msgstr "Update rule?"
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Update the token from any account already syncing with this integration, then try again."
 msgstr "Update the token from any account already syncing with this integration, then try again."
+
+#: src/rule/util/show-rule-application-toast.util.ts
+msgid "Updated {applied} of {total} transactions."
+msgstr "Updated {applied} of {total} transactions."
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Updated {formattedDate}"
