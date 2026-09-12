@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.50.1](https://github.com/budgie-at/budgie/compare/v6.50.0...v6.50.1) (2026-09-12)
+
+
+### Performance Improvements
+
+* **landing:** defer the non-default AppShot theme variant ([389e0cc](https://github.com/budgie-at/budgie/commit/389e0cc33f8c17f7c4a6793d6088d061afb5e0d5))
+
+
+
+
+
 # [6.50.0](https://github.com/budgie-at/budgie/compare/v6.49.0...v6.50.0) (2026-09-11)
 
 
