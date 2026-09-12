@@ -35,6 +35,16 @@ export const RunwayContent = ({ filters }: Props) => {
         return <RunwayEmptyState monthsUsed={computation.monthsUsed} />;
     }
 
+    const forecastComputation = isAllIn
+        ? {
+              ...computation,
+              net: computation.allInNet,
+              runwayMonths: computation.allInRunwayMonths,
+              runsOutAt: computation.allInRunsOutAt,
+              isPositive: computation.allInNet >= 0
+          }
+        : computation;
+
     return (
         <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
             <RunwayHero
@@ -44,8 +54,8 @@ export const RunwayContent = ({ filters }: Props) => {
                 onChangeWindow={setWindow}
                 onToggleAllIn={handleToggleAllIn}
             />
-            <RunwayOverview computation={computation} />
-            <RunwayForecastChart computation={computation} />
+            <RunwayOverview computation={forecastComputation} />
+            <RunwayForecastChart computation={forecastComputation} />
             <RunwayHistoryChart series={series} burn={computation.burn} />
             <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
             <MenuSpacer />

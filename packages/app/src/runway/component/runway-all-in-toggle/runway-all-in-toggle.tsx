@@ -24,9 +24,15 @@ const toggleVariants = cva('flex-row items-center gap-x-xs rounded-full border p
 
 export const RunwayAllInToggle = ({ isAllIn, onToggle }: Props) => {
     const icon = isAllIn ? UserIconNameEnum.Check : UserIconNameEnum.Plus;
+    const accessibilityState = { checked: isAllIn };
 
     return (
-        <HapticPressable accessibilityRole="button" className={toggleVariants({ isAllIn })} onPress={onToggle}>
+        <HapticPressable
+            accessibilityRole="switch"
+            accessibilityState={accessibilityState}
+            className={toggleVariants({ isAllIn })}
+            onPress={onToggle}
+        >
             <Icon icon={icon} size={ICON_SIZE} className="text-secondary-foreground" />
             <Text className="text-xs font-medium text-secondary-foreground">
                 <Trans>Include one-offs</Trans>
