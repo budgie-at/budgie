@@ -28,6 +28,7 @@ export const SyncEntityTable = sqliteTable(
             .notNull(),
         backwardSyncedAt: int('backward_synced_at', { mode: 'timestamp' }),
         backwardSyncFromAt: int('backward_sync_from_at', { mode: 'timestamp' }),
+        backwardSyncLimitAt: int('backward_sync_limit_at', { mode: 'timestamp' }),
         forwardSyncedAt: int('forward_synced_at', { mode: 'timestamp' }),
         forwardSyncFromAt: int('forward_sync_from_at', { mode: 'timestamp' }),
         transactionCount: int('transaction_count', { mode: 'number' }).default(0).notNull(),
