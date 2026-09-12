@@ -189,14 +189,14 @@ jobs:
                   directory: coverage-reports
                   use_oidc: true
 
-    expo-ota-preview:
+    ota-preview:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
-        name: Expo OTA preview
+        name: OTA preview
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@78fa7d91fe35ff902a281f49065d3cd9b94a059a # v1.21.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@49cf033ba2f70d71c106c6416c1810e3287875f3 # v1.22.0
         with:
             app-dir: packages/app
             scheme: budgie
