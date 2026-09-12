@@ -2516,7 +2516,6 @@ msgid "Not Contains"
 msgstr "Не містить"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
-#: src/runway/component/runway-widget/runway-widget.tsx
 msgid "Not enough history yet"
 msgstr "Ще недостатньо історії"
 

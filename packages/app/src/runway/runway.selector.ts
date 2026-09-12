@@ -1,6 +1,5 @@
 export const RunwaySelector = {
     WidgetCard: 'RunwayWidget.Card',
     WidgetFigure: 'RunwayWidget.Figure',
-    WidgetDateLabel: 'RunwayWidget.DateLabel',
-    WidgetEmptyState: 'RunwayWidget.EmptyState'
+    WidgetDateLabel: 'RunwayWidget.DateLabel'
 } as const;
