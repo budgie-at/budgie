@@ -196,7 +196,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v1.17.0 # v1.17.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v1.18.0 # v1.18.0
         with:
             app-dir: packages/app
             scheme: budgie
