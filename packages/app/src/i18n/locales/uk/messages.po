@@ -2549,10 +2549,6 @@ msgstr "зараз"
 msgid "One-off"
 msgstr "Разово"
 
-#: src/runway/component/runway-drivers/runway-drivers.tsx
-msgid "One-offs are excluded from the base rate."
-msgstr "Разові витрати виключено з базової ставки."
-
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Перетворюються лише транзакції витрат і надходжень: витрати переказуються на цей рахунок, надходження — з нього. Інші типи залишаються без змін."

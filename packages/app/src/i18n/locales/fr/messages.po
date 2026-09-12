@@ -2549,10 +2549,6 @@ msgstr "maintenant"
 msgid "One-off"
 msgstr "Ponctuel"
 
-#: src/runway/component/runway-drivers/runway-drivers.tsx
-msgid "One-offs are excluded from the base rate."
-msgstr "Les dépenses ponctuelles sont exclues du taux de base."
-
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Seules les transactions de dépenses et de revenus sont converties : les dépenses sont transférées vers ce compte, les revenus en proviennent. Les autres types restent inchangés."

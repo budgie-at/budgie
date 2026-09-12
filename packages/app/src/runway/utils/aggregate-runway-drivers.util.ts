@@ -1,12 +1,29 @@
 import { RUNWAY_IRREGULAR_CONCENTRATION_THRESHOLD, RUNWAY_IRREGULAR_CV_THRESHOLD, RunwayDriverSeriesRowInterface } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
-
-import { isIrregularDriver } from './is-irregular-driver.util';
+import { isEmptyArray, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import type { RunwayDriverInterface } from '../interface/runway-driver.interface';
 
 const NULL_DRIVER_KEY = -1;
+
+const isIrregularDriver = (monthlyAmounts: readonly number[]): boolean => {
+    if (isEmptyArray(monthlyAmounts)) {
+        return false;
+    }
+
+    const total = monthlyAmounts.reduce((sum, amount) => sum + amount, 0);
+
+    if (!isPositiveNumber(total)) {
+        return false;
+    }
+
+    const mean = total / monthlyAmounts.length;
+    const variance = monthlyAmounts.reduce((sum, amount) => sum + (amount - mean) ** 2, 0) / monthlyAmounts.length;
+    const coefficientOfVariation = Math.sqrt(variance) / mean;
+    const concentration = Math.max(...monthlyAmounts) / total;
+
+    return coefficientOfVariation > RUNWAY_IRREGULAR_CV_THRESHOLD || concentration >= RUNWAY_IRREGULAR_CONCENTRATION_THRESHOLD;
+};
 
 export const aggregateRunwayDrivers = (rows: readonly RunwayDriverSeriesRowInterface[], months: number): RunwayDriverInterface[] => {
     const monthKeys = [...new Set(rows.map(row => row.month))].sort().slice(-months);
@@ -35,7 +52,7 @@ export const aggregateRunwayDrivers = (rows: readonly RunwayDriverSeriesRowInter
                 amount,
                 monthlyAmount: amount / months,
                 monthlyAmounts,
-                isIrregular: isIrregularDriver(monthlyAmounts, RUNWAY_IRREGULAR_CV_THRESHOLD, RUNWAY_IRREGULAR_CONCENTRATION_THRESHOLD)
+                isIrregular: isIrregularDriver(monthlyAmounts)
             };
         })
         .sort((left, right) => right.amount - left.amount);
