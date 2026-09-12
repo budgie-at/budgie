@@ -17,7 +17,7 @@ import { useRunwayQuery } from '../../query/use-runway.query';
 import { RunwaySelector } from '../../runway.selector';
 import { RunwayMeter } from '../runway-meter/runway-meter';
 
-// eslint-disable-next-line max-statements -- Widget orchestrates 7 hooks and renders enabled, insufficient-history, and ready states
+// eslint-disable-next-line max-statements -- Widget orchestrates multiple hooks and its enabled/ready render states
 export const RunwayWidget = () => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
@@ -32,21 +32,11 @@ export const RunwayWidget = () => {
     const { formatMonthAndYear } = useFormatDate();
     const formatDigits = useFormatDigits(0);
 
-    if (!isEnabled) {
+    if (!isEnabled || computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {
         return null;
     }
 
     const handleNavigate = () => void router.push('/analytics?tab=runway');
-
-    if (computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {
-        return (
-            <Card testID={RunwaySelector.WidgetEmptyState} variant="ghost" onPress={handleNavigate} className="gap-y-md">
-                <Text className="text-primary font-medium text-md">{t`Runway`}</Text>
-                <Text className="text-secondary-foreground text-sm">{t`Not enough history yet`}</Text>
-            </Card>
-        );
-    }
-
     const { isPositive, net, runwayMonths, runsOutAt } = computation;
     const netAmount = convertFromMicroUnits(net);
     const figure = isPositive ? t`Building` : `≈ ${formatDigits(Math.round(runwayMonths ?? 0))}`;
