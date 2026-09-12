@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.53.0](https://github.com/budgie-at/budgie/compare/v6.52.0...v6.53.0) (2026-09-12)
+
+
+### Bug Fixes
+
+* **app:** address runway review findings (a11y, all-in propagation, widget gating, history scroll) ([6402212](https://github.com/budgie-at/budgie/commit/64022121504cf923c1451a04c2d493ed823e820f))
+* **app:** hide runway home widget until enough history ([01cba3f](https://github.com/budgie-at/budgie/commit/01cba3f4e78b89c2356439b9425cac81ae0ec17c))
+* **contracts:** attribute runway tag drivers to the primary tag only ([62f4494](https://github.com/budgie-at/budgie/commit/62f4494f3b51f1c8068101fea2f1fa6a4054d806))
+
+
+### Features
+
+* **app:** add runway cash-flow forecast ([ac5d996](https://github.com/budgie-at/budgie/commit/ac5d9960e54fb114e4448fed5f40f9b3fa3d29c7))
+
+
+
+
+
 # [6.52.0](https://github.com/budgie-at/budgie/compare/v6.51.1...v6.52.0) (2026-09-12)
 
 
