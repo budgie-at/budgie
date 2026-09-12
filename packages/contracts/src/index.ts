@@ -509,3 +509,13 @@ export type { BudgetCategoryLimitEntityInterface } from './budget-category-limit
 export type { BudgetCategoryLimitCreateEntityInterface } from './budget-category-limit/entity/budget-category-limit-create-entity.interface';
 export type { BudgetCategoryLimitUpdateEntityInterface } from './budget-category-limit/entity/budget-category-limit-update-entity.interface';
 export type { BudgetCategoryLimitBulkUpdateInputInterface } from './budget-category-limit/input/budget-category-limit-bulk-update-input.interface';
+
+export { RUNWAY_IRREGULAR_CV_THRESHOLD } from './runway/constant/runway.constant';
+export { RUNWAY_IRREGULAR_CONCENTRATION_THRESHOLD } from './runway/constant/runway.constant';
+export { RUNWAY_MAX_MONTHS } from './runway/constant/runway.constant';
+
+export { RunwayWindowEnum, DEFAULT_RUNWAY_WINDOW } from './runway/enum/runway-window.enum';
+export { RunwayDriverDimensionEnum } from './runway/enum/runway-driver-dimension.enum';
+
+export type { RunwaySeriesRowInterface } from './runway/interface/runway-series-row.interface';
+export type { RunwayDriverSeriesRowInterface } from './runway/interface/runway-driver-series-row.interface';

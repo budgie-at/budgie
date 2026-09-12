@@ -19,6 +19,7 @@ import { DefaultCategoryTranslationEntityTable } from '../../category-translatio
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { DebtEventAssociationEnum } from '../../debt-event/enum/debt-event-association.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
+import { RunwayDriverDimensionEnum } from '../../runway/enum/runway-driver-dimension.enum';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transaction-entry-kind.enum';
@@ -32,6 +33,8 @@ import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enu
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { StatisticsFilterInterface } from '../interface/statistics-filter.interface';
+
+import type { SelectedFields } from 'drizzle-orm/sqlite-core';
 
 export class StatisticsRepository extends BaseTransactionFilterRepository {
     getTransactions(filters: StatisticsFilterInterface, limit: number, language: LanguageEnum) {
@@ -78,39 +81,34 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     }
 
     getTotalIncomeAndExpenseQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        const baseWhere = this.buildStatisticsWhere(filters);
-
-        return this.db
-            .select({
-                income: sql<number>`
-                    COALESCE(SUM(CASE
-                        WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
-                             AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-                        THEN 0
-                        WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.DEBIT)}
-                        THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-                        ELSE 0
-                    END), 0)
-                `.as('income'),
-                expense: sql<number>`
-                    COALESCE(SUM(CASE
-                        WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
-                             AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
-                        THEN ${this.buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}
-                        WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
-                             AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
-                        THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-                        WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.CREDIT)}
-                        THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-                        ELSE 0
-                    END), 0)
-                `.as('expense')
-            })
-            .from(TransactionEntryEntityTable)
+        return this.buildLedgerEntriesQuery(this.buildIncomeExpenseFields(defaultInstrumentId))
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(and(baseWhere, this.buildLedgerEntryCondition(), this.buildPrimaryEntryCondition()));
+            .where(this.buildStatisticsLedgerWhere(filters));
+    }
+
+    getRunwaySeriesQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, months: number) {
+        const monthSql = this.buildRunwayMonthSql();
+
+        return this.buildLedgerEntriesQuery({ month: monthSql.as('month'), ...this.buildIncomeExpenseFields(defaultInstrumentId) })
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .where(this.buildStatisticsLedgerWhere(filters, this.buildRunwayCompleteMonthsCondition(months)))
+            .groupBy(monthSql)
+            .orderBy(monthSql);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/max-params -- Runway drivers keep the mandated positional signature (filters, defaultInstrumentId, dimension, months, language)
+    getRunwayDriverSeriesQuery(
+        filters: TransactionFilterInterface,
+        defaultInstrumentId: number,
+        dimension: RunwayDriverDimensionEnum,
+        months: number,
+        language: LanguageEnum
+    ) {
+        return dimension === RunwayDriverDimensionEnum.CATEGORY
+            ? this.buildRunwayCategoryDriverSeriesQuery(filters, defaultInstrumentId, months, language)
+            : this.buildRunwayTagDriverSeriesQuery(filters, defaultInstrumentId, months);
     }
 
     getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
@@ -366,6 +364,126 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
 
     private buildPrimaryEntryCondition() {
         return eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY);
+    }
+
+    private buildIncomeEntryValueSql(defaultInstrumentId: number) {
+        return sql<number>`CASE
+            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                 AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+            THEN 0
+            WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.DEBIT)}
+            THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
+            ELSE 0
+        END`;
+    }
+
+    private buildExpenseEntryValueSql(defaultInstrumentId: number) {
+        return sql<number>`CASE
+            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                 AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                 AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+            THEN ${this.buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}
+            WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
+                 AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+            THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
+            WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.CREDIT)}
+            THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
+            ELSE 0
+        END`;
+    }
+
+    private buildIncomeTotalSql(defaultInstrumentId: number) {
+        return sql<number>`COALESCE(SUM(${this.buildIncomeEntryValueSql(defaultInstrumentId)}), 0)`;
+    }
+
+    private buildExpenseTotalSql(defaultInstrumentId: number) {
+        return sql<number>`COALESCE(SUM(${this.buildExpenseEntryValueSql(defaultInstrumentId)}), 0)`;
+    }
+
+    private buildLedgerEntriesQuery<TSelection extends SelectedFields>(selectFields: TSelection) {
+        return this.db.select(selectFields).from(TransactionEntryEntityTable);
+    }
+
+    private buildIncomeExpenseFields(defaultInstrumentId: number) {
+        return {
+            income: this.buildIncomeTotalSql(defaultInstrumentId).as('income'),
+            expense: this.buildExpenseTotalSql(defaultInstrumentId).as('expense')
+        };
+    }
+
+    private buildRunwayDriverFields(monthSql: SQL<string>, amountSql: SQL<number>) {
+        return {
+            month: monthSql.as('month'),
+            amount: amountSql.as('amount')
+        };
+    }
+
+    private buildStatisticsLedgerWhere(filters: TransactionFilterInterface, extraCondition?: SQL) {
+        return and(this.buildStatisticsWhere(filters), this.buildLedgerEntryCondition(), this.buildPrimaryEntryCondition(), extraCondition);
+    }
+
+    private buildRunwayMonthSql() {
+        return sql<string>`strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch')`;
+    }
+
+    private buildRunwayCompleteMonthsCondition(months: number) {
+        const monthSql = this.buildRunwayMonthSql();
+
+        return and(sql`${monthSql} >= strftime('%Y-%m', 'now', ${`-${months} months`})`, sql`${monthSql} < strftime('%Y-%m', 'now')`);
+    }
+
+    private buildRunwayCategoryDriverSeriesQuery(
+        filters: TransactionFilterInterface,
+        defaultInstrumentId: number,
+        months: number,
+        language: LanguageEnum
+    ) {
+        const amountSql = this.buildExpenseTotalSql(defaultInstrumentId);
+        const monthSql = this.buildRunwayMonthSql();
+        const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title}, '')`;
+
+        return this.buildLedgerEntriesQuery({
+            id: CategoryEntityTable.id,
+            title: categoryTitleSql.as('title'),
+            ...this.buildRunwayDriverFields(monthSql, amountSql)
+        })
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+            .leftJoin(
+                DefaultCategoryTranslationEntityTable,
+                and(
+                    eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
+                    eq(DefaultCategoryTranslationEntityTable.language, language)
+                )
+            )
+            .where(this.buildStatisticsLedgerWhere(filters, this.buildRunwayCompleteMonthsCondition(months)))
+            .groupBy(CategoryEntityTable.id, categoryTitleSql, monthSql)
+            .orderBy(monthSql, desc(amountSql));
+    }
+
+    private buildRunwayTagDriverSeriesQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, months: number) {
+        const amountSql = this.buildExpenseTotalSql(defaultInstrumentId);
+        const monthSql = this.buildRunwayMonthSql();
+
+        return this.buildLedgerEntriesQuery({
+            id: TagEntityTable.id,
+            title: TagEntityTable.title,
+            ...this.buildRunwayDriverFields(monthSql, amountSql)
+        })
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            .innerJoin(
+                TransactionTagsEntityTable,
+                and(
+                    eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id),
+                    eq(TransactionTagsEntityTable.isPrimary, true)
+                )
+            )
+            .innerJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
+            .where(this.buildStatisticsLedgerWhere(filters, this.buildRunwayCompleteMonthsCondition(months)))
+            .groupBy(TagEntityTable.id, TagEntityTable.title, monthSql)
+            .orderBy(monthSql, desc(amountSql));
     }
 
     private buildConversionRateSql(defaultInstrumentId: number, instrumentIdRef: SQL) {

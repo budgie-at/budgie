@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- File owns the account-balance ledger and valuation SQL pipeline that must stay together */
 import { Log } from '@budgie/logger';
 import { type SQL, type SQLWrapper, and, eq, inArray, isNull, notInArray, sql } from 'drizzle-orm';
 
@@ -26,6 +27,7 @@ import type { AccountBalanceEntityInterface } from '../entity/account-balance-en
 
 export class AccountBalanceRepository {
     private static readonly CRYPTO_ACCOUNT_TYPES = [AccountTypeEnum.CRYPTO, AccountTypeEnum.CRYPTO_SYNC];
+    private static readonly LIQUID_ACCOUNT_TYPES = [AccountTypeEnum.CASH, AccountTypeEnum.BANK, AccountTypeEnum.BANK_SYNC];
     constructor(private db: DB) {}
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async getNewTransactionEntriesDeltas(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
@@ -207,6 +209,15 @@ export class AccountBalanceRepository {
             .select({ total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
             .from(AccountEntityTable)
             .where(this.getActiveAccountWhereSql(eq(AccountEntityTable.type, accountType)));
+    }
+
+    getLiquidTotal(defaultInstrumentId: number) {
+        const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
+
+        return this.db
+            .select({ total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
+            .from(AccountEntityTable)
+            .where(this.getActiveAccountWhereSql(inArray(AccountEntityTable.type, AccountBalanceRepository.LIQUID_ACCOUNT_TYPES)));
     }
 
     getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
