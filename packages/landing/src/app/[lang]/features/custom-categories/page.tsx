@@ -178,7 +178,9 @@ export default async function CustomCategoriesFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Create unlimited categories with custom names, icons, and colors</Trans>
+                        <Trans>
+                            Create unlimited categories with a custom name and icon, plus AI-generated translation and search keywords
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Merge two categories into one with mass-reassignment of transactions</Trans>

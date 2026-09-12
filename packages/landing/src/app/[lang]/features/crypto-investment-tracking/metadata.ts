@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'crypto net worth tracker',
         'crypto price history app'
     ],
-    relatedFeatureSlugs: ['binance-sync', 'net-worth-tracker', 'account-management', 'multi-currency'],
+    relatedFeatureSlugs: ['crypto-price-history', 'binance-sync', 'net-worth-tracker', 'account-management', 'multi-currency'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-11-17',
     updatedAt: '2026-09-06',

@@ -349,14 +349,21 @@
             "idx": 49,
             "version": "6",
             "when": 1787000000000,
-            "tag": "0049_add_onboarding_completed",
+            "tag": "0049_add_bank_sync_backward_limit",
             "breakpoints": true
         },
         {
             "idx": 50,
             "version": "6",
+            "when": 1787000000001,
+            "tag": "0050_add_onboarding_completed",
+            "breakpoints": true
+        },
+        {
+            "idx": 51,
+            "version": "6",
             "when": 1787100000000,
-            "tag": "0050_add_onboarding_step_and_ai_consent",
+            "tag": "0051_add_onboarding_step_and_ai_consent",
             "breakpoints": true
         }
     ]

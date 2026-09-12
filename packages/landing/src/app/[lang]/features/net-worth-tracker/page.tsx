@@ -228,11 +228,11 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>How do crypto and stock holdings price?</Trans>}
+                    question={<Trans>How do crypto holdings price?</Trans>}
                     answer={
                         <Trans>
-                            Either by manual price update or by importing your brokerage&apos;s CSV export. Live ticker integration is
-                            opt-in to keep the offline-first guarantee.
+                            Crypto holdings are valued from the daily market history Budgie stores on device and backfills in the
+                            background. Live ticker updates are opt-in to keep the offline-first guarantee.
                         </Trans>
                     }
                 />
