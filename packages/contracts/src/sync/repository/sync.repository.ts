@@ -159,6 +159,7 @@ export class SyncRepository {
                 status: SyncStatusEnum.IDLE,
                 backwardSyncFromAt: now,
                 backwardSyncedAt: null,
+                backwardSyncLimitAt: null,
                 forwardSyncFromAt: now,
                 forwardSyncedAt: null,
                 transactionCount: 0,
