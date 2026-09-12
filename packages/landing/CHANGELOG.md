@@ -3,6 +3,146 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.50.1](https://github.com/budgie-at/budgie/compare/v6.50.0...v6.50.1) (2026-09-12)
+
+
+### Performance Improvements
+
+* **landing:** defer the non-default AppShot theme variant ([389e0cc](https://github.com/budgie-at/budgie/commit/389e0cc33f8c17f7c4a6793d6088d061afb5e0d5))
+
+
+
+
+
+# [6.50.0](https://github.com/budgie-at/budgie/compare/v6.49.0...v6.50.0) (2026-09-11)
+
+
+### Features
+
+* **landing:** add the crypto-price-history feature page ([3beffba](https://github.com/budgie-at/budgie/commit/3beffba5e19162fbf1ab5cfe0bc7d38e73e727c9))
+
+
+
+
+
+# [6.49.0](https://github.com/budgie-at/budgie/compare/v6.48.0...v6.49.0) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** clarify sync-data-repairs copy and French soft-delete wording ([79c2edd](https://github.com/budgie-at/budgie/commit/79c2eddfe1e8f19438e7145dbe2d5fe207b68497))
+
+
+### Features
+
+* **landing:** add the sync-data-repairs feature page ([dd042ea](https://github.com/budgie-at/budgie/commit/dd042ea0a5426ab53fca7823e6786c10e99b317e))
+
+
+
+
+
+# [6.48.0](https://github.com/budgie-at/budgie/compare/v6.47.5...v6.48.0) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** use Paramètres for Settings in the French balance-adjustment copy ([72632f0](https://github.com/budgie-at/budgie/commit/72632f0e47d2aed71e99973cc1824131da29b595))
+
+
+### Features
+
+* **landing:** add the balance-adjustment feature page ([f1d5dc0](https://github.com/budgie-at/budgie/commit/f1d5dc024ca6262dc51a8730e8185c2ef2e2fca0))
+
+
+
+
+
+## [6.47.5](https://github.com/budgie-at/budgie/compare/v6.47.4...v6.47.5) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** clear stale crypto-and-investments copy ([2405911](https://github.com/budgie-at/budgie/commit/24059118ecb67add568b31114ab7b9215c221b11))
+* **landing:** drop unsupported stocks and ETF claims ([35adc2c](https://github.com/budgie-at/budgie/commit/35adc2c73c78901a799df71cbb45d3b008d75840))
+
+
+
+
+
+## [6.47.4](https://github.com/budgie-at/budgie/compare/v6.47.3...v6.47.4) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** drop the desktop first-callout margin ([c7d07db](https://github.com/budgie-at/budgie/commit/c7d07db24ab79af1a20838038ca69a2a1bce426d))
+
+
+
+
+
+## [6.47.3](https://github.com/budgie-at/budgie/compare/v6.47.2...v6.47.3) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** correct stale on-device model sizes ([557281f](https://github.com/budgie-at/budgie/commit/557281fead3864f297df55d8f676863fce3fb45d))
+
+
+
+
+
+## [6.47.2](https://github.com/budgie-at/budgie/compare/v6.47.1...v6.47.2) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** correct token storage in the privacy policy ([e644144](https://github.com/budgie-at/budgie/commit/e644144fa21adb1cdfa834c23a4d7e45736ef846))
+* **landing:** describe real bank-token storage ([32153ba](https://github.com/budgie-at/budgie/commit/32153ba86b5093013efb56c7a9371792adea320e))
+
+
+
+
+
+## [6.47.1](https://github.com/budgie-at/budgie/compare/v6.47.0...v6.47.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** drop the custom-categories colour claim ([d2a3183](https://github.com/budgie-at/budgie/commit/d2a3183874ea0f360ad40230dfb8c7c3079dffcf))
+* **landing:** reword custom-categories German benefit copy ([5d96ef3](https://github.com/budgie-at/budgie/commit/5d96ef30ad7d262005c0ba69d1d8cec38dc19560))
+
+
+
+
+
+# [6.47.0](https://github.com/budgie-at/budgie/compare/v6.46.0...v6.47.0) (2026-09-11)
+
+
+### Bug Fixes
+
+* **landing:** address remaining debt-tracking catalog review ([1a79e7c](https://github.com/budgie-at/budgie/commit/1a79e7cba97b76db8449a1ef92fd85c7377a7da4))
+* **landing:** polish debt-tracking catalog wording ([e77e9c7](https://github.com/budgie-at/budgie/commit/e77e9c76ae40c745f289f40e1bf803b74d8cbcf1))
+
+
+### Features
+
+* **landing:** debt-tracking steps story ([9c7c51a](https://github.com/budgie-at/budgie/commit/9c7c51a3259cc7cce07f3f0d49f80f7ad6bc6863))
+
+
+
+
+
+# [6.46.0](https://github.com/budgie-at/budgie/compare/v6.45.1...v6.46.0) (2026-09-11)
+
+
+### Features
+
+* **landing:** bank-fee-tracking steps story ([a174459](https://github.com/budgie-at/budgie/commit/a1744596d0a5314dc93dd5b2567815813a575acd))
+
+
+
+
+
 ## [6.45.1](https://github.com/budgie-at/budgie/compare/v6.45.0...v6.45.1) (2026-09-11)
 
 **Note:** Version bump only for package @budgie-at/landing

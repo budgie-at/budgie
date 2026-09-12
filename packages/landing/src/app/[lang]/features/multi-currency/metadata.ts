@@ -20,7 +20,14 @@ export const FEATURE_METADATA = {
         'mobile currency conversion app',
         'foreign currency tracker'
     ],
-    relatedFeatureSlugs: ['account-management', 'net-worth-tracker', 'account-transfers', 'crypto-investment-tracking'],
+    relatedFeatureSlugs: [
+        'crypto-price-history',
+        'balance-adjustment',
+        'account-management',
+        'net-worth-tracker',
+        'account-transfers',
+        'crypto-investment-tracking'
+    ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-12-19',
     updatedAt: '2026-05-03',
