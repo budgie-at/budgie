@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.53.2](https://github.com/budgie-at/budgie/compare/v6.53.1...v6.53.2) (2026-09-13)
+
+
+### Bug Fixes
+
+* **app:** convert unpaired own-card transfers from archived accounts ([a17c21e](https://github.com/budgie-at/budgie/commit/a17c21ed7905555ccf9013857782f1b1af5e2786))
+* **app:** repair own-card transfer legs into inactive accounts ([bd86f30](https://github.com/budgie-at/budgie/commit/bd86f30a191234f39dfc8d7c104a32568b251539))
+* **app:** skip ambiguous archived counterparts in own-card transfer repair ([cae6ed2](https://github.com/budgie-at/budgie/commit/cae6ed21a9e2042a3709b78d3ce786faa251fe4d))
+
+
+
+
+
 ## [6.53.1](https://github.com/budgie-at/budgie/compare/v6.53.0...v6.53.1) (2026-09-13)
 
 
