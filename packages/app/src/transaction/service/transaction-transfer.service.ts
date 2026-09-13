@@ -167,8 +167,8 @@ class TransactionTransferService {
         const fromAccountId = isExpense ? this.requireTransferAccountId(transaction.fromAccountId, 'source') : params.accountId;
         const toAccountId = isExpense ? params.accountId : this.requireTransferAccountId(transaction.toAccountId, 'destination');
         const [fromAccount, toAccount] = await Promise.all([
-            accountService.findByIdOrFail(fromAccountId),
-            accountService.findByIdOrFail(toAccountId)
+            accountService.findByIdIncludingArchivedOrFail(fromAccountId),
+            accountService.findByIdIncludingArchivedOrFail(toAccountId)
         ]);
         const conversion = await exchangeRatesService.convert(
             isExpense ? fromAccount.instrumentId : toAccount.instrumentId,

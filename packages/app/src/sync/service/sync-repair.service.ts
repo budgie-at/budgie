@@ -11,6 +11,7 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { consolidationCoordinatorService } from './consolidation-coordinator.service';
 import { ersteDuplicateRepairSourceService, privatbankDuplicateRepairSourceService } from './sync-duplicate-repair-source.service';
 import { syncDuplicateSoftDeleteService } from './sync-duplicate-soft-delete.service';
+import { unpairedOwnCardTransferRepairService } from './unpaired-own-card-transfer-repair.service';
 
 import type { SyncDuplicateCandidateRowInterface } from '../interface/sync-duplicate-candidate-row.interface';
 import type { SyncDuplicateRepairPreviewInterface } from '../interface/sync-duplicate-repair-preview.interface';
@@ -64,8 +65,9 @@ class SyncRepairService {
     private async repairConsolidationDuplicates(): Promise<number> {
         const incomeDuplicateRepairCount = await consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
         const bridgeClaimRepairCount = await consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
+        const ownCardTransferRepairCount = await unpairedOwnCardTransferRepairService.repair();
 
-        return incomeDuplicateRepairCount + bridgeClaimRepairCount;
+        return incomeDuplicateRepairCount + bridgeClaimRepairCount + ownCardTransferRepairCount;
     }
 
     @Log(
@@ -97,7 +99,9 @@ class SyncRepairService {
     private async buildPreview(): Promise<SyncDuplicateRepairPreviewInterface> {
         const candidates = await this.findDuplicateCandidates(db);
         const consolidationRepairCount =
-            (await this.countConsolidationRepairCandidates()) + (await this.countBridgeClaimRepairCandidates());
+            (await this.countConsolidationRepairCandidates()) +
+            (await this.countBridgeClaimRepairCandidates()) +
+            (await unpairedOwnCardTransferRepairService.countCandidates());
 
         return this.buildPreviewFromCandidates(candidates, consolidationRepairCount);
     }

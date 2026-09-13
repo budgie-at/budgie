@@ -111,6 +111,13 @@ export class AccountRepository {
         });
     }
 
+    findByIdIncludingArchived(id: number, tx?: DB) {
+        return (tx ?? this.db).query.AccountEntityTable.findFirst({
+            where: eq(AccountEntityTable.id, id),
+            with: { [AccountAssociationEnum.INSTRUMENT]: true }
+        });
+    }
+
     findByIntegrationId(integrationId: number, tx?: DB) {
         return (tx ?? this.db).query.AccountEntityTable.findMany({
             where: and(eq(AccountEntityTable.integrationId, integrationId), isNull(AccountEntityTable.deletedAt)),
