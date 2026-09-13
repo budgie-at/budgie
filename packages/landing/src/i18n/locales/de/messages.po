@@ -2511,6 +2511,10 @@ msgstr "Kontoüberweisungen — richtig gemacht"
 msgid "accounts"
 msgstr "Konten"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Accounts and categories are created from the values in the file — nothing to set up beforehand"
+msgstr "Konten und Kategorien entstehen aus den Werten in der Datei — nichts muss vorher angelegt werden"
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Accounts group themselves by type"
 msgstr "Konten gruppieren sich nach Typ"
@@ -2987,6 +2991,10 @@ msgstr "Jede Bank, jede Spaltenreihenfolge – einmal pro Quelle einrichten, dan
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Any change affecting data handling is flagged for review"
 msgstr "Jede Änderung, die die Datenverarbeitung betrifft, wird zur Überprüfung markiert"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Any column order works"
+msgstr "Jede Spaltenreihenfolge funktioniert"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Any conduct or content of any third party on the Service"
@@ -4024,10 +4032,6 @@ msgstr "Budgie-Bildschirm „In Überweisung umwandeln“ mit vorausgefülltem B
 msgid "Budgie CSV and PDF import parses statement files on your device. No file content is uploaded to any server during import. The parser runs locally, extracts transactions, and writes them to the local database. Deduplication ensures that importing overlapping date ranges does not create duplicate records."
 msgstr "Budgies CSV- und PDF-Import analysiert Kontoauszugsdateien auf Ihrem Gerät. Beim Import wird kein Dateiinhalt auf einen Server hochgeladen. Der Parser läuft lokal, extrahiert Transaktionen und schreibt sie in die lokale Datenbank. Duplikatserkennung stellt sicher, dass das Importieren überlappender Datumsbereiche keine doppelten Einträge erstellt."
 
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Budgie CSV column mapping screen with the saved bank import presets above the field selectors"
-msgstr "Budgie-Bildschirm zur CSV-Spaltenzuordnung mit den gespeicherten Bank-Importvorlagen über den Feldauswahlen"
-
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Budgie data management settings showing Import Database and Export Database rows"
 msgstr "Budgie-Einstellungen zur Datenverwaltung mit den Zeilen „Datenbank importieren“ und „Datenbank exportieren“"
@@ -4043,10 +4047,6 @@ msgstr "Budgie-Datumsfilter-Sheet mit einem August-Kalender über der Reihe der 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals"
 msgstr "Budgie-Schuldenkonto „Verliehen an Daniel“ mit 750 $, die noch zu erhalten sind, bei 37,5 % zurückgezahlt, samt zurückgezahltem und verliehenem Gesamtbetrag"
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
-msgstr "Budgie dedupliziert anhand der Transaktions-ID. Vorhandene Zeilen werden übersprungen; nur neue werden eingefügt. Ein erneuter Import ist sicher."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout"
@@ -4316,6 +4316,10 @@ msgstr "Budgie-Sperrbildschirm mit zwei von vier gefüllten PIN-Punkten während
 #: src/generic/component/logo/logo.tsx
 msgid "Budgie logo"
 msgstr "Budgie-Logo"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Budgie Map CSV Columns screen with the Budgie, SmartBudget and FinEye import presets above the To Account, Category, Date, Amount, To Currency and External ID column selectors"
+msgstr "Budgie-Bildschirm „CSV-Spalten zuordnen“ mit den Import-Vorlagen Budgie, SmartBudget und FinEye über den Spaltenauswahlfeldern für Zielkonto, Kategorie, Datum, Betrag, Zielwährung und Externe ID"
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "Budgie maps each PrivatBank category label to the corresponding ISO MCC code, so AI categorization, MCC chips, and analytics all work the same as with other bank-synced data."
@@ -4797,6 +4801,10 @@ msgstr "Der Bau von Local-First-Software erfordert die Lösung schwieriger Probl
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Built {formattedPublishedAt}"
 msgstr "Erstellt am {formattedPublishedAt}"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Built-in presets for Budgie's own export, SmartBudget and FinEye fill every selector in one tap"
+msgstr "Mitgelieferte Vorlagen für Budgies eigenen Export, SmartBudget und FinEye füllen jedes Auswahlfeld mit einem Tipp"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Built-in via your server"
@@ -6130,6 +6138,10 @@ msgstr "CSV ist für Tabellen, Steuersoftware und andere Apps, die flache Daten 
 msgid "Currency is fixed per account"
 msgstr "Währung ist pro Konto fest"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Currency read from the file"
+msgstr "Währung aus der Datei gelesen"
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Currency-mode pill switches whether you drive from send or receive direction"
 msgstr "Die Währungsmodus-Schaltfläche wechselt, ob Sie aus der Sende- oder Empfangsrichtung arbeiten"
@@ -6379,10 +6391,6 @@ msgstr "Schuldenverfolgung"
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Debts in another currency are valued with the exchange rate from the day the money actually moved"
 msgstr "Schulden in einer anderen Währung werden mit dem Wechselkurs vom Tag der tatsächlichen Geldbewegung bewertet"
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Decimal separator and date format options handle US, EU, and ISO variants"
-msgstr "Dezimaltrennzeichen- und Datumsformatoptionen unterstützen US-, EU- und ISO-Varianten"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Decisions and rationales are documented publicly"
@@ -6732,6 +6740,10 @@ msgstr "Bewahrt der CSV-Import das ursprüngliche Transaktionsdatum?"
 msgid "Does export work offline?"
 msgstr "Funktioniert der Export offline?"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Does importing add to what I already have?"
+msgstr "Ergänzt der Import meine vorhandenen Daten?"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Does it block screenshots or screen recordings?"
 msgstr "Blockiert das Screenshots oder Bildschirmaufnahmen?"
@@ -6893,6 +6905,10 @@ msgstr "Jede Karte mit ihrem Saldo"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Each crypto instrument has its own market screen: the current price, a sparkline of where it has been, metrics for the period, and your holding valued against it. The app ships with a year of daily prices for the nine largest crypto assets, quoted in both euro and dollar, so the charts have something to show the moment you open them."
 msgstr "Jedes Krypto-Instrument hat seinen eigenen Marktbildschirm: den aktuellen Preis, eine Sparkline seines bisherigen Verlaufs, Kennzahlen für den Zeitraum und Ihre Position bewertet dazu. Die App bringt ein Jahr täglicher Kurse für die neun größten Krypto-Assets mit, notiert in Euro und Dollar, sodass die Diagramme sofort etwas zu zeigen haben, wenn Sie sie öffnen."
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Each field gets its own selector listing the headers found in your file, so nothing depends on the order your bank chose. To Account, Category, Date, Amount and To Currency have to be mapped; the badge in the corner counts the rows Budgie found."
+msgstr "Jedes Feld hat ein eigenes Auswahlfeld mit den in deiner Datei gefundenen Spaltenüberschriften, nichts hängt also von der Reihenfolge deiner Bank ab. Zielkonto, Kategorie, Datum, Betrag und Zielwährung müssen zugeordnet werden; das Abzeichen in der Ecke zählt die gefundenen Zeilen."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Each group is updated in bulk, which keeps large imports practical even when years of transactions need valuation."
@@ -7473,6 +7489,10 @@ msgstr "Exportieren Sie Ihre Daten jederzeit als CSV. Budgie sperrt Sie nicht ei
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Extensive feature set beyond budgeting"
 msgstr "Umfangreicher Funktionsumfang über Budgetierung hinaus"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "External ID is optional"
+msgstr "Externe ID ist optional"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "External input is welcomed on security architecture"
@@ -8569,7 +8589,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/binance-sync/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
-#: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -8782,8 +8801,8 @@ msgid "If you’ve landed on this article, you’re probably wondering: <0>What 
 msgstr "Wenn Sie auf diesen Artikel gestoßen sind, fragen Sie sich wahrscheinlich: <0>Was sind die besten YNAB-Alternativen, die Ihre finanzielle Privatsphäre wirklich respektieren?</0>"
 
 #: src/app/[lang]/features/csv-import/page.tsx
-msgid "If your bank exports CSV, yes. The flexible column mapper accommodates any column order, separator, and date format — set up once, save as a preset."
-msgstr "Wenn Ihre Bank CSV exportiert, ja. Der flexible Spalten-Mapper unterstützt jede Spaltenreihenfolge, jedes Trennzeichen und jedes Datumsformat – einmalig einrichten, als Voreinstellung speichern."
+msgid "If your bank exports CSV, yes — you decide which column feeds each field. Dates need to read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD, and amounts need a dot as the decimal separator."
+msgstr "Wenn deine Bank CSV exportiert, ja — du entscheidest, welche Spalte welches Feld füllt. Datumswerte müssen als MM/DD/YYYY HH:MM:SS oder YYYY-MM-DD lesbar sein, und Beträge brauchen einen Punkt als Dezimaltrennzeichen."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Immediate Actions"
@@ -8810,10 +8829,6 @@ msgstr "Konten und Transaktionen aus einem PrivatBank24-XLSX-Export importieren 
 #: src/app/[lang]/features/privatbank-import/metadata.ts
 msgid "Import accounts and transactions from a PrivatBank24 XLSX export. PrivatBank's MCC categories map to ISO codes automatically so AI categorization downstream still works."
 msgstr "Konten und Transaktionen aus einem PrivatBank24-XLSX-Export importieren. Die MCC-Kategorien von PrivatBank werden automatisch auf ISO-Codes abgebildet, sodass die nachgelagerte KI-Kategorisierung weiterhin funktioniert."
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Import any bank's CSV with flexible column mapping and reusable presets. Set it up once per bank, then it's two taps from there."
-msgstr "CSV jeder Bank mit flexibler Spaltenzuordnung und wiederverwendbaren Voreinstellungen importieren. Einmalig pro Bank einrichten, danach sind es zwei Tipp-Aktionen."
 
 #: src/app/[lang]/features/csv-import/metadata.ts
 msgid "Import any bank's CSV with flexible column mapping, save the mapping as a preset, and re-import safely with deduplication. Universal escape hatch for banks without an API."
@@ -9693,12 +9708,20 @@ msgid "Many banks now offer official API programs with scoped OAuth tokens. Thes
 msgstr "Viele Banken bieten jetzt offizielle API-Programme mit begrenzten OAuth-Token an. Diese Token gewähren schreibgeschützten Zugriff auf die Transaktionshistorie, ohne Anmeldedaten preiszugeben. In einer Offline-First-App ist dies die sicherste Form der automatisierten Banksynchronisation:"
 
 #: src/app/[lang]/features/csv-import/page.tsx
-msgid "Map columns flexibly: Date, Amount, Description, Counterparty — your bank's order, not ours"
-msgstr "Spalten flexibel zuordnen: Datum, Betrag, Beschreibung, Gegenpartei – die Reihenfolge Ihrer Bank, nicht unsere"
+msgid "Map both account legs and the row imports as one transfer rather than two unrelated entries"
+msgstr "Ordne beide Kontoseiten zu und die Zeile wird als eine Umbuchung importiert statt als zwei zusammenhanglose Buchungen"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Map the columns to Budgie’s fields"
 msgstr "Ordnen Sie die Spalten den Budgie-Feldern zu"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Map the second account leg and the row lands as a transfer instead of two unrelated entries. Map MCC and the merchant code picks the category. External ID keeps your bank's own reference on the transaction."
+msgstr "Ordne die zweite Kontoseite zu und die Zeile landet als Umbuchung statt als zwei zusammenhanglose Buchungen. Ordne MCC zu und der Händlercode wählt die Kategorie. Die Externe ID behält die Referenz deiner Bank an der Transaktion."
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Map To Account, Category, Date, Amount and To Currency onto whichever columns your bank exports — your order, not ours"
+msgstr "Ordne Zielkonto, Kategorie, Datum, Betrag und Zielwährung genau den Spalten zu, die deine Bank exportiert — deine Reihenfolge, nicht unsere"
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Mapped to your category"
@@ -10712,6 +10735,10 @@ msgstr "Nein. Budgie speichert Zinssatz und Fälligkeitsdatum und berechnet dara
 msgid "No. Budgie uses an indexed local SQLite query for the count and the drill-down list. Everything runs on-device, without a cloud analytics service."
 msgstr "Nein. Budgie verwendet eine indizierte lokale SQLite-Abfrage für die Anzahl und die Drill-down-Liste. Alles läuft auf dem Gerät, ohne Cloud-Analytics-Dienst."
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "No. CSV import rebuilds the ledger from the file: existing accounts, categories and transactions are cleared first. Treat it as the way to move in from another app, not as a monthly top-up."
+msgstr "Nein. Der CSV-Import baut das Kontobuch aus der Datei neu auf: vorhandene Konten, Kategorien und Transaktionen werden zuerst gelöscht. Nutze ihn für den Umzug aus einer anderen App, nicht als monatliche Ergänzung."
+
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "No. Deposit accounts are excluded from normal expense source selection, and Budgie prevents deposit balances from becoming negative."
 msgstr "Nein. Festgeldkonten sind von der normalen Auswahl als Ausgabenquelle ausgeschlossen, und Budgie verhindert, dass Festgeldsalden negativ werden."
@@ -10834,8 +10861,8 @@ msgid "Not directly, but CSV import with column mapping can populate categories 
 msgstr "Nicht direkt, aber der CSV-Import mit Spaltenzuordnung kann Kategorien beim ersten Import befüllen. Danach können Sie sie wie jede andere bearbeiten."
 
 #: src/app/[lang]/features/csv-import/page.tsx
-msgid "Not every bank has an API. CSV is the universal escape hatch — and Budgie supports it without forcing you into a specific column order. Map “Date”, “Amount”, “Description” to whichever columns your bank uses, save the preset, and never touch the mapping again."
-msgstr "Nicht jede Bank hat eine API. CSV ist die universelle Lösung – und Budgie unterstützt sie, ohne Sie auf eine bestimmte Spaltenreihenfolge festzulegen. Ordnen Sie „Datum“, „Betrag“, “Beschreibung“ den Spalten Ihrer Bank zu, speichern Sie die Voreinstellung und berühren Sie die Zuordnung nie wieder."
+msgid "Not every bank has an API, and not every app you are leaving will hand you anything but a spreadsheet. CSV is the universal escape hatch — and Budgie reads it without forcing you into a specific column order."
+msgstr "Nicht jede Bank hat eine API, und nicht jede App, die du verlässt, gibt dir mehr als eine Tabelle. CSV ist die universelle Notausfahrt — und Budgie liest sie, ohne dir eine bestimmte Spaltenreihenfolge vorzuschreiben."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Not every bank offers an API program, and not every bank is supported by a given direct-sync integration. For these cases, manual statement import is the privacy-preserving fallback — and it is more practical than most people expect."
@@ -11221,6 +11248,10 @@ msgstr "Eine Bankverbindung enthält die Zugangsdaten und trägt jedes darunterl
 msgid "One coin, three screens"
 msgstr "Eine Münze, drei Bildschirme"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "One column per field"
+msgstr "Eine Spalte pro Feld"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One connection behind many accounts — cards, jars, and deposits from the same bank"
 msgstr "Eine Verbindung für viele Konten — Karten, Töpfe und Festgelder derselben Bank"
@@ -11288,6 +11319,10 @@ msgstr "Ein Beleg, drei Kategorien"
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "One row, reclassified"
 msgstr "Eine Zeile, neu eingeordnet"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "One screen does the whole import"
+msgstr "Ein Bildschirm erledigt den ganzen Import"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One screen per bank"
@@ -11579,6 +11614,10 @@ msgstr "Optionaler Bank-Sync verwendet Ihre eigenen API-Token – niemals einen 
 msgid "Optional Bank Synchronization"
 msgstr "Optionale Banksynchronisation"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Optional columns carry the detail"
+msgstr "Optionale Spalten bringen die Details"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Optional contact name — track inter-personal loans without spreadsheets"
 msgstr "Optionaler Kontaktname – zwischenmenschliche Kredite ohne Tabellen verfolgen"
@@ -11586,6 +11625,10 @@ msgstr "Optionaler Kontaktname – zwischenmenschliche Kredite ohne Tabellen ver
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Optional Face ID or Touch ID unlock, with the PIN as fallback"
 msgstr "Optionales Entsperren mit Face ID oder Touch ID, die PIN als Rückfalloption"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Optional MCC, comment and External ID columns carry the bank's own detail into each transaction"
+msgstr "Optionale Spalten für MCC, Kommentar und Externe ID bringen die Details der Bank in jede Transaktion"
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Optional, direct API tokens"
@@ -11808,6 +11851,10 @@ msgstr "Persönliche Finanzen sind ein idealer Bereich für die Local-First-Arch
 msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
 msgstr ""
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Pick a CSV from Settings and Budgie reads its header row, then offers those headers to every field it needs to write a transaction."
+msgstr "Wähle in den Einstellungen eine CSV-Datei und Budgie liest ihre Kopfzeile, dann bietet es diese Überschriften jedem Feld an, das für eine Transaktion nötig ist."
+
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Pick a window: last 7 days, last 30, last 90, or a custom range. Budgie diffs the bank's response against existing rows; new rows insert, deleted rows soft-delete, edited rows show a conflict picker."
 msgstr "Ein Fenster auswählen: letzte 7 Tage, letzte 30, letzte 90 oder ein benutzerdefinierter Bereich. Budgie vergleicht die Antwort der Bank mit bestehenden Zeilen; neue Zeilen werden eingefügt, gelöschte Zeilen werden weich gelöscht, bearbeitete Zeilen zeigen einen Konfliktauswähler."
@@ -11971,6 +12018,10 @@ msgstr ""
 msgid "Plus, amount, save. The account, today's date and the likely category are already filled in for you."
 msgstr "Plus, Betrag, speichern. Konto, heutiges Datum und die wahrscheinliche Kategorie sind bereits für Sie ausgefüllt."
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Point Budgie at any CSV and map its columns onto Budgie's fields on one screen — or start from a built-in preset and adjust."
+msgstr "Zeig Budgie eine beliebige CSV-Datei und ordne ihre Spalten auf einem Bildschirm den Feldern von Budgie zu — oder starte mit einer mitgelieferten Vorlage und passe sie an."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "PostgreSQL or MySQL backend (your choice)"
 msgstr "PostgreSQL- oder MySQL-Backend (Ihre Wahl)"
@@ -11999,6 +12050,10 @@ msgstr "Bewahrt mehr Ihrer Kategoriestruktur"
 msgid "presets"
 msgstr "Voreinstellungen"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Presets fill every field"
+msgstr "Vorlagen füllen jedes Feld"
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Presets, one tap each"
 msgstr "Voreinstellungen, je ein Tipp"
@@ -12014,10 +12069,6 @@ msgstr "Drücken und halten Sie eine beliebige Transaktionskarte für etwa 300 m
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Preview every parsed transaction before write — no surprises"
 msgstr "Jede analysierte Transaktion vor dem Schreiben in der Vorschau anzeigen – keine Überraschungen"
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Preview every row before write so you can spot mis-mappings instantly"
-msgstr "Jede Zeile vor dem Schreiben in der Vorschau anzeigen, damit Sie Fehlzuordnungen sofort erkennen können"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Price, and its last move"
@@ -12371,10 +12422,6 @@ msgstr "Qwen3 1.7B läuft auf Ihrem Smartphone – kein API-Schlüssel, kein Abo
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Rarely surfaced"
 msgstr "Selten sichtbar"
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Re-import detects duplicates by externalId — safe to re-pull the same statement"
-msgstr "Erneuter Import erkennt Duplikate per externalId – sicher, denselben Kontoauszug erneut abzurufen"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Re-locks the moment the app goes to background"
@@ -12862,10 +12909,6 @@ msgstr "Sicheres Löschen: fordert Sie auf, Transaktionen zu migrieren oder zu l
 msgid "Same picker across analytics, transactions, and recurring screens"
 msgstr "Gleicher Auswähler in Analysen-, Transaktions- und Wiederholungsbildschirmen"
 
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Save a per-bank preset and never re-map again"
-msgstr "Eine Pro-Bank-Voreinstellung speichern und nie wieder neu zuordnen"
-
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Save through the OS share sheet — Files, iCloud, Drive, anything"
 msgstr "Über das OS-Teilen-Blatt speichern – Dateien, iCloud, Drive, alles"
@@ -13323,10 +13366,6 @@ msgstr "Smart"
 msgid "Smart Expense Suggestions for Mobile — Budgie"
 msgstr "Intelligente Ausgaben-Vorschläge für Mobilgeräte – Budgie"
 
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Smart presets remember your column choices, date format, decimal separator, and account assignment per source. Re-imports detect duplicates so you can re-pull the same statement safely."
-msgstr "Smarte Voreinstellungen merken sich Ihre Spaltenauswahl, Datumsformat, Dezimaltrennzeichen und Kontozuweisung pro Quelle. Erneute Importe erkennen Duplikate, sodass Sie denselben Kontoauszug sicher erneut abrufen können."
-
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
@@ -13594,6 +13633,10 @@ msgstr "Phase 1: Embedding-basiertes Mustererkennen"
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Stage 2: LLM-Based Semantic Categorization"
 msgstr "Phase 2: LLM-basierte semantische Kategorisierung"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Start from a built-in preset"
+msgstr "Mit einer mitgelieferten Vorlage starten"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Start from a template built out of your own recent spending, from a generic starter budget, or from an empty canvas"
@@ -13976,10 +14019,6 @@ msgstr "Tippen Sie auf eine beliebige Tag-Zeile, um jede beitragende Transaktion
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Tap edit on any transaction and override the translated name manually. Your override is permanent for that merchant."
 msgstr "Bei einer Transaktion auf Bearbeiten tippen und den übersetzten Namen manuell überschreiben. Ihre Überschreibung ist dauerhaft für diesen Händler."
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Tap Import → CSV. Pick the file. Map columns. Save the mapping as a preset. The importer parses, dedupes against existing rows by externalId, and shows a preview before write."
-msgstr "Import → CSV tippen. Datei auswählen. Spalten zuordnen. Zuordnung als Voreinstellung speichern. Der Importer analysiert, dedupliziert gegen bestehende Zeilen per externalId und zeigt vor dem Schreiben eine Vorschau."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every transaction into a new or existing Erste account."
@@ -14406,6 +14445,10 @@ msgstr "Die versteckten Kosten \"kostenloser\" Budget-Apps"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The Hidden Dangers of Cloud-Based Financial Apps"
 msgstr "Die verborgenen Gefahren Cloud-basierter Finanz-Apps"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "The importer builds the ledger out of the file: accounts and categories are created from the values it finds, MCC codes resolve to categories, and rows with both account legs become transfers. Dates are read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD, and amounts use a dot as the decimal separator."
+msgstr "Der Importer baut das Kontobuch aus der Datei: Konten und Kategorien entstehen aus den gefundenen Werten, MCC-Codes werden zu Kategorien aufgelöst, und Zeilen mit beiden Kontoseiten werden zu Umbuchungen. Datumswerte werden als MM/DD/YYYY HH:MM:SS oder YYYY-MM-DD gelesen, und Beträge nutzen einen Punkt als Dezimaltrennzeichen."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The Ink & Switch Manifesto and Its Impact"
@@ -15147,6 +15190,10 @@ msgstr "Drei erstklassige Transaktionstypen: Ausgabe, Einnahme, Überweisung –
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Three frames: the keypad the app opens on, the four digits that open the encrypted database, and the Settings group where you switch the lock on."
 msgstr "Drei Bilder: das Tastenfeld, mit dem die App startet, die vier Ziffern, die die verschlüsselte Datenbank öffnen, und die Einstellungsgruppe, in der du die Sperre einschaltest."
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Three presets ship with the app — Budgie's own export, SmartBudget and FinEye. Tapping one fills every selector at once and tells you the columns are still yours to adjust."
+msgstr "Drei Vorlagen sind in der App enthalten — Budgies eigener Export, SmartBudget und FinEye. Ein Tipp füllt alle Auswahlfelder auf einmal und weist darauf hin, dass die Spalten weiterhin anpassbar bleiben."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Three screens to a clean report"
@@ -16151,10 +16198,6 @@ msgstr ""
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "What happens if I close one of the accounts?"
 msgstr "Was passiert, wenn ich eines der Konten schließe?"
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "What happens if I import the same file twice?"
-msgstr "Was passiert, wenn ich dieselbe Datei zweimal importiere?"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "What happens if I lose my phone?"
@@ -17633,6 +17676,10 @@ msgstr "Ja. Der KI-Service-Layer — einschließlich der Embedding-Modellintegra
 msgid "Yes. The backup file is the SQLCipher database with your PIN-derived key intact. Restore on any device by entering the same PIN."
 msgstr "Ja. Die Backup-Datei ist die SQLCipher-Datenbank mit intaktem PIN-abgeleitetem Schlüssel. Auf jedem Gerät durch Eingabe derselben PIN wiederherstellen."
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Yes. The column you map to Date becomes the transaction's date, read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD. A row whose date cannot be read is reported instead of guessed at."
+msgstr "Ja. Die Spalte, die du dem Datum zuordnest, wird zum Datum der Transaktion und wird als MM/DD/YYYY HH:MM:SS oder YYYY-MM-DD gelesen. Eine Zeile mit unlesbarem Datum wird gemeldet statt geraten."
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Yes. The dual-amount input opens after picking the destination account. Original amount is preserved on the source leg; destination leg gets your specified amount."
 msgstr "Ja. Die Doppelbetrags-Eingabe öffnet sich nach der Auswahl des Zielkontos. Der Originalbetrag wird auf der Quell-Buchungsseite gespeichert; die Ziel-Buchungsseite erhält Ihren angegebenen Betrag."
@@ -17640,10 +17687,6 @@ msgstr "Ja. Die Doppelbetrags-Eingabe öffnet sich nach der Auswahl des Zielkont
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Yes. The entire transaction entry flow — amount, category, tags, account — works fully offline. Your data is written directly to the on-device SQLite database with no network call."
 msgstr "Ja. Der gesamte Transaktionseingabeablauf – Betrag, Kategorie, Tags, Konto – funktioniert vollständig offline. Ihre Daten werden direkt in die geräteeigene SQLite-Datenbank ohne Netzwerkaufruf geschrieben."
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Yes. The mapper captures both booking date and value date when both are present in the CSV; transactions sort by your preference."
-msgstr "Ja. Der Mapper erfasst sowohl Buchungsdatum als auch Wertstellungsdatum, wenn beide in der CSV vorhanden sind; Transaktionen werden nach Ihrer Präferenz sortiert."
 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Yes. The original is preserved for receipt-matching and audit; the translated form is what your search queries hit."
