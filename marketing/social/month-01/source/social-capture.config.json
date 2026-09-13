@@ -75,15 +75,15 @@
         },
         {
             "name": "social-showcase-14",
-            "flow": "flows/media/social-accounts-scrolled.flow.yaml"
+            "flow": "flows/social/social-accounts-scrolled.flow.yaml"
         },
         {
             "name": "social-showcase-15",
-            "flow": "flows/media/social-voice-entry.flow.yaml"
+            "flow": "flows/social/social-voice-entry.flow.yaml"
         },
         {
             "name": "social-showcase-16",
-            "flow": "flows/media/social-ai-suggestion.flow.yaml"
+            "flow": "flows/social/social-ai-suggestion.flow.yaml"
         },
         {
             "name": "social-showcase-17",
