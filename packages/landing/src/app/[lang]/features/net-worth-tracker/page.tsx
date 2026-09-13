@@ -97,10 +97,10 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     scene="net-worth-tracker-1"
                     slug="net-worth-tracker"
                 >
-                    <FeatureStory.Callout y={0.145}>
+                    <FeatureStory.Callout y={0.175}>
                         <Trans>Total in your base currency</Trans>
                     </FeatureStory.Callout>
-                    <FeatureStory.Callout y={0.208}>
+                    <FeatureStory.Callout y={0.225}>
                         <Trans>Fiat and crypto, split out</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
@@ -115,10 +115,10 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     scene="multi-currency-1"
                     slug="multi-currency"
                 >
-                    <FeatureStory.Callout y={0.168}>
+                    <FeatureStory.Callout y={0.178}>
                         <Trans>Converted to your base currency</Trans>
                     </FeatureStory.Callout>
-                    <FeatureStory.Callout y={0.64}>
+                    <FeatureStory.Callout y={0.655}>
                         <Trans>The account keeps its own</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
@@ -154,7 +154,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Toggle &ldquo;include in net worth&rdquo; per account. A daily background task pulls fresh exchange rates so a Euro
+                        Toggle &ldquo;include in net worth&rdquo; per account. A background task keeps exchange rates fresh so a Euro
                         savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency.
                     </Trans>
                 </FeaturePageProse>
@@ -169,7 +169,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                         <Trans>Per-account &ldquo;include in net worth&rdquo; toggle — partial-truth balance is your call</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Daily background FX-rate refresh converts every account to your base currency</Trans>
+                        <Trans>Background FX-rate refresh converts every account to your base currency</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Liability and debt accounts subtract automatically; receivables add</Trans>
@@ -191,7 +191,7 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                         rival={<Trans>Bank only</Trans>}
                     />
                     <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Per-account currency, daily auto-conversion</Trans>}
+                        budgie={<Trans>Per-account currency, background auto-conversion</Trans>}
                         concern={<Trans>FX support</Trans>}
                         rival={<Trans>One currency, often hardcoded</Trans>}
                     />
@@ -213,8 +213,8 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     question={<Trans>Where do exchange rates come from?</Trans>}
                     answer={
                         <Trans>
-                            A daily background task pulls rates from a public-domain feed and stores a snapshot per day on your device. No
-                            live rate broker is queried at render time.
+                            A background task pulls exchange rates automatically and stores a snapshot on your device. No live rate broker
+                            is queried at render time.
                         </Trans>
                     }
                 />
@@ -231,8 +231,8 @@ export default async function NetWorthTrackerFeaturePage(props: PageLangParam) {
                     question={<Trans>How do crypto holdings price?</Trans>}
                     answer={
                         <Trans>
-                            Crypto holdings are valued from the daily market history Budgie stores on device and backfills in the
-                            background. Live ticker updates are opt-in to keep the offline-first guarantee.
+                            Crypto holdings are valued from the market history Budgie stores on device and refreshes in the background, so
+                            pricing stays available without a live rate broker.
                         </Trans>
                     }
                 />
