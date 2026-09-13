@@ -16,6 +16,7 @@ import { getRecurringEntryKey } from '../../utils/get-recurring-entry-key.util';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 
 const ANIMATION_STAGGER = 50;
+const MAX_STAGGER_INDEX = 8;
 
 interface Props {
     readonly entry: RecurringCalendarEntryInterface;
@@ -36,7 +37,7 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     const category = entry.categoryTitle ?? entry.title;
     const description = t`${formattedAmount} · ${category}`;
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
-    const animationDelay = index * ANIMATION_STAGGER;
+    const animationDelay = Math.min(index, MAX_STAGGER_INDEX) * ANIMATION_STAGGER;
     const key = getRecurringEntryKey(entry);
     let handlePress = onPress;
 

@@ -304,9 +304,8 @@ export { TransferAssetTransactionCreateInputSchema } from './transaction/schema/
 export type { TransactionFilterInterface } from './transaction/interface/transaction-filter.interface';
 export type { TransactionPatternQueryInterface } from './transaction/interface/transaction-pattern-query.interface';
 export type { AmountPatternQueryInterface } from './transaction/interface/amount-pattern-query.interface';
-export type { MonthlyPatternQueryInterface } from './transaction/interface/monthly-pattern-query.interface';
-export type { MonthlyPatternRawRowInterface } from './transaction/interface/monthly-pattern-raw-row.interface';
-export type { MonthlyPatternRowInterface } from './transaction/interface/monthly-pattern-row.interface';
+export type { RecurringChargeCandidateInterface } from './transaction/interface/recurring-charge-candidate.interface';
+export type { RecurringChargeCandidateQueryInterface } from './transaction/interface/recurring-charge-candidate-query.interface';
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
