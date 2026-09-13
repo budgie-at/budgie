@@ -17,6 +17,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -51,6 +52,9 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
     const homePath = `/${lang}`;
     const featuresPath = `/${lang}/features`;
     const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
+    const storyAlt = t(
+        i18n
+    )`Budgie Budget details screen with 95% of the monthly limit spent and the remainder below it, above category limit cards for Housing & Utilities, Groceries over budget, Transportation and Car & Fuel`;
 
     return (
         <main className="flex-1">
@@ -70,7 +74,7 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
             />
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Budget Planning — Limits That Match Your Payday</Trans>}
+                heading={<Trans>Budget Planning — One Limit, Split By Category</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
@@ -80,14 +84,66 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                 }
             />
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>The whole month on one screen</Trans>}>
+                    <Trans>
+                        Budget details puts the overall limit at the top and every category limit underneath, all worked out on the device
+                        from the transactions already in your ledger.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>One limit for the month</Trans>}>
+                    <Trans>
+                        The header carries the period the budget covers, what you have spent against the overall limit, the percentage that
+                        represents and what is still left. Spending recorded on accounts in other currencies is converted into the
+                        budget&apos;s currency before any of it is counted.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} priority scene="budget-planning-2" slug="budget-planning">
+                    <FeatureStory.Callout y={0.224}>
+                        <Trans>95% of the limit used</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.268}>
+                        <Trans>What is still left</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>A limit per category</Trans>}>
+                    <Trans>
+                        Every category you gave a ceiling gets its own card under Category limits: a bar, what you have spent, what is left
+                        and the limit itself. Tap one and Budgie opens the transactions behind that number for exactly this period.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot alt={storyAlt} index={1} locale={lang} scene="budget-planning-2" slug="budget-planning">
+                    <FeatureStory.Callout y={0.436}>
+                        <Trans>Spent, left and limit</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Going over is obvious</Trans>}>
+                    <Trans>
+                        A category that passes its ceiling turns red and swaps Left for Over budget, so the overrun is a number rather than
+                        a bar that quietly stops. Refunds work the other way: a returned purchase gives the budget its money back.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot alt={storyAlt} index={2} locale={lang} scene="budget-planning-2" slug="budget-planning">
+                    <FeatureStory.Callout y={0.535}>
+                        <Trans>Red once the limit breaks</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.572}>
+                        <Trans>How far over you are</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>A budget cycle should start when your money arrives</Trans>
+                    <Trans>One limit, split the way you actually spend</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Most budget apps assume the first of the month. Budgie lets you pick any start day for the cycle, or anchor it to
-                        the last day of each month, so the period you plan against is the period you actually get paid for.
+                        A Budgie budget runs on a monthly cycle, and the period it currently covers is shown on the budget detail screen and
+                        on the home widget, so you always know which dates the numbers belong to.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -108,7 +164,7 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                         <Trans>An overall monthly limit, per-category limits, and one cap for everything else</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Payday-aligned cycles — start on any day of the month or anchor to the last day</Trans>
+                        <Trans>The exact dates of the current cycle on both the detail screen and the home widget</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>
@@ -158,27 +214,13 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Create a budget, pick the day the cycle starts, and set an overall limit in your default currency. Add limits to the
-                        categories you care about and a cap for the rest. The detail screen breaks the period down category by category; the
-                        home widget keeps the headline numbers one glance away, and can be hidden from Settings whenever you want the home
-                        screen quiet.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
                     <Trans>Subscription budget apps vs. Budgie</Trans>
                 </FeaturePageHeading>
                 <FeaturePageComparisonTable rivalLabel={<Trans>Cloud budget app</Trans>}>
                     <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Any start day, or the last day of the month</Trans>}
-                        concern={<Trans>Cycle start</Trans>}
-                        rival={<Trans>Usually locked to the 1st</Trans>}
+                        budgie={<Trans>A template built from your own recent spending, a generic starter, or nothing at all</Trans>}
+                        concern={<Trans>Getting started</Trans>}
+                        rival={<Trans>Generic templates from a shared library</Trans>}
                     />
                     <FeaturePageComparisonTable.Row
                         budgie={<Trans>Computed on-device from your local database</Trans>}
@@ -203,8 +245,8 @@ export default async function BudgetPlanningFeaturePage(props: PageLangParam) {
                     question={<Trans>Which budget periods are supported?</Trans>}
                     answer={
                         <Trans>
-                            Monthly. What you choose is where the month begins — any day of the month, or the last day — so the cycle can
-                            follow your payday instead of the calendar.
+                            Monthly. Budgie tracks one active budget over a monthly cycle, and both the detail screen and the home widget
+                            print the exact start and end dates of the period the numbers cover.
                         </Trans>
                     }
                 />
