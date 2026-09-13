@@ -1,0 +1,36 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- extendedWaitUntil:
+      visible:
+          id: 'ActionButton'
+      timeout: 120000
+
+- runFlow: ../subflows/transactions/open-action-menu.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'ActionItem.AiButton'
+          enabled: true
+      timeout: 240000
+
+- tapOn:
+      id: 'ActionItem.AiButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'VoiceInputOverlay.RecordButton'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

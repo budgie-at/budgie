@@ -1,0 +1,879 @@
+{
+    "generatedAt": "2026-09-09T15:17:29.537Z",
+    "theme": "light",
+    "format": "png",
+    "colorSpace": "sRGB",
+    "assets": [
+        {
+            "post": "d01",
+            "slug": "launch",
+            "slide": 1,
+            "file": "d01-launch/final/d01-launch-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video hook card reading “Meet the money app that can’t see your money.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d01",
+            "slug": "launch",
+            "slide": 1,
+            "file": "d01-launch/final/d01-launch-slide-01-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video hook card reading “Meet the money app that can’t see your money.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d01",
+            "slug": "launch",
+            "slide": 2,
+            "file": "d01-launch/final/d01-launch-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video end card reading “Budgie keeps financial clarity on your device.” above a framed Budgie home screen.",
+            "screens": ["home"],
+            "verified": true
+        },
+        {
+            "post": "d01",
+            "slug": "launch",
+            "slide": 2,
+            "file": "d01-launch/final/d01-launch-slide-02-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video end card reading “Budgie keeps financial clarity on your device.” above a framed Budgie home screen.",
+            "screens": ["home"],
+            "verified": true
+        },
+        {
+            "post": "d01",
+            "slug": "launch",
+            "slide": 3,
+            "file": "d01-launch/final/d01-launch-slide-03-1080x1080-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1080
+            },
+            "alt": "Square thumbnail reading “Meet the money app that can’t see your money.” beside a framed Budgie home screen.",
+            "screens": ["home"],
+            "verified": true
+        },
+        {
+            "post": "d02",
+            "slug": "no-account-question",
+            "slide": 1,
+            "file": "d02-no-account-question/final/d02-no-account-question-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Slide asking why a finance app needs your email, with a framed Budgie onboarding screen below the text.",
+            "screens": ["onboarding"],
+            "verified": true
+        },
+        {
+            "post": "d03",
+            "slug": "data-location",
+            "slide": 1,
+            "file": "d03-data-location/final/d03-data-location-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Opening slide asking where your finance data lives.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d03",
+            "slug": "data-location",
+            "slide": 2,
+            "file": "d03-data-location/final/d03-data-location-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Diagram of a person, an app and a vendor cloud, illustrating that many apps send data to a vendor cloud.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d03",
+            "slug": "data-location",
+            "slide": 3,
+            "file": "d03-data-location/final/d03-data-location-slide-03-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Diagram of a person pointing to their own device, whose local database is encrypted once a PIN is set, illustrating a local-first model.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d03",
+            "slug": "data-location",
+            "slide": 4,
+            "file": "d03-data-location/final/d03-data-location-slide-04-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Slide noting that local-first still needs clear backups and honest limits, with caveat chips for bank sync, model downloads and exchange-rate refresh.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d03",
+            "slug": "data-location",
+            "slide": 5,
+            "file": "d03-data-location/final/d03-data-location-slide-05-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Checklist telling readers to ask where data is stored, processed, backed up and exported before choosing an app.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d04",
+            "slug": "airplane-mode",
+            "slide": 1,
+            "file": "d04-airplane-mode/final/d04-airplane-mode-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video hook card reading “The airplane-mode test.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d04",
+            "slug": "airplane-mode",
+            "slide": 1,
+            "file": "d04-airplane-mode/final/d04-airplane-mode-slide-01-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video hook card reading “The airplane-mode test.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d04",
+            "slug": "airplane-mode",
+            "slide": 2,
+            "file": "d04-airplane-mode/final/d04-airplane-mode-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video end card reading “Some things still need the internet: bank sync, initial downloads, and fresh rates.” above a framed Budgie accounts screen.",
+            "screens": ["accounts"],
+            "verified": true
+        },
+        {
+            "post": "d04",
+            "slug": "airplane-mode",
+            "slide": 2,
+            "file": "d04-airplane-mode/final/d04-airplane-mode-slide-02-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video end card reading “Some things still need the internet: bank sync, initial downloads, and fresh rates.” above a framed Budgie accounts screen.",
+            "screens": ["accounts"],
+            "verified": true
+        },
+        {
+            "post": "d05",
+            "slug": "privacy-poll",
+            "slide": 1,
+            "file": "d05-privacy-poll/final/d05-privacy-poll-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Poll card asking what is non-negotiable for your money data, with four options: no account wall, local storage, export control and no ad profiling.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d06",
+            "slug": "onboarding",
+            "slide": 1,
+            "file": "d06-onboarding/final/d06-onboarding-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video hook card reading “No account. No email. No sign-up.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d06",
+            "slug": "onboarding",
+            "slide": 1,
+            "file": "d06-onboarding/final/d06-onboarding-slide-01-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video hook card reading “No account. No email. No sign-up.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d06",
+            "slug": "onboarding",
+            "slide": 2,
+            "file": "d06-onboarding/final/d06-onboarding-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video end card reading “Start tracking without handing over your financial life.” above a framed Budgie onboarding screen.",
+            "screens": ["onboarding"],
+            "verified": true
+        },
+        {
+            "post": "d06",
+            "slug": "onboarding",
+            "slide": 2,
+            "file": "d06-onboarding/final/d06-onboarding-slide-02-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video end card reading “Start tracking without handing over your financial life.” above a framed Budgie onboarding screen.",
+            "screens": ["onboarding"],
+            "verified": true
+        },
+        {
+            "post": "d08",
+            "slug": "local-ai",
+            "slide": 1,
+            "file": "d08-local-ai/final/d08-local-ai-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video hook card reading “AI that stays on the phone.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d08",
+            "slug": "local-ai",
+            "slide": 1,
+            "file": "d08-local-ai/final/d08-local-ai-slide-01-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video hook card reading “AI that stays on the phone.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d08",
+            "slug": "local-ai",
+            "slide": 2,
+            "file": "d08-local-ai/final/d08-local-ai-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video end card reading “AI help can happen without sending your finance history to a cloud model.” above a framed Budgie ai-suggestion screen.",
+            "screens": ["ai-suggestion"],
+            "verified": true
+        },
+        {
+            "post": "d08",
+            "slug": "local-ai",
+            "slide": 2,
+            "file": "d08-local-ai/final/d08-local-ai-slide-02-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video end card reading “AI help can happen without sending your finance history to a cloud model.” above a framed Budgie ai-suggestion screen.",
+            "screens": ["ai-suggestion"],
+            "verified": true
+        },
+        {
+            "post": "d09",
+            "slug": "screen-privacy",
+            "slide": 1,
+            "file": "d09-screen-privacy/final/d09-screen-privacy-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video hook card reading “Privacy when someone else sees your screen.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d09",
+            "slug": "screen-privacy",
+            "slide": 1,
+            "file": "d09-screen-privacy/final/d09-screen-privacy-slide-01-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video hook card reading “Privacy when someone else sees your screen.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d09",
+            "slug": "screen-privacy",
+            "slide": 2,
+            "file": "d09-screen-privacy/final/d09-screen-privacy-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video end card reading “Privacy should cover the moments around the app, too.” above a framed Budgie lock screen.",
+            "screens": ["lock"],
+            "verified": true
+        },
+        {
+            "post": "d09",
+            "slug": "screen-privacy",
+            "slide": 2,
+            "file": "d09-screen-privacy/final/d09-screen-privacy-slide-02-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video end card reading “Privacy should cover the moments around the app, too.” above a framed Budgie lock screen.",
+            "screens": ["lock"],
+            "verified": true
+        },
+        {
+            "post": "d10",
+            "slug": "backup-tradeoff",
+            "slide": 1,
+            "file": "d10-backup-tradeoff/final/d10-backup-tradeoff-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Opening slide reading that local-first is not magic backup.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d10",
+            "slug": "backup-tradeoff",
+            "slide": 2,
+            "file": "d10-backup-tradeoff/final/d10-backup-tradeoff-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Slide reading that your finance history can stay under your control.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d10",
+            "slug": "backup-tradeoff",
+            "slide": 3,
+            "file": "d10-backup-tradeoff/final/d10-backup-tradeoff-slide-03-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Slide reading that you still need a deliberate backup plan.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d10",
+            "slug": "backup-tradeoff",
+            "slide": 4,
+            "file": "d10-backup-tradeoff/final/d10-backup-tradeoff-slide-04-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Four-row checklist covering what is stored locally, what syncs, what exports and what happens if a device is lost.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d10",
+            "slug": "backup-tradeoff",
+            "slide": 5,
+            "file": "d10-backup-tradeoff/final/d10-backup-tradeoff-slide-05-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Closing slide reading “No automatic cloud backup in Budgie. Export your database file or CSV before you lose a device.”",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d11",
+            "slug": "voice-entry",
+            "slide": 1,
+            "file": "d11-voice-entry/final/d11-voice-entry-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video hook card reading “Speak an expense. Budgie logs it.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d11",
+            "slug": "voice-entry",
+            "slide": 1,
+            "file": "d11-voice-entry/final/d11-voice-entry-slide-01-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video hook card reading “Speak an expense. Budgie logs it.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d11",
+            "slug": "voice-entry",
+            "slide": 2,
+            "file": "d11-voice-entry/final/d11-voice-entry-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video end card reading “Less typing, still private by design.” above a framed Budgie voice-entry screen.",
+            "screens": ["voice-entry"],
+            "verified": true
+        },
+        {
+            "post": "d11",
+            "slug": "voice-entry",
+            "slide": 2,
+            "file": "d11-voice-entry/final/d11-voice-entry-slide-02-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video end card reading “Less typing, still private by design.” above a framed Budgie voice-entry screen.",
+            "screens": ["voice-entry"],
+            "verified": true
+        },
+        {
+            "post": "d13",
+            "slug": "import-paths",
+            "slide": 1,
+            "file": "d13-import-paths/final/d13-import-paths-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Opening slide reading that import should not mean surrendering your finance account.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d13",
+            "slug": "import-paths",
+            "slide": 2,
+            "file": "d13-import-paths/final/d13-import-paths-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Aggregator model diagram: your bank, then an aggregator cloud, then the app.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d13",
+            "slug": "import-paths",
+            "slide": 3,
+            "file": "d13-import-paths/final/d13-import-paths-slide-03-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Direct sync diagram: your bank to your device with no aggregator in between, with Monobank and Binance chips beside a framed Budgie bank sync screen.",
+            "screens": ["bank-sync"],
+            "verified": true
+        },
+        {
+            "post": "d13",
+            "slug": "import-paths",
+            "slide": 4,
+            "file": "d13-import-paths/final/d13-import-paths-slide-04-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Statement import diagram: a statement file to your device, labelled works offline, with CSV, PrivatBank XLSX and Erste PDF chips beside a framed Budgie import screen.",
+            "screens": ["import"],
+            "verified": true
+        },
+        {
+            "post": "d13",
+            "slug": "import-paths",
+            "slide": 5,
+            "file": "d13-import-paths/final/d13-import-paths-slide-05-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Checklist telling readers to ask who receives the data, where it is processed and what works offline.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d14",
+            "slug": "whole-picture",
+            "slide": 1,
+            "file": "d14-whole-picture/final/d14-whole-picture-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video hook card reading “One view of the whole picture.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d14",
+            "slug": "whole-picture",
+            "slide": 1,
+            "file": "d14-whole-picture/final/d14-whole-picture-slide-01-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video hook card reading “One view of the whole picture.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d14",
+            "slug": "whole-picture",
+            "slide": 2,
+            "file": "d14-whole-picture/final/d14-whole-picture-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video end card reading “One view of your money, built around your data ownership.” above a framed Budgie accounts screen.",
+            "screens": ["accounts"],
+            "verified": true
+        },
+        {
+            "post": "d14",
+            "slug": "whole-picture",
+            "slide": 2,
+            "file": "d14-whole-picture/final/d14-whole-picture-slide-02-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video end card reading “One view of your money, built around your data ownership.” above a framed Budgie accounts screen.",
+            "screens": ["accounts"],
+            "verified": true
+        },
+        {
+            "post": "d15",
+            "slug": "weekly-review",
+            "slide": 1,
+            "file": "d15-weekly-review/final/d15-weekly-review-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Opening slide reading a five-minute money review.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d15",
+            "slug": "weekly-review",
+            "slide": 2,
+            "file": "d15-weekly-review/final/d15-weekly-review-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Slide asking what changed this week.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d15",
+            "slug": "weekly-review",
+            "slide": 3,
+            "file": "d15-weekly-review/final/d15-weekly-review-slide-03-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Slide asking what surprised me.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d15",
+            "slug": "weekly-review",
+            "slide": 4,
+            "file": "d15-weekly-review/final/d15-weekly-review-slide-04-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Slide asking what needs attention next week.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d15",
+            "slug": "weekly-review",
+            "slide": 5,
+            "file": "d15-weekly-review/final/d15-weekly-review-slide-05-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Closing slide inviting readers to use any tracker they trust, above a framed Budgie analytics screen.",
+            "screens": ["analytics"],
+            "verified": true
+        },
+        {
+            "post": "d16",
+            "slug": "source-transparency",
+            "slide": 1,
+            "file": "d16-source-transparency/final/d16-source-transparency-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Editorial slide reading that privacy claims should be inspectable, with a repository file list and a framed Budgie security settings screen.",
+            "screens": ["settings-security"],
+            "verified": true
+        },
+        {
+            "post": "d16",
+            "slug": "source-transparency",
+            "slide": 1,
+            "file": "d16-source-transparency/final/d16-source-transparency-slide-01-1200x1500-light.png",
+            "size": {
+                "width": 1200,
+                "height": 1500
+            },
+            "alt": "Editorial slide reading that privacy claims should be inspectable, with a repository file list and a framed Budgie security settings screen.",
+            "screens": ["settings-security"],
+            "verified": true
+        },
+        {
+            "post": "d17",
+            "slug": "data-promises",
+            "slide": 1,
+            "file": "d17-data-promises/final/d17-data-promises-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Slide listing five lines Budgie will not cross, with a line icon on each row.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d18",
+            "slug": "comparison",
+            "slide": 1,
+            "file": "d18-comparison/final/d18-comparison-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Opening slide comparing local-first and cloud-first finance tracking.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d18",
+            "slug": "comparison",
+            "slide": 2,
+            "file": "d18-comparison/final/d18-comparison-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Data location comparison: on your device for local-first Budgie, on the vendor servers for a cloud-first tracker.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d18",
+            "slug": "comparison",
+            "slide": 3,
+            "file": "d18-comparison/final/d18-comparison-slide-03-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Offline use comparison: full history, add expenses and insights for local-first Budgie, often limited to cached views for a cloud-first tracker.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d18",
+            "slug": "comparison",
+            "slide": 4,
+            "file": "d18-comparison/final/d18-comparison-slide-04-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "AI processing comparison: on-device model with a one-time download for local-first Budgie, a cloud model that sees your data for a cloud-first tracker.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d18",
+            "slug": "comparison",
+            "slide": 5,
+            "file": "d18-comparison/final/d18-comparison-slide-05-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Account requirement comparison: none for local-first Budgie, email or login usually required for a cloud-first tracker.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d18",
+            "slug": "comparison",
+            "slide": 6,
+            "file": "d18-comparison/final/d18-comparison-slide-06-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Transparency comparison: public source code for local-first Budgie, usually closed source for a cloud-first tracker.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d18",
+            "slug": "comparison",
+            "slide": 7,
+            "file": "d18-comparison/final/d18-comparison-slide-07-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Closing slide inviting readers to choose the trade-offs they actually want.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d19",
+            "slug": "selection-checklist",
+            "slide": 1,
+            "file": "d19-selection-checklist/final/d19-selection-checklist-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Checklist of five questions to ask before trusting a finance app, with empty checkboxes.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d20",
+            "slug": "product-tour",
+            "slide": 1,
+            "file": "d20-product-tour/final/d20-product-tour-slide-01-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video hook card reading “Thirty seconds of Budgie.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d20",
+            "slug": "product-tour",
+            "slide": 1,
+            "file": "d20-product-tour/final/d20-product-tour-slide-01-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video hook card reading “Thirty seconds of Budgie.” on a dark Budgie canvas.",
+            "screens": [],
+            "verified": true
+        },
+        {
+            "post": "d20",
+            "slug": "product-tour",
+            "slide": 2,
+            "file": "d20-product-tour/final/d20-product-tour-slide-02-1080x1350-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1350
+            },
+            "alt": "Video end card reading “Private expense tracking on your device.” above a framed Budgie home screen.",
+            "screens": ["home"],
+            "verified": true
+        },
+        {
+            "post": "d20",
+            "slug": "product-tour",
+            "slide": 2,
+            "file": "d20-product-tour/final/d20-product-tour-slide-02-1080x1920-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1920
+            },
+            "alt": "Video end card reading “Private expense tracking on your device.” above a framed Budgie home screen.",
+            "screens": ["home"],
+            "verified": true
+        },
+        {
+            "post": "d20",
+            "slug": "product-tour",
+            "slide": 3,
+            "file": "d20-product-tour/final/d20-product-tour-slide-03-1080x1080-light.png",
+            "size": {
+                "width": 1080,
+                "height": 1080
+            },
+            "alt": "Square thumbnail reading “Thirty seconds of Budgie.” beside a framed Budgie home screen.",
+            "screens": ["home"],
+            "verified": true
+        }
+    ]
+}
