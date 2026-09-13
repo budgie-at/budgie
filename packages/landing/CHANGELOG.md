@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.55.0](https://github.com/budgie-at/budgie/compare/v6.54.1...v6.55.0) (2026-09-13)
+
+
+### Bug Fixes
+
+* **landing:** resume AppClip playback across live theme changes ([4898926](https://github.com/budgie-at/budgie/commit/4898926cdf20c5037651cda975fdbd86c3864919)), closes [#882](https://github.com/budgie-at/budgie/issues/882) [#883](https://github.com/budgie-at/budgie/issues/883)
+
+
+### Features
+
+* **landing:** csv-import steps story ([1cb633c](https://github.com/budgie-at/budgie/commit/1cb633cf5932025c60d07b8c6e4534e2467120a7))
+
+
+
+
+
 ## [6.50.1](https://github.com/budgie-at/budgie/compare/v6.50.0...v6.50.1) (2026-09-12)
 
 
