@@ -19,6 +19,7 @@ import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.inte
 import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { ruleService } from '../../service/rule.service';
 import { selectSuggestConditions } from '../../util/select-suggest-condition.util';
+import { showRuleApplicationToast } from '../../util/show-rule-application-toast.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 
 const serializeCondition = (condition: RuleConditionInputInterface): string =>
@@ -92,7 +93,7 @@ const createRule = async (ruleInput: RuleCreateInputInterface): Promise<void> =>
     });
     const rule = await ruleService.create(ruleInput);
     logger.log('createRule:created', { ruleId: rule.id });
-    ruleApplicationDrainerService.enqueueRuleApplication(rule.id);
+    ruleApplicationDrainerService.enqueueRuleApplication(rule.id, showRuleApplicationToast);
     logger.log('createRule:enqueued', { ruleId: rule.id });
 };
 

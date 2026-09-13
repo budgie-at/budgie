@@ -9,6 +9,7 @@ import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
 import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { ruleService } from '../../service/rule.service';
+import { showRuleApplicationToast } from '../../util/show-rule-application-toast.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 
 interface Props {
@@ -50,7 +51,7 @@ const updateRule = async (updateRuleData: UpdateRuleDataInterface, language: Lan
 
     await ruleService.updateById(updateRuleData.ruleId, { actions: mergedActions });
 
-    ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId);
+    ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId, showRuleApplicationToast);
 };
 
 export const RuleUpdateCard = (props: Props) => {
