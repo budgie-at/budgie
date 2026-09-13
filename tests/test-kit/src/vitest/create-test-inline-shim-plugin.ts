@@ -30,6 +30,11 @@ const VIRTUAL_SHIMS: Record<string, string> = {
     `,
     '@lingui/core/macro': `
         export const t = parts => (Array.isArray(parts) ? parts.join('') : String(parts));
+        export const msg = parts => {
+            const message = Array.isArray(parts) ? parts.join('') : String(parts);
+
+            return { id: message, message };
+        };
     `,
     '@lingui/react/macro': `
         export const useLingui = () => ({ t: parts => (Array.isArray(parts) ? parts.join('') : String(parts)) });
