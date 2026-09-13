@@ -115,7 +115,7 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                     scene="expense-tracking-1"
                     slug="expense-tracking"
                 >
-                    <FeatureStory.Callout y={0.307}>
+                    <FeatureStory.Callout y={0.335}>
                         <Trans>Amount first, no form</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout y={0.884}>

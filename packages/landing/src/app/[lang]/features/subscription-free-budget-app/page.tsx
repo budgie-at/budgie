@@ -98,10 +98,10 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                     scene="subscription-free-budget-app-1"
                     slug="subscription-free-budget-app"
                 >
-                    <FeatureStory.Callout index={0} y={0.125}>
+                    <FeatureStory.Callout index={0} y={0.16}>
                         <Trans>No upgrade banner here</Trans>
                     </FeatureStory.Callout>
-                    <FeatureStory.Callout index={1} y={0.678}>
+                    <FeatureStory.Callout index={1} y={0.7}>
                         <Trans>No lock icons, no tiers</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>

@@ -2173,6 +2173,10 @@ msgstr "A 4-digit PIN, set from Settings → Security"
 msgid "A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches."
 msgstr "A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches."
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "A background task pulls exchange rates automatically and stores a snapshot on your device. No live rate broker is queried at render time."
+msgstr "A background task pulls exchange rates automatically and stores a snapshot on your device. No live rate broker is queried at render time."
+
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "A backup of everything"
 msgstr "A backup of everything"
@@ -2224,10 +2228,6 @@ msgstr "A connection screen listing its accounts with their balances and a per-a
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "A CRDT counter works differently. Instead of storing a single number, it stores the increments from each user separately. User A’s increments are tracked independently from User B’s. The current value is computed by summing all increments. If A increments once and B increments once, the total is 7, regardless of the order the operations are received. No conflict, no coordination required."
 msgstr "A CRDT counter works differently. Instead of storing a single number, it stores the increments from each user separately. User A’s increments are tracked independently from User B’s. The current value is computed by summing all increments. If A increments once and B increments once, the total is 7, regardless of the order the operations are received. No conflict, no coordination required."
-
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "A daily background task pulls rates from a public-domain feed and stores a snapshot per day on your device. No live rate broker is queried at render time."
-msgstr "A daily background task pulls rates from a public-domain feed and stores a snapshot per day on your device. No live rate broker is queried at render time."
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "A dedicated Rules screen with search across conditions, actions, categories, tags, and accounts"
@@ -3269,6 +3269,10 @@ msgstr "Automatic Transfer Consolidation — both legs of a cross-bank transfer 
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 msgid "automation"
 msgstr "automation"
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Background FX-rate refresh converts every account to your base currency"
+msgstr "Background FX-rate refresh converts every account to your base currency"
 
 #: src/app/[lang]/features/data-export/opengraph-image.tsx
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
@@ -6020,8 +6024,8 @@ msgid "Crypto holdings are first-class instruments: symbol, quantity, and a dail
 msgstr "Crypto holdings are first-class instruments: symbol, quantity, and a daily price"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Crypto holdings are valued from the daily market history Budgie stores on device and backfills in the background. Live ticker updates are opt-in to keep the offline-first guarantee."
-msgstr "Crypto holdings are valued from the daily market history Budgie stores on device and backfills in the background. Live ticker updates are opt-in to keep the offline-first guarantee."
+msgid "Crypto holdings are valued from the market history Budgie stores on device and refreshes in the background, so pricing stays available without a live rate broker."
+msgstr "Crypto holdings are valued from the market history Budgie stores on device and refreshes in the background, so pricing stays available without a live rate broker."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Crypto holdings sit alongside your fiat accounts with the same UX"
@@ -6218,10 +6222,6 @@ msgstr "Cyrillic, Greek, Arabic, CJK, and more — any non-Latin script the on-d
 #: src/app/[lang]/features/ai-merchant-translation/metadata.ts
 msgid "Cyrillic, Greek, or Cyrillic-script merchant names get normalized to Latin so your transaction list reads cleanly. Runs on-device."
 msgstr "Cyrillic, Greek, or Cyrillic-script merchant names get normalized to Latin so your transaction list reads cleanly. Runs on-device."
-
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Daily background FX-rate refresh converts every account to your base currency"
-msgstr "Daily background FX-rate refresh converts every account to your base currency"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Daily FX-rate snapshots stored on-device for accurate historical conversion"
@@ -11791,8 +11791,8 @@ msgid "Per-account “include in net worth” toggle — partial-truth balance i
 msgstr "Per-account “include in net worth” toggle — partial-truth balance is your call"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Per-account currency, daily auto-conversion"
-msgstr "Per-account currency, daily auto-conversion"
+msgid "Per-account currency, background auto-conversion"
+msgstr "Per-account currency, background auto-conversion"
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Per-MCC overrides for personal preferences — set once, applies forever"
@@ -15299,8 +15299,8 @@ msgid "Today, This Week, Last Week, This Month, Last Month, This Year, All Time 
 msgstr "Today, This Week, Last Week, This Month, Last Month, This Year, All Time — every screen with a list, two taps to the right window. Plus a From/To amount range in the same filter row."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Toggle “include in net worth” per account. A daily background task pulls fresh exchange rates so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency."
-msgstr "Toggle “include in net worth” per account. A daily background task pulls fresh exchange rates so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency."
+msgid "Toggle “include in net worth” per account. A background task keeps exchange rates fresh so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency."
+msgstr "Toggle “include in net worth” per account. A background task keeps exchange rates fresh so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency."
 
 #: src/generic/component/header/header.tsx
 msgid "Toggle menu"

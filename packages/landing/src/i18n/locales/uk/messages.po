@@ -2174,6 +2174,10 @@ msgstr "4-значний PIN, який задається в Налаштува�
 msgid "A background scan looks at your transaction history for amount + cadence patterns: same vendor, similar amount, regular interval. Confidence scores filter out one-off matches."
 msgstr "Фоновий аналіз переглядає вашу історію транзакцій на предмет шаблонів сума + ритм: той самий продавець, схожа сума, регулярний інтервал. Оцінки надійності відфільтровують разові збіги."
 
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "A background task pulls exchange rates automatically and stores a snapshot on your device. No live rate broker is queried at render time."
+msgstr "Фонова задача автоматично отримує курси обміну та зберігає знімок на вашому пристрої. Під час відображення жоден брокер курсів у реальному часі не опитується."
+
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "A backup of everything"
 msgstr "Резервна копія всього"
@@ -2225,10 +2229,6 @@ msgstr "Екран підключення зі списком його раху�
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "A CRDT counter works differently. Instead of storing a single number, it stores the increments from each user separately. User A’s increments are tracked independently from User B’s. The current value is computed by summing all increments. If A increments once and B increments once, the total is 7, regardless of the order the operations are received. No conflict, no coordination required."
 msgstr "CRDT-лічильник працює інакше. Замість зберігання одного числа він зберігає інкременти від кожного користувача окремо. Інкременти Користувача A відстежуються незалежно від Користувача B. Поточне значення обчислюється як сума всіх інкрементів. Якщо A збільшує один раз і B збільшує один раз, загальна сума дорівнює 7, незалежно від порядку отримання операцій. Жодного конфлікту, жодної координації."
-
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "A daily background task pulls rates from a public-domain feed and stores a snapshot per day on your device. No live rate broker is queried at render time."
-msgstr "Щоденне фонове завдання отримує курси з загальнодоступного джерела та зберігає знімок за кожен день на вашому пристрої. Під час відображення жоден брокер курсів не опитується."
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "A dedicated Rules screen with search across conditions, actions, categories, tags, and accounts"
@@ -3270,6 +3270,10 @@ msgstr "Автоматичне об'єднання переказів — оби
 #: src/app/[lang]/features/categorization-rules/opengraph-image.tsx
 msgid "automation"
 msgstr ""
+
+#: src/app/[lang]/features/net-worth-tracker/page.tsx
+msgid "Background FX-rate refresh converts every account to your base currency"
+msgstr "Фонове оновлення курсів обміну конвертує кожен рахунок у вашу базову валюту"
 
 #: src/app/[lang]/features/data-export/opengraph-image.tsx
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
@@ -6021,8 +6025,8 @@ msgid "Crypto holdings are first-class instruments: symbol, quantity, and a dail
 msgstr "Криптоактиви — повноцінні інструменти: символ, кількість і денна ціна"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Crypto holdings are valued from the daily market history Budgie stores on device and backfills in the background. Live ticker updates are opt-in to keep the offline-first guarantee."
-msgstr "Криптоактиви оцінюються за щоденною історією ринку, яку Budgie зберігає на пристрої та довантажує у фоновому режимі. Оновлення котирувань у реальному часі — за бажанням, щоб зберегти гарантію роботи офлайн."
+msgid "Crypto holdings are valued from the market history Budgie stores on device and refreshes in the background, so pricing stays available without a live rate broker."
+msgstr "Криптоактиви оцінюються на основі історії ринку, яку Budgie зберігає на пристрої та оновлює у фоновому режимі, тож ціни залишаються доступними без брокера курсів у реальному часі."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Crypto holdings sit alongside your fiat accounts with the same UX"
@@ -6219,10 +6223,6 @@ msgstr "Кирилиця, грецька, арабська, CJK та інші �
 #: src/app/[lang]/features/ai-merchant-translation/metadata.ts
 msgid "Cyrillic, Greek, or Cyrillic-script merchant names get normalized to Latin so your transaction list reads cleanly. Runs on-device."
 msgstr "Назви продавців кирилицею, грецьким або арабським письмом нормалізуються в латиницю, щоб список транзакцій читався легше. Працює на пристрої."
-
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Daily background FX-rate refresh converts every account to your base currency"
-msgstr "Щоденне фонове оновлення курсів FX конвертує кожен рахунок у вашу базову валюту"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Daily FX-rate snapshots stored on-device for accurate historical conversion"
@@ -10673,7 +10673,7 @@ msgstr "Немає відстеження або аналітики"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No upgrade banner here"
-msgstr "Тут немає банера з пропозицією перейти на платний план"
+msgstr "Жодного банера з апгрейдом"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No user profiles or advertising IDs"
@@ -11792,8 +11792,8 @@ msgid "Per-account “include in net worth” toggle — partial-truth balance i
 msgstr "Перемикач «Враховувати у чистих активах» для кожного рахунку, щоб у підсумок входили лише вибрані вами баланси"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Per-account currency, daily auto-conversion"
-msgstr "Валюта рахунку, щоденна автоконверсія"
+msgid "Per-account currency, background auto-conversion"
+msgstr "Валюта на рахунок, фонова автоматична конвертація"
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Per-MCC overrides for personal preferences — set once, applies forever"
@@ -15300,8 +15300,8 @@ msgid "Today, This Week, Last Week, This Month, Last Month, This Year, All Time 
 msgstr "Сьогодні, Цей тиждень, Минулий тиждень, Цей місяць, Минулий місяць, Цей рік, Весь час — на кожному екрані зі списком потрібні лише два дотики до потрібного періоду. Плюс діапазон суми Від/До в тому самому рядку фільтрів."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
-msgid "Toggle “include in net worth” per account. A daily background task pulls fresh exchange rates so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency."
-msgstr "Перемикайте «включити до чистих активів» для кожного рахунку. Щоденне фонове завдання завантажує актуальні обмінні курси, тому ощадний рахунок у євро, гаманець USDC та зарплата в UAH відображаються в основній валюті."
+msgid "Toggle “include in net worth” per account. A background task keeps exchange rates fresh so a Euro savings account, a USDC wallet, and a UAH-denominated salary all show in your home currency."
+msgstr "Перемикайте «включити в чистий капітал» для кожного рахунку. Фонова задача підтримує актуальні курси обміну, тож ощадний рахунок у євро, гаманець USDC і зарплата в гривнях відображаються у вашій домашній валюті."
 
 #: src/generic/component/header/header.tsx
 msgid "Toggle menu"
