@@ -16,6 +16,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -72,9 +73,54 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                 heading={<Trans>Windowed Bank Re-sync</Trans>}
                 locale={lang}
                 tagline={
-                    <Trans>Re-pull just the last N days of bank history without nuking your manual edits or category overrides.</Trans>
+                    <Trans>
+                        Re-pull the last 7, 30 or 90 days from your bank instead of resetting the account and re-walking its whole history.
+                    </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Rewind a week, not a year</Trans>}>
+                    <Trans>
+                        One sheet on the account&apos;s own settings screen: the whole history, or the last ninety, thirty or seven days.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Re-pull a slice, not everything</Trans>}>
+                    <Trans>
+                        Open a bank-synced account and tap Re-sync. Picking a window moves that account&apos;s sync cursor back to the date
+                        you chose, so the next sync starts from there instead of walking the whole history again.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Account Settings for a bank-synced account with the re-sync sheet open on four options: re-sync entire history, last 90 days, last 30 days and last 7 days`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="bank-resync-window-1"
+                    slug="bank-resync-window"
+                >
+                    <FeatureStory.Callout index={0} y={0.64}>
+                        <Trans>The whole-history reset</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={0} y={0.715}>
+                        <Trans>Or the last ninety days</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.863}>
+                        <Trans>Seven days, one tap</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Down to the last week</Trans>}>
+                    <Trans>
+                        Seven days is the tightest slice on offer. Whatever comes back is matched against what you already have on the
+                        bank&apos;s own transaction id and updated in place, so rows are refreshed rather than duplicated — and the category
+                        and the tags you set are not part of that update.
+                    </Trans>
+                </FeatureStory.Step>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -82,14 +128,15 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Sometimes a sync drifts — a transaction reconciles late, a refund posts wrong. The naive fix is a full re-sync,
-                        which wipes your edits. Budgie&apos;s window picker re-pulls only the slice you ask for.
+                        Sometimes a sync drifts — a transaction reconciles late, a refund posts after the fact. The blunt fix is to reset
+                        the account and re-walk its entire history. Budgie&apos;s window picker rewinds only as far as you ask.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Pick a window: last 7 days, last 30, last 90, or a custom range. Budgie diffs the bank&apos;s response against
-                        existing rows; new rows insert, deleted rows soft-delete, edited rows show a conflict picker.
+                        Pick the last 7, 30 or 90 days and Budgie moves that account&apos;s sync cursor back to the matching date; the next
+                        sync re-fetches from there. Rows the bank sends again are matched on its own transaction id, so they are updated in
+                        place instead of landing twice.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -100,33 +147,21 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Five window presets: 7, 30, 90 days, plus custom range</Trans>
+                        <Trans>Four choices: the last 7, 30 or 90 days, or the whole history</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Manual edits in the window are preserved — conflict picker for every edited row</Trans>
+                        <Trans>The category and the tags you set are never part of what a re-sync writes</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Diff before write — see what changes before anything commits</Trans>
+                        <Trans>Repeat rows are matched on the bank&apos;s transaction id, not inserted again</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Soft-delete for rows the bank no longer reports — recoverable from trash</Trans>
+                        <Trans>The whole-history option asks for confirmation before it clears the sync state</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Works on every bank-synced provider — Monobank today, more soon</Trans>
+                        <Trans>Re-sync sits in each account&apos;s own settings, beside its sync switch</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Account detail → Re-sync. The window picker opens. Pick a range. The sync engine fetches just that window from the
-                        bank API, runs a diff, and presents conflicts before write.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -134,8 +169,9 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     question={<Trans>Why not just full re-sync?</Trans>}
                     answer={
                         <Trans>
-                            A full re-sync wipes your manual category overrides and edits. Windowed re-sync diffs only the slice you ask
-                            for, so old edits stay safe.
+                            The whole-history option clears the account&apos;s entire sync state and re-walks it from the beginning, and it
+                            un-merges every transfer pair Budgie had matched automatically on that account. A window rewinds a set number of
+                            days and leaves everything older untouched.
                         </Trans>
                     }
                 />
@@ -143,7 +179,8 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     question={<Trans>What&apos;s the smallest window?</Trans>}
                     answer={
                         <Trans>
-                            Last 7 days. Larger windows (30, 90, custom) are also one-tap presets. Custom range opens a date picker.
+                            Seven days. Thirty and ninety are the other two presets. There is no custom date range — the sheet offers
+                            exactly these four choices.
                         </Trans>
                     }
                 />
@@ -151,8 +188,9 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     question={<Trans>What happens to edited transactions in the window?</Trans>}
                     answer={
                         <Trans>
-                            A conflict picker appears for every edited row before write. You choose to keep your edit, take the bank&apos;s
-                            version, or merge fields.
+                            There is no conflict prompt. If the bank sends a row again with different figures, Budgie overwrites the amount,
+                            the title, the comment and the date that came with it. What it never touches is the category and the tags you
+                            set.
                         </Trans>
                     }
                 />
@@ -160,8 +198,8 @@ export default async function BankResyncWindowFeaturePage(props: PageLangParam) 
                     question={<Trans>Can I re-sync transactions from before bank-sync was enabled?</Trans>}
                     answer={
                         <Trans>
-                            Only as far back as the bank&apos;s API supports. Monobank has months of history; PrivatBank XLSX is per-export.
-                            CSV import is the universal fallback.
+                            Only as far back as the bank&apos;s API serves. Re-sync drives the Monobank connection; PrivatBank and Erste
+                            arrive as file imports, where the range is whatever you export. CSV import is the universal fallback.
                         </Trans>
                     }
                 />
