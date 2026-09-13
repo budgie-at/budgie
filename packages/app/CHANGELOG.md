@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.54.1](https://github.com/budgie-at/budgie/compare/v6.54.0...v6.54.1) (2026-09-13)
+
+
+### Bug Fixes
+
+* **app:** keep distinct recurring merchants from over-merging ([ca859b6](https://github.com/budgie-at/budgie/commit/ca859b676213f12e61d39047a1432a8b8b5f38f3))
+
+
+
+
+
 # [6.54.0](https://github.com/budgie-at/budgie/compare/v6.53.2...v6.54.0) (2026-09-13)
 
 
