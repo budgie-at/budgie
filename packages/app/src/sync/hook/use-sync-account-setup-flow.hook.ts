@@ -6,6 +6,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
+import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
 
 import { useAccountSelection } from './use-account-selection.hook';
 
@@ -13,14 +14,17 @@ export const useSyncAccountSetupFlow = (setupSync: (selectedAccountIds: string[]
     const { t } = useLingui();
     const [isLoading, setIsLoading] = useState(false);
     const accountSelection = useAccountSelection();
+    const onboardingHref = useOnboardingRedirect();
 
-    const handleGoBack = () => void goBackOrReplace('/');
+    const exitHref = onboardingHref ?? '/';
+
+    const handleGoBack = () => void goBackOrReplace(exitHref);
 
     const handleSetupSync = async () => {
         setIsLoading(true);
         try {
             await setupSync([...accountSelection.selectedAccounts]);
-            router.replace('/');
+            router.replace(exitHref);
         } catch (error) {
             showErrorToast(t`Could not set up sync`, getErrorMessage(error));
         } finally {
