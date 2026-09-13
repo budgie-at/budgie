@@ -41,6 +41,13 @@ class UnpairedOwnCardTransferRepairService {
             AND INSTR(tx.title, '*') > 0
             AND (tx.title LIKE '%своєї картки%' OR tx.title LIKE '%свою картку%' OR tx.title LIKE '%мою картку%')
             AND entry.amount > 0
+            AND (
+                SELECT COUNT(*) FROM accounts archived_account
+                WHERE archived_account.deleted_at IS NOT NULL
+                    AND archived_account.type = 'BANK_SYNC'
+                    AND archived_account.iban IS NOT NULL
+                    AND SUBSTR(archived_account.iban, -4) = SUBSTR(tx.title, INSTR(tx.title, '*') + 1, 4)
+            ) = 1
             AND NOT EXISTS (
                 SELECT 1 FROM transactions counterpart_tx
                 INNER JOIN transaction_entries counterpart_entry ON
