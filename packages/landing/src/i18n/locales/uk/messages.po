@@ -2511,6 +2511,10 @@ msgstr "Перекази між рахунками — зроблено прав
 msgid "accounts"
 msgstr "рахунки"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Accounts and categories are created from the values in the file — nothing to set up beforehand"
+msgstr "Рахунки й категорії створюються зі значень у файлі — нічого не треба готувати наперед"
+
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Accounts group themselves by type"
 msgstr "Рахунки групуються за типом"
@@ -2987,6 +2991,10 @@ msgstr "Будь-який банк, будь-який порядок колон�
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Any change affecting data handling is flagged for review"
 msgstr "Будь-яка зміна, що впливає на обробку даних, позначається для перегляду"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Any column order works"
+msgstr "Будь-який порядок стовпців підходить"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Any conduct or content of any third party on the Service"
@@ -4024,10 +4032,6 @@ msgstr "Екран Budgie «Перетворити на переказ» із з
 msgid "Budgie CSV and PDF import parses statement files on your device. No file content is uploaded to any server during import. The parser runs locally, extracts transactions, and writes them to the local database. Deduplication ensures that importing overlapping date ranges does not create duplicate records."
 msgstr "Імпорт CSV та PDF у Budgie обробляє файли виписок на вашому пристрої. Жодний вміст файлу не завантажується на жодний сервер під час імпорту. Парсер працює локально, витягує транзакції та записує їх до локальної бази даних. Дедублікація гарантує, що імпорт перекриваючих діапазонів дат не створює дублікатів."
 
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Budgie CSV column mapping screen with the saved bank import presets above the field selectors"
-msgstr "Екран зіставлення стовпців CSV у Budgie зі збереженими шаблонами імпорту банків над селекторами полів"
-
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Budgie data management settings showing Import Database and Export Database rows"
 msgstr "Налаштування керування даними Budgie з рядками «Імпортувати базу даних» і «Експортувати базу даних»"
@@ -4043,10 +4047,6 @@ msgstr "Аркуш фільтра дати Budgie з календарем сер
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Budgie debt account screen for Lent to Daniel showing $750 still to receive at 37.5% returned, with the returned and lent totals"
 msgstr "Екран боргу Budgie для «Позика Данилу»: 750 $ ще належить отримати, повернено 37,5 %, із підсумками поверненого й позиченого"
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Budgie deduplicates by transaction ID. Existing rows are skipped; only new ones insert. Re-importing is safe."
-msgstr "Budgie дедуплікує за ідентифікатором транзакції. Наявні рядки пропускаються; вставляються лише нові. Повторний імпорт є безпечним."
 
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout"
@@ -4316,6 +4316,10 @@ msgstr "Екран блокування Budgie: дві з чотирьох кр�
 #: src/generic/component/logo/logo.tsx
 msgid "Budgie logo"
 msgstr "Логотип Budgie"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Budgie Map CSV Columns screen with the Budgie, SmartBudget and FinEye import presets above the To Account, Category, Date, Amount, To Currency and External ID column selectors"
+msgstr "Екран Budgie «Зіставлення стовпців CSV» із шаблонами імпорту Budgie, SmartBudget і FinEye над селекторами стовпців для полів «На рахунок», «Категорія», «Дата», «Сума», «Валюта на» та «Зовнішній ID»"
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "Budgie maps each PrivatBank category label to the corresponding ISO MCC code, so AI categorization, MCC chips, and analytics all work the same as with other bank-synced data."
@@ -4797,6 +4801,10 @@ msgstr "Створення local-first програмного забезпече
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Built {formattedPublishedAt}"
 msgstr "Зібрано {formattedPublishedAt}"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Built-in presets for Budgie's own export, SmartBudget and FinEye fill every selector in one tap"
+msgstr "Вбудовані шаблони для власного експорту Budgie, SmartBudget і FinEye заповнюють усі селектори одним дотиком"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Built-in via your server"
@@ -6130,6 +6138,10 @@ msgstr "CSV призначений для таблиць, податкового
 msgid "Currency is fixed per account"
 msgstr "Валюта фіксована для рахунку"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Currency read from the file"
+msgstr "Валюта читається з файлу"
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Currency-mode pill switches whether you drive from send or receive direction"
 msgstr "Перемикач режиму валюти визначає, чи ви вводите суму відправлення чи отримання"
@@ -6379,10 +6391,6 @@ msgstr "Облік боргів"
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Debts in another currency are valued with the exchange rate from the day the money actually moved"
 msgstr "Борги в іншій валюті оцінюються за обмінним курсом того дня, коли гроші фактично рухалися"
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Decimal separator and date format options handle US, EU, and ISO variants"
-msgstr "Параметри роздільника десяткових знаків та формату дати підтримують варіанти US, EU та ISO"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Decisions and rationales are documented publicly"
@@ -6732,6 +6740,10 @@ msgstr "Чи зберігає імпорт CSV оригінальну дату �
 msgid "Does export work offline?"
 msgstr "Чи працює експорт офлайн?"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Does importing add to what I already have?"
+msgstr "Чи додає імпорт до того, що вже є?"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Does it block screenshots or screen recordings?"
 msgstr "Чи блокує це скриншоти або запис екрана?"
@@ -6893,6 +6905,10 @@ msgstr "Кожна картка з балансом"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Each crypto instrument has its own market screen: the current price, a sparkline of where it has been, metrics for the period, and your holding valued against it. The app ships with a year of daily prices for the nine largest crypto assets, quoted in both euro and dollar, so the charts have something to show the moment you open them."
 msgstr "Кожен криптоінструмент має власний ринковий екран: поточну ціну, спарклайн її динаміки, показники за період і оцінку Вашої позиції відносно неї. Застосунок постачається з річною історією щоденних цін для дев'яти найбільших криптоактивів, у євро та доларах, тож графікам є що показати одразу після відкриття."
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Each field gets its own selector listing the headers found in your file, so nothing depends on the order your bank chose. To Account, Category, Date, Amount and To Currency have to be mapped; the badge in the corner counts the rows Budgie found."
+msgstr "Кожне поле має власний селектор із заголовками, знайденими у вашому файлі, тож ніщо не залежить від порядку, який обрав банк. «На рахунок», «Категорія», «Дата», «Сума» та «Валюта на» обовʼязкові; значок у кутку рахує знайдені рядки."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Each group is updated in bulk, which keeps large imports practical even when years of transactions need valuation."
@@ -7473,6 +7489,10 @@ msgstr "Експортуйте свої дані у форматі CSV будь-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Extensive feature set beyond budgeting"
 msgstr "Широкий набір функцій за межами бюджетування"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "External ID is optional"
+msgstr "Зовнішній ID необовʼязковий"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "External input is welcomed on security architecture"
@@ -8569,7 +8589,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/binance-sync/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
-#: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -8782,8 +8801,8 @@ msgid "If you’ve landed on this article, you’re probably wondering: <0>What 
 msgstr "Якщо ви потрапили на цю статтю, вас, ймовірно, цікавить: <0>Які найкращі альтернативи YNAB, що дійсно поважають вашу фінансову конфіденційність?</0>"
 
 #: src/app/[lang]/features/csv-import/page.tsx
-msgid "If your bank exports CSV, yes. The flexible column mapper accommodates any column order, separator, and date format — set up once, save as a preset."
-msgstr "Якщо ваш банк експортує CSV — так. Гнучкий маппер стовпців підтримує будь-який порядок стовпців, роздільник і формат дати — налаштуйте один раз, збережіть як пресет."
+msgid "If your bank exports CSV, yes — you decide which column feeds each field. Dates need to read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD, and amounts need a dot as the decimal separator."
+msgstr "Якщо ваш банк експортує CSV, так — ви самі вирішуєте, який стовпець живить кожне поле. Дати мають читатися як MM/DD/YYYY HH:MM:SS або YYYY-MM-DD, а суми потребують крапки як десяткового роздільника."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Immediate Actions"
@@ -8810,10 +8829,6 @@ msgstr "Імпортуйте рахунки та транзакції з XLSX-е
 #: src/app/[lang]/features/privatbank-import/metadata.ts
 msgid "Import accounts and transactions from a PrivatBank24 XLSX export. PrivatBank's MCC categories map to ISO codes automatically so AI categorization downstream still works."
 msgstr "Імпортуйте рахунки та транзакції з XLSX-експорту PrivatBank24. MCC-категорії PrivatBank автоматично зіставляються з ISO-кодами, тож AI-категоризація далі по процесу все одно працює."
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Import any bank's CSV with flexible column mapping and reusable presets. Set it up once per bank, then it's two taps from there."
-msgstr "Імпортуйте CSV будь-якого банку з гнучким маппінгом стовпців і придатними до повторного використання пресетами. Налаштуйте один раз для кожного банку — далі два торкання."
 
 #: src/app/[lang]/features/csv-import/metadata.ts
 msgid "Import any bank's CSV with flexible column mapping, save the mapping as a preset, and re-import safely with deduplication. Universal escape hatch for banks without an API."
@@ -9693,12 +9708,20 @@ msgid "Many banks now offer official API programs with scoped OAuth tokens. Thes
 msgstr "Багато банків тепер пропонують офіційні API-програми з обмеженими OAuth-токенами. Ці токени надають доступ лише на читання до історії транзакцій без розкриття даних для входу. При використанні в офлайн-першому додатку це найбезпечніша доступна форма автоматизованої синхронізації з банком:"
 
 #: src/app/[lang]/features/csv-import/page.tsx
-msgid "Map columns flexibly: Date, Amount, Description, Counterparty — your bank's order, not ours"
-msgstr "Гнучко мапуйте стовпці: Дата, Сума, Опис, Контрагент — порядок вашого банку, а не наш"
+msgid "Map both account legs and the row imports as one transfer rather than two unrelated entries"
+msgstr "Зіставте обидва рахунки — і рядок імпортується як один переказ, а не як дві незвʼязані операції"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Map the columns to Budgie’s fields"
 msgstr "Зіставте стовпці з полями Budgie"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Map the second account leg and the row lands as a transfer instead of two unrelated entries. Map MCC and the merchant code picks the category. External ID keeps your bank's own reference on the transaction."
+msgstr "Зіставте другий рахунок — і рядок стане переказом, а не двома незвʼязаними операціями. Зіставте MCC — і код торговця обере категорію. Зовнішній ID зберігає банківське посилання в операції."
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Map To Account, Category, Date, Amount and To Currency onto whichever columns your bank exports — your order, not ours"
+msgstr "Зіставте «На рахунок», «Категорія», «Дата», «Сума» та «Валюта на» з тими стовпцями, які експортує ваш банк — ваш порядок, а не наш"
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Mapped to your category"
@@ -10712,6 +10735,10 @@ msgstr "Ні. Budgie зберігає відсоткову ставку та д�
 msgid "No. Budgie uses an indexed local SQLite query for the count and the drill-down list. Everything runs on-device, without a cloud analytics service."
 msgstr "Ні. Budgie використовує індексований локальний SQLite-запит для кількості та списку деталізації. Усе працює на пристрої, без хмарного сервісу аналітики."
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "No. CSV import rebuilds the ledger from the file: existing accounts, categories and transactions are cleared first. Treat it as the way to move in from another app, not as a monthly top-up."
+msgstr "Ні. Імпорт CSV перебудовує облік із файлу: наявні рахунки, категорії та операції спершу очищуються. Це спосіб переїхати з іншого застосунку, а не щомісячне доповнення."
+
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "No. Deposit accounts are excluded from normal expense source selection, and Budgie prevents deposit balances from becoming negative."
 msgstr "Ні. Депозитні рахунки виключено зі звичайного вибору джерела витрат, і Budgie не дає їхнім балансам ставати від'ємними."
@@ -10834,8 +10861,8 @@ msgid "Not directly, but CSV import with column mapping can populate categories 
 msgstr "Не безпосередньо, але CSV-імпорт із маппінгом стовпців може заповнити категорії під час першого імпорту. Після цього редагуйте їх як будь-які інші."
 
 #: src/app/[lang]/features/csv-import/page.tsx
-msgid "Not every bank has an API. CSV is the universal escape hatch — and Budgie supports it without forcing you into a specific column order. Map “Date”, “Amount”, “Description” to whichever columns your bank uses, save the preset, and never touch the mapping again."
-msgstr "Не кожен банк має API. CSV — це універсальний запасний вихід, і Budgie підтримує його без навʼязування певного порядку стовпців. Призначте «Дата», «Сума», «Опис» для будь-яких стовпців вашого банку, збережіть пресет і більше не торкайтеся маппінгу."
+msgid "Not every bank has an API, and not every app you are leaving will hand you anything but a spreadsheet. CSV is the universal escape hatch — and Budgie reads it without forcing you into a specific column order."
+msgstr "Не кожен банк має API, і не кожен застосунок, який ви покидаєте, дасть вам щось крім таблиці. CSV — це універсальний запасний вихід, і Budgie читає його, не нав’язуючи певного порядку стовпців."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Not every bank offers an API program, and not every bank is supported by a given direct-sync integration. For these cases, manual statement import is the privacy-preserving fallback — and it is more practical than most people expect."
@@ -11221,6 +11248,10 @@ msgstr "Одне банківське підключення утримує об
 msgid "One coin, three screens"
 msgstr "Одна монета, три екрани"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "One column per field"
+msgstr "Один стовпець на поле"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One connection behind many accounts — cards, jars, and deposits from the same bank"
 msgstr "Одне підключення для багатьох рахунків — карток, банок і депозитів одного банку"
@@ -11288,6 +11319,10 @@ msgstr "Один чек — три категорії"
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "One row, reclassified"
 msgstr "Один рядок, перекласифікований"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "One screen does the whole import"
+msgstr "Один екран робить увесь імпорт"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One screen per bank"
@@ -11579,6 +11614,10 @@ msgstr "Необов'язкова банківська синхронізаці�
 msgid "Optional Bank Synchronization"
 msgstr "Необов'язкова банківська синхронізація"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Optional columns carry the detail"
+msgstr "Необовʼязкові стовпці несуть деталі"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Optional contact name — track inter-personal loans without spreadsheets"
 msgstr "Необов'язкове ім'я контакту — відстежуйте особисті позики без таблиць"
@@ -11586,6 +11625,10 @@ msgstr "Необов'язкове ім'я контакту — відстежу�
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Optional Face ID or Touch ID unlock, with the PIN as fallback"
 msgstr "Додаткове розблокування Face ID або Touch ID, PIN — запасний варіант"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Optional MCC, comment and External ID columns carry the bank's own detail into each transaction"
+msgstr "Необовʼязкові стовпці MCC, коментаря та зовнішнього ID переносять банківські деталі в кожну операцію"
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Optional, direct API tokens"
@@ -11808,6 +11851,10 @@ msgstr "Особисті фінанси — це ідеальна сфера д�
 msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
 msgstr ""
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Pick a CSV from Settings and Budgie reads its header row, then offers those headers to every field it needs to write a transaction."
+msgstr "Оберіть CSV у налаштуваннях — Budgie прочитає рядок заголовків і запропонує ці заголовки кожному полю, потрібному для запису операції."
+
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Pick a window: last 7 days, last 30, last 90, or a custom range. Budgie diffs the bank's response against existing rows; new rows insert, deleted rows soft-delete, edited rows show a conflict picker."
 msgstr "Оберіть вікно: останні 7 днів, 30, 90 або довільний діапазон. Budgie порівнює відповідь банку з наявними рядками; нові рядки вставляються, видалені — м'яко видаляються, відредаговані — показують вибір конфлікту."
@@ -11971,6 +12018,10 @@ msgstr ""
 msgid "Plus, amount, save. The account, today's date and the likely category are already filled in for you."
 msgstr "Плюс, сума, зберегти. Рахунок, сьогоднішня дата й найімовірніша категорія вже заповнені за вас."
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Point Budgie at any CSV and map its columns onto Budgie's fields on one screen — or start from a built-in preset and adjust."
+msgstr "Вкажіть Budgie будь-який CSV і зіставте його стовпці з полями Budgie на одному екрані — або почніть із вбудованого шаблону та підправте."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "PostgreSQL or MySQL backend (your choice)"
 msgstr "Бекенд на PostgreSQL або MySQL (на ваш вибір)"
@@ -11999,6 +12050,10 @@ msgstr "Зберігає більше вашої структури катего
 msgid "presets"
 msgstr "пресети"
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Presets fill every field"
+msgstr "Шаблони заповнюють усі поля"
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Presets, one tap each"
 msgstr "Пресети, по одному дотику"
@@ -12014,10 +12069,6 @@ msgstr "Натисніть і утримуйте будь-яку картку т
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Preview every parsed transaction before write — no surprises"
 msgstr "Переглядайте кожну розпізнану транзакцію перед записом — ніяких несподіванок"
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Preview every row before write so you can spot mis-mappings instantly"
-msgstr "Переглядайте кожен рядок перед записом, щоб одразу виявити неправильні маппінги"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Price, and its last move"
@@ -12371,10 +12422,6 @@ msgstr "Qwen3 1.7B працює на вашому телефоні — без AP
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Rarely surfaced"
 msgstr "Рідко відображається"
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Re-import detects duplicates by externalId — safe to re-pull the same statement"
-msgstr "Повторний імпорт виявляє дублікати за externalId — безпечно повторно завантажувати ту саму виписку"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Re-locks the moment the app goes to background"
@@ -12862,10 +12909,6 @@ msgstr "Безпечне видалення: запитує перенести �
 msgid "Same picker across analytics, transactions, and recurring screens"
 msgstr "Той самий вибір для аналітики, транзакцій та регулярних екранів"
 
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Save a per-bank preset and never re-map again"
-msgstr "Збережіть пресет для кожного банку і більше не повторюйте маппінг"
-
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Save through the OS share sheet — Files, iCloud, Drive, anything"
 msgstr "Збережіть через аркуш поширення ОС — Файли, iCloud, Drive, де завгодно"
@@ -13323,10 +13366,6 @@ msgstr "розумний"
 msgid "Smart Expense Suggestions for Mobile — Budgie"
 msgstr "Розумні підказки витрат для мобільних — Budgie"
 
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Smart presets remember your column choices, date format, decimal separator, and account assignment per source. Re-imports detect duplicates so you can re-pull the same statement safely."
-msgstr "Розумні пресети запам'ятовують вибір стовпців, формат дати, десятковий роздільник і призначення рахунку для кожного джерела. Повторні імпорти виявляють дублікати, тому можна безпечно повторно завантажити ту саму виписку."
-
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
@@ -13594,6 +13633,10 @@ msgstr "Етап 1: Пошук шаблонів на основі вкладен
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Stage 2: LLM-Based Semantic Categorization"
 msgstr "Етап 2: Семантична категоризація на основі LLM"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Start from a built-in preset"
+msgstr "Почніть із вбудованого шаблону"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Start from a template built out of your own recent spending, from a generic starter budget, or from an empty canvas"
@@ -13976,10 +14019,6 @@ msgstr "Натисніть будь-який рядок тегу, щоб поб�
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Tap edit on any transaction and override the translated name manually. Your override is permanent for that merchant."
 msgstr "Торкніть «Редагувати» на будь-якій транзакції та вручну замініть перекладену назву. Ваше перевизначення є постійним для цього торговця."
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Tap Import → CSV. Pick the file. Map columns. Save the mapping as a preset. The importer parses, dedupes against existing rows by externalId, and shows a preview before write."
-msgstr "Торкніть Імпорт → CSV. Оберіть файл. Налаштуйте маппінг стовпців. Збережіть маппінг як пресет. Імпортер обробляє, виконує дедублікацію з наявними рядками за externalId і показує попередній перегляд перед записом."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every transaction into a new or existing Erste account."
@@ -14406,6 +14445,10 @@ msgstr "Прихована ціна \"безкоштовних\" бюджетн�
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The Hidden Dangers of Cloud-Based Financial Apps"
 msgstr "Приховані небезпеки хмарних фінансових додатків"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "The importer builds the ledger out of the file: accounts and categories are created from the values it finds, MCC codes resolve to categories, and rows with both account legs become transfers. Dates are read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD, and amounts use a dot as the decimal separator."
+msgstr "Імпортер будує облік із файлу: рахунки й категорії створюються зі знайдених значень, коди MCC перетворюються на категорії, а рядки з обома рахунками стають переказами. Дати читаються як MM/DD/YYYY HH:MM:SS або YYYY-MM-DD, а суми використовують крапку як десятковий роздільник."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The Ink & Switch Manifesto and Its Impact"
@@ -15147,6 +15190,10 @@ msgstr "Три першокласних типи транзакцій: витр�
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Three frames: the keypad the app opens on, the four digits that open the encrypted database, and the Settings group where you switch the lock on."
 msgstr "Три кадри: клавіатура, з якої відкривається застосунок, чотири цифри, що відкривають зашифровану базу, і група налаштувань, де вмикається блокування."
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Three presets ship with the app — Budgie's own export, SmartBudget and FinEye. Tapping one fills every selector at once and tells you the columns are still yours to adjust."
+msgstr "У застосунку є три шаблони — власний експорт Budgie, SmartBudget і FinEye. Дотик до одного заповнює всі селектори одразу й нагадує, що стовпці й далі можна змінити."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Three screens to a clean report"
@@ -16151,10 +16198,6 @@ msgstr ""
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "What happens if I close one of the accounts?"
 msgstr "Що станеться, якщо я закрию один з рахунків?"
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "What happens if I import the same file twice?"
-msgstr "Що відбудеться, якщо імпортувати той самий файл двічі?"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "What happens if I lose my phone?"
@@ -17633,6 +17676,10 @@ msgstr "Так. AI-сервіс — включно з інтеграцією emb
 msgid "Yes. The backup file is the SQLCipher database with your PIN-derived key intact. Restore on any device by entering the same PIN."
 msgstr "Так. Файл резервної копії — це база даних SQLCipher зі збереженим ключем, виведеним з вашого PIN. Відновіть на будь-якому пристрої, ввівши той самий PIN."
 
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Yes. The column you map to Date becomes the transaction's date, read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD. A row whose date cannot be read is reported instead of guessed at."
+msgstr "Так. Стовпець, який ви зіставите з датою, стає датою операції та читається як MM/DD/YYYY HH:MM:SS або YYYY-MM-DD. Рядок із нечитабельною датою повідомляється, а не вгадується."
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Yes. The dual-amount input opens after picking the destination account. Original amount is preserved on the source leg; destination leg gets your specified amount."
 msgstr "Так. Двосуме введення відкривається після вибору рахунку призначення. Оригінальна сума зберігається на вихідній нозі; нога призначення отримує вказану вами суму."
@@ -17640,10 +17687,6 @@ msgstr "Так. Двосуме введення відкривається пі�
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Yes. The entire transaction entry flow — amount, category, tags, account — works fully offline. Your data is written directly to the on-device SQLite database with no network call."
 msgstr "Так. Весь процес введення транзакцій — сума, категорія, теги, рахунок — повністю офлайн. Ваші дані записуються безпосередньо до SQLite бази даних на пристрої без жодного мережевого виклику."
-
-#: src/app/[lang]/features/csv-import/page.tsx
-msgid "Yes. The mapper captures both booking date and value date when both are present in the CSV; transactions sort by your preference."
-msgstr "Так. Маппер фіксує як дату бронювання, так і дату валютування, коли обидві присутні в CSV; транзакції сортуються за вашими вподобаннями."
 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Yes. The original is preserved for receipt-matching and audit; the translated form is what your search queries hit."
