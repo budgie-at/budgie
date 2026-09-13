@@ -26,7 +26,6 @@ class UnpairedOwnCardTransferRepairService {
         INNER JOIN accounts own_account ON
             own_account.id = CASE WHEN tx.type = 'INCOME' THEN tx.to_account_id ELSE tx.from_account_id END
             AND own_account.deleted_at IS NULL
-            AND own_account.is_active = 1
         INNER JOIN accounts counterpart_account ON
             counterpart_account.deleted_at IS NOT NULL
             AND counterpart_account.type = 'BANK_SYNC'
