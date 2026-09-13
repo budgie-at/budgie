@@ -2,7 +2,7 @@ import * as SQLite from 'expo-sqlite';
 
 import { isDefined } from '@rnw-community/shared';
 
-import type { MonthlyPatternRawRowInterface, RepeatedTransactionPatternInterface } from '@budgie/contracts';
+import type { RepeatedTransactionPatternInterface } from '@budgie/contracts';
 
 interface CacheEntryInterface<T> {
     readonly value: T;
@@ -22,17 +22,12 @@ class PatternCacheService {
     private readonly capacity: number;
     private readonly ttlMs: number;
 
-    private readonly monthlyEntries = new Map<string, CacheEntryInterface<MonthlyPatternRawRowInterface[]>>();
     private readonly repeatedEntries = new Map<string, CacheEntryInterface<RepeatedTransactionPatternInterface[]>>();
     private readonly amountEntries = new Map<string, CacheEntryInterface<RepeatedTransactionPatternInterface[]>>();
 
     constructor(options: PatternCacheOptionsInterface = {}) {
         this.capacity = options.capacity ?? DEFAULT_CAPACITY;
         this.ttlMs = options.ttlMs ?? DEFAULT_TTL_MS;
-    }
-
-    async memoizeMonthly(key: string, compute: () => Promise<MonthlyPatternRawRowInterface[]>): Promise<MonthlyPatternRawRowInterface[]> {
-        return this.recall(this.monthlyEntries, key, compute);
     }
 
     async memoizeRepeated(
@@ -50,7 +45,6 @@ class PatternCacheService {
     }
 
     invalidate(): void {
-        this.monthlyEntries.clear();
         this.repeatedEntries.clear();
         this.amountEntries.clear();
     }
