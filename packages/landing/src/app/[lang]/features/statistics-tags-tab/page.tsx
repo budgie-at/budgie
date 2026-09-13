@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -75,20 +74,63 @@ export default async function StatisticsTagsTabFeaturePage(props: PageLangParam)
                 locale={lang}
                 tagline={
                     <Trans>
-                        Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable
-                        Untagged bucket that shows exactly which transactions have no label.
+                        Switch to the Tags tab in Analytics for income and spending totalled tag by tag, each with its share of the period
+                        and the transactions behind it.
                     </Trans>
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie analytics tags tab ranking income and spending by tag over the selected period`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>The question a category cannot answer</Trans>}>
+                    <Trans>
+                        One screen: the Tags tab beside Categories, income totalled tag by tag, then spending, each with its share of the
+                        period.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Categories cannot answer every question</Trans>}>
+                    <Trans>
+                        A category says what kind of expense something is. Which trip, which project, which person is a different question,
+                        and that is what a tag records. Analytics keeps a Tags tab beside Categories, under the same period and filter
+                        chips.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Analytics Tags tab with an overview of spent, income and balance above an income-by-tag list and a spending-by-tag list, each row showing a total and its share of the period`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="statistics-tags-tab-1"
                     slug="statistics-tags-tab"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout index={0} y={0.123}>
+                        <Trans>Tags, beside Categories</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.459}>
+                        <Trans>Income totalled per tag</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={2} y={0.583}>
+                        <Trans>Its share of the period</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Income and spending, tag by tag</Trans>}>
+                    <Trans>
+                        The tab splits in two: income by tag first, then spending by tag, each row a tag with its total for the period. The
+                        same tag can appear on both lists, so a tag that earns and costs is not flattened into one figure.
+                    </Trans>
+                </FeatureStory.Step>
+
+                <FeatureStory.Step index={2} title={<Trans>Every tag carries its share</Trans>}>
+                    <Trans>
+                        Under each total is that tag&apos;s share — of the period&apos;s income, or of its expenses. The shares can add up
+                        past 100%, because a transaction can carry several tags and counts in full under each of them. Tapping a row opens
+                        the transactions behind it.
+                    </Trans>
+                </FeatureStory.Step>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -104,31 +146,32 @@ export default async function StatisticsTagsTabFeaturePage(props: PageLangParam)
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The Tags tab in Budgie Statistics puts per-tag totals on the same screen as category breakdowns, reachable with a
-                        single tap on the tab switcher. Each row shows income, expense, and net for the currently selected date range.
-                        Tapping any row drills into the full filtered transaction list for that tag, with sorting and date filters
-                        available. The Untagged bucket surfaces every transaction that would otherwise be invisible to tag-based analysis.
+                        The Tags tab in Budgie Analytics puts per-tag totals on the same screen as the category breakdown, reachable with a
+                        single tap on the tab switcher. It lists income by tag and spending by tag separately, each row carrying that
+                        tag&apos;s total for the active period and its share of it. Tapping a row opens the transactions behind it, filtered
+                        to that tag. Whatever in the period carries no tag at all shows up as an Untagged row instead of quietly
+                        disappearing.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>The Untagged bucket as a labeling gap-finder</Trans>
+                    <Trans>The Untagged row is the gap</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        The Untagged bucket is not an error state — it is a deliberate audit tool. Every transaction with zero tags
-                        accumulates there, and its total tells you how much of your spending currently has no tag context. Tapping it opens
-                        a standard transaction list filtered to &ldquo;no tags&rdquo;, where you can open each row and add the missing label
-                        immediately. Budgie does not force you to tag everything, but it makes the gap visible so the choice is informed.
+                        Untagged is not an error state — it is what is left over. Anything in the period carrying no tag is grouped into a
+                        single Untagged row inside the list it belongs to, counted separately for income and for spending, so its total sits
+                        beside the tags you did apply. Tapping it opens those transactions, where you can add the missing label. Budgie does
+                        not force you to tag everything, but it will not hide the gap either.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The Untagged total recomputes live as you tag transactions, so the number shrinks in real time during a labeling
-                        pass. Combined with AI tag suggestions, a short review session can close most gaps without the usual manual-tag
-                        tedium.
+                        The totals are a live query, so the Untagged row shrinks as you label transactions during a review pass.
+                        Budgie&apos;s on-device suggestions propose tags on the transaction form itself, which is usually quicker than
+                        picking each one by hand.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -139,16 +182,18 @@ export default async function StatisticsTagsTabFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Per-tag income, expense, and net totals — one tap from the Statistics screen tab bar</Trans>
+                        <Trans>Income by tag and spending by tag, one tap from the Analytics tab bar</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Drillable Untagged bucket that lists every transaction missing a label for easy retroactive tagging</Trans>
+                        <Trans>An Untagged row for whatever in the period carries no label, and the transactions behind it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Full date filter compatibility — respects Last Week, Last Month, and Custom ranges globally</Trans>
+                        <Trans>
+                            Reads the same period and filters as the Categories tab — This Month, Last Month, This Year and the rest
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Tap any tag row to open the filtered transaction list with all sorts and filters available</Trans>
+                        <Trans>Tap any row to open the transactions behind that tag for the active period</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -167,8 +212,8 @@ export default async function StatisticsTagsTabFeaturePage(props: PageLangParam)
                     question={<Trans>What&apos;s the Untagged bucket?</Trans>}
                     answer={
                         <Trans>
-                            A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction
-                            so you can label them retroactively.
+                            Whatever in the period has no tag at all. It appears as an Untagged row — one in the income list, one in the
+                            spending list — and tapping it opens those transactions so you can label them.
                         </Trans>
                     }
                 />
@@ -176,14 +221,19 @@ export default async function StatisticsTagsTabFeaturePage(props: PageLangParam)
                     question={<Trans>Can I drill down from a tag?</Trans>}
                     answer={
                         <Trans>
-                            Yes — tapping any tag row opens the full transaction list filtered to that tag, with the same sorts and date
-                            filters available everywhere else.
+                            Yes. Tapping a row opens the transaction list for that tag over the active period. A row belongs either to the
+                            income list or to the spending list, and the list opens on that side.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does this work with the date filter presets?</Trans>}
-                    answer={<Trans>Yes — the Tags tab respects whatever range is active globally (Last Week, Last Month, Custom).</Trans>}
+                    answer={
+                        <Trans>
+                            Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This
+                            Year or All Time. There is no custom range.
+                        </Trans>
+                    }
                 />
             </FeaturePageFaqSection>
 
