@@ -2206,6 +2206,10 @@ msgstr "Una retirada de efectivo es una transferencia de su cuenta bancaria a ef
 msgid "A category row opens the transactions behind it, carrying the same period across and grouping them by month — each one with its account, its tags and its time. Tags drill down the same way, and the Untagged bucket shows what slipped through."
 msgstr "Una fila de categoría abre las transacciones que hay detrás, mantiene el mismo periodo y las agrupa por mes: cada una con su cuenta, sus etiquetas y su hora. Las etiquetas se desglosan igual, y el grupo «Sin etiqueta» muestra lo que se te escapó."
 
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "A category says what kind of expense something is. Which trip, which project, which person is a different question, and that is what a tag records. Analytics keeps a Tags tab beside Categories, under the same period and filter chips."
+msgstr "Una categoría dice de qué tipo de gasto se trata. Qué viaje, qué proyecto, qué persona es otra pregunta distinta, y eso es lo que registra una etiqueta. Analíticas mantiene una pestaña Etiquetas junto a Categorías, bajo el mismo periodo y los mismos filtros."
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "A category says what you bought. A tag says which trip, which project, which person — chosen on the same form, from your own flat list."
 msgstr "Una categoría dice qué compraste. Una etiqueta dice qué viaje, qué proyecto, qué persona: se elige en el mismo formulario, desde tu propia lista plana."
@@ -2406,10 +2410,6 @@ msgstr "Una transferencia es un tipo propio"
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "A transfer, not an expense"
 msgstr "Una transferencia, no un gasto"
-
-#: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "A virtual tag that aggregates every transaction with zero tags. Tapping it lists each contributing transaction so you can label them retroactively."
-msgstr "Una etiqueta virtual que agrupa cada transacción sin etiquetas. Al pulsarla se lista cada transacción contribuyente para que puedas etiquetarlas retroactivamente."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "A year of daily prices for BTC, ETH, BNB, SOL, XRP, TRX, USDT, USDC, and HYPE ships with the app, in euro and dollar"
@@ -2898,6 +2898,10 @@ msgstr "Un proyecto de código abierto es más que solo código público. Es una
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "An overall monthly limit, per-category limits, and one cap for everything else"
 msgstr "Un límite mensual general, límites por categoría y un tope único para todo lo demás"
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "An Untagged row for whatever in the period carries no label, and the transactions behind it"
+msgstr "Una fila «Sin etiqueta» para todo lo del periodo que no lleva etiqueta, y las transacciones que hay detrás"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
@@ -3929,8 +3933,8 @@ msgid "Budgie analytics Tags tab listing income and spending totals for each tag
 msgstr "Pestaña Etiquetas de los análisis de Budgie con los totales de ingresos y gastos de cada etiqueta"
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "Budgie analytics tags tab ranking income and spending by tag over the selected period"
-msgstr "Pestaña de etiquetas de las analíticas de Budgie que ordena los ingresos y el gasto por etiqueta durante el periodo seleccionado"
+msgid "Budgie Analytics Tags tab with an overview of spent, income and balance above an income-by-tag list and a spending-by-tag list, each row showing a total and its share of the period"
+msgstr "Pestaña Etiquetas de Analíticas de Budgie con un resumen de gastado, ingreso y saldo sobre una lista de ingresos por etiqueta y otra de gastos por etiqueta, donde cada fila muestra un total y su porcentaje del periodo"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Budgie archived accounts screen listing two archived accounts, each with a restore button"
@@ -5167,6 +5171,10 @@ msgstr "Las categorías responden a \"¿qué tipo de gasto?\"; las etiquetas a \
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Categories before you type"
 msgstr "Categorías antes de escribir"
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Categories cannot answer every question"
+msgstr "Las categorías no responden a todo"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Categories tab: per-category totals, with drill-down to every transaction in the row"
@@ -6866,10 +6874,6 @@ msgstr "Desglosa desde cualquier fila de etiqueta hasta sus transacciones subyac
 msgid "drill-down"
 msgstr "desglose"
 
-#: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "Drillable Untagged bucket that lists every transaction missing a label for easy retroactive tagging"
-msgstr "Apartado de Sin Etiquetar que lista cada transacción sin etiqueta para un etiquetado retroactivo fácil"
-
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
 msgid "duplicates"
 msgstr "duplicados"
@@ -7263,6 +7267,10 @@ msgstr "Cada fila ya es de agosto"
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Every rule can be switched off without being deleted"
 msgstr "Cada regla se puede desactivar sin necesidad de eliminarla"
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Every tag carries its share"
+msgstr "Cada etiqueta lleva su porcentaje"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Every tag, ranked by spend"
@@ -8045,10 +8053,6 @@ msgstr "Completo"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Full access to source code for review and security audits"
 msgstr ""
-
-#: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "Full date filter compatibility — respects Last Week, Last Month, and Custom ranges globally"
-msgstr "Compatibilidad total con filtros de fecha — respeta Última semana, Último mes y rangos personalizados globalmente"
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Full expense tracking with zero internet dependency"
@@ -8943,9 +8947,21 @@ msgstr "Esta guía analiza por qué la gente deja YNAB, qué esperar de una alte
 msgid "In-app switcher — no reinstall, no relaunch"
 msgstr "Cambio de idioma dentro de la app, sin reinstalación ni reinicio"
 
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Income and spending, tag by tag"
+msgstr "Ingresos y gastos, etiqueta por etiqueta"
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Income by category and Spending by category list each one with its total and its share of the period, biggest first. Categories with no activity drop out of the list, and anything you never filed collects in an Uncategorized row."
 msgstr "«Ingresos por categoría» y «Gastos por categoría» muestran cada una con su total y su porcentaje del periodo, de mayor a menor. Las categorías sin actividad desaparecen de la lista y todo lo que nunca clasificaste se acumula en una fila «Sin categoría»."
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Income by tag and spending by tag, one tap from the Analytics tab bar"
+msgstr "Ingresos por etiqueta y gastos por etiqueta, a un toque desde la barra de pestañas de Analíticas"
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Income totalled per tag"
+msgstr "Ingresos sumados por etiqueta"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Indexed local SQLite queries, so the insight stays fast on long transaction histories"
@@ -9188,6 +9204,7 @@ msgid "It was money moving between your own accounts, so it inflated your spendi
 msgstr "Era dinero que se movía entre tus propias cuentas, así que inflaba tus gastos. Mantén pulsada la fila y Convertir a transferencia ya está en el menú."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Its share of the period"
 msgstr "Su parte del periodo"
 
@@ -11357,6 +11374,10 @@ msgstr "Una pantalla y listo"
 msgid "One screen, one field. Budgie never asks for your bank password, and no aggregator ever holds your credentials."
 msgstr "Una pantalla, un campo. Budgie nunca te pide la contraseña del banco, y ningún agregador guarda tus credenciales."
 
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "One screen: the Tags tab beside Categories, income totalled tag by tag, then spending, each with its share of the period."
+msgstr "Una sola pantalla: la pestaña Etiquetas junto a Categorías, los ingresos sumados etiqueta por etiqueta y luego los gastos, cada uno con su porcentaje del periodo."
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "One sentence can log several transactions at once — “twelve for coffee, forty for the taxi, and eight euros for parking” comes back as three separate rows, not one merged entry. A review sheet shows every extracted row with its amount, category, and account before anything is written to the database."
 msgstr "Una sola frase puede registrar varias transacciones a la vez: «doce de café, cuarenta de taxi y ocho euros de aparcamiento» se convierte en tres filas independientes, no como una entrada combinada. Una hoja de revisión muestra cada fila extraída con su importe, categoría y cuenta antes de escribir nada en la base de datos."
@@ -11843,10 +11864,6 @@ msgstr "Las anulaciones por MCC te permiten ajustar el mapeo predeterminado: dir
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Per-tag income, expense, and net totals — each tag row broken out separately"
 msgstr "Ingresos, gastos y totales netos por etiqueta — cada fila de etiqueta desglosada por separado"
-
-#: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "Per-tag income, expense, and net totals — one tap from the Statistics screen tab bar"
-msgstr "Ingresos, gastos y totales netos por etiqueta — un toque desde la barra de pestañas de la pantalla de Estadísticas"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "performance"
@@ -12547,6 +12564,10 @@ msgstr "De solo lectura en el mejor caso"
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Read-only or nothing"
 msgstr "Solo lectura o nada"
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Reads the same period and filters as the Categories tab — This Month, Last Month, This Year and the rest"
+msgstr "Lee el mismo periodo y los mismos filtros que la pestaña Categorías: Este mes, Mes pasado, Este año y los demás"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Ready to experience financial tracking built on transparency? Explore our public source code, learn about our security practices, and join the waitlist to be among the first to use Budgie. Your money. Your data. Your ability to verify every claim we make."
@@ -13912,8 +13933,8 @@ msgid "Switch the expense to split mode and add a row per category. Each row car
 msgstr "Cambia el gasto al modo de división y añade una fila por categoría. Cada fila lleva su propio icono, categoría e importe."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "Switch to the Tags tab in Statistics for sortable per-tag totals — income, expense, and net — plus a drillable Untagged bucket that shows exactly which transactions have no label."
-msgstr "Cambia a la pestaña de Etiquetas en Estadísticas para obtener totales ordenables por etiqueta — ingresos, gastos y neto — más un apartado de Sin Etiquetar que muestra exactamente qué transacciones no tienen etiqueta."
+msgid "Switch to the Tags tab in Analytics for income and spending totalled tag by tag, each with its share of the period and the transactions behind it."
+msgstr "Cambia a la pestaña Etiquetas en Analíticas para ver ingresos y gastos sumados etiqueta por etiqueta, cada uno con su porcentaje del periodo y las transacciones que hay detrás."
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Switches without a relaunch"
@@ -14034,6 +14055,10 @@ msgstr "Pestaña de Etiquetas en Estadísticas — Ingresos, gastos y neto por e
 msgid "Tags tab: per-tag income and expense, plus an “Untagged” bucket for the gaps"
 msgstr "Pestaña Etiquetas: ingresos y gastos por etiqueta, más un grupo «Sin etiqueta» para las lagunas"
 
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Tags, beside Categories"
+msgstr "Etiquetas, junto a Categorías"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Take Control of Your Financial Privacy Today"
 msgstr "Toma el control de tu privacidad financiera hoy"
@@ -14075,8 +14100,8 @@ msgid "Tap any marked day to see exactly what bills — here Day 15 lists the gy
 msgstr "Toca cualquier día marcado para ver exactamente qué se cobra — aquí el día 15 lista el gimnasio, Netflix y Spotify."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "Tap any tag row to open the filtered transaction list with all sorts and filters available"
-msgstr "Toca cualquier fila de etiqueta para abrir la lista de transacciones filtrada con todas las opciones de ordenación y filtros disponibles"
+msgid "Tap any row to open the transactions behind that tag for the active period"
+msgstr "Toca cualquier fila para abrir las transacciones que hay detrás de esa etiqueta en el periodo activo"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Tap any tag row to see every contributing transaction for the current period, with the same sort options and date filters available everywhere else in Analytics."
@@ -14764,6 +14789,10 @@ msgstr "El problema del software financiero de código cerrado"
 msgid "The product was free because your data was the product. Mint revenue came from recommending financial products — credit cards, loans, insurance — based on your spending patterns. As Intuit priorities shifted toward other products, investment in Mint dried up, bank connections became unreliable, and eventually the service was discontinued entirely."
 msgstr "El producto era gratuito porque tus datos eran el producto. Los ingresos de Mint provenían de recomendar productos financieros — tarjetas de crédito, préstamos, seguros — basándose en tus patrones de gasto. A medida que las prioridades de Intuit se desplazaron hacia otros productos, la inversión en Mint se agotó, las conexiones bancarias se volvieron poco fiables y finalmente el servicio se discontinuó por completo."
 
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "The question a category cannot answer"
+msgstr "La pregunta que una categoría no puede responder"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The question isn’t whether you should use an offline-first financial app. The question is: why would you trust your financial privacy to anything else?"
 msgstr "La pregunta no es si deberías usar una aplicación financiera sin conexión. La pregunta es: ¿por qué confiarías tu privacidad financiera a otra cosa?"
@@ -14929,8 +14958,12 @@ msgid "The Sync Data Repairs screen is where you see that damage and undo it. It
 msgstr "La pantalla Reparación de datos de sincronización es donde ves ese daño y lo deshaces. Analiza cada fuente de sincronización bancaria, muestra el recuento de duplicados por fuente antes de cambiar nada y elimina de forma reversible solo las filas importadas duplicadas tras tu confirmación."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "The Tags tab in Budgie Statistics puts per-tag totals on the same screen as category breakdowns, reachable with a single tap on the tab switcher. Each row shows income, expense, and net for the currently selected date range. Tapping any row drills into the full filtered transaction list for that tag, with sorting and date filters available. The Untagged bucket surfaces every transaction that would otherwise be invisible to tag-based analysis."
-msgstr "La pestaña de Etiquetas en Estadísticas de Budgie pone los totales por etiqueta en la misma pantalla que los desgloses de categorías, accesible con un solo toque en el selector de pestañas. Cada fila muestra ingresos, gastos y neto para el rango de fechas seleccionado actualmente. Tocar cualquier fila desgrana la lista de transacciones filtrada completa para esa etiqueta, con opciones de ordenación y filtros de fecha disponibles. El apartado Sin Etiquetar muestra cada transacción que de otro modo sería invisible para el análisis basado en etiquetas."
+msgid "The tab splits in two: income by tag first, then spending by tag, each row a tag with its total for the period. The same tag can appear on both lists, so a tag that earns and costs is not flattened into one figure."
+msgstr "La pestaña se divide en dos: primero ingresos por etiqueta, luego gastos por etiqueta, cada fila una etiqueta con su total del periodo. La misma etiqueta puede aparecer en ambas listas, así que una etiqueta que ingresa y gasta no queda aplanada en una sola cifra."
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "The Tags tab in Budgie Analytics puts per-tag totals on the same screen as the category breakdown, reachable with a single tap on the tab switcher. It lists income by tag and spending by tag separately, each row carrying that tag's total for the active period and its share of it. Tapping a row opens the transactions behind it, filtered to that tag. Whatever in the period carries no tag at all shows up as an Untagged row instead of quietly disappearing."
+msgstr "La pestaña Etiquetas de Analíticas de Budgie pone los totales por etiqueta en la misma pantalla que el desglose por categorías, a un solo toque del conmutador de pestañas. Enumera por separado los ingresos por etiqueta y los gastos por etiqueta, y cada fila lleva el total de esa etiqueta en el periodo activo y su porcentaje. Al tocar una fila se abren las transacciones que hay detrás, filtradas por esa etiqueta. Todo lo del periodo que no lleve ninguna etiqueta aparece como fila «Sin etiqueta» en lugar de desaparecer sin más."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The terms are often used interchangeably, but there is a distinction. Offline-first typically means an application that caches data for offline access but still treats the server as authoritative. Local-first goes further: the local device is the source of truth, and the server (if present) is just another peer for synchronization. Local-first implies true data ownership, not just offline caching."
@@ -14943,6 +14976,10 @@ msgstr "Los tres modos de fallo de las apps financieras en la nube"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Timeline of Mint’s Decline"
 msgstr "Cronología del declive de Mint:"
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "The totals are a live query, so the Untagged row shrinks as you label transactions during a review pass. Budgie's on-device suggestions propose tags on the transaction form itself, which is usually quicker than picking each one by hand."
+msgstr "Los totales son una consulta en vivo, así que la fila «Sin etiqueta» encoge a medida que etiquetas transacciones durante una revisión. Las sugerencias en el dispositivo de Budgie proponen etiquetas en el propio formulario de transacción, lo que suele ser más rápido que elegirlas una a una."
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "The trade-off is multi-device sync — there's no automatic sync via our servers because we don't have any. Use a backup file copied through your own cloud storage if you need to move between devices."
@@ -14988,21 +15025,13 @@ msgstr "El factor confianza"
 msgid "The two-stage pipeline runs embedding lookup first for instant nearest-neighbor categorization from your own history, then falls back to Qwen3 1.7B for novel transactions the embedding index has not seen before. Every accepted or edited suggestion updates the 768-dim index immediately — accuracy compounds over time."
 msgstr "La canalización de dos etapas ejecuta primero la búsqueda de embedding para la categorización instantánea de vecino más cercano desde tu propio historial, luego recurre a Qwen3 1.7B para transacciones novedosas que el índice de embedding no ha visto antes. Cada sugerencia aceptada o editada actualiza el índice de 768 dimensiones inmediatamente — la precisión se acumula con el tiempo."
 
-#: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "The Untagged bucket as a labeling gap-finder"
-msgstr "El apartado Sin Etiquetar como buscador de huecos de etiquetado"
-
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "The Untagged bucket collects every transaction that carries zero tags. It is a deliberate gap-finder — tap it to see the full list, label what you missed, and watch the bucket shrink."
 msgstr "El apartado Sin Etiquetar recopila cada transacción que no tiene ninguna etiqueta. Es un buscador deliberado de huecos — tócalo para ver la lista completa, etiqueta lo que te perdiste y observa cómo el apartado se reduce."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "The Untagged bucket is not an error state — it is a deliberate audit tool. Every transaction with zero tags accumulates there, and its total tells you how much of your spending currently has no tag context. Tapping it opens a standard transaction list filtered to “no tags”, where you can open each row and add the missing label immediately. Budgie does not force you to tag everything, but it makes the gap visible so the choice is informed."
-msgstr "El apartado Sin Etiquetar no es un estado de error — es una herramienta de auditoría deliberada. Cada transacción con cero etiquetas se acumula allí, y su total te indica cuánto de tu gasto no tiene actualmente contexto de etiqueta. Al tocarlo se abre una lista de transacciones estándar filtrada a «sin etiquetas», donde puedes abrir cada fila y añadir la etiqueta faltante inmediatamente. Budgie no te obliga a etiquetar todo, pero hace visible el hueco para que la elección sea informada."
-
-#: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "The Untagged total recomputes live as you tag transactions, so the number shrinks in real time during a labeling pass. Combined with AI tag suggestions, a short review session can close most gaps without the usual manual-tag tedium."
-msgstr "El total de Sin Etiquetar se recalcula en vivo a medida que etiquetas transacciones, por lo que el número se reduce en tiempo real durante una sesión de etiquetado. Combinado con las sugerencias de etiquetas de IA, una breve sesión de revisión puede cerrar la mayoría de los huecos sin el tedioso etiquetado manual habitual."
+msgid "The Untagged row is the gap"
+msgstr "La fila «Sin etiqueta» es el hueco"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "The Upgrade Flow"
@@ -15802,6 +15831,10 @@ msgstr "Transacciones sin categorizar"
 msgid "Uncategorized Transactions Finder"
 msgstr "Buscador de transacciones sin categoría"
 
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Under each total is that tag's share — of the period's income, or of its expenses. The shares can add up past 100%, because a transaction can carry several tags and counts in full under each of them. Tapping a row opens the transactions behind it."
+msgstr "Bajo cada total está el porcentaje de esa etiqueta: sobre los ingresos del periodo o sobre sus gastos. Los porcentajes pueden sumar más del 100 %, porque una transacción puede llevar varias etiquetas y cuenta entera bajo cada una. Al tocar una fila se abren las transacciones que hay detrás."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Understanding the technical mechanisms of data collection reveals why cloud-based financial apps pose inherent privacy risks."
 msgstr "Comprender los mecanismos tecnicos de la recopilacion de datos revela por que las aplicaciones financieras basadas en la nube conllevan riesgos inherentes para la privacidad."
@@ -15833,6 +15866,10 @@ msgstr "Ganancia no realizada sobre la base de coste"
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Untagged bucket surfaces every transaction missing a label — drill in and fix gaps"
 msgstr "El apartado Sin Etiquetar muestra cada transacción sin etiqueta — desglosa y corrige los huecos"
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Untagged is not an error state — it is what is left over. Anything in the period carrying no tag is grouped into a single Untagged row inside the list it belongs to, counted separately for income and for spending, so its total sits beside the tags you did apply. Tapping it opens those transactions, where you can add the missing label. Budgie does not force you to tag everything, but it will not hide the gap either."
+msgstr "«Sin etiqueta» no es un estado de error: es lo que sobra. Todo lo del periodo que no lleve etiqueta se agrupa en una única fila «Sin etiqueta» dentro de la lista que le corresponde, contada por separado para ingresos y para gastos, así que su total queda junto a las etiquetas que sí pusiste. Al tocarla se abren esas transacciones, donde puedes añadir la etiqueta que falta. Budgie no te obliga a etiquetarlo todo, pero tampoco esconde el hueco."
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
@@ -16661,6 +16698,10 @@ msgstr "¿Qué es el apartado Sin Etiquetar?"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "What’s your budget?"
 msgstr "¿Cuál es tu presupuesto?"
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Whatever in the period has no tag at all. It appears as an Untagged row — one in the income list, one in the spending list — and tapping it opens those transactions so you can label them."
+msgstr "Todo lo del periodo que no tiene ninguna etiqueta. Aparece como una fila «Sin etiqueta» — una en la lista de ingresos y otra en la de gastos — y al tocarla se abren esas transacciones para que las etiquetes."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "When a bank sync re-delivers the same transaction, Budgie finds the duplicate imported rows and soft-deletes only the copies — your own entries stay exactly as they are."
@@ -17558,10 +17599,6 @@ msgstr "Sí: tema del sistema por defecto. Cámbialo a Claro u Oscuro en Ajustes
 msgid "Yes — tapping a category row on the budget detail screen opens the transaction list filtered to that category and that exact budget period."
 msgstr "Sí — tocar una fila de categoría en la pantalla de detalle del presupuesto abre la lista de transacciones filtrada por esa categoría y ese periodo de presupuesto exacto."
 
-#: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "Yes — tapping any tag row opens the full transaction list filtered to that tag, with the same sorts and date filters available everywhere else."
-msgstr "Sí — tocar cualquier fila de etiqueta abre la lista completa de transacciones filtrada a esa etiqueta, con las mismas opciones de ordenación y filtros de fecha disponibles en el resto."
-
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Yes — that's the whole point. Counter-IBAN is the primary matching signal: both banks store the counterparty IBAN on their respective legs, so Budgie can link them directly. Monobank, PrivatBank, and Erste all expose counter-IBAN. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion."
 msgstr "Sí — ese es el punto. El IBAN contrario es la señal de coincidencia principal: ambos bancos almacenan el IBAN de la contraparte en sus respectivos tramos, por lo que Budgie puede vincularlos directamente. Monobank, PrivatBank y Erste todos exponen el IBAN contrario. Para pares entre divisas, una banda de tolerancia del tipo de cambio confirma la coincidencia cuando los importes difieren debido a la conversión de divisas."
@@ -17583,8 +17620,8 @@ msgid "Yes — the original spending stat falls out immediately because transfer
 msgstr "Sí: la estadística de gasto original desaparece de inmediato porque las transferencias no cuentan como gastos."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "Yes — the Tags tab respects whatever range is active globally (Last Week, Last Month, Custom)."
-msgstr "Sí — la pestaña de Etiquetas respeta el rango que esté activo globalmente (Última semana, Último mes, Personalizado)."
+msgid "Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This Year or All Time. There is no custom range."
+msgstr "Sí: la pestaña Etiquetas lee el periodo que esté activo — Este mes, Mes pasado, Esta semana, Semana pasada, Hoy, Este año o Todo el tiempo. No hay rango personalizado."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Yes — the two settings are independent. PIN lock controls who can open the app; Screenshot Protection controls what balances show while it's in the background."
@@ -17773,6 +17810,10 @@ msgstr "Sí. Toca un patrón para ajustar el importe, la cadencia o el comercio.
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Tap any category or tag row to see every transaction that contributed to it during the current period."
 msgstr "Sí. Toca cualquier fila de categoría o etiqueta para ver todas las transacciones que contribuyeron a ella en el periodo actual."
+
+#: src/app/[lang]/features/statistics-tags-tab/page.tsx
+msgid "Yes. Tapping a row opens the transaction list for that tag over the active period. A row belongs either to the income list or to the spending list, and the list opens on that side."
+msgstr "Sí. Al tocar una fila se abre la lista de transacciones de esa etiqueta en el periodo activo. Una fila pertenece a la lista de ingresos o a la de gastos, y la lista se abre en ese lado."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the public repository. The underlying models (Qwen3, whisper.rn) are separately licensed projects."
