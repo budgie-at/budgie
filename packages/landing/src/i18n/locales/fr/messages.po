@@ -3288,10 +3288,6 @@ msgstr "Sauvegarde et restauration"
 msgid "Backup file copied via your cloud"
 msgstr "Fichier de sauvegarde copié via votre cloud"
 
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Backup file is your SQLCipher database — no vendor format conversion"
-msgstr "Le fichier de sauvegarde est votre base de données SQLCipher — sans conversion de format propriétaire"
-
 #: src/app/[lang]/security/page.tsx
 msgid "Backups are encrypted before leaving your device — the key stays with you"
 msgstr "Les sauvegardes sont chiffrées avant de quitter votre appareil — la clé reste avec vous"
@@ -4040,10 +4036,6 @@ msgstr "L'import CSV et PDF de Budgie analyse les fichiers de relevé sur votre 
 msgid "Budgie data management settings showing Import Database and Export Database rows"
 msgstr "Paramètres de gestion des données de Budgie affichant les lignes Importer la base de données et Exporter la base de données"
 
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Budgie data management settings with the import, export, backup and restore actions"
-msgstr "Paramètres de gestion des données de Budgie avec les actions d’import, d’export, de sauvegarde et de restauration"
-
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Budgie date filter sheet with an August calendar above the row of preset range chips"
 msgstr "Feuille de filtre de date Budgie avec un calendrier d'août au-dessus de la rangée de puces de périodes prédéfinies"
@@ -4496,6 +4488,10 @@ msgstr "Écran des paramètres de Budgie avec la mention hors ligne et privé au
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
 msgstr "Écran Réglages de Budgie avec le groupe Sécurité : la carte Verrouillage de l'application et l'interrupteur Protection des captures d'écran activé"
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Budgie settings screen, Data Management section, listing the Import CSV, Export CSV, Import Database and Export Database rows"
+msgstr "Écran des réglages de Budgie, section Gestion des données, avec les lignes Importer CSV, Exporter CSV, Importer la base de données et Exporter la base de données"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie ships historical daily exchange-rate seeds in the local database migration."
@@ -5131,8 +5127,8 @@ msgid "Can splits have different tags?"
 msgstr "Les divisions peuvent-elles avoir des étiquettes différentes ?"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Capture your entire Budgie database in one encrypted file. Restore on any device in seconds — no account, no upload."
-msgstr "Capturez l’intégralité de votre base de données Budgie dans un seul fichier chiffré. Restaurez sur n’importe quel appareil en quelques secondes — sans compte, sans téléversement."
+msgid "Capture the whole Budgie database as one file — SQLCipher-encrypted with your PIN when you set one — and put it back on another device. No account, no upload."
+msgstr "Capturez toute la base de données Budgie dans un seul fichier — chiffré par SQLCipher avec votre code PIN si vous en définissez un — et remettez-le sur un autre appareil. Sans compte, sans envoi."
 
 #: src/app/[lang]/features/database-backup/metadata.ts
 msgid "Capture your entire Budgie database in one encrypted file. Save to iCloud or Drive on your terms; restore on a new device with one tap and your PIN."
@@ -5441,8 +5437,8 @@ msgid "Cloud Apps"
 msgstr "Apps cloud"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Cloud apps do \"backups\" by holding all your data on their servers. Budgie does backups by giving you an encrypted file. Where you put that file is your business."
-msgstr "Les applications cloud font des « sauvegardes » en conservant toutes vos données sur leurs serveurs. Budgie fait des sauvegardes en vous donnant un fichier chiffré. L’endroit où vous placez ce fichier vous appartient."
+msgid "Cloud apps do “backups” by holding all your data on their servers. Budgie does backups by handing you the database file. Where you put it is your business."
+msgstr "Les applications cloud font des « sauvegardes » en gardant toutes vos données sur leurs serveurs. Budgie fait des sauvegardes en vous remettant le fichier de la base de données. Où vous le rangez ne regarde que vous."
 
 #: src/generic/component/comparison-section/comparison-table.tsx
 msgid "Cloud Apps include Mint, Emma, Snoop, and similar services that store your data on their servers."
@@ -7464,6 +7460,10 @@ msgstr "Exportez à tout moment en CSV ou JSON"
 msgid "Export CSV takes the whole ledger in a single tap. There is no range to pick and no partial file to reconcile later."
 msgstr "Exporter CSV prend tout le registre en un seul appui. Aucune plage à choisir et aucun fichier partiel à rapprocher plus tard."
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Export Database checkpoints the write-ahead log and copies the SQLite file itself — every transaction, account, category, tag and setting — then hands it to the system share sheet as a dated budgie-backup file. Set a PIN and that PIN is the SQLCipher key the file is encrypted with."
+msgstr "« Exporter la base de données » valide le journal write-ahead et copie le fichier SQLite lui-même — chaque transaction, compte, catégorie, étiquette et réglage — puis le transmet au menu de partage du système sous forme de fichier budgie-backup daté. Définissez un code PIN et ce code est la clé SQLCipher qui chiffre le fichier."
+
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Export Database writes one encrypted file with everything. Import Database restores it on a new phone in seconds."
 msgstr "Exporter la base de données écrit un fichier chiffré avec tout. Importer la base de données le restaure sur un nouveau téléphone en quelques secondes."
@@ -8474,8 +8474,8 @@ msgid "How do I open the menu?"
 msgstr "Comment ouvrir le menu ?"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "How do I restore on a new device?"
-msgstr "Comment restaurer sur un nouvel appareil ?"
+msgid "How do I restore on another device?"
+msgstr "Comment restaurer sur un autre appareil ?"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "How do I set a primary tag?"
@@ -8601,7 +8601,6 @@ msgstr "En quoi est-ce différent de la page Analyses d'étiquettes ?"
 #: src/app/[lang]/features/binance-sync/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
-#: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
@@ -8771,6 +8770,10 @@ msgstr "Si vous avez précédemment catégorisé des transactions du même comme
 msgid "If you have questions about our open source license, commercial licensing options, or anything else related to Budgie's licensing:"
 msgstr ""
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "If you have set a PIN, yes: the file is the SQLCipher database encrypted with that PIN, so a provider sees encrypted bytes rather than your transactions. Without a PIN the database is not encrypted and neither is the backup, so set one before the file leaves your device."
+msgstr "Si vous avez défini un code PIN, oui : le fichier est la base SQLCipher chiffrée avec ce code, un hébergeur ne voit donc que des octets chiffrés et non vos transactions. Sans code PIN, la base n'est pas chiffrée et la sauvegarde non plus — définissez-en un avant que le fichier ne quitte votre appareil."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "If you haven’t exported your Mint data yet, here’s what you need to know:"
 msgstr "Si vous n'avez pas encore exporté vos données Mint, voici ce que vous devez savoir :"
@@ -8848,6 +8851,10 @@ msgstr "Importez le CSV de n'importe quelle banque avec un mapping de colonnes f
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Import bank CSVs and PDFs without a cloud connection"
 msgstr "Importez des CSV et PDF bancaires sans connexion cloud"
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and cannot be undone; confirm and it swaps the database in — write-ahead sidecars included — clears the stored PIN and restarts."
+msgstr "« Importer la base de données » se trouve juste au-dessus. Choisissez le fichier et Budgie vous avertit qu'il remplacera toutes les données actuelles et que c'est irréversible ; confirmez et il permute la base — fichiers write-ahead compris —, efface le code PIN enregistré et redémarre."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Import the file into Budgie"
@@ -8974,8 +8981,8 @@ msgid "Install + open"
 msgstr "Installer + ouvrir"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Install Budgie on the new phone. On the welcome screen, tap Restore. Pick the backup file from Files / iCloud / Drive. Enter your original PIN. Done."
-msgstr "Installez Budgie sur le nouveau téléphone. Sur l'écran d'accueil, touchez Restaurer. Choisissez le fichier de sauvegarde depuis Fichiers / iCloud / Drive. Saisissez votre PIN d'origine. Terminé."
+msgid "Install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file and confirm the warning. Budgie replaces its database, clears the stored PIN and restarts, so set the lock again afterwards."
+msgstr "Installez Budgie, ouvrez les Réglages et touchez « Importer la base de données » dans la liste Gestion des données. Choisissez le fichier de sauvegarde et confirmez l'avertissement. Budgie remplace sa base, efface le code PIN enregistré et redémarre : reconfigurez le verrouillage ensuite."
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Install on iPhone"
@@ -9642,10 +9649,6 @@ msgstr "Prendre votre décision"
 msgid "management"
 msgstr "gestion"
 
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Manual backups only by default — for the privacy-first crowd that doesn't want surprise file writes. You can schedule reminders in Settings."
-msgstr "Sauvegardes manuelles par défaut, pour les personnes qui ne veulent pas d’écritures de fichiers surprises. Vous pouvez programmer des rappels dans Settings."
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Manual budgeting is simpler than it sounds. Check accounts daily—it takes 2-3 minutes to enter new transactions. Use receipts and enter transactions as you make purchases. Do weekly reconciliation to match your app against bank statements. Embrace the awareness—manual entry makes you more conscious of spending. Many users find manual entry actually improves their financial awareness compared to automatic sync."
 msgstr "La budgétisation manuelle est plus simple qu'il n'y paraît. Vérifiez vos comptes quotidiennement — cela prend 2 à 3 minutes pour saisir les nouvelles transactions. Utilisez les reçus et saisissez les transactions au moment de vos achats. Faites un rapprochement hebdomadaire pour comparer votre application avec vos relevés bancaires. Profitez de cette prise de conscience — la saisie manuelle vous rend plus conscient de vos dépenses. De nombreux utilisateurs trouvent que la saisie manuelle améliore leur conscience financière par rapport à la synchronisation automatique."
@@ -9879,10 +9882,6 @@ msgstr "Methode 2 : Le screen scraping"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Method 3: Direct API Access (Open Banking)"
 msgstr "Methode 3 : Acces direct par API (Open Banking)"
-
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Migrate to a new phone in under a minute, no account required"
-msgstr "Migrez vers un nouveau téléphone en moins d’une minute, sans compte requis"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Migrating from Mint to Budgie: A Practical Walkthrough"
@@ -10249,6 +10248,10 @@ msgstr "La plupart des utilisateurs ne completent jamais les etapes 3 ou 4."
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Move money between your own accounts with automatic FX conversion and dual-amount display for cross-currency transfers."
 msgstr "Déplacez de l’argent entre vos propres comptes avec conversion FX automatique et affichage double montant pour les virements multi-devises."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Move to a new phone by exporting on the old one and importing on the new one — no account on either side"
+msgstr "Changez de téléphone en exportant sur l'ancien et en important sur le nouveau — aucun compte d'un côté ni de l'autre"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Moving from Mint to another cloud service does not solve the problem. It reschedules it."
@@ -10765,6 +10768,10 @@ msgstr "Non. Les comptes de dépôt sont exclus de la sélection normale des sou
 #: src/app/[lang]/privacy/page.tsx
 msgid "No. Every transaction, category, and balance lives in an encrypted SQLite database on your device. Budgie has no backend that receives financial data."
 msgstr "Non. Chaque transaction, catégorie et solde réside dans une base de données SQLite chiffrée sur votre appareil. Budgie n'a pas de backend qui reçoit des données financières."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "No. Exports are manual only — Budgie never writes a backup file on its own, and there is no scheduler and no reminder to turn on. Nothing is written until you tap Export Database."
+msgstr "Non. Les exports sont uniquement manuels : Budgie n'écrit jamais de fichier de sauvegarde de lui-même, et il n'existe ni planificateur ni rappel à activer. Rien n'est écrit tant que vous ne touchez pas « Exporter la base de données »."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "No. Inference uses ONNX Runtime locally. There is no fallback to a cloud model and no telemetry about your transactions."
@@ -11289,6 +11296,14 @@ msgstr "Une seule devise, souvent codée en dur"
 #: src/app/[lang]/security/page.tsx
 msgid "One encrypted file. No account. Restore on any device in seconds."
 msgstr "Un fichier chiffré. Sans compte. Restaurez sur n’importe quel appareil en quelques secondes."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "One file holds every transaction, account, category, tag and setting — it is the app's own SQLite database"
+msgstr "Un fichier contient chaque transaction, compte, catégorie, étiquette et réglage — c'est la base SQLite de l'application elle-même"
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "One file holds the database"
+msgstr "Un fichier contient la base de données"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "One number, everything in it"
@@ -12812,21 +12827,26 @@ msgstr "Développeur solo réactif"
 msgid "restore"
 msgstr "restauration"
 
+#: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Restore from a backup file"
 msgstr "Restaurer à partir d'un fichier de sauvegarde"
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Restore from the same Settings list: pick the file, confirm the destructive replace, the app restarts on it"
+msgstr "Restaurez depuis la même liste de réglages : choisissez le fichier, confirmez le remplacement, l'application redémarre dessus"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Restore in one tap"
 msgstr "Restaurer en un geste"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Restore is a one-tap flow on a fresh install — pick the file, enter your PIN"
-msgstr "La restauration est un flux en un toucher sur une nouvelle installation — choisissez le fichier, saisissez votre PIN"
+msgid "Restore lives in the same Settings list as the export. Pick the file, confirm the warning that it replaces everything, and the app restarts on the restored database. No account is involved on either side."
+msgstr "La restauration se trouve dans la même liste de réglages que l'export. Choisissez le fichier, confirmez l'avertissement indiquant que tout sera remplacé, et l'application redémarre sur la base restaurée. Aucun compte n'intervient d'un côté ni de l'autre."
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Restore is a single tap on a fresh install — pick the file, enter the original PIN, the database is back. Migrate to a new phone in under a minute without an account."
-msgstr "La restauration est un seul toucher sur une nouvelle installation — choisissez le fichier, saisissez le PIN d'origine, la base de données est de retour. Migrez vers un nouveau téléphone en moins d'une minute sans compte."
+msgid "Restore replaces what is there"
+msgstr "La restauration remplace l'existant"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Returned vs lent"
@@ -13221,6 +13241,10 @@ msgstr "Les pannes de service vous laissent sans accès"
 msgid "Set a monthly ceiling and per-category limits that reset when you get paid."
 msgstr "Fixez un plafond mensuel et des limites par catégorie qui se réinitialisent le jour de la paie."
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Set a PIN and the file is SQLCipher-encrypted with it — no vendor format, no conversion step"
+msgstr "Définissez un code PIN et le fichier est chiffré avec par SQLCipher — pas de format propriétaire, pas d'étape de conversion"
+
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Set a target balance on any account and Budgie writes the difference as an Adjustment"
 msgstr "Définissez un solde cible sur n'importe quel compte et Budgie enregistre la différence comme un ajustement"
@@ -13253,10 +13277,6 @@ msgstr "Configurez votre nouvelle application avec les soldes actuels"
 msgid "Settings › Categories shows the categories you created and nothing else — the built-in tree stays out of the way until you need it. The ones you tag most transactions with sort to the top."
 msgstr "Réglages › Catégories n'affiche que les catégories que vous avez créées — l'arborescence intégrée reste à l'écart jusqu'à ce que vous en ayez besoin. Celles qui portent le plus de transactions remontent en haut."
 
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Settings → Export → Backup. Budgie writes a .db file with SQLCipher encryption intact. To restore, install Budgie on the new device, tap Restore on the welcome screen, point at the file, enter the PIN."
-msgstr "Paramètres → Export → Sauvegarde. Budgie écrit un fichier .db avec le chiffrement SQLCipher intact. Pour restaurer, installez Budgie sur le nouvel appareil, touchez Restaurer sur l'écran d'accueil, pointez vers le fichier, saisissez le PIN."
-
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Settings → Recalculate Balances clears the cached balance for every account and rebuilds it from the transactions themselves — useful after an import or a run of edits when a cached figure has drifted."
 msgstr "Paramètres → Recalculer les soldes efface le solde en cache de chaque compte et le reconstruit à partir des transactions elles-mêmes — utile après un import ou une série de modifications lorsqu'un chiffre en cache a dérivé."
@@ -13268,6 +13288,10 @@ msgstr "Paramètres → Sécurité, juste sous la carte de verrouillage par code
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
 msgstr "Les paramètres contiennent les deux exports sous forme de lignes simples, chacune à côté de l’import qui relit le fichier."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Settings keeps Export Database and Import Database as two neighbouring rows. Between them they do everything a hosted account would have done."
+msgstr "Les réglages gardent « Exporter la base de données » et « Importer la base de données » côte à côte. À elles deux, ces lignes font tout ce qu'un compte hébergé aurait fait."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Settle by transfer to a real account — no awkward \"expense\" workarounds"
@@ -13348,10 +13372,6 @@ msgstr "Configurez simplement vos comptes avec les soldes actuels et commencez �
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Since your financial data is stored locally on your device, international data transfers are minimal. However, if you use optional cloud features, your data may be processed in countries where our service providers operate. We ensure appropriate safeguards are in place to protect your data in compliance with applicable data protection laws including GDPR and CCPA."
 msgstr ""
-
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Single encrypted file holds every transaction, account, category, tag, and setting"
-msgstr "Un seul fichier chiffré contient chaque transaction, compte, catégorie, étiquette et paramètre"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Single-currency apps can't model how most people actually save and spend — a UK current account, a Wise USD pot, a UAH salary. Budgie tracks each in its native currency and converts to your base when summing."
@@ -14433,6 +14453,10 @@ msgstr "Le taux de change est enregistré avec le virement, donc les deux soldes
 msgid "The export includes:"
 msgstr "L'export inclut :"
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "The export leaves through the system share sheet — Files, iCloud Drive, Drive, Dropbox or a USB stick"
+msgstr "L'export sort par le menu de partage du système — Fichiers, iCloud Drive, Drive, Dropbox ou une clé USB"
+
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "The figure at the top adds every account together and reports it in the base currency you set in Settings. Pick a different base and the same accounts produce a different number."
 msgstr "Le chiffre en haut additionne tous les comptes et l'exprime dans la devise de base définie dans les Réglages. Changez de devise de base et les mêmes comptes donnent un autre nombre."
@@ -14844,6 +14868,10 @@ msgstr "Le service ne sera pas arrêté"
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The Service, including its original content, features, and functionality, is owned by Budgie and is protected by international copyright, trademark, patent, trade secret, and other intellectual property laws. Our trademarks and trade dress may not be used without our prior written permission."
 msgstr ""
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "The share sheet is the last step Budgie takes part in. Send the file to Files, iCloud Drive, a Drive folder or a USB stick, and keep as many dated copies as you want — the name carries the date and time, so exports never collide."
+msgstr "Le menu de partage est la dernière étape à laquelle Budgie participe. Envoyez le fichier vers Fichiers, iCloud Drive, un dossier Drive ou une clé USB, et gardez autant de copies datées que vous voulez — le nom porte la date et l'heure, les exports ne se chevauchent donc jamais."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "The shutdown was not a surprise to anyone paying attention. It was the predictable end of an ad-supported, cloud-hosted service that was never designed around user ownership of data."
@@ -15778,10 +15806,6 @@ msgstr "Prochains prélèvements"
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."
 msgstr "Utilisez Ajouter un élément pour ajouter une ligne ; l'étiquette sous les lignes indique ce qu'il reste à attribuer."
-
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"
-msgstr "Utilisez n'importe quel cloud (iCloud, Drive, Dropbox) ou transfert USB — votre choix"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Use automated systems to access the Service without permission"
@@ -16739,6 +16763,10 @@ msgstr "Lorsque votre base de donnees est chiffree, le fichier sur le disque app
 msgid "When your financial information lives on someone else’s server, you’re trusting that:"
 msgstr "Lorsque vos informations financières vivent sur le serveur de quelqu'un d'autre, vous faites confiance que :"
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Where a server would be, there is a file"
+msgstr "Là où il y aurait un serveur, il y a un fichier"
+
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Where AI runs"
 msgstr "Où s'exécute l'IA"
@@ -17391,6 +17419,10 @@ msgstr "Créez votre fichier de sauvegarde ici"
 msgid "Writes straight to the device"
 msgstr "Écrit directement sur l'appareil"
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Writes the whole database"
+msgstr "Écrit toute la base de données"
+
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "xlsx"
 msgstr "xlsx"
@@ -17456,8 +17488,8 @@ msgid "Yes — enables transfer-pair detection"
 msgstr "Oui — active la détection des paires de virement"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Yes — every backup is a separate file. Snapshot before risky imports or migrations and keep the file around for rollback."
-msgstr "Oui — chaque sauvegarde est un fichier séparé. Prenez un instantané avant des importations ou migrations risquées et conservez le fichier pour un retour en arrière."
+msgid "Yes — every export is written with the date and time in its name, so files never overwrite each other. Snapshot before a risky import or migration and keep the file around for rollback."
+msgstr "Oui — chaque export porte la date et l'heure dans son nom, les fichiers ne s'écrasent donc jamais. Prenez un instantané avant un import ou une migration risquée et gardez le fichier pour revenir en arrière."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Yes — IBAN extraction is part of the header parse. The IBAN is stored on the account and enables automatic transfer-pair detection between Erste and other accounts you own."
@@ -17502,10 +17534,6 @@ msgstr "Oui — c'est tout l'objectif. L'IBAN contrepartie est le signal de corr
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Yes — the encrypted backup is just a file. Save it anywhere you control: NAS, S3, your own server, your own cloud."
 msgstr "Oui — la sauvegarde chiffrée est simplement un fichier. Enregistrez-le n'importe où sous votre contrôle : NAS, S3, votre propre serveur, votre propre cloud."
-
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Yes — the file is SQLCipher-encrypted with your PIN-derived key. Cloud providers see encrypted bytes, not your transactions."
-msgstr "Oui — le fichier est chiffré SQLCipher avec votre clé dérivée du PIN. Les fournisseurs cloud ne voient que des octets chiffrés, pas vos transactions."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Yes — the filter row has an amount-range chip beside the date one. Give it a From value, a To value, or both, and it stacks with every other active filter."
@@ -18127,6 +18155,10 @@ msgstr "Votre appareil uniquement"
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Your device UDID must already be registered in the ad-hoc provisioning profile."
 msgstr "L'UDID de votre appareil doit déjà être enregistré dans le profil de provisionnement ad hoc."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Your file, your storage"
+msgstr "Votre fichier, votre stockage"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Your financial data belongs to you. Period. A good budget app should:"
