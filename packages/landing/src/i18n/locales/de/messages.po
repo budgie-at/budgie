@@ -2158,6 +2158,10 @@ msgstr ""
 msgid "9.2 Limitation of Liability"
 msgstr ""
 
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "95% of the limit used"
+msgstr "95 % des Limits verbraucht"
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "A \"matching rules\" pill on a transaction shows which rules apply to it"
 msgstr "Eine „passende Regeln“-Kennzeichnung an einer Transaktion zeigt, welche Regeln für sie gelten"
@@ -2191,12 +2195,12 @@ msgid "A bank token is not a property of one account — it is a property of you
 msgstr "Ein Bank-Token ist keine Eigenschaft eines einzelnen Kontos — es ist eine Eigenschaft Ihrer Beziehung zur Bank. Budgie bildet das genau so ab: Eine Verbindung enthält den Anbieter und die Zugangsdaten, und jedes Konto, das Sie von dieser Bank synchronisieren, verweist darauf."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
-msgid "A budget cycle should start when your money arrives"
-msgstr "Ein Budgetzyklus sollte beginnen, wenn Ihr Geld eingeht"
-
-#: src/app/[lang]/features/budget-planning/page.tsx
 msgid "A budget is one overall limit plus as many per-category limits as you want, and a single cap for everything that falls outside those categories. The form shows how much you have allocated, how much is left, and warns you the moment your category limits exceed the overall limit."
 msgstr "Ein Budget besteht aus einem Gesamtlimit plus beliebig vielen Kategorielimits und einer einzigen Obergrenze für alles, was außerhalb dieser Kategorien anfällt. Das Formular zeigt, wie viel Sie bereits zugewiesen haben, wie viel übrig ist, und warnt Sie, sobald Ihre Kategorielimits das Gesamtlimit überschreiten."
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "A Budgie budget runs on a monthly cycle, and the period it currently covers is shown on the budget detail screen and on the home widget, so you always know which dates the numbers belong to."
+msgstr "Ein Budgie-Budget läuft in einem Monatszyklus, und der aktuell abgedeckte Zeitraum steht auf der Budget-Detailseite und im Startbildschirm-Widget — du weißt also immer, zu welchen Daten die Zahlen gehören."
 
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-overview-section/bank-fee-tracking-overview-section.tsx
 msgid "A cash withdrawal is a transfer from your bank account to cash, but the ATM commission is still a real expense. If both are forced into one category, either transfers pollute spending or fees disappear from analytics."
@@ -2213,6 +2217,10 @@ msgstr "Eine Kategorie sagt, um welche Art von Ausgabe es sich handelt. Welche R
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "A category says what you bought. A tag says which trip, which project, which person — chosen on the same form, from your own flat list."
 msgstr "Eine Kategorie sagt, was du gekauft hast. Ein Tag sagt, welche Reise, welches Projekt, welche Person — ausgewählt im selben Formular, aus deiner eigenen flachen Liste."
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "A category that passes its ceiling turns red and swaps Left for Over budget, so the overrun is a number rather than a bar that quietly stops. Refunds work the other way: a returned purchase gives the budget its money back."
+msgstr "Eine Kategorie, die ihre Obergrenze überschreitet, wird rot und ersetzt „Übrig“ durch „Über Budget“, die Überschreitung ist also eine Zahl statt eines Balkens, der einfach stehen bleibt. Rückerstattungen wirken andersherum: Ein zurückgegebener Einkauf gibt dem Budget sein Geld zurück."
 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "A cloud assistant ships your transaction titles to a remote model and trusts the provider's privacy policy. Budgie's models live on your device — there's no provider to trust."
@@ -2311,6 +2319,10 @@ msgstr "Eine Festanlage, geführt wie ein Konto"
 msgid "A key that can only read"
 msgstr "Ein Schlüssel, der nur lesen kann"
 
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "A limit per category"
+msgstr "Ein Limit pro Kategorie"
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "A loan made in another currency is worth what it was worth on the day it was made, not what today's rate says. Budgie stores the exchange rate used for a debt's target balance along with the converted amount, looking up the rate for the operation date — or the closest earlier one it has — and bridging through your base currency when there is no direct pair."
 msgstr "Ein Darlehen in einer anderen Währung ist so viel wert, wie es am Tag der Vergabe war — nicht, was der heutige Kurs sagt. Budgie speichert den Wechselkurs für den Zielsaldo einer Schuld zusammen mit dem umgerechneten Betrag, sucht dafür den Kurs zum Buchungsdatum — oder den nächstgelegenen früheren, den es hat — und überbrückt über Ihre Basiswährung, wenn es kein direktes Paar gibt."
@@ -2394,6 +2406,10 @@ msgstr "Ein technischer Blick auf Budgies Offline-first-Architektur: SQLite, AES
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
 msgstr "Ein technischer Blick auf Budgies Offline-first-Architektur: SQLite, AES-256-Verschlüsselung und Gerät-zu-Gerät-Sync halten deine Finanzdaten auf deinem Gerät."
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "A template built from your own recent spending, a generic starter, or nothing at all"
+msgstr "Eine Vorlage aus deinen eigenen letzten Ausgaben, ein allgemeiner Einstieg oder gar nichts"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "A transaction can carry more than one tag. The list only has room for one chip, so Budgie picks which one to show."
@@ -3007,10 +3023,6 @@ msgstr "Jede zukünftige Lösung hält an unserem Kernprinzip fest: Deine Finanz
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Any SDK that requires network connectivity for basic functionality"
 msgstr "Jedes SDK, das Netzwerkkonnektivität für grundlegende Funktionalität erfordert"
-
-#: src/app/[lang]/features/budget-planning/page.tsx
-msgid "Any start day, or the last day of the month"
-msgstr "Jeder beliebige Starttag oder der letzte Tag des Monats"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Any User Content you submit or transmit through the Service"
@@ -3868,6 +3880,10 @@ msgstr "Haushaltsbuch App ohne Bank-Login – kein Aggregator – Budgie"
 msgid "budget app without wifi"
 msgstr ""
 
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "Budget details puts the overall limit at the top and every category limit underneath, all worked out on the device from the transactions already in your ledger."
+msgstr "Die Budget-Details zeigen oben das Gesamtlimit und darunter jedes Kategorielimit — alles auf dem Gerät aus den Transaktionen berechnet, die ohnehin in deinem Kontobuch stehen."
+
 #: src/app/[lang]/page.tsx
 msgid "Budget limits that match your payday"
 msgstr "Budgetgrenzen passend zum Zahltag"
@@ -3878,9 +3894,12 @@ msgstr "Budgetplanung"
 
 #: src/app/[lang]/features/budget-planning/metadata.ts
 #: src/app/[lang]/features/budget-planning/opengraph-image.tsx
-#: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Budget Planning — Limits That Match Your Payday"
 msgstr "Budgetplanung — Limits, die zu Ihrem Zahltag passen"
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "Budget Planning — One Limit, Split By Category"
+msgstr "Budgetplanung — ein Limit, nach Kategorien aufgeteilt"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/app/[lang]/legal/privacy-policy/page.tsx
@@ -3963,6 +3982,10 @@ msgstr "Budgie-Bitcoin-Marktbildschirm mit dem Kurs, einer Sparkline und einer B
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie Bitcoin wallet screen with the balance in BTC above two crypto purchase rows showing the amount paid and the rate"
 msgstr "Budgie-Bitcoin-Wallet-Bildschirm mit dem Saldo in BTC über zwei Kryptokaufzeilen, die den gezahlten Betrag und den Kurs zeigen"
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "Budgie Budget details screen with 95% of the monthly limit spent and the remainder below it, above category limit cards for Housing & Utilities, Groceries over budget, Transportation and Car & Fuel"
+msgstr "Budgie-Bildschirm „Budget-Details“: 95 % des Monatsbudgets verbraucht, darunter der Restbetrag, darüber die Kategoriekarten Wohnen & Nebenkosten, Lebensmittel über Budget, Verkehr sowie Auto & Kraftstoff"
 
 #: src/app/[lang]/page.tsx
 msgid "Budgie budget details screen with a monthly budget bar and per-category limits"
@@ -5917,10 +5940,6 @@ msgstr "CRDTs bewältigen dies automatisch für die Datenzusammenführung. Aber 
 msgid "CRDTs solve the conflict resolution problem but leave open questions about how changes propagate between devices. Sync engines handle this layer, managing:"
 msgstr "CRDTs lösen das Konfliktlösungsproblem, lassen aber die Frage offen, wie sich Änderungen zwischen Geräten ausbreiten. Sync-Engines kümmern sich um diese Schicht und verwalten:"
 
-#: src/app/[lang]/features/budget-planning/page.tsx
-msgid "Create a budget, pick the day the cycle starts, and set an overall limit in your default currency. Add limits to the categories you care about and a cap for the rest. The detail screen breaks the period down category by category; the home widget keeps the headline numbers one glance away, and can be hidden from Settings whenever you want the home screen quiet."
-msgstr "Erstellen Sie ein Budget, wählen Sie den Tag, an dem der Zyklus beginnt, und legen Sie ein Gesamtlimit in Ihrer Standardwährung fest. Fügen Sie Limits für die Kategorien hinzu, die Ihnen wichtig sind, sowie eine Obergrenze für den Rest. Der Detailbildschirm schlüsselt den Zeitraum Kategorie für Kategorie auf; das Home-Widget hält die wichtigsten Zahlen auf einen Blick bereit und lässt sich in den Einstellungen jederzeit ausblenden, wenn der Startbildschirm ruhig bleiben soll."
-
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Create a feature branch for your changes"
 msgstr ""
@@ -6202,10 +6221,6 @@ msgstr "Benutzerdefinierte Transaktions-Tags für Ausgaben-Tracking – Budgie"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "CVE (Common Vulnerabilities and Exposures) tracking and responses"
 msgstr "CVE-Tracking (Common Vulnerabilities and Exposures) und Reaktionen darauf"
-
-#: src/app/[lang]/features/budget-planning/page.tsx
-msgid "Cycle start"
-msgstr "Zyklusbeginn"
 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Cyrillic (Ukrainian, Russian, Bulgarian, Serbian), Greek, Arabic, Hebrew, CJK (Chinese / Japanese / Korean), Thai, and more — any script the on-device LLM understands."
@@ -7192,6 +7207,10 @@ msgstr "Alle Funktionen des Budgie Offline-First-Ausgabentrackers – vom Bank-S
 msgid "Every card transaction carries a merchant category code. Silpo arrives on the expense form with its Grocery code shown under the merchant name."
 msgstr "Jede Kartenzahlung trägt einen Händlerkategoriecode. Silpo erscheint im Ausgabenformular mit dem Code „Grocery“ unter dem Händlernamen."
 
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "Every category you gave a ceiling gets its own card under Category limits: a bar, what you have spent, what is left and the limit itself. Tap one and Budgie opens the transactions behind that number for exactly this period."
+msgstr "Jede Kategorie, der du eine Obergrenze gegeben hast, bekommt unter „Kategorielimits“ eine eigene Karte: einen Balken, das Ausgegebene, das Verbleibende und das Limit selbst. Tippst du darauf, öffnet Budgie genau die Transaktionen hinter dieser Zahl für diesen Zeitraum."
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Every category, ranked by what it took"
 msgstr "Jede Kategorie, sortiert nach ihrem Anteil"
@@ -8110,6 +8129,10 @@ msgstr ""
 msgid "Generate it in Monobank"
 msgstr "In Monobank erzeugen"
 
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "Generic templates from a shared library"
+msgstr "Allgemeine Vorlagen aus einer gemeinsamen Bibliothek"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Genuine Offline Capability"
 msgstr "Echte Offline-Fähigkeit"
@@ -8125,6 +8148,10 @@ msgstr ""
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/metadata.ts
 msgid "Get the privacy of self-hosted finance apps without running a server. Budgie's data lives on your phone; your cloud handles backups. Zero ops, full ownership."
 msgstr "Bekomme Privatsphäre wie bei selbst gehosteten Finanz-Apps, ohne einen Server zu betreiben. Budgie behält Daten auf deinem Smartphone, während dein eigener Cloud-Speicher Backups übernimmt."
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "Getting started"
+msgstr "Der Einstieg"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Getting Started with Local-First Development"
@@ -8161,6 +8188,10 @@ msgstr "Zur Startseite"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Go to Settings"
 msgstr "Gehen Sie zu den Einstellungen"
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "Going over is obvious"
+msgstr "Überschreitungen sind offensichtlich"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Good categorization rules"
@@ -8546,6 +8577,10 @@ msgstr "Wie weit reicht die Historie zurück?"
 msgid "How far does the forecast go?"
 msgstr "Wie weit geht die Prognose?"
 
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "How far over you are"
+msgstr "Wie weit du darüber liegst"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "How fast is the quick-entry form?"
 msgstr "Wie schnell ist das Schnelleingabe-Formular?"
@@ -8595,7 +8630,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 #: src/app/[lang]/features/binance-sync/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-#: src/app/[lang]/features/budget-planning/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
@@ -10158,8 +10192,8 @@ msgid "Monthly subscription required"
 msgstr "Monatliches Abonnement erforderlich"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
-msgid "Monthly. What you choose is where the month begins — any day of the month, or the last day — so the cycle can follow your payday instead of the calendar."
-msgstr "Monatlich. Sie legen fest, wo der Monat beginnt — an einem beliebigen Tag oder am letzten Tag des Monats —, sodass sich der Zyklus nach Ihrem Zahltag statt nach dem Kalender richtet."
+msgid "Monthly. Budgie tracks one active budget over a monthly cycle, and both the detail screen and the home widget print the exact start and end dates of the period the numbers cover."
+msgstr "Monatlich. Budgie führt ein aktives Budget in einem Monatszyklus, und sowohl die Detailseite als auch das Startbildschirm-Widget nennen das genaue Start- und Enddatum des Zeitraums, für den die Zahlen gelten."
 
 #: src/feature/component/features-hub-grid/features-hub-grid.tsx
 msgid "More Features"
@@ -10188,10 +10222,6 @@ msgstr "Die meisten Apps nutzen Plaid, was die Weitergabe Ihrer Bankzugangsdaten
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Most budget and expense tracking apps operate as black boxes. You download an app, create an account, link your bank, and start tracking expenses. The interface is polished, the features are helpful, and everything seems fine. But beneath that friendly surface lies a system you cannot inspect, verify, or truly understand."
 msgstr "Die meisten Budget- und Ausgabenverfolgungsapps funktionieren als Blackboxen. Sie laden eine App herunter, erstellen ein Konto, verbinden Ihre Bank und beginnen, Ausgaben zu verfolgen. Die Oberfläche ist poliert, die Funktionen sind hilfreich, und alles scheint in Ordnung. Doch unter dieser freundlichen Oberfläche verbirgt sich ein System, das Sie nicht inspizieren, verifizieren oder wirklich verstehen können."
-
-#: src/app/[lang]/features/budget-planning/page.tsx
-msgid "Most budget apps assume the first of the month. Budgie lets you pick any start day for the cycle, or anchor it to the last day of each month, so the period you plan against is the period you actually get paid for."
-msgstr "Die meisten Budget-Apps gehen vom Monatsersten aus. Budgie lässt Sie einen beliebigen Starttag für den Zyklus wählen oder ihn am letzten Tag jedes Monats verankern, sodass der Zeitraum, für den Sie planen, dem Zeitraum entspricht, für den Sie tatsächlich bezahlt werden."
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet drops, and risky when those servers leak. Budgie inverts the model: an encrypted SQLite database lives on your phone, and that's the whole story. There is no backend reading your statements."
@@ -11305,6 +11335,14 @@ msgstr "Eine Datei enthält jede Transaktion, jedes Konto, jede Kategorie, jedes
 msgid "One file holds the database"
 msgstr "Eine Datei enthält die Datenbank"
 
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "One limit for the month"
+msgstr "Ein Limit für den Monat"
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "One limit, split the way you actually spend"
+msgstr "Ein Limit, aufgeteilt so, wie du wirklich ausgibst"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "One number, everything in it"
 msgstr "Eine Zahl, alles darin"
@@ -11824,10 +11862,6 @@ msgstr "Ein persönliches Token einfügen"
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
 msgstr "Zahlen Sie einmal für Bankabgleich und geräteinterne KI, wenn Sie sie möchten. Der Tracker selbst läuft nie ab."
-
-#: src/app/[lang]/features/budget-planning/page.tsx
-msgid "Payday-aligned cycles — start on any day of the month or anchor to the last day"
-msgstr "An den Zahltag angepasste Zyklen — Start an einem beliebigen Tag des Monats oder verankert am letzten Tag"
 
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 msgid "pdf"
@@ -12694,6 +12728,10 @@ msgstr "Kalender für wiederkehrende Zahlungen"
 #: src/app/[lang]/features/recurring-payments-calendar/metadata.ts
 msgid "Recurring Payments Calendar — Budgie"
 msgstr "Kalender für wiederkehrende Zahlungen — Budgie"
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "Red once the limit breaks"
+msgstr "Rot, sobald das Limit fällt"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Reduced Infrastructure Costs"
@@ -13651,6 +13689,10 @@ msgstr "Ausgegeben und eingenommen im Zeitraum"
 msgid "Spent and income stay clean"
 msgstr "Ausgaben und Einnahmen bleiben sauber"
 
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "Spent, left and limit"
+msgstr "Ausgegeben, übrig und Limit"
+
 #: src/app/[lang]/features/split-transactions/opengraph-image.tsx
 msgid "split"
 msgstr "Aufteilen"
@@ -14493,6 +14535,10 @@ msgstr "Das Ende einer Ära: Was ist mit Mint passiert?"
 msgid "The entire flow — from audio to saved transaction — happens offline. It works in airplane mode, in areas with no signal, and in any language Whisper supports."
 msgstr "Der gesamte Ablauf – von Audio bis zur gespeicherten Transaktion – geschieht offline. Es funktioniert im Flugmodus, in Gebieten ohne Signal und in jeder Sprache, die Whisper unterstützt."
 
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "The exact dates of the current cycle on both the detail screen and the home widget"
+msgstr "Die genauen Daten des aktuellen Zyklus auf der Detailseite und im Startbildschirm-Widget"
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "The exchange rate is saved with the transfer, so both balances reconcile exactly"
 msgstr "Der Wechselkurs wird mit der Überweisung gespeichert, damit beide Kontostände exakt aufgehen"
@@ -14544,6 +14590,10 @@ msgstr "Die Zukunft ist Local-First"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The Future of Local-First"
 msgstr "Die Zukunft von Local-First"
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "The header carries the period the budget covers, what you have spent against the overall limit, the percentage that represents and what is still left. Spending recorded on accounts in other currencies is converted into the budget's currency before any of it is counted."
+msgstr "Der Kopfbereich nennt den abgedeckten Zeitraum, das gegen das Gesamtlimit Ausgegebene, den entsprechenden Prozentsatz und das Verbleibende. Ausgaben auf Konten in anderen Währungen werden in die Budgetwährung umgerechnet, bevor irgendetwas gezählt wird."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Hidden Cost of “Free” Budgeting Apps"
@@ -15045,6 +15095,10 @@ msgstr "Die Wallet selbst rechnet in der Münze: ein Saldo in BTC und darunter d
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "The whole list, no spinner"
 msgstr "Die ganze Liste, kein Ladekreis"
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "The whole month on one screen"
+msgstr "Der ganze Monat auf einem Bildschirm"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "The whole-history option asks for confirmation before it clears the sync state"
@@ -15919,10 +15973,6 @@ msgstr "Nutzer kontrollieren ihre eigene Backup-Strategie. Dazu können lokale G
 msgid "Users notice the difference immediately. Applications feel “snappy“ or “responsive” in ways that are hard to articulate but immediately apparent. This is not optimization; it is a fundamental architectural advantage."
 msgstr "Nutzer bemerken den Unterschied sofort. Anwendungen fühlen sich „flüssig\" und „reaktionsschnell\" an, auf eine Art, die schwer in Worte zu fassen, aber unmittelbar spürbar ist. Das ist keine Optimierung — es ist ein fundamentaler architektonischer Vorteil."
 
-#: src/app/[lang]/features/budget-planning/page.tsx
-msgid "Usually locked to the 1st"
-msgstr "Meist fest auf den 1. gesetzt"
-
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "ux"
 msgstr ""
@@ -16497,6 +16547,10 @@ msgstr "Was auf diesem Bildschirm fehlt"
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "What Is On-Device AI?"
 msgstr "Was ist geräteeigene KI?"
+
+#: src/app/[lang]/features/budget-planning/page.tsx
+msgid "What is still left"
+msgstr "Was noch übrig ist"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "What is the difference between archived and inactive?"
