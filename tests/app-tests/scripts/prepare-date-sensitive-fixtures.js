@@ -42,6 +42,7 @@ const shiftTransactionsFixtureToNow = () => {
     const missingRateAccountId = 11;
     const missingRateCategoryId = 42;
     const missingRateAmount = 15_000_000_000;
+    const uncategorizedLargeIncomeAmount = 90_000_000;
 
     copyFixture(sourcePath, targetPath);
     runSqlite(
@@ -415,6 +416,51 @@ const shiftTransactionsFixtureToNow = () => {
             ${missingRateAmount}
         FROM transactions
         WHERE id = last_insert_rowid();
+
+        INSERT INTO transactions (
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            comment,
+            to_account_id,
+            exchange_rate
+        )
+        SELECT
+            MIN(operated_at) - 120,
+            MIN(operated_at) - 120,
+            'INCOME',
+            '',
+            MIN(operated_at) - 120,
+            'E2E Uncategorized Large Income',
+            2,
+            1.0
+        FROM transactions;
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount
+        )
+        SELECT
+            created_at,
+            updated_at,
+            'DEBIT',
+            2,
+            NULL,
+            id,
+            ${uncategorizedLargeIncomeAmount}
+        FROM transactions
+        WHERE id = last_insert_rowid();
+
+        UPDATE account_balances
+        SET amount = amount + ${uncategorizedLargeIncomeAmount}
+        WHERE account_id = 2;
 
         UPDATE settings
         SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
