@@ -1,70 +1,35 @@
-import { useEffect, useRef, useState } from 'react';
+import { isDefined } from '@rnw-community/shared';
 
-import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
+import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { RecurringCalendarDataInterface } from '../interface/recurring-calendar-data.interface';
-import { recurringCalendarService } from '../service/recurring-calendar.service';
+import { detectRecurringSeries } from '../utils/detect-recurring-series.util';
+import { projectRecurringMonth } from '../utils/project-recurring-month.util';
+
+const RECURRING_WINDOW_MONTHS = 24;
 
 interface UseRecurringCalendarReturnInterface {
-    readonly data: RecurringCalendarDataInterface | undefined;
-    readonly isLoading: boolean;
+    readonly data?: RecurringCalendarDataInterface;
 }
-
-const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, never[]> = new Map();
 
 export const useRecurringCalendar = (displayYear: number, displayMonth: number): UseRecurringCalendarReturnInterface => {
     const { defaultInstrument } = useSettingsContext();
     const language = useSetting('language');
-    const focusKey = useFocusKey();
-    const [data, setData] = useState<RecurringCalendarDataInterface | undefined>();
-    const [isLoading, setIsLoading] = useState(false);
-    const hasLoadedRef = useRef(false);
+    const now = new Date();
+    const since = new Date(now.getFullYear(), now.getMonth() - RECURRING_WINDOW_MONTHS, now.getDate());
 
-    useEffect(() => {
-        let cancelled = false;
+    const { data: candidates, updatedAt } = useDatabaseLiveQuery(
+        transactionPatternRepository.findRecurringChargeCandidates({
+            defaultInstrumentId: defaultInstrument.id,
+            language,
+            since
+        }),
+        [defaultInstrument.id, language, since.getTime()]
+    );
 
-        if (!hasLoadedRef.current) {
-            setIsLoading(true);
-        }
+    const calendarData = projectRecurringMonth(detectRecurringSeries(candidates), displayYear, displayMonth, now);
 
-        const fetchData = async (): Promise<void> => {
-            try {
-                const result = await recurringCalendarService.getMonthlyRecurringPayments(
-                    defaultInstrument.id,
-                    displayYear,
-                    displayMonth,
-                    language
-                );
-
-                if (!cancelled) {
-                    hasLoadedRef.current = true;
-                    setData(result);
-                }
-            } catch {
-                if (!cancelled) {
-                    const emptyData = {
-                        entriesByDay: EMPTY_ENTRIES_BY_DAY,
-                        forecastedEntriesByDay: EMPTY_ENTRIES_BY_DAY,
-                        totalAmount: 0,
-                        forecastedTotalAmount: 0
-                    };
-                    hasLoadedRef.current = true;
-                    setData(emptyData);
-                }
-            } finally {
-                if (!cancelled) {
-                    setIsLoading(false);
-                }
-            }
-        };
-
-        void fetchData();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [focusKey, defaultInstrument.id, displayYear, displayMonth, language]);
-
-    return { data, isLoading };
+    return { ...(isDefined(updatedAt) && { data: calendarData }) };
 };
