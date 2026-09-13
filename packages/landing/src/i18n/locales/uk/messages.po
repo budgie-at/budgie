@@ -10673,7 +10673,7 @@ msgstr "Немає відстеження або аналітики"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No upgrade banner here"
-msgstr "Жодного банера з апгрейдом"
+msgstr "Тут немає банера з пропозицією перейти на платний план"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "No user profiles or advertising IDs"
