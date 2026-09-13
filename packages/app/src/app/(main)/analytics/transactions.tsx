@@ -39,6 +39,18 @@ const getTransactionTypes = (value: string | string[] | undefined): TransactionT
 
 const getNumberParams = (value: string | string[] | undefined): number[] => getRouteParamValues(value).map(Number).filter(Number.isFinite);
 
+const getNumberParam = (value: string | string[] | undefined): number | null => {
+    const rawValue = getRouteParam(value);
+
+    if (!isNotEmptyString(rawValue)) {
+        return null;
+    }
+
+    const numberValue = Number(rawValue);
+
+    return Number.isFinite(numberValue) ? numberValue : null;
+};
+
 const getAnalyticsMode = (value: string | null): AnalyticsTransactionsModeEnum | null => {
     if (value === AnalyticsTransactionsModeEnum.BUDGET_OTHER) {
         return AnalyticsTransactionsModeEnum.BUDGET_OTHER;
@@ -63,6 +75,8 @@ export default function AnalyticsTransactionsPage() {
         readonly accountIds?: string | string[];
         readonly excludedCategoryIds?: string | string[];
         readonly tagIds?: string | string[];
+        readonly amountFrom?: string | string[];
+        readonly amountTo?: string | string[];
     }>();
     const mode = getAnalyticsMode(getRouteParam(searchParams.mode));
     const startDate = getRouteParam(searchParams.startDate);
@@ -74,6 +88,8 @@ export default function AnalyticsTransactionsPage() {
     const accountIds = getNumberParams(searchParams.accountIds);
     const excludedCategoryIds = getNumberParams(searchParams.excludedCategoryIds);
     const tagIds = getNumberParams(searchParams.tagIds);
+    const amountFrom = getNumberParam(searchParams.amountFrom);
+    const amountTo = getNumberParam(searchParams.amountTo);
     const params: AnalyticsTransactionsRouteParamsInterface = {
         ...(isDefined(mode) && { mode }),
         ...(isDefined(startDate) && { startDate }),
@@ -84,7 +100,9 @@ export default function AnalyticsTransactionsPage() {
         ...(isNotEmptyArray(types) && { types }),
         ...(isNotEmptyArray(accountIds) && { accountIds }),
         ...(isNotEmptyArray(excludedCategoryIds) && { excludedCategoryIds }),
-        ...(isNotEmptyArray(tagIds) && { tagIds })
+        ...(isNotEmptyArray(tagIds) && { tagIds }),
+        ...(isDefined(amountFrom) && { amountFrom }),
+        ...(isDefined(amountTo) && { amountTo })
     };
 
     return <AnalyticsTransactionsRoute params={params} />;
