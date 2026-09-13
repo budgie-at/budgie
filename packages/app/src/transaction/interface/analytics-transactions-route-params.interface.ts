@@ -12,4 +12,6 @@ export interface AnalyticsTransactionsRouteParamsInterface {
     readonly accountIds?: number[];
     readonly excludedCategoryIds?: number[];
     readonly tagIds?: number[];
+    readonly amountFrom?: number;
+    readonly amountTo?: number;
 }

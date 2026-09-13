@@ -47,6 +47,8 @@ const buildUncategorizedRouteParams = (activeFilters: TransactionFilterInterface
     const tagIds = buildNullableArrayParam(activeFilters.tagIds);
     const startDate = activeFilters.date?.from?.toISOString() ?? null;
     const endDate = activeFilters.date?.to?.toISOString() ?? null;
+    const amountFrom = activeFilters.amount?.from?.toString() ?? null;
+    const amountTo = activeFilters.amount?.to?.toString() ?? null;
 
     return {
         mode: AnalyticsTransactionsModeEnum.UNCATEGORIZED,
@@ -54,7 +56,9 @@ const buildUncategorizedRouteParams = (activeFilters: TransactionFilterInterface
         ...(isDefined(accountIds) && { accountIds }),
         ...(isDefined(tagIds) && { tagIds }),
         ...(isDefined(startDate) && { startDate }),
-        ...(isDefined(endDate) && { endDate })
+        ...(isDefined(endDate) && { endDate }),
+        ...(isDefined(amountFrom) && { amountFrom }),
+        ...(isDefined(amountTo) && { amountTo })
     };
 };
 
