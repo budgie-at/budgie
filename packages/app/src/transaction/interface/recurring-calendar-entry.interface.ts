@@ -7,9 +7,7 @@ export interface RecurringCalendarEntryInterface {
     readonly title: string;
     readonly latestAmount: number;
     readonly latestTransactionId: number | null;
-    readonly occurrenceCount: number;
     readonly dayOfMonth: number;
     readonly accountId: number;
-    readonly instrumentId: number;
     readonly isForecast: boolean;
 }

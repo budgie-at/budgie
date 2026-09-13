@@ -8,11 +8,9 @@ export interface RecurringSeriesInterface {
     readonly categoryTitle: string;
     readonly categoryIcon: UserIconNameEnum;
     readonly accountId: number;
-    readonly instrumentId: number;
     readonly periodMonths: number | null;
     readonly periodDays: number;
     readonly anchorTimestamp: number;
     readonly predictedAmount: number;
-    readonly occurrenceCount: number;
     readonly events: readonly RecurringSeriesEventInterface[];
 }

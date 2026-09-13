@@ -63,10 +63,8 @@ export class RecurringCalendarAccumulator {
             title: series.title,
             latestAmount: entry.amount,
             latestTransactionId: entry.latestTransactionId,
-            occurrenceCount: series.occurrenceCount,
             dayOfMonth: entry.day,
             accountId: series.accountId,
-            instrumentId: series.instrumentId,
             isForecast: entry.isForecast
         };
     }
