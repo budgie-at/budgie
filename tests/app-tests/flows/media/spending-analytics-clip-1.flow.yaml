@@ -12,11 +12,6 @@ env:
           id: 'AnalyticsPage.Tab.Categories'
       timeout: 15000
 
-- extendedWaitUntil:
-      visible:
-          id: '${CATEGORY_STATISTICS_ID}'
-      timeout: 10000
-
 - scrollUntilVisible:
       element:
           id: '${CATEGORY_STATISTICS_ID}'
