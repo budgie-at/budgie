@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.53.1](https://github.com/budgie-at/budgie/compare/v6.53.0...v6.53.1) (2026-09-13)
+
+
+### Bug Fixes
+
+* **app:** defer rule application and toast when it finishes ([d5c0161](https://github.com/budgie-at/budgie/commit/d5c0161d26cf77a5f0d51e1a191ecede2cd2cd4f))
+* **app:** return to onboarding after bank sync setup ([43591e3](https://github.com/budgie-at/budgie/commit/43591e35d70e5177bd61d6c6df92c7a851593876))
+
+
+
+
+
+# [6.53.0](https://github.com/budgie-at/budgie/compare/v6.52.0...v6.53.0) (2026-09-12)
+
+
+### Bug Fixes
+
+* **app:** address runway review findings (a11y, all-in propagation, widget gating, history scroll) ([6402212](https://github.com/budgie-at/budgie/commit/64022121504cf923c1451a04c2d493ed823e820f))
+* **app:** hide runway home widget until enough history ([01cba3f](https://github.com/budgie-at/budgie/commit/01cba3f4e78b89c2356439b9425cac81ae0ec17c))
+
+
+### Features
+
+* **app:** add runway cash-flow forecast ([ac5d996](https://github.com/budgie-at/budgie/commit/ac5d9960e54fb114e4448fed5f40f9b3fa3d29c7))
+
+
+
+
+
 # [6.52.0](https://github.com/budgie-at/budgie/compare/v6.51.1...v6.52.0) (2026-09-12)
 
 

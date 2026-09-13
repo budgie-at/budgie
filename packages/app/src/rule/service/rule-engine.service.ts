@@ -32,6 +32,7 @@ import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.
 
 import { ruleMatcherService } from './rule-matcher.service';
 
+import type { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
 import type { RuleCreatePreparationResultInterface } from '../interface/rule-create-preparation-result.interface';
 import type { RuleEvaluationInputInterface } from '../interface/rule-evaluation-input.interface';
 import type { RuleTransactionMatchInterface } from '../interface/rule-transaction-match.interface';
@@ -49,12 +50,6 @@ import type {
     TransactionCreateInputInterface,
     TransactionEntryCreateEntityInterface
 } from '@budgie/contracts';
-
-type ApplyRuleResultType = {
-    readonly applied: number;
-    readonly failed: number;
-    readonly total: number;
-};
 
 class RuleEngineService {
     @Log(
@@ -128,9 +123,9 @@ class RuleEngineService {
     async applyRuleToMatchingTransactions(
         ruleId: number,
         onProgress: ((processed: number, total: number) => void) | null
-    ): Promise<ApplyRuleResultType> {
+    ): Promise<ApplyRuleResultInterface> {
         const rule = await ruleRepository.findByIdWithRelations(ruleId);
-        const emptyResult: ApplyRuleResultType = { applied: 0, failed: 0, total: 0 };
+        const emptyResult: ApplyRuleResultInterface = { applied: 0, failed: 0, total: 0 };
 
         if (!isDefined(rule) || !isNotEmptyArray(rule.conditions)) {
             return emptyResult;
