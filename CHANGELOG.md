@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.58.0](https://github.com/budgie-at/budgie/compare/v6.57.0...v6.58.0) (2026-09-13)
+
+
+### Features
+
+* **landing:** budget-planning steps story ([290c75f](https://github.com/budgie-at/budgie/commit/290c75f6eac07ed53a6ecd126704963aee740b3f))
+
+
+
+
+
 # [6.57.0](https://github.com/budgie-at/budgie/compare/v6.56.0...v6.57.0) (2026-09-13)
 
 
