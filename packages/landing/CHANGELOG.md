@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.55.1](https://github.com/budgie-at/budgie/compare/v6.55.0...v6.55.1) (2026-09-13)
+
+
+### Bug Fixes
+
+* **landing:** re-tune the first five story pages' callouts and labels ([ff5c196](https://github.com/budgie-at/budgie/commit/ff5c196b35e2dc7ae73dd30de54640c7c18bb2c4)), closes [#823](https://github.com/budgie-at/budgie/issues/823) [#824](https://github.com/budgie-at/budgie/issues/824) [#825](https://github.com/budgie-at/budgie/issues/825) [#826](https://github.com/budgie-at/budgie/issues/826) [#827](https://github.com/budgie-at/budgie/issues/827) [#828](https://github.com/budgie-at/budgie/issues/828) [#829](https://github.com/budgie-at/budgie/issues/829)
+
+
+### Performance Improvements
+
+* **landing:** stop gating feature-page hero text behind client hydration ([ec1bf2a](https://github.com/budgie-at/budgie/commit/ec1bf2ab81dbdf9cbe1544ec268cecae5ae8219b)), closes [#896](https://github.com/budgie-at/budgie/issues/896)
+
+
+
+
+
 # [6.55.0](https://github.com/budgie-at/budgie/compare/v6.54.1...v6.55.0) (2026-09-13)
 
 
