@@ -17,6 +17,13 @@ env:
           id: '${CATEGORY_STATISTICS_ID}'
       timeout: 10000
 
+- scrollUntilVisible:
+      element:
+          id: '${CATEGORY_STATISTICS_ID}'
+      direction: DOWN
+      speed: 20
+      centerElement: true
+
 - waitForAnimationToEnd
 
 - takeScreenshot: poster
