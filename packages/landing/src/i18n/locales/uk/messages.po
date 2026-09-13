@@ -3288,10 +3288,6 @@ msgstr "Резервне копіювання та відновлення"
 msgid "Backup file copied via your cloud"
 msgstr "Файл резервної копії скопійований через вашу хмару"
 
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Backup file is your SQLCipher database — no vendor format conversion"
-msgstr "Файл резервної копії — це ваша база даних SQLCipher — без конвертації у формат постачальника"
-
 #: src/app/[lang]/security/page.tsx
 msgid "Backups are encrypted before leaving your device — the key stays with you"
 msgstr "Резервні копії шифруються до того, як покинуть ваш пристрій — ключ залишається у вас"
@@ -4040,10 +4036,6 @@ msgstr "Імпорт CSV та PDF у Budgie обробляє файли випи
 msgid "Budgie data management settings showing Import Database and Export Database rows"
 msgstr "Налаштування керування даними Budgie з рядками «Імпортувати базу даних» і «Експортувати базу даних»"
 
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Budgie data management settings with the import, export, backup and restore actions"
-msgstr "Налаштування керування даними Budgie з діями імпорту, експорту, резервного копіювання та відновлення"
-
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Budgie date filter sheet with an August calendar above the row of preset range chips"
 msgstr "Аркуш фільтра дати Budgie з календарем серпня над рядом чипів готових періодів"
@@ -4496,6 +4488,10 @@ msgstr "Екран налаштувань Budgie з повідомленням �
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
 msgstr "Екран налаштувань Budgie з групою Безпека: картка блокування застосунку й увімкнений перемикач захисту від знімків екрана"
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Budgie settings screen, Data Management section, listing the Import CSV, Export CSV, Import Database and Export Database rows"
+msgstr "Екран налаштувань Budgie, розділ «Керування даними», із рядками «Імпортувати CSV», «Експортувати CSV», «Імпортувати базу даних» та «Експортувати базу даних»"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie ships historical daily exchange-rate seeds in the local database migration."
@@ -5131,8 +5127,8 @@ msgid "Can splits have different tags?"
 msgstr "Чи можуть частини розділеної транзакції мати різні теги?"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Capture your entire Budgie database in one encrypted file. Restore on any device in seconds — no account, no upload."
-msgstr "Збережіть усю базу даних Budgie в одному зашифрованому файлі. Відновіть на будь-якому пристрої за лічені секунди — без облікового запису, без завантаження."
+msgid "Capture the whole Budgie database as one file — SQLCipher-encrypted with your PIN when you set one — and put it back on another device. No account, no upload."
+msgstr "Збережіть усю базу даних Budgie в один файл — зашифрований SQLCipher вашим PIN-кодом, якщо ви його встановите, — і поверніть його на інший пристрій. Без облікового запису, без завантаження на сервер."
 
 #: src/app/[lang]/features/database-backup/metadata.ts
 msgid "Capture your entire Budgie database in one encrypted file. Save to iCloud or Drive on your terms; restore on a new device with one tap and your PIN."
@@ -5441,8 +5437,8 @@ msgid "Cloud Apps"
 msgstr "Хмарні додатки"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Cloud apps do \"backups\" by holding all your data on their servers. Budgie does backups by giving you an encrypted file. Where you put that file is your business."
-msgstr "Хмарні додатки роблять «резервні копії», зберігаючи всі ваші дані на своїх серверах. Budgie робить резервні копії, надаючи вам зашифрований файл. Де ви його зберігаєте — ваша справа."
+msgid "Cloud apps do “backups” by holding all your data on their servers. Budgie does backups by handing you the database file. Where you put it is your business."
+msgstr "Хмарні застосунки роблять «резервні копії», тримаючи всі ваші дані на своїх серверах. Budgie робить резервну копію, віддаючи вам файл бази даних. Куди ви його покладете — ваша справа."
 
 #: src/generic/component/comparison-section/comparison-table.tsx
 msgid "Cloud Apps include Mint, Emma, Snoop, and similar services that store your data on their servers."
@@ -7464,6 +7460,10 @@ msgstr "Експортуйте будь-коли в CSV або JSON"
 msgid "Export CSV takes the whole ledger in a single tap. There is no range to pick and no partial file to reconcile later."
 msgstr "«Експортувати CSV» бере весь реєстр одним дотиком. Немає діапазону, який треба обирати, і немає часткового файлу, який довелося б потім звіряти."
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Export Database checkpoints the write-ahead log and copies the SQLite file itself — every transaction, account, category, tag and setting — then hands it to the system share sheet as a dated budgie-backup file. Set a PIN and that PIN is the SQLCipher key the file is encrypted with."
+msgstr "«Експортувати базу даних» фіксує журнал випереджувального запису й копіює сам файл SQLite — кожну операцію, рахунок, категорію, тег і налаштування — а тоді передає його системному меню поширення як датований файл budgie-backup. Встановіть PIN — і цей PIN стає ключем SQLCipher, яким зашифровано файл."
+
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Export Database writes one encrypted file with everything. Import Database restores it on a new phone in seconds."
 msgstr "«Експортувати базу даних» записує один зашифрований файл з усім. «Імпортувати базу даних» відновлює його на новому телефоні за кілька секунд."
@@ -8474,8 +8474,8 @@ msgid "How do I open the menu?"
 msgstr "Як відкрити меню?"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "How do I restore on a new device?"
-msgstr "Як відновити на новому пристрої?"
+msgid "How do I restore on another device?"
+msgstr "Як відновити на іншому пристрої?"
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "How do I set a primary tag?"
@@ -8601,7 +8601,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 #: src/app/[lang]/features/binance-sync/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
-#: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
@@ -8771,6 +8770,10 @@ msgstr "Якщо у вас є раніше категоризовані тран
 msgid "If you have questions about our open source license, commercial licensing options, or anything else related to Budgie's licensing:"
 msgstr ""
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "If you have set a PIN, yes: the file is the SQLCipher database encrypted with that PIN, so a provider sees encrypted bytes rather than your transactions. Without a PIN the database is not encrypted and neither is the backup, so set one before the file leaves your device."
+msgstr "Якщо ви встановили PIN — так: файл є базою SQLCipher, зашифрованою цим PIN, тож провайдер бачить зашифровані байти, а не ваші операції. Без PIN база не зашифрована, і резервна копія теж, тож встановіть його, перш ніж файл покине пристрій."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "If you haven’t exported your Mint data yet, here’s what you need to know:"
 msgstr "Якщо ви ще не експортували свої дані з Mint, ось що потрібно знати:"
@@ -8848,6 +8851,10 @@ msgstr "Імпортуйте CSV будь-якого банку з гнучки�
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Import bank CSVs and PDFs without a cloud connection"
 msgstr "Імпортуйте банківські CSV та PDF без хмарного підключення"
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and cannot be undone; confirm and it swaps the database in — write-ahead sidecars included — clears the stored PIN and restarts."
+msgstr "«Імпортувати базу даних» стоїть просто над ним. Оберіть файл — і Budgie попередить, що це замінить усі поточні дані й буде незворотним; після підтвердження він підставляє базу даних разом із файлами випереджувального запису, очищає збережений PIN і перезапускається."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Import the file into Budgie"
@@ -8974,8 +8981,8 @@ msgid "Install + open"
 msgstr "Встановити та відкрити"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Install Budgie on the new phone. On the welcome screen, tap Restore. Pick the backup file from Files / iCloud / Drive. Enter your original PIN. Done."
-msgstr "Встановіть Budgie на новий телефон. На екрані привітання торкніть «Відновити». Оберіть файл резервної копії з Файлів / iCloud / Drive. Введіть оригінальний PIN. Готово."
+msgid "Install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file and confirm the warning. Budgie replaces its database, clears the stored PIN and restarts, so set the lock again afterwards."
+msgstr "Встановіть Budgie, відкрийте налаштування й торкніться «Імпортувати базу даних» у списку «Керування даними». Оберіть файл резервної копії та підтвердіть попередження. Budgie замінює свою базу даних, очищає збережений PIN і перезапускається, тож потім налаштуйте блокування знову."
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Install on iPhone"
@@ -9642,10 +9649,6 @@ msgstr "Прийняття рішення"
 msgid "management"
 msgstr "управління"
 
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Manual backups only by default — for the privacy-first crowd that doesn't want surprise file writes. You can schedule reminders in Settings."
-msgstr "Ручні резервні копії за замовчуванням — для тих, хто не хоче неочікуваного запису файлів. Нагадування можна запланувати в Налаштуваннях."
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Manual budgeting is simpler than it sounds. Check accounts daily—it takes 2-3 minutes to enter new transactions. Use receipts and enter transactions as you make purchases. Do weekly reconciliation to match your app against bank statements. Embrace the awareness—manual entry makes you more conscious of spending. Many users find manual entry actually improves their financial awareness compared to automatic sync."
 msgstr "Ручне бюджетування простіше, ніж здається. Перевіряйте рахунки щодня — це займає 2-3 хвилини для введення нових транзакцій. Використовуйте чеки та вносіть транзакції під час покупок. Робіть щотижневу звірку, щоб порівняти додаток з банківськими виписками. Цінуйте усвідомленість — ручне введення робить вас більш свідомими щодо витрат. Багато користувачів вважають, що ручне введення насправді покращує їхню фінансову обізнаність порівняно з автоматичною синхронізацією."
@@ -9879,10 +9882,6 @@ msgstr "Метод 2: Скрапінг екрану"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Method 3: Direct API Access (Open Banking)"
 msgstr "Метод 3: Прямий доступ через API (Відкритий банкінг)"
-
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Migrate to a new phone in under a minute, no account required"
-msgstr "Перейдіть на новий телефон за менше ніж хвилину — без необхідності мати обліковий запис"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Migrating from Mint to Budgie: A Practical Walkthrough"
@@ -10249,6 +10248,10 @@ msgstr "Більшість користувачів ніколи не викон
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Move money between your own accounts with automatic FX conversion and dual-amount display for cross-currency transfers."
 msgstr "Переміщуйте гроші між власними рахунками з автоматичною конверсією FX та подвійним відображенням суми для міжвалютних переказів."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Move to a new phone by exporting on the old one and importing on the new one — no account on either side"
+msgstr "Перейдіть на новий телефон, експортувавши на старому та імпортувавши на новому — без облікового запису з жодного боку"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Moving from Mint to another cloud service does not solve the problem. It reschedules it."
@@ -10765,6 +10768,10 @@ msgstr "Ні. Депозитні рахунки виключено зі звич
 #: src/app/[lang]/privacy/page.tsx
 msgid "No. Every transaction, category, and balance lives in an encrypted SQLite database on your device. Budgie has no backend that receives financial data."
 msgstr "Ні. Кожна транзакція, категорія та баланс зберігаються у зашифрованій базі даних SQLite на вашому пристрої. У Budgie немає бекенду, що отримує фінансові дані."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "No. Exports are manual only — Budgie never writes a backup file on its own, and there is no scheduler and no reminder to turn on. Nothing is written until you tap Export Database."
+msgstr "Ні. Експорт лише ручний — Budgie ніколи не пише файл резервної копії самостійно, і немає ні планувальника, ні нагадування, які можна ввімкнути. Нічого не записується, доки ви не торкнетесь «Експортувати базу даних»."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "No. Inference uses ONNX Runtime locally. There is no fallback to a cloud model and no telemetry about your transactions."
@@ -11289,6 +11296,14 @@ msgstr "Одна валюта, часто жорстко закодована"
 #: src/app/[lang]/security/page.tsx
 msgid "One encrypted file. No account. Restore on any device in seconds."
 msgstr "Один зашифрований файл. Без облікового запису. Відновлення на будь-якому пристрої за секунди."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "One file holds every transaction, account, category, tag and setting — it is the app's own SQLite database"
+msgstr "Один файл містить кожну операцію, рахунок, категорію, тег і налаштування — це власна база SQLite застосунку"
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "One file holds the database"
+msgstr "Один файл містить базу даних"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "One number, everything in it"
@@ -12812,21 +12827,26 @@ msgstr "Відповідальний розробник-одинак"
 msgid "restore"
 msgstr "відновлення"
 
+#: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Restore from the same Settings list: pick the file, confirm the destructive replace, the app restarts on it"
+msgstr "Відновлення з того самого списку налаштувань: оберіть файл, підтвердіть заміну, застосунок перезапуститься на ньому"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Restore in one tap"
 msgstr "Відновлення одним дотиком"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Restore is a one-tap flow on a fresh install — pick the file, enter your PIN"
-msgstr "Відновлення — це процес одного дотику при новому встановленні — оберіть файл, введіть PIN"
+msgid "Restore lives in the same Settings list as the export. Pick the file, confirm the warning that it replaces everything, and the app restarts on the restored database. No account is involved on either side."
+msgstr "Відновлення живе в тому самому списку налаштувань, що й експорт. Оберіть файл, підтвердіть попередження про заміну всього — і застосунок перезапуститься на відновленій базі даних. Жодного облікового запису з жодного боку."
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Restore is a single tap on a fresh install — pick the file, enter the original PIN, the database is back. Migrate to a new phone in under a minute without an account."
-msgstr "Відновлення — це один дотик при новому встановленні — оберіть файл, введіть оригінальний PIN, база даних повернулася. Перейдіть на новий телефон за менше ніж хвилину без облікового запису."
+msgid "Restore replaces what is there"
+msgstr "Відновлення замінює наявне"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Returned vs lent"
@@ -13221,6 +13241,10 @@ msgstr "Збої в обслуговуванні залишають вас бе�
 msgid "Set a monthly ceiling and per-category limits that reset when you get paid."
 msgstr "Встановіть місячну межу та ліміти за категоріями, які оновлюються з зарплатою."
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Set a PIN and the file is SQLCipher-encrypted with it — no vendor format, no conversion step"
+msgstr "Встановіть PIN — і файл буде зашифровано ним через SQLCipher: без власницького формату й без кроку конвертації"
+
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Set a target balance on any account and Budgie writes the difference as an Adjustment"
 msgstr "Задайте цільовий баланс для будь-якого рахунку, і Budgie проведе різницю як коригування"
@@ -13253,10 +13277,6 @@ msgstr "Налаштуйте новий додаток з поточними з�
 msgid "Settings › Categories shows the categories you created and nothing else — the built-in tree stays out of the way until you need it. The ones you tag most transactions with sort to the top."
 msgstr "Налаштування › Категорії показують лише створені вами категорії — вбудоване дерево не заважає, доки не знадобиться. Ті, до яких належить найбільше транзакцій, підіймаються вгору."
 
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Settings → Export → Backup. Budgie writes a .db file with SQLCipher encryption intact. To restore, install Budgie on the new device, tap Restore on the welcome screen, point at the file, enter the PIN."
-msgstr "Налаштування → Експорт → Резервна копія. Budgie записує файл .db зі збереженим шифруванням SQLCipher. Для відновлення встановіть Budgie на новий пристрій, торкніть «Відновити» на екрані привітання, вкажіть файл, введіть PIN."
-
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Settings → Recalculate Balances clears the cached balance for every account and rebuilds it from the transactions themselves — useful after an import or a run of edits when a cached figure has drifted."
 msgstr "Налаштування → Перерахувати баланси очищає кешований баланс кожного рахунку й відновлює його з самих транзакцій — корисно після імпорту чи серії змін, коли кешоване значення розійшлося."
@@ -13268,6 +13288,10 @@ msgstr "Налаштування → Безпека, одразу під кар�
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Settings holds both exports as plain rows, each one sitting next to the import that reads the file back in."
 msgstr "Налаштування містять обидва експорти звичайними рядками, і кожен стоїть поряд з імпортом, який читає цей файл назад."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Settings keeps Export Database and Import Database as two neighbouring rows. Between them they do everything a hosted account would have done."
+msgstr "У налаштуваннях «Експортувати базу даних» та «Імпортувати базу даних» стоять сусідніми рядками. Разом вони роблять усе, що робив би розміщений на сервері обліковий запис."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Settle by transfer to a real account — no awkward \"expense\" workarounds"
@@ -13348,10 +13372,6 @@ msgstr "Просто налаштуйте рахунки з поточними �
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Since your financial data is stored locally on your device, international data transfers are minimal. However, if you use optional cloud features, your data may be processed in countries where our service providers operate. We ensure appropriate safeguards are in place to protect your data in compliance with applicable data protection laws including GDPR and CCPA."
 msgstr ""
-
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Single encrypted file holds every transaction, account, category, tag, and setting"
-msgstr "Один зашифрований файл містить кожну транзакцію, рахунок, категорію, тег та налаштування"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Single-currency apps can't model how most people actually save and spend — a UK current account, a Wise USD pot, a UAH salary. Budgie tracks each in its native currency and converts to your base when summing."
@@ -14433,6 +14453,10 @@ msgstr "Курс зберігається разом із переказом, т
 msgid "The export includes:"
 msgstr "Експорт включає:"
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "The export leaves through the system share sheet — Files, iCloud Drive, Drive, Dropbox or a USB stick"
+msgstr "Експорт виходить через системне меню поширення — «Файли», iCloud Drive, Drive, Dropbox або USB-флешка"
+
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "The figure at the top adds every account together and reports it in the base currency you set in Settings. Pick a different base and the same accounts produce a different number."
 msgstr "Число вгорі додає всі рахунки й показує результат у базовій валюті, яку ви задали в Налаштуваннях. Оберіть іншу базу — і ті самі рахунки дадуть інше число."
@@ -14844,6 +14868,10 @@ msgstr "Сервіс не буде закритий"
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The Service, including its original content, features, and functionality, is owned by Budgie and is protected by international copyright, trademark, patent, trade secret, and other intellectual property laws. Our trademarks and trade dress may not be used without our prior written permission."
 msgstr ""
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "The share sheet is the last step Budgie takes part in. Send the file to Files, iCloud Drive, a Drive folder or a USB stick, and keep as many dated copies as you want — the name carries the date and time, so exports never collide."
+msgstr "Меню поширення — останній крок, у якому бере участь Budgie. Надішліть файл до «Файлів», iCloud Drive, теки Drive чи на USB-флешку й тримайте скільки завгодно датованих копій — у назві є дата й час, тож експорти ніколи не перетинаються."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "The shutdown was not a surprise to anyone paying attention. It was the predictable end of an ad-supported, cloud-hosted service that was never designed around user ownership of data."
@@ -15778,10 +15806,6 @@ msgstr "Майбутні списання"
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Use Add item to add another row; the label under the rows shows how much is still left to assign."
 msgstr "Натисніть «Додати елемент», щоб додати ще один рядок; підпис під рядками показує, скільки ще залишилось призначити."
-
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice"
-msgstr "Використовуйте будь-яку хмару (iCloud, Drive, Dropbox) або USB-передачу — ваш вибір"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Use automated systems to access the Service without permission"
@@ -16739,6 +16763,10 @@ msgstr "Коли ваша база даних зашифрована, файл �
 msgid "When your financial information lives on someone else’s server, you’re trusting that:"
 msgstr "Коли ваша фінансова інформація зберігається на чужому сервері, ви довіряєте, що:"
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Where a server would be, there is a file"
+msgstr "Там, де був би сервер, лежить файл"
+
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Where AI runs"
 msgstr "Де виконується AI"
@@ -17391,6 +17419,10 @@ msgstr "Створіть тут файл резервної копії"
 msgid "Writes straight to the device"
 msgstr "Записує одразу на пристрій"
 
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Writes the whole database"
+msgstr "Записує всю базу даних"
+
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "xlsx"
 msgstr "XLSX"
@@ -17456,8 +17488,8 @@ msgid "Yes — enables transfer-pair detection"
 msgstr "Так — дозволяє виявлення пар переказів"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Yes — every backup is a separate file. Snapshot before risky imports or migrations and keep the file around for rollback."
-msgstr "Так — кожна резервна копія є окремим файлом. Зробіть знімок перед ризикованими імпортами або міграціями та зберігайте файл для відкату."
+msgid "Yes — every export is written with the date and time in its name, so files never overwrite each other. Snapshot before a risky import or migration and keep the file around for rollback."
+msgstr "Так — кожен експорт має дату й час у назві, тож файли ніколи не перезаписують один одного. Зробіть знімок перед ризикованим імпортом чи переїздом і збережіть файл для відкату."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Yes — IBAN extraction is part of the header parse. The IBAN is stored on the account and enables automatic transfer-pair detection between Erste and other accounts you own."
@@ -17502,10 +17534,6 @@ msgstr "Так — у цьому весь сенс. IBAN контрагента 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Yes — the encrypted backup is just a file. Save it anywhere you control: NAS, S3, your own server, your own cloud."
 msgstr "Так — зашифрована резервна копія є лише файлом. Збережіть її де завгодно, чим ви керуєте: NAS, S3, власний сервер, власна хмара."
-
-#: src/app/[lang]/features/database-backup/page.tsx
-msgid "Yes — the file is SQLCipher-encrypted with your PIN-derived key. Cloud providers see encrypted bytes, not your transactions."
-msgstr "Так — файл зашифрований SQLCipher за допомогою ключа, виведеного з вашого PIN. Хмарні провайдери бачать зашифровані байти, а не ваші транзакції."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Yes — the filter row has an amount-range chip beside the date one. Give it a From value, a To value, or both, and it stacks with every other active filter."
@@ -18127,6 +18155,10 @@ msgstr "Лише ваш пристрій"
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Your device UDID must already be registered in the ad-hoc provisioning profile."
 msgstr "UDID вашого пристрою вже має бути зареєстровано в ad-hoc профілі забезпечення."
+
+#: src/app/[lang]/features/database-backup/page.tsx
+msgid "Your file, your storage"
+msgstr "Ваш файл, ваше сховище"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Your financial data belongs to you. Period. A good budget app should:"
