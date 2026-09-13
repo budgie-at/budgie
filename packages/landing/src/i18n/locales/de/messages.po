@@ -2218,10 +2218,6 @@ msgstr "Ein Cloud-Assistent sendet Ihre Transaktionsbeschreibungen an ein Remote
 msgid "A comprehensive developer's guide to Mint alternatives after the shutdown. Detailed comparison of Budgie, Actual Budget, Firefly III, Lunch Money, YNAB, and more."
 msgstr "Ein praktischer Entwicklerleitfaden zu Mint-Alternativen nach der Abschaltung, mit einem klaren Vergleich von Budgie, Actual Budget, Firefly III, Lunch Money, YNAB und mehr."
 
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "A conflict picker appears for every edited row before write. You choose to keep your edit, take the bank's version, or merge fields."
-msgstr "Für jede bearbeitete Zeile erscheint ein Konfliktdialog vor dem Schreiben. Sie entscheiden, ob Sie Ihre Bearbeitung beibehalten, die Bankversion übernehmen oder Felder zusammenführen möchten."
-
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "A connection screen listing its accounts with their balances and a per-account sync switch"
 msgstr "Ein Verbindungsbildschirm mit allen zugehörigen Konten samt Saldo und einem Sync-Schalter pro Konto"
@@ -2306,10 +2302,6 @@ msgstr "Ein Finanzdaten-Aggregator, der Millionen von Nutzern bedient, hält Zug
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "A fixed term, tracked like an account"
 msgstr "Eine Festanlage, geführt wie ein Konto"
-
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "A full re-sync wipes your manual category overrides and edits. Windowed re-sync diffs only the slice you ask for, so old edits stay safe."
-msgstr "Eine vollständige Neusynchronisierung löscht Ihre manuellen Kategoriezuweisungen und Bearbeitungen. Die Fenster-Neusynchronisierung vergleicht nur den gewählten Zeitraum, sodass ältere Bearbeitungen erhalten bleiben."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "A key that can only read"
@@ -2460,10 +2452,6 @@ msgstr "Kontostände und Gesamtvermögen wechseln zu einem Platzhalter, sobald B
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Account balances and net worth switch to a placeholder wherever Budgie renders them, for as long as the app isn't the active app — most visible when you open the app switcher."
 msgstr "Kontostände und Gesamtvermögen werden überall dort durch einen Platzhalter ersetzt, wo Budgie sie anzeigt, solange die App nicht aktiv ist — am deutlichsten im App-Umschalter."
-
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Account detail → Re-sync. The window picker opens. Pick a range. The sync engine fetches just that window from the bank API, runs a diff, and presents conflicts before write."
-msgstr "Kontodetails → Neu synchronisieren. Der Zeitraumauswähler öffnet sich. Wählen Sie einen Bereich. Die Synchronisierungs-Engine ruft nur diesen Zeitraum von der Bank-API ab, führt einen Vergleich durch und zeigt Konflikte vor dem Schreiben."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Account holder, IBAN, opening and closing balances all extracted automatically"
@@ -3919,6 +3907,10 @@ msgstr "Budgie - Ausgaben-Tracker mit Datenschutz-Fokus"
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Budgie (\"we,\" \"our,\" or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application and website (collectively, the \"Service\"). We are a privacy-first financial tracking application that operates on an offline-first basis, meaning your financial data stays on your device."
 msgstr "Budgie („wir“, „unser“ oder „uns“) verpflichtet sich, Ihre Privatsphäre zu schützen. Diese Datenschutzrichtlinie erklärt, wie wir Ihre Informationen erfassen, verwenden, offenlegen und schützen, wenn Sie unsere mobile Anwendung und Website (zusammen der „Service“) nutzen. Wir sind eine private Finanztracking-App, die offline-first arbeitet, das heißt: Ihre Finanzdaten bleiben auf Ihrem Gerät."
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Budgie Account Settings for a bank-synced account with the re-sync sheet open on four options: re-sync entire history, last 90 days, last 30 days and last 7 days"
+msgstr "Budgie-Kontoeinstellungen für ein bankensynchronisiertes Konto mit geöffnetem Neusynchronisierungs-Blatt und vier Optionen: gesamten Verlauf neu synchronisieren, letzte 90 Tage, letzte 30 Tage und letzte 7 Tage"
 
 #: src/app/[lang]/page.tsx
 msgid "Budgie analytics screen breaking spending down by category with amounts and percentages"
@@ -6523,10 +6515,6 @@ msgstr "Speicherung auf dem Gerät"
 msgid "Device-to-Device Sync Architecture"
 msgstr "Architektur der Gerät-zu-Gerät-Synchronisierung"
 
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Diff before write — see what changes before anything commits"
-msgstr "Vergleich vor dem Schreiben – sehen Sie, was sich ändert, bevor etwas festgeschrieben wird"
-
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Direct API or PDF/CSV"
 msgstr "Direkte API oder PDF/CSV"
@@ -6856,6 +6844,10 @@ msgstr "Funktioniert das mit den Datumsfilter-Voreinstellungen?"
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Does voice entry send audio to a server?"
 msgstr "Sendet die Spracheingabe Audio an einen Server?"
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Down to the last week"
+msgstr "Bis hinunter auf eine Woche"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Download the ZIP file containing your data"
@@ -7803,10 +7795,6 @@ msgstr "Fünf Bildschirme der echten App, in der Reihenfolge, in der du ihnen be
 msgid "Five taps is four taps too many"
 msgstr "Fünf Tipps sind vier Tipps zu viel"
 
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Five window presets: 7, 30, 90 days, plus custom range"
-msgstr "Fünf Fenstervoreinstellungen: 7, 30, 90 Tage, plus benutzerdefinierter Bereich"
-
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
 msgstr "Korrigiere eine Zeile oder nutze „Alle Kategorien auswählen“, um den ganzen Stapel auf einmal zu korrigieren"
@@ -7986,6 +7974,10 @@ msgstr "Forkbar"
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Four actions, no form"
 msgstr "Vier Aktionen, kein Formular"
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Four choices: the last 7, 30 or 90 days, or the whole history"
+msgstr "Vier Optionen: die letzten 7, 30 oder 90 Tage — oder der gesamte Verlauf"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Four slots, nothing typed"
@@ -8597,7 +8589,6 @@ msgstr "Wie unterscheidet sich das von der Tag-Analyse-Seite?"
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 #: src/app/[lang]/features/bank-integration-management/page.tsx
-#: src/app/[lang]/features/bank-resync-window/page.tsx
 #: src/app/[lang]/features/binance-sync/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/budget-planning/page.tsx
@@ -9268,10 +9259,6 @@ msgstr "Der Sprachwechsel erfolgt in der App — keine Neuinstallation nötig. Z
 msgid "languages"
 msgstr "Sprachen"
 
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Last 7 days. Larger windows (30, 90, custom) are also one-tap presets. Custom range opens a date picker."
-msgstr "Letzte 7 Tage. Größere Fenster (30, 90, benutzerdefiniert) sind ebenfalls Ein-Tipp-Voreinstellungen. Benutzerdefinierter Bereich öffnet eine Datumsauswahl."
-
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Last Month lands as a chip in the filter row and the count above the list drops from 761 transactions to 73, every row now dated inside August. Clear All puts the whole list back, and the date chip stacks with the type, amount, category, tag and account chips beside it."
 msgstr "„Letzter Monat“ landet als Chip in der Filterzeile und die Zahl über der Liste fällt von 761 Transaktionen auf 73 — jede Zeile liegt jetzt im August. „Alle löschen“ holt die ganze Liste zurück, und der Datums-Chip lässt sich mit den Chips für Typ, Betrag, Kategorien, Tags und Konten daneben kombinieren."
@@ -9656,10 +9643,6 @@ msgstr "Manuelles Budgetieren ist einfacher als es klingt. Prüfen Sie Konten t�
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Manual date pickers are slow. Budgie wraps them with the seven presets you actually use, plus a custom-range fallback. Every transaction list, every analytics tab, every recurring view shares the same picker."
 msgstr "Manuelle Datumsauswahl ist langsam. Budgie umschließt sie mit den sieben Presets, die Sie tatsächlich nutzen, plus einem benutzerdefinierten Zeitraum als Fallback. Jede Transaktionsliste, jeder Analytics-Tab, jede wiederkehrende Ansicht teilt sich denselben Picker."
-
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Manual edits in the window are preserved — conflict picker for every edited row"
-msgstr "Manuelle Bearbeitungen im Fenster werden bewahrt – Konfliktauswähler für jede bearbeitete Zeile"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Manual edits to detected patterns are sticky — the next scan respects them"
@@ -11390,6 +11373,10 @@ msgstr "Ein Einstellungsbildschirm — und das Bemerkenswerteste daran ist die Z
 msgid "One settings screen, and the two rows that stand in for everything a hosted server would do."
 msgstr "Ein Einstellungsbildschirm, und die zwei Zeilen, die alles ersetzen, was ein gehosteter Server tun würde."
 
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "One sheet on the account's own settings screen: the whole history, or the last ninety, thirty or seven days."
+msgstr "Ein Blatt auf dem Einstellungsbildschirm des Kontos: der gesamte Verlauf oder die letzten neunzig, dreißig oder sieben Tage."
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "One switch in Settings → Security, right under the PIN-lock card"
 msgstr "Ein Schalter in Einstellungen → Sicherheit, direkt unter der PIN-Sperre-Karte"
@@ -11459,8 +11446,8 @@ msgid "Ongoing Practices"
 msgstr "Laufende Praktiken"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Only as far back as the bank's API supports. Monobank has months of history; PrivatBank XLSX is per-export. CSV import is the universal fallback."
-msgstr "Nur so weit zurück, wie die API der Bank unterstützt. Monobank hat Monate an Geschichte; PrivatBank-XLSX ist pro Export. CSV-Import ist der universelle Fallback."
+msgid "Only as far back as the bank's API serves. Re-sync drives the Monobank connection; PrivatBank and Erste arrive as file imports, where the range is whatever you export. CSV import is the universal fallback."
+msgstr "Nur so weit zurück, wie die API der Bank reicht. Die Neusynchronisierung steuert die Monobank-Verbindung; PrivatBank und Erste kommen als Dateiimporte, bei denen der Zeitraum dem entspricht, was du exportierst. Der CSV-Import ist die universelle Rückfalloption."
 
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Only fees are spending"
@@ -11493,6 +11480,10 @@ msgstr "Nur die Zeilen ohne Kategorie"
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically after sync or manual entry."
 msgstr "Nur wenn nötig. Händler mit lateinischer Schrift überspringen die Übersetzung. Nicht-lateinische Zeichenketten durchlaufen die Warteschlange automatisch nach der Synchronisierung oder manuellen Eingabe."
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Open a bank-synced account and tap Re-sync. Picking a window moves that account's sync cursor back to the date you chose, so the next sync starts from there instead of walking the whole history again."
+msgstr "Öffne ein bankensynchronisiertes Konto und tippe auf Neu synchronisieren. Ein Zeitfenster setzt den Sync-Zeiger dieses Kontos auf das gewählte Datum zurück, sodass die nächste Synchronisierung dort beginnt, statt den gesamten Verlauf erneut durchzugehen."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Open a debt to see what is still to receive, how much has come back and the total you lent, against the target balance and return date."
@@ -11683,6 +11674,10 @@ msgstr "Optionen umfassen:"
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Or fund a new deposit"
 msgstr "Oder ein neues Einlagenkonto eröffnen"
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Or the last ninety days"
+msgstr "Oder die letzten neunzig Tage"
 
 #: src/app/[lang]/features/custom-categories/opengraph-image.tsx
 #: src/app/[lang]/features/transaction-tags/opengraph-image.tsx
@@ -11897,10 +11892,6 @@ msgstr ""
 msgid "Pick a CSV from Settings and Budgie reads its header row, then offers those headers to every field it needs to write a transaction."
 msgstr "Wähle in den Einstellungen eine CSV-Datei und Budgie liest ihre Kopfzeile, dann bietet es diese Überschriften jedem Feld an, das für eine Transaktion nötig ist."
 
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Pick a window: last 7 days, last 30, last 90, or a custom range. Budgie diffs the bank's response against existing rows; new rows insert, deleted rows soft-delete, edited rows show a conflict picker."
-msgstr "Ein Fenster auswählen: letzte 7 Tage, letzte 30, letzte 90 oder ein benutzerdefinierter Bereich. Budgie vergleicht die Antwort der Bank mit bestehenden Zeilen; neue Zeilen werden eingefügt, gelöschte Zeilen werden weich gelöscht, bearbeitete Zeilen zeigen einen Konfliktauswähler."
-
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Pick any range by hand"
 msgstr "Beliebigen Zeitraum selbst wählen"
@@ -11920,6 +11911,10 @@ msgstr "Wähle die Ausgabe und wandle um. Die Erstattung steht nicht mehr für s
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Pick the expense it reverses"
 msgstr "Wähle die Ausgabe, die sie zurücknimmt"
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Pick the last 7, 30 or 90 days and Budgie moves that account's sync cursor back to the matching date; the next sync re-fetches from there. Rows the bank sends again are matched on its own transaction id, so they are updated in place instead of landing twice."
+msgstr "Wähle die letzten 7, 30 oder 90 Tage, und Budgie setzt den Sync-Zeiger dieses Kontos auf das passende Datum zurück; die nächste Synchronisierung holt ab dort neu. Zeilen, die die Bank erneut sendet, werden über ihre eigene Transaktions-ID zugeordnet und an Ort und Stelle aktualisiert, statt ein zweites Mal zu landen."
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Pick the one to keep"
@@ -12469,6 +12464,10 @@ msgstr "Selten sichtbar"
 msgid "Re-locks the moment the app goes to background"
 msgstr "Sperrt erneut, sobald die App in den Hintergrund geht"
 
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Re-pull a slice, not everything"
+msgstr "Nur einen Ausschnitt neu holen"
+
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx
 msgid "Re-pull a slice. Keep your edits."
 msgstr "Einen Zeitraum erneut abrufen. Ihre Bearbeitungen behalten."
@@ -12477,17 +12476,21 @@ msgstr "Einen Zeitraum erneut abrufen. Ihre Bearbeitungen behalten."
 msgid "Re-pull a slice. Keep your edits. No nuke-from-orbit."
 msgstr "Einen Zeitraum neu synchronisieren, ohne deine Bearbeitungen zu verlieren."
 
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Re-pull just the last N days of bank history without nuking your manual edits or category overrides."
-msgstr "Nur die letzten N Tage der Bankhistorie erneut abrufen, ohne manuelle Bearbeitungen oder Kategorieüberschreibungen zu löschen."
-
 #: src/app/[lang]/features/bank-resync-window/metadata.ts
 msgid "Re-pull just the last N days of bank history without nuking your manual edits or category overrides. Conflict picker for edited rows."
 msgstr "Synchronisiere nur die letzten N Tage der Bankhistorie neu, ohne manuelle Bearbeitungen oder Kategorie-Overrides zu überschreiben. Bearbeitete Zeilen öffnen sich in einem Konflikt-Picker."
 
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Re-pull the last 7, 30 or 90 days from your bank instead of resetting the account and re-walking its whole history."
+msgstr "Hole die letzten 7, 30 oder 90 Tage neu von deiner Bank, statt das Konto zurückzusetzen und seinen gesamten Verlauf erneut durchzugehen."
+
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx
 msgid "re-sync"
 msgstr "Neu synchronisieren"
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Re-sync sits in each account's own settings, beside its sync switch"
+msgstr "Die Neusynchronisierung liegt in den Einstellungen jedes Kontos, neben seinem Sync-Schalter"
 
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx
 msgid "Re-sync Window"
@@ -12747,6 +12750,10 @@ msgstr "Reparatur"
 msgid "Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long before you think about the debt. Instead of deleting it and re-entering a transfer, attach that transaction to the debt: it is recorded as a settlement against the debt account and the balance moves accordingly, while the original transaction stays exactly where your bank put it."
 msgstr "Rückzahlungen kommen selten beschriftet an. Ein Freund schickt Geld zurück, und es landet als gewöhnliche Einnahme auf Ihrem Konto, lange bevor Sie an die Schuld denken. Statt sie zu löschen und eine Überweisung neu zu erfassen, verknüpfen Sie diese Transaktion mit der Schuld: Sie wird als Begleichung des Schulden-Kontos erfasst, und der Saldo passt sich entsprechend an, während die ursprüngliche Transaktion genau dort bleibt, wo Ihre Bank sie eingeordnet hat."
 
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Repeat rows are matched on the bank's transaction id, not inserted again"
+msgstr "Wiederkehrende Zeilen werden über die Transaktions-ID der Bank zugeordnet, nicht erneut eingefügt"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Report bugs and usability issues"
 msgstr "Melden Sie Bugs und Usability-Probleme"
@@ -12883,6 +12890,10 @@ msgstr "Prüfe die Tabelle der drei extrahierten Zeilen, jede mit eigenem Betrag
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Revoke access through your bank’s connected apps settings"
 msgstr "Den Zugriff über die Einstellungen für verbundene Apps Ihrer Bank widerrufen"
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Rewind a week, not a year"
+msgstr "Eine Woche zurückspulen, kein Jahr"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Roadmap Transparency"
@@ -13313,6 +13324,18 @@ msgstr "Einrichtungszeit"
 msgid "Seven date presets, from Today to All Time, plus any range you pick on the calendar"
 msgstr "Sieben Datumsvorgaben von Heute bis Gesamter Zeitraum, plus jeder Bereich aus dem Kalender"
 
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Seven days is the tightest slice on offer. Whatever comes back is matched against what you already have on the bank's own transaction id and updated in place, so rows are refreshed rather than duplicated — and the category and the tags you set are not part of that update."
+msgstr "Sieben Tage sind der engste angebotene Ausschnitt. Was zurückkommt, wird über die Transaktions-ID der Bank mit dem abgeglichen, was du schon hast, und an Ort und Stelle aktualisiert — Zeilen werden also aufgefrischt statt verdoppelt, und die Kategorie und die Tags, die du gesetzt hast, gehören nicht zu diesem Update."
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Seven days, one tap"
+msgstr "Sieben Tage, ein Tippen"
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "Seven days. Thirty and ninety are the other two presets. There is no custom date range — the sheet offers exactly these four choices."
+msgstr "Sieben Tage. Dreißig und neunzig sind die beiden anderen Voreinstellungen. Einen eigenen Zeitraum gibt es nicht — das Blatt bietet genau diese vier Optionen."
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Seven presets cover the windows you actually use, from Today to All Time"
 msgstr "Sieben Presets decken die Zeiträume ab, die Sie tatsächlich nutzen, von Heute bis Gesamter Zeitraum"
@@ -13431,10 +13454,6 @@ msgstr "Intelligente Überweisungs- und Rückerstattungskonsolidierung – Budgi
 msgid "Social login SDKs that share data with platform providers"
 msgstr "Social-Login-SDKs, die Daten mit Plattformanbietern teilen"
 
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Soft-delete for rows the bank no longer reports — recoverable from trash"
-msgstr "Weicheslöschen für Zeilen, die die Bank nicht mehr meldet – aus dem Papierkorb wiederherstellbar"
-
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "Soft-deletes duplicated imported rows only — anything you typed yourself is left exactly as it is"
 msgstr "Soft-löscht nur duplizierte importierte Zeilen — alles, was Sie selbst eingegeben haben, bleibt genau so, wie es ist"
@@ -13468,8 +13487,8 @@ msgid "Some things should not be guessed"
 msgstr "Manches sollte man nicht raten"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Sometimes a sync drifts — a transaction reconciles late, a refund posts wrong. The naive fix is a full re-sync, which wipes your edits. Budgie's window picker re-pulls only the slice you ask for."
-msgstr "Manchmal driftet eine Synchronisierung – eine Transaktion wird spät abgeglichen, eine Rückerstattung wird falsch gebucht. Die naive Lösung ist eine vollständige Neusynchronisierung, die Ihre Bearbeitungen löscht. Budgies Fensterauswähler ruft nur den angeforderten Zeitraum erneut ab."
+msgid "Sometimes a sync drifts — a transaction reconciles late, a refund posts after the fact. The blunt fix is to reset the account and re-walk its entire history. Budgie's window picker rewinds only as far as you ask."
+msgstr "Manchmal läuft eine Synchronisierung aus dem Ruder — eine Transaktion wird spät abgeglichen, eine Rückerstattung erscheint nachträglich. Die grobe Lösung wäre, das Konto zurückzusetzen und seinen gesamten Verlauf erneut durchzugehen. Budgies Fensterauswahl spult nur so weit zurück, wie du es verlangst."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Sometimes the best migration is no migration. Consider starting fresh if:"
@@ -14305,6 +14324,10 @@ msgstr "Die Bargeldbewegung kann ein Transfer bleiben, während die ATM-Gebühr 
 msgid "The categories you actually use"
 msgstr "Die Kategorien, die du wirklich nutzt"
 
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "The category and the tags you set are never part of what a re-sync writes"
+msgstr "Die Kategorie und die Tags, die du gesetzt hast, gehören nie zu dem, was eine Neusynchronisierung schreibt"
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The category it sets"
 msgstr "Die Kategorie, die sie setzt"
@@ -14994,6 +15017,18 @@ msgstr "Die Wallet selbst rechnet in der Münze: ein Saldo in BTC und darunter d
 msgid "The whole list, no spinner"
 msgstr "Die ganze Liste, kein Ladekreis"
 
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "The whole-history option asks for confirmation before it clears the sync state"
+msgstr "Die Option für den gesamten Verlauf fragt nach, bevor sie den Sync-Status löscht"
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "The whole-history option clears the account's entire sync state and re-walks it from the beginning, and it un-merges every transfer pair Budgie had matched automatically on that account. A window rewinds a set number of days and leaves everything older untouched."
+msgstr "Die Option für den gesamten Verlauf löscht den kompletten Sync-Status des Kontos und geht ihn von vorne durch — und sie löst jedes Überweisungspaar wieder auf, das Budgie auf diesem Konto automatisch zusammengeführt hatte. Ein Zeitfenster spult eine feste Zahl von Tagen zurück und lässt alles Ältere unberührt."
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "The whole-history reset"
+msgstr "Der Reset des gesamten Verlaufs"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The write completes locally with no network activity"
 msgstr "Der Schreibvorgang wird lokal abgeschlossen, ohne jegliche Netzwerkaktivität"
@@ -15029,6 +15064,10 @@ msgstr "Es gibt keine Hintergrundsynchronisierung, die stillschweigend Ihre Date
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "There is no Budgie server holding your financial data. We do not have access to your transactions because we never receive them."
 msgstr "Es gibt keinen Budgie-Server, der Ihre Finanzdaten hält. Wir haben keinen Zugang zu Ihren Transaktionen, weil wir sie nie erhalten."
+
+#: src/app/[lang]/features/bank-resync-window/page.tsx
+msgid "There is no conflict prompt. If the bank sends a row again with different figures, Budgie overwrites the amount, the title, the comment and the date that came with it. What it never touches is the category and the tags you set."
+msgstr "Es gibt keine Konfliktabfrage. Sendet die Bank eine Zeile erneut mit anderen Zahlen, überschreibt Budgie Betrag, Titel, Kommentar und das mitgelieferte Datum. Was es nie anrührt, sind die Kategorie und die Tags, die du gesetzt hast."
 
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "There is no server to phone home to"
@@ -17386,10 +17425,6 @@ msgstr "Funktioniert offline und auf jeder Formularvariante – Ausgabe, Einnahm
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Works offline and on-device, with no analytics service reading your financial data"
 msgstr "Funktioniert offline und auf dem Gerät, ohne dass ein Analytics-Dienst Ihre Finanzdaten liest"
-
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-msgid "Works on every bank-synced provider — Monobank today, more soon"
-msgstr "Funktioniert bei jedem banksynchronisierten Anbieter – heute Monobank, bald mehr"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Works with offline-only banks"
