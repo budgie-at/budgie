@@ -7,6 +7,7 @@ import {
 import type {
     ConsolidationScanScopeInterface,
     DB,
+    LanguageEnum,
     RefundCandidateBaseInterface,
     RefundCandidateBaseRowInterface,
     RefundCandidateInterface,
@@ -42,12 +43,13 @@ export class RefundPairRepository {
 
     async findRefundableExpenseCandidates(
         refundIncomeTransactionId: number,
-        search: string
+        search: string,
+        language: LanguageEnum
     ): Promise<RefundableExpenseCandidateInterface[]> {
         const searchPattern = `%${search.trim().toLowerCase()}%`;
         const rows = await this.db.$client.getAllAsync<RefundableExpenseCandidateRowInterface>(
             REFUNDABLE_EXPENSE_CANDIDATES_SQL,
-            buildRefundableExpenseCandidateParams(refundIncomeTransactionId, searchPattern)
+            buildRefundableExpenseCandidateParams(refundIncomeTransactionId, searchPattern, language)
         );
 
         return rows.map(row => this.mapRefundableExpenseCandidateRow(row));

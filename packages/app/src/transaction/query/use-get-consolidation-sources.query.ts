@@ -52,7 +52,7 @@ export const useGetConsolidationSourcesQuery = (transactionId: number) => {
 
         const fetchData = async (): Promise<void> => {
             const [rows, canonical] = await Promise.all([
-                transactionRepository.findConsolidationSources(transactionId),
+                transactionRepository.findConsolidationSources(transactionId, language),
                 transactionRepository.getById(transactionId, language)
             ]);
             if (isActive) {

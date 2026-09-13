@@ -1,4 +1,5 @@
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
+import { LanguageEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { refundPairRepository, testSeedService } from '../harness/test-context';
@@ -19,7 +20,7 @@ describe('consolidation/refund-pair-review-null-mcc', () => {
 
         const autoCandidates = await refundPairRepository.findCandidates();
         const reviewCandidates = await refundPairRepository.findReviewCandidates();
-        const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '');
+        const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN);
 
         expect(autoCandidates).toHaveLength(0);
         expect(reviewCandidates.length).toBeGreaterThanOrEqual(1);
