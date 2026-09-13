@@ -71,7 +71,7 @@ jobs:
         permissions:
             contents: read
             pull-requests: read
-        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@16620b5534cd6d01c646dee292d9f5891d0eda27 # feat/expo-fingerprint-guard fleet-validation pin
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@2cce199673839b35a327ba642750aab153596806 # feat/expo-fingerprint-guard fleet-validation pin
         with:
             working-directory: packages/app
             platforms: ios,android
