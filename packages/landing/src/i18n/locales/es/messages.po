@@ -2359,10 +2359,6 @@ msgstr "Un gráfico de precios en tu propia base de datos: tarjeta de precio, mi
 msgid "A project that ignores security issues or dismisses user concerns is sending clear signals about its priorities. Conversely, a project with thoughtful, timely responses to concerns demonstrates genuine commitment to its users."
 msgstr "Un proyecto que ignora los problemas de seguridad o descarta las preocupaciones de los usuarios está enviando señales claras sobre sus prioridades. Por el contrario, un proyecto con respuestas reflexivas y oportunas a las preocupaciones demuestra un compromiso genuino con sus usuarios."
 
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "A public-domain FX feed. No vendor account, no rate broker; the rate per day is auditable on your device."
-msgstr "Una fuente de tipos de cambio de dominio público. Sin cuenta de proveedor ni intermediario; el tipo diario es auditable en tu dispositivo."
-
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "A refund is not income"
 msgstr "Un reembolso no es un ingreso"
@@ -3349,6 +3345,10 @@ msgstr "Sincronización de cuentas bancarias"
 msgid "Bank accounts first"
 msgstr "Primero las cuentas bancarias"
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Bank and Cash each carry their own subtotal, converted the same way. A euro card can sit in the same group as a dollar card and still roll into one figure."
+msgstr "Banco y Efectivo tienen cada uno su propio subtotal, convertido de la misma forma. Una tarjeta en euros puede estar en el mismo grupo que una en dólares y aun así sumarse en una sola cifra."
+
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "Bank APIs can re-deliver a transaction after a retry or an overlapping resync window. The repair finds those repeated imported rows and removes the copies, not the original event."
 msgstr "Las API bancarias pueden reenviar una transacción tras un reintento o una ventana de resincronización solapada. La reparación encuentra esas filas importadas repetidas y elimina las copias, no el evento original."
@@ -4151,6 +4151,10 @@ msgstr "Pantalla de inicio de Budgie desplazada a las secciones de deuda «Debes
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with a euro-denominated account listed under a total balance shown in dollars"
 msgstr "Pantalla de inicio de Budgie con una cuenta en euros bajo un saldo total mostrado en dólares"
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Budgie home screen with a total balance above the Bank and Cash account groups, each group carrying its own subtotal and each account card its own currency"
+msgstr "Pantalla de inicio de Budgie con un saldo total sobre los grupos de cuentas Banco y Efectivo, donde cada grupo tiene su propio subtotal y cada tarjeta de cuenta su propia moneda"
 
 #: src/app/[lang]/page.tsx
 msgid "Budgie home screen with a total balance, savings accounts and money owed and lent"
@@ -6142,6 +6146,10 @@ msgstr "CSV es para hojas de cálculo, software fiscal y otras apps que necesita
 msgid "Currency is fixed per account"
 msgstr "La moneda es fija por cuenta"
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Currency rates come from a free public endpoint at exchangerate-api.com, and crypto prices from CoinGecko. There is no vendor account to create and no API key to paste in."
+msgstr "Los tipos de cambio vienen de un endpoint público gratuito en exchangerate-api.com, y los precios de las criptomonedas de CoinGecko. No hay que crear ninguna cuenta de proveedor ni pegar ninguna clave de API."
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Currency read from the file"
 msgstr "La moneda se lee del archivo"
@@ -6224,17 +6232,9 @@ msgstr "Cirílico, griego, árabe, CJK y más: cualquier alfabeto no latino que 
 msgid "Cyrillic, Greek, or Cyrillic-script merchant names get normalized to Latin so your transaction list reads cleanly. Runs on-device."
 msgstr "Los nombres de comercios en cirílico, griego o escritura árabe se normalizan a texto latino para que tu lista de transacciones se lea mejor. Funciona en el dispositivo."
 
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Daily FX-rate snapshots stored on-device for accurate historical conversion"
-msgstr "Instantáneas diarias de tipos de cambio almacenadas en el dispositivo para una conversión histórica exacta"
-
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Daily prices backfilled only for the crypto accounts you actually hold"
 msgstr "Los precios diarios se rellenan solo para las cuentas de cripto que realmente tienes"
-
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Daily, in the background. Each day gets its own snapshot stored on-device for accurate historical conversion."
-msgstr "Diariamente, en segundo plano. Cada día obtiene su propia instantánea almacenada en el dispositivo para una conversión histórica exacta."
 
 #: src/app/[lang]/features/dark-mode/opengraph-image.tsx
 msgid "dark mode"
@@ -6887,16 +6887,16 @@ msgid "duplicates"
 msgstr "duplicados"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Each account has a fixed currency. The exchange-rate service stores daily snapshots; the home/analytics screens read the latest rate when summing. Cross-currency transfers preserve both legs and the rate at the time."
-msgstr "Cada cuenta tiene una divisa fija. El servicio de tipos de cambio almacena instantáneas diarias; las pantallas de inicio y análisis leen el tipo más reciente disponible."
-
-#: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Each account holds a fixed native currency — fiat, crypto, or otherwise"
 msgstr "Cada cuenta tiene una divisa nativa fija: fiat, cripto o cualquier otra"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Each bank section on the home screen has a shortcut into its connection. Inside you get the accounts that belong to it, each with its icon, title, and current balance, and a switch to pause syncing for that account alone while its siblings keep going."
 msgstr "Cada sección de banco en la pantalla de inicio tiene un acceso directo a su conexión. Dentro encuentras las cuentas que le pertenecen, cada una con su icono, título y saldo actual, y un interruptor para pausar la sincronización de esa cuenta sola mientras las demás siguen funcionando."
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Each card shows the balance in the currency that account is held in. Budgie stores the money as it is and derives the converted figures on top, using the most recent rate it fetched and kept on your device."
+msgstr "Cada tarjeta muestra el saldo en la moneda en la que se mantiene la cuenta. Budgie guarda el dinero tal cual y deriva encima las cifras convertidas, usando el último tipo que descargó y guardó en tu dispositivo."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Each card with its balance"
@@ -7172,6 +7172,10 @@ msgstr "Cada tipo de cuenta tiene su propio color e icono, así que una pantalla
 msgid "Every account type now has its own color, not just its own icon — see the account management page."
 msgstr "Cada tipo de cuenta ahora tiene su propio color, no solo su propio icono; consulta la página de gestión de cuentas."
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Every account, added up once"
+msgstr "Todas las cuentas, sumadas una vez"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Every action on a long-press"
 msgstr "Todas las acciones con una pulsación larga"
@@ -7296,10 +7300,6 @@ msgstr "Cada transacción de tu base de datos. Útil para análisis del historia
 msgid "Every transaction is stored locally. No Wi-Fi required to add expenses, view balances, or import bank data. Works anywhere."
 msgstr "Cada transacción se almacena localmente. No se requiere Wi-Fi para añadir gastos, ver saldos o importar datos bancarios. Funciona en cualquier lugar."
 
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Every transaction is valued at the rate of the day it happened, not today's rate"
-msgstr "Cada transacción se valora con el tipo de cambio del día en que ocurrió, no con el de hoy"
-
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Every transaction lives on your device. No cloud account, no sign-up — your finances stay in your pocket, even on a plane or in a tunnel."
 msgstr "Cada transacción vive en tu dispositivo. Sin cuenta en la nube, sin registro: tus finanzas se quedan en tu bolsillo, incluso en modo avión."
@@ -7381,6 +7381,10 @@ msgstr "Los tipos de cambio se obtienen y almacenan localmente cuando tienes con
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Exchange rates are fetched anonymously"
 msgstr "Los tipos de cambio se obtienen de forma anónima"
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Exchange rates refresh in the background and are stored on your device. Nothing is converted in place: every account, transaction, and transfer leg keeps its original currency and amount, and the base-currency figure is derived on top of it."
+msgstr "Los tipos de cambio se actualizan en segundo plano y se guardan en tu dispositivo. Nada se convierte en el sitio: cada cuenta, cada transacción y cada lado de una transferencia conserva su moneda y su importe originales, y la cifra en la moneda base se deriva encima."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/opengraph-image.tsx
 msgid "exchange-rates"
@@ -8098,10 +8102,6 @@ msgstr "fx"
 msgid "FX preserved"
 msgstr "FX conservado"
 
-#: src/app/[lang]/features/multi-currency/page.tsx
-msgid "FX rates are pulled once a day from a public-domain source. Nothing is converted in place: every account, transaction, and transfer leg keeps its original currency and amount, and the base-currency figure is derived on top of it."
-msgstr "Los tipos de cambio se descargan una vez al día desde una fuente de dominio público. Nada se convierte sobre el original: cada cuenta, transacción y tramo de transferencia conserva su divisa y su importe originales, y la cifra en tu divisa base se calcula a partir de ahí."
-
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "FX support"
 msgstr "Soporte FX"
@@ -8194,6 +8194,10 @@ msgstr "Buen soporte multi-divisa"
 msgid "Government agencies won’t request access"
 msgstr "Las agencias gubernamentales no solicitarán acceso"
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Group subtotal, already converted"
+msgstr "Subtotal del grupo, ya convertido"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Grouped by month"
 msgstr "Agrupado por mes"
@@ -8202,6 +8206,10 @@ msgstr "Agrupado por mes"
 msgid "Grouped under the bank"
 msgstr "Agrupado bajo el banco"
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Groups convert as they sum"
+msgstr "Los grupos convierten al sumar"
+
 #: src/feature/component/features-hub-grid/features-hub-grid.tsx
 msgid "Headline Features"
 msgstr "Funciones destacadas"
@@ -8209,6 +8217,10 @@ msgstr "Funciones destacadas"
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Held by aggregator"
 msgstr "En manos del agregador"
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Held in its own currency"
+msgstr "Mantenida en su propia moneda"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Help with translations"
@@ -8253,8 +8265,8 @@ msgid "Hold accounts in any currency. A nightly background task fetches fresh FX
 msgstr "Mantén cuentas en cualquier divisa. Una tarea nocturna en segundo plano obtiene tipos de cambio actualizados para que los paneles siempre muestren tu divisa base."
 
 #: src/app/[lang]/features/multi-currency/page.tsx
-msgid "Hold accounts in any currency. A nightly background task fetches fresh FX rates so your dashboards always show in your home currency."
-msgstr "Mantén cuentas en cualquier divisa. Una tarea nocturna en segundo plano obtiene tipos de cambio actualizados para que tus paneles siempre muestren tu divisa base."
+msgid "Hold accounts in any currency. Budgie refreshes exchange rates in the background so your dashboards always show in your home currency."
+msgstr "Ten cuentas en cualquier moneda. Budgie actualiza los tipos de cambio en segundo plano para que tus paneles se muestren siempre en tu moneda principal."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Hold any transaction card"
@@ -8591,7 +8603,6 @@ msgstr "¿En qué se diferencia esto de la página de análisis de etiquetas?"
 #: src/app/[lang]/features/budget-planning/page.tsx
 #: src/app/[lang]/features/database-backup/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
-#: src/app/[lang]/features/multi-currency/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
@@ -8881,6 +8892,10 @@ msgstr "En 2019, un laboratorio de investigación llamado Ink & Switch publicó 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "In 2022, Plaid settled a $58 million class action lawsuit over allegations that they collected more data than users authorized and retained it longer than necessary. The settlement included claims that Plaid obtained login credentials through interfaces designed to look like bank login pages, leading users to believe they were logging directly into their banks."
 msgstr "En 2022, Plaid llego a un acuerdo en una demanda colectiva de 58 millones de dolares por acusaciones de haber recopilado mas datos de los que los usuarios autorizaron y haberlos retenido mas tiempo del necesario. El acuerdo incluia alegaciones de que Plaid obtenia credenciales de inicio de sesion a traves de interfaces disenadas para parecer paginas de inicio de sesion bancarias, llevando a los usuarios a creer que estaban iniciando sesion directamente en sus bancos."
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "In a background task while the app is closed, and again when you open it, with a short cooldown between refreshes. The newest rate for each currency pair replaces the one held on your device."
+msgstr "En una tarea en segundo plano mientras la app está cerrada, y de nuevo al abrirla, con un breve intervalo de espera entre actualizaciones. El tipo más reciente de cada par de monedas sustituye al que hay en tu dispositivo."
 
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "In a SQLite database on your phone, and nowhere else. Budgie has no account system and no server of its own, so there is nothing to upload and nothing for us to read. Set a PIN and the database is encrypted on the device with SQLCipher using that PIN."
@@ -9706,6 +9721,10 @@ msgstr "Muchas apps que afirman respetar la privacidad aun recopilan datos de us
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Many banks now offer official API programs with scoped OAuth tokens. These tokens grant read-only access to transaction history without exposing login credentials. When used in an offline-first app, this is the most secure form of automated bank sync available:"
 msgstr "Muchos bancos ahora ofrecen programas de API oficiales con tokens OAuth de alcance limitado. Estos tokens otorgan acceso de solo lectura al historial de transacciones sin exponer las credenciales de inicio de sesión. Cuando se usan en una app offline-first, esta es la forma más segura de sincronización bancaria automatizada disponible:"
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Many currencies, one number"
+msgstr "Muchas monedas, una cifra"
 
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Map both account legs and the row imports as one transfer rather than two unrelated entries"
@@ -11320,6 +11339,10 @@ msgstr "Un recibo, tres categorías"
 msgid "One row, reclassified"
 msgstr "Una fila, reclasificada"
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "One screen carries both: a total in the currency you picked, and the accounts underneath still holding whatever they hold."
+msgstr "Una sola pantalla lleva las dos cosas: un total en la moneda que elegiste y, debajo, las cuentas que siguen guardando lo que guardan."
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "One screen does the whole import"
 msgstr "Una sola pantalla hace toda la importación"
@@ -11375,6 +11398,10 @@ msgstr "Una etiqueta por transacción puede promoverse a «principal» y destaca
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
 msgstr "Un toque exporta todo el historial: sin rangos que elegir ni archivos parciales que cuadrar después"
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "One total, your base currency"
+msgstr "Un total, en tu moneda base"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "One transaction carries both account entries automatically — no double-entry by you"
@@ -14134,6 +14161,10 @@ msgstr "La cuenta mantiene la suya"
 msgid "The account screen carries the current balance, the interest rate, the maturity date, the days remaining and a calculated expected payout."
 msgstr "La pantalla de la cuenta muestra el saldo actual, la tasa de interés, la fecha de vencimiento, los días restantes y un pago esperado calculado."
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "The accounts never convert"
+msgstr "Las cuentas nunca convierten"
+
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "The accuracy fixes apply going forward and to the specific edge cases the backfills targeted. They do not rewrite unrelated transaction history."
 msgstr "Las correcciones de precisión se aplican de aquí en adelante y a los casos límite específicos que los backfills abordaron. No reescriben el historial de transacciones no relacionado."
@@ -14402,6 +14433,10 @@ msgstr "El tipo de cambio se guarda con la transferencia, así ambos saldos cuad
 msgid "The export includes:"
 msgstr "La exportación incluye:"
 
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "The figure at the top adds every account together and reports it in the base currency you set in Settings. Pick a different base and the same accounts produce a different number."
+msgstr "La cifra de arriba suma todas las cuentas y la muestra en la moneda base que definiste en Ajustes. Elige otra base y las mismas cuentas dan un número distinto."
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set a From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band. The chip shows the range you picked, and clearing it is one tap."
 msgstr "La fila de filtros no trata solo del tiempo. Junto a los chips de fecha, tipo y categoría hay un rango de importe: define un valor Desde para localizar las compras grandes, un valor Hasta para reunir las pequeñas, o ambos para mirar una franja. El chip muestra el rango que elegiste, y borrarlo es un toque."
@@ -14555,6 +14590,10 @@ msgstr "La forma mas privada de incorporar datos bancarios en Budgie es la impor
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "The native splash screen reads the OS theme directly so the transition into the React Native app stays in dark mode without an intermediate light state."
 msgstr "La pantalla de inicio nativa lee el tema del sistema operativo directamente para que la transición a la app React Native permanezca en modo oscuro sin destello."
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "The newest rate for every currency pair is stored on your device"
+msgstr "El tipo más reciente de cada par de monedas se guarda en tu dispositivo"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "The nine largest crypto assets ship with a year of daily prices in euro and dollar. Anything beyond that is pulled from CoinGecko's public market data, one missing day at a time, and only for the crypto accounts you hold."
@@ -15334,6 +15373,10 @@ msgstr "Saldo total arriba"
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Total in your base currency"
 msgstr "Total en tu moneda base"
+
+#: src/app/[lang]/features/multi-currency/page.tsx
+msgid "Totals are converted with the most recent rate Budgie fetched"
+msgstr "Los totales se convierten con el último tipo que Budgie descargó"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Track accounts in multiple currencies without compromising privacy:"
