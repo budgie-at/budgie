@@ -86,7 +86,7 @@ const OgImage = async ({ params }: PageLangParam) => {
     const i18n = getI18nInstance(lang);
 
     const title = i18n._(msg`Privacy-First Expense Tracker`);
-    const subtitle = i18n._(msg`Track expenses, sync banks, manage crypto & investments — all offline, encrypted, and on your device.`);
+    const subtitle = i18n._(msg`Track expenses, sync banks, manage crypto — all offline, encrypted, and on your device.`);
     const offlineLabel = i18n._(msg`100% Offline`);
     const encryptedLabel = i18n._(msg`Encrypted`);
     const openSourceLabel = i18n._(msg`Open Source`);

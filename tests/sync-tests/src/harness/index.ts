@@ -22,6 +22,8 @@ export { findMccByCode } from './db/find-mcc-by-code';
 export { requireInstrument } from './db/require-instrument';
 export { monobankStub } from './monobank/monobank-stub';
 export { buildMonobank } from './monobank/build-monobank';
+export { stubEmptyStatements } from './monobank/stub-empty-statements';
+export { subtractMonths } from './scenario/subtract-months';
 export { binanceStub } from './binance/binance-stub';
 export type { TimeWindow } from './binance/binance-stub';
 export { buildBinance } from './binance/build-binance';

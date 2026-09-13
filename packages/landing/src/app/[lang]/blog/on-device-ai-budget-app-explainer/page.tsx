@@ -469,9 +469,9 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                         <BlogFaqItem question={<Trans>How much storage do the AI models use?</Trans>}>
                             <Trans>
-                                The language model and the embedding model together require approximately 900 MB to 1.2 GB of storage
-                                depending on the quantization level selected during installation. This is a one-time download. Once
-                                installed, no additional model downloads are required for normal use.
+                                The language model and the embedding model together require approximately 1.6 GB of storage. Adding voice
+                                entry brings the total to about 2.5 GB. This is a one-time download. Once installed, no additional model
+                                downloads are required for normal use.
                             </Trans>
                         </BlogFaqItem>
 

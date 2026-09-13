@@ -11,6 +11,7 @@ export const SyncCreateEntitySchema = convertToCreateEntitySchema(SyncEntitySche
     forwardSyncFromAt: true,
     forwardSyncedAt: true,
     backwardSyncFromAt: true,
+    backwardSyncLimitAt: true,
     backwardSyncedAt: true,
     transactionCount: true
 });

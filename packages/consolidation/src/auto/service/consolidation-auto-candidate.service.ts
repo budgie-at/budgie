@@ -4,7 +4,11 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { ConsolidationFamilyRegistryService } from './consolidation-family-registry.service';
-import type { ConsolidationScanScopeInterface, ExistingTransferIncomeDuplicateCandidateInterface } from '@budgie/contracts';
+import type {
+    BridgeClaimRepairCandidateInterface,
+    ConsolidationScanScopeInterface,
+    ExistingTransferIncomeDuplicateCandidateInterface
+} from '@budgie/contracts';
 
 export class ConsolidationAutoCandidateService {
     constructor(private readonly consolidationFamilyRegistryService: ConsolidationFamilyRegistryService) {}
@@ -92,6 +96,15 @@ export class ConsolidationAutoCandidateService {
         candidates: ExistingTransferIncomeDuplicateCandidateInterface[]
     ): Promise<number> {
         return this.consolidationFamilyRegistryService.buildExistingTransferIncomeDuplicateFamily().processCandidateList(candidates);
+    }
+
+    @Log(
+        candidates => `enter bridgeClaimRepairCount=${candidates.length}`,
+        (result, candidates) => `done bridgeClaimRepairCount=${candidates.length} consolidated=${result}`,
+        (error, candidates) => `throw bridgeClaimRepairCount=${candidates.length} error=${getErrorMessage(error)}`
+    )
+    async processBridgeClaimRepairCandidates(candidates: BridgeClaimRepairCandidateInterface[]): Promise<number> {
+        return this.consolidationFamilyRegistryService.buildBridgeClaimRepairFamily().processCandidateList(candidates);
     }
 
     private addBlockedSourceTransactionIds(blockedSourceTransactionIds: Set<number>, sourceTransactionIds: number[]): void {

@@ -4,6 +4,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import type { ConsolidationRepositoriesInterface } from '../interface/consolidation-repositories.interface';
 import type {
+    BridgeClaimRepairCandidateInterface,
     ExistingTransferBridgeCandidateInterface,
     ExistingTransferChainReclaimCandidateInterface,
     ExistingTransferIncomeDuplicateCandidateInterface
@@ -40,6 +41,14 @@ export class ConsolidationCandidateService {
         await this.yieldControl();
 
         return existingTransferIncomeDuplicateCandidates;
+    }
+
+    @Log('enter', result => `done bridgeClaimRepairCount=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
+    async findBridgeClaimedRepairCandidates(): Promise<BridgeClaimRepairCandidateInterface[]> {
+        const candidates = await this.repositories.transferPairRepository.findBridgeClaimedRepairCandidates();
+        await this.yieldControl();
+
+        return candidates;
     }
 
     @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)

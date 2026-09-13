@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -81,14 +80,58 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie term deposit screen with the interest rate, maturity date and expected payout`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>A fixed term, tracked like an account</Trans>}>
+                    <Trans>
+                        Budgie keeps a term deposit separate from the accounts you spend from, and shows what it will pay at maturity.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>A deposit is not a savings account</Trans>}>
+                    <Trans>
+                        The account screen carries the current balance, the interest rate, the maturity date, the days remaining and a
+                        calculated expected payout.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie deposit account screen showing a $15,408.40 balance, a 4.35% interest rate, a January 1, 2027 maturity date, 120 days remaining and a $15,628.76 expected payout`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="deposit-tracking-1"
                     slug="deposit-tracking"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.339}>
+                        <Trans>Maturity date and days left</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.395}>
+                        <Trans>Expected payout estimate</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Close it and the money moves</Trans>}>
+                    <Trans>
+                        Open the account menu and choose Close Deposit. Budgie moves the remaining balance to the destination you pick and
+                        archives the deposit.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie deposit account screen with the account menu open showing the Edit and Close Deposit actions`}
+                    index={1}
+                    locale={lang}
+                    scene="deposit-tracking-2"
+                    slug="deposit-tracking"
+                >
+                    <FeatureStory.Callout y={0.183}>
+                        <Trans>Edit the deposit details</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.221}>
+                        <Trans>Close and move the balance</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -132,24 +175,6 @@ export default async function DepositTrackingFeaturePage(props: PageLangParam) {
                         <Trans>&ldquo;Include in net worth&rdquo; stays available when a deposit should or should not count</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Create a Deposit account manually or from a bank integration. Add its current balance, currency, interest rate, and
-                        maturity date so Budgie can show the deposit details alongside your other accounts.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        When the deposit matures, choose the destination account and close it. Budgie transfers the remaining balance from
-                        the deposit account and archives the deposit so it leaves the home screen without losing history.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>

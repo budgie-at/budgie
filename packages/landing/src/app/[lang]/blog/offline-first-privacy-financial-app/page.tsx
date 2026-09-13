@@ -353,7 +353,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                             <Trans>Support for 150+ currencies</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Crypto and stock tracking included</Trans>
+                            <Trans>Crypto tracking included</Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
@@ -502,7 +502,7 @@ export default async function OfflineFirstPrivacyArticle(props: PageLangParam) {
                             <Trans>Bank account synchronization</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Crypto and stock tracking</Trans>
+                            <Trans>Crypto tracking</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>AI-powered insights</Trans>

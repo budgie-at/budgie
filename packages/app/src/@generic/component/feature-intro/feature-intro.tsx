@@ -1,0 +1,31 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+import { Text, View } from 'react-native';
+
+import { EmptyFn } from '@rnw-community/shared';
+
+import { testID as testIDProps } from '../../utils/test-id.util';
+import { Button } from '../button/button';
+import { CircleIcon } from '../circle-icon/circle-icon';
+
+interface Props {
+    readonly icon: UserIconNameEnum;
+    readonly title: string;
+    readonly onCreate: EmptyFn;
+    readonly buttonText: string;
+    readonly description: string;
+    readonly testID?: string;
+}
+
+export const FeatureIntro = ({ icon, title, description, onCreate, buttonText, testID }: Props) => (
+    <View
+        {...testIDProps(testID)}
+        className="rounded-5xl border border-secondary-corner bg-secondary-background py-12.5 px-5xl items-center"
+    >
+        <CircleIcon icon={icon} variant="ghost" size={64} iconSize={32} className="rounded-3xl mb-3xl" />
+
+        <Text className="text-primary text-md font-semibold mb-lg">{title}</Text>
+        <Text className="text-secondary-foreground text-sm text-center mb-7xl">{description}</Text>
+
+        <Button onPress={onCreate} leftIcon={UserIconNameEnum.Plus} content={buttonText} />
+    </View>
+);

@@ -1,4 +1,5 @@
 import { AtmCashWithdrawalConsolidationFamilyService } from './atm-cash-withdrawal-consolidation-family.service';
+import { BridgeClaimRepairConsolidationFamilyService } from './bridge-claim-repair-consolidation-family.service';
 import { ExistingTransferBridgeConsolidationFamilyService } from './existing-transfer-bridge-consolidation-family.service';
 import { ExistingTransferChainReclaimConsolidationFamilyService } from './existing-transfer-chain-reclaim-consolidation-family.service';
 import { ExistingTransferIncomeDuplicateConsolidationFamilyService } from './existing-transfer-income-duplicate-consolidation-family.service';
@@ -81,6 +82,14 @@ export class ConsolidationFamilyRegistryService {
     buildExistingTransferIncomeDuplicateFamily(): ExistingTransferIncomeDuplicateConsolidationFamilyService {
         return new ExistingTransferIncomeDuplicateConsolidationFamilyService(
             this.repositories.existingTransferRepository,
+            this.consolidationRepairExecutorService,
+            this.yieldControl
+        );
+    }
+
+    buildBridgeClaimRepairFamily(): BridgeClaimRepairConsolidationFamilyService {
+        return new BridgeClaimRepairConsolidationFamilyService(
+            this.repositories.transferPairRepository,
             this.consolidationRepairExecutorService,
             this.yieldControl
         );

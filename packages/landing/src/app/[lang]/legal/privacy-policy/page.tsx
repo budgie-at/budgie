@@ -94,7 +94,9 @@ export default async function PrivacyPolicyPage(props: PageLangParam) {
                     <Trans>Device information (type, operating system version) for debugging purposes</Trans>
                 </li>
                 <li>
-                    <Trans>Authentication tokens for optional bank sync services (stored securely in device keychain)</Trans>
+                    <Trans>
+                        Authentication tokens for optional bank sync services (stored in the local database, encrypted when a PIN is set)
+                    </Trans>
                 </li>
             </ul>
             <h2>

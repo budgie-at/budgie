@@ -3,6 +3,95 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.52.0](https://github.com/budgie-at/budgie/compare/v6.51.1...v6.52.0) (2026-09-12)
+
+
+### Bug Fixes
+
+* **app:** close the onboarding escape hatch and resume at the right step ([5002de2](https://github.com/budgie-at/budgie/commit/5002de284ee398d0f59df298f1ce76e7f12b3bd4))
+* **app:** give onboarding safe-area insets and a legible CTA ([ea444f4](https://github.com/budgie-at/budgie/commit/ea444f4ec7a7b27d78090097b244ba97989bc1c4))
+* **app:** inset the CSV import footer buttons from the screen edges ([fa3c635](https://github.com/budgie-at/budgie/commit/fa3c635a34eaf2dcae964397886895117af6ba8d))
+* **app:** make passed onboarding progress segments white ([524e694](https://github.com/budgie-at/budgie/commit/524e69404523b14afc14e842f5c692be19ef8f7d))
+* **app:** push the onboarding keypad instead of replacing Home ([2f6b08c](https://github.com/budgie-at/budgie/commit/2f6b08c90f814b229313a32b3c538df6dbe2d41a))
+* **app:** stop hiding the tab bar for existing users ([49a84ec](https://github.com/budgie-at/budgie/commit/49a84ec9de250ce7efa0e4cfae5969bcbbf5869a))
+* **app:** stop onboarding creating duplicate accounts on re-entry ([661ed8f](https://github.com/budgie-at/budgie/commit/661ed8f56eb9e1537dd673f3f785d61f8bc64fe8))
+* **app:** title the provisioned account in the device language ([29e401b](https://github.com/budgie-at/budgie/commit/29e401b51c6b0c3f92eb754b4044bec2069c79e4))
+
+
+### Features
+
+* **app:** add a create affordance to the tags empty state ([4922bee](https://github.com/budgie-at/budgie/commit/4922bee503f46f98e3fb13ebd3cda4d37900d1ec))
+* **app:** add AI consent and completion steps, gate the model download ([8c2b70e](https://github.com/budgie-at/budgie/commit/8c2b70e83cb2a001bc536282e8a7e35a88900d2b))
+* **app:** add balances and first-expense onboarding steps ([6bc49c7](https://github.com/budgie-at/budgie/commit/6bc49c7fbbd206e22dce88aa785f414c2c99bfb3))
+* **app:** add budget and lock onboarding steps ([c175f1c](https://github.com/budgie-at/budgie/commit/c175f1c5e6c30409ee0e765ff8374b135e3f4136))
+* **app:** add first-launch provisioning service ([fccb116](https://github.com/budgie-at/budgie/commit/fccb116e2653f42da925bce43a8af3945d9ca684))
+* **app:** add onboarding chrome, progress bar and option row ([f6dc6f2](https://github.com/budgie-at/budgie/commit/f6dc6f2b93e69457ccd27f8bdc243478bfb290c1))
+* **app:** add onboarding currency disclosure strip ([1a2282c](https://github.com/budgie-at/budgie/commit/1a2282c649644adce259f627924a039603ef8a74))
+* **app:** add onboarding route group, welcome and track steps ([fea2492](https://github.com/budgie-at/budgie/commit/fea2492b2c130b583f5366a07ac348644f0b8afa))
+* **app:** branch the rules empty state on bank integration presence ([480932d](https://github.com/budgie-at/budgie/commit/480932dd0d943a9b99c247d704d9361a218b12c2))
+* **app:** let users step back through onboarding ([9bf86ab](https://github.com/budgie-at/budgie/commit/9bf86ab7ef5a97049a749438da11c4580cea480c))
+* **app:** run first-launch provisioning and open the keypad ([40ef853](https://github.com/budgie-at/budgie/commit/40ef8533d399df354c7810f2b89c00e804e00f98))
+* **app:** show onboarding currency strip on the expense keypad ([1cfb0e4](https://github.com/budgie-at/budgie/commit/1cfb0e49745ef2374efb4bdaf690b6b332e1331b))
+* **app:** teach tags and categories from the analytics empty states ([4939bad](https://github.com/budgie-at/budgie/commit/4939bad888f2d0da61afab9a4f66f83dcf9a9563))
+* **contracts:** add isOnboardingCompleted setting ([9ebb099](https://github.com/budgie-at/budgie/commit/9ebb099ff946c4391c9585d17e24400857cbe335))
+* **contracts:** add onboardingStep and isAiEnabled settings ([e241ea8](https://github.com/budgie-at/budgie/commit/e241ea8fa5f7351b92577019008617580941bfb0))
+
+
+
+
+
+## [6.51.1](https://github.com/budgie-at/budgie/compare/v6.51.0...v6.51.1) (2026-09-12)
+
+
+### Bug Fixes
+
+* **app:** include archived-account transactions in the CSV export ([b403022](https://github.com/budgie-at/budgie/commit/b403022128eb3acc74fee64bd5a33deec1096a8e))
+
+
+
+
+
+# [6.51.0](https://github.com/budgie-at/budgie/compare/v6.50.1...v6.51.0) (2026-09-12)
+
+
+### Bug Fixes
+
+* **app:** fit monobank history step on one screen ([99d51c0](https://github.com/budgie-at/budgie/commit/99d51c08a28d80bd38b2d6150a9b59c4526946f9))
+* **app:** pad sync setup page footer from screen edges ([4d4e1cd](https://github.com/budgie-at/budgie/commit/4d4e1cd893e5710acbd04d837879a0e8dd833198))
+
+
+### Features
+
+* **app:** warn that long monobank history can take hours ([1671665](https://github.com/budgie-at/budgie/commit/167166581873ec60c5e3947e38ea9e3a44c2c881))
+* let users pick monobank sync history period ([3b5bc1e](https://github.com/budgie-at/budgie/commit/3b5bc1e0c9b5873f42508fe02cb287c43b7843c5))
+
+
+
+
+
+## [6.41.4](https://github.com/budgie-at/budgie/compare/v6.41.3...v6.41.4) (2026-09-10)
+
+
+### Bug Fixes
+
+* **consolidation:** repair bridge-claimed transfer pairs via settings fix ([9689929](https://github.com/budgie-at/budgie/commit/96899297cd7d98dd554a685f7d441bab8fce2f51))
+
+
+
+
+
+## [6.41.2](https://github.com/budgie-at/budgie/compare/v6.41.1...v6.41.2) (2026-09-10)
+
+
+### Bug Fixes
+
+* **app:** convert debt settlement amounts into the debt instrument ([49dd9b4](https://github.com/budgie-at/budgie/commit/49dd9b4f518071a63eceebdda3a2e1bf52df31bc))
+* **app:** reject missing rates and harden cross-instrument debt repair ([73ed458](https://github.com/budgie-at/budgie/commit/73ed458ff09c0ef0df49c05c619b6f7b6c070cb6))
+
+
+
+
+
 ## [6.41.1](https://github.com/budgie-at/budgie/compare/v6.41.0...v6.41.1) (2026-09-08)
 
 

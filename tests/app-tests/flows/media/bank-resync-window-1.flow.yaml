@@ -1,0 +1,28 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://account/12/update'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountSyncCard.ResyncButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'AccountSyncCard.ResyncButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'ResyncWindowPicker.Option.7'
+      timeout: 10000
+
+- extendedWaitUntil:
+      visible:
+          id: 'ResyncWindowPicker.Option.all'
+      timeout: 5000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

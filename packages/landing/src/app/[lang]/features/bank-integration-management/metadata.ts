@@ -21,6 +21,7 @@ export const FEATURE_METADATA = {
         'multi account bank sync'
     ],
     relatedFeatureSlugs: [
+        'sync-data-repairs',
         'monobank-sync',
         'privatbank-import',
         'erste-bank-pdf-import',

@@ -68,7 +68,7 @@ export async function generateMetadata(props: Props) {
 
     const siteTitle = i18n._(msg`Budgie - Privacy-First Expense Tracker`);
     const shortDescription = i18n._(
-        msg`Track expenses, sync banks, manage crypto & stocks with complete privacy. Multi-currency support, debt tracking, and AI insights.`
+        msg`Track expenses, sync banks, manage crypto with complete privacy. Multi-currency support, debt tracking, and AI insights.`
     );
 
     return {

@@ -16,6 +16,8 @@ export const SyncEntitySchema = createSelectSchema(SyncEntityTable, {
     status: zodEnum(SyncStatusEnum).describe('Current sync status.'),
     backwardSyncedAt: schema => schema.nullable().default(null).describe('Timestamp when backward sync was completed.'),
     backwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync backward from (newest point going back).'),
+    backwardSyncLimitAt: schema =>
+        schema.nullable().default(null).describe('Earliest point backward sync should reach; null backfills the whole available history.'),
     forwardSyncedAt: schema => schema.nullable().default(null).describe('Timestamp of the last successful forward sync.'),
     forwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync forward from.'),
     transactionCount: number().nonnegative().default(0).describe('Total number of transactions synced.'),

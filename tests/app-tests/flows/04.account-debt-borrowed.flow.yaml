@@ -19,6 +19,8 @@ appId: ${APP_ID}
       timeout: 10000
 
 - assertVisible:
+      id: 'DebtAccountCardSummary.SettledLabel.E2E_Borrowed_Account'
+- assertVisible:
       id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Borrowed_Account.800'
 - assertVisible:
       id: 'DebtAccountCardSummary.PaidAmount.E2E_Borrowed_Account.0'

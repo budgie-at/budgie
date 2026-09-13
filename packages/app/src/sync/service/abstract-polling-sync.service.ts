@@ -1,5 +1,6 @@
 import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
+import { subMonths } from 'date-fns/subMonths';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
@@ -11,6 +12,7 @@ import { microPause } from '../../@generic/utils/micro-pause.util';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { SYNC_ERROR_THRESHOLD } from '../constant/sync-error-threshold.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
+import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 
 import { AbstractSyncService } from './abstract-sync.service';
@@ -23,6 +25,14 @@ import type { SyncBatchResultInterface } from '@budgie/sync';
 export abstract class AbstractPollingSyncService extends AbstractSyncService {
     private static readonly FORWARD_SYNC_STALE_THRESHOLD_MS = 2 * 60 * 1000;
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
+    private static readonly BACKWARD_SYNC_LIMIT_MONTHS: Record<SyncHistoryDepthEnum, number | null> = {
+        [SyncHistoryDepthEnum.MONTH_1]: 1,
+        [SyncHistoryDepthEnum.MONTHS_3]: 3,
+        [SyncHistoryDepthEnum.MONTHS_6]: 6,
+        [SyncHistoryDepthEnum.YEAR_1]: 12,
+        [SyncHistoryDepthEnum.FULL]: null,
+        [SyncHistoryDepthEnum.NEW_ONLY]: 0
+    };
 
     override readonly supportsTokenAuth: boolean = true;
 
@@ -216,18 +226,19 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return enabledSyncs.filter(sync => integrationIdByAccountId.get(sync.accountId) === credentialGroupIntegrationId);
     }
 
-    protected async createOrUpdateSync(accountId: number, token: string): Promise<void> {
+    protected async createOrUpdateSync(accountId: number, token: string, historyDepth = SyncHistoryDepthEnum.FULL): Promise<void> {
+        const now = new Date();
+        const backwardSyncLimitAt = this.resolveBackwardSyncLimit(historyDepth, now);
         const integration = await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token);
         await accountRepository.updateById(accountId, { integrationId: integration.id });
 
         const existingSync = await syncRepository.getByAccountId(accountId);
         if (isDefined(existingSync)) {
-            await syncRepository.update(existingSync.id, { enabled: true, errorCount: 0, lastError: null });
+            await syncRepository.update(existingSync.id, { enabled: true, errorCount: 0, lastError: null, backwardSyncLimitAt });
 
             return;
         }
 
-        const now = new Date();
         const earliestTransactionTime = await transactionService.getEarliestTransactionTimeByAccountId(accountId);
         await syncRepository.create({
             accountId,
@@ -237,6 +248,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             status: SyncStatusEnum.SYNCING,
             backwardSyncFromAt: now,
             backwardSyncedAt: earliestTransactionTime ?? null,
+            backwardSyncLimitAt,
             forwardSyncFromAt: now,
             forwardSyncedAt: null
         });
@@ -274,6 +286,12 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
     protected shouldKeepSyncsEnabledAfterError(_error: unknown): boolean {
         return false;
+    }
+
+    private resolveBackwardSyncLimit(historyDepth: SyncHistoryDepthEnum, anchor: Date): Date | null {
+        const months = AbstractPollingSyncService.BACKWARD_SYNC_LIMIT_MONTHS[historyDepth];
+
+        return isDefined(months) ? subMonths(anchor, months) : null;
     }
 
     private startSyncRun(deadlineAtMs: number): void {

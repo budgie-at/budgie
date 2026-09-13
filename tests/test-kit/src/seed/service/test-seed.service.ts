@@ -137,6 +137,7 @@ export class TestSeedService {
                 forwardSyncedAt: input.forwardSyncedAt ?? null,
                 backwardSyncFromAt: input.backwardSyncFromAt ?? null,
                 backwardSyncedAt: input.backwardSyncedAt ?? null,
+                backwardSyncLimitAt: input.backwardSyncLimitAt ?? null,
                 transactionCount: input.transactionCount ?? 0,
                 errorCount: input.errorCount ?? 0,
                 lastError: input.lastError ?? null

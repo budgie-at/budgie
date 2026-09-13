@@ -8,6 +8,7 @@ import { authService } from '../../auth/service/auth.service';
 import { budgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { historicalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
+import { onboardingService } from '../../onboarding/service/onboarding.service';
 import { binanceSyncService } from '../../sync/service/binance-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../../sync/service/sync-workload.service';
@@ -37,12 +38,14 @@ const syncAppData = async (): Promise<void> => {
 };
 
 const initializeAppServices = async (): Promise<void> => {
-    await import('../../account/task/account-balance-incremental.task');
-    await import('../../budget/task/budget-alert-monitor.task');
-    await import('../../exchange-rate/task/exchange-rate-sync.task');
-    await import('../../sync/task/monobank-sync.task');
-    await import('../../sync/task/binance-sync.task');
-    await import('../../sync/task/transfer-consolidation.task');
+    await Promise.all([
+        import('../../account/task/account-balance-incremental.task'),
+        import('../../budget/task/budget-alert-monitor.task'),
+        import('../../exchange-rate/task/exchange-rate-sync.task'),
+        import('../../sync/task/monobank-sync.task'),
+        import('../../sync/task/binance-sync.task'),
+        import('../../sync/task/transfer-consolidation.task')
+    ]);
     await authService.ensurePinBackgroundAccessibility().catch(emptyFn);
     await exchangeRatesSyncService.registerBackgroundTask().catch(emptyFn);
     await accountBalanceIncrementalService.registerBackgroundTask().catch(emptyFn);
@@ -51,6 +54,7 @@ const initializeAppServices = async (): Promise<void> => {
     await binanceSyncService.registerBackgroundTask().catch(emptyFn);
     await budgetAlertMonitorService.registerBackgroundTask().catch(emptyFn);
     await syncWorkloadService.run('startup', syncAppData);
+    await onboardingService.initializeLocale().catch(emptyFn);
     void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
 };
 

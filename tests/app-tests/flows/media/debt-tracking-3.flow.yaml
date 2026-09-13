@@ -1,0 +1,31 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/202/income'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.TriggerButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+      timeout: 5000
+
+- tapOn:
+      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'AccountPickerBottomSheet.Input'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

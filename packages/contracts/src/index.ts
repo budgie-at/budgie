@@ -319,6 +319,7 @@ export type { AtmCashWithdrawalCandidateInterface } from './transaction/interfac
 export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
 export type { ExistingTransferBridgeCandidateInterface } from './transaction/interface/existing-transfer-bridge-candidate.interface';
 export type { ExistingTransferChainReclaimCandidateInterface } from './transaction/interface/existing-transfer-chain-reclaim-candidate.interface';
+export type { BridgeClaimRepairCandidateInterface } from './transaction/interface/bridge-claim-repair-candidate.interface';
 export type { ExistingTransferIncomeDuplicateCandidateInterface } from './transaction/interface/existing-transfer-income-duplicate-candidate.interface';
 export type { IbanBridgeCanonicalDuplicateCandidateInterface } from './transaction/interface/iban-bridge-canonical-duplicate-candidate.interface';
 export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';
@@ -508,3 +509,13 @@ export type { BudgetCategoryLimitEntityInterface } from './budget-category-limit
 export type { BudgetCategoryLimitCreateEntityInterface } from './budget-category-limit/entity/budget-category-limit-create-entity.interface';
 export type { BudgetCategoryLimitUpdateEntityInterface } from './budget-category-limit/entity/budget-category-limit-update-entity.interface';
 export type { BudgetCategoryLimitBulkUpdateInputInterface } from './budget-category-limit/input/budget-category-limit-bulk-update-input.interface';
+
+export { RUNWAY_IRREGULAR_CV_THRESHOLD } from './runway/constant/runway.constant';
+export { RUNWAY_IRREGULAR_CONCENTRATION_THRESHOLD } from './runway/constant/runway.constant';
+export { RUNWAY_MAX_MONTHS } from './runway/constant/runway.constant';
+
+export { RunwayWindowEnum, DEFAULT_RUNWAY_WINDOW } from './runway/enum/runway-window.enum';
+export { RunwayDriverDimensionEnum } from './runway/enum/runway-driver-dimension.enum';
+
+export type { RunwaySeriesRowInterface } from './runway/interface/runway-series-row.interface';
+export type { RunwayDriverSeriesRowInterface } from './runway/interface/runway-driver-series-row.interface';

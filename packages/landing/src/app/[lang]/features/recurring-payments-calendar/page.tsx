@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -80,14 +79,66 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie recurring payments calendar with the monthly total above the upcoming subscriptions`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>The slow leak in every budget</Trans>}>
+                    <Trans>
+                        Budgie scans your history for amount and cadence patterns and plots every recurring charge on a month calendar.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Detected, not declared</Trans>}>
+                    <Trans>
+                        Budgie finds the pattern itself — same merchant, similar amount, regular interval — and marks the days those charges
+                        fall on.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Recurring screen showing a September 2026 calendar with detected payment days marked and an upcoming charges list`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="recurring-payments-calendar-1"
+                    slug="recurring-payments-calendar"
+                >
+                    <FeatureStory.Callout y={0.393}>
+                        <Trans>Detected, not added</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>A month grid of what bills</Trans>}>
+                    <Trans>Every marked day is a real recurring charge. The upcoming list totals what is still to come this month.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Recurring screen showing a September 2026 calendar with detected payment days marked and an upcoming charges list`}
+                    index={1}
                     locale={lang}
                     scene="recurring-payments-calendar-1"
                     slug="recurring-payments-calendar"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.677}>
+                        <Trans>Upcoming charges</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Sixty days ahead</Trans>}>
+                    <Trans>Tap any marked day to see exactly what bills — here Day 15 lists the gym, Netflix and Spotify.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie Recurring screen with Day 15 selected and a list of Gym Membership, Netflix and Spotify charges`}
+                    index={2}
+                    locale={lang}
+                    scene="recurring-payments-calendar-2"
+                    slug="recurring-payments-calendar"
+                >
+                    <FeatureStory.Callout y={0.611}>
+                        <Trans>Charges for that day</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -128,18 +179,6 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                         <Trans>Manual edits to detected patterns are sticky — the next scan respects them</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Detection runs as a background task on your transaction table. The pattern interface stores merchant fingerprint,
-                        average amount, cadence, and last-seen date. Manual edits to a pattern are sticky.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>

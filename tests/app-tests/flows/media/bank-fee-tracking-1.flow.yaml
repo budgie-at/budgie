@@ -1,0 +1,31 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://transactions/2300/transfer'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.TriggerButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'TransactionActionsMenu.TriggerButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionActionsMenu.FeeButton'
+      timeout: 5000
+
+- tapOn:
+      id: 'TransactionActionsMenu.FeeButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SplitEntryRow.Amount.0'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

@@ -216,7 +216,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageComparisonTable rivalLabel={<Trans>Plaid-based app</Trans>}>
                     <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Your token, in your keystore</Trans>}
+                        budgie={<Trans>Your token, in your local database</Trans>}
                         concern={<Trans>Token control</Trans>}
                         rival={<Trans>Plaid-managed credential vault</Trans>}
                     />
@@ -257,8 +257,8 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     question={<Trans>Where does my Monobank token live?</Trans>}
                     answer={
                         <Trans>
-                            In your platform&apos;s secure keystore (iOS Keychain / Android Keystore), never in plaintext or our servers (we
-                            have none).
+                            In Budgie&apos;s local database on your device. When you set a PIN, that database is encrypted with a SQLCipher
+                            key held in your platform&apos;s keystore; the token itself is never sent to a Budgie server (we have none).
                         </Trans>
                     }
                 />
