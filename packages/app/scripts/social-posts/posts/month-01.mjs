@@ -85,7 +85,7 @@ function videoPost(definition) {
         {
             sizes: VIDEO_SIZES,
             screens: [],
-            alt: `Video hook card reading “${hook}” on a dark Budgie canvas.`,
+            alt: `Video hook card reading “${hook}” on a Budgie canvas.`,
             render: context => statementSlide({ text: hook, level: 'xl' }, context)
         },
         {
