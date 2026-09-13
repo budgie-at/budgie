@@ -111,7 +111,6 @@ export class TransactionPatternRepository {
                 comment: TransactionEntityTable.comment,
                 defaultAmount,
                 accountId: AccountEntityTable.id,
-                instrumentId: AccountEntityTable.instrumentId,
                 categoryId: sql<number>`${TransactionEntryEntityTable.categoryId}`,
                 categoryTitle: sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`,
                 categoryIcon: CategoryEntityTable.icon

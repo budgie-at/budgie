@@ -152,12 +152,10 @@ const buildSeries = (candidates: readonly RecurringChargeCandidateInterface[]): 
         categoryTitle: latest.categoryTitle,
         categoryIcon: latest.categoryIcon,
         accountId: latest.accountId,
-        instrumentId: latest.instrumentId,
         periodMonths: resolvePeriodMonths(medianGap),
         periodDays: medianGap,
         anchorTimestamp: events[events.length - 1].timestamp,
         predictedAmount: Math.round(median(recentAmounts)),
-        occurrenceCount: events.length,
         events
     };
 };

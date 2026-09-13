@@ -12,7 +12,6 @@ const RECURRING_WINDOW_MONTHS = 24;
 
 interface UseRecurringCalendarReturnInterface {
     readonly data?: RecurringCalendarDataInterface;
-    readonly isLoading: boolean;
 }
 
 export const useRecurringCalendar = (displayYear: number, displayMonth: number): UseRecurringCalendarReturnInterface => {
@@ -31,7 +30,6 @@ export const useRecurringCalendar = (displayYear: number, displayMonth: number):
     );
 
     const calendarData = projectRecurringMonth(detectRecurringSeries(candidates), displayYear, displayMonth, now);
-    const isLoading = !isDefined(updatedAt);
 
-    return { ...(isDefined(updatedAt) && { data: calendarData }), isLoading };
+    return { ...(isDefined(updatedAt) && { data: calendarData }) };
 };

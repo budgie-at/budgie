@@ -7,7 +7,6 @@ export interface RecurringChargeCandidateInterface {
     readonly comment: string;
     readonly defaultAmount: number;
     readonly accountId: number;
-    readonly instrumentId: number;
     readonly categoryId: number;
     readonly categoryTitle: string;
     readonly categoryIcon: UserIconNameEnum;
