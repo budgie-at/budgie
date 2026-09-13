@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.54.0](https://github.com/budgie-at/budgie/compare/v6.53.2...v6.54.0) (2026-09-13)
+
+
+### Bug Fixes
+
+* **app:** scope social manifests to one theme and keep the lock scene PIN-only ([85c0801](https://github.com/budgie-at/budgie/commit/85c08014785776438f792f10aed8bd71a95d15f1))
+
+
+### Features
+
+* add month-01 social post generator, showcase scene and capture flows ([6bea4ae](https://github.com/budgie-at/budgie/commit/6bea4ae1ad1b82382043b0d04cf47aedf994ef68))
+
+
+
+
+
 ## [6.53.2](https://github.com/budgie-at/budgie/compare/v6.53.1...v6.53.2) (2026-09-13)
 
 
