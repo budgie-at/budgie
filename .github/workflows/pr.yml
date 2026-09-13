@@ -196,7 +196,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@49cf033ba2f70d71c106c6416c1810e3287875f3 # v1.22.0
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v1.23.0 # v1.23.0
         with:
             app-dir: packages/app
             scheme: budgie
@@ -208,13 +208,31 @@ jobs:
             release-tag-prefix: ota
             prune-keep: '100'
 
+    fingerprint-guard:
+        if: needs.detect-mobile-impact.outputs.mobile == 'true'
+        needs: [detect-mobile-impact]
+        name: Native runtime fingerprint
+        permissions:
+            contents: read
+            pull-requests: read
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@v1.23.0 # v1.23.0
+        with:
+            working-directory: packages/app
+            platforms: ios,android
+            app-env: |
+                APP_VARIANT=production
+            package-manager: pnpm
+            install-command: pnpm install --frozen-lockfile
+            runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+            node-version: 22.22.1
+
     ios-maestro:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, code-quality]
         name: iOS Maestro E2E
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.13.0 # v1.13.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.23.0 # v1.23.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
