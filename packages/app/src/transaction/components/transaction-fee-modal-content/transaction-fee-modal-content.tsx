@@ -10,6 +10,8 @@ import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-aler
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 
+import { TransactionFeeModalContentSelector } from './transaction-fee-modal-content.selector';
+
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { TransactionFeeModalResult } from '../../context/transaction-fee-modal.context';
 import type { TransactionEntryCreateInputInterface } from '@budgie/contracts';
@@ -98,10 +100,19 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
                         size="md"
                         className="aspect-square"
                         onPress={handleRemove}
+                        testID={TransactionFeeModalContentSelector.RemoveButton}
                     />
                 ) : null}
 
-                <Button className="flex-1" content={t`Save fee`} variant={variant} size="md" disabled={!canSave} onPress={handleConfirm} />
+                <Button
+                    className="flex-1"
+                    content={t`Save fee`}
+                    variant={variant}
+                    size="md"
+                    disabled={!canSave}
+                    onPress={handleConfirm}
+                    testID={TransactionFeeModalContentSelector.SaveButton}
+                />
             </View>
         </View>
     );
