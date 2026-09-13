@@ -15,11 +15,11 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
-import { ruleEngineService } from '../service/rule-engine.service';
+import { ruleApplicationDrainerService } from '../service/rule-application-drainer.service';
 import { ruleMatcherService } from '../service/rule-matcher.service';
 import { ruleService } from '../service/rule.service';
+import { showRuleApplicationToast } from '../util/show-rule-application-toast.util';
 
 import type { RuleFormResultType } from '../context/rule-form-modal.context';
 
@@ -135,14 +135,12 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
         });
     };
 
-    const applyToExisting = async (targetRuleId: number, shouldApply: boolean): Promise<void> => {
+    const enqueueApplyToExisting = (targetRuleId: number, shouldApply: boolean): void => {
         if (!shouldApply) {
             return;
         }
 
-        await syncWorkloadService.runUser('rule-application-rule', () =>
-            ruleEngineService.applyRuleToMatchingTransactions(targetRuleId, null)
-        );
+        ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId, showRuleApplicationToast);
     };
 
     const handleSubmit = async (values: RuleCreateInputInterface) => {
@@ -151,10 +149,10 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
             if (isEditing && isDefined(ruleId)) {
                 await ruleService.updateById(ruleId, values);
-                await applyToExisting(ruleId, shouldApply);
+                enqueueApplyToExisting(ruleId, shouldApply);
             } else {
                 const rule = await ruleService.create(values);
-                await applyToExisting(rule.id, shouldApply);
+                enqueueApplyToExisting(rule.id, shouldApply);
             }
             onSuccess?.(isEditing ? 'updated' : 'created');
         } catch (error: unknown) {
