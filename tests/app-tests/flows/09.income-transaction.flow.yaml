@@ -77,7 +77,8 @@ appId: ${APP_ID}
     id: 'TransactionInfo.Row.Account'
 - assertVisible:
     id: 'TransactionInfo.Row.Category'
-- assertNotVisible: '^Set fee$'
+- assertNotVisible:
+      id: 'TransactionFeePill'
 - tapOn:
     id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
@@ -98,7 +99,8 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'SplitEntryRow.Amount.0'
-- assertVisible: 'Save fee'
+- assertVisible:
+      id: 'TransactionFeeModal.SaveButton'
 - swipe:
     direction: DOWN
 - extendedWaitUntil:
