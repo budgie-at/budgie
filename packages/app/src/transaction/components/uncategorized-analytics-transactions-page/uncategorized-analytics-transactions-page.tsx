@@ -1,4 +1,9 @@
-import { DEFAULT_TRANSACTION_FILTER, type TransactionFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    type AmountRangeInterface,
+    DEFAULT_TRANSACTION_FILTER,
+    type TransactionFilterInterface,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { useRouter } from 'expo-router';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -29,6 +34,14 @@ const buildFilterIds = (values?: number[]): number[] | null => {
     return null;
 };
 
+const buildAmountRange = (params: AnalyticsTransactionsRouteParamsInterface): AmountRangeInterface | null => {
+    if (!isDefined(params.amountFrom) && !isDefined(params.amountTo)) {
+        return null;
+    }
+
+    return { from: params.amountFrom ?? null, to: params.amountTo ?? null };
+};
+
 const buildFilters = (params: AnalyticsTransactionsRouteParamsInterface): TransactionFilterInterface => ({
     ...DEFAULT_TRANSACTION_FILTER,
     types: buildTypes(params),
@@ -37,7 +50,8 @@ const buildFilters = (params: AnalyticsTransactionsRouteParamsInterface): Transa
         to: isDefined(params.endDate) ? new Date(params.endDate) : null
     },
     accountIds: buildFilterIds(params.accountIds),
-    tagIds: buildFilterIds(params.tagIds)
+    tagIds: buildFilterIds(params.tagIds),
+    amount: buildAmountRange(params)
 });
 
 export const UncategorizedAnalyticsTransactionsPage = (params: AnalyticsTransactionsRouteParamsInterface) => {
