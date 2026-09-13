@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://account/8/details'
+
+- extendedWaitUntil:
+      visible:
+          id: 'DepositAccountActionsMenu.TriggerButton'
+      timeout: 15000
+
+- tapOn:
+      id: 'DepositAccountActionsMenu.TriggerButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'DepositAccountActionsMenu.CloseDepositButton'
+      timeout: 5000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

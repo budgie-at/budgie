@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.52.0](https://github.com/budgie-at/budgie/compare/v6.51.1...v6.52.0) (2026-09-12)
+
+
+### Features
+
+* **app:** branch the rules empty state on bank integration presence ([480932d](https://github.com/budgie-at/budgie/commit/480932dd0d943a9b99c247d704d9361a218b12c2))
+* **contracts:** add isOnboardingCompleted setting ([9ebb099](https://github.com/budgie-at/budgie/commit/9ebb099ff946c4391c9585d17e24400857cbe335))
+* **contracts:** add onboardingStep and isAiEnabled settings ([e241ea8](https://github.com/budgie-at/budgie/commit/e241ea8fa5f7351b92577019008617580941bfb0))
+
+
+
+
+
+# [6.51.0](https://github.com/budgie-at/budgie/compare/v6.50.1...v6.51.0) (2026-09-12)
+
+
+### Features
+
+* let users pick monobank sync history period ([3b5bc1e](https://github.com/budgie-at/budgie/commit/3b5bc1e0c9b5873f42508fe02cb287c43b7843c5))
+
+
+
+
+
+## [6.41.4](https://github.com/budgie-at/budgie/compare/v6.41.3...v6.41.4) (2026-09-10)
+
+
+### Bug Fixes
+
+* **consolidation:** repair bridge-claimed transfer pairs via settings fix ([9689929](https://github.com/budgie-at/budgie/commit/96899297cd7d98dd554a685f7d441bab8fce2f51))
+
+
+
+
+
 ## [6.41.1](https://github.com/budgie-at/budgie/compare/v6.41.0...v6.41.1) (2026-09-08)
 
 

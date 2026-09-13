@@ -101,18 +101,8 @@ class ExporterService {
 
             for (const transaction of transactions) {
                 if (transaction.type === TransactionTypeEnum.TRANSFER) {
-                    const fromAccountDeleted =
-                        isDefined(transaction.fromAccountId) && this.deletedAccountsMap.has(transaction.fromAccountId);
-                    const toAccountDeleted = isDefined(transaction.toAccountId) && this.deletedAccountsMap.has(transaction.toAccountId);
-
-                    if (fromAccountDeleted && !toAccountDeleted) {
-                        rows.push(this.mapDeletedFromAccountTransfer(transaction));
-                    } else if (toAccountDeleted && !fromAccountDeleted) {
-                        rows.push(this.mapDeletedToAccountTransfer(transaction));
-                    } else if (!fromAccountDeleted && !toAccountDeleted) {
-                        rows.push(this.mapTransferTransaction(transaction));
-                    }
-                } else if (isDefined(transaction.toAccountId) && !this.deletedAccountsMap.has(transaction.toAccountId)) {
+                    rows.push(this.mapTransferTransaction(transaction));
+                } else if (isDefined(transaction.toAccountId)) {
                     rows.push(...this.mapIncomeExpenseTransaction(transaction));
                 }
             }
@@ -126,11 +116,19 @@ class ExporterService {
         return rows;
     }
 
+    private getAccount(accountId: number | null | undefined): AccountEntityInterface | null {
+        if (!isDefined(accountId)) {
+            return null;
+        }
+
+        return this.accountsMap.get(accountId) ?? this.deletedAccountsMap.get(accountId) ?? null;
+    }
+
     private mapTransferTransaction(transaction: TransactionWithEntriesEntityInterface): ExportRowInterface {
         const entry = transaction.entries.at(0);
 
-        const fromAccount = isDefined(transaction.fromAccountId) ? this.accountsMap.get(transaction.fromAccountId) : null;
-        const toAccount = isDefined(transaction.toAccountId) ? this.accountsMap.get(transaction.toAccountId) : null;
+        const fromAccount = this.getAccount(transaction.fromAccountId);
+        const toAccount = this.getAccount(transaction.toAccountId);
         const fromInstrument = isDefined(fromAccount?.instrumentId) ? this.instrumentsMap.get(fromAccount.instrumentId) : null;
         const toInstrument = isDefined(toAccount?.instrumentId) ? this.instrumentsMap.get(toAccount.instrumentId) : null;
         const category = isDefined(entry?.categoryId) ? this.categoriesMap.get(entry.categoryId) : null;
@@ -154,28 +152,8 @@ class ExporterService {
         };
     }
 
-    private mapDeletedFromAccountTransfer(transaction: TransactionWithEntriesEntityInterface): ExportRowInterface {
-        const toAccount = isDefined(transaction.toAccountId) ? this.accountsMap.get(transaction.toAccountId) : null;
-        const toInstrument = isDefined(toAccount?.instrumentId) ? this.instrumentsMap.get(toAccount.instrumentId) : null;
-        const toEntry = transaction.entries.find(entry => entry.accountId === transaction.toAccountId);
-        const category = isDefined(toEntry?.categoryId) ? this.categoriesMap.get(toEntry.categoryId) : null;
-        const amount = isDefined(toEntry) ? toEntry.amount : 0;
-
-        return this.createExportRow(transaction, toAccount, toInstrument, category, amount);
-    }
-
-    private mapDeletedToAccountTransfer(transaction: TransactionWithEntriesEntityInterface): ExportRowInterface {
-        const fromAccount = isDefined(transaction.fromAccountId) ? this.accountsMap.get(transaction.fromAccountId) : null;
-        const fromInstrument = isDefined(fromAccount?.instrumentId) ? this.instrumentsMap.get(fromAccount.instrumentId) : null;
-        const fromEntry = transaction.entries.find(entry => entry.accountId === transaction.fromAccountId);
-        const category = isDefined(fromEntry?.categoryId) ? this.categoriesMap.get(fromEntry.categoryId) : null;
-        const amount = isDefined(fromEntry) ? -fromEntry.amount : 0;
-
-        return this.createExportRow(transaction, fromAccount, fromInstrument, category, amount);
-    }
-
     private mapIncomeExpenseTransaction(transaction: TransactionWithEntriesEntityInterface): ExportRowInterface[] {
-        const toAccount = isDefined(transaction.toAccountId) ? this.accountsMap.get(transaction.toAccountId) : null;
+        const toAccount = this.getAccount(transaction.toAccountId);
         const toInstrument = isDefined(toAccount?.instrumentId) ? this.instrumentsMap.get(toAccount.instrumentId) : null;
 
         return transaction.entries.map(entry => {
