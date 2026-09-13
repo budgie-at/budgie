@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.57.0](https://github.com/budgie-at/budgie/compare/v6.56.0...v6.57.0) (2026-09-13)
+
+
+### Features
+
+* **landing:** add bank-resync-window steps story and correct re-sync claims ([54323d6](https://github.com/budgie-at/budgie/commit/54323d6490d7a53a2c7faf434b318a2b1db04969)), closes [#781](https://github.com/budgie-at/budgie/issues/781)
+* **landing:** add statistics-tags-tab steps story and correct tag-analytics claims ([810beea](https://github.com/budgie-at/budgie/commit/810beead818e76b0bbaee4b3ca7e56e47d7a645f)), closes [#791](https://github.com/budgie-at/budgie/issues/791)
+* **landing:** database-backup steps story ([5e2290f](https://github.com/budgie-at/budgie/commit/5e2290ff790612b3d46414671d6063e41b4f8bca))
+
+
+
+
+
 # [6.56.0](https://github.com/budgie-at/budgie/compare/v6.55.1...v6.56.0) (2026-09-13)
 
 
