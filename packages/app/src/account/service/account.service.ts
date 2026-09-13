@@ -200,6 +200,17 @@ class AccountService {
         return account;
     }
 
+    async findByIdIncludingArchivedOrFail(id: number): Promise<AccountEntityInterface> {
+        const account = await accountRepository.findByIdIncludingArchived(id);
+
+        if (!isDefined(account)) {
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
+            throw new Error(`Account with id ${id} not found`);
+        }
+
+        return account;
+    }
+
     async archiveByIdInTransaction(id: number, tx: DB): Promise<void> {
         await this.unconsolidateActiveAutoByAccountId(id, tx);
 
