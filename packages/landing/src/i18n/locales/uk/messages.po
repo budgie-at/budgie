@@ -5532,14 +5532,11 @@ msgstr "Хмарні трекери витрат зазвичай викорис
 msgid "Cloud-based means your data is on their servers"
 msgstr "Хмарний — означає, що ваші дані на їхніх серверах"
 
+#: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
+#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no copy on somebody else's server."
 msgstr "Хмарні застосунки для особистих фінансів дублюють кожну транзакцію на свої сервери. Budgie тримає вашу книгу обліку на вашому пристрої. Без акаунта, без агрегатора, без копії на чужому сервері."
-
-#: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
-#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
-msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure."
-msgstr "Хмарні додатки для особистих фінансів дублюють кожну транзакцію на свої сервери. Budgie зберігає вашу фінансову книгу на вашому пристрої. Без акаунта, без агрегатора, без ризику."
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Cloud-based PFM apps"

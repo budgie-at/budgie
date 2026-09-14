@@ -5531,14 +5531,11 @@ msgstr "Cloud-based expense trackers typically use databases like PostgreSQL, My
 msgid "Cloud-based means your data is on their servers"
 msgstr "Cloud-based means your data is on their servers"
 
+#: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
+#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no copy on somebody else's server."
 msgstr "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no copy on somebody else's server."
-
-#: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
-#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
-msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure."
-msgstr "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure."
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Cloud-based PFM apps"

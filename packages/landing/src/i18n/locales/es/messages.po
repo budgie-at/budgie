@@ -5532,14 +5532,11 @@ msgstr "Los rastreadores de gastos basados en la nube tipicamente usan bases de 
 msgid "Cloud-based means your data is on their servers"
 msgstr "Basado en la nube, lo que significa que tus datos están en sus servidores"
 
+#: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
+#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no copy on somebody else's server."
 msgstr "Las apps de finanzas personales en la nube replican cada transacción en sus servidores. Budgie mantiene tu registro en tu dispositivo. Sin cuenta, sin agregador, sin copia en el servidor de otro."
-
-#: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
-#: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
-msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure."
-msgstr "Las apps de finanzas personales basadas en la nube replican cada transacción a sus servidores. Budgie mantiene tu libro de cuentas en tu dispositivo. Sin cuenta, sin agregador, sin exposición."
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Cloud-based PFM apps"
