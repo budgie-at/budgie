@@ -14,7 +14,7 @@ interface Props extends Pick<
     readonly balance: number;
     readonly sync: SyncEntityInterface | null;
     readonly className?: string;
-    readonly debtProgressSummary?: DebtAccountProgressSummaryInterface;
+    readonly debtProgressSummary: DebtAccountProgressSummaryInterface | null;
     readonly instrumentId: number;
     readonly instrumentCode: string;
     readonly instrumentSymbol: string;

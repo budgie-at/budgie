@@ -3,6 +3,66 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.62.1](https://github.com/budgie-at/budgie/compare/v6.62.0...v6.62.1) (2026-09-14)
+
+
+### Performance Improvements
+
+* **landing:** fetch the priority AppShot dark variant at high priority ([e0eecb6](https://github.com/budgie-at/budgie/commit/e0eecb66486417de5a0a065874552f3639618c79))
+
+
+
+
+
+# [6.62.0](https://github.com/budgie-at/budgie/compare/v6.61.0...v6.62.0) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** sharpen de/es/fr/uk biometric story wording per review ([b25290b](https://github.com/budgie-at/budgie/commit/b25290beac9c181e1e2d56b8ce391bf028afb9c1))
+
+
+### Features
+
+* **landing:** add biometric-authentication scroll story ([baa538f](https://github.com/budgie-at/budgie/commit/baa538fa0301a1676b30ad1ef47e07ec968fe29b))
+
+
+
+
+
+# [6.61.0](https://github.com/budgie-at/budgie/compare/v6.60.2...v6.61.0) (2026-09-14)
+
+
+### Features
+
+* **landing:** add bank-integration-management scroll story ([1482173](https://github.com/budgie-at/budgie/commit/14821734202b6a61dfb14a2713b2fab0ba6c148f))
+
+
+
+
+
+## [6.60.2](https://github.com/budgie-at/budgie/compare/v6.60.1...v6.60.2) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** reserve caption rail space for three-callout story steps ([a648b34](https://github.com/budgie-at/budgie/commit/a648b3417d6282d334c3e4c8a182af9b7b45f1d3))
+
+
+
+
+
+## [6.60.1](https://github.com/budgie-at/budgie/compare/v6.60.0...v6.60.1) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** correct private-budget-app-alternative tagline overstatement ([9e42061](https://github.com/budgie-at/budgie/commit/9e42061300379fdc7a0749ddaa8b31e896dc815e)), closes [#1024](https://github.com/budgie-at/budgie/issues/1024)
+
+
+
+
+
 # [6.60.0](https://github.com/budgie-at/budgie/compare/v6.59.1...v6.60.0) (2026-09-14)
 
 
