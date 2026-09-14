@@ -141,10 +141,6 @@ msgstr "{months, plural, one {# Monat} other {# Monate}}"
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} neu, {existingTransactionCount} bereits importiert, {parsedTransactionCount} geprüft"
 
-#: src/runway/component/runway-history-chart/runway-history-chart.tsx
-msgid "{peakLabel} spiked to {peakAmount} — the median ignores it."
-msgstr "{peakLabel} ist auf {peakAmount} gestiegen – der Median ignoriert das."
-
 #: src/category/components/category-statistics-card/category-statistics-card.tsx
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
 msgid "{percentage}% of expenses"
@@ -178,6 +174,10 @@ msgstr "{source}-Fehler · {message}"
 #: src/ai/service/ai-system-status.service.ts
 msgid "{source} failed: {message}"
 msgstr "{source} fehlgeschlagen: {message}"
+
+#: src/runway/component/runway-history-chart/runway-history-chart.tsx
+msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
+msgstr "{spikeLabel} hatte eine Einmalausgabe von {spikeAmount}. Die Schätzung nutzt stattdessen einen typischen Monat."
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
@@ -2402,10 +2402,6 @@ msgstr "MCC-Kategorien sind nicht geladen"
 msgid "MCC Code"
 msgstr "MCC-Code"
 
-#: src/runway/component/runway-history-chart/runway-history-chart.tsx
-msgid "median {medianLabel}"
-msgstr "Median {medianLabel}"
-
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Merchant code"
@@ -2435,9 +2431,17 @@ msgstr "Fehlende Kategorien"
 msgid "Missing rate"
 msgstr "Kurs fehlt"
 
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
+msgid "Money in"
+msgstr "Einnahmen"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Money lent or borrowed"
 msgstr "Verliehenes oder geliehenes Geld"
+
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
+msgid "Money out"
+msgstr "Ausgaben"
 
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
@@ -2750,6 +2754,10 @@ msgstr "Lokale KI aktiviert"
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "One-off"
 msgstr "Einmalig"
+
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
+msgid "One-off spike"
+msgstr "Einmaliger Ausschlag"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
@@ -4020,6 +4028,10 @@ msgstr "Typ"
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx
 msgid "Type ({selectedTypesCount})"
 msgstr "Typ ({selectedTypesCount})"
+
+#: src/runway/component/runway-history-median-line/runway-history-median-line.tsx
+msgid "typical month {amount}"
+msgstr "typischer Monat {amount}"
 
 #: src/i18n/constant/languages.constant.ts
 #: src/i18n/constant/locales.constant.ts

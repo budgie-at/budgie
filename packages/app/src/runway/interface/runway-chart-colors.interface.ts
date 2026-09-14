@@ -1,5 +1,7 @@
 export interface RunwayChartColorsInterface {
     readonly destructive: string;
+    readonly positive: string;
+    readonly spike: string;
     readonly median: string;
     readonly bandFill: string;
     readonly bandStroke: string;
