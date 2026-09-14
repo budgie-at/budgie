@@ -1,5 +1,5 @@
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { LanguageEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
@@ -68,7 +68,7 @@ describe('consolidation/refund-pair-by-title-candidates', () => {
             refundTitle: 'ПОВЕРНЕННЯ КОШТІВ, Послуги'
         });
 
-        const incomeCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '');
+        const incomeCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN);
         expect(incomeCandidates).toMatchObject([{ id: expense.id, isRecommended: true }]);
     });
 

@@ -9,6 +9,7 @@ import { transactionRepository } from '../../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { RefundedSummaryKindEnum } from '../../enum/refunded-summary-kind.enum';
 import { computeRefundedSummary } from '../../utils/compute-refunded-summary.util';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
@@ -25,6 +26,7 @@ const logger = getLogger('RefundedPill');
 
 export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
+    const language = useSetting('language');
     const formatDigits = useFormatDigits(decimalPlaces);
     const isRefund = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
     const [refundsTotal, setRefundsTotal] = useState<number | null>(null);
@@ -33,7 +35,7 @@ export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
         let isActive = true;
 
         const fetchRefundsTotal = async (): Promise<void> => {
-            const sources = await transactionRepository.findConsolidationSources(transaction.id);
+            const sources = await transactionRepository.findConsolidationSources(transaction.id, language);
             const total = sources
                 .filter(source => source.entryType === TransactionEntryTypeEnum.DEBIT)
                 .reduce((sum, source) => sum + source.amount, 0);
@@ -57,7 +59,7 @@ export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
         return () => {
             isActive = false;
         };
-    }, [isRefund, transaction.id]);
+    }, [isRefund, transaction.id, language]);
 
     const summary = isRefund && isDefined(refundsTotal) ? computeRefundedSummary(transaction, refundsTotal) : null;
     const currencySymbol = transaction.entries[0]?.account.instrument.symbol;

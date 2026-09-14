@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { transactionRefundService } from '../service/transaction-refund.service';
 
 import type { RefundableExpenseCandidateInterface } from '@budgie/contracts';
 
 export const useRefundableExpenseCandidatesQuery = (refundIncomeTransactionId: number, search: string) => {
+    const language = useSetting('language');
     const [candidates, setCandidates] = useState<RefundableExpenseCandidateInterface[]>([]);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +18,7 @@ export const useRefundableExpenseCandidatesQuery = (refundIncomeTransactionId: n
 
         setIsLoading(true);
         void transactionRefundService
-            .findRefundableExpenses(refundIncomeTransactionId, search)
+            .findRefundableExpenses(refundIncomeTransactionId, search, language)
             .then(result => {
                 if (isMounted) {
                     setCandidates(result);
@@ -42,7 +44,7 @@ export const useRefundableExpenseCandidatesQuery = (refundIncomeTransactionId: n
         return () => {
             isMounted = false;
         };
-    }, [refundIncomeTransactionId, search]);
+    }, [refundIncomeTransactionId, search, language]);
 
     return { candidates, errorMessage, isLoading };
 };

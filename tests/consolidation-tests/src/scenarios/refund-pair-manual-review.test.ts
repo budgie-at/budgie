@@ -1,4 +1,4 @@
-import { PRECISION } from '@budgie/contracts';
+import { LanguageEnum, PRECISION } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
@@ -37,7 +37,7 @@ const seedSeezonaRefund = (accountId: number, refundAccountId?: number) => {
 const expectManualSeezonaCandidate = async (refundId: number, accountTitle?: string) => {
     const autoCandidates = await refundPairRepository.findCandidates();
     const reviewCandidates = await refundPairRepository.findReviewCandidates();
-    const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refundId, '');
+    const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refundId, '', LanguageEnum.EN);
 
     expect(autoCandidates).toHaveLength(0);
     expect(reviewCandidates.length).toBeGreaterThanOrEqual(1);
