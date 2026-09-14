@@ -1,12 +1,8 @@
 appId: ${APP_ID}
 ---
-- runFlow:
-      file: ../subflows/import/open-csv-import-picker.flow.yaml
+- openLink: 'budgie://settings/import?fileUri=file://${APP_DATA_CONTAINER}/Documents/E2EFixtures/e2e-budgie-import.csv'
 
-- runFlow:
-      file: ../subflows/import/select-file-from-app-provider.flow.yaml
-      env:
-          FILE_ROW_ID_MATCH: 'e2e-budgie-import(, csv)?'
+- waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible:
