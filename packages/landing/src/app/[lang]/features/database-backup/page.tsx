@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -52,6 +51,9 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
     const homePath = `/${lang}`;
     const featuresPath = `/${lang}/features`;
     const featurePath = `/${lang}/features/${FEATURE_METADATA.slug}`;
+    const storyAlt = t(
+        i18n
+    )`Budgie settings screen, Data Management section, listing the Import CSV, Export CSV, Import Database and Export Database rows`;
 
     return (
         <main className="flex-1">
@@ -75,19 +77,53 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Capture your entire Budgie database in one encrypted file. Restore on any device in seconds — no account, no upload.
+                        Capture the whole Budgie database as one file — SQLCipher-encrypted with your PIN when you set one — and put it back
+                        on another device. No account, no upload.
                     </Trans>
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie data management settings with the import, export, backup and restore actions`}
-                    locale={lang}
-                    scene="database-backup-1"
-                    slug="database-backup"
-                />
-            </FeaturePageMedia>
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Where a server would be, there is a file</Trans>}>
+                    <Trans>
+                        Settings keeps Export Database and Import Database as two neighbouring rows. Between them they do everything a
+                        hosted account would have done.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>One file holds the database</Trans>}>
+                    <Trans>
+                        Export Database checkpoints the write-ahead log and copies the SQLite file itself — every transaction, account,
+                        category, tag and setting — then hands it to the system share sheet as a dated budgie-backup file. Set a PIN and
+                        that PIN is the SQLCipher key the file is encrypted with.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} priority scene="database-backup-1" slug="database-backup">
+                    <FeatureStory.Callout y={0.54}>
+                        <Trans>Writes the whole database</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Restore replaces what is there</Trans>}>
+                    <Trans>
+                        Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and
+                        cannot be undone; confirm and it swaps the database in — write-ahead sidecars included — clears the stored PIN and
+                        restarts.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot alt={storyAlt} index={1} locale={lang} scene="database-backup-1" slug="database-backup">
+                    <FeatureStory.Callout y={0.461}>
+                        <Trans>Restore from a backup file</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Your file, your storage</Trans>}>
+                    <Trans>
+                        The share sheet is the last step Budgie takes part in. Send the file to Files, iCloud Drive, a Drive folder or a USB
+                        stick, and keep as many dated copies as you want — the name carries the date and time, so exports never collide.
+                    </Trans>
+                </FeatureStory.Step>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -95,14 +131,14 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Cloud apps do &quot;backups&quot; by holding all your data on their servers. Budgie does backups by giving you an
-                        encrypted file. Where you put that file is your business.
+                        Cloud apps do &ldquo;backups&rdquo; by holding all your data on their servers. Budgie does backups by handing you
+                        the database file. Where you put it is your business.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Restore is a single tap on a fresh install — pick the file, enter the original PIN, the database is back. Migrate to
-                        a new phone in under a minute without an account.
+                        Restore lives in the same Settings list as the export. Pick the file, confirm the warning that it replaces
+                        everything, and the app restarts on the restored database. No account is involved on either side.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -113,42 +149,37 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Single encrypted file holds every transaction, account, category, tag, and setting</Trans>
+                        <Trans>
+                            One file holds every transaction, account, category, tag and setting — it is the app&apos;s own SQLite database
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Backup file is your SQLCipher database — no vendor format conversion</Trans>
+                        <Trans>Set a PIN and the file is SQLCipher-encrypted with it — no vendor format, no conversion step</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Restore is a one-tap flow on a fresh install — pick the file, enter your PIN</Trans>
+                        <Trans>
+                            Restore from the same Settings list: pick the file, confirm the destructive replace, the app restarts on it
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Migrate to a new phone in under a minute, no account required</Trans>
+                        <Trans>
+                            Move to a new phone by exporting on the old one and importing on the new one — no account on either side
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Use any cloud (iCloud, Drive, Dropbox) or USB transfer — your choice</Trans>
+                        <Trans>The export leaves through the system share sheet — Files, iCloud Drive, Drive, Dropbox or a USB stick</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Settings → Export → Backup. Budgie writes a .db file with SQLCipher encryption intact. To restore, install Budgie on
-                        the new device, tap Restore on the welcome screen, point at the file, enter the PIN.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>How do I restore on a new device?</Trans>}
+                    question={<Trans>How do I restore on another device?</Trans>}
                     answer={
                         <Trans>
-                            Install Budgie on the new phone. On the welcome screen, tap Restore. Pick the backup file from Files / iCloud /
-                            Drive. Enter your original PIN. Done.
+                            Install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file and
+                            confirm the warning. Budgie replaces its database, clears the stored PIN and restarts, so set the lock again
+                            afterwards.
                         </Trans>
                     }
                 />
@@ -156,8 +187,9 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     question={<Trans>Is the backup file safe to upload to a cloud?</Trans>}
                     answer={
                         <Trans>
-                            Yes — the file is SQLCipher-encrypted with your PIN-derived key. Cloud providers see encrypted bytes, not your
-                            transactions.
+                            If you have set a PIN, yes: the file is the SQLCipher database encrypted with that PIN, so a provider sees
+                            encrypted bytes rather than your transactions. Without a PIN the database is not encrypted and neither is the
+                            backup, so set one before the file leaves your device.
                         </Trans>
                     }
                 />
@@ -165,8 +197,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     question={<Trans>Can I have multiple backups?</Trans>}
                     answer={
                         <Trans>
-                            Yes — every backup is a separate file. Snapshot before risky imports or migrations and keep the file around for
-                            rollback.
+                            Yes — every export is written with the date and time in its name, so files never overwrite each other. Snapshot
+                            before a risky import or migration and keep the file around for rollback.
                         </Trans>
                     }
                 />
@@ -174,8 +206,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     question={<Trans>Does Budgie auto-backup?</Trans>}
                     answer={
                         <Trans>
-                            Manual backups only by default — for the privacy-first crowd that doesn&apos;t want surprise file writes. You
-                            can schedule reminders in Settings.
+                            No. Exports are manual only — Budgie never writes a backup file on its own, and there is no scheduler and no
+                            reminder to turn on. Nothing is written until you tap Export Database.
                         </Trans>
                     }
                 />
