@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.62.2](https://github.com/budgie-at/budgie/compare/v6.62.1...v6.62.2) (2026-09-14)
+
+
+### Bug Fixes
+
+* **app:** keep the key when restoring a PIN-encrypted backup ([8af92fd](https://github.com/budgie-at/budgie/commit/8af92fd04e3185769e0d6a0d4d6a8ad3877a921b))
+* **app:** keep the restore commit as the last failure point ([6dc1dee](https://github.com/budgie-at/budgie/commit/6dc1deed12dedc47f06e860cbaf5d31163fbd461))
+* **app:** probe backup keys on a fixed-name copy ([26cd2fa](https://github.com/budgie-at/budgie/commit/26cd2faea4eaad2e7dbda8c06f04fd4a2b4f6981))
+* **app:** roll back the stored PIN when a restore fails ([7b60102](https://github.com/budgie-at/budgie/commit/7b60102bf1dab82fcef9520f93b37c6d8e36b8cf))
+
+
+
+
+
 ## [6.62.1](https://github.com/budgie-at/budgie/compare/v6.62.0...v6.62.1) (2026-09-14)
 
 
