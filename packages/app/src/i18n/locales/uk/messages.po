@@ -2283,6 +2283,10 @@ msgstr "Модель ШІ не готова"
 msgid "Loading AI model..."
 msgstr "Завантаження моделі ШІ..."
 
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Loading debt progress"
+msgstr "Завантаження прогресу боргу"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Завантаження історії ринку"

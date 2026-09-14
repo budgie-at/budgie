@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.60.2](https://github.com/budgie-at/budgie/compare/v6.60.1...v6.60.2) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** reserve caption rail space for three-callout story steps ([a648b34](https://github.com/budgie-at/budgie/commit/a648b3417d6282d334c3e4c8a182af9b7b45f1d3))
+
+
+
+
+
+## [6.60.1](https://github.com/budgie-at/budgie/compare/v6.60.0...v6.60.1) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** correct private-budget-app-alternative tagline overstatement ([9e42061](https://github.com/budgie-at/budgie/commit/9e42061300379fdc7a0749ddaa8b31e896dc815e)), closes [#1024](https://github.com/budgie-at/budgie/issues/1024)
+
+
+
+
+
 # [6.60.0](https://github.com/budgie-at/budgie/compare/v6.59.1...v6.60.0) (2026-09-14)
 
 

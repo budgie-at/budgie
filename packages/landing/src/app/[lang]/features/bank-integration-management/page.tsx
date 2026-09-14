@@ -11,14 +11,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -81,14 +80,87 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie home screen with the synced card balances above the cash and savings sections`}
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>One key per bank, not per account</Trans>}>
+                    <Trans>
+                        Three screens: the credential you paste once, the bank screen that lists everything it unlocked, and the sync
+                        controls each account keeps for itself.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Connect the bank once</Trans>}>
+                    <Trans>
+                        Setup asks for one credential and spells out how to scope it — for Binance, an API key and secret with reading
+                        enabled and trading and withdrawals switched off. Budgie stores it on the bank, not on an account, and fetches
+                        whatever that key can see.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Connect Binance screen with the Get API Key row, a four-step setup list, and the API key and secret fields`}
+                    index={0}
                     locale={lang}
-                    scene="monobank-sync-2"
+                    priority
+                    scene="binance-sync-1"
+                    slug="binance-sync"
+                >
+                    <FeatureStory.Callout y={0.22}>
+                        <Trans>Generate it in Binance</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.893}>
+                        <Trans>Then it fetches the accounts</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Every account behind that key</Trans>}>
+                    <Trans>
+                        The bank gets its own screen: the cards and jars synced from it, each with its balance and a switch that pauses one
+                        account while its siblings keep going. A Monobank connection can pull the bank&apos;s account list again later and
+                        offer only the accounts you have not added yet — no second token.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Monobank connection screen listing two cards and a jar with balances, sync switches, and Add deposit and Add accounts buttons`}
+                    index={1}
+                    locale={lang}
+                    scene="monobank-sync-1"
                     slug="monobank-sync"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.218}>
+                        <Trans>One row per synced account</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.302}>
+                        <Trans>Pause this one, keep the rest</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Each account keeps its own controls</Trans>}>
+                    <Trans>
+                        Open an account and its sync card is there: pause it, paste a fresh token — which lands on the shared connection and
+                        clears the error counters of every account on it — or re-pull a window, from the last seven days up to the entire
+                        history.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Account Settings screen for a Monobank card with the re-sync sheet open on entire history, 90, 30 and 7 days`}
+                    index={2}
+                    locale={lang}
+                    scene="bank-resync-window-1"
+                    slug="bank-resync-window"
+                >
+                    <FeatureStory.Callout y={0.638}>
+                        <Trans>Reset and pull everything again</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.862}>
+                        <Trans>Or just the last week</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -125,7 +197,10 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                         <Trans>A connection screen listing its accounts with their balances and a per-account sync switch</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Add more accounts from the bank later without re-entering credentials, with duplicates filtered out</Trans>
+                        <Trans>
+                            Monobank connections can add more accounts later without re-entering the token, with the ones you already have
+                            filtered out
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Open a deposit straight from the connection, so it inherits the bank it belongs to</Trans>
@@ -152,22 +227,9 @@ export default async function BankIntegrationManagementFeaturePage(props: PageLa
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        What the screen offers next depends on the bank. Connections that talk to a live API can pull the bank&apos;s
-                        account list and add whatever you left out the first time. Statement-based banks offer an import action instead.
-                        Both can open a new deposit account that starts out attached to the same bank.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Connect a bank once and the credential is stored as a connection for that provider. Any account you create from it —
-                        during setup or months later — records which connection it came from, and sync resolves the token through that link
-                        rather than keeping a copy per account.
+                        What the screen offers next depends on the bank. A Monobank connection can pull the bank&apos;s account list and add
+                        whatever you left out the first time. Statement-based banks — PrivatBank and Erste — offer a file import action
+                        instead. Both can open a new deposit account that starts out attached to the same bank.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
