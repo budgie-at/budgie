@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.63.0](https://github.com/budgie-at/budgie/compare/v6.62.2...v6.63.0) (2026-09-14)
+
+
+### Features
+
+* **app:** animate debt progress track with reduced-motion support ([807079b](https://github.com/budgie-at/budgie/commit/807079b69d95f8fb5772b0cf4056166bd9fc7475))
+
+
+
+
+
 ## [6.62.2](https://github.com/budgie-at/budgie/compare/v6.62.1...v6.62.2) (2026-09-14)
 
 
