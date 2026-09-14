@@ -20,7 +20,6 @@ interface Props {
     readonly computation: RunwayComputationInterface;
 }
 
-const TABULAR_NUMS_STYLE = { fontVariant: ['tabular-nums' as const] };
 const ENTERING_DURATION = 240;
 const ENTERING = FadeIn.duration(ENTERING_DURATION);
 
@@ -52,8 +51,7 @@ export const RunwayVerdict = ({ computation }: Props) => {
                         adjustsFontSizeToFit
                         numberOfLines={1}
                         minimumFontScale={0.6}
-                        style={TABULAR_NUMS_STYLE}
-                        className="text-4xl font-bold text-primary"
+                        className="text-4xl font-bold tabular-nums text-primary"
                     >
                         {figure}
                     </ProtectedText>

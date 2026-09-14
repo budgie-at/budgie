@@ -1,3 +1,5 @@
+import { RUNWAY_WINDOW_MONTHS } from '@budgie/contracts';
+
 import { statisticsRepository } from '../../@generic/drizzle/db/db';
 import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
@@ -11,18 +13,18 @@ import type { UseRunwayQueryParams } from '../interface/use-runway-query-params.
 import type { TransactionFilterInterface } from '@budgie/contracts';
 
 export const useRunwayQuery = (params: UseRunwayQueryParams) => {
-    const { filters, window, dimension, liquid } = params;
+    const { filters, dimension, liquid } = params;
     const language = useSetting('language');
     const { defaultInstrument } = useSettingsContext();
     const queryFilters: TransactionFilterInterface = { ...filters, date: null };
     const filterKey = buildTransactionFilterKey(queryFilters);
     const { data: seriesRows } = useDatabaseLiveQuery(
-        statisticsRepository.getRunwaySeriesQuery(queryFilters, defaultInstrument.id, window),
-        [filterKey, defaultInstrument.id, window]
+        statisticsRepository.getRunwaySeriesQuery(queryFilters, defaultInstrument.id, RUNWAY_WINDOW_MONTHS),
+        [filterKey, defaultInstrument.id]
     );
     const { data: driverRows } = useDatabaseLiveQuery(
-        statisticsRepository.getRunwayDriverSeriesQuery(queryFilters, defaultInstrument.id, dimension, window, language),
-        [filterKey, defaultInstrument.id, dimension, window, language]
+        statisticsRepository.getRunwayDriverSeriesQuery(queryFilters, defaultInstrument.id, dimension, RUNWAY_WINDOW_MONTHS, language),
+        [filterKey, defaultInstrument.id, dimension, language]
     );
     const { drivers, irregularMonthlyAmount } = aggregateRunwayDrivers(driverRows, median(seriesRows.map(row => row.expense)));
     const computation = computeRunway({ series: seriesRows, liquid, irregularMonthlyAmount, referenceDate: new Date() });

@@ -26,10 +26,3 @@ export const RUNWAY_CHART_COLORS: Record<ColorSchemaEnum, RunwayChartColorsInter
         markerBackground: 'rgba(10, 10, 10, 1)'
     }
 };
-
-export const RUNWAY_METER_STOPS = [
-    { offset: '0%', color: '#00ff88' },
-    { offset: '45%', color: '#7ddb4f' },
-    { offset: '78%', color: '#f0b100' },
-    { offset: '100%', color: '#ff8a00' }
-] as const;

@@ -1640,10 +1640,6 @@ msgstr "Edit Transfer"
 msgid "Emergency fund and savings goals"
 msgstr "Emergency fund and savings goals"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-msgid "empty"
-msgstr "empty"
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Empty canvas"
 msgstr "Empty canvas"
@@ -2484,7 +2480,7 @@ msgstr "Monthly Total"
 msgid "months left"
 msgstr "months left"
 
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Most likely balance"
 msgstr "Most likely balance"
 
@@ -2998,7 +2994,7 @@ msgstr "Push notifications are disabled"
 msgid "Quick rule"
 msgstr "Quick rule"
 
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Range across better and worse months"
 msgstr "Range across better and worse months"
 
@@ -4034,7 +4030,7 @@ msgstr "Type"
 msgid "Type ({selectedTypesCount})"
 msgstr "Type ({selectedTypesCount})"
 
-#: src/runway/component/runway-history-median-line/runway-history-median-line.tsx
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "typical month {amount}"
 msgstr "typical month {amount}"
 

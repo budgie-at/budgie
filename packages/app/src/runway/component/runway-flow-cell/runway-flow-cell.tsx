@@ -15,8 +15,6 @@ interface Props {
     readonly variant: ColorPaletteVariant;
 }
 
-const TABULAR_NUMS_STYLE = { fontVariant: ['tabular-nums' as const] };
-
 export const RunwayFlowCell = ({ label, amount, variant }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(0);
@@ -34,8 +32,7 @@ export const RunwayFlowCell = ({ label, amount, variant }: Props) => {
                 adjustsFontSizeToFit
                 numberOfLines={1}
                 minimumFontScale={0.7}
-                style={TABULAR_NUMS_STYLE}
-                className={cn('text-md font-semibold', FOREGROUND_COLOR_PALETTE[variant])}
+                className={cn('text-md font-semibold tabular-nums', FOREGROUND_COLOR_PALETTE[variant])}
             >
                 {value}
             </ProtectedText>

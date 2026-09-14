@@ -4,11 +4,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useThemeContext } from '../../../theme/context/theme.context';
 import { RUNWAY_CHART_COLORS } from '../../constant/runway-chart-colors.constant';
-import {
-    RUNWAY_HISTORY_BAR_AREA_HEIGHT,
-    RUNWAY_HISTORY_BAR_GAP,
-    RUNWAY_HISTORY_MIN_BAR_HEIGHT
-} from '../../constant/runway-history.constant';
+import { RUNWAY_HISTORY_BAR_AREA_HEIGHT, RUNWAY_HISTORY_BAR_GAP } from '../../constant/runway-history.constant';
 
 interface Props {
     readonly centerX: number;
@@ -21,14 +17,15 @@ interface Props {
 }
 
 const BAR_RADIUS = 2;
+const MIN_BAR_HEIGHT = 1.5;
 
 export const RunwayHistoryBars = ({ centerX, barWidth, baselineY, expense, income, maxValue, isSpike }: Props) => {
     const { colorScheme } = useThemeContext();
 
     const colors = RUNWAY_CHART_COLORS[colorScheme];
     const scale = isPositiveNumber(maxValue) ? RUNWAY_HISTORY_BAR_AREA_HEIGHT / maxValue : 0;
-    const expenseHeight = isPositiveNumber(expense) ? Math.max(expense * scale, RUNWAY_HISTORY_MIN_BAR_HEIGHT) : 0;
-    const incomeHeight = isPositiveNumber(income) ? Math.max(income * scale, RUNWAY_HISTORY_MIN_BAR_HEIGHT) : 0;
+    const expenseHeight = isPositiveNumber(expense) ? Math.max(expense * scale, MIN_BAR_HEIGHT) : 0;
+    const incomeHeight = isPositiveNumber(income) ? Math.max(income * scale, MIN_BAR_HEIGHT) : 0;
     const expenseFill = isSpike ? colors.spike : colors.destructive;
     const expenseX = centerX - RUNWAY_HISTORY_BAR_GAP / 2 - barWidth;
     const incomeX = centerX + RUNWAY_HISTORY_BAR_GAP / 2;
