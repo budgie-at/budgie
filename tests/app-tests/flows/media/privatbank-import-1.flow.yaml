@@ -1,5 +1,15 @@
 appId: ${APP_ID}
 ---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
 - runFlow: ../subflows/accounts/open-new-account.flow.yaml
 
 - scrollUntilVisible:
