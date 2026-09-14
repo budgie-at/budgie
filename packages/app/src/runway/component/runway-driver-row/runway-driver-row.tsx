@@ -38,7 +38,10 @@ export const RunwayDriverRow = ({ driver, maxAmount }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const title = isNotEmptyString(driver.title) ? driver.title : t`Uncategorized`;
+    const { foldedDriverCount } = driver;
+    const foldedTitle = t`Other · ${foldedDriverCount}`;
+    const namedTitle = isNotEmptyString(driver.title) ? driver.title : t`Uncategorized`;
+    const title = isPositiveNumber(foldedDriverCount) ? foldedTitle : namedTitle;
     const formattedAmount = formatDigits(convertFromMicroUnits(driver.monthlyAmount), defaultInstrument.symbol);
     const share = isPositiveNumber(maxAmount) ? driver.monthlyAmount / maxAmount : 0;
     const shareStyle: ViewStyle = { width: `${Math.round(share * 100)}%` };

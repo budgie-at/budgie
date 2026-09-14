@@ -5,6 +5,7 @@ import { useSetting } from '../../settings/hook/use-setting.hook';
 import { buildTransactionFilterKey } from '../../transaction/utils/build-transaction-filter-key.util';
 import { aggregateRunwayDrivers } from '../utils/aggregate-runway-drivers.util';
 import { computeRunway } from '../utils/compute-runway.util';
+import { median } from '../utils/median.util';
 
 import type { UseRunwayQueryParams } from '../interface/use-runway-query-params.interface';
 import type { TransactionFilterInterface } from '@budgie/contracts';
@@ -23,7 +24,7 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
         statisticsRepository.getRunwayDriverSeriesQuery(queryFilters, defaultInstrument.id, dimension, window, language),
         [filterKey, defaultInstrument.id, dimension, window, language]
     );
-    const drivers = aggregateRunwayDrivers(driverRows, window);
+    const drivers = aggregateRunwayDrivers(driverRows, median(seriesRows.map(row => row.expense)));
     const irregularMonthlyAmount = drivers.filter(driver => driver.isIrregular).reduce((total, driver) => total + driver.monthlyAmount, 0);
     const computation = computeRunway({ series: seriesRows, liquid, irregularMonthlyAmount, referenceDate: new Date() });
 

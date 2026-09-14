@@ -2830,6 +2830,10 @@ msgstr "Початкова транзакція"
 msgid "Other"
 msgstr "Інше"
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "Other · {foldedDriverCount}"
+msgstr "Інше · {foldedDriverCount}"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: {threshold}% spent"
 msgstr "Бюджет «Інше»: використано {threshold}%"

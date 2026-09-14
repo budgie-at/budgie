@@ -40,7 +40,7 @@ export const RunwayDrivers = (props: Props) => {
             {hasDrivers ? (
                 <View className="gap-y-xl">
                     {drivers.map(driver => (
-                        <RunwayDriverRow key={driver.id ?? driver.title} driver={driver} maxAmount={maxAmount} />
+                        <RunwayDriverRow key={`${driver.id ?? ''}-${driver.foldedDriverCount}`} driver={driver} maxAmount={maxAmount} />
                     ))}
                 </View>
             ) : (

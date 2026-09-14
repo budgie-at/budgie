@@ -2830,6 +2830,10 @@ msgstr "Transaction d’origine"
 msgid "Other"
 msgstr "Autre"
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "Other · {foldedDriverCount}"
+msgstr "Autres · {foldedDriverCount}"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: {threshold}% spent"
 msgstr "Budget autres : {threshold}% dépensé"
