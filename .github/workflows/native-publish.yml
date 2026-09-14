@@ -20,6 +20,7 @@ jobs:
       contents: read
     env:
       APP_VARIANT: production
+      EAS_BUILD_PROFILE: production
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
