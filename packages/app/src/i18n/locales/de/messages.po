@@ -192,7 +192,7 @@ msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
 
 #: src/runway/component/runway-hero/runway-hero.tsx
-#: src/runway/component/runway-widget-card/runway-widget-card.tsx
+#: src/runway/component/runway-pill/runway-pill.tsx
 msgid "+{formattedNet} / mo"
 msgstr "+{formattedNet} / Mon."
 
@@ -207,6 +207,10 @@ msgstr "<"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid ">"
 msgstr ">"
+
+#: src/runway/component/runway-pill/runway-pill.tsx
+msgid "≈ {formattedMonths} mo"
+msgstr "≈ {formattedMonths} Mon."
 
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -746,10 +750,6 @@ msgstr "Budgie benachrichtigt dich, wenn der Import fertig ist"
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen bleiben unverändert."
-
-#: src/runway/component/runway-widget-card/runway-widget-card.tsx
-msgid "Building"
-msgstr "Aufbau"
 
 #: src/runway/component/runway-overview/runway-overview.tsx
 msgid "Burn"
@@ -1532,10 +1532,6 @@ msgstr "App-Sperre deaktivieren"
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Display the budget card on the home screen"
 msgstr "Budget-Karte auf dem Startbildschirm anzeigen"
-
-#: src/settings/components/runway-widget-toggle/runway-widget-toggle.tsx
-msgid "Display the runway card on the home screen"
-msgstr "Runway-Karte auf dem Startbildschirm anzeigen"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Do not sync history"
@@ -3206,12 +3202,10 @@ msgid "Runs in the background, and much slower while the app is closed."
 msgstr "Läuft im Hintergrund und deutlich langsamer, wenn die App geschlossen ist."
 
 #: src/runway/component/runway-hero/runway-hero.tsx
-#: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "Runs out around {runOutDate}"
 msgstr "Reicht etwa bis {runOutDate}"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
-#: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "Runway"
 msgstr "Runway"
 
@@ -3514,10 +3508,6 @@ msgstr "Budget auf Startseite anzeigen"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show Cents"
 msgstr "Cent anzeigen"
-
-#: src/settings/components/runway-widget-toggle/runway-widget-toggle.tsx
-msgid "Show runway on home"
-msgstr "Runway auf Startseite anzeigen"
 
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx

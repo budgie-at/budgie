@@ -1,1 +1,1 @@
-export type WidgetSettingKey = 'isBudgetWidgetEnabled' | 'isRunwayWidgetEnabled';
+export type WidgetSettingKey = 'isBudgetWidgetEnabled';
