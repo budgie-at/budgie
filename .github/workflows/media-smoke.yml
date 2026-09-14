@@ -24,7 +24,7 @@ jobs:
         name: Landing media flows
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.23.0 # v1.23.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.23.1 # v1.23.1
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
