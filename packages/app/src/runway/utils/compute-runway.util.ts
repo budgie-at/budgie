@@ -54,6 +54,7 @@ export const computeRunway = (params: ComputeRunwayParams): RunwayComputationInt
             burn: 0,
             income: 0,
             net: 0,
+            allInBurn: 0,
             allInNet: 0,
             liquid,
             runwayMonths: null,
@@ -74,7 +75,8 @@ export const computeRunway = (params: ComputeRunwayParams): RunwayComputationInt
     const p25Net = percentile(netSeries, P25_PERCENTILE);
     const p75Net = percentile(netSeries, P75_PERCENTILE);
     const runwayMonths = net < 0 ? liquid / Math.abs(net) : null;
-    const allInNet = net - irregularMonthlyAmount;
+    const allInBurn = burn + irregularMonthlyAmount;
+    const allInNet = income - allInBurn;
     const allInRunwayMonths = allInNet < 0 ? liquid / Math.abs(allInNet) : null;
     const runsOutAt = isDefined(runwayMonths) ? new Date(referenceDate.getTime() + runwayMonths * MILLISECONDS_PER_MONTH) : null;
     const allInRunsOutAt = isDefined(allInRunwayMonths)
@@ -85,6 +87,7 @@ export const computeRunway = (params: ComputeRunwayParams): RunwayComputationInt
         burn,
         income,
         net,
+        allInBurn,
         allInNet,
         liquid,
         runwayMonths,
