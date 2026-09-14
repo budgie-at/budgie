@@ -8,12 +8,12 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'budget-planning',
     tier: FeatureTierEnum.HERO,
-    title: msg`Budget Planning — Limits That Match Your Payday`,
+    title: msg`Budget Planning — One Limit, Split By Category`,
     tagline: msg`One overall limit, per-category limits, and a cap for everything else — with a home-screen widget and on-device alerts.`,
     metaTitle: msg`Monthly Budget Planning — Budgie`,
-    metaDescription: msg`Set an overall monthly limit plus per-category limits, start the cycle on your payday, watch progress from the home screen, and get on-device alerts at 80% and 100%. No server involved.`,
+    metaDescription: msg`Set an overall monthly limit plus per-category limits, track the current cycle from the home-screen widget, and get on-device alerts at 80% and 100% of your limit. No server involved.`,
     primaryKeyword: 'monthly budget app',
-    seoKeywords: ['monthly budget app', 'budget planning app', 'category budget limits', 'offline budget alerts', 'payday budget cycle'],
+    seoKeywords: ['monthly budget app', 'budget planning app', 'category budget limits', 'offline budget alerts', 'monthly budget cycle'],
     relatedFeatureSlugs: [
         'spending-analytics',
         'custom-categories',
