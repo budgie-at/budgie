@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.60.0](https://github.com/budgie-at/budgie/compare/v6.59.1...v6.60.0) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** tighten binance-sync sync-window copy and locale wording ([4868933](https://github.com/budgie-at/budgie/commit/48689333a80855b5c277ba2c52d75408fca04692)), closes [#1019](https://github.com/budgie-at/budgie/issues/1019)
+
+
+### Features
+
+* **landing:** add binance-sync steps story and correct sync claims ([ee299e6](https://github.com/budgie-at/budgie/commit/ee299e609c3bd734b051b8fc86a597467c4c89ae)), closes [#782](https://github.com/budgie-at/budgie/issues/782)
+* **landing:** add private-budget-app-alternative story and fix false claims ([97b393a](https://github.com/budgie-at/budgie/commit/97b393aafda068405acaa33d497de0bfb1c8ed92)), closes [#755](https://github.com/budgie-at/budgie/issues/755)
+
+
+
+
+
 ## [6.59.1](https://github.com/budgie-at/budgie/compare/v6.59.0...v6.59.1) (2026-09-14)
 
 
