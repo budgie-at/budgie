@@ -13,7 +13,7 @@ appId: ${APP_ID}
       optional: true
 
 - tapOn:
-      text: 'Browse|Parcourir|Durchsuchen|Examinar|Огляд'
+      text: 'Browse|Explorer|Durchsuchen|Examinar|Огляд'
       optional: true
 
 - waitForAnimationToEnd
