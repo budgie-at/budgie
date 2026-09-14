@@ -412,6 +412,11 @@
     grid-template-columns: minmax(0, 1fr);
 }
 
+.story-grid:has(.story-stage[data-active][data-callout-count='3']),
+.story-grid:not([data-ready]):has(.story-stage[data-index='0'][data-callout-count='3']) {
+    --story-caption-reserve: 7rem;
+}
+
 .story-intro {
     grid-column: 1;
     grid-row: 1;
