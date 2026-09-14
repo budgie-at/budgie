@@ -170,8 +170,12 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 53. **`useEffect` cleanups capture their target via a stable ref, not via deps.** A cleanup that depends on a function returned by a custom hook, a tuple member from a context provider, or any prop reconstructed each render fires on every parent re-render — not on actual unmount. Pattern:
     ```ts
     const resolveRef = useRef(resolveFromHook);
-    resolveRef.current = resolveFromHook;
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only cleanup; ref reads the live value
+
+    useEffect(() => {
+        resolveRef.current = resolveFromHook;
+    });
+
+    // oxlint-disable-next-line react/exhaustive-deps -- mount-only cleanup; ref reads the live value
     useEffect(() => () => resolveRef.current(...), []);
     ```
     Empty deps + ref-stable read = cleanup fires only on actual unmount.
