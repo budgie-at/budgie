@@ -2276,6 +2276,10 @@ msgstr "LLM not ready"
 msgid "Loading AI model..."
 msgstr "Loading AI model..."
 
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Loading debt progress"
+msgstr "Loading debt progress"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Loading market history"

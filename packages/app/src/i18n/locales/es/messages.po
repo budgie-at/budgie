@@ -2275,6 +2275,10 @@ msgstr "Modelo de IA no disponible"
 msgid "Loading AI model..."
 msgstr "Cargando modelo de IA..."
 
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Loading debt progress"
+msgstr "Cargando progreso de la deuda"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Cargando historial del mercado"
