@@ -3213,11 +3213,11 @@ msgstr "Reicht etwa bis {runOutDate}"
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "Runway"
-msgstr "Runway"
+msgstr "Reichweite"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
 msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
-msgstr "Runway benötigt mindestens 3 vollständige Monate mit Transaktionen. Du hast {monthsUsed}."
+msgstr "Die Reichweite benötigt mindestens 3 vollständige Monate mit Transaktionen. Du hast {monthsUsed}."
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
