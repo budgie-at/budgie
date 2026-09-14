@@ -103,8 +103,13 @@ class DatabaseImportService {
     }
 
     private async copyDatabaseSidecars(sourceUri: string, destinationPath: string): Promise<void> {
-        await this.copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`);
-        await this.copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`);
+        try {
+            await this.copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`);
+            await this.copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`);
+        } catch {
+            this.deleteFileIfExists(`${destinationPath}-wal`);
+            this.deleteFileIfExists(`${destinationPath}-shm`);
+        }
     }
 
     private deleteDestinationFiles(destinationPath: string, tempPath: string): void {
