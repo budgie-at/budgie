@@ -1,5 +1,5 @@
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
-import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { LanguageEnum, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
@@ -102,8 +102,8 @@ describe('consolidation/refund-pair-by-title', () => {
             refundTitle: 'Apple Store refund'
         });
 
-        const incomeCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '');
-        const expenseCandidates = await refundPairRepository.findRefundableExpenseCandidates(expense.id, '');
+        const incomeCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN);
+        const expenseCandidates = await refundPairRepository.findRefundableExpenseCandidates(expense.id, '', LanguageEnum.EN);
 
         expect(incomeCandidates).toMatchObject([{ id: expense.id, type: TransactionTypeEnum.EXPENSE }]);
         expect(expenseCandidates).toEqual([]);
