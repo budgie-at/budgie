@@ -13,7 +13,7 @@ appId: ${APP_ID}
       optional: true
 
 - tapOn:
-      text: 'Browse'
+      text: 'Browse|Parcourir|Durchsuchen|Examinar|Огляд'
       optional: true
 
 - waitForAnimationToEnd
@@ -25,10 +25,10 @@ appId: ${APP_ID}
       commands:
           - runFlow:
                 when:
-                    visible: 'On My iPhone'
+                    visible: 'On My iPhone|Sur mon iPhone|Auf meinem iPhone|En mi iPhone|На iPhone'
                 commands:
                     - tapOn:
-                          text: 'On My iPhone'
+                          text: 'On My iPhone|Sur mon iPhone|Auf meinem iPhone|En mi iPhone|На iPhone'
                     - waitForAnimationToEnd
 
 - runFlow:
