@@ -16,6 +16,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -79,6 +80,58 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                 }
             />
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Setup is one screen</Trans>}>
+                    <Trans>
+                        How to create the key, where to paste it, and the button that reads your balances back — connecting Binance fits on
+                        a single screen.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>The key is made on Binance</Trans>}>
+                    <Trans>
+                        The first row takes you to Binance&apos;s API management page, and the numbered list under it is the recipe: sign
+                        in, then create a new System-generated API key. Budgie never creates the key for you, because it never sees your
+                        Binance login.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="binance-sync-1"
+                    slug="binance-sync"
+                >
+                    <FeatureStory.Callout index={0} y={0.22}>
+                        <Trans>Opens Binance API management</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.429}>
+                        <Trans>Reading only, never trading</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={2} y={0.893}>
+                        <Trans>Reads your balances back</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Only the reading permission</Trans>}>
+                    <Trans>
+                        Step three is the one that matters: keep only &quot;Enable Reading&quot; on, and never allow trading or withdrawals.
+                        Permissions are enforced on Binance&apos;s side, and Budgie carries no order or withdrawal call to make — every
+                        request it signs goes to a read endpoint.
+                    </Trans>
+                </FeatureStory.Step>
+
+                <FeatureStory.Step index={2} title={<Trans>Fetch Accounts, then choose</Trans>}>
+                    <Trans>
+                        The key and the secret go into the two fields below, masked as you type. Fetch Accounts asks Binance what you hold
+                        and hands you the list: tick the assets you want as accounts, and Start Sync takes it from there.
+                    </Trans>
+                </FeatureStory.Step>
+            </FeatureStory>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>A key that can only read</Trans>
@@ -108,7 +161,7 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         <Trans>Balances taken from Binance itself, covering Spot, Funding, and Flexible and Locked Simple Earn</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>One account per asset, so each coin has its own balance, history, and place in net worth</Trans>
+                        <Trans>One account per wallet and asset, each with its own balance, history, and place in net worth</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Crypto and fiat deposits and withdrawals, P2P buy and sell orders, and Simple Earn rewards</Trans>
@@ -120,14 +173,16 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         <Trans>A P2P purchase and the bank payment behind it merge into one cross-currency transfer</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
-                        <Trans>Historical backfill walks backwards in windows and stops once your account goes quiet</Trans>
+                        <Trans>The first sync walks five years of history backwards in windows; later runs fetch only what changed</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
-                        <Trans>Each source type is written to your database as it finishes, so completed work is never re-fetched</Trans>
+                        <Trans>
+                            Each source type is written to your database as it finishes, and Binance ids keep re-runs duplicate-free
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={7}>
                         <Trans>
-                            Assets Budgie cannot price are kept visible with a &quot;valuation unavailable&quot; note, never dropped
+                            Assets Budgie cannot price are listed under &quot;valuation unavailable&quot; at setup instead of vanishing
                         </Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -155,20 +210,6 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
             </FeaturePageSection>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Setup is two steps: enter the key and secret, then pick which assets to keep as accounts. The first sync walks your
-                        history backwards in windows — deposits and withdrawals in wide pages, rewards, Convert, fiat orders, and P2P in
-                        narrower ones — and gives up once it has crossed a long stretch of empty windows. Later runs stay incremental, and
-                        balances are re-anchored to what Binance reports, including assets you have sold down to zero.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     question={<Trans>Can Budgie trade or withdraw with my key?</Trans>}
@@ -184,8 +225,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     question={<Trans>Which balances are included?</Trans>}
                     answer={
                         <Trans>
-                            Spot and Funding wallets plus Flexible and Locked Simple Earn positions, folded into one balance per asset so
-                            what you see matches what Binance shows you.
+                            Spot and Funding, as one account per wallet and asset. Flexible and Locked Simple Earn positions are added into
+                            the Spot balance for the same asset, so a coin you have staked still shows its full quantity.
                         </Trans>
                     }
                 />
@@ -193,8 +234,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     question={<Trans>How far back does the history go?</Trans>}
                     answer={
                         <Trans>
-                            Several years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is capped at six
-                            months by Binance&apos;s own API, so anything older cannot be pulled by any app.
+                            Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P orders stop at six months, because
+                            that is as far back as Binance&apos;s own order-history endpoint will serve.
                         </Trans>
                     }
                 />
@@ -202,8 +243,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     question={<Trans>What if the app is closed mid-sync?</Trans>}
                     answer={
                         <Trans>
-                            Each source type is committed to your local database as soon as it completes, so the work already done is kept
-                            and the next run picks up from there instead of starting over.
+                            Each source type is committed to your local database as soon as it completes, so whatever finished is kept. The
+                            next run asks Binance for those windows again, but every row carries its Binance id, so nothing is duplicated.
                         </Trans>
                     }
                 />
