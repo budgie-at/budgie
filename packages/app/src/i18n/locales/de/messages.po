@@ -137,10 +137,6 @@ msgstr "{matchingRulesCount, plural, one {# passende Regel} other {# passende Re
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# Monat} other {# Monate}}"
 
-#: src/runway/component/runway-horizon-chip/runway-horizon-chip.tsx
-msgid "{months} mo"
-msgstr "{months} Mon."
-
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} neu, {existingTransactionCount} bereits importiert, {parsedTransactionCount} geprüft"
@@ -191,7 +187,6 @@ msgstr "{splitEntryCount, plural, one {# Element} other {# Elemente}}"
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
 
-#: src/runway/component/runway-hero/runway-hero.tsx
 #: src/runway/component/runway-pill/runway-pill.tsx
 msgid "+{formattedNet} / mo"
 msgstr "+{formattedNet} / Mon."
@@ -644,6 +639,10 @@ msgstr "Basiswährung"
 msgid "Base instrument not found"
 msgstr "Basiswährung nicht gefunden"
 
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Based on your last {monthsUsed} months"
+msgstr "Basierend auf Ihren letzten {monthsUsed} Monaten"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Based on your recent spending"
 msgstr "Basierend auf deinen letzten Ausgaben"
@@ -739,9 +738,9 @@ msgstr "Budgie benachrichtigt dich, wenn der Import fertig ist"
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen bleiben unverändert."
 
-#: src/runway/component/runway-overview/runway-overview.tsx
-msgid "Burn"
-msgstr "Verbrauch"
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Burning"
+msgstr "Rückgang"
 
 #: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
@@ -1260,11 +1259,15 @@ msgstr "Widget-Einstellung konnte nicht aktualisiert werden"
 msgid "Count this account in your net worth calculation"
 msgstr "Dieses Konto in die Berechnung des Nettovermögens einbeziehen"
 
-#: src/runway/component/runway-hero/runway-hero.tsx
+#: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
+msgid "Counts irregular costs like insurance or holidays as a monthly expense."
+msgstr "Rechnet unregelmäßige Kosten wie Versicherungen oder Urlaube als monatliche Ausgabe."
+
+#: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Covered by {coverMonths} months of expenses"
 msgstr "Gedeckt durch {coverMonths} Monate Ausgaben"
 
-#: src/runway/component/runway-hero/runway-hero.tsx
+#: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Covered by your liquid balance"
 msgstr "Gedeckt durch dein liquides Guthaben"
 
@@ -1583,10 +1586,6 @@ msgstr "z.B. Lebensmittel, Unterhaltung"
 msgid "e.g. Savings Account"
 msgstr "z. B. Sparkonto"
 
-#: src/runway/component/runway-overview/runway-overview.tsx
-msgid "Earn"
-msgstr "Einnahmen"
-
 #: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Edit"
@@ -1639,6 +1638,10 @@ msgstr "Überweisung bearbeiten"
 #: src/app/(main)/create-account/index.tsx
 msgid "Emergency fund and savings goals"
 msgstr "Notfallfonds und Sparziele"
+
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "empty"
+msgstr "null"
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Empty canvas"
@@ -1824,6 +1827,7 @@ msgstr "Erwartetes Rückgabedatum (Optional)"
 msgid "Expense"
 msgstr "Ausgabe"
 
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Expenses"
 msgstr "Ausgaben"
@@ -2004,6 +2008,10 @@ msgstr "Zurück"
 msgid "Greater Than"
 msgstr "Größer als"
 
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Growing"
+msgstr "Wachstum"
+
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Hidden from Home"
 msgstr "Auf der Startseite ausgeblendet"
@@ -2121,6 +2129,7 @@ msgstr "Einmalige Ausgaben einbeziehen"
 msgid "Included in file imports"
 msgstr "In Dateiimporte einbezogen"
 
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
@@ -2393,10 +2402,6 @@ msgstr "MCC-Kategorien sind nicht geladen"
 msgid "MCC Code"
 msgstr "MCC-Code"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-msgid "median · p25–p75"
-msgstr "Median · p25–p75"
-
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "median {medianLabel}"
 msgstr "Median {medianLabel}"
@@ -2470,9 +2475,13 @@ msgstr "Monatsverlauf"
 msgid "Monthly Total"
 msgstr "Monatssumme"
 
-#: src/runway/component/runway-hero/runway-hero.tsx
+#: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "months left"
 msgstr "Monate übrig"
+
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+msgid "Most likely balance"
+msgstr "Wahrscheinlichster Kontostand"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -2482,7 +2491,7 @@ msgstr "Zu Konto → Kontoauszüge navigieren"
 msgid "Navigate to Menu → Statements"
 msgstr "Zu Menü → Kontoauszüge navigieren"
 
-#: src/runway/component/runway-overview/runway-overview.tsx
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
 msgid "Net"
 msgstr "Netto"
 
@@ -2844,7 +2853,6 @@ msgstr "Monatliches Gesamtlimit"
 msgid "Overpaid"
 msgstr "Überzahlt"
 
-#: src/runway/component/runway-overview/runway-overview.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Overview"
 msgstr "Übersicht"
@@ -2878,6 +2886,10 @@ msgstr "Fügen Sie Ihr Binance-API-Secret ein:"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
 msgstr "PDF-Kontoauszug"
+
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "per month"
+msgstr "pro Monat"
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Permission to access contacts was denied."
@@ -2972,6 +2984,10 @@ msgstr "Push-Benachrichtigungen sind deaktiviert"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
 msgstr "Schnellregel"
+
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+msgid "Range across better and worse months"
+msgstr "Bereich über bessere und schlechtere Monate"
 
 #: src/auth/util/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
@@ -3189,7 +3205,7 @@ msgstr "Regeln funktionieren mit importierten Transaktionen"
 msgid "Runs in the background, and much slower while the app is closed."
 msgstr "Läuft im Hintergrund und deutlich langsamer, wenn die App geschlossen ist."
 
-#: src/runway/component/runway-hero/runway-hero.tsx
+#: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Runs out around {runOutDate}"
 msgstr "Reicht etwa bis {runOutDate}"
 
@@ -3733,10 +3749,6 @@ msgstr "Zum Auswählen tippen"
 msgid "Target balance"
 msgstr "Zielsaldo"
 
-#: src/runway/component/runway-hero/runway-hero.tsx
-msgid "The answer"
-msgstr "Die Antwort"
-
 #: src/rule/util/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "Die Regel wurde gespeichert, aber keine vorhandenen Transaktionen mussten aktualisiert werden."
@@ -4185,10 +4197,6 @@ msgstr "XLSX-Export"
 msgid "Yesterday"
 msgstr "Gestern"
 
-#: src/runway/component/runway-hero/runway-hero.tsx
-msgid "You are building, not burning."
-msgstr "Du baust auf, statt zu verbrauchen."
-
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "You can always finish these steps later. Budgie's ready whenever you are."
 msgstr "Sie können diese Schritte jederzeit später abschließen. Budgie ist bereit, wenn Sie es sind."
@@ -4221,10 +4229,6 @@ msgstr "Sie schulden"
 #: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You received money"
 msgstr "Sie haben Geld erhalten"
-
-#: src/runway/component/runway-hero/runway-hero.tsx
-msgid "You spend more than you earn."
-msgstr "Du gibst mehr aus, als du verdienst."
 
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "You're all set"
