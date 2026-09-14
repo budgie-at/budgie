@@ -70,15 +70,17 @@ export const StatisticsContent = ({ activeTab }: Props) => {
 
     return (
         <>
-            <View className="pb-2xl">
-                <TransactionFilters
-                    accountId={null}
-                    filters={filters}
-                    onChange={setFilters}
-                    showTypeFilter={false}
-                    hasFiltersSelected={hasFiltersSelected}
-                />
-            </View>
+            {!isRunwayTab && (
+                <View className="pb-2xl">
+                    <TransactionFilters
+                        accountId={null}
+                        filters={filters}
+                        onChange={setFilters}
+                        showTypeFilter={false}
+                        hasFiltersSelected={hasFiltersSelected}
+                    />
+                </View>
+            )}
 
             {content}
         </>
