@@ -40,10 +40,10 @@ done < <(jq -r '."capture-scenes"[] | select(has("flow")) | .name + "\t" + .flow
 [ "$MISSING_FLOWS" -eq 0 ] && ok 'every flow scene resolves to a file under screenshots-dir'
 
 MEDIA_DIR="$SCREENSHOTS_DIR/flows/media"
-for flow_file in "$MEDIA_DIR"/*.flow.yaml; do
+for flow_file in "$MEDIA_DIR"/*.flow.yaml "$MEDIA_DIR"/ai-build/*.flow.yaml; do
     [ -e "$flow_file" ] || continue
     base=$(basename "$flow_file")
-    rel="flows/media/$base"
+    rel="flows/media/${flow_file#"$MEDIA_DIR/"}"
     shots=$(grep -n '^- takeScreenshot:' "$flow_file" || true)
     starts=$(grep -n '^- startRecording:' "$flow_file" || true)
     stops=$(grep -c '^- stopRecording$' "$flow_file" || true)

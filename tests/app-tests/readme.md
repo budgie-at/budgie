@@ -74,16 +74,47 @@ adds one `startRecording`/`stopRecording` pair after it and is named
 `<slug>-clip-<n>`. Flows reach their state by `runFlow`ing the E2E subflows
 under `flows/subflows/`, never by re-implementing navigation.
 
+### AI scenes need the AI capture build
+
+Every flow under `flows/media/ai-build/` needs a binary built **without**
+`EXPO_PUBLIC_AI_DISABLE`. On the store/e2e build `app.config.js` drops the
+`llama.rn` and `react-native-audio-api` plugins and sets
+`extra.aiEnabled = false`, which unmounts the Settings → AI group, the voice
+entry button and every suggestion pill, so those flows can only fail there.
+
+Run `.github/workflows/ios-e2e-ai-build.yml` (`workflow_dispatch`) and download
+its `ios-e2e-app-e2e-ai` artifact; the Mac Studio cannot build Release locally
+(#961). Then, per simulator:
+
+```bash
+xcrun simctl install <udid> Base.app
+xcrun simctl privacy <udid> grant microphone com.vitalyiegorov.budgie.e2e
+bash tests/app-tests/scripts/stage-ai-models.sh <udid> com.vitalyiegorov.budgie.e2e
+pnpm media:capture -- --udid <udid> --skip-install --scenes voice-transaction-entry-1,...
+```
+
+`stage-ai-models.sh` clones Qwen3 1.7B Q4_K_M (1.11 GB), nomic-embed-text-v2-moe
+Q8_0 (0.51 GB) and Whisper large-v3-turbo Q8_0 (0.87 GB) from a local cache into
+the container's `Documents/` (Whisper into `Documents/ai-models/`), which is
+exactly where `download-model.util.ts` and `whisper-model.service.ts` look before
+downloading. Fetch that cache once from the URLs in
+`packages/app/src/ai/util/ai-constants.util.ts` and
+`packages/app/src/ai/constant/whisper-model.constant.ts`.
+
+The AI subsystem is also gated on the `settings.isAiEnabled` consent that only
+onboarding writes (#962), and `showcase.db` predates the migration that adds the
+column. `scenes/shared/ai-consent.sql` therefore replays the pending migrations
+the app would run at launch, marks them applied, and grants consent; AI scene
+overlays `.read` it.
+
 `.github/workflows/media-smoke.yml` runs every `flows/media/*.flow.yaml` once
 per PR touching them and nightly, on one shard, seeding each flow's scene
 (`en`/`dark`) through `seed-screenshot-scene.sh` as mobile-ci's
 `pre-flow-command`. `pr.yml`'s `detect-mobile-impact` keeps those same paths
 out of the full iOS suite. `pin-app-lock-clip-1` is excluded until #697 makes
-the seed hook produce a SQLCipher database for lock-flag scenes. `ai-auto-categorization-clip-1`
-is excluded because the smoke job's e2e build sets `EXPO_PUBLIC_AI_DISABLE=true`
-(see #700), which cannot exercise the on-device AI categorization the clip
-records; it stays in `landing-media.config.json` for local capture against an
-AI-enabled build (see #718). There is no
+the seed hook produce a SQLCipher database for lock-flag scenes. The
+`flows/media/ai-build/` flows need no exclude pattern: the smoke job's
+`flows-max-depth` of 1 already keeps subdirectories out of the shard. There is no
 CSV import clip: the flow recorded the iOS Files picker, which both needs
 E2EFixtures on the CI runner and exposes `01.db`…`09.db` fixture filenames.
 

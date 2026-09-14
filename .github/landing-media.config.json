@@ -43,12 +43,28 @@
             "flow": "flows/media/budget-planning-2.flow.yaml"
         },
         {
-            "name": "ai-auto-categorization-2",
-            "deepLink": "budgie://settings?anchor=ai"
-        },
-        {
             "name": "ai-merchant-translation-1",
             "flow": "flows/media/ai-merchant-translation-1.flow.yaml"
+        },
+        {
+            "name": "voice-transaction-entry-1",
+            "flow": "flows/media/ai-build/voice-transaction-entry-1.flow.yaml"
+        },
+        {
+            "name": "voice-transaction-entry-2",
+            "flow": "flows/media/ai-build/voice-transaction-entry-2.flow.yaml"
+        },
+        {
+            "name": "ai-auto-categorization-1",
+            "flow": "flows/media/ai-build/ai-auto-categorization-1.flow.yaml"
+        },
+        {
+            "name": "ai-transaction-suggestions-1",
+            "flow": "flows/media/ai-build/ai-transaction-suggestions-1.flow.yaml"
+        },
+        {
+            "name": "ai-tag-suggestions-1",
+            "flow": "flows/media/ai-build/ai-tag-suggestions-1.flow.yaml"
         },
         {
             "name": "on-device-ai-budget-app-1",
@@ -316,14 +332,14 @@
         },
         {
             "name": "voice-transaction-entry-clip-1",
-            "flow": "flows/media/voice-transaction-entry-clip-1.flow.yaml",
+            "flow": "flows/media/ai-build/voice-transaction-entry-clip-1.flow.yaml",
             "locales": [
                 "en"
             ]
         },
         {
             "name": "ai-auto-categorization-clip-1",
-            "flow": "flows/media/ai-auto-categorization-clip-1.flow.yaml",
+            "flow": "flows/media/ai-build/ai-auto-categorization-clip-1.flow.yaml",
             "locales": [
                 "en"
             ]

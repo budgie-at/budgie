@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 ---
 - runFlow:
-      file: ../subflows/navigation/open-deep-link.flow.yaml
+      file: ../../subflows/navigation/open-deep-link.flow.yaml
       env:
           DEEP_LINK: 'budgie://'
 
@@ -16,7 +16,7 @@ appId: ${APP_ID}
 
 - startRecording: clip
 
-- runFlow: ../subflows/transactions/open-action-menu.flow.yaml
+- runFlow: ../../subflows/transactions/open-action-menu.flow.yaml
 
 - waitForAnimationToEnd
 

@@ -3,7 +3,7 @@ env:
     MERCHANT_TITLE: ${MERCHANT_TITLE || 'Whole Foods Market'}
 ---
 - runFlow:
-      file: ../subflows/navigation/open-deep-link.flow.yaml
+      file: ../../subflows/navigation/open-deep-link.flow.yaml
       env:
           DEEP_LINK: 'budgie://create-transaction/expense'
 
