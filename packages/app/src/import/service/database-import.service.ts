@@ -2,7 +2,7 @@ import { Log } from '@budgie/logger';
 import { File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { expoDb } from '../../@generic/drizzle/db/db';
@@ -11,6 +11,8 @@ import { aiStorageReplacementService } from '../../ai/service/ai-storage-replace
 import { authService } from '../../auth/service/auth.service';
 
 class DatabaseImportService {
+    private static readonly PROBE_DATABASE_NAME = 'import-probe.db';
+
     @Log(
         (sourceUri, backupPin) => `enter sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
         (result, ...[sourceUri, backupPin]) =>
@@ -31,21 +33,31 @@ class DatabaseImportService {
             `throw sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)} error=${getErrorMessage(error)}`
     )
     async canOpenBackup(sourceUri: string, backupPin: string | null): Promise<boolean> {
-        const backupFile = new File(sourceUri);
-        const backupDatabase = await SQLite.openDatabaseAsync(backupFile.name, { useNewConnection: true }, backupFile.parentDirectory.uri);
+        const probePath = `${Paths.cache.uri}/${DatabaseImportService.PROBE_DATABASE_NAME}`;
+
+        this.deleteProbeFiles(probePath);
+        await new File(sourceUri).copy(new File(probePath));
+
+        const probeDatabase = await SQLite.openDatabaseAsync(
+            DatabaseImportService.PROBE_DATABASE_NAME,
+            { useNewConnection: true },
+            Paths.cache.uri
+        );
 
         try {
             if (isNotEmptyString(backupPin)) {
-                await backupDatabase.execAsync(`PRAGMA key = '${backupPin}';`); // oxlint-disable-line lingui/no-unlocalized-strings
+                await probeDatabase.execAsync(`PRAGMA key = '${backupPin}';`); // oxlint-disable-line lingui/no-unlocalized-strings
             }
 
-            await backupDatabase.execAsync('SELECT count(*) FROM sqlite_master;'); // oxlint-disable-line lingui/no-unlocalized-strings
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
+            const tables = await probeDatabase.getAllAsync<unknown>('SELECT name FROM sqlite_master;');
 
-            return true;
+            return isNotEmptyArray(tables);
         } catch {
             return false;
         } finally {
-            await backupDatabase.closeAsync();
+            await probeDatabase.closeAsync();
+            this.deleteProbeFiles(probePath);
         }
     }
 
@@ -59,6 +71,12 @@ class DatabaseImportService {
         this.deleteDestinationFiles(destinationPath, tempPath);
         await this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
         await this.copyDatabaseSidecars(sourceUri, destinationPath);
+    }
+
+    private deleteProbeFiles(probePath: string): void {
+        this.deleteFileIfExists(probePath);
+        this.deleteFileIfExists(`${probePath}-wal`);
+        this.deleteFileIfExists(`${probePath}-shm`);
     }
 
     private async replaceDestinationFile(sourceUri: string, tempPath: string, destinationPath: string): Promise<void> {
