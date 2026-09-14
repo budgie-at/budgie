@@ -17,7 +17,6 @@ interface Props {
     readonly maxAmount: number;
 }
 
-const TABULAR_NUMS_STYLE = { fontVariant: ['tabular-nums' as const] };
 const QUIET_BAR_CLASSNAME = 'h-full rounded-full bg-secondary-foreground';
 
 const titleVariants = cva('shrink text-sm', {
@@ -29,7 +28,7 @@ const titleVariants = cva('shrink text-sm', {
     }
 });
 
-const amountVariants = cva('text-sm', {
+const amountVariants = cva('text-sm tabular-nums', {
     variants: {
         isFolded: {
             true: 'font-medium text-secondary-foreground',
@@ -80,7 +79,7 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount }: Props) => {
                     ) : null}
                 </View>
 
-                <Text numberOfLines={1} style={TABULAR_NUMS_STYLE} className={amountVariants({ isFolded })}>
+                <Text numberOfLines={1} className={amountVariants({ isFolded })}>
                     <Trans>{formattedAmount} / mo</Trans>
                 </Text>
             </View>

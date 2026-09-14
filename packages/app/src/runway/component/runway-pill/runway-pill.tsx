@@ -1,4 +1,4 @@
-import { DEFAULT_RUNWAY_WINDOW, DEFAULT_TRANSACTION_FILTER, RunwayDriverDimensionEnum, UserIconNameEnum } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, RunwayDriverDimensionEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cn } from 'cn';
 import { router } from 'expo-router';
@@ -33,7 +33,6 @@ export const RunwayPill = () => {
     const liquid = useLiquidBalanceQuery();
     const { computation } = useRunwayQuery({
         filters: DEFAULT_TRANSACTION_FILTER,
-        window: DEFAULT_RUNWAY_WINDOW,
         dimension: RunwayDriverDimensionEnum.CATEGORY,
         liquid
     });

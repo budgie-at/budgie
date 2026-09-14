@@ -1,4 +1,4 @@
-import { DEFAULT_RUNWAY_WINDOW, RunwayDriverDimensionEnum } from '@budgie/contracts';
+import { RunwayDriverDimensionEnum } from '@budgie/contracts';
 import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
@@ -25,7 +25,7 @@ export const RunwayContent = ({ filters }: Props) => {
     const [isAllIn, setIsAllIn] = useState(false);
 
     const liquid = useLiquidBalanceQuery();
-    const { computation, drivers, series } = useRunwayQuery({ filters, window: DEFAULT_RUNWAY_WINDOW, dimension, liquid });
+    const { computation, drivers, series } = useRunwayQuery({ filters, dimension, liquid });
 
     const handleToggleAllIn = () => {
         setIsAllIn(current => !current);

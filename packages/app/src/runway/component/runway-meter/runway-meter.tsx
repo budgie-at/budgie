@@ -1,19 +1,23 @@
 import { RUNWAY_MAX_MONTHS } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
-import { useEffect } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useReducedMotion, withTiming } from 'react-native-reanimated';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { RUNWAY_METER_STOPS } from '../../constant/runway-chart-colors.constant';
+import { RUNWAY_HORIZON_MONTHS } from '../../constant/runway-horizon-months.constant';
 
 interface Props {
     readonly months: number | null;
 }
 
-const RUNWAY_METER_TICK_MONTHS = [0, 3, 6, 9, RUNWAY_MAX_MONTHS] as const;
-const RUNWAY_METER_GRADIENT_ID = 'runway-meter-fill';
+const GRADIENT_ID = 'runway-meter-fill';
+const GRADIENT_STOPS = [
+    { offset: '0%', color: '#00ff88' },
+    { offset: '45%', color: '#7ddb4f' },
+    { offset: '78%', color: '#f0b100' },
+    { offset: '100%', color: '#ff8a00' }
+] as const;
 const FULL_PERCENT = 100;
 const FILL_DURATION = 400;
 const FILL_EASING_X1 = 0.23;
@@ -27,33 +31,29 @@ export const RunwayMeter = ({ months }: Props) => {
     const reducedMotion = useReducedMotion();
 
     const clampedMonths = Math.min(Math.max(months ?? 0, 0), RUNWAY_MAX_MONTHS);
-    const emptyPercent = FULL_PERCENT - (clampedMonths / RUNWAY_MAX_MONTHS) * FULL_PERCENT;
-    const maskPercent = useSharedValue(FULL_PERCENT);
-
-    useEffect(() => {
-        maskPercent.set(reducedMotion ? emptyPercent : withTiming(emptyPercent, { duration: FILL_DURATION, easing: FILL_EASING }));
-    }, [emptyPercent, reducedMotion, maskPercent]);
-
-    const maskStyle = useAnimatedStyle(() => ({ width: `${maskPercent.get()}%` }));
+    const emptyWidth = `${FULL_PERCENT - (clampedMonths / RUNWAY_MAX_MONTHS) * FULL_PERCENT}%` as const;
+    const maskStyle = useAnimatedStyle(() => ({
+        width: reducedMotion ? emptyWidth : withTiming(emptyWidth, { duration: FILL_DURATION, easing: FILL_EASING })
+    }));
 
     return (
         <View>
             <View className="h-3 overflow-hidden rounded-full bg-secondary-corner">
                 <Svg width="100%" height="100%">
                     <Defs>
-                        <LinearGradient id={RUNWAY_METER_GRADIENT_ID} x1="0" y1="0" x2="1" y2="0">
-                            {RUNWAY_METER_STOPS.map(stop => (
+                        <LinearGradient id={GRADIENT_ID} x1="0" y1="0" x2="1" y2="0">
+                            {GRADIENT_STOPS.map(stop => (
                                 <Stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />
                             ))}
                         </LinearGradient>
                     </Defs>
-                    <Rect width="100%" height="100%" fill={`url(#${RUNWAY_METER_GRADIENT_ID})`} />
+                    <Rect width="100%" height="100%" fill={`url(#${GRADIENT_ID})`} />
                 </Svg>
                 <Animated.View className="absolute bottom-0 right-0 top-0 rounded-l-full bg-secondary-corner" style={maskStyle} />
             </View>
 
             <View className="mt-sm flex-row justify-between">
-                {RUNWAY_METER_TICK_MONTHS.map((tick, index) => (
+                {RUNWAY_HORIZON_MONTHS.map((tick, index) => (
                     <Text key={tick} className="text-xxs text-secondary-foreground">
                         {index === 0 ? <Trans>now</Trans> : formatDigits(tick)}
                     </Text>

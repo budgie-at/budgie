@@ -1639,10 +1639,6 @@ msgstr "Редагувати переказ"
 msgid "Emergency fund and savings goals"
 msgstr "Резервний фонд та цілі заощаджень"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-msgid "empty"
-msgstr "нуль"
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Empty canvas"
 msgstr "Порожній шаблон"
@@ -2483,7 +2479,7 @@ msgstr "Місячний підсумок"
 msgid "months left"
 msgstr "місяців залишилось"
 
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Most likely balance"
 msgstr "Найімовірніший баланс"
 
@@ -2997,7 +2993,7 @@ msgstr "Push-сповіщення вимкнено"
 msgid "Quick rule"
 msgstr "Швидке правило"
 
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Range across better and worse months"
 msgstr "Діапазон кращих і гірших місяців"
 
@@ -4033,7 +4029,7 @@ msgstr "Тип"
 msgid "Type ({selectedTypesCount})"
 msgstr "Тип ({selectedTypesCount})"
 
-#: src/runway/component/runway-history-median-line/runway-history-median-line.tsx
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "typical month {amount}"
 msgstr "типовий місяць {amount}"
 

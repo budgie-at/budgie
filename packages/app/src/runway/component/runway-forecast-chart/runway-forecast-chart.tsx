@@ -1,6 +1,6 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
-import Svg, { Line, Path, Text as SvgText } from 'react-native-svg';
+import { Text, View } from 'react-native';
+import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -9,10 +9,8 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useThemeContext } from '../../../theme/context/theme.context';
 import { RUNWAY_CHART_COLORS } from '../../constant/runway-chart-colors.constant';
-import { RUNWAY_FORECAST_HORIZONS_MONTHS } from '../../constant/runway-forecast.constant';
+import { RUNWAY_HORIZON_MONTHS } from '../../constant/runway-horizon-months.constant';
 import { buildRunwayForecastPath } from '../../utils/build-forecast-path.util';
-import { RunwayForecastLegend } from '../runway-forecast-legend/runway-forecast-legend';
-import { RunwayForecastRunOutMarker } from '../runway-forecast-run-out-marker/runway-forecast-run-out-marker';
 
 import type { RunwayComputationInterface } from '../../interface/runway-computation.interface';
 
@@ -27,17 +25,21 @@ const CHART_PADDING_RIGHT = 6;
 const CHART_PADDING_TOP = 18;
 const CHART_PADDING_BOTTOM = 20;
 const LABEL_FONT_SIZE = 8;
-const ZERO_LABEL_GAP = 4;
+const LABEL_GAP = 4;
+const MARKER_RADIUS = 3.5;
+const RUN_OUT_DASH = '2 3';
 const RUN_OUT_ANCHOR_RATIO = 0.82;
+const CHART_RIGHT = CHART_WIDTH - CHART_PADDING_RIGHT;
+const CHART_BOTTOM = CHART_HEIGHT - CHART_PADDING_BOTTOM;
+const RUN_OUT_LABEL_Y = CHART_PADDING_TOP - LABEL_GAP;
 
 export const RunwayForecastChart = ({ computation }: Props) => {
     const { t } = useLingui();
     const { formatMonthAndYear } = useFormatDate();
     const formatDigits = useFormatDigits(0);
-    const { colorScheme } = useThemeContext();
+    const colors = RUNWAY_CHART_COLORS[useThemeContext().colorScheme];
 
-    const colors = RUNWAY_CHART_COLORS[colorScheme];
-    const geometry = buildRunwayForecastPath({
+    const { bandPath, medianPath, runOutX, tickXs, zeroY } = buildRunwayForecastPath({
         computation,
         width: CHART_WIDTH,
         height: CHART_HEIGHT,
@@ -46,14 +48,9 @@ export const RunwayForecastChart = ({ computation }: Props) => {
         paddingTop: CHART_PADDING_TOP,
         paddingBottom: CHART_PADDING_BOTTOM
     });
-    const tickLabels = RUNWAY_FORECAST_HORIZONS_MONTHS.map((months, index) => (index === 0 ? t`now` : formatDigits(months)));
+    const tickLabels = RUNWAY_HORIZON_MONTHS.map((months, index) => (index === 0 ? t`now` : formatDigits(months)));
     const runOutLabel = isDefined(computation.runsOutAt) ? formatMonthAndYear(computation.runsOutAt) : '';
-    const { runOutX } = geometry;
-    const chartBottom = CHART_HEIGHT - CHART_PADDING_BOTTOM;
-    const chartRight = CHART_WIDTH - CHART_PADDING_RIGHT;
-    const isRunOutNearEdge = isDefined(runOutX) && runOutX > CHART_WIDTH * RUN_OUT_ANCHOR_RATIO;
-    const runOutAnchor = isRunOutNearEdge ? 'end' : 'middle';
-    const zeroLabelY = geometry.zeroY - ZERO_LABEL_GAP;
+    const runOutAnchor = isDefined(runOutX) && runOutX > CHART_WIDTH * RUN_OUT_ANCHOR_RATIO ? 'end' : 'middle';
 
     return (
         <Card className="gap-y-xl">
@@ -62,36 +59,64 @@ export const RunwayForecastChart = ({ computation }: Props) => {
             </Text>
 
             <Svg width="100%" height={CHART_HEIGHT} viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}>
-                <Line x1={CHART_PADDING_LEFT} y1={geometry.zeroY} x2={chartRight} y2={geometry.zeroY} stroke={colors.zero} />
-                <SvgText x={chartRight} y={zeroLabelY} fill={colors.label} fontSize={LABEL_FONT_SIZE} textAnchor="end">
-                    {t`empty`}
-                </SvgText>
-                <Path d={geometry.bandPath} fill={colors.bandFill} stroke={colors.bandStroke} strokeWidth={1} />
-                <Path
-                    d={geometry.medianPath}
-                    fill="none"
-                    stroke={colors.median}
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
+                <Line x1={CHART_PADDING_LEFT} y1={zeroY} x2={CHART_RIGHT} y2={zeroY} stroke={colors.zero} />
+                <Path d={bandPath} fill={colors.bandFill} stroke={colors.bandStroke} strokeWidth={1} />
+                <Path d={medianPath} fill="none" stroke={colors.median} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+
                 {isDefined(runOutX) && isNotEmptyString(runOutLabel) ? (
-                    <RunwayForecastRunOutMarker
-                        x={runOutX}
-                        topY={CHART_PADDING_TOP}
-                        zeroY={geometry.zeroY}
-                        label={runOutLabel}
-                        textAnchor={runOutAnchor}
-                    />
+                    <>
+                        <Line
+                            x1={runOutX}
+                            y1={CHART_PADDING_TOP}
+                            x2={runOutX}
+                            y2={zeroY}
+                            stroke={colors.destructive}
+                            strokeDasharray={RUN_OUT_DASH}
+                            strokeWidth={1}
+                        />
+                        <Circle
+                            cx={runOutX}
+                            cy={zeroY}
+                            r={MARKER_RADIUS}
+                            fill={colors.destructive}
+                            stroke={colors.markerBackground}
+                            strokeWidth={1.5}
+                        />
+                        <SvgText
+                            x={runOutX}
+                            y={RUN_OUT_LABEL_Y}
+                            fill={colors.destructive}
+                            fontSize={LABEL_FONT_SIZE}
+                            fontWeight="600"
+                            textAnchor={runOutAnchor}
+                        >
+                            {runOutLabel}
+                        </SvgText>
+                    </>
                 ) : null}
-                {geometry.tickXs.map((x, index) => (
-                    <SvgText key={x} x={x} y={chartBottom} fill={colors.label} fontSize={LABEL_FONT_SIZE} textAnchor="middle">
+
+                {tickXs.map((x, index) => (
+                    <SvgText key={x} x={x} y={CHART_BOTTOM} fill={colors.label} fontSize={LABEL_FONT_SIZE} textAnchor="middle">
                         {tickLabels[index]}
                     </SvgText>
                 ))}
             </Svg>
 
-            <RunwayForecastLegend />
+            <View className="gap-y-xs">
+                <View className="flex-row items-center gap-x-sm">
+                    <View className="h-0.5 w-4 rounded-full bg-primary" />
+                    <Text className="text-xxs text-secondary-foreground">
+                        <Trans>Most likely balance</Trans>
+                    </Text>
+                </View>
+
+                <View className="flex-row items-center gap-x-sm">
+                    <View className="h-3 w-4 rounded-sm border border-ghost-corner bg-ghost-background" />
+                    <Text className="text-xxs text-secondary-foreground">
+                        <Trans>Range across better and worse months</Trans>
+                    </Text>
+                </View>
+            </View>
         </Card>
     );
 };
