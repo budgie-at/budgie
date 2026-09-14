@@ -387,7 +387,7 @@ maestro_work_dir() {
 capture_flow_cell() {
     local udid="$1" locale="$2" appearance="$3" scene="$4" flow="$5" final_path="$6"
     local flow_path test_output_dir shot_cwd shot_count=0 shot_file='' candidate
-    local clip_count=0 clip_file=''
+    local clip_count=0 clip_file='' app_data_container
 
     [ -n "$SCREENSHOTS_DIR" ] || fail "scene '$scene' declares a flow but the config has no screenshots-dir"
     flow_path="$SCREENSHOTS_DIR/$flow"
@@ -398,10 +398,17 @@ capture_flow_cell() {
     rm -rf "$test_output_dir"
     mkdir -p "$shot_cwd"
 
+    # Resolved once per cell so a flow can read a fixture straight from the
+    # app's own sandbox (e.g. a CSV picked via a fileUri deep link) without
+    # ever driving the OS Files picker. Empty when the container cannot be
+    # resolved; harmless for every flow that does not reference it.
+    app_data_container=$(xcrun simctl get_app_container "$udid" "$APP_ID" data 2>/dev/null || true)
+
     (
         cd "$shot_cwd"
         maestro --device "$udid" test \
             -e "APP_ID=$APP_ID" -e "LOCALE=$locale" -e "APPEARANCE=$appearance" \
+            -e "APP_DATA_CONTAINER=$app_data_container" \
             ${MAESTRO_CONFIG_ARGS[@]+"${MAESTRO_CONFIG_ARGS[@]}"} \
             --test-output-dir "$test_output_dir" "$flow_path"
     ) || return 1
