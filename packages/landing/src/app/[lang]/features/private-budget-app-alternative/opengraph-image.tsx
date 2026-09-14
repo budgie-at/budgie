@@ -16,7 +16,7 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         t(i18n)`Private Budget App — A Cloud-Free Alternative`,
         t(
             i18n
-        )`Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure.`,
+        )`Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no copy on somebody else's server.`,
         [t(i18n)`privacy`, t(i18n)`comparison`, t(i18n)`alternative`]
     );
 };
