@@ -16,9 +16,9 @@ const EMPTY_DEBT_ACCOUNT_PROGRESS_SUMMARY: DebtAccountProgressSummaryInterface =
     totalAmount: 0
 };
 
-export const useDebtAccountProgressSummaryQuery = (accountId: number): DebtAccountProgressSummaryInterface => {
+export const useDebtAccountProgressSummaryQuery = (accountId: number): DebtAccountProgressSummaryInterface | null => {
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
-    const { data } = useDatabaseLiveQuery(accountBalanceRepository.getDebtAccountProgressByAccountId(accountId), [
+    const { data, updatedAt } = useDatabaseLiveQuery(accountBalanceRepository.getDebtAccountProgressByAccountId(accountId), [
         accountId,
         accountBalancesUpdatedAt
     ]);
@@ -27,6 +27,10 @@ export const useDebtAccountProgressSummaryQuery = (accountId: number): DebtAccou
     const overpaidAmount = useCachedMicroUnitQuery(row?.overpaidAmount);
     const paidAmount = useCachedMicroUnitQuery(row?.paidAmount);
     const totalAmount = useCachedMicroUnitQuery(row?.totalAmount);
+
+    if (!isDefined(updatedAt)) {
+        return null;
+    }
 
     if (!isDefined(row)) {
         return EMPTY_DEBT_ACCOUNT_PROGRESS_SUMMARY;
