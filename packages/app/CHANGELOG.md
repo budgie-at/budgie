@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.61.0](https://github.com/budgie-at/budgie/compare/v6.60.2...v6.61.0) (2026-09-14)
+
+
+### Bug Fixes
+
+* **app:** show a loading state instead of full-principal fallback on debt cards ([d7fc8b8](https://github.com/budgie-at/budgie/commit/d7fc8b822c6bf5bdca91a0e4465a78d19262ee0f))
+
+
+
+
+
 # [6.60.0](https://github.com/budgie-at/budgie/compare/v6.59.1...v6.60.0) (2026-09-14)
 
 

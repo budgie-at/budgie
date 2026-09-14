@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.61.0](https://github.com/budgie-at/budgie/compare/v6.60.2...v6.61.0) (2026-09-14)
+
+
+### Features
+
+* **landing:** add bank-integration-management scroll story ([1482173](https://github.com/budgie-at/budgie/commit/14821734202b6a61dfb14a2713b2fab0ba6c148f))
+
+
+
+
+
 ## [6.60.2](https://github.com/budgie-at/budgie/compare/v6.60.1...v6.60.2) (2026-09-14)
 
 
