@@ -2831,6 +2831,10 @@ msgstr "Початкова транзакція"
 msgid "Other"
 msgstr "Інше"
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "Other · {foldedDriverCount}"
+msgstr "Інше · {foldedDriverCount}"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: {threshold}% spent"
 msgstr "Бюджет «Інше»: використано {threshold}%"
@@ -4059,6 +4063,7 @@ msgstr "Невідомо"
 msgid "Unrealized P&L"
 msgstr "Нереаліз. приб./збиток"
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Untagged"

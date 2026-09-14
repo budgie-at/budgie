@@ -1,3 +1,4 @@
+import { RunwayDriverDimensionEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View, ViewStyle } from 'react-native';
@@ -12,6 +13,7 @@ import type { RunwayDriverInterface } from '../../interface/runway-driver.interf
 
 interface Props {
     readonly driver: RunwayDriverInterface;
+    readonly dimension: RunwayDriverDimensionEnum;
     readonly maxAmount: number;
 }
 
@@ -33,12 +35,16 @@ const barVariants = cva('h-full rounded-full', {
     }
 });
 
-export const RunwayDriverRow = ({ driver, maxAmount }: Props) => {
+export const RunwayDriverRow = ({ driver, dimension, maxAmount }: Props) => {
     const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const title = isNotEmptyString(driver.title) ? driver.title : t`Uncategorized`;
+    const { foldedDriverCount } = driver;
+    const foldedTitle = t`Other · ${foldedDriverCount}`;
+    const emptyTitle = dimension === RunwayDriverDimensionEnum.TAG ? t`Untagged` : t`Uncategorized`;
+    const namedTitle = isNotEmptyString(driver.title) ? driver.title : emptyTitle;
+    const title = isPositiveNumber(foldedDriverCount) ? foldedTitle : namedTitle;
     const formattedAmount = formatDigits(convertFromMicroUnits(driver.monthlyAmount), defaultInstrument.symbol);
     const share = isPositiveNumber(maxAmount) ? driver.monthlyAmount / maxAmount : 0;
     const shareStyle: ViewStyle = { width: `${Math.round(share * 100)}%` };

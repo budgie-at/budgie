@@ -512,6 +512,7 @@ export type { BudgetCategoryLimitBulkUpdateInputInterface } from './budget-categ
 export { RUNWAY_IRREGULAR_CV_THRESHOLD } from './runway/constant/runway.constant';
 export { RUNWAY_IRREGULAR_CONCENTRATION_THRESHOLD } from './runway/constant/runway.constant';
 export { RUNWAY_MAX_MONTHS } from './runway/constant/runway.constant';
+export { RUNWAY_DRIVER_MIN_BURN_SHARE } from './runway/constant/runway.constant';
 
 export { RunwayWindowEnum, DEFAULT_RUNWAY_WINDOW } from './runway/enum/runway-window.enum';
 export { RunwayDriverDimensionEnum } from './runway/enum/runway-driver-dimension.enum';

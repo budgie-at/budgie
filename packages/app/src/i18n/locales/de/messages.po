@@ -2831,6 +2831,10 @@ msgstr "Ursprüngliche Transaktion"
 msgid "Other"
 msgstr "Sonstige"
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "Other · {foldedDriverCount}"
+msgstr "Sonstige · {foldedDriverCount}"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: {threshold}% spent"
 msgstr "Sonstiges Budget: {threshold}% verbraucht"
@@ -4059,6 +4063,7 @@ msgstr "Unbekannt"
 msgid "Unrealized P&L"
 msgstr "Unrealisierte GuV"
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Untagged"

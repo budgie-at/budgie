@@ -432,6 +432,21 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         return and(sql`${monthSql} >= strftime('%Y-%m', 'now', ${`-${months} months`})`, sql`${monthSql} < strftime('%Y-%m', 'now')`);
     }
 
+    private buildRunwayDriverSeriesBaseQuery(
+        idColumn: typeof CategoryEntityTable.id | typeof TagEntityTable.id,
+        titleSql: SQL<string>,
+        monthSql: SQL<string>,
+        amountSql: SQL<number>
+    ) {
+        return this.buildLedgerEntriesQuery({
+            id: idColumn,
+            title: titleSql.as('title'),
+            ...this.buildRunwayDriverFields(monthSql, amountSql)
+        })
+            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id));
+    }
+
     private buildRunwayCategoryDriverSeriesQuery(
         filters: TransactionFilterInterface,
         defaultInstrumentId: number,
@@ -442,13 +457,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         const monthSql = this.buildRunwayMonthSql();
         const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title}, '')`;
 
-        return this.buildLedgerEntriesQuery({
-            id: CategoryEntityTable.id,
-            title: categoryTitleSql.as('title'),
-            ...this.buildRunwayDriverFields(monthSql, amountSql)
-        })
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+        return this.buildRunwayDriverSeriesBaseQuery(CategoryEntityTable.id, categoryTitleSql, monthSql, amountSql)
             .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
             .leftJoin(
                 DefaultCategoryTranslationEntityTable,
@@ -465,21 +474,13 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     private buildRunwayTagDriverSeriesQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, months: number) {
         const amountSql = this.buildExpenseTotalSql(defaultInstrumentId);
         const monthSql = this.buildRunwayMonthSql();
+        const tagTitleSql = sql<string>`COALESCE(${TagEntityTable.title}, '')`;
 
-        return this.buildLedgerEntriesQuery({
-            id: TagEntityTable.id,
-            title: TagEntityTable.title,
-            ...this.buildRunwayDriverFields(monthSql, amountSql)
-        })
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .innerJoin(
-                TransactionTagsEntityTable,
-                and(eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id), eq(TransactionTagsEntityTable.isPrimary, true))
-            )
-            .innerJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
+        return this.buildRunwayDriverSeriesBaseQuery(TagEntityTable.id, tagTitleSql, monthSql, amountSql)
+            .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
+            .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
             .where(this.buildStatisticsLedgerWhere(filters, this.buildRunwayCompleteMonthsCondition(months)))
-            .groupBy(TagEntityTable.id, TagEntityTable.title, monthSql)
+            .groupBy(TagEntityTable.id, tagTitleSql, monthSql)
             .orderBy(monthSql, desc(amountSql));
     }
 
