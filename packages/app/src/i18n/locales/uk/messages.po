@@ -816,6 +816,10 @@ msgstr "Категорії автоматично розподіляють ва�
 msgid "Categorise imports automatically"
 msgstr "Автоматична категоризація імпортів"
 
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
+msgstr "Категоризує транзакції, пропонує теги та розшифровує голосові нотатки просто на цьому пристрої. Один раз завантажує близько 2,5 ГБ моделей — краще через Wi-Fi."
+
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
@@ -1231,6 +1235,10 @@ msgstr "Не вдалося розконсолідувати транзакці�
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Не вдалося оновити сповіщення"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Could not update on-device AI"
+msgstr "Не вдалося оновити ШІ на пристрої"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -2723,6 +2731,10 @@ msgstr "Нічого з минулого не імпортується"
 #: src/runway/component/runway-meter/runway-meter.tsx
 msgid "now"
 msgstr "зараз"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "On-device AI"
+msgstr "ШІ на пристрої"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx

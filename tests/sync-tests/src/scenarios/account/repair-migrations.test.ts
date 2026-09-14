@@ -1,22 +1,8 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-
 import { describe, expect, it } from 'vitest';
 
 import { getDefined } from '@rnw-community/shared';
 
-import { testDb } from '../../harness';
-
-const applyMigration = async (fileName: string): Promise<void> => {
-    const sqlText = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle', fileName), 'utf8');
-
-    await sqlText
-        .split('--> statement-breakpoint')
-        .reduce<Promise<void>>(
-            (migrationPromise, statement) => migrationPromise.then(() => testDb.$client.execAsync(statement)),
-            Promise.resolve()
-        );
-};
+import { applyMigration, testDb } from '../../harness';
 
 describe('account/repair-migrations', () => {
     it('rewrites legacy Privatbank IBANs to the schema-valid format', async () => {

@@ -20,6 +20,7 @@ export { fetchSyncById } from './db/fetch-sync-by-id';
 export { fetchAccountIntegrationToken } from './db/fetch-account-integration-token';
 export { findMccByCode } from './db/find-mcc-by-code';
 export { requireInstrument } from './db/require-instrument';
+export { applyMigration } from './db/apply-migration';
 export { monobankStub } from './monobank/monobank-stub';
 export { buildMonobank } from './monobank/build-monobank';
 export { stubEmptyStatements } from './monobank/stub-empty-statements';
