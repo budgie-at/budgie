@@ -36,7 +36,7 @@ export const StatisticsContent = ({ activeTab }: Props) => {
     const tagsActivityMode = isCategoriesTab ? 'hidden' : 'visible';
 
     const content = isRunwayTab ? (
-        <RunwayContent filters={filters} />
+        <RunwayContent />
     ) : (
         <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
             <View className="gap-y-lg">

@@ -63,7 +63,7 @@ export const NetWorthCollapsibleHeader = ({ scrollY, netWorth, fiatTotal, crypto
                 </ProtectedMoney>
             </View>
 
-            <View className="flex-row items-center gap-x-sm">
+            <View className="mt-lg flex-row items-center gap-x-sm">
                 <NetWorthAssetChips fiatTotal={fiatTotal} cryptoTotal={cryptoTotal} fiatCount={fiatCount} cryptoCount={cryptoCount} />
 
                 <RunwayPill />
