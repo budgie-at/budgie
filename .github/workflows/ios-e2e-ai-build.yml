@@ -2,6 +2,8 @@ name: Build iOS e2e AI app
 
 on:
     workflow_dispatch:
+    push:
+        branches: [test/media-capture-ai-scenes]
 
 concurrency:
     group: ios-e2e-ai-build-${{ github.ref }}
