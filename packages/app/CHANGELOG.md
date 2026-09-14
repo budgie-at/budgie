@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.62.1](https://github.com/budgie-at/budgie/compare/v6.62.0...v6.62.1) (2026-09-14)
+
+
+### Bug Fixes
+
+* **app:** restore AI for existing installs after the onboarding consent gate ([1245160](https://github.com/budgie-at/budgie/commit/1245160fb5a9bcdc991091bc1e9e3e2a51caca3f))
+
+
+
+
+
 # [6.61.0](https://github.com/budgie-at/budgie/compare/v6.60.2...v6.61.0) (2026-09-14)
 
 
