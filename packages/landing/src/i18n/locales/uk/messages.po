@@ -7827,8 +7827,8 @@ msgid "Five taps is four taps too many"
 msgstr "П'ять дотиків — це на чотири дотики більше ніж потрібно"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P orders stop at six months, because that is as far back as Binance's own order-history endpoint will serve."
-msgstr "П'ять років для поповнень, виведень, угод, Convert та винагород Earn. P2P-замовлення сягають шести місяців, бо саме настільки назад видає історію власний ендпоінт Binance."
+msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
+msgstr "П'ять років для поповнень, виведень, угод, Convert та винагород Earn. Історія P2P-замовлень обмежена шістьма місяцями, бо саме настільки назад видає власний ендпоінт Binance."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
@@ -8715,7 +8715,7 @@ msgstr "Як зробити внесок"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "How to create the key, where to paste it, and the button that reads your balances back — connecting Binance fits on a single screen."
-msgstr "Як створити ключ, куди його вставити та яка кнопка повертає ваші баланси — підключення Binance вміщується в один екран."
+msgstr "Як створити ключ, куди його вставити та яка кнопка зчитує ваші баланси — підключення Binance вміщується в один екран."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "How to Evaluate a Budgeting App’s Privacy"
@@ -12631,7 +12631,7 @@ msgstr "Читає той самий період і ті самі фільтр�
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Reads your balances back"
-msgstr "Повертає ваші баланси"
+msgstr "Зчитує ваші баланси"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Ready to experience financial tracking built on transparency? Explore our public source code, learn about our security practices, and join the waitlist to be among the first to use Budgie. Your money. Your data. Your ability to verify every claim we make."
@@ -13403,7 +13403,7 @@ msgstr "Налаштування нетривіальне"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Setup is one screen"
-msgstr "Налаштування — це один екран"
+msgstr "Налаштування вміщується в один екран"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Setup time"
@@ -14594,8 +14594,8 @@ msgid "The first row takes you to Binance's API management page, and the numbere
 msgstr "Перший рядок веде вас до керування API в Binance, а пронумерований список під ним — це рецепт: увійдіть, потім створіть новий згенерований системою API-ключ. Budgie ніколи не створює ключ за вас, бо ніколи не бачить вашого входу в Binance."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "The first sync walks five years of history backwards in windows; later runs fetch only what changed"
-msgstr "Перша синхронізація проходить п'ять років історії назад вікнами; наступні запуски беруть лише те, що змінилося"
+msgid "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
+msgstr "Перша синхронізація проходить до п'яти років історії назад вікнами; наступні запуски запитують лише дні від попереднього"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"

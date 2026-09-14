@@ -7826,8 +7826,8 @@ msgid "Five taps is four taps too many"
 msgstr "Five taps is four taps too many"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P orders stop at six months, because that is as far back as Binance's own order-history endpoint will serve."
-msgstr "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P orders stop at six months, because that is as far back as Binance's own order-history endpoint will serve."
+msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
+msgstr "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
@@ -14593,8 +14593,8 @@ msgid "The first row takes you to Binance's API management page, and the numbere
 msgstr "The first row takes you to Binance's API management page, and the numbered list under it is the recipe: sign in, then create a new System-generated API key. Budgie never creates the key for you, because it never sees your Binance login."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "The first sync walks five years of history backwards in windows; later runs fetch only what changed"
-msgstr "The first sync walks five years of history backwards in windows; later runs fetch only what changed"
+msgid "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
+msgstr "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"

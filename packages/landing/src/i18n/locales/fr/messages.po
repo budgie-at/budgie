@@ -7827,8 +7827,8 @@ msgid "Five taps is four taps too many"
 msgstr "Cinq appuis, c'est quatre de trop"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P orders stop at six months, because that is as far back as Binance's own order-history endpoint will serve."
-msgstr "Cinq ans pour les dépôts, retraits, transactions, Convert et récompenses Earn. Les ordres P2P s'arrêtent à six mois, car c'est là que s'arrête l'historique des ordres de l'API Binance elle-même."
+msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
+msgstr "Cinq ans pour les dépôts, retraits, transactions, Convert et récompenses Earn. L'historique des ordres P2P est limité à six mois, car c'est là que s'arrête le point de terminaison de Binance lui-même."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
@@ -14594,8 +14594,8 @@ msgid "The first row takes you to Binance's API management page, and the numbere
 msgstr "La première ligne vous emmène vers la gestion des API de Binance, et la liste numérotée en dessous est la marche à suivre : connectez-vous, puis créez une nouvelle clé API générée par le système. Budgie ne crée jamais la clé à votre place, car il ne voit jamais votre connexion Binance."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "The first sync walks five years of history backwards in windows; later runs fetch only what changed"
-msgstr "La première synchronisation remonte cinq ans d'historique par fenêtres ; les suivantes ne récupèrent que ce qui a changé"
+msgid "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
+msgstr "La première synchronisation remonte jusqu'à cinq ans d'historique par fenêtres ; les suivantes ne demandent que les jours écoulés depuis la précédente"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"
