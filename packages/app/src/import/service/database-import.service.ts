@@ -21,8 +21,17 @@ class DatabaseImportService {
             `throw sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)} error=${getErrorMessage(error)}`
     )
     async importFromUri(sourceUri: string, backupPin: string | null): Promise<void> {
-        await this.replaceFromUri(sourceUri);
+        const previousPin = await authService.getPin();
+
         await authService.persistPin(backupPin);
+
+        try {
+            await this.replaceFromUri(sourceUri);
+        } catch (error) {
+            await authService.persistPin(previousPin);
+            throw error;
+        }
+
         await reloadApp();
     }
 
@@ -36,8 +45,31 @@ class DatabaseImportService {
         const probePath = `${Paths.cache.uri}/${DatabaseImportService.PROBE_DATABASE_NAME}`;
 
         this.deleteProbeFiles(probePath);
-        await new File(sourceUri).copy(new File(probePath));
 
+        try {
+            await new File(sourceUri).copy(new File(probePath));
+
+            return await this.readProbeDatabase(backupPin);
+        } catch {
+            return false;
+        } finally {
+            this.deleteProbeFiles(probePath);
+        }
+    }
+
+    async replaceFromUri(sourceUri: string): Promise<void> {
+        const destinationPath = this.getDestinationPath();
+        const tempPath = `${Paths.cache.uri}/import-temp.db`;
+
+        await aiStorageReplacementService.pauseLongLivedRuntime();
+        await expoDb.closeAsync();
+        this.clearDatabaseGlobals();
+        this.deleteDestinationFiles(destinationPath, tempPath);
+        await this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
+        await this.copyDatabaseSidecars(sourceUri, destinationPath);
+    }
+
+    private async readProbeDatabase(backupPin: string | null): Promise<boolean> {
         const probeDatabase = await SQLite.openDatabaseAsync(
             DatabaseImportService.PROBE_DATABASE_NAME,
             { useNewConnection: true },
@@ -53,24 +85,9 @@ class DatabaseImportService {
             const tables = await probeDatabase.getAllAsync<unknown>('SELECT name FROM sqlite_master;');
 
             return isNotEmptyArray(tables);
-        } catch {
-            return false;
         } finally {
             await probeDatabase.closeAsync();
-            this.deleteProbeFiles(probePath);
         }
-    }
-
-    async replaceFromUri(sourceUri: string): Promise<void> {
-        const destinationPath = this.getDestinationPath();
-        const tempPath = `${Paths.cache.uri}/import-temp.db`;
-
-        await aiStorageReplacementService.pauseLongLivedRuntime();
-        await expoDb.closeAsync();
-        this.clearDatabaseGlobals();
-        this.deleteDestinationFiles(destinationPath, tempPath);
-        await this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
-        await this.copyDatabaseSidecars(sourceUri, destinationPath);
     }
 
     private deleteProbeFiles(probePath: string): void {
