@@ -28,7 +28,15 @@ appId: ${APP_ID}
                 optional: true
           - waitForAnimationToEnd
           - tapOn:
+                point: '10%,12%'
+                optional: true
+          - waitForAnimationToEnd
+          - tapOn:
                 id: 'BackButton'
+                optional: true
+          - waitForAnimationToEnd
+          - tapOn:
+                point: '10%,12%'
                 optional: true
           - waitForAnimationToEnd
 
