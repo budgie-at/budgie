@@ -12,7 +12,7 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`Backup & Restore`, t(i18n)`Encrypted file. No account. No upload.`, [
+    return createFeatureOgImage(t(i18n)`Backup & Restore`, t(i18n)`One file. Encrypted when you set a PIN. No account.`, [
         t(i18n)`backup`,
         t(i18n)`restore`,
         t(i18n)`encryption`
