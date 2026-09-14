@@ -48,8 +48,8 @@ const barVariants = cva('h-full rounded-full', {
 
 export const RunwayDriverRow = ({ driver, dimension, maxAmount }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const { defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(0);
 
     const { foldedDriverCount } = driver;
     const isFolded = isPositiveNumber(foldedDriverCount);
