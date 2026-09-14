@@ -11,6 +11,12 @@
             "react-native": "./dist/esm/index.js",
             "default": "./dist/esm/index.js"
         },
+        "./schema": {
+            "types": "./dist/esm/schema.d.ts",
+            "import": "./dist/esm/schema.js",
+            "react-native": "./dist/esm/schema.js",
+            "default": "./dist/esm/schema.js"
+        },
         "./package.json": "./package.json"
     },
     "main": "./dist/esm/index.js",
