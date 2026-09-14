@@ -2,7 +2,7 @@ import { Log } from '@budgie/logger';
 import { File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { expoDb } from '../../@generic/drizzle/db/db';
@@ -12,14 +12,41 @@ import { authService } from '../../auth/service/auth.service';
 
 class DatabaseImportService {
     @Log(
-        sourceUri => `enter sourceUri="${sourceUri}"`,
-        (result, sourceUri) => `done result=${String(result)} sourceUri="${sourceUri}"`,
-        (error, sourceUri) => `throw sourceUri="${sourceUri}" error=${getErrorMessage(error)}`
+        (sourceUri, backupPin) => `enter sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
+        (result, ...[sourceUri, backupPin]) =>
+            `done result=${String(result)} sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
+        (error, sourceUri, backupPin) =>
+            `throw sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)} error=${getErrorMessage(error)}`
     )
-    async importFromUri(sourceUri: string): Promise<void> {
+    async importFromUri(sourceUri: string, backupPin: string | null): Promise<void> {
         await this.replaceFromUri(sourceUri);
-        await authService.clearAllPins();
+        await authService.persistPin(backupPin);
         await reloadApp();
+    }
+
+    @Log(
+        (sourceUri, backupPin) => `enter sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
+        (result, ...[sourceUri, backupPin]) => `done result=${result} sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
+        (error, sourceUri, backupPin) =>
+            `throw sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)} error=${getErrorMessage(error)}`
+    )
+    async canOpenBackup(sourceUri: string, backupPin: string | null): Promise<boolean> {
+        const backupFile = new File(sourceUri);
+        const backupDatabase = await SQLite.openDatabaseAsync(backupFile.name, { useNewConnection: true }, backupFile.parentDirectory.uri);
+
+        try {
+            if (isNotEmptyString(backupPin)) {
+                await backupDatabase.execAsync(`PRAGMA key = '${backupPin}';`); // oxlint-disable-line lingui/no-unlocalized-strings
+            }
+
+            await backupDatabase.execAsync('SELECT count(*) FROM sqlite_master;'); // oxlint-disable-line lingui/no-unlocalized-strings
+
+            return true;
+        } catch {
+            return false;
+        } finally {
+            await backupDatabase.closeAsync();
+        }
     }
 
     async replaceFromUri(sourceUri: string): Promise<void> {
