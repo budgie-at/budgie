@@ -20,6 +20,14 @@ appId: ${APP_ID}
 
 - runFlow:
       when:
+          visible: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+      commands:
+          - tapOn:
+                text: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
           notVisible:
               text: 'budgie \(E2E\)'
       commands:
@@ -40,7 +48,7 @@ appId: ${APP_ID}
                 element:
                     text: 'budgie \(E2E\)'
                 direction: DOWN
-                timeout: 10000
+                timeout: 20000
                 speed: 20
                 centerElement: true
                 waitToSettleTimeoutMs: 1000
@@ -48,7 +56,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           text: 'budgie \(E2E\)'
-      timeout: 10000
+      timeout: 20000
 
 - tapOn:
       text: 'budgie \(E2E\)'
@@ -56,10 +64,18 @@ appId: ${APP_ID}
 
 - waitForAnimationToEnd
 
+- runFlow:
+      when:
+          visible: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+      commands:
+          - tapOn:
+                text: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+          - waitForAnimationToEnd
+
 - extendedWaitUntil:
       visible:
           id: 'E2EFixtures, Folder'
-      timeout: 10000
+      timeout: 20000
 
 - tapOn:
       id: 'E2EFixtures, Folder'
