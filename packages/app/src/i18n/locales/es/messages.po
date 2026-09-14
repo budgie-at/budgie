@@ -3213,11 +3213,11 @@ msgstr "Se agota alrededor de {runOutDate}"
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/runway/component/runway-widget-card/runway-widget-card.tsx
 msgid "Runway"
-msgstr "Runway"
+msgstr "Autonomía"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
 msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
-msgstr "Runway necesita al menos 3 meses completos de transacciones. Tienes {monthsUsed}."
+msgstr "La autonomía necesita al menos 3 meses completos de transacciones. Tienes {monthsUsed}."
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
