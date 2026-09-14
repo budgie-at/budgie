@@ -20,6 +20,20 @@ appId: ${APP_ID}
 
 - runFlow:
       when:
+          notVisible:
+              text: 'budgie \(E2E\)'
+      commands:
+          - tapOn:
+                id: 'BackButton'
+                optional: true
+          - waitForAnimationToEnd
+          - tapOn:
+                id: 'BackButton'
+                optional: true
+          - waitForAnimationToEnd
+
+- runFlow:
+      when:
           visible: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
       commands:
           - tapOn:
