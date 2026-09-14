@@ -3164,8 +3164,8 @@ msgid "Asset coverage"
 msgstr "Asset coverage"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Assets Budgie cannot price are kept visible with a \"valuation unavailable\" note, never dropped"
-msgstr "Assets Budgie cannot price are kept visible with a \"valuation unavailable\" note, never dropped"
+msgid "Assets Budgie cannot price are listed under \"valuation unavailable\" at setup instead of vanishing"
+msgstr "Assets Budgie cannot price are listed under \"valuation unavailable\" at setup instead of vanishing"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "At Budgie, we believe financial privacy shouldn’t be a premium feature—it should be the foundation. Here’s how our architecture differs from cloud-based alternatives."
@@ -4009,6 +4009,10 @@ msgstr "Budgie category picker open over the Edit Category form, listing the cat
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie Commercial Licensing"
 msgstr "Budgie Commercial Licensing"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields"
+msgstr "Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Budgie Connect Monobank screen with a token field, setup steps and a note that the token is stored securely"
@@ -6929,12 +6933,12 @@ msgid "Each of these groups brings different perspectives, skills, and motivatio
 msgstr "Each of these groups brings different perspectives, skills, and motivations. A privacy researcher might notice data collection patterns that a security auditor overlooks. A developer integrating with the project might discover edge cases the original authors missed. This diversity of attention is a strength no single security team can replicate."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Each source type is committed to your local database as soon as it completes, so the work already done is kept and the next run picks up from there instead of starting over."
-msgstr "Each source type is committed to your local database as soon as it completes, so the work already done is kept and the next run picks up from there instead of starting over."
+msgid "Each source type is committed to your local database as soon as it completes, so whatever finished is kept. The next run asks Binance for those windows again, but every row carries its Binance id, so nothing is duplicated."
+msgstr "Each source type is committed to your local database as soon as it completes, so whatever finished is kept. The next run asks Binance for those windows again, but every row carries its Binance id, so nothing is duplicated."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Each source type is written to your database as it finishes, so completed work is never re-fetched"
-msgstr "Each source type is written to your database as it finishes, so completed work is never re-fetched"
+msgid "Each source type is written to your database as it finishes, and Binance ids keep re-runs duplicate-free"
+msgstr "Each source type is written to your database as it finishes, and Binance ids keep re-runs duplicate-free"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Each split row counts toward its own category in analytics — the parent transaction itself becomes invisible to category sums (it's just the wrapper)."
@@ -7674,6 +7678,10 @@ msgstr "fees"
 msgid "Fees work on expenses, income, and transfers — not only card purchases"
 msgstr "Fees work on expenses, income, and transfers — not only card purchases"
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Fetch Accounts, then choose"
+msgstr "Fetch Accounts, then choose"
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Fiat and crypto, split out"
 msgstr "Fiat and crypto, split out"
@@ -7816,6 +7824,10 @@ msgstr "Five screens of the real app, in the order you actually meet them."
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Five taps is four taps too many"
 msgstr "Five taps is four taps too many"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
+msgstr "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
@@ -8264,10 +8276,6 @@ msgstr "High — shutdown = data loss risk"
 msgid "Highly customizable"
 msgstr "Highly customizable"
 
-#: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Historical backfill walks backwards in windows and stops once your account goes quiet"
-msgstr "Historical backfill walks backwards in windows and stops once your account goes quiet"
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Historical data isn’t critical for your goals"
 msgstr "Historical data isn’t critical for your goals"
@@ -8623,7 +8631,6 @@ msgstr "How is this different from the Tag Analytics page?"
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 #: src/app/[lang]/features/bank-integration-management/page.tsx
-#: src/app/[lang]/features/binance-sync/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
@@ -8704,6 +8711,10 @@ msgstr "How to Audit the Code"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "How to Contribute"
 msgstr "How to Contribute"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "How to create the key, where to paste it, and the button that reads your balances back — connecting Binance fits on a single screen."
+msgstr "How to create the key, where to paste it, and the button that reads your balances back — connecting Binance fits on a single screen."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "How to Evaluate a Budgeting App’s Privacy"
@@ -11276,8 +11287,8 @@ msgid "on-device-ai"
 msgstr "on-device-ai"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "One account per asset, so each coin has its own balance, history, and place in net worth"
-msgstr "One account per asset, so each coin has its own balance, history, and place in net worth"
+msgid "One account per wallet and asset, each with its own balance, history, and place in net worth"
+msgstr "One account per wallet and asset, each with its own balance, history, and place in net worth"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "One amount, entered once"
@@ -11534,6 +11545,10 @@ msgstr "Only the assets you actually hold are backfilled — no wasted downloads
 msgid "Only the ones you created"
 msgstr "Only the ones you created"
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Only the reading permission"
+msgstr "Only the reading permission"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Only the rows without a category"
 msgstr "Only the rows without a category"
@@ -11687,6 +11702,10 @@ msgstr "Open-source translations — community can contribute new locales"
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Opening a transaction no longer drops you into a form. You get a read-only Transaction Info view — amount, account, category, tags, comment, and the details the bank sent — with editing behind an explicit button. Looking something up stops being a chance to change it by accident."
 msgstr "Opening a transaction no longer drops you into a form. You get a read-only Transaction Info view — amount, account, category, tags, comment, and the details the bank sent — with editing behind an explicit button. Looking something up stops being a chance to change it by accident."
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Opens Binance API management"
+msgstr "Opens Binance API management"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Operations from both devices are exchanged"
@@ -12601,9 +12620,17 @@ msgstr "Read-only at best"
 msgid "Read-only or nothing"
 msgstr "Read-only or nothing"
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Reading only, never trading"
+msgstr "Reading only, never trading"
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Reads the same period and filters as the Categories tab — This Month, Last Month, This Year and the rest"
 msgstr "Reads the same period and filters as the Categories tab — This Month, Last Month, This Year and the rest"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Reads your balances back"
+msgstr "Reads your balances back"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Ready to experience financial tracking built on transparency? Explore our public source code, learn about our security practices, and join the waitlist to be among the first to use Budgie. Your money. Your data. Your ability to verify every claim we make."
@@ -13374,8 +13401,8 @@ msgid "Setup is non-trivial"
 msgstr "Setup is non-trivial"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Setup is two steps: enter the key and secret, then pick which assets to keep as accounts. The first sync walks your history backwards in windows — deposits and withdrawals in wide pages, rewards, Convert, fiat orders, and P2P in narrower ones — and gives up once it has crossed a long stretch of empty windows. Later runs stay incremental, and balances are re-anchored to what Binance reports, including assets you have sold down to zero."
-msgstr "Setup is two steps: enter the key and secret, then pick which assets to keep as accounts. The first sync walks your history backwards in windows — deposits and withdrawals in wide pages, rewards, Convert, fiat orders, and P2P in narrower ones — and gives up once it has crossed a long stretch of empty windows. Later runs stay incremental, and balances are re-anchored to what Binance reports, including assets you have sold down to zero."
+msgid "Setup is one screen"
+msgstr "Setup is one screen"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Setup time"
@@ -13420,10 +13447,6 @@ msgstr "Seven presets. Monday-to-Sunday weeks."
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Several production-ready libraries provide local-first infrastructure:"
 msgstr "Several production-ready libraries provide local-first infrastructure:"
-
-#: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Several years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is capped at six months by Binance's own API, so anything older cannot be pulled by any app."
-msgstr "Several years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is capped at six months by Binance's own API, so anything older cannot be pulled by any app."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Shortcuts integration allows some automation"
@@ -13713,8 +13736,8 @@ msgid "Split Transactions — Budgie"
 msgstr "Split Transactions — Budgie"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Spot and Funding wallets plus Flexible and Locked Simple Earn positions, folded into one balance per asset so what you see matches what Binance shows you."
-msgstr "Spot and Funding wallets plus Flexible and Locked Simple Earn positions, folded into one balance per asset so what you see matches what Binance shows you."
+msgid "Spot and Funding, as one account per wallet and asset. Flexible and Locked Simple Earn positions are added into the Spot balance for the same asset, so a coin you have staked still shows its full quantity."
+msgstr "Spot and Funding, as one account per wallet and asset. Flexible and Locked Simple Earn positions are added into the Spot balance for the same asset, so a coin you have staked still shows its full quantity."
 
 #: src/app/[lang]/features/recurring-payments-calendar/metadata.ts
 msgid "Spot the slow leak before it bills — subscription patterns plotted on a month calendar with forecasted upcoming."
@@ -13848,6 +13871,10 @@ msgstr "Step 5: Optional — Enable Direct Bank Sync"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Step 5: Run Parallel for One Month"
 msgstr "Step 5: Run Parallel for One Month"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Step three is the one that matters: keep only \"Enable Reading\" on, and never allow trading or withdrawals. Permissions are enforced on Binance's side, and Budgie carries no order or withdrawal call to make — every request it signs goes to a read endpoint."
+msgstr "Step three is the one that matters: keep only \"Enable Reading\" on, and never allow trading or withdrawals. Permissions are enforced on Binance's side, and Budgie carries no order or withdrawal call to make — every request it signs goes to a read endpoint."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Still to receive"
@@ -14561,6 +14588,14 @@ msgstr "The figure at the top adds every account together and reports it in the 
 msgid "The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set a From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band. The chip shows the range you picked, and clearing it is one tap."
 msgstr "The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set a From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band. The chip shows the range you picked, and clearing it is one tap."
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "The first row takes you to Binance's API management page, and the numbered list under it is the recipe: sign in, then create a new System-generated API key. Budgie never creates the key for you, because it never sees your Binance login."
+msgstr "The first row takes you to Binance's API management page, and the numbered list under it is the recipe: sign in, then create a new System-generated API key. Budgie never creates the key for you, because it never sees your Binance login."
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
+msgstr "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
+
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"
 msgstr "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"
@@ -14620,6 +14655,14 @@ msgstr "The Ink & Switch paper did not invent these ideas. Distributed systems r
 #: src/beta/component/beta-empty-state/beta-empty-state.tsx
 msgid "The iOS development build hasn't been published yet. Check back after the next build run."
 msgstr "The iOS development build hasn't been published yet. Check back after the next build run."
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "The key and the secret go into the two fields below, masked as you type. Fetch Accounts asks Binance what you hold and hands you the list: tick the assets you want as accounts, and Start Sync takes it from there."
+msgstr "The key and the secret go into the two fields below, masked as you type. Fetch Accounts asks Binance what you hold and hands you the list: tick the assets you want as accounts, and Start Sync takes it from there."
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "The key is made on Binance"
+msgstr "The key is made on Binance"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "The keypad opens first. Type the amount, keep the account Budgie already picked, and save."
