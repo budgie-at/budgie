@@ -20,24 +20,21 @@ export const RunwayDrivers = (props: Props) => {
     const { drivers, dimension, onChangeDimension } = props;
     const { t } = useLingui();
 
-    const title = t`What's driving it`;
     const options = [
         { value: RunwayDriverDimensionEnum.CATEGORY, label: t`Categories` },
         { value: RunwayDriverDimensionEnum.TAG, label: t`Tags` }
     ];
     const maxAmount = drivers.reduce((maximum, driver) => Math.max(maximum, driver.monthlyAmount), 0);
-    const hasDrivers = isNotEmptyArray(drivers);
 
     return (
         <Card className="gap-y-xl">
-            <View className="flex-row items-center justify-between">
-                <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">{title}</Text>
-                <View className="w-40">
-                    <SegmentedTabs options={options} value={dimension} onChange={onChangeDimension} />
-                </View>
+            <View className="gap-y-lg">
+                <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">{t`What's driving it`}</Text>
+
+                <SegmentedTabs options={options} value={dimension} onChange={onChangeDimension} />
             </View>
 
-            {hasDrivers ? (
+            {isNotEmptyArray(drivers) ? (
                 <View className="gap-y-xl">
                     {drivers.map(driver => (
                         <RunwayDriverRow
