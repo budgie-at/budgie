@@ -2601,10 +2601,6 @@ msgstr "Додати ще один рядок категорії"
 msgid "Add it in three taps"
 msgstr "Додайте за три дотики"
 
-#: src/app/[lang]/features/bank-integration-management/page.tsx
-msgid "Add more accounts from the bank later without re-entering credentials, with duplicates filtered out"
-msgstr "Додавайте більше рахунків з банку пізніше без повторного введення облікових даних — дублікати відфільтровуються автоматично"
-
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Add tests for new functionality"
 msgstr ""
@@ -3943,6 +3939,10 @@ msgstr "Budgie («ми», «наш» або «нас») прагне захищ�
 msgid "Budgie Account Settings for a bank-synced account with the re-sync sheet open on four options: re-sync entire history, last 90 days, last 30 days and last 7 days"
 msgstr "Налаштування рахунку Budgie для рахунку з банківською синхронізацією з відкритим аркушем повторної синхронізації на чотирьох варіантах: повторно синхронізувати всю історію, останні 90 днів, останні 30 днів і останні 7 днів"
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Budgie Account Settings screen for a Monobank card with the re-sync sheet open on entire history, 90, 30 and 7 days"
+msgstr "Екран Налаштування рахунку Budgie для картки Monobank із відкритим меню повторної синхронізації: уся історія, 90, 30 і 7 днів"
+
 #: src/app/[lang]/page.tsx
 msgid "Budgie analytics screen breaking spending down by category with amounts and percentages"
 msgstr "Екран аналітики Budgie з розподілом витрат за категоріями, сумами та відсотками"
@@ -4022,6 +4022,10 @@ msgstr ""
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields"
 msgstr "Екран Budgie \"Підключити Binance\" з рядком \"Отримати API-ключ\", чотирма пронумерованими кроками налаштування та порожніми полями для API-ключа й секрету"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Budgie Connect Binance screen with the Get API Key row, a four-step setup list, and the API key and secret fields"
+msgstr "Екран Підключити Binance у Budgie з рядком Отримати API-ключ, чотирикроковою інструкцією та полями для API-ключа й секрету"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Budgie Connect Monobank screen with a token field, setup steps and a note that the token is stored securely"
@@ -4186,10 +4190,6 @@ msgstr "Головний екран Budgie із загальним баланс�
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal"
 msgstr "Головний екран Budgie з рахунками, згрупованими в секції «Банк» і «Готівка», кожен заголовок із власним проміжним підсумком"
-
-#: src/app/[lang]/features/bank-integration-management/page.tsx
-msgid "Budgie home screen with the synced card balances above the cash and savings sections"
-msgstr "Головний екран Budgie із синхронізованими балансами карток над розділами готівки та накопичень"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with the total balance header above every account section"
@@ -4371,6 +4371,10 @@ msgstr "Budgie об’єднує очевидні пари переказів і
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Budgie Missing categories screen listing income and expense rows that still have no category"
 msgstr "Екран Budgie «Без категорій» зі списком доходів і витрат, які ще не мають категорії"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Budgie Monobank connection screen listing two cards and a jar with balances, sync switches, and Add deposit and Add accounts buttons"
+msgstr "Екран підключення Monobank у Budgie зі списком двох карток і банки, їхніми балансами, перемикачами синхронізації та кнопками Додати депозит і Додати рахунки"
 
 #: src/app/[lang]/page.tsx
 msgid "Budgie Monobank screen listing two cards and a car jar with their balances"
@@ -5736,13 +5740,13 @@ msgstr "Вирішення конфліктів без серверів"
 msgid "Conflict-Free Replicated Data Types (CRDTs)"
 msgstr "Безконфліктні репліковані типи даних (CRDT)"
 
-#: src/app/[lang]/features/bank-integration-management/page.tsx
-msgid "Connect a bank once and the credential is stored as a connection for that provider. Any account you create from it — during setup or months later — records which connection it came from, and sync resolves the token through that link rather than keeping a copy per account."
-msgstr "Підключіть банк один раз — і облікові дані зберігаються як підключення для цього провайдера. Кожен рахунок, який Ви створюєте на його основі — під час налаштування чи місяцями пізніше — фіксує, з якого підключення він походить, а синхронізація визначає токен через цей зв'язок, а не зберігає копію для кожного рахунку."
-
 #: src/app/[lang]/features/binance-sync/metadata.ts
 msgid "Connect Binance with a read-only API key. Spot, Funding, and Simple Earn balances, P2P orders, trades, Convert, and Earn rewards sync to your device, and P2P buys merge with the matching bank payment."
 msgstr "Підключіть Binance за допомогою API-ключа лише для читання. Баланси Spot, Funding і Simple Earn, ордери P2P, угоди, Convert і винагороди Earn синхронізуються на ваш пристрій, а P2P-покупки об'єднуються з відповідним банківським платежем."
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Connect the bank once"
+msgstr "Підключіть банк один раз"
 
 #: src/app/[lang]/features/monobank-sync/metadata.ts
 msgid "Connect your Monobank account with a personal API token. Cards and jars, full transaction history, FX rates, and counter-IBANs sync straight to your device — no Plaid."
@@ -6918,6 +6922,10 @@ msgid "Each account holds a fixed native currency — fiat, crypto, or otherwise
 msgstr "Кожен рахунок має фіксовану нативну валюту — фіат, крипто або інше"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Each account keeps its own controls"
+msgstr "Кожен рахунок має власні налаштування"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Each bank section on the home screen has a shortcut into its connection. Inside you get the accounts that belong to it, each with its icon, title, and current balance, and a switch to pause syncing for that account alone while its siblings keep going."
 msgstr "Кожен банківський розділ на головному екрані має ярлик до свого підключення. Усередині Ви бачите рахунки, що йому належать, кожен зі своєю іконкою, назвою та поточним балансом, а також перемикач, щоб призупинити синхронізацію лише для цього рахунку, поки решта продовжує працювати."
 
@@ -7182,6 +7190,10 @@ msgstr "Навіть якщо хтось перехопить з'єднання,
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Even if you delete your account with a budgeting app, the aggregator (Plaid, Yodlee, etc.) may retain your data. You have a relationship with the app and a separate relationship with the aggregator. Deleting one does not necessarily affect the other."
 msgstr "Навіть якщо ви видалите свій акаунт у бюджетному додатку, агрегатор (Plaid, Yodlee тощо) може зберегти ваші дані. У вас є відносини з додатком і окремі відносини з агрегатором. Видалення одних не обов'язково впливає на інші."
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Every account behind that key"
+msgstr "Усі рахунки за цим ключем"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Every account type carries its own color and icon, so a home screen with a dozen accounts still reads at a glance"
@@ -8145,6 +8157,10 @@ msgstr "Підтримка FX"
 msgid "General Data Protection Regulation (GDPR) - European Union"
 msgstr ""
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Generate it in Binance"
+msgstr "Створіть його в Binance"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Generate it in Monobank"
 msgstr "Створіть його в Monobank"
@@ -8643,7 +8659,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
-#: src/app/[lang]/features/bank-integration-management/page.tsx
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
@@ -10165,6 +10180,10 @@ msgstr "Банківська синхронізація Monobank"
 msgid "Monobank cards and jars arrive through your own token, straight into the database on your phone."
 msgstr "Картки й банки Monobank надходять через ваш власний токен просто в базу даних на телефоні."
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Monobank connections can add more accounts later without re-entering the token, with the ones you already have filtered out"
+msgstr "Підключення Monobank можуть додати нові рахунки пізніше без повторного введення токена, відфільтрувавши ті, що вже є"
+
 #: src/app/[lang]/features/monobank-sync/metadata.ts
 msgid "Monobank Expense Tracker — Direct API Sync, No Plaid"
 msgstr "Облік витрат для Монобанку — пряма синхронізація API, без Plaid"
@@ -11373,6 +11392,10 @@ msgstr "Один файл містить базу даних"
 msgid "One file. Encrypted when you set a PIN. No account."
 msgstr "Один файл. Зашифрований, щойно встановлено PIN-код. Без облікового запису."
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "One key per bank, not per account"
+msgstr "Один ключ на банк, а не на рахунок"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "One limit for the month"
 msgstr "Один ліміт на місяць"
@@ -11425,6 +11448,10 @@ msgstr "Один чек, кілька категорій."
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "One receipt, three categories"
 msgstr "Один чек — три категорії"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "One row per synced account"
+msgstr "Один рядок на синхронізований рахунок"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "One row, reclassified"
@@ -11597,6 +11624,10 @@ msgstr "Відкривайте депозит прямо з підключенн
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual refresh."
 msgstr "Відкрийте рядок, задайте категорію — і цей список, і плашка за ним оновляться самі, без перезавантаження та ручного оновлення."
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Open an account and its sync card is there: pause it, paste a fresh token — which lands on the shared connection and clears the error counters of every account on it — or re-pull a window, from the last seven days up to the entire history."
+msgstr "Відкрийте рахунок — і картка синхронізації вже тут: призупиніть її, вставте новий токен, який потрапляє на спільне підключення й обнуляє лічильники помилок усіх його рахунків, або перезавантажте період — від останніх семи днів до всієї історії."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Open any list of Mint alternatives and you will find subscription-based cloud services, ad-supported web apps, and venture-funded startups. Each of them recreates the same architecture: your credentials go to an aggregator, your transactions flow to a server, a company stores your financial history indefinitely."
@@ -11780,6 +11811,10 @@ msgstr "Варіанти включають:"
 msgid "Or fund a new deposit"
 msgstr "Або поповніть новий депозит"
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Or just the last week"
+msgstr "Або лише за останній тиждень"
+
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Or the last ninety days"
 msgstr "Або останні дев'яносто днів"
@@ -11904,6 +11939,10 @@ msgstr "Вставте API-ключ лише для читання, і Budgie з
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Paste one personal token"
 msgstr "Вставте один персональний токен"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Pause this one, keep the rest"
+msgstr "Призупиніть цей, решта працює"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
@@ -12923,6 +12962,10 @@ msgstr "Вимагає технічного налаштування (не plug-
 msgid "Resell, redistribute, or sublicense the Service"
 msgstr ""
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Reset and pull everything again"
+msgstr "Скинути й завантажити все заново"
+
 #: src/generic/component/footer/footer.tsx
 msgid "Resources"
 msgstr "Ресурси"
@@ -13424,6 +13467,10 @@ msgstr "У налаштуваннях «Експортувати базу дан
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Settle by transfer to a real account — no awkward \"expense\" workarounds"
 msgstr "Погасіть переказом на реальний рахунок — без незручних обхідних шляхів через \"витрати\""
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Setup asks for one credential and spells out how to scope it — for Binance, an API key and secret with reading enabled and trading and withdrawals switched off. Budgie stores it on the bank, not on an account, and fetches whatever that key can see."
+msgstr "Налаштування просить одні облікові дані й пояснює, як їх обмежити: для Binance це API-ключ і секрет із дозволом лише на читання, без торгівлі та виведення. Budgie зберігає їх у банку, а не в рахунку, і забирає все, що цей ключ бачить."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Setup is non-trivial"
@@ -14421,6 +14468,10 @@ msgstr "Фон суцільно чорний, а не затемнена сір�
 msgid "The bank already told you what it was"
 msgstr "Банк уже сказав, що це"
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "The bank gets its own screen: the cards and jars synced from it, each with its balance and a switch that pauses one account while its siblings keep going. A Monobank connection can pull the bank's account list again later and offer only the accounts you have not added yet — no second token."
+msgstr "Банк отримує власний екран: картки та банки, синхронізовані з нього, кожна з балансом і перемикачем, що призупиняє один рахунок, поки решта працюють. Підключення Monobank може ще раз отримати список рахунків банку й запропонувати лише ті, яких ви ще не додали, — без другого токена."
+
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "The bank's category code"
 msgstr "Код категорії від банку"
@@ -15198,6 +15249,10 @@ msgstr "Запис завершується локально без будь-я�
 msgid "theme"
 msgstr "тема"
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Then it fetches the accounts"
+msgstr "Далі він отримує рахунки"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Then layer sync on top. Modern sync engines make this incremental approach practical. You do not need to design for distributed systems from day one."
 msgstr "Потім нашаруйте синхронізацію зверху. Сучасні синхронізаційні рушії роблять цей поступовий підхід практичним. Вам не потрібно проєктувати для розподілених систем з першого дня."
@@ -15485,6 +15540,10 @@ msgstr "Три екрани: обрати теги у формі витрати,
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
 msgstr "Три екрани: збереження витрати, повернення до вже збереженої витрати та список, у якому вони всі опиняються."
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Three screens: the credential you paste once, the bank screen that lists everything it unlocked, and the sync controls each account keeps for itself."
+msgstr "Три екрани: облікові дані, які ви вставляєте один раз, екран банку зі всім, що вони відкрили, і налаштування синхронізації, які кожен рахунок тримає при собі."
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Three screens: the expense that was never spending, the picker that names the other account, and the transfer the row turns into."
@@ -16675,8 +16734,8 @@ msgid "What Sets Budgie Apart:"
 msgstr "Що вирізняє Budgie:"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
-msgid "What the screen offers next depends on the bank. Connections that talk to a live API can pull the bank's account list and add whatever you left out the first time. Statement-based banks offer an import action instead. Both can open a new deposit account that starts out attached to the same bank."
-msgstr "Те, що екран пропонує далі, залежить від банку. Підключення, які взаємодіють із живим API, можуть підвантажити список рахунків банку й додати те, що Ви пропустили першого разу. Банки на основі виписок натомість пропонують дію імпорту. В обох випадках можна відкрити новий депозитний рахунок, який одразу прив'язується до того самого банку."
+msgid "What the screen offers next depends on the bank. A Monobank connection can pull the bank's account list and add whatever you left out the first time. Statement-based banks — PrivatBank and Erste — offer a file import action instead. Both can open a new deposit account that starts out attached to the same bank."
+msgstr "Що екран запропонує далі, залежить від банку. Підключення Monobank може отримати список рахунків банку й додати те, що ви пропустили першого разу. Банки з виписками — PrivatBank і Erste — натомість пропонують імпорт файлу. Обидва можуть відкрити новий депозитний рахунок, уже прив’язаний до того самого банку."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "What the switch actually hides"
