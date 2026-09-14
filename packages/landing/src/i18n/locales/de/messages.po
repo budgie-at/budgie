@@ -7571,7 +7571,7 @@ msgstr "Face ID steuert den Verschlüsselungsschlüssel."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID opens the lock, the PIN owns the key"
-msgstr "Face ID öffnet die Sperre, die PIN hält den Schlüssel"
+msgstr "Face ID öffnet die Sperre, die PIN ist der Schlüssel"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
@@ -11398,7 +11398,7 @@ msgstr "Eine Datei. Verschlüsselt, sobald du eine PIN festlegst. Kein Konto."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
-msgstr "Ein Blick, und der Sperrbildschirm von Budgie ist passiert. Die vier Ziffern, die Sie gewählt haben, bleiben der Schlüssel, mit dem Ihre Datenbank verschlüsselt ist."
+msgstr "Ein Blick genügt, um Budgies Sperrbildschirm zu überspringen. Die vier Ziffern, die Sie gewählt haben, bleiben der Schlüssel, mit dem Ihre Datenbank verschlüsselt ist."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One key per bank, not per account"

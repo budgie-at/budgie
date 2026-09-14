@@ -5172,7 +5172,7 @@ msgstr "Les divisions peuvent-elles avoir des étiquettes différentes ?"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Cancel or fail and nothing is lost: the keypad was already there. Budgie switches the device-passcode fallback off on purpose, so your PIN is the only other way in."
-msgstr "Annulez ou échouez, rien n’est perdu : le clavier était déjà là. Budgie désactive volontairement le repli sur le code de l’appareil — votre code PIN est la seule autre entrée."
+msgstr "En cas d’annulation ou d’échec, rien n’est perdu : le clavier était déjà là. Budgie désactive volontairement le repli sur le code de l’appareil — votre code PIN est le seul autre moyen d’accès."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Capture the whole Budgie database as one file — SQLCipher-encrypted with your PIN when you set one — and put it back on another device. No account, no upload."
@@ -7571,11 +7571,11 @@ msgstr "Face ID pilote la clé de chiffrement."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID opens the lock, the PIN owns the key"
-msgstr "Face ID ouvre le verrou, le code PIN garde la clé"
+msgstr "Face ID ouvre le verrou, le code PIN est la clé"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
-msgstr "Déverrouillage Face ID sur l’écran de verrouillage, proposé quand l’appareil l’a configuré"
+msgstr "Déverrouillage Face ID sur l’écran de verrouillage, proposé lorsque Face ID est configuré sur l’appareil"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"

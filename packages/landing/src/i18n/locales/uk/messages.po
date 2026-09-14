@@ -5172,7 +5172,7 @@ msgstr "Чи можуть частини розділеної транзакці
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Cancel or fail and nothing is lost: the keypad was already there. Budgie switches the device-passcode fallback off on purpose, so your PIN is the only other way in."
-msgstr "Скасуєте чи не вдасться — нічого не втрачено: клавіатура вже на екрані. Budgie навмисно вимикає запасний код пристрою, тож ваш PIN — єдиний інший шлях усередину."
+msgstr "Якщо ви скасуєте біометричну автентифікацію або вона не спрацює, нічого не втрачено: клавіатура вже на екрані. Budgie навмисно вимикає запасний код пристрою, тож ваш PIN — єдиний інший спосіб увійти."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Capture the whole Budgie database as one file — SQLCipher-encrypted with your PIN when you set one — and put it back on another device. No account, no upload."
@@ -7571,7 +7571,7 @@ msgstr "Face ID керує ключем шифрування."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID opens the lock, the PIN owns the key"
-msgstr "Face ID відкриває замок, ключ лишається за PIN-кодом"
+msgstr "Face ID відкриває замок, а ключ — це PIN"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
@@ -11000,7 +11000,7 @@ msgstr "Нічого не змінюється. AI на пристрої є ап
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off, and there is no attempt counter that locks you out of your own database."
-msgstr "Нічого страшного: клавіатура PIN-коду вже на екрані, тож ви просто вводите свій PIN. Budgie вимикає запасний код пристрою, і жоден лічильник спроб не замкне вас поза власною базою даних."
+msgstr "Нічого страшного: клавіатура PIN-коду вже на екрані, тож ви просто вводите свій PIN. Budgie вимикає запасний код пристрою, і жоден лічильник спроб не заблокує вам доступ до власної бази даних."
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Nothing happens — your data is safe on-device. You can keep adding transactions, reviewing history, and running reports with no interruption. Sync features like Monobank simply wait until you reconnect."
