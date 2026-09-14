@@ -601,6 +601,10 @@ msgstr "Середнє"
 msgid "Avg cost"
 msgstr "Сер. ціна"
 
+#: src/app/import-backup-pin.tsx
+msgid "Backup PIN"
+msgstr "PIN резервної копії"
+
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Balance"
 msgstr "Баланс"
@@ -1722,6 +1726,10 @@ msgstr "Введіть новий PIN-код"
 msgid "Enter new token"
 msgstr "Введіть новий токен"
 
+#: src/app/import-backup-pin.tsx
+msgid "Enter the PIN this backup was created with. It becomes your app PIN after the restore."
+msgstr "Введіть PIN, з яким було створено цю резервну копію. Після відновлення він стане PIN-кодом застосунку."
+
 #: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
 msgid "Enter value..."
 msgstr "Введіть значення..."
@@ -2140,6 +2148,7 @@ msgstr "Доходи за категоріями"
 msgid "Income by Tag"
 msgstr "Доходи за тегами"
 
+#: src/app/import-backup-pin.tsx
 #: src/auth/hook/use-pin-authentication.hook.ts
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
@@ -3748,6 +3757,10 @@ msgstr "Цей рахунок буде приховано з головного 
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
+
+#: src/import/components/import-database/import-database.tsx
+msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
+msgstr "Ця резервна копія захищена PIN-кодом. Імпорт замінить усі поточні дані, а її PIN стане PIN-кодом застосунку. Після імпорту застосунок перезапуститься. Цю дію не можна скасувати."
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "This consolidated transfer has no moved source entries."

@@ -602,6 +602,10 @@ msgstr "Average"
 msgid "Avg cost"
 msgstr "Avg cost"
 
+#: src/app/import-backup-pin.tsx
+msgid "Backup PIN"
+msgstr "Backup PIN"
+
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Balance"
 msgstr "Balance"
@@ -1723,6 +1727,10 @@ msgstr "Enter new PIN"
 msgid "Enter new token"
 msgstr "Enter new token"
 
+#: src/app/import-backup-pin.tsx
+msgid "Enter the PIN this backup was created with. It becomes your app PIN after the restore."
+msgstr "Enter the PIN this backup was created with. It becomes your app PIN after the restore."
+
 #: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
 msgid "Enter value..."
 msgstr "Enter value..."
@@ -2141,6 +2149,7 @@ msgstr "Income by category"
 msgid "Income by Tag"
 msgstr "Income by Tag"
 
+#: src/app/import-backup-pin.tsx
 #: src/auth/hook/use-pin-authentication.hook.ts
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "Incorrect PIN"
@@ -3749,6 +3758,10 @@ msgstr "This account will be hidden from your main view and won't be included in
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
+
+#: src/import/components/import-database/import-database.tsx
+msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
+msgstr "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "This consolidated transfer has no moved source entries."

@@ -107,8 +107,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 <FeatureStory.Step index={1} title={<Trans>Restore replaces what is there</Trans>}>
                     <Trans>
                         Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and
-                        cannot be undone; confirm and it swaps the database in — write-ahead sidecars included — clears the stored PIN and
-                        restarts.
+                        cannot be undone; confirm and it swaps the database in — write-ahead sidecars included — and restarts. A backup
+                        encrypted with a PIN asks for that PIN first, and it becomes the app PIN on the restored database.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot alt={storyAlt} index={1} locale={lang} scene="database-backup-1" slug="database-backup">
@@ -178,8 +178,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file and
-                            confirm the warning. Budgie replaces its database, clears the stored PIN and restarts, so set the lock again
-                            afterwards.
+                            confirm the warning. If the backup was encrypted with a PIN, Budgie asks for that PIN and keeps it as the lock
+                            on the restored database; an unencrypted backup restores with no PIN set.
                         </Trans>
                     }
                 />

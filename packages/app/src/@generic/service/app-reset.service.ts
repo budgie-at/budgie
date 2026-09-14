@@ -62,7 +62,7 @@ class AppResetService {
     private async runCleanupResetSteps(errors: unknown[]): Promise<void> {
         this.captureSyncError(() => void this.deleteCacheContents(), errors);
         this.captureSyncError(() => void patternCacheService.invalidate(), errors);
-        await this.captureAsyncError(() => authService.clearAllPins(), errors);
+        await this.captureAsyncError(() => authService.persistPin(null), errors);
     }
 
     private captureSyncError(operation: () => void, errors: unknown[]): void {
