@@ -40,8 +40,8 @@ const SPIKE_MULTIPLIER = 1.5;
 
 export const RunwayHistoryChart = ({ series, burn }: Props) => {
     const { intl } = useI18nContext();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const { defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(0);
     const colors = RUNWAY_CHART_COLORS[useThemeContext().colorScheme];
 
     const peakRow = series.reduce<RunwaySeriesRowInterface | null>(

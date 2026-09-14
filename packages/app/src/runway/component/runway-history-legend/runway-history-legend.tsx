@@ -17,8 +17,8 @@ const LINE_SWATCH_CLASSNAME = 'h-0.5 w-4 rounded-full';
 
 export const RunwayHistoryLegend = ({ hasSpike, typicalAmount }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const { defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(0);
     const colors = RUNWAY_CHART_COLORS[useThemeContext().colorScheme];
 
     const amount = formatDigits(convertFromMicroUnits(typicalAmount), defaultInstrument.symbol);
