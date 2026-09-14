@@ -9,7 +9,7 @@ import {
     ExternalSourceEnum,
     LanguageEnum,
     PRECISION,
-    RUNWAY_MAX_MONTHS,
+    RUNWAY_WINDOW_MONTHS,
     RunwayDriverDimensionEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
@@ -73,32 +73,50 @@ const seedExpense = (accountId: number, categoryId: number, amount: number, mont
     return transaction.id;
 };
 
+const seedScenario = async (): Promise<{ readonly instrumentId: number; readonly accountId: number }> => {
+    const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+
+    return { instrumentId: hryvnia.id, accountId: seed.account({ instrumentId: hryvnia.id }).id };
+};
+
 const aggregate = (dimension: RunwayDriverDimensionEnum, instrumentId: number): RunwayDriverBreakdownInterface => {
-    const seriesRows = statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_MAX_MONTHS).all();
+    const seriesRows = statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_WINDOW_MONTHS).all();
+    const monthlyBurn = median(seriesRows.map(row => row.expense));
     const driverRows = statisticsRepository
-        .getRunwayDriverSeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, dimension, RUNWAY_MAX_MONTHS, LanguageEnum.EN)
+        .getRunwayDriverSeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, dimension, RUNWAY_WINDOW_MONTHS, LanguageEnum.EN)
+        .all();
+    const categoryRows = statisticsRepository
+        .getRunwayDriverSeriesQuery(
+            DEFAULT_TRANSACTION_FILTER,
+            instrumentId,
+            RunwayDriverDimensionEnum.CATEGORY,
+            RUNWAY_WINDOW_MONTHS,
+            LanguageEnum.EN
+        )
         .all();
 
-    return aggregateRunwayDrivers(driverRows, median(seriesRows.map(row => row.expense)));
+    return {
+        drivers: aggregateRunwayDrivers(driverRows, monthlyBurn).drivers,
+        irregularMonthlyAmount: aggregateRunwayDrivers(categoryRows, monthlyBurn).irregularMonthlyAmount
+    };
 };
 
 describe('runway drivers', () => {
     it('divides by months with data, flags only one-offs and folds the long tail', async () => {
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
-        const account = seed.account({ instrumentId: hryvnia.id });
+        const { instrumentId, accountId } = await seedScenario();
         const regular = seedCategory('Groceries');
         const oneOff = seedCategory('Dentist');
         const firstTail = seedCategory('Stamps');
         const secondTail = seedCategory('Candles');
 
         Array.from({ length: SEEDED_MONTHS }, (_, index) => index + 1).forEach(monthsAgo => {
-            seedExpense(account.id, regular.id, REGULAR_MONTHLY_AMOUNT, monthsAgo);
+            seedExpense(accountId, regular.id, REGULAR_MONTHLY_AMOUNT, monthsAgo);
         });
-        seedExpense(account.id, oneOff.id, ONE_OFF_AMOUNT, 2);
-        seedExpense(account.id, firstTail.id, FIRST_TAIL_AMOUNT, 3);
-        seedExpense(account.id, secondTail.id, SECOND_TAIL_AMOUNT, 1);
+        seedExpense(accountId, oneOff.id, ONE_OFF_AMOUNT, 2);
+        seedExpense(accountId, firstTail.id, FIRST_TAIL_AMOUNT, 3);
+        seedExpense(accountId, secondTail.id, SECOND_TAIL_AMOUNT, 1);
 
-        const { drivers, irregularMonthlyAmount } = aggregate(RunwayDriverDimensionEnum.CATEGORY, hryvnia.id);
+        const { drivers, irregularMonthlyAmount } = aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId);
 
         expect(drivers).toStrictEqual([
             { id: regular.id, title: regular.title, monthlyAmount: REGULAR_MONTHLY_AMOUNT, isIrregular: false, foldedDriverCount: 0 },
@@ -114,24 +132,37 @@ describe('runway drivers', () => {
         expect(irregularMonthlyAmount).toBe((ONE_OFF_AMOUNT + FIRST_TAIL_AMOUNT + SECOND_TAIL_AMOUNT) / SEEDED_MONTHS);
     });
 
-    it('counts secondary tags and untagged spend in the tag dimension', async () => {
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
-        const account = seed.account({ instrumentId: hryvnia.id });
+    it('counts secondary tags and untagged spend in the tag dimension without changing irregular spend', async () => {
+        const { instrumentId, accountId } = await seedScenario();
         const regular = seedCategory('Groceries');
+        const oneOff = seedCategory('Dentist');
         const tag = seed.tag('Trip');
+        const secondTag = seed.tag('Health');
 
         Array.from({ length: SEEDED_MONTHS }, (_, index) => index + 1).forEach(monthsAgo => {
-            const transactionId = seedExpense(account.id, regular.id, REGULAR_MONTHLY_AMOUNT, monthsAgo);
+            const transactionId = seedExpense(accountId, regular.id, REGULAR_MONTHLY_AMOUNT, monthsAgo);
 
             seed.transactionTag(transactionId, tag.id);
         });
-        seedExpense(account.id, regular.id, UNTAGGED_AMOUNT, 1);
+        seedExpense(accountId, regular.id, UNTAGGED_AMOUNT, 1);
+        const oneOffTransactionId = seedExpense(accountId, oneOff.id, ONE_OFF_AMOUNT, 2);
 
-        const { drivers } = aggregate(RunwayDriverDimensionEnum.TAG, hryvnia.id);
+        seed.transactionTag(oneOffTransactionId, tag.id);
+        seed.transactionTag(oneOffTransactionId, secondTag.id);
 
-        expect(drivers).toStrictEqual([
-            { id: tag.id, title: 'Trip', monthlyAmount: REGULAR_MONTHLY_AMOUNT, isIrregular: false, foldedDriverCount: 0 },
+        const tagBreakdown = aggregate(RunwayDriverDimensionEnum.TAG, instrumentId);
+
+        expect(tagBreakdown.drivers).toStrictEqual([
+            {
+                id: tag.id,
+                title: 'Trip',
+                monthlyAmount: (REGULAR_MONTHLY_AMOUNT * SEEDED_MONTHS + ONE_OFF_AMOUNT) / SEEDED_MONTHS,
+                isIrregular: false,
+                foldedDriverCount: 0
+            },
+            { id: secondTag.id, title: 'Health', monthlyAmount: ONE_OFF_AMOUNT / SEEDED_MONTHS, isIrregular: true, foldedDriverCount: 0 },
             { id: null, title: '', monthlyAmount: UNTAGGED_AMOUNT / SEEDED_MONTHS, isIrregular: true, foldedDriverCount: 0 }
         ]);
+        expect(tagBreakdown.irregularMonthlyAmount).toBe(ONE_OFF_AMOUNT / SEEDED_MONTHS);
     });
 });

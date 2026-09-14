@@ -14,18 +14,12 @@ import { RunwayForecastChart } from '../runway-forecast-chart/runway-forecast-ch
 import { RunwayHistoryChart } from '../runway-history-chart/runway-history-chart';
 import { RunwayVerdict } from '../runway-verdict/runway-verdict';
 
-import type { TransactionFilterInterface } from '@budgie/contracts';
-
-interface Props {
-    readonly filters: TransactionFilterInterface;
-}
-
-export const RunwayContent = ({ filters }: Props) => {
+export const RunwayContent = () => {
     const [dimension, setDimension] = useState<RunwayDriverDimensionEnum>(RunwayDriverDimensionEnum.CATEGORY);
     const [isAllIn, setIsAllIn] = useState(false);
 
     const liquid = useLiquidBalanceQuery();
-    const { computation, drivers, series } = useRunwayQuery({ filters, dimension, liquid });
+    const { computation, drivers, series } = useRunwayQuery({ dimension, liquid });
 
     const handleToggleAllIn = () => {
         setIsAllIn(current => !current);

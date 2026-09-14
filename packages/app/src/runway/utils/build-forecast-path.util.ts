@@ -66,7 +66,7 @@ export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInt
         ),
         bandPath: buildForecastPath([...p75Points, ...[...p25Points].reverse()], true),
         zeroY: yAt(ZERO_VALUE),
-        runOutX: isDefined(runwayMonths) ? xAt(Math.min(Math.max(runwayMonths, ZERO_VALUE), RUNWAY_MAX_MONTHS)) : null,
+        runOutX: isDefined(runwayMonths) && runwayMonths <= RUNWAY_MAX_MONTHS ? xAt(Math.max(runwayMonths, ZERO_VALUE)) : null,
         tickXs: xTicks
     };
 };
