@@ -53,6 +53,7 @@ import m0049 from './0049_add_bank_sync_backward_limit.sql';
 import m0050 from './0050_add_onboarding_completed.sql';
 import m0051 from './0051_add_onboarding_step_and_ai_consent.sql';
 import m0052 from './0052_soft_cerebro.sql';
+import m0053 from './0053_backfill_ai_consent_for_existing_installs.sql';
 import journal from './meta/_journal.json';
 
 export default {
@@ -110,6 +111,7 @@ export default {
         m0049,
         m0050,
         m0051,
-        m0052
+        m0052,
+        m0053
     }
 };
