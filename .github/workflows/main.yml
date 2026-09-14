@@ -131,6 +131,9 @@ jobs:
       - name: Build internal workspace packages
         run: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
 
+      - name: Assert AI is enabled
+        run: bash .github/scripts/assert-ai-enabled.sh
+
       - name: Publish update
         working-directory: packages/app
         run: |

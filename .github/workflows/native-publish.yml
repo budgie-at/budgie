@@ -12,8 +12,39 @@ permissions:
   contents: read
 
 jobs:
+  assert-ai:
+    name: Assert AI is enabled
+    runs-on: [self-hosted, trf-linux-amd64-2x4]
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      APP_VARIANT: production
+      EAS_BUILD_PROFILE: production
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.22.1
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Assert AI is enabled
+        run: bash .github/scripts/assert-ai-enabled.sh
+
   publish:
     name: iOS build and publish
+    needs: assert-ai
     permissions:
       contents: read
     uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@v1.23.1 # v1.23.1
