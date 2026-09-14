@@ -2,6 +2,8 @@ import { isEmptyArray, isDefined } from '@rnw-community/shared';
 
 import { RUNWAY_MINIMUM_MONTHS } from '../constant/runway-minimum-months.constant';
 
+import { median } from './median.util';
+
 import type { ComputeRunwayParams } from '../interface/compute-runway-params.interface';
 import type { RunwayComputationInterface } from '../interface/runway-computation.interface';
 
@@ -10,21 +12,6 @@ const P75_PERCENTILE = 0.75;
 const AVERAGE_DAYS_PER_MONTH = 30.4375;
 const MILLISECONDS_PER_DAY = 86_400_000;
 const MILLISECONDS_PER_MONTH = AVERAGE_DAYS_PER_MONTH * MILLISECONDS_PER_DAY;
-
-const median = (values: readonly number[]): number => {
-    if (isEmptyArray(values)) {
-        return 0;
-    }
-
-    const sortedValues = [...values].sort((left, right) => left - right);
-    const middleIndex = Math.floor(sortedValues.length / 2);
-
-    if (sortedValues.length % 2 === 0) {
-        return (sortedValues[middleIndex - 1] + sortedValues[middleIndex]) / 2;
-    }
-
-    return sortedValues[middleIndex];
-};
 
 const percentile = (values: readonly number[], percentileRank: number): number => {
     if (isEmptyArray(values)) {
