@@ -2,13 +2,14 @@ import { AccountDebtTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
 import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
+import { DebtAccountBalanceSkeleton } from '../debt-account-balance-skeleton/debt-account-balance-skeleton';
 import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
 
 import { DebtAccountBalanceSelector } from './debt-account-balance.selector';
@@ -18,12 +19,16 @@ import type { DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 interface Props {
     readonly debtType: AccountDebtTypeEnum;
     readonly instrumentSymbol: string;
-    readonly summary: DebtAccountProgressSummaryInterface;
+    readonly summary: DebtAccountProgressSummaryInterface | null;
 }
 
 export const DebtAccountBalance = ({ debtType, instrumentSymbol, summary }: Props) => {
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
+
+    if (!isDefined(summary)) {
+        return <DebtAccountBalanceSkeleton />;
+    }
 
     const { outstandingAmount, overpaidAmount, paidAmount, percentage, totalAmount } = summary;
     const borrowed = debtType === AccountDebtTypeEnum.BORROW;
