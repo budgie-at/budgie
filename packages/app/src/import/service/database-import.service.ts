@@ -2,7 +2,7 @@ import { Log } from '@budgie/logger';
 import { File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { expoDb } from '../../@generic/drizzle/db/db';
@@ -11,15 +11,50 @@ import { aiStorageReplacementService } from '../../ai/service/ai-storage-replace
 import { authService } from '../../auth/service/auth.service';
 
 class DatabaseImportService {
+    private static readonly PROBE_DATABASE_NAME = 'import-probe.db';
+
     @Log(
-        sourceUri => `enter sourceUri="${sourceUri}"`,
-        (result, sourceUri) => `done result=${String(result)} sourceUri="${sourceUri}"`,
-        (error, sourceUri) => `throw sourceUri="${sourceUri}" error=${getErrorMessage(error)}`
+        (sourceUri, backupPin) => `enter sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
+        (result, ...[sourceUri, backupPin]) =>
+            `done result=${String(result)} sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
+        (error, sourceUri, backupPin) =>
+            `throw sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)} error=${getErrorMessage(error)}`
     )
-    async importFromUri(sourceUri: string): Promise<void> {
-        await this.replaceFromUri(sourceUri);
-        await authService.clearAllPins();
+    async importFromUri(sourceUri: string, backupPin: string | null): Promise<void> {
+        const previousPin = await authService.getPin();
+
+        await authService.persistPin(backupPin);
+
+        try {
+            await this.replaceFromUri(sourceUri);
+        } catch (error) {
+            await authService.persistPin(previousPin);
+            throw error;
+        }
+
         await reloadApp();
+    }
+
+    @Log(
+        (sourceUri, backupPin) => `enter sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
+        (result, ...[sourceUri, backupPin]) => `done result=${result} sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
+        (error, sourceUri, backupPin) =>
+            `throw sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)} error=${getErrorMessage(error)}`
+    )
+    async canOpenBackup(sourceUri: string, backupPin: string | null): Promise<boolean> {
+        const probePath = `${Paths.cache.uri}/${DatabaseImportService.PROBE_DATABASE_NAME}`;
+
+        this.deleteProbeFiles(probePath);
+
+        try {
+            await new File(sourceUri).copy(new File(probePath));
+
+            return await this.readProbeDatabase(backupPin);
+        } catch {
+            return false;
+        } finally {
+            this.deleteProbeFiles(probePath);
+        }
     }
 
     async replaceFromUri(sourceUri: string): Promise<void> {
@@ -34,6 +69,33 @@ class DatabaseImportService {
         await this.copyDatabaseSidecars(sourceUri, destinationPath);
     }
 
+    private async readProbeDatabase(backupPin: string | null): Promise<boolean> {
+        const probeDatabase = await SQLite.openDatabaseAsync(
+            DatabaseImportService.PROBE_DATABASE_NAME,
+            { useNewConnection: true },
+            Paths.cache.uri
+        );
+
+        try {
+            if (isNotEmptyString(backupPin)) {
+                await probeDatabase.execAsync(`PRAGMA key = '${backupPin}';`); // oxlint-disable-line lingui/no-unlocalized-strings
+            }
+
+            // oxlint-disable-next-line lingui/no-unlocalized-strings
+            const tables = await probeDatabase.getAllAsync<unknown>('SELECT name FROM sqlite_master;');
+
+            return isNotEmptyArray(tables);
+        } finally {
+            await probeDatabase.closeAsync();
+        }
+    }
+
+    private deleteProbeFiles(probePath: string): void {
+        this.deleteFileIfExists(probePath);
+        this.deleteFileIfExists(`${probePath}-wal`);
+        this.deleteFileIfExists(`${probePath}-shm`);
+    }
+
     private async replaceDestinationFile(sourceUri: string, tempPath: string, destinationPath: string): Promise<void> {
         const tempFile = new File(tempPath);
         await new File(sourceUri).copy(tempFile);
@@ -41,8 +103,13 @@ class DatabaseImportService {
     }
 
     private async copyDatabaseSidecars(sourceUri: string, destinationPath: string): Promise<void> {
-        await this.copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`);
-        await this.copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`);
+        try {
+            await this.copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`);
+            await this.copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`);
+        } catch {
+            this.deleteFileIfExists(`${destinationPath}-wal`);
+            this.deleteFileIfExists(`${destinationPath}-shm`);
+        }
     }
 
     private deleteDestinationFiles(destinationPath: string, tempPath: string): void {

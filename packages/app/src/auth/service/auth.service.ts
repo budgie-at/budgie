@@ -99,8 +99,12 @@ class AuthService {
         return SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
     }
 
-    async clearAllPins(): Promise<void> {
-        await SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
+    async persistPin(pin: string | null): Promise<void> {
+        if (isNotEmptyString(pin)) {
+            await SecureStore.setItemAsync(PIN_KEY, pin, PIN_SECURE_STORE_OPTIONS);
+        } else {
+            await SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
+        }
     }
 
     private async rekeyDatabase(params: RekeyParamsInterface): Promise<void> {
@@ -112,14 +116,6 @@ class AuthService {
         } catch (error) {
             await this.persistPin(previousPin);
             throw error;
-        }
-    }
-
-    private async persistPin(pin: string | null): Promise<void> {
-        if (isNotEmptyString(pin)) {
-            await SecureStore.setItemAsync(PIN_KEY, pin, PIN_SECURE_STORE_OPTIONS);
-        } else {
-            await SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
         }
     }
 

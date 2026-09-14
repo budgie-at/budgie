@@ -27,6 +27,7 @@ import { DATE_PICKER_MODAL_OPTIONS } from '../@generic/constant/date-picker-moda
 import { DEFAULT_STACK_OPTIONS } from '../@generic/constant/default-stack-options.constant';
 import { AMOUNT_FILTER_SHEET_OPTIONS, COMPACT_FILTER_SHEET_OPTIONS } from '../@generic/constant/filter-modal-options.constant';
 import { ICON_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/icon-selector-modal-options.constant';
+import { IMPORT_BACKUP_PIN_MODAL_OPTIONS } from '../@generic/constant/import-backup-pin-modal-options.constant';
 import { NOTE_INPUT_MODAL_OPTIONS } from '../@generic/constant/note-input-modal-options.constant';
 import { RULE_FORM_MODAL_OPTIONS } from '../@generic/constant/rule-form-modal-options.constant';
 import { RULE_SELECTOR_MODAL_OPTIONS } from '../@generic/constant/rule-selector-modal-options.constant';
@@ -221,6 +222,10 @@ export const RootLayoutContent = () => {
                                                                         <Stack.Screen
                                                                             name="import-column-mapper"
                                                                             options={UNIFIED_FILTER_SHEET_OPTIONS}
+                                                                        />
+                                                                        <Stack.Screen
+                                                                            name="import-backup-pin"
+                                                                            options={IMPORT_BACKUP_PIN_MODAL_OPTIONS}
                                                                         />
                                                                         <Stack.Screen
                                                                             name="transaction-type-filter"
