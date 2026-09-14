@@ -17,11 +17,23 @@ interface Props {
     readonly maxAmount: number;
 }
 
-const nameVariants = cva('text-sm font-medium', {
+const TABULAR_NUMS_STYLE = { fontVariant: ['tabular-nums' as const] };
+const QUIET_BAR_CLASSNAME = 'h-full rounded-full bg-secondary-foreground';
+
+const titleVariants = cva('shrink text-sm', {
     variants: {
-        isIrregular: {
+        isFolded: {
             true: 'text-secondary-foreground',
-            false: 'text-primary'
+            false: 'font-medium text-primary'
+        }
+    }
+});
+
+const amountVariants = cva('text-sm', {
+    variants: {
+        isFolded: {
+            true: 'font-medium text-secondary-foreground',
+            false: 'font-semibold text-primary'
         }
     }
 });
@@ -41,21 +53,26 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount }: Props) => {
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const { foldedDriverCount } = driver;
+    const isFolded = isPositiveNumber(foldedDriverCount);
     const foldedTitle = t`Other · ${foldedDriverCount}`;
     const emptyTitle = dimension === RunwayDriverDimensionEnum.TAG ? t`Untagged` : t`Uncategorized`;
     const namedTitle = isNotEmptyString(driver.title) ? driver.title : emptyTitle;
-    const title = isPositiveNumber(foldedDriverCount) ? foldedTitle : namedTitle;
+    const title = isFolded ? foldedTitle : namedTitle;
     const formattedAmount = formatDigits(convertFromMicroUnits(driver.monthlyAmount), defaultInstrument.symbol);
+    const barClassName = isFolded ? QUIET_BAR_CLASSNAME : barVariants({ isIrregular: driver.isIrregular });
     const share = isPositiveNumber(maxAmount) ? driver.monthlyAmount / maxAmount : 0;
     const shareStyle: ViewStyle = { width: `${Math.round(share * 100)}%` };
 
     return (
         <View className="gap-y-sm">
-            <View className="flex-row items-baseline justify-between">
-                <View className="flex-row items-center gap-x-xs">
-                    <Text className={nameVariants({ isIrregular: driver.isIrregular })}>{title}</Text>
+            <View className="flex-row items-center justify-between gap-x-md">
+                <View className="shrink flex-row items-center gap-x-sm">
+                    <Text numberOfLines={1} className={titleVariants({ isFolded })}>
+                        {title}
+                    </Text>
+
                     {driver.isIrregular ? (
-                        <View className="rounded-full border border-warning-corner bg-warning-background px-sm py-xxs">
+                        <View className="shrink-0 rounded-full border border-warning-corner bg-warning-background px-xs py-xxs">
                             <Text className="text-xxs font-semibold text-warning-foreground">
                                 <Trans>One-off</Trans>
                             </Text>
@@ -63,13 +80,13 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount }: Props) => {
                     ) : null}
                 </View>
 
-                <Text className="text-sm font-semibold tabular-nums text-primary">
+                <Text numberOfLines={1} style={TABULAR_NUMS_STYLE} className={amountVariants({ isFolded })}>
                     <Trans>{formattedAmount} / mo</Trans>
                 </Text>
             </View>
 
-            <View className="h-2 overflow-hidden rounded-full bg-secondary-corner">
-                <View className={barVariants({ isIrregular: driver.isIrregular })} style={shareStyle} />
+            <View className="h-1 overflow-hidden rounded-full bg-secondary-corner">
+                <View className={barClassName} style={shareStyle} />
             </View>
         </View>
     );
