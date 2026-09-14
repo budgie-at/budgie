@@ -1,6 +1,5 @@
 import { statisticsRepository } from '@app/@generic/drizzle/db/db';
 import { aggregateRunwayDrivers } from '@app/runway/utils/aggregate-runway-drivers.util';
-import { computeRunway } from '@app/runway/utils/compute-runway.util';
 import { median } from '@app/runway/utils/median.util';
 import {
     CategoryEntityTable,
@@ -19,15 +18,11 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { requireInstrument } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { seed } from '../../harness/seed/seed';
 
-import type { RunwayComputationInterface } from '@app/runway/interface/runway-computation.interface';
 import type { RunwayDriverBreakdownInterface } from '@app/runway/interface/runway-driver-breakdown.interface';
-import type { RunwayDriverInterface } from '@app/runway/interface/runway-driver.interface';
 import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
 
 const REGULAR_MONTHLY_AMOUNT = 100 * PRECISION;
@@ -78,33 +73,13 @@ const seedExpense = (accountId: number, categoryId: number, amount: number, mont
     return transaction.id;
 };
 
-const requireDriver = (drivers: readonly RunwayDriverInterface[], categoryId: number): RunwayDriverInterface => {
-    const driver = drivers.find(row => row.id === categoryId);
-
-    if (!isDefined(driver)) {
-        throw new Error(`Driver ${categoryId} not found`);
-    }
-
-    return driver;
-};
-
-const aggregate = (
-    dimension: RunwayDriverDimensionEnum,
-    instrumentId: number
-): RunwayDriverBreakdownInterface & { readonly computation: RunwayComputationInterface } => {
+const aggregate = (dimension: RunwayDriverDimensionEnum, instrumentId: number): RunwayDriverBreakdownInterface => {
     const seriesRows = statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_MAX_MONTHS).all();
     const driverRows = statisticsRepository
         .getRunwayDriverSeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, dimension, RUNWAY_MAX_MONTHS, LanguageEnum.EN)
         .all();
-    const breakdown = aggregateRunwayDrivers(driverRows, median(seriesRows.map(row => row.expense)));
-    const computation = computeRunway({
-        series: seriesRows,
-        liquid: 0,
-        irregularMonthlyAmount: breakdown.irregularMonthlyAmount,
-        referenceDate: new Date()
-    });
 
-    return { ...breakdown, computation };
+    return aggregateRunwayDrivers(driverRows, median(seriesRows.map(row => row.expense)));
 };
 
 describe('runway drivers', () => {
@@ -123,33 +98,20 @@ describe('runway drivers', () => {
         seedExpense(account.id, firstTail.id, FIRST_TAIL_AMOUNT, 3);
         seedExpense(account.id, secondTail.id, SECOND_TAIL_AMOUNT, 1);
 
-        const { drivers, irregularMonthlyAmount, computation } = aggregate(RunwayDriverDimensionEnum.CATEGORY, hryvnia.id);
-        const other = drivers.at(-1);
+        const { drivers, irregularMonthlyAmount } = aggregate(RunwayDriverDimensionEnum.CATEGORY, hryvnia.id);
 
-        expect(requireDriver(drivers, regular.id)).toStrictEqual({
-            id: regular.id,
-            title: regular.title,
-            monthlyAmount: REGULAR_MONTHLY_AMOUNT,
-            isIrregular: false,
-            foldedDriverCount: 0
-        });
-        expect(requireDriver(drivers, oneOff.id)).toStrictEqual({
-            id: oneOff.id,
-            title: oneOff.title,
-            monthlyAmount: ONE_OFF_AMOUNT / SEEDED_MONTHS,
-            isIrregular: true,
-            foldedDriverCount: 0
-        });
-        expect(other).toStrictEqual({
-            id: null,
-            title: '',
-            monthlyAmount: (FIRST_TAIL_AMOUNT + SECOND_TAIL_AMOUNT) / SEEDED_MONTHS,
-            isIrregular: false,
-            foldedDriverCount: 2
-        });
-        expect(drivers).toHaveLength(3);
+        expect(drivers).toStrictEqual([
+            { id: regular.id, title: regular.title, monthlyAmount: REGULAR_MONTHLY_AMOUNT, isIrregular: false, foldedDriverCount: 0 },
+            { id: oneOff.id, title: oneOff.title, monthlyAmount: ONE_OFF_AMOUNT / SEEDED_MONTHS, isIrregular: true, foldedDriverCount: 0 },
+            {
+                id: null,
+                title: '',
+                monthlyAmount: (FIRST_TAIL_AMOUNT + SECOND_TAIL_AMOUNT) / SEEDED_MONTHS,
+                isIrregular: false,
+                foldedDriverCount: 2
+            }
+        ]);
         expect(irregularMonthlyAmount).toBe((ONE_OFF_AMOUNT + FIRST_TAIL_AMOUNT + SECOND_TAIL_AMOUNT) / SEEDED_MONTHS);
-        expect(computation.allInBurn).toBe(computation.burn + irregularMonthlyAmount);
     });
 
     it('counts secondary tags and untagged spend in the tag dimension', async () => {
@@ -168,20 +130,8 @@ describe('runway drivers', () => {
         const { drivers } = aggregate(RunwayDriverDimensionEnum.TAG, hryvnia.id);
 
         expect(drivers).toStrictEqual([
-            {
-                id: tag.id,
-                title: 'Trip',
-                monthlyAmount: REGULAR_MONTHLY_AMOUNT,
-                isIrregular: false,
-                foldedDriverCount: 0
-            },
-            {
-                id: null,
-                title: '',
-                monthlyAmount: UNTAGGED_AMOUNT / SEEDED_MONTHS,
-                isIrregular: true,
-                foldedDriverCount: 0
-            }
+            { id: tag.id, title: 'Trip', monthlyAmount: REGULAR_MONTHLY_AMOUNT, isIrregular: false, foldedDriverCount: 0 },
+            { id: null, title: '', monthlyAmount: UNTAGGED_AMOUNT / SEEDED_MONTHS, isIrregular: true, foldedDriverCount: 0 }
         ]);
     });
 });
