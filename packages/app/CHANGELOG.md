@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.57.0](https://github.com/budgie-at/budgie/compare/v6.56.0...v6.57.0) (2026-09-13)
+
+
+### Bug Fixes
+
+* **app:** carry the amount filter into the missing categories screen ([221d7a7](https://github.com/budgie-at/budgie/commit/221d7a7721202cacc0703299ea068ca32594a082))
+
+
+
+
+
 ## [6.54.1](https://github.com/budgie-at/budgie/compare/v6.54.0...v6.54.1) (2026-09-13)
 
 

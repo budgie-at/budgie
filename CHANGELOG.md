@@ -3,6 +3,78 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.58.0](https://github.com/budgie-at/budgie/compare/v6.57.0...v6.58.0) (2026-09-13)
+
+
+### Features
+
+* **landing:** budget-planning steps story ([290c75f](https://github.com/budgie-at/budgie/commit/290c75f6eac07ed53a6ecd126704963aee740b3f))
+
+
+
+
+
+# [6.57.0](https://github.com/budgie-at/budgie/compare/v6.56.0...v6.57.0) (2026-09-13)
+
+
+### Bug Fixes
+
+* **app:** carry the amount filter into the missing categories screen ([221d7a7](https://github.com/budgie-at/budgie/commit/221d7a7721202cacc0703299ea068ca32594a082))
+
+
+### Features
+
+* **landing:** add bank-resync-window steps story and correct re-sync claims ([54323d6](https://github.com/budgie-at/budgie/commit/54323d6490d7a53a2c7faf434b318a2b1db04969)), closes [#781](https://github.com/budgie-at/budgie/issues/781)
+* **landing:** add statistics-tags-tab steps story and correct tag-analytics claims ([810beea](https://github.com/budgie-at/budgie/commit/810beead818e76b0bbaee4b3ca7e56e47d7a645f)), closes [#791](https://github.com/budgie-at/budgie/issues/791)
+* **landing:** database-backup steps story ([5e2290f](https://github.com/budgie-at/budgie/commit/5e2290ff790612b3d46414671d6063e41b4f8bca))
+
+
+
+
+
+# [6.56.0](https://github.com/budgie-at/budgie/compare/v6.55.1...v6.56.0) (2026-09-13)
+
+
+### Features
+
+* **landing:** add multi-currency steps story and correct FX-rate claims ([c949674](https://github.com/budgie-at/budgie/commit/c9496741c91cd65dcecbf5d15eb2b1f470f24ea6)), closes [#787](https://github.com/budgie-at/budgie/issues/787)
+
+
+
+
+
+## [6.55.1](https://github.com/budgie-at/budgie/compare/v6.55.0...v6.55.1) (2026-09-13)
+
+
+### Bug Fixes
+
+* **landing:** re-tune the first five story pages' callouts and labels ([ff5c196](https://github.com/budgie-at/budgie/commit/ff5c196b35e2dc7ae73dd30de54640c7c18bb2c4)), closes [#823](https://github.com/budgie-at/budgie/issues/823) [#824](https://github.com/budgie-at/budgie/issues/824) [#825](https://github.com/budgie-at/budgie/issues/825) [#826](https://github.com/budgie-at/budgie/issues/826) [#827](https://github.com/budgie-at/budgie/issues/827) [#828](https://github.com/budgie-at/budgie/issues/828) [#829](https://github.com/budgie-at/budgie/issues/829)
+
+
+### Performance Improvements
+
+* **landing:** stop gating feature-page hero text behind client hydration ([ec1bf2a](https://github.com/budgie-at/budgie/commit/ec1bf2ab81dbdf9cbe1544ec268cecae5ae8219b)), closes [#896](https://github.com/budgie-at/budgie/issues/896)
+
+
+
+
+
+# [6.55.0](https://github.com/budgie-at/budgie/compare/v6.54.1...v6.55.0) (2026-09-13)
+
+
+### Bug Fixes
+
+* **landing:** resume AppClip playback across live theme changes ([4898926](https://github.com/budgie-at/budgie/commit/4898926cdf20c5037651cda975fdbd86c3864919)), closes [#882](https://github.com/budgie-at/budgie/issues/882) [#883](https://github.com/budgie-at/budgie/issues/883)
+
+
+### Features
+
+* **landing:** csv-import steps story ([1cb633c](https://github.com/budgie-at/budgie/commit/1cb633cf5932025c60d07b8c6e4534e2467120a7))
+
+
+
+
+
 ## [6.54.1](https://github.com/budgie-at/budgie/compare/v6.54.0...v6.54.1) (2026-09-13)
 
 

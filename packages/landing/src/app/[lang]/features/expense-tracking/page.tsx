@@ -97,7 +97,7 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                     scene="expense-tracking-1"
                     slug="expense-tracking"
                 >
-                    <FeatureStory.Callout y={0.29}>
+                    <FeatureStory.Callout y={0.335}>
                         <Trans>Type the amount</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout y={0.87}>
