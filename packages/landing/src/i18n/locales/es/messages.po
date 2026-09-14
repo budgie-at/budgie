@@ -7827,8 +7827,8 @@ msgid "Five taps is four taps too many"
 msgstr "Cinco toques son cuatro toques de más"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P orders stop at six months, because that is as far back as Binance's own order-history endpoint will serve."
-msgstr "Cinco años para depósitos, retiros, operaciones, Convert y recompensas de Earn. Las órdenes P2P se detienen en seis meses, porque hasta ahí llega el historial de órdenes de la propia API de Binance."
+msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
+msgstr "Cinco años para depósitos, retiros, operaciones, Convert y recompensas de Earn. El historial de órdenes P2P está limitado a seis meses, porque hasta ahí llega el propio endpoint de Binance."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
@@ -13403,7 +13403,7 @@ msgstr "La configuración no es trivial"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Setup is one screen"
-msgstr "La configuración es una pantalla"
+msgstr "La configuración se realiza en una sola pantalla"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Setup time"
@@ -14594,8 +14594,8 @@ msgid "The first row takes you to Binance's API management page, and the numbere
 msgstr "La primera fila le lleva a la gestión de API de Binance, y la lista numerada de debajo es la receta: inicie sesión y cree una nueva clave API generada por el sistema. Budgie nunca crea la clave por usted, porque nunca ve su inicio de sesión de Binance."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "The first sync walks five years of history backwards in windows; later runs fetch only what changed"
-msgstr "La primera sincronización recorre cinco años de historial hacia atrás por ventanas; las siguientes solo traen lo que ha cambiado"
+msgid "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
+msgstr "La primera sincronización recorre hasta cinco años de historial hacia atrás por ventanas; las siguientes solo piden los días transcurridos desde la anterior"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"

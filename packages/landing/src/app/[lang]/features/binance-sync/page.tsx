@@ -173,7 +173,10 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         <Trans>A P2P purchase and the bank payment behind it merge into one cross-currency transfer</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
-                        <Trans>The first sync walks five years of history backwards in windows; later runs fetch only what changed</Trans>
+                        <Trans>
+                            The first sync walks up to five years of history backwards in windows; later runs only ask for the days since
+                            the last one
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
                         <Trans>
@@ -234,8 +237,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     question={<Trans>How far back does the history go?</Trans>}
                     answer={
                         <Trans>
-                            Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P orders stop at six months, because
-                            that is as far back as Binance&apos;s own order-history endpoint will serve.
+                            Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six
+                            months, because that is as far back as Binance&apos;s own endpoint will serve.
                         </Trans>
                     }
                 />
