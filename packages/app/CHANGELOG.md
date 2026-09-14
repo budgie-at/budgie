@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.59.0](https://github.com/budgie-at/budgie/compare/v6.58.0...v6.59.0) (2026-09-14)
+
+
+### Features
+
+* **app:** add stable selectors for the transaction fee sheet and fee pill ([10cef3b](https://github.com/budgie-at/budgie/commit/10cef3b5397ef61e15f3c8b04fedba2673685f9d))
+
+
+
+
+
 # [6.57.0](https://github.com/budgie-at/budgie/compare/v6.56.0...v6.57.0) (2026-09-13)
 
 
