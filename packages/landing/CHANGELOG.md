@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.62.1](https://github.com/budgie-at/budgie/compare/v6.62.0...v6.62.1) (2026-09-14)
+
+
+### Performance Improvements
+
+* **landing:** fetch the priority AppShot dark variant at high priority ([e0eecb6](https://github.com/budgie-at/budgie/commit/e0eecb66486417de5a0a065874552f3639618c79))
+
+
+
+
+
 # [6.62.0](https://github.com/budgie-at/budgie/compare/v6.61.0...v6.62.0) (2026-09-14)
 
 
