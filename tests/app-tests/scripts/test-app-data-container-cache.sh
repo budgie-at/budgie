@@ -40,7 +40,7 @@ chmod +x "$TEMP_DIR/bin/xcrun"
 
 SOURCE_DB="$TEMP_DIR/source.db"
 SOURCE_CSV="$TEMP_DIR/source.csv"
-sqlite3 "$SOURCE_DB" 'CREATE TABLE example (value TEXT); INSERT INTO example VALUES ("cached");'
+sqlite3 "$SOURCE_DB" "CREATE TABLE example (value TEXT); INSERT INTO example VALUES ('cached');"
 printf '%s\n' 'value' 'cached' > "$SOURCE_CSV"
 
 : > "$XCRUN_LOG"
