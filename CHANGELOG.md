@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.62.0](https://github.com/budgie-at/budgie/compare/v6.61.0...v6.62.0) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** sharpen de/es/fr/uk biometric story wording per review ([b25290b](https://github.com/budgie-at/budgie/commit/b25290beac9c181e1e2d56b8ce391bf028afb9c1))
+
+
+### Features
+
+* **landing:** add biometric-authentication scroll story ([baa538f](https://github.com/budgie-at/budgie/commit/baa538fa0301a1676b30ad1ef47e07ec968fe29b))
+
+
+
+
+
 # [6.61.0](https://github.com/budgie-at/budgie/compare/v6.60.2...v6.61.0) (2026-09-14)
 
 
