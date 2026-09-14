@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import React, { useState } from 'react';
+import React, { useEffect, useEffectEvent, useState } from 'react';
 import { View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -58,6 +58,12 @@ export default function ImportBackupPinModal() {
     };
 
     const handleCancel = () => void resolveImportBackupPin(null);
+
+    const handleDismiss = useEffectEvent(() => {
+        resolveImportBackupPin(null, { skipBack: true });
+    });
+
+    useEffect(() => () => void handleDismiss(), []);
 
     return (
         <FullPage>
