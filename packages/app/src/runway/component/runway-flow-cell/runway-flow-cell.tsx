@@ -18,8 +18,8 @@ interface Props {
 const TABULAR_NUMS_STYLE = { fontVariant: ['tabular-nums' as const] };
 
 export const RunwayFlowCell = ({ label, amount, variant }: Props) => {
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const { defaultInstrument } = useSettingsContext();
+    const formatDigits = useFormatDigits(0);
     const formatCompactDigits = useFormatCompactDigits();
 
     const isAbbreviated = Math.abs(amount) >= HUNDRED_THOUSAND;
