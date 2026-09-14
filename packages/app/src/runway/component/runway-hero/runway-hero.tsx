@@ -1,6 +1,3 @@
-import { RunwayWindowEnum } from '@budgie/contracts';
-import { MessageDescriptor } from '@lingui/core';
-import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cn } from 'cn';
 import { Text, View } from 'react-native';
@@ -8,7 +5,6 @@ import { Text, View } from 'react-native';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
-import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -21,20 +17,12 @@ import type { RunwayComputationInterface } from '../../interface/runway-computat
 
 interface Props {
     readonly computation: RunwayComputationInterface;
-    readonly window: RunwayWindowEnum;
     readonly isAllIn?: boolean;
-    readonly onChangeWindow: (window: RunwayWindowEnum) => void;
     readonly onToggleAllIn: () => void;
 }
 
-const RUNWAY_WINDOW_LABELS: Record<RunwayWindowEnum, MessageDescriptor> = {
-    [RunwayWindowEnum.THREE_MONTHS]: msg`3`,
-    [RunwayWindowEnum.SIX_MONTHS]: msg`6`,
-    [RunwayWindowEnum.TWELVE_MONTHS]: msg`12`
-};
-
 export const RunwayHero = (props: Props) => {
-    const { computation, window, isAllIn = false, onChangeWindow, onToggleAllIn } = props;
+    const { computation, isAllIn = false, onToggleAllIn } = props;
     const { t } = useLingui();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
@@ -44,11 +32,6 @@ export const RunwayHero = (props: Props) => {
     const runwayMonths = isAllIn ? computation.allInRunwayMonths : computation.runwayMonths;
     const runsOutAt = isAllIn ? computation.allInRunsOutAt : computation.runsOutAt;
     const cardVariant = net >= 0 ? 'positive' : 'destructive';
-    const windowOptions = [
-        { value: RunwayWindowEnum.THREE_MONTHS, label: t(RUNWAY_WINDOW_LABELS[RunwayWindowEnum.THREE_MONTHS]) },
-        { value: RunwayWindowEnum.SIX_MONTHS, label: t(RUNWAY_WINDOW_LABELS[RunwayWindowEnum.SIX_MONTHS]) },
-        { value: RunwayWindowEnum.TWELVE_MONTHS, label: t(RUNWAY_WINDOW_LABELS[RunwayWindowEnum.TWELVE_MONTHS]) }
-    ];
     const runOutDate = isDefined(runsOutAt) ? formatMonthAndYear(runsOutAt) : '';
     const coverMonths = isPositiveNumber(computation.burn) ? Math.round(computation.liquid / computation.burn) : null;
     const formattedNet = formatDigits(convertFromMicroUnits(net), defaultInstrument.symbol);
@@ -64,15 +47,9 @@ export const RunwayHero = (props: Props) => {
 
     return (
         <Card variant={cardVariant} className="gap-y-lg">
-            <View className="flex-row items-center justify-between">
-                <Text className={cn('text-xxs font-semibold uppercase tracking-wider', FOREGROUND_COLOR_PALETTE[cardVariant])}>
-                    <Trans>The answer</Trans>
-                </Text>
-
-                <View className="w-32">
-                    <SegmentedTabs options={windowOptions} value={window} onChange={onChangeWindow} />
-                </View>
-            </View>
+            <Text className={cn('text-xxs font-semibold uppercase tracking-wider', FOREGROUND_COLOR_PALETTE[cardVariant])}>
+                <Trans>The answer</Trans>
+            </Text>
 
             <Text className="text-xl font-semibold leading-tight text-primary">
                 {cardVariant === 'positive' ? <Trans>You are building, not burning.</Trans> : <Trans>You spend more than you earn.</Trans>}

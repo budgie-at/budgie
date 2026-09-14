@@ -232,18 +232,6 @@ msgstr "100 % hors ligne et privé"
 msgid "100% on-device"
 msgstr "100 % en local"
 
-#: src/runway/component/runway-hero/runway-hero.tsx
-msgid "12"
-msgstr "12"
-
-#: src/runway/component/runway-hero/runway-hero.tsx
-msgid "3"
-msgstr "3"
-
-#: src/runway/component/runway-hero/runway-hero.tsx
-msgid "6"
-msgstr "6"
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "A balanced starter budget with common categories"
 msgstr "Un budget de départ équilibré avec des catégories courantes"

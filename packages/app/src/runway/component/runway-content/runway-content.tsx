@@ -1,4 +1,4 @@
-import { DEFAULT_RUNWAY_WINDOW, RunwayDriverDimensionEnum, RunwayWindowEnum } from '@budgie/contracts';
+import { DEFAULT_RUNWAY_WINDOW, RunwayDriverDimensionEnum } from '@budgie/contracts';
 import { useState } from 'react';
 import { ScrollView } from 'react-native';
 
@@ -20,12 +20,11 @@ interface Props {
 }
 
 export const RunwayContent = ({ filters }: Props) => {
-    const [window, setWindow] = useState<RunwayWindowEnum>(DEFAULT_RUNWAY_WINDOW);
     const [dimension, setDimension] = useState<RunwayDriverDimensionEnum>(RunwayDriverDimensionEnum.CATEGORY);
     const [isAllIn, setIsAllIn] = useState(false);
 
     const liquid = useLiquidBalanceQuery();
-    const { computation, drivers, series } = useRunwayQuery({ filters, window, dimension, liquid });
+    const { computation, drivers, series } = useRunwayQuery({ filters, window: DEFAULT_RUNWAY_WINDOW, dimension, liquid });
 
     const handleToggleAllIn = () => {
         setIsAllIn(current => !current);
@@ -47,13 +46,7 @@ export const RunwayContent = ({ filters }: Props) => {
 
     return (
         <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
-            <RunwayHero
-                computation={computation}
-                window={window}
-                isAllIn={isAllIn}
-                onChangeWindow={setWindow}
-                onToggleAllIn={handleToggleAllIn}
-            />
+            <RunwayHero computation={computation} isAllIn={isAllIn} onToggleAllIn={handleToggleAllIn} />
             <RunwayOverview computation={forecastComputation} />
             <RunwayForecastChart computation={forecastComputation} />
             <RunwayHistoryChart series={series} burn={computation.burn} />
