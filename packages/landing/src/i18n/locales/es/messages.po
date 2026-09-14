@@ -2983,11 +2983,14 @@ msgstr ""
 msgid "Another subscription to manage"
 msgstr "Otra suscripción más que gestionar"
 
-#: src/app/[lang]/features/csv-import/opengraph-image.tsx
-msgid "Any bank, any column order — once and done."
-msgstr "Cualquier banco, cualquier orden de columnas: configúralo una vez y listo."
-
 #: src/app/[lang]/features/csv-import/metadata.ts
+msgid "Any bank, any column order — map it on one screen or start from a built-in preset."
+msgstr "Cualquier banco, cualquier orden de columnas — asígnalas en una pantalla o empieza con un ajuste predefinido integrado."
+
+#: src/app/[lang]/features/csv-import/opengraph-image.tsx
+msgid "Any bank, any column order — map it or use a built-in preset."
+msgstr "Cualquier banco, cualquier orden de columnas — asígnalas o usa un ajuste predefinido integrado."
+
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Any bank, any column order — set it up once per source, then it's two taps from there."
 msgstr "Cualquier banco, cualquier orden de columnas: configúralo una vez por fuente y luego son dos toques."
@@ -3894,9 +3897,6 @@ msgstr "Planificación de presupuesto"
 
 #: src/app/[lang]/features/budget-planning/metadata.ts
 #: src/app/[lang]/features/budget-planning/opengraph-image.tsx
-msgid "Budget Planning — Limits That Match Your Payday"
-msgstr "Planificación de presupuesto — Límites que se ajustan a tu día de pago"
-
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Budget Planning — One Limit, Split By Category"
 msgstr "Planificación de presupuesto: un límite, repartido por categorías"
@@ -5150,8 +5150,8 @@ msgid "Capture the whole Budgie database as one file — SQLCipher-encrypted wit
 msgstr "Captura toda la base de datos de Budgie en un solo archivo —cifrado con SQLCipher y tu PIN si la configuras— y devuélvela a otro dispositivo. Sin cuenta y sin subidas."
 
 #: src/app/[lang]/features/database-backup/metadata.ts
-msgid "Capture your entire Budgie database in one encrypted file. Save to iCloud or Drive on your terms; restore on a new device with one tap and your PIN."
-msgstr "Captura toda tu base de datos de Budgie en un único archivo cifrado. Guárdalo en iCloud o Drive según tus condiciones; restáuralo en un dispositivo nuevo."
+msgid "Capture your entire Budgie database in one file, SQLCipher-encrypted once you set a PIN. Save to iCloud or Drive on your terms; restore on a new device by picking the file — no account needed."
+msgstr "Captura toda tu base de datos de Budgie en un archivo, cifrado con SQLCipher en cuanto configuras un PIN. Guárdalo en iCloud o Drive como prefieras; restáuralo en un dispositivo nuevo eligiendo el archivo — no necesitas cuenta."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Cards and jars arrive"
@@ -7054,10 +7054,6 @@ msgstr "Archivo de backup de base de datos cifrada para restauración completa e
 msgid "Encrypted Database Backup to Your Cloud — Budgie"
 msgstr "Copia de seguridad cifrada de la base de datos en tu nube — Budgie"
 
-#: src/app/[lang]/features/database-backup/opengraph-image.tsx
-msgid "Encrypted file. No account. No upload."
-msgstr "Archivo cifrado. Sin cuenta. Sin subida."
-
 #: src/app/[lang]/security/metadata.ts
 msgid "encrypted finance app"
 msgstr ""
@@ -8874,8 +8870,8 @@ msgid "Import accounts and transactions from a PrivatBank24 XLSX export. PrivatB
 msgstr "Importa cuentas y transacciones desde una exportación XLSX de PrivatBank24. Las categorías MCC de PrivatBank se mapean a códigos ISO automáticamente."
 
 #: src/app/[lang]/features/csv-import/metadata.ts
-msgid "Import any bank's CSV with flexible column mapping, save the mapping as a preset, and re-import safely with deduplication. Universal escape hatch for banks without an API."
-msgstr "Importa el CSV de cualquier banco con mapeo flexible de columnas, guarda el mapeo como preajuste y reimporta de forma segura con deduplicación."
+msgid "Import any bank's CSV with flexible column mapping, or start from a built-in Budgie, SmartBudget or FinEye preset. Re-importing rebuilds your ledger from the file. Universal escape hatch for banks without an API."
+msgstr "Importa el CSV de cualquier banco con asignación de columnas flexible, o empieza con un ajuste predefinido integrado de Budgie, SmartBudget o FinEye. Volver a importar reconstruye tu libro mayor desde el archivo. Solución universal para bancos sin API."
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Import bank CSVs and PDFs without a cloud connection"
@@ -11288,6 +11284,10 @@ msgstr "Una cuenta por activo, de modo que cada moneda tiene su propio saldo, hi
 msgid "One amount, entered once"
 msgstr "Un importe, introducido una vez"
 
+#: src/app/[lang]/features/database-backup/metadata.ts
+msgid "One backup file, SQLCipher-encrypted once you set a PIN. No account, restore by picking the file."
+msgstr "Un archivo de copia de seguridad, cifrado con SQLCipher en cuanto configuras un PIN. Sin cuenta, restauración eligiendo el archivo."
+
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "One badge. Scan a list at a glance."
 msgstr "Un distintivo. Escanea una lista de un vistazo."
@@ -11320,7 +11320,6 @@ msgstr "Una credencial por banco, compartida por todas las cuentas que tiene —
 msgid "One currency, often hardcoded"
 msgstr "Una divisa, a menudo codificada en duro"
 
-#: src/app/[lang]/features/database-backup/metadata.ts
 #: src/app/[lang]/offline-first/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
@@ -11334,6 +11333,10 @@ msgstr "Un archivo contiene cada transacción, cuenta, categoría, etiqueta y aj
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "One file holds the database"
 msgstr "Un archivo contiene la base de datos"
+
+#: src/app/[lang]/features/database-backup/opengraph-image.tsx
+msgid "One file. Encrypted when you set a PIN. No account."
+msgstr "Un archivo. Cifrado en cuanto configuras un PIN. Sin cuenta."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "One limit for the month"
@@ -13320,8 +13323,8 @@ msgid "Set a target balance on any account and Budgie writes the difference as a
 msgstr "Define un saldo objetivo en cualquier cuenta y Budgie registra la diferencia como un ajuste"
 
 #: src/app/[lang]/features/budget-planning/metadata.ts
-msgid "Set an overall monthly limit plus per-category limits, start the cycle on your payday, watch progress from the home screen, and get on-device alerts at 80% and 100%. No server involved."
-msgstr "Define un límite mensual general más límites por categoría, empieza el ciclo en tu día de pago, sigue el progreso desde la pantalla de inicio, y recibe alertas en el dispositivo al 80% y al 100%. Sin ningún servidor de por medio."
+msgid "Set an overall monthly limit plus per-category limits, track the current cycle from the home-screen widget, and get on-device alerts at 80% and 100% of your limit. No server involved."
+msgstr "Define un límite mensual general más límites por categoría, sigue el ciclo actual desde el widget de la pantalla de inicio y recibe alertas en el dispositivo al 80 % y 100 % de tu límite. Sin servidor implicado."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Set one overall monthly limit, add per-category limits, cap everything else, and watch the cycle fill up from your home screen. Every number is computed on your device."
