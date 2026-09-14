@@ -20,7 +20,6 @@ import { pairAccountsIntoRows } from '../../account/utils/pair-accounts-into-row
 import { resolveBankProviderGroup } from '../../account/utils/resolve-bank-provider-group.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
-import { RunwayWidget } from '../../runway/component/runway-widget/runway-widget';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
 const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: Value): void => {
@@ -145,7 +144,6 @@ export default function HomePage() {
     const scrollY = useSharedValue(0);
     const language = useSetting('language');
     const isBudgetWidgetEnabled = useSetting('isBudgetWidgetEnabled');
-    const isRunwayWidgetEnabled = useSetting('isRunwayWidgetEnabled');
     const focusKey = useFocusKey();
     const onboardingHref = useOnboardingRedirect();
 
@@ -159,7 +157,6 @@ export default function HomePage() {
     const listHeaderComponent = (
         <View className="mb-3xl gap-y-3xl">
             <BudgetWidget key={`${language}-${isBudgetWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`} />
-            <RunwayWidget key={`${language}-${isRunwayWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`} />
         </View>
     );
 
