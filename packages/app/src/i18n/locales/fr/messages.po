@@ -820,6 +820,10 @@ msgstr "Les catégories ventilent vos dépenses automatiquement. Ajoutez une tra
 msgid "Categorise imports automatically"
 msgstr "Catégoriser les imports automatiquement"
 
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
+msgstr "Catégorise les transactions, suggère des tags et transcrit les notes vocales directement sur cet appareil. Télécharge environ 2,5 Go de modèles une seule fois — de préférence en Wi-Fi."
+
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
@@ -1235,6 +1239,10 @@ msgstr "Impossible de déconsolider la transaction."
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Impossible de mettre à jour les notifications"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Could not update on-device AI"
+msgstr "Impossible de mettre à jour l'IA sur l'appareil"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -2284,6 +2292,10 @@ msgstr "Modèle IA non disponible"
 msgid "Loading AI model..."
 msgstr "Chargement du modèle d'IA..."
 
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Loading debt progress"
+msgstr "Chargement de la progression de la dette"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Chargement de l'historique du marché"
@@ -2732,6 +2744,10 @@ msgstr "Rien du passé n'est importé"
 #: src/runway/component/runway-meter/runway-meter.tsx
 msgid "now"
 msgstr "maintenant"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "On-device AI"
+msgstr "IA sur l'appareil"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx

@@ -9,6 +9,7 @@ import type { ConvertToRefundParamsInterface } from '../interface/convert-to-ref
 import type { RefundConsolidationDependenciesInterface } from '../interface/refund-consolidation-dependencies.interface';
 import type {
     DB,
+    LanguageEnum,
     RefundableExpenseCandidateInterface,
     TransactionEntryEntityInterface,
     TransactionWithEntriesEntityInterface
@@ -18,14 +19,19 @@ export class RefundConsolidationService {
     constructor(private readonly dependencies: RefundConsolidationDependenciesInterface) {}
 
     @Log(
-        (refundIncomeTransactionId, search) => `enter refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}"`,
-        (result, refundIncomeTransactionId, search) =>
-            `done refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" candidateIds=${result.map(candidate => candidate.id).join(',')}`,
-        (error, refundIncomeTransactionId, search) =>
-            `throw refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" error=${getErrorMessage(error)}`
+        (refundIncomeTransactionId, search, language) =>
+            `enter refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" language=${language}`,
+        (result, refundIncomeTransactionId, search, language) =>
+            `done refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" language=${language} candidateIds=${result.map(candidate => candidate.id).join(',')}`,
+        (error, refundIncomeTransactionId, search, language) =>
+            `throw refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" language=${language} error=${getErrorMessage(error)}`
     )
-    async findRefundableExpenses(refundIncomeTransactionId: number, search: string): Promise<RefundableExpenseCandidateInterface[]> {
-        return await this.dependencies.refundPairRepository.findRefundableExpenseCandidates(refundIncomeTransactionId, search);
+    async findRefundableExpenses(
+        refundIncomeTransactionId: number,
+        search: string,
+        language: LanguageEnum
+    ): Promise<RefundableExpenseCandidateInterface[]> {
+        return await this.dependencies.refundPairRepository.findRefundableExpenseCandidates(refundIncomeTransactionId, search, language);
     }
 
     @Log(

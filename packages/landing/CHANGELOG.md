@@ -3,6 +3,84 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.62.0](https://github.com/budgie-at/budgie/compare/v6.61.0...v6.62.0) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** sharpen de/es/fr/uk biometric story wording per review ([b25290b](https://github.com/budgie-at/budgie/commit/b25290beac9c181e1e2d56b8ce391bf028afb9c1))
+
+
+### Features
+
+* **landing:** add biometric-authentication scroll story ([baa538f](https://github.com/budgie-at/budgie/commit/baa538fa0301a1676b30ad1ef47e07ec968fe29b))
+
+
+
+
+
+# [6.61.0](https://github.com/budgie-at/budgie/compare/v6.60.2...v6.61.0) (2026-09-14)
+
+
+### Features
+
+* **landing:** add bank-integration-management scroll story ([1482173](https://github.com/budgie-at/budgie/commit/14821734202b6a61dfb14a2713b2fab0ba6c148f))
+
+
+
+
+
+## [6.60.2](https://github.com/budgie-at/budgie/compare/v6.60.1...v6.60.2) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** reserve caption rail space for three-callout story steps ([a648b34](https://github.com/budgie-at/budgie/commit/a648b3417d6282d334c3e4c8a182af9b7b45f1d3))
+
+
+
+
+
+## [6.60.1](https://github.com/budgie-at/budgie/compare/v6.60.0...v6.60.1) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** correct private-budget-app-alternative tagline overstatement ([9e42061](https://github.com/budgie-at/budgie/commit/9e42061300379fdc7a0749ddaa8b31e896dc815e)), closes [#1024](https://github.com/budgie-at/budgie/issues/1024)
+
+
+
+
+
+# [6.60.0](https://github.com/budgie-at/budgie/compare/v6.59.1...v6.60.0) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** tighten binance-sync sync-window copy and locale wording ([4868933](https://github.com/budgie-at/budgie/commit/48689333a80855b5c277ba2c52d75408fca04692)), closes [#1019](https://github.com/budgie-at/budgie/issues/1019)
+
+
+### Features
+
+* **landing:** add binance-sync steps story and correct sync claims ([ee299e6](https://github.com/budgie-at/budgie/commit/ee299e609c3bd734b051b8fc86a597467c4c89ae)), closes [#782](https://github.com/budgie-at/budgie/issues/782)
+* **landing:** add private-budget-app-alternative story and fix false claims ([97b393a](https://github.com/budgie-at/budgie/commit/97b393aafda068405acaa33d497de0bfb1c8ed92)), closes [#755](https://github.com/budgie-at/budgie/issues/755)
+
+
+
+
+
+## [6.59.1](https://github.com/budgie-at/budgie/compare/v6.59.0...v6.59.1) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** align csv-import, database-backup and budget-planning metadata with the app ([80277e8](https://github.com/budgie-at/budgie/commit/80277e894913c3892755c7d293ca4d6ace64f185)), closes [#994](https://github.com/budgie-at/budgie/issues/994) [#1001](https://github.com/budgie-at/budgie/issues/1001) [#1008](https://github.com/budgie-at/budgie/issues/1008) [#993](https://github.com/budgie-at/budgie/issues/993) [#1000](https://github.com/budgie-at/budgie/issues/1000) [#1007](https://github.com/budgie-at/budgie/issues/1007)
+* **landing:** use an imperative Spanish restore clause in database-backup tagline ([7102fe7](https://github.com/budgie-at/budgie/commit/7102fe78ec8b295158211a2264cf530906f13cbd)), closes [#1012](https://github.com/budgie-at/budgie/issues/1012)
+
+
+
+
+
 # [6.58.0](https://github.com/budgie-at/budgie/compare/v6.57.0...v6.58.0) (2026-09-13)
 
 
