@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.62.2](https://github.com/budgie-at/budgie/compare/v6.62.1...v6.62.2) (2026-09-14)
+
+
+### Bug Fixes
+
+* **app:** keep the key when restoring a PIN-encrypted backup ([8af92fd](https://github.com/budgie-at/budgie/commit/8af92fd04e3185769e0d6a0d4d6a8ad3877a921b))
+
+
+
+
+
 ## [6.62.1](https://github.com/budgie-at/budgie/compare/v6.62.0...v6.62.1) (2026-09-14)
 
 
