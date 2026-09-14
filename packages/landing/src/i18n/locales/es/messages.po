@@ -3051,6 +3051,7 @@ msgstr "El Bloqueo de app está en el grupo Seguridad. Toca Activar, elige los c
 msgid "App Lock, off by default"
 msgstr "Bloqueo de aplicación, desactivado por defecto"
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "App Lock: PIN and Face ID"
 msgstr "Bloqueo de app: PIN y Face ID"
@@ -3520,10 +3521,6 @@ msgstr "Las entradas de comisión bancaria se incluyen en las analíticas por ca
 msgid "Bank-grade biometric unlock — same Secure Enclave, same encryption key."
 msgstr "Desbloqueo biométrico respaldado por el mismo hardware de plataforma que usa tu app bancaria."
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Bank-grade biometric unlock that drives the same encryption key as your PIN — frictionless and uncompromising."
-msgstr "Desbloqueo biométrico ligado a la misma clave de cifrado que tu PIN, para que abrir Budgie siga siendo rápido sin debilitar la bóveda."
-
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/metadata.ts
 msgid "Bank-issued codes do the work — coffee shops land in Food & Drink, gas stations in Transport."
@@ -3742,21 +3739,21 @@ msgstr "Autenticación biométrica — Budgie"
 msgid "biometric finance app"
 msgstr ""
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Biometric key fragment lives in the Secure Enclave / Keystore — Budgie never sees raw biometric data"
-msgstr "El fragmento de clave biométrica reside en el Secure Enclave / Keystore; Budgie nunca ve datos biométricos en bruto"
-
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Biometric lock + AES-256 encrypted storage"
 msgstr "Bloqueo biométrico + almacenamiento cifrado AES-256"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Biometric unlock is a shortcut past Budgie's lock screen. What encrypts the database underneath is still the four-digit PIN."
+msgstr "El desbloqueo biométrico es un atajo para pasar la pantalla de bloqueo de Budgie. Lo que cifra la base de datos por debajo sigue siendo el PIN de cuatro dígitos."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Biometric unlock is the platform's Face ID / Touch ID check standing in for typing the PIN. The PIN itself stays in the device keychain, marked this-device-only, and remains the database key — biometrics are a faster path to the same lock, not a second one."
 msgstr "El desbloqueo biométrico es la comprobación Face ID / Touch ID de la plataforma en lugar de teclear el PIN. El PIN sigue en el llavero del dispositivo, marcado solo para este dispositivo, y sigue siendo la clave de la base de datos: la biometría es un camino más rápido al mismo bloqueo, no otro distinto."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Biometrics are the right balance for an expense app you open ten times a day. Budgie hooks into the platform Secure Enclave / TEE so the device, not Budgie, vouches for you."
-msgstr "La biometría tiene sentido para una app de gastos que abres a menudo. Budgie usa Secure Enclave / TEE de la plataforma, así que la comprobación biométrica se queda en el dispositivo."
+msgid "Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system authentication API, so the matching happens in the operating system and Budgie only ever learns whether it succeeded."
+msgstr "La biometría es el equilibrio adecuado para una app de gastos que abres diez veces al día. Budgie llama a la API de autenticación del sistema, así que la comprobación ocurre en el sistema operativo y Budgie solo sabe si salió bien."
 
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "bitcoin"
@@ -4528,6 +4525,10 @@ msgstr "Pantalla de ajustes de Budgie con el aviso de funcionamiento offline y p
 msgid "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
 msgstr "Pantalla de Ajustes de Budgie con el grupo Seguridad: la tarjeta Bloqueo de app y el interruptor de Protección de capturas activado"
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID"
+msgstr "Pantalla de configuración de Budgie con la sección Seguridad y una tarjeta de Bloqueo de aplicación que dice Protege tu aplicación con PIN y Face ID"
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Budgie settings screen, Data Management section, listing the Import CSV, Export CSV, Import Database and Export Database rows"
 msgstr "Pantalla de ajustes de Budgie, sección Gestión de datos, con las filas Importar CSV, Exportar CSV, Importar base de datos y Exportar base de datos"
@@ -5168,6 +5169,10 @@ msgstr "¿Puede alguien ver mi saldo en el selector de apps?"
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Can splits have different tags?"
 msgstr "¿Las divisiones pueden tener etiquetas diferentes?"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Cancel or fail and nothing is lost: the keypad was already there. Budgie switches the device-passcode fallback off on purpose, so your PIN is the only other way in."
+msgstr "Cancela o falla y no pierdes nada: el teclado ya estaba ahí. Budgie desactiva a propósito el código del dispositivo como alternativa, así que tu PIN es la única otra forma de entrar."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Capture the whole Budgie database as one file — SQLCipher-encrypted with your PIN when you set one — and put it back on another device. No account, no upload."
@@ -6598,10 +6603,6 @@ msgstr "Sincronización directa"
 msgid "Direction. \"I owe\" is a liability — your net worth subtracts it. \"Owes me\" is a receivable — your net worth adds it. Same account type, opposite sign."
 msgstr "Dirección. «Yo debo» es un pasivo: tu patrimonio neto lo resta. «Me deben» es un activo: tu patrimonio neto lo suma."
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Disabled biometrics fall back to PIN. Failed biometric attempts respect the OS lockout policy — five strikes and you're prompted for the device passcode, not just our PIN."
-msgstr "La biometría desactivada vuelve al PIN. Los intentos biométricos fallidos respetan la política de bloqueo del sistema operativo: cinco intentos y necesitas el código del dispositivo."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Discover a vulnerability by examining the code"
 msgstr "Descubrir una vulnerabilidad examinando el código"
@@ -7048,10 +7049,6 @@ msgstr "Los empleados no accederán a tus datos"
 #: src/app/[lang]/features/multi-language-app/opengraph-image.tsx
 msgid "EN, UK, FR, DE, ES — full UI."
 msgstr "EN, UK, FR, DE, ES: interfaz completa."
-
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Enable in Settings → PIN → \"Unlock with biometrics\". The platform stores a biometric-bound key fragment in the Secure Enclave/Keystore; Budgie combines it with your PIN-derived key to unlock SQLCipher."
-msgstr "Actívalo en Settings → PIN → \"Unlock with biometrics\". La plataforma almacena un fragmento de clave vinculado a biometría en Secure Enclave/Keystore; Budgie lo combina con tu clave derivada del PIN para desbloquear SQLCipher."
 
 #: src/app/[lang]/opengraph-image.tsx
 msgid "Encrypted"
@@ -7568,13 +7565,17 @@ msgstr "Desbloqueo con Face ID / Touch ID ligado a la misma clave de cifrado SQL
 msgid "Face ID and fingerprint authentication on every supported device"
 msgstr "Autenticación por Face ID y huella dactilar en cada dispositivo compatible"
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Face ID and Touch ID supported on every modern iOS and Android device"
-msgstr "Face ID y Touch ID compatibles en todos los dispositivos iOS y Android modernos"
-
 #: src/app/[lang]/features/biometric-authentication/opengraph-image.tsx
 msgid "Face ID drives the encryption key."
 msgstr "Face ID maneja la clave de cifrado."
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Face ID opens the lock, the PIN owns the key"
+msgstr "Face ID abre el bloqueo, el PIN es la clave"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
+msgstr "Desbloqueo con Face ID en la pantalla de bloqueo, disponible cuando el dispositivo lo tiene configurado"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
@@ -8659,7 +8660,6 @@ msgstr "¿En qué se diferencia esto de la página de análisis de etiquetas?"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
-#: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
@@ -10581,10 +10581,6 @@ msgstr "Sin cuenta, sin sincronización en la nube, sin seguimiento. La base de 
 msgid "No account. No aggregator. No telemetry. Six features that make Budgie the most private expense tracker on iOS and Android."
 msgstr "Sin cuenta. Sin agregador. Sin telemetría. Seis funciones que hacen de Budgie el rastreador de gastos más privado en iOS y Android."
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "No additional friction at app open — same speed as your bank app"
-msgstr "Sin fricción adicional al abrir la app: la misma velocidad que tu app bancaria"
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "No advertising or data monetization"
 msgstr "Sin publicidad ni monetización de datos"
@@ -10890,8 +10886,8 @@ msgid "No. The microphone stream feeds whisper.rn directly in-process; the audio
 msgstr "No. El flujo del micrófono alimenta whisper.rn directamente en proceso; el búfer de audio se descarta tras la transcripción. Nada se guarda, envía ni registra."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "No. The platform manages biometric matching in the Secure Enclave (iOS) or Keystore (Android). Budgie only receives a yes/no signal plus access to a stored key fragment."
-msgstr "No. La plataforma gestiona la coincidencia biométrica en el Secure Enclave (iOS) o Keystore (Android). Budgie solo recibe un sí o no."
+msgid "No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key fragment and no biometric material on Budgie's side — the encryption key is your PIN."
+msgstr "No. El sistema operativo gestiona la comprobación biométrica y no entrega a Budgie más que el resultado. No hay ningún fragmento de clave ni material biométrico del lado de Budgie: la clave de cifrado es tu PIN."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. The repair works on imported rows only. Manual transactions are never touched — that is exactly what the confirmation card promises before you press Repair."
@@ -11001,6 +10997,10 @@ msgstr "Nada — no hay nada que detener. El desbloqueo es de pago único, no es
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Nothing changes. On-device AI is inherently offline. All AI features work identically whether you have network connectivity or not. This is one of the core advantages of the architecture."
 msgstr "Nada cambia. La IA en el dispositivo es inherentemente sin conexión. Todas las funciones de IA funcionan de forma idéntica tengas o no conectividad de red. Esta es una de las ventajas principales de la arquitectura."
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off, and there is no attempt counter that locks you out of your own database."
+msgstr "Nada dramático: el teclado del PIN ya está en pantalla, así que simplemente escribes tu PIN. Budgie desactiva el código del dispositivo como alternativa y no hay ningún contador de intentos que te deje fuera de tu propia base de datos."
 
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Nothing happens — your data is safe on-device. You can keep adding transactions, reviewing history, and running reports with no interruption. Sync features like Monobank simply wait until you reconnect."
@@ -11228,6 +11228,10 @@ msgstr "Negro compatible con OLED, con configuración regional, sin destello bla
 msgid "OLED-friendly true black canvas — saves battery on modern phones"
 msgstr "Lienzo de negro verdadero compatible con OLED: ahorra batería en teléfonos modernos"
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "On a cold launch Budgie asks the system to authenticate you the moment the lock screen appears, and a successful scan takes you straight in. The keypad also keeps a scan button, so you can ask for it again."
+msgstr "En un arranque en frío Budgie pide al sistema que te autentique en cuanto aparece la pantalla de bloqueo, y un escaneo correcto te lleva directo adentro. El teclado además conserva un botón de escaneo para volver a pedirlo."
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "On a server that mirrors your transactions"
 msgstr "En un servidor que refleja tus transacciones"
@@ -11391,6 +11395,10 @@ msgstr "Un archivo contiene la base de datos"
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
 msgid "One file. Encrypted when you set a PIN. No account."
 msgstr "Un archivo. Cifrado en cuanto configuras un PIN. Sin cuenta."
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
+msgstr "Una mirada y la pantalla de bloqueo de Budgie queda atrás. Los cuatro dígitos que elegiste siguen siendo la clave con la que se cifra tu base de datos."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One key per bank, not per account"
@@ -12969,10 +12977,6 @@ msgstr "Restablecer y volver a descargar todo"
 #: src/generic/component/footer/footer.tsx
 msgid "Resources"
 msgstr "Recursos"
-
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Respects OS lockout policy — five strikes prompts the device passcode"
-msgstr "Respeta la política de bloqueo del sistema operativo: cinco intentos activa el código del dispositivo"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Respects the global date-range preset — Last Week, Last Month, Custom, or All Time"
@@ -14616,6 +14620,10 @@ msgstr "El chip Fecha abre un calendario mensual con los periodos predefinidos e
 msgid "The Developer’s Guide to Mint Alternatives: Complete Comparison"
 msgstr "Guía del desarrollador para alternativas a Mint: Comparativa completa"
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "The device-passcode fallback is switched off on purpose — your PIN is the only alternative"
+msgstr "El código del dispositivo como alternativa está desactivado a propósito: tu PIN es la única opción"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The distinction matters because it changes fundamental assumptions about ownership, availability, and privacy."
 msgstr "La distinción es importante porque cambia las suposiciones fundamentales sobre propiedad, disponibilidad y privacidad."
@@ -14862,6 +14870,10 @@ msgstr "Los pares evidentes se fusionan al importar"
 msgid "The open-source security community includes:"
 msgstr "La comunidad de seguridad de código abierto incluye:"
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "The operating system does the matching — Budgie never sees biometric data, only the result"
+msgstr "La comprobación la hace el sistema operativo: Budgie nunca ve datos biométricos, solo el resultado"
+
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The other leg, still there"
 msgstr "El otro tramo, ahí sigue"
@@ -14901,10 +14913,6 @@ msgstr "El mercado de aplicaciones de finanzas personales ha explotado. Mint, YN
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The pill counts what you missed"
 msgstr "La etiqueta cuenta lo que falta"
-
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "The PIN entry screen appears as a fallback. After five biometric failures, the OS itself prompts the device passcode."
-msgstr "La pantalla de entrada de PIN aparece como alternativa. Después de cinco fallos biométricos, el propio sistema operativo solicita el código del dispositivo."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
@@ -14967,6 +14975,10 @@ msgstr "El problema del software financiero de código cerrado"
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "The product was free because your data was the product. Mint revenue came from recommending financial products — credit cards, loans, insurance — based on your spending patterns. As Intuit priorities shifted toward other products, investment in Mint dried up, bank connections became unreliable, and eventually the service was discontinued entirely."
 msgstr "El producto era gratuito porque tus datos eran el producto. Los ingresos de Mint provenían de recomendar productos financieros — tarjetas de crédito, préstamos, seguros — basándose en tus patrones de gasto. A medida que las prioridades de Intuit se desplazaron hacia otros productos, la inversión en Mint se agotó, las conexiones bancarias se volvieron poco fiables y finalmente el servicio se discontinuó por completo."
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "The prompt fires by itself as the lock screen appears — no extra tap at app open"
+msgstr "La solicitud aparece sola al mostrarse la pantalla de bloqueo: ni un toque extra al abrir la app"
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "The question a category cannot answer"
@@ -15131,6 +15143,10 @@ msgstr "La moneda hablada selecciona automáticamente la cuenta correspondiente"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
 msgstr "El archivo de base de datos SQLite se almacena en un directorio protegido al que solo Budgie puede acceder. En iOS, este es el directorio Documents aislado de la app. En Android, es el almacenamiento interno de la app que otras aplicaciones no pueden leer."
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and the device has a biometric enrolled — there is no biometric-only mode."
+msgstr "El interruptor está dentro de la tarjeta de Bloqueo de aplicación, en Configuración, bajo Seguridad. Solo aparece cuando has puesto un PIN y el dispositivo tiene una biometría configurada: no existe un modo solo biométrico."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "The Sync Data Repairs screen is where you see that damage and undo it. It scans each bank-sync source, shows the duplicate count per source before changing anything, and soft-deletes only the duplicated imported rows once you confirm."
@@ -15859,6 +15875,10 @@ msgstr "Actívalo y los saldos de las cuentas y el patrimonio neto se sustituyen
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Turn the radio off, nothing changes"
 msgstr "Apaga la radio y nada cambia"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Turned off, unavailable, cancelled or refused — every one of those paths lands on the PIN keypad, because the keypad is what the lock screen renders in the first place. Budgie asks the system not to offer the device passcode as a fallback, so your Budgie PIN is the only alternative."
+msgstr "Desactivada, no disponible, cancelada o rechazada: todos esos caminos acaban en el teclado del PIN, porque el teclado es justo lo que dibuja la pantalla de bloqueo. Budgie pide al sistema que no ofrezca el código del dispositivo como alternativa, de modo que tu PIN de Budgie es la única opción."
 
 #: src/generic/component/footer/footer.tsx
 msgid "Twitter"
@@ -17783,8 +17803,8 @@ msgid "Yes — see Smart Transfer Consolidation. Bank-synced debits and credits 
 msgstr "Sí: consulta Consolidación inteligente de transferencias. Los débitos y créditos sincronizados con el banco coinciden por importe, ventana temporal e IBAN de contraparte."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Yes — Settings → PIN → toggle off “Unlock with biometrics”. The PIN remains active."
-msgstr "Sí: Ajustes → PIN → desactiva \"Desbloquear con biometría\". El PIN sigue activo."
+msgid "Yes — Settings → Security → App Lock, then the Face ID / Touch ID row inside the card. The PIN stays active. Turning App Lock off switches biometrics off with it."
+msgstr "Sí: Configuración → Seguridad → Bloqueo de aplicación y luego la fila Face ID / Touch ID dentro de la tarjeta. El PIN sigue activo. Si desactivas el bloqueo de aplicación, la biometría se apaga con él."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Yes — system theme by default. Override to Light or Dark in Settings if you prefer."
