@@ -816,6 +816,10 @@ msgstr "Kategorien schlüsseln deine Ausgaben automatisch auf. Füge eine Transa
 msgid "Categorise imports automatically"
 msgstr "Importe automatisch kategorisieren"
 
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
+msgstr "Kategorisiert Transaktionen, schlägt Tags vor und transkribiert Sprachnotizen direkt auf diesem Gerät. Lädt einmalig etwa 2,5 GB an Modellen herunter – am besten über WLAN."
+
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
@@ -1231,6 +1235,10 @@ msgstr "Transaktion konnte nicht entkonsolidiert werden."
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Benachrichtigungen konnten nicht aktualisiert werden"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Could not update on-device AI"
+msgstr "On-Device-KI konnte nicht aktualisiert werden"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -2723,6 +2731,10 @@ msgstr "Nichts aus der Vergangenheit wird importiert"
 #: src/runway/component/runway-meter/runway-meter.tsx
 msgid "now"
 msgstr "jetzt"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "On-device AI"
+msgstr "On-Device-KI"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
