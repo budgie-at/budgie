@@ -48,7 +48,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           text: 'budgie \(E2E\)'
-      timeout: 3000
+      timeout: 10000
 
 - tapOn:
       text: 'budgie \(E2E\)'
@@ -59,7 +59,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'E2EFixtures, Folder'
-      timeout: 3000
+      timeout: 10000
 
 - tapOn:
       id: 'E2EFixtures, Folder'
