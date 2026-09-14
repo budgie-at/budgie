@@ -13,7 +13,7 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const i18n = getI18nInstance(lang);
 
     return createFeatureOgImage(
-        t(i18n)`Budget Planning — Limits That Match Your Payday`,
+        t(i18n)`Budget Planning — One Limit, Split By Category`,
         t(i18n)`One overall limit, per-category limits, and a cap for everything else — with a home-screen widget and on-device alerts.`,
         [t(i18n)`budget`, t(i18n)`limits`, t(i18n)`alerts`]
     );
