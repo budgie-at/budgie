@@ -11,7 +11,7 @@ export const FEATURE_METADATA = {
     tier: FeatureTierEnum.HERO,
     category: FeatureCategoryEnum.COMPARISON,
     title: msg`Private Budget App — A Cloud-Free Alternative`,
-    tagline: msg`Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure.`,
+    tagline: msg`Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no copy on somebody else's server.`,
     metaTitle: msg`Private Budget App — Cloud-Free Alternative — Budgie`,
     metaDescription: msg`Tired of cloud-based PFM apps holding your transactions? Budgie is offline-first, no account, no aggregator. Your financial data stays on your phone.`,
     primaryKeyword: 'private alternative cloud budget app',
