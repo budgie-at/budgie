@@ -8916,8 +8916,8 @@ msgid "Import bank CSVs and PDFs without a cloud connection"
 msgstr "Importa CSVs y PDFs bancarios sin conexión a la nube"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and cannot be undone; confirm and it swaps the database in — write-ahead sidecars included — clears the stored PIN and restarts."
-msgstr "«Importar base de datos» está justo encima. Elige el archivo y Budgie te avisa de que reemplazará todos los datos actuales y no se puede deshacer; al confirmar cambia la base de datos —incluidos los archivos write-ahead—, borra el PIN guardado y se reinicia."
+msgid "Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and cannot be undone; confirm and it swaps the database in — write-ahead sidecars included — and restarts. A backup encrypted with a PIN asks for that PIN first, and it becomes the app PIN on the restored database."
+msgstr "«Importar base de datos» está justo encima. Elige el archivo y Budgie te avisa de que reemplazará todos los datos actuales y no se puede deshacer; al confirmar, cambia la base de datos —incluidos los archivos write-ahead— y se reinicia. Si la copia está cifrada con un PIN, Budgie pide ese PIN primero y pasa a ser el PIN de la app en la base de datos restaurada."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Import the file into Budgie"
@@ -9056,8 +9056,8 @@ msgid "Install + open"
 msgstr "Instalar + abrir"
 
 #: src/app/[lang]/features/database-backup/page.tsx
-msgid "Install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file and confirm the warning. Budgie replaces its database, clears the stored PIN and restarts, so set the lock again afterwards."
-msgstr "Instala Budgie, abre Ajustes y toca «Importar base de datos» en la lista de Gestión de datos. Elige el archivo de copia y confirma el aviso. Budgie reemplaza su base de datos, borra el PIN guardado y se reinicia, así que vuelve a configurar el bloqueo después."
+msgid "Install Budgie, open Settings and tap Import Database in the Data Management list. Pick the backup file and confirm the warning. If the backup was encrypted with a PIN, Budgie asks for that PIN and keeps it as the lock on the restored database; an unencrypted backup restores with no PIN set."
+msgstr "Instala Budgie, abre Ajustes y toca «Importar base de datos» en la lista de Gestión de datos. Elige el archivo de copia de seguridad y confirma el aviso. Si la copia se cifró con un PIN, Budgie pide ese PIN y lo mantiene como bloqueo de la base de datos restaurada; una copia sin cifrar se restaura sin ningún PIN."
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "Install on iPhone"
