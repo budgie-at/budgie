@@ -86,13 +86,20 @@ appId: ${APP_ID}
 
 - waitForAnimationToEnd
 
-- runFlow:
-      when:
-          visible: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+- retry:
+      maxRetries: 3
       commands:
-          - tapOn:
-                text: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
-          - waitForAnimationToEnd
+          - runFlow:
+                when:
+                    visible: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+                commands:
+                    - tapOn:
+                          text: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+                    - waitForAnimationToEnd
+          - extendedWaitUntil:
+                visible:
+                    id: 'E2EFixtures, Folder'
+                timeout: 8000
 
 - extendedWaitUntil:
       visible:
