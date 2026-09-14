@@ -11286,7 +11286,7 @@ msgstr "Un importe, introducido una vez"
 
 #: src/app/[lang]/features/database-backup/metadata.ts
 msgid "One backup file, SQLCipher-encrypted once you set a PIN. No account, restore by picking the file."
-msgstr "Un archivo de copia de seguridad, cifrado con SQLCipher en cuanto configuras un PIN. Sin cuenta, restauración eligiendo el archivo."
+msgstr "Un archivo de copia de seguridad, cifrado con SQLCipher en cuanto configuras un PIN. Sin cuenta; restaura seleccionando el archivo."
 
 #: src/app/[lang]/features/primary-tag/opengraph-image.tsx
 msgid "One badge. Scan a list at a glance."
