@@ -3043,9 +3043,17 @@ msgstr "App"
 msgid "App goes to background → lock kicks in. A wrong PIN doesn't lock you out forever, but there is no reset that hands the data back (your call: keep the PIN safe)."
 msgstr "App geht in den Hintergrund → die Sperre greift. Eine falsche PIN sperrt dich nicht für immer aus, aber es gibt kein Zurücksetzen, das die Daten zurückgibt (deine Sache: bewahre die PIN sicher auf)."
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "App Lock is opt-in, and the PIN you set does double duty: it becomes the SQLCipher key for the whole database. Until you set one, the file is ordinary local SQLite — private to the app sandbox, but not encrypted."
+msgstr "Die App-Sperre ist optional, und die PIN, die Sie festlegen, erfüllt zwei Aufgaben: Sie wird zum SQLCipher-Schlüssel für die gesamte Datenbank. Solange Sie keine festlegen, ist die Datei ein gewöhnliches lokales SQLite — privat in der App-Sandbox, aber nicht verschlüsselt."
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID or Touch ID enrolled Budgie offers to unlock with it — the keypad stays as the fallback. Screenshot Protection is its own switch directly underneath."
 msgstr "Die App-Sperre liegt in der Gruppe Sicherheit. Tippe auf Aktivieren, wähle die vier Ziffern, und wenn auf deinem Gerät Face ID oder Touch ID eingerichtet ist, bietet Budgie das Entsperren damit an — das Tastenfeld bleibt als Rückfalloption. Der Screenshot-Schutz ist ein eigener Schalter direkt darunter."
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "App Lock, off by default"
+msgstr "App-Sperre, standardmäßig aus"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "App Lock: PIN and Face ID"
@@ -4496,6 +4504,10 @@ msgstr "Budgie-Einstellungsbildschirm mit dem Bereich Sicherheit: die PIN-Sperre
 msgid "Budgie settings screen stating that every piece of financial data stays on the device with no cloud sync or tracking"
 msgstr "Budgie-Einstellungen mit dem Hinweis, dass alle Finanzdaten auf dem Gerät bleiben, ohne Cloud-Synchronisierung und ohne Tracking"
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off"
+msgstr "Budgie-Einstellungen mit einer Privatsphäre-Karte, die besagt, dass alle Finanzdaten lokal auf dem Gerät gespeichert werden, und darunter dem Bereich Sicherheit, in dem die App-Sperre noch nicht aktiviert und der Screenshot-Schutz ausgeschaltet ist"
+
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie settings screen with security, language, currency and default account rows and no sign-in row"
 msgstr "Budgie-Einstellungen mit Zeilen für Sicherheit, Sprache, Währung und Standardkonto und ohne Zeile zum Anmelden"
@@ -4596,6 +4608,10 @@ msgstr "Budgie verfolgt einen grundlegend anderen Ansatz. Ihre Finanzdaten verla
 msgid "Budgie takes offline-first seriously. Here’s how we protect your financial privacy:"
 msgstr "Budgie nimmt Offline-First ernst. So schützen wir Ihre finanzielle Privatsphäre:"
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Budgie talks to Monobank's own API with a token you paste in, parses Erste PDF statements and PrivatBank Excel exports on the device, and imports any other bank through generic CSV. No aggregator sits in between."
+msgstr "Budgie spricht über ein Token, das Sie selbst einfügen, mit der eigenen API von Monobank, verarbeitet Erste-PDF-Auszüge und PrivatBank-Excel-Exporte direkt auf dem Gerät und importiert jede andere Bank per generischem CSV. Dazwischen sitzt kein Aggregator."
+
 #: src/app/[lang]/layout.tsx
 msgid "Budgie Team"
 msgstr "Budgie-Team"
@@ -4692,10 +4708,6 @@ msgstr "Budgie verwendet einen anderen Ansatz, basierend auf konfliktfreien repl
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie verwendet eine Source-Available-Lizenz, die es Ihnen ermöglicht, den Code anzusehen, zu ändern und dazu beizutragen, während sichergestellt wird, dass nur wir die offizielle App monetarisieren können. Dies hält das Projekt nachhaltig und bewahrt gleichzeitig Transparenz."
 
-#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "Budgie uses direct bank APIs (Monobank) and PDF/Excel statement imports (Erste, PrivatBank, anything CSV). No third-party touches your data."
-msgstr "Budgie verwendet direkte Bank-APIs (Monobank) und PDF/Excel-Kontoauszugsimporte (Erste Bank, PrivatBank, alles per CSV). Keine dritte Partei berührt Ihre Daten."
-
 #: src/app/[lang]/privacy/page.tsx
 msgid "Budgie uses SQLCipher-backed SQLite with AES-256 encryption. The encryption key is derived from your device keychain and is never transmitted off the device."
 msgstr "Budgie verwendet SQLCipher-gestütztes SQLite mit AES-256-Verschlüsselung. Der Verschlüsselungsschlüssel wird aus Ihrem Geräteschlüsselbund abgeleitet und nie vom Gerät übertragen."
@@ -4780,6 +4792,10 @@ msgstr "Budgies PIN sperrt nicht nur den Bildschirm – sie leitet den SQLCipher
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie’s Public Source Commitment"
 msgstr "Budgies Public-Source-Verpflichtung"
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Budgie's Settings screen opens on a Privacy card, and the Security group sits right under it. Between them they show the whole arrangement: one local database, no sign-in, and a lock you turn on yourself."
+msgstr "Der Einstellungsbildschirm von Budgie beginnt mit einer Privatsphäre-Karte, direkt darunter steht der Bereich Sicherheit. Zusammen zeigen sie das ganze Prinzip: eine lokale Datenbank, keine Anmeldung und eine Sperre, die Sie selbst einschalten."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie's source code is hosted on GitHub. You can browse, fork, and contribute at github.com/budgie-at/budgie. The repository includes the full app, AI service layer, contracts, and landing page."
@@ -5516,9 +5532,12 @@ msgstr "Cloud-basierte Ausgabentracker verwenden typischerweise Datenbanken wie 
 msgid "Cloud-based means your data is on their servers"
 msgstr "Cloud-basiert bedeutet, dass Ihre Daten auf deren Servern liegen"
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no copy on somebody else's server."
+msgstr "Cloud-basierte Finanz-Apps spiegeln jede Transaktion auf ihre Server. Budgie behält Ihr Buch auf Ihrem Gerät. Kein Konto, kein Aggregator, keine Kopie auf fremden Servern."
+
 #: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
 #: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
-#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure."
 msgstr "Cloud-basierte persönliche Finanz-Apps spiegeln jede Transaktion auf ihre Server. Budgie hält Ihr Haushaltsbuch auf Ihrem Gerät. Kein Konto, kein Aggregator, keine Exposition."
 
@@ -5527,8 +5546,8 @@ msgid "Cloud-based PFM apps"
 msgstr "Cloud-basierte PFM-Apps"
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank credentials. Budgie does none of this — your data stays on your device, encrypted."
-msgstr "Cloud-basierte PFM-Apps spiegeln Ihre Transaktionen auf ihre Server, teilen Daten mit Aggregatoren und speichern Ihre Bankzugangsdaten. Budgie tut nichts davon – Ihre Daten bleiben verschlüsselt auf Ihrem Gerät."
+msgid "Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank credentials. Budgie does none of this — your ledger stays in a local database on your device, and setting a PIN encrypts that database with SQLCipher."
+msgstr "Cloud-basierte PFM-Apps spiegeln Ihre Transaktionen auf ihre Server, geben Daten an Aggregatoren weiter und speichern Ihre Bankzugangsdaten. Budgie tut nichts davon — Ihr Buch bleibt in einer lokalen Datenbank auf Ihrem Gerät, und sobald Sie eine PIN festlegen, wird diese Datenbank mit SQLCipher verschlüsselt."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Cloud-based with Plaid data sharing"
@@ -7074,10 +7093,6 @@ msgstr ""
 msgid "Encrypted Local Storage"
 msgstr "Verschlüsselter lokaler Speicher"
 
-#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "Encrypted on your device"
-msgstr "Auf Ihrem Gerät verschlüsselt"
-
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Encrypted on your phone"
 msgstr "Auf Ihrem Smartphone verschlüsselt"
@@ -7486,6 +7501,10 @@ msgstr "„Datenbank exportieren“ schreibt das Write-Ahead-Log fest und kopier
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Export Database writes one encrypted file with everything. Import Database restores it on a new phone in seconds."
 msgstr "Datenbank exportieren schreibt eine verschlüsselte Datei mit allem. Datenbank importieren stellt sie in Sekunden auf einem neuen Handy wieder her."
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Export Database writes the whole database to one file and hands it to the system share sheet, so you choose where it goes — iCloud Drive, Google Drive, Dropbox, a NAS. Budgie has no sync server and no integration with any of them."
+msgstr "„Datenbank exportieren“ schreibt die gesamte Datenbank in eine Datei und übergibt sie dem Teilen-Dialog des Systems — Sie entscheiden, wohin: iCloud Drive, Google Drive, Dropbox, ein NAS. Budgie hat keinen Sync-Server und keine Anbindung an einen dieser Dienste."
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Export Database writes the whole database to one file. The Import Database row directly above it restores from that same file on any device."
@@ -8021,10 +8040,6 @@ msgstr "Vier Felder, nichts eingegeben"
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Free core, optional one-time unlock"
 msgstr "Kostenloser Kern, optionaler einmaliger Freischalt"
-
-#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "Free for core, optional one-time unlock"
-msgstr "Kostenlos für den Kern, optionaler einmaliger Freischalt"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Free use, copying, modification, and sharing for personal and business purposes"
@@ -9501,6 +9516,10 @@ msgstr "Lokale Benachrichtigungen, opt-in, pro Zeitraum dedupliziert"
 msgid "Local SQLite database with Drizzle ORM (you can query your own data)"
 msgstr "Lokale SQLite-Datenbank mit Drizzle ORM (Sie können Ihre eigenen Daten abfragen)"
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Local SQLite, encrypted once you set a PIN"
+msgstr "Lokales SQLite, verschlüsselt ab der ersten PIN"
+
 #: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "local-first"
@@ -10911,6 +10930,10 @@ msgstr "Keiner – Budgie kommuniziert direkt mit Monobank"
 msgid "None — no servers"
 msgstr "Keiner – keine Server"
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "None — there is no paid tier"
+msgstr "Keines — es gibt keinen Bezahltarif"
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "None of these revenue models work without collecting, analyzing, and retaining your financial data. Your transaction history is not just a feature of the product. It <0>is</0> the product."
 msgstr "Keines dieser Erlösmodelle funktioniert ohne das Sammeln, Analysieren und Aufbewahren Ihrer Finanzdaten. Ihre Transaktionsh<0>ist</0>orie ist nicht nur eine Funktion des Produkts. Sie ist das Produkt."
@@ -10974,6 +10997,10 @@ msgstr "Mit deinen Daten passiert nichts, weil Budgie deine Daten nicht hat. All
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up with half a sentence logged"
 msgstr "Es wird nichts gespeichert, bevor du auf Speichern tippst – der gesamte Stapel wird in einer einzigen Datenbanktransaktion geschrieben, sodass nie nur ein halber Satz erfasst wird"
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Nothing on this screen asks who you are. There is no account, no email, no sign-in step — so there is no server-side profile that a breach could expose."
+msgstr "Nichts auf diesem Bildschirm fragt, wer Sie sind. Es gibt kein Konto, keine E-Mail-Adresse, keinen Anmeldeschritt — und damit kein serverseitiges Profil, das ein Datenleck preisgeben könnte."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Nothing opens before the PIN"
@@ -12286,6 +12313,10 @@ msgstr "Datenschutzauswirkungen werden offen diskutiert"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Privacy is non-negotiable"
 msgstr "Datenschutz nicht verhandelbar ist"
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Privacy is the first group in Settings. Every account, transaction and category lives in a single SQLite file on the phone — there is no vendor database holding a second copy."
+msgstr "Privatsphäre ist der erste Bereich in den Einstellungen. Jedes Konto, jede Transaktion und jede Kategorie liegt in einer einzigen SQLite-Datei auf dem Telefon — es gibt keine Anbieterdatenbank mit einer zweiten Kopie."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Privacy isn’t an afterthought—it’s the foundation:"
@@ -13888,6 +13919,10 @@ msgstr "Hör auf, monatlich nur fürs Geldtracking zu zahlen. Budgies Kernfunkti
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Store data locally or on infrastructure you control"
 msgstr "Daten lokal oder auf einer von Ihnen kontrollierten Infrastruktur speichern"
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Stored locally on your device"
+msgstr "Lokal auf Ihrem Gerät gespeichert"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Storing data locally is the first layer of protection. Encryption is the second. Even if someone gains physical access to your device, your financial data should remain unreadable without your authorization."
@@ -16943,6 +16978,10 @@ msgstr "Wenn Ihre Datenbank verschlüsselt ist, erscheint die Datei auf der Fest
 msgid "When your financial information lives on someone else’s server, you’re trusting that:"
 msgstr "Wenn Ihre Finanzinformationen auf dem Server eines anderen gespeichert sind, vertrauen Sie darauf, dass:"
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Where a cloud-free budget app keeps your money data"
+msgstr "Wo eine cloudfreie Budget-App Ihre Finanzdaten aufbewahrt"
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Where a server would be, there is a file"
 msgstr "Wo ein Server wäre, liegt eine Datei"
@@ -18047,10 +18086,6 @@ msgstr ""
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "YOU ARE SOLELY RESPONSIBLE FOR BACKING UP YOUR DATA. While the Service stores data locally on your device and may offer optional cloud backup features, we are not responsible for any loss of data. We strongly recommend regularly exporting your data using the built-in export features."
 msgstr ""
-
-#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "You backup to your own iCloud Drive, Google Drive, or Dropbox. Budgie never sees your data — your cloud, your keys."
-msgstr "Sie sichern in Ihrem eigenen iCloud Drive, Google Drive oder Dropbox. Budgie sieht Ihre Daten nie – Ihre Cloud, Ihre Schlüssel."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "You become the product, not the customer"

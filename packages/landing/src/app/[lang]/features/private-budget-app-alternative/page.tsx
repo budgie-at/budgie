@@ -17,6 +17,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -75,10 +76,57 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                 tagline={
                     <Trans>
                         Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your
-                        device. No account, no aggregator, no exposure.
+                        device. No account, no aggregator, no copy on somebody else&apos;s server.
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Where a cloud-free budget app keeps your money data</Trans>}>
+                    <Trans>
+                        Budgie&apos;s Settings screen opens on a Privacy card, and the Security group sits right under it. Between them they
+                        show the whole arrangement: one local database, no sign-in, and a lock you turn on yourself.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Point index={0}>
+                    <Trans>
+                        Privacy is the first group in Settings. Every account, transaction and category lives in a single SQLite file on the
+                        phone — there is no vendor database holding a second copy.
+                    </Trans>
+                </FeatureStory.Point>
+
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="private-budget-app-alternative-1"
+                    slug="private-budget-app-alternative"
+                >
+                    <FeatureStory.Callout index={0} y={0.255}>
+                        <Trans>Stored locally on your device</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.4}>
+                        <Trans>App Lock, off by default</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Point index={1}>
+                    <Trans>
+                        Nothing on this screen asks who you are. There is no account, no email, no sign-in step — so there is no server-side
+                        profile that a breach could expose.
+                    </Trans>
+                </FeatureStory.Point>
+                <FeatureStory.Point index={2}>
+                    <Trans>
+                        App Lock is opt-in, and the PIN you set does double duty: it becomes the SQLCipher key for the whole database. Until
+                        you set one, the file is ordinary local SQLite — private to the app sandbox, but not encrypted.
+                    </Trans>
+                </FeatureStory.Point>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -87,7 +135,7 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                 <FeaturePageProse>
                     <Trans>
                         Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your
-                        device. No account, no aggregator, no exposure.
+                        device. No account, no aggregator, no copy on somebody else&apos;s server.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -100,19 +148,21 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
                             Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank
-                            credentials. Budgie does none of this — your data stays on your device, encrypted.
+                            credentials. Budgie does none of this — your ledger stays in a local database on your device, and setting a PIN
+                            encrypts that database with SQLCipher.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>
-                            Budgie uses direct bank APIs (Monobank) and PDF/Excel statement imports (Erste, PrivatBank, anything CSV). No
-                            third-party touches your data.
+                            Budgie talks to Monobank&apos;s own API with a token you paste in, parses Erste PDF statements and PrivatBank
+                            Excel exports on the device, and imports any other bank through generic CSV. No aggregator sits in between.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>
-                            You backup to your own iCloud Drive, Google Drive, or Dropbox. Budgie never sees your data — your cloud, your
-                            keys.
+                            Export Database writes the whole database to one file and hands it to the system share sheet, so you choose
+                            where it goes — iCloud Drive, Google Drive, Dropbox, a NAS. Budgie has no sync server and no integration with
+                            any of them.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
@@ -127,7 +177,7 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Cloud-based PFM apps</Trans>}>
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Encrypted on your device</Trans>}
+                        budgieValue={<Trans>Local SQLite, encrypted once you set a PIN</Trans>}
                         competitorValue={<Trans>Vendor&apos;s cloud + aggregator</Trans>}
                         label={<Trans>Where transactions live</Trans>}
                     />
@@ -142,7 +192,7 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                         label={<Trans>Bank login</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Free for core, optional one-time unlock</Trans>}
+                        budgieValue={<Trans>None — there is no paid tier</Trans>}
                         competitorValue={<Trans>Monthly recurring</Trans>}
                         label={<Trans>Subscription</Trans>}
                     />
@@ -165,7 +215,8 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                     answer={
                         <Trans>
                             Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank
-                            credentials. Budgie does none of this — your data stays on your device, encrypted.
+                            credentials. Budgie does none of this — your ledger stays in a local database on your device, and setting a PIN
+                            encrypts that database with SQLCipher.
                         </Trans>
                     }
                 />
@@ -173,8 +224,8 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                     question={<Trans>How does bank sync work without an aggregator?</Trans>}
                     answer={
                         <Trans>
-                            Budgie uses direct bank APIs (Monobank) and PDF/Excel statement imports (Erste, PrivatBank, anything CSV). No
-                            third-party touches your data.
+                            Budgie talks to Monobank&apos;s own API with a token you paste in, parses Erste PDF statements and PrivatBank
+                            Excel exports on the device, and imports any other bank through generic CSV. No aggregator sits in between.
                         </Trans>
                     }
                 />
@@ -182,8 +233,9 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                     question={<Trans>What about multi-device sync?</Trans>}
                     answer={
                         <Trans>
-                            You backup to your own iCloud Drive, Google Drive, or Dropbox. Budgie never sees your data — your cloud, your
-                            keys.
+                            Export Database writes the whole database to one file and hands it to the system share sheet, so you choose
+                            where it goes — iCloud Drive, Google Drive, Dropbox, a NAS. Budgie has no sync server and no integration with
+                            any of them.
                         </Trans>
                     }
                 />
