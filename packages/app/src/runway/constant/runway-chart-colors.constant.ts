@@ -5,6 +5,8 @@ import type { RunwayChartColorsInterface } from '../interface/runway-chart-color
 export const RUNWAY_CHART_COLORS: Record<ColorSchemaEnum, RunwayChartColorsInterface> = {
     [ColorSchemaEnum.Light]: {
         destructive: 'rgba(239, 68, 68, 1)',
+        positive: 'rgba(16, 185, 129, 1)',
+        spike: 'rgba(240, 177, 0, 1)',
         median: 'rgba(0, 0, 0, 1)',
         bandFill: 'rgba(10, 10, 10, 0.05)',
         bandStroke: 'rgba(0, 0, 0, 0.2)',
@@ -14,6 +16,8 @@ export const RUNWAY_CHART_COLORS: Record<ColorSchemaEnum, RunwayChartColorsInter
     },
     [ColorSchemaEnum.Dark]: {
         destructive: 'rgba(255, 68, 68, 1)',
+        positive: 'rgba(0, 255, 136, 1)',
+        spike: 'rgba(240, 177, 0, 1)',
         median: 'rgba(255, 255, 255, 1)',
         bandFill: 'rgba(255, 255, 255, 0.05)',
         bandStroke: 'rgba(255, 255, 255, 0.2)',
