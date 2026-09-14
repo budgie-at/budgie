@@ -2600,10 +2600,6 @@ msgstr "Add another category row"
 msgid "Add it in three taps"
 msgstr "Add it in three taps"
 
-#: src/app/[lang]/features/bank-integration-management/page.tsx
-msgid "Add more accounts from the bank later without re-entering credentials, with duplicates filtered out"
-msgstr "Add more accounts from the bank later without re-entering credentials, with duplicates filtered out"
-
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Add tests for new functionality"
 msgstr "Add tests for new functionality"
@@ -3042,10 +3038,19 @@ msgstr "App"
 msgid "App goes to background → lock kicks in. A wrong PIN doesn't lock you out forever, but there is no reset that hands the data back (your call: keep the PIN safe)."
 msgstr "App goes to background → lock kicks in. A wrong PIN doesn't lock you out forever, but there is no reset that hands the data back (your call: keep the PIN safe)."
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "App Lock is opt-in, and the PIN you set does double duty: it becomes the SQLCipher key for the whole database. Until you set one, the file is ordinary local SQLite — private to the app sandbox, but not encrypted."
+msgstr "App Lock is opt-in, and the PIN you set does double duty: it becomes the SQLCipher key for the whole database. Until you set one, the file is ordinary local SQLite — private to the app sandbox, but not encrypted."
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID or Touch ID enrolled Budgie offers to unlock with it — the keypad stays as the fallback. Screenshot Protection is its own switch directly underneath."
 msgstr "App Lock sits in the Security group. Tap Enable, pick the four digits, and if your device has Face ID or Touch ID enrolled Budgie offers to unlock with it — the keypad stays as the fallback. Screenshot Protection is its own switch directly underneath."
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "App Lock, off by default"
+msgstr "App Lock, off by default"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "App Lock: PIN and Face ID"
 msgstr "App Lock: PIN and Face ID"
@@ -3164,8 +3169,8 @@ msgid "Asset coverage"
 msgstr "Asset coverage"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Assets Budgie cannot price are kept visible with a \"valuation unavailable\" note, never dropped"
-msgstr "Assets Budgie cannot price are kept visible with a \"valuation unavailable\" note, never dropped"
+msgid "Assets Budgie cannot price are listed under \"valuation unavailable\" at setup instead of vanishing"
+msgstr "Assets Budgie cannot price are listed under \"valuation unavailable\" at setup instead of vanishing"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "At Budgie, we believe financial privacy shouldn’t be a premium feature—it should be the foundation. Here’s how our architecture differs from cloud-based alternatives."
@@ -3515,10 +3520,6 @@ msgstr "Bank-fee entries are included in category analytics even when attached t
 msgid "Bank-grade biometric unlock — same Secure Enclave, same encryption key."
 msgstr "Bank-grade biometric unlock — same Secure Enclave, same encryption key."
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Bank-grade biometric unlock that drives the same encryption key as your PIN — frictionless and uncompromising."
-msgstr "Bank-grade biometric unlock that drives the same encryption key as your PIN — frictionless and uncompromising."
-
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/metadata.ts
 msgid "Bank-issued codes do the work — coffee shops land in Food & Drink, gas stations in Transport."
@@ -3737,21 +3738,21 @@ msgstr "Biometric Authentication — Budgie"
 msgid "biometric finance app"
 msgstr "biometric finance app"
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Biometric key fragment lives in the Secure Enclave / Keystore — Budgie never sees raw biometric data"
-msgstr "Biometric key fragment lives in the Secure Enclave / Keystore — Budgie never sees raw biometric data"
-
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Biometric lock + AES-256 encrypted storage"
 msgstr "Biometric lock + AES-256 encrypted storage"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Biometric unlock is a shortcut past Budgie's lock screen. What encrypts the database underneath is still the four-digit PIN."
+msgstr "Biometric unlock is a shortcut past Budgie's lock screen. What encrypts the database underneath is still the four-digit PIN."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Biometric unlock is the platform's Face ID / Touch ID check standing in for typing the PIN. The PIN itself stays in the device keychain, marked this-device-only, and remains the database key — biometrics are a faster path to the same lock, not a second one."
 msgstr "Biometric unlock is the platform's Face ID / Touch ID check standing in for typing the PIN. The PIN itself stays in the device keychain, marked this-device-only, and remains the database key — biometrics are a faster path to the same lock, not a second one."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Biometrics are the right balance for an expense app you open ten times a day. Budgie hooks into the platform Secure Enclave / TEE so the device, not Budgie, vouches for you."
-msgstr "Biometrics are the right balance for an expense app you open ten times a day. Budgie hooks into the platform Secure Enclave / TEE so the device, not Budgie, vouches for you."
+msgid "Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system authentication API, so the matching happens in the operating system and Budgie only ever learns whether it succeeded."
+msgstr "Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system authentication API, so the matching happens in the operating system and Budgie only ever learns whether it succeeded."
 
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "bitcoin"
@@ -3934,6 +3935,10 @@ msgstr "Budgie (\"we,\" \"our,\" or \"us\") is committed to protecting your priv
 msgid "Budgie Account Settings for a bank-synced account with the re-sync sheet open on four options: re-sync entire history, last 90 days, last 30 days and last 7 days"
 msgstr "Budgie Account Settings for a bank-synced account with the re-sync sheet open on four options: re-sync entire history, last 90 days, last 30 days and last 7 days"
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Budgie Account Settings screen for a Monobank card with the re-sync sheet open on entire history, 90, 30 and 7 days"
+msgstr "Budgie Account Settings screen for a Monobank card with the re-sync sheet open on entire history, 90, 30 and 7 days"
+
 #: src/app/[lang]/page.tsx
 msgid "Budgie analytics screen breaking spending down by category with amounts and percentages"
 msgstr "Budgie analytics screen breaking spending down by category with amounts and percentages"
@@ -4009,6 +4014,14 @@ msgstr "Budgie category picker open over the Edit Category form, listing the cat
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie Commercial Licensing"
 msgstr "Budgie Commercial Licensing"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields"
+msgstr "Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Budgie Connect Binance screen with the Get API Key row, a four-step setup list, and the API key and secret fields"
+msgstr "Budgie Connect Binance screen with the Get API Key row, a four-step setup list, and the API key and secret fields"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Budgie Connect Monobank screen with a token field, setup steps and a note that the token is stored securely"
@@ -4173,10 +4186,6 @@ msgstr "Budgie home screen with a total balance, savings accounts and money owed
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal"
 msgstr "Budgie home screen with accounts grouped into Bank and Cash sections, each heading showing its own subtotal"
-
-#: src/app/[lang]/features/bank-integration-management/page.tsx
-msgid "Budgie home screen with the synced card balances above the cash and savings sections"
-msgstr "Budgie home screen with the synced card balances above the cash and savings sections"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with the total balance header above every account section"
@@ -4359,6 +4368,10 @@ msgstr "Budgie merges obvious transfer pairs and merchant refunds so bank import
 msgid "Budgie Missing categories screen listing income and expense rows that still have no category"
 msgstr "Budgie Missing categories screen listing income and expense rows that still have no category"
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Budgie Monobank connection screen listing two cards and a jar with balances, sync switches, and Add deposit and Add accounts buttons"
+msgstr "Budgie Monobank connection screen listing two cards and a jar with balances, sync switches, and Add deposit and Add accounts buttons"
+
 #: src/app/[lang]/page.tsx
 msgid "Budgie Monobank screen listing two cards and a car jar with their balances"
 msgstr "Budgie Monobank screen listing two cards and a car jar with their balances"
@@ -4491,6 +4504,10 @@ msgstr "Budgie Settings screen showing the Security section with the PIN-lock ca
 msgid "Budgie settings screen stating that every piece of financial data stays on the device with no cloud sync or tracking"
 msgstr "Budgie settings screen stating that every piece of financial data stays on the device with no cloud sync or tracking"
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off"
+msgstr "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off"
+
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Budgie settings screen with security, language, currency and default account rows and no sign-in row"
 msgstr "Budgie settings screen with security, language, currency and default account rows and no sign-in row"
@@ -4506,6 +4523,10 @@ msgstr "Budgie settings screen with the offline-and-private notice above the aut
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
 msgstr "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID"
+msgstr "Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Budgie settings screen, Data Management section, listing the Import CSV, Export CSV, Import Database and Export Database rows"
@@ -4590,6 +4611,10 @@ msgstr "Budgie takes a fundamentally different approach. <0>Your financial data 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Budgie takes offline-first seriously. Here’s how we protect your financial privacy:"
 msgstr "Budgie takes offline-first seriously. Here’s how we protect your financial privacy:"
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Budgie talks to Monobank's own API with a token you paste in, parses Erste PDF statements and PrivatBank Excel exports on the device, and imports any other bank through generic CSV. No aggregator sits in between."
+msgstr "Budgie talks to Monobank's own API with a token you paste in, parses Erste PDF statements and PrivatBank Excel exports on the device, and imports any other bank through generic CSV. No aggregator sits in between."
 
 #: src/app/[lang]/layout.tsx
 msgid "Budgie Team"
@@ -4687,10 +4712,6 @@ msgstr "Budgie uses a different approach based on Conflict-free Replicated Data 
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 
-#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "Budgie uses direct bank APIs (Monobank) and PDF/Excel statement imports (Erste, PrivatBank, anything CSV). No third-party touches your data."
-msgstr "Budgie uses direct bank APIs (Monobank) and PDF/Excel statement imports (Erste, PrivatBank, anything CSV). No third-party touches your data."
-
 #: src/app/[lang]/privacy/page.tsx
 msgid "Budgie uses SQLCipher-backed SQLite with AES-256 encryption. The encryption key is derived from your device keychain and is never transmitted off the device."
 msgstr "Budgie uses SQLCipher-backed SQLite with AES-256 encryption. The encryption key is derived from your device keychain and is never transmitted off the device."
@@ -4775,6 +4796,10 @@ msgstr "Budgie's PIN doesn't just gate the screen — it derives the SQLCipher e
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie’s Public Source Commitment"
 msgstr "Budgie’s Public Source Commitment"
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Budgie's Settings screen opens on a Privacy card, and the Security group sits right under it. Between them they show the whole arrangement: one local database, no sign-in, and a lock you turn on yourself."
+msgstr "Budgie's Settings screen opens on a Privacy card, and the Security group sits right under it. Between them they show the whole arrangement: one local database, no sign-in, and a lock you turn on yourself."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie's source code is hosted on GitHub. You can browse, fork, and contribute at github.com/budgie-at/budgie. The repository includes the full app, AI service layer, contracts, and landing page."
@@ -5143,6 +5168,10 @@ msgstr "Can someone see my balance in the app switcher?"
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Can splits have different tags?"
 msgstr "Can splits have different tags?"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Cancel or fail and nothing is lost: the keypad was already there. Budgie switches the device-passcode fallback off on purpose, so your PIN is the only other way in."
+msgstr "Cancel or fail and nothing is lost: the keypad was already there. Budgie switches the device-passcode fallback off on purpose, so your PIN is the only other way in."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Capture the whole Budgie database as one file — SQLCipher-encrypted with your PIN when you set one — and put it back on another device. No account, no upload."
@@ -5514,16 +5543,16 @@ msgstr "Cloud-based means your data is on their servers"
 #: src/app/[lang]/features/private-budget-app-alternative/metadata.ts
 #: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure."
-msgstr "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure."
+msgid "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no copy on somebody else's server."
+msgstr "Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no copy on somebody else's server."
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Cloud-based PFM apps"
 msgstr "Cloud-based PFM apps"
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank credentials. Budgie does none of this — your data stays on your device, encrypted."
-msgstr "Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank credentials. Budgie does none of this — your data stays on your device, encrypted."
+msgid "Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank credentials. Budgie does none of this — your ledger stays in a local database on your device, and setting a PIN encrypts that database with SQLCipher."
+msgstr "Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank credentials. Budgie does none of this — your ledger stays in a local database on your device, and setting a PIN encrypts that database with SQLCipher."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Cloud-based with Plaid data sharing"
@@ -5715,13 +5744,13 @@ msgstr "Conflict Resolution Without Servers"
 msgid "Conflict-Free Replicated Data Types (CRDTs)"
 msgstr "Conflict-Free Replicated Data Types (CRDTs)"
 
-#: src/app/[lang]/features/bank-integration-management/page.tsx
-msgid "Connect a bank once and the credential is stored as a connection for that provider. Any account you create from it — during setup or months later — records which connection it came from, and sync resolves the token through that link rather than keeping a copy per account."
-msgstr "Connect a bank once and the credential is stored as a connection for that provider. Any account you create from it — during setup or months later — records which connection it came from, and sync resolves the token through that link rather than keeping a copy per account."
-
 #: src/app/[lang]/features/binance-sync/metadata.ts
 msgid "Connect Binance with a read-only API key. Spot, Funding, and Simple Earn balances, P2P orders, trades, Convert, and Earn rewards sync to your device, and P2P buys merge with the matching bank payment."
 msgstr "Connect Binance with a read-only API key. Spot, Funding, and Simple Earn balances, P2P orders, trades, Convert, and Earn rewards sync to your device, and P2P buys merge with the matching bank payment."
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Connect the bank once"
+msgstr "Connect the bank once"
 
 #: src/app/[lang]/features/monobank-sync/metadata.ts
 msgid "Connect your Monobank account with a personal API token. Cards and jars, full transaction history, FX rates, and counter-IBANs sync straight to your device — no Plaid."
@@ -6573,10 +6602,6 @@ msgstr "Direct Sync"
 msgid "Direction. \"I owe\" is a liability — your net worth subtracts it. \"Owes me\" is a receivable — your net worth adds it. Same account type, opposite sign."
 msgstr "Direction. \"I owe\" is a liability — your net worth subtracts it. \"Owes me\" is a receivable — your net worth adds it. Same account type, opposite sign."
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Disabled biometrics fall back to PIN. Failed biometric attempts respect the OS lockout policy — five strikes and you're prompted for the device passcode, not just our PIN."
-msgstr "Disabled biometrics fall back to PIN. Failed biometric attempts respect the OS lockout policy — five strikes and you're prompted for the device passcode, not just our PIN."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Discover a vulnerability by examining the code"
 msgstr "Discover a vulnerability by examining the code"
@@ -6897,6 +6922,10 @@ msgid "Each account holds a fixed native currency — fiat, crypto, or otherwise
 msgstr "Each account holds a fixed native currency — fiat, crypto, or otherwise"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Each account keeps its own controls"
+msgstr "Each account keeps its own controls"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Each bank section on the home screen has a shortcut into its connection. Inside you get the accounts that belong to it, each with its icon, title, and current balance, and a switch to pause syncing for that account alone while its siblings keep going."
 msgstr "Each bank section on the home screen has a shortcut into its connection. Inside you get the accounts that belong to it, each with its icon, title, and current balance, and a switch to pause syncing for that account alone while its siblings keep going."
 
@@ -6929,12 +6958,12 @@ msgid "Each of these groups brings different perspectives, skills, and motivatio
 msgstr "Each of these groups brings different perspectives, skills, and motivations. A privacy researcher might notice data collection patterns that a security auditor overlooks. A developer integrating with the project might discover edge cases the original authors missed. This diversity of attention is a strength no single security team can replicate."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Each source type is committed to your local database as soon as it completes, so the work already done is kept and the next run picks up from there instead of starting over."
-msgstr "Each source type is committed to your local database as soon as it completes, so the work already done is kept and the next run picks up from there instead of starting over."
+msgid "Each source type is committed to your local database as soon as it completes, so whatever finished is kept. The next run asks Binance for those windows again, but every row carries its Binance id, so nothing is duplicated."
+msgstr "Each source type is committed to your local database as soon as it completes, so whatever finished is kept. The next run asks Binance for those windows again, but every row carries its Binance id, so nothing is duplicated."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Each source type is written to your database as it finishes, so completed work is never re-fetched"
-msgstr "Each source type is written to your database as it finishes, so completed work is never re-fetched"
+msgid "Each source type is written to your database as it finishes, and Binance ids keep re-runs duplicate-free"
+msgstr "Each source type is written to your database as it finishes, and Binance ids keep re-runs duplicate-free"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Each split row counts toward its own category in analytics — the parent transaction itself becomes invisible to category sums (it's just the wrapper)."
@@ -7020,10 +7049,6 @@ msgstr "Employees won’t access your data"
 msgid "EN, UK, FR, DE, ES — full UI."
 msgstr "EN, UK, FR, DE, ES — full UI."
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Enable in Settings → PIN → \"Unlock with biometrics\". The platform stores a biometric-bound key fragment in the Secure Enclave/Keystore; Budgie combines it with your PIN-derived key to unlock SQLCipher."
-msgstr "Enable in Settings → PIN → \"Unlock with biometrics\". The platform stores a biometric-bound key fragment in the Secure Enclave/Keystore; Budgie combines it with your PIN-derived key to unlock SQLCipher."
-
 #: src/app/[lang]/opengraph-image.tsx
 msgid "Encrypted"
 msgstr "Encrypted"
@@ -7068,10 +7093,6 @@ msgstr "Encrypted local database storage"
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Encrypted Local Storage"
 msgstr "Encrypted Local Storage"
-
-#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "Encrypted on your device"
-msgstr "Encrypted on your device"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Encrypted on your phone"
@@ -7165,6 +7186,10 @@ msgstr "Even if someone intercepts the connection, they can’t decrypt it"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Even if you delete your account with a budgeting app, the aggregator (Plaid, Yodlee, etc.) may retain your data. You have a relationship with the app and a separate relationship with the aggregator. Deleting one does not necessarily affect the other."
 msgstr "Even if you delete your account with a budgeting app, the aggregator (Plaid, Yodlee, etc.) may retain your data. You have a relationship with the app and a separate relationship with the aggregator. Deleting one does not necessarily affect the other."
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Every account behind that key"
+msgstr "Every account behind that key"
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Every account type carries its own color and icon, so a home screen with a dozen accounts still reads at a glance"
@@ -7482,6 +7507,10 @@ msgstr "Export Database checkpoints the write-ahead log and copies the SQLite fi
 msgid "Export Database writes one encrypted file with everything. Import Database restores it on a new phone in seconds."
 msgstr "Export Database writes one encrypted file with everything. Import Database restores it on a new phone in seconds."
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Export Database writes the whole database to one file and hands it to the system share sheet, so you choose where it goes — iCloud Drive, Google Drive, Dropbox, a NAS. Budgie has no sync server and no integration with any of them."
+msgstr "Export Database writes the whole database to one file and hands it to the system share sheet, so you choose where it goes — iCloud Drive, Google Drive, Dropbox, a NAS. Budgie has no sync server and no integration with any of them."
+
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Export Database writes the whole database to one file. The Import Database row directly above it restores from that same file on any device."
 msgstr "Export Database writes the whole database to one file. The Import Database row directly above it restores from that same file on any device."
@@ -7535,13 +7564,17 @@ msgstr "Face ID / Touch ID unlock that drives the same SQLCipher encryption key 
 msgid "Face ID and fingerprint authentication on every supported device"
 msgstr "Face ID and fingerprint authentication on every supported device"
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Face ID and Touch ID supported on every modern iOS and Android device"
-msgstr "Face ID and Touch ID supported on every modern iOS and Android device"
-
 #: src/app/[lang]/features/biometric-authentication/opengraph-image.tsx
 msgid "Face ID drives the encryption key."
 msgstr "Face ID drives the encryption key."
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Face ID opens the lock, the PIN owns the key"
+msgstr "Face ID opens the lock, the PIN owns the key"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
+msgstr "Face ID unlock on the lock screen, offered when the device has it enrolled"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
@@ -7673,6 +7706,10 @@ msgstr "fees"
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Fees work on expenses, income, and transfers — not only card purchases"
 msgstr "Fees work on expenses, income, and transfers — not only card purchases"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Fetch Accounts, then choose"
+msgstr "Fetch Accounts, then choose"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Fiat and crypto, split out"
@@ -7816,6 +7853,10 @@ msgstr "Five screens of the real app, in the order you actually meet them."
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Five taps is four taps too many"
 msgstr "Five taps is four taps too many"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
+msgstr "Five years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is limited to six months, because that is as far back as Binance's own endpoint will serve."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Fix a row, or use “Select all categories” to fix the whole batch at once"
@@ -8009,10 +8050,6 @@ msgstr "Four slots, nothing typed"
 msgid "Free core, optional one-time unlock"
 msgstr "Free core, optional one-time unlock"
 
-#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "Free for core, optional one-time unlock"
-msgstr "Free for core, optional one-time unlock"
-
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Free use, copying, modification, and sharing for personal and business purposes"
 msgstr "Free use, copying, modification, and sharing for personal and business purposes"
@@ -8119,6 +8156,10 @@ msgstr "FX support"
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "General Data Protection Regulation (GDPR) - European Union"
 msgstr "General Data Protection Regulation (GDPR) - European Union"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Generate it in Binance"
+msgstr "Generate it in Binance"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Generate it in Monobank"
@@ -8263,10 +8304,6 @@ msgstr "High — shutdown = data loss risk"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Highly customizable"
 msgstr "Highly customizable"
-
-#: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Historical backfill walks backwards in windows and stops once your account goes quiet"
-msgstr "Historical backfill walks backwards in windows and stops once your account goes quiet"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Historical data isn’t critical for your goals"
@@ -8622,9 +8659,6 @@ msgstr "How is this different from the Tag Analytics page?"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
-#: src/app/[lang]/features/bank-integration-management/page.tsx
-#: src/app/[lang]/features/binance-sync/page.tsx
-#: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
@@ -8704,6 +8738,10 @@ msgstr "How to Audit the Code"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "How to Contribute"
 msgstr "How to Contribute"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "How to create the key, where to paste it, and the button that reads your balances back — connecting Binance fits on a single screen."
+msgstr "How to create the key, where to paste it, and the button that reads your balances back — connecting Binance fits on a single screen."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "How to Evaluate a Budgeting App’s Privacy"
@@ -9489,6 +9527,10 @@ msgstr "Local notifications, opt-in, deduped per period"
 msgid "Local SQLite database with Drizzle ORM (you can query your own data)"
 msgstr "Local SQLite database with Drizzle ORM (you can query your own data)"
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Local SQLite, encrypted once you set a PIN"
+msgstr "Local SQLite, encrypted once you set a PIN"
+
 #: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "local-first"
@@ -10137,6 +10179,10 @@ msgstr "Monobank Bank Sync"
 msgid "Monobank cards and jars arrive through your own token, straight into the database on your phone."
 msgstr "Monobank cards and jars arrive through your own token, straight into the database on your phone."
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Monobank connections can add more accounts later without re-entering the token, with the ones you already have filtered out"
+msgstr "Monobank connections can add more accounts later without re-entering the token, with the ones you already have filtered out"
+
 #: src/app/[lang]/features/monobank-sync/metadata.ts
 msgid "Monobank Expense Tracker — Direct API Sync, No Plaid"
 msgstr "Monobank Expense Tracker — Direct API Sync, No Plaid"
@@ -10534,10 +10580,6 @@ msgstr "No account, no cloud sync, no tracking. The database lives on your phone
 msgid "No account. No aggregator. No telemetry. Six features that make Budgie the most private expense tracker on iOS and Android."
 msgstr "No account. No aggregator. No telemetry. Six features that make Budgie the most private expense tracker on iOS and Android."
 
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "No additional friction at app open — same speed as your bank app"
-msgstr "No additional friction at app open — same speed as your bank app"
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "No advertising or data monetization"
 msgstr "No advertising or data monetization"
@@ -10843,8 +10885,8 @@ msgid "No. The microphone stream feeds whisper.rn directly in-process; the audio
 msgstr "No. The microphone stream feeds whisper.rn directly in-process; the audio buffer is discarded after transcription. Nothing is saved, sent, or logged."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "No. The platform manages biometric matching in the Secure Enclave (iOS) or Keystore (Android). Budgie only receives a yes/no signal plus access to a stored key fragment."
-msgstr "No. The platform manages biometric matching in the Secure Enclave (iOS) or Keystore (Android). Budgie only receives a yes/no signal plus access to a stored key fragment."
+msgid "No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key fragment and no biometric material on Budgie's side — the encryption key is your PIN."
+msgstr "No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key fragment and no biometric material on Budgie's side — the encryption key is your PIN."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. The repair works on imported rows only. Manual transactions are never touched — that is exactly what the confirmation card promises before you press Repair."
@@ -10899,6 +10941,10 @@ msgstr "None — Budgie talks to Monobank directly"
 msgid "None — no servers"
 msgstr "None — no servers"
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "None — there is no paid tier"
+msgstr "None — there is no paid tier"
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "None of these revenue models work without collecting, analyzing, and retaining your financial data. Your transaction history is not just a feature of the product. It <0>is</0> the product."
 msgstr "None of these revenue models work without collecting, analyzing, and retaining your financial data. Your transaction history is not just a feature of the product. It <0>is</0> the product."
@@ -10951,6 +10997,10 @@ msgstr "Nothing — there's nothing to stop. The unlock is one-time, not a subsc
 msgid "Nothing changes. On-device AI is inherently offline. All AI features work identically whether you have network connectivity or not. This is one of the core advantages of the architecture."
 msgstr "Nothing changes. On-device AI is inherently offline. All AI features work identically whether you have network connectivity or not. This is one of the core advantages of the architecture."
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off, and there is no attempt counter that locks you out of your own database."
+msgstr "Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the device-passcode fallback off, and there is no attempt counter that locks you out of your own database."
+
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Nothing happens — your data is safe on-device. You can keep adding transactions, reviewing history, and running reports with no interruption. Sync features like Monobank simply wait until you reconnect."
 msgstr "Nothing happens — your data is safe on-device. You can keep adding transactions, reviewing history, and running reports with no interruption. Sync features like Monobank simply wait until you reconnect."
@@ -10962,6 +11012,10 @@ msgstr "Nothing happens to your data because Budgie does not have your data. Eve
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up with half a sentence logged"
 msgstr "Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up with half a sentence logged"
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Nothing on this screen asks who you are. There is no account, no email, no sign-in step — so there is no server-side profile that a breach could expose."
+msgstr "Nothing on this screen asks who you are. There is no account, no email, no sign-in step — so there is no server-side profile that a breach could expose."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Nothing opens before the PIN"
@@ -11173,6 +11227,10 @@ msgstr "OLED-friendly black, locale-aware, no white flash on cold launch."
 msgid "OLED-friendly true black canvas — saves battery on modern phones"
 msgstr "OLED-friendly true black canvas — saves battery on modern phones"
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "On a cold launch Budgie asks the system to authenticate you the moment the lock screen appears, and a successful scan takes you straight in. The keypad also keeps a scan button, so you can ask for it again."
+msgstr "On a cold launch Budgie asks the system to authenticate you the moment the lock screen appears, and a successful scan takes you straight in. The keypad also keeps a scan button, so you can ask for it again."
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "On a server that mirrors your transactions"
 msgstr "On a server that mirrors your transactions"
@@ -11276,8 +11334,8 @@ msgid "on-device-ai"
 msgstr "on-device-ai"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "One account per asset, so each coin has its own balance, history, and place in net worth"
-msgstr "One account per asset, so each coin has its own balance, history, and place in net worth"
+msgid "One account per wallet and asset, each with its own balance, history, and place in net worth"
+msgstr "One account per wallet and asset, each with its own balance, history, and place in net worth"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "One amount, entered once"
@@ -11337,6 +11395,14 @@ msgstr "One file holds the database"
 msgid "One file. Encrypted when you set a PIN. No account."
 msgstr "One file. Encrypted when you set a PIN. No account."
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
+msgstr "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "One key per bank, not per account"
+msgstr "One key per bank, not per account"
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "One limit for the month"
 msgstr "One limit for the month"
@@ -11389,6 +11455,10 @@ msgstr "One receipt, multiple categories."
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "One receipt, three categories"
 msgstr "One receipt, three categories"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "One row per synced account"
+msgstr "One row per synced account"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "One row, reclassified"
@@ -11534,6 +11604,10 @@ msgstr "Only the assets you actually hold are backfilled — no wasted downloads
 msgid "Only the ones you created"
 msgstr "Only the ones you created"
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Only the reading permission"
+msgstr "Only the reading permission"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Only the rows without a category"
 msgstr "Only the rows without a category"
@@ -11557,6 +11631,10 @@ msgstr "Open a deposit straight from the connection, so it inherits the bank it 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual refresh."
 msgstr "Open a row, set its category, and both this list and the pill behind it update on their own — no reload, no manual refresh."
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Open an account and its sync card is there: pause it, paste a fresh token — which lands on the shared connection and clears the error counters of every account on it — or re-pull a window, from the last seven days up to the entire history."
+msgstr "Open an account and its sync card is there: pause it, paste a fresh token — which lands on the shared connection and clears the error counters of every account on it — or re-pull a window, from the last seven days up to the entire history."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "Open any list of Mint alternatives and you will find subscription-based cloud services, ad-supported web apps, and venture-funded startups. Each of them recreates the same architecture: your credentials go to an aggregator, your transactions flow to a server, a company stores your financial history indefinitely."
@@ -11688,6 +11766,10 @@ msgstr "Open-source translations — community can contribute new locales"
 msgid "Opening a transaction no longer drops you into a form. You get a read-only Transaction Info view — amount, account, category, tags, comment, and the details the bank sent — with editing behind an explicit button. Looking something up stops being a chance to change it by accident."
 msgstr "Opening a transaction no longer drops you into a form. You get a read-only Transaction Info view — amount, account, category, tags, comment, and the details the bank sent — with editing behind an explicit button. Looking something up stops being a chance to change it by accident."
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Opens Binance API management"
+msgstr "Opens Binance API management"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Operations from both devices are exchanged"
 msgstr "Operations from both devices are exchanged"
@@ -11735,6 +11817,10 @@ msgstr "Options include:"
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Or fund a new deposit"
 msgstr "Or fund a new deposit"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Or just the last week"
+msgstr "Or just the last week"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Or the last ninety days"
@@ -11860,6 +11946,10 @@ msgstr "Paste a read-only API key and Budgie pulls your Binance balances and his
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Paste one personal token"
 msgstr "Paste one personal token"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Pause this one, keep the rest"
+msgstr "Pause this one, keep the rest"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
@@ -12267,6 +12357,10 @@ msgstr "Privacy implications are discussed openly"
 msgid "Privacy is non-negotiable"
 msgstr "Privacy is non-negotiable"
 
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Privacy is the first group in Settings. Every account, transaction and category lives in a single SQLite file on the phone — there is no vendor database holding a second copy."
+msgstr "Privacy is the first group in Settings. Every account, transaction and category lives in a single SQLite file on the phone — there is no vendor database holding a second copy."
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Privacy isn’t an afterthought—it’s the foundation:"
 msgstr "Privacy isn’t an afterthought—it’s the foundation:"
@@ -12601,9 +12695,17 @@ msgstr "Read-only at best"
 msgid "Read-only or nothing"
 msgstr "Read-only or nothing"
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Reading only, never trading"
+msgstr "Reading only, never trading"
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Reads the same period and filters as the Categories tab — This Month, Last Month, This Year and the rest"
 msgstr "Reads the same period and filters as the Categories tab — This Month, Last Month, This Year and the rest"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Reads your balances back"
+msgstr "Reads your balances back"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Ready to experience financial tracking built on transparency? Explore our public source code, learn about our security practices, and join the waitlist to be among the first to use Budgie. Your money. Your data. Your ability to verify every claim we make."
@@ -12867,13 +12969,13 @@ msgstr "Requires technical setup (not plug-and-play)"
 msgid "Resell, redistribute, or sublicense the Service"
 msgstr "Resell, redistribute, or sublicense the Service"
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Reset and pull everything again"
+msgstr "Reset and pull everything again"
+
 #: src/generic/component/footer/footer.tsx
 msgid "Resources"
 msgstr "Resources"
-
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Respects OS lockout policy — five strikes prompts the device passcode"
-msgstr "Respects OS lockout policy — five strikes prompts the device passcode"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Respects the global date-range preset — Last Week, Last Month, Custom, or All Time"
@@ -13369,13 +13471,17 @@ msgstr "Settings keeps Export Database and Import Database as two neighbouring r
 msgid "Settle by transfer to a real account — no awkward \"expense\" workarounds"
 msgstr "Settle by transfer to a real account — no awkward \"expense\" workarounds"
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Setup asks for one credential and spells out how to scope it — for Binance, an API key and secret with reading enabled and trading and withdrawals switched off. Budgie stores it on the bank, not on an account, and fetches whatever that key can see."
+msgstr "Setup asks for one credential and spells out how to scope it — for Binance, an API key and secret with reading enabled and trading and withdrawals switched off. Budgie stores it on the bank, not on an account, and fetches whatever that key can see."
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Setup is non-trivial"
 msgstr "Setup is non-trivial"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Setup is two steps: enter the key and secret, then pick which assets to keep as accounts. The first sync walks your history backwards in windows — deposits and withdrawals in wide pages, rewards, Convert, fiat orders, and P2P in narrower ones — and gives up once it has crossed a long stretch of empty windows. Later runs stay incremental, and balances are re-anchored to what Binance reports, including assets you have sold down to zero."
-msgstr "Setup is two steps: enter the key and secret, then pick which assets to keep as accounts. The first sync walks your history backwards in windows — deposits and withdrawals in wide pages, rewards, Convert, fiat orders, and P2P in narrower ones — and gives up once it has crossed a long stretch of empty windows. Later runs stay incremental, and balances are re-anchored to what Binance reports, including assets you have sold down to zero."
+msgid "Setup is one screen"
+msgstr "Setup is one screen"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Setup time"
@@ -13420,10 +13526,6 @@ msgstr "Seven presets. Monday-to-Sunday weeks."
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Several production-ready libraries provide local-first infrastructure:"
 msgstr "Several production-ready libraries provide local-first infrastructure:"
-
-#: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Several years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is capped at six months by Binance's own API, so anything older cannot be pulled by any app."
-msgstr "Several years for deposits, withdrawals, trades, Convert, and Earn rewards. P2P order history is capped at six months by Binance's own API, so anything older cannot be pulled by any app."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Shortcuts integration allows some automation"
@@ -13713,8 +13815,8 @@ msgid "Split Transactions — Budgie"
 msgstr "Split Transactions — Budgie"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Spot and Funding wallets plus Flexible and Locked Simple Earn positions, folded into one balance per asset so what you see matches what Binance shows you."
-msgstr "Spot and Funding wallets plus Flexible and Locked Simple Earn positions, folded into one balance per asset so what you see matches what Binance shows you."
+msgid "Spot and Funding, as one account per wallet and asset. Flexible and Locked Simple Earn positions are added into the Spot balance for the same asset, so a coin you have staked still shows its full quantity."
+msgstr "Spot and Funding, as one account per wallet and asset. Flexible and Locked Simple Earn positions are added into the Spot balance for the same asset, so a coin you have staked still shows its full quantity."
 
 #: src/app/[lang]/features/recurring-payments-calendar/metadata.ts
 msgid "Spot the slow leak before it bills — subscription patterns plotted on a month calendar with forecasted upcoming."
@@ -13849,6 +13951,10 @@ msgstr "Step 5: Optional — Enable Direct Bank Sync"
 msgid "Step 5: Run Parallel for One Month"
 msgstr "Step 5: Run Parallel for One Month"
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Step three is the one that matters: keep only \"Enable Reading\" on, and never allow trading or withdrawals. Permissions are enforced on Binance's side, and Budgie carries no order or withdrawal call to make — every request it signs goes to a read endpoint."
+msgstr "Step three is the one that matters: keep only \"Enable Reading\" on, and never allow trading or withdrawals. Permissions are enforced on Binance's side, and Budgie carries no order or withdrawal call to make — every request it signs goes to a read endpoint."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Still to receive"
 msgstr "Still to receive"
@@ -13860,6 +13966,10 @@ msgstr "Stop paying monthly to track your money. Budgie's core features are free
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Store data locally or on infrastructure you control"
 msgstr "Store data locally or on infrastructure you control"
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Stored locally on your device"
+msgstr "Stored locally on your device"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Storing data locally is the first layer of protection. Encryption is the second. Even if someone gains physical access to your device, your financial data should remain unreadable without your authorization."
@@ -14361,6 +14471,10 @@ msgstr "The background is solid black, not a dimmed grey panel layered over a li
 msgid "The bank already told you what it was"
 msgstr "The bank already told you what it was"
 
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "The bank gets its own screen: the cards and jars synced from it, each with its balance and a switch that pauses one account while its siblings keep going. A Monobank connection can pull the bank's account list again later and offer only the accounts you have not added yet — no second token."
+msgstr "The bank gets its own screen: the cards and jars synced from it, each with its balance and a switch that pauses one account while its siblings keep going. A Monobank connection can pull the bank's account list again later and offer only the accounts you have not added yet — no second token."
+
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "The bank's category code"
 msgstr "The bank's category code"
@@ -14505,6 +14619,10 @@ msgstr "The Date chip opens a month calendar with the presets in a row underneat
 msgid "The Developer’s Guide to Mint Alternatives: Complete Comparison"
 msgstr "The Developer’s Guide to Mint Alternatives: Complete Comparison"
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "The device-passcode fallback is switched off on purpose — your PIN is the only alternative"
+msgstr "The device-passcode fallback is switched off on purpose — your PIN is the only alternative"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The distinction matters because it changes fundamental assumptions about ownership, availability, and privacy."
 msgstr "The distinction matters because it changes fundamental assumptions about ownership, availability, and privacy."
@@ -14560,6 +14678,14 @@ msgstr "The figure at the top adds every account together and reports it in the 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set a From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band. The chip shows the range you picked, and clearing it is one tap."
 msgstr "The filter row is not only about time. Next to the date, type, and category chips there is an amount range: set a From value to hunt down the large purchases, a To value to sweep up the small ones, or both to look at a band. The chip shows the range you picked, and clearing it is one tap."
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "The first row takes you to Binance's API management page, and the numbered list under it is the recipe: sign in, then create a new System-generated API key. Budgie never creates the key for you, because it never sees your Binance login."
+msgstr "The first row takes you to Binance's API management page, and the numbered list under it is the recipe: sign in, then create a new System-generated API key. Budgie never creates the key for you, because it never sees your Binance login."
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
+msgstr "The first sync walks up to five years of history backwards in windows; later runs only ask for the days since the last one"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "The following data is stored exclusively on your device and is never transmitted to our servers unless you explicitly enable optional cloud features:"
@@ -14620,6 +14746,14 @@ msgstr "The Ink & Switch paper did not invent these ideas. Distributed systems r
 #: src/beta/component/beta-empty-state/beta-empty-state.tsx
 msgid "The iOS development build hasn't been published yet. Check back after the next build run."
 msgstr "The iOS development build hasn't been published yet. Check back after the next build run."
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "The key and the secret go into the two fields below, masked as you type. Fetch Accounts asks Binance what you hold and hands you the list: tick the assets you want as accounts, and Start Sync takes it from there."
+msgstr "The key and the secret go into the two fields below, masked as you type. Fetch Accounts asks Binance what you hold and hands you the list: tick the assets you want as accounts, and Start Sync takes it from there."
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "The key is made on Binance"
+msgstr "The key is made on Binance"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "The keypad opens first. Type the amount, keep the account Budgie already picked, and save."
@@ -14735,6 +14869,10 @@ msgstr "The obvious pairs merge on import"
 msgid "The open-source security community includes:"
 msgstr "The open-source security community includes:"
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "The operating system does the matching — Budgie never sees biometric data, only the result"
+msgstr "The operating system does the matching — Budgie never sees biometric data, only the result"
+
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The other leg, still there"
 msgstr "The other leg, still there"
@@ -14774,10 +14912,6 @@ msgstr "The personal finance app market has exploded. Mint, YNAB, Copilot, Monar
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The pill counts what you missed"
 msgstr "The pill counts what you missed"
-
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "The PIN entry screen appears as a fallback. After five biometric failures, the OS itself prompts the device passcode."
-msgstr "The PIN entry screen appears as a fallback. After five biometric failures, the OS itself prompts the device passcode."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
@@ -14840,6 +14974,10 @@ msgstr "The Problem with Closed-Source Financial Software"
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "The product was free because your data was the product. Mint revenue came from recommending financial products — credit cards, loans, insurance — based on your spending patterns. As Intuit priorities shifted toward other products, investment in Mint dried up, bank connections became unreliable, and eventually the service was discontinued entirely."
 msgstr "The product was free because your data was the product. Mint revenue came from recommending financial products — credit cards, loans, insurance — based on your spending patterns. As Intuit priorities shifted toward other products, investment in Mint dried up, bank connections became unreliable, and eventually the service was discontinued entirely."
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "The prompt fires by itself as the lock screen appears — no extra tap at app open"
+msgstr "The prompt fires by itself as the lock screen appears — no extra tap at app open"
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "The question a category cannot answer"
@@ -15005,6 +15143,10 @@ msgstr "The spoken currency picks the matching account automatically"
 msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
 msgstr "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
 
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and the device has a biometric enrolled — there is no biometric-only mode."
+msgstr "The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and the device has a biometric enrolled — there is no biometric-only mode."
+
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "The Sync Data Repairs screen is where you see that damage and undo it. It scans each bank-sync source, shows the duplicate count per source before changing anything, and soft-deletes only the duplicated imported rows once you confirm."
 msgstr "The Sync Data Repairs screen is where you see that damage and undo it. It scans each bank-sync source, shows the duplicate count per source before changing anything, and soft-deletes only the duplicated imported rows once you confirm."
@@ -15121,6 +15263,10 @@ msgstr "The write completes locally with no network activity"
 #: src/app/[lang]/features/dark-mode/opengraph-image.tsx
 msgid "theme"
 msgstr "theme"
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Then it fetches the accounts"
+msgstr "Then it fetches the accounts"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Then layer sync on top. Modern sync engines make this incremental approach practical. You do not need to design for distributed systems from day one."
@@ -15409,6 +15555,10 @@ msgstr "Three screens: pick tags on the expense form, read them back on the list
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
 msgstr "Three screens: saving an expense, coming back to one you already saved, and the list they all land in."
+
+#: src/app/[lang]/features/bank-integration-management/page.tsx
+msgid "Three screens: the credential you paste once, the bank screen that lists everything it unlocked, and the sync controls each account keeps for itself."
+msgstr "Three screens: the credential you paste once, the bank screen that lists everything it unlocked, and the sync controls each account keeps for itself."
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Three screens: the expense that was never spending, the picker that names the other account, and the transfer the row turns into."
@@ -15724,6 +15874,10 @@ msgstr "Turn it on and account balances and net worth swap to a placeholder the 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Turn the radio off, nothing changes"
 msgstr "Turn the radio off, nothing changes"
+
+#: src/app/[lang]/features/biometric-authentication/page.tsx
+msgid "Turned off, unavailable, cancelled or refused — every one of those paths lands on the PIN keypad, because the keypad is what the lock screen renders in the first place. Budgie asks the system not to offer the device passcode as a fallback, so your Budgie PIN is the only alternative."
+msgstr "Turned off, unavailable, cancelled or refused — every one of those paths lands on the PIN keypad, because the keypad is what the lock screen renders in the first place. Budgie asks the system not to offer the device passcode as a fallback, so your Budgie PIN is the only alternative."
 
 #: src/generic/component/footer/footer.tsx
 msgid "Twitter"
@@ -16599,8 +16753,8 @@ msgid "What Sets Budgie Apart:"
 msgstr "What Sets Budgie Apart:"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
-msgid "What the screen offers next depends on the bank. Connections that talk to a live API can pull the bank's account list and add whatever you left out the first time. Statement-based banks offer an import action instead. Both can open a new deposit account that starts out attached to the same bank."
-msgstr "What the screen offers next depends on the bank. Connections that talk to a live API can pull the bank's account list and add whatever you left out the first time. Statement-based banks offer an import action instead. Both can open a new deposit account that starts out attached to the same bank."
+msgid "What the screen offers next depends on the bank. A Monobank connection can pull the bank's account list and add whatever you left out the first time. Statement-based banks — PrivatBank and Erste — offer a file import action instead. Both can open a new deposit account that starts out attached to the same bank."
+msgstr "What the screen offers next depends on the bank. A Monobank connection can pull the bank's account list and add whatever you left out the first time. Statement-based banks — PrivatBank and Erste — offer a file import action instead. Both can open a new deposit account that starts out attached to the same bank."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "What the switch actually hides"
@@ -16898,6 +17052,10 @@ msgstr "When your database is encrypted, the file on disk appears as random bina
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "When your financial information lives on someone else’s server, you’re trusting that:"
 msgstr "When your financial information lives on someone else’s server, you’re trusting that:"
+
+#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
+msgid "Where a cloud-free budget app keeps your money data"
+msgstr "Where a cloud-free budget app keeps your money data"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Where a server would be, there is a file"
@@ -17644,8 +17802,8 @@ msgid "Yes — see Smart Transfer Consolidation. Bank-synced debits and credits 
 msgstr "Yes — see Smart Transfer Consolidation. Bank-synced debits and credits matching by amount, time window, and counter-IBAN auto-merge into a single transfer."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Yes — Settings → PIN → toggle off “Unlock with biometrics”. The PIN remains active."
-msgstr "Yes — Settings → PIN → toggle off “Unlock with biometrics”. The PIN remains active."
+msgid "Yes — Settings → Security → App Lock, then the Face ID / Touch ID row inside the card. The PIN stays active. Turning App Lock off switches biometrics off with it."
+msgstr "Yes — Settings → Security → App Lock, then the Face ID / Touch ID row inside the card. The PIN stays active. Turning App Lock off switches biometrics off with it."
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "Yes — system theme by default. Override to Light or Dark in Settings if you prefer."
@@ -18003,10 +18161,6 @@ msgstr "You are responsible for verifying all financial information and calculat
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "YOU ARE SOLELY RESPONSIBLE FOR BACKING UP YOUR DATA. While the Service stores data locally on your device and may offer optional cloud backup features, we are not responsible for any loss of data. We strongly recommend regularly exporting your data using the built-in export features."
 msgstr "YOU ARE SOLELY RESPONSIBLE FOR BACKING UP YOUR DATA. While the Service stores data locally on your device and may offer optional cloud backup features, we are not responsible for any loss of data. We strongly recommend regularly exporting your data using the built-in export features."
-
-#: src/app/[lang]/features/private-budget-app-alternative/page.tsx
-msgid "You backup to your own iCloud Drive, Google Drive, or Dropbox. Budgie never sees your data — your cloud, your keys."
-msgstr "You backup to your own iCloud Drive, Google Drive, or Dropbox. Budgie never sees your data — your cloud, your keys."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "You become the product, not the customer"

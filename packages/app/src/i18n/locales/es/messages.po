@@ -820,6 +820,10 @@ msgstr "Las categorías desglosan tus gastos automáticamente. Añade una transa
 msgid "Categorise imports automatically"
 msgstr "Categorizar importaciones automáticamente"
 
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
+msgstr "Categoriza transacciones, sugiere etiquetas y transcribe notas de voz en este dispositivo. Descarga unos 2,5 GB de modelos una sola vez: mejor con Wi-Fi."
+
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
@@ -1235,6 +1239,10 @@ msgstr "No se pudo desconsolidar la transacción."
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "No se pudieron actualizar las notificaciones"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Could not update on-device AI"
+msgstr "No se pudo actualizar la IA en el dispositivo"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -2284,6 +2292,10 @@ msgstr "Modelo de IA no disponible"
 msgid "Loading AI model..."
 msgstr "Cargando modelo de IA..."
 
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Loading debt progress"
+msgstr "Cargando progreso de la deuda"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Cargando historial del mercado"
@@ -2732,6 +2744,10 @@ msgstr "No se importa nada del pasado"
 #: src/runway/component/runway-meter/runway-meter.tsx
 msgid "now"
 msgstr "ahora"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "On-device AI"
+msgstr "IA en el dispositivo"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx

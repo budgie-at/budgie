@@ -1130,6 +1130,76 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
     { slug: 'primary-tag', locale: 'uk', scene: 'primary-tag-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
     { slug: 'primary-tag', locale: 'uk', scene: 'primary-tag-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     {
+        slug: 'private-budget-app-alternative',
+        locale: 'de',
+        scene: 'private-budget-app-alternative-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'private-budget-app-alternative',
+        locale: 'de',
+        scene: 'private-budget-app-alternative-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'private-budget-app-alternative',
+        locale: 'en',
+        scene: 'private-budget-app-alternative-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'private-budget-app-alternative',
+        locale: 'en',
+        scene: 'private-budget-app-alternative-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'private-budget-app-alternative',
+        locale: 'es',
+        scene: 'private-budget-app-alternative-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'private-budget-app-alternative',
+        locale: 'es',
+        scene: 'private-budget-app-alternative-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'private-budget-app-alternative',
+        locale: 'fr',
+        scene: 'private-budget-app-alternative-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'private-budget-app-alternative',
+        locale: 'fr',
+        scene: 'private-budget-app-alternative-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'private-budget-app-alternative',
+        locale: 'uk',
+        scene: 'private-budget-app-alternative-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'private-budget-app-alternative',
+        locale: 'uk',
+        scene: 'private-budget-app-alternative-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
         slug: 'recurring-payments-calendar',
         locale: 'de',
         scene: 'recurring-payments-calendar-1',

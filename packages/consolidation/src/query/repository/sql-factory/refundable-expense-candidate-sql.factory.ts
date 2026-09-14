@@ -1,5 +1,7 @@
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 
+import type { LanguageEnum } from '@budgie/contracts';
+
 const MANUAL_RECOMMENDED_AMOUNT_DISTANCE_RATIO = 0.05;
 const MANUAL_RECOMMENDED_DATE_DISTANCE_SECONDS = 604_800;
 
@@ -76,7 +78,13 @@ const buildManualCandidateSelectSql = (): string => `
         account.title AS accountTitle,
         instrument.code AS currencyCode,
         instrument.symbol AS currencySymbol,
-        category.title AS categoryTitle,
+        COALESCE(
+            (SELECT translation.title
+             FROM default_category_translations translation
+             WHERE translation.category_id = category.id
+               AND translation.language = ?),
+            category.title
+        ) AS categoryTitle,
         category.title_en AS categoryTitleEn,
         category.icon AS categoryIcon,
         ${buildManualRecommendedSql()} AS isRecommended,
@@ -120,11 +128,16 @@ export const REFUNDABLE_EXPENSE_CANDIDATES_SQL = `
     LIMIT 80
 `;
 
-export const buildRefundableExpenseCandidateParams = (refundIncomeTransactionId: number, searchPattern: string): (number | string)[] => [
+export const buildRefundableExpenseCandidateParams = (
+    refundIncomeTransactionId: number,
+    searchPattern: string,
+    language: LanguageEnum
+): (number | string)[] => [
     refundIncomeTransactionId,
     TransactionTypeEnum.INCOME,
     TransactionEntryTypeEnum.DEBIT,
     TransactionEntryTypeEnum.DEBIT,
+    language,
     MANUAL_RECOMMENDED_AMOUNT_DISTANCE_RATIO,
     MANUAL_RECOMMENDED_DATE_DISTANCE_SECONDS,
     TransactionEntryTypeEnum.CREDIT,

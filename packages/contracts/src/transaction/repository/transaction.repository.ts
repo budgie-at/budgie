@@ -222,12 +222,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     @Log(
-        canonicalTransactionId => `enter canonicalTransactionId=${canonicalTransactionId}`,
-        (result, canonicalTransactionId) =>
-            `done canonicalTransactionId=${canonicalTransactionId} sourceTransactionIds=${result.map(row => row.sourceTransactionId).join(',')}`,
-        (error, canonicalTransactionId) => `throw canonicalTransactionId=${canonicalTransactionId} error=${getErrorMessage(error)}`
+        (canonicalTransactionId, language) => `enter canonicalTransactionId=${canonicalTransactionId} language=${language}`,
+        (result, canonicalTransactionId, language) =>
+            `done canonicalTransactionId=${canonicalTransactionId} language=${language} sourceTransactionIds=${result.map(row => row.sourceTransactionId).join(',')}`,
+        (error, canonicalTransactionId, language) =>
+            `throw canonicalTransactionId=${canonicalTransactionId} language=${language} error=${getErrorMessage(error)}`
     )
-    async findConsolidationSources(canonicalTransactionId: number): Promise<ConsolidationSourceRowInterface[]> {
+    async findConsolidationSources(canonicalTransactionId: number, language: LanguageEnum): Promise<ConsolidationSourceRowInterface[]> {
         return await this.db.$client.getAllAsync<ConsolidationSourceRowInterface>(
             `SELECT
                 moved.transaction_id AS canonicalTransactionId,
@@ -256,7 +257,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 instrument.id AS instrumentId,
                 instrument.code AS currencyCode,
                 instrument.symbol AS currencySymbol,
-                category.title AS categoryTitle,
+                COALESCE(
+                    (SELECT translation.title
+                     FROM default_category_translations translation
+                     WHERE translation.category_id = category.id
+                       AND translation.language = ?),
+                    category.title
+                ) AS categoryTitle,
                 category.icon AS categoryIcon,
                 mcc.mcc AS mcc,
                 mcc.short_description AS mccDescription,
@@ -276,7 +283,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
               AND moved.original_transaction_id IS NOT NULL
               AND moved.deleted_at IS NULL
             ORDER BY source.operated_at ASC, source.id ASC, moved.id ASC`,
-            [canonicalTransactionId]
+            [language, canonicalTransactionId]
         );
     }
 
