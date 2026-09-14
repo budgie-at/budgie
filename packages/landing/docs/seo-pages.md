@@ -164,6 +164,8 @@ The story renders a server compound root; only its inner observer island is `"us
 
 Reference implementation: `src/app/[lang]/features/net-worth-tracker/page.tsx`.
 
+i18n authoring contract, callout anchor measurement across locales, and the locale QA checklist to run before merging a story page: `docs/feature-story-i18n-qa.md`.
+
 ### 13. Metadata char budgets
 
 Titles must fit 60 characters including the ` | Budgie` template suffix; descriptions must fit 160 characters. The `fitText` util (`src/generic/util/fit-text.util.ts`) is applied inside the metadata builders, so page copy in `metadata.ts` sidecars may be longer — the builder clamps it. Do not add per-page clamping logic.

@@ -15,52 +15,66 @@ import { DebtAccountCardContext } from '../../context/debt-account-card.context'
 import { isDebtDeadlineUrgent } from '../../utils/is-debt-deadline-urgent.util';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { DebtAccountCardEmpty } from '../debt-account-card-empty/debt-account-card-empty';
+import { DebtAccountCardFooterSkeleton } from '../debt-account-card-footer-skeleton/debt-account-card-footer-skeleton';
 import { DebtAccountCardFooter } from '../debt-account-card-footer/debt-account-card-footer';
+import { DebtAccountCardSkeleton } from '../debt-account-card-skeleton/debt-account-card-skeleton';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
 
 import type { AccountEntityInterface, DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'createdAt' | 'title' | 'icon' | 'debtType' | 'targetBalance' | 'deadline'> {
+interface Props extends Pick<AccountEntityInterface, 'id' | 'createdAt' | 'title' | 'icon' | 'debtType' | 'deadline'> {
     readonly balance: number;
     readonly className?: string;
-    readonly debtProgressSummary?: DebtAccountProgressSummaryInterface;
+    readonly debtProgressSummary: DebtAccountProgressSummaryInterface | null;
     readonly instrumentSymbol: string;
 }
 
 export const DebtAccountCard = (props: Props) => {
-    const { id, createdAt, title, icon, balance, debtType, targetBalance, deadline, className, debtProgressSummary, instrumentSymbol } =
-        props;
+    const { id, createdAt, title, icon, balance, debtType, deadline, className, debtProgressSummary, instrumentSymbol } = props;
 
     const { t } = useLingui();
     const { formatCompactFullDate } = useFormatDate();
     const protectAmount = useProtectedAmountLabel();
 
-    const summary: DebtAccountProgressSummaryInterface = debtProgressSummary ?? {
-        outstandingAmount: targetBalance,
-        overpaidAmount: 0,
-        paidAmount: 0,
-        percentage: 0,
-        totalAmount: targetBalance
-    };
     const isUrgent = isDefined(deadline) && isDebtDeadlineUrgent(createdAt, deadline);
-    const isSettled = !isPositiveNumber(summary.outstandingAmount) && summary.percentage >= 100;
-    const progressLabel = isSettled ? t`Settled` : t(DEBT_SETTLED_LABEL[debtType]);
-    const displayPercentage = summary.percentage >= 100 ? 100 : Math.floor(summary.percentage);
-    const contextValue = {
-        displayPercentage,
-        instrumentSymbol,
-        settledLabel: isPositiveNumber(summary.overpaidAmount) ? t`Overpaid` : progressLabel,
-        summary,
-        title
-    };
-    const hasDebt = isPositiveNumber(summary.totalAmount);
-    const balanceContent = hasDebt ? <DebtAccountCardSummary /> : <DebtAccountCardEmpty />;
     const topRight = isDefined(deadline) ? (
         <View className="flex-row items-center gap-x-xs">
             <Icon icon={UserIconNameEnum.Calendar} className="text-secondary-foreground" size={12} />
             <Text className="text-secondary-foreground text-xxs font-medium">{formatCompactFullDate(deadline)}</Text>
         </View>
     ) : null;
+
+    if (!isDefined(debtProgressSummary)) {
+        return (
+            <AccountCardBase
+                id={id}
+                title={title}
+                icon={icon}
+                balance={balance}
+                instrumentSymbol={instrumentSymbol}
+                circleVariant={ACCOUNT_COLOR.DEBT}
+                accessibilityLabel={`${title}. ${t`Loading debt progress`}`}
+                balanceContent={<DebtAccountCardSkeleton />}
+                topRight={topRight}
+                className={cn(className, isUrgent && 'border-dark-warning-corner')}
+            >
+                <DebtAccountCardFooterSkeleton />
+            </AccountCardBase>
+        );
+    }
+
+    const isSettled = !isPositiveNumber(debtProgressSummary.outstandingAmount) && debtProgressSummary.percentage >= 100;
+    const progressLabel = isSettled ? t`Settled` : t(DEBT_SETTLED_LABEL[debtType]);
+    const displayPercentage = debtProgressSummary.percentage >= 100 ? 100 : Math.floor(debtProgressSummary.percentage);
+    const contextValue = {
+        displayPercentage,
+        instrumentSymbol,
+        settledLabel: isPositiveNumber(debtProgressSummary.overpaidAmount) ? t`Overpaid` : progressLabel,
+        summary: debtProgressSummary,
+        title
+    };
+    const hasDebt = isPositiveNumber(debtProgressSummary.totalAmount);
+    const balanceContent = hasDebt ? <DebtAccountCardSummary /> : <DebtAccountCardEmpty />;
 
     return (
         <DebtAccountCardContext.Provider value={contextValue}>
@@ -71,7 +85,7 @@ export const DebtAccountCard = (props: Props) => {
                 balance={balance}
                 instrumentSymbol={instrumentSymbol}
                 circleVariant={ACCOUNT_COLOR.DEBT}
-                accessibilityLabel={`${title}. ${t(DEBT_REMAINING_LABEL[debtType])}: ${protectAmount(summary.outstandingAmount, instrumentSymbol)}. ${t(DEBT_SETTLED_LABEL[debtType])}: ${protectAmount(summary.paidAmount, instrumentSymbol)}. ${t`Total`}: ${protectAmount(summary.totalAmount, instrumentSymbol)}. ${displayPercentage}%`}
+                accessibilityLabel={`${title}. ${t(DEBT_REMAINING_LABEL[debtType])}: ${protectAmount(debtProgressSummary.outstandingAmount, instrumentSymbol)}. ${t(DEBT_SETTLED_LABEL[debtType])}: ${protectAmount(debtProgressSummary.paidAmount, instrumentSymbol)}. ${t`Total`}: ${protectAmount(debtProgressSummary.totalAmount, instrumentSymbol)}. ${displayPercentage}%`}
                 balanceContent={balanceContent}
                 topRight={topRight}
                 className={cn(className, isUrgent && 'border-dark-warning-corner')}
