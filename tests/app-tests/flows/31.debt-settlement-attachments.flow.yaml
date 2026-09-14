@@ -686,7 +686,8 @@ appId: ${APP_ID}
       env:
           CATEGORY_NAME: 'E2E Debt Attachment Category'
 
-- tapOn: 'Set fee'
+- tapOn:
+      id: 'TransactionFeePill'
 - extendedWaitUntil:
       visible:
           id: 'SplitEntryRow.Amount.0'
@@ -694,7 +695,8 @@ appId: ${APP_ID}
 - tapOn:
       id: 'SplitEntryRow.Amount.0'
 - inputText: '5'
-- tapOn: 'Save fee'
+- tapOn:
+      id: 'TransactionFeeModal.SaveButton'
 - extendedWaitUntil:
       notVisible:
           id: 'SplitEntryRow.Amount.0'
