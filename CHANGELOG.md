@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.59.1](https://github.com/budgie-at/budgie/compare/v6.59.0...v6.59.1) (2026-09-14)
+
+
+### Bug Fixes
+
+* **landing:** align csv-import, database-backup and budget-planning metadata with the app ([80277e8](https://github.com/budgie-at/budgie/commit/80277e894913c3892755c7d293ca4d6ace64f185)), closes [#994](https://github.com/budgie-at/budgie/issues/994) [#1001](https://github.com/budgie-at/budgie/issues/1001) [#1008](https://github.com/budgie-at/budgie/issues/1008) [#993](https://github.com/budgie-at/budgie/issues/993) [#1000](https://github.com/budgie-at/budgie/issues/1000) [#1007](https://github.com/budgie-at/budgie/issues/1007)
+* **landing:** use an imperative Spanish restore clause in database-backup tagline ([7102fe7](https://github.com/budgie-at/budgie/commit/7102fe78ec8b295158211a2264cf530906f13cbd)), closes [#1012](https://github.com/budgie-at/budgie/issues/1012)
+
+
+
+
+
 # [6.59.0](https://github.com/budgie-at/budgie/compare/v6.58.0...v6.59.0) (2026-09-14)
 
 
