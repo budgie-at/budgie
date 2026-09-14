@@ -7571,7 +7571,7 @@ msgstr "Face ID maneja la clave de cifrado."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID opens the lock, the PIN owns the key"
-msgstr "Face ID abre el bloqueo, el PIN guarda la clave"
+msgstr "Face ID abre el bloqueo, el PIN es la clave"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
