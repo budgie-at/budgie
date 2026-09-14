@@ -132,15 +132,15 @@
         },
         {
             "name": "erste-bank-pdf-import-1",
-            "flow": "flows/media/erste-bank-pdf-import-1.flow.yaml"
+            "flow": "flows/media/erste-bank-pdf-import-1.picker-pending-1042.yaml"
         },
         {
             "name": "privatbank-import-1",
-            "flow": "flows/media/privatbank-import-1.flow.yaml"
+            "flow": "flows/media/privatbank-import-1.picker-pending-1042.yaml"
         },
         {
             "name": "privatbank-import-2",
-            "flow": "flows/media/privatbank-import-2.flow.yaml"
+            "flow": "flows/media/privatbank-import-2.picker-pending-1042.yaml"
         },
         {
             "name": "custom-categories-1",
