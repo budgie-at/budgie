@@ -8,7 +8,7 @@
         },
         "ts": {
             "dependsOn": ["^ts"],
-            "outputs": ["node_modules/.cache/tsbuildinfo.json"]
+            "outputs": ["node_modules/.cache/tsbuildinfo.json", "dist/**"]
         },
         "lint:eslint": {
             "dependsOn": ["^lint:eslint"],

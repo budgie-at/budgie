@@ -817,6 +817,10 @@ msgstr "Categories break your spending down automatically. Add a transaction, or
 msgid "Categorise imports automatically"
 msgstr "Categorise imports automatically"
 
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
+msgstr "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
+
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
@@ -1232,6 +1236,10 @@ msgstr "Could not unconsolidate transaction."
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Could not update notifications"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "Could not update on-device AI"
+msgstr "Could not update on-device AI"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -2276,6 +2284,10 @@ msgstr "LLM not ready"
 msgid "Loading AI model..."
 msgstr "Loading AI model..."
 
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Loading debt progress"
+msgstr "Loading debt progress"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Loading market history"
@@ -2724,6 +2736,10 @@ msgstr "Nothing from the past is imported"
 #: src/runway/component/runway-meter/runway-meter.tsx
 msgid "now"
 msgstr "now"
+
+#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
+msgid "On-device AI"
+msgstr "On-device AI"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx

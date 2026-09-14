@@ -49,6 +49,7 @@ Before starting any of the work areas below, read the corresponding doc first.
 | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
 | Blog articles, feature pages, pillar hubs, legal pages, sitemap entries, `generateMetadata`, JSON-LD helpers, anything SEO-related     | `docs/seo-pages.md`  |
 | `<Trans>` / `t` / `msg`, `generateMetadata` i18n strings, catalog `.po`/`.ts` files, RSC i18n setup, dispatching translation subagents | `docs/lingui-rsc.md` |
+| `FeatureStory` page copy, callout `y`/`x` anchors, i18n sync/rebase for a story PR, locale QA before merging a story page              | `docs/feature-story-i18n-qa.md` |
 | IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, API/root `.txt` proxy bypass rules                       | `docs/indexnow.md`   |
 | Product screenshots and motion clips, `public/media/**`, `<AppShot>`/`<AppClip>`, the generated media manifest, `media:manifest`/`media:check` | `tests/app-tests/readme.md` |
 
@@ -457,3 +458,13 @@ experimental: {
 - **Sections in `/components/`** - Page sections organized by feature
 - **Base UI in `/ui/`** - Reusable primitives
 - **No barrel exports** - Direct imports only
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

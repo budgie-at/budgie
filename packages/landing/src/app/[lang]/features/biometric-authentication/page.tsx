@@ -16,6 +16,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -73,10 +74,54 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 locale={lang}
                 tagline={
                     <Trans>
-                        Bank-grade biometric unlock that drives the same encryption key as your PIN — frictionless and uncompromising.
+                        One glance past Budgie&apos;s lock screen. The four digits you chose stay the key your database is encrypted with.
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Face ID opens the lock, the PIN owns the key</Trans>}>
+                    <Trans>
+                        Biometric unlock is a shortcut past Budgie&apos;s lock screen. What encrypts the database underneath is still the
+                        four-digit PIN.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Point index={0}>
+                    <Trans>
+                        The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and
+                        the device has a biometric enrolled — there is no biometric-only mode.
+                    </Trans>
+                </FeatureStory.Point>
+
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="screenshot-protection-1"
+                    slug="screenshot-protection"
+                >
+                    <FeatureStory.Callout y={0.42}>
+                        <Trans>App Lock: PIN and Face ID</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Point index={1}>
+                    <Trans>
+                        On a cold launch Budgie asks the system to authenticate you the moment the lock screen appears, and a successful
+                        scan takes you straight in. The keypad also keeps a scan button, so you can ask for it again.
+                    </Trans>
+                </FeatureStory.Point>
+                <FeatureStory.Point index={2}>
+                    <Trans>
+                        Cancel or fail and nothing is lost: the keypad was already there. Budgie switches the device-passcode fallback off
+                        on purpose, so your PIN is the only other way in.
+                    </Trans>
+                </FeatureStory.Point>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -84,14 +129,15 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Biometrics are the right balance for an expense app you open ten times a day. Budgie hooks into the platform Secure
-                        Enclave / TEE so the device, not Budgie, vouches for you.
+                        Biometrics are the right balance for an expense app you open ten times a day. Budgie calls the system authentication
+                        API, so the matching happens in the operating system and Budgie only ever learns whether it succeeded.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Disabled biometrics fall back to PIN. Failed biometric attempts respect the OS lockout policy — five strikes and
-                        you&apos;re prompted for the device passcode, not just our PIN.
+                        Turned off, unavailable, cancelled or refused — every one of those paths lands on the PIN keypad, because the keypad
+                        is what the lock screen renders in the first place. Budgie asks the system not to offer the device passcode as a
+                        fallback, so your Budgie PIN is the only alternative.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -102,33 +148,21 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Face ID and Touch ID supported on every modern iOS and Android device</Trans>
+                        <Trans>Face ID unlock on the lock screen, offered when the device has it enrolled</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Biometric key fragment lives in the Secure Enclave / Keystore — Budgie never sees raw biometric data</Trans>
+                        <Trans>The operating system does the matching — Budgie never sees biometric data, only the result</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Falls back to PIN if biometrics are disabled or unavailable</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Respects OS lockout policy — five strikes prompts the device passcode</Trans>
+                        <Trans>The device-passcode fallback is switched off on purpose — your PIN is the only alternative</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>No additional friction at app open — same speed as your bank app</Trans>
+                        <Trans>The prompt fires by itself as the lock screen appears — no extra tap at app open</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Enable in Settings → PIN → &quot;Unlock with biometrics&quot;. The platform stores a biometric-bound key fragment in
-                        the Secure Enclave/Keystore; Budgie combines it with your PIN-derived key to unlock SQLCipher.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -136,8 +170,8 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     question={<Trans>Does Budgie store my biometric data?</Trans>}
                     answer={
                         <Trans>
-                            No. The platform manages biometric matching in the Secure Enclave (iOS) or Keystore (Android). Budgie only
-                            receives a yes/no signal plus access to a stored key fragment.
+                            No. The operating system manages biometric matching and hands Budgie nothing but the result. There is no key
+                            fragment and no biometric material on Budgie&apos;s side — the encryption key is your PIN.
                         </Trans>
                     }
                 />
@@ -145,14 +179,19 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     question={<Trans>What if biometrics fail?</Trans>}
                     answer={
                         <Trans>
-                            The PIN entry screen appears as a fallback. After five biometric failures, the OS itself prompts the device
-                            passcode.
+                            Nothing dramatic: the PIN keypad is already on screen, so you simply type your PIN. Budgie turns the
+                            device-passcode fallback off, and there is no attempt counter that locks you out of your own database.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Can I disable biometrics?</Trans>}
-                    answer={<Trans>Yes — Settings → PIN → toggle off &ldquo;Unlock with biometrics&rdquo;. The PIN remains active.</Trans>}
+                    answer={
+                        <Trans>
+                            Yes — Settings → Security → App Lock, then the Face ID / Touch ID row inside the card. The PIN stays active.
+                            Turning App Lock off switches biometrics off with it.
+                        </Trans>
+                    }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Is Face ID safer than a PIN?</Trans>}
