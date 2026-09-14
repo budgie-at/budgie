@@ -48,27 +48,33 @@
         },
         {
             "name": "voice-transaction-entry-1",
-            "flow": "flows/media/ai-build/voice-transaction-entry-1.flow.yaml"
+            "flow": "flows/media/ai-build/voice-transaction-entry-1.flow.yaml",
+            "locales": []
         },
         {
             "name": "voice-transaction-entry-2",
-            "flow": "flows/media/ai-build/voice-transaction-entry-2.flow.yaml"
+            "flow": "flows/media/ai-build/voice-transaction-entry-2.flow.yaml",
+            "locales": []
         },
         {
             "name": "ai-auto-categorization-1",
-            "flow": "flows/media/ai-build/ai-auto-categorization-1.flow.yaml"
+            "flow": "flows/media/ai-build/ai-auto-categorization-1.flow.yaml",
+            "locales": []
         },
         {
             "name": "ai-transaction-suggestions-1",
-            "flow": "flows/media/ai-build/ai-transaction-suggestions-1.flow.yaml"
+            "flow": "flows/media/ai-build/ai-transaction-suggestions-1.flow.yaml",
+            "locales": []
         },
         {
             "name": "ai-tag-suggestions-1",
-            "flow": "flows/media/ai-build/ai-tag-suggestions-1.flow.yaml"
+            "flow": "flows/media/ai-build/ai-tag-suggestions-1.flow.yaml",
+            "locales": []
         },
         {
             "name": "on-device-ai-budget-app-1",
-            "deepLink": "budgie://settings?anchor=ai"
+            "deepLink": "budgie://settings?anchor=ai",
+            "settleSeconds": 20
         },
         {
             "name": "no-bank-login-budget-app-1",

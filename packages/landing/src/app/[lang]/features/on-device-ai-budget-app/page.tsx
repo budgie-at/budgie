@@ -86,7 +86,7 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                 <AppShot
                     alt={t(
                         i18n
-                    )`Budgie settings screen stating that every piece of financial data stays on the device with no cloud sync or tracking`}
+                    )`Budgie settings screen showing the AI section with its on-device AI switch and model status, and no account or cloud sync`}
                     locale={lang}
                     scene="on-device-ai-budget-app-1"
                     slug="on-device-ai-budget-app"

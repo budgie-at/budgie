@@ -81,16 +81,29 @@ Every flow under `flows/media/ai-build/` needs a binary built **without**
 `llama.rn` and `react-native-audio-api` plugins and sets
 `extra.aiEnabled = false`, which unmounts the Settings → AI group, the voice
 entry button and every suggestion pill, so those flows can only fail there.
-
-Run `.github/workflows/ios-e2e-ai-build.yml` (`workflow_dispatch`) and download
+Run `.github/workflows/ios-e2e-ai-build.yml` (`workflow_dispatch`) and install
 its `ios-e2e-app-e2e-ai` artifact; the Mac Studio cannot build Release locally
-(#961). Then, per simulator:
+(#961).
+
+`on-device-ai-budget-app-1` captures on that build with AI consent left off:
+the group mounts from the build flag alone, so it needs no models and the app
+stays stable. It carries its own `settleSeconds` because the AI build's first
+paint is well past the 6 s default.
+
+The five scenes that need live inference — `voice-transaction-entry-1`/`-2`,
+`ai-auto-categorization-1`, `ai-transaction-suggestions-1` and
+`ai-tag-suggestions-1` — are parked with `"locales": []`, which keeps their
+flows covered by `test-landing-media-config.sh` while capturing nothing. They
+stay blocked on #1037: granting consent makes `bootModels()` load Qwen3,
+nomic-embed and Whisper concurrently under `use_mlock`, and the simulator
+force-quits the app at ~3.5 GB RSS (also at ~2.7 GB with Whisper stubbed out)
+before any cell can settle. Unpark them once #1037 lands, staging the models
+first so no run waits on the ~2.5 GB download:
 
 ```bash
 xcrun simctl install <udid> Base.app
 xcrun simctl privacy <udid> grant microphone com.vitalyiegorov.budgie.e2e
 bash tests/app-tests/scripts/stage-ai-models.sh <udid> com.vitalyiegorov.budgie.e2e
-pnpm media:capture -- --udid <udid> --skip-install --scenes voice-transaction-entry-1,...
 ```
 
 `stage-ai-models.sh` clones Qwen3 1.7B Q4_K_M (1.11 GB), nomic-embed-text-v2-moe
@@ -99,13 +112,9 @@ the container's `Documents/` (Whisper into `Documents/ai-models/`), which is
 exactly where `download-model.util.ts` and `whisper-model.service.ts` look before
 downloading. Fetch that cache once from the URLs in
 `packages/app/src/ai/util/ai-constants.util.ts` and
-`packages/app/src/ai/constant/whisper-model.constant.ts`.
-
-The AI subsystem is also gated on the `settings.isAiEnabled` consent that only
-onboarding writes (#962), and `showcase.db` predates the migration that adds the
-column. `scenes/shared/ai-consent.sql` therefore replays the pending migrations
-the app would run at launch, marks them applied, and grants consent; AI scene
-overlays `.read` it.
+`packages/app/src/ai/constant/whisper-model.constant.ts`. Staging must follow
+`simctl install`: installing a different build creates a new data container and
+drops anything staged into the old one.
 
 `.github/workflows/media-smoke.yml` runs every `flows/media/*.flow.yaml` once
 per PR touching them and nightly, on one shard, seeding each flow's scene
@@ -114,7 +123,8 @@ per PR touching them and nightly, on one shard, seeding each flow's scene
 out of the full iOS suite. `pin-app-lock-clip-1` is excluded until #697 makes
 the seed hook produce a SQLCipher database for lock-flag scenes. The
 `flows/media/ai-build/` flows need no exclude pattern: the smoke job's
-`flows-max-depth` of 1 already keeps subdirectories out of the shard. There is no
+`flows-max-depth` of 1 already keeps subdirectories out of the shard, and they
+cannot run on its AI-disabled build anyway. There is no
 CSV import clip: the flow recorded the iOS Files picker, which both needs
 E2EFixtures on the CI runner and exposes `01.db`…`09.db` fixture filenames.
 

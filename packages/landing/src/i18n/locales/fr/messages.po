@@ -4488,6 +4488,10 @@ msgstr "Écran des paramètres de Budgie listant les options de confidentialité
 msgid "Budgie settings screen showing the 100% offline and private card above app lock and screenshot protection"
 msgstr "Écran des réglages de Budgie avec la carte 100 % hors ligne et privée au-dessus du verrouillage et de la protection des captures"
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Budgie settings screen showing the AI section with its on-device AI switch and model status, and no account or cloud sync"
+msgstr "Écran des réglages de Budgie montrant la section IA, son interrupteur d'IA sur l'appareil et l'état du modèle, sans compte ni synchronisation cloud"
+
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "Budgie settings screen showing the data management section with Export CSV and Export Database rows"
 msgstr "Écran des paramètres de Budgie montrant la section gestion des données avec les lignes Exporter CSV et Exporter la base de données"
@@ -4500,10 +4504,6 @@ msgstr "Écran des paramètres de Budgie affichant l’ensemble des options, san
 msgid "Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch"
 msgstr "Écran des paramètres de Budgie montrant la section Sécurité : la carte de verrouillage par code PIN au-dessus d'un interrupteur de protection des captures d'écran activé"
 
-#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
-msgid "Budgie settings screen stating that every piece of financial data stays on the device with no cloud sync or tracking"
-msgstr "Écran des paramètres de Budgie indiquant que toutes les données financières restent sur l’appareil, sans synchronisation cloud ni suivi"
-
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off"
 msgstr "Écran Paramètres de Budgie avec une carte Confidentialité indiquant que toutes les données financières sont stockées localement sur l'appareil et, en dessous, le groupe Sécurité où le verrouillage de l'application n'est pas encore activé et la protection des captures d'écran est désactivée"
@@ -4515,10 +4515,6 @@ msgstr "Écran des paramètres de Budgie avec les lignes sécurité, langue, dev
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Budgie settings screen with the General section showing the Language row set to the active language above Main Currency and Default Account"
 msgstr "Écran des paramètres de Budgie avec la section Général affichant la ligne Langue réglée sur la langue active, au-dessus de Devise principale et Compte par défaut"
-
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle"
-msgstr "Écran des paramètres de Budgie avec la mention hors ligne et privé au-dessus de l’option d’attribution automatique des catégories par code MCC"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
