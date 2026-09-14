@@ -27,7 +27,7 @@ const CHART_PADDING_RIGHT = 6;
 const CHART_PADDING_TOP = 18;
 const CHART_PADDING_BOTTOM = 20;
 const LABEL_FONT_SIZE = 8;
-const ZERO_LABEL_BASELINE_OFFSET = 3;
+const ZERO_LABEL_GAP = 4;
 const RUN_OUT_ANCHOR_RATIO = 0.82;
 
 export const RunwayForecastChart = ({ computation }: Props) => {
@@ -53,7 +53,7 @@ export const RunwayForecastChart = ({ computation }: Props) => {
     const chartRight = CHART_WIDTH - CHART_PADDING_RIGHT;
     const isRunOutNearEdge = isDefined(runOutX) && runOutX > CHART_WIDTH * RUN_OUT_ANCHOR_RATIO;
     const runOutAnchor = isRunOutNearEdge ? 'end' : 'middle';
-    const zeroLabelY = geometry.zeroY + ZERO_LABEL_BASELINE_OFFSET;
+    const zeroLabelY = geometry.zeroY - ZERO_LABEL_GAP;
 
     return (
         <Card className="gap-y-xl">
@@ -63,7 +63,7 @@ export const RunwayForecastChart = ({ computation }: Props) => {
 
             <Svg width="100%" height={CHART_HEIGHT} viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}>
                 <Line x1={CHART_PADDING_LEFT} y1={geometry.zeroY} x2={chartRight} y2={geometry.zeroY} stroke={colors.zero} />
-                <SvgText x={0} y={zeroLabelY} fill={colors.label} fontSize={LABEL_FONT_SIZE}>
+                <SvgText x={chartRight} y={zeroLabelY} fill={colors.label} fontSize={LABEL_FONT_SIZE} textAnchor="end">
                     {t`empty`}
                 </SvgText>
                 <Path d={geometry.bandPath} fill={colors.bandFill} stroke={colors.bandStroke} strokeWidth={1} />

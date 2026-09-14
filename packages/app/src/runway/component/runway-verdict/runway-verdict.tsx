@@ -26,17 +26,16 @@ const ENTERING = FadeIn.duration(ENTERING_DURATION);
 
 export const RunwayVerdict = ({ computation }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
-    const formatMonths = useFormatDigits(0);
+    const { defaultInstrument } = useSettingsContext();
+    const formatWholeDigits = useFormatDigits(0);
     const { formatMonthAndYear } = useFormatDate();
 
     const { burn, isPositive, liquid, monthsUsed, net, runsOutAt, runwayMonths } = computation;
     const variant = isPositive ? 'positive' : 'destructive';
-    const formattedNet = formatDigits(convertFromMicroUnits(net), defaultInstrument.symbol);
+    const formattedNet = formatWholeDigits(convertFromMicroUnits(net), defaultInstrument.symbol);
     const coverMonths = isPositiveNumber(burn) ? Math.round(liquid / burn) : null;
     const runOutDate = isDefined(runsOutAt) ? formatMonthAndYear(runsOutAt) : '';
-    const figure = isPositive ? `+${formattedNet}` : `≈ ${formatMonths(Math.round(runwayMonths ?? 0))}`;
+    const figure = isPositive ? `+${formattedNet}` : `≈ ${formatWholeDigits(Math.round(runwayMonths ?? 0))}`;
     const figureUnit = isPositive ? t`per month` : t`months left`;
     const coverLine = isDefined(coverMonths) ? t`Covered by ${coverMonths} months of expenses` : t`Covered by your liquid balance`;
     const outlookLine = isPositive ? coverLine : t`Runs out around ${runOutDate}`;

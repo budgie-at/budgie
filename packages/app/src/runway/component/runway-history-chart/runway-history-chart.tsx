@@ -45,10 +45,8 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
     const { intl } = useI18nContext();
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
-    const { colorScheme } = useThemeContext();
     const reducedMotion = useReducedMotion();
-
-    const colors = RUNWAY_CHART_COLORS[colorScheme];
+    const colors = RUNWAY_CHART_COLORS[useThemeContext().colorScheme];
     const peakRow = series.reduce<RunwaySeriesRowInterface | null>(
         (peak, row) => (isDefined(peak) && peak.expense >= row.expense ? peak : row),
         null
@@ -100,7 +98,7 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
                         />
                     ))}
 
-                    <RunwayHistoryMedianLine value={burn} maxValue={maxValue} />
+                    <RunwayHistoryMedianLine value={burn} maxValue={maxValue} lastMonth={months.at(-1)} />
 
                     {months
                         .filter(month => month.hasLabel)
