@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.65.2](https://github.com/budgie-at/budgie/compare/v6.65.1...v6.65.2) (2026-09-15)
+
+
+### Bug Fixes
+
+* **app:** keep AI leases correct across voice, translation and suspend ([b08d34b](https://github.com/budgie-at/budgie/commit/b08d34b66ddf4ad5cee005e9ce80339614e6935d))
+* **app:** never load AI models when the build disables AI ([deaa61b](https://github.com/budgie-at/budgie/commit/deaa61bb5d5b60a75c540dfe75368a0000afe17f))
+* **app:** report STT stream arming and serialize subsystem error reset ([fe41103](https://github.com/budgie-at/budgie/commit/fe41103f13e5c80c3ff91a7aa5fa68e1ae50901f))
+* **app:** route AI subsystem retry through the residency service ([33d8b8a](https://github.com/budgie-at/budgie/commit/33d8b8a20dc9730d4913a43ad0492975ca9f2e79))
+* **app:** stop retrying failed model loads and leaking the whisper lease ([045cd09](https://github.com/budgie-at/budgie/commit/045cd09fac6df25be4f6521e0def36078c74e4c2))
+
+
+### Performance Improvements
+
+* **app:** load AI models lazily and release idle contexts ([cca2af5](https://github.com/budgie-at/budgie/commit/cca2af566b727c19401e616ba52077c3bb4e12ac))
+
+
+
+
+
 ## [6.65.1](https://github.com/budgie-at/budgie/compare/v6.65.0...v6.65.1) (2026-09-15)
 
 
