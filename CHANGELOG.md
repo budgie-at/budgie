@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.65.1](https://github.com/budgie-at/budgie/compare/v6.65.0...v6.65.1) (2026-09-15)
+
+
+### Bug Fixes
+
+* **app:** rebuild balances when a sync data repair throws ([6917eca](https://github.com/budgie-at/budgie/commit/6917eca3b636625c62802a218b0543e224adaca2))
+* **consolidation:** pair and classify own-card transfer legs from bank sync ([f674a79](https://github.com/budgie-at/budgie/commit/f674a79c2c62e88b158ac062cec067cd519b79d0)), closes [#1073](https://github.com/budgie-at/budgie/issues/1073)
+
+
+
+
+
 # [6.65.0](https://github.com/budgie-at/budgie/compare/v6.64.4...v6.65.0) (2026-09-15)
 
 
