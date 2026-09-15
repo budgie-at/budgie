@@ -117,10 +117,9 @@ export abstract class BaseSubsystemService<TSnapshot extends SnapshotWithStatusI
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async retry(): Promise<void> {
+    async resetError(): Promise<void> {
         await this.beforeRetry();
         this.setSnapshot({ ...this.getSnapshot(), status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
-        await this.start();
     }
 
     protected beforeRetry(): Promise<void> {

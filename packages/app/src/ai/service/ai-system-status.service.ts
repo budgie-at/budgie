@@ -11,6 +11,7 @@ import {
     transactionRepository
 } from '../../@generic/drizzle/db/db';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemActionEnum } from '../enum/ai-system-action.enum';
 import { AiSystemStateEnum } from '../enum/ai-system-state.enum';
@@ -21,6 +22,7 @@ import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { translationProgressStore } from '../store/translation-progress.store';
 
 import { aiCoordinatorService } from './ai-coordinator.service';
+import { aiModelResidencyService } from './ai-model-residency.service';
 import { ScheduledSnapshotStore } from './base-subsystem.service';
 import { chatService } from './chat.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
@@ -68,13 +70,13 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     async retry(): Promise<void> {
         const promises: Promise<void>[] = [];
         if (isNotEmptyString(chatService.getSnapshot().errorMessage)) {
-            promises.push(chatService.retry());
+            promises.push(aiModelResidencyService.retry(AiSubsystemNameEnum.CHAT));
         }
         if (isNotEmptyString(embeddingService.getSnapshot().errorMessage)) {
-            promises.push(embeddingService.retry());
+            promises.push(aiModelResidencyService.retry(AiSubsystemNameEnum.EMBEDDING));
         }
         if (isNotEmptyString(sttService.getSnapshot().errorMessage)) {
-            promises.push(sttService.retry());
+            promises.push(aiModelResidencyService.retry(AiSubsystemNameEnum.STT));
         }
         await Promise.allSettled(promises);
         if (translationDrainerService.getSnapshot().state === DrainerStateEnum.ERROR) {
@@ -156,7 +158,7 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         await transactionRepository.clearNonIndexableFlags();
     }
 
-    // eslint-disable-next-line max-statements, max-lines-per-function -- Priority-ordered derivation table with exhaustive SUSPENDED/IDLE branches
+    // eslint-disable-next-line max-statements, max-lines-per-function -- Priority-ordered derivation table across subsystem, coordinator and drainer states
     private derive(): AiSystemSnapshotInterface {
         const translationPending = translationDrainerService.getSnapshot().pending;
         const embeddingPending = embeddingDrainerService.getSnapshot().pending;
@@ -200,15 +202,12 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
             };
         }
 
-        const suspendedOrIdle = this.firstSuspendedOrIdle(chat.status, embedding.status, stt.status);
-        if (isDefined(suspendedOrIdle)) {
-            const statusText = suspendedOrIdle === AiSystemStateEnum.SUSPENDED ? t`Resuming AI…` : t`AI idle`;
-
+        if (aiCoordinatorService.getSnapshot().isSuspended) {
             return {
-                state: suspendedOrIdle,
+                state: AiSystemStateEnum.SUSPENDED,
                 percent: 0,
                 action: AiSystemActionEnum.NONE,
-                statusText,
+                statusText: t`Resuming AI…`,
                 translationPending,
                 embeddingPending,
                 errorMessage: null
@@ -292,22 +291,6 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
         const downloading = statuses.some(status => status === AiSubsystemStatusEnum.DOWNLOADING);
 
         return downloading ? t`Downloading models` : t`Loading models`;
-    }
-
-    private firstSuspendedOrIdle(
-        chat: AiSubsystemStatusEnum,
-        embedding: AiSubsystemStatusEnum,
-        stt: AiSubsystemStatusEnum
-    ): AiSystemStateEnum.SUSPENDED | AiSystemStateEnum.IDLE | null {
-        const statuses = [chat, embedding, stt] as const;
-        if (statuses.some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
-            return AiSystemStateEnum.SUSPENDED;
-        }
-        if (statuses.some(status => status === AiSubsystemStatusEnum.IDLE)) {
-            return AiSystemStateEnum.IDLE;
-        }
-
-        return null;
     }
 
     /* oxlint-disable lingui/no-unlocalized-strings -- Diagnostic source labels embedded in error statusText (the message itself is native) */

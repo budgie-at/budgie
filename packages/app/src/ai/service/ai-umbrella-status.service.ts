@@ -102,24 +102,6 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
             };
         }
 
-        if (statuses.some(status => status === AiSubsystemStatusEnum.SUSPENDED)) {
-            return {
-                state: AiSystemUmbrellaStateEnum.SUSPENDED,
-                statusText: t`Resuming AI…`,
-                downloadPercent: 0,
-                errorMessage: null
-            };
-        }
-
-        if (statuses.some(status => status === AiSubsystemStatusEnum.IDLE)) {
-            return {
-                state: AiSystemUmbrellaStateEnum.IDLE,
-                statusText: t`AI idle`,
-                downloadPercent: 0,
-                errorMessage: null
-            };
-        }
-
         if (statuses.every(status => status === AiSubsystemStatusEnum.DISABLED)) {
             return { state: AiSystemUmbrellaStateEnum.DISABLED, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };
         }

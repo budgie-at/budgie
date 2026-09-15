@@ -412,11 +412,6 @@ msgstr "ШІ"
 msgid "AI disabled"
 msgstr "ШІ вимкнено"
 
-#: src/ai/service/ai-system-status.service.ts
-#: src/ai/service/ai-umbrella-status.service.ts
-msgid "AI idle"
-msgstr "ШІ неактивний"
-
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "AI off"
 msgstr "ШІ вимкнено"
@@ -3173,7 +3168,6 @@ msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
 #: src/ai/service/ai-system-status.service.ts
-#: src/ai/service/ai-umbrella-status.service.ts
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
 

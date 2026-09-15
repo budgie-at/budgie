@@ -5,8 +5,8 @@ import { useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
-import { AiSubsystemStatusEnum } from '../../ai/enum/ai-subsystem-status.enum';
-import { useChat } from '../../ai/hook/use-chat.hook';
+import { AiSubsystemNameEnum } from '../../ai/enum/ai-subsystem-name.enum';
+import { aiModelResidencyService } from '../../ai/service/ai-model-residency.service';
 import { chatService } from '../../ai/service/chat.service';
 
 const logger = getLogger('useRegenerateTranslation');
@@ -20,25 +20,25 @@ export interface UseRegenerateTranslationReturn {
 }
 
 export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn): UseRegenerateTranslationReturn => {
-    const { status: chatStatus } = useChat();
-    const isChatReady = chatStatus === AiSubsystemStatusEnum.READY;
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     // eslint-disable-next-line max-statements -- Lifecycle-guarded translate with structured logging and error capture
     const regenerate = async (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
-        if (!isChatReady) {
-            logger.log('translation:regenerate:skip:not-ready', { chatStatus });
-            setError(t`LLM not ready`);
-
-            return null;
-        }
-
         logger.log('translation:regenerate:start', { entityId, titleLen: title.length });
         setIsRegenerating(true);
         setError(null);
 
+        const isChatReady = await aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT);
+
         try {
+            if (!isChatReady) {
+                logger.log('translation:regenerate:skip:not-ready');
+                setError(t`LLM not ready`);
+
+                return null;
+            }
+
             const service = new TranslationLlmService(chatService);
             const result = await service.translate(title);
             await updateTranslation(entityId, result.titleEn, result.titleTags);
@@ -51,6 +51,7 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
 
             return null;
         } finally {
+            aiModelResidencyService.release(AiSubsystemNameEnum.CHAT);
             setIsRegenerating(false);
         }
     };

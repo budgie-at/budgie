@@ -46,7 +46,6 @@ export const loadLlamaContext = async (params: LoadLlamaContextParamsInterface):
         model: modelPath,
         n_ctx: params.contextSize,
         n_gpu_layers: GPU_LAYERS,
-        use_mlock: true,
         embedding: params.embedding,
         ...(isDefined(params.poolingType) && { pooling_type: params.poolingType })
     });
