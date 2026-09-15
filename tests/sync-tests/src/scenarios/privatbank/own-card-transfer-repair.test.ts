@@ -7,18 +7,18 @@ import { fetchTransactionById, seed, testDb } from '../../harness';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
-const OWN_CARD_INCOME_TITLE = 'Зі своєї картки *9174';
-const OWN_CARD_EXPENSE_TITLE = 'На мою картку *0356';
-const OWN_CARD_AMOUNT = 27_900_000_000;
-const OWN_CARD_FEE_AMOUNT = 100_000_000;
-const OWN_CARD_OPERATED_AT = new Date('2026-09-01T10:10:05.000Z');
+const OWN_CARD_INCOME_TITLE = 'Зі своєї картки *4321';
+const OWN_CARD_EXPENSE_TITLE = 'На мою картку *1234';
+const OWN_CARD_AMOUNT = 10_000_000_000;
+const OWN_CARD_FEE_AMOUNT = 25_000_000;
+const OWN_CARD_OPERATED_AT = new Date('2026-03-04T09:15:00.000Z');
 
 const seedPrivatbankCard = (cardEnding: string): AccountEntityInterface =>
     seed.account({
         title: `Privatbank •${cardEnding}`,
         type: AccountTypeEnum.BANK_SYNC,
         externalSource: ExternalSourceEnum.PRIVATBANK,
-        externalId: `4246 **** **** ${cardEnding}`,
+        externalId: `4000 **** **** ${cardEnding}`,
         iban: `UA00PRIVATBANK${cardEnding}`
     });
 
@@ -49,8 +49,8 @@ const seedArchivedOwnCardScenario = (): {
     readonly income: TransactionEntityInterface;
     readonly liveCard: AccountEntityInterface;
 } => {
-    const liveCard = seedPrivatbankCard('0356');
-    const archivedCard = seedPrivatbankCard('9174');
+    const liveCard = seedPrivatbankCard('1234');
+    const archivedCard = seedPrivatbankCard('4321');
     const income = seedOwnCardIncome(liveCard.id);
 
     archiveAccount(archivedCard.id);
@@ -82,8 +82,8 @@ describe('privatbank/own-card-transfer-repair', () => {
     });
 
     it('counts an own-card income with a fee entry once', async () => {
-        const liveCard = seedPrivatbankCard('0356');
-        const archivedCard = seedPrivatbankCard('9174');
+        const liveCard = seedPrivatbankCard('1234');
+        const archivedCard = seedPrivatbankCard('4321');
         const income = seedOwnCardIncome(liveCard.id);
 
         seed.feeEntry(income.id, 'privatbank-own-card-income-fee', { accountId: liveCard.id, amount: OWN_CARD_FEE_AMOUNT });
@@ -94,8 +94,8 @@ describe('privatbank/own-card-transfer-repair', () => {
     });
 
     it('ignores an own-card income that still has a live counterpart leg', async () => {
-        const liveCard = seedPrivatbankCard('0356');
-        const archivedCard = seedPrivatbankCard('9174');
+        const liveCard = seedPrivatbankCard('1234');
+        const archivedCard = seedPrivatbankCard('4321');
 
         seedOwnCardIncome(liveCard.id);
         seedOwnCardCounterpartExpense(archivedCard.id);
