@@ -71,7 +71,6 @@ class AiModelResidencyService {
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async suspend(): Promise<void> {
         this.isSuspended = true;
-        this.leases.clear();
         Object.values(AiSubsystemNameEnum).forEach(subsystem => {
             this.clearIdleTimer(subsystem);
         });
@@ -81,6 +80,9 @@ class AiModelResidencyService {
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     resume(): void {
         this.isSuspended = false;
+        Object.values(AiSubsystemNameEnum).forEach(subsystem => {
+            void this.chain(() => this.loadWhileLeased(subsystem));
+        });
     }
 
     @Log(
