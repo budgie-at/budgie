@@ -1,4 +1,5 @@
 import { unpairedOwnCardTransferRepairService } from '@app/sync/service/unpaired-own-card-transfer-repair.service';
+import { transactionTransferService } from '@app/transaction/service/transaction-transfer.service';
 import {
     AccountEntityTable,
     AccountTypeEnum,
@@ -8,7 +9,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { fetchTransactionById, seed, testDb } from '../../harness';
 
@@ -21,6 +22,7 @@ const UNKNOWN_CARD_INCOME_TITLE = 'Зі своєї картки *9999';
 const OWN_CARD_AMOUNT = 10_000_000_000;
 const OWN_CARD_FEE_AMOUNT = 25_000_000;
 const OWN_CARD_OPERATED_AT = new Date('2026-03-04T09:15:00.000Z');
+const CONVERSION_FAILURE_MESSAGE = 'conversion failed';
 
 const seedPrivatbankCard = (cardEnding: string): AccountEntityInterface =>
     seed.account({
@@ -144,6 +146,22 @@ describe('privatbank/own-card-transfer-repair', () => {
         archiveAccount(archivedCard.id);
 
         expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+    });
+
+    it('rejects when a candidate conversion fails', async () => {
+        seedArchivedOwnCardScenario();
+
+        const convertSpy = vi
+            .spyOn(transactionTransferService, 'convertIncomeToTransfer')
+            .mockRejectedValue(new Error(CONVERSION_FAILURE_MESSAGE));
+
+        try {
+            await expect(unpairedOwnCardTransferRepairService.repair()).rejects.toThrow(CONVERSION_FAILURE_MESSAGE);
+        } finally {
+            convertSpy.mockRestore();
+        }
+
+        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
     });
 
     it('ignores an own-card income that still has a live counterpart leg', async () => {
