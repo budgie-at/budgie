@@ -36,7 +36,7 @@ export const StatisticsContent = ({ activeTab }: Props) => {
     const tagsActivityMode = isCategoriesTab ? 'hidden' : 'visible';
 
     const content = isRunwayTab ? (
-        <RunwayContent filters={filters} />
+        <RunwayContent />
     ) : (
         <ScrollView contentContainerClassName="gap-y-7xl py-5xl" showsVerticalScrollIndicator={false}>
             <View className="gap-y-lg">
@@ -70,15 +70,17 @@ export const StatisticsContent = ({ activeTab }: Props) => {
 
     return (
         <>
-            <View className="pb-2xl">
-                <TransactionFilters
-                    accountId={null}
-                    filters={filters}
-                    onChange={setFilters}
-                    showTypeFilter={false}
-                    hasFiltersSelected={hasFiltersSelected}
-                />
-            </View>
+            {!isRunwayTab && (
+                <View className="pb-2xl">
+                    <TransactionFilters
+                        accountId={null}
+                        filters={filters}
+                        onChange={setFilters}
+                        showTypeFilter={false}
+                        hasFiltersSelected={hasFiltersSelected}
+                    />
+                </View>
+            )}
 
             {content}
         </>

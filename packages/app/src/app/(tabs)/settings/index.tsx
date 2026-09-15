@@ -33,7 +33,6 @@ import { DefaultCurrencySelector } from '../../../settings/components/default-cu
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
 import { RecalculateBalances } from '../../../settings/components/recalculate-balances/recalculate-balances';
 import { RepairSyncData } from '../../../settings/components/repair-sync-data/repair-sync-data';
-import { RunwayWidgetToggle } from '../../../settings/components/runway-widget-toggle/runway-widget-toggle';
 import { PinCard } from '../../../settings/components/security-settings/pin-card';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
@@ -180,7 +179,6 @@ export default function SettingsPage() {
                         <Animated.View className="gap-y-lg" {...anchorHighlight('budget')}>
                             <BudgetManagementCard />
                             <BudgetWidgetToggle />
-                            <RunwayWidgetToggle />
                             <BudgetPushToggle />
                         </Animated.View>
                     </SettingsGroup>

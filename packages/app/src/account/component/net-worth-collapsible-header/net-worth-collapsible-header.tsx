@@ -9,6 +9,7 @@ import { ProtectedMoney } from '../../../@generic/component/protected-money/prot
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { RunwayPill } from '../../../runway/component/runway-pill/runway-pill';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { NetWorthAssetChips } from '../net-worth-asset-chips/net-worth-asset-chips';
 
@@ -62,7 +63,11 @@ export const NetWorthCollapsibleHeader = ({ scrollY, netWorth, fiatTotal, crypto
                 </ProtectedMoney>
             </View>
 
-            <NetWorthAssetChips fiatTotal={fiatTotal} cryptoTotal={cryptoTotal} fiatCount={fiatCount} cryptoCount={cryptoCount} />
+            <View className="mt-lg flex-row items-center gap-x-sm">
+                <NetWorthAssetChips fiatTotal={fiatTotal} cryptoTotal={cryptoTotal} fiatCount={fiatCount} cryptoCount={cryptoCount} />
+
+                <RunwayPill />
+            </View>
         </View>
     );
 
