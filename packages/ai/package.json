@@ -1,6 +1,6 @@
 {
     "name": "@budgie/ai",
-    "version": "6.64.2",
+    "version": "6.65.0",
     "private": true,
     "description": "AI services for transaction categorization, embedding suggestions, and voice extraction",
     "sideEffects": false,
