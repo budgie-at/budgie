@@ -10,7 +10,7 @@ import { useLlmCategorization } from './use-llm-categorization.hook';
 import { useRecording } from './use-recording.hook';
 import { useStt } from './use-stt.hook';
 
-// eslint-disable-next-line max-statements -- Hook orchestrates the full record-transcribe-categorize lifecycle as a single awaitable
+// eslint-disable-next-line max-statements, max-lines-per-function -- Hook orchestrates the full record-transcribe-categorize lifecycle as a single awaitable
 export const useVoiceInput = (): UseVoiceInputReturnInterface => {
     const [state, setState] = useState<VoiceInputStateEnum>(VoiceInputStateEnum.IDLE);
     const [error, setError] = useState<string | null>(null);
@@ -63,14 +63,18 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
         onSilenceDetected: () => void runPipeline().catch(handleError)
     });
 
-    const { downloadProgress } = stt;
-
     const startAndCollect: UseVoiceInputReturnInterface['startAndCollect'] = async onResult => {
         setError(null);
         setFinalTranscription('');
         categorization.reset();
         resultRef.current = onResult;
-        await stt.startStream();
+
+        if (!(await stt.startStream())) {
+            settle([], '');
+
+            return;
+        }
+
         recording.start();
         setState(VoiceInputStateEnum.RECORDING);
     };
@@ -93,10 +97,10 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
         setFinalTranscription('');
     };
 
-    const isPipelineFinishing = state === VoiceInputStateEnum.PROCESSING || state === VoiceInputStateEnum.DONE;
-    const transcription = isPipelineFinishing
-        ? { committed: finalTranscription, partial: '' }
-        : { committed: stt.transcription, partial: stt.partialTranscription };
+    const transcription =
+        state === VoiceInputStateEnum.PROCESSING || state === VoiceInputStateEnum.DONE
+            ? { committed: finalTranscription, partial: '' }
+            : { committed: stt.transcription, partial: stt.partialTranscription };
 
     return {
         state,
@@ -107,7 +111,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
             audioLevel: recording.audioLevel
         },
         isReady: hasBeenReady,
-        downloadProgress,
+        downloadProgress: stt.downloadProgress,
         startAndCollect,
         stop,
         cancel

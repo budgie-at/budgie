@@ -1,26 +1,24 @@
 import { useEffect, useRef } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
-
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { aiModelResidencyService } from '../service/ai-model-residency.service';
 
 interface UseSttResidencyReturn {
-    readonly acquireSttResidency: () => Promise<void>;
+    readonly acquireSttResidency: () => Promise<boolean>;
     readonly releaseSttResidency: () => void;
 }
 
 export const useSttResidency = (): UseSttResidencyReturn => {
     const hasLeaseRef = useRef(false);
-    const pendingAcquireRef = useRef<Promise<unknown>>(Promise.resolve());
+    const pendingAcquireRef = useRef<Promise<boolean>>(Promise.resolve(false));
 
-    const acquireSttResidency = async (): Promise<void> => {
+    const acquireSttResidency = async (): Promise<boolean> => {
         if (!hasLeaseRef.current) {
             hasLeaseRef.current = true;
-            pendingAcquireRef.current = aiModelResidencyService.acquire(AiSubsystemNameEnum.STT).catch(emptyFn);
+            pendingAcquireRef.current = aiModelResidencyService.acquire(AiSubsystemNameEnum.STT).catch(() => false);
         }
 
-        await pendingAcquireRef.current;
+        return pendingAcquireRef.current;
     };
 
     const releaseSttResidency = (): void => {

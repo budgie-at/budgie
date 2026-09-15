@@ -83,8 +83,10 @@ class AiModelResidencyService {
         (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
     )
     async retry(subsystem: AiSubsystemNameEnum): Promise<void> {
-        await AiModelResidencyService.SUBSYSTEMS[subsystem].resetError();
-        await this.chain(() => this.loadWhileLeased(subsystem));
+        await this.chain(async () => {
+            await AiModelResidencyService.SUBSYSTEMS[subsystem].resetError();
+            await this.loadWhileLeased(subsystem);
+        });
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
