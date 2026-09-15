@@ -298,3 +298,49 @@ appId: ${APP_ID}
       id: 'CurrencyMarket.Holdings.CostBasis.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
+
+# --- Runway settings section (crypto fixture) ---
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=runway'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.RunwayCryptoCard'
+      timeout: 10000
+- assertVisible:
+      id: 'SettingsPage.RunwayPillSwitch'
+      text: '1'
+- assertVisible:
+      id: 'SettingsPage.RunwayCryptoSwitch'
+      text: '0'
+
+- tapOn:
+      id: 'SettingsPage.RunwayCryptoSwitch'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.RunwayCryptoSwitch'
+          text: '1'
+      timeout: 3000
+
+- tapOn:
+      id: 'SettingsPage.RunwayPillSwitch'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.RunwayPillSwitch'
+          text: '0'
+      timeout: 3000
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=runway'
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.RunwayCryptoSwitch'
+          text: '1'
+      timeout: 10000
+- assertVisible:
+      id: 'SettingsPage.RunwayPillSwitch'
+      text: '0'

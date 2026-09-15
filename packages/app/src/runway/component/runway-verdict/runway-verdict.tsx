@@ -12,6 +12,8 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { RunwaySelector } from '../../runway.selector';
 import { RunwayMeter } from '../runway-meter/runway-meter';
 
 import type { RunwayComputationInterface } from '../../interface/runway-computation.interface';
@@ -26,6 +28,7 @@ const ENTERING = FadeIn.duration(ENTERING_DURATION);
 export const RunwayVerdict = ({ computation }: Props) => {
     const { t } = useLingui();
     const { defaultInstrument } = useSettingsContext();
+    const isRunwayCryptoIncluded = useSetting('isRunwayCryptoIncluded');
     const formatWholeDigits = useFormatDigits(0);
     const { formatMonthAndYear } = useFormatDate();
 
@@ -51,6 +54,7 @@ export const RunwayVerdict = ({ computation }: Props) => {
                         adjustsFontSizeToFit
                         numberOfLines={1}
                         minimumFontScale={0.6}
+                        testID={RunwaySelector.VerdictFigure(figure)}
                         className="text-4xl font-bold tabular-nums text-primary"
                     >
                         {figure}
@@ -65,6 +69,12 @@ export const RunwayVerdict = ({ computation }: Props) => {
                 <Text className="text-xxs text-secondary-foreground">
                     <Trans>Based on your last {monthsUsed} months</Trans>
                 </Text>
+
+                {isRunwayCryptoIncluded ? (
+                    <Text testID={RunwaySelector.VerdictCryptoNote} className="text-xxs text-secondary-foreground">
+                        <Trans>Includes crypto</Trans>
+                    </Text>
+                ) : null}
             </Card>
         </Animated.View>
     );

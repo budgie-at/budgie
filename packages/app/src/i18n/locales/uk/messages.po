@@ -1237,6 +1237,10 @@ msgstr "Не вдалося оновити ШІ на пристрої"
 msgid "Could not update rule"
 msgstr "Не вдалося оновити правило"
 
+#: src/settings/hook/use-setting-toggle.hook.ts
+msgid "Could not update setting"
+msgstr "Не вдалося оновити налаштування"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Could not update settings"
 msgstr "Не вдалося оновити налаштування"
@@ -1251,13 +1255,13 @@ msgstr "Не вдалося оновити токен"
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
 
-#: src/settings/hook/use-widget-setting-toggle.hook.ts
-msgid "Could not update widget setting"
-msgstr "Не вдалося оновити налаштування віджета"
-
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
 msgid "Count this account in your net worth calculation"
 msgstr "Враховувати цей рахунок у розрахунку чистої вартості"
+
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Counts crypto at today's market value"
+msgstr "Враховує криптовалюту за сьогоднішньою ринковою вартістю"
 
 #: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
 msgid "Counts irregular costs like insurance or holidays as a monthly expense."
@@ -1523,6 +1527,10 @@ msgstr "Вимкнути блокування"
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Display the budget card on the home screen"
 msgstr "Показувати картку бюджету на головному екрані"
+
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Display the runway pill next to your total balance"
+msgstr "Показувати індикатор запасу поруч із загальним балансом"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Do not sync history"
@@ -2108,6 +2116,10 @@ msgstr "Неактивний"
 msgid "Inactive Accounts"
 msgstr "Неактивні рахунки"
 
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Include crypto"
+msgstr "Включити криптовалюту"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Include in file imports"
@@ -2124,6 +2136,10 @@ msgstr "Включити разові витрати"
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Included in file imports"
 msgstr "Враховується в імпортах файлів"
+
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Includes crypto"
+msgstr "Включно з криптовалютою"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
@@ -3218,6 +3234,7 @@ msgid "Runs out around {runOutDate}"
 msgstr "Закінчиться близько {runOutDate}"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
+#: src/app/(tabs)/settings/index.tsx
 #: src/runway/component/runway-pill/runway-pill.tsx
 msgid "Runway"
 msgstr "Запас"
@@ -3521,6 +3538,10 @@ msgstr "Показувати бюджет на головній"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show Cents"
 msgstr "Показати копійки"
+
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Show on home"
+msgstr "Показувати на головній"
 
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx

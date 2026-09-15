@@ -1238,6 +1238,10 @@ msgstr "Could not update on-device AI"
 msgid "Could not update rule"
 msgstr "Could not update rule"
 
+#: src/settings/hook/use-setting-toggle.hook.ts
+msgid "Could not update setting"
+msgstr "Could not update setting"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Could not update settings"
 msgstr "Could not update settings"
@@ -1252,13 +1256,13 @@ msgstr "Could not update token"
 msgid "Could not update transaction."
 msgstr "Could not update transaction."
 
-#: src/settings/hook/use-widget-setting-toggle.hook.ts
-msgid "Could not update widget setting"
-msgstr "Could not update widget setting"
-
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
 msgid "Count this account in your net worth calculation"
 msgstr "Count this account in your net worth calculation"
+
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Counts crypto at today's market value"
+msgstr "Counts crypto at today's market value"
 
 #: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
 msgid "Counts irregular costs like insurance or holidays as a monthly expense."
@@ -1524,6 +1528,10 @@ msgstr "Disable App Lock"
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Display the budget card on the home screen"
 msgstr "Display the budget card on the home screen"
+
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Display the runway pill next to your total balance"
+msgstr "Display the runway pill next to your total balance"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Do not sync history"
@@ -2109,6 +2117,10 @@ msgstr "Inactive"
 msgid "Inactive Accounts"
 msgstr "Inactive Accounts"
 
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Include crypto"
+msgstr "Include crypto"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Include in file imports"
@@ -2125,6 +2137,10 @@ msgstr "Include one-offs"
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Included in file imports"
 msgstr "Included in file imports"
+
+#: src/runway/component/runway-verdict/runway-verdict.tsx
+msgid "Includes crypto"
+msgstr "Includes crypto"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
@@ -3219,6 +3235,7 @@ msgid "Runs out around {runOutDate}"
 msgstr "Runs out around {runOutDate}"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
+#: src/app/(tabs)/settings/index.tsx
 #: src/runway/component/runway-pill/runway-pill.tsx
 msgid "Runway"
 msgstr "Runway"
@@ -3522,6 +3539,10 @@ msgstr "Show budget on home"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show Cents"
 msgstr "Show Cents"
+
+#: src/runway/component/runway-settings-section/runway-settings-section.tsx
+msgid "Show on home"
+msgstr "Show on home"
 
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx

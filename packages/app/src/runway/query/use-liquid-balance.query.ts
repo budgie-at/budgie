@@ -5,11 +5,12 @@ import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-ex
 import { useSettingsContext } from '../../settings/context/settings.context';
 
 export const useLiquidBalanceQuery = (): number => {
-    const { defaultInstrument } = useSettingsContext();
+    const { defaultInstrument, settings } = useSettingsContext();
     const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
-    const { data } = useDatabaseLiveQuery(accountBalanceRepository.getLiquidTotal(defaultInstrument.id), [
+    const { data } = useDatabaseLiveQuery(accountBalanceRepository.getLiquidTotal(defaultInstrument.id, settings.isRunwayCryptoIncluded), [
         defaultInstrument.id,
+        settings.isRunwayCryptoIncluded,
         accountBalancesUpdatedAt,
         exchangeRatesUpdatedAt
     ]);
