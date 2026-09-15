@@ -20,6 +20,11 @@ class SyncWorkloadService {
         this.cancelQueuedWork();
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    resumeAcceptingWork(): void {
+        this.isAcceptingWork = true;
+    }
+
     @Log(
         (name, work) => `enter queue=background name="${name}" workName="${work.name}"`,
         (result, name, work) => `done queue=background name="${name}" workName="${work.name}" result=${String(result)}`,
