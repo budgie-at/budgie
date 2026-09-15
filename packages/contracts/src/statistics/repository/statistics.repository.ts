@@ -427,9 +427,13 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     }
 
     private buildRunwayCompleteMonthsCondition(months: number) {
-        const monthSql = this.buildRunwayMonthSql();
+        const windowStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now', ${`-${months} months`}))`;
+        const currentMonthStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now'))`;
 
-        return and(sql`${monthSql} >= strftime('%Y-%m', 'now', ${`-${months} months`})`, sql`${monthSql} < strftime('%Y-%m', 'now')`);
+        return and(
+            sql`${TransactionEntityTable.operatedAt} >= ${windowStartEpoch}`,
+            sql`${TransactionEntityTable.operatedAt} < ${currentMonthStartEpoch}`
+        );
     }
 
     private buildRunwayDriverSeriesBaseQuery(
