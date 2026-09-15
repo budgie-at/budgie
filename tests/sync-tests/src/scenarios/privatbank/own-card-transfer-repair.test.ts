@@ -1,5 +1,12 @@
 import { unpairedOwnCardTransferRepairService } from '@app/sync/service/unpaired-own-card-transfer-repair.service';
-import { AccountEntityTable, AccountTypeEnum, ExternalSourceEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    AccountEntityTable,
+    AccountTypeEnum,
+    ExternalSourceEnum,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
@@ -10,6 +17,7 @@ import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie
 const OWN_CARD_INCOME_TITLE = 'Зі своєї картки *4321';
 const OWN_CARD_EXPENSE_TITLE = 'На мою картку *1234';
 const THIRD_PARTY_CARD_TITLE = 'Переказ на картку';
+const UNKNOWN_CARD_INCOME_TITLE = 'Зі своєї картки *9999';
 const OWN_CARD_AMOUNT = 10_000_000_000;
 const OWN_CARD_FEE_AMOUNT = 25_000_000;
 const OWN_CARD_OPERATED_AT = new Date('2026-03-04T09:15:00.000Z');
@@ -27,13 +35,20 @@ const archiveAccount = (accountId: number): void => {
     testDb.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, accountId)).run();
 };
 
-const seedOwnCardIncome = (accountId: number): TransactionEntityInterface => {
+const seedOwnCardIncome = (accountId: number, title: string = OWN_CARD_INCOME_TITLE): TransactionEntityInterface => {
     const income = seed.bankPairIncome(
         { externalId: 'privatbank-own-card-income', operatedAt: OWN_CARD_OPERATED_AT },
         { accountId, amount: OWN_CARD_AMOUNT }
     );
 
-    return seed.updateTransaction(income.id, { externalSource: ExternalSourceEnum.PRIVATBANK, title: OWN_CARD_INCOME_TITLE });
+    return seed.updateTransaction(income.id, { externalSource: ExternalSourceEnum.PRIVATBANK, title });
+};
+
+const softDeleteTransaction = (transactionId: number): void => {
+    const deletedAt = new Date();
+
+    testDb.update(TransactionEntityTable).set({ deletedAt }).where(eq(TransactionEntityTable.id, transactionId)).run();
+    testDb.update(TransactionEntryEntityTable).set({ deletedAt }).where(eq(TransactionEntryEntityTable.transactionId, transactionId)).run();
 };
 
 const seedOwnCardCounterpartExpense = (accountId: number): TransactionEntityInterface => {
@@ -103,6 +118,29 @@ describe('privatbank/own-card-transfer-repair', () => {
         );
 
         seed.updateTransaction(expense.id, { externalSource: ExternalSourceEnum.PRIVATBANK, title: THIRD_PARTY_CARD_TITLE });
+        archiveAccount(archivedCard.id);
+
+        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+    });
+
+    it('repairs an own-card income whose counterpart leg was archived together with the card', async () => {
+        const liveCard = seedPrivatbankCard('1234');
+        const archivedCard = seedPrivatbankCard('4321');
+        const income = seedOwnCardIncome(liveCard.id);
+
+        softDeleteTransaction(seedOwnCardCounterpartExpense(archivedCard.id).id);
+        archiveAccount(archivedCard.id);
+
+        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
+        expect(await unpairedOwnCardTransferRepairService.repair()).toBe(1);
+        expect(fetchTransactionById(income.id).fromAccountId).toBe(archivedCard.id);
+    });
+
+    it('ignores an own-card income whose card mask resolves to no archived account', async () => {
+        const liveCard = seedPrivatbankCard('1234');
+        const archivedCard = seedPrivatbankCard('4321');
+
+        seedOwnCardIncome(liveCard.id, UNKNOWN_CARD_INCOME_TITLE);
         archiveAccount(archivedCard.id);
 
         expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
