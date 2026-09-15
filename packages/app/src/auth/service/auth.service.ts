@@ -5,6 +5,8 @@ import * as SecureStore from 'expo-secure-store';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
+import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
+import { databaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
 import { databaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
 import { RekeyParamsInterface } from '../../@generic/drizzle/service/interface/rekey-params.interface';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
@@ -108,6 +110,10 @@ class AuthService {
     }
 
     private async rekeyDatabase(params: RekeyParamsInterface): Promise<void> {
+        await databaseLifecycleService.run(DatabaseLifecycleOperationEnum.REKEY, () => this.runRekey(params));
+    }
+
+    private async runRekey(params: RekeyParamsInterface): Promise<void> {
         const previousPin = await this.getPin();
 
         try {

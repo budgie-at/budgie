@@ -5,7 +5,8 @@ import * as SQLite from 'expo-sqlite';
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
-import { expoDb } from '../../@generic/drizzle/db/db';
+import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
+import { databaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { aiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { authService } from '../../auth/service/auth.service';
@@ -21,18 +22,7 @@ class DatabaseImportService {
             `throw sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)} error=${getErrorMessage(error)}`
     )
     async importFromUri(sourceUri: string, backupPin: string | null): Promise<void> {
-        const previousPin = await authService.getPin();
-
-        await authService.persistPin(backupPin);
-
-        try {
-            await this.replaceFromUri(sourceUri);
-        } catch (error) {
-            await authService.persistPin(previousPin);
-            throw error;
-        }
-
-        await reloadApp();
+        await databaseLifecycleService.run(DatabaseLifecycleOperationEnum.IMPORT, () => this.runImport(sourceUri, backupPin));
     }
 
     @Log(
@@ -62,11 +52,25 @@ class DatabaseImportService {
         const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
         await aiStorageReplacementService.pauseLongLivedRuntime();
-        await expoDb.closeAsync();
-        this.clearDatabaseGlobals();
+        await databaseLifecycleService.close();
         this.deleteDestinationFiles(destinationPath, tempPath);
         await this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
         await this.copyDatabaseSidecars(sourceUri, destinationPath);
+    }
+
+    private async runImport(sourceUri: string, backupPin: string | null): Promise<void> {
+        const previousPin = await authService.getPin();
+
+        await authService.persistPin(backupPin);
+
+        try {
+            await this.replaceFromUri(sourceUri);
+        } catch (error) {
+            await authService.persistPin(previousPin);
+            throw error;
+        }
+
+        await reloadApp();
     }
 
     private async readProbeDatabase(backupPin: string | null): Promise<boolean> {
@@ -117,13 +121,6 @@ class DatabaseImportService {
         this.deleteFileIfExists(`${destinationPath}-wal`);
         this.deleteFileIfExists(`${destinationPath}-shm`);
         this.deleteFileIfExists(tempPath);
-    }
-
-    private clearDatabaseGlobals() {
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__expoSqliteDb__ = undefined;
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__drizzleDb__ = undefined;
     }
 
     private deleteFileIfExists(path: string): void {
