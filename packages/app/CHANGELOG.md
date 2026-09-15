@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.65.0](https://github.com/budgie-at/budgie/compare/v6.64.4...v6.65.0) (2026-09-15)
+
+
+### Features
+
+* **app:** runway settings with show-on-home and include-crypto switches ([cb24d3c](https://github.com/budgie-at/budgie/commit/cb24d3ca8c4009023ab86eed758b1e4abc141450)), closes [#1069](https://github.com/budgie-at/budgie/issues/1069)
+
+
+
+
+
 ## [6.64.4](https://github.com/budgie-at/budgie/compare/v6.64.3...v6.64.4) (2026-09-15)
 
 
