@@ -16,6 +16,13 @@
 #   DEVICE_SLUG     slugified device name
 #   SIMULATOR_UDID  booted simulator UDID
 #   APP_PATH        packaged .app path
+#   MAESTRO_FLOW_ENV_FILE   when run as an ios-maestro pre-flow-command, the
+#                           file this hook appends `KEY=VALUE` pairs to so
+#                           mobile-ci passes them as `-e KEY=VALUE` to the
+#                           flow's `maestro test` invocation. Unset in direct
+#                           capture mode (capture-store-screenshots.sh already
+#                           passes APP_DATA_CONTAINER itself); guarded so this
+#                           hook stays a no-op there.
 #
 # The database is assembled from fixtures/screenshots:
 #   showcase.db         curated dataset, anchored on a fixed date
@@ -27,12 +34,18 @@
 # filename convention: scenes/$SCENE.sql, else scenes/<SCENE minus -N>.sql,
 # else none.
 #
+# Also installs the file fixtures under fixtures/e2e-*.{csv,pdf,xlsx} into the
+# app's Documents/E2EFixtures so a scene's flow can open one straight from a
+# fileUri deep link (see csv-import-2.flow.yaml), the same way
+# setup-ios-e2e-fixtures.sh seeds them for the numbered E2E suite.
+#
 # Offline mode, used by test-seed-screenshot-scene.sh and for local inspection:
 #   LOCALE=de APPEARANCE=dark scripts/seed-screenshot-scene.sh --dry-run --output /tmp/de.db
 
 set -euo pipefail
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+FIXTURES_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/../fixtures" && pwd)
 SCREENSHOTS_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/../fixtures/screenshots" && pwd)
 SHOWCASE_DATABASE_PATH="$SCREENSHOTS_DIR/showcase.db"
 SHIFT_DATES_SQL_PATH="$SCREENSHOTS_DIR/shift-dates.sql"
@@ -262,6 +275,24 @@ report_database() {
     "
 }
 
+install_file_fixtures() {
+    local app_data_container="$1"
+    local fixtures_directory="$app_data_container/Documents/E2EFixtures"
+    local fixture_path
+    local fixture_name
+
+    mkdir -p "$fixtures_directory"
+
+    for fixture_path in "$FIXTURES_DIR"/e2e-*.csv "$FIXTURES_DIR"/e2e-*.pdf "$FIXTURES_DIR"/e2e-*.xlsx; do
+        [ -f "$fixture_path" ] || continue
+
+        fixture_name=$(basename "$fixture_path")
+        cp "$fixture_path" "$fixtures_directory/$fixture_name"
+
+        echo "seed-screenshot-scene: installed file fixture $fixtures_directory/$fixture_name"
+    done
+}
+
 install_database() {
     local app_data_container
     local sqlite_directory
@@ -293,6 +324,12 @@ install_database() {
     cp "$PREPARED_DATABASE_PATH" "$sqlite_directory/budgie.db"
 
     echo "seed-screenshot-scene: installed into $sqlite_directory/budgie.db"
+
+    install_file_fixtures "$app_data_container"
+
+    if [ -n "${MAESTRO_FLOW_ENV_FILE:-}" ]; then
+        printf 'APP_DATA_CONTAINER=%s\n' "$app_data_container" >> "$MAESTRO_FLOW_ENV_FILE"
+    fi
 }
 
 prepare_database
