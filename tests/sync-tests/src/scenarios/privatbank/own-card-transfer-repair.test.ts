@@ -9,6 +9,7 @@ import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie
 
 const OWN_CARD_INCOME_TITLE = 'Зі своєї картки *4321';
 const OWN_CARD_EXPENSE_TITLE = 'На мою картку *1234';
+const THIRD_PARTY_CARD_TITLE = 'Переказ на картку';
 const OWN_CARD_AMOUNT = 10_000_000_000;
 const OWN_CARD_FEE_AMOUNT = 25_000_000;
 const OWN_CARD_OPERATED_AT = new Date('2026-03-04T09:15:00.000Z');
@@ -91,6 +92,20 @@ describe('privatbank/own-card-transfer-repair', () => {
 
         expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
         expect(await unpairedOwnCardTransferRepairService.repair()).toBe(1);
+    });
+
+    it('ignores a maskless third-party card transfer', async () => {
+        const liveCard = seedPrivatbankCard('1234');
+        const archivedCard = seedPrivatbankCard('4321');
+        const expense = seed.bankPairExpense(
+            { externalId: 'privatbank-third-party-expense', operatedAt: OWN_CARD_OPERATED_AT },
+            { accountId: liveCard.id, amount: OWN_CARD_AMOUNT }
+        );
+
+        seed.updateTransaction(expense.id, { externalSource: ExternalSourceEnum.PRIVATBANK, title: THIRD_PARTY_CARD_TITLE });
+        archiveAccount(archivedCard.id);
+
+        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
     });
 
     it('ignores an own-card income that still has a live counterpart leg', async () => {
