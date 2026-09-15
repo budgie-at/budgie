@@ -9,6 +9,7 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { sttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
 
+import { useSttResidency } from './use-stt-residency.hook';
 import { useSttSnapshot } from './use-stt-snapshot.hook';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
@@ -34,13 +35,13 @@ export const useStt = (): UseSttReturn => {
     const [status, setStatus] = useState<SttStatus>('idle');
     const [baseTranscription, setBaseTranscription] = useState('');
     const streamGenerationRef = useRef(0);
-
-    const isCurrentStream = (generation: number): boolean => generation === streamGenerationRef.current;
+    const { acquireSttResidency, releaseSttResidency } = useSttResidency();
 
     const startStream = () => {
         streamGenerationRef.current += 1;
         const language = isSpeechToTextLanguage(locale.languageCode) ? locale.languageCode : null;
 
+        acquireSttResidency();
         sttService.streamCancel().catch(emptyFn);
         setBaseTranscription(sttService.committedTranscription);
         sttService.streamStart(language).catch(emptyFn);
@@ -71,7 +72,8 @@ export const useStt = (): UseSttReturn => {
         } catch {
             throw new Error(t`Transcription failed`);
         } finally {
-            if (isCurrentStream(generation)) {
+            releaseSttResidency();
+            if (generation === streamGenerationRef.current) {
                 setStatus('idle');
             }
         }
@@ -81,6 +83,7 @@ export const useStt = (): UseSttReturn => {
         streamGenerationRef.current += 1;
         setStatus('idle');
         sttService.streamCancel().catch(emptyFn);
+        releaseSttResidency();
     };
 
     return {
