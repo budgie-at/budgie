@@ -2,6 +2,7 @@ import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { SnapshotWithStatusInterface } from '../interface/snapshot-with-status.interface';
@@ -104,7 +105,7 @@ class AiModelResidencyService {
     )
     private async ensureLoaded(subsystem: AiSubsystemNameEnum): Promise<boolean> {
         const service = AiModelResidencyService.SUBSYSTEMS[subsystem];
-        if (this.isSuspended || service.getSnapshot().status === AiSubsystemStatusEnum.ERROR) {
+        if (!isAiEnabled() || this.isSuspended || service.getSnapshot().status === AiSubsystemStatusEnum.ERROR) {
             return false;
         }
         await this.chain(() => this.loadWhileLeased(subsystem));
@@ -118,7 +119,7 @@ class AiModelResidencyService {
         (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
     )
     private async loadWhileLeased(subsystem: AiSubsystemNameEnum): Promise<void> {
-        if (this.isSuspended || !isPositiveNumber(this.getLeaseCount(subsystem))) {
+        if (!isAiEnabled() || this.isSuspended || !isPositiveNumber(this.getLeaseCount(subsystem))) {
             return;
         }
         await AiModelResidencyService.SUBSYSTEMS[subsystem].start();
