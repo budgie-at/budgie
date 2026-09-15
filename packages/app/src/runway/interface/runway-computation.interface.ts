@@ -2,6 +2,7 @@ export interface RunwayComputationInterface {
     readonly burn: number;
     readonly income: number;
     readonly net: number;
+    readonly allInBurn: number;
     readonly allInNet: number;
     readonly liquid: number;
     readonly runwayMonths: number | null;

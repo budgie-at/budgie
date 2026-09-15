@@ -2,7 +2,7 @@ import { RUNWAY_MAX_MONTHS } from '@budgie/contracts';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { RUNWAY_FORECAST_HORIZONS_MONTHS } from '../constant/runway-forecast.constant';
+import { RUNWAY_HORIZON_MONTHS } from '../constant/runway-horizon-months.constant';
 
 import type { RunwayComputationInterface } from '../interface/runway-computation.interface';
 
@@ -16,7 +16,6 @@ interface RunwayForecastGeometryInterface {
     readonly bandPath: string;
     readonly zeroY: number;
     readonly runOutX: number | null;
-    readonly runOutY: number | null;
     readonly tickXs: readonly number[];
 }
 
@@ -44,12 +43,11 @@ export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInt
 
     const drawableWidth = width - paddingLeft - paddingRight;
     const drawableHeight = height - paddingTop - paddingBottom;
-    const medianValues = RUNWAY_FORECAST_HORIZONS_MONTHS.map(months => liquid + net * months);
-    const p25Values = RUNWAY_FORECAST_HORIZONS_MONTHS.map(months => liquid + p25Net * months);
-    const p75Values = RUNWAY_FORECAST_HORIZONS_MONTHS.map(months => liquid + p75Net * months);
-    const scaledValues = [...medianValues, ...p25Values, ...p75Values, ZERO_VALUE];
-    const minValue = Math.min(...scaledValues);
-    const maxValue = Math.max(...scaledValues);
+    const medianValues = RUNWAY_HORIZON_MONTHS.map(months => liquid + net * months);
+    const p25Values = RUNWAY_HORIZON_MONTHS.map(months => liquid + p25Net * months);
+    const p75Values = RUNWAY_HORIZON_MONTHS.map(months => liquid + p75Net * months);
+    const minValue = Math.min(...medianValues, ...p25Values, ...p75Values, ZERO_VALUE);
+    const maxValue = Math.max(...medianValues, ...p25Values, ...p75Values, ZERO_VALUE);
     const valueRange = maxValue - minValue;
 
     const xAt = (months: number) => paddingLeft + (months / RUNWAY_MAX_MONTHS) * drawableWidth;
@@ -57,20 +55,18 @@ export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInt
         isPositiveNumber(valueRange)
             ? paddingTop + (1 - (value - minValue) / valueRange) * drawableHeight
             : paddingTop + drawableHeight / 2;
-    const xTicks = RUNWAY_FORECAST_HORIZONS_MONTHS.map(months => xAt(months));
-    const medianPoints = medianValues.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
+    const xTicks = RUNWAY_HORIZON_MONTHS.map(months => xAt(months));
     const p25Points = p25Values.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
     const p75Points = p75Values.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
-    const bandPoints = [...p75Points, ...[...p25Points].reverse()];
-    const runOutX = isDefined(runwayMonths) ? xAt(Math.min(Math.max(runwayMonths, ZERO_VALUE), RUNWAY_MAX_MONTHS)) : null;
-    const runOutY = isDefined(runOutX) ? yAt(ZERO_VALUE) : null;
 
     return {
-        medianPath: buildForecastPath(medianPoints, false),
-        bandPath: buildForecastPath(bandPoints, true),
+        medianPath: buildForecastPath(
+            medianValues.map((value, index) => ({ x: xTicks[index], y: yAt(value) })),
+            false
+        ),
+        bandPath: buildForecastPath([...p75Points, ...[...p25Points].reverse()], true),
         zeroY: yAt(ZERO_VALUE),
-        runOutX,
-        runOutY,
+        runOutX: isDefined(runwayMonths) && runwayMonths <= RUNWAY_MAX_MONTHS ? xAt(Math.max(runwayMonths, ZERO_VALUE)) : null,
         tickXs: xTicks
     };
 };

@@ -31,7 +31,7 @@ export const NetWorthAssetChips = ({ fiatTotal, cryptoTotal, fiatCount, cryptoCo
     const formattedCryptoTotal = formatDigits(cryptoTotal, defaultInstrument.symbol);
 
     return (
-        <View className="flex-row gap-x-sm mt-lg" testID={NetWorthAssetChipsSelector.Container}>
+        <View className="flex-row gap-x-sm" testID={NetWorthAssetChipsSelector.Container}>
             <View
                 className="flex-row items-center gap-x-xs rounded-full bg-secondary-background border border-secondary-corner px-md py-xs"
                 testID={NetWorthAssetChipsSelector.Fiat}

@@ -3,4 +3,5 @@ export interface RunwayDriverInterface {
     readonly title: string;
     readonly monthlyAmount: number;
     readonly isIrregular: boolean;
+    readonly foldedDriverCount: number;
 }
