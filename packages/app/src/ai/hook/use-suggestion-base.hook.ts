@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from 'react';
 import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-completeness-threshold.constant';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
+import { aiModelResidencyService } from '../service/ai-model-residency.service';
 
 import { useEmbeddingProgressSnapshot } from './use-embedding-progress-snapshot.hook';
 
@@ -49,6 +51,18 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     useEffect(() => {
         fetchSuggestionsRef.current = fetchSuggestions;
     }, [fetchSuggestions]);
+
+    useEffect(() => {
+        if (!enabled) {
+            return emptyFn;
+        }
+
+        void aiModelResidencyService.acquire(AiSubsystemNameEnum.EMBEDDING).catch(emptyFn);
+
+        return () => {
+            aiModelResidencyService.release(AiSubsystemNameEnum.EMBEDDING);
+        };
+    }, [enabled]);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {

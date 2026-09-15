@@ -7,10 +7,12 @@ import { emptyFn, getErrorMessage, isDefined, isEmptyArray } from '@rnw-communit
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
 
+import { aiModelResidencyService } from './ai-model-residency.service';
 import { SnapshotStore } from './base-subsystem.service';
 import { drainerMutex } from './drainer-mutex.service';
 
@@ -25,6 +27,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     private static readonly SQLITE_BUSY_PATTERN = /database is locked|SQLITE_BUSY/iu;
 
     protected abstract readonly kind: DrainerKindEnum;
+    protected abstract readonly subsystem: AiSubsystemNameEnum;
     protected abstract readonly relaxedIntervalMs: number;
     protected abstract readonly relaxedBatchSize: number;
     protected abstract readonly boostBatchSize: number;
@@ -35,7 +38,6 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     private consecutiveFailures = 0;
     private timer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
-    private subsystemUnsubscribe: (() => void) | null = null;
     private foregroundWorkloadUnsubscribe: (() => void) | null = null;
     private started = false;
 
@@ -50,17 +52,8 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }
         this.started = true;
         this.appStateSubscription = AppState.addEventListener('change', this.handleAppState);
-        this.subsystemUnsubscribe = this.subscribeToSubsystem(() => {
-            if (this.isSubsystemReady()) {
-                this.scheduleDrain();
-            } else {
-                this.haltTimer();
-            }
-        });
         this.foregroundWorkloadUnsubscribe = foregroundWorkloadService.subscribe(this.handleForegroundWorkloadChange);
-        if (this.isSubsystemReady()) {
-            this.scheduleDrain();
-        }
+        this.scheduleDrain();
         void this.refreshPending();
     }
 
@@ -73,8 +66,6 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.haltTimer();
         this.appStateSubscription?.remove();
         this.appStateSubscription = null;
-        this.subsystemUnsubscribe?.();
-        this.subsystemUnsubscribe = null;
         this.foregroundWorkloadUnsubscribe?.();
         this.foregroundWorkloadUnsubscribe = null;
         this.setSnapshot({ state: DrainerStateEnum.IDLE });
@@ -147,8 +138,6 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         }
     }
 
-    protected abstract subscribeToSubsystem(listener: () => void): () => void;
-    protected abstract isSubsystemReady(): boolean;
     protected abstract fetchPending(limit: number): Promise<TRow[]>;
     protected abstract processRow(row: TRow): Promise<void>;
     protected abstract countPending(): Promise<number>;
@@ -158,7 +147,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     }
 
     protected isSafe(): boolean {
-        return this.started && this.isSubsystemReady() && AppState.currentState === 'active' && !foregroundWorkloadService.isActive();
+        return this.started && AppState.currentState === 'active' && !foregroundWorkloadService.isActive();
     }
 
     private readonly handleAppState = (state: AppStateStatus): void => {
@@ -237,10 +226,36 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
 
             return;
         }
+        let isSubsystemReady = true;
         try {
             const rows = await this.fetchPending(this.relaxedBatchSize);
             if (isEmptyArray(rows)) {
                 return;
+            }
+            isSubsystemReady = await this.processRowsWithModel(rows);
+        } finally {
+            await this.finalizeBatch();
+            drainerMutex.release(this.kind);
+            if (this.isSafe() && this.snapshot.state !== DrainerStateEnum.ERROR) {
+                if (isSubsystemReady) {
+                    this.scheduleDrain();
+                } else {
+                    this.scheduleDrainAfter(BaseDrainerService.ERROR_AUTO_RETRY_MS);
+                }
+            }
+        }
+    }
+
+    @Log(
+        rows => `enter rowCount=${rows.length}`,
+        (result, rows) => `done rowCount=${rows.length} result=${String(result)}`,
+        (error, rows) => `throw rowCount=${rows.length} error=${getErrorMessage(error)}`
+    )
+    private async processRowsWithModel(rows: TRow[]): Promise<boolean> {
+        const isSubsystemReady = await aiModelResidencyService.acquire(this.subsystem);
+        try {
+            if (!isSubsystemReady) {
+                return false;
             }
             for (const row of rows) {
                 if (!this.isSafe() || this.snapshot.state === DrainerStateEnum.ERROR) {
@@ -249,12 +264,10 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                 // eslint-disable-next-line no-await-in-loop -- Sequential to avoid Metal thrash
                 await this.runRow(row);
             }
+
+            return true;
         } finally {
-            await this.finalizeBatch();
-            drainerMutex.release(this.kind);
-            if (this.isSafe() && this.snapshot.state !== DrainerStateEnum.ERROR) {
-                this.scheduleDrain();
-            }
+            aiModelResidencyService.release(this.subsystem);
         }
     }
 
@@ -285,7 +298,11 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     private async runBoostLoop(): Promise<void> {
         let processed = 0;
         let rowIndex = 0;
+        const isSubsystemReady = await aiModelResidencyService.acquire(this.subsystem);
         try {
+            if (!isSubsystemReady) {
+                return;
+            }
             /* eslint-disable no-await-in-loop -- Sequential row processing is the whole point of boost */
             while (this.isSafe() && this.getState() === DrainerStateEnum.BOOSTING) {
                 const rows = await this.fetchPending(this.boostBatchSize);
@@ -310,6 +327,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
             /* eslint-enable no-await-in-loop */
         } finally {
             await this.finalizeBatch();
+            aiModelResidencyService.release(this.subsystem);
         }
     }
 

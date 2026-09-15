@@ -412,11 +412,6 @@ msgstr "IA"
 msgid "AI disabled"
 msgstr "IA desactivada"
 
-#: src/ai/service/ai-system-status.service.ts
-#: src/ai/service/ai-umbrella-status.service.ts
-msgid "AI idle"
-msgstr "IA inactiva"
-
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "AI off"
 msgstr "IA desactivada"
@@ -3173,7 +3168,6 @@ msgid "Restore from a backup file"
 msgstr "Restaurar desde un archivo de copia de seguridad"
 
 #: src/ai/service/ai-system-status.service.ts
-#: src/ai/service/ai-umbrella-status.service.ts
 msgid "Resuming AI…"
 msgstr "Reanudando IA…"
 
