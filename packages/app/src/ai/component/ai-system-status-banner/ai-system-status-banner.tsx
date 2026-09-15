@@ -14,20 +14,16 @@ const BANNER_ICON: Record<AiSystemUmbrellaStateEnum, UserIconNameEnum | null> = 
     [AiSystemUmbrellaStateEnum.DISABLED]: UserIconNameEnum.CircleAlert,
     [AiSystemUmbrellaStateEnum.DOWNLOADING]: UserIconNameEnum.LoaderCircle,
     [AiSystemUmbrellaStateEnum.HEALTHY]: null,
-    [AiSystemUmbrellaStateEnum.IDLE]: UserIconNameEnum.LoaderCircle,
     [AiSystemUmbrellaStateEnum.INITIALIZING]: UserIconNameEnum.LoaderCircle,
-    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: UserIconNameEnum.TriangleAlert,
-    [AiSystemUmbrellaStateEnum.SUSPENDED]: UserIconNameEnum.LoaderCircle
+    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: UserIconNameEnum.TriangleAlert
 };
 
 const BANNER_COLOR: Record<AiSystemUmbrellaStateEnum, string> = {
     [AiSystemUmbrellaStateEnum.DISABLED]: 'text-secondary-foreground',
     [AiSystemUmbrellaStateEnum.DOWNLOADING]: 'text-primary',
     [AiSystemUmbrellaStateEnum.HEALTHY]: 'text-secondary-foreground',
-    [AiSystemUmbrellaStateEnum.IDLE]: 'text-secondary-foreground',
     [AiSystemUmbrellaStateEnum.INITIALIZING]: 'text-warning-foreground',
-    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: 'text-destructive-foreground',
-    [AiSystemUmbrellaStateEnum.SUSPENDED]: 'text-warning-foreground'
+    [AiSystemUmbrellaStateEnum.MODEL_ERROR]: 'text-destructive-foreground'
 };
 
 export const AiSystemStatusBanner = () => {

@@ -58,8 +58,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
         onSilenceDetected: () => void runPipeline().catch(handleError)
     });
 
-    const isReady = stt.isReady && categorization.isReady;
-    const downloadProgress = Math.min(stt.downloadProgress, categorization.downloadProgress);
+    const { downloadProgress, isReady } = stt;
 
     const startAndCollect: UseVoiceInputReturnInterface['startAndCollect'] = onResult => {
         setError(null);

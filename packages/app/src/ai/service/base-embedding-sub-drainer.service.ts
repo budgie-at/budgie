@@ -5,6 +5,7 @@ import { Log } from '@budgie/logger';
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { db, transactionRepository } from '../../@generic/drizzle/db/db';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { PendingPersistInterface } from '../interface/pending-persist.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 
@@ -21,6 +22,7 @@ export abstract class BaseEmbeddingSubDrainerService<
     private static readonly BOOST_BATCH_SIZE = 15;
     private static readonly YIELD_EVERY_ROWS = 3;
 
+    protected readonly subsystem = AiSubsystemNameEnum.EMBEDDING;
     protected readonly relaxedIntervalMs = BaseEmbeddingSubDrainerService.RELAXED_INTERVAL_MS;
     protected readonly relaxedBatchSize = BaseEmbeddingSubDrainerService.RELAXED_BATCH_SIZE;
     protected readonly boostBatchSize = BaseEmbeddingSubDrainerService.BOOST_BATCH_SIZE;
@@ -97,14 +99,6 @@ export abstract class BaseEmbeddingSubDrainerService<
         }
 
         return this.upsertEmbedding(context, rawEmbedding);
-    }
-
-    protected subscribeToSubsystem(listener: () => void): () => void {
-        return embeddingService.subscribe(listener);
-    }
-
-    protected isSubsystemReady(): boolean {
-        return embeddingService.isReady;
     }
 
     protected abstract buildPromptContext(context: TContext): string;

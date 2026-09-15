@@ -11,13 +11,11 @@ import { translationProgressStore } from '../store/translation-progress.store';
 import { BACKGROUND_RELEASE_DELAY_MS } from '../util/ai-constants.util';
 
 import { aiEmbeddingStatusService } from './ai-embedding-status.service';
+import { aiModelResidencyService } from './ai-model-residency.service';
 import { aiTranslationStatusService } from './ai-translation-status.service';
 import { aiUmbrellaStatusService } from './ai-umbrella-status.service';
 import { SnapshotStore } from './base-subsystem.service';
-import { chatService } from './chat.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
-import { embeddingService } from './embedding.service';
-import { sttService } from './stt.service';
 import { translationDrainerService } from './translation-drainer.service';
 
 import type { AppStateStatus } from 'react-native';
@@ -27,7 +25,6 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
     private releaseTimer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
     private scheduledStartCancel: (() => void) | null = null;
-    private startGeneration = 0;
 
     constructor() {
         super({ isAvailable: isAiEnabled(), isSuspended: false });
@@ -68,16 +65,6 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         void this.stopSubsystems().catch(emptyFn);
     }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async bootModels(): Promise<void> {
-        await Promise.all([chatService.start(), embeddingService.start(), sttService.start()]);
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async releaseModels(): Promise<void> {
-        await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
-    }
-
     @Log(
         state => `enter state=${state}`,
         (result, state) => `done state=${state} result=${String(result)}`,
@@ -112,31 +99,13 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         void this.stopSubsystems().catch(emptyFn);
     }
 
-    private scheduleStartSubsystems(): void {
-        this.cancelScheduledStart();
-        this.scheduledStartCancel = scheduleIdleCallback(() => {
-            this.scheduledStartCancel = null;
-            void this.startSubsystems().catch(emptyFn);
-        });
-    }
-
-    private cancelScheduledStart(): void {
-        if (isDefined(this.scheduledStartCancel)) {
-            this.scheduledStartCancel();
-            this.scheduledStartCancel = null;
-        }
-    }
-
-    private async startSubsystems(): Promise<void> {
-        this.startGeneration += 1;
-        const generation = this.startGeneration;
-
-        await this.bootModels();
-
-        if (generation !== this.startGeneration || !this.started || this.snapshot.isSuspended) {
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    private startSubsystems(): void {
+        if (!this.started || this.snapshot.isSuspended) {
             return;
         }
 
+        aiModelResidencyService.resume();
         translationDrainerService.start();
         embeddingDrainerService.start();
         aiUmbrellaStatusService.start();
@@ -146,13 +115,29 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         void embeddingProgressStore.refresh(true);
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async stopSubsystems(): Promise<void> {
         aiEmbeddingStatusService.stop();
         aiTranslationStatusService.stop();
         aiUmbrellaStatusService.stop();
         translationDrainerService.stop();
         embeddingDrainerService.stop();
-        await this.releaseModels();
+        await aiModelResidencyService.suspend();
+    }
+
+    private scheduleStartSubsystems(): void {
+        this.cancelScheduledStart();
+        this.scheduledStartCancel = scheduleIdleCallback(() => {
+            this.scheduledStartCancel = null;
+            this.startSubsystems();
+        });
+    }
+
+    private cancelScheduledStart(): void {
+        if (isDefined(this.scheduledStartCancel)) {
+            this.scheduledStartCancel();
+            this.scheduledStartCancel = null;
+        }
     }
 
     private clearReleaseTimer(): void {

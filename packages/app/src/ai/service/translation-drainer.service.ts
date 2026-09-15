@@ -4,6 +4,7 @@ import { Log } from '@budgie/logger';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { translationProgressStore } from '../store/translation-progress.store';
 
@@ -20,6 +21,7 @@ class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInter
     private static readonly YIELD_EVERY_ROWS = 2;
 
     protected readonly kind = DrainerKindEnum.TRANSLATION;
+    protected readonly subsystem = AiSubsystemNameEnum.CHAT;
     protected readonly relaxedIntervalMs = TranslationDrainerService.RELAXED_INTERVAL_MS;
     protected readonly relaxedBatchSize = TranslationDrainerService.RELAXED_BATCH_SIZE;
     protected readonly boostBatchSize = TranslationDrainerService.BOOST_BATCH_SIZE;
@@ -47,14 +49,6 @@ class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInter
         } else {
             await tagRepository.updateTranslation(row.id, result.titleEn, result.titleTags);
         }
-    }
-
-    protected subscribeToSubsystem(listener: () => void): () => void {
-        return chatService.subscribe(listener);
-    }
-
-    protected isSubsystemReady(): boolean {
-        return chatService.isReady;
     }
 
     protected async fetchPending(limit: number): Promise<CategoryOrTagRowInterface[]> {
