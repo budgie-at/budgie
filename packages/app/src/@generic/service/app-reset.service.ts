@@ -4,10 +4,8 @@ import * as SQLite from 'expo-sqlite';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { aiModelResidencyService } from '../../ai/service/ai-model-residency.service';
 import { aiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
-import { chatService } from '../../ai/service/chat.service';
-import { embeddingService } from '../../ai/service/embedding.service';
-import { sttService } from '../../ai/service/stt.service';
 import { authService } from '../../auth/service/auth.service';
 import { patternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { DB_NAME } from '../drizzle/constant/db-name.constant';
@@ -36,7 +34,7 @@ class AppResetService {
     private async runPrimaryResetSteps(errors: unknown[]): Promise<void> {
         try {
             await aiStorageReplacementService.pauseLongLivedRuntime();
-            await Promise.all([chatService.stop(), embeddingService.stop(), sttService.stop()]);
+            await aiModelResidencyService.suspend();
             await databaseLifecycleService.close();
             this.deleteDatabaseFiles(this.getDatabasePath());
             this.deleteDatabaseFiles(`${this.getDatabasePath()}.bak`);

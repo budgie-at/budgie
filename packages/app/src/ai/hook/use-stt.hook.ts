@@ -9,6 +9,7 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { sttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
 
+import { useSttResidency } from './use-stt-residency.hook';
 import { useSttSnapshot } from './use-stt-snapshot.hook';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
@@ -19,7 +20,7 @@ interface UseSttReturn {
     readonly partialTranscription: string;
     readonly isReady: boolean;
     readonly downloadProgress: number;
-    readonly startStream: () => void;
+    readonly startStream: () => Promise<boolean>;
     readonly insertAudio: (samples: Float32Array) => void;
     readonly stopStream: () => Promise<string>;
     readonly cancelStream: () => void;
@@ -34,17 +35,36 @@ export const useStt = (): UseSttReturn => {
     const [status, setStatus] = useState<SttStatus>('idle');
     const [baseTranscription, setBaseTranscription] = useState('');
     const streamGenerationRef = useRef(0);
+    const { acquireSttResidency, releaseSttResidency } = useSttResidency();
 
-    const isCurrentStream = (generation: number): boolean => generation === streamGenerationRef.current;
-
-    const startStream = () => {
+    const startStream = async (): Promise<boolean> => {
         streamGenerationRef.current += 1;
+        const generation = streamGenerationRef.current;
         const language = isSpeechToTextLanguage(locale.languageCode) ? locale.languageCode : null;
 
-        sttService.streamCancel().catch(emptyFn);
+        if (!(await acquireSttResidency()) || generation !== streamGenerationRef.current) {
+            return false;
+        }
+
+        await sttService.streamCancel().catch(emptyFn);
         setBaseTranscription(sttService.committedTranscription);
-        sttService.streamStart(language).catch(emptyFn);
+        const isStreaming = await sttService.streamStart(language).then(
+            () => true,
+            () => false
+        );
+        const isCurrentGeneration = generation === streamGenerationRef.current;
+
+        if (!isStreaming && isCurrentGeneration) {
+            releaseSttResidency();
+        }
+
+        if (!isStreaming || !isCurrentGeneration) {
+            return false;
+        }
+
         setStatus('streaming');
+
+        return true;
     };
 
     const insertAudio = (samples: Float32Array) => {
@@ -71,7 +91,8 @@ export const useStt = (): UseSttReturn => {
         } catch {
             throw new Error(t`Transcription failed`);
         } finally {
-            if (isCurrentStream(generation)) {
+            releaseSttResidency();
+            if (generation === streamGenerationRef.current) {
                 setStatus('idle');
             }
         }
@@ -81,6 +102,7 @@ export const useStt = (): UseSttReturn => {
         streamGenerationRef.current += 1;
         setStatus('idle');
         sttService.streamCancel().catch(emptyFn);
+        releaseSttResidency();
     };
 
     return {

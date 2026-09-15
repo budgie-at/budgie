@@ -9,7 +9,7 @@ export interface UseVoiceInputReturnInterface {
     readonly data: VoiceInputDataInterface;
     readonly isReady: boolean;
     readonly downloadProgress: number;
-    readonly startAndCollect: (onResult: (transactions: AITransactionInterface[], originalText: string) => void) => void;
+    readonly startAndCollect: (onResult: (transactions: AITransactionInterface[], originalText: string) => void) => Promise<void>;
     readonly stop: () => void;
     readonly cancel: () => void;
 }

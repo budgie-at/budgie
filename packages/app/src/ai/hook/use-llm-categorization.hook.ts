@@ -1,4 +1,4 @@
-import { AITransactionInterface, ExtractedVoiceTransactionInterface, findAccountByCurrency } from '@budgie/ai';
+import { AITransactionInterface, findAccountByCurrency } from '@budgie/ai';
 import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useState } from 'react';
 
@@ -6,21 +6,19 @@ import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
-import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
+import { aiModelResidencyService } from '../service/ai-model-residency.service';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 import { voiceService } from '../service/voice.service';
 
-import { useAiDownloadProgress } from './use-ai-download-progress.hook';
-import { useChat } from './use-chat.hook';
-
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
+
+const VOICE_SUBSYSTEMS = [AiSubsystemNameEnum.CHAT, AiSubsystemNameEnum.EMBEDDING] as const;
 
 interface UseLlmCategorizationReturnInterface {
     readonly status: CategorizationStatus;
     readonly transactions: AITransactionInterface[];
     readonly error: string | null;
-    readonly isReady: boolean;
-    readonly downloadProgress: number;
     readonly categorize: (text: string) => Promise<AITransactionInterface[]>;
     readonly reset: () => void;
 }
@@ -34,12 +32,19 @@ const suggestCategoryFor = async (description: string, categories: CategoryEntit
     return suggestions[0] ?? null;
 };
 
-const mapExtractedToTransactions = async (
-    extracted: ExtractedVoiceTransactionInterface[],
+const extractAndMapTransactions = async (
+    text: string,
     accounts: AccountWithInstrumentEntityInterface[],
     categories: CategoryEntityInterface[]
-): Promise<AITransactionInterface[]> =>
-    Promise.all(
+): Promise<AITransactionInterface[]> => {
+    const extracted = await voiceService.extractTransactions(text);
+
+    if (!isNotEmptyArray(extracted)) {
+        // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
+        throw new Error('Failed to extract transactions from text');
+    }
+
+    return Promise.all(
         extracted.map(async item => ({
             category: await suggestCategoryFor(item.description, categories),
             amount: item.amount,
@@ -49,13 +54,11 @@ const mapExtractedToTransactions = async (
             comment: item.description
         }))
     );
+};
 
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { accounts } = useSearchAccountsSortedQuery();
     const { categories } = useAllCategoriesQuery();
-    const { status: chatStatus } = useChat();
-    const downloadProgress = useAiDownloadProgress();
-
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -65,15 +68,10 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
         setError(null);
         setTransactions([]);
 
+        await Promise.all(VOICE_SUBSYSTEMS.map(subsystem => aiModelResidencyService.acquire(subsystem)));
+
         try {
-            const extracted = await voiceService.extractTransactions(text);
-
-            if (!isNotEmptyArray(extracted)) {
-                // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
-                throw new Error('Failed to extract transactions from text');
-            }
-
-            const results = await mapExtractedToTransactions(extracted, accounts, categories);
+            const results = await extractAndMapTransactions(text, accounts, categories);
             setTransactions(results);
             setStatus('done');
 
@@ -82,6 +80,10 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
             setError(getErrorMessage(err));
             setStatus('error');
             throw err;
+        } finally {
+            VOICE_SUBSYSTEMS.forEach(subsystem => {
+                aiModelResidencyService.release(subsystem);
+            });
         }
     };
 
@@ -95,8 +97,6 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
         status,
         transactions,
         error,
-        isReady: chatStatus === AiSubsystemStatusEnum.READY,
-        downloadProgress,
         categorize,
         reset
     };

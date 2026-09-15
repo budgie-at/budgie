@@ -30,13 +30,6 @@ export const AI_SYSTEM_STATE_VISUALS: Record<AiSystemStateEnum, StateVisualInter
         shakeOnEnter: false,
         glow: false
     },
-    [AiSystemStateEnum.IDLE]: {
-        colorClass: 'text-secondary-foreground',
-        stripClass: 'bg-secondary-foreground',
-        pulsePeriodMs: null,
-        shakeOnEnter: false,
-        glow: false
-    },
     [AiSystemStateEnum.TRANSLATING]: {
         colorClass: 'text-warning-foreground',
         stripClass: 'bg-warning-foreground',
