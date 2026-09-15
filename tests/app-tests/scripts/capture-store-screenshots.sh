@@ -387,7 +387,7 @@ maestro_work_dir() {
 capture_flow_cell() {
     local udid="$1" locale="$2" appearance="$3" scene="$4" flow="$5" final_path="$6"
     local flow_path test_output_dir shot_cwd shot_count=0 shot_file='' candidate
-    local clip_count=0 clip_file=''
+    local clip_count=0 clip_file='' app_data_container
 
     [ -n "$SCREENSHOTS_DIR" ] || fail "scene '$scene' declares a flow but the config has no screenshots-dir"
     flow_path="$SCREENSHOTS_DIR/$flow"
@@ -398,10 +398,17 @@ capture_flow_cell() {
     rm -rf "$test_output_dir"
     mkdir -p "$shot_cwd"
 
+    # Resolved once per cell so a flow can read a fixture straight from the
+    # app's own sandbox (e.g. a CSV picked via a fileUri deep link) without
+    # ever driving the OS Files picker. Empty when the container cannot be
+    # resolved; harmless for every flow that does not reference it.
+    app_data_container=$(xcrun simctl get_app_container "$udid" "$APP_ID" data 2>/dev/null || true)
+
     (
         cd "$shot_cwd"
         maestro --device "$udid" test \
             -e "APP_ID=$APP_ID" -e "LOCALE=$locale" -e "APPEARANCE=$appearance" \
+            -e "APP_DATA_CONTAINER=$app_data_container" \
             ${MAESTRO_CONFIG_ARGS[@]+"${MAESTRO_CONFIG_ARGS[@]}"} \
             --test-output-dir "$test_output_dir" "$flow_path"
     ) || return 1
@@ -409,7 +416,19 @@ capture_flow_cell() {
     while IFS= read -r candidate; do
         shot_count=$((shot_count + 1))
         shot_file="$candidate"
-    done < <(find "$shot_cwd" -type f -name '*.png'; find "$test_output_dir" -type f \( -path '*takeScreenshot/*.png' -o -path '*/screenshots/*.png' \) -not -path "$shot_cwd/*")
+    done < <(find "$shot_cwd" -type f -name '*.png'; find "$test_output_dir" -type f -path '*takeScreenshot/*.png' -not -path "$shot_cwd/*")
+    if [ "$shot_count" -eq 0 ]; then
+        # Some maestro versions only place the named takeScreenshot output under
+        # screenshots/ instead of takeScreenshot/. Only fall back to that wider,
+        # optional-step-polluted path when the named one produced nothing, so a
+        # flow that reuses a branchy production subflow (an optional step that
+        # WARNED and dropped its own debug PNG under screenshots/) still resolves
+        # to its one real, named screenshot instead of failing on an inflated count.
+        while IFS= read -r candidate; do
+            shot_count=$((shot_count + 1))
+            shot_file="$candidate"
+        done < <(find "$test_output_dir" -type f -path '*/screenshots/*.png' -not -path "$shot_cwd/*")
+    fi
     if [ "$shot_count" -ne 1 ]; then
         echo "  $locale/$appearance/$scene: expected exactly 1 takeScreenshot PNG, found $shot_count" >&2
 

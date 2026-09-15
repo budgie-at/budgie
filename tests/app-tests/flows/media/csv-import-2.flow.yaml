@@ -1,0 +1,17 @@
+appId: ${APP_ID}
+---
+- openLink: 'budgie://settings/import?fileUri=file://${APP_DATA_CONTAINER}/Documents/E2EFixtures/e2e-budgie-import.csv'
+
+- waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'ImportScreen.PresetChip.Budgie'
+      timeout: 15000
+
+- tapOn:
+      id: 'ImportScreen.PresetChip.Budgie'
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene
