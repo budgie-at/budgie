@@ -1,7 +1,7 @@
 import { PRECISION, TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { db } from '../../@generic/drizzle/db/db';
 import { transactionTransferService } from '../../transaction/service/transaction-transfer.service';
@@ -23,6 +23,7 @@ class UnpairedOwnCardTransferRepairService {
             AND entry.deleted_at IS NULL
             AND entry.original_transaction_id IS NULL
             AND entry.kind = 'PRIMARY'
+            AND entry.type = CASE WHEN tx.type = 'INCOME' THEN 'DEBIT' ELSE 'CREDIT' END
         INNER JOIN accounts own_account ON
             own_account.id = CASE WHEN tx.type = 'INCOME' THEN tx.to_account_id ELSE tx.from_account_id END
             AND own_account.deleted_at IS NULL
@@ -73,20 +74,10 @@ class UnpairedOwnCardTransferRepairService {
     @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
     async repair(): Promise<number> {
         const candidates = await this.findCandidates(db);
-        if (!isNotEmptyArray(candidates)) {
-            return 0;
-        }
 
-        return candidates.reduce(
-            (previous, candidate) =>
-                previous.then(count =>
-                    this.convertCandidate(candidate).then(
-                        () => count + 1,
-                        () => count
-                    )
-                ),
-            Promise.resolve(0)
-        );
+        await candidates.reduce((previous, candidate) => previous.then(() => this.convertCandidate(candidate)), Promise.resolve());
+
+        return candidates.length;
     }
 
     @Log(
