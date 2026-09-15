@@ -119,10 +119,14 @@ class AiModelResidencyService {
         (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
     )
     private async loadWhileLeased(subsystem: AiSubsystemNameEnum): Promise<void> {
+        const service = AiModelResidencyService.SUBSYSTEMS[subsystem];
         if (!isAiEnabled() || this.isSuspended || !isPositiveNumber(this.getLeaseCount(subsystem))) {
             return;
         }
-        await AiModelResidencyService.SUBSYSTEMS[subsystem].start();
+        if (service.getSnapshot().status === AiSubsystemStatusEnum.ERROR) {
+            return;
+        }
+        await service.start();
     }
 
     @Log(
