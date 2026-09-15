@@ -42,9 +42,7 @@ export const useStt = (): UseSttReturn => {
         const generation = streamGenerationRef.current;
         const language = isSpeechToTextLanguage(locale.languageCode) ? locale.languageCode : null;
 
-        const isSttResident = await acquireSttResidency();
-
-        if (!isSttResident || generation !== streamGenerationRef.current) {
+        if (!(await acquireSttResidency()) || generation !== streamGenerationRef.current) {
             return false;
         }
 
@@ -54,8 +52,13 @@ export const useStt = (): UseSttReturn => {
             () => true,
             () => false
         );
+        const isCurrentGeneration = generation === streamGenerationRef.current;
 
-        if (!isStreaming || generation !== streamGenerationRef.current) {
+        if (!isStreaming && isCurrentGeneration) {
+            releaseSttResidency();
+        }
+
+        if (!isStreaming || !isCurrentGeneration) {
             return false;
         }
 
