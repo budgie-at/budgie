@@ -3515,7 +3515,6 @@ msgstr ""
 msgid "Bank-fee entries are included in category analytics even when attached to transfers"
 msgstr "Записи банківських комісій враховуються в категорійній аналітиці, навіть коли вони прив’язані до переказів"
 
-#: src/app/[lang]/features/biometric-authentication/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
 msgid "Bank-grade biometric unlock — same Secure Enclave, same encryption key."
@@ -7557,10 +7556,6 @@ msgstr "face id"
 msgid "Face ID / Touch ID Authentication"
 msgstr "Автентифікація за Face ID / Touch ID"
 
-#: src/app/[lang]/features/biometric-authentication/metadata.ts
-msgid "Face ID / Touch ID unlock that drives the same SQLCipher encryption key as your PIN. Frictionless, falls back to PIN when needed, respects platform lockout policy."
-msgstr "Розблокування Face ID / Touch ID прив’язане до того самого ключа шифрування SQLCipher, що й ваш PIN. Швидко, коли спрацьовує; резервний PIN, коли треба; правила блокування платформи, коли це обов’язково."
-
 #: src/app/[lang]/security/page.tsx
 msgid "Face ID and fingerprint authentication on every supported device"
 msgstr "Аутентифікація Face ID та відбитком пальця на кожному підтримуваному пристрої"
@@ -7576,6 +7571,10 @@ msgstr "Face ID відкриває замок, а ключ — це PIN"
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
 msgstr "Розблокування через Face ID на екрані блокування, якщо його налаштовано на пристрої"
+
+#: src/app/[lang]/features/biometric-authentication/metadata.ts
+msgid "Face ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real SQLCipher key, no device-passcode fallback."
+msgstr "Face ID миттєво розблоковує екран блокування; система виконує перевірку, а Budgie бачить лише результат. Ваш PIN-код залишається справжнім ключем шифрування SQLCipher, без резервного коду доступу пристрою."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
@@ -11399,6 +11398,10 @@ msgstr "Один файл. Зашифрований, щойно встановл
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
 msgstr "Один погляд — і екран блокування Budgie позаду. Чотири цифри, які ви обрали, лишаються ключем, яким зашифрована ваша база даних."
+
+#: src/app/[lang]/features/biometric-authentication/metadata.ts
+msgid "One glance unlocks the screen — your four-digit PIN stays the encryption key underneath."
+msgstr "Один погляд розблоковує екран — ваш чотиризначний PIN-код лишається ключем шифрування."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One key per bank, not per account"
