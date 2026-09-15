@@ -26,6 +26,23 @@ class ForegroundWorkloadService {
         };
     }
 
+    async whenIdle(): Promise<void> {
+        if (!this.isActive()) {
+            return;
+        }
+
+        await new Promise<void>(resolve => {
+            const unsubscribe = this.subscribe(() => {
+                if (this.isActive()) {
+                    return;
+                }
+
+                unsubscribe();
+                resolve();
+            });
+        });
+    }
+
     async run<T>(work: () => Promise<T>): Promise<T> {
         this.begin();
 
