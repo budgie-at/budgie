@@ -20,5 +20,8 @@ export const SettingsEntitySchema = createSelectSchema(SettingsEntityTable, {
     isBudgetPushEnabled: schema => schema.describe('Determines whether push notifications are sent when a budget threshold is crossed.'),
     isOnboardingCompleted: schema => schema.describe('Determines whether the first-launch onboarding has already run.'),
     onboardingStep: schema => schema.describe('Index of the onboarding step the user has reached.'),
-    isAiEnabled: schema => schema.describe('Determines whether the user has consented to downloading and running on-device AI models.')
+    isAiEnabled: schema => schema.describe('Determines whether the user has consented to downloading and running on-device AI models.'),
+    isRunwayPillEnabled: schema => schema.describe('Determines whether the runway pill is shown on the home screen.'),
+    isRunwayCryptoIncluded: schema =>
+        schema.describe('Determines whether crypto accounts are counted at market value in the runway liquid balance.')
 });

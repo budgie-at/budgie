@@ -19,5 +19,7 @@ export const DEFAULT_SETTINGS = {
     isBudgetPushEnabled: false,
     isOnboardingCompleted: false,
     onboardingStep: 0,
-    isAiEnabled: false
+    isAiEnabled: false,
+    isRunwayPillEnabled: true,
+    isRunwayCryptoIncluded: false
 } satisfies SettingsEntityInterface;

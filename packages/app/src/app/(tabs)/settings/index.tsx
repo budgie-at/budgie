@@ -23,6 +23,7 @@ import { ExportDatabase } from '../../../export/components/export-database/expor
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { MoneyDataUpgradeStatusCard } from '../../../money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card';
+import { RunwaySettingsSection } from '../../../runway/component/runway-settings-section/runway-settings-section';
 import { AutoAssignMccCategory } from '../../../settings/components/auto-assign-mcc-category/auto-assign-mcc-category';
 import { BudgetManagementCard } from '../../../settings/components/budget-management-card/budget-management-card';
 import { BudgetPushToggle } from '../../../settings/components/budget-push-toggle/budget-push-toggle';
@@ -180,6 +181,14 @@ export default function SettingsPage() {
                             <BudgetManagementCard />
                             <BudgetWidgetToggle />
                             <BudgetPushToggle />
+                        </Animated.View>
+                    </SettingsGroup>
+                </View>
+
+                <View {...anchorLayout('runway')}>
+                    <SettingsGroup title={t`Runway`}>
+                        <Animated.View className="gap-y-lg" {...anchorHighlight('runway')}>
+                            <RunwaySettingsSection />
                         </Animated.View>
                     </SettingsGroup>
                 </View>

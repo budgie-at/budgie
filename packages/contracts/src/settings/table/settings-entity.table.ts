@@ -30,6 +30,8 @@ export const SettingsEntityTable = sqliteTable(
         isBudgetPushEnabled: int('is_budget_push_enabled', { mode: 'boolean' }).notNull().default(false),
         isOnboardingCompleted: int('is_onboarding_completed', { mode: 'boolean' }).notNull().default(false),
         onboardingStep: int('onboarding_step', { mode: 'number' }).notNull().default(0),
-        isAiEnabled: int('is_ai_enabled', { mode: 'boolean' }).notNull().default(false)
+        isAiEnabled: int('is_ai_enabled', { mode: 'boolean' }).notNull().default(false),
+        isRunwayPillEnabled: int('is_runway_pill_enabled', { mode: 'boolean' }).notNull().default(true),
+        isRunwayCryptoIncluded: int('is_runway_crypto_included', { mode: 'boolean' }).notNull().default(false)
     })
 );
