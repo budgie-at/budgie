@@ -35,7 +35,7 @@ class EntryBaseValuationService {
         tx
     }: EntryBaseValuationInputInterface): Promise<EntryBaseValuationInterface> {
         const [account, baseInstrument] = await Promise.all([
-            accountRepository.findById(accountId, tx),
+            accountRepository.findByIdIncludingArchived(accountId, tx),
             exchangeRatesService.getBaseInstrument()
         ]);
 
