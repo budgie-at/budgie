@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.64.2](https://github.com/budgie-at/budgie/compare/v6.64.1...v6.64.2) (2026-09-15)
+
+
+### Performance Improvements
+
+* **contracts:** make the Runway month window predicate index-usable ([db669bb](https://github.com/budgie-at/budgie/commit/db669bb1fbf9c29d21e08680656e14e46fda9517)), closes [#1058](https://github.com/budgie-at/budgie/issues/1058)
+
+
+
+
+
 # [6.64.0](https://github.com/budgie-at/budgie/compare/v6.63.2...v6.64.0) (2026-09-15)
 
 
