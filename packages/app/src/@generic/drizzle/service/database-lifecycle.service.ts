@@ -7,7 +7,6 @@ import { ruleApplicationDrainerService } from '../../../rule/service/rule-applic
 import { syncWorkloadService } from '../../../sync/service/sync-workload.service';
 import { transferConsolidationDrainerService } from '../../../sync/service/transfer-consolidation-drainer.service';
 import { foregroundWorkloadService } from '../../service/foreground-workload.service';
-import { microPause } from '../../utils/micro-pause.util';
 import { expoDb } from '../db/db';
 
 import type { DatabaseLifecycleOperationEnum } from '../enum/database-lifecycle-operation.enum';
@@ -16,6 +15,7 @@ class DatabaseLifecycleService {
     private static readonly DRAIN_TIMEOUT_MS = 5000;
 
     private readonly inFlightOperations = new Map<DatabaseLifecycleOperationEnum, Promise<void>>();
+    private closeOperation: Promise<void> | null = null;
     private isClosed = false;
     private pendingOperation: Promise<unknown> = Promise.resolve();
 
@@ -51,15 +51,29 @@ class DatabaseLifecycleService {
             return;
         }
 
-        this.isClosed = true;
+        this.closeOperation ??= this.closeHandle().finally(() => {
+            this.closeOperation = null;
+        });
+
+        return await this.closeOperation;
+    }
+
+    private async closeHandle(): Promise<void> {
         await expoDb.closeAsync();
+        this.isClosed = true;
         this.clearDatabaseGlobals();
     }
 
     private async runExclusively(work: () => Promise<void>): Promise<void> {
         this.cancelBackgroundWork();
         await this.waitForForegroundIdle();
-        await foregroundWorkloadService.run(work);
+
+        try {
+            await foregroundWorkloadService.run(work);
+        } catch (error) {
+            this.resumeBackgroundWorkWhenDatabaseIsOpen();
+            throw error;
+        }
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -70,13 +84,18 @@ class DatabaseLifecycleService {
         historicalMarketDataLoaderService.cancelScheduledDrain();
     }
 
+    @Log('enter', isIdle => `done isIdle=${String(isIdle)}`, error => `throw error=${getErrorMessage(error)}`)
+    private async waitForForegroundIdle(): Promise<boolean> {
+        return await foregroundWorkloadService.whenIdle(DatabaseLifecycleService.DRAIN_TIMEOUT_MS);
+    }
+
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async waitForForegroundIdle(): Promise<void> {
-        if (!foregroundWorkloadService.isActive()) {
+    private resumeBackgroundWorkWhenDatabaseIsOpen(): void {
+        if (this.isClosed) {
             return;
         }
 
-        await Promise.race([foregroundWorkloadService.whenIdle(), microPause(DatabaseLifecycleService.DRAIN_TIMEOUT_MS)]);
+        syncWorkloadService.resumeAcceptingWork();
     }
 
     private clearDatabaseGlobals(): void {

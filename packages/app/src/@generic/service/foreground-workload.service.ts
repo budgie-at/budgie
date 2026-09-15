@@ -26,19 +26,26 @@ class ForegroundWorkloadService {
         };
     }
 
-    async whenIdle(): Promise<void> {
+    async whenIdle(timeoutMs: number): Promise<boolean> {
         if (!this.isActive()) {
-            return;
+            return true;
         }
 
-        await new Promise<void>(resolve => {
-            const unsubscribe = this.subscribe(() => {
+        return await new Promise<boolean>(resolve => {
+            let unsubscribe = emptyFn;
+            const timer = setTimeout(() => {
+                unsubscribe();
+                resolve(false);
+            }, timeoutMs);
+
+            unsubscribe = this.subscribe(() => {
                 if (this.isActive()) {
                     return;
                 }
 
+                clearTimeout(timer);
                 unsubscribe();
-                resolve();
+                resolve(true);
             });
         });
     }

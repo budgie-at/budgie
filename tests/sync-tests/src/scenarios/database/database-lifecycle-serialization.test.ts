@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const resetDatabaseLifecycleService = (): void => {
     Object.assign(databaseLifecycleService, {
+        closeOperation: null,
         inFlightOperations: new Map(),
         isClosed: false,
         pendingOperation: Promise.resolve()
@@ -76,5 +77,20 @@ describe('database/database-lifecycle-serialization', () => {
         await following;
 
         expect(events).toEqual(['import:start', 'rekey:start']);
+    });
+
+    it('retries the close when the native handle fails to close', async () => {
+        vi.mocked(expoDb.closeAsync).mockRejectedValueOnce(new Error('unable to close due to unfinalized statements'));
+
+        await expect(databaseLifecycleService.close()).rejects.toThrow();
+        await databaseLifecycleService.close();
+
+        expect(vi.mocked(expoDb.closeAsync)).toHaveBeenCalledTimes(2);
+    });
+
+    it('closes the native handle once when two closers race', async () => {
+        await Promise.all([databaseLifecycleService.close(), databaseLifecycleService.close()]);
+
+        expect(vi.mocked(expoDb.closeAsync)).toHaveBeenCalledTimes(1);
     });
 });
