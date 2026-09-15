@@ -77,6 +77,16 @@ class AiModelResidencyService {
         await this.chain(() => this.unloadAll());
     }
 
+    @Log(
+        subsystem => `enter subsystem=${subsystem}`,
+        (result, subsystem) => `done subsystem=${subsystem} result=${String(result)}`,
+        (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
+    )
+    async retry(subsystem: AiSubsystemNameEnum): Promise<void> {
+        await AiModelResidencyService.SUBSYSTEMS[subsystem].resetError();
+        await this.chain(() => this.loadWhileLeased(subsystem));
+    }
+
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     resume(): void {
         this.isSuspended = false;

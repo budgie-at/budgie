@@ -11,6 +11,7 @@ import {
     transactionRepository
 } from '../../@generic/drizzle/db/db';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemActionEnum } from '../enum/ai-system-action.enum';
 import { AiSystemStateEnum } from '../enum/ai-system-state.enum';
@@ -21,6 +22,7 @@ import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { translationProgressStore } from '../store/translation-progress.store';
 
 import { aiCoordinatorService } from './ai-coordinator.service';
+import { aiModelResidencyService } from './ai-model-residency.service';
 import { ScheduledSnapshotStore } from './base-subsystem.service';
 import { chatService } from './chat.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
@@ -68,13 +70,13 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
     async retry(): Promise<void> {
         const promises: Promise<void>[] = [];
         if (isNotEmptyString(chatService.getSnapshot().errorMessage)) {
-            promises.push(chatService.retry());
+            promises.push(aiModelResidencyService.retry(AiSubsystemNameEnum.CHAT));
         }
         if (isNotEmptyString(embeddingService.getSnapshot().errorMessage)) {
-            promises.push(embeddingService.retry());
+            promises.push(aiModelResidencyService.retry(AiSubsystemNameEnum.EMBEDDING));
         }
         if (isNotEmptyString(sttService.getSnapshot().errorMessage)) {
-            promises.push(sttService.retry());
+            promises.push(aiModelResidencyService.retry(AiSubsystemNameEnum.STT));
         }
         await Promise.allSettled(promises);
         if (translationDrainerService.getSnapshot().state === DrainerStateEnum.ERROR) {
