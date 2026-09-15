@@ -3514,7 +3514,6 @@ msgstr "bank-data-safety"
 msgid "Bank-fee entries are included in category analytics even when attached to transfers"
 msgstr "Bank-fee entries are included in category analytics even when attached to transfers"
 
-#: src/app/[lang]/features/biometric-authentication/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
 msgid "Bank-grade biometric unlock — same Secure Enclave, same encryption key."
@@ -7556,10 +7555,6 @@ msgstr "face id"
 msgid "Face ID / Touch ID Authentication"
 msgstr "Face ID / Touch ID Authentication"
 
-#: src/app/[lang]/features/biometric-authentication/metadata.ts
-msgid "Face ID / Touch ID unlock that drives the same SQLCipher encryption key as your PIN. Frictionless, falls back to PIN when needed, respects platform lockout policy."
-msgstr "Face ID / Touch ID unlock that drives the same SQLCipher encryption key as your PIN. Frictionless, falls back to PIN when needed, respects platform lockout policy."
-
 #: src/app/[lang]/security/page.tsx
 msgid "Face ID and fingerprint authentication on every supported device"
 msgstr "Face ID and fingerprint authentication on every supported device"
@@ -7575,6 +7570,10 @@ msgstr "Face ID opens the lock, the PIN owns the key"
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
 msgstr "Face ID unlock on the lock screen, offered when the device has it enrolled"
+
+#: src/app/[lang]/features/biometric-authentication/metadata.ts
+msgid "Face ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real SQLCipher key, no device-passcode fallback."
+msgstr "Face ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real SQLCipher key, no device-passcode fallback."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
@@ -11398,6 +11397,10 @@ msgstr "One file. Encrypted when you set a PIN. No account."
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
 msgstr "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
+
+#: src/app/[lang]/features/biometric-authentication/metadata.ts
+msgid "One glance unlocks the screen — your four-digit PIN stays the encryption key underneath."
+msgstr "One glance unlocks the screen — your four-digit PIN stays the encryption key underneath."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One key per bank, not per account"

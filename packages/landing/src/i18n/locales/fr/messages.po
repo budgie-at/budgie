@@ -3515,7 +3515,6 @@ msgstr ""
 msgid "Bank-fee entries are included in category analytics even when attached to transfers"
 msgstr "Les entrées de frais bancaires sont incluses dans les analyses par catégorie, même lorsqu’elles sont rattachées à des transferts"
 
-#: src/app/[lang]/features/biometric-authentication/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
 msgid "Bank-grade biometric unlock — same Secure Enclave, same encryption key."
@@ -7557,10 +7556,6 @@ msgstr "face id"
 msgid "Face ID / Touch ID Authentication"
 msgstr "Authentification Face ID / Touch ID"
 
-#: src/app/[lang]/features/biometric-authentication/metadata.ts
-msgid "Face ID / Touch ID unlock that drives the same SQLCipher encryption key as your PIN. Frictionless, falls back to PIN when needed, respects platform lockout policy."
-msgstr "Déverrouillage Face ID / Touch ID lié à la même clé de chiffrement SQLCipher que votre PIN. Rapide quand ça marche, repli sur le PIN quand il le faut, règles de verrouillage de la plateforme quand elles s’imposent."
-
 #: src/app/[lang]/security/page.tsx
 msgid "Face ID and fingerprint authentication on every supported device"
 msgstr "Authentification Face ID et empreinte digitale sur chaque appareil pris en charge"
@@ -7576,6 +7571,10 @@ msgstr "Face ID ouvre le verrou, le code PIN est la clé"
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
 msgstr "Déverrouillage Face ID sur l’écran de verrouillage, proposé lorsque Face ID est configuré sur l’appareil"
+
+#: src/app/[lang]/features/biometric-authentication/metadata.ts
+msgid "Face ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real SQLCipher key, no device-passcode fallback."
+msgstr "Face ID déverrouille l'écran de verrouillage instantanément ; le système d'exploitation effectue la vérification et Budgie ne voit que le résultat. Votre code PIN reste la véritable clé SQLCipher, sans repli sur le code d'accès de l'appareil."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
@@ -11399,6 +11398,10 @@ msgstr "Un fichier. Chiffré dès que vous définissez un code PIN. Aucun compte
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
 msgstr "Un regard et l’écran de verrouillage de Budgie est franchi. Les quatre chiffres que vous avez choisis restent la clé qui chiffre votre base de données."
+
+#: src/app/[lang]/features/biometric-authentication/metadata.ts
+msgid "One glance unlocks the screen — your four-digit PIN stays the encryption key underneath."
+msgstr "Un coup d'œil déverrouille l'écran — votre code PIN à quatre chiffres reste la clé de chiffrement."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "One key per bank, not per account"
