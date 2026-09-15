@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.64.1](https://github.com/budgie-at/budgie/compare/v6.64.0...v6.64.1) (2026-09-15)
+
+
+### Bug Fixes
+
+* **app:** prompt biometrics on fingerprint-only devices ([9aa9431](https://github.com/budgie-at/budgie/commit/9aa9431cfa87d6ec1f56f2c04ec5bf23bbd5f554)), closes [#1036](https://github.com/budgie-at/budgie/issues/1036)
+* **landing:** correct biometric authentication metadata claims ([45b56a4](https://github.com/budgie-at/budgie/commit/45b56a4065b22ba6fca306c69ad65508a4431545)), closes [#1061](https://github.com/budgie-at/budgie/issues/1061) [#1033](https://github.com/budgie-at/budgie/issues/1033)
+
+
+
+
+
 # [6.64.0](https://github.com/budgie-at/budgie/compare/v6.63.2...v6.64.0) (2026-09-15)
 
 
