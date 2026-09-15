@@ -16,14 +16,31 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { sql } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { requireInstrument } from '../../harness';
+import { requireInstrument, testDb } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { seed } from '../../harness/seed/seed';
 
 import type { RunwayDriverBreakdownInterface } from '@app/runway/interface/runway-driver-breakdown.interface';
 import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
+
+interface QueryPlanStepInterface {
+    readonly detail: string;
+}
+
+interface ToSqlQueryInterface {
+    readonly toSQL: () => { readonly sql: string; readonly params: readonly unknown[] };
+}
+
+const explainQueryPlan = (query: ToSqlQueryInterface): QueryPlanStepInterface[] => {
+    const { sql: queryText, params } = query.toSQL();
+    const segments = queryText.split('?').map((segment: string) => sql.raw(segment));
+    const fragments = segments.flatMap((segment, index: number) => (index < params.length ? [segment, sql`${params[index]}`] : [segment]));
+
+    return testDb.all<QueryPlanStepInterface>(sql`EXPLAIN QUERY PLAN ${sql.join(fragments, sql``)}`);
+};
 
 const REGULAR_MONTHLY_AMOUNT = 100 * PRECISION;
 const ONE_OFF_AMOUNT = 60 * PRECISION;
@@ -164,5 +181,58 @@ describe('runway drivers', () => {
             { id: null, title: '', monthlyAmount: UNTAGGED_AMOUNT / SEEDED_MONTHS, isIrregular: true, foldedDriverCount: 0 }
         ]);
         expect(tagBreakdown.irregularMonthlyAmount).toBe(ONE_OFF_AMOUNT / SEEDED_MONTHS);
+    });
+});
+
+describe('runway month window predicate', () => {
+    it('selects the same transactions as the previous strftime-based window and uses the visible/operated index', async () => {
+        const { instrumentId, accountId } = await seedScenario();
+        const category = seedCategory('Groceries');
+
+        Array.from({ length: RUNWAY_WINDOW_MONTHS + 2 }, (_, index) => index).forEach(monthsAgo => {
+            seedExpense(accountId, category.id, REGULAR_MONTHLY_AMOUNT, monthsAgo);
+        });
+        testDb.run(sql`ANALYZE`);
+
+        const monthsAgoOffset = `-${RUNWAY_WINDOW_MONTHS} months`;
+
+        const oldPredicateIds = testDb
+            .all<{ id: number }>(
+                sql`SELECT id FROM transactions
+                 WHERE strftime('%Y-%m', operated_at, 'unixepoch') >= strftime('%Y-%m', 'now', ${monthsAgoOffset})
+                   AND strftime('%Y-%m', operated_at, 'unixepoch') < strftime('%Y-%m', 'now')
+                 ORDER BY id`
+            )
+            .map(row => row.id);
+
+        const newPredicateIds = testDb
+            .all<{ id: number }>(
+                sql`SELECT id FROM transactions
+                 WHERE operated_at >= unixepoch(strftime('%Y-%m-01', 'now', ${monthsAgoOffset}))
+                   AND operated_at < unixepoch(strftime('%Y-%m-01', 'now'))
+                 ORDER BY id`
+            )
+            .map(row => row.id);
+
+        expect(newPredicateIds.length).toBeGreaterThan(0);
+        expect(newPredicateIds).toStrictEqual(oldPredicateIds);
+
+        const seriesQuery = statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_WINDOW_MONTHS);
+        const seriesPlan = explainQueryPlan(seriesQuery);
+
+        expect(seriesPlan.some(step => step.detail.includes('transactions_visible_operated_idx'))).toBe(true);
+        expect(seriesPlan.some(step => step.detail.includes('SCAN transactions '))).toBe(false);
+
+        const driverQuery = statisticsRepository.getRunwayDriverSeriesQuery(
+            DEFAULT_TRANSACTION_FILTER,
+            instrumentId,
+            RunwayDriverDimensionEnum.CATEGORY,
+            RUNWAY_WINDOW_MONTHS,
+            LanguageEnum.EN
+        );
+        const driverPlan = explainQueryPlan(driverQuery);
+
+        expect(driverPlan.some(step => step.detail.includes('transactions_visible_operated_idx'))).toBe(true);
+        expect(driverPlan.some(step => step.detail.includes('SCAN transactions '))).toBe(false);
     });
 });
