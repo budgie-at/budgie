@@ -20,7 +20,7 @@ interface UseSttReturn {
     readonly partialTranscription: string;
     readonly isReady: boolean;
     readonly downloadProgress: number;
-    readonly startStream: () => void;
+    readonly startStream: () => Promise<void>;
     readonly insertAudio: (samples: Float32Array) => void;
     readonly stopStream: () => Promise<string>;
     readonly cancelStream: () => void;
@@ -37,14 +37,20 @@ export const useStt = (): UseSttReturn => {
     const streamGenerationRef = useRef(0);
     const { acquireSttResidency, releaseSttResidency } = useSttResidency();
 
-    const startStream = () => {
+    const startStream = async (): Promise<void> => {
         streamGenerationRef.current += 1;
+        const generation = streamGenerationRef.current;
         const language = isSpeechToTextLanguage(locale.languageCode) ? locale.languageCode : null;
 
-        acquireSttResidency();
-        sttService.streamCancel().catch(emptyFn);
+        await acquireSttResidency();
+
+        if (generation !== streamGenerationRef.current) {
+            return;
+        }
+
+        await sttService.streamCancel().catch(emptyFn);
         setBaseTranscription(sttService.committedTranscription);
-        sttService.streamStart(language).catch(emptyFn);
+        await sttService.streamStart(language).catch(emptyFn);
         setStatus('streaming');
     };
 

@@ -6,18 +6,21 @@ import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { aiModelResidencyService } from '../service/ai-model-residency.service';
 
 interface UseSttResidencyReturn {
-    readonly acquireSttResidency: () => void;
+    readonly acquireSttResidency: () => Promise<void>;
     readonly releaseSttResidency: () => void;
 }
 
 export const useSttResidency = (): UseSttResidencyReturn => {
     const hasLeaseRef = useRef(false);
+    const pendingAcquireRef = useRef<Promise<unknown>>(Promise.resolve());
 
-    const acquireSttResidency = (): void => {
+    const acquireSttResidency = async (): Promise<void> => {
         if (!hasLeaseRef.current) {
             hasLeaseRef.current = true;
-            void aiModelResidencyService.acquire(AiSubsystemNameEnum.STT).catch(emptyFn);
+            pendingAcquireRef.current = aiModelResidencyService.acquire(AiSubsystemNameEnum.STT).catch(emptyFn);
         }
+
+        await pendingAcquireRef.current;
     };
 
     const releaseSttResidency = (): void => {
@@ -29,7 +32,7 @@ export const useSttResidency = (): UseSttResidencyReturn => {
 
     // oxlint-disable-next-line react/exhaustive-deps -- Mount-scoped lease; both callbacks only read the stable hasLeaseRef
     useEffect(() => {
-        acquireSttResidency();
+        void acquireSttResidency();
 
         return releaseSttResidency;
     }, []);

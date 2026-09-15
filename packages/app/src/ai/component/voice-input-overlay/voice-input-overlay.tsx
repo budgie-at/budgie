@@ -33,7 +33,9 @@ export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void })
         // eslint-disable-next-line max-statements -- Single async lifecycle: collect, route on result kind, recurse on re-record
         const runOnce = async (): Promise<void> => {
             const collected = await new Promise<CollectedVoiceInputInterface | null>(resolve => {
-                startAndCollect((transactions, originalText) => void resolve({ transactions, originalText }));
+                void startAndCollect((transactions, originalText) => void resolve({ transactions, originalText })).catch(() => {
+                    resolve(null);
+                });
             });
             if (!isLiveRef.current) {
                 return;

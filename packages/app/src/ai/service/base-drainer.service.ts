@@ -226,17 +226,22 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
 
             return;
         }
+        let isSubsystemReady = true;
         try {
             const rows = await this.fetchPending(this.relaxedBatchSize);
             if (isEmptyArray(rows)) {
                 return;
             }
-            await this.processRowsWithModel(rows);
+            isSubsystemReady = await this.processRowsWithModel(rows);
         } finally {
             await this.finalizeBatch();
             drainerMutex.release(this.kind);
             if (this.isSafe() && this.snapshot.state !== DrainerStateEnum.ERROR) {
-                this.scheduleDrain();
+                if (isSubsystemReady) {
+                    this.scheduleDrain();
+                } else {
+                    this.scheduleDrainAfter(BaseDrainerService.ERROR_AUTO_RETRY_MS);
+                }
             }
         }
     }
@@ -246,11 +251,11 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         (result, rows) => `done rowCount=${rows.length} result=${String(result)}`,
         (error, rows) => `throw rowCount=${rows.length} error=${getErrorMessage(error)}`
     )
-    private async processRowsWithModel(rows: TRow[]): Promise<void> {
+    private async processRowsWithModel(rows: TRow[]): Promise<boolean> {
         const isSubsystemReady = await aiModelResidencyService.acquire(this.subsystem);
         try {
             if (!isSubsystemReady) {
-                return;
+                return false;
             }
             for (const row of rows) {
                 if (!this.isSafe() || this.snapshot.state === DrainerStateEnum.ERROR) {
@@ -259,6 +264,8 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
                 // eslint-disable-next-line no-await-in-loop -- Sequential to avoid Metal thrash
                 await this.runRow(row);
             }
+
+            return true;
         } finally {
             aiModelResidencyService.release(this.subsystem);
         }

@@ -15,11 +15,16 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
     const [state, setState] = useState<VoiceInputStateEnum>(VoiceInputStateEnum.IDLE);
     const [error, setError] = useState<string | null>(null);
     const [finalTranscription, setFinalTranscription] = useState('');
+    const [hasBeenReady, setHasBeenReady] = useState(false);
 
     const resultRef = useRef<Parameters<UseVoiceInputReturnInterface['startAndCollect']>[0] | null>(null);
 
     const stt = useStt();
     const categorization = useLlmCategorization();
+
+    if (stt.isReady && !hasBeenReady) {
+        setHasBeenReady(true);
+    }
 
     const settle = (transactions: AITransactionInterface[], originalText: string) => {
         const callback = resultRef.current;
@@ -58,16 +63,16 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
         onSilenceDetected: () => void runPipeline().catch(handleError)
     });
 
-    const { downloadProgress, isReady } = stt;
+    const { downloadProgress } = stt;
 
-    const startAndCollect: UseVoiceInputReturnInterface['startAndCollect'] = onResult => {
+    const startAndCollect: UseVoiceInputReturnInterface['startAndCollect'] = async onResult => {
         setError(null);
         setFinalTranscription('');
         categorization.reset();
-        stt.startStream();
+        resultRef.current = onResult;
+        await stt.startStream();
         recording.start();
         setState(VoiceInputStateEnum.RECORDING);
-        resultRef.current = onResult;
     };
 
     const stop = () => {
@@ -101,7 +106,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
             error,
             audioLevel: recording.audioLevel
         },
-        isReady,
+        isReady: hasBeenReady,
         downloadProgress,
         startAndCollect,
         stop,

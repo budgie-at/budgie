@@ -1,4 +1,10 @@
+import { useEffect } from 'react';
+
+import { emptyFn } from '@rnw-community/shared';
+
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { aiModelResidencyService } from '../service/ai-model-residency.service';
 
 import { useAiDownloadProgress } from './use-ai-download-progress.hook';
 import { useChat } from './use-chat.hook';
@@ -19,6 +25,14 @@ export const useChatModelStatus = (): UseChatModelStatusReturn => {
     const chat = useChat();
     const downloadProgress = useAiDownloadProgress();
     const isChatReady = chat.status === AiSubsystemStatusEnum.READY;
+
+    useEffect(() => {
+        void aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT).catch(emptyFn);
+
+        return () => {
+            aiModelResidencyService.release(AiSubsystemNameEnum.CHAT);
+        };
+    }, []);
 
     return {
         isChatReady,
