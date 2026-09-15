@@ -11,6 +11,7 @@ import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { RunwayPill } from '../../../runway/component/runway-pill/runway-pill';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { NetWorthAssetChips } from '../net-worth-asset-chips/net-worth-asset-chips';
 
 import type { LayoutChangeEvent } from 'react-native';
@@ -33,6 +34,7 @@ const EXPANDED_CONTENT_HORIZONTAL_PADDING = 40;
 export const NetWorthCollapsibleHeader = ({ scrollY, netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
     const { top } = useSafeAreaInsets();
     const { defaultInstrument } = useSettingsContext();
+    const isRunwayPillEnabled = useSetting('isRunwayPillEnabled');
     const formatDigits = useDisplayFormatDigits();
     const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
 
@@ -66,7 +68,7 @@ export const NetWorthCollapsibleHeader = ({ scrollY, netWorth, fiatTotal, crypto
             <View className="mt-lg flex-row items-center gap-x-sm">
                 <NetWorthAssetChips fiatTotal={fiatTotal} cryptoTotal={cryptoTotal} fiatCount={fiatCount} cryptoCount={cryptoCount} />
 
-                <RunwayPill />
+                {isRunwayPillEnabled ? <RunwayPill /> : null}
             </View>
         </View>
     );

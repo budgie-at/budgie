@@ -2,14 +2,14 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
+import { useSettingToggle } from '../../hook/use-setting-toggle.hook';
 import { useSetting } from '../../hook/use-setting.hook';
-import { useWidgetSettingToggle } from '../../hook/use-widget-setting-toggle.hook';
 import { BudgetSettingCard } from '../budget-setting-card/budget-setting-card';
 
 export const BudgetWidgetToggle = () => {
     const { t } = useLingui();
     const isBudgetWidgetEnabled = useSetting('isBudgetWidgetEnabled');
-    const handleChange = useWidgetSettingToggle('isBudgetWidgetEnabled');
+    const handleChange = useSettingToggle('isBudgetWidgetEnabled');
 
     return (
         <BudgetSettingCard

@@ -55,6 +55,7 @@ import m0051 from './0051_add_onboarding_step_and_ai_consent.sql';
 import m0052 from './0052_soft_cerebro.sql';
 import m0053 from './0053_backfill_ai_consent_for_existing_installs.sql';
 import m0054 from './0054_drop_runway_widget_setting.sql';
+import m0055 from './0055_add_runway_settings.sql';
 import journal from './meta/_journal.json';
 
 export default {
@@ -114,6 +115,7 @@ export default {
         m0051,
         m0052,
         m0053,
-        m0054
+        m0054,
+        m0055
     }
 };
