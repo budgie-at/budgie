@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.64.0](https://github.com/budgie-at/budgie/compare/v6.63.2...v6.64.0) (2026-09-15)
+
+
+### Bug Fixes
+
+* **app:** correct Runway driver math, One-off flag, tag coverage and long tail ([bc7cd90](https://github.com/budgie-at/budgie/commit/bc7cd90b5feeb83980e2337358ed4d8f539ed633))
+
+
+### Features
+
+* **app:** Runway home pill next to the balance pills ([a3f5130](https://github.com/budgie-at/budgie/commit/a3f5130934d6ea1493f787f4f8b06372ac4991db))
+
+
+
+
+
 ## [6.63.1](https://github.com/budgie-at/budgie/compare/v6.63.0...v6.63.1) (2026-09-14)
 
 **Note:** Version bump only for package @budgie/contracts

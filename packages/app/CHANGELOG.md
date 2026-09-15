@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.64.0](https://github.com/budgie-at/budgie/compare/v6.63.2...v6.64.0) (2026-09-15)
+
+
+### Bug Fixes
+
+* **app:** correct Runway driver math, One-off flag, tag coverage and long tail ([bc7cd90](https://github.com/budgie-at/budgie/commit/bc7cd90b5feeb83980e2337358ed4d8f539ed633))
+* **app:** format Runway driver and legend amounts as whole units ([018c35c](https://github.com/budgie-at/budgie/commit/018c35c8cf075b369cb4cf53fab674ef6d43fb1a))
+* **app:** hide the transaction filter row on the Runway tab ([66e0d79](https://github.com/budgie-at/budgie/commit/66e0d7921c4651df49c6e1367257da3964c261c9)), closes [#1045](https://github.com/budgie-at/budgie/issues/1045)
+* **app:** make runway independent of analytics filters and driver dimension ([e2b9fe5](https://github.com/budgie-at/budgie/commit/e2b9fe523e09e1f8c2183f363eb3c48f68a4407f))
+* **app:** polish Runway verdict figures and chart labels ([c9a8a8a](https://github.com/budgie-at/budgie/commit/c9a8a8a87c3270fc1ee522afbd969815c25802ad))
+* **app:** translate Runway strings in uk, de, es and fr ([9a74764](https://github.com/budgie-at/budgie/commit/9a747646896e96f88b6c32598cd39ffb593b618f)), closes [#1046](https://github.com/budgie-at/budgie/issues/1046)
+
+
+### Features
+
+* **app:** make the Runway monthly history readable ([0632b97](https://github.com/budgie-at/budgie/commit/0632b9721c131270350bb79d59b1cbdd1ff6b06f))
+* **app:** redesign the Runway tab around one verdict ([855cdcf](https://github.com/budgie-at/budgie/commit/855cdcfa4556fbb13df1b04880d23fcc8ee1fe29)), closes [#1048](https://github.com/budgie-at/budgie/issues/1048)
+* **app:** restack Runway drivers header and quiet the driver rows ([58c22c9](https://github.com/budgie-at/budgie/commit/58c22c9ab13f88d2847d6d59e122d4e66ab2c789))
+* **app:** Runway home pill next to the balance pills ([a3f5130](https://github.com/budgie-at/budgie/commit/a3f5130934d6ea1493f787f4f8b06372ac4991db))
+
+
+
+
+
 ## [6.63.1](https://github.com/budgie-at/budgie/compare/v6.63.0...v6.63.1) (2026-09-14)
 
 **Note:** Version bump only for package @budgie-at/app
