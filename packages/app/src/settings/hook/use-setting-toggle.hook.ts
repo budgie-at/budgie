@@ -7,21 +7,21 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { updateSettingsMutation } from '../mutation/update-settings.mutation';
 
-import type { WidgetSettingKey } from '../type/widget-setting-key.type';
+import type { SettingToggleKey } from '../type/setting-toggle-key.type';
 
-const logger = getLogger('WidgetSettingToggle');
+const logger = getLogger('SettingToggle');
 
-export const useWidgetSettingToggle = (settingKey: WidgetSettingKey) => {
+export const useSettingToggle = (settingKey: SettingToggleKey) => {
     const { t } = useLingui();
 
     return async (next: boolean) => {
-        const input: Partial<Pick<SettingsCreateEntityInterface, WidgetSettingKey>> = { [settingKey]: next };
+        const input: Partial<Pick<SettingsCreateEntityInterface, SettingToggleKey>> = { [settingKey]: next };
 
         try {
             await updateSettingsMutation(input);
         } catch (error: unknown) {
             logger.error('failed', { settingKey, errorMessage: getErrorMessage(error) });
-            Toast.show({ type: 'error', text1: t`Could not update widget setting`, text2: getErrorMessage(error) });
+            Toast.show({ type: 'error', text1: t`Could not update setting`, text2: getErrorMessage(error) });
         }
     };
 };

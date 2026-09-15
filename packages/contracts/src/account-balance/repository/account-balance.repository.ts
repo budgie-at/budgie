@@ -211,13 +211,16 @@ export class AccountBalanceRepository {
             .where(this.getActiveAccountWhereSql(eq(AccountEntityTable.type, accountType)));
     }
 
-    getLiquidTotal(defaultInstrumentId: number) {
-        const exchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
+    getLiquidTotal(defaultInstrumentId: number, isCryptoIncluded: boolean) {
+        const exchangeRateSql = this.buildNetWorthExchangeRateConversionSql(defaultInstrumentId);
+        const accountTypes = isCryptoIncluded
+            ? [...AccountBalanceRepository.LIQUID_ACCOUNT_TYPES, ...AccountBalanceRepository.CRYPTO_ACCOUNT_TYPES]
+            : AccountBalanceRepository.LIQUID_ACCOUNT_TYPES;
 
         return this.db
             .select({ total: sql<number>`COALESCE(SUM((${this.getAccountBalanceWithTransactionsSql()}) * ${exchangeRateSql}), 0)` })
             .from(AccountEntityTable)
-            .where(this.getActiveAccountWhereSql(inArray(AccountEntityTable.type, AccountBalanceRepository.LIQUID_ACCOUNT_TYPES)));
+            .where(this.getActiveAccountWhereSql(inArray(AccountEntityTable.type, accountTypes)));
     }
 
     getTotalRemainingDebtByType(defaultInstrumentId: number, debtType: AccountDebtTypeEnum) {
