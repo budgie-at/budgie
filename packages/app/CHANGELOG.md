@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.64.4](https://github.com/budgie-at/budgie/compare/v6.64.3...v6.64.4) (2026-09-15)
+
+
+### Bug Fixes
+
+* **app:** keep the SQLite close retryable and stop leaking idle waiters ([1983af5](https://github.com/budgie-at/budgie/commit/1983af53b70859a2058bea84df48a0d5ba58a873))
+* **app:** own the SQLite handle once and serialize database lifecycle ([1b02902](https://github.com/budgie-at/budgie/commit/1b02902a78d43afaa9624585f9000860719fcef6)), closes [#459](https://github.com/budgie-at/budgie/issues/459)
+
+
+
+
+
 ## [6.64.3](https://github.com/budgie-at/budgie/compare/v6.64.2...v6.64.3) (2026-09-15)
 
 **Note:** Version bump only for package @budgie-at/app
