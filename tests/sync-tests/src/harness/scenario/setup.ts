@@ -7,7 +7,7 @@ import { emptyFn, isDefined } from '@rnw-community/shared';
 import type { DB } from '@budgie/contracts';
 
 vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
-    transferConsolidationDrainerService: { enqueue: vi.fn() }
+    transferConsolidationDrainerService: { cancelPending: vi.fn(), enqueue: vi.fn() }
 }));
 
 vi.mock('@app/@generic/utils/micro-pause.util', () => ({
@@ -49,7 +49,7 @@ let exclusiveTransactionQueue: Promise<unknown> = Promise.resolve();
 vi.mock('@app/@generic/drizzle/db/db', async () => ({
     db: testDb,
     ...createTestRepositories(testDb),
-    expoDb: void 0,
+    expoDb: { closeAsync: vi.fn((): Promise<void> => Promise.resolve()) },
     __REMOVE_ME_RESET_DB: (): Promise<void> => Promise.resolve()
 }));
 
