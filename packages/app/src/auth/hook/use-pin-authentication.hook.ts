@@ -185,8 +185,8 @@ const useAutomaticBiometricAuthentication = (
 
 export const usePinAuthentication = () => {
     const { t } = useLingui();
-    const { isFaceIdAvailable, setIsUnlocked } = useAuthContext();
-    const canUseBiometric = useSetting('isBiometricEnabled') && isFaceIdAvailable;
+    const { isFaceIdAvailable, isSomeAvailable, setIsUnlocked } = useAuthContext();
+    const canUseBiometric = useSetting('isBiometricEnabled') && isSomeAvailable;
     const { error, input, isLoading, setError, setInput, setIsLoading } = usePinFormState();
     const authAttemptTracker = useAuthAttemptTracker();
 
@@ -270,6 +270,7 @@ export const usePinAuthentication = () => {
         error,
         handleBiometricAuth,
         input,
+        isFaceIdAvailable,
         isLoading,
         title: t`Enter your PIN`
     };
