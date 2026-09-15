@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.63.2](https://github.com/budgie-at/budgie/compare/v6.63.1...v6.63.2) (2026-09-15)
+
+
+### Bug Fixes
+
+* add a coordinate back-tap fallback for the stale Explorer location ([f503168](https://github.com/budgie-at/budgie/commit/f5031682a8f458e4c9fd392b469c39c0d7dc4601))
+* back out of a stale Explorer sub-location before searching for budgie (E2E) ([fbca483](https://github.com/budgie-at/budgie/commit/fbca483c0aa35a3ec8676307ce499f4e253c0d8a))
+* correct French Files-app browse tab label to Explorer ([dedae31](https://github.com/budgie-at/budgie/commit/dedae31ca77a0aadaf50a20991802666d1fbd82f))
+* drop point-tap fallback, disallowed by validate-maestro-selectors ([418ac97](https://github.com/budgie-at/budgie/commit/418ac97a0429f00eada50d0ffa048c93b8397fb7))
+* match localized Files-provider tab labels in E2EFixtures navigation ([169390f](https://github.com/budgie-at/budgie/commit/169390f8649839f0953890b42ec9daa495bbe63d))
+* reach csv-import-2 via the real fileUri deep link, not the OS picker ([f30d87a](https://github.com/budgie-at/budgie/commit/f30d87adebe32bbdce2009e4e412ddfa94a60b44))
+* recover from a transient Files-provider content-unavailable error ([b9fb44d](https://github.com/budgie-at/budgie/commit/b9fb44df1dcad74a04dbae4393ff2bd8697c6351))
+* retry the Files-provider retry action up to 3 times ([25e14f6](https://github.com/budgie-at/budgie/commit/25e14f6554ffe0466d99f2e8e6c1b916b713fb62))
+* seed E2EFixtures files and APP_DATA_CONTAINER for Media smoke ([3a32c86](https://github.com/budgie-at/budgie/commit/3a32c8617fa57d8fd9c72fbcc45ad7d613ca4dd1))
+* wait for app ready and resolve real screenshot in import capture flows ([4d202b9](https://github.com/budgie-at/budgie/commit/4d202b99cac171a95056213aaa86dd7d69feaf09))
+* widen E2EFixtures Files-provider wait timeouts for non-en locales ([7de4e4a](https://github.com/budgie-at/budgie/commit/7de4e4a125c086bd26711a0830b884c4384284dd))
+
+
+
+
+
 ## [6.63.1](https://github.com/budgie-at/budgie/compare/v6.63.0...v6.63.1) (2026-09-14)
 
 **Note:** Version bump only for package @budgie-at/root
