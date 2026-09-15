@@ -194,7 +194,11 @@ class SyncRepairService {
 
     private async removeDuplicatesInner(): Promise<SyncDuplicateRepairResultInterface> {
         const duplicateResult = await transactionAsync(db, tx => this.removeDuplicatesInTransaction(tx));
-        const consolidationRepairCount = await this.repairConsolidationDuplicates();
+        const consolidationRepairCount = await this.repairConsolidationDuplicates().catch(async (error: unknown) => {
+            await this.rebuildBalancesWhenNeeded(duplicateResult).catch(emptyFn);
+
+            throw error;
+        });
         const result = this.mergeConsolidationRepairResult(duplicateResult, consolidationRepairCount);
 
         await this.rebuildBalancesWhenNeeded(result);
