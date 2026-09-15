@@ -20,7 +20,7 @@ interface UseSttReturn {
     readonly partialTranscription: string;
     readonly isReady: boolean;
     readonly downloadProgress: number;
-    readonly startStream: () => Promise<void>;
+    readonly startStream: () => Promise<boolean>;
     readonly insertAudio: (samples: Float32Array) => void;
     readonly stopStream: () => Promise<string>;
     readonly cancelStream: () => void;
@@ -37,21 +37,31 @@ export const useStt = (): UseSttReturn => {
     const streamGenerationRef = useRef(0);
     const { acquireSttResidency, releaseSttResidency } = useSttResidency();
 
-    const startStream = async (): Promise<void> => {
+    const startStream = async (): Promise<boolean> => {
         streamGenerationRef.current += 1;
         const generation = streamGenerationRef.current;
         const language = isSpeechToTextLanguage(locale.languageCode) ? locale.languageCode : null;
 
-        await acquireSttResidency();
+        const isSttResident = await acquireSttResidency();
 
-        if (generation !== streamGenerationRef.current) {
-            return;
+        if (!isSttResident || generation !== streamGenerationRef.current) {
+            return false;
         }
 
         await sttService.streamCancel().catch(emptyFn);
         setBaseTranscription(sttService.committedTranscription);
-        await sttService.streamStart(language).catch(emptyFn);
+        const isStreaming = await sttService.streamStart(language).then(
+            () => true,
+            () => false
+        );
+
+        if (!isStreaming || generation !== streamGenerationRef.current) {
+            return false;
+        }
+
         setStatus('streaming');
+
+        return true;
     };
 
     const insertAudio = (samples: Float32Array) => {
