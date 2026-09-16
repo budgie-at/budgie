@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.67.0](https://github.com/budgie-at/budgie/compare/v6.66.0...v6.67.0) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** detect stale og plates and constrain the plate locale ([93fec55](https://github.com/budgie-at/budgie/commit/93fec55984c6bc77c7826c3ee6ec5fb659884b34))
+
+
+### Features
+
+* **landing:** og images with product imagery for features, hubs and blog ([b0a66e7](https://github.com/budgie-at/budgie/commit/b0a66e74653b44ead05782e636db2f28c0dc1bde))
+
+
+
+
+
 # [6.66.0](https://github.com/budgie-at/budgie/compare/v6.65.3...v6.66.0) (2026-09-16)
 
 
