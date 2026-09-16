@@ -74,7 +74,7 @@ git commit -m "test(app): reproduce late Binance account association"
 - Modify: `packages/app/src/sync/service/binance-sync.service.ts`
 - Test: `tests/sync-tests/src/scenarios/binance/account-agnostic-sources.test.ts`
 
-- [ ] **Step 1: Reorder the existing ownership repair**
+- [x] **Step 1: Reorder the existing ownership repair**
 
 Change `anchorAllBalances` so integration resolution and orphan association happen before `fetchExchangeAccounts`:
 
@@ -94,7 +94,7 @@ private async anchorAllBalances(token: string): Promise<number> {
 
 Leave the remainder of the balance-anchor loop unchanged. This preserves non-null associations and excludes regular `CRYPTO` accounts.
 
-- [ ] **Step 2: Run the reproduction and verify it passes**
+- [x] **Step 2: Run the reproduction and verify it passes**
 
 Run:
 
@@ -104,7 +104,7 @@ pnpm --dir tests/sync-tests exec vitest run src/scenarios/binance/account-agnost
 
 Expected: PASS with the orphan account already associated at the first Binance request.
 
-- [ ] **Step 3: Run the focused Binance regression files**
+- [x] **Step 3: Run the focused Binance regression files**
 
 Run:
 
@@ -114,7 +114,7 @@ pnpm --dir tests/sync-tests exec vitest run src/scenarios/binance/setup-sync.tes
 
 Expected: both files pass, including discovered-account repair and regular-crypto isolation.
 
-- [ ] **Step 4: Commit the implementation**
+- [x] **Step 4: Commit the implementation**
 
 ```bash
 git add packages/app/src/sync/service/binance-sync.service.ts
