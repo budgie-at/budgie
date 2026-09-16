@@ -15,12 +15,16 @@ import { aiModelResidencyService } from './ai-model-residency.service';
 import { aiTranslationStatusService } from './ai-translation-status.service';
 import { aiUmbrellaStatusService } from './ai-umbrella-status.service';
 import { SnapshotStore } from './base-subsystem.service';
+import { chatService } from './chat.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
 import { translationDrainerService } from './translation-drainer.service';
 
 import type { AppStateStatus } from 'react-native';
 
 class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface> {
+    private static readonly DRAINER_IDLE_GRACE_MS = 5_000;
+    private static readonly DRAINER_ABORT_GRACE_MS = 2_000;
+
     private started = false;
     private releaseTimer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
@@ -122,7 +126,31 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         aiUmbrellaStatusService.stop();
         translationDrainerService.stop();
         embeddingDrainerService.stop();
+        await this.settleInFlightBatches();
         await aiModelResidencyService.suspend();
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    private async settleInFlightBatches(): Promise<void> {
+        if (await this.areDrainersIdle(AiCoordinatorService.DRAINER_IDLE_GRACE_MS)) {
+            return;
+        }
+        chatService.interrupt();
+        await this.areDrainersIdle(AiCoordinatorService.DRAINER_ABORT_GRACE_MS);
+    }
+
+    @Log(
+        timeoutMs => `enter timeoutMs=${timeoutMs}`,
+        (result, timeoutMs) => `done timeoutMs=${timeoutMs} areDrainersIdle=${String(result)}`,
+        (error, timeoutMs) => `throw timeoutMs=${timeoutMs} error=${getErrorMessage(error)}`
+    )
+    private async areDrainersIdle(timeoutMs: number): Promise<boolean> {
+        const [isTranslationIdle, isEmbeddingIdle] = await Promise.all([
+            translationDrainerService.whenIdle(timeoutMs),
+            embeddingDrainerService.whenIdle(timeoutMs)
+        ]);
+
+        return isTranslationIdle && isEmbeddingIdle;
     }
 
     private scheduleStartSubsystems(): void {

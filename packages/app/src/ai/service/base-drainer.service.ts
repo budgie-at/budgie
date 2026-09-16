@@ -84,6 +84,34 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
         this.setSnapshot({ state: DrainerStateEnum.PAUSED });
     }
 
+    @Log(
+        timeoutMs => `enter timeoutMs=${timeoutMs}`,
+        (result, timeoutMs) => `done timeoutMs=${timeoutMs} isIdle=${String(result)}`,
+        (error, timeoutMs) => `throw timeoutMs=${timeoutMs} error=${getErrorMessage(error)}`
+    )
+    async whenIdle(timeoutMs: number): Promise<boolean> {
+        let timer: ReturnType<typeof setTimeout> | null = null;
+        const timeout = new Promise<boolean>(resolve => {
+            timer = setTimeout(() => {
+                resolve(false);
+            }, timeoutMs);
+        });
+
+        try {
+            return await Promise.race([
+                this.pendingBatchPromise.then(
+                    () => true,
+                    () => true
+                ),
+                timeout
+            ]);
+        } finally {
+            if (isDefined(timer)) {
+                clearTimeout(timer);
+            }
+        }
+    }
+
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     resume(): void {
         if (this.snapshot.state !== DrainerStateEnum.PAUSED) {
