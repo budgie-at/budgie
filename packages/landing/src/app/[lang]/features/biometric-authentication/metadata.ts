@@ -11,18 +11,18 @@ export const FEATURE_METADATA = {
     title: msg`Face ID / Touch ID Authentication`,
     tagline: msg`One glance unlocks the screen — your four-digit PIN stays the encryption key underneath.`,
     metaTitle: msg`Biometric Authentication — Budgie`,
-    metaDescription: msg`Face ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real SQLCipher key, no device-passcode fallback.`,
-    primaryKeyword: 'Face ID expense app',
+    metaDescription: msg`Face ID or Touch ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real encryption key, no device-passcode fallback.`,
+    primaryKeyword: 'Face ID and Touch ID expense app',
     seoKeywords: [
         'Face ID expense app',
+        'Touch ID expense app',
         'biometric finance app',
-        'Face ID lock screen app',
-        'private expense tracker Face ID',
-        'Face ID PIN backup'
+        'fingerprint lock screen app',
+        'private expense tracker biometrics'
     ],
     relatedFeatureSlugs: ['pin-app-lock', 'screenshot-protection', 'offline-first-expense-tracker'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
     publishedAt: '2025-12-18',
-    updatedAt: '2026-09-15',
-    ogTags: ['biometric', 'face id', 'security']
+    updatedAt: '2026-09-16',
+    ogTags: ['biometric', 'face id', 'touch id', 'security']
 } satisfies FeatureRegistryEntryInterface;

@@ -82,7 +82,9 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/biometric-authentication`}
                         index={1}
-                        tagline={<Trans>Bank-grade biometric unlock — same Secure Enclave, same encryption key.</Trans>}
+                        tagline={
+                            <Trans>Biometric unlock hands Budgie only a yes or no — your PIN alone still derives the encryption key.</Trans>
+                        }
                         title={<Trans>Face ID / Touch ID Authentication</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
