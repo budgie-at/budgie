@@ -106,6 +106,17 @@ export const AccountSyncCard = ({ accountId }: Props) => {
                     </>
                 )}
 
+                {isNotEmptyString(sync.lastWarning) && (
+                    <View className="gap-y-xs">
+                        <Text className="text-xs text-secondary-foreground">
+                            <Trans>Warning</Trans>
+                        </Text>
+                        <Text className="text-secondary-foreground text-dark-warning-foreground text-xs" numberOfLines={2}>
+                            {sync.lastWarning}
+                        </Text>
+                    </View>
+                )}
+
                 {supportsTokenAuth ? tokenSection : null}
             </View>
         </Card>

@@ -1,5 +1,5 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
-import { AccountEntityTable, SyncModeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { AccountEntityTable, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { BinanceSignedClient, BinanceWalletEnum, SyncErrorCodeEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
@@ -15,6 +15,7 @@ import {
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
     seedCryptoInstrument,
+    setupAdaUsdtForwardFixture,
     setupBinanceFixture,
     setupUsdtSpotFixtureWithBalances,
     testDb
@@ -66,16 +67,7 @@ describe('binance/spot-trades', () => {
         const now = new Date();
         const forwardSyncedAt = new Date(now.getTime() - RECURRING_SYNC_AGE_MS);
         seedCryptoInstrument('ADA');
-        setupBinanceFixture({
-            asset: 'USDT',
-            mode: SyncModeEnum.FORWARD,
-            forwardSyncedAt
-        });
-        binanceStub.exchangeInfo(['ADAUSDT']);
-        binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'ADA', free: '200' }),
-            buildBinance.balance({ asset: 'USDT', free: '100' })
-        ]);
+        setupAdaUsdtForwardFixture(forwardSyncedAt);
         const requestedUrls: URL[] = [];
         binanceStub.myTrades(
             {

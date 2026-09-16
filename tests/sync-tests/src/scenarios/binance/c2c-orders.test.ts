@@ -1,8 +1,17 @@
 import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
-import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, SyncModeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    CurrencyEnum,
+    ExternalSourceEnum,
+    PRECISION,
+    SyncEntityTable,
+    SyncModeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
+import { eq } from 'drizzle-orm';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
@@ -12,16 +21,20 @@ import {
     expectSingleBinanceTransaction,
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
+    fetchSyncById,
     resetBinanceSyncForResync,
     requireInstrument,
     seed,
     setupBinanceFixture,
-    stubEmptyBinanceBalances
+    stubEmptyBinanceBalances,
+    testDb
 } from '../../harness';
 
-const setupForwardUsdtScenario = (): void => {
-    setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
+const setupForwardUsdtScenario = () => {
+    const fixture = setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
     stubEmptyBinanceBalances();
+
+    return fixture;
 };
 
 const stubBuyC2cOrder = (orderNumber: string): void => {
@@ -192,8 +205,8 @@ describe('binance/c2c-orders mapping', () => {
         expect(fetchBinanceTransactions()).toHaveLength(1);
     });
 
-    it('treats a 403 on the C2C endpoint as non-fatal and still syncs deposits', async () => {
-        setupForwardUsdtScenario();
+    it('treats a 403 on the C2C endpoint as non-fatal, still syncs deposits, and surfaces a user-visible warning', async () => {
+        const { sync } = setupForwardUsdtScenario();
         binanceStub.c2cUnavailable();
         binanceStub.deposits([buildBinance.deposit({ id: 'dep-after-c2c-403', coin: 'USDT', amount: '5' })]);
 
@@ -202,5 +215,22 @@ describe('binance/c2c-orders mapping', () => {
         const transactions = fetchBinanceTransactions();
         expect(transactions).toHaveLength(1);
         expect(transactions[0].externalId).toBe('dep-after-c2c-403');
+        expect(fetchSyncById(sync.id).lastWarning).toContain('P2P');
+    });
+
+    it('clears a previously recorded C2C warning once the C2C endpoint becomes available again', async () => {
+        const { sync } = setupForwardUsdtScenario();
+        binanceStub.c2cUnavailable();
+        binanceStub.deposits([]);
+        await binanceSyncService.sync();
+        expect(fetchSyncById(sync.id).lastWarning).toContain('P2P');
+
+        resetBinanceSyncForResync();
+        testDb.update(SyncEntityTable).set({ forwardSyncedAt: null }).where(eq(SyncEntityTable.id, sync.id)).run();
+        stubBuyC2cOrder('c2c-recovered');
+        binanceStub.deposits([]);
+        await binanceSyncService.sync();
+
+        expect(fetchSyncById(sync.id).lastWarning).toBeNull();
     });
 });

@@ -2,6 +2,7 @@ import { binanceSyncService } from '@app/sync/service/binance-sync.service';
 import {
     ExternalSourceEnum,
     InstrumentTypeEnum,
+    SyncModeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionTypeEnum
@@ -27,6 +28,15 @@ export const fetchBinanceEntriesByExternalId = (externalId: string) =>
     testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId)).all();
 
 export const seedCryptoInstrument = (code: string) => seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
+
+export const setupAdaUsdtForwardFixture = (forwardSyncedAt: Date, binanceTradeCursor?: string) => {
+    const fixture = setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD, forwardSyncedAt, binanceTradeCursor });
+
+    binanceStub.exchangeInfo(['ADAUSDT']);
+    binanceStub.spotBalances([buildBinance.balance({ asset: 'ADA', free: '200' }), buildBinance.balance({ asset: 'USDT', free: '100' })]);
+
+    return fixture;
+};
 
 export const setupUsdtSpotFixtureWithBalances = (baseAsset: string, baseFree: string): void => {
     setupBinanceFixture({ asset: 'USDT' });

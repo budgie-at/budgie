@@ -22,5 +22,11 @@ export const SyncEntitySchema = createSelectSchema(SyncEntityTable, {
     forwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync forward from.'),
     transactionCount: number().nonnegative().default(0).describe('Total number of transactions synced.'),
     errorCount: number().nonnegative().default(0).describe('Number of consecutive sync errors.'),
-    lastError: schema => schema.nullable().default(null).describe('Last error message if sync failed.')
+    lastError: schema => schema.nullable().default(null).describe('Last error message if sync failed.'),
+    lastWarning: schema => schema.nullable().default(null).describe('Last non-fatal sync warning, such as a missing provider read scope.'),
+    binanceTradeCursor: schema =>
+        schema
+            .nullable()
+            .default(null)
+            .describe('JSON-encoded per-symbol Binance trade fromId cursor map, used to resume paging across sync runs.')
 });

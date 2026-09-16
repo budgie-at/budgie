@@ -33,6 +33,8 @@ export const SyncEntityTable = sqliteTable(
         forwardSyncFromAt: int('forward_sync_from_at', { mode: 'timestamp' }),
         transactionCount: int('transaction_count', { mode: 'number' }).default(0).notNull(),
         errorCount: int('error_count', { mode: 'number' }).default(0).notNull(),
-        lastError: text('last_error')
+        lastError: text('last_error'),
+        lastWarning: text('last_warning'),
+        binanceTradeCursor: text('binance_trade_cursor')
     })
 );
