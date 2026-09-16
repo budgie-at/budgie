@@ -82,8 +82,13 @@ export class SyncRepository {
         return sync;
     }
 
-    async getById(id: number): Promise<SyncEntityInterface | undefined> {
-        return await this.db.query.SyncEntityTable.findFirst({
+    @Log(
+        (id, tx) => `enter id=${id} hasTx=${String(isDefined(tx))}`,
+        (result, id, tx) => `done id=${id} hasTx=${String(isDefined(tx))} found=${String(isDefined(result))}`,
+        (error, id, tx) => `throw id=${id} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async getById(id: number, tx?: DB): Promise<SyncEntityInterface | undefined> {
+        return await (tx ?? this.db).query.SyncEntityTable.findFirst({
             where: and(eq(SyncEntityTable.id, id), isNull(SyncEntityTable.deletedAt))
         });
     }
