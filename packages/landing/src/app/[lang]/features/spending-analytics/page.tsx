@@ -220,9 +220,7 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Are charts rendered offline?</Trans>}
-                    answer={
-                        <Trans>Yes. Analytics reads directly from your local SQLite database — every chart works without internet.</Trans>
-                    }
+                    answer={<Trans>Yes. Analytics reads straight from your phone — every chart works without internet.</Trans>}
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Do transfer fees show up as expenses?</Trans>}
