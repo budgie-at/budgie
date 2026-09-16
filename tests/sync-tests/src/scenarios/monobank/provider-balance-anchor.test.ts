@@ -1,10 +1,5 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import {
-    AccountBalanceEntityTable,
-    AccountEntityTable,
-    SyncBalanceAuthorityEnum,
-    SyncEntityTable
-} from '@budgie/contracts';
+import { AccountBalanceEntityTable, AccountEntityTable, SyncBalanceAuthorityEnum, SyncEntityTable } from '@budgie/contracts';
 import { eq, inArray } from 'drizzle-orm';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -66,6 +61,8 @@ describe('monobank/provider-balance-anchor', () => {
             ])
         );
         expect(anchoredAccounts.every(account => account.integrationId !== null)).toBe(true);
-        expect(anchoredAccounts.every(account => (account.balanceAnchorCapturedAt?.getTime() ?? 0) >= startedAt.getTime() - 1_000)).toBe(true);
+        expect(anchoredAccounts.every(account => (account.balanceAnchorCapturedAt?.getTime() ?? 0) >= startedAt.getTime() - 1_000)).toBe(
+            true
+        );
     });
 });

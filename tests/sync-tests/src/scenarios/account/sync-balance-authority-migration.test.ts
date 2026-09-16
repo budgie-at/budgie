@@ -23,10 +23,7 @@ describe('account/sync-balance-authority-migration', () => {
             INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, transaction_count, error_count)
             VALUES (1, 'MONOBANK', 1, 'FORWARD', 'IDLE', 0, 0);
         `);
-        const migration = readFileSync(
-            resolve(process.cwd(), '../../packages/app/drizzle/0056_add_sync_balance_authority.sql'),
-            'utf8'
-        );
+        const migration = readFileSync(resolve(process.cwd(), '../../packages/app/drizzle/0056_add_sync_balance_authority.sql'), 'utf8');
         sqlite.exec(migration.replaceAll('--> statement-breakpoint', ''));
 
         const row = sqlite

@@ -150,29 +150,16 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             return this.buildInterruptedBatchResult();
         }
 
-        if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
-            const now = new Date();
-
-            return { transactions: [], nextTo: now, nextFrom: now, completed: true };
-        }
-
-        const result = await this.fetchCurrentTransactionBatch(sync, account.externalId, runGeneration);
-        if (!isDefined(result)) {
-            return this.buildInterruptedBatchResult();
-        }
-
-        await this.commitFetchedBatch(result, account.id, runGeneration);
-
-        return result;
+        return this.executeAccountSyncBatch(sync, account, runGeneration);
     }
 
     @Log(
-        (sync, result, runGeneration) =>
-            `enter syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration}`,
-        (_result, sync, result, runGeneration) =>
-            `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration}`,
-        (error, sync, result, runGeneration) =>
-            `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration} error=${getErrorMessage(error)}`
+        (sync, { transactions, completed }, runGeneration) =>
+            `enter monobankSyncId=${sync.id} authority=${sync.balanceAuthority} mode=${sync.mode} importedIds=${transactions.map(transaction => transaction.id).join(',')} batchComplete=${String(completed)} generation=${runGeneration}`,
+        (_result, sync, { transactions, completed }, runGeneration) =>
+            `done monobankSyncId=${sync.id} authority=${sync.balanceAuthority} mode=${sync.mode} importedIds=${transactions.map(transaction => transaction.id).join(',')} batchComplete=${String(completed)} generation=${runGeneration}`,
+        (error, sync, { transactions, completed }, runGeneration) =>
+            `throw monobankSyncId=${sync.id} authority=${sync.balanceAuthority} mode=${sync.mode} importedIds=${transactions.map(transaction => transaction.id).join(',')} batchComplete=${String(completed)} generation=${runGeneration} error=${getErrorMessage(error)}`
     )
     protected override async applyProgressUpdate(
         sync: SyncEntityInterface,
@@ -462,6 +449,27 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         const { SyncAccountTypeEnum } = getSyncModule();
 
         return account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : super.accountIcon(account);
+    }
+
+    private async executeAccountSyncBatch(
+        sync: SyncEntityInterface,
+        account: Awaited<ReturnType<typeof accountRepository.findById>>,
+        runGeneration: number
+    ): Promise<SyncBatchResultInterface> {
+        if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
+            const now = new Date();
+
+            return { transactions: [], nextTo: now, nextFrom: now, completed: true };
+        }
+
+        const result = await this.fetchCurrentTransactionBatch(sync, account.externalId, runGeneration);
+        if (!isDefined(result)) {
+            return this.buildInterruptedBatchResult();
+        }
+
+        await this.commitFetchedBatch(result, account.id, runGeneration);
+
+        return result;
     }
 
     private async fetchCurrentTransactionBatch(

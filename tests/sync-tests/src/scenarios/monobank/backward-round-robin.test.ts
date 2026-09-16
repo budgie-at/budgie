@@ -13,13 +13,6 @@ describe('monobank/backward-round-robin', () => {
 
         await monobankSyncService.sync();
 
-        expect(requestedAccountIds.slice(0, 6)).toStrictEqual([
-            'mono-a',
-            'mono-b',
-            'mono-c',
-            'mono-a',
-            'mono-b',
-            'mono-c'
-        ]);
+        expect(requestedAccountIds.slice(0, 6)).toStrictEqual(['mono-a', 'mono-b', 'mono-c', 'mono-a', 'mono-b', 'mono-c']);
     });
 });

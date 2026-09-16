@@ -10,7 +10,7 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, fetchSyncById, monobankStub, testDb } from '../../harness';
+import { buildMonobank, fetchSyncById, monobankStub, stubMonobankProviderBalance, testDb } from '../../harness';
 import { fetchMonobankAdjustments } from '../../harness/db/fetch-monobank-adjustments';
 import { insertOne } from '../../harness/db/insert-one';
 import { setupAnchoredMonobankFixture } from '../../harness/monobank/setup-anchored-monobank-fixture';
@@ -93,13 +93,7 @@ describe('monobank/reconciliation-recovery', () => {
                  SELECT RAISE(ABORT, 'forced finalization failure');
              END`
         );
-        monobankStub.statement([]);
-        monobankStub.clientInfo(
-            buildMonobank.clientInfo({
-                accounts: [buildMonobank.account({ id: fixture.externalId, balance: 100 })],
-                jars: []
-            })
-        );
+        stubMonobankProviderBalance(fixture.externalId, 100);
 
         await monobankSyncService.sync();
 
