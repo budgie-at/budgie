@@ -3636,11 +3636,11 @@ msgstr "Dividir"
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
 #: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
 msgid "Start Deposit"
-msgstr "Iniciar depósito"
+msgstr ""
 
 #: src/app/convert-to-transfer.tsx
 msgid "Start Deposit?"
-msgstr "¿Iniciar depósito?"
+msgstr ""
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Start from scratch and set every limit yourself"
@@ -3855,7 +3855,7 @@ msgstr "Esto convertirá el ingreso en una transferencia entre cuentas."
 
 #: src/app/convert-to-transfer.tsx
 msgid "This will create a new deposit account and convert this expense into a transfer into it."
-msgstr "Esto creará una nueva cuenta de depósito y convertirá este gasto en una transferencia a esa cuenta."
+msgstr ""
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "This will keep one entry with the full transaction amount."
