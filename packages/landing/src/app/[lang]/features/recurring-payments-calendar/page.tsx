@@ -124,7 +124,7 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Sixty days ahead</Trans>}>
+                <FeatureStory.Step index={2} title={<Trans>Bi-monthly and quarterly too</Trans>}>
                     <Trans>Tap any marked day to see exactly what bills — here Day 15 lists the gym, Netflix and Spotify.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -152,7 +152,8 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Tap a calendar day to see the transactions due. The forecasted upcoming list extends out into the next 60 days.
+                        Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to date
+                        plus what&apos;s projected for the rest of it, and future months show projections you reach by navigating forward.
                         Cross-currency recurring shows in your home currency; original amount on tap.
                     </Trans>
                 </FeaturePageProse>
@@ -170,13 +171,18 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                         <Trans>Month-grid calendar plots upcoming renewals; tap a day to see what&apos;s billing</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>60-day forecast list of upcoming recurring payments</Trans>
+                        <Trans>
+                            Inferred cadence — monthly, bi-monthly, or quarterly — instead of forcing every bill into a monthly slot
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Cross-currency recurring shows in your home currency; original amount on tap</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Manual edits to detected patterns are sticky — the next scan respects them</Trans>
+                        <Trans>Fuzzy merchant matching keeps one series together even when a bank mangles the name</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>Scans 24 months of history to detect a pattern, not just the current month</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -201,11 +207,12 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I edit a detected pattern?</Trans>}
+                    question={<Trans>Can bi-monthly or quarterly bills show up correctly?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Tap a pattern to adjust amount, cadence, or merchant. Manual edits are sticky — the next scan respects
-                            them.
+                            Yes. Budgie infers each pattern&apos;s real interval from the gaps between charges instead of assuming
+                            everything is monthly, so a bi-monthly premium or a quarterly tax payment lands on the right day instead of
+                            being forced into a monthly slot.
                         </Trans>
                     }
                 />
@@ -213,8 +220,9 @@ export default async function RecurringPaymentsCalendarFeaturePage(props: PageLa
                     question={<Trans>How far does the forecast go?</Trans>}
                     answer={
                         <Trans>
-                            60 days into the future based on each pattern&apos;s cadence. Useful for spotting which week is going to be
-                            heavy.
+                            As far as the month you&apos;re viewing. Past months show what actually happened, the current month shows
+                            actuals to date plus what&apos;s projected for the rest of it, and future months show projections — navigate
+                            month to month to look further ahead.
                         </Trans>
                     }
                 />
