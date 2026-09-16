@@ -105,7 +105,7 @@ overlay.
 | `budget-near-limit.sql`      | one budget pinned near its overall limit, one category over its limit                                             |
 | `uncategorized.sql`          | a batch of the newest expenses with no category                                                                   |
 | `tags-rich.sql`              | extra tags plus a wide, multi-tagged transaction set                                                              |
-| `bank-sync-connected.sql`    | a connected Monobank integration with synced accounts and MCC-categorized transactions                            |
+| `sync-connected.sql`    | a connected Monobank integration with synced accounts and MCC-categorized transactions                            |
 | `binance-sync-connected.sql` | a connected Binance integration with `CRYPTO_SYNC` spot/funding wallets, spot trades, Earn rewards and P2P orders |
 | `bank-fees.sql`              | bank fee entries on an expense, an income and a transfer                                                          |
 | `multi-currency.sql`         | two accounts in currencies the locale does not already use, with matching rates                                   |

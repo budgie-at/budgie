@@ -44,7 +44,7 @@ src/
     ├── mapper/
     │   └── monobank-*.mapper.ts
     └── service/
-        └── monobank-sync.service.ts
+        └── monosync.service.ts
 ```
 
 ## Architecture
@@ -347,7 +347,7 @@ schema change upstream surfaces as a compile error in the harness.
 Monobank allows 1 request per minute per endpoint. Handle in app layer:
 
 ```typescript
-// In app: monobank-sync.service.ts
+// In app: monosync.service.ts
 const MONOBANK_RATE_LIMIT_MS = 60_000;
 
 // Add delay between API calls
