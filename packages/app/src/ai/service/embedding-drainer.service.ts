@@ -81,6 +81,17 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         await Promise.all([this.merchant.pause(), this.comment.pause()]);
     }
 
+    @Log(
+        timeoutMs => `enter timeoutMs=${timeoutMs}`,
+        (result, timeoutMs) => `done timeoutMs=${timeoutMs} areSubDrainersIdle=${String(result)}`,
+        (error, timeoutMs) => `throw timeoutMs=${timeoutMs} error=${getErrorMessage(error)}`
+    )
+    async whenIdle(timeoutMs: number): Promise<boolean> {
+        const [isMerchantIdle, isCommentIdle] = await Promise.all([this.merchant.whenIdle(timeoutMs), this.comment.whenIdle(timeoutMs)]);
+
+        return isMerchantIdle && isCommentIdle;
+    }
+
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     resume(): void {
         this.merchant.resume();
