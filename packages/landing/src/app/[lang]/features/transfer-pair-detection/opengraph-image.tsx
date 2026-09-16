@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Smart Transfer Consolidation — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`Transfer Consolidation`, t(i18n)`Two debits aren't a transfer. Budgie knows.`, [
-        t(i18n)`transfers`,
-        t(i18n)`deduplication`,
-        t(i18n)`smart`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`Transfer Consolidation`,
+        t(i18n)`Two debits aren't a transfer. Budgie knows.`,
+        [t(i18n)`transfers`, t(i18n)`deduplication`, t(i18n)`smart`],
+        resolveOgPlate('transfer-pair-detection', lang)
+    );
 };
 
 export default OgImage;

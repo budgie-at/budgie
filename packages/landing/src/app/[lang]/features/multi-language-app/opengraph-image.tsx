@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Multi-Language App — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`5 Languages`, t(i18n)`EN, UK, FR, DE, ES — full UI.`, [
-        t(i18n)`i18n`,
-        t(i18n)`languages`,
-        t(i18n)`multilingual`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`5 Languages`,
+        t(i18n)`EN, UK, FR, DE, ES — full UI.`,
+        [t(i18n)`i18n`, t(i18n)`languages`, t(i18n)`multilingual`],
+        resolveOgPlate('multi-language-app', lang)
+    );
 };
 
 export default OgImage;

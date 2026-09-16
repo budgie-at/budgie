@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Budget App No Subscription — Free Core, One-Time Pro — Budgie';
@@ -17,7 +18,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         t(
             i18n
         )`Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own.`,
-        [t(i18n)`pricing`, t(i18n)`comparison`, t(i18n)`subscription-free`]
+        [t(i18n)`pricing`, t(i18n)`comparison`, t(i18n)`subscription-free`],
+        resolveOgPlate('subscription-free-budget-app', lang)
     );
 };
 

@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Bank Fee Tracking — Budgie';
@@ -15,7 +16,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     return createFeatureOgImage(
         t(i18n)`Bank Fee Tracking`,
         t(i18n)`Keep ATM fees, transfer fees, and card commissions visible without polluting transfers.`,
-        [t(i18n)`fees`, t(i18n)`analytics`, t(i18n)`bank-sync`]
+        [t(i18n)`fees`, t(i18n)`analytics`, t(i18n)`bank-sync`],
+        resolveOgPlate('bank-fee-tracking', lang)
     );
 };
 
