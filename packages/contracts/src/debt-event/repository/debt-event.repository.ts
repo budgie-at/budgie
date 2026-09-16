@@ -106,7 +106,14 @@ export class DebtEventRepository {
     }
 
     async archiveByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        await this.updateDeletedAtByAccountIds(accountIds, new Date(), tx);
+        if (!isNotEmptyArray(accountIds)) {
+            return;
+        }
+
+        await (tx ?? this.db)
+            .update(DebtEventEntityTable)
+            .set({ deletedAt: new Date() })
+            .where(and(inArray(DebtEventEntityTable.debtAccountId, accountIds), isNull(DebtEventEntityTable.deletedAt)));
     }
 
     async restoreByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
