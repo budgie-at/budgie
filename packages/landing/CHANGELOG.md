@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.66.0](https://github.com/budgie-at/budgie/compare/v6.65.3...v6.66.0) (2026-09-16)
+
+
+### Features
+
+* **landing:** add on-device-ai-budget-app steps story ([97bd640](https://github.com/budgie-at/budgie/commit/97bd64036c2a1309a2c3bc0f8eed0855ae61e65b))
+
+
+
+
+
 ## [6.65.3](https://github.com/budgie-at/budgie/compare/v6.65.2...v6.65.3) (2026-09-16)
 
 **Note:** Version bump only for package @budgie-at/landing
