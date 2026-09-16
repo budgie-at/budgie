@@ -4189,6 +4189,10 @@ msgstr "Обсяг"
 msgid "Waiting"
 msgstr "Очікування"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Warning"
+msgstr "Попередження"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."
 msgstr "Ми повторимо спробу у фоновому режимі."
