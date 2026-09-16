@@ -187,8 +187,8 @@ msgid "<0>Automerge</0> is a JSON CRDT implementation that makes it easy to work
 msgstr "<0>Automerge</0> — це JSON CRDT реалізація, яка спрощує роботу зі складними структурами документів. Вона особливо сильна для застосунків, яким потрібно синхронізувати довільні JSON-дані."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Backup exposure</0>: If your device backup is compromised, the encrypted database within it remains protected."
-msgstr "<0>Компрометація резервних копій</0>: Якщо резервна копія вашого пристрою буде скомпрометована, зашифрована база даних у ній залишається захищеною."
+msgid "<0>Backup exposure</0>: If your device backup is compromised, a backup you made with a PIN remains protected inside it."
+msgstr "<0>Витік через резервну копію</0>: якщо резервну копію вашого пристрою скомпрометовано, копія, зроблена з PIN-кодом, залишається захищеною всередині неї."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Bank sync included.</0> Automatic imports via Plaid."
@@ -610,8 +610,8 @@ msgid "<0>Electric SQL</0> synchronizes SQLite databases between devices and clo
 msgstr "<0>Electric SQL</0> синхронізує бази даних SQLite між пристроями та хмарним Postgres, забезпечуючи local-first зі знайомим SQL."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "<0>Embeddings stored in local SQLite</0> — The embedding vectors for your transaction history are stored in the same encrypted database as your transactions. They are not synced to any server."
-msgstr "<0>Вектори збережені у локальному SQLite</0> — Вектори вкладень для вашої історії транзакцій зберігаються в тій самій зашифрованій базі даних, що й ваші транзакції. Вони не синхронізуються з жодним сервером."
+msgid "<0>Embeddings stored in local SQLite</0> — The embedding vectors for your transaction history are stored in the same database as your transactions, encrypted the moment you set a PIN. They are not synced to any server."
+msgstr "<0>Вбудовування зберігаються локально в SQLite</0> — вектори вбудовувань для історії ваших транзакцій зберігаються в тій самій базі даних, що й ваші транзакції, і шифруються, щойно ви встановлюєте PIN-код. Вони не синхронізуються з жодним сервером."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Encrypted local backup</0> — Create a backup of your entire database at any time and save it to iCloud, a USB drive, or anywhere you choose. Budgie does not hold your backup."
@@ -650,8 +650,8 @@ msgid "<0>Forced migration</0>: Users pushed to Credit Karma, another Intuit pro
 msgstr "<0>Примусова міграція</0>: Користувачів штовхають до Credit Karma, іншого продукту Intuit з іншими умовами конфіденційності"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Forensic analysis</0>: Even with sophisticated forensic tools, the encrypted database cannot be meaningfully analyzed without the key."
-msgstr "<0>Криміналістичний аналіз</0>: Навіть із використанням складних криміналістичних інструментів зашифрована база даних не може бути змістовно проаналізована без ключа."
+msgid "<0>Forensic analysis</0>: Even with sophisticated forensic tools, an encrypted database cannot be meaningfully analyzed without the PIN."
+msgstr "<0>Криміналістичний аналіз</0>: навіть за допомогою складних криміналістичних інструментів зашифровану базу даних неможливо змістовно проаналізувати без PIN-коду."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Free with ads/data selling:</0> Your data is the product"
@@ -786,14 +786,6 @@ msgid "<0>January 2024</0>: Data migration to Credit Karma begins for users who 
 msgstr "<0>Січень 2024</0>: Починається міграція даних до Credit Karma для користувачів, які погодилися."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Key derivation</0>: Your encryption key is derived from your device credentials using industry-standard key derivation functions. This means the key is unique to your device and cannot be reconstructed elsewhere."
-msgstr "<0>Деривація ключа</0>: Ваш ключ шифрування генерується з облікових даних вашого пристрою за допомогою стандартних функцій деривації ключів. Це означає, що ключ унікальний для вашого пристрою і не може бути відтворений деінде."
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Key isolation</0>: Each device has its own encryption key. There is no master key that could decrypt all user databases, because such a key does not exist."
-msgstr "<0>Ізоляція ключа</0>: Кожен пристрій має власний ключ шифрування. Не існує майстер-ключа, який міг би розшифрувати всі бази даних користувачів, тому що такий ключ просто не існує."
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Latency</0>: Every operation requires a round trip to the server. Even with fast connections, this adds noticeable delay to every action you take."
 msgstr "<0>Затримка</0>: Кожна операція потребує подорожі до сервера й назад. Навіть із швидким з'єднанням це додає помітну затримку до кожної дії."
 
@@ -876,10 +868,6 @@ msgstr "<0>Зрілий API</0>: Добре задокументований, с
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Maximum privacy</0>: Budgie or Firefly III"
 msgstr "Максимальна приватність: Budgie або Firefly III"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Memory protection</0>: Keys are held in memory only when needed for database operations and are cleared when the app is backgrounded or closed."
-msgstr "<0>Захист пам'яті</0>: Ключі зберігаються в пам'яті лише тоді, коли вони потрібні для операцій з базою даних, і очищуються, коли додаток переходить у фоновий режим або закривається."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Minimal dependency philosophy</0>: We prefer implementing functionality ourselves over adding dependencies, reducing attack surface."
@@ -1045,6 +1033,10 @@ msgstr "<0>Немає власних категорій</0>: Ви обмежен
 msgid "<0>No data monetization</0>: We don’t want your data. We can’t even access it."
 msgstr "<0>Без монетизації даних</0>: Ми не хочемо ваших даних. Ми навіть не можемо отримати до них доступ."
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "<0>No derivation, no separate key</0>: Setting a PIN turns it directly into the key your database is encrypted with. There is no key-derivation step and no hidden key generated behind the scenes — if you know the PIN, you have the key."
+msgstr "<0>Без похідного ключа, без окремого ключа</0>: встановлення PIN-коду безпосередньо перетворює його на ключ, яким шифрується ваша база даних. Немає жодного етапу створення похідного ключа й жодного прихованого ключа, згенерованого за лаштунками, — якщо ви знаєте PIN-код, у вас є ключ."
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>No export:</0> Complete vendor lock-in"
 msgstr "<0>Без експорту:</0> Повна залежність від постачальника"
@@ -1109,6 +1101,10 @@ msgstr "Нетехнічні: Monarch Money, Copilot, YNAB"
 msgid "<0>November 2023</0>: Intuit announces Mint will be discontinued, pushing users toward Credit Karma."
 msgstr "<0>Листопад 2023</0>: Intuit оголошує про закриття Mint, направляючи користувачів до Credit Karma."
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "<0>Nowhere but your device</0>: Your PIN never leaves your device and never touches our servers, because we do not have servers that handle user data."
+msgstr "<0>Ніде, крім вашого пристрою</0>: ваш PIN-код ніколи не залишає ваш пристрій і ніколи не потрапляє на наші сервери, оскільки в нас немає серверів, які обробляють дані користувачів."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Offline Support</0>: Full"
 msgstr "<0>Офлайн-підтримка</0>: Повна"
@@ -1142,8 +1138,8 @@ msgid "<0>On-device AI</0> — The model is bundled with the app (or downloaded 
 msgstr "<0>AI на пристрої</0> — Модель вбудована в додаток (або завантажується одноразово під час налаштування). Кожен виклик виводу залишається на вашому пристрої. Жодного мережевого запиту, жодного серверного журналу, жодна третя сторона ніколи не бачить введених даних."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>On-device SQLite storage</0> — Every transaction, account, and category is stored locally in an encrypted database. Budgie works fully offline; connectivity is optional, never required."
-msgstr "<0>Локальне сховище SQLite</0> — Кожна транзакція, рахунок і категорія зберігаються локально у зашифрованій базі даних. Budgie працює повністю офлайн; підключення до мережі необов'язкове і ніколи не вимагається."
+msgid "<0>On-device SQLite storage</0> — Every transaction, account, and category is stored locally in a database, encrypted the moment you set a PIN. Budgie works fully offline; connectivity is optional, never required."
+msgstr "<0>Зберігання на пристрої з SQLite</0> — кожна транзакція, рахунок і категорія зберігаються локально в базі даних, яка шифрується, щойно ви встановлюєте PIN-код. Budgie повністю працює офлайн; підключення до інтернету є необов'язковим і ніколи не потрібне."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>One-time purchase:</0> No ongoing relationship or data motivation"
@@ -1532,10 +1528,6 @@ msgstr "<0>Плавна співпраця з колегами.</0> Local-first 
 msgid "<0>Secondary use</0>: Using aggregated data to build credit scoring and identity products"
 msgstr "<0>Вторинне використання</0>: Використання агрегованих даних для створення продуктів кредитного скорингу та ідентифікації"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Secure storage</0>: The derived key is stored in platform-specific secure enclaves. On iOS, this is the Keychain. On Android, it is the Android Keystore backed by hardware security modules when available."
-msgstr "<0>Безпечне зберігання</0>: Згенерований ключ зберігається у платформо-специфічних захищених сховищах. На iOS це Keychain. На Android це Android Keystore, підкріплений апаратними модулями безпеки, коли вони доступні."
-
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>Security and privacy by default.</0> Since data stays local, there is no central server holding everyone’s information. Privacy becomes a natural property of the architecture."
 msgstr "<0>Безпека та приватність за замовчуванням.</0> Оскільки дані залишаються локальними, немає центрального сервера, що зберігає інформацію всіх. Приватність стає природною властивістю архітектури."
@@ -1651,6 +1643,10 @@ msgstr "<0>Мобільний додаток</0> — Повна кодова б�
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>The network is optional.</0> Full functionality should be available offline. The network enhances capabilities but is not required for core operations."
 msgstr "<0>Мережа є необов'язковою.</0> Повна функціональність має бути доступна офлайн. Мережа розширює можливості, але не є обов'язковою для основних операцій."
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "<0>The same PIN works on any device</0>: Your PIN is not tied to a single phone. Restoring a backup on a new device asks for the PIN that backup was made with, and that PIN becomes the key again — which is exactly what lets you move to a new device without an account or a server in between."
+msgstr "<0>Той самий PIN-код працює на будь-якому пристрої</0>: ваш PIN-код не прив'язаний до одного телефону. Відновлення резервної копії на новому пристрої запитує PIN-код, з яким цю копію було створено, і цей PIN-код знову стає ключем — саме це дає змогу переходити на новий пристрій без облікового запису та без сервера-посередника."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Third-party access</0>: Your bank data flows through infrastructure operated by companies whose business model depends on data."
@@ -1793,8 +1789,8 @@ msgid "<0>Your work is not trapped on one device.</0> Despite data being local, 
 msgstr "<0>Ваша робота не замкнена на одному пристрої.</0> Локальні дані все одно мають охайно переходити між пристроями, якими ви реально користуєтеся."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>Your-cloud backup</0> — Encrypted backups that you store in your own cloud storage (iCloud, Google Drive, Dropbox) or locally, not on the developer's servers."
-msgstr "<0>Резервне копіювання у вашу хмару</0> — Зашифровані резервні копії, які ви зберігаєте у власному хмарному сховищі (iCloud, Google Drive, Dropbox) або локально, а не на серверах розробника."
+msgid "<0>Your-cloud backup</0> — Backups, encrypted if you set a PIN when you made them, stored in your own cloud storage (iCloud, Google Drive, Dropbox) or locally, not on the developer's servers."
+msgstr "<0>Резервна копія у вашій власній хмарі</0> — резервні копії, зашифровані, якщо ви встановите PIN-код під час їх створення, які ви зберігаєте у власному хмарному сховищі (iCloud, Google Drive, Dropbox) або локально, а не на серверах розробника."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Zero-knowledge bank sync</0>: If you want automatic transaction imports, Budgie’s bank sync uses end-to-end encryption. Your credentials are encrypted on your device, and sync happens directly between your phone and your bank. Budgie never sees your banking credentials or transaction data."
@@ -3327,6 +3323,10 @@ msgstr "Резервне копіювання та відновлення"
 msgid "Backup file copied via your cloud"
 msgstr "Файл резервної копії скопійований через вашу хмару"
 
+#: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
+msgid "Backup, Encrypted With Your PIN"
+msgstr "Резервна копія, зашифрована вашим PIN-кодом"
+
 #: src/app/[lang]/privacy/page.tsx
 msgid "Backups go to your personal cloud storage — iCloud Drive on iOS, or Google Drive or Dropbox on Android. Budgie never receives a copy; you own every byte."
 msgstr "Резервні копії надходять до вашого особистого хмарного сховища — iCloud Drive на iOS або Google Drive чи Dropbox на Android. Budgie ніколи не отримує копію; кожен байт належить вам."
@@ -4290,8 +4290,8 @@ msgid "Budgie is a source-available personal finance app. Read the source, audit
 msgstr "Budgie — застосунок для особистих фінансів із доступним вихідним кодом. Читайте код, перевіряйте заяви про приватність, додавайте функції та довіряйте трекеру витрат, бо можете його перевірити."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in an encrypted SQLite database on your device. There are no Budgie servers that receive your transactions, no aggregator that holds your bank credentials, and no subscription required to use the core features."
-msgstr "Budgie — офлайн-перший додаток для обліку витрат, створений для iOS та Android. Усі дані зберігаються у зашифрованій базі даних SQLite на вашому пристрої. Немає серверів Budgie, що отримують ваші транзакції, немає агрегатора, що зберігає ваші банківські облікові дані, і не потрібна підписка для використання основних функцій."
+msgid "Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in a database on your device, encrypted the moment you set a PIN. There are no Budgie servers that receive your transactions, no aggregator that holds your bank credentials, and no subscription required to use the core features."
+msgstr "Budgie — офлайн-орієнтований застосунок для обліку витрат для iOS та Android. Усі дані зберігаються в базі даних на вашому пристрої, яка шифрується, щойно ви встановлюєте PIN-код. Немає жодних серверів Budgie, які отримують ваші транзакції, немає агрегатора, який володіє вашими банківськими обліковими даними, і не потрібна підписка для використання основних функцій."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie is and will remain free. The app is open source, and we’re committed to a sustainable model that doesn’t rely on monetizing user data or gating features behind paywalls. We may offer optional services in the future (like hosted backup), but the core app will always be free and fully functional."
@@ -4328,6 +4328,10 @@ msgstr ""
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device in a SQLite database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app is open source so you can verify every claim we make."
 msgstr "Budgie — це нативний мобільний додаток, повністю офлайн-здатний та радикально приватний. Ваші дані зберігаються на вашому пристрої в базі даних SQLite, до якої ви можете робити запити безпосередньо. Банківська синхронізація, коли використовується, застосовує архітектуру нульового знання. Додаток з відкритим кодом, тому ви можете перевірити кожну нашу заяву."
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Budgie is open source, so anyone can read exactly how your PIN becomes your database's encryption key — there is no hidden derivation step and no proprietary library standing between your PIN and the data. That code is public for community review."
+msgstr "Budgie з відкритим вихідним кодом, тож будь-хто може прочитати, як саме ваш PIN-код стає ключем шифрування вашої бази даних — немає жодного прихованого етапу створення похідного ключа й жодної закритої бібліотеки між вашим PIN-кодом і даними. Цей код відкритий для перевірки спільнотою."
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie is open source. The Monobank integration lives in packages/sync/src/monobank/ and the project's release cadence keeps it current."
@@ -5928,8 +5932,8 @@ msgid "Copilot: The Apple Ecosystem Choice"
 msgstr "Copilot: Вибір для екосистеми Apple"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Copy the encrypted backup file via your own iCloud Drive, Google Drive, or Dropbox. Restore on the second device with one tap."
-msgstr "Скопіюйте зашифрований файл резервної копії через власний iCloud Drive, Google Drive або Dropbox. Відновіть на другому пристрої одним дотиком."
+msgid "Copy the backup file via your own iCloud Drive, Google Drive, or Dropbox — it is encrypted if you set a PIN when you made it. Restore it on the second device by picking the file and entering that PIN."
+msgstr "Скопіюйте файл резервної копії через власний iCloud Drive, Google Drive або Dropbox — він зашифрований, якщо під час створення ви встановили PIN-код. Відновіть його на другому пристрої, вибравши файл і ввівши цей PIN-код."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Copyright © 2024-2026, Budgie"
@@ -6391,10 +6395,6 @@ msgstr "Резервне копіювання та відновлення баз
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "Database backup and restore"
 msgstr ""
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Database encryption protects your data in several scenarios:"
-msgstr "Шифрування бази даних захищає ваші дані в кількох сценаріях:"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Database schemas and migration files"
@@ -7102,10 +7102,6 @@ msgstr "EN, UK, FR, DE, ES — повний інтерфейс."
 msgid "Encrypted"
 msgstr "Зашифровано"
 
-#: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
-msgid "Encrypted Backup"
-msgstr "Зашифроване резервне копіювання"
-
 #: src/app/[lang]/security/metadata.ts
 msgid "encrypted budget app"
 msgstr ""
@@ -7126,14 +7122,6 @@ msgstr "Зашифроване резервне копіювання бази д
 #: src/app/[lang]/security/metadata.ts
 msgid "encrypted finance app"
 msgstr ""
-
-#: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
-msgid "Encrypted Local Storage"
-msgstr "Зашифроване локальне сховище"
-
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Encrypted on your phone"
-msgstr "Зашифровано на вашому телефоні"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
@@ -7249,8 +7237,8 @@ msgid "Every AI correction improves future suggestions via on-device learning"
 msgstr "Кожна AI-корекція покращує майбутні підказки завдяки навчанню на пристрої"
 
 #: src/app/[lang]/features/page.tsx
-msgid "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and encrypted backups — all 100% offline-first."
-msgstr "Усі функції Budgie в одному місці: синхронізація з банком, AI на пристрої, введення голосом, мультивалютність, виявлення регулярних платежів і зашифровані резервні копії — усе 100% офлайн-перше."
+msgid "Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and PIN-protected backups — all 100% offline-first."
+msgstr "Усі функції Budgie в одному місці: банківська синхронізація, ШІ на пристрої, голосове введення, мультивалютність, виявлення регулярних платежів і резервні копії, захищені PIN-кодом, — і все це на 100% офлайн."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Every buy keeps what it cost"
@@ -7399,8 +7387,8 @@ msgid "Every transaction you make, including amounts, merchants, and locations"
 msgstr "Кожну вашу транзакцію, включаючи суми, торговців та місця"
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Every transaction, account and category lives in an encrypted database on your phone — there is no backend to deploy."
-msgstr "Кожна транзакція, рахунок і категорія зберігаються в зашифрованій базі даних на вашому телефоні — розгортати бекенд не потрібно."
+msgid "Every transaction, account and category lives in a database on your phone, encrypted the moment you set a PIN — there is no backend to deploy."
+msgstr "Кожна транзакція, рахунок і категорія перебувають у базі даних на вашому телефоні, яка шифрується, щойно ви встановлюєте PIN-код, — розгортати бекенд не потрібно."
 
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "Every transaction, budget and chart is computed from a SQLite database on your phone. There is no account to create, so there is nothing to sign into, nothing to sync and nothing to leak. Turn the radio off and the app behaves exactly the same."
@@ -7541,8 +7529,8 @@ msgid "Export Database checkpoints the write-ahead log and copies the SQLite fil
 msgstr "«Експортувати базу даних» фіксує журнал випереджувального запису й копіює сам файл SQLite — кожну операцію, рахунок, категорію, тег і налаштування — а тоді передає його системному меню поширення як датований файл budgie-backup. Встановіть PIN — і цей PIN стає ключем SQLCipher, яким зашифровано файл."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Export Database writes one encrypted file with everything. Import Database restores it on a new phone in seconds."
-msgstr "«Експортувати базу даних» записує один зашифрований файл з усім. «Імпортувати базу даних» відновлює його на новому телефоні за кілька секунд."
+msgid "Export Database writes one file with everything, encrypted if you have a PIN set. Import Database restores it on a new phone after you pick the file and enter that PIN if the backup was encrypted."
+msgstr "Export Database записує один файл з усіма даними, зашифрований, якщо у вас встановлено PIN-код. Import Database відновлює його на новому телефоні після вибору файлу та введення цього PIN-коду, якщо резервна копія була зашифрована."
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Export Database writes the whole database to one file and hands it to the system share sheet, so you choose where it goes — iCloud Drive, Google Drive, Dropbox, a NAS. Budgie has no sync server and no integration with any of them."
@@ -8028,8 +8016,8 @@ msgid "For supported banks, Budgie can sync new transactions directly from your 
 msgstr "Для підтримуваних банків Budgie може синхронізувати нові транзакції безпосередньо з вашого пристрою. Це замінює ручний крок імпорту для поточного використання. Для банків, ще не підтримуваних прямою синхронізацією, регулярний імпорт CSV є цілком стійким робочим процесом."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
-msgid "For supported banks, Budgie connects directly from your device to the bank API using OAuth tokens stored in the encrypted local database. The sync runs on your device; Budgie servers are not involved in the data flow. Transaction data is written directly to the local SQLite database."
-msgstr "Для підтримуваних банків Budgie підключається безпосередньо з вашого пристрою до банківського API за допомогою OAuth-токенів, збережених у зашифрованій локальній базі даних. Синхронізація виконується на вашому пристрої; сервери Budgie не беруть участі в потоці даних. Транзакційні дані записуються безпосередньо до локальної бази SQLite."
+msgid "For supported banks, Budgie connects directly from your device to the bank API using OAuth tokens stored in your local database, encrypted if you have a PIN set. The sync runs on your device; Budgie servers are not involved in the data flow. Transaction data is written directly to that local database."
+msgstr "Для підтримуваних банків Budgie підключається безпосередньо з вашого пристрою до API банку за допомогою токенів OAuth, що зберігаються у вашій локальній базі даних і шифруються, якщо ви встановили PIN-код. Синхронізація відбувається на вашому пристрої; сервери Budgie не беруть участі в потоці даних. Дані транзакцій записуються безпосередньо в цю локальну базу даних."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "For synchronization, Obsidian offers optional services or you can use your own sync solution (Dropbox, iCloud, Git, Syncthing). This approach gives users complete ownership and flexibility. Your notes cannot be locked in a proprietary format, and they survive regardless of what happens to Obsidian as a company."
@@ -8717,10 +8705,6 @@ msgstr "Чим це відрізняється від сторінки анал�
 msgid "How it works"
 msgstr "Як це працює"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "How Keys Are Managed Locally"
-msgstr "Як керуються ключі локально"
-
 #: src/app/[lang]/ai-features/page.tsx
 msgid "How large are the model downloads?"
 msgstr "Який розмір завантаження моделей?"
@@ -8801,6 +8785,10 @@ msgstr "Як оцінити конфіденційність бюджетног�
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "How to Export Your Mint Data (Before It’s Too Late)"
 msgstr "Як експортувати дані з Mint (поки не пізно)"
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "How Your PIN Protects Your Data"
+msgstr "Як ваш PIN-код захищає ваші дані"
 
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "I found recurring subscriptions I had completely forgotten about. Cancelled them straight away, and those small amounts really add up."
@@ -9618,6 +9606,10 @@ msgstr "Локальна база даних SQLite з Drizzle ORM (ви мож�
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Local SQLite, encrypted once you set a PIN"
 msgstr "Локальний SQLite, зашифрований після встановлення PIN-коду"
+
+#: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
+msgid "Local Storage, Encrypted With Your PIN"
+msgstr "Локальне зберігання, зашифроване вашим PIN-кодом"
 
 #: src/app/[lang]/blog/local-first-movement-developers/opengraph-image.tsx
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
@@ -11148,8 +11140,8 @@ msgid "O'Saasy License Agreement"
 msgstr ""
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
-msgid "OAuth tokens for direct bank sync are stored in the encrypted local database on your device alongside your transaction data. They are protected by the same AES-256 encryption and device authentication as your financial records. Revoking a token from your bank portal immediately terminates all sync access without requiring any action inside Budgie."
-msgstr "OAuth-токени для прямої синхронізації з банком зберігаються у зашифрованій локальній базі даних на вашому пристрої поряд з вашими транзакційними даними. Вони захищені тим самим шифруванням AES-256 та аутентифікацією пристрою, що й ваші фінансові записи. Відкликання токена через портал банку негайно припиняє весь доступ до синхронізації без необхідності будь-яких дій усередині Budgie."
+msgid "OAuth tokens for direct bank sync are stored in your local database on your device alongside your transaction data, protected the same way — encrypted with your PIN if you have one set. Revoking a token from your bank portal immediately terminates all sync access without requiring any action inside Budgie."
+msgstr "Токени OAuth для прямої банківської синхронізації зберігаються у вашій локальній базі даних на вашому пристрої поряд із даними транзакцій і захищені так само — зашифровані вашим PIN-кодом, якщо ви його встановили. Відкликання токена через портал вашого банку негайно припиняє будь-який доступ до синхронізації без потреби виконувати будь-які дії в Budgie."
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "OAuth via aggregator"
@@ -11347,6 +11339,10 @@ msgstr "На iOS 18 і новіших версіях перезавантажт�
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "On your phone"
 msgstr "На вашому телефоні"
+
+#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
+msgid "On your phone, encrypted when a PIN is set"
+msgstr "На вашому телефоні, зашифровано, коли встановлено PIN-код"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/opengraph-image.tsx
@@ -12031,10 +12027,6 @@ msgstr "Наш повний вихідний код доступний на GitH
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Our development roadmap is public and regularly updated. You can see:"
 msgstr "Наша дорожня карта розробки публічна та регулярно оновлюється. Ви можете бачити:"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Our encryption uses standard library implementations of AES-256 from platform security frameworks (iOS CryptoKit, Android Keystore). These implementations are developed and audited by Apple and Google. Our integration is documented in the open source code for community review."
-msgstr "Наше шифрування використовує стандартні бібліотечні реалізації AES-256 від платформних фреймворків безпеки (iOS CryptoKit, Android Keystore). Ці реалізації розроблені та перевірені Apple і Google. Наша інтеграція задокументована у коді з відкритим доступом для перегляду спільнотою."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Our Service is not intended for individuals under the age of 18. We do not knowingly collect personal information from children. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately."
@@ -14826,10 +14818,6 @@ msgstr "Екосистема стає сильнішою завдяки обмі
 msgid "The embedding lookup is not a single index — Budgie keeps three separate ones, each matching a different field against your own history and returning up to three candidates. The transaction index matches the title you are typing against your past entries to suggest category and tags. The merchant index matches shop names across spelling variants — the same index that lets the same store resolve consistently even when different banks spell it differently, which is the visible result behind merchant name translation. The comment index matches your own free-text notes, so a comment you typed once for a coffee shop comes back as a suggestion the next time you visit it."
 msgstr "Пошук за ембеддингами — це не один індекс: Budgie підтримує три окремі, кожен зіставляє інше поле з вашою власною історією та повертає до трьох кандидатів. Індекс транзакцій зіставляє назву, яку ви вводите, з вашими попередніми записами, щоб запропонувати категорію та теги. Індекс продавців зіставляє назви магазинів попри варіанти написання — той самий індекс, який дозволяє однаково розпізнавати той самий заклад, навіть якщо різні банки пишуть його по-різному, і саме це є видимим результатом перекладу назв продавців. Індекс коментарів зіставляє ваші власні довільні нотатки, тож коментар, який ви одного разу написали для кав’ярні, з’явиться як підказка під час наступного відвідування."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The encryption key never leaves your device and never touches our servers because we do not have servers that handle user data. Here is how key management works:"
-msgstr "Ключ шифрування ніколи не залишає ваш пристрій і ніколи не потрапляє на наші сервери, тому що у нас немає серверів, які обробляють дані користувачів. Ось як працює управління ключами:"
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The End of an Era: What Happened to Mint"
 msgstr "Кінець епохи: Що сталося з Mint"
@@ -14899,8 +14887,8 @@ msgid "The full list renders with the radio off. No spinner, no retry."
 msgstr "Повний список показується з вимкненим радіо. Без спінера, без повторних спроб."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "The fundamental difference is where your data lives. Cloud apps store your transaction history on company servers. Budgie stores it in an encrypted database on your device. That difference determines who controls your financial data, who can access it, and what happens when the company changes its mind about the product."
-msgstr "Фундаментальна різниця полягає в тому, де зберігаються ваші дані. Хмарні додатки зберігають вашу історію транзакцій на серверах компанії. Budgie зберігає її у зашифрованій базі даних на вашому пристрої. Ця різниця визначає, хто контролює ваші фінансові дані, хто може отримати до них доступ і що відбувається, коли компанія змінює своє ставлення до продукту."
+msgid "The fundamental difference is where your data lives. Cloud apps store your transaction history on company servers. Budgie stores it on your device, encrypted the moment you set a PIN. That difference determines who controls your financial data, who can access it, and what happens when the company changes its mind about the product."
+msgstr "Принципова різниця полягає в тому, де зберігаються ваші дані. Хмарні застосунки зберігають історію ваших транзакцій на серверах компанії. Budgie зберігає її на вашому пристрої, шифруючи, щойно ви встановлюєте PIN-код. Ця різниця визначає, хто контролює ваші фінансові дані, хто може отримати до них доступ і що станеться, якщо компанія передумає щодо продукту."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The Future is Local-First"
@@ -15578,10 +15566,6 @@ msgstr "Сторонні партнери отримують анонімізо�
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "This approach eliminates the fear of “what if I made the wrong choice” and lets you experience the differences firsthand."
 msgstr "Цей підхід усуває страх \"а раптом я зробив неправильний вибір\" і дозволяє вам побачити різницю на власному досвіді."
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "This architecture means that even if someone steals your device, they cannot read your financial data without also compromising your device’s security (unlocking it with your biometrics or passcode)."
-msgstr "З такою архітектурою вкрасти пристрій недостатньо. Зловмиснику ще потрібно обійти захист пристрою, наприклад ваш код доступу або біометрію, перш ніж фінансові дані стануть читабельними."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "This article explains what on-device AI means technically, why it matters for financial privacy, and how Budgie implements it end to end."
@@ -17270,8 +17254,8 @@ msgid "When you connect through Plaid, you enter into a relationship with Plaid,
 msgstr "Коли ви підключаєтесь через Plaid, ви вступаєте у відносини з Plaid, а не лише з додатком. Бізнес-інтереси Plaid можуть не збігатися з вашими уподобаннями щодо конфіденційності."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
-msgid "When you create a backup, the encrypted database file is exported to your chosen destination — iCloud, Google Drive, a local network share, or a USB-connected device. Budgie does not receive or store the backup. Restoration reads the file from the same destination and decrypts it locally."
-msgstr "Коли ви створюєте резервну копію, зашифрований файл бази даних експортується до вашого вибраного місця призначення — iCloud, Google Drive, локальний мережевий ресурс або пристрій, підключений через USB. Budgie не отримує і не зберігає резервну копію. Відновлення читає файл з того самого місця призначення і розшифровує його локально."
+msgid "When you create a backup, the database file — encrypted if you have a PIN set — is exported to your chosen destination — iCloud, Google Drive, a local network share, or a USB-connected device. Budgie does not receive or store the backup. Restoring it later reads the file back from wherever you put it and asks for that backup's PIN if it was encrypted."
+msgstr "Коли ви створюєте резервну копію, файл бази даних — зашифрований, якщо у вас встановлено PIN-код, — експортується до обраного вами місця призначення: iCloud, Google Drive, локальна мережева папка або пристрій, підключений через USB. Budgie не отримує й не зберігає резервну копію. Подальше відновлення зчитує файл звідти, куди ви його поклали, і запитує PIN-код цієї копії, якщо вона була зашифрована."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "When you create a transaction in Budgie, here is what happens at the technical level:"
@@ -17410,8 +17394,8 @@ msgid "Where you live and work"
 msgstr "Де ви живете та працюєте"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
-msgid "Whether data arrives via direct sync or manual import, it is stored in the same AES-256 encrypted SQLite database. The database is protected by your device PIN, biometric authentication, or a dedicated app lock. No transaction data is stored on Budgie servers at any point."
-msgstr "Незалежно від того, надходять дані через пряму синхронізацію або ручний імпорт, вони зберігаються в тій самій зашифрованій базі даних SQLite AES-256. База даних захищена PIN пристрою, біометричною аутентифікацією або спеціальним блокуванням додатку. Жодні транзакційні дані не зберігаються на серверах Budgie в жодний момент."
+msgid "Whether data arrives via direct sync or manual import, it is stored in the same local database. Set a PIN and that PIN becomes the key your data is encrypted with; biometric unlock is just a faster way past the lock screen, and your PIN stays the key either way. No transaction data is stored on Budgie servers at any point."
+msgstr "Незалежно від того, чи дані надходять через пряму синхронізацію, чи через ручний імпорт, вони зберігаються в тій самій локальній базі даних. Встановіть PIN-код, і цей PIN-код стане ключем, яким шифруються ваші дані; біометричне розблокування — це лише швидший спосіб пройти екран блокування, а ключем у будь-якому разі залишається ваш PIN-код. Дані транзакцій ніколи не зберігаються на серверах Budgie."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Whether it’s ever sold or shared"
@@ -17871,6 +17855,14 @@ msgstr "Повторна синхронізація банку у вікні"
 msgid "Windowed re-sync to fix drift without losing manual edits"
 msgstr "Повторна синхронізація у вікні для виправлення зміщення без втрати ручних змін"
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "With a PIN set, database encryption protects your data in several scenarios:"
+msgstr "Якщо встановлено PIN-код, шифрування бази даних захищає ваші дані в кількох сценаріях:"
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "With a PIN set, even someone who steals your device cannot read your financial data without also compromising your device’s security (unlocking it with your biometrics or passcode). Without a PIN, the database is not encrypted at all, so we recommend setting one before storing sensitive data."
+msgstr "Якщо встановлено PIN-код, навіть той, хто вкраде ваш пристрій, не зможе прочитати ваші фінансові дані, попередньо не скомпрометувавши безпеку самого пристрою (розблокувавши його за допомогою біометрії чи коду). Без PIN-коду базу даних узагалі не зашифровано, тому ми рекомендуємо встановити його перед тим, як зберігати чутливі дані."
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "With App Lock on, every route in the app redirects to this keypad until the PIN checks out — on every cold launch, and again the moment the app goes to the background. There is nothing behind it to read: no balances, no transaction list, no skip."
 msgstr "Коли блокування ввімкнене, будь-який екран застосунку перенаправляє на цю клавіатуру, доки PIN не збігається — за кожного холодного запуску і знову, щойно застосунок іде у фон. Позаду нічого не прочитати: ні балансів, ні списку транзакцій, ні кнопки пропустити."
@@ -18078,8 +18070,8 @@ msgid "Yes — tapping a category row on the budget detail screen opens the tran
 msgstr "Так — торкання рядка категорії на екрані деталей бюджету відкриває список транзакцій, відфільтрований за цією категорією та саме цим періодом бюджету."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-msgid "Yes — the encrypted backup is just a file. Save it anywhere you control: NAS, S3, your own server, your own cloud."
-msgstr "Так — зашифрована резервна копія є лише файлом. Збережіть її де завгодно, чим ви керуєте: NAS, S3, власний сервер, власна хмара."
+msgid "Yes — the backup is just a file, encrypted if you had a PIN set when you made it. Save it anywhere you control: NAS, S3, your own server, your own cloud."
+msgstr "Так — резервна копія — це просто файл, зашифрований, якщо під час її створення у вас був встановлений PIN-код. Зберігайте її де завгодно, де контролюєте самі: NAS, S3, власний сервер, власна хмара."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Yes — the filter row has an amount-range chip beside the date one. Give it a From value, a To value, or both, and it stacks with every other active filter."
@@ -18683,8 +18675,8 @@ msgid "Your data doesn’t disappear if we go out of business"
 msgstr "Ваші дані не зникнуть, якщо ми припинимо діяльність"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Your data exists only on your device. If you lose your phone without having synced to another device or created an encrypted backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
-msgstr "Ваші дані існують лише на вашому пристрої. Якщо ви загубите телефон, не синхронізувавши дані з іншим пристроєм або не створивши зашифровану резервну копію, ваші дані будуть втрачені. Це компроміс конфіденційності: ми не можемо допомогти вам відновити дані, тому що ми їх не маємо. Ми рекомендуємо регулярне резервне копіювання на ваше власне сховище."
+msgid "Your data exists only on your device. If you lose your phone without having synced to another device or created a backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
+msgstr "Ваші дані існують лише на вашому пристрої. Якщо ви втратите телефон, не синхронізувавши його з іншим пристроєм і не створивши резервну копію, ваші дані буде втрачено. Це і є компроміс приватності: ми не можемо допомогти вам відновити дані, яких у нас немає. Радимо регулярно створювати резервні копії у власному сховищі."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Your data is yours. Budgie supports exporting your financial data in standard formats. If you ever want to switch to a different application or analyze your data in a spreadsheet, you have full access."
@@ -18773,6 +18765,10 @@ msgstr "Ваші гроші. Ваш телефон. Жодного чужого 
 #: src/app/[lang]/page.tsx
 msgid "Your own token calls the bank API directly. No Plaid, no data broker."
 msgstr "Ваш власний токен звертається до API банку напряму. Без Plaid і без брокерів даних."
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Your PIN is the encryption key itself — no separate key is derived, generated, or stored on your behalf. Here is what that means in practice:"
+msgstr "Ваш PIN-код і є ключем шифрування — жоден окремий ключ не виводиться, не генерується і не зберігається від вашого імені. Ось що це означає на практиці:"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your political and religious affiliations"

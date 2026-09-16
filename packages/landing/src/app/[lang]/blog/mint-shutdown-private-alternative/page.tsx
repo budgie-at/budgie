@@ -239,8 +239,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Your-cloud backup</strong> — Backups, encrypted if you set a PIN, that you store in your own cloud
-                                storage (iCloud, Google Drive, Dropbox) or locally, not on the developer&apos;s servers.
+                                <strong>Your-cloud backup</strong> — Backups, encrypted if you set a PIN when you made them, stored in your
+                                own cloud storage (iCloud, Google Drive, Dropbox) or locally, not on the developer&apos;s servers.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
