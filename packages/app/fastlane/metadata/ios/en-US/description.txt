@@ -4,7 +4,7 @@ WORKS WITHOUT A CONNECTION
 Every transaction lives on your phone. Add expenses, browse your history, and review your analytics with no internet connection at all — nothing has to reach a server first.
 
 EVERY EXPENSE IN SECONDS
-Say an expense out loud or type it, and Budgie fills in the category on its own, right there on your device. Split a purchase across categories or people in the same flow.
+Say an expense out loud or type it, and Budgie fills in the category on its own, right there on your device. Split a purchase across categories in the same flow.
 
 SEE WHERE THE MONEY GOES
 Spending analytics break down every category and tag, so a pattern shows up before it becomes a problem. Track your net worth across every account, card, and currency in one place.
@@ -29,7 +29,5 @@ EVERYTHING ELSE YOU'D WANT
 • Voice entry when typing isn't convenient
 • PIN, biometric lock, and screenshot protection
 • No account, no bank login, no subscription
-
-Budgie is currently in private beta. Join the waitlist and see for yourself why your money doesn't need to leave your phone to be understood.
 
 Learn more at budgie.at.
