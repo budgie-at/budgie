@@ -239,8 +239,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Your-cloud backup</strong> — Encrypted backups that you store in your own cloud storage (iCloud,
-                                Google Drive, Dropbox) or locally, not on the developer&apos;s servers.
+                                <strong>Your-cloud backup</strong> — Backups, encrypted if you set a PIN, that you store in your own cloud
+                                storage (iCloud, Google Drive, Dropbox) or locally, not on the developer&apos;s servers.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -259,9 +259,9 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in an encrypted SQLite
-                            database on your device. There are no Budgie servers that receive your transactions, no aggregator that holds
-                            your bank credentials, and no subscription required to use the core features.
+                            Budgie is an offline-first expense tracker built for iOS and Android. All data is stored in a database on your
+                            device, encrypted the moment you set a PIN. There are no Budgie servers that receive your transactions, no
+                            aggregator that holds your bank credentials, and no subscription required to use the core features.
                         </Trans>
                     </BlogArticleProse>
 
@@ -272,8 +272,9 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>On-device SQLite storage</strong> — Every transaction, account, and category is stored locally in an
-                                encrypted database. Budgie works fully offline; connectivity is optional, never required.
+                                <strong>On-device SQLite storage</strong> — Every transaction, account, and category is stored locally in a
+                                database, encrypted the moment you set a PIN. Budgie works fully offline; connectivity is optional, never
+                                required.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -441,9 +442,9 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         <BlogFaqItem question={<Trans>How is Budgie different from a cloud budgeting app?</Trans>}>
                             <Trans>
                                 The fundamental difference is where your data lives. Cloud apps store your transaction history on company
-                                servers. Budgie stores it in an encrypted database on your device. That difference determines who controls
-                                your financial data, who can access it, and what happens when the company changes its mind about the
-                                product.
+                                servers. Budgie stores it on your device, encrypted the moment you set a PIN. That difference determines who
+                                controls your financial data, who can access it, and what happens when the company changes its mind about
+                                the product.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>
