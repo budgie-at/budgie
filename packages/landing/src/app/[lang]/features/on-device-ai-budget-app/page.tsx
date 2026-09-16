@@ -89,7 +89,10 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                 </FeatureStory.Intro>
 
                 <FeatureStory.Step index={0} title={<Trans>One switch, one download</Trans>}>
-                    <Trans>The On-device AI card is off until you turn it on. It then downloads about 2.5 GB of models, once.</Trans>
+                    <Trans>
+                        New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch
+                        controls it, and about 2.5 GB of models download once.
+                    </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
@@ -186,8 +189,9 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>
-                            Inference runs in milliseconds for embeddings and a few seconds for the LLM, only when you trigger it.
-                            Background impact is negligible.
+                            Nothing runs until you trigger it. A model is loaded when the feature that needs it starts, stays in memory for
+                            about half a minute after you finish, and is dropped when the app goes to the background — so the first request
+                            after a pause waits for a load and the ones after it do not.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -263,8 +267,9 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     question={<Trans>Does on-device AI drain battery?</Trans>}
                     answer={
                         <Trans>
-                            Inference runs in milliseconds for embeddings and a few seconds for the LLM, only when you trigger it.
-                            Background impact is negligible.
+                            Nothing runs until you trigger it. A model is loaded when the feature that needs it starts, stays in memory for
+                            about half a minute after you finish, and is dropped when the app goes to the background — so the first request
+                            after a pause waits for a load and the ones after it do not.
                         </Trans>
                     }
                 />
