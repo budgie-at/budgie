@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'ai-transaction-suggestions',
     tier: FeatureTierEnum.CORE,
     title: msg`Smart Transaction Suggestions — Tap and Done`,
-    tagline: msg`Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, amount, account, all pre-filled.`,
+    tagline: msg`Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, and amount, all filled in.`,
     metaTitle: msg`Smart Expense Suggestions for Mobile — Budgie`,
-    metaDescription: msg`Budgie suggests category, tags, comment, and amount from your own SQL patterns and three separate on-device embedding indexes. Faster manual entry than any AI cloud assistant.`,
+    metaDescription: msg`Budgie fills in category, tags, comment, and amount from your own spending history — faster than typing, fully offline.`,
     primaryKeyword: 'smart expense suggestions',
     seoKeywords: [
         'smart expense suggestions',

@@ -18,7 +18,7 @@ export const FEATURE_METADATA = {
         'AI tag suggestions',
         'on-device tag prediction',
         'expense tag autocomplete',
-        'LLM transaction tags'
+        'offline tag suggestions'
     ],
     relatedFeatureSlugs: ['transaction-tags', 'tag-analytics', 'ai-auto-categorization', 'ai-transaction-suggestions', 'primary-tag'],
     relatedArticleSlugs: ['budgie-offline-financial-data'],

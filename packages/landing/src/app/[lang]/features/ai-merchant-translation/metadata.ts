@@ -9,7 +9,7 @@ export const FEATURE_METADATA = {
     slug: 'ai-merchant-translation',
     tier: FeatureTierEnum.POWER,
     title: msg`AI Merchant Name Translation`,
-    tagline: msg`Cyrillic, Greek, Arabic merchant strings — the on-device LLM transliterates and adds search keywords.`,
+    tagline: msg`Cyrillic, Greek, and Arabic merchant names become readable and searchable — on your phone.`,
     metaTitle: msg`Foreign Merchant Name Normalizer — Budgie`,
     metaDescription: msg`Cyrillic, Greek, or Cyrillic-script merchant names get normalized to Latin so your transaction list reads cleanly. Runs on-device.`,
     primaryKeyword: 'foreign merchant name normalizer',

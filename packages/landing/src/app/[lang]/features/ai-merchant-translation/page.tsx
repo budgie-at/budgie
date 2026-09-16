@@ -86,8 +86,8 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                 <FeaturePageProse>
                     <Trans>
                         Bank statements from Ukrainian, Greek, or Arabic-script banks come back full of unreadable merchant names — useless
-                        for search or analytics. Budgie&apos;s on-device normalizer runs each merchant string through the LLM, gets a clean
-                        Latin name plus search keywords, and stores both.
+                        for search or analytics. Budgie rewrites each one into readable Latin text, adds search keywords, and keeps both
+                        forms. All of it happens on your phone.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -104,19 +104,19 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Cyrillic, Greek, Arabic, CJK, and more — any non-Latin script the on-device LLM understands</Trans>
+                        <Trans>Cyrillic, Greek, Arabic, Chinese, Japanese, Korean, and more</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Original merchant string preserved for receipt-matching and audit</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Translated form indexed by embeddings — semantic search hits whatever you remember</Trans>
+                        <Trans>Both forms are searchable — search finds the merchant whichever one you remember</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>On-device — no merchant string ever leaves your phone</Trans>
+                        <Trans>On your phone — no merchant name ever leaves it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Manual override per merchant if the LLM gets it wrong</Trans>
+                        <Trans>Manual override per merchant if a name comes back wrong</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -127,8 +127,8 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Each new transaction&apos;s title flows through a translation queue. The LLM proposes (translatedName, keywords);
-                        both are saved alongside the original. Embeddings then index the translated form for semantic search.
+                        Each new transaction&apos;s title joins a translation queue. Budgie proposes a readable name plus search keywords,
+                        and saves both alongside the original — so search finds the merchant either way.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -138,8 +138,8 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                     question={<Trans>Which scripts are supported?</Trans>}
                     answer={
                         <Trans>
-                            Cyrillic (Ukrainian, Russian, Bulgarian, Serbian), Greek, Arabic, Hebrew, CJK (Chinese / Japanese / Korean),
-                            Thai, and more — any script the on-device LLM understands.
+                            Cyrillic (Ukrainian, Russian, Bulgarian, Serbian), Greek, Arabic, Hebrew, Chinese, Japanese, Korean, Thai, and
+                            more.
                         </Trans>
                     }
                 />
@@ -153,7 +153,7 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What if the LLM mistranslates?</Trans>}
+                    question={<Trans>What if a merchant name is translated wrongly?</Trans>}
                     answer={
                         <Trans>
                             Tap edit on any transaction and override the translated name manually. Your override is permanent for that
