@@ -80,7 +80,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
             />
 
             <FeatureStory>
-                <FeatureStory.Intro heading={<Trans>Face ID opens the lock, the PIN owns the key</Trans>}>
+                <FeatureStory.Intro heading={<Trans>Face ID or Touch ID opens the lock, the PIN owns the key</Trans>}>
                     <Trans>
                         Biometric unlock is a shortcut past Budgie&apos;s lock screen. What encrypts the database underneath is still the
                         four-digit PIN.
@@ -97,7 +97,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 <FeatureStory.Shot
                     alt={t(
                         i18n
-                    )`Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID`}
+                    )`Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID or Touch ID`}
                     index={0}
                     locale={lang}
                     priority
@@ -105,7 +105,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                     slug="screenshot-protection"
                 >
                     <FeatureStory.Callout y={0.42}>
-                        <Trans>App Lock: PIN and Face ID</Trans>
+                        <Trans>App Lock: PIN and Face ID or Touch ID</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
@@ -148,7 +148,7 @@ export default async function BiometricAuthenticationFeaturePage(props: PageLang
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Face ID unlock on the lock screen, offered when the device has it enrolled</Trans>
+                        <Trans>Face ID or Touch ID unlock on the lock screen, offered when the device has one enrolled</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>The operating system does the matching — Budgie never sees biometric data, only the result</Trans>
