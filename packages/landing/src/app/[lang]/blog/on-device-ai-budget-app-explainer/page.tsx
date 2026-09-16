@@ -275,8 +275,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            The result is that Budgie can run a capable language model in the background, suggest a category within a
-                            fraction of a second, and do so entirely offline — with no network latency and no server costs.
+                            The result is that Budgie can run a capable language model on the phone itself, load it only when a suggestion
+                            is actually needed, and do the whole thing offline — with no network latency and no server costs.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -308,8 +308,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                     <BlogArticleProse>
                         <Trans>
                             If you have previously categorized transactions from the same merchant, the embedding match returns those
-                            categories with high confidence. The embedding model is small and fast — it produces suggestions in milliseconds
-                            and is particularly good at recognizing merchants you have encountered before.
+                            categories with high confidence. The embedding model is small, so it loads quickly and answers quickly once
+                            resident — and it is particularly good at recognizing merchants you have encountered before.
                         </Trans>
                     </BlogArticleProse>
 
@@ -470,16 +470,18 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                         <BlogFaqItem question={<Trans>How much storage do the AI models use?</Trans>}>
                             <Trans>
                                 The language model and the embedding model together require approximately 1.6 GB of storage. Adding voice
-                                entry brings the total to about 2.5 GB. This is a one-time download. Once installed, no additional model
-                                downloads are required for normal use.
+                                entry brings the total to about 2.5 GB. All of it is optional: nothing downloads until you switch On-device
+                                AI on in Settings, and then each file arrives the first time you use the feature that needs it. The download
+                                happens once — after that no further model downloads are required for normal use.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>Does the AI drain my battery?</Trans>}>
                             <Trans>
-                                Budgie runs AI inference only when you add or edit a transaction — not continuously in the background. Each
-                                categorization inference completes in under a second on modern hardware. The cumulative battery impact of
-                                normal daily use is negligible.
+                                Budgie runs AI inference only when you add or edit a transaction — not continuously in the background. A
+                                model is loaded when the feature that needs it starts and dropped about half a minute after you finish, so
+                                the first request after a pause pays for the load and the ones after it are quick. The cumulative battery
+                                impact of normal daily use is negligible.
                             </Trans>
                         </BlogFaqItem>
 

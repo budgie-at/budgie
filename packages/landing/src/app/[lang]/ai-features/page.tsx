@@ -57,7 +57,7 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         <Trans>Qwen3 1.7B runs on your phone — no API key, no subscription</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
-                        <Trans>768-dimensional embedding model for instant category suggestions</Trans>
+                        <Trans>Category suggestions drawn from your own history — never from a cloud service</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
                         <Trans>Voice transaction entry via whisper.rn — audio never leaves the device</Trans>
@@ -152,8 +152,9 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            The embedding model is approximately 0.5 GB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are
-                            downloaded once on first use of AI features and cached on-device.
+                            About 1.6 GB for the two models behind categorization and suggestions, plus a further 0.9 GB if you use voice
+                            entry. Nothing downloads until you switch On-device AI on in Settings, and then only when you first use the
+                            feature that needs it. Each file is cached on the device afterwards.
                         </Trans>
                     }
                     question={<Trans>How large are the model downloads?</Trans>}
@@ -185,6 +186,16 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         </Trans>
                     }
                     question={<Trans>How does AI improve over time?</Trans>}
+                />
+                <FeaturePageFaqItem
+                    answer={
+                        <Trans>
+                            Yes. Settings has an AI section with a single On-device AI switch that turns the whole subsystem on or off.
+                            Switch it off and nothing downloads, nothing loads, and no suggestion runs — the rest of Budgie is unaffected.
+                            New installs start with it off; if you were already using AI before the switch existed, it stays on.
+                        </Trans>
+                    }
+                    question={<Trans>Can I turn AI off?</Trans>}
                 />
             </FeaturePageFaqSection>
         </PillarHubPageShell>

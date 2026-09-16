@@ -73,8 +73,8 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 locale={lang}
                 tagline={
                     <Trans>
-                        After selecting a category, the on-device LLM proposes up to three tags as tappable pill chips — with an embedding
-                        fallback that stays instant even when the model is still warming up.
+                        After selecting a category, the on-device model proposes up to three tags as tappable pill chips — with a lighter
+                        fallback that answers while that model is still loading.
                     </Trans>
                 }
             />
@@ -103,15 +103,14 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>LLM primary, embedding fallback — always fast</Trans>
+                    <Trans>Two paths to a suggestion, so you rarely wait</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        The primary engine is the on-device Qwen3 1.7B language model. It ranks tag candidates from your existing tag
-                        vocabulary by semantic similarity to the transaction context — matching phrasing variations that a simple text
-                        lookup would miss. When the LLM is still loading or busy with another inference, the embedding fallback takes over:
-                        a nearest-neighbor lookup over 768-dimensional embeddings of your past tagged transactions, running in milliseconds
-                        without waiting for the LLM.
+                        The primary engine is the on-device language model. It ranks tag candidates from your existing tag vocabulary by
+                        semantic similarity to the transaction context — matching phrasing variations that a simple text lookup would miss.
+                        That model is loaded on demand, so the very first suggestion after a pause waits for it. When it is still loading or
+                        busy with another request, a lookup over your past tagged transactions takes over and answers without waiting.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -132,7 +131,7 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                         <Trans>Up to three tag suggestions as tappable pills after category selection — zero typing required</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>LLM-powered ranking with embedding fallback keeps suggestions instant on any device</Trans>
+                        <Trans>A second, lighter path answers whenever the main model is still loading or busy</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Additive interface — suggestions sit alongside the text field, never replacing it</Trans>
@@ -157,8 +156,8 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     question={<Trans>What if the LLM is slow on my phone?</Trans>}
                     answer={
                         <Trans>
-                            The embedding fallback runs in milliseconds and proposes the same tags from a 768-dim nearest-neighbor lookup
-                            over your history.
+                            A lighter fallback proposes the same tags from a lookup over your own tagged history, so you get suggestions
+                            while the larger model is still loading or busy.
                         </Trans>
                     }
                 />
