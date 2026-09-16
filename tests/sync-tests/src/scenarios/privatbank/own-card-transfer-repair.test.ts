@@ -76,6 +76,26 @@ const seedArchivedOwnCardScenario = (): {
     return { archivedCard, income, liveCard };
 };
 
+const seedArchivedCardWithMask = (externalId: string | null, iban: string): AccountEntityInterface => {
+    const archivedCard = seed.account({
+        title: 'Privatbank •4321',
+        type: AccountTypeEnum.BANK_SYNC,
+        externalSource: ExternalSourceEnum.PRIVATBANK,
+        externalId,
+        iban
+    });
+
+    archiveAccount(archivedCard.id);
+
+    return archivedCard;
+};
+
+const expectRepairedFromCounterpart = async (archivedCard: AccountEntityInterface, income: TransactionEntityInterface): Promise<void> => {
+    expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
+    expect(await unpairedOwnCardTransferRepairService.repair()).toBe(1);
+    expect(fetchTransactionById(income.id).fromAccountId).toBe(archivedCard.id);
+};
+
 describe('privatbank/own-card-transfer-repair', () => {
     it('repairs an own-card income whose counterpart card account was archived', async () => {
         const { archivedCard, income, liveCard } = seedArchivedOwnCardScenario();
@@ -173,5 +193,21 @@ describe('privatbank/own-card-transfer-repair', () => {
         archiveAccount(archivedCard.id);
 
         expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+    });
+
+    it('matches the counterpart card by external_id when its IBAN suffix differs', async () => {
+        const liveCard = seedPrivatbankCard('1234');
+        const archivedCard = seedArchivedCardWithMask('4000 **** **** 4321', 'UA00PRIVATBANK9999');
+        const income = seedOwnCardIncome(liveCard.id);
+
+        await expectRepairedFromCounterpart(archivedCard, income);
+    });
+
+    it('falls back to the IBAN suffix when the counterpart card has no external_id', async () => {
+        const liveCard = seedPrivatbankCard('1234');
+        const archivedCard = seedArchivedCardWithMask(null, 'UA00PRIVATBANK4321');
+        const income = seedOwnCardIncome(liveCard.id);
+
+        await expectRepairedFromCounterpart(archivedCard, income);
     });
 });
