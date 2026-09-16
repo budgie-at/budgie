@@ -168,8 +168,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
-                            Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run via
-                            ONNX Runtime on iOS and Android.
+                            Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run
+                            entirely on your phone on iOS and Android, and voice entry adds a third model — nothing leaves the device.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
@@ -236,8 +236,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     question={<Trans>Which models does Budgie run on-device?</Trans>}
                     answer={
                         <Trans>
-                            Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run via
-                            ONNX Runtime on iOS and Android.
+                            Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run
+                            entirely on your phone on iOS and Android, and voice entry adds a third model — nothing leaves the device.
                         </Trans>
                     }
                 />

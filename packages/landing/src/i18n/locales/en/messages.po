@@ -4728,10 +4728,6 @@ msgstr "Budgie uses the O'SAASY License, a source-available license that lets yo
 msgid "Budgie uses two complementary AI techniques for transaction categorization. They address different parts of the problem and together produce more accurate suggestions than either approach alone."
 msgstr "Budgie uses two complementary AI techniques for transaction categorization. They address different parts of the problem and together produce more accurate suggestions than either approach alone."
 
-#: src/app/[lang]/ai-features/page.tsx
-msgid "Budgie uses two on-device models: Qwen3 1.7B for natural-language understanding and chat, and a 768-dimensional embedding model for nearest-neighbor categorization from your own transaction history. Both run locally with no external API call."
-msgstr "Budgie uses two on-device models: Qwen3 1.7B for natural-language understanding and chat, and a 768-dimensional embedding model for nearest-neighbor categorization from your own transaction history. Both run locally with no external API call."
-
 #: src/generic/component/comparison-section/comparison-section-header.tsx
 msgid "Budgie vs cloud budgeting apps"
 msgstr "Budgie vs cloud budgeting apps"
@@ -10848,6 +10844,10 @@ msgstr "No. CSV import rebuilds the ledger from the file: existing accounts, cat
 msgid "No. Deposit accounts are excluded from normal expense source selection, and Budgie prevents deposit balances from becoming negative."
 msgstr "No. Deposit accounts are excluded from normal expense source selection, and Budgie prevents deposit balances from becoming negative."
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "No. Every inference runs on your own device. There is no fallback to a cloud model and no telemetry about your transactions."
+msgstr "No. Every inference runs on your own device. There is no fallback to a cloud model and no telemetry about your transactions."
+
 #: src/app/[lang]/privacy/page.tsx
 msgid "No. Every transaction, category, and balance lives in an encrypted SQLite database on your device. Budgie has no backend that receives financial data."
 msgstr "No. Every transaction, category, and balance lives in an encrypted SQLite database on your device. Budgie has no backend that receives financial data."
@@ -10855,10 +10855,6 @@ msgstr "No. Every transaction, category, and balance lives in an encrypted SQLit
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "No. Exports are manual only — Budgie never writes a backup file on its own, and there is no scheduler and no reminder to turn on. Nothing is written until you tap Export Database."
 msgstr "No. Exports are manual only — Budgie never writes a backup file on its own, and there is no scheduler and no reminder to turn on. Nothing is written until you tap Export Database."
-
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "No. Inference uses ONNX Runtime locally. There is no fallback to a cloud model and no telemetry about your transactions."
-msgstr "No. Inference uses ONNX Runtime locally. There is no fallback to a cloud model and no telemetry about your transactions."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "No. PDF parsing happens entirely on-device — your statement never leaves your phone."
@@ -12636,8 +12632,8 @@ msgid "Qwen3 1.7B and a 768-dim embedding model run entirely on your phone. Smar
 msgstr "Qwen3 1.7B and a 768-dim embedding model run entirely on your phone. Smart suggestions, voice entry, and auto-categorization — no data leaves your device."
 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
-msgid "Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run via ONNX Runtime on iOS and Android."
-msgstr "Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run via ONNX Runtime on iOS and Android."
+msgid "Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run entirely on your phone on iOS and Android, and voice entry adds a third model — nothing leaves the device."
+msgstr "Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run entirely on your phone on iOS and Android, and voice entry adds a third model — nothing leaves the device."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Qwen3 1.7B Q4 model runs entirely on your phone after a one-time download"
@@ -15647,6 +15643,10 @@ msgstr "Three separate embedding indexes — transaction, merchant, and comment 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
 msgstr "Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI."
+
+#: src/app/[lang]/ai-features/page.tsx
+msgid "Three, all on your device: a language model for natural-language understanding and chat, a 768-dimensional embedding model for nearest-neighbor categorization from your own transaction history, and a speech model for voice entry. Every one of them runs locally with no external API call."
+msgstr "Three, all on your device: a language model for natural-language understanding and chat, a 768-dimensional embedding model for nearest-neighbor categorization from your own transaction history, and a speech model for voice entry. Every one of them runs locally with no external API call."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Time series"
