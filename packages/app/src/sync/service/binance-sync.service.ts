@@ -443,15 +443,15 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private async anchorAllBalances(token: string): Promise<number> {
-        const exchangeAccounts = await this.fetchExchangeAccounts(token);
-        const exchangeAccountByExternalId = new Map(exchangeAccounts.map(exchangeAccount => [exchangeAccount.id, exchangeAccount]));
-        const accounts = await accountRepository.findByExternalSource(this.provider);
         const integrationId = (await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token)).id;
+        const accounts = await accountRepository.findByExternalSource(this.provider);
         await Promise.all(
             accounts
                 .filter(account => account.type === AccountTypeEnum.CRYPTO_SYNC && !isDefined(account.integrationId))
                 .map(async account => accountRepository.updateById(account.id, { integrationId }))
         );
+        const exchangeAccounts = await this.fetchExchangeAccounts(token);
+        const exchangeAccountByExternalId = new Map(exchangeAccounts.map(exchangeAccount => [exchangeAccount.id, exchangeAccount]));
         let anchoredCount = 0;
         for (const account of accounts) {
             const exchangeAccount = isNotEmptyString(account.externalId) ? exchangeAccountByExternalId.get(account.externalId) : null;
