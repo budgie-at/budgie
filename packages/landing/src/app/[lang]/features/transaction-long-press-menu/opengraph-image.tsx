@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Quick Edit Transaction App — Long-Press Menu — Budgie';
@@ -17,7 +18,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         t(
             i18n
         )`Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required.`,
-        [t(i18n)`ux`, t(i18n)`gestures`, t(i18n)`productivity`]
+        [t(i18n)`ux`, t(i18n)`gestures`, t(i18n)`productivity`],
+        resolveOgPlate('transaction-long-press-menu', lang)
     );
 };
 

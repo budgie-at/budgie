@@ -9,7 +9,8 @@ pnpm start                    # Development server (next dev)
 pnpm build                    # Production build
 pnpm i18n:sync                # Extract & compile i18n translations
 pnpm media:manifest           # Rescan public/media and regenerate the committed media manifest
-pnpm media:check              # Verify manifest freshness, asset budgets and <AppShot>/<AppClip> usages
+pnpm media:og                 # Regenerate the dark OG device plates in public/og-plate from public/media
+pnpm media:check              # Verify manifest freshness, OG plate coverage, asset budgets and <AppShot>/<AppClip> usages
 pnpm ts                       # Native TypeScript 7 check
 pnpm lint                     # Oxlint + 13-rule ESLint fallback
 ```
@@ -369,7 +370,9 @@ Add JSON-LD for rich snippets where appropriate.
 
 **Security header baseline.** Set in `next.config.ts`: `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, HSTS `max-age=63072000; includeSubDomains` (no preload), `Permissions-Policy` denying camera/microphone/geolocation/payment, and `X-Permitted-Cross-Domain-Policies: none`. Preserve all of it when editing config.
 
-**OG image coverage.** Every `page.tsx` SEO route (feature page, blog article, hub) must have a sibling `opengraph-image.tsx` using the shared builders (`createFeatureOgImage` / `createBlogOgImage`). App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`; never commit binary icon variants next to them.
+**OG image coverage.** Every `page.tsx` SEO route (feature page, blog article, hub) must have a sibling `opengraph-image.tsx` using the shared builders (`createFeatureOgImage` / `createBlogOgImage`), which both render the one shared `OgCard` composition. App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`; never commit binary icon variants next to them.
+
+**OG product imagery.** `OgCard` composites a locale-matched dark device plate resolved by `resolveOgPlate(mediaSlug, lang)` and degrades to the text-only card when the slug has no capture. The media slug is a page-local literal in the `opengraph-image.tsx`, never a registry field. Plates live in `public/og-plate/<media-slug>/<locale>.jpg` and are generated from `public/media` by `pnpm media:og`, because satori decodes only PNG/JPEG/GIF/SVG and rejects the WebP and AVIF stills. Re-run `pnpm media:og` after any capture change; `pnpm media:check` fails on drift.
 
 **Metadata char budgets.** Titles fit 60 chars including the ` | Budgie` template suffix; descriptions fit 160 chars. The `fitText` util (`src/generic/util/fit-text.util.ts`) is applied inside the metadata builders, so page copy in sidecars may be longer — the builder clamps. Page-author details: `docs/seo-pages.md`.
 

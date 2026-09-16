@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Erste Bank PDF Import — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`Erste Bank PDF Import`, t(i18n)`Classic and modern PDF formats supported.`, [
-        t(i18n)`erste`,
-        t(i18n)`pdf`,
-        t(i18n)`import`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`Erste Bank PDF Import`,
+        t(i18n)`Classic and modern PDF formats supported.`,
+        [t(i18n)`erste`, t(i18n)`pdf`, t(i18n)`import`],
+        resolveOgPlate('erste-bank-pdf-import', lang)
+    );
 };
 
 export default OgImage;

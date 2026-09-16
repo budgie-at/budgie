@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createBlogOgImage } from '../../../../blog/component/blog-og-image/blog-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'After Mint: A Private, Offline Alternative That Actually Sticks Around';
@@ -12,11 +13,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createBlogOgImage(t(i18n)`After Mint: A Private, Offline Alternative That Actually Sticks Around`, [
-        t(i18n)`mint-alternatives`,
-        t(i18n)`offline-first`,
-        t(i18n)`privacy`
-    ]);
+    return createBlogOgImage(
+        t(i18n)`After Mint: A Private, Offline Alternative That Actually Sticks Around`,
+        [t(i18n)`mint-alternatives`, t(i18n)`offline-first`, t(i18n)`privacy`],
+        resolveOgPlate('net-worth-tracker', lang)
+    );
 };
 
 export default OgImage;

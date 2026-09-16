@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Voice Transaction Entry — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`Voice Transaction Entry`, t(i18n)`Speak it. Budgie logs it. Audio never leaves your phone.`, [
-        t(i18n)`voice`,
-        t(i18n)`on-device`,
-        t(i18n)`ai`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`Voice Transaction Entry`,
+        t(i18n)`Speak it. Budgie logs it. Audio never leaves your phone.`,
+        [t(i18n)`voice`, t(i18n)`on-device`, t(i18n)`ai`],
+        resolveOgPlate('voice-transaction-entry', lang)
+    );
 };
 
 export default OgImage;

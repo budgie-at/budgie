@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Binance Account Sync — Budgie';
@@ -15,7 +16,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     return createFeatureOgImage(
         t(i18n)`Binance Sync — Read-Only Keys, Real Balances`,
         t(i18n)`Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — signed with a read-only API key.`,
-        [t(i18n)`binance`, t(i18n)`crypto`, t(i18n)`sync`]
+        [t(i18n)`binance`, t(i18n)`crypto`, t(i18n)`sync`],
+        resolveOgPlate('binance-sync', lang)
     );
 };
 

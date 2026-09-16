@@ -1,6 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
 import { createFeatureOgImage } from '../../../feature/component/feature-og-image/feature-og-image';
 import { fitText } from '../../../generic/util/fit-text.util';
+import { resolveOgPlate } from '../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
 
 import { PRIVACY_PILLAR_HUB_METADATA } from './metadata';
@@ -18,7 +19,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     return createFeatureOgImage(
         i18n._(PRIVACY_PILLAR_HUB_METADATA.metaTitle),
         fitText(i18n._(PRIVACY_PILLAR_HUB_METADATA.metaDescription), MAX_OG_TAGLINE_CHARS),
-        PRIVACY_PILLAR_HUB_METADATA.seoKeywords.slice(0, 3).map(keyword => i18n._(keyword))
+        PRIVACY_PILLAR_HUB_METADATA.seoKeywords.slice(0, 3).map(keyword => i18n._(keyword)),
+        resolveOgPlate('private-budget-app-alternative', lang)
     );
 };
 

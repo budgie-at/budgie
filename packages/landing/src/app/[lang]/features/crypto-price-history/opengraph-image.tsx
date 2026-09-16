@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Crypto Price History — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`Crypto Price History`, t(i18n)`Charts read from your database.`, [
-        t(i18n)`crypto`,
-        t(i18n)`prices`,
-        t(i18n)`offline`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`Crypto Price History`,
+        t(i18n)`Charts read from your database.`,
+        [t(i18n)`crypto`, t(i18n)`prices`, t(i18n)`offline`],
+        resolveOgPlate('crypto-price-history', lang)
+    );
 };
 
 export default OgImage;
