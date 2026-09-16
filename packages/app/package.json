@@ -22,10 +22,12 @@
         "prebuild": "expo prebuild --clean",
         "prebuild:dev": "EXPO_PUBLIC_AI_DISABLE=true APP_VARIANT=development expo prebuild --clean",
         "start": "expo start --dev-client -c",
+        "store:notes": "node --experimental-strip-types scripts/generate-store-release-notes.ts",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p .",
         "web": "expo start --web"
     },
     "dependencies": {
+        "@anthropic-ai/sdk": "^0.115.0",
         "@budgie/ai": "workspace:^",
         "@budgie/budget": "workspace:*",
         "@budgie/consolidation": "workspace:*",
