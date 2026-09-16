@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.8](https://github.com/budgie-at/budgie/compare/v6.67.7...v6.67.8) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** describe biometrics for face id and fingerprint ([abdfe18](https://github.com/budgie-at/budgie/commit/abdfe18f60a2466c5c773728510bfa90a62ce716)), closes [#1059](https://github.com/budgie-at/budgie/issues/1059)
+* **landing:** remove runtime names from the ai pages ([95fa358](https://github.com/budgie-at/budgie/commit/95fa3580c86eebc8a760c432a9025a8cd8f9b350)), closes [#1105](https://github.com/budgie-at/budgie/issues/1105)
+
+
+
+
+
 ## [6.67.7](https://github.com/budgie-at/budgie/compare/v6.67.6...v6.67.7) (2026-09-16)
 
 
