@@ -128,6 +128,9 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         translationDrainerService.stop();
         embeddingDrainerService.stop();
         await this.settleInFlightBatches();
+        if (this.started && !this.snapshot.isSuspended) {
+            return;
+        }
         await aiModelResidencyService.suspend();
     }
 
