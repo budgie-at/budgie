@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.7](https://github.com/budgie-at/budgie/compare/v6.67.6...v6.67.7) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** correct iban, split and action-menu copy ([6f5ed84](https://github.com/budgie-at/budgie/commit/6f5ed8402eeb69ef3a4c47c5c6eeeea8acb9c0a4))
+
+
+
+
+
 ## [6.67.6](https://github.com/budgie-at/budgie/compare/v6.67.5...v6.67.6) (2026-09-16)
 
 
