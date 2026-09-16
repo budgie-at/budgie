@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'offline voice entry',
         'multi-transaction voice entry'
     ],
-    relatedFeatureSlugs: ['ai-auto-categorization', 'expense-tracking', 'ai-merchant-translation'],
+    relatedFeatureSlugs: ['ai-auto-categorization', 'expense-tracking', 'ai-category-translation'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
     publishedAt: '2026-01-22',
     updatedAt: '2026-09-16',

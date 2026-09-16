@@ -5,7 +5,7 @@ import { createFeatureOgImage } from '../../../../feature/component/feature-og-i
 import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
-export const alt = 'AI Merchant Translation — Budgie';
+export const alt = 'AI Category & Tag Translation — Budgie';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -14,10 +14,10 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const i18n = getI18nInstance(lang);
 
     return createFeatureOgImage(
-        t(i18n)`Merchant Translation`,
+        t(i18n)`Category & Tag Translation`,
         t(i18n)`Cyrillic to English. On-device.`,
         [t(i18n)`translation`, t(i18n)`ai`, t(i18n)`multilingual`],
-        resolveOgPlate('ai-merchant-translation', lang)
+        resolveOgPlate('ai-category-translation', lang)
     );
 };
 

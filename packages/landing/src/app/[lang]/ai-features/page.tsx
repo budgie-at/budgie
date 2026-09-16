@@ -63,7 +63,7 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         <Trans>Voice transaction entry — the audio never leaves the device</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
-                        <Trans>Merchant name normalization for Cyrillic and foreign bank statements</Trans>
+                        <Trans>Category and tag translation for Cyrillic, Greek, and Arabic names</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
                         <Trans>Every AI correction improves future suggestions via on-device learning</Trans>
@@ -90,10 +90,14 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         title={<Trans>Voice Transaction Entry</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
-                        href={`/${lang}/features/ai-merchant-translation`}
+                        href={`/${lang}/features/ai-category-translation`}
                         index={2}
-                        tagline={<Trans>Cyrillic, Greek, and Arabic merchant names become readable and searchable — on your phone.</Trans>}
-                        title={<Trans>AI Merchant Name Translation</Trans>}
+                        tagline={
+                            <Trans>
+                                Cyrillic, Greek, and Arabic category and tag names become readable and searchable — on your phone.
+                            </Trans>
+                        }
+                        title={<Trans>AI Category & Tag Translation</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/ai-transaction-suggestions`}
