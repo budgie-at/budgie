@@ -16,7 +16,7 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     return createBlogOgImage(
         t(i18n)`On-Device AI in Your Budget App: How It Works and Why It Matters`,
         [t(i18n)`on-device-ai`, t(i18n)`privacy`, t(i18n)`local-llm`],
-        resolveOgPlate('ai-merchant-translation', lang)
+        resolveOgPlate('ai-category-translation', lang)
     );
 };
 

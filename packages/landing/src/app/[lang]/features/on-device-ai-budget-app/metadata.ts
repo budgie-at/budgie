@@ -27,7 +27,7 @@ export const FEATURE_METADATA = {
         'voice-transaction-entry',
         'ai-transaction-suggestions',
         'ai-tag-suggestions',
-        'ai-merchant-translation'
+        'ai-category-translation'
     ],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app', 'on-device-ai-budget-app-explainer'],
     publishedAt: '2026-05-07',

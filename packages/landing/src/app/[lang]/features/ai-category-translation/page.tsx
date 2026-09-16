@@ -40,7 +40,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     });
 }
 
-export default async function AiMerchantTranslationFeaturePage(props: PageLangParam) {
+export default async function AiCategoryTranslationFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
@@ -73,27 +73,27 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                 locale={lang}
                 tagline={
                     <Trans>
-                        Foreign merchant names from Cyrillic, Greek, or Arabic bank statements get normalized to readable Latin — on your
-                        device, without sending anything to a server.
+                        Category and tag names in Cyrillic, Greek, or Arabic get an English form — on your device, without sending anything
+                        to a server.
                     </Trans>
                 }
             />
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why foreign merchant names break expense search</Trans>
+                    <Trans>Why foreign category and tag names break expense search</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Bank statements from Ukrainian, Greek, or Arabic-script banks come back full of unreadable merchant names — useless
-                        for search or analytics. Budgie rewrites each one into readable Latin text, adds search keywords, and keeps both
-                        forms. All of it happens on your phone.
+                        Categories and tags you create or import in Ukrainian, Greek, or Arabic script are unreadable to search and
+                        suggestions built around Latin text. Budgie writes an English form for each one, adds search keywords, and keeps
+                        both forms. All of it happens on your phone.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Original Cyrillic or Greek strings are preserved for receipt-matching and audit; the normalized form is what your
-                        search queries hit. No data ever leaves your device.
+                        The original Cyrillic, Greek, or Arabic name stays exactly as you wrote it; the English form is what your search
+                        queries also match against. No data ever leaves your device.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -107,16 +107,16 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                         <Trans>Cyrillic, Greek, Arabic, Chinese, Japanese, Korean, and more</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Original merchant string preserved for receipt-matching and audit</Trans>
+                        <Trans>Original category and tag names stay untouched alongside the English form</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Both forms are searchable — search finds the merchant whichever one you remember</Trans>
+                        <Trans>Both forms are searchable — search finds the category or tag whichever one you remember</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>On your phone — no merchant name ever leaves it</Trans>
+                        <Trans>On your phone — no category or tag name ever leaves it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Manual override per merchant if a name comes back wrong</Trans>
+                        <Trans>Edit any category or tag if its English form comes back wrong</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -127,8 +127,8 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Each new transaction&apos;s title joins a translation queue. Budgie proposes a readable name plus search keywords,
-                        and saves both alongside the original — so search finds the merchant either way.
+                        Each new category or tag joins a translation queue. Budgie proposes an English form plus search keywords, and saves
+                        both alongside the original — so search and suggestions find it either way.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -144,29 +144,29 @@ export default async function AiMerchantTranslationFeaturePage(props: PageLangPa
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Are the original merchant strings kept?</Trans>}
+                    question={<Trans>Are my original category and tag names kept?</Trans>}
                     answer={
                         <Trans>
-                            Yes. The original is preserved for receipt-matching and audit; the translated form is what your search queries
-                            hit.
+                            Yes. The original name stays exactly as you wrote it; the English form is what your search queries also match
+                            against.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What if a merchant name is translated wrongly?</Trans>}
+                    question={<Trans>What if a category or tag is translated wrongly?</Trans>}
                     answer={
                         <Trans>
-                            Tap edit on any transaction and override the translated name manually. Your override is permanent for that
-                            merchant.
+                            Open the category or tag and edit its English form or keywords directly. Your edit is permanent for that
+                            category or tag.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Does this run on every transaction?</Trans>}
+                    question={<Trans>Does this run on every category and tag?</Trans>}
                     answer={
                         <Trans>
-                            Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue
-                            automatically after sync or manual entry.
+                            Only when needed. Latin-script names skip translation. Non-Latin names flow through the queue automatically
+                            after you create or import them.
                         </Trans>
                     }
                 />

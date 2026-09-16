@@ -1,3 +1,5 @@
+import { SUPPORTED_LOCALES } from './src/i18n/supported-locales.constant.mjs';
+
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -13,6 +15,15 @@ const nextConfig: NextConfig = {
         inlineCss: true,
         swcPlugins: [['@lingui/swc-plugin', {}]],
         useTypeScriptCli: false
+    },
+    async redirects() {
+        return [
+            {
+                source: `/:lang(${SUPPORTED_LOCALES.join('|')})/features/ai-merchant-translation`,
+                destination: '/:lang/features/ai-category-translation',
+                permanent: true
+            }
+        ];
     },
     async headers() {
         return [
