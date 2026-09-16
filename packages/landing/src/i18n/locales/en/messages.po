@@ -2080,14 +2080,6 @@ msgstr "6.2 Data Backup"
 msgid "6.3 Prohibited Content"
 msgstr "6.3 Prohibited Content"
 
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "60 days into the future based on each pattern's cadence. Useful for spotting which week is going to be heavy."
-msgstr "60 days into the future based on each pattern's cadence. Useful for spotting which week is going to be heavy."
-
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "60-day forecast list of upcoming recurring payments"
-msgstr "60-day forecast list of upcoming recurring payments"
-
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "7. Children's Privacy"
 msgstr "7. Children's Privacy"
@@ -3164,6 +3156,10 @@ msgstr "As accurate as your most-recent balance + FX rate. Manual accounts hold 
 msgid "As awareness of digital privacy grows, more people are realizing that <0>convenience shouldn’t come at the cost of privacy</0>. The offline-first movement represents a return to user sovereignty over personal data."
 msgstr "As awareness of digital privacy grows, more people are realizing that <0>convenience shouldn’t come at the cost of privacy</0>. The offline-first movement represents a return to user sovereignty over personal data."
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "As far as the month you're viewing. Past months show what actually happened, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections — navigate month to month to look further ahead."
+msgstr "As far as the month you're viewing. Past months show what actually happened, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections — navigate month to month to look further ahead."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Asset coverage"
 msgstr "Asset coverage"
@@ -3682,6 +3678,10 @@ msgstr "Beyond the 2022 settlement, Plaid has faced ongoing scrutiny:"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Beyond the architecture itself, how we develop and maintain Budgie matters for your security."
 msgstr "Beyond the architecture itself, how we develop and maintain Budgie matters for your security."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Bi-monthly and quarterly too"
+msgstr "Bi-monthly and quarterly too"
 
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 msgid "binance"
@@ -4925,6 +4925,10 @@ msgstr "Can be entirely self-hosted"
 msgid "Can be overwhelming for casual users"
 msgstr "Can be overwhelming for casual users"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Can bi-monthly or quarterly bills show up correctly?"
+msgstr "Can bi-monthly or quarterly bills show up correctly?"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Can Budgie trade or withdraw with my key?"
 msgstr "Can Budgie trade or withdraw with my key?"
@@ -4988,10 +4992,6 @@ msgstr "Can I drill down from the breakdown to the transactions?"
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Can I drill into a tag's transactions?"
 msgstr "Can I drill into a tag's transactions?"
-
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Can I edit a detected pattern?"
-msgstr "Can I edit a detected pattern?"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Can I edit a transaction after saving?"
@@ -8149,6 +8149,10 @@ msgstr "Future Considerations"
 msgid "Future-Proof Your Finances"
 msgstr "Future-Proof Your Finances"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Fuzzy merchant matching keeps one series together even when a bank mangles the name"
+msgstr "Fuzzy merchant matching keeps one series together even when a bank mangles the name"
+
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx
 msgid "fx"
 msgstr "fx"
@@ -9050,6 +9054,10 @@ msgstr "Inference is a local call"
 msgid "Inference runs in milliseconds for embeddings and a few seconds for the LLM, only when you trigger it. Background impact is negligible."
 msgstr "Inference runs in milliseconds for embeddings and a few seconds for the LLM, only when you trigger it. Background impact is negligible."
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Inferred cadence — monthly, bi-monthly, or quarterly — instead of forcing every bill into a monthly slot"
+msgstr "Inferred cadence — monthly, bi-monthly, or quarterly — instead of forcing every bill into a monthly slot"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Infinitely customizable"
 msgstr "Infinitely customizable"
@@ -9747,10 +9755,6 @@ msgstr "Manual budgeting is simpler than it sounds. Check accounts daily—it ta
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Manual date pickers are slow. Budgie wraps them with the seven presets you actually use, plus a custom-range fallback. Every transaction list, every analytics tab, every recurring view shares the same picker."
 msgstr "Manual date pickers are slow. Budgie wraps them with the seven presets you actually use, plus a custom-range fallback. Every transaction list, every analytics tab, every recurring view shares the same picker."
-
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Manual edits to detected patterns are sticky — the next scan respects them"
-msgstr "Manual edits to detected patterns are sticky — the next scan respects them"
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Manual entries don't have MCC; some bank-sync flows drop it. AI category suggestions handle those — see On-Device AI Auto-Categorization."
@@ -13203,6 +13207,10 @@ msgstr "scanning"
 msgid "Scanning a long transaction list for one tag is hard. Budgie's primary-tag concept solves it visually — the most important tag for that row gets a corner-star badge."
 msgstr "Scanning a long transaction list for one tag is hard. Budgie's primary-tag concept solves it visually — the most important tag for that row gets a corner-star badge."
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Scans 24 months of history to detect a pattern, not just the current month"
+msgstr "Scans 24 months of history to detect a pattern, not just the current month"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Scheduled transactions"
 msgstr "Scheduled transactions"
@@ -13615,10 +13623,6 @@ msgstr "Single-device focus means no automatic sync between phone and tablet"
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Six monthly bars on that view show what you usually spend at the same place, in the same category"
 msgstr "Six monthly bars on that view show what you usually spend at the same place, in the same category"
-
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Sixty days ahead"
-msgstr "Sixty days ahead"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/metadata.ts
 msgid "Skip the aggregator. Budgie syncs Monobank via your personal API token and imports any bank's PDF or CSV statement directly. Your credentials never leave you."
@@ -14275,8 +14279,8 @@ msgid "Taking Control of Your Financial Privacy"
 msgstr "Taking Control of Your Financial Privacy"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Tap a calendar day to see the transactions due. The forecasted upcoming list extends out into the next 60 days. Cross-currency recurring shows in your home currency; original amount on tap."
-msgstr "Tap a calendar day to see the transactions due. The forecasted upcoming list extends out into the next 60 days. Cross-currency recurring shows in your home currency; original amount on tap."
+msgid "Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections you reach by navigating forward. Cross-currency recurring shows in your home currency; original amount on tap."
+msgstr "Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections you reach by navigating forward. Cross-currency recurring shows in your home currency; original amount on tap."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Tap a row to categorize it"
@@ -17974,6 +17978,10 @@ msgstr "Yes. Both models live on your device after the one-time download. Catego
 msgid "Yes. Budgie CSV importer handles large files and deduplicates on transaction date, description, and amount. If your Mint export was a single file covering multiple years, you can import it in one step."
 msgstr "Yes. Budgie CSV importer handles large files and deduplicates on transaction date, description, and amount. If your Mint export was a single file covering multiple years, you can import it in one step."
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Yes. Budgie infers each pattern's real interval from the gaps between charges instead of assuming everything is monthly, so a bi-monthly premium or a quarterly tax payment lands on the right day instead of being forced into a monthly slot."
+msgstr "Yes. Budgie infers each pattern's real interval from the gaps between charges instead of assuming everything is monthly, so a bi-monthly premium or a quarterly tax payment lands on the right day instead of being forced into a monthly slot."
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Yes. Budgie is open source. You can review the bank sync and import code to confirm that no outbound calls send transaction data to Budgie servers. The network requests during sync go directly from your device to your bank API endpoint."
 msgstr "Yes. Budgie is open source. You can review the bank sync and import code to confirm that no outbound calls send transaction data to Budgie servers. The network requests during sync go directly from your device to your bank API endpoint."
@@ -18073,10 +18081,6 @@ msgstr "Yes. Switch the date filter between presets like This Month, Last Month 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Yes. Switch to split inside the income form just like the expense form."
 msgstr "Yes. Switch to split inside the income form just like the expense form."
-
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Yes. Tap a pattern to adjust amount, cadence, or merchant. Manual edits are sticky — the next scan respects them."
-msgstr "Yes. Tap a pattern to adjust amount, cadence, or merchant. Manual edits are sticky — the next scan respects them."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Tap any category or tag row to see every transaction that contributed to it during the current period."

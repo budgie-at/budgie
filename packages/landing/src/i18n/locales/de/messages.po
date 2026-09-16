@@ -2081,14 +2081,6 @@ msgstr ""
 msgid "6.3 Prohibited Content"
 msgstr ""
 
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "60 days into the future based on each pattern's cadence. Useful for spotting which week is going to be heavy."
-msgstr "60 Tage in die Zukunft, basierend auf dem Rhythmus jedes Musters. Nützlich, um besonders ausgabenreiche Wochen zu erkennen."
-
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "60-day forecast list of upcoming recurring payments"
-msgstr "60-Tage-Vorschau bevorstehender wiederkehrender Zahlungen"
-
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "7. Children's Privacy"
 msgstr ""
@@ -3165,6 +3157,10 @@ msgstr "So genau wie Ihr aktuellster Kontostand + Wechselkurs. Manuelle Konten h
 msgid "As awareness of digital privacy grows, more people are realizing that <0>convenience shouldn’t come at the cost of privacy</0>. The offline-first movement represents a return to user sovereignty over personal data."
 msgstr "Mit wachsendem Bewusstsein für digitale Privatsphäre erkennen immer mehr Menschen, dass <0>Bequemlichkeit nicht auf Kosten der Privatsphäre gehen sollte</0>. Die Offline-First-Bewegung repräsentiert eine Rückkehr zur Benutzersouveränität über persönliche Daten."
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "As far as the month you're viewing. Past months show what actually happened, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections — navigate month to month to look further ahead."
+msgstr "So weit wie der Monat, den Sie gerade ansehen. Vergangene Monate zeigen, was tatsächlich passiert ist, der aktuelle Monat zeigt die bisherigen Ist-Werte plus die Prognose für den Rest des Monats, und zukünftige Monate zeigen Prognosen – navigieren Sie von Monat zu Monat, um weiter vorauszuschauen."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Asset coverage"
 msgstr "Vermögensabdeckung"
@@ -3683,6 +3679,10 @@ msgstr "Ueber den Vergleich von 2022 hinaus steht Plaid unter ständiger Beobach
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Beyond the architecture itself, how we develop and maintain Budgie matters for your security."
 msgstr "Ueber die Architektur hinaus ist die Art und Weise, wie wir Budgie entwickeln und pflegen, für Ihre Sicherheit von Bedeutung."
+
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Bi-monthly and quarterly too"
+msgstr "Auch zweimonatlich und vierteljährlich"
 
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 msgid "binance"
@@ -4926,6 +4926,10 @@ msgstr "Kann vollständig selbst gehostet werden"
 msgid "Can be overwhelming for casual users"
 msgstr "Kann für Gelegenheitsnutzer überwältigend sein"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Can bi-monthly or quarterly bills show up correctly?"
+msgstr "Werden zweimonatliche oder vierteljährliche Rechnungen korrekt angezeigt?"
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Can Budgie trade or withdraw with my key?"
 msgstr "Kann Budgie mit meinem Schlüssel handeln oder abheben?"
@@ -4989,10 +4993,6 @@ msgstr "Kann ich von der Aufschlüsselung zu den Transaktionen springen?"
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Can I drill into a tag's transactions?"
 msgstr "Kann ich die Transaktionen eines Tags anzeigen?"
-
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Can I edit a detected pattern?"
-msgstr "Kann ich ein erkanntes Muster bearbeiten?"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Can I edit a transaction after saving?"
@@ -8150,6 +8150,10 @@ msgstr "Zukunftsperspektiven"
 msgid "Future-Proof Your Finances"
 msgstr "Machen Sie Ihre Finanzen zukunftssicher"
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Fuzzy merchant matching keeps one series together even when a bank mangles the name"
+msgstr "Unscharfer Händlerabgleich hält eine Serie zusammen, selbst wenn eine Bank den Namen verstümmelt"
+
 #: src/app/[lang]/features/multi-currency/opengraph-image.tsx
 msgid "fx"
 msgstr "Wechselkurs"
@@ -9051,6 +9055,10 @@ msgstr "Die Berechnung bleibt lokal"
 msgid "Inference runs in milliseconds for embeddings and a few seconds for the LLM, only when you trigger it. Background impact is negligible."
 msgstr "Inferenz läuft in Millisekunden für Embeddings und einigen Sekunden für das LLM, nur wenn Sie sie auslösen. Der Hintergrundeinfluss ist vernachlässigbar."
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Inferred cadence — monthly, bi-monthly, or quarterly — instead of forcing every bill into a monthly slot"
+msgstr "Abgeleiteter Rhythmus – monatlich, zweimonatlich oder vierteljährlich – statt jede Rechnung in ein monatliches Raster zu zwingen"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Infinitely customizable"
 msgstr "Endlos anpassbar"
@@ -9748,10 +9756,6 @@ msgstr "Manuelles Budgetieren ist einfacher als es klingt. Prüfen Sie Konten t�
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Manual date pickers are slow. Budgie wraps them with the seven presets you actually use, plus a custom-range fallback. Every transaction list, every analytics tab, every recurring view shares the same picker."
 msgstr "Manuelle Datumsauswahl ist langsam. Budgie umschließt sie mit den sieben Presets, die Sie tatsächlich nutzen, plus einem benutzerdefinierten Zeitraum als Fallback. Jede Transaktionsliste, jeder Analytics-Tab, jede wiederkehrende Ansicht teilt sich denselben Picker."
-
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Manual edits to detected patterns are sticky — the next scan respects them"
-msgstr "Manuelle Bearbeitungen erkannter Muster bleiben erhalten – der nächste Scan respektiert sie"
 
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Manual entries don't have MCC; some bank-sync flows drop it. AI category suggestions handle those — see On-Device AI Auto-Categorization."
@@ -13204,6 +13208,10 @@ msgstr "Scannen"
 msgid "Scanning a long transaction list for one tag is hard. Budgie's primary-tag concept solves it visually — the most important tag for that row gets a corner-star badge."
 msgstr "Eine lange Transaktionsliste nach einem Tag zu scannen ist schwierig. Budgies Primär-Tag-Konzept löst es visuell – der wichtigste Tag für diese Zeile erhält ein Eckstern-Abzeichen."
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Scans 24 months of history to detect a pattern, not just the current month"
+msgstr "Durchsucht 24 Monate Verlauf, um ein Muster zu erkennen, nicht nur den aktuellen Monat"
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Scheduled transactions"
 msgstr "Geplante Transaktionen"
@@ -13616,10 +13624,6 @@ msgstr "Einzelgerät-Fokus bedeutet keine automatische Synchronisierung zwischen
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Six monthly bars on that view show what you usually spend at the same place, in the same category"
 msgstr "Sechs Monatsbalken in dieser Ansicht zeigen, was Sie üblicherweise am selben Ort in derselben Kategorie ausgeben"
-
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Sixty days ahead"
-msgstr "Sechzig Tage voraus"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/metadata.ts
 msgid "Skip the aggregator. Budgie syncs Monobank via your personal API token and imports any bank's PDF or CSV statement directly. Your credentials never leave you."
@@ -14276,8 +14280,8 @@ msgid "Taking Control of Your Financial Privacy"
 msgstr "Uebernehmen Sie die Kontrolle über Ihre finanzielle Privatsphäre"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Tap a calendar day to see the transactions due. The forecasted upcoming list extends out into the next 60 days. Cross-currency recurring shows in your home currency; original amount on tap."
-msgstr "Auf einen Kalendertag tippen, um die fälligen Transaktionen zu sehen. Die prognostizierte Vorschauliste erstreckt sich auf die nächsten 60 Tage. Währungsübergreifende Wiederholungen werden in Ihrer Heimwährung angezeigt; Originalbetrag auf Tipp-Aktion."
+msgid "Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections you reach by navigating forward. Cross-currency recurring shows in your home currency; original amount on tap."
+msgstr "Auf einen Kalendertag tippen, um die fälligen Transaktionen zu sehen. Vergangene Monate zeigen Ist-Werte, der aktuelle Monat zeigt die bisherigen Ist-Werte plus die Prognose für den Rest des Monats, und zukünftige Monate zeigen Prognosen, zu denen Sie durch Vorwärtsnavigation gelangen. Währungsübergreifende Wiederholungen werden in Ihrer Heimwährung angezeigt; Originalbetrag auf Tipp-Aktion."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Tap a row to categorize it"
@@ -17975,6 +17979,10 @@ msgstr "Ja. Beide Modelle leben nach dem einmaligen Download auf Ihrem Gerät. D
 msgid "Yes. Budgie CSV importer handles large files and deduplicates on transaction date, description, and amount. If your Mint export was a single file covering multiple years, you can import it in one step."
 msgstr "Ja. Budgies CSV-Importer verarbeitet große Dateien und dedupliziert nach Transaktionsdatum, Beschreibung und Betrag. Wenn Ihr Mint-Export eine einzelne Datei war, die mehrere Jahre abdeckt, können Sie sie in einem Schritt importieren."
 
+#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+msgid "Yes. Budgie infers each pattern's real interval from the gaps between charges instead of assuming everything is monthly, so a bi-monthly premium or a quarterly tax payment lands on the right day instead of being forced into a monthly slot."
+msgstr "Ja. Budgie leitet das tatsächliche Intervall jedes Musters aus den Abständen zwischen den Belastungen ab, statt von einem monatlichen Rhythmus auszugehen, sodass eine zweimonatliche Prämie oder eine vierteljährliche Steuerzahlung am richtigen Tag landet, statt in ein monatliches Raster gezwängt zu werden."
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Yes. Budgie is open source. You can review the bank sync and import code to confirm that no outbound calls send transaction data to Budgie servers. The network requests during sync go directly from your device to your bank API endpoint."
 msgstr "Ja. Budgie ist Open Source. Sie können den Banksync- und Importcode überprüfen, um zu bestätigen, dass keine ausgehenden Aufrufe Transaktionsdaten an Budgie-Server senden. Die Netzwerkanfragen während der Synchronisation gehen direkt von Ihrem Gerät zum Bank-API-Endpunkt."
@@ -18074,10 +18082,6 @@ msgstr "Ja. Wechsle den Datumsfilter zwischen Vorgaben wie Dieser Monat, Letzter
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Yes. Switch to split inside the income form just like the expense form."
 msgstr "Ja. Wechseln Sie im Einnahmenformular genau wie im Ausgabenformular zur Aufteilung."
-
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-msgid "Yes. Tap a pattern to adjust amount, cadence, or merchant. Manual edits are sticky — the next scan respects them."
-msgstr "Ja. Tippen Sie auf ein Muster, um Betrag, Rhythmus oder Händler anzupassen. Manuelle Bearbeitungen bleiben erhalten – der nächste Scan respektiert sie."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Tap any category or tag row to see every transaction that contributed to it during the current period."
