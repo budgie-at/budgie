@@ -35,9 +35,10 @@ Screenshots are captured against the E2E build
 `team_id` defaults to the team id in `eas.json` and can be overridden with
 `FASTLANE_TEAM_ID`.
 
-The `metadata/` trees land in this PR as locale skeletons (empty locale folders
-tracked with `.gitkeep`). The copy, changelogs, and Play screenshots are filled
-in by later sub-issues.
+The iOS `metadata/` tree carries real ASO copy for all five locales. The
+Android tree still lands as locale skeletons (empty locale folders tracked
+with `.gitkeep`) until the Play copy sub-issue fills it in; Play screenshots
+are a separate sub-issue.
 
 ## Lanes
 
@@ -62,6 +63,16 @@ empty. It fails when a screenshot locale folder is missing, when any PNG's pixel
 size matches no App Store slot, when `metadata/ios/copyright.txt` carries a stale
 year, or when either metadata tree is missing a locale or is missing entirely.
 Run it after touching the Fastfile, the compose script, or the metadata trees.
+
+`verify_field_budgets` is the per-file budget gate `store_preflight` runs after
+`verify_store_tree`: for every `ASC_LOCALES` entry it checks that every required
+metadata file exists and its stripped character length (codepoints, not bytes)
+is within budget, and that `keywords.txt` carries no space after a comma. An
+empty locale folder — which passes the directory-only `verify_store_tree` check
+— still fails here, so `deliver`/`supply` can never upload a blank listing for a
+locale. The iOS budget table per field is `IOS_FIELD_BUDGETS` in the Fastfile;
+the Android metadata sub-issue adds the matching `ANDROID_FIELD_BUDGETS` table
+and wires the same gate against the Play tree.
 
 `ios_metadata` runs `deliver` with `skip_binary_upload` and `skip_screenshots`,
 so it only pushes text metadata to the editable version and leaves the binary

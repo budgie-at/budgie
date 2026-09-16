@@ -96,6 +96,35 @@ def verify_store_tree(label, path)
   end
 end
 
+IOS_FIELD_BUDGETS = {
+  "name.txt" => 30,
+  "subtitle.txt" => 30,
+  "keywords.txt" => 100,
+  "promotional_text.txt" => 170,
+  "description.txt" => 4000,
+  "release_notes.txt" => 4000,
+  "support_url.txt" => Float::INFINITY
+}.freeze
+
+def verify_field_budgets(label, base_path, field_budgets)
+  ASC_LOCALES.each do |locale|
+    field_budgets.each do |relative_path, limit|
+      field_path = File.join(base_path, locale, relative_path)
+      UI.user_error!("#{label} #{locale}/#{relative_path} is missing") unless File.file?(field_path)
+
+      content = File.read(field_path).strip
+      length = content.length
+      UI.user_error!("#{label} #{locale}/#{relative_path} is #{length} characters, over the #{limit} budget") if length > limit
+
+      next unless relative_path == "keywords.txt"
+
+      UI.user_error!("#{label} #{locale}/#{relative_path} has a space after a comma") if content.include?(", ")
+    end
+  end
+
+  UI.success("#{label}: all locales within budget")
+end
+
 # The App Store Connect API key reaches this lane by three different routes and
 # none of them is guaranteed:
 #
@@ -204,6 +233,7 @@ lane :store_preflight do
   verify_ios_screenshot_slots(path)
   verify_store_tree("iOS metadata", IOS_METADATA_PATH)
   verify_store_tree("Android metadata", ANDROID_METADATA_PATH)
+  verify_field_budgets("iOS metadata", IOS_METADATA_PATH, IOS_FIELD_BUDGETS)
 
   android_images = android_image_counts
   if android_images.empty?
