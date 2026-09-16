@@ -4226,7 +4226,7 @@ msgstr "Pantalla de inicio de Budgie con las cuentas agrupadas en las secciones 
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Budgie home screen with the total balance header above every account section"
-msgstr ""
+msgstr "Pantalla de inicio de Budgie con la cabecera de saldo total sobre todas las secciones de cuentas"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups"
