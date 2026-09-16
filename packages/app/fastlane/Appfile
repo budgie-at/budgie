@@ -4,5 +4,9 @@ team_id(ENV.fetch("FASTLANE_TEAM_ID", "3R8589YV24"))
 
 for_platform :android do
   package_name("com.vitaliiyehorov.budgie")
-  json_key_file(ENV["GOOGLE_SERVICE_ACCOUNT_KEY_PATH"])
+
+  app_dir = File.expand_path("..", Dir.pwd)
+  submitted_key_path = JSON.parse(File.read(File.join(app_dir, "eas.json"))).dig("submit", "production", "android", "serviceAccountKeyPath")
+  service_account_key_path = ENV["GOOGLE_SERVICE_ACCOUNT_KEY_PATH"] || submitted_key_path
+  json_key_file(service_account_key_path && File.absolute_path(service_account_key_path, app_dir))
 end
