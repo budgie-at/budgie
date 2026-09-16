@@ -99,15 +99,14 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 <FeaturePageProse>
                     <Trans>
                         Cloud &ldquo;AI&rdquo; budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees
-                        your supermarket habits. Budgie loads both models once, then keeps every inference local — same accuracy, zero data
-                        exfiltration.
+                        your supermarket habits. Budgie keeps every inference on your own device — same accuracy, zero data exfiltration.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The two-stage pipeline runs embedding lookup first for instant nearest-neighbor categorization from your own
-                        history, then falls back to Qwen3 1.7B for novel transactions the embedding index has not seen before. Every
-                        accepted or edited suggestion updates the 768-dim index immediately — accuracy compounds over time.
+                        The two-stage pipeline looks through your own history first and falls back to the language model only for
+                        transactions it has not seen before. Every accepted or edited suggestion updates the index immediately — accuracy
+                        compounds over time.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -119,8 +118,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0} key="stage-0">
                         <Trans>
-                            Embedding lookup — 768-dim Nomic model finds the nearest historical transaction instantly via sqlite-vec SIMD
-                            search
+                            History lookup — Budgie finds the closest match among transactions you have already categorized, which is the
+                            fast path once the models are loaded
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1} key="stage-1">
@@ -153,7 +152,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         <Trans>Two complementary signals: vector lookup over your history plus a generative LLM suggestion</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Every correction updates the embedding index instantly — accuracy improves as you use it</Trans>
+                        <Trans>Every correction updates the index on the spot — accuracy improves as you use it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Statements never leave the device — no OpenAI, no remote inference, ever</Trans>
@@ -167,10 +166,12 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are
-                        stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor
-                        exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept,
-                        edit, or reject) feeds back into the embedding index without any network call.
+                        Each model is fetched the first time you use the feature that needs it, and only after you have switched On-device
+                        AI on in Settings. It is then held in memory just while that feature is working and released about half a minute
+                        after you stop — so the first suggestion after a pause waits for a load, and the ones that follow do not. For each
+                        new transaction Budgie looks through your own history first; if nothing close enough is there, the language model
+                        writes a suggestion instead. Your response (accept, edit, or reject) feeds back into the index without any network
+                        call.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -201,6 +202,17 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                         <Trans>
                             Always. Every transaction lets you accept, edit, or reject the suggestion. Your corrections feed back into the
                             768-dim embedding index immediately so the next similar transaction lands closer to the right category.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I turn AI off?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Settings has an AI section with a single On-device AI switch. Turn it off and nothing downloads, nothing
+                            loads into memory, and no suggestion runs — categorization falls back to your rules and the bank&apos;s own
+                            merchant codes. New installs start with the switch off; if you were already using AI before the switch existed,
+                            it stays on.
                         </Trans>
                     }
                 />

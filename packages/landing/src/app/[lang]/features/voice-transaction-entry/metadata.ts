@@ -24,6 +24,6 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['ai-auto-categorization', 'expense-tracking', 'ai-merchant-translation'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
     publishedAt: '2026-01-22',
-    updatedAt: '2026-09-07',
+    updatedAt: '2026-09-16',
     ogTags: ['voice', 'on-device', 'ai']
 } satisfies FeatureRegistryEntryInterface;

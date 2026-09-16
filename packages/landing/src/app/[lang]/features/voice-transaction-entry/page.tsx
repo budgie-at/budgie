@@ -131,7 +131,7 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                         <Trans>The spoken currency picks the matching account automatically</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
-                        <Trans>Works during the AI model loading phase too — visual progress indicator built-in</Trans>
+                        <Trans>The record button shows a progress ring while the speech model downloads and loads</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -178,9 +178,9 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     question={<Trans>Which languages does voice entry support?</Trans>}
                     answer={
                         <Trans>
-                            Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English,
-                            Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with
-                            language coverage in the model.
+                            Budgie downloads the speech model once and caches it on the device — only after you switch On-device AI on in
+                            Settings, and only the first time you record. It covers English, Ukrainian, German, French, and Spanish as
+                            primary languages, plus dozens more. Transcription quality scales with language coverage in the model.
                         </Trans>
                     }
                 />
