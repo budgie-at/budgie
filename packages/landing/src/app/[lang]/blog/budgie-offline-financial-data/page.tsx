@@ -306,49 +306,44 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>How Keys Are Managed Locally</Trans>
+                        <Trans>How Your PIN Protects Your Data</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            The encryption key never leaves your device and never touches our servers because we do not have servers that
-                            handle user data. Here is how key management works:
+                            Your PIN is the encryption key itself — no separate key is derived, generated, or stored on your behalf. Here is
+                            what that means in practice:
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Key derivation</strong>: Your encryption key is derived from your device credentials using
-                            industry-standard key derivation functions. This means the key is unique to your device and cannot be
-                            reconstructed elsewhere.
+                            <strong>No derivation, no separate key</strong>: Setting a PIN turns it directly into the key your database is
+                            encrypted with. There is no key-derivation step and no hidden key generated behind the scenes — if you know the
+                            PIN, you have the key.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Secure storage</strong>: The derived key is stored in platform-specific secure enclaves. On iOS, this is
-                            the Keychain. On Android, it is the Android Keystore backed by hardware security modules when available.
+                            <strong>Nowhere but your device</strong>: Your PIN never leaves your device and never touches our servers,
+                            because we do not have servers that handle user data.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Key isolation</strong>: Each device has its own encryption key. There is no master key that could
-                            decrypt all user databases, because such a key does not exist.
+                            <strong>The same PIN works on any device</strong>: Your PIN is not tied to a single phone. Restoring a backup on
+                            a new device asks for the PIN that backup was made with, and that PIN becomes the key again — which is exactly
+                            what lets you move to a new device without an account or a server in between.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Memory protection</strong>: Keys are held in memory only when needed for database operations and are
-                            cleared when the app is backgrounded or closed.
-                        </Trans>
-                    </BlogArticleProse>
-
-                    <BlogArticleProse>
-                        <Trans>
-                            This architecture means that even if someone steals your device, they cannot read your financial data without
-                            also compromising your device’s security (unlocking it with your biometrics or passcode).
+                            With a PIN set, even someone who steals your device cannot read your financial data without also compromising
+                            your device’s security (unlocking it with your biometrics or passcode). Without a PIN, the database is not
+                            encrypted at all, so we recommend setting one before storing sensitive data.
                         </Trans>
                     </BlogArticleProse>
 
@@ -357,7 +352,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>Database encryption protects your data in several scenarios:</Trans>
+                        <Trans>With a PIN set, database encryption protects your data in several scenarios:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
@@ -369,15 +364,15 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Forensic analysis</strong>: Even with sophisticated forensic tools, the encrypted database cannot be
-                            meaningfully analyzed without the key.
+                            <strong>Forensic analysis</strong>: Even with sophisticated forensic tools, an encrypted database cannot be
+                            meaningfully analyzed without the PIN.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Backup exposure</strong>: If your device backup is compromised, the encrypted database within it remains
-                            protected.
+                            <strong>Backup exposure</strong>: If your device backup is compromised, a backup you made with a PIN remains
+                            protected inside it.
                         </Trans>
                     </BlogArticleProse>
 
@@ -861,8 +856,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                         <BlogFaqItem question={<Trans>What happens to my data if I lose my phone?</Trans>}>
                             <Trans>
                                 Your data exists only on your device. If you lose your phone without having synced to another device or
-                                created an encrypted backup, your data is lost. This is the privacy tradeoff: we cannot help you recover
-                                data because we do not have it. We recommend regular backups to your own storage.
+                                created a backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because
+                                we do not have it. We recommend regular backups to your own storage.
                             </Trans>
                         </BlogFaqItem>
 
@@ -876,9 +871,9 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                         <BlogFaqItem question={<Trans>Is the encryption implementation audited?</Trans>}>
                             <Trans>
-                                Our encryption uses standard library implementations of AES-256 from platform security frameworks (iOS
-                                CryptoKit, Android Keystore). These implementations are developed and audited by Apple and Google. Our
-                                integration is documented in the open source code for community review.
+                                Budgie is open source, so anyone can read exactly how your PIN becomes your database&apos;s encryption key —
+                                there is no hidden derivation step and no proprietary library standing between your PIN and the data. That
+                                code is public for community review.
                             </Trans>
                         </BlogFaqItem>
 
