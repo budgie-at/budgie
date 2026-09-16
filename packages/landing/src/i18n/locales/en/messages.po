@@ -173,10 +173,6 @@ msgstr "<0>Audit connected accounts</0>: Check each bank’s connected apps sett
 msgid "<0>Audit trail control</0> — You decide exactly which time periods to import. There is no background sync pulling in data without your explicit action."
 msgstr "<0>Audit trail control</0> — You decide exactly which time periods to import. There is no background sync pulling in data without your explicit action."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Authentication</0>: You confirm the transfer on both devices, usually by comparing a visual code"
-msgstr "<0>Authentication</0>: You confirm the transfer on both devices, usually by comparing a visual code"
-
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>Automerge</0> is a JSON CRDT implementation that makes it easy to work with complex document structures. It is particularly strong for applications that need to sync arbitrary JSON data."
 msgstr "<0>Automerge</0> is a JSON CRDT implementation that makes it easy to work with complex document structures. It is particularly strong for applications that need to sync arbitrary JSON data."
@@ -580,10 +576,6 @@ msgstr "<0>Direct bank communication</0> — When sync runs, your device communi
 msgid "<0>Direct bank sync without aggregator intermediaries</0> — Budgie bank connection for supported banks communicates directly from your device to your bank. No third-party aggregator receives your credentials or stores your transaction stream."
 msgstr "<0>Direct bank sync without aggregator intermediaries</0> — Budgie bank connection for supported banks communicates directly from your device to your bank. No third-party aggregator receives your credentials or stores your transaction stream."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Discovery</0>: Both devices discover each other on the local network or through a temporary relay that sees only encrypted blobs"
-msgstr "<0>Discovery</0>: Both devices discover each other on the local network or through a temporary relay that sees only encrypted blobs"
-
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Docker support.</0> Easy deployment for those familiar with containers."
 msgstr "<0>Docker support.</0> Easy deployment for those familiar with containers."
@@ -612,10 +604,6 @@ msgstr "<0>Electric SQL</0> synchronizes SQLite databases between devices and cl
 msgid "<0>Encrypted local backup</0> — Create a backup of your entire database at any time and save it to iCloud, a USB drive, or anywhere you choose. Budgie does not hold your backup."
 msgstr "<0>Encrypted local backup</0> — Create a backup of your entire database at any time and save it to iCloud, a USB drive, or anywhere you choose. Budgie does not hold your backup."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Encrypted transfer</0>: The database is transferred in its encrypted form"
-msgstr "<0>Encrypted transfer</0>: The database is transferred in its encrypted form"
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Envelope budgeting</0>: Implements the zero-based budgeting methodology effectively, helping you allocate every dollar."
 msgstr "<0>Envelope budgeting</0>: Implements the zero-based budgeting methodology effectively, helping you allocate every dollar."
@@ -627,6 +615,10 @@ msgstr "<0>Evaluate offline alternatives</0>: Budgie and similar apps offer core
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Export your data</0>: Download transaction history before considering migration"
 msgstr "<0>Export your data</0>: Download transaction history before considering migration"
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "<0>Export</0>: From Settings on your current device, export a database backup. Budgie writes your encrypted database to a single file and hands it to your device’s share sheet"
+msgstr "<0>Export</0>: From Settings on your current device, export a database backup. Budgie writes your encrypted database to a single file and hands it to your device’s share sheet"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Firefly III</0>: Use the data importer tool with Mint preset"
@@ -728,6 +720,10 @@ msgstr "<0>Identity information</0>: Name, address, phone number, email from you
 msgid "<0>If You Migrated to Credit Karma:</0> Your transaction history should have transferred, but it’s in Credit Karma’s format now. You can export from Credit Karma, but the data structure differs from Mint."
 msgstr "<0>If You Migrated to Credit Karma:</0> Your transaction history should have transferred, but it’s in Credit Karma’s format now. You can export from Credit Karma, but the data structure differs from Mint."
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "<0>Import</0>: On the new device, open Settings and pick the backup file to import"
+msgstr "<0>Import</0>: On the new device, open Settings and pick the backup file to import"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Incredibly comprehensive</0>: Tracks assets, liabilities, budgets, piggy banks, bills, and more. If you can think of a financial scenario, Firefly III probably handles it."
 msgstr "<0>Incredibly comprehensive</0>: Tracks assets, liabilities, budgets, piggy banks, bills, and more. If you can think of a financial scenario, Firefly III probably handles it."
@@ -823,10 +819,6 @@ msgstr "<0>llama.rn</0> MIT License - On-device language model runtime binding"
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Local data storage</0> — Your transaction history lives on your device, in a format you can read and export. No internet connection required to access your own records."
 msgstr "<0>Local data storage</0> — Your transaction history lives on your device, in a format you can read and export. No internet connection required to access your own records."
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Local decryption</0>: The receiving device uses key exchange protocols to establish the ability to decrypt the transferred data"
-msgstr "<0>Local decryption</0>: The receiving device uses key exchange protocols to establish the ability to decrypt the transferred data"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Local spreadsheet apps.</0> LibreOffice Calc, Numbers (offline mode)"
@@ -944,6 +936,10 @@ msgstr "<0>Modern, native tech stack</0>: A clean, type-safe codebase built for 
 msgid "<0>Modifications</0>: Create and use modified versions of Budgie"
 msgstr "<0>Modifications</0>: Create and use modified versions of Budgie"
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "<0>Move the file</0>: You choose how the file reaches the new device, for example a cable, a file manager, or storage you control. Budgie has no part in this step"
+msgstr "<0>Move the file</0>: You choose how the file reaches the new device, for example a cable, a file manager, or storage you control. Budgie has no part in this step"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Multi-currency excellence</0>: Excellent support for multiple currencies, including crypto integration."
 msgstr "<0>Multi-currency excellence</0>: Excellent support for multiple currencies, including crypto integration."
@@ -1001,8 +997,8 @@ msgid "<0>Network dependency</0>: You cannot access your data without an interne
 msgstr "<0>Network dependency</0>: You cannot access your data without an internet connection. Try adding an expense while underground on the subway or in an area with poor coverage, and you are stuck."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Network layer</0>: Search for any HTTP clients, fetch calls, or socket connections. You will find that network usage is limited to exchange rate fetching (which does not include any user data), optional device-to-device sync (encrypted end-to-end), and app update checks (no user data transmitted)."
-msgstr "<0>Network layer</0>: Search for any HTTP clients, fetch calls, or socket connections. You will find that network usage is limited to exchange rate fetching (which does not include any user data), optional device-to-device sync (encrypted end-to-end), and app update checks (no user data transmitted)."
+msgid "<0>Network layer</0>: Search for any HTTP clients, fetch calls, or socket connections. You will find that network usage is limited to exchange rate fetching (which does not include any user data), optional backup export and import (which never touches the network), and app update checks (no user data transmitted)."
+msgstr "<0>Network layer</0>: Search for any HTTP clients, fetch calls, or socket connections. You will find that network usage is limited to exchange rate fetching (which does not include any user data), optional backup export and import (which never touches the network), and app update checks (no user data transmitted)."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Next.js</0> MIT License - React framework for web applications"
@@ -1474,6 +1470,10 @@ msgstr "<0>Reports and analytics</0>: Built-in reporting is extensive, and you c
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Required bank sync:</0> Least private option"
 msgstr "<0>Required bank sync:</0> Least private option"
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "<0>Restore</0>: If the backup is PIN-protected, enter the PIN it was created with. Importing replaces all data on the new device, and that PIN becomes the new device’s app PIN"
+msgstr "<0>Restore</0>: If the backup is PIN-protected, enter the PIN it was created with. Importing replaces all data on the new device, and that PIN becomes the new device’s app PIN"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "<0>Retention policies</0> — Even with privacy guarantees, data is retained for some period. Policies change. Acquisitions happen. What is private today may not be private tomorrow."
@@ -2283,12 +2283,12 @@ msgid "A dedicated Tags tab lives in Analytics next to the Categories and Runway
 msgstr "A dedicated Tags tab lives in Analytics next to the Categories and Runway tabs — per-tag income, expense, and net totals, plus a drillable Untagged bucket that surfaces every transaction missing a label."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "A deep-dive into Budgie’s offline-first architecture, explaining how local storage, encryption at rest, and device-to-device sync keep your financial data completely private."
-msgstr "A deep-dive into Budgie’s offline-first architecture, explaining how local storage, encryption at rest, and device-to-device sync keep your financial data completely private."
+msgid "A deep-dive into Budgie’s offline-first architecture, explaining how local storage, encryption at rest, and a single encrypted backup file keep your financial data completely private."
+msgstr "A deep-dive into Budgie’s offline-first architecture, explaining how local storage, encryption at rest, and a single encrypted backup file keep your financial data completely private."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
-msgid "A deep-dive into how Budgie keeps your financial data on your device: local storage, encryption at rest, and device-to-device sync with no cloud copy."
-msgstr "A deep-dive into how Budgie keeps your financial data on your device: local storage, encryption at rest, and device-to-device sync with no cloud copy."
+msgid "A deep-dive into how Budgie keeps your financial data on your device: local storage, encryption at rest, and one encrypted backup file with no cloud copy."
+msgstr "A deep-dive into how Budgie keeps your financial data on your device: local storage, encryption at rest, and one encrypted backup file with no cloud copy."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "A deliberate gap-finder. Transactions without tags accumulate in this bucket so you can spot bookkeeping gaps and tighten them up."
@@ -2305,10 +2305,6 @@ msgstr "A deposit is not everyday cash. Budgie treats it as a distinct account t
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/metadata.ts
 msgid "A detailed technical analysis of how cloud-based budgeting apps collect, share, and expose your financial data through Plaid integrations, data breaches, and third-party aggregation."
 msgstr "A detailed technical analysis of how cloud-based budgeting apps collect, share, and expose your financial data through Plaid integrations, data breaches, and third-party aggregation."
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "A deterministic merge algorithm combines the operations"
-msgstr "A deterministic merge algorithm combines the operations"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "A due date and a target"
@@ -3365,6 +3361,10 @@ msgstr "Backup"
 msgid "Backup & Restore"
 msgstr "Backup & Restore"
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Backup and restore implementation"
+msgstr "Backup and restore implementation"
+
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Backup file copied via your cloud"
 msgstr "Backup file copied via your cloud"
@@ -3884,10 +3884,6 @@ msgstr "Both amounts are shown together (e.g. $1000 → €925). Pin either side
 msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
 msgstr "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Both devices arrive at the same final state without needing a server to arbitrate"
-msgstr "Both devices arrive at the same final state without needing a server to arbitrate"
-
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Both Erste statement layouts supported: classic and the 2026 modern format"
 msgstr "Both Erste statement layouts supported: classic and the 2026 modern format"
@@ -4195,8 +4191,8 @@ msgid "Budgie encrypts your database using the same encryption standard used by 
 msgstr "Budgie encrypts your database using the same encryption standard used by governments and financial institutions worldwide. It has never been broken by any publicly known attack. A brute-force attempt to crack a key of that strength would require more energy than exists in the observable universe."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Budgie exists because we believe you should not have to trade this intimate information for the convenience of expense tracking. Every architectural decision, from local storage to encryption to device-to-device sync, is designed to keep this information where it belongs: <0>under your control</0>."
-msgstr "Budgie exists because we believe you should not have to trade this intimate information for the convenience of expense tracking. Every architectural decision, from local storage to encryption to device-to-device sync, is designed to keep this information where it belongs: <0>under your control</0>."
+msgid "Budgie exists because we believe you should not have to trade this intimate information for the convenience of expense tracking. Every architectural decision, from local storage to encryption to how backups move between devices, is designed to keep this information where it belongs: <0>under your control</0>."
+msgstr "Budgie exists because we believe you should not have to trade this intimate information for the convenience of expense tracking. Every architectural decision, from local storage to encryption to how backups move between devices, is designed to keep this information where it belongs: <0>under your control</0>."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie exists because we wanted a financial app that treats users as customers, not products. One that works offline, respects privacy, and gives you complete control over your data. If that resonates with you, we’d love to have you try it."
@@ -4398,6 +4394,10 @@ msgstr "Budgie is operated by Budgie (\"we,\" \"us,\" or \"our\"). We reserve th
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie is our contribution to this future: a personal finance application that keeps your financial data where it belongs, on your device under your control."
 msgstr "Budgie is our contribution to this future: a personal finance application that keeps your financial data where it belongs, on your device under your control."
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Budgie is single-device by design. There is no automatic sync between a phone and a tablet, and moving to a new device means exporting a backup and importing it there: an explicit, occasional action rather than a continuous one."
+msgstr "Budgie is single-device by design. There is no automatic sync between a phone and a tablet, and moving to a new device means exporting a backup and importing it there: an explicit, occasional action rather than a continuous one."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists, and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends on your specific requirements."
@@ -4788,10 +4788,6 @@ msgstr "Budgie turns that cleanup into a visible workflow. When the current filt
 msgid "Budgie turns the merchant category code the bank attaches to each card transaction into one of your own categories."
 msgstr "Budgie turns the merchant category code the bank attaches to each card transaction into one of your own categories."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:"
-msgstr "Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:"
-
 #: src/app/[lang]/open-source/page.tsx
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
@@ -4860,10 +4856,6 @@ msgstr "Budgie’s bank sync uses direct connections to bank APIs where availabl
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie’s codebase is open source, allowing security researchers and curious users to verify our claims. You can inspect exactly how data is stored, confirm that nothing is transmitted to our servers, and even build the application yourself."
 msgstr "Budgie’s codebase is open source, allowing security researchers and curious users to verify our claims. You can inspect exactly how data is stored, confirm that nothing is transmitted to our servers, and even build the application yourself."
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Budgie’s device-to-device sync requires more user involvement. You need to explicitly trigger sync when you want data to transfer. Both devices need to be accessible, either on the same local network or both connected to the internet for the relay-assisted handshake."
-msgstr "Budgie’s device-to-device sync requires more user involvement. You need to explicitly trigger sync when you want data to transfer. Both devices need to be accessible, either on the same local network or both connected to the internet for the relay-assisted handshake."
 
 #: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
 msgid "Budgie's local model suggests up to three tags per transaction so heavy taggers stop typing. A lighter fallback answers while it loads."
@@ -5875,10 +5867,6 @@ msgstr "Confirm the fixed version is released"
 msgid "Confirm to add transactions to your accounts"
 msgstr "Confirm to add transactions to your accounts"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Conflict Resolution Without Servers"
-msgstr "Conflict Resolution Without Servers"
-
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Conflict-Free Replicated Data Types (CRDTs)"
 msgstr "Conflict-Free Replicated Data Types (CRDTs)"
@@ -6705,10 +6693,6 @@ msgstr "Device information (type, operating system version) for debugging purpos
 msgid "Device-Local Storage"
 msgstr "Device-Local Storage"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Device-to-Device Sync Architecture"
-msgstr "Device-to-Device Sync Architecture"
-
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Devices with a fingerprint sensor and no face scanner now get prompted for biometric unlock at all — they were silently skipped before — and the lock screen shows a fingerprint icon instead of a face-scan icon on those devices."
 msgstr "Devices with a fingerprint sensor and no face scanner now get prompted for biometric unlock at all — they were silently skipped before — and the lock screen shows a fingerprint icon instead of a face-scan icon on those devices."
@@ -6754,8 +6738,8 @@ msgid "Discover a vulnerability by examining the code"
 msgstr "Discover a vulnerability by examining the code"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
-msgid "Discover exactly how Budgie keeps your financial data off the cloud: local-only storage, encryption at rest, device sync, and open-source transparency."
-msgstr "Discover exactly how Budgie keeps your financial data off the cloud: local-only storage, encryption at rest, device sync, and open-source transparency."
+msgid "Discover exactly how Budgie keeps your financial data off the cloud: local-only storage, encryption at rest, encrypted backups, and open-source transparency."
+msgstr "Discover exactly how Budgie keeps your financial data off the cloud: local-only storage, encryption at rest, encrypted backups, and open-source transparency."
 
 #: src/generic/component/blog-section/blog-section.tsx
 msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
@@ -7241,8 +7225,8 @@ msgid "Encryption, PIN lock and screenshot blur"
 msgstr "Encryption, PIN lock and screenshot blur"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "End-to-end encrypted cloud sync would require servers to store encrypted blobs. While the content would be encrypted, metadata would still be visible: when you sync, how much data you have, sync patterns that might reveal usage habits. Device-to-device sync eliminates even this metadata exposure."
-msgstr "End-to-end encrypted cloud sync would require servers to store encrypted blobs. While the content would be encrypted, metadata would still be visible: when you sync, how much data you have, sync patterns that might reveal usage habits. Device-to-device sync eliminates even this metadata exposure."
+msgid "End-to-end encrypted cloud sync would require servers to store encrypted blobs. While the content would be encrypted, metadata would still be visible: when you sync, how much data you have, sync patterns that might reveal usage habits. A backup file you export and move yourself eliminates even this metadata exposure — no server is ever involved."
+msgstr "End-to-end encrypted cloud sync would require servers to store encrypted blobs. While the content would be encrypted, metadata would still be visible: when you sync, how much data you have, sync patterns that might reveal usage habits. A backup file you export and move yourself eliminates even this metadata exposure — no server is ever involved."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "End-to-End Encryption Explained"
@@ -8318,6 +8302,10 @@ msgstr "Getting started"
 msgid "Getting Started with Local-First Development"
 msgstr "Getting Started with Local-First Development"
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Getting Your Data Onto a New Device"
+msgstr "Getting Your Data Onto a New Device"
+
 #: src/app/[lang]/features/open-source-budget-app-mobile/opengraph-image.tsx
 msgid "github"
 msgstr "github"
@@ -9142,8 +9130,8 @@ msgid "In the vendor cloud"
 msgstr "In the vendor cloud"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "In this article, we will walk through exactly how Budgie keeps your financial data off the cloud. We will cover the database architecture, encryption implementation, sync mechanisms, and security practices that make this possible. If you are evaluating Budgie and want to understand what you are trusting, this guide will give you the complete technical picture."
-msgstr "In this article, we will walk through exactly how Budgie keeps your financial data off the cloud. We will cover the database architecture, encryption implementation, sync mechanisms, and security practices that make this possible. If you are evaluating Budgie and want to understand what you are trusting, this guide will give you the complete technical picture."
+msgid "In this article, we will walk through exactly how Budgie keeps your financial data off the cloud. We will cover the database architecture, encryption implementation, backup and restore mechanics, and security practices that make this possible. If you are evaluating Budgie and want to understand what you are trusting, this guide will give you the complete technical picture."
+msgstr "In this article, we will walk through exactly how Budgie keeps your financial data off the cloud. We will cover the database architecture, encryption implementation, backup and restore mechanics, and security practices that make this possible. If you are evaluating Budgie and want to understand what you are trusting, this guide will give you the complete technical picture."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "In this comprehensive guide, we’ll explore why people are leaving YNAB, what to look for in a privacy-focused alternative, and provide honest reviews of the top options available in 2025. Whether you’re concerned about cloud data storage, subscription fatigue, or simply want more control over your financial information, we’ve got you covered."
@@ -11626,8 +11614,8 @@ msgid "One of the key benefits of public-source and offline-first architecture i
 msgstr "One of the key benefits of public-source and offline-first architecture is data sovereignty. Your data is stored locally on your device, not locked in some company’s cloud that might disappear. If Budgie development stopped tomorrow, your data would still be on your phone, and the public source code would allow anyone to continue development or create export tools. You’re never locked in."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "One of the most common questions about offline-first apps is: how do I get my data onto a new device? Budgie handles this through device-to-device sync with no cloud intermediary."
-msgstr "One of the most common questions about offline-first apps is: how do I get my data onto a new device? Budgie handles this through device-to-device sync with no cloud intermediary."
+msgid "One of the most common questions about offline-first apps is: how do I get my data onto a new device? Budgie answers this with a single encrypted backup file. There is no cloud intermediary and no account."
+msgstr "One of the most common questions about offline-first apps is: how do I get my data onto a new device? Budgie answers this with a single encrypted backup file. There is no cloud intermediary and no account."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "One of the most powerful aspects of open-source software is the ability to verify privacy claims against actual implementation. While you may not be able to read code yourself, you can look for:"
@@ -12014,10 +12002,6 @@ msgstr "Opening a transaction no longer drops you into a form. You get a read-on
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Opens Binance API management"
 msgstr "Opens Binance API management"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Operations from both devices are exchanged"
-msgstr "Operations from both devices are exchanged"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Opt-in on-device notifications when a limit reaches 80% and again at 100%, once per period"
@@ -14403,10 +14387,6 @@ msgstr "Sync interval"
 msgid "Sync method"
 msgstr "Sync method"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Sync protocol implementation"
-msgstr "Sync protocol implementation"
-
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Sync the account the money left and the account it landed in, and each one imports its own leg — an expense on one side, an income on the other. Left alone, one movement lands in your ledger twice."
 msgstr "Sync the account the money left and the account it landed in, and each one imports its own leg — an expense on one side, an income on the other. Left alone, one movement lands in your ledger twice."
@@ -14730,6 +14710,10 @@ msgstr "The backfill reports its progress per asset, so you can see how much of 
 msgid "The background is solid black, not a dimmed grey panel layered over a light design."
 msgstr "The background is solid black, not a dimmed grey panel layered over a light design."
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "The Backup and Restore Flow"
+msgstr "The Backup and Restore Flow"
+
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "The bank already told you what it was"
 msgstr "The bank already told you what it was"
@@ -14855,8 +14839,8 @@ msgid "The CRDT research community has developed structures for various use case
 msgstr "The CRDT research community has developed structures for various use cases: maps, graphs, JSON documents, and rich text. Libraries like Yjs, Automerge, and CRDTs provide production-ready implementations."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The critical point is that at no point does readable financial data travel through any third-party infrastructure. Even the temporary relay used for discovery when devices are not on the same network sees only encrypted data that it cannot interpret."
-msgstr "The critical point is that at no point does readable financial data travel through any third-party infrastructure. Even the temporary relay used for discovery when devices are not on the same network sees only encrypted data that it cannot interpret."
+msgid "The critical point is that Budgie never transmits your data anywhere. The backup file only moves when you choose to move it, and Budgie never reads or writes it over a network connection."
+msgstr "The critical point is that Budgie never transmits your data anywhere. The backup file only moves when you choose to move it, and Budgie never reads or writes it over a network connection."
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "The CSV-import feature handles any flat CSV including ones Budgie produced — useful for round-tripping or merging databases."
@@ -15451,8 +15435,8 @@ msgid "The tradeoff is capability. A cloud service can throw a warehouse of comp
 msgstr "The tradeoff is capability. A cloud service can throw a warehouse of computers at a question; a phone has a battery and a few gigabytes of memory. For open-ended writing or research, the cloud still wins. For the narrow job of reading a merchant name and picking the right category, a phone is now more than enough — which is exactly why Budgie does it there."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The Tradeoff: Sync Convenience vs. Privacy"
-msgstr "The Tradeoff: Sync Convenience vs. Privacy"
+msgid "The Tradeoff: Convenience vs. Privacy"
+msgstr "The Tradeoff: Convenience vs. Privacy"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "The transaction becomes a single transfer with a credit entry and a debit entry against the two accounts, balances reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you."
@@ -15735,10 +15719,6 @@ msgstr "This means more than just a privacy policy. True privacy requires:"
 msgid "This means that when you use any budgeting app backed by a major aggregator, your bank data exists in at least three places: your bank, the app, and the aggregator. Each is an independent breach surface."
 msgstr "This means that when you use any budgeting app backed by a major aggregator, your bank data exists in at least three places: your bank, the app, and the aggregator. Each is an independent breach surface."
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "This means you can use Budgie on multiple devices that occasionally sync when they are on the same network, and your data will eventually converge to a consistent state without data loss."
-msgstr "This means you can use Budgie on multiple devices that occasionally sync when they are on the same network, and your data will eventually converge to a consistent state without data loss."
-
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "This ownership extends to data longevity. Local data files will remain readable decades from now. SaaS services regularly shut down, leaving users scrambling to export data before it disappears."
 msgstr "This ownership extends to data longevity. Local data files will remain readable decades from now. SaaS services regularly shut down, leaving users scrambling to export data before it disappears."
@@ -16007,10 +15987,6 @@ msgstr "Tracked as fee entries"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Trade-offs to Consider:"
 msgstr "Trade-offs to Consider:"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Traditional cloud sync relies on a central server to be the source of truth when conflicts arise. If you edit a transaction on two devices, the server decides which version wins."
-msgstr "Traditional cloud sync relies on a central server to be the source of truth when conflicts arise. If you edit a transaction on two devices, the server decides which version wins."
 
 #: src/app/[lang]/features/categorization-rules/metadata.ts
 msgid "Transaction Categorization Rules — Budgie"
@@ -16626,8 +16602,8 @@ msgid "We will acknowledge your report within 48 hours"
 msgstr "We will acknowledge your report within 48 hours"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "We will be direct about the tradeoffs. Cloud sync is more convenient. You do not need to be on the same network. You do not need to initiate a sync manually. Changes propagate automatically in the background."
-msgstr "We will be direct about the tradeoffs. Cloud sync is more convenient. You do not need to be on the same network. You do not need to initiate a sync manually. Changes propagate automatically in the background."
+msgid "We will be direct about the tradeoffs. Cloud sync is more convenient. You do not need to move a file yourself. Changes propagate automatically in the background."
+msgstr "We will be direct about the tradeoffs. Cloud sync is more convenient. You do not need to move a file yourself. Changes propagate automatically in the background."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "We’re not asking you to trust us. We’re giving you the tools to verify."
@@ -16881,10 +16857,6 @@ msgstr "What Happens to Your Data When Companies Are Sold or Shut Down"
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "What happens when I already have a lot of rules?"
 msgstr "What happens when I already have a lot of rules?"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "What Happens When You Sync Between Devices"
-msgstr "What Happens When You Sync Between Devices"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "What happens with accounts in another currency?"
@@ -17325,8 +17297,8 @@ msgid "When you use optional features such as bank synchronization or market dat
 msgstr "When you use optional features such as bank synchronization or market data feeds, you are also subject to the terms and conditions of those third-party service providers. We are not responsible for the availability, accuracy, or reliability of third-party services."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "When you want to transfer your data to a new device, Budgie uses direct peer-to-peer communication. Here is the process:"
-msgstr "When you want to transfer your data to a new device, Budgie uses direct peer-to-peer communication. Here is the process:"
+msgid "When you want to move your data to a new device, you export a backup on the old one and import it on the new one. Here is the process:"
+msgstr "When you want to move your data to a new device, you export a backup on the old one and import it on the new one. Here is the process:"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "When you’re paid and when you’re broke"
@@ -18702,8 +18674,8 @@ msgid "Your data doesn’t disappear if we go out of business"
 msgstr "Your data doesn’t disappear if we go out of business"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Your data exists only on your device. If you lose your phone without having synced to another device or created a backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
-msgstr "Your data exists only on your device. If you lose your phone without having synced to another device or created a backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
+msgid "Your data exists only on your device. If you lose your phone without having created a backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
+msgstr "Your data exists only on your device. If you lose your phone without having created a backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Your data in a local file you can open and query yourself"
