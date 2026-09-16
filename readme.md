@@ -17,7 +17,7 @@
 - [Roadmap](#roadmap)
   - [Phase 0 — Foundations](#phase-0--foundations-week-1)
   - [Phase 1 — Core Expenses & Budgets](#phase-1--core-expenses--budgets-weeks-23)
-  - [Phase 2 — Bank Sync & Ingestion](#phase-2--bank-sync-read-only--ingestion-weeks-45)
+  - [Phase 2 — Bank Sync & Ingestion](#phase-2--sync-read-only--ingestion-weeks-45)
   - [Phase 3 — Portfolio (Stocks & Crypto)](#phase-3--portfolio-stocks--crypto-weeks-67)
   - [Phase 4 — Debts & Goals](#phase-4--debts--goals-weeks-89)
   - [Phase 5 — AI Chat v1](#phase-5--ai-chat-v1-local-first-weeks-1011)

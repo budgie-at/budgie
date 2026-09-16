@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, bank-sync, budget, consolidation, and logger packages.
+Budgie is an offline-first mobile expenses tracker. The production monorepo contains app, contracts, ai, landing, sync, budget, consolidation, and logger packages.
 
 ## Commands
 
@@ -72,7 +72,7 @@ Use the repo package scopes without the npm namespace prefix:
 - `contracts`
 - `ai`
 - `landing`
-- `bank-sync`
+- `sync`
 - `budget`
 - `consolidation`
 - `logger`
@@ -98,7 +98,7 @@ packages/
 ├── consolidation/      # Transaction consolidation
 ├── contracts/          # Shared TypeScript schemas, types, repositories
 ├── landing/            # Next.js 16 marketing site
-├── bank-sync/          # Bank integration package
+├── sync/          # Bank integration package
 └── logger/             # Shared logging package
 ```
 
@@ -141,7 +141,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
 26. **Always brace control-flow bodies** - Every `if`, `else`, `for`, `while`, and `do` body must be wrapped in `{ }`, even for single statements. Enforced by ESLint `curly: ['error', 'all']` and `nonblock-statement-body-position: ['error', 'below']`.
-27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `bank-sync`, `budget`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/bank-sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
+27. **No unit tests in app code.** Production packages (`app`, `contracts`, `ai`, `landing`, `sync`, `budget`, `consolidation`, `logger`) do not host Jest/Vitest/etc. Verification at the code level is done via `pnpm ts`, `pnpm lint`, `pnpm deadcode`, `pnpm cpd`, manual testing, and — for SQL — `EXPLAIN QUERY PLAN` plus the bench harness under `packages/app/scripts/`. E2E coverage lives in `tests/app-tests/` via Maestro. Integration coverage lives in `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/`. Shared integration harness code belongs in `tests/test-kit/`, not in a scenario suite. Do not add Vitest/Jest workspaces elsewhere without amending this rule.
 28. **Enum members are `UPPER_CASE` with `UPPER_CASE` string values.** Mirror the `@budgie/contracts` convention. Example: `TRANSFER = 'TRANSFER'`. Exception: when a pre-existing serialized value (DB column, telemetry endpoint, storage key) uses a different casing, preserve the value string while moving the key to UPPER_CASE: `MODEL_ERROR = 'model-error'`. Document the exception inline.
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `pnpm cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
@@ -508,9 +508,9 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 `EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output. Metro dev bundles still log through `__DEV__`; native development and profiling builds set logging at build time, so non-dev bundle changes require rebuilds. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
 
-### `bank-sync` exception
+### `sync` exception
 
-`packages/bank-sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/bank-sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
+`packages/sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
 
 ## Tech Stack
 
@@ -520,7 +520,7 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 | **ai**        | Pure TypeScript, Zod                                                                                                                                                            |
 | **contracts** | Drizzle ORM, Zod, drizzle-zod                                                                                                                                                   |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                                                |
-| **bank-sync** | @liaugust/monobank-sdk, date-fns                                                                                                                                                |
+| **sync** | @liaugust/monobank-sdk, date-fns                                                                                                                                                |
 | **Build**     | pnpm 12.1.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.12, native TypeScript 7 + TypeScript 6 API, Oxlint 1.80 JS bridge + 13-rule ESLint 10 fallback |
 
 ## Workflow
