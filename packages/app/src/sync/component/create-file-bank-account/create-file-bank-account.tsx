@@ -96,6 +96,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
             isFileStep={isFileStep}
             isLoading={isLoading}
             hasSelectedAccounts={hasSelectedAccounts}
+            ctaLabel={config.ctaLabel}
             onSelectFile={handleSelectFile}
             onSetupSync={handleSetupSync}
         />
@@ -104,6 +105,7 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
     return (
         <CollapsibleChromePage
             title={config.title}
+            subtitle={config.description}
             leading={<HeaderBackButton />}
             testID={CreateFileBankAccountSelector.ScrollView}
             footer={footer}
