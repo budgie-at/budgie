@@ -2335,6 +2335,10 @@ msgstr "Об'єднаний переказ зберігає рядок «Кон�
 msgid "A month grid of what bills"
 msgstr "Сітка місяця з майбутніми списаннями"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "A new Settings → Runway section controls it: “Show on home” toggles the pill (on by default), and “Include crypto” folds your crypto holdings into the calculation at today’s market value (off by default, since crypto swings can otherwise dominate a cash-flow read)."
+msgstr "Новий розділ Налаштування → Runway керує цим: «Показувати на головному екрані» вмикає чи вимикає плашку (за замовчуванням увімкнено), а «Враховувати криптовалюту» додає ваші криптоактиви до розрахунку за поточною ринковою вартістю (за замовчуванням вимкнено, оскільки коливання криптовалют інакше можуть переважати в оцінці грошового потоку)."
+
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "A P2P purchase and the bank payment behind it merge into one cross-currency transfer"
 msgstr "P2P-покупка та банківський платіж, що стоїть за нею, об'єднуються в один міжвалютний переказ"
@@ -2374,6 +2378,14 @@ msgstr "Редизайн обрамлення екрана: прогресивн
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
 msgstr "Один перемикач темного режиму в Налаштуваннях — за замовчуванням стежить за темою системи, вручну перемикається будь-коли"
+
+#: src/app/[lang]/blog/whats-new-september-2026/metadata.ts
+msgid "A single Runway verdict replaces the old cash-flow widget, on-device AI comes back for existing installs with a real off switch and loads only while it's needed, and a batch of import and transfer fixes lands. Here is everything from the September 2026 cycle."
+msgstr "Єдиний висновок Runway замінює старий віджет грошового потоку, локальний ШІ повертається для наявних інсталяцій із справжнім перемикачем вимкнення та завантажується лише за потреби, а також виходить пакет виправлень імпорту й переказів. Ось усе з циклу вересня 2026 року."
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "A source of crashes around backup restore, PIN changes, and resetting the app is gone: those operations now run strictly one at a time instead of racing each other."
+msgstr "Усунено джерело збоїв, пов'язаних із відновленням резервної копії, зміною PIN-коду та скиданням застосунку: тепер ці операції виконуються строго по черзі, а не змагаються одна з одною."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "A source-available license that lets you read, fork, and modify the code. The official app builds remain ours to monetize, which keeps development sustainable."
@@ -2859,6 +2871,10 @@ msgstr "Чипи суми, категорії, тегу й рахунку зву
 msgid "Amounts aligned right"
 msgstr "Суми вирівняні праворуч"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "An active amount-range filter now carries over into the Missing categories screen."
+msgstr "Активний фільтр за діапазоном суми тепер переноситься і на екран «Відсутні категорії»."
+
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "An amount-range chip in the same filter row, with a From value, a To value, or both"
 msgstr "Чіп діапазону суми в тому самому рядку фільтрів — зі значенням «Від», «До» або обома одразу"
@@ -3071,6 +3087,10 @@ msgstr "Лише Apple (немає Android, немає веб)"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Apple’s built-in productivity apps use a local-first architecture with iCloud synchronization. Data is stored on device and syncs through Apple’s infrastructure. Critically, the apps work fully offline, with changes propagating when connectivity returns."
 msgstr "Вбудовані застосунки продуктивності Apple використовують архітектуру local-first із синхронізацією через iCloud. Дані зберігаються на пристрої та синхронізуються через інфраструктуру Apple. Критично важливо, що застосунки повноцінно працюють офлайн, а зміни поширюються при відновленні зв'язку."
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Applying a categorization rule to existing transactions now runs in the background with a completion toast instead of blocking the screen."
+msgstr "Застосування правила категоризації до наявних транзакцій тепер виконується у фоновому режимі зі спливаючим повідомленням після завершення, а не блокує екран."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/opengraph-image.tsx
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
@@ -3440,6 +3460,7 @@ msgstr "Банківські виписки від українських, гр�
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
 #: src/app/[lang]/features/bank-resync-window/opengraph-image.tsx
 #: src/app/[lang]/features/mcc-auto-category/opengraph-image.tsx
@@ -3774,6 +3795,7 @@ msgstr "Block, материнська компанія Cash App, розкрил�
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/generic/component/footer/footer.tsx
 #: src/generic/component/header/header.tsx
@@ -5312,6 +5334,7 @@ msgid "Change the token once and every account on that connection follows"
 msgstr "Змініть токен один раз — і кожен рахунок на цьому підключенні підхопить зміну"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/opengraph-image.tsx
+#: src/app/[lang]/blog/whats-new-september-2026/opengraph-image.tsx
 msgid "changelog"
 msgstr "журнал змін"
 
@@ -6424,6 +6447,10 @@ msgstr "Семантика балансу боргу тепер уніфіков
 msgid "Debt balances and settlement got a rework"
 msgstr "Баланси боргів і їх погашення переробили"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Debt cards show a proper loading state instead of briefly flashing the full original amount, and the debt progress track now animates with reduced-motion support."
+msgstr "Картки боргу тепер показують коректний стан завантаження замість короткого миготіння повної початкової суми, а індикатор прогресу боргу тепер анімується з підтримкою зменшеного руху."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Debt counts, both directions"
 msgstr "Борги рахуються в обидва боки"
@@ -6455,6 +6482,10 @@ msgstr "Дедуплікує відносно наявних транзакці�
 #: src/app/[lang]/features/transfer-pair-detection/opengraph-image.tsx
 msgid "deduplication"
 msgstr "дедуплікація"
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Default category titles in the refund and consolidation pickers now respect your app language."
+msgstr "Стандартні назви категорій у списках вибору для повернення коштів і консолідації тепер відповідають мові вашого застосунку."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Delete your account in the budgeting app"
@@ -6571,6 +6602,10 @@ msgstr "Зберігання на пристрої"
 msgid "Device-to-Device Sync Architecture"
 msgstr "Архітектура синхронізації між пристроями"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Devices with a fingerprint sensor and no face scanner now get prompted for biometric unlock at all — they were silently skipped before — and the lock screen shows a fingerprint icon instead of a face-scan icon on those devices."
+msgstr "Пристрої з датчиком відбитка пальця й без сканера обличчя тепер отримують запит на біометричне розблокування — раніше їх непомітно пропускали — а екран блокування показує на таких пристроях значок відбитка пальця замість значка сканування обличчя."
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Direct API or PDF/CSV"
 msgstr "Прямий API або PDF/CSV"
@@ -6672,6 +6707,7 @@ msgid "Do I need to create an account to use Budgie?"
 msgstr "Чи потрібно створювати акаунт для використання Budgie?"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Do I need to do anything to get these changes?"
 msgstr "Чи потрібно щось робити, щоб отримати ці зміни?"
 
@@ -7797,6 +7833,10 @@ msgstr "Знайдіть відсутні категорії до того, як
 msgid "Find Uncategorized Transactions Before They Skew Your Budget"
 msgstr "Знайдіть транзакції без категорій до того, як вони спотворять бюджет"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Finishing bank-sync setup returns you to onboarding instead of leaving you stranded on the sync screen."
+msgstr "Після завершення налаштування банківської синхронізації ви повертаєтесь до початкового налаштування, а не залишаєтесь на екрані синхронізації."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Fintech companies operate in a volatile market. The app you trust today may not exist in two years."
 msgstr "Фінтех-компанії працюють на нестабільному ринку. Додаток, якому ви довіряєте сьогодні, може не існувати через два роки."
@@ -7878,6 +7918,10 @@ msgstr "Строкові депозити тепер мають власний �
 #: src/app/[lang]/features/deposit-tracking/metadata.ts
 msgid "Fixed-term savings kept separate from everyday spending, with maturity dates and expected payout math."
 msgstr "Строкові заощадження, відокремлені від повсякденних витрат, із датами погашення та розрахунком очікуваної виплати."
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "fixes"
+msgstr "виправлення"
 
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Flag, name and code per row"
@@ -8065,6 +8109,7 @@ msgstr "Безкоштовно, без облікового запису, без
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/feature/component/feature-page-faq-section/feature-page-faq-section.tsx
 msgid "Frequently Asked Questions"
@@ -8349,6 +8394,7 @@ msgstr "Позиції об'єднуються в чисті активи раз
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 #: src/app/[lang]/blog/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 #: src/app/[lang]/features/account-management/page.tsx
 #: src/app/[lang]/features/account-transfers/page.tsx
@@ -8756,6 +8802,10 @@ msgstr "Як експортувати дані з Mint (поки не пізно
 msgid "I found recurring subscriptions I had completely forgotten about. Cancelled them straight away, and those small amounts really add up."
 msgstr "Я знайшов регулярні підписки, про які повністю забув. Одразу їх скасував, і ці дрібні суми справді накопичуються."
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "I had on-device AI enabled before — did anything change for me?"
+msgstr "У мене вже був увімкнений локальний ШІ — чи щось змінилося для мене?"
+
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "I was spending way more on \"small purchases\" without realizing it. Budgie showed me the truth in the first week. The breakdown by category was eye-opening."
 msgstr "Я витрачав набагато більше на «дрібні покупки», не усвідомлюючи цього. Budgie показав мені правду вже в перший тиждень. Розбивка за категоріями відкрила очі."
@@ -8942,6 +8992,10 @@ msgstr "Імпортовані комісії стають записами ба
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Importing to Budgie"
 msgstr "Імпорт до Budgie:"
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Imports and repairs"
+msgstr "Імпорт та виправлення"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Improve and optimize app performance"
@@ -9228,6 +9282,7 @@ msgid "Is the project using well-maintained libraries or abandoned ones?"
 msgstr "Чи використовує проєкт добре підтримувані бібліотеки, чи покинуті?"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Is there a full changelog with every release?"
 msgstr "Чи є повний журнал змін для кожного релізу?"
 
@@ -10861,6 +10916,10 @@ msgstr "Ні. Кожен інференс виконується на вашом
 msgid "No. Every transaction, category, and balance lives in an encrypted SQLite database on your device. Budgie has no backend that receives financial data."
 msgstr "Ні. Кожна транзакція, категорія та баланс зберігаються у зашифрованій базі даних SQLite на вашому пристрої. У Budgie немає бекенду, що отримує фінансові дані."
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "No. Everything here ships in the regular app update. Runway and on-device AI are visible immediately; Runway’s home pill and crypto inclusion can be turned off again in Settings if you prefer the old header."
+msgstr "Ні. Усе це надходить зі звичайним оновленням застосунку. Runway та локальний ШІ видно одразу; плашку Runway на головному екрані та врахування криптовалюти можна знову вимкнути в Налаштуваннях, якщо ви віддаєте перевагу старому заголовку."
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "No. Exports are manual only — Budgie never writes a backup file on its own, and there is no scheduler and no reminder to turn on. Nothing is written until you tap Export Database."
 msgstr "Ні. Експорт лише ручний — Budgie ніколи не пише файл резервної копії самостійно, і немає ні планувальника, ні нагадування, які можна ввімкнути. Нічого не записується, доки ви не торкнетесь «Експортувати базу даних»."
@@ -11284,6 +11343,10 @@ msgstr "на пристрої"
 msgid "On-device — no merchant string ever leaves your phone"
 msgstr "На пристрої — жоден рядок назви торговця ніколи не залишає ваш телефон"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "on-device ai"
+msgstr "локальний ші"
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "on-device AI"
 msgstr "AI на пристрої"
@@ -11332,11 +11395,19 @@ msgstr "AI на пристрої для фінансів — приватний 
 msgid "On-Device AI Finance App — Private AI — Budgie"
 msgstr "Фінансовий додаток із AI на пристрої — приватний AI — Budgie"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "On-device AI got lighter, and easier to turn off"
+msgstr "Локальний ШІ став легшим і його простіше вимкнути"
+
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/metadata.ts
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/opengraph-image.tsx
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "On-Device AI in Your Budget App: How It Works and Why It Matters"
 msgstr "AI на пристрої у вашому бюджетному додатку: як це працює та чому це важливо"
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "On-device AI is back for people who installed Budgie before it first shipped — an update earlier this cycle had left it silently off for those installs. Settings now has a straightforward on-device AI switch, so turning categorization and voice entry off (or back on) no longer means digging through onboarding again."
+msgstr "Локальний ШІ повернувся для тих, хто встановив Budgie ще до його першого запуску — попереднє оновлення цього циклу непомітно залишило його вимкненим для таких інсталяцій. У Налаштуваннях тепер є простий перемикач локального ШІ, тож вимкнення (або повторне увімкнення) категоризації та голосового введення більше не вимагає проходження початкового налаштування заново."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "On-device AI means that the model weights and the inference computation both live on your device — in RAM, using your CPU or neural-engine hardware — rather than on a cloud server. When you ask for a category suggestion, the model receives your input and produces output without any network call."
@@ -11355,6 +11426,7 @@ msgid "On-device LLM splits natural speech into multiple transactions, each with
 msgstr "LLM на пристрої розбиває природну мову на кілька транзакцій, кожна зі своєю сумою та категорією"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/opengraph-image.tsx
+#: src/app/[lang]/blog/whats-new-september-2026/opengraph-image.tsx
 msgid "on-device-ai"
 msgstr ""
 
@@ -12864,6 +12936,10 @@ msgstr "Відтворіть структуру категорій (часто �
 msgid "recurring"
 msgstr "регулярні платежі"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Recurring bills, properly detected"
+msgstr "Регулярні платежі, правильно розпізнані"
+
 #: src/app/[lang]/features/recurring-payments-calendar/opengraph-image.tsx
 msgid "Recurring Calendar"
 msgstr "Календар регулярних платежів"
@@ -12889,6 +12965,10 @@ msgstr "Календар регулярних платежів"
 #: src/app/[lang]/features/recurring-payments-calendar/metadata.ts
 msgid "Recurring Payments Calendar — Budgie"
 msgstr "Календар регулярних платежів — Budgie"
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Recurring-payment detection was rebuilt around the actual billing cadence instead of a fixed monthly assumption: it now recognizes bi-monthly and quarterly bills, merges near-duplicate merchant names into one series, and projects upcoming occurrences into both past and future months instead of only the current one."
+msgstr "Виявлення регулярних платежів перебудували навколо реальної періодичності виставлення рахунків замість фіксованого припущення щомісячності: тепер воно розпізнає раз на два місяці та щоквартальні рахунки, об'єднує майже однакові назви продавців в одну серію та прогнозує майбутні випадки як у минулих, так і в майбутніх місяцях, а не лише в поточному."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Red once the limit breaks"
@@ -13071,6 +13151,10 @@ msgstr "Відновлення живе в тому самому списку н
 msgid "Restore replaces what is there"
 msgstr "Відновлення замінює наявне"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Restoring a PIN-protected backup now asks for that backup’s PIN and adopts it as your app PIN, instead of leaving the restored data unreadable behind your old PIN."
+msgstr "Відновлення резервної копії, захищеної PIN-кодом, тепер запитує PIN-код цієї копії та встановлює його як PIN-код застосунку, замість того щоб залишати відновлені дані нечитабельними за вашим старим PIN-кодом."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Returned vs lent"
 msgstr "Повернено порівняно з позиченим"
@@ -13164,8 +13248,8 @@ msgid "Running a cloud-first application requires servers, databases, and ongoin
 msgstr "Запуск хмарного застосунку потребує серверів, баз даних та постійних операційних витрат, що масштабуються з кількістю користувачів. Local-first застосунки перекладають обчислення та зберігання на пристрої користувачів. Граничні витрати на додаткового користувача наближаються до нуля."
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
-msgid "Running a large language model and a Whisper speech model on-device raises an obvious question: does the app stay fast to open? This cycle deferred llama and Whisper module evaluation past the first rendered frame, switched lucide icons to per-icon lazy imports, gated Lingui catalog loading behind an activation check instead of loading every locale eagerly, deferred sync services and background task registration off the boot path, dropped unreferenced embedded fonts, switched to date-fns deep subpath imports, and removed the intl-pluralrules polyfill now that Hermes ships it natively. Each change is small; together they keep first paint fast even with two on-device models available."
-msgstr "Запуск великої мовної моделі та мовної моделі Whisper на пристрої породжує очевидне питання: чи залишається застосунок швидким для відкриття? Цей цикл відклав обчислення модулів llama і Whisper до моменту після першого відрендереного кадру, перевів іконки lucide на лінивий імпорт для кожної іконки окремо, обумовив завантаження каталогів Lingui перевіркою активації замість жадібного завантаження кожної мови, відклав сервіси синхронізації та реєстрацію фонових завдань поза шляхом завантаження, прибрав неврахований вбудований шрифт, перейшов на глибокі підшляхові імпорти date-fns і прибрав поліфіл intl-pluralrules, оскільки Hermes тепер підтримує його нативно. Кожна зміна невелика; разом вони підтримують швидкий перший рендер навіть із двома доступними локальними моделями."
+msgid "Running three on-device AI models raises an obvious question: does the app stay fast to open? This cycle deferred model evaluation past the first rendered frame (a later cycle replaced this with loading models only while a feature is actually in use — see the September update), switched icons to per-icon lazy imports, gated translation catalog loading behind an activation check instead of loading every locale eagerly, deferred sync services and background task registration off the boot path, dropped unreferenced embedded fonts, and switched to deep subpath imports for date formatting. Each change is small; together they keep first paint fast even with three on-device models available."
+msgstr "Одночасна робота трьох локальних моделей ШІ ставить очевидне питання: чи залишається застосунок швидким під час відкриття? Цього циклу оцінку моделей відклали до моменту після першого відображеного кадру (пізніший цикл замінив це на завантаження моделей лише тоді, коли функція справді використовується — див. вересневе оновлення), значки перевели на відкладене імпортування для кожного значка окремо, завантаження каталогу перекладів прив'язали до перевірки активації замість жадібного завантаження кожної мови, служби синхронізації та реєстрацію фонових завдань відклали з шляху запуску, видалили невикористані вбудовані шрифти та перейшли на глибокі імпорти підшляхів для форматування дат. Кожна зміна невелика; разом вони зберігають швидкість першого відображення навіть за наявності трьох локальних моделей."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "Runs against the local database — no upload, no server"
@@ -13174,6 +13258,15 @@ msgstr "Працює з локальною базою даних — без за
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Runtimes designed for mobile inference handle memory management, tokenization, and batching in ways optimized for constrained environments. They minimize peak memory usage and keep the thermal footprint low enough for casual use without draining the battery."
 msgstr "Середовища виконання, розроблені для мобільного виводу, обробляють управління пам'яттю, токенізацію та пакетну обробку способами, оптимізованими для обмежених середовищ. Вони мінімізують пікове використання пам'яті та підтримують тепловий слід достатньо низьким для звичайного використання без розрядки батареї."
+
+#: src/app/[lang]/blog/whats-new-september-2026/opengraph-image.tsx
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "runway"
+msgstr "runway"
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Runway: one verdict instead of a dashboard"
+msgstr "Runway: один висновок замість панелі показників"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Safe deletion: prompts you to migrate or wipe transactions, never silently orphans"
@@ -13322,6 +13415,7 @@ msgstr ""
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/opengraph-image.tsx
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/features/biometric-authentication/opengraph-image.tsx
 #: src/app/[lang]/features/pin-app-lock/opengraph-image.tsx
 #: src/app/[lang]/features/screenshot-protection/opengraph-image.tsx
@@ -13375,6 +13469,10 @@ msgstr "Подивіться, що об'єдналося, і скасуйте ц
 #: src/app/[lang]/blog/whats-new-august-september-2026/metadata.ts
 msgid "See what shipped in Budgie between August and September 2026: bank integration settings, Binance sync, deposit and debt account types, amount-range filtering, consolidation accuracy fixes, and startup performance work."
 msgstr "Дізнайтеся, що вийшло в Budgie між серпнем і вереснем 2026 року: налаштування банківської інтеграції, синхронізація з Binance, типи рахунків депозиту та боргу, фільтрація за діапазоном суми, виправлення точності консолідації та робота над продуктивністю запуску."
+
+#: src/app/[lang]/blog/whats-new-september-2026/metadata.ts
+msgid "See what shipped in Budgie in September 2026: the Runway verdict and its Settings section, lighter on-device AI with a real off switch, fingerprint unlock, encrypted backup restore, own-card transfer repair, and smaller fixes."
+msgstr "Дізнайтеся, що вийшло в Budgie у вересні 2026 року: висновок Runway та його розділ Налаштувань, легший локальний ШІ зі справжнім перемикачем вимкнення, розблокування за відбитком пальця, відновлення зашифрованої резервної копії, виправлення переказів між власними картками та менші виправлення."
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "See where it actually goes"
@@ -13647,6 +13745,10 @@ msgstr "Маленька команда (ризик bus factor)"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Smaller development team"
 msgstr "Менша команда розробників"
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Smaller fixes worth a list"
+msgstr "Дрібніші виправлення, варті списку"
 
 #: src/app/[lang]/features/transfer-pair-detection/opengraph-image.tsx
 msgid "smart"
@@ -14536,6 +14638,10 @@ msgstr "Банк отримує власний екран: картки та б�
 msgid "The bank's category code"
 msgstr "Код категорії від банку"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "The bigger change is when the underlying models actually load. They used to load in full every time you opened the app, whether or not you used any AI feature that session. Now each model loads only when a feature that needs it runs, and is released again a short while after you stop using it — nothing loads at all if you never touch an AI feature."
+msgstr "Важливіша зміна стосується моменту, коли фактично завантажуються базові моделі. Раніше вони повністю завантажувались щоразу, коли ви відкривали застосунок, незалежно від того, чи використовували ви якусь функцію ШІ в цьому сеансі. Тепер кожна модель завантажується лише тоді, коли запускається функція, якій вона потрібна, і звільняється знову невдовзі після того, як ви перестаєте нею користуватися — якщо ви взагалі не торкаєтесь функцій ШІ, нічого не завантажується."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Bottom Line"
 msgstr "Підсумок"
@@ -14792,6 +14898,10 @@ msgstr "Прихована ціна \"безкоштовних\" бюджетн�
 msgid "The Hidden Dangers of Cloud-Based Financial Apps"
 msgstr "Приховані небезпеки хмарних фінансових додатків"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "The home screen now shows a Runway pill next to your total balance — a short read like “+$420/mo” or “≈4 mo” that tells you whether you are growing or burning through savings, without opening a report. Tapping it opens the Runway tab, which leads with a single verdict card: growing or burning, months of cover left or net per month, and a run-out date when you are burning."
+msgstr "Головний екран тепер показує плашку Runway поруч із загальним балансом — короткий показник на кшталт «+420 $/міс» або «≈4 міс», який повідомляє, зростаєте ви чи витрачаєте заощадження, без відкриття звіту. Дотик відкриває вкладку Runway, яка починається з єдиної картки-висновку: зростання чи витрачання, місяців запасу або чистий показник на місяць, і дата вичерпання коштів, якщо ви витрачаєте заощадження."
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "The importer builds the ledger out of the file: accounts and categories are created from the values it finds, MCC codes resolve to categories, and rows with both account legs become transfers. Dates are read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD, and amounts use a dot as the decimal separator."
 msgstr "Імпортер будує облік із файлу: рахунки й категорії створюються зі знайдених значень, коди MCC перетворюються на категорії, а рядки з обома рахунками стають переказами. Дати читаються як MM/DD/YYYY HH:MM:SS або YYYY-MM-DD, а суми використовують крапку як десятковий роздільник."
@@ -15032,6 +15142,10 @@ msgstr "Проблеми конфіденційності, описані вищ
 msgid "The privacy-first expense tracker that keeps your financial data exactly where it belongs, on your device."
 msgstr "Трекер витрат із пріоритетом приватності, який тримає ваші фінансові дані саме там, де їм місце: на вашому пристрої."
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "The PrivatBank import instructions were rewritten to match the real Privat24 flow: export the statement as Excel (PDF and CSV are rejected), grab the file from your email if Privat24 sends it there instead of downloading it directly, and know upfront that this is a one-time import, not a live sync. The button is labeled “Import” to match."
+msgstr "Інструкції з імпорту для PrivatBank переписали відповідно до реального процесу в Приват24: експортуйте виписку у форматі Excel (PDF і CSV відхиляються), заберіть файл з пошти, якщо Приват24 надсилає його туди замість прямого завантаження, і одразу майте на увазі, що це одноразовий імпорт, а не постійна синхронізація. Кнопка відповідно підписана «Імпорт»."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "The Problem We Saw"
 msgstr "Проблема, яку ми побачили:"
@@ -15148,6 +15262,10 @@ msgstr "Принцип безпеки, який сповідує відкрит�
 msgid "The selector tracks how often each category is picked and reorders the list so the top tappers stay near the top. The order is per-device."
 msgstr "Селектор відстежує, як часто обирається кожна категорія, і перебудовує список так, щоб найуживаніші знаходилися вгорі. Порядок є індивідуальним для кожного пристрою."
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "The September 2026 cycle replaced the cash-flow widget with one verdict, brought on-device AI back with a real off switch, and closed out a batch of import and transfer bugs. Here is what changed, with no marketing gloss."
+msgstr "Цикл вересня 2026 року замінив віджет грошового потоку єдиним висновком, повернув локальний ШІ зі справжнім перемикачем вимкнення та закрив пакет помилок імпорту й переказів. Ось що змінилося, без маркетингового глянцю."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The server cannot be breached because there is no server. Employee access is impossible because there are no employees with access to your data. Data aggregators are not involved because there is no aggregation."
 msgstr "Сервер не може бути зламаний, тому що сервера немає. Доступ співробітників неможливий, тому що немає співробітників з доступом до ваших даних. Агрегатори даних не задіяні, тому що агрегації немає."
@@ -15203,6 +15321,10 @@ msgstr ""
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "The source is public, but the licence is not OSI-approved open source. Budgie ships under the O'SAASY licence: you can read every line on GitHub, fork it and contribute, while commercial redistribution stays with the project."
 msgstr "Код відкритий для читання, але ліцензія не є open source, схваленою OSI. Budgie виходить під ліцензією O'SAASY: ви можете прочитати кожен рядок на GitHub, зробити форк і зробити внесок, а комерційне розповсюдження лишається за проєктом."
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "The split screen’s “left to assign” footer could get stuck at a fraction of a cent and never turn into the confirm button; the remaining amount is now compared exactly. See <0>split transactions</0>."
+msgstr "Нижній напис «залишилося розподілити» на екрані розподілу міг зависати на частці копійки й ніколи не перетворюватися на кнопку підтвердження; тепер залишок суми порівнюється точно. Див. <0>розподіл транзакцій</0>."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "The spoken currency picks the matching account automatically"
@@ -15561,6 +15683,10 @@ msgstr "Ця власність поширюється на довговічні
 msgid "This post groups the user-visible work from one release window. It is not a line-by-line release log — check the app store listing for the exact version history."
 msgstr "Цей допис групує видиму для користувача роботу одного вікна релізу. Це не покроковий журнал релізу — перевірте список у магазині застосунків для точної історії версій."
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "This post groups the user-visible work from one release window. It is not a line-by-line release log; check the app store listing for the exact version history."
+msgstr "У цій публікації зібрано помітну для користувача роботу за один період випуску. Це не покроковий журнал змін; точну історію версій дивіться на сторінці застосунку в магазині."
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "This principle extends to more complex data structures:"
 msgstr "Цей принцип поширюється на складніші структури даних:"
@@ -15868,6 +15994,10 @@ msgstr "Переказ між власними рахунками як перш�
 msgid "Transfer Consolidation"
 msgstr "Консолідація переказів"
 
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Transferring money to or from a debt account keeps the category you had on the original entry instead of overwriting it with a generic transfer category. See <0>debt & loan tracking</0>."
+msgstr "Переказ коштів на рахунок боргу або з нього тепер зберігає категорію, яку мав початковий запис, замість заміни її загальною категорією переказу. Див. <0>відстеження боргів і кредитів</0>."
+
 #: src/app/[lang]/features/account-transfers/opengraph-image.tsx
 #: src/app/[lang]/features/transfer-pair-detection/opengraph-image.tsx
 msgid "transfers"
@@ -15876,6 +16006,10 @@ msgstr "перекази"
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Transfers between your accounts are not income or expenses — and an app that treats them as such will mis-state your spending. Budgie has a first-class Transfer transaction type with explicit source and destination accounts."
 msgstr "Перекази між вашими рахунками — це не дохід і не витрати, і додаток, який ставиться до них як до таких, викривлює ваші витрати. Budgie має першокласний тип транзакції «Переказ» з явними рахунками джерела та призначення."
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Transfers between your own PrivatBank cards now get paired and classified correctly instead of sitting around as two unrelated entries; matching now checks the card number first and only falls back to the account number when that is unavailable. See <0>account transfers</0>."
+msgstr "Перекази між вашими власними картками PrivatBank тепер правильно пов'язуються та класифікуються, а не залишаються двома непов'язаними записами; зіставлення тепер спершу перевіряє номер картки і лише за його відсутності повертається до номера рахунку. Див. <0>перекази між рахунками</0>."
 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Translated form indexed by embeddings — semantic search hits whatever you remember"
@@ -16149,6 +16283,10 @@ msgstr "Необмежена кількість рахунків: поточни
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Unlimited splits per transaction — every category gets its accurate share"
 msgstr "Необмежена кількість розбивок на транзакцію — кожна категорія отримує точну частку"
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Unlock and restore, fixed"
+msgstr "Розблокування та відновлення виправлено"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Unrealized gain over cost basis"
@@ -16954,9 +17092,18 @@ msgstr "Що у відрі «Без тегів»?"
 msgid "What's New in Budgie: Bank Integrations, Binance Sync, Deposits, and Debt"
 msgstr "Що нового в Budgie: банківські інтеграції, синхронізація з Binance, депозити та борги"
 
+#: src/app/[lang]/blog/whats-new-september-2026/metadata.ts
+#: src/app/[lang]/blog/whats-new-september-2026/opengraph-image.tsx
+msgid "What's New in Budgie: One Runway Verdict, Lighter On-Device AI, and Repaired Transfers"
+msgstr "Що нового в Budgie: один висновок Runway, легший локальний ШІ та виправлені перекази"
+
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "What’s New: Bank Integrations, Binance Sync, Deposits, and Debt"
 msgstr "Що нового: банківські інтеграції, синхронізація з Binance, депозити та борги"
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "What’s New: One Runway Verdict, Lighter On-Device AI, and Repaired Transfers"
+msgstr "Що нового: один висновок Runway, легший локальний ШІ та виправлені перекази"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "What’s Public Source: Everything"
@@ -18598,6 +18745,10 @@ msgstr "Ваші стосунки та соціальні зв'язки"
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Your right to use the Service will immediately cease"
 msgstr ""
+
+#: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+msgid "Your setting is unchanged. What changed is timing: models now load only while a feature is actually running instead of every time you open the app."
+msgstr "Ваше налаштування не змінилося. Змінився час: моделі тепер завантажуються лише тоді, коли функція справді виконується, а не щоразу, коли ви відкриваєте застосунок."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your shopping habits and preferences"
