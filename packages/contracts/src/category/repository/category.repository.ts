@@ -1,4 +1,4 @@
-import { and, count, eq, getTableColumns, isNull, like, or, sql } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, inArray, isNull, like, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -7,6 +7,7 @@ import { TranslatableRepositoryBase } from '../../@generic/repository/translatab
 import { DB } from '../../@generic/type/db.type';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { DEBT_SYSTEM_CATEGORY_IDS } from '../constant/debt-system-category-ids.constant';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
 import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.interface';
 import { CategoryEntityTable } from '../table/category-entity.table';
@@ -27,15 +28,17 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         });
     }
 
-    findAll(language: LanguageEnum) {
-        return this.buildLocalizedCategoryBaseQuery(language);
+    findAllNonSystemLocalized(language: LanguageEnum) {
+        return this.buildLocalizedCategoryBaseQuery(language).where(eq(CategoryEntityTable.isSystemCategory, false));
     }
 
     findBySearchQuery(search: string, includeDefault: boolean, language: LanguageEnum) {
         const trimmed = search.trim();
-        const baseFilter = includeDefault
-            ? eq(CategoryEntityTable.isSystemCategory, false)
-            : and(eq(CategoryEntityTable.isDefault, false), eq(CategoryEntityTable.isSystemCategory, false));
+        const selectableFilter = or(
+            eq(CategoryEntityTable.isSystemCategory, false),
+            inArray(CategoryEntityTable.id, DEBT_SYSTEM_CATEGORY_IDS)
+        );
+        const baseFilter = includeDefault ? selectableFilter : and(eq(CategoryEntityTable.isDefault, false), selectableFilter);
         const sortedByUsage = this.buildLocalizedCategoryBaseQuery(language).leftJoin(
             TransactionEntryEntityTable,
             eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId)

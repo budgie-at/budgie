@@ -8,9 +8,9 @@ import type { CategoryEntityInterface } from '@budgie/contracts';
 
 const EMPTY_CATEGORIES: CategoryEntityInterface[] = [];
 
-export const useAllCategoriesQuery = () => {
+export const useNonSystemCategoriesQuery = () => {
     const language = useSetting('language');
-    const { data, error, updatedAt } = useDatabaseLiveQuery(categoryRepository.findAll(language), [language]);
+    const { data, error, updatedAt } = useDatabaseLiveQuery(categoryRepository.findAllNonSystemLocalized(language), [language]);
 
     if (!isDefined(data)) {
         return { isLoading: true, categories: EMPTY_CATEGORIES, updatedAt: null, error };
