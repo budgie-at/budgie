@@ -38,6 +38,7 @@ describe('consolidation/family-priority', () => {
             'IBAN_BRIDGE_CHAIN_TRANSFER',
             'EXISTING_TRANSFER_BRIDGE',
             'EXISTING_TRANSFER_CHAIN_RECLAIM',
+            'IBAN_BRIDGE_CANONICAL_SUPERSESSION',
             'IBAN_BRIDGE_CANONICAL_DUPLICATE',
             'IBAN_BRIDGE_TRANSFER',
             'EXISTING_TRANSFER_INCOME_DUPLICATE',
