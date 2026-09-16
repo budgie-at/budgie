@@ -239,11 +239,6 @@ export default async function LicensePage(props: PageLangParam) {
             </p>
             <p>
                 <Trans>
-                    <strong>WatermelonDB</strong> MIT License - Reactive database framework for React Native
-                </Trans>
-            </p>
-            <p>
-                <Trans>
                     <strong>TanStack Query</strong> MIT License - Data fetching and state management
                 </Trans>
             </p>

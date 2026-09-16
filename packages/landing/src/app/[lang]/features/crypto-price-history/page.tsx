@@ -87,7 +87,7 @@ export default async function CryptoPriceHistoryFeaturePage(props: PageLangParam
                     <Trans>
                         Most crypto trackers draw their charts from a live ticker: the app opens a connection to a price provider, and the
                         chart is gone the moment that connection is. Budgie stores prices instead. Every daily close it fetches is written
-                        to your own SQLite database, and the chart is read back out of it — so it never flickers while a socket reconnects.
+                        to your phone, and the chart is read back out of that copy — so it never flickers while a socket reconnects.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -120,7 +120,7 @@ export default async function CryptoPriceHistoryFeaturePage(props: PageLangParam
                         <Trans>Only the assets you actually hold are backfilled — no wasted downloads</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
-                        <Trans>The chart is read from your own SQLite database, so it renders with the network off</Trans>
+                        <Trans>The chart is read from your own phone, so it renders with the network off</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -148,8 +148,7 @@ export default async function CryptoPriceHistoryFeaturePage(props: PageLangParam
                     question={<Trans>Does the chart work offline?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Prices are stored in your own SQLite database and the chart is read from there, so it renders with the
-                            network off.
+                            Yes. Prices are saved on your phone and the chart is drawn from that copy, so it renders with the network off.
                         </Trans>
                     }
                 />
