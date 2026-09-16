@@ -127,19 +127,19 @@ git commit -m "fix(app): associate Binance accounts before syncing"
 - Verify: `packages/app/src/sync/service/binance-sync.service.ts`
 - Verify: `tests/sync-tests/src/scenarios/binance/account-agnostic-sources.test.ts`
 
-- [ ] **Step 1: Run formatting**
+- [x] **Step 1: Run formatting**
 
 Run `pnpm format`.
 
 Expected: exit code 0; commit formatting changes if any are produced.
 
-- [ ] **Step 2: Run TypeScript validation**
+- [x] **Step 2: Run TypeScript validation**
 
 Run `pnpm ts`.
 
 Expected: all workspace TypeScript tasks pass.
 
-- [ ] **Step 3: Run the complete sync integration suite**
+- [x] **Step 3: Run the complete sync integration suite**
 
 Run:
 
@@ -149,13 +149,13 @@ pnpm --dir tests/sync-tests exec vitest run --testTimeout=10000
 
 Expected: all sync integration tests pass.
 
-- [ ] **Step 4: Run repository static checks**
+- [x] **Step 4: Run repository static checks**
 
 Run `pnpm lint`, `pnpm deadcode`, and `pnpm cpd`.
 
 Expected: zero lint errors, dead-code command exits successfully, and duplication reports zero clones.
 
-- [ ] **Step 5: Confirm the branch is clean**
+- [x] **Step 5: Confirm the branch is clean**
 
 Run:
 
