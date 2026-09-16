@@ -191,11 +191,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         (error, sync, result, runGeneration) =>
             `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} runGeneration=${runGeneration} error=${getErrorMessage(error)}`
     )
-    protected async applyProgressUpdate(
-        sync: SyncEntityInterface,
-        result: SyncBatchResultInterface,
-        runGeneration: number
-    ): Promise<void> {
+    protected async applyProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface, runGeneration: number): Promise<void> {
         if (!this.isRunCurrent(runGeneration)) {
             return;
         }
@@ -524,7 +520,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         }
     }
 
-    private resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {
+    protected resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {
         const now = new Date();
         const transactionCount = result.transactionCount ?? result.transactions.length;
         const baseUpdate = { transactionCount: sync.transactionCount + transactionCount, errorCount: 0, lastError: null };
