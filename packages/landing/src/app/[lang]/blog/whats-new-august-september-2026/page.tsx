@@ -231,13 +231,13 @@ export default async function WhatsNewAugustSeptember2026Article(props: PageLang
                     </BlogArticleHeading>
                     <BlogArticleProse>
                         <Trans>
-                            Running a large language model and a Whisper speech model on-device raises an obvious question: does the app
-                            stay fast to open? This cycle deferred llama and Whisper module evaluation past the first rendered frame,
-                            switched lucide icons to per-icon lazy imports, gated Lingui catalog loading behind an activation check instead
-                            of loading every locale eagerly, deferred sync services and background task registration off the boot path,
-                            dropped unreferenced embedded fonts, switched to date-fns deep subpath imports, and removed the intl-pluralrules
-                            polyfill now that Hermes ships it natively. Each change is small; together they keep first paint fast even with
-                            two on-device models available.
+                            Running three on-device AI models raises an obvious question: does the app stay fast to open? This cycle
+                            deferred model evaluation past the first rendered frame (a later cycle replaced this with loading models only
+                            while a feature is actually in use — see the September update), switched icons to per-icon lazy imports, gated
+                            translation catalog loading behind an activation check instead of loading every locale eagerly, deferred sync
+                            services and background task registration off the boot path, dropped unreferenced embedded fonts, and switched
+                            to deep subpath imports for date formatting. Each change is small; together they keep first paint fast even with
+                            three on-device models available.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
