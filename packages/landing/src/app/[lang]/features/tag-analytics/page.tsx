@@ -73,8 +73,8 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        A dedicated Tags tab lives alongside the Categories tab in Analytics — per-tag income, expense, and net totals, plus
-                        a drillable Untagged bucket that surfaces every transaction missing a label.
+                        A dedicated Tags tab lives in Analytics next to the Categories and Runway tabs — per-tag income, expense, and net
+                        totals, plus a drillable Untagged bucket that surfaces every transaction missing a label.
                     </Trans>
                 }
             />
@@ -104,7 +104,7 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Dedicated Tags tab alongside the Categories tab — one tap to switch views</Trans>
+                        <Trans>Dedicated Tags tab in Analytics, next to Categories and Runway — one tap to switch views</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Per-tag income, expense, and net totals — each tag row broken out separately</Trans>

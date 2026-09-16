@@ -32,6 +32,6 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
     publishedAt: '2025-12-19',
-    updatedAt: '2026-05-03',
+    updatedAt: '2026-09-16',
     ogTags: ['analytics', 'charts', 'drill-down']
 } satisfies FeatureRegistryEntryInterface;

@@ -23,6 +23,6 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['transaction-tags', 'primary-tag', 'spending-analytics', 'date-filter-presets'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
     publishedAt: '2026-01-04',
-    updatedAt: '2026-05-07',
+    updatedAt: '2026-09-16',
     ogTags: ['tags', 'analytics', 'drill-down']
 } satisfies FeatureRegistryEntryInterface;
