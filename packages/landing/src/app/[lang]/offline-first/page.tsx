@@ -66,7 +66,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                         <Trans>Analytics, charts, and reports work entirely on-device</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
-                        <Trans>Encrypted local backups you can restore without a server</Trans>
+                        <Trans>Local backup files you can restore without a server — encrypted whenever your PIN is set</Trans>
                     </PillarHubHeroBulletItem>
                 </PillarHubHeroBulletList>
             </PillarHubHero>
@@ -100,7 +100,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/database-backup`}
                         index={4}
-                        tagline={<Trans>One encrypted file. No account. Restore on any device in seconds.</Trans>}
+                        tagline={<Trans>One file. No account. Restore by picking it — encrypted if your PIN was set.</Trans>}
                         title={<Trans>Database Backup &amp; Restore</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
@@ -121,7 +121,7 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Yes. The entire transaction entry flow — amount, category, tags, account — works fully offline. Your data is
-                            written directly to the on-device SQLite database with no network call.
+                            written directly to the on-device database with no network call.
                         </Trans>
                     }
                     question={<Trans>Can I add transactions without an internet connection?</Trans>}
