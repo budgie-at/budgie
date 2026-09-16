@@ -7526,10 +7526,6 @@ msgstr "Exporter la base de données écrit toute la base dans un seul fichier. 
 msgid "Export Every Transaction You've Logged"
 msgstr "Exportez chaque transaction que vous avez enregistrée"
 
-#: src/app/[lang]/features/privatbank-import/page.tsx
-msgid "Export the XLSX from your PrivatBank24 statements page. Open Budgie, tap Import → PrivatBank. Budgie validates the format, parses the rows, and writes them to your selected PrivatBank account."
-msgstr "Exportez le XLSX depuis la page de relevés PrivatBank24. Ouvrez Budgie, touchez Importer → PrivatBank. Budgie valide le format, analyse les lignes et les écrit dans votre compte PrivatBank sélectionné."
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Export to JSON, CSV, or direct database access"
 msgstr "Export en JSON, CSV, ou accès direct à la base de données"
@@ -8521,13 +8517,13 @@ msgstr "Comment budgéter sans synchronisation bancaire ?"
 msgid "How do I close a deposit?"
 msgstr "Comment clôturer un dépôt ?"
 
+#: src/app/[lang]/features/privatbank-import/page.tsx
+msgid "How do I export from Privat24?"
+msgstr "Comment exporter depuis Privat24 ?"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How do I export my data if I stop using Budgie?"
 msgstr "Comment exporter mes donnees si j'arrete d'utiliser Budgie ?"
-
-#: src/app/[lang]/features/privatbank-import/page.tsx
-msgid "How do I export the XLSX from PrivatBank24?"
-msgstr "Comment exporter le XLSX depuis PrivatBank24 ?"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "How do I know the app I download matches the public source code?"
@@ -8999,6 +8995,10 @@ msgstr "En decembre 2023, Intuit a annonce la fermeture de Mint apres 17 ans. Le
 msgid "In practice, for most personal applications, this is rarely visible to users. Sync is fast enough that inconsistency windows are short. But your code should not assume instant consistency."
 msgstr "En pratique, pour la plupart des applications personnelles, cela est rarement visible par les utilisateurs. La synchronisation est suffisamment rapide pour que les fenêtres d'incohérence soient courtes. Mais votre code ne doit pas présumer d'une cohérence instantanée."
 
+#: src/app/[lang]/features/privatbank-import/page.tsx
+msgid "In the Privat24 app, select the card or account you want to import, open its statement, and choose a date range covering your full history. Export it as Excel — PDF and CSV aren't accepted — and if Privat24 emails the file instead of downloading it, save the attachment from your inbox. In Budgie, start a new account, choose PrivatBank, and pick the saved file. Budgie validates it, parses the rows, and writes them to your selected account."
+msgstr "Dans l'application Privat24, sélectionnez la carte ou le compte que vous souhaitez importer, ouvrez son relevé et choisissez une plage de dates couvrant tout votre historique. Exportez-le au format Excel — les fichiers PDF et CSV ne sont pas acceptés — et si Privat24 vous envoie le fichier par e-mail au lieu de le télécharger, enregistrez la pièce jointe depuis votre boîte de réception. Dans Budgie, créez un nouveau compte, choisissez PrivatBank, puis sélectionnez le fichier enregistré. Budgie le valide, traite les lignes et les inscrit dans le compte sélectionné."
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "In the same list as your bank"
 msgstr "Dans la même liste que votre banque"
@@ -9242,6 +9242,10 @@ msgstr "Y a-t-il un abonnement ?"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Is there active discussion about privacy and data handling?"
 msgstr "Y a-t-il une discussion active sur la confidentialité et le traitement des données ?"
+
+#: src/app/[lang]/features/privatbank-import/page.tsx
+msgid "Is this a live sync?"
+msgstr "S'agit-il d'une synchronisation en direct ?"
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Is this the same as the AI categorization?"
@@ -9622,12 +9626,12 @@ msgid "Logged a payment as expense but it was a transfer? One tap reclassifies �
 msgstr "Vous avez enregistré un paiement comme dépense, mais c'était un virement ? Un toucher reclassifie — les deux legs se lient, les soldes se réconcilient, les analytiques se mettent à jour."
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
-msgid "Long-press a PrivatBank account card on the home screen for a one-tap re-import"
-msgstr "Appuyez longuement sur une carte de compte PrivatBank sur l'écran d'accueil pour une réimportation en un toucher"
+msgid "Long-press a PrivatBank account card on the home screen to jump straight to the file picker for a fresh import"
+msgstr "Appuyez longuement sur une carte de compte PrivatBank sur l'écran d'accueil pour accéder directement au sélecteur de fichiers d'un nouvel import"
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
-msgid "Long-press a PrivatBank account card on the home screen for a one-tap re-import — Budgie remembers the file and the column mapping."
-msgstr "Appuyez longuement sur une carte de compte PrivatBank sur l'écran d'accueil pour une réimportation en un toucher — Budgie mémorise le fichier et le mapping de colonnes."
+msgid "Long-press a PrivatBank account card on the home screen to jump straight to the file picker for that account — pick a fresh export and Budgie merges it in, skipping anything already imported."
+msgstr "Appuyez longuement sur une carte de compte PrivatBank sur l'écran d'accueil pour accéder directement au sélecteur de fichiers de ce compte — choisissez un nouvel export et Budgie l'intègre, en ignorant ce qui a déjà été importé."
 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Long-press a tag chip on the card to rotate which one is primary. The choice persists across edits, and the badge stays through bank-sync re-imports."
@@ -10556,6 +10560,10 @@ msgstr "Plus récent sur le marché comparé aux alternatives établies"
 msgid "No"
 msgstr "Non"
 
+#: src/app/[lang]/features/privatbank-import/page.tsx
+msgid "No — long-press just opens the file picker for that account. Re-importing the same export again is safe; anything already there is skipped."
+msgstr "Non — l'appui long ouvre simplement le sélecteur de fichiers de ce compte. Réimporter le même export est sans risque ; ce qui est déjà présent est ignoré."
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "No “forgot PIN” recovery — that's the privacy guarantee"
 msgstr "Pas de récupération « PIN oublié » — c’est la garantie de confidentialité"
@@ -10861,10 +10869,6 @@ msgstr "Non. Les exports sont uniquement manuels : Budgie n'écrit jamais de fic
 msgid "No. PDF parsing happens entirely on-device — your statement never leaves your phone."
 msgstr "Non. L’analyse du PDF se fait entièrement sur l’appareil — votre relevé ne quitte jamais votre téléphone."
 
-#: src/app/[lang]/features/privatbank-import/page.tsx
-msgid "No. Re-import always dedupes by transaction ID, so re-pulling the same file is safe and idempotent."
-msgstr "Non. La réimportation déduplique toujours par identifiant de transaction, donc récupérer le même fichier est sans risque et idempotent."
-
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "No. Rules are explicit conditions you wrote and can read back. AI categorization is a separate on-device suggestion engine for merchants no rule covers yet."
 msgstr "Non. Les règles sont des conditions explicites que vous avez écrites et pouvez relire. La catégorisation par IA est un moteur de suggestion distinct, sur l'appareil, pour les commerçants qu'aucune règle ne couvre encore."
@@ -10924,6 +10928,10 @@ msgstr "Non. Il n'y a ni connexion ticker ni compte ; le complément utilise les
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "No. They are local notifications scheduled by the app itself from data already on your device. Nothing is sent to a server, and no account is required."
 msgstr "Non. Ce sont des notifications locales programmées par l'application elle-même à partir de données déjà présentes sur votre appareil. Rien n'est envoyé à un serveur, et aucun compte n'est requis."
+
+#: src/app/[lang]/features/privatbank-import/page.tsx
+msgid "No. This is a one-time import from a Privat24 statement export, and each export only covers a single card or account. Re-run the import whenever you want fresh data."
+msgstr "Non. Il s'agit d'un import ponctuel à partir d'un relevé Privat24, et chaque export ne couvre qu'une seule carte ou un seul compte. Relancez l'import dès que vous voulez des données à jour."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "No. This Week and Last Week always use a Monday-to-Sunday week, regardless of your locale — there is no locale-based or manual override today."
@@ -11609,6 +11617,14 @@ msgstr "Vue détaillée en un toucher uniquement sur les transactions non catég
 msgid "One-tap form fill — category, tags, comment, amount, and account pre-populated from your own history"
 msgstr "Remplissage du formulaire en un geste — catégorie, tags, commentaire, montant et compte pré-remplis depuis votre propre historique"
 
+#: src/app/[lang]/features/privatbank-import/page.tsx
+msgid "One-time import per card or account — not a live sync, so re-run it whenever you want fresh data"
+msgstr "Import ponctuel par carte ou par compte — pas de synchronisation en direct, relancez-le donc dès que vous voulez des données à jour"
+
+#: src/app/[lang]/features/privatbank-import/metadata.ts
+msgid "One-time import, MCC-mapped — long-press an account card to jump to the picker."
+msgstr "Import ponctuel, avec correspondance MCC — appuyez longuement sur une carte de compte pour accéder au sélecteur de fichiers."
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Ongoing Practices"
 msgstr "Pratiques continues"
@@ -11690,8 +11706,8 @@ msgid "Open Budgie and go to Settings, then Import Data"
 msgstr "Ouvrez Budgie et allez dans Paramètres > Importer des données"
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
-msgid "Open privat24.ua in a browser, go to Statements, pick the date range, and use the XLSX export button. Save the file and import via Budgie's Import → PrivatBank flow."
-msgstr "Ouvrez privat24.ua dans un navigateur, allez dans Relevés, choisissez la plage de dates et utilisez le bouton d’export XLSX. Enregistrez le fichier et importez via le flux Import → PrivatBank de Budgie."
+msgid "Open Privat24, select the card or account you want to import, and open its statement. Choose a date range that covers your full history, then export it as Excel — PDF and CSV files can't be imported. If Privat24 emails you the file instead of downloading it, save the attachment from your inbox, then pick it from Budgie's file picker."
+msgstr "Dans Privat24, sélectionnez la carte ou le compte que vous souhaitez importer, puis ouvrez son relevé. Choisissez une plage de dates couvrant tout votre historique, puis exportez-le au format Excel — les fichiers PDF et CSV ne peuvent pas être importés. Si Privat24 vous envoie le fichier par e-mail au lieu de le télécharger, enregistrez la pièce jointe depuis votre boîte de réception, puis sélectionnez-le dans le sélecteur de fichiers de Budgie."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
@@ -15457,6 +15473,10 @@ msgstr "C’est une inquiétude légitime, mais la recherche en sécurité montr
 msgid "This is a development build — it expects a running Metro bundler or the development EAS Update channel."
 msgstr "Il s'agit d'une version de développement — elle nécessite un bundler Metro actif ou le canal de mise à jour de développement EAS."
 
+#: src/app/[lang]/features/privatbank-import/page.tsx
+msgid "This is a one-time import from a Privat24 statement export, not a live sync — each export covers a single card or account, so a multi-card wallet needs one import per card."
+msgstr "Il s'agit d'un import ponctuel à partir d'un relevé Privat24, pas d'une synchronisation en direct — chaque export ne couvre qu'une seule carte ou un seul compte, donc un portefeuille à plusieurs cartes nécessite un import par carte."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "This is a valid concern known as “build verification.” Budgie uses reproducible builds where possible, allowing anyone to verify that the published app matches the source code. For mobile apps, additional trust is required in the app store distribution, but the public source code ensures you can build the app yourself if you want maximum verification. We also provide checksums for releases so you can verify download integrity."
 msgstr "C'est une préoccupation valable, connue sous le nom de « vérification de build ». Budgie utilise des builds reproductibles lorsque c'est possible, permettant à chacun de vérifier que l'application publiée correspond au code source. Pour les applications mobiles, une confiance supplémentaire est nécessaire dans la distribution par les stores, mais le code source public garantit que vous pouvez construire l'application vous-même si vous voulez une vérification maximale. Nous fournissons aussi des sommes de contrôle pour les versions afin que vous puissiez vérifier l'intégrité du téléchargement."
@@ -17781,10 +17801,6 @@ msgstr "Écrit par le modèle de l’appareil"
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "xlsx"
 msgstr "xlsx"
-
-#: src/app/[lang]/features/privatbank-import/metadata.ts
-msgid "XLSX, MCC-mapped, two taps — long-press an account card to re-import."
-msgstr "Importez un export PrivatBank XLSX avec mapping MCC, puis appuyez longuement sur la carte du compte pour réimporter plus tard."
 
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "XLSX, MCC-mapped, two taps."
