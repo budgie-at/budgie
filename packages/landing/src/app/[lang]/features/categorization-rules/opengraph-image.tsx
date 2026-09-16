@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Transaction Categorization Rules — Budgie';
@@ -15,7 +16,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     return createFeatureOgImage(
         t(i18n)`Categorization Rules — Deterministic, Not Guesswork`,
         t(i18n)`If the title contains this and the MCC is that, set the category, add the tag, or make it a transfer.`,
-        [t(i18n)`rules`, t(i18n)`categorization`, t(i18n)`automation`]
+        [t(i18n)`rules`, t(i18n)`categorization`, t(i18n)`automation`],
+        resolveOgPlate('categorization-rules', lang)
     );
 };
 

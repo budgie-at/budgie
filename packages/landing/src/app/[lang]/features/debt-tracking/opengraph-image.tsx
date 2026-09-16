@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Debt & Loan Tracking — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`Debt Tracking`, t(i18n)`Money out, money in — first class.`, [
-        t(i18n)`debt`,
-        t(i18n)`loans`,
-        t(i18n)`contacts`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`Debt Tracking`,
+        t(i18n)`Money out, money in — first class.`,
+        [t(i18n)`debt`, t(i18n)`loans`, t(i18n)`contacts`],
+        resolveOgPlate('debt-tracking', lang)
+    );
 };
 
 export default OgImage;

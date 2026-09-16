@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'On-Device AI Budget App — Private LLM Categorization — Budgie';
@@ -17,7 +18,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         t(
             i18n
         )`Cloud AI assistants for budgeting send every transaction to a remote server for "intelligence". Budgie runs the LLM and embeddings on your phone — your data never leaves.`,
-        [t(i18n)`ai`, t(i18n)`on-device`, t(i18n)`privacy`]
+        [t(i18n)`ai`, t(i18n)`on-device`, t(i18n)`privacy`],
+        resolveOgPlate('on-device-ai-budget-app', lang)
     );
 };
 
