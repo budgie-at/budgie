@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.6](https://github.com/budgie-at/budgie/compare/v6.67.5...v6.67.6) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** describe recurring detection as computed and read-only ([c2d8f54](https://github.com/budgie-at/budgie/commit/c2d8f544d9f3fc97995c54b350d155fc28684e6d))
+
+
+
+
+
 ## [6.67.5](https://github.com/budgie-at/budgie/compare/v6.67.4...v6.67.5) (2026-09-16)
 
 
