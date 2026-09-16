@@ -8,6 +8,7 @@ import {
     PRECISION,
     SyncEntityTable,
     SyncModeEnum,
+    SyncWarningEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
@@ -215,7 +216,7 @@ describe('binance/c2c-orders mapping', () => {
         const transactions = fetchBinanceTransactions();
         expect(transactions).toHaveLength(1);
         expect(transactions[0].externalId).toBe('dep-after-c2c-403');
-        expect(fetchSyncById(sync.id).lastWarning).toContain('P2P');
+        expect(fetchSyncById(sync.id).lastWarning).toBe(SyncWarningEnum.C2C_UNAVAILABLE);
     });
 
     it('clears a previously recorded C2C warning once the C2C endpoint becomes available again', async () => {
@@ -223,7 +224,7 @@ describe('binance/c2c-orders mapping', () => {
         binanceStub.c2cUnavailable();
         binanceStub.deposits([]);
         await binanceSyncService.sync();
-        expect(fetchSyncById(sync.id).lastWarning).toContain('P2P');
+        expect(fetchSyncById(sync.id).lastWarning).toBe(SyncWarningEnum.C2C_UNAVAILABLE);
 
         resetBinanceSyncForResync();
         testDb.update(SyncEntityTable).set({ forwardSyncedAt: null }).where(eq(SyncEntityTable.id, sync.id)).run();

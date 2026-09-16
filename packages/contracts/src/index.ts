@@ -78,6 +78,7 @@ export type { DebtAccountProgressSummaryInterface } from './account-balance/inte
 export { SyncModeEnum } from './sync/enum/sync-mode.enum';
 export { SyncStatusEnum } from './sync/enum/sync-status.enum';
 export { SyncAssociationEnum } from './sync/enum/sync-association.enum';
+export { SyncWarningEnum } from './sync/enum/sync-warning.enum';
 
 export { DebtEventDirectionEnum } from './debt-event/enum/debt-event-direction.enum';
 export { DebtEventSourceEnum } from './debt-event/enum/debt-event-source.enum';

@@ -1,4 +1,4 @@
-import { ExternalSourceEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, SyncModeEnum, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -54,6 +54,9 @@ export const AccountSyncCard = ({ accountId }: Props) => {
     const providerService = syncProviderRegistryService.getServiceForProvider(sync.provider);
     const supportsTokenAuth = providerService?.supportsTokenAuth === true;
     const syncLabel = providerService?.supportsFileImport === true ? t`Include in file imports` : t`Sync`;
+    const warningLabels: Record<SyncWarningEnum, string> = {
+        [SyncWarningEnum.C2C_UNAVAILABLE]: t`Binance P2P orders are unavailable: the API key is missing P2P read permission.`
+    };
     const tokenSection =
         sync.provider === ExternalSourceEnum.BINANCE ? (
             <BinanceSyncTokenSection accountId={accountId} />
@@ -106,13 +109,13 @@ export const AccountSyncCard = ({ accountId }: Props) => {
                     </>
                 )}
 
-                {isNotEmptyString(sync.lastWarning) && (
+                {isDefined(sync.lastWarning) && (
                     <View className="gap-y-xs">
                         <Text className="text-xs text-secondary-foreground">
                             <Trans>Warning</Trans>
                         </Text>
-                        <Text className="text-secondary-foreground text-dark-warning-foreground text-xs" numberOfLines={2}>
-                            {sync.lastWarning}
+                        <Text className="text-warning-foreground text-xs" numberOfLines={2}>
+                            {warningLabels[sync.lastWarning]}
                         </Text>
                     </View>
                 )}

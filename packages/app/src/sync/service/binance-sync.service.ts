@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- File owns a single multi-stage Binance sync orchestration pipeline (accounts, sources, transfers, fiat) that must stay together */
 import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
-import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, SyncWarningEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { getUnixTime } from 'date-fns/getUnixTime';
 import { subDays } from 'date-fns/subDays';
@@ -57,8 +57,6 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     private static readonly SOURCE_INPUT_YIELD_INTERVAL = 50;
     private static readonly FORWARD_OVERLAP_DAYS = 1;
     private static readonly FIAT_REFRESH_INTERVAL_MS = 23 * 60 * 60 * 1000;
-    // eslint-disable-next-line lingui/no-unlocalized-strings -- Stored sync-status text, mirrors the existing unlocalized lastError field
-    private static readonly C2C_UNAVAILABLE_WARNING = 'Binance P2P orders are unavailable: the API key is missing P2P read permission.';
     protected readonly provider = ExternalSourceEnum.BINANCE;
     // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
     protected readonly providerTitle = 'Binance';
@@ -202,7 +200,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         const mergedCursors = this.mergeTradeCursors(this.parseTradeCursors(sync.binanceTradeCursor), client.getSymbolTradeCursors());
         await syncRepository.update(sync.id, {
             binanceTradeCursor: isNotEmptyArray(Object.keys(mergedCursors)) ? JSON.stringify(mergedCursors) : null,
-            lastWarning: client.isC2cUnavailable() ? AppBinanceSyncService.C2C_UNAVAILABLE_WARNING : null
+            lastWarning: client.isC2cUnavailable() ? SyncWarningEnum.C2C_UNAVAILABLE : null
         });
     }
 
