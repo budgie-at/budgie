@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.9](https://github.com/budgie-at/budgie/compare/v6.67.8...v6.67.9) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** match the privatbank import page to the current privat24 flow ([dd8ac30](https://github.com/budgie-at/budgie/commit/dd8ac3045d30f7eb718d850c0e7e12a45c7fdd45))
+
+
+
+
+
 ## [6.67.8](https://github.com/budgie-at/budgie/compare/v6.67.7...v6.67.8) (2026-09-16)
 
 
