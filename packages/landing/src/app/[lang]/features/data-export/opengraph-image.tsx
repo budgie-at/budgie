@@ -15,7 +15,7 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
 
     return createFeatureOgImage(
         t(i18n)`Data Export`,
-        t(i18n)`CSV for spreadsheets. Encrypted backup for restore.`,
+        t(i18n)`CSV for spreadsheets. Full database backup for restore.`,
         [t(i18n)`export`, t(i18n)`csv`, t(i18n)`backup`],
         resolveOgPlate('data-export', lang)
     );
