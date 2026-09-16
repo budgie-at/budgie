@@ -76,19 +76,13 @@ export default function ConvertToTransferModal() {
 
         hasStartedDepositRef.current = true;
 
-        const createDepositAccount = async (): Promise<void> => {
-            try {
-                const createdAccountId = await depositCreateAction.onCreate();
-
-                if (isDefined(createdAccountId)) {
-                    form.setValue('toAccountId', createdAccountId, { shouldValidate: true });
-                }
-            } catch {
-                Toast.show({ type: 'error', text1: depositCreateAction.errorMessage });
-            }
-        };
-
-        void createDepositAccount();
+        depositCreateAction
+            .onCreate()
+            .then(
+                createdAccountId =>
+                    isDefined(createdAccountId) && void form.setValue('toAccountId', createdAccountId, { shouldValidate: true })
+            )
+            .catch(() => void Toast.show({ type: 'error', text1: depositCreateAction.errorMessage }));
     }, [startDeposit, depositCreateAction, form]);
 
     const conversionDescription = isExpense
