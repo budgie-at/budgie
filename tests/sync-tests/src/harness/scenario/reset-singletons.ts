@@ -5,12 +5,7 @@ import { transferConsolidationService } from '@app/sync/service/transfer-consoli
 
 export const resetSingletons = (): void => {
     Object.assign(binanceSyncService, { fiatSyncedAtMs: null, isRunning: false, runGeneration: 0, runRequested: false });
-    Object.assign(monobankSyncService, {
-        isRunning: false,
-        mccCategoryLookupMap: new Map(),
-        runGeneration: 0,
-        runRequested: false
-    });
+    resetMonobankSyncSingleton();
     Object.assign(syncWorkloadService, {
         backgroundQueue: [],
         drainGeneration: 0,
@@ -20,4 +15,13 @@ export const resetSingletons = (): void => {
         userQueue: []
     });
     Object.assign(transferConsolidationService, { isRunning: false });
+};
+
+export const resetMonobankSyncSingleton = (): void => {
+    Object.assign(monobankSyncService, {
+        isRunning: false,
+        mccCategoryLookupMap: new Map(),
+        runGeneration: 0,
+        runRequested: false
+    });
 };
