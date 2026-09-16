@@ -308,6 +308,13 @@ appId: ${APP_ID}
 
 # --- Runway pill on home (default: shown, crypto excluded) ---
 
+- scrollUntilVisible:
+      element:
+          id: 'NetWorthAssetChips'
+      direction: UP
+      speed: 20
+      centerElement: true
+      optional: true
 - assertVisible:
       id: 'RunwayPill'
 
@@ -390,6 +397,13 @@ appId: ${APP_ID}
       visible:
           id: 'HomePage.TotalBalance'
       timeout: 10000
+- scrollUntilVisible:
+      element:
+          id: 'NetWorthAssetChips'
+      direction: UP
+      speed: 20
+      centerElement: true
+      optional: true
 - assertNotVisible:
       id: 'RunwayPill'
 
@@ -424,5 +438,12 @@ appId: ${APP_ID}
       visible:
           id: 'HomePage.TotalBalance'
       timeout: 10000
+- scrollUntilVisible:
+      element:
+          id: 'NetWorthAssetChips'
+      direction: UP
+      speed: 20
+      centerElement: true
+      optional: true
 - assertVisible:
       id: 'RunwayPill'
