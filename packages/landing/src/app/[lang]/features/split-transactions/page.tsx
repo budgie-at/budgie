@@ -144,8 +144,9 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The remaining-budget pill shows what&apos;s left to allocate as you go. Save with Done; the original transaction
-                        becomes a parent with linked split entries underneath.
+                        The footer button doubles as your running total — it reads &quot;$X left to assign&quot; until the split is fully
+                        allocated, then it becomes Confirm Split. The original transaction becomes a parent with linked split entries
+                        underneath.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -159,7 +160,7 @@ export default async function SplitTransactionsFeaturePage(props: PageLangParam)
                         <Trans>Unlimited splits per transaction — every category gets its accurate share</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Remaining-budget pill shows what&apos;s left to allocate as you build the split</Trans>
+                        <Trans>The footer button tracks what&apos;s left to allocate, then turns into Confirm Split once it adds up</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Each split row keeps its own tags and comment — fully independent</Trans>

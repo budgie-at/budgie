@@ -5939,6 +5939,10 @@ msgstr "Counted as spending"
 msgid "Counter-IBAN enrichment and transfer consolidation"
 msgstr "Counter-IBAN enrichment and transfer consolidation"
 
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Counter-IBAN from Monobank as the primary signal; amount and time-window matching for banks that don't send one"
+msgstr "Counter-IBAN from Monobank as the primary signal; amount and time-window matching for banks that don't send one"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Counter-IBAN stored"
 msgstr "Counter-IBAN stored"
@@ -5946,10 +5950,6 @@ msgstr "Counter-IBAN stored"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Counter-IBAN stored from the corr_iban field, enabling smart transfer-pair consolidation"
 msgstr "Counter-IBAN stored from the corr_iban field, enabling smart transfer-pair consolidation"
-
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Counter-IBAN stored per leg — primary signal for cross-account matching"
-msgstr "Counter-IBAN stored per leg — primary signal for cross-account matching"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Counting a merchant refund as earnings inflates every income report you run. Long-press the income row, choose Convert to Refund, and Budgie lists the expenses it could be reversing — same currency, any account, and never smaller than the refund itself."
@@ -6639,8 +6639,8 @@ msgid "Discover why source-available budgeting apps provide unmatched transparen
 msgstr "Discover why source-available budgeting apps provide unmatched transparency and security for your financial data."
 
 #: src/app/[lang]/features/split-transactions/metadata.ts
-msgid "Divide a single transaction across multiple categories with a remaining-budget indicator. Each split keeps its own tags and comment."
-msgstr "Divide a single transaction across multiple categories with a remaining-budget indicator. Each split keeps its own tags and comment."
+msgid "Divide a single transaction across multiple categories with a running left-to-assign total. Each split keeps its own tags and comment."
+msgstr "Divide a single transaction across multiple categories with a running left-to-assign total. Each split keeps its own tags and comment."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Do any of these apps work without internet?"
@@ -7010,12 +7010,12 @@ msgid "Edit, convert to a transfer, attach a debt or delete. A plain tap only op
 msgstr "Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by accident."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Edit, convert to a transfer, attach a debt, or delete — every one of them starts from the list."
-msgstr "Edit, convert to a transfer, attach a debt, or delete — every one of them starts from the list."
+msgid "Edit, convert to refund, convert to transfer, attach a debt, delete, or revert — every one of them starts from the list."
+msgstr "Edit, convert to refund, convert to transfer, attach a debt, delete, or revert — every one of them starts from the list."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Edit, Delete, Split, Convert to Transfer, and Convert to Refund. The exact set depends on the transaction type — only income can become a refund, for example."
-msgstr "Edit, Delete, Split, Convert to Transfer, and Convert to Refund. The exact set depends on the transaction type — only income can become a refund, for example."
+msgid "Edit, Convert to Refund, Convert to Transfer, Attach Debt, Delete, and Revert. The exact set depends on the transaction type — only income can become a refund, for example."
+msgstr "Edit, Convert to Refund, Convert to Transfer, Attach Debt, Delete, and Revert. The exact set depends on the transaction type — only income can become a refund, for example."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Editing a transaction in most expense apps means tapping the row to open a detail screen, then tapping an edit button, then navigating form tabs, then saving, then going back. Common operations like deleting a duplicate or reclassifying an expense as a transfer should not cost five taps. Budgie surfaces all of them behind a single long-press gesture anchored to the transaction card itself."
@@ -8041,10 +8041,6 @@ msgstr "Fork the repository on GitHub"
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Forkable"
 msgstr "Forkable"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Four actions, no form"
-msgstr "Four actions, no form"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Four choices: the last 7, 30 or 90 days, or the whole history"
@@ -9653,13 +9649,16 @@ msgid "Long-press any transaction card for a native context menu — edit, delet
 msgstr "Long-press any transaction card for a native context menu — edit, delete, split, convert to transfer, or convert income to a refund without opening the full edit form."
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
+msgid "Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert — no full edit form required."
+msgstr "Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert — no full edit form required."
+
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required."
 msgstr "Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required."
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
-msgid "Long-press any transaction in Budgie for a native context menu: edit, delete, split, convert to transfer, or convert income to refund. Two taps where the rest of the market needs five."
-msgstr "Long-press any transaction in Budgie for a native context menu: edit, delete, split, convert to transfer, or convert income to refund. Two taps where the rest of the market needs five."
+msgid "Long-press any transaction in Budgie for a popover menu: edit, convert to refund, convert to transfer, attach a debt, delete, or revert. Two taps where the rest of the market needs five."
+msgstr "Long-press any transaction in Budgie for a popover menu: edit, convert to refund, convert to transfer, attach a debt, delete, or revert. Two taps where the rest of the market needs five."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Long-press for every action"
@@ -10457,10 +10456,6 @@ msgstr "Native app experience is priority"
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Native iOS + Android"
 msgstr "Native iOS + Android"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Native platform UI — system context menu on iPad, bottom sheet on iPhone and Android"
-msgstr "Native platform UI — system context menu on iPad, bottom sheet on iPhone and Android"
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "Native PrivatBank24 XLSX schema parser — no manual column mapping"
@@ -11473,6 +11468,10 @@ msgstr "One per transaction — never ambiguous, always quick to scan"
 msgid "One PIN. Real encryption."
 msgstr "One PIN. Real encryption."
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "One popover menu on every platform — no modal, no full-screen form to open first"
+msgstr "One popover menu on every platform — no modal, no full-screen form to open first"
+
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "One real screen, rendered in whichever theme this page is in right now."
 msgstr "One real screen, rendered in whichever theme this page is in right now."
@@ -11969,8 +11968,8 @@ msgid "Page Not Found"
 msgstr "Page Not Found"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Pairs match if the implied FX rate falls within a plausible tolerance band. Cross-currency legs have to land within a minute of each other; same-currency pairs get a twelve-hour window. The original amounts in both currencies are preserved on each leg."
-msgstr "Pairs match if the implied FX rate falls within a plausible tolerance band. Cross-currency legs have to land within a minute of each other; same-currency pairs get a twelve-hour window. The original amounts in both currencies are preserved on each leg."
+msgid "Pairs match if the implied FX rate falls within a plausible tolerance band. Both legs still need to land within the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved on each leg."
+msgstr "Pairs match if the implied FX rate falls within a plausible tolerance band. Both legs still need to land within the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved on each leg."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Pairs with the PIN lock for a fuller privacy seal"
@@ -12934,10 +12933,6 @@ msgstr "Release notes"
 msgid "Reliable data integrity"
 msgstr "Reliable data integrity"
 
-#: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Remaining-budget pill shows what's left to allocate as you build the split"
-msgstr "Remaining-budget pill shows what's left to allocate as you build the split"
-
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
 msgid "Remove duplicate bank imports."
 msgstr "Remove duplicate bank imports."
@@ -13619,6 +13614,10 @@ msgstr "Single-device focus means no automatic cloud sync between devices. We th
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Single-device focus means no automatic sync between phone and tablet"
 msgstr "Single-device focus means no automatic sync between phone and tablet"
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Six actions, no form"
+msgstr "Six actions, no form"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Six monthly bars on that view show what you usually spend at the same place, in the same category"
@@ -14608,10 +14607,6 @@ msgstr "The Consent Model"
 msgid "The consent you provide to the app does not limit what Plaid collects. Plaid’s systems pull comprehensive data, and the app requests subsets through the API. The delta between what Plaid collects and what the app needs sits in Plaid’s infrastructure."
 msgstr "The consent you provide to the app does not limit what Plaid collects. Plaid’s systems pull comprehensive data, and the app requests subsets through the API. The delta between what Plaid collects and what the app needs sits in Plaid’s infrastructure."
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "The context menu uses native platform APIs — the system menu component on iPadOS and a bottom sheet on iPhone and Android — so the interaction is immediately familiar. There is no modal, no full-screen form, and no intermediate navigation step for the common actions."
-msgstr "The context menu uses native platform APIs — the system menu component on iPadOS and a bottom sheet on iPhone and Android — so the interaction is immediately familiar. There is no modal, no full-screen form, and no intermediate navigation step for the common actions."
-
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "The converted value is stored together with the exchange rate for the date of the operation, so an old loan keeps the valuation it had when it was made instead of drifting with today's rate."
 msgstr "The converted value is stored together with the exchange rate for the date of the operation, so an old loan keeps the valuation it had when it was made instead of drifting with today's rate."
@@ -14739,6 +14734,14 @@ msgstr "The following data is stored exclusively on your device and is never tra
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The following uses require explicit permission or a separate commercial license:"
 msgstr "The following uses require explicit permission or a separate commercial license:"
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "The footer button doubles as your running total — it reads \"$X left to assign\" until the split is fully allocated, then it becomes Confirm Split. The original transaction becomes a parent with linked split entries underneath."
+msgstr "The footer button doubles as your running total — it reads \"$X left to assign\" until the split is fully allocated, then it becomes Confirm Split. The original transaction becomes a parent with linked split entries underneath."
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "The footer button tracks what's left to allocate, then turns into Confirm Split once it adds up"
+msgstr "The footer button tracks what's left to allocate, then turns into Confirm Split once it adds up"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The four digits are the key"
@@ -15060,10 +15063,6 @@ msgstr "The Real-World Impact of Financial Privacy"
 msgid "The remainder counts down"
 msgstr "The remainder counts down"
 
-#: src/app/[lang]/features/split-transactions/page.tsx
-msgid "The remaining-budget pill shows what's left to allocate as you go. Save with Done; the original transaction becomes a parent with linked split entries underneath."
-msgstr "The remaining-budget pill shows what's left to allocate as you go. Save with Done; the original transaction becomes a parent with linked split entries underneath."
-
 #: src/app/[lang]/open-source/page.tsx
 msgid "The repository includes the full React Native app, the AI service layer with on-device LLM and embedding model integrations, the contracts package, and this landing page. Nothing is hidden behind a proprietary SDK or closed binary."
 msgstr "The repository includes the full React Native app, the AI service layer with on-device LLM and embedding model integrations, the contracts package, and this landing page. Nothing is hidden behind a proprietary SDK or closed binary."
@@ -15107,6 +15106,10 @@ msgstr "The same Budgie Missing categories list with its first uncategorised row
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
 msgstr "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "The same popover menu opens on every platform, anchored to the transaction card. There is no modal, no full-screen form, and no intermediate navigation step for the common actions."
+msgstr "The same popover menu opens on every platform, anchored to the transaction card. There is no modal, no full-screen form, and no intermediate navigation step for the common actions."
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with a credit and a debit against the two accounts — no second transaction is created."
@@ -16018,8 +16021,8 @@ msgid "Two sources: (1) weekly/monthly SQL patterns over your own transactions, 
 msgstr "Two sources: (1) weekly/monthly SQL patterns over your own transactions, and (2) a 768-dim embedding lookup matching the current title against your nearest historical entries. No cloud calls."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your spending doubles. Budgie matches the pair using amount, time window, and the counter-IBAN stored on each leg."
-msgstr "Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your spending doubles. Budgie matches the pair using amount, time window, and the counter-IBAN stored on each leg."
+msgid "Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides it."
+msgstr "Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides it."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Two taps from list to done — long-press plus action, no intermediate screens"
@@ -17846,10 +17849,6 @@ msgstr "Yes — every export is written with the date and time in its name, so f
 msgid "Yes — IBAN extraction is part of the header parse. The IBAN is stored on the account and enables automatic transfer-pair detection between Erste and other accounts you own."
 msgstr "Yes — IBAN extraction is part of the header parse. The IBAN is stored on the account and enables automatic transfer-pair detection between Erste and other accounts you own."
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Yes — on iPadOS the menu uses the system context-menu UI; on iPhone and Android the menu is a sheet."
-msgstr "Yes — on iPadOS the menu uses the system context-menu UI; on iPhone and Android the menu is a sheet."
-
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Yes — once the Whisper model is cached on-device, voice entry works without any internet connection."
 msgstr "Yes — once the Whisper model is cached on-device, voice entry works without any internet connection."
@@ -17874,10 +17873,6 @@ msgstr "Yes — system theme by default. Override to Light or Dark in Settings i
 msgid "Yes — tapping a category row on the budget detail screen opens the transaction list filtered to that category and that exact budget period."
 msgstr "Yes — tapping a category row on the budget detail screen opens the transaction list filtered to that category and that exact budget period."
 
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Yes — that's the whole point. Counter-IBAN is the primary matching signal: both banks store the counterparty IBAN on their respective legs, so Budgie can link them directly. Monobank, PrivatBank, and Erste all expose counter-IBAN. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion."
-msgstr "Yes — that's the whole point. Counter-IBAN is the primary matching signal: both banks store the counterparty IBAN on their respective legs, so Budgie can link them directly. Monobank, PrivatBank, and Erste all expose counter-IBAN. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion."
-
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Yes — the encrypted backup is just a file. Save it anywhere you control: NAS, S3, your own server, your own cloud."
 msgstr "Yes — the encrypted backup is just a file. Save it anywhere you control: NAS, S3, your own server, your own cloud."
@@ -17893,6 +17888,10 @@ msgstr "Yes — the MCC short and full description appear in the transaction edi
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Yes — the original spending stat falls out immediately because transfers don't count as expenses."
 msgstr "Yes — the original spending stat falls out immediately because transfers don't count as expenses."
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Yes — the same popover menu opens on iPad, iPhone, and Android; there is no separate iPad presentation."
+msgstr "Yes — the same popover menu opens on iPad, iPhone, and Android; there is no separate iPad presentation."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This Year or All Time. There is no custom range."
@@ -18041,6 +18040,10 @@ msgstr "Yes. Jars are fetched alongside your cards and listed in their own secti
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Yes. Like other accounts, deposits have an “include in net worth” setting, so you can decide whether a locked deposit belongs in your net worth view."
 msgstr "Yes. Like other accounts, deposits have an “include in net worth” setting, so you can decide whether a locked deposit belongs in your net worth view."
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Yes. Monobank sends a counter-IBAN on every leg, so Budgie links those pairs directly. PrivatBank and Erste don't expose a counterparty IBAN at all, so Budgie falls back to matching on amount and a time window instead. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion."
+msgstr "Yes. Monobank sends a counter-IBAN on every leg, so Budgie links those pairs directly. PrivatBank and Erste don't expose a counterparty IBAN at all, so Budgie falls back to matching on amount and a time window instead. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion."
 
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "Yes. Monobank sync uses a personal API token that you generate yourself in your bank, and the request goes from your phone straight to the bank. For other banks you import a statement file instead. Budgie never asks for a banking password and there is no aggregator such as Plaid in between."
