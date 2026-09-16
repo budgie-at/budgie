@@ -14,6 +14,7 @@ import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.
 import { SyncEntityTable } from '../../sync/table/sync-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
 
@@ -180,9 +181,10 @@ export class AccountBalanceRepository {
         const totalBalanceSql = sql<number>`
             COALESCE((
                 SELECT ${this.getTransactionsSumSql()}
-                FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId}
-                WHERE ${TransactionEntryEntityTable.accountId} = ${accountId}
-                  AND ${TransactionEntryEntityTable.deletedAt} IS NULL
+                FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${sql`${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId}`}
+                WHERE ${sql`${TransactionEntryEntityTable.accountId} = ${accountId}`}
+                  AND ${sql`${TransactionEntryEntityTable.deletedAt} IS NULL`}
+                  AND ${sql`${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}`}
                   AND ${accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql()}
                   AND ${accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()}
             ), 0)`;

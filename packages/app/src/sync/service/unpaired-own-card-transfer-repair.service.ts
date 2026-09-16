@@ -3,7 +3,7 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { db } from '../../@generic/drizzle/db/db';
+import { db, transactionRepository } from '../../@generic/drizzle/db/db';
 import { transactionTransferService } from '../../transaction/service/transaction-transfer.service';
 
 import type { UnpairedOwnCardTransferCandidateInterface } from '../interface/unpaired-own-card-transfer-candidate.interface';
@@ -16,7 +16,25 @@ class UnpairedOwnCardTransferRepairService {
         SELECT
             tx.id AS transactionId,
             tx.type AS transactionType,
-            counterpart_account.id AS counterpartAccountId
+            counterpart_account.id AS counterpartAccountId,
+            (
+                SELECT superseded_tx.id FROM transactions superseded_tx
+                INNER JOIN transaction_entries superseded_entry ON
+                    superseded_entry.transaction_id = superseded_tx.id
+                    AND superseded_entry.deleted_at IS NOT NULL
+                    AND superseded_entry.original_transaction_id IS NULL
+                    AND superseded_entry.kind = 'PRIMARY'
+                WHERE superseded_tx.deleted_at IS NOT NULL
+                    AND superseded_tx.id != tx.id
+                    AND (
+                        (tx.type = 'INCOME' AND superseded_tx.type = 'EXPENSE' AND superseded_tx.from_account_id = counterpart_account.id)
+                        OR (tx.type = 'EXPENSE' AND superseded_tx.type = 'INCOME' AND superseded_tx.to_account_id = counterpart_account.id)
+                    )
+                    AND ABS(superseded_tx.operated_at - tx.operated_at) <= ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
+                    AND superseded_entry.amount >= entry.amount - ${UnpairedOwnCardTransferRepairService.COUNTERPART_AMOUNT_TOLERANCE}
+                ORDER BY ABS(superseded_tx.operated_at - tx.operated_at)
+                LIMIT 1
+            ) AS supersededTransactionId
         FROM transactions tx
         INNER JOIN transaction_entries entry ON
             entry.transaction_id = tx.id
@@ -88,10 +106,12 @@ class UnpairedOwnCardTransferRepairService {
     }
 
     @Log(
-        candidate => `enter transactionId=${candidate.transactionId} counterpartAccountId=${candidate.counterpartAccountId}`,
-        (_result, candidate) => `done transactionId=${candidate.transactionId} counterpartAccountId=${candidate.counterpartAccountId}`,
+        candidate =>
+            `enter transactionId=${candidate.transactionId} counterpartAccountId=${candidate.counterpartAccountId} supersededTransactionId=${String(candidate.supersededTransactionId)}`,
+        (_result, candidate) =>
+            `done transactionId=${candidate.transactionId} counterpartAccountId=${candidate.counterpartAccountId} supersededTransactionId=${String(candidate.supersededTransactionId)}`,
         (error, candidate) =>
-            `throw transactionId=${candidate.transactionId} counterpartAccountId=${candidate.counterpartAccountId} error=${getErrorMessage(error)}`
+            `throw transactionId=${candidate.transactionId} counterpartAccountId=${candidate.counterpartAccountId} supersededTransactionId=${String(candidate.supersededTransactionId)} error=${getErrorMessage(error)}`
     )
     private async convertCandidate(candidate: UnpairedOwnCardTransferCandidateInterface): Promise<void> {
         const params = { id: candidate.transactionId, accountId: candidate.counterpartAccountId, customExchangeRate: 1 };
@@ -100,6 +120,10 @@ class UnpairedOwnCardTransferRepairService {
             await transactionTransferService.convertIncomeToTransfer(params);
         } else {
             await transactionTransferService.convertExpenseToTransfer(params);
+        }
+
+        if (isDefined(candidate.supersededTransactionId)) {
+            await transactionRepository.deleteById(candidate.supersededTransactionId);
         }
     }
 
