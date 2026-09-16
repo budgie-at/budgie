@@ -663,6 +663,10 @@ msgstr "Dates de facturation"
 msgid "Binance"
 msgstr "Binance"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
+msgstr "Les ordres P2P Binance sont indisponibles : la clé API n'a pas la permission de lecture P2P."
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric Authentication"
 msgstr "Authentification biométrique"
@@ -4188,6 +4192,10 @@ msgstr "Volume"
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Waiting"
 msgstr "En attente"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Warning"
+msgstr "Avertissement"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."

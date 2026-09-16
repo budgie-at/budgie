@@ -663,6 +663,10 @@ msgstr "Дати списання"
 msgid "Binance"
 msgstr "Binance"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
+msgstr "Ордери Binance P2P недоступні: API-ключу бракує дозволу на читання P2P."
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric Authentication"
 msgstr "Біометрична автентифікація"
@@ -4188,6 +4192,10 @@ msgstr "Обсяг"
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Waiting"
 msgstr "Очікування"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Warning"
+msgstr "Попередження"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."

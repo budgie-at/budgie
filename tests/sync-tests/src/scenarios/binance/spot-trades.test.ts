@@ -15,6 +15,7 @@ import {
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
     seedCryptoInstrument,
+    setupAdaUsdtFixture,
     setupBinanceFixture,
     setupUsdtSpotFixtureWithBalances,
     testDb
@@ -66,16 +67,7 @@ describe('binance/spot-trades', () => {
         const now = new Date();
         const forwardSyncedAt = new Date(now.getTime() - RECURRING_SYNC_AGE_MS);
         seedCryptoInstrument('ADA');
-        setupBinanceFixture({
-            asset: 'USDT',
-            mode: SyncModeEnum.FORWARD,
-            forwardSyncedAt
-        });
-        binanceStub.exchangeInfo(['ADAUSDT']);
-        binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'ADA', free: '200' }),
-            buildBinance.balance({ asset: 'USDT', free: '100' })
-        ]);
+        setupAdaUsdtFixture(SyncModeEnum.FORWARD, forwardSyncedAt);
         const requestedUrls: URL[] = [];
         binanceStub.myTrades(
             {

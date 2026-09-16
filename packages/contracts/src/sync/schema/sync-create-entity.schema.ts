@@ -8,6 +8,8 @@ export const SyncCreateEntitySchema = convertToCreateEntitySchema(SyncEntitySche
     enabled: true,
     errorCount: true,
     lastError: true,
+    lastWarning: true,
+    binanceTradeCursor: true,
     forwardSyncFromAt: true,
     forwardSyncedAt: true,
     backwardSyncFromAt: true,
