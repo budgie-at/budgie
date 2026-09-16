@@ -117,21 +117,17 @@ export class DebtEventRepository {
     }
 
     async restoreByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        await this.updateDeletedAtByAccountIds(accountIds, null, tx);
-    }
-
-    async truncate(tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(DebtEventEntityTable);
-    }
-
-    private async updateDeletedAtByAccountIds(accountIds: number[], deletedAt: Date | null, tx?: DB): Promise<void> {
         if (!isNotEmptyArray(accountIds)) {
             return;
         }
 
         await (tx ?? this.db)
             .update(DebtEventEntityTable)
-            .set({ deletedAt })
+            .set({ deletedAt: null })
             .where(inArray(DebtEventEntityTable.debtAccountId, accountIds));
+    }
+
+    async truncate(tx?: DB): Promise<void> {
+        await (tx ?? this.db).delete(DebtEventEntityTable);
     }
 }
