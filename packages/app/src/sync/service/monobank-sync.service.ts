@@ -1,14 +1,21 @@
 /* eslint-disable no-await-in-loop -- Sync orchestration requires sequential awaits */
 import { consolidationScopeService } from '@budgie/consolidation';
-import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, transactionAsync, UserIconNameEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    ExternalSourceEnum,
+    SyncBalanceAuthorityEnum,
+    SyncModeEnum,
+    transactionAsync,
+    UserIconNameEnum
+} from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountBalanceRepository, accountRepository, db } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -21,6 +28,7 @@ import { getSyncModule, loadSyncModule } from '../util/load-sync-module.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
+import { monobankBalanceReconciliationService } from './monobank-balance-reconciliation.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 import { transferConsolidationService } from './transfer-consolidation.service';
 
@@ -134,6 +142,41 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         await this.commitFetchedBatch(result, account.id, runGeneration);
 
         return result;
+    }
+
+    @Log(
+        (sync, result, runGeneration) =>
+            `enter syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration}`,
+        (_result, sync, result, runGeneration) =>
+            `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration}`,
+        (error, sync, result, runGeneration) =>
+            `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration} error=${getErrorMessage(error)}`
+    )
+    protected override async applyProgressUpdate(
+        sync: SyncEntityInterface,
+        result: SyncBatchResultInterface,
+        runGeneration: number
+    ): Promise<void> {
+        const shouldReconcile =
+            sync.mode === SyncModeEnum.FORWARD && result.completed && sync.balanceAuthority === SyncBalanceAuthorityEnum.PROVIDER;
+        if (!shouldReconcile) {
+            await super.applyProgressUpdate(sync, result, runGeneration);
+
+            return;
+        }
+
+        const providerBalance = await this.fetchFreshProviderBalanceForRun(sync, runGeneration);
+        if (!isDefined(providerBalance) || !this.isRunCurrent(runGeneration)) {
+            return;
+        }
+
+        await monobankBalanceReconciliationService.finalize({
+            syncId: sync.id,
+            accountId: sync.accountId,
+            providerBalance,
+            progressUpdate: this.resolveProgressUpdate(sync, result),
+            isRunCurrent: () => this.isRunCurrent(runGeneration)
+        });
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -334,6 +377,43 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         const jars = await service.syncJars();
 
         return [...accounts, ...jars];
+    }
+
+    @Log(
+        (sync, runGeneration) => `enter syncId=${sync.id} accountId=${sync.accountId} runGeneration=${runGeneration}`,
+        (result, sync, runGeneration) =>
+            `done syncId=${sync.id} accountId=${sync.accountId} runGeneration=${runGeneration} balance=${String(result)}`,
+        (error, sync, runGeneration) =>
+            `throw syncId=${sync.id} accountId=${sync.accountId} runGeneration=${runGeneration} error=${getErrorMessage(error)}`
+    )
+    private async fetchFreshProviderBalanceForRun(sync: SyncEntityInterface, runGeneration: number): Promise<number | null> {
+        const account = await accountRepository.findById(sync.accountId);
+        if (!this.isRunCurrent(runGeneration) || !isDefined(account) || !isNotEmptyString(account.externalId)) {
+            return null;
+        }
+
+        const token = await this.resolveSyncToken(sync);
+        if (!this.isRunCurrent(runGeneration)) {
+            return null;
+        }
+
+        return this.fetchProviderBalance(account.externalId, token);
+    }
+
+    @Log(
+        (externalAccountId, token) => `enter externalAccountId=${externalAccountId} tokenLen=${token.length}`,
+        (result, externalAccountId, token) => `done externalAccountId=${externalAccountId} tokenLen=${token.length} balance=${result}`,
+        (error, externalAccountId, token) =>
+            `throw externalAccountId=${externalAccountId} tokenLen=${token.length} error=${getErrorMessage(error)}`
+    )
+    private async fetchProviderBalance(externalAccountId: string, token: string): Promise<number> {
+        const bankAccounts = await this.fetchBankAccountsAndJars(token);
+        const bankAccount = bankAccounts.find(account => account.id === externalAccountId);
+        if (!isDefined(bankAccount)) {
+            throw new Error(`Monobank account ${externalAccountId} is unavailable`);
+        }
+
+        return convertToMicroUnits(bankAccount.balance);
     }
 
     protected override generateAccountTitle(account: SyncAccountInterface): string {
