@@ -106,8 +106,14 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     )
     protected override async executeSyncBatch(sync: SyncEntityInterface, runGeneration: number): Promise<SyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
-        if (!this.isRunCurrent(runGeneration) || !isDefined(account) || !isNotEmptyString(account.externalId)) {
+        if (!this.isRunCurrent(runGeneration)) {
             return this.buildInterruptedBatchResult();
+        }
+
+        if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
+            const now = new Date();
+
+            return { transactions: [], nextTo: now, nextFrom: now, completed: true };
         }
 
         const result = await this.fetchCurrentTransactionBatch(sync, account.externalId, runGeneration);
