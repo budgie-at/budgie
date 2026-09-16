@@ -93,6 +93,8 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - assertNotVisible:
+    id: 'TransactionActionsMenu.StartDepositButton'
+- assertNotVisible:
     id: 'TransactionActionsMenu.RevertButton'
 - tapOn:
     id: 'TransactionActionsMenu.FeeButton'
@@ -119,6 +121,8 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.ConvertToRefundButton'
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
+- assertNotVisible:
+    id: 'TransactionActionsMenu.StartDepositButton'
 - assertNotVisible:
     id: 'TransactionActionsMenu.RevertButton'
 - tapOn:
