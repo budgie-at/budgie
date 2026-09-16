@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/landing",
-    "version": "6.67.18",
+    "version": "6.69.0",
     "private": true,
     "scripts": {
         "build": "pnpm media:check && next build",
