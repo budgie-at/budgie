@@ -15,7 +15,7 @@
 **Files:**
 - Modify: `tests/sync-tests/src/scenarios/binance/account-agnostic-sources.test.ts`
 
-- [ ] **Step 1: Write the failing integration test**
+- [x] **Step 1: Write the failing integration test**
 
 Import `HttpResponse` and `http` from `msw`, and import `mockServer` from `../../harness/scenario/mock-server`. Add a test that inspects the orphan account when Binance makes its first balance request:
 
@@ -30,7 +30,7 @@ it('associates orphan Binance sync accounts before requesting provider balances'
         instrumentId: instrument.id
     });
     const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-    let integrationIdAtFirstProviderRequest: number | null = null;
+    const integrationIdsAtProviderRequests: Array<number | null> = [];
     mockServer.use(
         http.post('https://api.binance.com/sapi/v3/asset/getUserAsset', () => {
             const [accountAtRequest] = testDb
@@ -38,7 +38,7 @@ it('associates orphan Binance sync accounts before requesting provider balances'
                 .from(AccountEntityTable)
                 .where(eq(AccountEntityTable.id, orphanAccount.id))
                 .all();
-            integrationIdAtFirstProviderRequest = accountAtRequest.integrationId;
+            integrationIdsAtProviderRequests.push(accountAtRequest.integrationId);
 
             return HttpResponse.json([]);
         })
@@ -47,11 +47,11 @@ it('associates orphan Binance sync accounts before requesting provider balances'
     await binanceSyncService.sync();
 
     const [seededAccount] = fetchAccountByExternalId(externalId);
-    expect(integrationIdAtFirstProviderRequest).toBe(seededAccount.integrationId);
+    expect(integrationIdsAtProviderRequests[0]).toBe(seededAccount.integrationId);
 });
 ```
 
-- [ ] **Step 2: Run the focused test and verify the reproduction fails**
+- [x] **Step 2: Run the focused test and verify the reproduction fails**
 
 Run:
 
@@ -61,7 +61,7 @@ pnpm --dir tests/sync-tests exec vitest run src/scenarios/binance/account-agnost
 
 Expected: FAIL because `integrationIdAtFirstProviderRequest` is `null`, proving that the provider request currently starts before local ownership repair.
 
-- [ ] **Step 3: Commit the failing reproduction**
+- [x] **Step 3: Commit the failing reproduction**
 
 ```bash
 git add tests/sync-tests/src/scenarios/binance/account-agnostic-sources.test.ts
