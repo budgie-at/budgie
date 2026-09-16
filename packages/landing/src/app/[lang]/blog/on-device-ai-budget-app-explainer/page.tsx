@@ -433,7 +433,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                         <BlogArticleListItem>
                             <Trans>
                                 <strong>Embeddings stored in local SQLite</strong> — The embedding vectors for your transaction history are
-                                stored in the same encrypted database as your transactions. They are not synced to any server.
+                                stored in the same database as your transactions, encrypted the moment you set a PIN. They are not synced to
+                                any server.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>

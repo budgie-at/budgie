@@ -88,8 +88,8 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
 
                 <FeatureStory.Point index={0}>
                     <Trans>
-                        Every transaction, account and category lives in an encrypted database on your phone — there is no backend to
-                        deploy.
+                        Every transaction, account and category lives in a database on your phone, encrypted the moment you set a PIN —
+                        there is no backend to deploy.
                     </Trans>
                 </FeatureStory.Point>
 
@@ -111,7 +111,8 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
 
                 <FeatureStory.Point index={1}>
                     <Trans>
-                        Export Database writes one encrypted file with everything. Import Database restores it on a new phone in seconds.
+                        Export Database writes one file with everything, encrypted if you have a PIN set. Import Database restores it on a
+                        new phone after you pick the file and confirm.
                     </Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
@@ -144,8 +145,8 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>
-                            Copy the encrypted backup file via your own iCloud Drive, Google Drive, or Dropbox. Restore on the second device
-                            with one tap.
+                            Copy the backup file via your own iCloud Drive, Google Drive, or Dropbox — it is encrypted if you set a PIN when
+                            you made it. Restore it on the second device by picking the file and entering that PIN.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
@@ -153,8 +154,8 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>
-                            Yes — the encrypted backup is just a file. Save it anywhere you control: NAS, S3, your own server, your own
-                            cloud.
+                            Yes — the backup is just a file, encrypted if you had a PIN set when you made it. Save it anywhere you control:
+                            NAS, S3, your own server, your own cloud.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -166,7 +167,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                 </FeaturePageHeading>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Server-based finance apps</Trans>}>
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Encrypted on your phone</Trans>}
+                        budgieValue={<Trans>On your phone, PIN-encrypted</Trans>}
                         competitorValue={<Trans>Your VPS / Docker host</Trans>}
                         label={<Trans>Where data lives</Trans>}
                     />
@@ -212,8 +213,8 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     question={<Trans>How do I sync between phone and tablet?</Trans>}
                     answer={
                         <Trans>
-                            Copy the encrypted backup file via your own iCloud Drive, Google Drive, or Dropbox. Restore on the second device
-                            with one tap.
+                            Copy the backup file via your own iCloud Drive, Google Drive, or Dropbox — it is encrypted if you set a PIN when
+                            you made it. Restore it on the second device by picking the file and entering that PIN.
                         </Trans>
                     }
                 />
@@ -225,8 +226,8 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     question={<Trans>Can I keep my data backed up to my own server?</Trans>}
                     answer={
                         <Trans>
-                            Yes — the encrypted backup is just a file. Save it anywhere you control: NAS, S3, your own server, your own
-                            cloud.
+                            Yes — the backup is just a file, encrypted if you had a PIN set when you made it. Save it anywhere you control:
+                            NAS, S3, your own server, your own cloud.
                         </Trans>
                     }
                 />

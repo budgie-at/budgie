@@ -20,7 +20,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     const title = t(i18n)`All Budgie Features — Offline-First Expense Tracker`;
     const description = t(
         i18n
-    )`Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and encrypted backups — all 100% offline-first.`;
+    )`Every Budgie feature in one place: bank sync, on-device AI, voice entry, multi-currency, recurring detection, and PIN-protected backups — all 100% offline-first.`;
 
     return {
         title,
