@@ -851,6 +851,10 @@ msgstr "Vérification"
 msgid "Checking Account"
 msgstr "Compte courant"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
+msgstr "Choisissez « Excel » comme format d'export — les fichiers PDF et CSV ne peuvent pas être importés"
+
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choisissez un modèle pour remplir automatiquement les correspondances de colonnes"
@@ -1843,10 +1847,6 @@ msgstr "Exporter CSV"
 msgid "Export Database"
 msgstr "Exporter la base de données"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Export your transactions to Excel"
-msgstr "Exportez vos transactions vers Excel"
-
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
 msgstr "ID externe"
@@ -2043,6 +2043,14 @@ msgstr "Comment exporter"
 msgid "Icon importer not found: {icon}"
 msgstr "Importateur d'icônes introuvable : {icon}"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
+msgstr "Si Privat24 vous envoie le fichier par e-mail au lieu de le télécharger, enregistrez la pièce jointe depuis votre boîte de réception"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Import"
+msgstr "Importer"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Import a statement"
 msgstr "Importer un relevé"
@@ -2053,7 +2061,6 @@ msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Importer les comptes et transactions depuis le relevé PDF Erste Bank"
 
 #: src/app/(main)/create-account/index.tsx
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import accounts and transactions from Privatbank XLSX export"
 msgstr "Importer les comptes et transactions depuis l'export XLSX de Privatbank"
 
@@ -2498,10 +2505,6 @@ msgstr "Solde le plus probable"
 msgid "Navigate to Account → Statements"
 msgstr "Allez dans Compte → Relevés"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Navigate to Menu → Statements"
-msgstr "Allez dans Menu → Relevés"
-
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 msgid "Net"
 msgstr "Net"
@@ -2766,6 +2769,10 @@ msgstr "Ponctuel"
 msgid "One-off spike"
 msgstr "Pic ponctuel"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
+msgstr "Import ponctuel à partir d'un relevé Privat24 — ce n'est pas une synchronisation en direct, et chaque export ne couvre qu'une seule carte ou un seul compte"
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Seules les transactions de dépenses et de revenus sont converties : les dépenses sont transférées vers ce compte, les revenus en proviennent. Les autres types restent inchangés."
@@ -2796,17 +2803,21 @@ msgstr "Ouvrez Binance pour obtenir votre clé API"
 msgid "Open George (Erste Bank online banking)"
 msgstr "Ouvrez George (banque en ligne Erste Bank)"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Open its statement and choose a date range that covers your full history"
+msgstr "Ouvrez le relevé et choisissez une période qui couvre tout votre historique"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Monobank to get your token"
 msgstr "Ouvrez Monobank pour obtenir votre jeton"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Open Privat24 and select the card or account you want to import"
+msgstr "Ouvrez Privat24 et sélectionnez la carte ou le compte que vous souhaitez importer"
+
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Open settings"
 msgstr "Ouvrir les paramètres"
-
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Open the Privatbank24 app"
-msgstr "Ouvrez l'application Privatbank24"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
@@ -3170,6 +3181,10 @@ msgstr "Restaurer à partir d'un fichier de sauvegarde"
 #: src/ai/service/ai-system-status.service.ts
 msgid "Resuming AI…"
 msgstr "Reprise de l'IA…"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Return to Budgie and select the saved XLSX file below"
+msgstr "Revenez à Budgie et sélectionnez ci-dessous le fichier XLSX enregistré"
 
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Returned"
