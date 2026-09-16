@@ -9,15 +9,15 @@ export const FEATURE_METADATA = {
     slug: 'ai-auto-categorization',
     tier: FeatureTierEnum.HERO,
     title: msg`On-Device AI Auto-Categorization`,
-    tagline: msg`Two on-device models — Qwen3 1.7B for chat and a 768-dim embedding model — power category, tag, and merchant suggestions privately.`,
+    tagline: msg`Category, tag, and merchant suggestions that run entirely on your phone and learn from your corrections.`,
     metaTitle: msg`On-Device AI Auto-Categorization — Budgie`,
-    metaDescription: msg`Budgie runs Qwen3 1.7B + a 768-dim embedding model on your phone. Two-stage categorization with corrections feeding the embedding index.`,
+    metaDescription: msg`Category, tag, and merchant suggestions that run entirely on your phone, learn from your corrections, and never reach a server.`,
     primaryKeyword: 'AI expense categorization',
     seoKeywords: [
         'AI expense categorization',
         'on-device AI budget app',
         'private AI finance',
-        'local LLM expense tracker',
+        'offline AI expense tracker',
         'machine learning expense categorization'
     ],
     relatedFeatureSlugs: [

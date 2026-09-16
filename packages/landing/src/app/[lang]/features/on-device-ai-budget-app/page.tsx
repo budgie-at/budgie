@@ -71,18 +71,18 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
             />
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>On-Device AI Budget App — Local LLM, No Cloud Inference</Trans>}
+                heading={<Trans>On-Device AI Budget App — AI That Never Leaves Your Phone</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Cloud AI assistants for budgeting send every transaction to a remote server for &ldquo;intelligence&rdquo;. Budgie
-                        runs the LLM and embeddings on your phone — your data never leaves.
+                        Cloud AI assistants for budgeting send every transaction to a remote server for &ldquo;intelligence&rdquo;.
+                        Budgie&apos;s AI runs on your phone — your data never leaves.
                     </Trans>
                 }
             />
 
             <FeatureStory>
-                <FeatureStory.Intro heading={<Trans>The models sit on your phone</Trans>}>
+                <FeatureStory.Intro heading={<Trans>It all happens on your phone</Trans>}>
                     <Trans>
                         One switch in Settings, and categories, tags, translation and voice entry all run where your data already is.
                     </Trans>
@@ -91,13 +91,13 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                 <FeatureStory.Step index={0} title={<Trans>One switch, one download</Trans>}>
                     <Trans>
                         New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch
-                        controls it, and about 2.5 GB of models download once.
+                        controls it, and about 2.5 GB downloads once.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
                         i18n
-                    )`Budgie settings screen with the AI section, the On-device AI toggle switched on and two model status cards below it`}
+                    )`Budgie settings screen with the AI section, the On-device AI toggle switched on and two AI status cards below it`}
                     index={0}
                     locale={lang}
                     priority
@@ -112,10 +112,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Inference is a local call</Trans>}>
-                    <Trans>
-                        Budgie writes the English name and the search keywords for a foreign category with the model on the phone.
-                    </Trans>
+                <FeatureStory.Step index={1} title={<Trans>Nothing goes out to be processed</Trans>}>
+                    <Trans>Budgie writes the English name and the search keywords for a foreign category right on the phone.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(
@@ -127,7 +125,7 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     slug="ai-merchant-translation"
                 >
                     <FeatureStory.Callout y={0.4}>
-                        <Trans>Written by the on-device model</Trans>
+                        <Trans>Written on your phone</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout y={0.505}>
                         <Trans>Keywords you can search by</Trans>
@@ -158,8 +156,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Cloud AI assistants for budgeting send every transaction to a remote server for &ldquo;intelligence&rdquo;. Budgie
-                        runs the LLM and embeddings on your phone — your data never leaves.
+                        Cloud AI assistants for budgeting send every transaction to a remote server for &ldquo;intelligence&rdquo;.
+                        Budgie&apos;s AI runs on your phone — your data never leaves.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -171,27 +169,27 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
-                            Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run
-                            entirely on your phone on iOS and Android, and voice entry adds a third model — nothing leaves the device.
+                            Category suggestions, tag suggestions, merchant clean-up, and voice entry all run on your phone, on both iOS and
+                            Android — nothing leaves the device.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>
-                            Roughly 1.6 GB for the language and embedding models, or 2.5 GB with voice entry. The download is one-time,
-                            opt-in, and only triggers if you turn on AI features.
+                            Roughly 1.6 GB for categorization and suggestions, or 2.5 GB with voice entry. The download is one-time, opt-in,
+                            and only starts if you turn on AI features.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>
-                            A cloud assistant ships your transaction titles to a remote model and trusts the provider&apos;s privacy policy.
-                            Budgie&apos;s models live on your device — there&apos;s no provider to trust.
+                            A cloud assistant ships your transaction titles to a remote service and trusts the provider&apos;s privacy
+                            policy. Budgie does the work on your device — there&apos;s no provider to trust.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>
-                            Nothing runs until you trigger it. A model is loaded when the feature that needs it starts, stays in memory for
-                            about half a minute after you finish, and is dropped when the app goes to the background — so the first request
-                            after a pause waits for a load and the ones after it do not.
+                            Nothing runs until you trigger it. Budgie gets ready when the feature that needs it starts, stays ready for
+                            about half a minute after you finish, and lets go when the app goes to the background — so the first request
+                            after a pause waits a moment and the ones after it do not.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -237,11 +235,11 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>Which models does Budgie run on-device?</Trans>}
+                    question={<Trans>Which AI features run on my phone?</Trans>}
                     answer={
                         <Trans>
-                            Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run
-                            entirely on your phone on iOS and Android, and voice entry adds a third model — nothing leaves the device.
+                            Category suggestions, tag suggestions, merchant clean-up, and voice entry all run on your phone, on both iOS and
+                            Android — nothing leaves the device.
                         </Trans>
                     }
                 />
@@ -249,8 +247,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     question={<Trans>How big is the download?</Trans>}
                     answer={
                         <Trans>
-                            Roughly 1.6 GB for the language and embedding models, or 2.5 GB with voice entry. The download is one-time,
-                            opt-in, and only triggers if you turn on AI features.
+                            Roughly 1.6 GB for categorization and suggestions, or 2.5 GB with voice entry. The download is one-time, opt-in,
+                            and only starts if you turn on AI features.
                         </Trans>
                     }
                 />
@@ -258,8 +256,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     question={<Trans>How is this different from a cloud AI assistant?</Trans>}
                     answer={
                         <Trans>
-                            A cloud assistant ships your transaction titles to a remote model and trusts the provider&apos;s privacy policy.
-                            Budgie&apos;s models live on your device — there&apos;s no provider to trust.
+                            A cloud assistant ships your transaction titles to a remote service and trusts the provider&apos;s privacy
+                            policy. Budgie does the work on your device — there&apos;s no provider to trust.
                         </Trans>
                     }
                 />
@@ -267,9 +265,9 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     question={<Trans>Does on-device AI drain battery?</Trans>}
                     answer={
                         <Trans>
-                            Nothing runs until you trigger it. A model is loaded when the feature that needs it starts, stays in memory for
-                            about half a minute after you finish, and is dropped when the app goes to the background — so the first request
-                            after a pause waits for a load and the ones after it do not.
+                            Nothing runs until you trigger it. Budgie gets ready when the feature that needs it starts, stays ready for
+                            about half a minute after you finish, and lets go when the app goes to the background — so the first request
+                            after a pause waits a moment and the ones after it do not.
                         </Trans>
                     }
                 />

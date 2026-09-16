@@ -73,8 +73,8 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                 locale={lang}
                 tagline={
                     <Trans>
-                        Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment,
-                        amount, and account all pre-filled before you type a single character.
+                        Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, and
+                        amount all filled in before you type a single character.
                     </Trans>
                 }
             />
@@ -102,38 +102,36 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Two engines, zero cloud round-trips</Trans>
+                    <Trans>Two ways of knowing, zero cloud round-trips</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Suggestions are powered by two complementary on-device systems. The first is a SQL pattern engine that scans your
-                        weekly and monthly transaction history to surface the most likely category, amount, and account for a given merchant
-                        name. The second is a 768-dimensional embedding lookup that encodes the current title and finds the nearest
-                        historical entries in vector space — catching name variations and abbreviations that a keyword match would miss.
+                        Budgie learns your recurring spending and your one-offs separately. It spots what repeats weekly or monthly and
+                        surfaces the usual category and amount for that merchant. Alongside that it matches the title you are typing against
+                        your whole history by meaning rather than spelling — catching name variations and abbreviations that a keyword match
+                        would miss.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        When both engines agree, the suggestion chips appear immediately. When they diverge, the SQL pattern wins for
-                        structured fields like amount and category while the embedding adds tag and comment hints. Every accepted or
-                        corrected suggestion feeds the embedding index so the next similar entry is even closer.
+                        When both agree, the suggestion chips appear immediately. When they diverge, the recurring pattern wins for amount
+                        and category while the history match adds tag and comment hints. Every accepted or corrected suggestion is taken
+                        into account, so the next similar entry lands even closer.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Three embedding indexes, not one</Trans>
+                    <Trans>Three kinds of match, not one</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        The embedding lookup is not a single index — Budgie keeps three separate ones, each matching a different field
-                        against your own history and returning up to three candidates. The transaction index matches the title you are
-                        typing against your past entries to suggest category and tags. The merchant index matches shop names across spelling
-                        variants — the same index that lets the same store resolve consistently even when different banks spell it
-                        differently, which is the visible result behind merchant name translation. The comment index matches your own
-                        free-text notes, so a comment you typed once for a coffee shop comes back as a suggestion the next time you visit
-                        it.
+                        Budgie matches your history in three separate ways, each returning up to three candidates. Transaction titles are
+                        matched against your past entries to suggest a category and tags. Shop names are matched across spelling variants,
+                        so the same store resolves consistently even when two banks write it differently — the visible result behind
+                        merchant name clean-up. And your own free-text notes are matched too, so a comment you typed once for a coffee shop
+                        comes back as a suggestion the next time you visit it.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -144,20 +142,21 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>One-tap form fill — category, tags, comment, amount, and account pre-populated from your own history</Trans>
+                        <Trans>One-tap form fill — category, tags, comment, and amount pre-filled from your own history</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Fully private — both engines run on-device, no network call, no profiling</Trans>
+                        <Trans>Fully private — everything runs on your phone, no network call, no profiling</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Self-improving — accepted or corrected suggestions tighten the embedding index for next time</Trans>
+                        <Trans>Self-improving — accepted or corrected suggestions sharpen the next one</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Works offline and on every form variant — expense, income, and transfer</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>
-                            Three separate embedding indexes — transaction, merchant, and comment — each surfacing up to three candidates
+                            Three kinds of match — transaction title, merchant name, and your own comments — each surfacing up to three
+                            candidates
                         </Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -168,8 +167,8 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     question={<Trans>Where do the suggestions come from?</Trans>}
                     answer={
                         <Trans>
-                            Two sources: (1) weekly/monthly SQL patterns over your own transactions, and (2) a 768-dim embedding lookup
-                            matching the current title against your nearest historical entries. No cloud calls.
+                            Two sources, both your own data: the weekly and monthly patterns Budgie spots in your transactions, and the
+                            closest matches to the title you are typing in your own history. No cloud calls.
                         </Trans>
                     }
                 />
@@ -184,7 +183,7 @@ export default async function AiTransactionSuggestionsFeaturePage(props: PageLan
                     answer={
                         <Trans>
                             Suggestions are proposals — nothing is applied until you tap one, and every form works exactly the same if you
-                            ignore them. Settings → AI shows what each on-device model is doing and how far along its backfill is.
+                            ignore them. Settings → AI shows what the on-device AI is doing and how far along it is.
                         </Trans>
                     }
                 />

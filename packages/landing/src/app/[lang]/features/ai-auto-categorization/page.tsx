@@ -75,8 +75,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 locale={lang}
                 tagline={
                     <Trans>
-                        Two on-device models — Qwen3 1.7B for chat and a 768-dim Nomic embedding model — categorize transactions, suggest
-                        tags, and learn from your corrections. Your statements never leave the phone.
+                        Category, tag, and merchant suggestions that run entirely on your phone and learn from your corrections. Your
+                        statements never leave the device.
                     </Trans>
                 }
             />
@@ -98,40 +98,39 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Cloud &ldquo;AI&rdquo; budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees
-                        your supermarket habits. Budgie keeps every inference on your own device — same accuracy, zero data exfiltration.
+                        Cloud &ldquo;AI&rdquo; budgeting apps send every merchant name to a remote server, which means somebody else&apos;s
+                        computer sees your supermarket habits. Budgie works it out on your own device — same accuracy, nothing to leak.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The two-stage pipeline looks through your own history first and falls back to the language model only for
-                        transactions it has not seen before. Every accepted or edited suggestion updates the index immediately — accuracy
-                        compounds over time.
+                        Budgie recognizes merchants you have categorized before, spots the spending that repeats month after month, and
+                        reads the merchant code your bank sends with each card payment. Every accepted or edited suggestion is taken into
+                        account immediately — accuracy compounds over time.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Two-stage categorization flow</Trans>
+                    <Trans>How a suggestion is made</Trans>
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0} key="stage-0">
                         <Trans>
-                            History lookup — Budgie finds the closest match among transactions you have already categorized, which is the
-                            fast path once the models are loaded
+                            Seen before — Budgie finds the closest match among transactions you have already categorized, which is the fast
+                            path
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1} key="stage-1">
                         <Trans>
-                            LLM fallback — Qwen3 1.7B Q4 handles novel transactions the embedding index has not seen, proposing category and
-                            tags from context
+                            Spending that repeats — rent, the commute, the weekly shop all come back with their usual category and amount
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2} key="stage-2">
                         <Trans>
-                            Correction loop — every accepted or edited suggestion updates the embedding index immediately so the next
-                            similar transaction lands closer without re-training
+                            Correction loop — every accepted or edited suggestion counts immediately, so the next similar transaction lands
+                            closer without any re-training
                         </Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -143,19 +142,19 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Qwen3 1.7B Q4 model runs entirely on your phone after a one-time download</Trans>
+                        <Trans>Everything runs on your phone after a one-time download</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>768-dim Nomic embedding model + sqlite-vec for SIMD-accelerated similarity search</Trans>
+                        <Trans>Merchants you have categorized before are recognized instantly</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Two complementary signals: vector lookup over your history plus a generative LLM suggestion</Trans>
+                        <Trans>Card payments from an unfamiliar shop still land in the right area, using the code your bank sends</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Every correction updates the index on the spot — accuracy improves as you use it</Trans>
+                        <Trans>Every correction counts on the spot — accuracy improves as you use it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Statements never leave the device — no OpenAI, no remote inference, ever</Trans>
+                        <Trans>Statements never leave the device — no cloud AI, no remote processing, ever</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -166,12 +165,12 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Each model is fetched the first time you use the feature that needs it, and only after you have switched On-device
-                        AI on in Settings. It is then held in memory just while that feature is working and released about half a minute
-                        after you stop — so the first suggestion after a pause waits for a load, and the ones that follow do not. For each
-                        new transaction Budgie looks through your own history first; if nothing close enough is there, the language model
-                        writes a suggestion instead. Your response (accept, edit, or reject) feeds back into the index without any network
-                        call.
+                        The download happens the first time you use the feature that needs it, and only after you have switched On-device AI
+                        on in Settings. Budgie then keeps that capability ready just while you are using it and releases it about half a
+                        minute after you stop — so the first suggestion after a pause waits a moment, and the ones that follow do not. For
+                        each new transaction Budgie looks through your own history first; if nothing close enough is there, the merchant
+                        code your bank sent points at the right area instead. Your response — accept, edit, or reject — feeds straight back
+                        in, with no network call.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -181,18 +180,18 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     question={<Trans>Does the AI work offline?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Both models live on your device after the one-time download. Categorization runs whether you&apos;re online
-                            or not.
+                            Yes. Everything it needs lives on your device after the one-time download. Categorization runs whether
+                            you&apos;re online or not.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>How big is the model download?</Trans>}
+                    question={<Trans>How big is the download?</Trans>}
                     answer={
                         <Trans>
-                            Three separate files, each fetched on first use of the feature that needs it: roughly 1.1 GB for the Qwen3 1.7B
-                            Q4 language model, 0.5 GB for the 768-dim Nomic embedding model, and a further 0.9 GB for Whisper large-v3-turbo
-                            if you turn on voice entry. Every one of them is optional — you can keep using Budgie without AI.
+                            About 1.6 GB for categorization and suggestions, plus a further 0.9 GB if you turn on voice entry. Each part
+                            arrives the first time you use the feature that needs it, and all of it is optional — you can keep using Budgie
+                            without AI.
                         </Trans>
                     }
                 />
@@ -200,8 +199,8 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     question={<Trans>Can I correct the AI&apos;s suggestions?</Trans>}
                     answer={
                         <Trans>
-                            Always. Every transaction lets you accept, edit, or reject the suggestion. Your corrections feed back into the
-                            768-dim embedding index immediately so the next similar transaction lands closer to the right category.
+                            Always. Every transaction lets you accept, edit, or reject the suggestion. Your corrections count immediately,
+                            so the next similar transaction lands closer to the right category.
                         </Trans>
                     }
                 />
@@ -210,17 +209,16 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     answer={
                         <Trans>
                             Yes. Settings has an AI section with a single On-device AI switch. Turn it off and nothing downloads, nothing
-                            loads into memory, and no suggestion runs — categorization falls back to your rules and the bank&apos;s own
-                            merchant codes. New installs start with the switch off; if you were already using AI before the switch existed,
-                            it stays on.
+                            loads, and no suggestion runs — categorization falls back to your rules and the bank&apos;s own merchant codes.
+                            New installs start with the switch off; if you were already using AI before the switch existed, it stays on.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Does Budgie use OpenAI or any cloud LLM?</Trans>}
+                    question={<Trans>Does Budgie send my transactions to a cloud AI?</Trans>}
                     answer={
                         <Trans>
-                            No. Every inference runs on your own device. There is no fallback to a cloud model and no telemetry about your
+                            No. Everything is worked out on your own device. There is no cloud fallback and no telemetry about your
                             transactions.
                         </Trans>
                     }
