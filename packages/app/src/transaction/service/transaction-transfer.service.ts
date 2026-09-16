@@ -131,14 +131,16 @@ class TransactionTransferService {
                         accountId: conversion.creditAccountId,
                         type: TransactionEntryTypeEnum.CREDIT,
                         amount: conversion.creditAmount,
-                        valuation: creditValuation
+                        valuation: creditValuation,
+                        sourceEntry: conversion.sourceEntry
                     }),
                     this.buildTransferEntryCreateEntity({
                         transactionId: params.id,
                         accountId: conversion.debitAccountId,
                         type: TransactionEntryTypeEnum.DEBIT,
                         amount: conversion.debitAmount,
-                        valuation: debitValuation
+                        valuation: debitValuation,
+                        sourceEntry: conversion.sourceEntry
                     }),
                     ...conversion.feeEntries.map((entry, index) => this.buildFeeEntryCreateEntity(params.id, entry, feeValuations[index]))
                 ],
@@ -189,7 +191,8 @@ class TransactionTransferService {
             operatedAt: transaction.operatedAt,
             toAccountId,
             transactionType: this.resolveTransferTransactionType(fromAccount.type, toAccount.type),
-            feeEntries: getTransactionFeeEntries(transaction.entries)
+            feeEntries: getTransactionFeeEntries(transaction.entries),
+            sourceEntry: transactionEntry
         };
     }
 
@@ -242,7 +245,8 @@ class TransactionTransferService {
         accountId,
         type,
         amount,
-        valuation
+        valuation,
+        sourceEntry
     }: BuildTransferEntryCreateEntityInputInterface): TransactionEntryCreateEntityInterface {
         return {
             transactionId,
@@ -250,7 +254,8 @@ class TransactionTransferService {
             type,
             kind: TransactionEntryKindEnum.PRIMARY,
             amount,
-            categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
+            categoryId: sourceEntry.categoryId ?? SystemCategoryIdEnum.CURRENCY_TRANSFER,
+            categorySource: sourceEntry.categorySource,
             mccCategoryId: null,
             externalId: null,
             exchangeRate: 1,
