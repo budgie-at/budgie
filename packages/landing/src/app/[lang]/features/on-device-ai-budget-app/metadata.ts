@@ -10,15 +10,15 @@ export const FEATURE_METADATA = {
     slug: 'on-device-ai-budget-app',
     tier: FeatureTierEnum.HERO,
     category: FeatureCategoryEnum.COMPARISON,
-    title: msg`On-Device AI Budget App — Local LLM, No Cloud Inference`,
-    tagline: msg`Cloud AI assistants for budgeting send every transaction to a remote server for "intelligence". Budgie runs the LLM and embeddings on your phone — your data never leaves.`,
-    metaTitle: msg`On-Device AI Budget App — Private LLM Categorization — Budgie`,
-    metaDescription: msg`Budgie runs a 1.7B-parameter LLM and 768-dim embedding model on your phone for categorization, tag suggestions, and voice entry. No cloud AI, ever.`,
+    title: msg`On-Device AI Budget App — AI That Never Leaves Your Phone`,
+    tagline: msg`Cloud AI assistants for budgeting send every transaction to a remote server for "intelligence". Budgie's AI runs on your phone — your data never leaves.`,
+    metaTitle: msg`On-Device AI Budget App — No Cloud AI — Budgie`,
+    metaDescription: msg`Categorization, tag suggestions, and voice entry all run on your phone. One opt-in download, then no cloud AI, no account, no subscription.`,
     primaryKeyword: 'on-device AI budget app',
     seoKeywords: [
         'on-device AI budget app',
         'private AI finance app',
-        'local LLM expense tracker',
+        'offline AI expense tracker',
         'on-device AI categorization',
         'no cloud AI budget app'
     ],
@@ -32,5 +32,5 @@ export const FEATURE_METADATA = {
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app', 'on-device-ai-budget-app-explainer'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-09-16',
-    ogTags: ['ai', 'on-device', 'privacy', 'llm']
+    ogTags: ['ai', 'on-device', 'privacy', 'offline']
 } satisfies FeatureRegistryEntryInterface;

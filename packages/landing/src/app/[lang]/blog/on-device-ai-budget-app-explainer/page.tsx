@@ -38,7 +38,7 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
         author: ARTICLE_METADATA.author,
         date: ARTICLE_METADATA.date,
         description: i18n._(ARTICLE_METADATA.seoDescription),
-        keywords: t(i18n)`on-device AI budget app, private AI finance, local LLM finance app, offline AI expense tracker`,
+        keywords: t(i18n)`on-device AI budget app, private AI finance, offline AI finance app, offline AI expense tracker`,
         locale: lang,
         slug: ARTICLE_METADATA.slug,
         title: i18n._(ARTICLE_METADATA.title)
@@ -58,7 +58,7 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                 description={i18n._(ARTICLE_METADATA.description)}
                 homeLabel={t(i18n)`Home`}
                 image={`/${lang}/blog/${ARTICLE_METADATA.slug}/opengraph-image`}
-                keywords={t(i18n)`on-device AI budget app, private AI finance, local LLM finance app, offline AI expense tracker`}
+                keywords={t(i18n)`on-device AI budget app, private AI finance, offline AI finance app, offline AI expense tracker`}
                 locale={lang}
                 slug={ARTICLE_METADATA.slug}
                 title={i18n._(ARTICLE_METADATA.title)}
@@ -83,8 +83,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        Cloud AI assistants process your spending data on remote servers. On-device AI keeps every inference local. Here is
-                        how a 1.7B-param model, offline embeddings, and Whisper speech recognition work together in Budgie.
+                        Cloud AI assistants process your spending data on remote servers. Budgie&apos;s AI works on your phone instead. Here
+                        is what that means for your privacy, what it costs you in storage and battery, and what it can and cannot do.
                     </Trans>
                 </p>
 
@@ -102,7 +102,7 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                                 <Trans>privacy</Trans>
                             </Badge>
                             <Badge variant="secondary">
-                                <Trans>local LLM</Trans>
+                                <Trans>offline</Trans>
                             </Badge>
                             <Badge variant="secondary">
                                 <Trans>voice input</Trans>
@@ -127,16 +127,16 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie takes a different approach. Every AI feature — category suggestions, embedding-based pattern matching,
-                            and voice transaction entry — runs entirely on your device. Your spending data never leaves your phone for AI
-                            processing.
+                            Budgie takes a different approach. Every AI feature — category suggestions, tag suggestions, merchant name
+                            clean-up, and voice transaction entry — runs entirely on your device. Your spending data never leaves your phone
+                            to be processed.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            This article explains what on-device AI means technically, why it matters for financial privacy, and how Budgie
-                            implements it end to end.
+                            This article explains what that actually means: what happens on the phone, what never leaves it, what it costs
+                            in storage and battery, what the AI can and cannot do, and how your corrections make it better.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -148,9 +148,8 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            On-device AI means that the model weights and the inference computation both live on your device — in RAM, using
-                            your CPU or neural-engine hardware — rather than on a cloud server. When you ask for a category suggestion, the
-                            model receives your input and produces output without any network call.
+                            On-device AI means the work happens on the phone in your hand rather than on somebody else&apos;s computer. When
+                            Budgie suggests a category, your transaction is read and answered on the device, without a single network call.
                         </Trans>
                     </BlogArticleProse>
 
@@ -161,24 +160,25 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Cloud AI assistants</strong> — Your transaction description, merchant name, and amount are
-                                serialized and sent to a remote API. The model runs on the provider&apos;s infrastructure, returns a
-                                response, and your data is logged for quality and safety monitoring.
+                                <strong>Cloud AI assistants</strong> — Your transaction description, merchant name, and amount are sent to a
+                                remote service. The work happens on the provider&apos;s machines, an answer comes back, and your data is
+                                typically logged there for quality and safety monitoring.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>On-device AI</strong> — The model is bundled with the app (or downloaded once at setup). Every
-                                inference call stays on your device. No network request, no server log, no third party ever sees the input.
+                                <strong>On-device AI</strong> — Everything the app needs is downloaded once, then stays on your phone. Every
+                                request is answered locally. No network call, no server log, no third party ever sees the input.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
                     <BlogArticleProse>
                         <Trans>
-                            The tradeoff is model size. Cloud providers can run billion-parameter models on server clusters with no
-                            constraint on memory or compute. On-device models must fit in the memory budget of a phone, which limits their
-                            size. Modern quantization techniques have dramatically closed this gap.
+                            The tradeoff is capability. A cloud service can throw a warehouse of computers at a question; a phone has a
+                            battery and a few gigabytes of memory. For open-ended writing or research, the cloud still wins. For the narrow
+                            job of reading a merchant name and picking the right category, a phone is now more than enough — which is
+                            exactly why Budgie does it there.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -227,130 +227,113 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>How a 1.7B-Parameter LLM Fits on a Phone</Trans>
+                        <Trans>What It Costs You: Download, Storage, and Battery</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
-                            The core of Budgie AI categorization is a 1.7-billion-parameter language model. A few years ago, running a model
-                            this size on a phone would have been impractical. Three advances made it possible:
+                            AI on your phone is not free — it trades network round-trips for space on the device. Budgie is explicit about
+                            the bill, and none of it is charged until you ask for it.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Quantization</Trans>
+                        <Trans>A one-time download, only if you want it</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Full-precision model weights are stored as 32-bit floats, meaning each parameter takes 4 bytes. Quantization
-                            reduces this to 4-bit or 8-bit integers, shrinking the model by 4x to 8x with modest accuracy loss. A 1.7B
-                            parameter model quantized to 4-bit occupies roughly 900 MB — manageable on modern smartphones.
+                            Nothing downloads until you switch On-device AI on in Settings. Categorization and suggestions come to about 1.6
+                            GB; voice entry adds a further 0.9 GB, for roughly 2.5 GB if you use everything. That happens once. Afterwards
+                            it stays on the device and normal use needs no further download.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Neural Engine Acceleration</Trans>
+                        <Trans>Battery: only when you ask</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Apple Silicon and modern Android processors include dedicated neural processing hardware. These chips run matrix
-                            multiplications — the dominant computation in transformer inference — far more efficiently than a general CPU.
-                            Inference that would take seconds on a CPU takes milliseconds on a neural engine.
+                            Nothing runs in the background. Budgie gets ready when you open a form or tap the mic, stays ready for about
+                            half a minute after you finish, and lets go when the app goes to the background. That is why the first
+                            suggestion after a pause waits a moment and the ones after it feel instant — and why the cumulative cost of
+                            normal daily use is negligible.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Efficient Inference Runtimes</Trans>
+                        <Trans>You can turn it all off</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Runtimes designed for mobile inference handle memory management, tokenization, and batching in ways optimized
-                            for constrained environments. They minimize peak memory usage and keep the thermal footprint low enough for
-                            casual use without draining the battery.
-                        </Trans>
-                    </BlogArticleProse>
-
-                    <BlogArticleProse>
-                        <Trans>
-                            The result is that Budgie can run a capable language model on the phone itself, load it only when a suggestion
-                            is actually needed, and do the whole thing offline — with no network latency and no server costs.
+                            One switch in Settings controls the whole thing. Turn it off and nothing downloads, nothing loads, and no
+                            suggestion runs — categorization falls back to your own rules and the merchant codes your bank already sends.
+                            New installs start with the switch off.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>Embeddings and LLM Working Together: The Two-Stage Suggestion Stack</Trans>
+                        <Trans>How a Suggestion Actually Gets Made</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie uses two complementary AI techniques for transaction categorization. They address different parts of the
-                            problem and together produce more accurate suggestions than either approach alone.
+                            Every suggestion Budgie makes comes from your own data. Nothing is invented, and there is no shared model of
+                            other people&apos;s spending involved.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Stage 1: Embedding-Based Pattern Matching</Trans>
+                        <Trans>Merchants you have seen before</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            When you first enter a transaction, Budgie converts the merchant name and description into a dense vector
-                            embedding — a numerical representation that captures semantic meaning. This embedding is compared against
-                            embeddings of your historical transactions using vector similarity.
-                        </Trans>
-                    </BlogArticleProse>
-
-                    <BlogArticleProse>
-                        <Trans>
-                            If you have previously categorized transactions from the same merchant, the embedding match returns those
-                            categories with high confidence. The embedding model is small, so it loads quickly and answers quickly once
-                            resident — and it is particularly good at recognizing merchants you have encountered before.
+                            Most of what you spend money on, you have spent money on before. Budgie compares a new transaction against the
+                            ones you have already categorized and matches them by meaning rather than spelling, so a shop still resolves
+                            when two banks write its name differently. This is the path that answers most of the time.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Stage 2: LLM-Based Semantic Categorization</Trans>
+                        <Trans>Spending that repeats</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            When the embedding stage produces low-confidence results — for example, with a new merchant or an ambiguous
-                            description — the full language model takes over. The LLM receives the transaction description and your category
-                            list as context, and generates a ranked suggestion.
+                            Rent, the commute, the weekly shop — Budgie tracks what repeats weekly and monthly and offers the usual category
+                            and amount for it, so confirming a familiar expense is one tap. The code your bank sends with each card payment
+                            adds a further hint for merchants your history has nothing to say about.
                         </Trans>
                     </BlogArticleProse>
 
-                    <BlogArticleProse>
-                        <Trans>
-                            The LLM is slower than the embedding lookup but handles novel inputs well. It understands that a charge from a
-                            pharmacy should go under healthcare, even if it has never seen that specific merchant before, because it has
-                            learned the semantic relationship between merchant types and spending categories.
-                        </Trans>
-                    </BlogArticleProse>
+                    <BlogArticleSubheading>
+                        <Trans>Your corrections are the training</Trans>
+                    </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Both stages run entirely on your device. The embeddings are stored locally alongside your transaction database.
-                            The LLM weights are bundled with the app. Nothing is sent to a remote endpoint at any point in this pipeline.
+                            Nothing is applied until you accept it, and every accept or edit counts immediately. There is no re-training
+                            step and no model update to wait for: the next similar transaction simply lands closer. The longer you use
+                            Budgie, the more its suggestions look like your own habits.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>Whisper.rn for Voice: Offline Speech-to-Text</Trans>
+                        <Trans>Voice Entry: Speak It, Budgie Logs It</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie supports voice transaction entry powered by Whisper.rn — a React Native port of OpenAI Whisper, the
-                            open-source speech recognition model. Whisper runs entirely on-device. When you speak a transaction, the audio
-                            is processed locally and transcribed without being sent to any speech recognition API.
+                            Tap the mic and say what you spent. Your speech becomes text on the phone, and the audio is never sent anywhere.
+                            One sentence can produce several transactions — &ldquo;twelve for coffee, forty for the taxi, and eight euros
+                            for parking&rdquo; comes back as three separate rows, each with its own amount and category.
                         </Trans>
                     </BlogArticleProse>
 
@@ -360,16 +343,16 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            Cloud speech recognition services receive raw audio. That audio can contain more than just the transaction you
-                            intend to record — background conversations, ambient sounds, personally identifying information. Cloud providers
-                            routinely use audio samples to improve their models.
+                            Cloud speech recognition receives raw audio. That audio can contain far more than the expense you meant to
+                            record — background conversations, ambient sound, other people. Providers routinely keep samples to improve
+                            their systems.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            Whisper running on your device never sends audio anywhere. The model receives your audio buffer, produces a
-                            transcript, and that is the end of the data flow. No audio log, no remote API call, no third party involved.
+                            Budgie never sends the audio anywhere. The recording becomes text on the device and is then discarded. No audio
+                            file, no upload, no third party involved.
                         </Trans>
                     </BlogArticleProse>
 
@@ -380,29 +363,82 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                You tap the voice input button and speak the transaction details — amount, merchant, and optional notes.
+                                You tap the mic in the quick-entry sheet and speak naturally — amounts, what they were for, and optional
+                                notes.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Whisper transcribes the audio locally, producing a text string.</Trans>
-                        </BlogArticleListItem>
-                        <BlogArticleListItem>
-                            <Trans>The transcribed text is passed to the two-stage categorization stack described above.</Trans>
+                            <Trans>Your speech is transcribed on the phone.</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                Budgie presents a pre-filled transaction form with the extracted amount and suggested category for your
-                                review before saving.
+                                Budgie splits the sentence into one row per expense and fills in the amount, a category, and the account
+                                matching the currency you said.
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                A review sheet shows every row before anything is saved. Fix a row, fix the whole batch at once, or
+                                re-record and try again.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
                     <BlogArticleProse>
                         <Trans>
-                            The entire flow — from audio to saved transaction — happens offline. It works in airplane mode, in areas with no
-                            signal, and in any language Whisper supports.
+                            The whole flow works in airplane mode and with no signal. English, Ukrainian, German, French, and Spanish are
+                            the primary languages, with dozens more covered.
                         </Trans>
                     </BlogArticleProse>
+                </BlogArticleSection>
+
+                <BlogArticleSection>
+                    <BlogArticleHeading>
+                        <Trans>What It Can and Cannot Do</Trans>
+                    </BlogArticleHeading>
+
+                    <BlogArticleProse>
+                        <Trans>
+                            Being honest about the limits is part of the point. Budgie&apos;s AI is built for a narrow job and does not
+                            pretend to be an assistant.
+                        </Trans>
+                    </BlogArticleProse>
+
+                    <BlogArticleList>
+                        <BlogArticleListItem>
+                            <Trans>
+                                <strong>It can</strong> suggest a category, propose up to three tags, reuse a comment you wrote before,
+                                offer the usual amount for a familiar merchant, rewrite a non-Latin category name into something readable
+                                and searchable, and turn one spoken sentence into several transactions.
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                <strong>It cannot</strong> invent data it has never seen — every suggested value comes from transactions you
+                                already logged or imported. It does not read receipts, it is not a chat assistant, it gives no financial
+                                advice, and it never saves anything on your behalf: nothing is written until you tap.
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                <strong>It is slower on the very first request</strong> after a pause, because it has to get ready first. On
+                                older phones that pause is longer, which is why suggestions also have a faster path that answers from your
+                                history while the rest warms up.
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                <strong>It needs some history first.</strong> On a brand-new install there is nothing to match against, so
+                                suggestions get noticeably better over the first few weeks.
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                <strong>It gets things wrong sometimes</strong>, and the interface assumes that. Everything is a proposal
+                                you can accept, edit, or ignore — and correcting it is how it improves.
+                            </Trans>
+                        </BlogArticleListItem>
+                    </BlogArticleList>
                 </BlogArticleSection>
 
                 <BlogArticleSection>
@@ -412,29 +448,28 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie is open source. The privacy claims made in this article are not policy statements — they are
-                            architectural facts visible in the codebase. You can verify:
+                            Budgie is open source. The privacy claims in this article are not policy statements — they are facts you can
+                            check in the code yourself. You can verify:
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>No outbound network calls during AI inference</strong> — The categorization service uses only local
-                                model files and the local SQLite database. There are no HTTP calls to external AI endpoints.
+                                <strong>No outbound network calls when a suggestion is made</strong> — Suggestions are produced from files
+                                and data already on the device. There are no calls to an external AI service, and no API key anywhere.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>No audio data leaves the device</strong> — The voice entry module uses Whisper.rn with a local model
-                                file. Audio buffers are processed in memory and discarded after transcription.
+                                <strong>No audio data leaves the device</strong> — Voice entry transcribes from an on-device file. The audio
+                                is processed in memory and discarded once it has become text.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Embeddings stored in local SQLite</strong> — The embedding vectors for your transaction history are
-                                stored in the same database as your transactions, encrypted the moment you set a PIN. They are not synced to
-                                any server.
+                                <strong>The learned index lives with your data</strong> — What Budgie learns from your history is stored on
+                                the device alongside your transactions, encrypted the moment you set a PIN, and synced nowhere.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -459,44 +494,44 @@ export default async function OnDeviceAiBudgetAppExplainerPage(props: PageLangPa
                     </BlogArticleHeading>
 
                     <BlogFaqSection locale={lang}>
-                        <BlogFaqItem question={<Trans>Does on-device AI mean the categorization is less accurate?</Trans>}>
+                        <BlogFaqItem question={<Trans>Does running on my phone make the suggestions worse?</Trans>}>
                             <Trans>
-                                Not meaningfully for personal expense categorization. The task is well-suited to smaller models: the
-                                vocabulary is limited, the context window is short, and your personal transaction history provides strong
-                                prior signal via embeddings. Budgie two-stage stack produces accuracy comparable to cloud approaches for
-                                this specific task.
+                                Not for this job. Sorting your own expenses is a narrow task: the vocabulary is small, and your own history
+                                is a far stronger signal than anything a general model could add. A cloud service would be guessing from
+                                other people&apos;s data; Budgie is matching against yours.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>How much storage do the AI models use?</Trans>}>
                             <Trans>
-                                The language model and the embedding model together require approximately 1.6 GB of storage. Adding voice
-                                entry brings the total to about 2.5 GB. All of it is optional: nothing downloads until you switch On-device
-                                AI on in Settings, and then each file arrives the first time you use the feature that needs it. The download
-                                happens once — after that no further model downloads are required for normal use.
+                                Categorization and suggestions take about 1.6 GB of storage. Adding voice entry brings the total to about
+                                2.5 GB. All of it is optional: nothing downloads until you switch On-device AI on in Settings, and then each
+                                part arrives the first time you use the feature that needs it. It downloads once — normal use afterwards
+                                needs no further download.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>Does the AI drain my battery?</Trans>}>
                             <Trans>
-                                Budgie runs AI inference only when you add or edit a transaction — not continuously in the background. A
-                                model is loaded when the feature that needs it starts and dropped about half a minute after you finish, so
-                                the first request after a pause pays for the load and the ones after it are quick. The cumulative battery
-                                impact of normal daily use is negligible.
+                                Budgie only does this work when you add or edit a transaction — never continuously in the background. It
+                                gets ready when the feature that needs it starts and lets go about half a minute after you finish, so the
+                                first request after a pause pays for that and the ones after it are quick. The cumulative battery impact of
+                                normal daily use is negligible.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>Can I use voice entry in languages other than English?</Trans>}>
                             <Trans>
-                                Yes. Whisper supports over 90 languages. Budgie voice entry works in any language Whisper supports,
-                                including multilingual conversations. Language detection is automatic.
+                                Yes. English, Ukrainian, German, French, and Spanish are the primary languages, with dozens more covered.
+                                Budgie follows your phone&apos;s language, so there is nothing to configure.
                             </Trans>
                         </BlogFaqItem>
 
                         <BlogFaqItem question={<Trans>What happens to AI suggestions if I am offline?</Trans>}>
                             <Trans>
-                                Nothing changes. On-device AI is inherently offline. All AI features work identically whether you have
-                                network connectivity or not. This is one of the core advantages of the architecture.
+                                Nothing changes. Once the one-time download is done, every AI feature works identically with or without a
+                                connection — in airplane mode, on a plane, or with no signal at all. That is the whole point of doing it on
+                                the phone.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>
