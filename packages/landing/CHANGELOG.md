@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.10](https://github.com/budgie-at/budgie/compare/v6.67.9...v6.67.10) (2026-09-16)
+
+**Note:** Version bump only for package @budgie-at/landing
+
+
+
+
+
 ## [6.67.9](https://github.com/budgie-at/budgie/compare/v6.67.8...v6.67.9) (2026-09-16)
 
 
