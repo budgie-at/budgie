@@ -73,8 +73,8 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        When a bank sync re-delivers the same transaction, Budgie finds the duplicate imported rows and soft-deletes only
-                        the copies — your own entries stay exactly as they are.
+                        When a bank sync re-delivers a transaction, or delivers one of your own transfers as two separate rows, Budgie finds
+                        it and fixes it — duplicates get soft-deleted, unmatched transfer legs get paired into one.
                     </Trans>
                 }
             />
@@ -92,9 +92,32 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The Sync Data Repairs screen is where you see that damage and undo it. It scans each bank-sync source, shows the
-                        duplicate count per source before changing anything, and soft-deletes only the duplicated imported rows once you
-                        confirm.
+                        The Sync Data Repairs screen runs several checks in one pass: it finds duplicate imported rows, cleans up a few
+                        rarer transfer-matching duplicates that only affect transfers, and looks for transfers between your own cards that
+                        arrived as a separate income row and expense row instead of one transfer. It checks your imported banking
+                        connections that support this repair today, shows a count before changing anything, and only touches the rows
+                        involved once you confirm.
+                    </Trans>
+                </FeaturePageProse>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>When one card pays another</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        Sometimes a transfer between your own cards arrives as two separate rows instead of one — an expense on the card
+                        that sent it, an income on the card that received it. The repair finds those pairs and turns the unmatched row into
+                        a proper transfer, rather than deleting anything.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        It only acts when the receiving card is no longer active on your account, when the masked card number on the
+                        transaction matches exactly one of your closed cards, and when a matching entry turns up within about half a day and
+                        within the expected amount. If the receiving card is still active, this repair leaves it alone — that&apos;s by
+                        design, not a bug.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -106,15 +129,17 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
-                            A dedicated Settings screen scans every bank-sync source and shows the duplicate count before it changes
-                            anything
+                            A dedicated Settings screen scans your imported banking connections and shows a count before it changes anything
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Soft-deletes duplicated imported rows only — anything you typed yourself is left exactly as it is</Trans>
+                        <Trans>Soft-deletes duplicated imported rows — anything you typed yourself is never a candidate</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>A per-source list so you can see which connection produced the duplicates</Trans>
+                        <Trans>
+                            A per-source list, though paired own-card transfers are folded into one connection&apos;s count rather than
+                            shown separately
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>No repair runs until you confirm on the repair card — no background cleanup</Trans>
@@ -125,6 +150,12 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     <FeaturePageBenefitGridItem index={5}>
                         <Trans>Runs against the local database — no upload, no server</Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={6}>
+                        <Trans>
+                            Also pairs unmatched own-card transfer legs into a real transfer — that&apos;s a rewrite, not a deletion, and it
+                            can&apos;t be undone with one tap
+                        </Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -133,8 +164,9 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     question={<Trans>What does a sync data repair actually do?</Trans>}
                     answer={
                         <Trans>
-                            It scans each bank-sync source for duplicate imported transactions and soft-deletes the duplicated rows. Only
-                            imported copies are candidates; the repair shows the count per source first so you can decide.
+                            It runs several fixes on your imported banking connections: it soft-deletes duplicate imported rows, cleans up a
+                            couple of rarer transfer-matching duplicates, and pairs transfers between your own cards that arrived as two
+                            separate rows into one. The screen shows a count before you confirm anything.
                         </Trans>
                     }
                 />
@@ -158,6 +190,26 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     question={<Trans>What if there is nothing to repair?</Trans>}
                     answer={<Trans>The screen says “No sync repairs found” and leaves your data alone.</Trans>}
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What does the own-card transfer fix actually change?</Trans>}
+                    answer={
+                        <Trans>
+                            It doesn&apos;t delete anything. It rewrites a synced income or expense row into a transfer, pointing it at the
+                            closed card that received or sent it. That&apos;s a bigger change than a duplicate soft-delete, and unlike the
+                            soft-delete it has no one-tap undo.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Why didn&apos;t it find my own-card transfer?</Trans>}
+                    answer={
+                        <Trans>
+                            The receiving card has to be closed on your account, and its masked card number has to match exactly one of your
+                            closed cards. A matching entry also has to turn up within about half a day and for the expected amount. If the
+                            card is still active, or the masked number matches more than one closed card, the repair leaves it alone.
+                        </Trans>
+                    }
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Why do duplicates appear at all?</Trans>}
