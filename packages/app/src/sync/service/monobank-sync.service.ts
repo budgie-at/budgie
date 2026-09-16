@@ -1,13 +1,14 @@
 /* eslint-disable no-await-in-loop -- Sync orchestration requires sequential awaits */
 import { consolidationScopeService } from '@budgie/consolidation';
-import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, transactionAsync, UserIconNameEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository } from '../../@generic/drizzle/db/db';
+import { accountBalanceRepository, accountRepository, db } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { microPause } from '../../@generic/utils/micro-pause.util';
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -70,13 +71,22 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         await loadSyncModule();
         const bankAccounts = await this.fetchBankAccountsAndJars(token);
 
-        for (const externalId of externalIds) {
-            const bankAccount = bankAccounts.find(acc => acc.id === externalId);
-            if (isDefined(bankAccount)) {
-                const account = await this.getOrCreateSyncAccount(bankAccount);
-                await this.createOrUpdateSync(account.id, token, historyDepth);
+        const selectedAccounts = bankAccounts.filter(account => externalIds.includes(account.id));
+
+        await transactionAsync(db, async tx => {
+            for (const bankAccount of selectedAccounts) {
+                const account = await this.getOrCreateSyncAccount(bankAccount, tx);
+                const sync = await this.createOrUpdateSync(account.id, token, historyDepth, tx);
+                await accountBalanceRepository.upsert(
+                    {
+                        accountId: account.id,
+                        amount: convertToMicroUnits(bankAccount.balance),
+                        updatedAt: sync.balanceAnchorCapturedAt ?? new Date()
+                    },
+                    tx
+                );
             }
-        }
+        });
 
         void this.registerBackgroundTask();
         void this.sync();

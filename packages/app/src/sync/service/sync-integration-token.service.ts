@@ -5,7 +5,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { accountRepository, bankIntegrationRepository, syncRepository } from '../../@generic/drizzle/db/db';
 
-import type { AccountEntityInterface, BankIntegrationEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
+import type { AccountEntityInterface, BankIntegrationEntityInterface, DB, ExternalSourceEnum } from '@budgie/contracts';
 
 class SyncIntegrationTokenService {
     @Log(
@@ -64,17 +64,19 @@ class SyncIntegrationTokenService {
     }
 
     @Log(
-        (provider, token) => `enter provider=${provider} tokenLen=${token.length}`,
-        (result, provider, token) => `done provider=${provider} tokenLen=${token.length} integrationId=${result.id}`,
-        (error, provider, token) => `throw provider=${provider} tokenLen=${token.length} error=${getErrorMessage(error)}`
+        (provider, token, tx) => `enter provider=${provider} tokenLen=${token.length} hasTx=${String(isDefined(tx))}`,
+        (result, provider, token, tx) =>
+            `done provider=${provider} tokenLen=${token.length} hasTx=${String(isDefined(tx))} integrationId=${result.id}`,
+        (error, provider, token, tx) =>
+            `throw provider=${provider} tokenLen=${token.length} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
-    async getOrCreateIntegration(provider: ExternalSourceEnum, token: string): Promise<BankIntegrationEntityInterface> {
-        const existingIntegration = await bankIntegrationRepository.findByProviderAndToken(provider, token);
+    async getOrCreateIntegration(provider: ExternalSourceEnum, token: string, tx?: DB): Promise<BankIntegrationEntityInterface> {
+        const existingIntegration = await bankIntegrationRepository.findByProviderAndToken(provider, token, tx);
         if (isDefined(existingIntegration)) {
             return existingIntegration;
         }
 
-        return bankIntegrationRepository.create({ provider, token });
+        return bankIntegrationRepository.create({ provider, token }, tx);
     }
 
     @Log(

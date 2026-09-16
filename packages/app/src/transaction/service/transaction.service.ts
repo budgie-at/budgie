@@ -202,12 +202,14 @@ class TransactionService {
     }
 
     @Log(
-        accountId => `enter accountId=${accountId}`,
-        (result, accountId) => `done accountId=${accountId} earliestAt=${result?.toISOString() ?? 'null'}`,
-        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
+        (accountId, tx) => `enter accountId=${accountId} hasTx=${String(isDefined(tx))}`,
+        (result, accountId, tx) =>
+            `done accountId=${accountId} hasTx=${String(isDefined(tx))} earliestAt=${result?.toISOString() ?? 'null'}`,
+        (error, accountId, tx) =>
+            `throw accountId=${accountId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
-    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
-        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
+    async getEarliestTransactionTimeByAccountId(accountId: number, tx?: DB): Promise<Date | null> {
+        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest', tx);
     }
 
     @Log(
