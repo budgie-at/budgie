@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.13](https://github.com/budgie-at/budgie/compare/v6.67.12...v6.67.13) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** state the real encryption and backup model ([2ed0903](https://github.com/budgie-at/budgie/commit/2ed0903e231b8304d3e6d93d834e2a98297ab19a)), closes [#1107](https://github.com/budgie-at/budgie/issues/1107)
+
+
+
+
+
 ## [6.67.12](https://github.com/budgie-at/budgie/compare/v6.67.11...v6.67.12) (2026-09-16)
 
 
