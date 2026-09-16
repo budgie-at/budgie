@@ -2097,10 +2097,6 @@ msgstr ""
 msgid "768-dim Nomic embedding model + sqlite-vec for SIMD-accelerated similarity search"
 msgstr "768-вимірна модель вкладень Nomic + sqlite-vec для SIMD-прискореного семантичного пошуку"
 
-#: src/app/[lang]/ai-features/page.tsx
-msgid "768-dimensional embedding model for instant category suggestions"
-msgstr "768-вимірна модель вкладень для миттєвих підказок категорій"
-
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "8. International Data Transfers"
 msgstr ""
@@ -2311,6 +2307,10 @@ msgstr "Строковий вклад, який обліковується як 
 msgid "A key that can only read"
 msgstr "Ключ, який може лише читати"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "A lighter fallback proposes the same tags from a lookup over your own tagged history, so you get suggestions while the larger model is still loading or busy."
+msgstr "Легший резервний шлях пропонує ті самі теги на основі пошуку у вашій власній історії з тегами, тож ви отримуєте підказки, поки більша модель ще завантажується або зайнята."
+
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "A limit per category"
 msgstr "Ліміт на кожну категорію"
@@ -2374,6 +2374,10 @@ msgstr "Екран перевірки показує кожен рядок пе�
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "A screen chrome redesign: progressive blur behind the header, a collapsible header on scroll, and a fix for the iOS 26 safe-area edge case."
 msgstr "Редизайн обрамлення екрана: прогресивне розмиття за заголовком, згорнутий при прокрутці заголовок і виправлення граничного випадку безпечної зони iOS 26."
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "A second, lighter path answers whenever the main model is still loading or busy"
+msgstr "Другий, легший шлях відповідає щоразу, коли основна модель ще завантажується або зайнята"
 
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
@@ -2446,6 +2450,10 @@ msgstr "Рік щоденних цін для дев’яти найбільши
 #: src/app/[lang]/features/crypto-price-history/page.tsx
 msgid "A year of daily prices for the nine largest crypto assets ships inside the app in euro and dollar. Older history is backfilled from CoinGecko's public market data, on your device."
 msgstr "Рік щоденних цін для дев’яти найбільших криптоактивів входить у застосунок у євро та доларах. Давнішу історію довантажують із публічних ринкових даних CoinGecko на вашому пристрої."
+
+#: src/app/[lang]/ai-features/page.tsx
+msgid "About 1.6 GB for the two models behind categorization and suggestions, plus a further 0.9 GB if you use voice entry. Nothing downloads until you switch On-device AI on in Settings, and then only when you first use the feature that needs it. Each file is cached on the device afterwards."
+msgstr "Близько 1,6 ГБ для двох моделей, що відповідають за категоризацію та підказки, плюс іще 0,9 ГБ, якщо ви користуєтеся голосовим введенням. Нічого не завантажується, доки ви не ввімкнете «On-device AI» у Налаштуваннях, і лише тоді, коли ви вперше скористаєтеся відповідною функцією. Після цього кожен файл кешується на пристрої."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Academic researchers studying software security"
@@ -2656,14 +2664,17 @@ msgid "After Mint’s shutdown, developers need a finance app that respects data
 msgstr "Після закриття Mint розробникам потрібен фінансовий додаток, який поважає право власності на дані та конфіденційність. Порівняйте Budgie, Actual Budget, Firefly III та інші."
 
 #: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
 #: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
 msgid "After picking a category, the on-device LLM proposes up to three tags as tappable pills. Embedding-first fallback when the LLM is busy."
 msgstr "Після вибору категорії LLM на пристрої пропонує до трьох тегів, які можна додати одним дотиком. Якщо LLM зайнята, embedding-пошук підтримує доступність підказок."
 
+#: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
+msgid "After picking a category, the on-device model proposes up to three tags as tappable pills. A lighter fallback answers while it loads or is busy."
+msgstr "Після вибору категорії модель на пристрої пропонує до трьох тегів у вигляді натискних пігулок. Легший резервний шлях відповідає, поки вона завантажується або зайнята."
+
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
-msgid "After selecting a category, the on-device LLM proposes up to three tags as tappable pill chips — with an embedding fallback that stays instant even when the model is still warming up."
-msgstr "Після вибору категорії LLM на пристрої пропонує до трьох тегів у вигляді натискних чіпів — з резервним використанням вкладень, що залишається миттєвим навіть коли модель ще прогрівається."
+msgid "After selecting a category, the on-device model proposes up to three tags as tappable pill chips — with a lighter fallback that answers while that model is still loading."
+msgstr "Після вибору категорії модель на пристрої пропонує до трьох тегів у вигляді натискних чипів — із легшим резервним шляхом, який відповідає, поки ця модель ще завантажується."
 
 #: src/app/[lang]/features/no-bank-login-budget-app/opengraph-image.tsx
 msgid "aggregator"
@@ -4110,8 +4121,8 @@ msgid "Budgie does the opposite. You type the true balance; Budgie compares it w
 msgstr "Budgie робить навпаки. Ви вводите справжній баланс; Budgie порівнює його з поточним і проводить різницю як датовану транзакцію коригування. Виправлення видиме, датоване й редаговане, як будь-який інший рядок."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model."
-msgstr "Budgie один раз завантажує модель Whisper large-v3-turbo і зберігає її на пристрої. Вона охоплює англійську, українську, німецьку, французьку та іспанську як основні мови, а також десятки інших. Якість розпізнавання залежить від того, наскільки добре мова представлена в моделі."
+msgid "Budgie downloads the speech model once and caches it on the device — only after you switch On-device AI on in Settings, and only the first time you record. It covers English, Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with language coverage in the model."
+msgstr "Budgie завантажує мовленнєву модель один раз і кешує її на пристрої — лише після того, як ви ввімкнете «On-device AI» у Налаштуваннях, і лише під час першого запису. Вона охоплює англійську, українську, німецьку, французьку та іспанську як основні мови, а також десятки інших. Якість транскрипції залежить від мовного покриття моделі."
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Budgie Edit Category form showing the icon tile, the name field and the AI-generated translation and search keywords"
@@ -4491,8 +4502,8 @@ msgid "Budgie runs a 1.7B-parameter LLM and 768-dim embedding model on your phon
 msgstr "Budgie запускає LLM на 1,7 млрд параметрів і 768-вимірну модель вкладень на вашому телефоні для категоризації, підказок тегів і введення голосом. Жодного хмарного AI — ніколи."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "Budgie runs AI inference only when you add or edit a transaction — not continuously in the background. Each categorization inference completes in under a second on modern hardware. The cumulative battery impact of normal daily use is negligible."
-msgstr "Budgie запускає AI-вивід лише тоді, коли ви додаєте або редагуєте транзакцію — не безперервно у фоновому режимі. Кожен вивід категоризації завершується менш ніж за секунду на сучасному обладнанні. Сукупний вплив на батарею при нормальному щоденному використанні є незначним."
+msgid "Budgie runs AI inference only when you add or edit a transaction — not continuously in the background. A model is loaded when the feature that needs it starts and dropped about half a minute after you finish, so the first request after a pause pays for the load and the ones after it are quick. The cumulative battery impact of normal daily use is negligible."
+msgstr "Budgie виконує ШІ-інференс лише коли ви додаєте або редагуєте транзакцію — а не постійно у фоні. Модель завантажується, коли стартує функція, якій вона потрібна, і вивільняється приблизно через півхвилини після завершення, тож перший запит після паузи оплачує завантаження, а наступні вже швидкі. Сукупний вплив на батарею за звичайного щоденного використання незначний."
 
 #: src/app/[lang]/features/ai-auto-categorization/metadata.ts
 msgid "Budgie runs Qwen3 1.7B + a 768-dim embedding model on your phone. Two-stage categorization with corrections feeding the embedding index."
@@ -4809,8 +4820,8 @@ msgid "Budgie’s device-to-device sync requires more user involvement. You need
 msgstr "Синхронізація між пристроями в Budgie потребує більше залученості користувача. Вам потрібно явно ініціювати синхронізацію, коли ви хочете передати дані. Обидва пристрої повинні бути доступні — або в одній локальній мережі, або обидва підключені до інтернету для рукопотиску через ретранслятор."
 
 #: src/app/[lang]/features/ai-tag-suggestions/metadata.ts
-msgid "Budgie's local LLM suggests up to three tags per transaction so heavy taggers stop typing. Embedding fallback keeps it instant offline."
-msgstr "Локальна LLM Budgie пропонує до трьох тегів для кожної транзакції, тож активні користувачі тегів додають мітки без набору тексту. Embedding fallback зберігає швидкі підказки офлайн."
+msgid "Budgie's local model suggests up to three tags per transaction so heavy taggers stop typing. A lighter fallback answers while it loads."
+msgstr "Локальна модель Budgie пропонує до трьох тегів на транзакцію, щоб ви більше не друкували. Легший резервний шлях відповідає, поки вона завантажується."
 
 #: src/app/[lang]/security/page.tsx
 msgid "Budgie's PIN and biometric lock gate every app launch. Even if the device is unlocked, no financial data is visible until the correct PIN or biometric challenge is passed."
@@ -5148,6 +5159,11 @@ msgstr "Чи можна відстежувати борги, які я маю, �
 msgid "Can I turn a rule off temporarily?"
 msgstr "Чи можу я тимчасово вимкнути правило?"
 
+#: src/app/[lang]/ai-features/page.tsx
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Can I turn AI off?"
+msgstr "Чи можу я вимкнути ШІ?"
+
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Can I undo a refund link?"
 msgstr "Чи можна скасувати зв’язок повернення?"
@@ -5308,6 +5324,10 @@ msgstr "Категорію обрано на пристрої"
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Category cleanup from the same transaction cards you already use for editing"
 msgstr "Очищення категорій з тих самих карток транзакцій, які вже використовуються для редагування"
+
+#: src/app/[lang]/ai-features/page.tsx
+msgid "Category suggestions drawn from your own history — never from a cloud service"
+msgstr "Підказки категорій із вашої власної історії — ніколи з хмарного сервісу"
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Category-based analytics answer what kind of expense a transaction is — groceries, transport, dining. Tags answer a different and equally important question: what was it for? A dinner tagged as a #work-lunch, a #vacation flight charged to the same “Travel” category as a commute, a shared dinner that needs a #split label — these distinctions only surface when you have a dedicated tag reporting layer."
@@ -5475,8 +5495,8 @@ msgid "Closed-source financial apps often make security claims that sound impres
 msgstr "Фінансові додатки із закритим кодом часто роблять заяви про безпеку, які звучать вражаюче, але їх неможливо перевірити:"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "Cloud “AI” budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees your supermarket habits. Budgie loads both models once, then keeps every inference local — same accuracy, zero data exfiltration."
-msgstr "Хмарні «AI» бюджетні додатки передають кожну назву продавця до віддаленого LLM — це часто означає, що OpenAI бачить ваші звички у супермаркеті. Budgie завантажує обидві моделі один раз, потім зберігає кожен вивід локально — та ж точність, нуль витоку даних."
+msgid "Cloud “AI” budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees your supermarket habits. Budgie keeps every inference on your own device — same accuracy, zero data exfiltration."
+msgstr "Хмарні «ШІ»-бюджетні застосунки надсилають кожен рядок із назвою продавця до віддаленої LLM, а це часто означає, що OpenAI бачить ваші звички в супермаркеті. Budgie тримає кожен інференс на вашому власному пристрої — та сама точність, жодного витоку даних."
 
 #: src/app/[lang]/features/on-device-ai-budget-app/metadata.ts
 #: src/app/[lang]/features/on-device-ai-budget-app/opengraph-image.tsx
@@ -6990,6 +7010,10 @@ msgstr "Кожне поле має власний селектор із заго
 msgid "Each group is updated in bulk, which keeps large imports practical even when years of transactions need valuation."
 msgstr ""
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Each model is fetched the first time you use the feature that needs it, and only after you have switched On-device AI on in Settings. It is then held in memory just while that feature is working and released about half a minute after you stop — so the first suggestion after a pause waits for a load, and the ones that follow do not. For each new transaction Budgie looks through your own history first; if nothing close enough is there, the language model writes a suggestion instead. Your response (accept, edit, or reject) feeds back into the index without any network call."
+msgstr "Кожна модель завантажується під час першого використання функції, якій вона потрібна, і лише після того, як ви ввімкнете «On-device AI» у Налаштуваннях. Далі вона тримається в пам’яті тільки поки ця функція працює, і вивільняється приблизно через півхвилини після зупинки — тож перша підказка після паузи чекає на завантаження, а наступні вже ні. Для кожної нової транзакції Budgie спершу переглядає вашу власну історію; якщо нічого достатньо схожого немає, підказку пише мовна модель. Ваша реакція (прийняти, змінити чи відхилити) повертається в індекс без жодного мережевого виклику."
+
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Each new transaction's title flows through a translation queue. The LLM proposes (translatedName, keywords); both are saved alongside the original. Embeddings then index the translated form for semantic search."
 msgstr "Назва кожної нової транзакції проходить через чергу перекладів. LLM пропонує (перекладена назва, ключові слова); обидва зберігаються поряд з оригіналом. Потім вбудовування індексують перекладену форму для семантичного пошуку."
@@ -7069,10 +7093,6 @@ msgstr "Вісім функцій, що роблять його надійною
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Email: licensing@budgie.at"
 msgstr ""
-
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "Embedding lookup — 768-dim Nomic model finds the nearest historical transaction instantly via sqlite-vec SIMD search"
-msgstr "Пошук за вкладеннями — 768-вимірна модель Nomic миттєво знаходить найближчу історичну транзакцію через SIMD-пошук sqlite-vec"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Embeddings and LLM Working Together: The Two-Stage Suggestion Stack"
@@ -7285,8 +7305,8 @@ msgid "Every cloud-based service is a potential target. In 2023 alone, over 5.5 
 msgstr "Кожен хмарний сервіс є потенційною метою. Лише у 2023 році було викрито понад 5,5 мільярдів особистих записів у витоках даних по всьому світу."
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "Every correction updates the embedding index instantly — accuracy improves as you use it"
-msgstr "Кожне виправлення миттєво оновлює індекс вкладень — точність покращується в міру використання"
+msgid "Every correction updates the index on the spot — accuracy improves as you use it"
+msgstr "Кожне виправлення одразу оновлює індекс — точність зростає з використанням"
 
 #: src/app/[lang]/features/crypto-price-history/page.tsx
 msgid "Every crypto holding has its own market screen with a price card, a sparkline and period metrics"
@@ -8361,6 +8381,10 @@ msgstr "Історичні дані не є критичними для ваши
 msgid "Historical Exchange Rates in Budget Analytics"
 msgstr ""
 
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "History lookup — Budgie finds the closest match among transactions you have already categorized, which is the fast path once the models are loaded"
+msgstr "Пошук в історії — Budgie знаходить найближчий збіг серед уже категоризованих транзакцій; це швидкий шлях, щойно моделі завантажено"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Hobbyist security researchers and bug hunters"
 msgstr "Ентузіастів безпеки та мисливців за помилками"
@@ -8876,8 +8900,8 @@ msgid "If you have any questions, concerns, or requests regarding this Privacy P
 msgstr ""
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "If you have previously categorized transactions from the same merchant, the embedding match returns those categories with high confidence. The embedding model is small and fast — it produces suggestions in milliseconds and is particularly good at recognizing merchants you have encountered before."
-msgstr "Якщо у вас є раніше категоризовані транзакції від того самого продавця, збіг вкладень повертає ці категорії з високою впевненістю. Модель вкладень є невеликою і швидкою — вона видає підказки за мілісекунди і особливо добре розпізнає продавців, яких ви вже зустрічали."
+msgid "If you have previously categorized transactions from the same merchant, the embedding match returns those categories with high confidence. The embedding model is small, so it loads quickly and answers quickly once resident — and it is particularly good at recognizing merchants you have encountered before."
+msgstr "Якщо ви вже категоризували транзакції того самого продавця, зіставлення вкладень поверне ці категорії з високою впевненістю. Модель вкладень невелика, тож вона швидко завантажується і швидко відповідає, щойно опиниться в пам’яті — і особливо добре впізнає продавців, які вам уже траплялися."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "If you have questions about our open source license, commercial licensing options, or anything else related to Budgie's licensing:"
@@ -9096,10 +9120,6 @@ msgstr "Індексовані локальні SQLite-запити, щоб ін
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Inference is a local call"
 msgstr "Обчислення відбувається локально"
-
-#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
-msgid "Inference runs in milliseconds for embeddings and a few seconds for the LLM, only when you trigger it. Background impact is negligible."
-msgstr "Вивід для вкладень займає мілісекунди, для LLM — кілька секунд, лише коли ви його запускаєте. Фоновий вплив є незначним."
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Inferred cadence — monthly, bi-monthly, or quarterly — instead of forcing every bill into a monthly slot"
@@ -9566,14 +9586,6 @@ msgstr "Посилання на репозиторій"
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "LLM fallback — Qwen3 1.7B Q4 handles novel transactions the embedding index has not seen, proposing category and tags from context"
 msgstr "Резервний LLM — Qwen3 1.7B Q4 обробляє нові транзакції, яких індекс вкладень ще не бачив, пропонуючи категорію та теги з контексту"
-
-#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
-msgid "LLM primary, embedding fallback — always fast"
-msgstr "LLM основний, вкладення резервні — завжди швидко"
-
-#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
-msgid "LLM-powered ranking with embedding fallback keeps suggestions instant on any device"
-msgstr "Ранжування на основі LLM із резервними вкладеннями забезпечує миттєві підказки на будь-якому пристрої"
 
 #: src/app/[lang]/features/debt-tracking/opengraph-image.tsx
 msgid "loans"
@@ -10595,6 +10607,10 @@ msgstr "Ніколи не вживати юридичних дій проти д
 msgid "Never worry about service availability"
 msgstr "Ніколи не турбуйтеся про доступність сервісу"
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch controls it, and about 2.5 GB of models download once."
+msgstr "Нові встановлення починають із вимкненою карткою «On-device AI»; якщо ви вже користувалися ШІ, вона лишається увімкненою. У будь-якому разі нею керує перемикач, і близько 2,5 ГБ моделей завантажуються один раз."
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
 msgstr ""
@@ -11102,6 +11118,10 @@ msgid "Nothing opens before the PIN"
 msgstr "Нічого не відкриється до PIN"
 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Nothing runs until you trigger it. A model is loaded when the feature that needs it starts, stays in memory for about half a minute after you finish, and is dropped when the app goes to the background — so the first request after a pause waits for a load and the ones after it do not."
+msgstr "Нічого не працює, доки ви це не запустите. Модель завантажується, коли стартує функція, якій вона потрібна, лишається в пам’яті приблизно півхвилини після завершення і вивільняється, коли застосунок іде у фон — тож перший запит після паузи чекає на завантаження, а наступні вже ні."
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Nothing to send, nothing sent"
 msgstr "Нічого надсилати, нічого не надіслано"
 
@@ -11318,10 +11338,6 @@ msgstr "На холодному старті Budgie просить систем�
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "On a server that mirrors your transactions"
 msgstr "На сервері, що дублює ваші транзакції"
-
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "On first run, Budgie downloads Qwen3 1.7B Q4 and a 768-dim Nomic embedding model from the Hugging Face hub. Both are stored in your app sandbox. For each new transaction, the embedding model runs first — if a strong nearest neighbor exists in your history, the result is instant. If not, Qwen3 1.7B generates a suggestion. Your response (accept, edit, or reject) feeds back into the embedding index without any network call."
-msgstr "При першому запуску Budgie завантажує Qwen3 1.7B Q4 та 768-вимірну модель вкладень Nomic з Hugging Face hub. Обидві зберігаються у пісочниці вашого додатку. Для кожної нової транзакції спочатку запускається модель вкладень — якщо у вашій історії є сильний найближчий сусід, результат є миттєвим. Якщо ні, Qwen3 1.7B генерує підказку. Ваша відповідь (прийняти, відредагувати або відхилити) потрапляє назад до індексу вкладень без жодного мережевого виклику."
 
 #: src/beta/component/beta-release-card/beta-release-card.tsx
 msgid "On iOS 18 and later, restart your iPhone once after installing if the app fails to open."
@@ -14790,17 +14806,9 @@ msgstr "Ця відмінність має значення, тому що во�
 msgid "The ecosystem grows stronger through shared knowledge"
 msgstr "Екосистема стає сильнішою завдяки обміну знаннями"
 
-#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
-msgid "The embedding fallback runs in milliseconds and proposes the same tags from a 768-dim nearest-neighbor lookup over your history."
-msgstr "Резервний пошук за вкладеннями виконується за мілісекунди і пропонує ті самі теги з 768-вимірного пошуку найближчих сусідів по вашій історії."
-
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The embedding lookup is not a single index — Budgie keeps three separate ones, each matching a different field against your own history and returning up to three candidates. The transaction index matches the title you are typing against your past entries to suggest category and tags. The merchant index matches shop names across spelling variants — the same index that lets the same store resolve consistently even when different banks spell it differently, which is the visible result behind merchant name translation. The comment index matches your own free-text notes, so a comment you typed once for a coffee shop comes back as a suggestion the next time you visit it."
 msgstr "Пошук за ембеддингами — це не один індекс: Budgie підтримує три окремі, кожен зіставляє інше поле з вашою власною історією та повертає до трьох кандидатів. Індекс транзакцій зіставляє назву, яку ви вводите, з вашими попередніми записами, щоб запропонувати категорію та теги. Індекс продавців зіставляє назви магазинів попри варіанти написання — той самий індекс, який дозволяє однаково розпізнавати той самий заклад, навіть якщо різні банки пишуть його по-різному, і саме це є видимим результатом перекладу назв продавців. Індекс коментарів зіставляє ваші власні довільні нотатки, тож коментар, який ви одного разу написали для кав’ярні, з’явиться як підказка під час наступного відвідування."
-
-#: src/app/[lang]/ai-features/page.tsx
-msgid "The embedding model is approximately 0.5 GB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features and cached on-device."
-msgstr "Модель embeddings займає приблизно 0,5 ГБ. Qwen3 1.7B у квантованому вигляді — приблизно 1,1 ГБ. Обидві завантажуються один раз під час першого використання функцій ШІ та кешуються на пристрої."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The encryption key never leaves your device and never touches our servers because we do not have servers that handle user data. Here is how key management works:"
@@ -14931,8 +14939,8 @@ msgid "The keypad opens first. Type the amount, keep the account Budgie already 
 msgstr "Спершу відкривається клавіатура. Введіть суму, залиште рахунок, який обрав Budgie, і збережіть."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "The language model and the embedding model together require approximately 1.6 GB of storage. Adding voice entry brings the total to about 2.5 GB. This is a one-time download. Once installed, no additional model downloads are required for normal use."
-msgstr "Мовна модель і модель embeddings разом потребують приблизно 1,6 ГБ пам’яті. Із голосовим введенням загальний обсяг зростає до близько 2,5 ГБ. Це одноразове завантаження. Після встановлення додаткові завантаження моделей для звичайного використання не потрібні."
+msgid "The language model and the embedding model together require approximately 1.6 GB of storage. Adding voice entry brings the total to about 2.5 GB. All of it is optional: nothing downloads until you switch On-device AI on in Settings, and then each file arrives the first time you use the feature that needs it. The download happens once — after that no further model downloads are required for normal use."
+msgstr "Мовна модель і модель вкладень разом потребують приблизно 1,6 ГБ пам’яті. Із голосовим введенням загальний обсяг сягає близько 2,5 ГБ. Усе це необов’язкове: нічого не завантажується, доки ви не ввімкнете «On-device AI» у Налаштуваннях, а далі кожен файл надходить під час першого використання відповідної функції. Завантаження відбувається один раз — після цього для звичайної роботи додаткові завантаження моделей не потрібні."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The lifecycle of your financial data extends far beyond your active use of an app."
@@ -15040,10 +15048,6 @@ msgstr ""
 msgid "The obvious pairs merge on import"
 msgstr "Очевидні пари об'єднуються під час імпорту"
 
-#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
-msgid "The On-device AI card is off until you turn it on. It then downloads about 2.5 GB of models, once."
-msgstr "Картка «ШІ на пристрої» вимкнена, доки ви її не увімкнете. Тоді вона один раз завантажує близько 2,5 ГБ моделей."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The open-source security community includes:"
 msgstr "Спільнота безпеки відкритого коду включає:"
@@ -15115,8 +15119,8 @@ msgid "The Price Increases"
 msgstr "Зростання цін"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
-msgid "The primary engine is the on-device Qwen3 1.7B language model. It ranks tag candidates from your existing tag vocabulary by semantic similarity to the transaction context — matching phrasing variations that a simple text lookup would miss. When the LLM is still loading or busy with another inference, the embedding fallback takes over: a nearest-neighbor lookup over 768-dimensional embeddings of your past tagged transactions, running in milliseconds without waiting for the LLM."
-msgstr "Основним рушієм є мовна модель Qwen3 1.7B на пристрої. Вона ранжує кандидатів тегів з вашого наявного словника тегів за семантичною схожістю з контекстом транзакції — уловлюючи варіації формулювань, що пропустить простий текстовий пошук. Коли LLM все ще завантажується або зайнятий іншим виводом, резервний пошук за вкладеннями перехоплює управління: пошук найближчих сусідів по 768-вимірних вкладеннях ваших минулих помічених транзакцій, що виконується за мілісекунди без очікування LLM."
+msgid "The primary engine is the on-device language model. It ranks tag candidates from your existing tag vocabulary by semantic similarity to the transaction context — matching phrasing variations that a simple text lookup would miss. That model is loaded on demand, so the very first suggestion after a pause waits for it. When it is still loading or busy with another request, a lookup over your past tagged transactions takes over and answers without waiting."
+msgstr "Основний рушій — мовна модель на пристрої. Вона впорядковує кандидатів-теги з вашого наявного словника тегів за семантичною близькістю до контексту транзакції, вловлюючи варіанти формулювань, які простий текстовий пошук пропустив би. Ця модель завантажується на вимогу, тож найперша підказка після паузи чекає на неї. Поки вона ще завантажується або зайнята іншим запитом, естафету перебирає пошук у ваших раніше протегованих транзакціях і відповідає без очікування."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "The primary tag shows as a highlighted pill on the transaction list so you can scan a long list for #vacation or #shared without opening rows. Open the tag selector and long-press a tag card there to make it primary."
@@ -15186,6 +15190,10 @@ msgstr "Курс, за яким конвертовано"
 msgid "The Real-World Impact of Financial Privacy"
 msgstr "Реальний вплив фінансової конфіденційності"
 
+#: src/app/[lang]/features/voice-transaction-entry/page.tsx
+msgid "The record button shows a progress ring while the speech model downloads and loads"
+msgstr "Кнопка запису показує кільце прогресу, поки мовленнєва модель завантажується та ініціалізується"
+
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "The remainder counts down"
 msgstr "Залишок зменшується"
@@ -15199,8 +15207,8 @@ msgid "The repository includes:"
 msgstr "Репозиторій включає:"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
-msgid "The result is that Budgie can run a capable language model in the background, suggest a category within a fraction of a second, and do so entirely offline — with no network latency and no server costs."
-msgstr "Результат полягає в тому, що Budgie може запускати потужну мовну модель у фоновому режимі, пропонувати категорію за частку секунди, і робити це повністю офлайн — без мережевої затримки та серверних витрат."
+msgid "The result is that Budgie can run a capable language model on the phone itself, load it only when a suggestion is actually needed, and do the whole thing offline — with no network latency and no server costs."
+msgstr "Як наслідок, Budgie може запускати спроможну мовну модель просто на телефоні, завантажувати її лише тоді, коли підказка справді потрібна, і робити все це офлайн — без мережевої затримки та без витрат на сервери."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "The results obtained from the Service will be accurate or reliable"
@@ -15407,8 +15415,8 @@ msgid "The Trust Factor"
 msgstr "Фактор довіри"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
-msgid "The two-stage pipeline runs embedding lookup first for instant nearest-neighbor categorization from your own history, then falls back to Qwen3 1.7B for novel transactions the embedding index has not seen before. Every accepted or edited suggestion updates the 768-dim index immediately — accuracy compounds over time."
-msgstr "Двоетапний конвеєр спочатку запускає пошук вкладень для миттєвої категоризації найближчого сусіда з вашої власної історії, потім переходить до Qwen3 1.7B для нових транзакцій, яких індекс вкладень ще не бачив. Кожна прийнята або відредагована підказка негайно оновлює 768-вимірний індекс — точність накопичується з часом."
+msgid "The two-stage pipeline looks through your own history first and falls back to the language model only for transactions it has not seen before. Every accepted or edited suggestion updates the index immediately — accuracy compounds over time."
+msgstr "Двоетапний конвеєр спершу переглядає вашу власну історію і звертається до мовної моделі лише для транзакцій, яких він раніше не бачив. Кожна прийнята чи відредагована підказка одразу оновлює індекс — точність накопичується з часом."
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "The Untagged bucket collects every transaction that carries zero tags. It is a deliberate gap-finder — tap it to see the full list, label what you missed, and watch the bucket shrink."
@@ -16142,6 +16150,10 @@ msgstr "Дві моделі на пристрої — Qwen3 1.7B для чату
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Two on-device models — Qwen3 1.7B for chat and a 768-dim Nomic embedding model — categorize transactions, suggest tags, and learn from your corrections. Your statements never leave the phone."
 msgstr "Дві моделі на пристрої — Qwen3 1.7B для чату та 768-вимірна модель вкладень Nomic — категоризують транзакції, пропонують теги та навчаються на ваших виправленнях. Ваші виписки ніколи не покидають телефон."
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Two paths to a suggestion, so you rarely wait"
+msgstr "Два шляхи до підказки, щоб ви рідко чекали"
 
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Two paths: (1) direct API tokens for supported banks like Monobank, where the token lives in Budgie's local database; (2) PDF/CSV/Excel statement imports for anything else."
@@ -17883,10 +17895,6 @@ msgstr "Працюйте в районах з поганим зв'язком"
 msgid "Works Anywhere, Anytime"
 msgstr "Працює всюди, завжди"
 
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
-msgid "Works during the AI model loading phase too — visual progress indicator built-in"
-msgstr "Працює також під час фази завантаження моделі AI — вбудований візуальний індикатор прогресу"
-
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Works for both expense and income transactions"
 msgstr "Працює для транзакцій витрат і доходів"
@@ -18240,6 +18248,14 @@ msgstr "Так. Pull request-и, звіти про помилки та проп�
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Yes. Rename is non-destructive — every transaction in the category keeps its link via the category ID, not the name."
 msgstr "Так. Перейменування є незнищувальним — кожна транзакція в категорії зберігає зв'язок через ID категорії, а не назву."
+
+#: src/app/[lang]/ai-features/page.tsx
+msgid "Yes. Settings has an AI section with a single On-device AI switch that turns the whole subsystem on or off. Switch it off and nothing downloads, nothing loads, and no suggestion runs — the rest of Budgie is unaffected. New installs start with it off; if you were already using AI before the switch existed, it stays on."
+msgstr "Так. У Налаштуваннях є розділ ШІ з єдиним перемикачем «On-device AI», який вмикає або вимикає всю підсистему. Вимкніть його — і нічого не завантажується, нічого не вантажиться в пам’ять і жодна підказка не виконується; решта Budgie працює як звично. Нові встановлення починають із вимкненим перемикачем; якщо ви користувалися ШІ ще до появи перемикача, він лишається увімкненим."
+
+#: src/app/[lang]/features/ai-auto-categorization/page.tsx
+msgid "Yes. Settings has an AI section with a single On-device AI switch. Turn it off and nothing downloads, nothing loads into memory, and no suggestion runs — categorization falls back to your rules and the bank's own merchant codes. New installs start with the switch off; if you were already using AI before the switch existed, it stays on."
+msgstr "Так. У Налаштуваннях є розділ ШІ з єдиним перемикачем «On-device AI». Вимкніть його — і нічого не завантажується, нічого не потрапляє в пам’ять і жодна підказка не виконується: категоризація повертається до ваших правил і власних кодів продавця від банку. Нові встановлення починають із вимкненим перемикачем; якщо ви користувалися ШІ ще до його появи, він лишається увімкненим."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Yes. Switch the date filter between presets like This Month, Last Month and This Year, or draw a custom range on the calendar — the totals and every category row redraw for the period you chose."
