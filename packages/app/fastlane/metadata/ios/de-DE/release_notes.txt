@@ -1,0 +1,1 @@
+Dieses Update macht die Krypto-Synchronisierung mit Binance nach Unterbrechungen zuverlässiger, korrigiert die Reparatur von Übertragungen zwischen eigenen Karten nach der Wiederherstellung einer archivierten Karte und verweist das Web-Installationsbanner auf den richtigen App-Store-Eintrag. Dazu kommen zahlreiche kleinere Übersetzungs- und Stabilitätsverbesserungen.
