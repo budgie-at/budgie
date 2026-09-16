@@ -245,8 +245,8 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Standard export formats</strong> — CSV, JSON, or SQL exports that you can import into any
-                                spreadsheet or another app if you ever choose to leave.
+                                <strong>Standard export formats</strong> — CSV or JSON exports that you can import into any spreadsheet or
+                                another app if you ever choose to leave.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
@@ -272,14 +272,14 @@ export default async function MintShutdownPrivateAlternativePage(props: PageLang
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>On-device SQLite storage</strong> — Every transaction, account, and category is stored locally in a
+                                <strong>On-device storage</strong> — Every transaction, account, and category is stored locally in a
                                 database, encrypted the moment you set a PIN. Budgie works fully offline; connectivity is optional, never
                                 required.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>AES-256 database encryption</strong> — The database is encrypted at rest. Even if someone gains
+                                <strong>Strong database encryption</strong> — The database is encrypted at rest. Even if someone gains
                                 physical access to your device, they cannot read your financial data without the key.
                             </Trans>
                         </BlogArticleListItem>

@@ -591,7 +591,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>The mobile application</strong> - The complete React Native codebase for iOS and Android
+                                <strong>The mobile application</strong> - The complete mobile app source for iOS and Android
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>

@@ -298,8 +298,8 @@ export default async function HistoricalExchangeRatesBudgetAnalyticsArticle(prop
 
                         <BlogFaqItem question={<Trans>Why store the base amount if it can be recalculated?</Trans>}>
                             <Trans>
-                                Mobile analytics need to be fast. Storing the base amount lets Budgie sum large histories directly in SQL,
-                                while keeping the exchange rate available for audit and future rebuilds.
+                                Mobile analytics need to be fast. Storing the base amount lets Budgie total large histories instantly, while
+                                keeping the exchange rate available for audit and future rebuilds.
                             </Trans>
                         </BlogFaqItem>
 

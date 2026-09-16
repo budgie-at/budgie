@@ -239,12 +239,37 @@ export default async function LicensePage(props: PageLangParam) {
             </p>
             <p>
                 <Trans>
+                    <strong>Drizzle ORM</strong> Apache License 2.0 - Type-safe database toolkit
+                </Trans>
+            </p>
+            <p>
+                <Trans>
                     <strong>TanStack Query</strong> MIT License - Data fetching and state management
                 </Trans>
             </p>
             <p>
                 <Trans>
                     <strong>Lingui</strong> MIT License - Internationalization framework
+                </Trans>
+            </p>
+            <p>
+                <Trans>
+                    <strong>llama.rn</strong> MIT License - On-device language model runtime binding
+                </Trans>
+            </p>
+            <p>
+                <Trans>
+                    <strong>whisper.rn</strong> MIT License - On-device speech recognition runtime binding
+                </Trans>
+            </p>
+            <p>
+                <Trans>
+                    <strong>Qwen3</strong> Apache License 2.0 - Pretrained language model used for on-device text tasks
+                </Trans>
+            </p>
+            <p>
+                <Trans>
+                    <strong>Whisper</strong> MIT License - Pretrained speech recognition model used for on-device voice entry
                 </Trans>
             </p>
             <p>
