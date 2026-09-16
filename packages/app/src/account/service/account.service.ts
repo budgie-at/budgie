@@ -22,6 +22,7 @@ import {
     transactionRepository
 } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
@@ -43,6 +44,8 @@ import type {
 } from '@budgie/contracts';
 
 class AccountService {
+    private static readonly UNCONSOLIDATION_BATCH_SIZE = 25;
+
     @InvalidateDatabaseLiveQuery()
     async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
@@ -136,7 +139,9 @@ class AccountService {
 
     @InvalidateDatabaseLiveQuery()
     async archiveById(id: number): Promise<void> {
-        await transactionAsync(db, async tx => this.archiveByIdInTransaction(id, tx));
+        await microPause();
+
+        await foregroundWorkloadService.run(async () => transactionAsync(db, async tx => this.archiveByIdInTransaction(id, tx)));
     }
 
     @InvalidateDatabaseLiveQuery()
@@ -227,10 +232,15 @@ class AccountService {
 
     private async unconsolidateActiveAutoByAccountId(id: number, tx: DB): Promise<void> {
         const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIds([id], tx);
-        for (const canonical of canonicals) {
-            // eslint-disable-next-line no-await-in-loop -- Sequential unconsolidation must happen before account mutation
-            await unconsolidateByIdInTransaction(canonical.id, tx);
-        }
+
+        await processInputWithBatches(canonicals, AccountService.UNCONSOLIDATION_BATCH_SIZE, async batch => {
+            for (const canonical of batch) {
+                // eslint-disable-next-line no-await-in-loop -- Sequential unconsolidation must happen before account mutation
+                await unconsolidateByIdInTransaction(canonical.id, tx);
+            }
+
+            return null;
+        });
     }
 
     private async updateDebtByIdInTransaction(
