@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.18](https://github.com/budgie-at/budgie/compare/v6.67.17...v6.67.18) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** replace fictional device-to-device sync with real backup flow ([80a9c93](https://github.com/budgie-at/budgie/commit/80a9c93639fc73ff101e6aae6c7e2001ed9df801))
+
+
+
+
+
 ## [6.67.17](https://github.com/budgie-at/budgie/compare/v6.67.16...v6.67.17) (2026-09-16)
 
 
