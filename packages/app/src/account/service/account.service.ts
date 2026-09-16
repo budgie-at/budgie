@@ -141,7 +141,7 @@ class AccountService {
     async archiveById(id: number): Promise<void> {
         await microPause();
 
-        await foregroundWorkloadService.run(async () => transactionAsync(db, async tx => this.archiveByIdInTransaction(id, tx)));
+        await foregroundWorkloadService.run(() => transactionAsync(db, async tx => this.archiveByIdInTransaction(id, tx)));
     }
 
     @InvalidateDatabaseLiveQuery()
