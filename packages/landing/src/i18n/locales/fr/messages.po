@@ -2231,12 +2231,12 @@ msgid "A dedicated Rules screen with search across conditions, actions, categori
 msgstr "Un écran Règles dédié avec une recherche portant sur les conditions, les actions, les catégories, les étiquettes et les comptes"
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "A dedicated Settings screen scans every bank-sync source and shows the duplicate count before it changes anything"
-msgstr "Un écran dédié dans les Paramètres analyse chaque source de synchronisation bancaire et affiche le nombre de doublons avant de modifier quoi que ce soit"
+msgid "A dedicated Settings screen scans your imported banking connections and shows a count before it changes anything"
+msgstr "Un écran dédié dans les réglages analyse vos connexions bancaires importées et affiche un décompte avant de modifier quoi que ce soit"
 
 #: src/app/[lang]/features/sync-data-repairs/metadata.ts
-msgid "A dedicated Settings screen scans every bank-sync source for duplicate imported transactions, shows the count per source, and soft-deletes only the imported copies after you confirm. Manual transactions stay untouched."
-msgstr "Un écran dédié dans les Paramètres analyse chaque source de synchronisation bancaire à la recherche de transactions importées en double, affiche le nombre par source et effectue une suppression logique uniquement des copies importées après votre confirmation. Les transactions manuelles restent intactes."
+msgid "A dedicated Settings screen scans your imported banking connections for duplicate transactions and unmatched own-card transfers, showing a count before you confirm. It soft-deletes duplicate copies and pairs matched transfer legs. Manual transactions stay untouched."
+msgstr "Un écran dédié dans les réglages analyse vos connexions bancaires importées à la recherche de transactions en double et de virements non appariés entre vos propres cartes, en affichant un décompte avant votre confirmation. Il supprime de façon réversible les doublons et associe les segments de virement correspondants. Les transactions saisies manuellement restent intactes."
 
 #: src/app/[lang]/features/tag-analytics/metadata.ts
 msgid "A dedicated Tags tab in analytics with per-tag totals and a drillable Untagged bucket that surfaces every gap in your labeling."
@@ -2344,8 +2344,8 @@ msgid "A P2P purchase and the bank payment behind it merge into one cross-curren
 msgstr "Un achat P2P et le paiement bancaire qui le finance fusionnent en un seul transfert multidevise"
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "A per-source list so you can see which connection produced the duplicates"
-msgstr "Une liste par source pour voir quelle connexion a produit les doublons"
+msgid "A per-source list, though paired own-card transfers are folded into one connection's count rather than shown separately"
+msgstr "Une liste par connexion, bien que les virements appariés entre vos propres cartes soient regroupés dans le décompte d'une seule connexion plutôt qu'affichés séparément"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "A PIN, not a login"
@@ -2831,6 +2831,10 @@ msgstr "Accordez un délai raisonnable pour les correctifs avant la divulgation 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Allow you to delete your data completely if you leave"
 msgstr "Vous permettre de supprimer complètement vos données si vous partez"
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Also pairs unmatched own-card transfer legs into a real transfer — that's a rewrite, not a deletion, and it can't be undone with one tap"
+msgstr "Associe aussi les segments de virement non appariés entre vos propres cartes en un vrai virement — il s'agit d'une conversion, pas d'une suppression, et cela ne peut pas être annulé en un geste"
 
 #: src/app/[lang]/features/private-budget-app-alternative/opengraph-image.tsx
 msgid "alternative"
@@ -7841,10 +7845,6 @@ msgstr "Un logiciel financier qui respecte votre vie privée ne devrait pas exig
 msgid "Financial transactions and expense records"
 msgstr ""
 
-#: src/app/[lang]/features/sync-data-repairs/metadata.ts
-msgid "Find duplicate imported bank transactions and soft-delete only the copies — your manual entries are never touched."
-msgstr "Trouvez les transactions bancaires importées en double et effectuez une suppression logique uniquement des copies — vos saisies manuelles ne sont jamais touchées."
-
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
 msgid "Find missing categories before charts lie."
 msgstr "Trouvez les catégories manquantes avant que les graphiques mentent."
@@ -7852,6 +7852,10 @@ msgstr "Trouvez les catégories manquantes avant que les graphiques mentent."
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Find Uncategorized Transactions Before They Skew Your Budget"
 msgstr "Trouvez les transactions non catégorisées avant qu'elles faussent votre budget"
+
+#: src/app/[lang]/features/sync-data-repairs/metadata.ts
+msgid "Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows — manual entries are never touched."
+msgstr "Trouve les imports en double et associe les virements entre vos propres cartes arrivés sous forme de deux lignes séparées — les saisies manuelles ne sont jamais concernées."
 
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Finishing bank-sync setup returns you to onboarding instead of leaving you stranded on the sync screen."
@@ -9334,6 +9338,10 @@ msgstr ""
 msgid "Is YNAB safe to use?"
 msgstr "YNAB est-il sûr à utiliser ?"
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "It doesn't delete anything. It rewrites a synced income or expense row into a transfer, pointing it at the closed card that received or sent it. That's a bigger change than a duplicate soft-delete, and unlike the soft-delete it has no one-tap undo."
+msgstr "Rien n'est supprimé. Une ligne de revenu ou de dépense synchronisée est transformée en virement, en la reliant à la carte clôturée qui l'a reçue ou envoyée. C'est un changement plus important qu'une suppression réversible de doublon, et contrairement à celle-ci, il n'y a pas d'annulation en un geste."
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "It doesn't intercept the screenshot itself — the masking is a rendering change, so it covers every protected amount, not only the home screen."
 msgstr "Il n'intercepte pas la capture d'écran elle-même — le masquage est un changement d'affichage, il couvre donc chaque montant protégé, pas seulement l'écran d'accueil."
@@ -9346,13 +9354,17 @@ msgstr "Elle se classe toute seule"
 msgid "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
 msgstr "Non. Et le schéma des agrégateurs comporte des risques qui sont rarement clairement divulgués aux utilisateurs. Cet article explique ce que font les agrégateurs, pourquoi l'agrégation massive crée une cible de violation de valeur élevée, et comment une architecture hors ligne d'abord offre une alternative structurellement plus sûre."
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "It only acts when the receiving card is no longer active on your account, when the masked card number on the transaction matches exactly one of your closed cards, and when a matching entry turns up within about half a day and within the expected amount. If the receiving card is still active, this repair leaves it alone — that's by design, not a bug."
+msgstr "Cela n'agit que lorsque la carte réceptrice n'est plus active sur votre compte, que le numéro de carte masqué sur la transaction correspond exactement à une seule de vos cartes clôturées, et qu'une entrée correspondante apparaît dans environ une demi-journée et pour le montant attendu. Si la carte réceptrice est encore active, cette réparation la laisse de côté — c'est voulu, pas un bug."
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "It reads as a transfer afterwards"
 msgstr "Ensuite, cela se lit comme un virement"
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "It scans each bank-sync source for duplicate imported transactions and soft-deletes the duplicated rows. Only imported copies are candidates; the repair shows the count per source first so you can decide."
-msgstr "Il analyse chaque source de synchronisation bancaire à la recherche de transactions importées en double et effectue une suppression logique des lignes dupliquées. Seules les copies importées sont candidates ; la réparation affiche d'abord le nombre par source pour que vous décidiez."
+msgid "It runs several fixes on your imported banking connections: it soft-deletes duplicate imported rows, cleans up a couple of rarer transfer-matching duplicates, and pairs transfers between your own cards that arrived as two separate rows into one. The screen shows a count before you confirm anything."
+msgstr "Elle applique plusieurs corrections à vos connexions bancaires importées : elle supprime logiquement les lignes importées en double, nettoie quelques doublons plus rares liés aux virements, et fusionne en une seule les transferts entre vos propres cartes arrivés sous forme de deux lignes distinctes. L'écran affiche un nombre avant que vous ne confirmiez quoi que ce soit."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "It sits above the list and counts only the transactions without a category inside your active account, date, type, tag and amount filters."
@@ -13793,8 +13805,8 @@ msgid "Social login SDKs that share data with platform providers"
 msgstr "Les SDK de connexion sociale qui partagent des donnees avec les fournisseurs de plateformes"
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "Soft-deletes duplicated imported rows only — anything you typed yourself is left exactly as it is"
-msgstr "Suppression logique des lignes importées dupliquées uniquement — tout ce que vous avez saisi vous-même reste exactement tel quel"
+msgid "Soft-deletes duplicated imported rows — anything you typed yourself is never a candidate"
+msgstr "Supprime de façon réversible les lignes importées en double — tout ce que vous avez saisi vous-même n'est jamais concerné"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "software architecture"
@@ -13827,6 +13839,10 @@ msgstr "Certaines choses ne se devinent pas"
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Sometimes a sync drifts — a transaction reconciles late, a refund posts after the fact. The blunt fix is to reset the account and re-walk its entire history. Budgie's window picker rewinds only as far as you ask."
 msgstr "Parfois une synchronisation dérive : une transaction se réconcilie tard, un remboursement arrive après coup. La solution brutale consiste à réinitialiser le compte et à reparcourir tout son historique. Le sélecteur de fenêtre de Budgie ne rembobine que jusqu'où vous le demandez."
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Sometimes a transfer between your own cards arrives as two separate rows instead of one — an expense on the card that sent it, an income on the card that received it. The repair finds those pairs and turns the unmatched row into a proper transfer, rather than deleting anything."
+msgstr "Parfois, un virement entre vos propres cartes arrive sous forme de deux lignes séparées au lieu d'une seule — une dépense sur la carte émettrice, un revenu sur la carte réceptrice. La réparation trouve ces paires et transforme la ligne non appariée en un vrai virement, plutôt que de supprimer quoi que ce soit."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Sometimes the best migration is no migration. Consider starting fresh if:"
@@ -15190,6 +15206,10 @@ msgstr "Le taux de conversion appliqué"
 msgid "The Real-World Impact of Financial Privacy"
 msgstr "L'impact réel de la confidentialité financière"
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "The receiving card has to be closed on your account, and its masked card number has to match exactly one of your closed cards. A matching entry also has to turn up within about half a day and for the expected amount. If the card is still active, or the masked number matches more than one closed card, the repair leaves it alone."
+msgstr "La carte réceptrice doit être clôturée sur votre compte, et son numéro de carte masqué doit correspondre exactement à une seule de vos cartes clôturées. De plus, une entrée correspondante doit apparaître dans un délai d'environ une demi-journée et pour le montant attendu. Si la carte est encore active, ou si le numéro masqué correspond à plusieurs cartes clôturées, la réparation la laisse de côté."
+
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "The record button shows a progress ring while the speech model downloads and loads"
 msgstr "Le bouton d’enregistrement affiche un anneau de progression pendant le téléchargement et le chargement du modèle vocal"
@@ -15347,8 +15367,8 @@ msgid "The switch lives inside the App Lock card in Settings, under Security. It
 msgstr "L’interrupteur se trouve dans la carte Verrouillage de l’application, dans Paramètres, sous Sécurité. Il n’apparaît qu’une fois un code PIN défini et une biométrie configurée sur l’appareil — il n’existe pas de mode purement biométrique."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "The Sync Data Repairs screen is where you see that damage and undo it. It scans each bank-sync source, shows the duplicate count per source before changing anything, and soft-deletes only the duplicated imported rows once you confirm."
-msgstr "L'écran Réparation des données de synchronisation est l'endroit où vous voyez ces dégâts et les annulez. Il analyse chaque source de synchronisation bancaire, affiche le nombre de doublons par source avant de modifier quoi que ce soit, et effectue une suppression logique uniquement des lignes importées dupliquées après votre confirmation."
+msgid "The Sync Data Repairs screen runs several checks in one pass: it finds duplicate imported rows, cleans up a few rarer transfer-matching duplicates that only affect transfers, and looks for transfers between your own cards that arrived as a separate income row and expense row instead of one transfer. It checks your imported banking connections that support this repair today, shows a count before changing anything, and only touches the rows involved once you confirm."
+msgstr "L'écran des réparations de données de synchronisation effectue plusieurs vérifications en une seule passe : il trouve les lignes importées en double, nettoie quelques doublons plus rares liés aux virements, et recherche les transferts entre vos propres cartes arrivés sous forme de ligne de revenu et de ligne de dépense distinctes au lieu d'un seul virement. Il vérifie vos connexions bancaires importées qui prennent en charge cette réparation aujourd'hui, affiche un nombre avant de modifier quoi que ce soit, et ne touche que les lignes concernées une fois que vous confirmez."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "The tab splits in two: income by tag first, then spending by tag, each row a tag with its total for the period. The same tag can appear on both lists, so a tag that earns and costs is not flattened into one figure."
@@ -16743,6 +16763,10 @@ msgstr "Que fait « Recalculer les soldes » ?"
 msgid "What does Screenshot Protection actually hide?"
 msgstr "Que masque réellement la protection des captures d'écran ?"
 
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "What does the own-card transfer fix actually change?"
+msgstr "Que change exactement la correction des virements entre vos propres cartes ?"
+
 #: src/app/[lang]/features/crypto-price-history/page.tsx
 msgid "What does the progress indicator show?"
 msgstr "Que montre l'indicateur de progression ?"
@@ -17154,8 +17178,8 @@ msgid "Whatever in the period has no tag at all. It appears as an Untagged row �
 msgstr "Tout ce qui, dans la période, ne porte aucune étiquette. Cela apparaît comme une ligne « Sans étiquette » — une dans la liste des revenus, une dans celle des dépenses — et la toucher ouvre ces transactions pour que vous les étiquetiez."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
-msgid "When a bank sync re-delivers the same transaction, Budgie finds the duplicate imported rows and soft-deletes only the copies — your own entries stay exactly as they are."
-msgstr "Quand une synchronisation bancaire renvoie la même transaction, Budgie trouve les lignes importées en double et effectue une suppression logique uniquement des copies — vos propres saisies restent exactement telles quelles."
+msgid "When a bank sync re-delivers a transaction, or delivers one of your own transfers as two separate rows, Budgie finds it and fixes it — duplicates get soft-deleted, unmatched transfer legs get paired into one."
+msgstr "Lorsqu'une synchronisation bancaire renvoie une transaction, ou livre l'un de vos propres virements sous forme de deux lignes séparées, Budgie le détecte et le corrige — les doublons sont supprimés de façon réversible, les segments de virement non appariés sont associés en un seul."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "When a company shuts down, the data does not necessarily disappear. It often becomes an asset sold to the acquiring company or retained in archives with unclear access policies."
@@ -17196,6 +17220,10 @@ msgstr "Quand exactement une de tes règles existantes correspond déjà à la t
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "When Intuit Mint shut down on March 23, 2024, it left millions of users hunting for a replacement. Many found one quickly — but most landed on apps that share the same fundamental architecture as Mint: your financial data lives on someone else's servers, managed by a company whose priorities can shift without warning."
 msgstr "Quand Intuit Mint a fermé le 23 mars 2024, cela a laissé des millions d'utilisateurs à la recherche d'un remplaçant. Beaucoup en ont trouvé un rapidement — mais la plupart ont atterri sur des applications qui partagent la même architecture fondamentale que Mint : vos données financières vivent sur les serveurs d'une autre entreprise, gérée par une société dont les priorités peuvent changer sans avertissement."
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "When one card pays another"
+msgstr "Quand une carte en paie une autre"
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "When should I set a target balance?"
@@ -17570,6 +17598,10 @@ msgstr "Pourquoi les développeurs choisissent le Local-First"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Why Developers Choose Budgie"
 msgstr "Pourquoi les développeurs choisissent Budgie :"
+
+#: src/app/[lang]/features/sync-data-repairs/page.tsx
+msgid "Why didn't it find my own-card transfer?"
+msgstr "Pourquoi n'a-t-il pas trouvé mon virement entre vos propres cartes ?"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Why direct API matters more than convenience"
