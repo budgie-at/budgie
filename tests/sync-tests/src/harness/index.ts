@@ -51,8 +51,7 @@ export {
     FIAT_ORDERS_URL,
     WITHDRAW_URL,
     stubBinanceServerTime,
-    stubEmptyC2cAndEarnRewards,
-    stubEmptyDepositAndWithdraw
+    stubEmptyC2cAndEarnRewards
 } from './binance/binance-raw-stub';
 export { withCoolDownSpy } from './binance/with-cooldown-spy';
 export { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases } from './scenario/error-recovery';

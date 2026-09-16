@@ -4,12 +4,7 @@ export { ConsolidationCoordinatorService } from './auto/service/consolidation-co
 export { ConsolidationFamilyRegistryService } from './auto/service/consolidation-family-registry.service';
 export { consolidationScopeService } from './auto/service/consolidation-scope.service';
 export { P2pFiatDirectionEnum } from './auto/enum/p2p-fiat-direction.enum';
-export {
-    P2P_ORDER_EXTERNAL_ID_MARKER,
-    TRANSFER_PAIR_P2P_FIAT_AUTHORITATIVE_MAX_DELTA,
-    TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE,
-    TRANSFER_PAIR_P2P_FIAT_TIME_WINDOW_SECONDS
-} from './shared/constant/transfer-pair-p2p-fiat.constant';
+export { P2P_ORDER_EXTERNAL_ID_MARKER } from './shared/constant/transfer-pair-p2p-fiat.constant';
 export { ConsolidationExecutorService } from './executor/service/consolidation-executor.service';
 export { ConsolidationRepairExecutorService } from './executor/service/consolidation-repair-executor.service';
 export { AtmCashWithdrawalRepository } from './query/repository/atm-cash-withdrawal.repository';

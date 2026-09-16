@@ -27,8 +27,6 @@ import type {
 export const P2P_OPERATED_AT = new Date('2026-02-20T10:00:00.000Z');
 const P2P_ASSET_AMOUNT = 1_000 * PRECISION;
 const P2P_QUOTED_UNIT_PRICE = 41 * PRECISION;
-const P2P_BUY_INCOME_OFFSET_MS = 30_000;
-export const P2P_BUY_INCOME_OPERATED_AT = new Date(P2P_OPERATED_AT.getTime() + P2P_BUY_INCOME_OFFSET_MS);
 export const P2P_BANK_AMOUNT = (P2P_QUOTED_UNIT_PRICE * P2P_ASSET_AMOUNT) / PRECISION;
 export const P2P_SPLIT_BANK_PRIMARY_AMOUNT = 20 * P2P_ASSET_AMOUNT;
 export const P2P_SPLIT_BANK_EXTRA_AMOUNT = 21 * P2P_ASSET_AMOUNT;
@@ -76,7 +74,7 @@ export const seedP2pBuyIncome = (accountId: number, quotedInstrumentId: number |
             title: 'Binance P2P buy USDT',
             externalId: 'binance:c2c:order-1',
             externalSource: ExternalSourceEnum.BINANCE,
-            operatedAt: P2P_BUY_INCOME_OPERATED_AT,
+            operatedAt: new Date(P2P_OPERATED_AT.getTime() + 30_000),
             exchangeRate: 1,
             fromAccountId: null,
             toAccountId: accountId,
