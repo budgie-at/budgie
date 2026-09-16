@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.4](https://github.com/budgie-at/budgie/compare/v6.67.3...v6.67.4) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** match own-card transfer masks against the card number before the IBAN suffix ([c277060](https://github.com/budgie-at/budgie/commit/c2770604d8f3c8f5907a9065affa27881a55be3b)), closes [#1074](https://github.com/budgie-at/budgie/issues/1074) [#1078](https://github.com/budgie-at/budgie/issues/1078)
+
+
+
+
+
 ## [6.67.3](https://github.com/budgie-at/budgie/compare/v6.67.2...v6.67.3) (2026-09-16)
 
 **Note:** Version bump only for package @budgie-at/app
