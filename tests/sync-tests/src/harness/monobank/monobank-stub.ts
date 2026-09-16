@@ -18,5 +18,15 @@ export const monobankStub = {
         for (const batch of [...batches].reverse()) {
             mockServer.use(http.get(STATEMENT_ENDPOINT, () => HttpResponse.json(batch), { once: true }));
         }
+    },
+    recordStatementAccountIds: (requestedAccountIds: string[], onRequest?: () => void): void => {
+        mockServer.use(
+            http.get(STATEMENT_ENDPOINT, ({ params }) => {
+                requestedAccountIds.push(String(params.account));
+                onRequest?.();
+
+                return HttpResponse.json([]);
+            })
+        );
     }
 };

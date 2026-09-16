@@ -184,15 +184,23 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     @Log(
-        (sync, result) =>
-            `enter syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)}`,
-        (_result, sync, result) =>
-            `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, sync, result) =>
-            `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} error=${getErrorMessage(error)}`
+        (sync, result, runGeneration) =>
+            `enter syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration}`,
+        (_result, sync, result, runGeneration) =>
+            `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration}`,
+        (error, sync, result, runGeneration) =>
+            `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} runGeneration=${runGeneration} error=${getErrorMessage(error)}`
     )
-    protected async applyProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): Promise<void> {
-        await syncRepository.update(sync.id, this.resolveProgressUpdate(sync, result));
+    protected async applyProgressUpdate(
+        sync: SyncEntityInterface,
+        result: SyncBatchResultInterface,
+        runGeneration: number
+    ): Promise<void> {
+        if (!this.isRunCurrent(runGeneration)) {
+            return;
+        }
+
+        await syncRepository.updateProgress(sync.id, this.provider, sync.mode, this.resolveProgressUpdate(sync, result));
     }
 
     @Log(
@@ -483,7 +491,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return false;
         }
 
-        await this.applyProgressUpdate(pendingSync, result);
+        await this.applyProgressUpdate(pendingSync, result, runGeneration);
         if (!this.isRunCurrent(runGeneration)) {
             return false;
         }
