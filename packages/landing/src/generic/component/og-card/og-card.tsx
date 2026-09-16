@@ -1,6 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { OgCardBrandMark } from './og-card-brand-mark';
 import { OgCardDevice } from './og-card-device';
 
 const WIDE_COPY_WIDTH = '980px';
@@ -47,10 +48,7 @@ const markStyle = {
     background: 'linear-gradient(135deg, #34d399, #059669)',
     display: 'flex' as const,
     alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    fontSize: '26px',
-    fontWeight: 700,
-    color: '#04130c'
+    justifyContent: 'center' as const
 };
 
 const wordmarkStyle = { fontSize: '27px', fontWeight: 700, color: '#f8fafc', letterSpacing: '-0.4px' };
@@ -118,7 +116,9 @@ export const OgCard = ({ title, label, tags, tagline, plate }: Props) => {
 
             <div style={contentStyle}>
                 <div style={brandRowStyle}>
-                    <div style={markStyle}>B</div>
+                    <div style={markStyle}>
+                        <OgCardBrandMark />
+                    </div>
 
                     <span style={wordmarkStyle}>Budgie</span>
 
