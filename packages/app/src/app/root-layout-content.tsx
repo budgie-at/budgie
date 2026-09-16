@@ -88,9 +88,15 @@ const syncForegroundData = async (): Promise<void> => {
 };
 
 const handleAppStateChange = (isActive: boolean): void => {
-    if (isActive) {
-        void syncWorkloadService.run('foreground', syncForegroundData).catch(emptyFn);
+    if (!isActive) {
+        monobankSyncService.interruptActiveRun();
+        binanceSyncService.interruptActiveRun();
+        syncWorkloadService.interruptActiveWork();
+
+        return;
     }
+
+    void syncWorkloadService.run('foreground', syncForegroundData).catch(emptyFn);
 };
 
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
