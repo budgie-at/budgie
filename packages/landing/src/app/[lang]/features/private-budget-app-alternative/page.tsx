@@ -91,8 +91,8 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
 
                 <FeatureStory.Point index={0}>
                     <Trans>
-                        Privacy is the first group in Settings. Every account, transaction and category lives in a single SQLite file on the
-                        phone — there is no vendor database holding a second copy.
+                        Privacy is the first group in Settings. Every account, transaction and category lives in a single file on the phone
+                        — there is no vendor database holding a second copy.
                     </Trans>
                 </FeatureStory.Point>
 
@@ -122,8 +122,8 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
                     <Trans>
-                        App Lock is opt-in, and the PIN you set does double duty: it becomes the SQLCipher key for the whole database. Until
-                        you set one, the file is ordinary local SQLite — private to the app sandbox, but not encrypted.
+                        App Lock is opt-in, and the PIN you set does double duty: it becomes the key the whole file is encrypted with. Until
+                        you set one, the file is ordinary local storage — private to the app sandbox, but not encrypted.
                     </Trans>
                 </FeatureStory.Point>
             </FeatureStory>
@@ -148,8 +148,7 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
                             Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank
-                            credentials. Budgie does none of this — your ledger stays in a local database on your device, and setting a PIN
-                            encrypts that database with SQLCipher.
+                            credentials. Budgie does none of this — your ledger stays on your device, and setting a PIN encrypts that file.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
@@ -177,7 +176,7 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                 </FeaturePageHeading>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Cloud-based PFM apps</Trans>}>
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Local SQLite, encrypted once you set a PIN</Trans>}
+                        budgieValue={<Trans>On your phone, encrypted once you set a PIN</Trans>}
                         competitorValue={<Trans>Vendor&apos;s cloud + aggregator</Trans>}
                         label={<Trans>Where transactions live</Trans>}
                     />
@@ -215,8 +214,7 @@ export default async function PrivateBudgetAppAlternativePage(props: PageLangPar
                     answer={
                         <Trans>
                             Cloud-based PFM apps mirror your transactions to their servers, share data with aggregators, and store your bank
-                            credentials. Budgie does none of this — your ledger stays in a local database on your device, and setting a PIN
-                            encrypts that database with SQLCipher.
+                            credentials. Budgie does none of this — your ledger stays on your device, and setting a PIN encrypts that file.
                         </Trans>
                     }
                 />

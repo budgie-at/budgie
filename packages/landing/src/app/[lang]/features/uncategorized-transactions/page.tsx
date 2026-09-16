@@ -173,7 +173,7 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                         <Trans>Category cleanup from the same transaction cards you already use for editing</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Indexed local SQLite queries, so the insight stays fast on long transaction histories</Trans>
+                        <Trans>Stays fast on long transaction histories, entirely on-device</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Works offline and on-device, with no analytics service reading your financial data</Trans>
@@ -203,10 +203,7 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                 <FeaturePageFaqItem
                     question={<Trans>Will this slow down my transaction list?</Trans>}
                     answer={
-                        <Trans>
-                            No. Budgie uses an indexed local SQLite query for the count and the drill-down list. Everything runs on-device,
-                            without a cloud analytics service.
-                        </Trans>
+                        <Trans>No. The count and the drill-down list both run entirely on-device, without a cloud analytics service.</Trans>
                     }
                 />
                 <FeaturePageFaqItem
