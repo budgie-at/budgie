@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.17](https://github.com/budgie-at/budgie/compare/v6.67.16...v6.67.17) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** rescope merchant translation page to category and tag translation ([187ad09](https://github.com/budgie-at/budgie/commit/187ad09137984adf1e810ecf2e89eacb3d64c18a)), closes [#1138](https://github.com/budgie-at/budgie/issues/1138)
+
+
+
+
+
 ## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
 
 
