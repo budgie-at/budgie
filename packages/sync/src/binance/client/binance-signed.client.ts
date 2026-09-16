@@ -48,6 +48,7 @@ import type { SyncErrorInterface } from '../../core/interface/sync-error.interfa
 import type { SyncResultInterface } from '../../core/interface/sync-result.type';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
 import type { BinanceCredentialsInterface } from '../constant/binance-credentials.schema';
+import type { BinanceTradeCursorMapInterface } from '../constant/binance-trade-cursor-map.schema';
 import type { BinanceAssetBalanceApiInterface } from '../interface/binance-asset-balance-api.schema';
 import type { BinanceC2cOrderApiInterface } from '../interface/binance-c2c-order-api.schema';
 import type { BinanceConvertFlowApiInterface } from '../interface/binance-convert-api.schema';
@@ -56,6 +57,7 @@ import type { BinanceEarnPositionApiInterface } from '../interface/binance-earn-
 import type { BinanceEarnRewardApiInterface } from '../interface/binance-earn-reward-api.schema';
 import type { BinanceFiatOrderApiInterface } from '../interface/binance-fiat-order-api.schema';
 import type { BinanceLockedEarnPositionApiInterface } from '../interface/binance-locked-earn-position-api.schema';
+import type { BinanceTradeFetchContextInterface } from '../interface/binance-trade-fetch-context.interface';
 import type { BinanceTradeSymbolInterface } from '../interface/binance-trade-symbol.interface';
 import type { BinanceTransactionSourcesInterface } from '../interface/binance-transaction-sources.interface';
 import type { BinanceTransferInterface } from '../interface/binance-transfer.interface';
@@ -118,6 +120,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly c2cOrderCache = new Map<string, BinanceC2cOrderApiInterface[]>();
     private readonly earnRewardCache = new Map<string, BinanceEarnRewardApiInterface[]>();
     private readonly transferCache = new Map<string, BinanceTransferInterface[]>();
+    private readonly runSymbolTradeCursors = new Map<string, number>();
+    private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
     private serverTimeOffsetMs: number | undefined;
     private validSymbols: Set<string> | undefined;
@@ -225,15 +229,25 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         result => `done transferCount=${result.success ? result.data.length : 0}`,
         error => `throw error=${getErrorMessage(error)}`
     )
+    // eslint-disable-next-line max-params -- Existing public API intentionally keeps positional arguments
     async getTransfers(
         accountId: string,
         from: number,
         to: number | null = null,
-        eligibleSoldOffBaseAssets: readonly string[] = []
+        eligibleSoldOffBaseAssets: readonly string[] = [],
+        initialSymbolTradeCursors: BinanceTradeCursorMapInterface = {}
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
         return this.withDecodedAccount(accountId, from, to, (_decoded, startTimeMs, endTimeMs) =>
-            this.fetchAllTransfers(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets)
+            this.fetchAllTransfers(startTimeMs, endTimeMs, { eligibleSoldOffBaseAssets, initialSymbolTradeCursors })
         );
+    }
+
+    getSymbolTradeCursors(): BinanceTradeCursorMapInterface {
+        return Object.fromEntries(this.runSymbolTradeCursors);
+    }
+
+    isC2cUnavailable(): boolean {
+        return this.c2cUnavailableThisRun;
     }
 
     protected getDefaultHeaders(): Record<string, string> {
@@ -693,15 +707,15 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private async fetchAllTransfers(
         startTimeMs: number,
         endTimeMs: number,
-        eligibleSoldOffBaseAssets: readonly string[]
+        tradeContext: BinanceTradeFetchContextInterface
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const cacheKey = `${startTimeMs}-${endTimeMs}:${[...eligibleSoldOffBaseAssets].sort().join(',')}`;
+        const cacheKey = `${startTimeMs}-${endTimeMs}:${[...tradeContext.eligibleSoldOffBaseAssets].sort().join(',')}`;
         const cached = this.transferCache.get(cacheKey);
         if (isDefined(cached)) {
             return this.success(cached);
         }
 
-        const result = await this.fetchTradesAndConverts(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets);
+        const result = await this.fetchTradesAndConverts(startTimeMs, endTimeMs, tradeContext);
         if (result.success) {
             this.transferCache.set(cacheKey, result.data);
         }
@@ -712,14 +726,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private async fetchTradesAndConverts(
         startTimeMs: number,
         endTimeMs: number,
-        eligibleSoldOffBaseAssets: readonly string[]
+        tradeContext: BinanceTradeFetchContextInterface
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
         const convertResult = await this.fetchConvertTransfers(startTimeMs, endTimeMs);
         if (!convertResult.success) {
             return convertResult;
         }
 
-        const tradeResult = await this.fetchTradeTransfers(startTimeMs, endTimeMs, convertResult.data, eligibleSoldOffBaseAssets);
+        const tradeResult = await this.fetchTradeTransfers(startTimeMs, endTimeMs, convertResult.data, tradeContext);
         if (!tradeResult.success) {
             return tradeResult;
         }
@@ -808,19 +822,39 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         startTimeMs: number,
         endTimeMs: number,
         convertTransfers: BinanceTransferInterface[],
-        eligibleSoldOffBaseAssets: readonly string[]
+        tradeContext: BinanceTradeFetchContextInterface
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const symbolsResult = await this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers, eligibleSoldOffBaseAssets);
+        const symbolsResult = await this.deriveTradeSymbols(
+            startTimeMs,
+            endTimeMs,
+            convertTransfers,
+            tradeContext.eligibleSoldOffBaseAssets
+        );
         if (!symbolsResult.success) {
             return symbolsResult;
         }
 
-        syncLogger.log('binance:trades:symbols', { symbols: symbolsResult.data.map(symbol => symbol.symbol).join(',') });
+        return this.fetchSymbolsTrades(symbolsResult.data, startTimeMs, endTimeMs, tradeContext.initialSymbolTradeCursors);
+    }
+
+    private async fetchSymbolsTrades(
+        symbols: BinanceTradeSymbolInterface[],
+        startTimeMs: number,
+        endTimeMs: number,
+        initialSymbolTradeCursors: BinanceTradeCursorMapInterface
+    ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
+        syncLogger.log('binance:trades:symbols', { symbols: symbols.map(symbol => symbol.symbol).join(',') });
 
         const transfers: BinanceTransferInterface[] = [];
-        for (const symbol of symbolsResult.data) {
+        for (const symbol of symbols) {
+            const resumeFromId = initialSymbolTradeCursors[symbol.symbol];
             // eslint-disable-next-line no-await-in-loop -- Per-symbol myTrades calls must be paced sequentially against the shared api IP weight pool
-            const symbolResult = await this.fetchSymbolTrades(symbol, startTimeMs, endTimeMs);
+            const symbolResult = await this.fetchSymbolTrades(
+                symbol,
+                startTimeMs,
+                endTimeMs,
+                isDefined(resumeFromId) ? resumeFromId + 1 : null
+            );
             if (!symbolResult.success) {
                 return symbolResult;
             }
@@ -828,10 +862,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             transfers.push(...symbolResult.data);
         }
 
-        syncLogger.log('binance:trades:counts', {
-            symbols: symbolsResult.data.map(symbol => symbol.symbol).join(','),
-            count: transfers.length
-        });
+        syncLogger.log('binance:trades:counts', { symbols: symbols.map(symbol => symbol.symbol).join(','), count: transfers.length });
 
         return this.success(transfers);
     }
@@ -1004,9 +1035,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private async fetchSymbolTrades(
         symbol: BinanceTradeSymbolInterface,
         startTimeMs: number,
-        endTimeMs: number
+        endTimeMs: number,
+        initialFromId: number | null
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        return this.fetchNextSymbolTradePage({ symbol, startTimeMs, endTimeMs, fromId: null, transfers: [] });
+        return this.fetchNextSymbolTradePage({ symbol, startTimeMs, endTimeMs, fromId: initialFromId, transfers: [] });
     }
 
     private async fetchNextSymbolTradePage(state: {
@@ -1027,6 +1059,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
 
         state.transfers.push(...pageResult.data.transfers);
+        if (isDefined(pageResult.data.lastFetchedId)) {
+            this.runSymbolTradeCursors.set(state.symbol.symbol, pageResult.data.lastFetchedId);
+        }
 
         return isDefined(pageResult.data.nextFromId)
             ? this.fetchNextSymbolTradePage({ ...state, fromId: pageResult.data.nextFromId })
@@ -1038,7 +1073,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         fromId: number | null,
         startTimeMs: number,
         endTimeMs: number
-    ): Promise<SyncResultInterface<{ transfers: BinanceTransferInterface[]; nextFromId: number | null }>> {
+    ): Promise<SyncResultInterface<{ transfers: BinanceTransferInterface[]; nextFromId: number | null; lastFetchedId: number | null }>> {
         const result = await this.signedRequest(MY_TRADES_ENDPOINT, 'GET', {
             symbol: symbol.symbol,
             ...(isDefined(fromId) ? { fromId } : { startTime: startTimeMs }),
@@ -1060,17 +1095,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const lastTrade = parsed.data.at(-1);
         const nextFromId = parsed.data.length === TRADES_PER_SYMBOL_LIMIT && isDefined(lastTrade) ? lastTrade.id + 1 : null;
 
-        return this.success({ transfers, nextFromId });
+        return this.success({ transfers, nextFromId, lastFetchedId: lastTrade?.id ?? null });
     }
 
     private handleSymbolTradePageFailure(
         result: SyncResultInterface<unknown> & { success: false },
         symbol: string
-    ): SyncResultInterface<{ transfers: BinanceTransferInterface[]; nextFromId: number | null }> {
+    ): SyncResultInterface<{ transfers: BinanceTransferInterface[]; nextFromId: number | null; lastFetchedId: number | null }> {
         if (this.isInvalidSymbolError(result.error)) {
             syncLogger.log('binance:trades:unknown-symbol', { symbol });
 
-            return this.success({ transfers: [], nextFromId: null });
+            return this.success({ transfers: [], nextFromId: null, lastFetchedId: null });
         }
 
         return result;
@@ -1197,6 +1232,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         tradeType: string
     ): SyncResultInterface<{ orders: BinanceC2cOrderApiInterface[]; hasMore: boolean }> {
         if (error.code === SyncErrorCodeEnum.UNAUTHORIZED) {
+            this.c2cUnavailableThisRun = true;
             syncLogger.log('binance:c2c:unavailable', { tradeType, message: error.message });
 
             return this.success({ orders: [], hasMore: false });

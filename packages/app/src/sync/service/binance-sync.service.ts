@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- File owns a single multi-stage Binance sync orchestration pipeline (accounts, sources, transfers, fiat) that must stay together */
 import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
 import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
@@ -26,6 +27,7 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
 import { binanceAssetCodeService } from './binance-asset-code.service';
 import { binanceSourceQuoteService } from './binance-source-quote.service';
+import { binanceTradeCursorService } from './binance-trade-cursor.service';
 import { syncIntegrationTokenService } from './sync-integration-token.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
@@ -141,6 +143,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
         const token = await this.resolveSyncToken(sync);
         const changedCount = await this.runSyncPhases(sync, externalAccountId, token);
+        await binanceTradeCursorService.persistRunSideEffects(sync, this.runSignedClient);
         if (isPositiveNumber(changedCount)) {
             await transactionService.updateAllBalances();
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC);
@@ -408,7 +411,8 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             externalAccountId,
             getUnixTime(this.resolveWindowStart(sync)),
             null,
-            await binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(this.provider)
+            await binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(this.provider),
+            binanceTradeCursorService.parse(sync.binanceTradeCursor)
         );
         if (result.success) {
             return result.data;

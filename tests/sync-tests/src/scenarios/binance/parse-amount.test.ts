@@ -1,6 +1,9 @@
 import { binanceMapper } from '@budgie/sync';
 import { describe, expect, it } from 'vitest';
 
+const TRUNCATED_SUB_MICRO_AMOUNT = 0.123456;
+const MAX_SAFE_HIGH_SUPPLY_AMOUNT = 9_007_199_254;
+
 describe('binance/parse-amount', () => {
     it('parses a whole amount to a major-unit number', () => {
         expect(binanceMapper.parseBinanceAmount('1')).toBe(1);
@@ -11,7 +14,7 @@ describe('binance/parse-amount', () => {
     });
 
     it('truncates sub-1e-6 precision deterministically', () => {
-        expect(binanceMapper.parseBinanceAmount('0.12345678')).toBe(0.123456);
+        expect(binanceMapper.parseBinanceAmount('0.12345678')).toBe(TRUNCATED_SUB_MICRO_AMOUNT);
     });
 
     it('returns null for a non-numeric value', () => {
@@ -27,6 +30,6 @@ describe('binance/parse-amount', () => {
     });
 
     it('parses a high-supply amount that stays within MAX_SAFE_INTEGER', () => {
-        expect(binanceMapper.parseBinanceAmount('9007199254')).toBe(9007199254);
+        expect(binanceMapper.parseBinanceAmount('9007199254')).toBe(MAX_SAFE_HIGH_SUPPLY_AMOUNT);
     });
 });

@@ -6,12 +6,11 @@ import {
     BINANCE_TEST_TOKEN,
     BINANCE_WINDOW_FROM,
     BINANCE_WINDOW_TO,
-    DEPOSIT_URL,
     EMPTY_FIAT_RESPONSE,
     FIAT_ORDERS_URL,
-    WITHDRAW_URL,
     stubBinanceServerTime,
     stubEmptyC2cAndEarnRewards,
+    stubEmptyDepositAndWithdraw,
     withCoolDownSpy
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
@@ -22,8 +21,7 @@ const COOL_DOWN_WINDOW_MS = 60_000;
 describe('binance/fiat-rate-limit', () => {
     it('schedules a cool-down before the next heavy call when fiat used-weight crosses the ceiling threshold', async () => {
         stubBinanceServerTime();
-        mockServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json([])));
-        mockServer.use(http.get(WITHDRAW_URL, () => HttpResponse.json([])));
+        stubEmptyDepositAndWithdraw();
         stubEmptyC2cAndEarnRewards();
         mockServer.use(
             http.get(FIAT_ORDERS_URL, () =>

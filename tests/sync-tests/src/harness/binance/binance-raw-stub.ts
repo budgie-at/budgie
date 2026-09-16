@@ -25,3 +25,8 @@ export const stubEmptyC2cAndEarnRewards = (): void => {
     mockServer.use(http.get(C2C_ORDERS_URL, () => HttpResponse.json(EMPTY_C2C_RESPONSE)));
     mockServer.use(http.get(EARN_REWARDS_URL, () => HttpResponse.json(EMPTY_EARN_REWARDS_RESPONSE)));
 };
+
+export const stubEmptyDepositAndWithdraw = (): void => {
+    mockServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json([])));
+    mockServer.use(http.get(WITHDRAW_URL, () => HttpResponse.json([])));
+};

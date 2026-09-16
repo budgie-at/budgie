@@ -38,6 +38,7 @@ export {
     recentDayInMonthsAgo,
     resetBinanceSyncForResync,
     seedCryptoInstrument,
+    setupAdaUsdtForwardFixture,
     setupUsdtSpotFixtureWithBalances,
     stubEmptyBinanceBalances
 } from './binance/binance-scenario';
@@ -50,7 +51,8 @@ export {
     FIAT_ORDERS_URL,
     WITHDRAW_URL,
     stubBinanceServerTime,
-    stubEmptyC2cAndEarnRewards
+    stubEmptyC2cAndEarnRewards,
+    stubEmptyDepositAndWithdraw
 } from './binance/binance-raw-stub';
 export { withCoolDownSpy } from './binance/with-cooldown-spy';
 export { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases } from './scenario/error-recovery';
