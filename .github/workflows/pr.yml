@@ -154,6 +154,9 @@ jobs:
             - name: Install sqlite3 and ruby
               run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends sqlite3 ruby
 
+            - name: Store metadata budgets
+              run: bash .github/scripts/check-store-metadata.sh
+
             - name: Run E2E script self-tests
               run: |
                   set -euo pipefail
