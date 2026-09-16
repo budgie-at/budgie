@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
+import { and, asc, eq, getTableColumns, isNull, lt, or, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -118,15 +118,51 @@ export class SyncRepository {
     }
 
     async getPendingBackwardSync(provider: ExternalSourceEnum): Promise<SyncEntityInterface[]> {
-        return await this.selectWithActiveAccount().where(
-            and(
-                eq(SyncEntityTable.provider, provider),
-                eq(SyncEntityTable.enabled, true),
-                eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
-                isNull(SyncEntityTable.deletedAt),
-                isNull(AccountEntityTable.deletedAt)
+        return await this.selectWithActiveAccount()
+            .where(
+                and(
+                    eq(SyncEntityTable.provider, provider),
+                    eq(SyncEntityTable.enabled, true),
+                    eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
+                    isNull(SyncEntityTable.deletedAt),
+                    isNull(AccountEntityTable.deletedAt)
+                )
             )
-        );
+            .orderBy(
+                sql`CASE WHEN ${SyncEntityTable.backwardBatchSequence} IS NULL THEN 0 ELSE 1 END`,
+                asc(SyncEntityTable.backwardBatchSequence),
+                asc(SyncEntityTable.id)
+            );
+    }
+
+    @Log(
+        (id, provider, mode, input, tx) =>
+            `enter id=${id} provider=${provider} mode=${mode} inputMode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))}`,
+        (result, id, provider, mode, input, tx) =>
+            `done id=${id} provider=${provider} mode=${mode} inputMode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} sequence=${String(result.backwardBatchSequence)}`,
+        (error, id, provider, mode, input, tx) =>
+            `throw id=${id} provider=${provider} mode=${mode} inputMode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async updateProgress(
+        id: number,
+        provider: ExternalSourceEnum,
+        mode: SyncModeEnum,
+        input: SyncUpdateEntityInterface,
+        tx?: DB
+    ): Promise<SyncEntityInterface> {
+        const backwardSequenceUpdate =
+            mode === SyncModeEnum.BACKWARD
+                ? {
+                      backwardBatchSequence: sql<number>`COALESCE((SELECT MAX(sequence_source.backward_batch_sequence) FROM bank_syncs AS sequence_source WHERE sequence_source.provider = ${provider}), 0) + 1`
+                  }
+                : {};
+        const [sync] = await (tx ?? this.db)
+            .update(SyncEntityTable)
+            .set({ ...input, ...backwardSequenceUpdate })
+            .where(eq(SyncEntityTable.id, id))
+            .returning();
+
+        return sync;
     }
 
     async setStatus(id: number, status: SyncStatusEnum, tx?: DB): Promise<void> {
