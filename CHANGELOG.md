@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.5](https://github.com/budgie-at/budgie/compare/v6.67.4...v6.67.5) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** use the budgie logo as the og card brand mark ([f6bc7e7](https://github.com/budgie-at/budgie/commit/f6bc7e7bd52cc04ae7a4c8ff48e0d0cf3b9831f3)), closes [#1102](https://github.com/budgie-at/budgie/issues/1102)
+
+
+
+
+
 ## [6.67.4](https://github.com/budgie-at/budgie/compare/v6.67.3...v6.67.4) (2026-09-16)
 
 
