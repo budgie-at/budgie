@@ -185,6 +185,35 @@ missing from either.
 
 Keywords are comma-separated with no spaces after the commas.
 
+## CI contract
+
+`.github/workflows/native-publish.yml` runs `fastlane store_preflight` as the
+`ios-pre-submit-command` before `eas submit`, so a broken metadata or
+screenshot tree fails in seconds instead of after the build and submission.
+The `ios-post-submit-command` then runs `fastlane ios ios_metadata` on every
+release, followed by `fastlane ios ios_screenshots` when the workflow's
+`push_screenshots` dispatch input is `true`. `store_preflight` and
+`verify_field_budgets` remain the release-time authority — they run against
+the exact tree being submitted, including the resolved screenshot variant and
+PNG slot sizes, which the PR gate below does not check.
+
+`android-pre-submit-command` and `android-post-submit-command` mirror the iOS
+commands (`fastlane store_preflight`, then `fastlane android android_metadata`
+and, when requested, `fastlane android android_screenshots`) and the workflow
+already wires `google-key-path` and the `GOOGLE_SERVICE_ACCOUNT_JSON` secret.
+They stay inert because the workflow keeps `enable-android: false` until the
+Play service account exists; budgie-at/budgie#1148 flips it once that secret
+is in place.
+
+`.github/scripts/check-store-metadata.sh` is the fast PR mirror: it runs on
+every pull request (`e2e-script-tests` in `.github/workflows/pr.yml`, a
+self-hosted Linux job that already checks out the repo) and asserts the same
+per-locale field budgets and the `keywords.txt` comma rule that
+`verify_field_budgets` enforces, without needing fastlane, Ruby gems, or a
+resolved screenshot variant. `tests/app-tests/scripts/test-check-store-metadata.sh`
+proves the gate passes on this tree and fails on an over-budget field and a
+spaced keyword list.
+
 ## Refresh procedure
 
 1. Build the E2E app and capture on a Mac — see
