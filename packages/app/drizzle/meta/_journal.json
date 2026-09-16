@@ -407,6 +407,13 @@
             "when": 1789591227688,
             "tag": "0057_add_debt_system_categories",
             "breakpoints": true
+        },
+        {
+            "idx": 59,
+            "version": "6",
+            "when": 1789754897572,
+            "tag": "0059_add_sync_balance_authority",
+            "breakpoints": true
         }
     ]
 }
