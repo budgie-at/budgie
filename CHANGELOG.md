@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.70.0](https://github.com/budgie-at/budgie/compare/v6.69.0...v6.70.0) (2026-09-16)
+
+
+### Features
+
+* **app:** start a deposit from a synced expense ([24e6fb4](https://github.com/budgie-at/budgie/commit/24e6fb4e61d1533f1da772c3239bb8da177dbdc4)), closes [#668](https://github.com/budgie-at/budgie/issues/668)
+
+
+
+
+
 # [6.69.0](https://github.com/budgie-at/budgie/compare/v6.68.0...v6.69.0) (2026-09-16)
 
 
