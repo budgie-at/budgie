@@ -210,9 +210,8 @@ Update the existing handler in `root-layout-content.tsx`:
 ```ts
 const handleAppStateChange = (isActive: boolean): void => {
     if (!isActive) {
-        syncWorkloadService.interruptActiveWork();
         monobankSyncService.interruptActiveRun();
-        binanceSyncService.interruptActiveRun();
+        syncWorkloadService.interruptActiveWork();
 
         return;
     }
@@ -220,6 +219,8 @@ const handleAppStateChange = (isActive: boolean): void => {
     void syncWorkloadService.run('foreground', syncForegroundData).catch(emptyFn);
 };
 ```
+
+Only Monobank is invalidated at the app-state boundary. Its fetched batch is generation-checked before transaction writes. Binance keeps its current multi-phase owner and records a follow-up request instead of overlapping a replacement run with phase-level writes.
 
 - [ ] **Step 5: Reset polling generation state in integration tests**
 

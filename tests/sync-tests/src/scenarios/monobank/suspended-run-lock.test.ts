@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { buildMonobank, fetchPersistedMonobankTransactions } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -72,6 +73,8 @@ describe('monobank/suspended-run-lock', () => {
                 if (requestedStatementCount === 1) {
                     resolveStatementRequestStarted();
                     await statementRequestGate;
+
+                    return HttpResponse.json([buildMonobank.transaction({ id: 'stale-run-transaction', amount: -100, hold: false })]);
                 }
 
                 return HttpResponse.json([]);
@@ -93,5 +96,6 @@ describe('monobank/suspended-run-lock', () => {
         await backgroundSync;
 
         expect(didReplacementRequestStartWhileForegroundWasSuspended).toBe(true);
+        expect(fetchPersistedMonobankTransactions()).toHaveLength(0);
     });
 });

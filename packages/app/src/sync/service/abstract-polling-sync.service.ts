@@ -62,7 +62,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         const runGeneration = this.startSyncRun(deadlineAtMs);
         try {
             await this.beforeSyncRun();
-            if (!this.ownsRun(runGeneration)) {
+            if (!this.isRunCurrent(runGeneration)) {
                 return BackgroundTask.BackgroundTaskResult.Success;
             }
 
@@ -121,7 +121,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
                 return BackgroundTask.BackgroundTaskResult.Success;
             }
 
-            await this.beforeProcessRun(await this.resolveSyncToken(enabledSyncs[0]));
+            await this.beforeProcessRun(await this.resolveSyncToken(enabledSyncs[0]), runGeneration);
             if (this.shouldStopProcessing(runGeneration)) {
                 return BackgroundTask.BackgroundTaskResult.Success;
             }
@@ -142,8 +142,8 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
-        const pendingSync = await this.getNextPendingSync();
-        if (!this.ownsRun(runGeneration) || !isDefined(pendingSync)) {
+        const pendingSync = await this.getNextPendingSync(runGeneration);
+        if (!this.isRunCurrent(runGeneration) || !isDefined(pendingSync)) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
@@ -162,13 +162,16 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return await this.executeSyncLoop(runGeneration);
     }
 
-    @Log('enter', result => `done found=${String(isDefined(result))}`, error => `throw error=${getErrorMessage(error)}`)
-    protected async getNextPendingSync(): Promise<SyncEntityInterface | null> {
+    @Log(
+        runGeneration => `enter runGeneration=${runGeneration}`,
+        (result, runGeneration) => `done runGeneration=${runGeneration} found=${String(isDefined(result))}`,
+        (error, runGeneration) => `throw runGeneration=${runGeneration} error=${getErrorMessage(error)}`
+    )
+    protected async getNextPendingSync(runGeneration: number): Promise<SyncEntityInterface | null> {
         const backwardSyncs = await syncRepository.getPendingBackwardSync(this.provider);
-        if (isNotEmptyArray(backwardSyncs)) {
-            await syncRepository.setStatus(backwardSyncs[0].id, SyncStatusEnum.SYNCING);
-
-            return backwardSyncs[0];
+        const claimedBackwardSync = await this.claimPendingSync(backwardSyncs[0] ?? null, runGeneration);
+        if (isDefined(claimedBackwardSync)) {
+            return claimedBackwardSync;
         }
 
         const forwardSyncs = await syncRepository.getPendingForwardSync(
@@ -176,13 +179,8 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             AbstractPollingSyncService.FORWARD_SYNC_STALE_THRESHOLD_MS
         );
         const forwardSync = forwardSyncs.find(sync => !this.processedForwardSyncIds.has(sync.id));
-        if (isDefined(forwardSync)) {
-            await syncRepository.setStatus(forwardSync.id, SyncStatusEnum.SYNCING);
 
-            return forwardSync;
-        }
-
-        return null;
+        return this.claimPendingSync(forwardSync ?? null, runGeneration);
     }
 
     @Log(
@@ -213,13 +211,13 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             `throw runGeneration=${runGeneration} error=${getErrorMessage(error)} hookError=${getErrorMessage(hookError)}`
     )
     private async handleError(error: unknown, runGeneration: number): Promise<BackgroundTask.BackgroundTaskResult> {
-        if (!this.ownsRun(runGeneration)) {
+        if (!this.isRunCurrent(runGeneration)) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
         const enabledSyncs = await syncRepository.getEnabledByProvider(this.provider);
-        if (!this.ownsRun(runGeneration)) {
+        if (!this.isRunCurrent(runGeneration)) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
@@ -281,8 +279,12 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         });
     }
 
-    protected async beforeProcessRun(_firstSyncToken: string): Promise<void> {
+    protected async beforeProcessRun(_firstSyncToken: string, _runGeneration: number): Promise<void> {
         return Promise.resolve();
+    }
+
+    protected isRunCurrent(runGeneration: number): boolean {
+        return this.isRunning && runGeneration === this.runGeneration;
     }
 
     protected async beforeUpdateAccountToken(): Promise<void> {
@@ -315,6 +317,16 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return false;
     }
 
+    private async claimPendingSync(sync: SyncEntityInterface | null, runGeneration: number): Promise<SyncEntityInterface | null> {
+        if (!this.isRunCurrent(runGeneration) || !isDefined(sync)) {
+            return null;
+        }
+
+        await syncRepository.setStatus(sync.id, SyncStatusEnum.SYNCING);
+
+        return sync;
+    }
+
     private async handleEnabledSyncError(
         error: unknown,
         errorMessage: string,
@@ -325,7 +337,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return this.executeSyncLoop(runGeneration);
         }
 
-        if (!this.ownsRun(runGeneration)) {
+        if (!this.isRunCurrent(runGeneration)) {
             return BackgroundTask.BackgroundTaskResult.Success;
         }
 
@@ -359,7 +371,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     private async finishSyncRun(runGeneration: number): Promise<void> {
-        if (!this.ownsRun(runGeneration)) {
+        if (!this.isRunCurrent(runGeneration)) {
             return;
         }
 
@@ -375,7 +387,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     private completeSyncRun(runGeneration: number): void {
-        if (!this.ownsRun(runGeneration)) {
+        if (!this.isRunCurrent(runGeneration)) {
             return;
         }
 
@@ -392,18 +404,18 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     private async retryAfterError(enabledSyncs: SyncEntityInterface[], errorMessage: string, runGeneration: number): Promise<boolean> {
         const failedSync = enabledSyncs.find(sync => sync.id === this.failedSyncId);
         const syncToRetry = failedSync ?? enabledSyncs[0];
-        if (!this.ownsRun(runGeneration) || !isDefined(syncToRetry) || syncToRetry.errorCount >= SYNC_ERROR_THRESHOLD) {
+        if (!this.isRunCurrent(runGeneration) || !isDefined(syncToRetry) || syncToRetry.errorCount >= SYNC_ERROR_THRESHOLD) {
             return false;
         }
 
         await syncRepository.recordError(syncToRetry.id, errorMessage);
-        if (!this.ownsRun(runGeneration)) {
+        if (!this.isRunCurrent(runGeneration)) {
             return false;
         }
 
         await microPause(this.rateLimitMs);
 
-        return this.ownsRun(runGeneration);
+        return this.isRunCurrent(runGeneration);
     }
 
     private async disableFailedSyncs(enabledSyncs: SyncEntityInterface[], error: unknown, errorMessage: string): Promise<void> {
@@ -435,23 +447,19 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return isDefined(failedSync) ? [failedSync] : [enabledSyncs[0]];
     }
 
-    private ownsRun(runGeneration: number): boolean {
-        return this.isRunning && runGeneration === this.runGeneration;
-    }
-
     private shouldStopProcessing(runGeneration: number): boolean {
-        return !this.ownsRun(runGeneration) || this.runDeferred || Date.now() >= this.runDeadlineAtMs;
+        return !this.isRunCurrent(runGeneration) || this.runDeferred || Date.now() >= this.runDeadlineAtMs;
     }
 
     private async processSyncBatch(pendingSync: SyncEntityInterface, runGeneration: number): Promise<boolean> {
         this.failedSyncId = pendingSync.id;
-        const result = await this.executeSyncBatch(pendingSync);
-        if (!this.ownsRun(runGeneration)) {
+        const result = await this.executeSyncBatch(pendingSync, runGeneration);
+        if (!this.isRunCurrent(runGeneration)) {
             return false;
         }
 
         await this.applyProgressUpdate(pendingSync, result);
-        if (!this.ownsRun(runGeneration)) {
+        if (!this.isRunCurrent(runGeneration)) {
             return false;
         }
 
@@ -515,7 +523,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
     abstract setupAccountSyncBatch(token: string, externalIds: string[]): Promise<unknown>;
 
-    protected abstract executeSyncBatch(sync: SyncEntityInterface): Promise<SyncBatchResultInterface>;
+    protected abstract executeSyncBatch(sync: SyncEntityInterface, runGeneration: number): Promise<SyncBatchResultInterface>;
 
     protected abstract beforeSyncRun(): Promise<void>;
 }
