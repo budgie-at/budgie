@@ -141,7 +141,7 @@ Source: https://budgie.at/en/ai-features
 Qwen3 1.7B and a 768-dim embedding model run entirely on your phone. Smart suggestions, voice entry, and auto-categorization — no data leaves your device.
 
 - Qwen3 1.7B runs on your phone — no API key, no subscription
-- 768-dimensional embedding model for instant category suggestions
+- Category suggestions drawn from your own history — never from a cloud service
 - Voice transaction entry via whisper.rn — audio never leaves the device
 - Merchant name normalization for Cyrillic and foreign bank statements
 - Every AI correction improves future suggestions via on-device learning
@@ -255,7 +255,7 @@ Source: https://budgie.at/en/features/ai-auto-categorization
 
 Two on-device models — Qwen3 1.7B for chat and a 768-dim Nomic embedding model — categorize transactions, suggest tags, and learn from your corrections. Your statements never leave the phone.
 
-Cloud "AI" budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees your supermarket habits. Budgie loads both models once, then keeps every inference local — same accuracy, zero data exfiltration.
+Cloud "AI" budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees your supermarket habits. Budgie keeps every inference on your own device — same accuracy, zero data exfiltration.
 
 The two-stage pipeline runs embedding lookup first for instant nearest-neighbor categorization from your own history, then falls back to Qwen3 1.7B for novel transactions the embedding index has not seen before. Every accepted or edited suggestion updates the 768-dim index immediately — accuracy compounds over time.
 
@@ -290,7 +290,7 @@ What you get:
 - On-device LLM extracts amount, merchant, date, and category from natural speech
 - Audio never leaves the device — no Siri-style cloud round-trip
 - Pre-fills the same quick-entry form — confirm or correct
-- Works during the AI model loading phase too — visual progress indicator
+- The record button shows a progress ring while the speech model downloads and loads
 
 How it works: Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts amount, merchant, and date hints from the transcription and applies the same on-device category suggestion pipeline used for typed transactions.
 
@@ -723,7 +723,7 @@ Which AI models does Budgie use? Three, all on your device: a language model for
 
 Does the AI work offline? Yes. Both models live on your device after the one-time download.
 
-How large are the model downloads? The embedding model is approximately 90 MB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features.
+How large are the model downloads? About 1.6 GB for the two models behind categorization and suggestions, plus a further 0.9 GB if you use voice entry. Nothing downloads until you switch On-device AI on in Settings, and then only when you first use the feature that needs it.
 
 Does Budgie use OpenAI or any cloud LLM? No. Every inference runs on your own device. There is no fallback to a cloud model.
 
