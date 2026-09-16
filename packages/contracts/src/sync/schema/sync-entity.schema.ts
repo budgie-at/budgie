@@ -5,6 +5,7 @@ import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.con
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { SyncModeEnum } from '../enum/sync-mode.enum';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
+import { SyncWarningEnum } from '../enum/sync-warning.enum';
 import { SyncEntityTable } from '../table/sync-entity.table';
 
 export const SyncEntitySchema = createSelectSchema(SyncEntityTable, {
@@ -22,5 +23,14 @@ export const SyncEntitySchema = createSelectSchema(SyncEntityTable, {
     forwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync forward from.'),
     transactionCount: number().nonnegative().default(0).describe('Total number of transactions synced.'),
     errorCount: number().nonnegative().default(0).describe('Number of consecutive sync errors.'),
-    lastError: schema => schema.nullable().default(null).describe('Last error message if sync failed.')
+    lastError: schema => schema.nullable().default(null).describe('Last error message if sync failed.'),
+    lastWarning: zodEnum(SyncWarningEnum)
+        .nullable()
+        .default(null)
+        .describe('Last non-fatal sync warning, such as a missing provider read scope.'),
+    binanceTradeCursor: schema =>
+        schema
+            .nullable()
+            .default(null)
+            .describe('JSON-encoded per-symbol Binance trade fromId cursor map, used to resume paging across sync runs.')
 });

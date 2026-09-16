@@ -83,7 +83,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and
+                        A deep-dive into Budgie’s offline-first architecture, explaining how local storage, encryption at rest, and
                         device-to-device sync keep your financial data completely private.
                     </Trans>
                 </p>
@@ -149,27 +149,25 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>The Architecture: SQLite and Local-First Design</Trans>
+                        <Trans>How Your Data Stays on Your Device</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
-                            At the heart of Budgie is a local-first architecture built on SQLite, the most widely deployed database engine
-                            in the world. SQLite runs on billions of devices and has been battle-tested for over two decades. It is the same
-                            database that powers your browser history, your mobile contacts, and countless other applications that require
-                            reliable local storage.
+                            At the heart of Budgie is a local-first architecture: a battle-tested local database that runs on billions of
+                            devices worldwide and has powered reliable local storage for over two decades.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Why SQLite Over Cloud Databases</Trans>
+                        <Trans>Why Local Storage Beats a Cloud Account</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Cloud-based expense trackers typically use databases like PostgreSQL, MySQL, or MongoDB running on remote
-                            servers. When you add a transaction, it travels over the internet to a data center, gets processed, and then a
-                            confirmation returns to your device. This architecture creates several problems:
+                            Cloud-based expense trackers typically store your data in a database running on remote servers. When you add a
+                            transaction, it travels over the internet to a data center, gets processed, and then a confirmation returns to
+                            your device. This architecture creates several problems:
                         </Trans>
                     </BlogArticleProse>
 
@@ -203,7 +201,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            SQLite eliminates all of these problems. The database file lives on your device, operations happen in
+                            Local storage eliminates all of these problems. The database file lives on your device, operations happen in
                             microseconds, and your data remains under your physical control.
                         </Trans>
                     </BlogArticleProse>
@@ -221,10 +219,10 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                             <Trans>The app validates the input using Zod schemas to ensure data integrity</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>The transaction is written to a SQLite database stored in your device’s secure app storage</Trans>
+                            <Trans>The transaction is written to a local database stored in your device’s secure app storage</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>The database uses Drizzle ORM for type-safe operations</Trans>
+                            <Trans>The database layer enforces type-safe reads and writes</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>The write completes locally with no network activity</Trans>
@@ -240,9 +238,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the
-                            app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot
-                            read.
+                            The database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s
+                            sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read.
                         </Trans>
                     </BlogArticleProse>
 
@@ -287,14 +284,14 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>AES-256 Encryption at Rest</Trans>
+                        <Trans>Encrypted at Rest</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie encrypts your database using AES-256, the same encryption standard used by governments and financial
-                            institutions worldwide. AES-256 has never been broken by any publicly known attack. A brute-force attempt to
-                            crack a 256-bit key would require more energy than exists in the observable universe.
+                            Budgie encrypts your database using the same encryption standard used by governments and financial institutions
+                            worldwide. It has never been broken by any publicly known attack. A brute-force attempt to crack a key of that
+                            strength would require more energy than exists in the observable universe.
                         </Trans>
                     </BlogArticleProse>
 
@@ -660,7 +657,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>The complete React Native application source</Trans>
+                            <Trans>The complete mobile application source</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Database schemas and migration files</Trans>
@@ -701,8 +698,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Database layer</strong>: Examine the Drizzle ORM schemas and repository classes. You can trace exactly
-                            how data flows from user input to database storage, all locally.
+                            <strong>Database layer</strong>: Examine the schemas and repository classes. You can trace exactly how data
+                            flows from user input to database storage, all locally.
                         </Trans>
                     </BlogArticleProse>
 
@@ -918,7 +915,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Budgie exists because we believe you should not have to trade this intimate information for the convenience of
-                            expense tracking. Every architectural decision, from SQLite to local encryption to device-to-device sync, is
+                            expense tracking. Every architectural decision, from local storage to encryption to device-to-device sync, is
                             designed to keep this information where it belongs: <strong>under your control</strong>.
                         </Trans>
                     </BlogArticleProse>

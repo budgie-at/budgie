@@ -140,7 +140,9 @@ export class TestSeedService {
                 backwardSyncLimitAt: input.backwardSyncLimitAt ?? null,
                 transactionCount: input.transactionCount ?? 0,
                 errorCount: input.errorCount ?? 0,
-                lastError: input.lastError ?? null
+                lastError: input.lastError ?? null,
+                lastWarning: input.lastWarning ?? null,
+                binanceTradeCursor: input.binanceTradeCursor ?? null
             } satisfies SyncCreateEntityInterface)
             .returning()
             .all();

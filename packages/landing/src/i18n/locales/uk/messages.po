@@ -102,10 +102,6 @@ msgstr "<0>Реклама</0>: Таргетована реклама на осн
 msgid "<0>Advisor access.</0> Optional feature to share with financial advisors."
 msgstr "<0>Доступ для радника.</0> Необов'язкова функція для обміну даними з фінансовими радниками."
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>AES-256 database encryption</0> — The database is encrypted at rest. Even if someone gains physical access to your device, they cannot read your financial data without the key."
-msgstr "<0>Шифрування бази даних AES-256</0> — База даних зашифрована у стані спокою. Навіть якщо хтось отримає фізичний доступ до вашого пристрою, він не зможе прочитати ваші фінансові дані без ключа."
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "<0>Aggregated profiling</0> — When millions of users send similar financial data to the same service, the aggregate reveals behavioral patterns that can be monetized in ways that individual consent forms do not clearly cover."
 msgstr "<0>Агрегований профайлінг</0> — Коли мільйони користувачів надсилають подібні фінансові дані до одного сервісу, сукупність виявляє поведінкові шаблони, які можуть монетизуватися способами, що не чітко охоплені індивідуальними формами згоди."
@@ -554,8 +550,8 @@ msgid "<0>Data Storage</0>: Your choice"
 msgstr "<0>Зберігання даних</0>: На ваш вибір"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Database layer</0>: Examine the Drizzle ORM schemas and repository classes. You can trace exactly how data flows from user input to database storage, all locally."
-msgstr "<0>Рівень бази даних</0>: Вивчіть схеми Drizzle ORM та класи репозиторіїв. Ви можете простежити, як саме дані потрапляють від введення користувача до зберігання в базі — все локально."
+msgid "<0>Database layer</0>: Examine the schemas and repository classes. You can trace exactly how data flows from user input to database storage, all locally."
+msgstr "<0>Рівень бази даних</0>: перегляньте схеми та класи репозиторіїв. Ви можете точно простежити, як дані переходять від введення користувача до збереження в базі даних — усе локально."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Delete old accounts</0>: After migration, fully delete cloud-based app accounts and revoke aggregator access"
@@ -592,6 +588,10 @@ msgstr "<0>Виявлення</0>: Обидва пристрої знаходя�
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Docker support.</0> Easy deployment for those familiar with containers."
 msgstr "<0>Підтримка Docker.</0> Легке розгортання для тих, хто знайомий з контейнерами."
+
+#: src/app/[lang]/legal/license/page.tsx
+msgid "<0>Drizzle ORM</0> Apache License 2.0 - Type-safe database toolkit"
+msgstr "<0>Drizzle ORM</0> Ліцензія Apache 2.0 — типобезпечний інструментарій для роботи з базами даних"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Due diligence</0>: The acquiring company reviews user data, transaction volumes, and engagement metrics"
@@ -817,6 +817,10 @@ msgstr "<0>Деталі зобов'язань</0>: Суми кредитів, п
 msgid "<0>Lingui</0> MIT License - Internationalization framework"
 msgstr ""
 
+#: src/app/[lang]/legal/license/page.tsx
+msgid "<0>llama.rn</0> MIT License - On-device language model runtime binding"
+msgstr "<0>llama.rn</0> Ліцензія MIT — прив'язка виконання для мовної моделі на пристрої"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Local data storage</0> — Your transaction history lives on your device, in a format you can read and export. No internet connection required to access your own records."
 msgstr "<0>Локальне зберігання даних</0> — Ваша історія транзакцій зберігається на вашому пристрої у форматі, який можна прочитати та експортувати. Для доступу до власних записів не потрібне інтернет-підключення."
@@ -842,8 +846,8 @@ msgid "<0>Local-first/Offline-first:</0> Data stored exclusively on your device"
 msgstr "<0>Local-first/Offline-first:</0> Дані зберігаються виключно на вашому пристрої"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
-msgid "<0>Local-only storage</0>: All data stored in SQLite on your device"
-msgstr "<0>Лише локальне сховище</0>: Всі дані зберігаються в SQLite на вашому пристрої"
+msgid "<0>Local-only storage</0>: All data stored in a local database on your device"
+msgstr "<0>Лише локальне зберігання</0>: усі дані зберігаються в локальній базі даних на вашому пристрої"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Lock file integrity</0>: Dependency versions are locked to prevent supply chain attacks through compromised package updates."
@@ -925,10 +929,6 @@ msgstr "<0>Мобільний досвід</0> — Створений для т�
 msgid "<0>Moderate privacy</0>: Lunch Money, YNAB"
 msgstr "Помірна приватність: Lunch Money, YNAB"
 
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "<0>Modern tech stack</0>: React Native, Expo, Drizzle ORM, TypeScript throughout."
-msgstr "<0>Сучасний технологічний стек</0>: React Native, Expo, Drizzle ORM, TypeScript наскрізь."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "<0>Modern user experience</0> - Clean, intuitive interface for daily tracking"
 msgstr "<0>Сучасний досвід користувача</0> — Чистий, інтуїтивний інтерфейс для щоденного відстеження"
@@ -936,6 +936,10 @@ msgstr "<0>Сучасний досвід користувача</0> — Чист
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Modern, intuitive design.</0> Privacy doesn’t mean sacrificing user experience."
 msgstr "<0>Сучасний, інтуїтивний дизайн.</0> Приватність не означає жертвування зручністю."
+
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+msgid "<0>Modern, native tech stack</0>: A clean, type-safe codebase built for native mobile from day one."
+msgstr "<0>Сучасний, нативний технологічний стек</0>: чиста, типобезпечна кодова база, створена для нативних мобільних додатків із самого початку."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Modifications</0>: Create and use modified versions of Budgie"
@@ -1154,8 +1158,8 @@ msgid "<0>On-device AI</0> — Everything the app needs is downloaded once, then
 msgstr "<0>On-device AI</0> — Усе необхідне додатку завантажується один раз і залишається на вашому телефоні. Кожен запит опрацьовується локально. Жодних мережевих запитів, жодних серверних логів — вхідні дані не бачить ніхто сторонній."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>On-device SQLite storage</0> — Every transaction, account, and category is stored locally in a database, encrypted the moment you set a PIN. Budgie works fully offline; connectivity is optional, never required."
-msgstr "<0>Зберігання на пристрої з SQLite</0> — кожна транзакція, рахунок і категорія зберігаються локально в базі даних, яка шифрується, щойно ви встановлюєте PIN-код. Budgie повністю працює офлайн; підключення до інтернету є необов'язковим і ніколи не потрібне."
+msgid "<0>On-device storage</0> — Every transaction, account, and category is stored locally in a database, encrypted the moment you set a PIN. Budgie works fully offline; connectivity is optional, never required."
+msgstr "<0>Зберігання на пристрої</0> — кожна транзакція, рахунок і категорія зберігаються локально в базі даних, яка шифрується одразу після встановлення PIN-коду. Budgie повністю працює офлайн; підключення до мережі необов'язкове."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>One-time purchase:</0> No ongoing relationship or data motivation"
@@ -1417,6 +1421,10 @@ msgid "<0>Proven methodology</0>: Zero-based budgeting helps many people gain co
 msgstr "<0>Перевірена методологія</0>: Бюджетування з нуля допомагає багатьом людям отримати контроль над фінансами."
 
 #: src/app/[lang]/legal/license/page.tsx
+msgid "<0>Qwen3</0> Apache License 2.0 - Pretrained language model used for on-device text tasks"
+msgstr "<0>Qwen3</0> Ліцензія Apache 2.0 — попередньо навчена мовна модель для текстових завдань на пристрої"
+
+#: src/app/[lang]/legal/license/page.tsx
 msgid "<0>React Native & Expo</0> MIT License - Cross-platform mobile application framework"
 msgstr ""
 
@@ -1605,8 +1613,8 @@ msgid "<0>Standard cloud:</0> Data stored on company servers (least private)"
 msgstr "<0>Стандартна хмара:</0> Дані зберігаються на серверах компанії (найменш приватно)"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>Standard export formats</0> — CSV, JSON, or SQL exports that you can import into any spreadsheet or another app if you ever choose to leave."
-msgstr "<0>Стандартні формати експорту</0> — Експорт у форматах CSV, JSON або SQL, які можна імпортувати в будь-яку таблицю або інший додаток, якщо ви вирішите перейти."
+msgid "<0>Standard export formats</0> — CSV or JSON exports that you can import into any spreadsheet or another app if you ever choose to leave."
+msgstr "<0>Стандартні формати експорту</0> — експорт у CSV або JSON, який можна імпортувати в будь-яку таблицю чи інший застосунок, якщо ви колись вирішите піти."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Stay informed</0>: Follow fintech security news and breach disclosures"
@@ -1615,6 +1623,10 @@ msgstr "<0>Будьте в курсі</0>: стежте за новинами б
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "<0>Stored locally</0> — In an offline-first app, the token lives on your device, not on an aggregator server. Revoking it from your bank also removes the only remaining access path."
 msgstr "<0>Зберігається локально</0> — У додатку з офлайн-першим підходом токен зберігається на вашому пристрої, а не на сервері агрегатора. Відкликання його через банк також усуває єдиний залишковий шлях доступу."
+
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+msgid "<0>Strong database encryption</0> — The database is encrypted at rest. Even if someone gains physical access to your device, they cannot read your financial data without the key."
+msgstr "<0>Надійне шифрування бази даних</0> — база даних зашифрована в стані спокою. Навіть якщо хтось отримає фізичний доступ до вашого пристрою, він не зможе прочитати ваші фінансові дані без ключа."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Stunning design</0>: Arguably the best-looking finance app on iOS."
@@ -1657,8 +1669,8 @@ msgid "<0>The Long Now.</0> Your data should outlive any particular application,
 msgstr "<0>Довгострокова перспектива.</0> Ваші дані повинні пережити будь-який конкретний застосунок, сервіс чи компанію. Довговічність даних — це ключовий принцип дизайну."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
-msgid "<0>The mobile application</0> - The complete React Native codebase for iOS and Android"
-msgstr "<0>Мобільний додаток</0> — Повна кодова база React Native для iOS та Android"
+msgid "<0>The mobile application</0> - The complete mobile app source for iOS and Android"
+msgstr "<0>Мобільний застосунок</0> — повний вихідний код мобільного застосунку для iOS та Android"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>The network is optional.</0> Full functionality should be available offline. The network enhances capabilities but is not required for core operations."
@@ -1767,6 +1779,14 @@ msgstr "<0>Яка історія транзакцій збирається?</0> 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Where is data stored?</0> Red flag: Multiple cloud providers, unclear region. Green flag: Single provider, specific regions, SOC 2 Type II"
 msgstr "<0>Де зберігаються дані?</0> Red flag: Кілька хмарних провайдерів, незрозумілий регіон. Green flag: Один провайдер, конкретні регіони, SOC 2 Type II"
+
+#: src/app/[lang]/legal/license/page.tsx
+msgid "<0>whisper.rn</0> MIT License - On-device speech recognition runtime binding"
+msgstr "<0>whisper.rn</0> Ліцензія MIT — прив'язка виконання для розпізнавання мовлення на пристрої"
+
+#: src/app/[lang]/legal/license/page.tsx
+msgid "<0>Whisper</0> MIT License - Pretrained speech recognition model used for on-device voice entry"
+msgstr "<0>Whisper</0> Ліцензія MIT — попередньо навчена модель розпізнавання мовлення для голосового введення на пристрої"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>White-Label Solutions</0>: Rebranding Budgie and selling it as a SaaS product"
@@ -2263,6 +2283,14 @@ msgstr "Окрема вкладка Теги у Статистиці з сорт
 msgid "A dedicated Tags tab lives in Analytics next to the Categories and Runway tabs — per-tag income, expense, and net totals, plus a drillable Untagged bucket that surfaces every transaction missing a label."
 msgstr "Окрема вкладка Теги живе в Аналітиці поруч із вкладками Категорії та Runway — дохід, витрати й чисті суми за тегом, а також розгортана група Без тегу, що показує кожну транзакцію без мітки."
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "A deep-dive into Budgie’s offline-first architecture, explaining how local storage, encryption at rest, and device-to-device sync keep your financial data completely private."
+msgstr "Детальний огляд офлайн-архітектури Budgie, який пояснює, як локальне зберігання, шифрування в стані спокою та синхронізація між пристроями зберігають ваші фінансові дані повністю приватними."
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
+msgid "A deep-dive into how Budgie keeps your financial data on your device: local storage, encryption at rest, and device-to-device sync with no cloud copy."
+msgstr "Детальний огляд того, як Budgie зберігає ваші фінансові дані на вашому пристрої: локальне зберігання, шифрування в стані спокою та синхронізація між пристроями без копії в хмарі."
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "A deliberate gap-finder. Transactions without tags accumulate in this bucket so you can spot bookkeeping gaps and tighten them up."
 msgstr "Навмисний пошукач прогалин. Транзакції без тегів накопичуються в цьому кошику, щоб ви могли знайти прогалини у веденні обліку і усунути їх."
@@ -2426,14 +2454,6 @@ msgstr "Похід до супермаркету може включати пр�
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "A Tags tab beside Categories"
 msgstr "Вкладка «Теги» поруч із категоріями"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
-msgid "A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
-msgstr "Технічний погляд на offline-first архітектуру Budgie: SQLite, шифрування AES-256 і синхронізація між пристроями, які тримають ваші фінансові дані на вашому пристрої."
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
-msgstr "Технічний погляд на offline-first архітектуру Budgie: SQLite, шифрування AES-256 і синхронізація між пристроями, які тримають ваші фінансові дані на вашому пристрої."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "A template built from your own recent spending, a generic starter, or nothing at all"
@@ -2661,10 +2681,6 @@ msgstr "Коригування виключено з правил категор
 msgid "Advertising SDKs that build user profiles"
 msgstr "Рекламних SDK, що створюють профілі користувачів"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "AES-256 Encryption at Rest"
-msgstr "Шифрування AES-256 у стані спокою"
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "After 17 years of helping millions track their spending, Mint officially shut down on March 23, 2024. If you’re a developer who relied on Mint, you’re probably feeling frustrated, betrayed, and maybe a bit anxious about where your financial data will live next."
 msgstr "Після 17 років допомоги мільйонам людей відстежувати витрати, Mint офіційно припинив роботу 23 березня 2024 року. Якщо ви розробник, який покладався на Mint, ви, напевно, відчуваєте розчарування, зраду і, можливо, трохи тривоги щодо того, де тепер зберігатимуться ваші фінансові дані."
@@ -2848,8 +2864,8 @@ msgid "All your financial data is stored locally on your device. We utilize devi
 msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Ми використовуємо функції безпеки рівня пристрою, зокрема:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
-msgid "All your financial data, including transactions, accounts, budgets, and categories, is stored in a local SQLite database on your device. We use Drizzle ORM for type-safe database operations, ensuring data integrity while keeping everything local."
-msgstr "Транзакції, рахунки, бюджети й категорії живуть у локальній базі SQLite на вашому пристрої. Drizzle ORM дає нам типобезпечні операції з базою без перенесення ваших даних за межі пристрою."
+msgid "All your financial data, including transactions, accounts, budgets, and categories, is stored in a local database on your device, with type-safe operations that keep data integrity intact while keeping everything local."
+msgstr "Усі ваші фінансові дані, включно з транзакціями, рахунками, бюджетами та категоріями, зберігаються в локальній базі даних на вашому пристрої за допомогою типобезпечних операцій, які підтримують цілісність даних, залишаючи все локальним."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Allow reasonable time for fixes before public disclosure"
@@ -3232,8 +3248,8 @@ msgid "At Budgie, we believe financial privacy shouldn’t be a premium feature�
 msgstr "У Budgie ми віримо, що фінансова конфіденційність не повинна бути преміум-функцією — вона має бути фундаментом. Ось як наша архітектура відрізняється від хмарних альтернатив."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "At the heart of Budgie is a local-first architecture built on SQLite, the most widely deployed database engine in the world. SQLite runs on billions of devices and has been battle-tested for over two decades. It is the same database that powers your browser history, your mobile contacts, and countless other applications that require reliable local storage."
-msgstr "В основі Budgie лежить локально-орієнтована архітектура, побудована на SQLite — найбільш поширеному рушії баз даних у світі. SQLite працює на мільярдах пристроїв і перевірений на практиці протягом понад двох десятиліть. Це та сама база даних, яка зберігає історію вашого браузера, контакти вашого телефону та безліч інших застосунків, що потребують надійного локального сховища."
+msgid "At the heart of Budgie is a local-first architecture: a battle-tested local database that runs on billions of devices worldwide and has powered reliable local storage for over two decades."
+msgstr "В основі Budgie лежить локальна архітектура: перевірена часом локальна база даних, яка працює на мільярдах пристроїв у всьому світі та забезпечує надійне локальне зберігання вже понад два десятиліття."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Attach a repayment you already logged"
@@ -4180,12 +4196,12 @@ msgid "Budgie embodies this transparent approach. Every line of code is public. 
 msgstr "Budgie втілює цей прозорий підхід. Кожен рядок коду публічний. Кожне рішення задокументоване. Кожну заяву можна перевірити. Ми не просимо вас довіряти нам, бо ми так кажемо. Ми просимо вас довіряти нам, бо ви можете точно бачити, що ми робимо."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Budgie encrypts your database using AES-256, the same encryption standard used by governments and financial institutions worldwide. AES-256 has never been broken by any publicly known attack. A brute-force attempt to crack a 256-bit key would require more energy than exists in the observable universe."
-msgstr "Budgie шифрує вашу базу даних за допомогою AES-256 — того самого стандарту шифрування, який використовується урядами та фінансовими установами по всьому світу. AES-256 ніколи не був зламаний жодною публічно відомою атакою. Спроба грубої сили зламати 256-бітний ключ потребувала б більше енергії, ніж існує у всьому спостережуваному Всесвіті."
+msgid "Budgie encrypts your database using the same encryption standard used by governments and financial institutions worldwide. It has never been broken by any publicly known attack. A brute-force attempt to crack a key of that strength would require more energy than exists in the observable universe."
+msgstr "Budgie шифрує вашу базу даних за тим самим стандартом шифрування, який використовують уряди та фінансові установи в усьому світі. Його ще жодного разу не зламали жодною публічно відомою атакою. Спроба зламати ключ такої стійкості методом грубої сили вимагала б більше енергії, ніж існує у видимому Всесвіті."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Budgie exists because we believe you should not have to trade this intimate information for the convenience of expense tracking. Every architectural decision, from SQLite to local encryption to device-to-device sync, is designed to keep this information where it belongs: <0>under your control</0>."
-msgstr "Budgie існує, тому що ми вважаємо, що вам не потрібно обмінювати цю інтимну інформацію на зручність відстеження витрат. Кожне архітектурне рішення — від SQLite до локального шифрування та синхронізації між пристроями — розроблене для того, щоб ця інформація залишалася там, де їй місце: під вашим контролем."
+msgid "Budgie exists because we believe you should not have to trade this intimate information for the convenience of expense tracking. Every architectural decision, from local storage to encryption to device-to-device sync, is designed to keep this information where it belongs: <0>under your control</0>."
+msgstr "Budgie існує, бо ми вважаємо, що вам не варто жертвувати цією особистою інформацією заради зручності обліку витрат. Кожне архітектурне рішення — від локального зберігання до шифрування та синхронізації між пристроями — покликане утримувати цю інформацію там, де їй і належить бути: <0>під вашим контролем</0>."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie exists because we wanted a financial app that treats users as customers, not products. One that works offline, respects privacy, and gives you complete control over your data. If that resonates with you, we’d love to have you try it."
@@ -4365,8 +4381,8 @@ msgid "Budgie is licensed under the O'Saasy License, a source-available license 
 msgstr ""
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device in a SQLite database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app is open source so you can verify every claim we make."
-msgstr "Budgie — це нативний мобільний додаток, повністю офлайн-здатний та радикально приватний. Ваші дані зберігаються на вашому пристрої в базі даних SQLite, до якої ви можете робити запити безпосередньо. Банківська синхронізація, коли використовується, застосовує архітектуру нульового знання. Додаток з відкритим кодом, тому ви можете перевірити кожну нашу заяву."
+msgid "Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device in a local database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app is open source so you can verify every claim we make."
+msgstr "Budgie — нативний, орієнтований на мобільні пристрої, повністю здатний працювати офлайн і радикально приватний застосунок. Ваші дані зберігаються на вашому пристрої в локальній базі даних, яку можна запитувати напряму. Синхронізація з банком, якщо вона використовується, застосовує архітектуру нульового розголошення. Застосунок з відкритим кодом, тож ви можете перевірити кожне наше твердження."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie is open source, so anyone can read exactly how your PIN becomes your database's encryption key — there is no hidden derivation step and no proprietary library standing between your PIN and the data. That code is public for community review."
@@ -5507,10 +5523,6 @@ msgstr "Чисті підсумки доходів — дохід від пов�
 msgid "Clean, focused interface"
 msgstr "Чистий, зосереджений інтерфейс"
 
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Clean, modern codebase built with React Native and Expo"
-msgstr "Чиста, сучасна кодова база на React Native та Expo"
-
 #: src/app/[lang]/features/convert-to-refund/opengraph-image.tsx
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
 msgid "cleanup"
@@ -5645,8 +5657,8 @@ msgid "Cloud-based data storage"
 msgstr "Хмарне зберігання даних"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Cloud-based expense trackers typically use databases like PostgreSQL, MySQL, or MongoDB running on remote servers. When you add a transaction, it travels over the internet to a data center, gets processed, and then a confirmation returns to your device. This architecture creates several problems:"
-msgstr "Хмарні трекери витрат зазвичай використовують бази даних на кшталт PostgreSQL, MySQL або MongoDB, що працюють на віддалених серверах. Коли ви додаєте транзакцію, вона подорожує через інтернет до дата-центру, обробляється, а потім підтвердження повертається на ваш пристрій. Така архітектура створює кілька проблем:"
+msgid "Cloud-based expense trackers typically store your data in a database running on remote servers. When you add a transaction, it travels over the internet to a data center, gets processed, and then a confirmation returns to your device. This architecture creates several problems:"
+msgstr "Хмарні застосунки для обліку витрат зазвичай зберігають ваші дані в базі даних, що працює на віддалених серверах. Коли ви додаєте транзакцію, вона надсилається через інтернет до центру обробки даних, обробляється, а потім підтвердження повертається на ваш пристрій. Ця архітектура створює кілька проблем:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Cloud-based means your data is on their servers"
@@ -6727,8 +6739,8 @@ msgid "Discover a vulnerability by examining the code"
 msgstr "Виявити вразливість, вивчаючи код"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
-msgid "Discover exactly how Budgie keeps your financial data off the cloud. Learn about our SQLite architecture, AES-256 encryption, device-to-device sync, and open-source transparency."
-msgstr "Дізнайтеся, як саме Budgie зберігає ваші фінансові дані поза хмарою. Архітектура SQLite, шифрування AES-256, синхронізація між пристроями та прозорість відкритого коду."
+msgid "Discover exactly how Budgie keeps your financial data off the cloud: local-only storage, encryption at rest, device sync, and open-source transparency."
+msgstr "Дізнайтеся, як саме Budgie тримає ваші фінансові дані подалі від хмари: лише локальне зберігання, шифрування в стані спокою, синхронізація між пристроями та прозорість відкритого коду."
 
 #: src/generic/component/blog-section/blog-section.tsx
 msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
@@ -7161,6 +7173,10 @@ msgstr "EN, UK, FR, DE, ES — повний інтерфейс."
 #: src/app/[lang]/opengraph-image.tsx
 msgid "Encrypted"
 msgstr "Зашифровано"
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Encrypted at Rest"
+msgstr "Зашифровано в стані спокою"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "encrypted budget app"
@@ -8852,6 +8868,10 @@ msgid "How to Export Your Mint Data (Before It’s Too Late)"
 msgstr "Як експортувати дані з Mint (поки не пізно)"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "How Your Data Stays on Your Device"
+msgstr "Як ваші дані залишаються на вашому пристрої"
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Your PIN Protects Your Data"
 msgstr "Як ваш PIN-код захищає ваші дані"
 
@@ -9632,9 +9652,9 @@ msgstr ""
 msgid "Local notifications, opt-in, deduped per period"
 msgstr "Локальні сповіщення, за бажанням, без повторів у межах періоду"
 
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Local SQLite database with Drizzle ORM (you can query your own data)"
-msgstr "Локальна база даних SQLite з Drizzle ORM (ви можете робити запити до власних даних)"
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Local storage eliminates all of these problems. The database file lives on your device, operations happen in microseconds, and your data remains under your physical control."
+msgstr "Локальне зберігання усуває всі ці проблеми. Файл бази даних знаходиться на вашому пристрої, операції виконуються за мікросекунди, а ваші дані залишаються під вашим фізичним контролем."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Local Storage, Encrypted With Your PIN"
@@ -10175,8 +10195,8 @@ msgid "mobile"
 msgstr "мобільний"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
-msgid "Mobile analytics need to be fast. Storing the base amount lets Budgie sum large histories directly in SQL, while keeping the exchange rate available for audit and future rebuilds."
-msgstr ""
+msgid "Mobile analytics need to be fast. Storing the base amount lets Budgie total large histories instantly, while keeping the exchange rate available for audit and future rebuilds."
+msgstr "Мобільна аналітика має бути швидкою. Збереження базової суми дозволяє Budgie миттєво підсумовувати великі історії, водночас зберігаючи курс обміну для аудиту та майбутніх перерахунків."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Mobile experience"
@@ -11225,8 +11245,8 @@ msgid "Off by default. Turn it on in Settings → Security and it applies immedi
 msgstr "Вимкнено за замовчуванням. Увімкніть це в Налаштування → Безпека, і воно застосовується одразу, без налаштування для кожного екрана."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Offer comprehensive export functionality (CSV, JSON, SQL)"
-msgstr "Давати чистий експорт у CSV, JSON і SQL"
+msgid "Offer comprehensive export functionality (CSV, JSON, or a full database file)"
+msgstr "Пропонувати повноцінний експорт даних (CSV, JSON або повний файл бази даних)"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/features/crypto-price-history/opengraph-image.tsx
@@ -11883,6 +11903,10 @@ msgstr "Відкритий код"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Open source also addresses the longevity concern. Even if Budgie as a company were to disappear, the code remains available. Communities can maintain and extend it indefinitely."
 msgstr "Відкритий вихідний код також вирішує питання довговічності. Навіть якщо Budgie як компанія зникне, код залишається доступним. Спільноти можуть підтримувати та розширювати його необмежено."
+
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+msgid "Open source and auditable end to end"
+msgstr "Відкритий код і можливість перевірки від початку до кінця"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Open source code for verification"
@@ -12774,8 +12798,8 @@ msgid "public source budget app"
 msgstr ""
 
 #: src/app/[lang]/open-source/page.tsx
-msgid "Public source is not just a development philosophy — it is a security property. Closed finance apps ask you to trust that they do not log your transactions, share data with advertisers, or sell behavioral profiles. Budgie asks you to check. The on-device architecture, AES-256 encryption, and zero-telemetry design are all visible in the repository for any developer to verify."
-msgstr "Публічний вихідний код — це не лише філософія розробки, а й властивість безпеки. Закриті фінансові застосунки просять вірити, що вони не логують транзакції, не діляться даними з рекламодавцями й не продають поведінкові профілі. Budgie пропонує перевірити. On-device архітектура, шифрування AES-256 і дизайн без телеметрії видимі в репозиторії для будь-якого розробника."
+msgid "Public source is not just a development philosophy — it is a security property. Closed finance apps ask you to trust that they do not log your transactions, share data with advertisers, or sell behavioral profiles. Budgie asks you to check. The on-device architecture, encryption at rest, and zero-telemetry design are all visible in the repository for any developer to verify."
+msgstr "Відкритий код — це не просто філософія розробки, це властивість безпеки. Закриті фінансові застосунки просять вас довіряти, що вони не журналюють ваші транзакції, не діляться даними з рекламодавцями та не продають поведінкові профілі. Budgie просить вас перевірити. Архітектура на пристрої, шифрування в стані спокою та відсутність телеметрії — усе це видно в репозиторії, і будь-який розробник може це перевірити."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Public source means our privacy claims are verifiable. Any developer can audit the code and confirm that no financial data is transmitted to external servers. You do not have to trust us — you can check."
@@ -14111,10 +14135,6 @@ msgstr "Електронні таблиці: варіант абсолютног
 msgid "SQLite database you own and control"
 msgstr "База даних SQLite, яку ви контролюєте"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "SQLite eliminates all of these problems. The database file lives on your device, operations happen in microseconds, and your data remains under your physical control."
-msgstr "SQLite усуває всі ці проблеми. Файл бази даних живе на вашому пристрої, операції виконуються за мікросекунди, а ваші дані залишаються під вашим фізичним контролем."
-
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Start from a built-in preset"
 msgstr "Почніть із вбудованого шаблону"
@@ -14703,10 +14723,6 @@ msgstr "Вихідний код застосунку опубліковано з
 msgid "The arbitration shall be conducted in English in Vienna, Austria"
 msgstr ""
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The Architecture: SQLite and Local-First Design"
-msgstr "Архітектура: SQLite та локально-орієнтований дизайн"
-
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The average user logs the same merchant more than thirty times a year. Typing the category, picking a tag, entering the usual amount, and choosing the right account for the same coffee shop is wasted effort — the information is already in your history. Budgie surfaces it as tappable pill-shaped chips the moment you open the form, so confirming a familiar expense takes one tap instead of seven."
 msgstr "Середній користувач записує того самого продавця більше тридцяти разів на рік. Вводити категорію, вибирати тег, вводити зазвичайну суму і обирати правильний рахунок для тієї самої кав'ярні — це марна трата зусиль, адже ця інформація вже є у вашій історії. Budgie відображає її у вигляді натискних чіпів-пігулок у момент відкриття форми, щоб підтвердження знайомої витрати займало один дотик замість семи."
@@ -14800,8 +14816,8 @@ msgid "The company won’t be hacked"
 msgstr "Компанія не буде зламана"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The complete React Native application source"
-msgstr "Повний вихідний код React Native додатку"
+msgid "The complete mobile application source"
+msgstr "Повний вихідний код мобільного застосунку"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The complete source code for Budgie is available on GitHub. You can:"
@@ -14856,8 +14872,12 @@ msgid "The Data Collection Stack"
 msgstr "Стек збору даних"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The database uses Drizzle ORM for type-safe operations"
-msgstr "База даних використовує Drizzle ORM для типобезпечних операцій"
+msgid "The database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
+msgstr "Файл бази даних зберігається в захищеному каталозі, до якого має доступ лише Budgie. На iOS це пісочниця Documents застосунку. На Android це внутрішнє сховище застосунку, яке інші застосунки не можуть прочитати."
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "The database layer enforces type-safe reads and writes"
+msgstr "Рівень бази даних забезпечує типобезпечне читання та запис"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "The Date chip opens a month calendar with the presets in a row underneath it: Today, This Week, Last Week, This Month, Last Month, This Year, All Time. When none of them is the window you want, pick a start and an end date on the calendar instead and tap Show selected range."
@@ -15252,8 +15272,8 @@ msgid "The remainder counts down"
 msgstr "Залишок зменшується"
 
 #: src/app/[lang]/open-source/page.tsx
-msgid "The repository includes the full React Native app, the AI service layer with on-device LLM and embedding model integrations, the contracts package, and this landing page. Nothing is hidden behind a proprietary SDK or closed binary."
-msgstr "Репозиторій включає повний React Native додаток, рівень AI-сервісів з інтеграціями LLM та моделі вкладень на пристрої, пакет контрактів і цю цільову сторінку. Нічого не приховано за пропрієтарним SDK або закритим бінарним файлом."
+msgid "The repository includes the full mobile app, the on-device AI layer, the contracts package, and this landing page. Nothing is hidden behind a proprietary SDK or closed binary."
+msgstr "Репозиторій містить повний мобільний застосунок, шар ШІ на пристрої, пакет контрактів і цю цільову сторінку. Нічого не приховано за пропрієтарним SDK чи закритим бінарним файлом."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The repository includes:"
@@ -15387,10 +15407,6 @@ msgstr "Нижній напис «залишилося розподілити» 
 msgid "The spoken currency picks the matching account automatically"
 msgstr "Вимовлена валюта автоматично вибирає відповідний рахунок"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
-msgstr "Файл бази даних SQLite зберігається в захищеній директорії, доступ до якої має лише Budgie. На iOS це ізольована директорія Documents додатка. На Android це внутрішнє сховище додатка, яке інші програми не можуть прочитати."
-
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and the device has a biometric enrolled — there is no biometric-only mode."
 msgstr "Перемикач міститься в картці Блокування додатка в налаштуваннях, у розділі Безпека. Він з’являється лише після того, як ви задали PIN, і якщо на пристрої налаштована біометрія — суто біометричного режиму не існує."
@@ -15444,8 +15460,8 @@ msgid "The transaction becomes a single transfer with a credit entry and a debit
 msgstr "Транзакція перетворюється на єдиний переказ із кредитовим і дебетовим записом на двох рахунках, баланси узгоджуються на обох, а початкова статистика витрат зникає з аналітики. Жодного подвійного введення з вашого боку."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The transaction is written to a SQLite database stored in your device’s secure app storage"
-msgstr "Транзакція записується в базу даних SQLite, що зберігається в захищеному сховищі вашого пристрою"
+msgid "The transaction is written to a local database stored in your device’s secure app storage"
+msgstr "Транзакція записується в локальну базу даних, яка зберігається в захищеному сховищі застосунку на вашому пристрої"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "The transactions list now supports filtering by amount range in addition to date, category, tag, and account. Opening a transaction shows a read-only detail view with six-month similar-spend bars, so you can see whether an amount is typical for that merchant or category without leaving the screen. Several split-confirmation keyboard bugs were also fixed, so entering split amounts on a physical or software keyboard no longer misbehaves mid-edit."
@@ -17643,6 +17659,10 @@ msgstr "Чому міжособистісні борги заслуговуют�
 msgid "Why is “transfer” a separate type?"
 msgstr "Чому «переказ» є окремим типом?"
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Why Local Storage Beats a Cloud Account"
+msgstr "Чому локальне зберігання краще за хмарний обліковий запис"
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Why Manual Import Is Underrated"
 msgstr "Чому ручний імпорт недооцінений"
@@ -17748,10 +17768,6 @@ msgstr "Чому повернення забруднюють аналітику 
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Why scanning a long list for one tag is hard"
 msgstr "Чому шукати один тег у довгому списку складно"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Why SQLite Over Cloud Databases"
-msgstr "Чому SQLite, а не хмарні бази даних"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Why store the base amount if it can be recalculated?"
@@ -18301,10 +18317,6 @@ msgstr "Так. Торкніться будь-якого рядка катего
 msgid "Yes. Tapping a row opens the transaction list for that tag over the active period. A row belongs either to the income list or to the spending list, and the list opens on that side."
 msgstr "Так. Дотик до рядка відкриває список транзакцій цього тегу за активний період. Рядок належить або до списку доходів, або до списку витрат — саме на тому боці список і відкриється."
 
-#: src/app/[lang]/open-source/page.tsx
-msgid "Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the public repository. The underlying models (Qwen3, whisper.rn) are separately licensed projects."
-msgstr "Так. AI-сервіс — включно з інтеграцією embedding-моделі та оркестрацією LLM — є частиною публічного репозиторію. Базові моделі (Qwen3, whisper.rn) є окремо ліцензованими проєктами."
-
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Yes. The column you map to Date becomes the transaction's date, read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD. A row whose date cannot be read is reported instead of guessed at."
 msgstr "Так. Стовпець, який ви зіставите з датою, стає датою операції та читається як MM/DD/YYYY HH:MM:SS або YYYY-MM-DD. Рядок із нечитабельною датою повідомляється, а не вгадується."
@@ -18316,6 +18328,10 @@ msgstr "Так. Двосуме введення відкривається пі�
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Yes. The entire transaction entry flow — amount, category, tags, account — works fully offline. Your data is written directly to the on-device database with no network call."
 msgstr "Так. Увесь процес внесення транзакції — сума, категорія, теги, рахунок — працює повністю офлайн. Ваші дані записуються безпосередньо в базу даних на пристрої без жодного мережевого запиту."
+
+#: src/app/[lang]/open-source/page.tsx
+msgid "Yes. The on-device AI layer that powers category suggestions, voice entry, and merchant clean-up is part of the public repository. The pretrained models it runs are separately licensed third-party projects, credited on our licence page."
+msgstr "Так. Шар ШІ на пристрої, який забезпечує пропозиції категорій, голосове введення та очищення назв продавців, є частиною публічного репозиторію. Попередньо навчені моделі, які він використовує, — це окремо ліцензовані сторонні проєкти, вказані на нашій сторінці ліцензії."
 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Yes. The original is preserved for receipt-matching and audit; the translated form is what your search queries hit."
@@ -18689,6 +18705,10 @@ msgstr "Ваші дані не зникнуть, якщо ми припиним�
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Your data exists only on your device. If you lose your phone without having synced to another device or created a backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
 msgstr "Ваші дані існують лише на вашому пристрої. Якщо ви втратите телефон, не синхронізувавши його з іншим пристроєм і не створивши резервну копію, ваші дані буде втрачено. Це і є компроміс приватності: ми не можемо допомогти вам відновити дані, яких у нас немає. Радимо регулярно створювати резервні копії у власному сховищі."
+
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+msgid "Your data in a local file you can open and query yourself"
+msgstr "Ваші дані в локальному файлі, який ви можете самостійно відкрити та опрацювати"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Your data is yours. Budgie supports exporting your financial data in standard formats. If you ever want to switch to a different application or analyze your data in a spreadsheet, you have full access."
