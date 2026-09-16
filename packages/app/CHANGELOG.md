@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.68.0](https://github.com/budgie-at/budgie/compare/v6.67.18...v6.68.0) (2026-09-16)
+
+
+### Features
+
+* **app:** add fastlane deliver/supply metadata lanes and Android Appfile wiring ([80d8369](https://github.com/budgie-at/budgie/commit/80d8369a3b959305d50d6edc9f803f83b06136e9))
+
+
+
+
+
 ## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
 
 
