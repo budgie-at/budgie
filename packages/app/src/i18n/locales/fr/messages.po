@@ -4189,6 +4189,10 @@ msgstr "Volume"
 msgid "Waiting"
 msgstr "En attente"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Warning"
+msgstr "Avertissement"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."
 msgstr "Nous réessaierons en arrière-plan."
