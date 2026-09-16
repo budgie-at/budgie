@@ -2247,8 +2247,8 @@ msgid "A dedicated Tags tab in Statistics with sortable per-tag totals and a dri
 msgstr "A dedicated Tags tab in Statistics with sortable per-tag totals and a drillable Untagged bucket that surfaces every transaction missing a label."
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
-msgid "A dedicated Tags tab lives alongside the Categories tab in Analytics — per-tag income, expense, and net totals, plus a drillable Untagged bucket that surfaces every transaction missing a label."
-msgstr "A dedicated Tags tab lives alongside the Categories tab in Analytics — per-tag income, expense, and net totals, plus a drillable Untagged bucket that surfaces every transaction missing a label."
+msgid "A dedicated Tags tab lives in Analytics next to the Categories and Runway tabs — per-tag income, expense, and net totals, plus a drillable Untagged bucket that surfaces every transaction missing a label."
+msgstr "A dedicated Tags tab lives in Analytics next to the Categories and Runway tabs — per-tag income, expense, and net totals, plus a drillable Untagged bucket that surfaces every transaction missing a label."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "A deliberate gap-finder. Transactions without tags accumulate in this bucket so you can spot bookkeeping gaps and tighten them up."
@@ -2874,8 +2874,8 @@ msgid "Amount first, no form"
 msgstr "Amount first, no form"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Amount, category, tag and account chips narrow both tabs from the same filter row"
-msgstr "Amount, category, tag and account chips narrow both tabs from the same filter row"
+msgid "Amount, category, tag and account chips narrow the Categories and Tags tabs from the same filter row"
+msgstr "Amount, category, tag and account chips narrow the Categories and Tags tabs from the same filter row"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Amounts aligned right"
@@ -6491,8 +6491,8 @@ msgid "Dedicated Deposit account type for fixed-term savings and locked principa
 msgstr "Dedicated Deposit account type for fixed-term savings and locked principal"
 
 #: src/app/[lang]/features/tag-analytics/page.tsx
-msgid "Dedicated Tags tab alongside the Categories tab — one tap to switch views"
-msgstr "Dedicated Tags tab alongside the Categories tab — one tap to switch views"
+msgid "Dedicated Tags tab in Analytics, next to Categories and Runway — one tap to switch views"
+msgstr "Dedicated Tags tab in Analytics, next to Categories and Runway — one tap to switch views"
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "Dedupes against existing transactions on re-import"
@@ -10339,8 +10339,8 @@ msgid "Most app locks are decoration — a screen you can bypass by reading the 
 msgstr "Most app locks are decoration — a screen you can bypass by reading the storage layer. Budgie's PIN is wired to SQLCipher, so the same digits that pass the lock screen also derive the database encryption key."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Most apps show a pie chart and call it analytics. Budgie's analytics screen splits into Categories and Tags tabs, each with drill-down: tap a category to see every transaction in it for the current period."
-msgstr "Most apps show a pie chart and call it analytics. Budgie's analytics screen splits into Categories and Tags tabs, each with drill-down: tap a category to see every transaction in it for the current period."
+msgid "Most apps show a pie chart and call it analytics. Budgie's analytics screen has three tabs — Categories, Tags and Runway — and the first two carry drill-down: tap a category or tag to see every transaction in it for the current period."
+msgstr "Most apps show a pie chart and call it analytics. Budgie's analytics screen has three tabs — Categories, Tags and Runway — and the first two carry drill-down: tap a category or tag to see every transaction in it for the current period."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Most apps use Plaid, which requires sharing your bank credentials with a third party. Actual Budget uses SimpleFIN, which is somewhat more privacy-respecting. Budgie uses zero-knowledge sync where credentials are encrypted on your device and never visible to us. Firefly III typically relies on manual imports or community-built importers."
@@ -10367,8 +10367,8 @@ msgid "Most expense apps"
 msgstr "Most expense apps"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-msgid "Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, an instrument symbol, and a daily price. Net worth rolls them all up."
-msgstr "Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, an instrument symbol, and a daily price. Net worth rolls them all up."
+msgid "Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, an instrument symbol, and a daily price. Net worth rolls them all up. Runway is the exception: it counts only cash and bank balances by default, and only folds crypto into that forecast once you switch on Include crypto in Settings → Runway."
+msgstr "Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, an instrument symbol, and a daily price. Net worth rolls them all up. Runway is the exception: it counts only cash and bank balances by default, and only folds crypto into that forecast once you switch on Include crypto in Settings → Runway."
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Most expense apps stop at “this month's spending.” Budgie gives you the full balance-sheet view — assets, liabilities, and the line they form between them — without spreadsheets."
@@ -14074,8 +14074,8 @@ msgid "statistics"
 msgstr "statistics"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
-msgid "Statistics opens on This Month. The date chip swaps in Today, This or Last Week, Last Month, This Year and All Time, or any range you draw on the calendar. Amount, Category, Tag and Account chips narrow it further, and both tabs read the same filter."
-msgstr "Statistics opens on This Month. The date chip swaps in Today, This or Last Week, Last Month, This Year and All Time, or any range you draw on the calendar. Amount, Category, Tag and Account chips narrow it further, and both tabs read the same filter."
+msgid "Statistics opens on This Month. The date chip swaps in Today, This or Last Week, Last Month, This Year and All Time, or any range you draw on the calendar. Amount, Category, Tag and Account chips narrow it further, and the Categories and Tags tabs both read the same filter — Runway keeps its own six-month window instead."
+msgstr "Statistics opens on This Month. The date chip swaps in Today, This or Last Week, Last Month, This Year and All Time, or any range you draw on the calendar. Amount, Category, Tag and Account chips narrow it further, and the Categories and Tags tabs both read the same filter — Runway keeps its own six-month window instead."
 
 #: src/app/[lang]/blog/page.tsx
 msgid "Stay informed about financial privacy, security best practices, and the latest features in Budgie."
@@ -14335,8 +14335,8 @@ msgid "Tag Analytics"
 msgstr "Tag Analytics"
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
-msgid "Tag Analytics is the umbrella concept; this page documents the specific Tags-tab UI in the Statistics screen, where you can switch between Categories and Tags views with one tap."
-msgstr "Tag Analytics is the umbrella concept; this page documents the specific Tags-tab UI in the Statistics screen, where you can switch between Categories and Tags views with one tap."
+msgid "Tag Analytics is the umbrella concept; this page documents the specific Tags-tab UI in the Statistics screen, which swipes between three views — Categories, Tags and Runway."
+msgstr "Tag Analytics is the umbrella concept; this page documents the specific Tags-tab UI in the Statistics screen, which swipes between three views — Categories, Tags and Runway."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Tag-based analytics: per-tag totals plus an “Untagged” bucket"

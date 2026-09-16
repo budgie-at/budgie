@@ -88,8 +88,8 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 <FeatureStory.Step index={0} title={<Trans>Set the period, read the totals</Trans>}>
                     <Trans>
                         Statistics opens on This Month. The date chip swaps in Today, This or Last Week, Last Month, This Year and All Time,
-                        or any range you draw on the calendar. Amount, Category, Tag and Account chips narrow it further, and both tabs read
-                        the same filter.
+                        or any range you draw on the calendar. Amount, Category, Tag and Account chips narrow it further, and the Categories
+                        and Tags tabs both read the same filter — Runway keeps its own six-month window instead.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -151,8 +151,9 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Most apps show a pie chart and call it analytics. Budgie&apos;s analytics screen splits into Categories and Tags
-                        tabs, each with drill-down: tap a category to see every transaction in it for the current period.
+                        Most apps show a pie chart and call it analytics. Budgie&apos;s analytics screen has three tabs — Categories, Tags
+                        and Runway — and the first two carry drill-down: tap a category or tag to see every transaction in it for the
+                        current period.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -176,7 +177,7 @@ export default async function SpendingAnalyticsFeaturePage(props: PageLangParam)
                         <Trans>Tags tab: per-tag income and expense, plus an &ldquo;Untagged&rdquo; bucket for the gaps</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Amount, category, tag and account chips narrow both tabs from the same filter row</Trans>
+                        <Trans>Amount, category, tag and account chips narrow the Categories and Tags tabs from the same filter row</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Seven date presets, from Today to All Time, plus any range you pick on the calendar</Trans>
