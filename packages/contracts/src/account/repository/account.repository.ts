@@ -135,12 +135,12 @@ export class AccountRepository {
         return await this.findActiveByIds(ids, tx, this.getLedgerMaintainedAccountConditionSql());
     }
 
-    async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
+    async findByExternalIds(externalIds: string[], tx?: DB): Promise<AccountEntityInterface[]> {
         if (!isNotEmptyArray(externalIds)) {
             return [];
         }
 
-        return await this.db.query.AccountEntityTable.findMany({
+        return await (tx ?? this.db).query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
         });
     }
@@ -151,18 +151,18 @@ export class AccountRepository {
         });
     }
 
-    findByIban(iban: string) {
-        return this.db.query.AccountEntityTable.findFirst({
+    findByIban(iban: string, tx?: DB) {
+        return (tx ?? this.db).query.AccountEntityTable.findFirst({
             where: and(eq(AccountEntityTable.iban, iban), isNull(AccountEntityTable.deletedAt))
         });
     }
 
-    async findByIbans(ibans: string[]): Promise<AccountEntityInterface[]> {
+    async findByIbans(ibans: string[], tx?: DB): Promise<AccountEntityInterface[]> {
         if (!isNotEmptyArray(ibans)) {
             return [];
         }
 
-        return await this.db.query.AccountEntityTable.findMany({
+        return await (tx ?? this.db).query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.iban, ibans), isNull(AccountEntityTable.deletedAt))
         });
     }

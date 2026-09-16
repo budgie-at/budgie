@@ -652,13 +652,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         });
     }
 
-    async getTransactionTimeByAccountId(accountId: number, mode: 'latest' | 'earliest'): Promise<Date | null> {
+    async getTransactionTimeByAccountId(accountId: number, mode: 'latest' | 'earliest', tx?: DB): Promise<Date | null> {
         const aggregateSql =
             mode === 'latest'
                 ? sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`
                 : sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`;
 
-        const result = await this.db
+        const result = await (tx ?? this.db)
             .select({ operatedAt: aggregateSql })
             .from(TransactionEntityTable)
             .where(and(this.buildSingleAccountCondition(accountId), ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)));
