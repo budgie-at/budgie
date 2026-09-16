@@ -11276,11 +11276,11 @@ msgstr "FAQ zum Offline-Ausgaben-Tracker"
 
 #: src/app/[lang]/metadata.ts
 msgid "Offline Expense Tracker That Never Leaves Your Phone"
-msgstr "Offline-Ausgaben-Tracker, der dein Handy nie verlässt"
+msgstr "Haushaltsbuch, das offline funktioniert und dein Handy nie verlässt"
 
 #: src/generic/component/hero-section/hero-section-header.tsx
 msgid "Offline expense tracking that never phones home."
-msgstr "Offline-Ausgabenverwaltung, die nie nach Hause funkt."
+msgstr "Haushaltsbuch, das offline funktioniert und nie nach Hause funkt."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Offline use"

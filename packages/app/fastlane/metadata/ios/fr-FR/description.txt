@@ -1,0 +1,35 @@
+Budgie, c'est le suivi des dépenses sans la corvée : pas de compte à créer, pas d'identifiants bancaires à confier, pas d'abonnement. Vous notez une dépense en moins de cinq secondes — à la caisse, dans le métro, en avion — et tout reste sur votre téléphone, y compris quand il n'y a pas de réseau.
+
+ÇA MARCHE SANS RÉSEAU
+Chaque opération reste sur votre téléphone. Ajoutez une dépense, consultez l'historique et vos analyses sans la moindre connexion.
+
+CHAQUE DÉPENSE EN QUELQUES SECONDES
+Dictez une dépense ou tapez-la, Budgie choisit la catégorie directement sur l'appareil. Répartissez un achat entre plusieurs catégories ou personnes en une seule fois.
+
+OÙ PART VOTRE ARGENT
+Des analyses par catégorie et par tag révèlent une tendance avant qu'elle ne devienne un problème. Votre patrimoine, tous comptes, cartes et devises confondus, en un coup d'œil.
+
+BUDGETS ET AUTONOMIE
+Un budget calé sur votre date de paie plutôt que sur le mois civil, avec une autonomie qui se met à jour à chaque dépense.
+
+COMPTES, CARTES ET CRYPTO
+Espèces, cartes et cryptomonnaies côte à côte, chacune dans sa vraie devise — Budgie convertit automatiquement. Là où votre banque le permet, importez vos relevés au lieu de tout ressaisir.
+
+DETTES ET PRÊTS ENTRE PROCHES
+Un suivi de qui doit quoi à qui, avec les remboursements et le solde réellement restant en un coup d'œil.
+
+VERROUILLÉ
+Déverrouillage par code, visage ou empreinte, soldes masqués des captures d'écran et du multitâche. Vos sauvegardes restent protégées à chaque étape.
+
+ET AUSSI
+• Comptes multidevises avec conversion automatique
+• Calendrier des paiements récurrents
+• Import de relevés bancaires en CSV ou PDF, selon la banque
+• Tags personnalisés pour suivre ce qui compte pour vous
+• Saisie vocale quand taper n'est pas pratique
+• Code, verrouillage biométrique et protection contre les captures d'écran
+• Sans compte, sans connexion bancaire, sans abonnement
+
+Budgie est actuellement en bêta privée. Rejoignez la liste d'attente.
+
+En savoir plus sur budgie.at.

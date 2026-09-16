@@ -1,0 +1,35 @@
+Budgie ist das Haushaltsbuch für Leute, die nicht erst eine Bank verbinden wollen, um zu sehen, wohin ihr Geld geht. Ausgabe eintippen oder einsprechen, fertig — in unter fünf Sekunden, an der Kasse, in der U-Bahn, auch ganz ohne Empfang. Kein Konto, keine Bankzugangsdaten, kein Abo.
+
+FUNKTIONIERT OHNE NETZ
+Jede Buchung bleibt auf deinem Handy. Ausgaben erfassen, den Verlauf durchsehen und Auswertungen ansehen – alles ganz ohne Internetverbindung.
+
+JEDE AUSGABE IN SEKUNDEN
+Sag eine Ausgabe einfach an oder tippe sie ein, Budgie ordnet sie direkt auf dem Gerät der passenden Kategorie zu. Eine Ausgabe lässt sich in einem Schritt auf mehrere Kategorien oder Personen aufteilen.
+
+WO DAS GELD HINGEHT
+Auswertungen nach Kategorie und Tag zeigen ein Muster, bevor es zum Problem wird. Dein Vermögen über alle Konten, Karten und Währungen hinweg auf einen Blick.
+
+BUDGETS UND REICHWEITE
+Ein Budget, das sich nach deinem Gehaltseingang statt nach dem Kalendermonat richtet, und eine Reichweite, die sich mit jeder Ausgabe aktualisiert.
+
+KONTEN, KARTEN UND KRYPTO
+Bargeld, Karten und Kryptowerte nebeneinander, jeweils in der tatsächlichen Währung – Budgie rechnet automatisch um. Wo deine Bank es unterstützt, etwa per Erste-Kontoauszug, lassen sich Umsätze direkt importieren statt sie von Hand einzutippen.
+
+SCHULDEN UND GELIEHENES
+Eine laufende Liste, wer wem was schuldet, mit Rückzahlungen und dem tatsächlich verbleibenden Betrag auf einen Blick.
+
+ABGESICHERT
+Entsperren per PIN, Gesicht oder Fingerabdruck, Salden vor Screenshots und der App-Übersicht verborgen. Backups bleiben durchgehend geschützt.
+
+AUSSERDEM
+• Mehrwährungskonten mit automatischer Umrechnung
+• Kalender für wiederkehrende Zahlungen
+• Kontoauszüge als CSV oder PDF importieren, wo unterstützt
+• Eigene Tags für alles, was du im Blick behalten willst
+• Spracheingabe, wenn Tippen gerade unpraktisch ist
+• PIN, biometrische Sperre und Schutz vor Screenshots
+• Kein Konto, kein Bank-Login, kein Abo
+
+Budgie befindet sich aktuell in der privaten Beta. Trag dich auf die Warteliste ein.
+
+Mehr unter budgie.at.
