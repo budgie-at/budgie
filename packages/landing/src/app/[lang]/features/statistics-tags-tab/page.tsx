@@ -204,7 +204,7 @@ export default async function StatisticsTagsTabFeaturePage(props: PageLangParam)
                     answer={
                         <Trans>
                             Tag Analytics is the umbrella concept; this page documents the specific Tags-tab UI in the Statistics screen,
-                            where you can switch between Categories and Tags views with one tap.
+                            which swipes between three views — Categories, Tags and Runway.
                         </Trans>
                     }
                 />

@@ -23,6 +23,6 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['tag-analytics', 'spending-analytics', 'transaction-tags', 'ai-tag-suggestions', 'primary-tag'],
     relatedArticleSlugs: ['budgie-offline-financial-data'],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-05-07',
+    updatedAt: '2026-09-16',
     ogTags: ['analytics', 'tags', 'statistics']
 } satisfies FeatureRegistryEntryInterface;
