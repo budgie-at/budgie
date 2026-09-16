@@ -2155,8 +2155,8 @@ msgid "A \"matching rules\" pill on a transaction shows which rules apply to it"
 msgstr "Eine „passende Regeln“-Kennzeichnung an einer Transaktion zeigt, welche Regeln für sie gelten"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "A 4-digit PIN unlocks the app and unlocks the SQLCipher database. Without the PIN, the database file is unreadable — even with full filesystem access."
-msgstr "Eine 4-stellige PIN entsperrt die App und die SQLCipher-Datenbank. Ohne die PIN ist die Datenbankdatei unlesbar — selbst mit vollem Dateisystemzugriff."
+msgid "A 4-digit PIN unlocks the app and unlocks your data. Without the PIN, the database file is unreadable — even with full filesystem access."
+msgstr "Eine 4-stellige PIN entsperrt die App und entsperrt Ihre Daten. Ohne die PIN ist die Datenbankdatei unlesbar — selbst mit vollständigem Dateisystemzugriff."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "A 4-digit PIN, set from Settings → Security"
@@ -2169,6 +2169,10 @@ msgstr "Ein Hintergrundscan analysiert Ihre Transaktionshistorie auf Betrags- un
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "A background task pulls exchange rates automatically and stores a snapshot on your device. No live rate broker is queried at render time."
 msgstr "Eine Hintergrundaufgabe ruft automatisch Wechselkurse ab und speichert einen Schnappschuss auf Ihrem Gerät. Beim Anzeigen wird kein Live-Kursmakler abgefragt."
+
+#: src/app/[lang]/security/page.tsx
+msgid "A backup copies the database as it is — encrypted if your PIN was set when you exported"
+msgstr "Ein Backup kopiert die Datenbank so, wie sie ist — verschlüsselt, wenn Ihre PIN beim Export gesetzt war"
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "A backup of everything"
@@ -2633,14 +2637,6 @@ msgstr "Anpassungen sind von den Kategorisierungsregeln ausgenommen, sodass ein 
 msgid "Advertising SDKs that build user profiles"
 msgstr "Werbe-SDKs, die Nutzerprofile erstellen"
 
-#: src/app/[lang]/security/page.tsx
-msgid "AES-256 encrypted SQLite — your database is unreadable without your key"
-msgstr "AES-256-verschlüsseltes SQLite – Ihre Datenbank ist ohne Ihren Schlüssel unlesbar"
-
-#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
-msgid "AES-256 encrypted SQLite database, key derived from your PIN"
-msgstr "AES-256-verschlüsselte SQLite-Datenbank, Schlüssel aus Ihrer PIN abgeleitet"
-
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "AES-256 Encryption at Rest"
 msgstr "AES-256-Verschlüsselung im Ruhezustand"
@@ -2817,8 +2813,8 @@ msgid "All your financial data is stored exclusively on your device. Your transa
 msgstr "Deine Finanzdaten leben auf deinem Gerät. Transaktionen, Konten, Budgets und Insights berühren keine Budgie-Server, weil <0>keine Budgie-Server sie speichern</0>."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
-msgid "All your financial data is stored locally on your device using industry-standard encryption. We utilize device-level security features including:"
-msgstr "Ihre Finanzdaten werden lokal auf Ihrem Gerät mit Standardverschlüsselung gespeichert. Budgie nutzt dabei Sicherheitsfunktionen des Geräts, darunter:"
+msgid "All your financial data is stored locally on your device. We utilize device-level security features including:"
+msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Wir nutzen Sicherheitsfunktionen auf Geräteebene, darunter:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "All your financial data, including transactions, accounts, budgets, and categories, is stored in a local SQLite database on your device. We use Drizzle ORM for type-safe database operations, ensuring data integrity while keeping everything local."
@@ -3149,8 +3145,8 @@ msgid "Are dependencies regularly updated?"
 msgstr "Werden Abhängigkeiten regelmäßig aktualisiert?"
 
 #: src/app/[lang]/security/page.tsx
-msgid "Are my encrypted backups safe if someone accesses my cloud storage?"
-msgstr "Sind meine verschlüsselten Backups sicher, wenn jemand auf meinen Cloud-Speicher zugreift?"
+msgid "Are my backups safe if someone accesses my cloud storage?"
+msgstr "Sind meine Backups sicher, wenn jemand Zugriff auf meinen Cloud-Speicher hat?"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Are open banking APIs safer than screen scraping?"
@@ -3330,10 +3326,6 @@ msgstr "Backup & Wiederherstellung"
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Backup file copied via your cloud"
 msgstr "Backup-Datei über Ihre Cloud kopiert"
-
-#: src/app/[lang]/security/page.tsx
-msgid "Backups are encrypted before leaving your device — the key stays with you"
-msgstr "Backups werden verschlüsselt, bevor sie Ihr Gerät verlassen – der Schlüssel bleibt bei Ihnen"
 
 #: src/app/[lang]/privacy/page.tsx
 msgid "Backups go to your personal cloud storage — iCloud Drive on iOS, or Google Drive or Dropbox on Android. Budgie never receives a copy; you own every byte."
@@ -3770,13 +3762,13 @@ msgid "biometric finance app"
 msgstr ""
 
 #: src/generic/component/comparison-section/comparison-table-body.tsx
-msgid "Biometric lock + AES-256 encrypted storage"
-msgstr "Biometrische Sperre + AES-256-verschlüsselter Speicher"
+msgid "Biometric lock + on-device encryption with your PIN"
+msgstr "Biometrische Sperre + Verschlüsselung auf dem Gerät mit Ihrer PIN"
 
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
-msgid "Biometric unlock hands Budgie only a yes or no — your PIN alone still derives the encryption key."
-msgstr "Die biometrische Entsperrung liefert Budgie nur ein Ja oder Nein — allein Ihre PIN leitet weiterhin den Verschlüsselungsschlüssel ab."
+msgid "Biometric unlock hands Budgie only a yes or no — your PIN stays the key."
+msgstr "Die biometrische Entsperrung liefert Budgie nur ein Ja oder Nein — Ihre PIN bleibt der Schlüssel."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Biometric unlock is a shortcut past Budgie's lock screen. What encrypts the database underneath is still the four-digit PIN."
@@ -4270,8 +4262,8 @@ msgid "Budgie iOS Beta Install"
 msgstr "Budgie iOS Beta-Installation"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/metadata.ts
-msgid "Budgie is a 100% offline-first expense tracker. Your financial data never leaves your phone — encrypted SQLite, no cloud servers, no account required to start."
-msgstr "Budgie ist ein 100% Offline-First-Ausgaben-Tracker. Ihre Finanzdaten verlassen nie Ihr Telefon — verschlüsseltes SQLite, keine Cloud-Server, kein Konto erforderlich."
+msgid "Budgie is a 100% offline-first expense tracker. Your financial data never leaves your phone — encrypted with your PIN once you set one, no cloud servers, no account required to start."
+msgstr "Budgie ist ein 100 % offline-first Ausgaben-Tracker. Ihre Finanzdaten verlassen Ihr Telefon nie — verschlüsselt mit Ihrer PIN, sobald Sie eine festlegen, keine Cloud-Server, kein Konto erforderlich, um loszulegen."
 
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "Budgie is a fully offline budget app. Add expenses, view analytics, and import bank statements without any internet connection. Your data stays on your device."
@@ -4478,8 +4470,8 @@ msgid "Budgie prompts you to migrate them to another account or wipe them. Archi
 msgstr "Budgie fordert Sie auf, diese in ein anderes Konto zu migrieren oder zu löschen. Archivieren ist die sicherere Alternative – es blendet das Konto vom Startbildschirm aus, behält aber die Daten."
 
 #: src/app/[lang]/security/metadata.ts
-msgid "Budgie protects your finances with AES-256 encrypted SQLite, biometric and PIN lock, screenshot blur, and encrypted cloud backups. No server ever sees your data."
-msgstr "Budgie schützt Ihre Finanzen mit AES-256-verschlüsseltem SQLite, biometrischer und PIN-Sperre, Screenshot-Unschärfe und verschlüsselten Cloud-Backups. Kein Server sieht je Ihre Daten."
+msgid "Budgie protects your finances with on-device encryption once you set a PIN, biometric and PIN lock, screenshot blur, and backup files you keep yourself. No server ever sees your data."
+msgstr "Budgie schützt Ihre Finanzen mit Verschlüsselung auf dem Gerät, sobald Sie eine PIN festlegen, mit biometrischer Sperre und PIN-Sperre, Bildschirmfoto-Unschärfe und Backup-Dateien, die Sie selbst aufbewahren. Kein Server bekommt jemals Ihre Daten zu sehen."
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Budgie proves that you don’t have to choose between powerful features and privacy. You can have:"
@@ -4601,10 +4593,6 @@ msgstr "Budgie-Aufteilungsblatt mit den Zeilen Hauswartung und Elektronik & Gadg
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Budgie spots subscription patterns and renewals, plots them on a month calendar, and forecasts what's coming."
 msgstr "Budgie erkennt Abonnementmuster und Verlängerungen, stellt sie auf einem Monatskalender dar und prognostiziert, was als Nächstes kommt."
-
-#: src/app/[lang]/security/page.tsx
-msgid "Budgie stores all financial data in an SQLCipher-backed SQLite database encrypted with AES-256. The encryption key is derived from your device keychain and never transmitted off the device."
-msgstr "Budgie speichert alle Finanzdaten in einer SQLCipher-gestützten SQLite-Datenbank, die mit AES-256 verschlüsselt ist. Der Verschlüsselungsschlüssel wird aus Ihrem Geräteschlüsselbund abgeleitet und nie vom Gerät übertragen."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
 msgid "Budgie suggests category, tags, comment, and amount from your own SQL patterns and three separate on-device embedding indexes. Faster manual entry than any AI cloud assistant."
@@ -4754,10 +4742,6 @@ msgstr "Budgie verwendet einen anderen Ansatz, basierend auf konfliktfreien repl
 msgid "Budgie uses a source-available license that allows you to view, modify, and contribute to the code while ensuring only we can monetize the official app. This keeps the project sustainable while maintaining transparency."
 msgstr "Budgie verwendet eine Source-Available-Lizenz, die es Ihnen ermöglicht, den Code anzusehen, zu ändern und dazu beizutragen, während sichergestellt wird, dass nur wir die offizielle App monetarisieren können. Dies hält das Projekt nachhaltig und bewahrt gleichzeitig Transparenz."
 
-#: src/app/[lang]/privacy/page.tsx
-msgid "Budgie uses SQLCipher-backed SQLite with AES-256 encryption. The encryption key is derived from your device keychain and is never transmitted off the device."
-msgstr "Budgie verwendet SQLCipher-gestütztes SQLite mit AES-256-Verschlüsselung. Der Verschlüsselungsschlüssel wird aus Ihrem Geräteschlüsselbund abgeleitet und nie vom Gerät übertragen."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie uses the O'SAASY License, a source-available license that lets you read, modify, publish, and distribute the code while reserving hosted-service monetization for the original project. We chose this license for several reasons:"
 msgstr "Budgie verwendet die O'SAASY License, eine Source-Available-Lizenz, die es erlaubt, den Code zu lesen, zu ändern, zu veröffentlichen und zu verteilen, während die Monetarisierung gehosteter Dienste dem ursprünglichen Projekt vorbehalten bleibt. Wir haben diese Lizenz aus mehreren Gründen gewählt:"
@@ -4832,8 +4816,8 @@ msgid "Budgie's PIN and biometric lock gate every app launch. Even if the device
 msgstr "Budgies PIN- und Biometrie-Sperre schützt jeden App-Start. Selbst auf einem entsperrten Smartphone bleiben Finanzdaten verborgen, bis PIN oder Biometrieprüfung bestanden sind."
 
 #: src/app/[lang]/features/pin-app-lock/metadata.ts
-msgid "Budgie's PIN doesn't just gate the screen — it derives the SQLCipher encryption key. Without the PIN, the database file is unreadable, even with full filesystem access."
-msgstr "Budgies PIN sperrt nicht nur den Bildschirm – sie leitet den SQLCipher-Verschlüsselungsschlüssel ab. Ohne PIN ist die Datenbankdatei unlesbar, auch bei vollem Dateisystemzugriff."
+msgid "Budgie's PIN doesn't just gate the screen — it is the encryption key for your data. Without the PIN, the database file is unreadable, even with full filesystem access."
+msgstr "Die PIN von Budgie sperrt nicht nur den Bildschirm — sie ist der Verschlüsselungsschlüssel für Ihre Daten. Ohne die PIN ist die Datenbankdatei unlesbar, selbst mit vollständigem Dateisystemzugriff."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Budgie’s Public Source Commitment"
@@ -6197,21 +6181,21 @@ msgid "CSV Bank Statement Import"
 msgstr "CSV-Kontoauszugsimport"
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "CSV columns map cleanly to most spreadsheet pivots: title, both account legs with their amounts and currencies, category, MCC, date, comment, and the bank's own transaction id. The database backup carries the SQLCipher key wrapped in your PIN — restore on any device."
-msgstr "Die CSV-Spalten passen sauber in die meisten Pivot-Tabellen: Titel, beide Kontoseiten mit ihren Beträgen und Währungen, Kategorie, MCC, Datum, Kommentar und die Transaktions-ID der Bank. Die Datenbanksicherung enthält den SQLCipher-Schlüssel, geschützt durch Ihre PIN — wiederherstellbar auf jedem Gerät."
+msgid "CSV columns map cleanly to most spreadsheet pivots: title, both account legs with their amounts and currencies, category, MCC, date, comment, and the bank's own transaction id. The database backup is a byte-for-byte copy of the database file, so it is encrypted only if a PIN was set when you exported it."
+msgstr "Die CSV-Spalten lassen sich sauber in die meisten Tabellenkalkulations-Pivots übernehmen: Titel, beide Kontoseiten mit ihren Beträgen und Währungen, Kategorie, MCC, Datum, Kommentar und die bankeigene Transaktions-ID. Das Datenbank-Backup ist eine byteidentische Kopie der Datenbankdatei und daher nur dann verschlüsselt, wenn beim Export eine PIN gesetzt war."
 
 #: src/app/[lang]/features/data-export/page.tsx
 msgid "CSV export with title, both account legs and amounts, currencies, category, MCC, date, comment, and the bank's transaction id"
 msgstr "CSV-Export mit Titel, beiden Kontoseiten und Beträgen, Währungen, Kategorie, MCC, Datum, Kommentar und der Transaktions-ID der Bank"
 
-#: src/app/[lang]/features/data-export/opengraph-image.tsx
-msgid "CSV for spreadsheets. Encrypted backup for restore."
-msgstr "CSV für Tabellen. Verschlüsseltes Backup zur Wiederherstellung."
-
 #: src/app/[lang]/features/data-export/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
-msgid "CSV for spreadsheets. Encrypted database backup for restore. Both yours, never ours."
-msgstr "CSV für Tabellen. Verschlüsseltes Datenbank-Backup zur Wiederherstellung. Beides gehört Ihnen, niemals uns."
+msgid "CSV for spreadsheets. A full database backup for restore. Both yours, never ours."
+msgstr "CSV für Tabellenkalkulationen. Ein vollständiges Datenbank-Backup zur Wiederherstellung. Beides gehört Ihnen, niemals uns."
+
+#: src/app/[lang]/features/data-export/opengraph-image.tsx
+msgid "CSV for spreadsheets. Full database backup for restore."
+msgstr "CSV für Tabellenkalkulationen. Vollständiges Datenbank-Backup zur Wiederherstellung."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "CSV import"
@@ -7135,24 +7119,12 @@ msgstr "Verschlüsselte Haushaltsbuch-App – biometrische Sperre – Budgie"
 msgid "Encrypted Budget App — Lock Down Your Financial Data"
 msgstr "Verschlüsselte Haushaltsbuch-App – sichern Sie Ihre Finanzdaten"
 
-#: src/app/[lang]/features/data-export/page.tsx
-msgid "Encrypted database backup file for full restore on any device"
-msgstr "Verschlüsselte Datenbank-Backup-Datei für vollständige Wiederherstellung auf jedem Gerät"
-
 #: src/app/[lang]/features/database-backup/metadata.ts
 msgid "Encrypted Database Backup to Your Cloud — Budgie"
 msgstr "Verschlüsselte Datenbankssicherung in Ihre Cloud – Budgie"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "encrypted finance app"
-msgstr ""
-
-#: src/app/[lang]/offline-first/page.tsx
-msgid "Encrypted local backups you can restore without a server"
-msgstr "Verschlüsselte lokale Backups, die Sie ohne Server wiederherstellen können"
-
-#: src/app/[lang]/legal/privacy-policy/page.tsx
-msgid "Encrypted local database storage"
 msgstr ""
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
@@ -7162,10 +7134,6 @@ msgstr "Verschlüsselter lokaler Speicher"
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Encrypted on your phone"
 msgstr "Auf Ihrem Smartphone verschlüsselt"
-
-#: src/app/[lang]/privacy/page.tsx
-msgid "Encrypted SQLite on your device — no cloud copy ever"
-msgstr "Verschlüsseltes SQLite auf Ihrem Gerät – niemals eine Cloud-Kopie"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
@@ -7180,6 +7148,10 @@ msgstr "Details zur Verschlüsselungsimplementierung"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Encryption that doesn’t rely on hidden algorithms"
 msgstr "Verschlüsselung, die nicht auf verborgenen Algorithmen beruht"
+
+#: src/app/[lang]/features/pin-app-lock/page.tsx
+msgid "Encryption with a strong PIN protects against filesystem-level access, but a jailbroken device with active malware can capture the PIN at entry time. Don't unlock Budgie on a compromised device."
+msgstr "Die Verschlüsselung mit einer starken PIN schützt vor Zugriff auf Dateisystemebene, aber ein jailgebrochenes Gerät mit aktiver Schadsoftware kann die PIN bei der Eingabe abfangen. Entsperren Sie Budgie nicht auf einem kompromittierten Gerät."
 
 #: src/generic/component/proof-band/proof-band.tsx
 msgid "Encryption, PIN lock and screenshot blur"
@@ -8171,6 +8143,10 @@ msgstr "Vollständig"
 msgid "Full access to source code for review and security audits"
 msgstr ""
 
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Full database backup file for a complete restore — encrypted if a PIN was set at export time"
+msgstr "Vollständige Datenbank-Backup-Datei für eine komplette Wiederherstellung — verschlüsselt, wenn beim Export eine PIN gesetzt war"
+
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Full expense tracking with zero internet dependency"
 msgstr "Vollständiges Ausgaben-Tracking ohne jegliche Internetabhängigkeit"
@@ -8845,6 +8821,10 @@ msgstr "i18n"
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Identify and fix bugs and technical issues"
 msgstr ""
+
+#: src/app/[lang]/security/page.tsx
+msgid "If a PIN was set when you exported, yes — the backup is a copy of your already-encrypted data, so anyone with your cloud account sees an unreadable file. Export with no PIN set and the copy is unencrypted. Budgie never uploads anything itself; you choose where the file goes through the share sheet."
+msgstr "Wenn beim Export eine PIN festgelegt war, ja — das Backup ist eine Kopie Ihrer bereits verschlüsselten Daten, sodass jeder mit Zugriff auf Ihr Cloud-Konto nur eine unlesbare Datei sieht. Exportieren Sie ohne festgelegte PIN, ist die Kopie unverschlüsselt. Budgie lädt selbst nie etwas hoch; Sie entscheiden über das Freigabemenü, wohin die Datei geht."
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary so that the remaining Terms remain in full force and effect."
@@ -9607,6 +9587,14 @@ msgstr "Kredite"
 msgid "Loans between people are accounts too"
 msgstr "Privatdarlehen sind auch Konten"
 
+#: src/app/[lang]/offline-first/page.tsx
+msgid "Local backup files you can restore without a server — encrypted whenever your PIN is set"
+msgstr "Lokale Backup-Dateien, die Sie ohne Server wiederherstellen können — verschlüsselt, sobald Ihre PIN gesetzt ist"
+
+#: src/app/[lang]/legal/privacy-policy/page.tsx
+msgid "Local database storage encrypted whenever you set a PIN — that PIN is the encryption key"
+msgstr "Lokaler Datenbankspeicher verschlüsselt, sobald Sie eine PIN festlegen — diese PIN ist der Verschlüsselungsschlüssel"
+
 #: src/app/[lang]/offline-first/metadata.ts
 msgid "local expense tracker"
 msgstr ""
@@ -10348,8 +10336,8 @@ msgid "Most alternatives support some form of YNAB import. Actual Budget has a b
 msgstr "Die Hauptherausforderung ist die Kategoriestruktur — die meisten Importe übertragen Transaktionen, erfordern aber die Neuerstellung Ihrer Budgetkategorien. Manche Nutzer sehen dies als Gelegenheit zur Vereinfachung und Neustrukturierung."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "Most app locks are decoration — a screen you can bypass by reading the storage layer. Budgie's PIN is wired to SQLCipher, so the same digits that pass the lock screen also derive the database encryption key."
-msgstr "Die meisten App-Sperren sind Dekoration – ein Bildschirm, den Sie durch Lesen der Speicherschicht umgehen können. Budgies PIN ist mit SQLCipher verbunden, sodass dieselben Ziffern, die den Sperrbildschirm passieren, auch den Datenbank-Verschlüsselungsschlüssel ableiten."
+msgid "Most app locks are decoration — a screen you can bypass by reading the storage layer. Budgie's PIN is wired to the database encryption itself, so the same digits that pass the lock screen are the encryption key."
+msgstr "Die meisten App-Sperren sind Dekoration — ein Bildschirm, den Sie umgehen können, indem Sie die Speicherebene direkt auslesen. Die PIN von Budgie ist unmittelbar mit der Datenbankverschlüsselung verknüpft, sodass dieselben Ziffern, die den Sperrbildschirm passieren, der Verschlüsselungsschlüssel sind."
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Most apps show a pie chart and call it analytics. Budgie's analytics screen has three tabs — Categories, Tags and Runway — and the first two carry drill-down: tap a category or tag to see every transaction in it for the current period."
@@ -10364,8 +10352,8 @@ msgid "Most budget and expense tracking apps operate as black boxes. You downloa
 msgstr "Die meisten Budget- und Ausgabenverfolgungsapps funktionieren als Blackboxen. Sie laden eine App herunter, erstellen ein Konto, verbinden Ihre Bank und beginnen, Ausgaben zu verfolgen. Die Oberfläche ist poliert, die Funktionen sind hilfreich, und alles scheint in Ordnung. Doch unter dieser freundlichen Oberfläche verbirgt sich ein System, das Sie nicht inspizieren, verifizieren oder wirklich verstehen können."
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
-msgid "Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet drops, and risky when those servers leak. Budgie inverts the model: an encrypted SQLite database lives on your phone, and that's the whole story. There is no backend reading your statements."
-msgstr "Die meisten Budget-Apps senden jeden Einkauf und jeden Saldo an einen entfernten Server. Das macht sie fragil, wenn das Internet ausfällt, und riskant, wenn diese Server durchsickern. Budgie kehrt das Modell um: Eine verschlüsselte SQLite-Datenbank lebt auf Ihrem Telefon, und das ist die ganze Geschichte. Es gibt kein Backend, das Ihre Kontoauszüge liest."
+msgid "Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet drops, and risky when those servers leak. Budgie inverts the model: your database lives on your phone, encrypted with your PIN once you set one, and that's the whole story. There is no backend reading your statements."
+msgstr "Die meisten Budget-Apps senden jede Wischgeste und jeden Kontostand an einen entfernten Server. Das macht sie anfällig, wenn die Internetverbindung ausfällt, und riskant, wenn diese Server einmal ein Datenleck haben. Budgie kehrt dieses Modell um: Ihre Datenbank liegt auf Ihrem Telefon, verschlüsselt mit Ihrer PIN, sobald Sie eine festlegen, und das ist die ganze Geschichte. Es gibt kein Backend, das Ihre Kontoauszüge liest."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Most budgeting apps treat your phone as a thin client—a window into data stored on remote servers. Budgie flips this model. Your phone isn’t just displaying your budget; it’s storing it. There’s no Budgie server with a copy of your financial life because we never receive it in the first place."
@@ -10941,8 +10929,8 @@ msgid "No. Every inference runs on your own device. There is no fallback to a cl
 msgstr "Nein. Jede Inferenz läuft auf Ihrem eigenen Gerät. Es gibt keinen Fallback zu einem Cloud-Modell und keine Telemetrie über Ihre Transaktionen."
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "No. Every transaction, category, and balance lives in an encrypted SQLite database on your device. Budgie has no backend that receives financial data."
-msgstr "Nein. Jede Transaktion, Kategorie und jeder Saldo lebt in einer verschlüsselten SQLite-Datenbank auf Ihrem Gerät. Budgie hat kein Backend, das Finanzdaten empfängt."
+msgid "No. Every transaction, category, and balance lives in a database on your device, encrypted with your PIN once you set one. Budgie has no backend that receives financial data."
+msgstr "Nein. Jede Transaktion, jede Kategorie und jeder Kontostand liegt in einer Datenbank auf Ihrem Gerät, verschlüsselt mit Ihrer PIN, sobald Sie eine festlegen. Budgie hat kein Backend, das Finanzdaten empfängt."
 
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "No. Everything here ships in the regular app update. Runway and on-device AI are visible immediately; Runway’s home pill and crypto inclusion can be turned off again in Settings if you prefer the old header."
@@ -11502,12 +11490,6 @@ msgstr "Ein Zugang pro Bank, geteilt von jedem Konto darauf — ein Token-Wechse
 msgid "One currency, often hardcoded"
 msgstr "Eine Währung, oft fest einprogrammiert"
 
-#: src/app/[lang]/offline-first/page.tsx
-#: src/app/[lang]/privacy/page.tsx
-#: src/app/[lang]/security/page.tsx
-msgid "One encrypted file. No account. Restore on any device in seconds."
-msgstr "Eine verschlüsselte Datei. Kein Konto. Auf jedem Gerät in Sekunden wiederherstellen."
-
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "One file holds every transaction, account, category, tag and setting — it is the app's own SQLite database"
 msgstr "Eine Datei enthält jede Transaktion, jedes Konto, jede Kategorie, jedes Tag und jede Einstellung — es ist die SQLite-Datenbank der App selbst"
@@ -11519,6 +11501,12 @@ msgstr "Eine Datei enthält die Datenbank"
 #: src/app/[lang]/features/database-backup/opengraph-image.tsx
 msgid "One file. Encrypted when you set a PIN. No account."
 msgstr "Eine Datei. Verschlüsselt, sobald du eine PIN festlegst. Kein Konto."
+
+#: src/app/[lang]/offline-first/page.tsx
+#: src/app/[lang]/privacy/page.tsx
+#: src/app/[lang]/security/page.tsx
+msgid "One file. No account. Restore by picking it — encrypted if your PIN was set."
+msgstr "Eine Datei. Kein Konto. Zum Wiederherstellen einfach auswählen — verschlüsselt, wenn Ihre PIN gesetzt war."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "One glance past Budgie's lock screen. The four digits you chose stay the key your database is encrypted with."
@@ -11701,13 +11689,13 @@ msgstr "Ein nicht kategorisierter Einkauf kann Ihr Lebensmittelbudget besser aus
 msgid "One-tap action from any transaction's long-press menu"
 msgstr "Ein-Tipp-Aktion aus dem Lange-Drücken-Menü jeder Transaktion"
 
-#: src/app/[lang]/features/data-export/page.tsx
-msgid "One-tap CSV export of all transactions, plus a full encrypted database backup file you can save to iCloud, Drive, or anywhere."
-msgstr "Ein-Tipp-CSV-Export aller Transaktionen, plus eine vollständig verschlüsselte Datenbank-Backup-Datei, die Sie in iCloud, Drive oder überall speichern können."
-
 #: src/app/[lang]/features/data-export/metadata.ts
-msgid "One-tap CSV export of all transactions, plus a full encrypted database backup file you can save to iCloud, Drive, or anywhere. Your data, your call."
-msgstr "Ein-Tipp-CSV-Export aller Transaktionen, plus eine vollständig verschlüsselte Datenbank-Backup-Datei, die Sie in iCloud, Drive oder überall speichern können. Ihre Daten, Ihre Entscheidung."
+msgid "One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one — that you can save to iCloud, Drive, or anywhere. Your data, your call."
+msgstr "CSV-Export aller Transaktionen mit einem Tipp, plus eine vollständige Datenbank-Backup-Datei — verschlüsselt mit Ihrer PIN, falls Sie eine festgelegt haben —, die Sie in iCloud, Drive oder überall sonst speichern können. Ihre Daten, Ihre Entscheidung."
+
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one — you can save to iCloud, Drive, or anywhere."
+msgstr "CSV-Export aller Transaktionen mit einem Tipp, plus eine vollständige Datenbank-Backup-Datei — verschlüsselt mit Ihrer PIN, falls Sie eine festgelegt haben —, die Sie in iCloud, Drive oder überall sonst speichern können."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "One-tap drill-down into only the uncategorized transactions that match your current filters"
@@ -11736,6 +11724,10 @@ msgstr "Nur so weit zurück, wie die API der Bank reicht. Die Neusynchronisierun
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Only fees are spending"
 msgstr "Nur Gebühren sind Ausgaben"
+
+#: src/app/[lang]/features/data-export/page.tsx
+msgid "Only if a PIN was set when you exported it. The backup is a copy of the database file, so it carries whatever state your data was in: encrypted with your PIN if you had one set, and unencrypted if you never did. Restoring an encrypted backup asks for the PIN that backup was made with, and that PIN becomes the app PIN."
+msgstr "Nur wenn beim Export eine PIN festgelegt war. Das Backup ist eine Kopie der Datenbankdatei, sodass es genau den Zustand trägt, in dem sich Ihre Daten befanden: verschlüsselt mit Ihrer PIN, wenn Sie eine festgelegt hatten, und unverschlüsselt, wenn nicht. Das Wiederherstellen eines verschlüsselten Backups fragt nach der PIN, mit der dieses Backup erstellt wurde, und diese PIN wird zur App-PIN."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Only if you want to. Budgie can suggest a starting budget derived from your own recent transactions, offer a generic starter split across common categories, or hand you an empty canvas."
@@ -12244,8 +12236,8 @@ msgid "PIN App Lock — Locks With the Encryption Key"
 msgstr "PIN-App-Sperre — Sperrt mit dem Verschlüsselungsschlüssel"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "PIN derives the SQLCipher database encryption key — not just a screen guard"
-msgstr "PIN leitet den SQLCipher-Datenbank-Verschlüsselungsschlüssel ab – nicht nur ein Bildschirmschutz"
+msgid "PIN is the database encryption key — not just a screen guard"
+msgstr "Die PIN ist der Verschlüsselungsschlüssel der Datenbank — nicht nur ein Bildschirmschutz"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "PIN lock budget app"
@@ -12268,8 +12260,8 @@ msgid "Pin the side you type"
 msgstr "Fixiere die Seite, die du eingibst"
 
 #: src/app/[lang]/security/page.tsx
-msgid "PIN, biometrics, screenshot protection, and AES-256 encrypted storage. Budgie secures your financial data at every layer."
-msgstr "PIN, Biometrie, Screenshot-Schutz und AES-256-verschlüsselter Speicher. Budgie sichert Ihre Finanzdaten auf jeder Ebene."
+msgid "PIN, biometrics, screenshot protection, and on-device encryption the moment you set a PIN. Budgie secures your financial data at every layer."
+msgstr "PIN, Biometrie, Bildschirmfoto-Schutz und Verschlüsselung auf dem Gerät, sobald Sie eine PIN festlegen. Budgie schützt Ihre Finanzdaten auf jeder Ebene."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Plaid - Ongoing Concerns"
@@ -13598,9 +13590,21 @@ msgstr "Dienstausfälle lassen Sie ohne Zugriff zurück"
 msgid "Set a monthly ceiling and per-category limits that reset when you get paid."
 msgstr "Setze eine Monatsobergrenze und Grenzen je Kategorie, die zum Zahltag zurückgesetzt werden."
 
+#: src/app/[lang]/privacy/page.tsx
+msgid "Set a PIN and Budgie encrypts the database with that PIN as the key. The PIN is the only key and it never leaves your device. Without a PIN the file is not encrypted, though it stays inside the app sandbox."
+msgstr "Legen Sie eine PIN fest, und Budgie verschlüsselt die Datenbank mit dieser PIN als Schlüssel. Die PIN ist der einzige Schlüssel und verlässt Ihr Gerät nie. Ohne PIN ist die Datei nicht verschlüsselt, bleibt aber innerhalb der App-Sandbox."
+
+#: src/app/[lang]/security/page.tsx
+msgid "Set a PIN and Budgie encrypts your data on the device, with that PIN as the key itself. The PIN is the only key and it never leaves your device. Remove the PIN and the file is rewritten unencrypted — private to the app sandbox, but no longer protected."
+msgstr "Legen Sie eine PIN fest, und Budgie verschlüsselt Ihre Daten auf dem Gerät, wobei diese PIN selbst der Schlüssel ist. Die PIN ist der einzige Schlüssel und verlässt Ihr Gerät nie. Entfernen Sie die PIN, wird die Datei unverschlüsselt neu geschrieben — weiterhin privat innerhalb der App-Sandbox, aber nicht mehr geschützt."
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Set a PIN and the file is SQLCipher-encrypted with it — no vendor format, no conversion step"
 msgstr "Setze eine PIN und die Datei ist damit per SQLCipher verschlüsselt — kein Anbieterformat, kein Umwandlungsschritt"
+
+#: src/app/[lang]/security/page.tsx
+msgid "Set a PIN and your data is encrypted on the device — unreadable without those digits"
+msgstr "Legen Sie eine PIN fest, und Ihre Daten werden auf dem Gerät verschlüsselt — unlesbar ohne diese Ziffern"
 
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Set a target balance on any account and Budgie writes the difference as an Adjustment"
@@ -14037,10 +14041,6 @@ msgstr "Tabellenkalkulationen: Die Option der absoluten Kontrolle"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Spreadsheets: The Ultimate Control Option"
 msgstr "Tabellenkalkulationen: Die Option der absoluten Kontrolle"
-
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "SQLCipher with a strong PIN protects against filesystem-level access, but a jailbroken device with active malware can capture the PIN at entry time. Don't unlock Budgie on a compromised device."
-msgstr "SQLCipher plus starke PIN schützt vor Zugriff auf Dateisystemebene, aber ein gejailbreaktes Gerät mit aktiver Malware kann die PIN weiterhin beim Tippen mitschneiden. Entsperre Budgie nicht auf einem kompromittierten Gerät."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "SQLite database you own and control"
@@ -15117,14 +15117,14 @@ msgid "The PIN is the encryption key — there's no recovery mechanism, by desig
 msgstr "Die PIN ist der Verschlüsselungsschlüssel – es gibt keinen Wiederherstellungsmechanismus, by Design. Halten Sie Ihre PIN irgendwo sicher (ein Passwort-Manager funktioniert) oder verwenden Sie die Datenbank-Backup-Funktion, um von einem bekannt guten Zustand wiederherzustellen."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "The PIN is what SQLCipher opens the database with. Budgie keeps it in the device keychain, marked this-device-only, and hands it to the database as the encryption key; changing the PIN re-encrypts the whole file under the new one. The fourth digit submits on its own — a wrong PIN clears the dots and says so, and there is no reset that hands the data back."
-msgstr "Die PIN ist das, womit SQLCipher die Datenbank öffnet. Budgie bewahrt sie im Schlüsselbund des Geräts auf, nur für dieses Gerät markiert, und übergibt sie der Datenbank als Verschlüsselungsschlüssel; eine geänderte PIN verschlüsselt die gesamte Datei neu. Die vierte Ziffer sendet von selbst ab — eine falsche PIN leert die Punkte und sagt es dir, und es gibt kein Zurücksetzen, das die Daten zurückgibt."
+msgid "The PIN is what the app opens the database with. Budgie keeps it in the device keychain, marked this-device-only, and hands it to the database as the encryption key; changing the PIN re-encrypts the whole file under the new one. The fourth digit submits on its own — a wrong PIN clears the dots and says so, and there is no reset that hands the data back."
+msgstr "Mit der PIN öffnet die App die Datenbank. Budgie bewahrt sie im Schlüsselbund des Geräts auf, als „nur dieses Gerät\" markiert, und übergibt sie der Datenbank als Verschlüsselungsschlüssel; das Ändern der PIN verschlüsselt die gesamte Datei neu unter der neuen PIN. Die vierte Ziffer wird automatisch übermittelt — eine falsche PIN löscht die Punkte und zeigt dies an, und es gibt kein Zurücksetzen, das Ihnen die Daten zurückgibt."
 
 #: src/app/[lang]/features/pin-app-lock/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
-msgid "The PIN unlocks the app and unlocks SQLCipher — no PIN, no readable database."
-msgstr "Die PIN entsperrt die App und SQLCipher – keine PIN, keine lesbare Datenbank."
+msgid "The PIN unlocks the app and unlocks your data — no PIN, no readable database."
+msgstr "Die PIN entsperrt die App und entsperrt Ihre Daten — keine PIN, keine lesbare Datenbank."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "The Plaid Problem: Third-Party Data Aggregation Risks"
@@ -17912,8 +17912,8 @@ msgid "With your explicit consent, we may collect the following minimal informat
 msgstr ""
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
-msgid "Without a backup file, your data is gone — that's the privacy trade-off. Budgie offers a one-tap encrypted database backup you can save to iCloud Drive, Google Drive, or anywhere else. Restore on a new device with one tap."
-msgstr "Ohne eine Backup-Datei sind Ihre Daten verloren – das ist der Datenschutz-Trade-off. Budgie bietet ein Ein-Tipp-verschlüsseltes Datenbank-Backup, das Sie in iCloud Drive, Google Drive oder überall sonst speichern können. Auf einem neuen Gerät mit einer Tipp-Aktion wiederherstellen."
+msgid "Without a backup file, your data is gone — that's the privacy trade-off. Budgie exports a copy of the database file — encrypted if your PIN was set — that you can save to iCloud Drive, Google Drive, or anywhere else. Restoring it on a new device takes a few steps: pick the file, confirm the replace, enter that backup's PIN, and let the app restart."
+msgstr "Ohne Backup-Datei sind Ihre Daten weg — das ist der Preis für den Datenschutz. Budgie exportiert eine Kopie der Datenbankdatei — verschlüsselt, wenn Ihre PIN gesetzt war —, die Sie in iCloud Drive, Google Drive oder anderswo speichern können. Die Wiederherstellung auf einem neuen Gerät braucht nur wenige Schritte: Datei auswählen, den Ersatz bestätigen, die PIN dieses Backups eingeben und die App neu starten lassen."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Without access to the source code, these claims are marketing copy, not verifiable facts."
@@ -18161,10 +18161,6 @@ msgstr "Ja. Eine Anpassung öffnet in ihrer eigenen Detailansicht und lässt sic
 msgid "Yes. Analytics reads directly from your local SQLite database — every chart works without internet."
 msgstr "Ja. Analysen lesen direkt aus Ihrer lokalen SQLite-Datenbank – jedes Diagramm funktioniert ohne Internet."
 
-#: src/app/[lang]/security/page.tsx
-msgid "Yes. Backups are encrypted on your device before upload using your device-derived key. Anyone with access to your iCloud Drive or Google Drive would only see an encrypted blob — not your financial data."
-msgstr "Ja. Backups werden vor dem Upload auf Ihrem Gerät mit Ihrem geräteabgeleiteten Schlüssel verschlüsselt. Jeder mit Zugriff auf Ihr iCloud Drive oder Google Drive würde nur einen verschlüsselten Blob sehen – nicht Ihre Finanzdaten."
-
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Yes. Both engines run on-device."
 msgstr "Ja. Beide Engines laufen auf dem Gerät."
@@ -18309,10 +18305,6 @@ msgstr "Ja. Ein Tippen auf eine Zeile öffnet die Transaktionsliste für dieses 
 msgid "Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the public repository. The underlying models (Qwen3, whisper.rn) are separately licensed projects."
 msgstr "Ja. Der KI-Service-Layer — einschließlich der Embedding-Modellintegration und LLM-Orchestrierung — ist Teil des öffentlichen Repositorys. Die zugrunde liegenden Modelle (Qwen3, whisper.rn) sind separat lizenzierte Projekte."
 
-#: src/app/[lang]/features/data-export/page.tsx
-msgid "Yes. The backup file is the SQLCipher database with your PIN-derived key intact. Restore on any device by entering the same PIN."
-msgstr "Ja. Die Backup-Datei ist die SQLCipher-Datenbank mit intaktem PIN-abgeleitetem Schlüssel. Auf jedem Gerät durch Eingabe derselben PIN wiederherstellen."
-
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Yes. The column you map to Date becomes the transaction's date, read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD. A row whose date cannot be read is reported instead of guessed at."
 msgstr "Ja. Die Spalte, die du dem Datum zuordnest, wird zum Datum der Transaktion und wird als MM/DD/YYYY HH:MM:SS oder YYYY-MM-DD gelesen. Eine Zeile mit unlesbarem Datum wird gemeldet statt geraten."
@@ -18322,8 +18314,8 @@ msgid "Yes. The dual-amount input opens after picking the destination account. O
 msgstr "Ja. Die Doppelbetrags-Eingabe öffnet sich nach der Auswahl des Zielkontos. Der Originalbetrag wird auf der Quell-Buchungsseite gespeichert; die Ziel-Buchungsseite erhält Ihren angegebenen Betrag."
 
 #: src/app/[lang]/offline-first/page.tsx
-msgid "Yes. The entire transaction entry flow — amount, category, tags, account — works fully offline. Your data is written directly to the on-device SQLite database with no network call."
-msgstr "Ja. Der gesamte Transaktionseingabeablauf – Betrag, Kategorie, Tags, Konto – funktioniert vollständig offline. Ihre Daten werden direkt in die geräteeigene SQLite-Datenbank ohne Netzwerkaufruf geschrieben."
+msgid "Yes. The entire transaction entry flow — amount, category, tags, account — works fully offline. Your data is written directly to the on-device database with no network call."
+msgstr "Ja. Der gesamte Ablauf der Transaktionserfassung — Betrag, Kategorie, Tags, Konto — funktioniert vollständig offline. Ihre Daten werden direkt in die Datenbank auf dem Gerät geschrieben, ohne Netzwerkaufruf."
 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Yes. The original is preserved for receipt-matching and audit; the translated form is what your search queries hit."
@@ -18698,13 +18690,21 @@ msgstr "Ihre Daten existieren nur auf Ihrem Gerät. Wenn Sie Ihr Telefon verlier
 msgid "Your data is yours. Budgie supports exporting your financial data in standard formats. If you ever want to switch to a different application or analyze your data in a spreadsheet, you have full access."
 msgstr "Ihre Daten gehören Ihnen. Budgie unterstützt den Export Ihrer Finanzdaten in Standardformaten. Wenn Sie jemals zu einer anderen Anwendung wechseln oder Ihre Daten in einer Tabellenkalkulation analysieren möchten, haben Sie vollen Zugriff."
 
+#: src/app/[lang]/privacy/page.tsx
+msgid "Your data stays on your device, encrypted with your PIN once you set one — no cloud copy ever"
+msgstr "Ihre Daten bleiben auf Ihrem Gerät, verschlüsselt mit Ihrer PIN, sobald Sie eine festlegen — niemals eine Cloud-Kopie"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Your data won’t be sold to third parties"
 msgstr "Ihre Daten nicht an Dritte verkauft werden"
 
 #: src/app/[lang]/features/data-export/page.tsx
-msgid "Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a full SQLCipher database file for full restore. Both are user-initiated and saved through the OS share sheet."
-msgstr "Deine Daten bleiben portabel. Budgie exportiert ein flaches CSV für Tabellen und eine vollständige SQLCipher-Datenbankdatei zur Wiederherstellung. Beide Exporte startest du selbst und speicherst sie über das Teilen-Menü des Betriebssystems."
+msgid "Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a copy of the database file itself for a full restore. Both are user-initiated and saved through the OS share sheet."
+msgstr "Ihre Daten, Ihre Entscheidung. Budgie bietet zwei Exporte: ein einfaches CSV für Tabellenkalkulationen und eine Kopie der Datenbankdatei selbst für eine vollständige Wiederherstellung. Beide werden von Ihnen ausgelöst und über das Share-Sheet des Betriebssystems gespeichert."
+
+#: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+msgid "Your database is encrypted on the device once you set a PIN — that PIN is the key"
+msgstr "Ihre Datenbank wird auf dem Gerät verschlüsselt, sobald Sie eine PIN festlegen — diese PIN ist der Schlüssel"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Your Device is the Database"

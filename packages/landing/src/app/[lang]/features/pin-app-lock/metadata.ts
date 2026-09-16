@@ -9,14 +9,14 @@ export const FEATURE_METADATA = {
     slug: 'pin-app-lock',
     tier: FeatureTierEnum.CORE,
     title: msg`PIN App Lock — Locks With the Encryption Key`,
-    tagline: msg`The PIN unlocks the app and unlocks SQLCipher — no PIN, no readable database.`,
+    tagline: msg`The PIN unlocks the app and unlocks your data — no PIN, no readable database.`,
     metaTitle: msg`PIN Lock Finance App — Private Expense Tracker — Budgie`,
-    metaDescription: msg`Budgie's PIN doesn't just gate the screen — it derives the SQLCipher encryption key. Without the PIN, the database file is unreadable, even with full filesystem access.`,
+    metaDescription: msg`Budgie's PIN doesn't just gate the screen — it is the encryption key for your data. Without the PIN, the database file is unreadable, even with full filesystem access.`,
     primaryKeyword: 'PIN lock finance app',
     seoKeywords: [
         'PIN lock finance app',
         'encrypted finance app',
-        'SQLCipher mobile',
+        'PIN encrypted budget app',
         'PIN-protected expense tracker',
         'finance app screen lock'
     ],
