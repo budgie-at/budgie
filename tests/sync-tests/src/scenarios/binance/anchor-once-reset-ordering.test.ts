@@ -79,6 +79,18 @@ describe('binance/anchor-once-reset-ordering', () => {
         expect(fetchAnchoredAmount(account.id)).toBe(0);
     });
 
+    it('keeps the provider balance authoritative when imported transactions change the ledger', async () => {
+        const { account } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+        const providerBalance = 5 * PRECISION;
+        binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '5' })]);
+        binanceStub.deposits([buildBinance.deposit({ id: 'balance-regression-deposit', coin: 'BTC', amount: '2' })]);
+
+        await binanceSyncService.sync();
+
+        expect(fetchAnchoredAmount(account.id)).toBe(providerBalance);
+        expect(accountBalanceRepository.getByAccountId(account.id).get()?.balance).toBe(providerBalance);
+    });
+
     it('does not anchor an existing account to zero when Binance reports an unrepresentable balance', async () => {
         const { account } = setupBinanceFixture({ asset: 'PEPE', mode: SyncModeEnum.BACKWARD });
         await accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION, updatedAt: new Date() });

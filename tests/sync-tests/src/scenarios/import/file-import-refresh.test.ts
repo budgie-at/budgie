@@ -1,4 +1,6 @@
+import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
 import { databaseRefreshService } from '@app/@generic/service/database-refresh.service';
+import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
 import { describe, expect, it } from 'vitest';
@@ -70,5 +72,6 @@ describe('import/file-import-refresh', () => {
 
         expect(databaseRefreshService.getSnapshot()).toBe(initialVersion + 1);
         expect(notificationCount).toBe(1);
+        expect(accountBalanceRepository.getByAccountId(account.id).get()?.balance).toBe(-convertToMicroUnits(buildTransaction().amount));
     });
 });
