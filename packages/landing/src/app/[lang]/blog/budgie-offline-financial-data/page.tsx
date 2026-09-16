@@ -83,8 +83,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        A deep-dive into Budgie’s offline-first architecture, explaining how local storage, encryption at rest, and
-                        device-to-device sync keep your financial data completely private.
+                        A deep-dive into Budgie’s offline-first architecture, explaining how local storage, encryption at rest, and a single
+                        encrypted backup file keep your financial data completely private.
                     </Trans>
                 </p>
 
@@ -140,9 +140,9 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             In this article, we will walk through exactly how Budgie keeps your financial data off the cloud. We will cover
-                            the database architecture, encryption implementation, sync mechanisms, and security practices that make this
-                            possible. If you are evaluating Budgie and want to understand what you are trusting, this guide will give you
-                            the complete technical picture.
+                            the database architecture, encryption implementation, backup and restore mechanics, and security practices that
+                            make this possible. If you are evaluating Budgie and want to understand what you are trusting, this guide will
+                            give you the complete technical picture.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -383,114 +383,76 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>What Happens When You Sync Between Devices</Trans>
+                        <Trans>Getting Your Data Onto a New Device</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
                             One of the most common questions about offline-first apps is: how do I get my data onto a new device? Budgie
-                            handles this through device-to-device sync with no cloud intermediary.
+                            answers this with a single encrypted backup file. There is no cloud intermediary and no account.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Device-to-Device Sync Architecture</Trans>
+                        <Trans>The Backup and Restore Flow</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            When you want to transfer your data to a new device, Budgie uses direct peer-to-peer communication. Here is the
-                            process:
+                            When you want to move your data to a new device, you export a backup on the old one and import it on the new
+                            one. Here is the process:
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList ordered>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Discovery</strong>: Both devices discover each other on the local network or through a temporary
-                                relay that sees only encrypted blobs
+                                <strong>Export</strong>: From Settings on your current device, export a database backup. Budgie writes your
+                                encrypted database to a single file and hands it to your device’s share sheet
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Authentication</strong>: You confirm the transfer on both devices, usually by comparing a visual
-                                code
+                                <strong>Move the file</strong>: You choose how the file reaches the new device, for example a cable, a file
+                                manager, or storage you control. Budgie has no part in this step
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Encrypted transfer</strong>: The database is transferred in its encrypted form
+                                <strong>Import</strong>: On the new device, open Settings and pick the backup file to import
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Local decryption</strong>: The receiving device uses key exchange protocols to establish the ability
-                                to decrypt the transferred data
+                                <strong>Restore</strong>: If the backup is PIN-protected, enter the PIN it was created with. Importing
+                                replaces all data on the new device, and that PIN becomes the new device’s app PIN
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
                     <BlogArticleProse>
                         <Trans>
-                            The critical point is that at no point does readable financial data travel through any third-party
-                            infrastructure. Even the temporary relay used for discovery when devices are not on the same network sees only
-                            encrypted data that it cannot interpret.
+                            The critical point is that Budgie never transmits your data anywhere. The backup file only moves when you choose
+                            to move it, and Budgie never reads or writes it over a network connection.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Conflict Resolution Without Servers</Trans>
+                        <Trans>The Tradeoff: Convenience vs. Privacy</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Traditional cloud sync relies on a central server to be the source of truth when conflicts arise. If you edit a
-                            transaction on two devices, the server decides which version wins.
+                            We will be direct about the tradeoffs. Cloud sync is more convenient. You do not need to move a file yourself.
+                            Changes propagate automatically in the background.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational
-                            transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:
-                        </Trans>
-                    </BlogArticleProse>
-
-                    <BlogArticleList ordered>
-                        <BlogArticleListItem>
-                            <Trans>Operations from both devices are exchanged</Trans>
-                        </BlogArticleListItem>
-                        <BlogArticleListItem>
-                            <Trans>A deterministic merge algorithm combines the operations</Trans>
-                        </BlogArticleListItem>
-                        <BlogArticleListItem>
-                            <Trans>Both devices arrive at the same final state without needing a server to arbitrate</Trans>
-                        </BlogArticleListItem>
-                    </BlogArticleList>
-
-                    <BlogArticleProse>
-                        <Trans>
-                            This means you can use Budgie on multiple devices that occasionally sync when they are on the same network, and
-                            your data will eventually converge to a consistent state without data loss.
-                        </Trans>
-                    </BlogArticleProse>
-
-                    <BlogArticleSubheading>
-                        <Trans>The Tradeoff: Sync Convenience vs. Privacy</Trans>
-                    </BlogArticleSubheading>
-
-                    <BlogArticleProse>
-                        <Trans>
-                            We will be direct about the tradeoffs. Cloud sync is more convenient. You do not need to be on the same network.
-                            You do not need to initiate a sync manually. Changes propagate automatically in the background.
-                        </Trans>
-                    </BlogArticleProse>
-
-                    <BlogArticleProse>
-                        <Trans>
-                            Budgie’s device-to-device sync requires more user involvement. You need to explicitly trigger sync when you want
-                            data to transfer. Both devices need to be accessible, either on the same local network or both connected to the
-                            internet for the relay-assisted handshake.
+                            Budgie is single-device by design. There is no automatic sync between a phone and a tablet, and moving to a new
+                            device means exporting a backup and importing it there: an explicit, occasional action rather than a continuous
+                            one.
                         </Trans>
                     </BlogArticleProse>
 
@@ -666,7 +628,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                             <Trans>Encryption implementation details</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Sync protocol implementation</Trans>
+                            <Trans>Backup and restore implementation</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Build scripts and CI configuration</Trans>
@@ -691,8 +653,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             <strong>Network layer</strong>: Search for any HTTP clients, fetch calls, or socket connections. You will find
-                            that network usage is limited to exchange rate fetching (which does not include any user data), optional
-                            device-to-device sync (encrypted end-to-end), and app update checks (no user data transmitted).
+                            that network usage is limited to exchange rate fetching (which does not include any user data), optional backup
+                            export and import (which never touches the network), and app update checks (no user data transmitted).
                         </Trans>
                     </BlogArticleProse>
 
@@ -852,9 +814,9 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogFaqSection locale={lang}>
                         <BlogFaqItem question={<Trans>What happens to my data if I lose my phone?</Trans>}>
                             <Trans>
-                                Your data exists only on your device. If you lose your phone without having synced to another device or
-                                created a backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because
-                                we do not have it. We recommend regular backups to your own storage.
+                                Your data exists only on your device. If you lose your phone without having created a backup, your data is
+                                lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend
+                                regular backups to your own storage.
                             </Trans>
                         </BlogFaqItem>
 
@@ -894,7 +856,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                             <Trans>
                                 End-to-end encrypted cloud sync would require servers to store encrypted blobs. While the content would be
                                 encrypted, metadata would still be visible: when you sync, how much data you have, sync patterns that might
-                                reveal usage habits. Device-to-device sync eliminates even this metadata exposure.
+                                reveal usage habits. A backup file you export and move yourself eliminates even this metadata exposure — no
+                                server is ever involved.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>
@@ -915,8 +878,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Budgie exists because we believe you should not have to trade this intimate information for the convenience of
-                            expense tracking. Every architectural decision, from local storage to encryption to device-to-device sync, is
-                            designed to keep this information where it belongs: <strong>under your control</strong>.
+                            expense tracking. Every architectural decision, from local storage to encryption to how backups move between
+                            devices, is designed to keep this information where it belongs: <strong>under your control</strong>.
                         </Trans>
                     </BlogArticleProse>
 
