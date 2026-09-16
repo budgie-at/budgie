@@ -208,7 +208,7 @@ export default async function AiAutoCategorizationFeaturePage(props: PageLangPar
                     question={<Trans>Does Budgie use OpenAI or any cloud LLM?</Trans>}
                     answer={
                         <Trans>
-                            No. Inference uses ONNX Runtime locally. There is no fallback to a cloud model and no telemetry about your
+                            No. Every inference runs on your own device. There is no fallback to a cloud model and no telemetry about your
                             transactions.
                         </Trans>
                     }

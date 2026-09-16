@@ -31,6 +31,6 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app', 'on-device-ai-budget-app-explainer'],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-05-07',
+    updatedAt: '2026-09-16',
     ogTags: ['ai', 'on-device', 'privacy', 'llm']
 } satisfies FeatureRegistryEntryInterface;
