@@ -26,6 +26,7 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
 import { binanceAssetCodeService } from './binance-asset-code.service';
 import { binanceSourceQuoteService } from './binance-source-quote.service';
+import { binanceTradeCursorService } from './binance-trade-cursor.service';
 import { syncIntegrationTokenService } from './sync-integration-token.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
@@ -140,7 +141,11 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         }
 
         const token = await this.resolveSyncToken(sync);
-        const changedCount = await this.runSyncPhases(sync, externalAccountId, token);
+        const changedCount = await binanceTradeCursorService.withPersistedSideEffects(
+            sync,
+            () => this.runSignedClient,
+            () => this.runSyncPhases(sync, externalAccountId, token)
+        );
         if (isPositiveNumber(changedCount)) {
             await transactionService.updateAllBalances();
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC);
@@ -404,17 +409,10 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         externalAccountId: string,
         token: string
     ): Promise<BinanceTransferInterface[]> {
-        const result = await this.getRunSignedClient(token).getTransfers(
-            externalAccountId,
-            getUnixTime(this.resolveWindowStart(sync)),
-            null,
-            await binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(this.provider)
-        );
-        if (result.success) {
-            return result.data;
-        }
-
-        throw getSyncModule().SyncError.from(result.error);
+        return binanceTradeCursorService.fetchTransferBatch(this.getRunSignedClient(token), sync, externalAccountId, {
+            fromUnixTime: getUnixTime(this.resolveWindowStart(sync)),
+            eligibleSoldOffBaseAssets: await binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(this.provider)
+        });
     }
 
     private async createSyncedTransfers(transfers: BinanceTransferInterface[], token: string): Promise<number> {
