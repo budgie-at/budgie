@@ -74,8 +74,8 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        One-tap CSV export of all transactions, plus a full encrypted database backup file you can save to iCloud, Drive, or
-                        anywhere.
+                        One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one —
+                        you can save to iCloud, Drive, or anywhere.
                     </Trans>
                 }
             />
@@ -129,15 +129,15 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a full SQLCipher database file for
-                        full restore. Both are user-initiated and saved through the OS share sheet.
+                        Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a copy of the database file itself
+                        for a full restore. Both are user-initiated and saved through the OS share sheet.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
                         CSV columns map cleanly to most spreadsheet pivots: title, both account legs with their amounts and currencies,
-                        category, MCC, date, comment, and the bank&apos;s own transaction id. The database backup carries the SQLCipher key
-                        wrapped in your PIN — restore on any device.
+                        category, MCC, date, comment, and the bank&apos;s own transaction id. The database backup is a byte-for-byte copy of
+                        the database file, so it is encrypted only if a PIN was set when you exported it.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -154,7 +154,7 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Encrypted database backup file for full restore on any device</Trans>
+                        <Trans>Full database backup file for a complete restore — encrypted if a PIN was set at export time</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>One tap exports the whole history — no range to pick, no partial file to reconcile later</Trans>
@@ -182,8 +182,9 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                     question={<Trans>Is the backup encrypted?</Trans>}
                     answer={
                         <Trans>
-                            Yes. The backup file is the SQLCipher database with your PIN-derived key intact. Restore on any device by
-                            entering the same PIN.
+                            Only if a PIN was set when you exported it. The backup is a copy of the database file, so it carries whatever
+                            state your data was in: encrypted with your PIN if you had one set, and unencrypted if you never did. Restoring
+                            an encrypted backup asks for the PIN that backup was made with, and that PIN becomes the app PIN.
                         </Trans>
                     }
                 />

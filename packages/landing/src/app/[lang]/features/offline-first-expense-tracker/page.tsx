@@ -149,8 +149,8 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                 <FeaturePageProse>
                     <Trans>
                         Most budgeting apps push every swipe and balance to a remote server. That makes them fragile when the internet
-                        drops, and risky when those servers leak. Budgie inverts the model: an encrypted SQLite database lives on your
-                        phone, and that&apos;s the whole story. There is no backend reading your statements.
+                        drops, and risky when those servers leak. Budgie inverts the model: your database lives on your phone, encrypted
+                        with your PIN once you set one, and that&apos;s the whole story. There is no backend reading your statements.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -173,7 +173,7 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                         <Trans>No sign-up, no email, no account — install and start logging</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>AES-256 encrypted SQLite database, key derived from your PIN</Trans>
+                        <Trans>Your database is encrypted on the device once you set a PIN — that PIN is the key</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>No backend means no breach surface — there is nothing to leak</Trans>
@@ -226,9 +226,10 @@ export default async function OfflineFirstExpenseTrackerFeaturePage(props: PageL
                     question={<Trans>What happens if I lose my phone?</Trans>}
                     answer={
                         <Trans>
-                            Without a backup file, your data is gone — that&apos;s the privacy trade-off. Budgie offers a one-tap encrypted
-                            database backup you can save to iCloud Drive, Google Drive, or anywhere else. Restore on a new device with one
-                            tap.
+                            Without a backup file, your data is gone — that&apos;s the privacy trade-off. Budgie exports a copy of the
+                            database file — encrypted if your PIN was set — that you can save to iCloud Drive, Google Drive, or anywhere
+                            else. Restoring it on a new device takes a few steps: pick the file, confirm the replace, enter that
+                            backup&apos;s PIN, and let the app restart.
                         </Trans>
                     }
                 />
