@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.6](https://github.com/budgie-at/budgie/compare/v6.67.5...v6.67.6) (2026-09-16)
+
+
+### Performance Improvements
+
+* **app:** archive large accounts without locking the database ([04967ec](https://github.com/budgie-at/budgie/commit/04967eccf00342ee8d5d7612a98d71fe96fd9f03)), closes [#831](https://github.com/budgie-at/budgie/issues/831)
+
+
+
+
+
 ## [6.67.3](https://github.com/budgie-at/budgie/compare/v6.67.2...v6.67.3) (2026-09-16)
 
 **Note:** Version bump only for package @budgie/contracts
