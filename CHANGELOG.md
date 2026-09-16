@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.12](https://github.com/budgie-at/budgie/compare/v6.67.11...v6.67.12) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** correct sync data repair wording and translations ([4da21eb](https://github.com/budgie-at/budgie/commit/4da21ebdd0da44b357752ec3cce626b39d5750ce)), closes [#1129](https://github.com/budgie-at/budgie/issues/1129)
+* **landing:** describe every sync data repair including own-card transfers ([d41062d](https://github.com/budgie-at/budgie/commit/d41062d2b22bfdb305bb57cb62a88b32b7b92320))
+
+
+
+
+
 ## [6.67.11](https://github.com/budgie-at/budgie/compare/v6.67.10...v6.67.11) (2026-09-16)
 
 
