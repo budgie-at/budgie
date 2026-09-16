@@ -1,14 +1,26 @@
 # Fastlane store automation
 
-App Store Connect screenshot delivery for Budgie (iOS only). Metadata copy is
-not managed here.
+App Store Connect and Google Play listing delivery for Budgie. Text metadata and
+screenshots are pushed by `deliver`/`supply`, and `store_preflight` validates the
+committed trees before anything reaches a store.
 
 ## Layout
 
 ```text
 fastlane/
-├── Appfile                    # app_identifier, apple_id, team_id
-├── Fastfile                   # store_preflight + ios ios_screenshots
+├── Appfile                    # app_identifier, package_name, credentials
+├── Fastfile                   # store_preflight, metadata and screenshot lanes
+├── metadata/
+│   ├── ios/
+│   │   ├── copyright.txt
+│   │   └── <asc-locale>/{name,subtitle,keywords,promotional_text,description,release_notes,support_url}.txt
+│   └── android/
+│       └── <locale>/
+│           ├── title.txt
+│           ├── short_description.txt
+│           ├── full_description.txt
+│           ├── changelogs/default.txt
+│           └── images/phoneScreenshots/*.png
 └── screenshots/
     ├── deployed-variant.json  # which appearance the store currently carries
     ├── design/                # captions, palette and the composition script
@@ -16,30 +28,61 @@ fastlane/
     └── variants/<appearance>/ios/<asc-locale>/*.png
 ```
 
-`Appfile` carries the **production** bundle id `com.vitalyiegorov.budgie` — the
-listing `deliver` writes to. Screenshots are captured against the E2E build
+`Appfile` carries the **production** bundle id `com.vitalyiegorov.budgie` and
+Play package `com.vitaliiyehorov.budgie` — the listings the lanes write to.
+Screenshots are captured against the E2E build
 (`com.vitalyiegorov.budgie.e2e`), which is a different binary with the same UI.
 `team_id` defaults to the team id in `eas.json` and can be overridden with
 `FASTLANE_TEAM_ID`.
 
+The `metadata/` trees land in this PR as locale skeletons (empty locale folders
+tracked with `.gitkeep`). The copy, changelogs, and Play screenshots are filled
+in by later sub-issues.
+
 ## Lanes
 
 ```bash
-fastlane store_preflight       # no credentials needed
-fastlane ios ios_screenshots   # deliver the composed set
+fastlane store_preflight        # no credentials needed
+fastlane ios ios_metadata       # deliver App Store text metadata
+fastlane ios ios_screenshots    # deliver the composed screenshot set
+fastlane android android_metadata     # supply Play text metadata + changelogs
+fastlane android android_screenshots  # supply Play screenshots
 ```
 
-`store_preflight` resolves the active variant, reports how many screenshots each
-locale carries, and fails when a locale folder is missing or when any PNG's pixel
-size matches no App Store slot. Run it after touching the Fastfile or the compose
-script.
+Lanes are addressed as `fastlane <platform> <lane>`. Bare `fastlane
+store_preflight` works because it is platform-free, but bare
+`fastlane android_metadata` resolves against `default_platform(:ios)` and fails
+with "Could not find lane 'ios android_metadata'". Always pass the platform for
+the iOS and Android lanes.
 
-`ios_screenshots` re-runs both of those gates against the set it is about to
+`store_preflight` resolves the active variant, prints the app store version, the
+Play track, the copyright line, per-locale screenshot counts, each metadata tree
+path and its locales, and warns (not fails) while the Play image directory is
+empty. It fails when a screenshot locale folder is missing, when any PNG's pixel
+size matches no App Store slot, when `metadata/ios/copyright.txt` carries a stale
+year, or when either metadata tree is missing a locale or is missing entirely.
+Run it after touching the Fastfile, the compose script, or the metadata trees.
+
+`ios_metadata` runs `deliver` with `skip_binary_upload` and `skip_screenshots`,
+so it only pushes text metadata to the editable version and leaves the binary
+and the current store images alone.
+
+`ios_screenshots` re-runs the screenshot gates against the set it is about to
 upload, so a variant missing a locale can never reach `deliver`. It then runs
 `deliver` with `skip_binary_upload`, `skip_metadata`,
 `overwrite_screenshots`, `run_precheck_before_submit: false` and
 `submit_for_review: false`, so it only replaces the screenshot set on the
 editable version and never touches copy, the binary, or review state.
+
+`android_metadata` and `android_screenshots` run `supply` against the release
+`eas submit` just created. `supply` normally derives version codes from the
+binary it uploads, and these lanes upload none, so they read the version code
+with `google_play_track_version_codes` first; without it `supply` aborts with
+"Cannot find changelog because no version code given". The track comes from
+`submit.production.android.track` in `packages/app/eas.json` (currently
+`internal`) rather than `supply`'s `production` default. `android_screenshots`
+hard-fails when `metadata/android/<locale>/images` carries no images, because
+`supply` reports success even when it uploads nothing.
 
 ### Variant selection
 
@@ -63,7 +106,7 @@ reach `variants/`, the PR gallery, or `deliver`.
 
 ### Credentials
 
-The lane resolves the key **path** from the first of:
+**iOS.** The lane resolves the key **path** from the first of:
 
 1. `ASC_API_KEY_PATH`, then `EXPO_ASC_API_KEY_PATH`
 2. `$RUNNER_TEMP/store-screenshots/asc-api-key.p8` — where mobile-ci's upload
@@ -77,6 +120,7 @@ run needs only the `.p8` file itself:
 
 ```bash
 cd packages/app
+fastlane ios ios_metadata
 fastlane ios ios_screenshots
 ```
 
@@ -89,6 +133,47 @@ supplies the ids, so the lane works with the config as it stands. Setting
 through the `EAS_EXTRA_ENV` secret) overrides either half if the credentials
 ever diverge from eas.json.
 
+**Android.** The Play service account key is read from the
+`GOOGLE_SERVICE_ACCOUNT_KEY_PATH` environment variable (wired into `Appfile`'s
+`for_platform :android` block). The key and the `GOOGLE_SERVICE_ACCOUNT_JSON`
+repo secret do not exist for Budgie yet, so Android upload stays disabled until
+they are created:
+
+```bash
+GOOGLE_SERVICE_ACCOUNT_KEY_PATH=... fastlane android android_metadata
+GOOGLE_SERVICE_ACCOUNT_KEY_PATH=... fastlane android android_screenshots
+```
+
+## Locale mapping
+
+The app's supported locales are `en`, `fr`, `uk`, `de`, `es`. Both stores use
+the same folder names:
+
+| App locale | iOS metadata folder | Android metadata folder |
+| ---------- | ------------------- | ----------------------- |
+| `en`       | `en-US`             | `en-US`                 |
+| `fr`       | `fr-FR`             | `fr-FR`                 |
+| `uk`       | `uk`                | `uk`                    |
+| `de`       | `de-DE`             | `de-DE`                 |
+| `es`       | `es-ES`             | `es-ES`                 |
+
+Every locale must exist in both trees. `store_preflight` fails when any is
+missing from either.
+
+## Character limits
+
+| Field                        | App Store | Play Store |
+| ---------------------------- | --------- | ---------- |
+| Name / title                 | 30        | 30         |
+| Subtitle                     | 30        | n/a        |
+| Short description            | n/a       | 80         |
+| Keywords                     | 100       | n/a        |
+| Promotional text             | 170       | n/a        |
+| Description / full description | 4000    | 4000       |
+| Release notes / changelog    | 4000      | 500        |
+
+Keywords are comma-separated with no spaces after the commas.
+
 ## Refresh procedure
 
 1. Build the E2E app and capture on a Mac — see
@@ -96,4 +181,15 @@ ever diverge from eas.json.
 2. Compose the framed sets and review them.
 3. Commit `screenshots/variants/**` and any caption changes. `screenshots/raw/`
    and `screenshots/variants/ci/` are gitignored.
-4. `fastlane store_preflight`, then `fastlane ios ios_screenshots`.
+4. `fastlane store_preflight`, then `fastlane ios ios_metadata`,
+   `fastlane ios ios_screenshots`, `fastlane android android_metadata`, and
+   `fastlane android android_screenshots` as needed.
+
+`deliver` needs an editable App Store version to write into, and uploading a
+build does not create one, so both iOS lanes pass `app_version` read from
+`packages/app/package.json` (the same source `app.config.js` uses).
+
+fastlane runs lane bodies from `packages/app/fastlane` but actions from
+`packages/app`, so any path a lane resolves in plain Ruby must be anchored on
+the `FASTLANE_DIR`/`APP_DIR` constants rather than written relative to the
+working directory.
