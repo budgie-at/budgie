@@ -4,6 +4,7 @@ import { AppState } from 'react-native';
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { AiCoordinatorSnapshotInterface } from '../interface/ai-coordinator-snapshot.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
@@ -132,25 +133,16 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     private async settleInFlightBatches(): Promise<void> {
-        if (await this.areDrainersIdle(AiCoordinatorService.DRAINER_IDLE_GRACE_MS)) {
+        const idle = Promise.all([translationDrainerService.whenIdle(), embeddingDrainerService.whenIdle()]);
+        const isSettled = await Promise.race([
+            idle.then(() => true),
+            microPause(AiCoordinatorService.DRAINER_IDLE_GRACE_MS).then(() => false)
+        ]);
+        if (isSettled) {
             return;
         }
         chatService.interrupt();
-        await this.areDrainersIdle(AiCoordinatorService.DRAINER_ABORT_GRACE_MS);
-    }
-
-    @Log(
-        timeoutMs => `enter timeoutMs=${timeoutMs}`,
-        (result, timeoutMs) => `done timeoutMs=${timeoutMs} areDrainersIdle=${String(result)}`,
-        (error, timeoutMs) => `throw timeoutMs=${timeoutMs} error=${getErrorMessage(error)}`
-    )
-    private async areDrainersIdle(timeoutMs: number): Promise<boolean> {
-        const [isTranslationIdle, isEmbeddingIdle] = await Promise.all([
-            translationDrainerService.whenIdle(timeoutMs),
-            embeddingDrainerService.whenIdle(timeoutMs)
-        ]);
-
-        return isTranslationIdle && isEmbeddingIdle;
+        await Promise.race([idle, microPause(AiCoordinatorService.DRAINER_ABORT_GRACE_MS)]);
     }
 
     private scheduleStartSubsystems(): void {
