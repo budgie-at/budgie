@@ -1,0 +1,33 @@
+Budgie es control de gastos sin peajes: sin crear cuenta, sin dar las claves del banco y sin suscripción. Apuntas un gasto en menos de cinco segundos — en la cola del súper, en el metro, en un avión — y todo se queda en tu móvil, también cuando no hay cobertura.
+
+FUNCIONA SIN COBERTURA
+Cada movimiento se queda en tu móvil. Añade gastos, revisa el historial y consulta tus análisis sin ninguna conexión.
+
+CADA GASTO EN SEGUNDOS
+Dicta un gasto o escríbelo, y Budgie elige la categoría directamente en el propio dispositivo. Reparte una compra entre varias categorías en el mismo paso.
+
+ADÓNDE VA TU DINERO
+Los análisis por categoría y etiqueta muestran un patrón antes de que se convierta en un problema. Tu patrimonio, con todas las cuentas, tarjetas y divisas juntas, de un vistazo.
+
+PRESUPUESTOS Y AUTONOMÍA
+Un presupuesto que sigue tu fecha de cobro, no el mes natural, con una autonomía que se actualiza con cada gasto.
+
+CUENTAS, TARJETAS Y CRIPTO
+Efectivo, tarjetas y criptomonedas juntos, cada uno en su divisa real — Budgie convierte automáticamente. Donde tu banco lo permite, importa los movimientos en lugar de escribirlos a mano.
+
+DEUDAS Y PRÉSTAMOS
+Un registro de quién debe qué a quién, con los pagos hechos y el saldo realmente pendiente de un vistazo.
+
+BAJO LLAVE
+Desbloqueo con PIN, cara o huella, saldos ocultos en capturas de pantalla y en el multitarea. Tus copias de seguridad quedan protegidas en todo momento.
+
+ADEMÁS
+• Cuentas multidivisa con conversión automática
+• Calendario de pagos recurrentes
+• Importa extractos bancarios en CSV o PDF, según el banco
+• Etiquetas propias para lo que quieras seguir
+• Dictado por voz cuando escribir no es cómodo
+• PIN, bloqueo biométrico y protección contra capturas
+• Sin cuenta, sin acceso bancario y sin suscripción
+
+Más información en budgie.at.

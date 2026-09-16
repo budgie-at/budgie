@@ -1,0 +1,1 @@
+Cette mise à jour fiabilise la synchronisation des transactions crypto Binance après une interruption, et corrige la réparation des virements entre cartes propres après la restauration d'une carte archivée. De nombreuses corrections de traduction et de stabilité complètent cette version.
