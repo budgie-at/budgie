@@ -102,10 +102,6 @@ msgstr "<0>Werbung</0>: Gezielte Anzeigen basierend auf Ihren Ausgabemustern und
 msgid "<0>Advisor access.</0> Optional feature to share with financial advisors."
 msgstr "<0>Berater-Zugang.</0> Optionale Funktion zum Teilen mit Finanzberatern."
 
-#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>AES-256 database encryption</0> — The database is encrypted at rest. Even if someone gains physical access to your device, they cannot read your financial data without the key."
-msgstr "<0>AES-256-Datenbankverschlüsselung</0> — Die Datenbank ist im Ruhezustand verschlüsselt. Selbst wenn jemand physischen Zugriff auf Ihr Gerät erhält, kann er Ihre Finanzdaten ohne den Schlüssel nicht lesen."
-
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "<0>Aggregated profiling</0> — When millions of users send similar financial data to the same service, the aggregate reveals behavioral patterns that can be monetized in ways that individual consent forms do not clearly cover."
 msgstr "<0>Aggregiertes Profiling</0> — Wenn Millionen von Nutzern ähnliche Finanzdaten an denselben Dienst senden, offenbart die Gesamtheit Verhaltensmuster, die auf Weisen monetarisiert werden können, die individuelle Einwilligungsformulare nicht klar abdecken."
@@ -554,8 +550,8 @@ msgid "<0>Data Storage</0>: Your choice"
 msgstr "<0>Datenspeicherung</0>: Ihre Wahl"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "<0>Database layer</0>: Examine the Drizzle ORM schemas and repository classes. You can trace exactly how data flows from user input to database storage, all locally."
-msgstr "<0>Datenbankschicht</0>: Untersuchen Sie die Drizzle-ORM-Schemas und Repository-Klassen. Sie können genau nachverfolgen, wie Daten von der Benutzereingabe zur Datenbankspeicherung fließen — alles lokal."
+msgid "<0>Database layer</0>: Examine the schemas and repository classes. You can trace exactly how data flows from user input to database storage, all locally."
+msgstr "<0>Datenbankschicht</0>: Untersuchen Sie die Schemas und Repository-Klassen. Sie können genau nachvollziehen, wie Daten von der Benutzereingabe bis zur Datenbankspeicherung fließen – alles lokal."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Delete old accounts</0>: After migration, fully delete cloud-based app accounts and revoke aggregator access"
@@ -592,6 +588,10 @@ msgstr "<0>Erkennung</0>: Beide Geräte finden sich im lokalen Netzwerk oder üb
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Docker support.</0> Easy deployment for those familiar with containers."
 msgstr "<0>Docker-Unterstützung.</0> Einfache Bereitstellung für Container-Erfahrene."
+
+#: src/app/[lang]/legal/license/page.tsx
+msgid "<0>Drizzle ORM</0> Apache License 2.0 - Type-safe database toolkit"
+msgstr "<0>Drizzle ORM</0> Apache-Lizenz 2.0 – Typsicheres Datenbank-Toolkit"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Due diligence</0>: The acquiring company reviews user data, transaction volumes, and engagement metrics"
@@ -817,6 +817,10 @@ msgstr "<0>Verbindlichkeitsdetails</0>: Kreditbeträge, Zinssätze, Mindestzahlu
 msgid "<0>Lingui</0> MIT License - Internationalization framework"
 msgstr ""
 
+#: src/app/[lang]/legal/license/page.tsx
+msgid "<0>llama.rn</0> MIT License - On-device language model runtime binding"
+msgstr "<0>llama.rn</0> MIT-Lizenz – Laufzeitanbindung für Sprachmodelle auf dem Gerät"
+
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Local data storage</0> — Your transaction history lives on your device, in a format you can read and export. No internet connection required to access your own records."
 msgstr "<0>Lokale Datenspeicherung</0> — Ihre Transaktionshistorie lebt auf Ihrem Gerät, in einem Format, das Sie lesen und exportieren können. Kein Internetzugang erforderlich, um auf Ihre eigenen Aufzeichnungen zuzugreifen."
@@ -842,8 +846,8 @@ msgid "<0>Local-first/Offline-first:</0> Data stored exclusively on your device"
 msgstr "<0>Local-first/Offline-first:</0> Daten werden ausschließlich auf Ihrem Gerät gespeichert"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
-msgid "<0>Local-only storage</0>: All data stored in SQLite on your device"
-msgstr "<0>Nur lokale Speicherung</0>: Alle Daten werden in SQLite auf Ihrem Gerät gespeichert"
+msgid "<0>Local-only storage</0>: All data stored in a local database on your device"
+msgstr "<0>Nur lokale Speicherung</0>: Alle Daten werden in einer lokalen Datenbank auf Ihrem Gerät gespeichert"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Lock file integrity</0>: Dependency versions are locked to prevent supply chain attacks through compromised package updates."
@@ -925,10 +929,6 @@ msgstr "<0>Natives mobiles Erlebnis</0> — Für Telefone gebaut, nicht vom Desk
 msgid "<0>Moderate privacy</0>: Lunch Money, YNAB"
 msgstr "Moderater Datenschutz: Lunch Money, YNAB"
 
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "<0>Modern tech stack</0>: React Native, Expo, Drizzle ORM, TypeScript throughout."
-msgstr "<0>Moderner Tech-Stack</0>: React Native, Expo, Drizzle ORM, TypeScript durchgehend."
-
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "<0>Modern user experience</0> - Clean, intuitive interface for daily tracking"
 msgstr "<0>Modernes Benutzererlebnis</0> — Klare, intuitive Oberfläche für die tägliche Erfassung"
@@ -936,6 +936,10 @@ msgstr "<0>Modernes Benutzererlebnis</0> — Klare, intuitive Oberfläche für d
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Modern, intuitive design.</0> Privacy doesn’t mean sacrificing user experience."
 msgstr "<0>Modernes, intuitives Design.</0> Datenschutz bedeutet nicht, auf Benutzerfreundlichkeit zu verzichten."
+
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+msgid "<0>Modern, native tech stack</0>: A clean, type-safe codebase built for native mobile from day one."
+msgstr "<0>Moderner, nativer Technologie-Stack</0>: Eine saubere, typsichere Codebasis, die von Anfang an für native mobile Apps entwickelt wurde."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>Modifications</0>: Create and use modified versions of Budgie"
@@ -1154,8 +1158,8 @@ msgid "<0>On-device AI</0> — Everything the app needs is downloaded once, then
 msgstr "<0>On-Device-KI</0> — Alles, was die App braucht, wird einmal heruntergeladen und bleibt danach auf dem Gerät. Jede Anfrage wird lokal beantwortet. Kein Netzwerkaufruf, kein Server-Log, niemand Drittes sieht jemals die Eingabe."
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>On-device SQLite storage</0> — Every transaction, account, and category is stored locally in a database, encrypted the moment you set a PIN. Budgie works fully offline; connectivity is optional, never required."
-msgstr "<0>Speicherung auf dem Gerät mit SQLite</0> — Jede Transaktion, jedes Konto und jede Kategorie wird lokal in einer Datenbank gespeichert, die verschlüsselt wird, sobald Sie eine PIN festlegen. Budgie funktioniert vollständig offline; eine Internetverbindung ist optional, nie erforderlich."
+msgid "<0>On-device storage</0> — Every transaction, account, and category is stored locally in a database, encrypted the moment you set a PIN. Budgie works fully offline; connectivity is optional, never required."
+msgstr "<0>Speicherung auf dem Gerät</0> — Jede Transaktion, jedes Konto und jede Kategorie wird lokal in einer Datenbank gespeichert, die verschlüsselt wird, sobald Sie eine PIN festlegen. Budgie funktioniert vollständig offline; eine Verbindung ist optional, nie erforderlich."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>One-time purchase:</0> No ongoing relationship or data motivation"
@@ -1417,6 +1421,10 @@ msgid "<0>Proven methodology</0>: Zero-based budgeting helps many people gain co
 msgstr "<0>Bewährte Methodik</0>: Zero-Based-Budgeting hilft vielen Menschen, ihre Finanzen in den Griff zu bekommen."
 
 #: src/app/[lang]/legal/license/page.tsx
+msgid "<0>Qwen3</0> Apache License 2.0 - Pretrained language model used for on-device text tasks"
+msgstr "<0>Qwen3</0> Apache-Lizenz 2.0 – Vortrainiertes Sprachmodell für Textaufgaben auf dem Gerät"
+
+#: src/app/[lang]/legal/license/page.tsx
 msgid "<0>React Native & Expo</0> MIT License - Cross-platform mobile application framework"
 msgstr ""
 
@@ -1605,8 +1613,8 @@ msgid "<0>Standard cloud:</0> Data stored on company servers (least private)"
 msgstr "<0>Standard-Cloud:</0> Daten werden auf Unternehmensservern gespeichert (am wenigsten privat)"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
-msgid "<0>Standard export formats</0> — CSV, JSON, or SQL exports that you can import into any spreadsheet or another app if you ever choose to leave."
-msgstr "<0>Standard-Exportformate</0> — CSV-, JSON- oder SQL-Exporte, die Sie in jede Tabellenkalkulation oder eine andere App importieren können, wenn Sie sich jemals entscheiden zu wechseln."
+msgid "<0>Standard export formats</0> — CSV or JSON exports that you can import into any spreadsheet or another app if you ever choose to leave."
+msgstr "<0>Standard-Exportformate</0> — CSV- oder JSON-Exporte, die Sie in jede Tabellenkalkulation oder eine andere App importieren können, falls Sie jemals wechseln möchten."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Stay informed</0>: Follow fintech security news and breach disclosures"
@@ -1615,6 +1623,10 @@ msgstr "<0>Bleib auf dem Laufenden</0>: Verfolge Fintech-Sicherheitsnews und Mel
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "<0>Stored locally</0> — In an offline-first app, the token lives on your device, not on an aggregator server. Revoking it from your bank also removes the only remaining access path."
 msgstr "<0>Lokal gespeichert</0> — In einer Offline-First-App lebt das Token auf Ihrem Gerät, nicht auf einem Aggregatorserver. Das Widerrufen bei Ihrer Bank entfernt auch den einzig verbleibenden Zugangspfad."
+
+#: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
+msgid "<0>Strong database encryption</0> — The database is encrypted at rest. Even if someone gains physical access to your device, they cannot read your financial data without the key."
+msgstr "<0>Starke Datenbankverschlüsselung</0> — Die Datenbank ist im Ruhezustand verschlüsselt. Selbst wenn jemand physischen Zugriff auf Ihr Gerät erlangt, kann er Ihre Finanzdaten ohne den Schlüssel nicht lesen."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>Stunning design</0>: Arguably the best-looking finance app on iOS."
@@ -1657,8 +1669,8 @@ msgid "<0>The Long Now.</0> Your data should outlive any particular application,
 msgstr "<0>Die lange Sicht.</0> Ihre Daten sollten jede einzelne Anwendung, jeden Dienst oder jedes Unternehmen überleben. Datenbeständigkeit ist ein zentrales Designprinzip."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
-msgid "<0>The mobile application</0> - The complete React Native codebase for iOS and Android"
-msgstr "<0>Die mobile Anwendung</0> — Die vollständige React Native-Codebasis für iOS und Android"
+msgid "<0>The mobile application</0> - The complete mobile app source for iOS and Android"
+msgstr "<0>Die mobile Anwendung</0> – Der vollständige Quellcode der mobilen App für iOS und Android"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "<0>The network is optional.</0> Full functionality should be available offline. The network enhances capabilities but is not required for core operations."
@@ -1767,6 +1779,14 @@ msgstr "<0>Welche Transaktionshistorie wird erfasst?</0> Red flag: Vollständige
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Where is data stored?</0> Red flag: Multiple cloud providers, unclear region. Green flag: Single provider, specific regions, SOC 2 Type II"
 msgstr "<0>Wo werden Daten gespeichert?</0> Red flag: Mehrere Cloud-Anbieter, unklare Region. Green flag: Ein Anbieter, spezifische Regionen, SOC 2 Type II"
+
+#: src/app/[lang]/legal/license/page.tsx
+msgid "<0>whisper.rn</0> MIT License - On-device speech recognition runtime binding"
+msgstr "<0>whisper.rn</0> MIT-Lizenz – Laufzeitanbindung für Spracherkennung auf dem Gerät"
+
+#: src/app/[lang]/legal/license/page.tsx
+msgid "<0>Whisper</0> MIT License - Pretrained speech recognition model used for on-device voice entry"
+msgstr "<0>Whisper</0> MIT-Lizenz – Vortrainiertes Spracherkennungsmodell für die Spracheingabe auf dem Gerät"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>White-Label Solutions</0>: Rebranding Budgie and selling it as a SaaS product"
@@ -2263,6 +2283,14 @@ msgstr "Ein dedizierter Tags-Reiter in der Statistik mit sortierbaren Summen pro
 msgid "A dedicated Tags tab lives in Analytics next to the Categories and Runway tabs — per-tag income, expense, and net totals, plus a drillable Untagged bucket that surfaces every transaction missing a label."
 msgstr "Ein eigener Tags-Tab lebt in der Analyse neben den Tabs Kategorien und Runway — Einnahmen, Ausgaben und Nettosummen pro Tag, plus ein aufklappbarer Ohne-Tag-Bereich, der jede Transaktion ohne Label zeigt."
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "A deep-dive into Budgie’s offline-first architecture, explaining how local storage, encryption at rest, and device-to-device sync keep your financial data completely private."
+msgstr "Ein tiefer Einblick in die Offline-First-Architektur von Budgie, der erklärt, wie lokale Speicherung, Verschlüsselung im Ruhezustand und Geräte-zu-Geräte-Synchronisierung Ihre Finanzdaten vollständig privat halten."
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
+msgid "A deep-dive into how Budgie keeps your financial data on your device: local storage, encryption at rest, and device-to-device sync with no cloud copy."
+msgstr "Ein tiefer Einblick, wie Budgie Ihre Finanzdaten auf Ihrem Gerät behält: lokale Speicherung, Verschlüsselung im Ruhezustand und Geräte-zu-Geräte-Synchronisierung ohne Cloud-Kopie."
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "A deliberate gap-finder. Transactions without tags accumulate in this bucket so you can spot bookkeeping gaps and tighten them up."
 msgstr "Eine gezielte Lückenfindung. Transaktionen ohne Tags sammeln sich in diesem Bereich, damit Sie Buchführungslücken erkennen und schließen können."
@@ -2426,14 +2454,6 @@ msgstr "Ein Supermarkt-Einkauf kann Lebensmittel, ein Ladegerät und eine Lampe 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "A Tags tab beside Categories"
 msgstr "Tab „Tags“ neben Kategorien"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
-msgid "A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
-msgstr "Ein technischer Blick auf Budgies Offline-first-Architektur: SQLite, AES-256-Verschlüsselung und Gerät-zu-Gerät-Sync halten deine Finanzdaten auf deinem Gerät."
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private."
-msgstr "Ein technischer Blick auf Budgies Offline-first-Architektur: SQLite, AES-256-Verschlüsselung und Gerät-zu-Gerät-Sync halten deine Finanzdaten auf deinem Gerät."
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "A template built from your own recent spending, a generic starter, or nothing at all"
@@ -2661,10 +2681,6 @@ msgstr "Anpassungen sind von den Kategorisierungsregeln ausgenommen, sodass ein 
 msgid "Advertising SDKs that build user profiles"
 msgstr "Werbe-SDKs, die Nutzerprofile erstellen"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "AES-256 Encryption at Rest"
-msgstr "AES-256-Verschlüsselung im Ruhezustand"
-
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "After 17 years of helping millions track their spending, Mint officially shut down on March 23, 2024. If you’re a developer who relied on Mint, you’re probably feeling frustrated, betrayed, and maybe a bit anxious about where your financial data will live next."
 msgstr "Nach 17 Jahren, in denen Mint Millionen von Menschen beim Ausgabentracking geholfen hat, wurde der Dienst am 23. März 2024 offiziell eingestellt. Wenn Sie als Entwickler auf Mint angewiesen waren, fühlen Sie sich wahrscheinlich frustriert, im Stich gelassen und vielleicht etwas besorgt darüber, wo Ihre Finanzdaten künftig gespeichert werden."
@@ -2848,8 +2864,8 @@ msgid "All your financial data is stored locally on your device. We utilize devi
 msgstr "Alle Ihre Finanzdaten werden lokal auf Ihrem Gerät gespeichert. Wir nutzen Sicherheitsfunktionen auf Geräteebene, darunter:"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
-msgid "All your financial data, including transactions, accounts, budgets, and categories, is stored in a local SQLite database on your device. We use Drizzle ORM for type-safe database operations, ensuring data integrity while keeping everything local."
-msgstr "Transaktionen, Konten, Budgets und Kategorien liegen in einer lokalen SQLite-Datenbank auf deinem Gerät. Drizzle ORM gibt uns typsichere Datenbankoperationen, ohne deine Daten vom Gerät zu bewegen."
+msgid "All your financial data, including transactions, accounts, budgets, and categories, is stored in a local database on your device, with type-safe operations that keep data integrity intact while keeping everything local."
+msgstr "Alle Ihre Finanzdaten, einschließlich Transaktionen, Konten, Budgets und Kategorien, werden in einer lokalen Datenbank auf Ihrem Gerät gespeichert, mit typsicheren Operationen, die die Datenintegrität wahren und alles lokal halten."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Allow reasonable time for fixes before public disclosure"
@@ -3232,8 +3248,8 @@ msgid "At Budgie, we believe financial privacy shouldn’t be a premium feature�
 msgstr "Bei Budgie glauben wir, dass finanzielle Privatsphäre keine Premium-Funktion sein sollte — sie sollte das Fundament sein. So unterscheidet sich unsere Architektur von cloudbasierten Alternativen."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "At the heart of Budgie is a local-first architecture built on SQLite, the most widely deployed database engine in the world. SQLite runs on billions of devices and has been battle-tested for over two decades. It is the same database that powers your browser history, your mobile contacts, and countless other applications that require reliable local storage."
-msgstr "Im Kern von Budgie steht eine Local-First-Architektur, die auf SQLite aufgebaut ist — der am weitesten verbreiteten Datenbank-Engine der Welt. SQLite läuft auf Milliarden von Geräten und hat sich über mehr als zwei Jahrzehnte bewährt. Es ist dieselbe Datenbank, die Ihren Browserverlauf, Ihre mobilen Kontakte und zahllose andere Anwendungen antreibt, die zuverlässigen lokalen Speicher benötigen."
+msgid "At the heart of Budgie is a local-first architecture: a battle-tested local database that runs on billions of devices worldwide and has powered reliable local storage for over two decades."
+msgstr "Im Kern von Budgie steht eine Local-First-Architektur: eine bewährte lokale Datenbank, die auf Milliarden von Geräten weltweit läuft und seit über zwei Jahrzehnten zuverlässige lokale Speicherung ermöglicht."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Attach a repayment you already logged"
@@ -4180,12 +4196,12 @@ msgid "Budgie embodies this transparent approach. Every line of code is public. 
 msgstr "Budgie verkörpert diesen transparenten Ansatz. Jede Codezeile ist öffentlich. Jede Entscheidung ist dokumentiert. Jede Behauptung ist überprüfbar. Wir bitten Sie nicht, uns zu vertrauen, weil wir es sagen. Wir bitten Sie, uns zu vertrauen, weil Sie genau sehen können, was wir tun."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Budgie encrypts your database using AES-256, the same encryption standard used by governments and financial institutions worldwide. AES-256 has never been broken by any publicly known attack. A brute-force attempt to crack a 256-bit key would require more energy than exists in the observable universe."
-msgstr "Budgie verschlüsselt Ihre Datenbank mit AES-256, demselben Verschlüsselungsstandard, der von Regierungen und Finanzinstitutionen weltweit verwendet wird. AES-256 wurde durch keinen öffentlich bekannten Angriff geknackt. Ein Brute-Force-Versuch, einen 256-Bit-Schlüssel zu knacken, würde mehr Energie erfordern, als im beobachtbaren Universum existiert."
+msgid "Budgie encrypts your database using the same encryption standard used by governments and financial institutions worldwide. It has never been broken by any publicly known attack. A brute-force attempt to crack a key of that strength would require more energy than exists in the observable universe."
+msgstr "Budgie verschlüsselt Ihre Datenbank mit demselben Verschlüsselungsstandard, der weltweit von Regierungen und Finanzinstituten verwendet wird. Er wurde noch nie durch einen öffentlich bekannten Angriff gebrochen. Ein Brute-Force-Versuch, einen Schlüssel dieser Stärke zu knacken, würde mehr Energie erfordern, als im beobachtbaren Universum existiert."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Budgie exists because we believe you should not have to trade this intimate information for the convenience of expense tracking. Every architectural decision, from SQLite to local encryption to device-to-device sync, is designed to keep this information where it belongs: <0>under your control</0>."
-msgstr "Budgie existiert, weil wir glauben, dass Sie diese intimen Informationen nicht für die Bequemlichkeit der Ausgabenverfolgung eintauschen sollten. Jede architektonische Entscheidung — von SQLite über lokale Verschlüsselung bis hin zur Gerät-zu-Gerät-Synchronisierung — ist darauf ausgelegt, diese Informationen dort zu halten, wo sie hingehören: unter Ihrer Kontrolle."
+msgid "Budgie exists because we believe you should not have to trade this intimate information for the convenience of expense tracking. Every architectural decision, from local storage to encryption to device-to-device sync, is designed to keep this information where it belongs: <0>under your control</0>."
+msgstr "Budgie existiert, weil wir glauben, dass Sie diese intimen Informationen nicht für den Komfort der Ausgabenverfolgung eintauschen sollten. Jede architektonische Entscheidung, von der lokalen Speicherung über die Verschlüsselung bis zur Geräte-zu-Geräte-Synchronisierung, ist darauf ausgelegt, diese Informationen dort zu behalten, wo sie hingehören: <0>unter Ihrer Kontrolle</0>."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie exists because we wanted a financial app that treats users as customers, not products. One that works offline, respects privacy, and gives you complete control over your data. If that resonates with you, we’d love to have you try it."
@@ -4365,8 +4381,8 @@ msgid "Budgie is licensed under the O'Saasy License, a source-available license 
 msgstr ""
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device in a SQLite database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app is open source so you can verify every claim we make."
-msgstr "Budgie ist nativ mobil, vollständig offline-fähig und radikal privat. Ihre Daten leben auf Ihrem Gerät in einer SQLite-Datenbank, die Sie direkt abfragen können. Die Banksynchronisierung nutzt, wenn eingesetzt, Zero-Knowledge-Architektur. Die App ist Open Source, damit Sie jede unserer Behauptungen überprüfen können."
+msgid "Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device in a local database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app is open source so you can verify every claim we make."
+msgstr "Budgie ist nativ mobile-first, vollständig offlinefähig und radikal privat. Ihre Daten befinden sich auf Ihrem Gerät in einer lokalen Datenbank, die Sie direkt abfragen können. Die Bank-Synchronisierung nutzt, sofern verwendet, eine Zero-Knowledge-Architektur. Die App ist Open Source, sodass Sie jede unserer Aussagen überprüfen können."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie is open source, so anyone can read exactly how your PIN becomes your database's encryption key — there is no hidden derivation step and no proprietary library standing between your PIN and the data. That code is public for community review."
@@ -5507,10 +5523,6 @@ msgstr "Saubere Einnahmensummen – Rückerstattungseinnahmen werden mit der Aus
 msgid "Clean, focused interface"
 msgstr "Saubere, fokussierte Oberfläche"
 
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Clean, modern codebase built with React Native and Expo"
-msgstr "Saubere, moderne Codebasis mit React Native und Expo"
-
 #: src/app/[lang]/features/convert-to-refund/opengraph-image.tsx
 #: src/app/[lang]/features/uncategorized-transactions/opengraph-image.tsx
 msgid "cleanup"
@@ -5645,8 +5657,8 @@ msgid "Cloud-based data storage"
 msgstr "Cloud-basierte Datenspeicherung"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Cloud-based expense trackers typically use databases like PostgreSQL, MySQL, or MongoDB running on remote servers. When you add a transaction, it travels over the internet to a data center, gets processed, and then a confirmation returns to your device. This architecture creates several problems:"
-msgstr "Cloud-basierte Ausgabentracker verwenden typischerweise Datenbanken wie PostgreSQL, MySQL oder MongoDB, die auf entfernten Servern laufen. Wenn Sie eine Transaktion hinzufügen, reist sie über das Internet zu einem Rechenzentrum, wird verarbeitet, und dann kehrt eine Bestätigung auf Ihr Gerät zurück. Diese Architektur schafft mehrere Probleme:"
+msgid "Cloud-based expense trackers typically store your data in a database running on remote servers. When you add a transaction, it travels over the internet to a data center, gets processed, and then a confirmation returns to your device. This architecture creates several problems:"
+msgstr "Cloud-basierte Ausgabenverfolgungs-Apps speichern Ihre Daten in der Regel in einer Datenbank, die auf entfernten Servern läuft. Wenn Sie eine Transaktion hinzufügen, reist sie über das Internet zu einem Rechenzentrum, wird verarbeitet, und dann kehrt eine Bestätigung zu Ihrem Gerät zurück. Diese Architektur schafft mehrere Probleme:"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Cloud-based means your data is on their servers"
@@ -6727,8 +6739,8 @@ msgid "Discover a vulnerability by examining the code"
 msgstr "Eine Schwachstelle durch Untersuchung des Codes entdecken"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/metadata.ts
-msgid "Discover exactly how Budgie keeps your financial data off the cloud. Learn about our SQLite architecture, AES-256 encryption, device-to-device sync, and open-source transparency."
-msgstr "Erfahren Sie genau, wie Budgie Ihre Finanzdaten von der Cloud fernhält. SQLite-Architektur, AES-256-Verschlüsselung, Gerät-zu-Gerät-Synchronisierung und Open-Source-Transparenz."
+msgid "Discover exactly how Budgie keeps your financial data off the cloud: local-only storage, encryption at rest, device sync, and open-source transparency."
+msgstr "Erfahren Sie genau, wie Budgie Ihre Finanzdaten von der Cloud fernhält: ausschließlich lokale Speicherung, Verschlüsselung im Ruhezustand, Gerätesynchronisierung und Open-Source-Transparenz."
 
 #: src/generic/component/blog-section/blog-section.tsx
 msgid "Discover insights about financial privacy, security best practices, and how to take control of your money."
@@ -7161,6 +7173,10 @@ msgstr "EN, UK, FR, DE, ES – vollständige Benutzeroberfläche."
 #: src/app/[lang]/opengraph-image.tsx
 msgid "Encrypted"
 msgstr "Verschlüsselt"
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Encrypted at Rest"
+msgstr "Verschlüsselt im Ruhezustand"
 
 #: src/app/[lang]/security/metadata.ts
 msgid "encrypted budget app"
@@ -8852,6 +8868,10 @@ msgid "How to Export Your Mint Data (Before It’s Too Late)"
 msgstr "So exportieren Sie Ihre Mint-Daten (bevor es zu spät ist)"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "How Your Data Stays on Your Device"
+msgstr "Wie Ihre Daten auf Ihrem Gerät bleiben"
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "How Your PIN Protects Your Data"
 msgstr "Wie Ihre PIN Ihre Daten schützt"
 
@@ -9632,9 +9652,9 @@ msgstr ""
 msgid "Local notifications, opt-in, deduped per period"
 msgstr "Lokale Benachrichtigungen, opt-in, pro Zeitraum dedupliziert"
 
-#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Local SQLite database with Drizzle ORM (you can query your own data)"
-msgstr "Lokale SQLite-Datenbank mit Drizzle ORM (Sie können Ihre eigenen Daten abfragen)"
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Local storage eliminates all of these problems. The database file lives on your device, operations happen in microseconds, and your data remains under your physical control."
+msgstr "Lokale Speicherung beseitigt all diese Probleme. Die Datenbankdatei befindet sich auf Ihrem Gerät, Vorgänge geschehen in Mikrosekunden, und Ihre Daten bleiben unter Ihrer physischen Kontrolle."
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Local Storage, Encrypted With Your PIN"
@@ -10175,8 +10195,8 @@ msgid "mobile"
 msgstr "Mobil"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
-msgid "Mobile analytics need to be fast. Storing the base amount lets Budgie sum large histories directly in SQL, while keeping the exchange rate available for audit and future rebuilds."
-msgstr ""
+msgid "Mobile analytics need to be fast. Storing the base amount lets Budgie total large histories instantly, while keeping the exchange rate available for audit and future rebuilds."
+msgstr "Mobile Analysen müssen schnell sein. Durch das Speichern des Basisbetrags kann Budgie umfangreiche Verläufe sofort summieren, während der Wechselkurs für Audits und künftige Neuberechnungen verfügbar bleibt."
 
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Mobile experience"
@@ -11225,8 +11245,8 @@ msgid "Off by default. Turn it on in Settings → Security and it applies immedi
 msgstr "Standardmäßig deaktiviert. Aktiviere es in Einstellungen → Sicherheit, und es gilt sofort, ohne Einrichtung pro Bildschirm."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
-msgid "Offer comprehensive export functionality (CSV, JSON, SQL)"
-msgstr "Sauberer Export nach CSV, JSON und SQL"
+msgid "Offer comprehensive export functionality (CSV, JSON, or a full database file)"
+msgstr "Umfassende Exportfunktionen bieten (CSV, JSON oder eine vollständige Datenbankdatei)"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 #: src/app/[lang]/features/crypto-price-history/opengraph-image.tsx
@@ -11883,6 +11903,10 @@ msgstr "Open Source"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Open source also addresses the longevity concern. Even if Budgie as a company were to disappear, the code remains available. Communities can maintain and extend it indefinitely."
 msgstr "Open Source adressiert auch die Beständigkeitsfrage. Selbst wenn Budgie als Unternehmen verschwinden sollte, bleibt der Code verfügbar. Gemeinschaften können ihn unbegrenzt pflegen und erweitern."
+
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+msgid "Open source and auditable end to end"
+msgstr "Open Source und durchgehend überprüfbar"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Open source code for verification"
@@ -12774,8 +12798,8 @@ msgid "public source budget app"
 msgstr ""
 
 #: src/app/[lang]/open-source/page.tsx
-msgid "Public source is not just a development philosophy — it is a security property. Closed finance apps ask you to trust that they do not log your transactions, share data with advertisers, or sell behavioral profiles. Budgie asks you to check. The on-device architecture, AES-256 encryption, and zero-telemetry design are all visible in the repository for any developer to verify."
-msgstr "Öffentlicher Quellcode ist nicht nur eine Entwicklungsphilosophie — er ist eine Sicherheitseigenschaft. Geschlossene Finanz-Apps verlangen, dass Sie darauf vertrauen, dass sie Ihre Transaktionen nicht protokollieren, Daten mit Werbetreibenden teilen oder Verhaltensprofile verkaufen. Budgie fordert Sie auf, es zu prüfen. Die On-Device-Architektur, AES-256-Verschlüsselung und das Zero-Telemetry-Design sind im Repository für jeden Entwickler sichtbar."
+msgid "Public source is not just a development philosophy — it is a security property. Closed finance apps ask you to trust that they do not log your transactions, share data with advertisers, or sell behavioral profiles. Budgie asks you to check. The on-device architecture, encryption at rest, and zero-telemetry design are all visible in the repository for any developer to verify."
+msgstr "Öffentlicher Quellcode ist nicht nur eine Entwicklungsphilosophie — er ist ein Sicherheitsmerkmal. Geschlossene Finanz-Apps bitten Sie zu vertrauen, dass sie Ihre Transaktionen nicht protokollieren, Daten nicht an Werbetreibende weitergeben oder Verhaltensprofile verkaufen. Budgie bittet Sie, es zu überprüfen. Die On-Device-Architektur, die Verschlüsselung im Ruhezustand und das Zero-Telemetry-Design sind alle im Repository für jeden Entwickler sichtbar und überprüfbar."
 
 #: src/app/[lang]/open-source/page.tsx
 msgid "Public source means our privacy claims are verifiable. Any developer can audit the code and confirm that no financial data is transmitted to external servers. You do not have to trust us — you can check."
@@ -14111,10 +14135,6 @@ msgstr "Tabellenkalkulationen: Die Option der absoluten Kontrolle"
 msgid "SQLite database you own and control"
 msgstr "SQLite-Datenbank, die Sie besitzen und kontrollieren"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "SQLite eliminates all of these problems. The database file lives on your device, operations happen in microseconds, and your data remains under your physical control."
-msgstr "SQLite beseitigt all diese Probleme. Die Datenbankdatei liegt auf deinem Gerät, Operationen laufen in Mikrosekunden, und deine Daten bleiben unter deiner physischen Kontrolle."
-
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Start from a built-in preset"
 msgstr "Mit einer mitgelieferten Vorlage starten"
@@ -14703,10 +14723,6 @@ msgstr "Der Quellcode der App ist unter der O’SAASY-Lizenz veröffentlicht, so
 msgid "The arbitration shall be conducted in English in Vienna, Austria"
 msgstr ""
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The Architecture: SQLite and Local-First Design"
-msgstr "Die Architektur: SQLite und Local-First-Design"
-
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "The average user logs the same merchant more than thirty times a year. Typing the category, picking a tag, entering the usual amount, and choosing the right account for the same coffee shop is wasted effort — the information is already in your history. Budgie surfaces it as tappable pill-shaped chips the moment you open the form, so confirming a familiar expense takes one tap instead of seven."
 msgstr "Der durchschnittliche Nutzer erfasst denselben Händler mehr als dreißig Mal im Jahr. Die Kategorie eintippen, ein Tag auswählen, den üblichen Betrag eingeben und das richtige Konto für dasselbe Café wählen ist verschwendete Mühe – die Information ist bereits in Ihrer Historie. Budgie bringt sie als tippbare pillenförmige Chips zum Vorschein, sobald Sie das Formular öffnen, sodass das Bestätigen einer vertrauten Ausgabe einen Tippen statt sieben kostet."
@@ -14800,8 +14816,8 @@ msgid "The company won’t be hacked"
 msgstr "Das Unternehmen nicht gehackt wird"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The complete React Native application source"
-msgstr "Den vollständigen React-Native-Anwendungsquellcode"
+msgid "The complete mobile application source"
+msgstr "Der vollständige Quellcode der mobilen Anwendung"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The complete source code for Budgie is available on GitHub. You can:"
@@ -14856,8 +14872,12 @@ msgid "The Data Collection Stack"
 msgstr "Der Datenerfassungs-Stack"
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The database uses Drizzle ORM for type-safe operations"
-msgstr "Die Datenbank verwendet Drizzle ORM für typsichere Operationen"
+msgid "The database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
+msgstr "Die Datenbankdatei wird in einem geschützten Verzeichnis gespeichert, auf das nur Budgie zugreifen kann. Unter iOS ist dies das sandboxed Documents-Verzeichnis der App. Unter Android ist es der interne App-Speicher, den andere Apps nicht lesen können."
+
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "The database layer enforces type-safe reads and writes"
+msgstr "Die Datenbankschicht erzwingt typsichere Lese- und Schreibvorgänge"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "The Date chip opens a month calendar with the presets in a row underneath it: Today, This Week, Last Week, This Month, Last Month, This Year, All Time. When none of them is the window you want, pick a start and an end date on the calendar instead and tap Show selected range."
@@ -15252,8 +15272,8 @@ msgid "The remainder counts down"
 msgstr "Der Rest zählt herunter"
 
 #: src/app/[lang]/open-source/page.tsx
-msgid "The repository includes the full React Native app, the AI service layer with on-device LLM and embedding model integrations, the contracts package, and this landing page. Nothing is hidden behind a proprietary SDK or closed binary."
-msgstr "Das Repository enthält die vollständige React Native App, die KI-Serviceschicht mit geräteeigenen LLM- und Embedding-Modell-Integrationen, das Vertragspaket und diese Landing Page. Nichts ist hinter einem proprietären SDK oder einer geschlossenen Binärdatei verborgen."
+msgid "The repository includes the full mobile app, the on-device AI layer, the contracts package, and this landing page. Nothing is hidden behind a proprietary SDK or closed binary."
+msgstr "Das Repository enthält die vollständige mobile App, die On-Device-KI-Schicht, das Contracts-Paket und diese Landingpage. Nichts ist hinter einem proprietären SDK oder einer geschlossenen Binärdatei verborgen."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "The repository includes:"
@@ -15387,10 +15407,6 @@ msgstr "Die Fußzeile „übrig zum Zuweisen“ auf dem Split-Bildschirm konnte 
 msgid "The spoken currency picks the matching account automatically"
 msgstr "Die gesprochene Währung wählt automatisch das passende Konto aus"
 
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read."
-msgstr "Die SQLite-Datenbankdatei wird in einem geschützten Verzeichnis gespeichert, auf das nur Budgie zugreifen kann. Unter iOS ist dies das sandboxierte Documents-Verzeichnis der App. Unter Android ist es der interne App-Speicher, den andere Anwendungen nicht lesen können."
-
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "The switch lives inside the App Lock card in Settings, under Security. It only appears once you have set a PIN and the device has a biometric enrolled — there is no biometric-only mode."
 msgstr "Der Schalter sitzt in der App-Sperre-Karte in den Einstellungen unter Sicherheit. Er erscheint erst, wenn Sie eine PIN gesetzt haben und auf dem Gerät eine Biometrie eingerichtet ist — einen reinen Biometrie-Modus gibt es nicht."
@@ -15444,8 +15460,8 @@ msgid "The transaction becomes a single transfer with a credit entry and a debit
 msgstr "Die Transaktion wird zu einem einzigen Transfer mit einer Gutschrift und einer Belastung auf den beiden Konten, die Salden gleichen sich in beiden aus, und die ursprüngliche Ausgabenstatistik fällt aus der Analyse heraus. Keine doppelte Buchungsarbeit für Sie."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "The transaction is written to a SQLite database stored in your device’s secure app storage"
-msgstr "Die Transaktion wird in eine SQLite-Datenbank geschrieben, die im sicheren App-Speicher Ihres Geräts gespeichert ist"
+msgid "The transaction is written to a local database stored in your device’s secure app storage"
+msgstr "Die Transaktion wird in eine lokale Datenbank geschrieben, die im sicheren App-Speicher Ihres Geräts gespeichert ist"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "The transactions list now supports filtering by amount range in addition to date, category, tag, and account. Opening a transaction shows a read-only detail view with six-month similar-spend bars, so you can see whether an amount is typical for that merchant or category without leaving the screen. Several split-confirmation keyboard bugs were also fixed, so entering split amounts on a physical or software keyboard no longer misbehaves mid-edit."
@@ -17643,6 +17659,10 @@ msgstr "Warum zwischenmenschliche Schulden einen eigenen Kontotyp verdienen"
 msgid "Why is “transfer” a separate type?"
 msgstr "Warum ist „Überweisung“ ein separater Typ?"
 
+#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
+msgid "Why Local Storage Beats a Cloud Account"
+msgstr "Warum lokale Speicherung einem Cloud-Konto überlegen ist"
+
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "Why Manual Import Is Underrated"
 msgstr "Warum manueller Import unterschätzt wird"
@@ -17748,10 +17768,6 @@ msgstr "Warum Erstattungen Einnahmenanalysen kontaminieren"
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Why scanning a long list for one tag is hard"
 msgstr "Warum das Scannen einer langen Liste nach einem Tag schwierig ist"
-
-#: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
-msgid "Why SQLite Over Cloud Databases"
-msgstr "Warum SQLite statt Cloud-Datenbanken"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Why store the base amount if it can be recalculated?"
@@ -18301,10 +18317,6 @@ msgstr "Ja. Tippe auf eine beliebige Kategorie- oder Tag-Zeile, um jede Transakt
 msgid "Yes. Tapping a row opens the transaction list for that tag over the active period. A row belongs either to the income list or to the spending list, and the list opens on that side."
 msgstr "Ja. Ein Tippen auf eine Zeile öffnet die Transaktionsliste für dieses Tag im aktiven Zeitraum. Eine Zeile gehört entweder zur Einnahmen- oder zur Ausgabenliste, und die Liste öffnet sich auf dieser Seite."
 
-#: src/app/[lang]/open-source/page.tsx
-msgid "Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the public repository. The underlying models (Qwen3, whisper.rn) are separately licensed projects."
-msgstr "Ja. Der KI-Service-Layer — einschließlich der Embedding-Modellintegration und LLM-Orchestrierung — ist Teil des öffentlichen Repositorys. Die zugrunde liegenden Modelle (Qwen3, whisper.rn) sind separat lizenzierte Projekte."
-
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Yes. The column you map to Date becomes the transaction's date, read as MM/DD/YYYY HH:MM:SS or YYYY-MM-DD. A row whose date cannot be read is reported instead of guessed at."
 msgstr "Ja. Die Spalte, die du dem Datum zuordnest, wird zum Datum der Transaktion und wird als MM/DD/YYYY HH:MM:SS oder YYYY-MM-DD gelesen. Eine Zeile mit unlesbarem Datum wird gemeldet statt geraten."
@@ -18316,6 +18328,10 @@ msgstr "Ja. Die Doppelbetrags-Eingabe öffnet sich nach der Auswahl des Zielkont
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Yes. The entire transaction entry flow — amount, category, tags, account — works fully offline. Your data is written directly to the on-device database with no network call."
 msgstr "Ja. Der gesamte Ablauf der Transaktionserfassung — Betrag, Kategorie, Tags, Konto — funktioniert vollständig offline. Ihre Daten werden direkt in die Datenbank auf dem Gerät geschrieben, ohne Netzwerkaufruf."
+
+#: src/app/[lang]/open-source/page.tsx
+msgid "Yes. The on-device AI layer that powers category suggestions, voice entry, and merchant clean-up is part of the public repository. The pretrained models it runs are separately licensed third-party projects, credited on our licence page."
+msgstr "Ja. Die On-Device-KI-Schicht, die Kategorievorschläge, Spracheingabe und die Bereinigung von Händlernamen ermöglicht, ist Teil des öffentlichen Repositorys. Die vortrainierten Modelle, die sie ausführt, sind separat lizenzierte Drittanbieterprojekte, die auf unserer Lizenzseite aufgeführt sind."
 
 #: src/app/[lang]/features/ai-merchant-translation/page.tsx
 msgid "Yes. The original is preserved for receipt-matching and audit; the translated form is what your search queries hit."
@@ -18689,6 +18705,10 @@ msgstr "Ihre Daten verschwinden nicht, wenn wir aufhören"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Your data exists only on your device. If you lose your phone without having synced to another device or created a backup, your data is lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend regular backups to your own storage."
 msgstr "Ihre Daten existieren nur auf Ihrem Gerät. Wenn Sie Ihr Telefon verlieren, ohne mit einem anderen Gerät synchronisiert oder ein Backup erstellt zu haben, sind Ihre Daten verloren. Das ist der Preis für den Datenschutz: Wir können Ihnen nicht helfen, Daten wiederherzustellen, weil wir sie nicht besitzen. Wir empfehlen regelmäßige Backups in Ihrem eigenen Speicher."
+
+#: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
+msgid "Your data in a local file you can open and query yourself"
+msgstr "Ihre Daten in einer lokalen Datei, die Sie selbst öffnen und abfragen können"
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Your data is yours. Budgie supports exporting your financial data in standard formats. If you ever want to switch to a different application or analyze your data in a spreadsheet, you have full access."
