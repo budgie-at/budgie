@@ -54,6 +54,35 @@ export class AccountBalanceRepository {
         return new Map(results.map(({ accountId, delta }) => [accountId, delta]));
     }
 
+    @Log(
+        (accountId, excludedTransactionId, tx) =>
+            `enter accountId=${accountId} excludedTransactionId=${String(excludedTransactionId)} tx=${String(isDefined(tx))}`,
+        (result, accountId, excludedTransactionId, tx) =>
+            `done accountId=${accountId} excludedTransactionId=${String(excludedTransactionId)} tx=${String(isDefined(tx))} result=${result}`,
+        (error, accountId, excludedTransactionId, tx) =>
+            `throw accountId=${accountId} excludedTransactionId=${String(excludedTransactionId)} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async getLedgerBalanceExcludingTransaction(accountId: number, excludedTransactionId: number | null, tx?: DB): Promise<number> {
+        const excludedTransactionSql = isDefined(excludedTransactionId)
+            ? ne(TransactionEntryEntityTable.transactionId, excludedTransactionId)
+            : sql`1 = 1`;
+        const [row] = await (tx ?? this.db)
+            .select({ balance: sql<number>`COALESCE(${this.getTransactionsSumSql()}, 0)`.mapWith(Number) })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+            .where(
+                and(
+                    eq(TransactionEntryEntityTable.accountId, accountId),
+                    excludedTransactionSql,
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
+                    accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()
+                )
+            );
+
+        return row.balance;
+    }
+
     getAssetClassTotals(defaultInstrumentId: number) {
         const fiatExchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
         const cryptoExchangeRateSql = this.buildStrictExchangeRateConversionSql(defaultInstrumentId);
@@ -263,35 +292,6 @@ export class AccountBalanceRepository {
         await database
             .delete(AccountBalanceEntityTable)
             .where(notInArray(AccountBalanceEntityTable.accountId, providerAuthoritativeAccountIdsSql));
-    }
-
-    @Log(
-        (accountId, excludedTransactionId, tx) =>
-            `enter accountId=${accountId} excludedTransactionId=${String(excludedTransactionId)} tx=${String(isDefined(tx))}`,
-        (result, accountId, excludedTransactionId, tx) =>
-            `done accountId=${accountId} excludedTransactionId=${String(excludedTransactionId)} tx=${String(isDefined(tx))} result=${result}`,
-        (error, accountId, excludedTransactionId, tx) =>
-            `throw accountId=${accountId} excludedTransactionId=${String(excludedTransactionId)} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async getLedgerBalanceExcludingTransaction(accountId: number, excludedTransactionId: number | null, tx?: DB): Promise<number> {
-        const excludedTransactionSql = isDefined(excludedTransactionId)
-            ? ne(TransactionEntryEntityTable.transactionId, excludedTransactionId)
-            : sql`1 = 1`;
-        const [row] = await (tx ?? this.db)
-            .select({ balance: sql<number>`COALESCE(${this.getTransactionsSumSql()}, 0)`.mapWith(Number) })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
-            .where(
-                and(
-                    eq(TransactionEntryEntityTable.accountId, accountId),
-                    excludedTransactionSql,
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
-                    accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()
-                )
-            );
-
-        return row?.balance ?? 0;
     }
 
     private buildNetWorthExchangeRateConversionSql(defaultInstrumentId: number) {

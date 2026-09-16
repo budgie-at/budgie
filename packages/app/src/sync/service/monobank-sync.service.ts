@@ -12,7 +12,7 @@ import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountBalanceRepository, accountRepository, db } from '../../@generic/drizzle/db/db';
+import { accountBalanceRepository, accountRepository, db, syncRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
@@ -20,6 +20,7 @@ import { ruleApplicationDrainerService } from '../../rule/service/rule-applicati
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
+import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
@@ -60,6 +61,27 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         }
 
         return this.mapAccountsToPreview(bankAccounts);
+    }
+
+    @Log(
+        accountId => `enter accountId=${accountId}`,
+        (result, accountId) => `done accountId=${accountId} balance=${result}`,
+        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
+    )
+    async fetchFreshProviderBalanceByAccountId(accountId: number): Promise<number> {
+        const sync = await syncRepository.getByAccountId(accountId);
+        if (!isDefined(sync)) {
+            throw new Error(UNKNOWN_SYNC_ERROR);
+        }
+
+        const account = await accountRepository.findById(accountId);
+        if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
+            throw new Error(UNKNOWN_SYNC_ERROR);
+        }
+
+        const token = await this.resolveSyncToken(sync);
+
+        return this.fetchProviderBalance(account.externalId, token);
     }
 
     @InvalidateDatabaseLiveQuery()
@@ -407,7 +429,9 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             return null;
         }
 
-        return this.fetchProviderBalance(account.externalId, token);
+        const providerBalance = await this.fetchProviderBalance(account.externalId, token);
+
+        return this.isRunCurrent(runGeneration) ? providerBalance : null;
     }
 
     @Log(
@@ -420,7 +444,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         const bankAccounts = await this.fetchBankAccountsAndJars(token);
         const bankAccount = bankAccounts.find(account => account.id === externalAccountId);
         if (!isDefined(bankAccount)) {
-            throw new Error(`Monobank account ${externalAccountId} is unavailable`);
+            throw new Error(UNKNOWN_SYNC_ERROR);
         }
 
         return convertToMicroUnits(bankAccount.balance);

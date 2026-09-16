@@ -196,7 +196,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return;
         }
 
-        await syncRepository.updateProgress(sync.id, this.provider, sync.mode, this.resolveProgressUpdate(sync, result));
+        await syncRepository.updateProgress(sync.id, sync.mode, this.resolveProgressUpdate(sync, result));
     }
 
     @Log(
@@ -209,58 +209,11 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     @Log(
-        (error, runGeneration) => `enter runGeneration=${runGeneration} error=${getErrorMessage(error)}`,
-        (result, error, runGeneration) => `done runGeneration=${runGeneration} error=${getErrorMessage(error)} result=${String(result)}`,
-        (hookError, error, runGeneration) =>
-            `throw runGeneration=${runGeneration} error=${getErrorMessage(error)} hookError=${getErrorMessage(hookError)}`
-    )
-    private async handleError(error: unknown, runGeneration: number): Promise<BackgroundTask.BackgroundTaskResult> {
-        if (!this.isRunCurrent(runGeneration)) {
-            return BackgroundTask.BackgroundTaskResult.Success;
-        }
-
-        const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
-        const enabledSyncs = await syncRepository.getEnabledByProvider(this.provider);
-        if (!this.isRunCurrent(runGeneration)) {
-            return BackgroundTask.BackgroundTaskResult.Success;
-        }
-
-        if (!isNotEmptyArray(enabledSyncs)) {
-            return BackgroundTask.BackgroundTaskResult.Failed;
-        }
-
-        return this.handleEnabledSyncError(error, errorMessage, enabledSyncs, runGeneration);
-    }
-
-    @Log(
-        (enabledSyncs, credentialGroupSync) =>
-            `enter enabledSyncIds=${enabledSyncs.map(sync => sync.id).join(',')} credentialGroupSyncId=${credentialGroupSync.id}`,
-        (result, enabledSyncs, credentialGroupSync) =>
-            `done enabledSyncIds=${enabledSyncs.map(sync => sync.id).join(',')} credentialGroupSyncId=${credentialGroupSync.id} groupedSyncIds=${result.map(sync => sync.id).join(',')}`,
-        (error, enabledSyncs, credentialGroupSync) =>
-            `throw enabledSyncIds=${enabledSyncs.map(sync => sync.id).join(',')} credentialGroupSyncId=${credentialGroupSync.id} error=${getErrorMessage(error)}`
-    )
-    private async resolveCredentialGroupSyncs(
-        enabledSyncs: SyncEntityInterface[],
-        credentialGroupSync: SyncEntityInterface
-    ): Promise<SyncEntityInterface[]> {
-        const accounts = await accountRepository.findByIds(enabledSyncs.map(sync => sync.accountId));
-        const integrationIdByAccountId = new Map(accounts.map(account => [account.id, account.integrationId]));
-        const credentialGroupIntegrationId = integrationIdByAccountId.get(credentialGroupSync.accountId);
-
-        if (!isDefined(credentialGroupIntegrationId)) {
-            return [credentialGroupSync];
-        }
-
-        return enabledSyncs.filter(sync => integrationIdByAccountId.get(sync.accountId) === credentialGroupIntegrationId);
-    }
-
-    @Log(
         (accountId, token, historyDepth, tx) =>
             `enter accountId=${accountId} tokenLen=${token.length} historyDepth=${historyDepth} hasTx=${String(isDefined(tx))}`,
-        (result, accountId, token, historyDepth, tx) =>
+        (result, ...[accountId, token, historyDepth, tx]) =>
             `done accountId=${accountId} tokenLen=${token.length} historyDepth=${historyDepth} hasTx=${String(isDefined(tx))} syncId=${result.id}`,
-        (error, accountId, token, historyDepth, tx) =>
+        (error, ...[accountId, token, historyDepth, tx]) =>
             `throw accountId=${accountId} tokenLen=${token.length} historyDepth=${historyDepth} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     protected async createOrUpdateSync(
@@ -310,6 +263,81 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             },
             tx
         );
+    }
+
+    @Log(
+        (error, runGeneration) => `enter runGeneration=${runGeneration} error=${getErrorMessage(error)}`,
+        (result, error, runGeneration) => `done runGeneration=${runGeneration} error=${getErrorMessage(error)} result=${String(result)}`,
+        (hookError, error, runGeneration) =>
+            `throw runGeneration=${runGeneration} error=${getErrorMessage(error)} hookError=${getErrorMessage(hookError)}`
+    )
+    private async handleError(error: unknown, runGeneration: number): Promise<BackgroundTask.BackgroundTaskResult> {
+        if (!this.isRunCurrent(runGeneration)) {
+            return BackgroundTask.BackgroundTaskResult.Success;
+        }
+
+        const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
+        const enabledSyncs = await syncRepository.getEnabledByProvider(this.provider);
+        if (!this.isRunCurrent(runGeneration)) {
+            return BackgroundTask.BackgroundTaskResult.Success;
+        }
+
+        if (!isNotEmptyArray(enabledSyncs)) {
+            return BackgroundTask.BackgroundTaskResult.Failed;
+        }
+
+        return this.handleEnabledSyncError(error, errorMessage, enabledSyncs, runGeneration);
+    }
+
+    @Log(
+        (enabledSyncs, credentialGroupSync) =>
+            `enter enabledSyncIds=${enabledSyncs.map(sync => sync.id).join(',')} credentialGroupSyncId=${credentialGroupSync.id}`,
+        (result, enabledSyncs, credentialGroupSync) =>
+            `done enabledSyncIds=${enabledSyncs.map(sync => sync.id).join(',')} credentialGroupSyncId=${credentialGroupSync.id} groupedSyncIds=${result.map(sync => sync.id).join(',')}`,
+        (error, enabledSyncs, credentialGroupSync) =>
+            `throw enabledSyncIds=${enabledSyncs.map(sync => sync.id).join(',')} credentialGroupSyncId=${credentialGroupSync.id} error=${getErrorMessage(error)}`
+    )
+    private async resolveCredentialGroupSyncs(
+        enabledSyncs: SyncEntityInterface[],
+        credentialGroupSync: SyncEntityInterface
+    ): Promise<SyncEntityInterface[]> {
+        const accounts = await accountRepository.findByIds(enabledSyncs.map(sync => sync.accountId));
+        const integrationIdByAccountId = new Map(accounts.map(account => [account.id, account.integrationId]));
+        const credentialGroupIntegrationId = integrationIdByAccountId.get(credentialGroupSync.accountId);
+
+        if (!isDefined(credentialGroupIntegrationId)) {
+            return [credentialGroupSync];
+        }
+
+        return enabledSyncs.filter(sync => integrationIdByAccountId.get(sync.accountId) === credentialGroupIntegrationId);
+    }
+
+    protected resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {
+        const now = new Date();
+        const transactionCount = result.transactionCount ?? result.transactions.length;
+        const baseUpdate = { transactionCount: sync.transactionCount + transactionCount, errorCount: 0, lastError: null };
+
+        if (result.completed && sync.mode === SyncModeEnum.FORWARD) {
+            return { ...baseUpdate, status: SyncStatusEnum.IDLE, forwardSyncedAt: now, forwardSyncFromAt: now };
+        }
+
+        if (result.completed) {
+            return {
+                ...baseUpdate,
+                mode: SyncModeEnum.FORWARD,
+                status: SyncStatusEnum.IDLE,
+                backwardSyncedAt: result.nextTo,
+                backwardSyncFromAt: result.nextFrom
+            };
+        }
+
+        if (sync.mode === SyncModeEnum.BACKWARD) {
+            const nextBackwardSyncedAt = isPositiveNumber(transactionCount) ? null : (sync.backwardSyncedAt ?? result.nextTo);
+
+            return { ...baseUpdate, backwardSyncedAt: nextBackwardSyncedAt, backwardSyncFromAt: result.nextTo };
+        }
+
+        return { ...baseUpdate, forwardSyncFromAt: result.nextFrom };
     }
 
     protected async beforeProcessRun(_firstSyncToken: string, _runGeneration: number): Promise<void> {
@@ -522,34 +550,6 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         if (pendingSync.mode === SyncModeEnum.FORWARD && result.completed) {
             this.processedForwardSyncIds.add(pendingSync.id);
         }
-    }
-
-    protected resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {
-        const now = new Date();
-        const transactionCount = result.transactionCount ?? result.transactions.length;
-        const baseUpdate = { transactionCount: sync.transactionCount + transactionCount, errorCount: 0, lastError: null };
-
-        if (result.completed && sync.mode === SyncModeEnum.FORWARD) {
-            return { ...baseUpdate, status: SyncStatusEnum.IDLE, forwardSyncedAt: now, forwardSyncFromAt: now };
-        }
-
-        if (result.completed) {
-            return {
-                ...baseUpdate,
-                mode: SyncModeEnum.FORWARD,
-                status: SyncStatusEnum.IDLE,
-                backwardSyncedAt: result.nextTo,
-                backwardSyncFromAt: result.nextFrom
-            };
-        }
-
-        if (sync.mode === SyncModeEnum.BACKWARD) {
-            const nextBackwardSyncedAt = isPositiveNumber(transactionCount) ? null : (sync.backwardSyncedAt ?? result.nextTo);
-
-            return { ...baseUpdate, backwardSyncedAt: nextBackwardSyncedAt, backwardSyncFromAt: result.nextTo };
-        }
-
-        return { ...baseUpdate, forwardSyncFromAt: result.nextFrom };
     }
 
     abstract fetchAccountsPreview(token: string): Promise<SyncAccountPreviewInterface[]>;
