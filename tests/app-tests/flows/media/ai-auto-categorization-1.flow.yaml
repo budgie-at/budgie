@@ -15,7 +15,8 @@ env:
 - tapOn:
       id: 'TransactionForm.CommentInput'
 - inputText: ${MERCHANT_TITLE}
-- pressKey: enter
+- tapOn:
+      id: 'NoteInput.SubmitButton'
 
 - extendedWaitUntil:
       visible:

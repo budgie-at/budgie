@@ -21,7 +21,7 @@ appId: ${APP_ID}
       visible:
           id: 'ActionItem.AiButton'
           enabled: true
-      timeout: 240000
+      timeout: 600000
 
 - tapOn:
       id: 'ActionItem.AiButton'
