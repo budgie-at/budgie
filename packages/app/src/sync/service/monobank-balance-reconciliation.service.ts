@@ -20,9 +20,10 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 
 import type { MonobankBalanceFinalizationInputInterface } from '../interface/monobank-balance-finalization-input.interface';
-import type { DB, SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
+import type { DB, SyncEntityInterface } from '@budgie/contracts';
 
 class MonobankBalanceReconciliationService {
     @InvalidateDatabaseLiveQuery()
@@ -56,15 +57,13 @@ class MonobankBalanceReconciliationService {
                 return;
             }
 
-            await this.finalizeInTransaction(sync, input.providerBalance, input.progressUpdate, input.isRunCurrent, tx);
+            await this.finalizeInTransaction(sync, input, tx);
         });
     }
 
     private async finalizeInTransaction(
         sync: SyncEntityInterface,
-        providerBalance: number,
-        progressUpdate: SyncUpdateEntityInterface,
-        isRunCurrent: () => boolean,
+        input: MonobankBalanceFinalizationInputInterface,
         tx: DB
     ): Promise<void> {
         const ledgerBalance = await accountBalanceRepository.getLedgerBalanceExcludingTransaction(
@@ -72,7 +71,7 @@ class MonobankBalanceReconciliationService {
             sync.balanceAdjustmentTransactionId,
             tx
         );
-        const delta = providerBalance - ledgerBalance;
+        const delta = input.providerBalance - ledgerBalance;
 
         if (isDefined(sync.balanceAdjustmentTransactionId)) {
             await transactionRepository.deleteById(sync.balanceAdjustmentTransactionId, tx);
@@ -80,16 +79,16 @@ class MonobankBalanceReconciliationService {
 
         const adjustmentTransactionId = delta === 0 ? null : await this.createAdjustment(sync.accountId, delta, tx);
 
-        if (!isRunCurrent()) {
-            throw new Error('Monobank sync run lost ownership before finalization');
+        if (!input.isRunCurrent()) {
+            throw new Error(UNKNOWN_SYNC_ERROR);
         }
 
         const finalizedAt = new Date();
-        await accountBalanceRepository.upsert({ accountId: sync.accountId, amount: providerBalance, updatedAt: finalizedAt }, tx);
+        await accountBalanceRepository.upsert({ accountId: sync.accountId, amount: input.providerBalance, updatedAt: finalizedAt }, tx);
         await syncRepository.update(
             sync.id,
             {
-                ...progressUpdate,
+                ...input.progressUpdate,
                 balanceAuthority: SyncBalanceAuthorityEnum.LEDGER,
                 balanceAnchorCapturedAt: null,
                 balanceAdjustmentTransactionId: adjustmentTransactionId
