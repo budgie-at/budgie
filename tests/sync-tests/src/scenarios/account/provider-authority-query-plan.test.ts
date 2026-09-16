@@ -1,25 +1,10 @@
 import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
 import { AccountTypeEnum, ExternalSourceEnum, SyncBalanceAuthorityEnum } from '@budgie/contracts';
-import { sql } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { seed, testDb } from '../../harness';
+import { explainQueryPlan, seed } from '../../harness';
 
-interface QueryPlanStepInterface {
-    readonly detail: string;
-}
-
-interface ToSqlQueryInterface {
-    readonly toSQL: () => { readonly sql: string; readonly params: readonly unknown[] };
-}
-
-const explainQueryPlan = (query: ToSqlQueryInterface): QueryPlanStepInterface[] => {
-    const { sql: queryText, params } = query.toSQL();
-    const segments = queryText.split('?').map(segment => sql.raw(segment));
-    const fragments = segments.flatMap((segment, index) => (index < params.length ? [segment, sql`${params[index]}`] : [segment]));
-
-    return testDb.all<QueryPlanStepInterface>(sql`EXPLAIN QUERY PLAN ${sql.join(fragments, sql``)}`);
-};
+import type { ToSqlQueryInterface } from '../../harness';
 
 const expectIndexedProviderAuthorityLookup = (query: ToSqlQueryInterface): void => {
     const details = explainQueryPlan(query).map(step => step.detail);

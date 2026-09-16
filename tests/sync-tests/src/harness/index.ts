@@ -21,9 +21,12 @@ export { fetchAccountIntegrationToken } from './db/fetch-account-integration-tok
 export { findMccByCode } from './db/find-mcc-by-code';
 export { requireInstrument } from './db/require-instrument';
 export { applyMigration } from './db/apply-migration';
+export { explainQueryPlan } from './db/explain-query-plan';
+export type { ToSqlQueryInterface } from './db/interface/to-sql-query.interface';
 export { monobankStub } from './monobank/monobank-stub';
 export { buildMonobank } from './monobank/build-monobank';
 export { stubEmptyStatements } from './monobank/stub-empty-statements';
+export { stubMonobankProviderBalance } from './monobank/stub-monobank-provider-balance';
 export { subtractMonths } from './scenario/subtract-months';
 export { binanceStub } from './binance/binance-stub';
 export type { TimeWindow } from './binance/binance-stub';
@@ -55,6 +58,7 @@ export {
 export { withCoolDownSpy } from './binance/with-cooldown-spy';
 export { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases } from './scenario/error-recovery';
 export { seedExchangeRate } from './consolidation/seed-exchange-rate';
+export { seedExpenseEntry } from './seed/seed-expense-entry';
 export {
     P2P_ONE_HOUR_MS,
     P2P_OPERATED_AT,
