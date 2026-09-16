@@ -90,7 +90,6 @@ const syncForegroundData = async (): Promise<void> => {
 const handleAppStateChange = (isActive: boolean): void => {
     if (!isActive) {
         monobankSyncService.interruptActiveRun();
-        binanceSyncService.interruptActiveRun();
         syncWorkloadService.interruptActiveWork();
 
         return;
