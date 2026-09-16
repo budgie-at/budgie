@@ -236,6 +236,22 @@
             "deepLink": "budgie://currency/34"
         },
         {
+            "name": "runway-1",
+            "deepLink": "budgie://analytics?tab=runway"
+        },
+        {
+            "name": "runway-2",
+            "flow": "flows/media/runway-2.flow.yaml"
+        },
+        {
+            "name": "runway-3",
+            "flow": "flows/media/runway-3.flow.yaml"
+        },
+        {
+            "name": "runway-settings-1",
+            "deepLink": "budgie://settings?anchor=runway"
+        },
+        {
             "name": "primary-tag-1",
             "deepLink": "budgie://transactions"
         },
