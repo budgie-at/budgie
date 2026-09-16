@@ -142,9 +142,9 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            Budgie uses two on-device models: Qwen3 1.7B for natural-language understanding and chat, and a 768-dimensional
-                            embedding model for nearest-neighbor categorization from your own transaction history. Both run locally with no
-                            external API call.
+                            Three, all on your device: a language model for natural-language understanding and chat, a 768-dimensional
+                            embedding model for nearest-neighbor categorization from your own transaction history, and a speech model for
+                            voice entry. Every one of them runs locally with no external API call.
                         </Trans>
                     }
                     question={<Trans>Which AI models does Budgie use?</Trans>}
