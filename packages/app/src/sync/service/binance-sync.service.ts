@@ -143,8 +143,12 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         }
 
         const token = await this.resolveSyncToken(sync);
-        const changedCount = await this.runSyncPhases(sync, externalAccountId, token);
-        await binanceTradeCursorService.persistRunSideEffects(sync, this.runSignedClient);
+        let changedCount = 0;
+        try {
+            changedCount = await this.runSyncPhases(sync, externalAccountId, token);
+        } finally {
+            await binanceTradeCursorService.persistRunSideEffects(sync, this.runSignedClient);
+        }
         if (isPositiveNumber(changedCount)) {
             await transactionService.updateAllBalances();
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC);
