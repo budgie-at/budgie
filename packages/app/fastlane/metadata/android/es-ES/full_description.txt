@@ -4,7 +4,7 @@ FUNCIONA SIN COBERTURA
 Cada movimiento se queda en tu móvil. Añade gastos, revisa el historial y consulta tus análisis sin ninguna conexión.
 
 CADA GASTO EN SEGUNDOS
-Dicta un gasto o escríbelo, y Budgie elige la categoría directamente en el propio dispositivo. Reparte una compra entre varias categorías o personas en el mismo paso.
+Dicta un gasto o escríbelo, y Budgie elige la categoría directamente en el propio dispositivo. Reparte una compra entre varias categorías en el mismo paso.
 
 ADÓNDE VA TU DINERO
 Los análisis por categoría y etiqueta muestran un patrón antes de que se convierta en un problema. Tu patrimonio, con todas las cuentas, tarjetas y divisas juntas, de un vistazo.
@@ -29,7 +29,5 @@ ADEMÁS
 • Dictado por voz cuando escribir no es cómodo
 • PIN, bloqueo biométrico y protección contra capturas
 • Sin cuenta, sin acceso bancario y sin suscripción
-
-Budgie está actualmente en beta privada. Apúntate a la lista de espera.
 
 Más información en budgie.at.
