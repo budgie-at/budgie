@@ -57,7 +57,6 @@ import type { BinanceEarnPositionApiInterface } from '../interface/binance-earn-
 import type { BinanceEarnRewardApiInterface } from '../interface/binance-earn-reward-api.schema';
 import type { BinanceFiatOrderApiInterface } from '../interface/binance-fiat-order-api.schema';
 import type { BinanceLockedEarnPositionApiInterface } from '../interface/binance-locked-earn-position-api.schema';
-import type { BinanceTradeFetchContextInterface } from '../interface/binance-trade-fetch-context.interface';
 import type { BinanceTradeSymbolInterface } from '../interface/binance-trade-symbol.interface';
 import type { BinanceTransactionSourcesInterface } from '../interface/binance-transaction-sources.interface';
 import type { BinanceTransferInterface } from '../interface/binance-transfer.interface';
@@ -238,7 +237,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         initialSymbolTradeCursors: BinanceTradeCursorMapInterface = {}
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
         return this.withDecodedAccount(accountId, from, to, (_decoded, startTimeMs, endTimeMs) =>
-            this.fetchAllTransfers(startTimeMs, endTimeMs, { eligibleSoldOffBaseAssets, initialSymbolTradeCursors })
+            this.fetchAllTransfers(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets, initialSymbolTradeCursors)
         );
     }
 
@@ -707,15 +706,16 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private async fetchAllTransfers(
         startTimeMs: number,
         endTimeMs: number,
-        tradeContext: BinanceTradeFetchContextInterface
+        eligibleSoldOffBaseAssets: readonly string[],
+        initialSymbolTradeCursors: BinanceTradeCursorMapInterface
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const cacheKey = `${startTimeMs}-${endTimeMs}:${[...tradeContext.eligibleSoldOffBaseAssets].sort().join(',')}`;
+        const cacheKey = `${startTimeMs}-${endTimeMs}:${[...eligibleSoldOffBaseAssets].sort().join(',')}`;
         const cached = this.transferCache.get(cacheKey);
         if (isDefined(cached)) {
             return this.success(cached);
         }
 
-        const result = await this.fetchTradesAndConverts(startTimeMs, endTimeMs, tradeContext);
+        const result = await this.fetchTradesAndConverts(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets, initialSymbolTradeCursors);
         if (result.success) {
             this.transferCache.set(cacheKey, result.data);
         }
@@ -726,14 +726,20 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private async fetchTradesAndConverts(
         startTimeMs: number,
         endTimeMs: number,
-        tradeContext: BinanceTradeFetchContextInterface
+        eligibleSoldOffBaseAssets: readonly string[],
+        initialSymbolTradeCursors: BinanceTradeCursorMapInterface
     ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
         const convertResult = await this.fetchConvertTransfers(startTimeMs, endTimeMs);
         if (!convertResult.success) {
             return convertResult;
         }
 
-        const tradeResult = await this.fetchTradeTransfers(startTimeMs, endTimeMs, convertResult.data, tradeContext);
+        const symbolsResult = await this.deriveTradeSymbols(startTimeMs, endTimeMs, convertResult.data, eligibleSoldOffBaseAssets);
+        if (!symbolsResult.success) {
+            return symbolsResult;
+        }
+
+        const tradeResult = await this.fetchSymbolsTrades(symbolsResult.data, startTimeMs, endTimeMs, initialSymbolTradeCursors);
         if (!tradeResult.success) {
             return tradeResult;
         }
@@ -816,25 +822,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
 
         return this.success({ list: parsed.data.list, moreData: parsed.data.moreData });
-    }
-
-    private async fetchTradeTransfers(
-        startTimeMs: number,
-        endTimeMs: number,
-        convertTransfers: BinanceTransferInterface[],
-        tradeContext: BinanceTradeFetchContextInterface
-    ): Promise<SyncResultInterface<BinanceTransferInterface[]>> {
-        const symbolsResult = await this.deriveTradeSymbols(
-            startTimeMs,
-            endTimeMs,
-            convertTransfers,
-            tradeContext.eligibleSoldOffBaseAssets
-        );
-        if (!symbolsResult.success) {
-            return symbolsResult;
-        }
-
-        return this.fetchSymbolsTrades(symbolsResult.data, startTimeMs, endTimeMs, tradeContext.initialSymbolTradeCursors);
     }
 
     private async fetchSymbolsTrades(
