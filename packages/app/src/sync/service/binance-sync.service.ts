@@ -39,6 +39,7 @@ import type {
 } from '@budgie/contracts';
 import type {
     BinanceSignedClient,
+    BinanceTradeCursorMapInterface,
     BinanceTransferInterface,
     SyncAccountInterface,
     SyncBatchResultInterface,
@@ -412,7 +413,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
             getUnixTime(this.resolveWindowStart(sync)),
             null,
             await binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(this.provider),
-            binanceTradeCursorService.parse(sync.binanceTradeCursor)
+            this.resolveResumeCursors(sync)
         );
         if (result.success) {
             return result.data;
@@ -477,6 +478,14 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         this.runClientToken = null;
         this.runExchangeAccounts = null;
         this.providerSourceFailedThisRun = false;
+    }
+
+    private resolveResumeCursors(sync: SyncEntityInterface): BinanceTradeCursorMapInterface {
+        if (sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt)) {
+            return {};
+        }
+
+        return binanceTradeCursorService.parse(sync.binanceTradeCursor);
     }
 
     private resolveWindowStart(sync: SyncEntityInterface): Date {

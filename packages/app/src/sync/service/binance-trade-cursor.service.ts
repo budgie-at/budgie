@@ -24,12 +24,25 @@ class BinanceTradeCursorService {
         }
     }
 
+    mergeCursors(
+        stored: BinanceTradeCursorMapInterface,
+        current: BinanceTradeCursorMapInterface
+    ): BinanceTradeCursorMapInterface {
+        const merged: BinanceTradeCursorMapInterface = { ...stored };
+        for (const [symbol, fromId] of Object.entries(current)) {
+            const storedFromId = merged[symbol];
+            merged[symbol] = isDefined(storedFromId) ? Math.max(storedFromId, fromId) : fromId;
+        }
+
+        return merged;
+    }
+
     async persistRunSideEffects(sync: SyncEntityInterface, client: BinanceSignedClient | null): Promise<void> {
         if (!isDefined(client)) {
             return;
         }
 
-        const mergedCursors = { ...this.parse(sync.binanceTradeCursor), ...client.getSymbolTradeCursors() };
+        const mergedCursors = this.mergeCursors(this.parse(sync.binanceTradeCursor), client.getSymbolTradeCursors());
         await syncRepository.update(sync.id, {
             binanceTradeCursor: isNotEmptyArray(Object.keys(mergedCursors)) ? JSON.stringify(mergedCursors) : null,
             lastWarning: client.isC2cUnavailable() ? BinanceTradeCursorService.C2C_UNAVAILABLE_WARNING : null
