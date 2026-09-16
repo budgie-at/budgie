@@ -31,8 +31,7 @@ class UnpairedOwnCardTransferRepairService {
             counterpart_account.deleted_at IS NOT NULL
             AND counterpart_account.type = 'BANK_SYNC'
             AND counterpart_account.id != own_account.id
-            AND counterpart_account.iban IS NOT NULL
-            AND SUBSTR(counterpart_account.iban, -4) = SUBSTR(tx.title, INSTR(tx.title, '*') + 1, 4)
+            AND (${UnpairedOwnCardTransferRepairService.buildCardMaskPredicate('counterpart_account')})
         WHERE tx.deleted_at IS NULL
             AND tx.consolidation_parent_transaction_id IS NULL
             AND tx.external_source = 'PRIVATBANK'
@@ -45,8 +44,7 @@ class UnpairedOwnCardTransferRepairService {
                 SELECT COUNT(*) FROM accounts archived_account
                 WHERE archived_account.deleted_at IS NOT NULL
                     AND archived_account.type = 'BANK_SYNC'
-                    AND archived_account.iban IS NOT NULL
-                    AND SUBSTR(archived_account.iban, -4) = SUBSTR(tx.title, INSTR(tx.title, '*') + 1, 4)
+                    AND (${UnpairedOwnCardTransferRepairService.buildCardMaskPredicate('archived_account')})
             ) = 1
             AND NOT EXISTS (
                 SELECT 1 FROM transactions counterpart_tx
@@ -103,6 +101,20 @@ class UnpairedOwnCardTransferRepairService {
         } else {
             await transactionTransferService.convertExpenseToTransfer(params);
         }
+    }
+
+    private static buildCardMaskPredicate(accountAlias: string): string {
+        return String.raw`
+            (
+                ${accountAlias}.external_id IS NOT NULL
+                AND SUBSTR(${accountAlias}.external_id, -4) = SUBSTR(tx.title, INSTR(tx.title, '*') + 1, 4)
+            )
+            OR (
+                ${accountAlias}.external_id IS NULL
+                AND ${accountAlias}.iban IS NOT NULL
+                AND SUBSTR(${accountAlias}.iban, -4) = SUBSTR(tx.title, INSTR(tx.title, '*') + 1, 4)
+            )
+        `;
     }
 }
 
