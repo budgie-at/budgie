@@ -14,6 +14,7 @@ fastlane/
 │   ├── ios/
 │   │   ├── copyright.txt
 │   │   └── <asc-locale>/{name,subtitle,keywords,promotional_text,description,release_notes,support_url}.txt
+│   ├── release-notes-state.json  # base tag/commit the committed notes were generated from
 │   └── android/
 │       └── <locale>/
 │           ├── title.txt
@@ -184,6 +185,60 @@ missing from either.
 | Release notes / changelog    | 4000      | 500        |
 
 Keywords are comma-separated with no spaces after the commas.
+
+## Release notes workflow (local-first)
+
+Release notes are generated **locally, never in CI**, and the committed files
+are the source of truth.
+
+`packages/app/scripts/generate-store-release-notes.ts` picks the commit range
+(everything since the latest `v*` tag when `HEAD` has moved past it, or the
+latest release's range when `HEAD` is exactly on the tag), keeps only
+user-facing commits — types `feat`, `fix`, `perf` with no scope or scope
+`app` — dedupes and sentence-cases the subjects, and reads the release
+version from `packages/app/package.json`.
+
+**LLM path (default when `ANTHROPIC_API_KEY` is set).** Sends the cleaned
+commit list to Claude (`STORE_NOTES_MODEL`, default `claude-opus-5`) in a
+single structured-output request and asks for release notes in Budgie's
+outcome-only voice for all five locales (`en`, `fr`, `uk`, `de`, `es`), each
+with an App Store variant and a Google Play variant. It validates every
+locale's length in code (App Store ≤ 3900 codepoints, Play ≤ 490 codepoints),
+retries once asking Claude to shorten only the violating fields, and
+hard-truncates at a line boundary if it is still too long. Writes
+`metadata/ios/<locale>/release_notes.txt` and
+`metadata/android/<locale>/changelogs/default.txt` for all five locales.
+
+**Fallback path (English only).** If `ANTHROPIC_API_KEY` is absent, or the
+API call fails for any reason, it renders a plain "What's new" bullet list
+(or a generic "Stability and quality improvements" line when there are no
+user-facing commits), writes it to the `en-US` files only (trimmed to 4000 /
+500 characters), and never touches the other four locale files. It prints a
+warning listing which locale files are now older than the refreshed `en-US`
+copy, so they can be translated by hand or through the same agent flow that
+maintains the Lingui catalogs — never machine translation.
+
+Either path writes `metadata/release-notes-state.json`, recording the base
+tag, the commit it generated from, and the version. This is how
+`--check` knows what the committed notes cover.
+
+Release procedure:
+
+1. Run `pnpm store:notes` from `packages/app` after a user-facing change
+   lands, or before cutting a release.
+2. Translate any locale files the run flagged as stale.
+3. Commit the updated `metadata/ios/**/release_notes.txt`,
+   `metadata/android/**/changelogs/default.txt`, and
+   `metadata/release-notes-state.json`.
+4. `fastlane store_preflight`, then `fastlane ios ios_metadata` and
+   `fastlane android android_metadata` push the committed copy to both
+   stores.
+
+Check freshness without regenerating (never blocks, only warns):
+
+```bash
+node --experimental-strip-types packages/app/scripts/generate-store-release-notes.ts --check
+```
 
 ## Refresh procedure
 
