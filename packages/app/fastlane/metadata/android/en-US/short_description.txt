@@ -1,0 +1,1 @@
+Offline expense tracker and budget planner. No account, no bank login, no ads.

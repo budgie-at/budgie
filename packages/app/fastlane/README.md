@@ -35,10 +35,8 @@ Screenshots are captured against the E2E build
 `team_id` defaults to the team id in `eas.json` and can be overridden with
 `FASTLANE_TEAM_ID`.
 
-The iOS `metadata/` tree carries real ASO copy for all five locales. The
-Android tree still lands as locale skeletons (empty locale folders tracked
-with `.gitkeep`) until the Play copy sub-issue fills it in; Play screenshots
-are a separate sub-issue.
+Both the iOS and Android `metadata/` trees carry real ASO copy for all five
+locales. Play screenshots are a separate sub-issue.
 
 ## Lanes
 
@@ -70,9 +68,11 @@ metadata file exists and its stripped character length (codepoints, not bytes)
 is within budget, and that `keywords.txt` carries no space after a comma. An
 empty locale folder — which passes the directory-only `verify_store_tree` check
 — still fails here, so `deliver`/`supply` can never upload a blank listing for a
-locale. The iOS budget table per field is `IOS_FIELD_BUDGETS` in the Fastfile;
-the Android metadata sub-issue adds the matching `ANDROID_FIELD_BUDGETS` table
-and wires the same gate against the Play tree.
+locale. The budget table per field is `IOS_FIELD_BUDGETS` and
+`ANDROID_FIELD_BUDGETS` in the Fastfile; each locale's Play
+`full_description.txt` is kept byte-identical to its iOS `description.txt`,
+and `changelogs/default.txt` carries the same release notes as iOS
+`release_notes.txt`, trimmed to the 500-character Play changelog budget.
 
 `ios_metadata` runs `deliver` with `skip_binary_upload` and `skip_screenshots`,
 so it only pushes text metadata to the editable version and leaves the binary

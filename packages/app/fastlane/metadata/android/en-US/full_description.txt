@@ -1,0 +1,35 @@
+Budgie is an expense tracker that works the way your money actually moves: offline, instantly, and without asking anyone's permission. Open it on the platform, in the queue, on a plane — every expense lands in under five seconds, and nothing waits for a signal. No account to create, no bank credentials to hand over, no subscription clock ticking in the background.
+
+WORKS WITHOUT A CONNECTION
+Every transaction lives on your phone. Add expenses, browse your history, and review your analytics with no internet connection at all — nothing has to reach a server first.
+
+EVERY EXPENSE IN SECONDS
+Say an expense out loud or type it, and Budgie fills in the category on its own, right there on your device. Split a purchase across categories or people in the same flow.
+
+SEE WHERE THE MONEY GOES
+Spending analytics break down every category and tag, so a pattern shows up before it becomes a problem. Track your net worth across every account, card, and currency in one place.
+
+BUDGETS AND RUNWAY
+Set a budget that matches your payday, not the calendar month, and watch your runway update as you spend, so you always know how far your money will stretch.
+
+ACCOUNTS, CARDS AND CRYPTO
+Track cash, cards, and crypto holdings side by side in whatever currency they're actually in — Budgie converts on the fly. Where your bank supports it, import statements directly instead of typing every line by hand.
+
+DEBTS AND SHARED MONEY
+Keep a running ledger of who owes who, log repayments, and see the real remaining balance at a glance.
+
+LOCKED DOWN
+Unlock with a PIN, your face, or your fingerprint, and hide your balances from the app switcher and screenshots. Back up your data on your own terms, protected the whole time.
+
+EVERYTHING ELSE YOU'D WANT
+• Multi-currency accounts and automatic conversion
+• Recurring payments calendar so nothing sneaks up on you
+• Import bank statements as CSV or PDF, where supported
+• Tags for spending you track your own way
+• Voice entry when typing isn't convenient
+• PIN, biometric lock, and screenshot protection
+• No account, no bank login, no subscription
+
+Budgie is currently in private beta. Join the waitlist and see for yourself why your money doesn't need to leave your phone to be understood.
+
+Learn more at budgie.at.

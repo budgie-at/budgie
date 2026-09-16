@@ -106,6 +106,13 @@ IOS_FIELD_BUDGETS = {
   "support_url.txt" => Float::INFINITY
 }.freeze
 
+ANDROID_FIELD_BUDGETS = {
+  "title.txt" => 30,
+  "short_description.txt" => 80,
+  "full_description.txt" => 4000,
+  "changelogs/default.txt" => 500
+}.freeze
+
 def verify_field_budgets(label, base_path, field_budgets)
   ASC_LOCALES.each do |locale|
     field_budgets.each do |relative_path, limit|
@@ -234,6 +241,7 @@ lane :store_preflight do
   verify_store_tree("iOS metadata", IOS_METADATA_PATH)
   verify_store_tree("Android metadata", ANDROID_METADATA_PATH)
   verify_field_budgets("iOS metadata", IOS_METADATA_PATH, IOS_FIELD_BUDGETS)
+  verify_field_budgets("Android metadata", ANDROID_METADATA_PATH, ANDROID_FIELD_BUDGETS)
 
   android_images = android_image_counts
   if android_images.empty?
