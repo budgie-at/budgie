@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Biometric Authentication — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`Biometric Auth`, t(i18n)`Face ID drives the encryption key.`, [
-        t(i18n)`biometric`,
-        t(i18n)`face id`,
-        t(i18n)`security`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`Biometric Auth`,
+        t(i18n)`Face ID drives the encryption key.`,
+        [t(i18n)`biometric`, t(i18n)`face id`, t(i18n)`security`],
+        resolveOgPlate('biometric-authentication', lang)
+    );
 };
 
 export default OgImage;

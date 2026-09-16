@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Monobank Auto-Sync — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`Monobank Bank Sync`, t(i18n)`Direct API. No aggregator. Yours forever.`, [
-        t(i18n)`monobank`,
-        t(i18n)`privacy`,
-        t(i18n)`bank sync`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`Monobank Bank Sync`,
+        t(i18n)`Direct API. No aggregator. Yours forever.`,
+        [t(i18n)`monobank`, t(i18n)`privacy`, t(i18n)`bank sync`],
+        resolveOgPlate('monobank-sync', lang)
+    );
 };
 
 export default OgImage;

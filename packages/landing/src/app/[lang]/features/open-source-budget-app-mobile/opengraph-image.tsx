@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Source-Available Mobile Budget App — Auditable Privacy — Budgie';
@@ -17,7 +18,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         t(
             i18n
         )`Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line.`,
-        [t(i18n)`open-source`, t(i18n)`transparency`, t(i18n)`github`]
+        [t(i18n)`open-source`, t(i18n)`transparency`, t(i18n)`github`],
+        resolveOgPlate('open-source-budget-app-mobile', lang)
     );
 };
 

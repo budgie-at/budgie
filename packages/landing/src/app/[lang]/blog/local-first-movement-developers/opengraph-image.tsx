@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createBlogOgImage } from '../../../../blog/component/blog-og-image/blog-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'The Local-First Movement: Why Developers Are Building Offline Apps';
@@ -12,11 +13,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createBlogOgImage(t(i18n)`The Local-First Movement: Why Developers Are Building Offline Apps`, [
-        t(i18n)`local-first`,
-        t(i18n)`offline-first`,
-        t(i18n)`CRDTs`
-    ]);
+    return createBlogOgImage(
+        t(i18n)`The Local-First Movement: Why Developers Are Building Offline Apps`,
+        [t(i18n)`local-first`, t(i18n)`offline-first`, t(i18n)`CRDTs`],
+        resolveOgPlate('offline-first-expense-tracker', lang)
+    );
 };
 
 export default OgImage;

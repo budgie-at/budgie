@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Analytics by Tag — Per-Tag Spending Tab — Budgie';
@@ -17,7 +18,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         t(
             i18n
         )`A dedicated Tags tab in Statistics with sortable per-tag totals and a drillable Untagged bucket that surfaces every transaction missing a label.`,
-        [t(i18n)`analytics`, t(i18n)`tags`, t(i18n)`statistics`]
+        [t(i18n)`analytics`, t(i18n)`tags`, t(i18n)`statistics`],
+        resolveOgPlate('statistics-tags-tab', lang)
     );
 };
 

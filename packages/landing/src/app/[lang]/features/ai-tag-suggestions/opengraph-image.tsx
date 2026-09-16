@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Automatic Expense Tags — On-Device — Budgie';
@@ -17,7 +18,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         t(
             i18n
         )`After picking a category, the on-device LLM proposes up to three tags as tappable pills. Embedding-first fallback when the LLM is busy.`,
-        [t(i18n)`ai`, t(i18n)`tags`, t(i18n)`suggestions`]
+        [t(i18n)`ai`, t(i18n)`tags`, t(i18n)`suggestions`],
+        resolveOgPlate('ai-tag-suggestions', lang)
     );
 };
 

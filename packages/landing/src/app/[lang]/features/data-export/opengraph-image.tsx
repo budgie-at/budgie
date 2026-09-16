@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'CSV & Database Export — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`Data Export`, t(i18n)`CSV for spreadsheets. Encrypted backup for restore.`, [
-        t(i18n)`export`,
-        t(i18n)`csv`,
-        t(i18n)`backup`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`Data Export`,
+        t(i18n)`CSV for spreadsheets. Encrypted backup for restore.`,
+        [t(i18n)`export`, t(i18n)`csv`, t(i18n)`backup`],
+        resolveOgPlate('data-export', lang)
+    );
 };
 
 export default OgImage;
