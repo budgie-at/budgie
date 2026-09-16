@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.69.0](https://github.com/budgie-at/budgie/compare/v6.68.0...v6.69.0) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** correct store copy claims per coordinator review ([820b188](https://github.com/budgie-at/budgie/commit/820b1885b22a41bcfd5e7b4e3fa9d6bad4ccb150))
+* **app:** sync play store copy with corrected app store descriptions ([e983034](https://github.com/budgie-at/budgie/commit/e9830343e466d090f9d8686ac84879915acb3a87))
+
+
+### Features
+
+* **app:** app store metadata for all five locales with budget gate ([c876277](https://github.com/budgie-at/budgie/commit/c876277025bb533748d6985fef821df89882c275)), closes [#1145](https://github.com/budgie-at/budgie/issues/1145) [#1141](https://github.com/budgie-at/budgie/issues/1141)
+* **app:** google play metadata and changelogs for all five locales ([dc1ebd8](https://github.com/budgie-at/budgie/commit/dc1ebd83c8e4338fe05a8d4426f6ecb2eec691dc)), closes [#1142](https://github.com/budgie-at/budgie/issues/1142)
+
+
+
+
+
 # [6.68.0](https://github.com/budgie-at/budgie/compare/v6.67.18...v6.68.0) (2026-09-16)
 
 
