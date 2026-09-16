@@ -47,20 +47,20 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Qwen3 1.7B and a 768-dim embedding model run entirely on your phone. Smart suggestions, voice entry, and
-                        auto-categorization — no data leaves your device.
+                        Budgie&apos;s AI runs entirely on your phone. Smart suggestions, voice entry, and auto-categorization — no data
+                        leaves your device.
                     </Trans>
                 }
             >
                 <PillarHubHeroBulletList>
                     <PillarHubHeroBulletItem>
-                        <Trans>Qwen3 1.7B runs on your phone — no API key, no subscription</Trans>
+                        <Trans>Runs on your phone, not in the cloud — no API key, no subscription</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
                         <Trans>Category suggestions drawn from your own history — never from a cloud service</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
-                        <Trans>Voice transaction entry via whisper.rn — audio never leaves the device</Trans>
+                        <Trans>Voice transaction entry — the audio never leaves the device</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
                         <Trans>Merchant name normalization for Cyrillic and foreign bank statements</Trans>
@@ -78,8 +78,7 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         index={0}
                         tagline={
                             <Trans>
-                                Two on-device models — Qwen3 1.7B for chat and a 768-dim embedding model — power category, tag, and merchant
-                                suggestions privately.
+                                Category, tag, and merchant suggestions that run entirely on your phone and learn from your corrections.
                             </Trans>
                         }
                         title={<Trans>On-Device AI Auto-Categorization</Trans>}
@@ -87,22 +86,13 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/voice-transaction-entry`}
                         index={1}
-                        tagline={
-                            <Trans>
-                                Speak it. Budgie logs it. whisper.rn (whisper.cpp backend) transcribes on-device — audio never leaves your
-                                phone.
-                            </Trans>
-                        }
+                        tagline={<Trans>Speak it. Budgie logs it. Speech is transcribed on your phone — the audio never leaves it.</Trans>}
                         title={<Trans>Voice Transaction Entry</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/ai-merchant-translation`}
                         index={2}
-                        tagline={
-                            <Trans>
-                                Cyrillic, Greek, Arabic merchant strings — the on-device LLM transliterates and adds search keywords.
-                            </Trans>
-                        }
+                        tagline={<Trans>Cyrillic, Greek, and Arabic merchant names become readable and searchable — on your phone.</Trans>}
                         title={<Trans>AI Merchant Name Translation</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
@@ -111,7 +101,7 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         tagline={
                             <Trans>
                                 Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags,
-                                comment, amount, account, all pre-filled.
+                                comment, and amount, all filled in.
                             </Trans>
                         }
                         title={<Trans>Smart Transaction Suggestions — Tap and Done</Trans>}
@@ -121,8 +111,8 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         index={4}
                         tagline={
                             <Trans>
-                                After picking a category, the on-device LLM proposes up to three tags as tappable pills. Embedding-first
-                                fallback when the LLM is busy.
+                                After picking a category, Budgie proposes up to three tags as tappable pills — instantly, even while the
+                                larger model is still warming up.
                             </Trans>
                         }
                         title={<Trans>Automatic Tag Suggestions — Tap, Don&apos;t Type</Trans>}
@@ -142,28 +132,28 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            Three, all on your device: a language model for natural-language understanding and chat, a 768-dimensional
-                            embedding model for nearest-neighbor categorization from your own transaction history, and a speech model for
-                            voice entry. Every one of them runs locally with no external API call.
+                            Three jobs, all done on your device: understanding what you write or say, matching a new transaction against the
+                            ones you have already categorized, and turning speech into text. Every one of them runs on your phone with no
+                            external call.
                         </Trans>
                     }
-                    question={<Trans>Which AI models does Budgie use?</Trans>}
+                    question={<Trans>Where does Budgie&apos;s AI run?</Trans>}
                 />
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            About 1.6 GB for the two models behind categorization and suggestions, plus a further 0.9 GB if you use voice
-                            entry. Nothing downloads until you switch On-device AI on in Settings, and then only when you first use the
-                            feature that needs it. Each file is cached on the device afterwards.
+                            About 1.6 GB for categorization and suggestions, plus a further 0.9 GB if you use voice entry. Nothing downloads
+                            until you switch On-device AI on in Settings, and then only when you first use the feature that needs it. Each
+                            download happens once and is kept on the device afterwards.
                         </Trans>
                     }
-                    question={<Trans>How large are the model downloads?</Trans>}
+                    question={<Trans>How large is the one-time download?</Trans>}
                 />
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            No. Voice entry uses whisper.rn — a React Native binding for whisper.cpp — which transcribes audio directly on
-                            your device. Your voice recordings are never streamed to any external server.
+                            No. Voice entry transcribes the audio directly on your device. Your voice is never streamed to an external
+                            server and no recording is kept.
                         </Trans>
                     }
                     question={<Trans>Does voice entry send audio to a server?</Trans>}
@@ -172,8 +162,8 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Categorization and suggestions work in any language because they are driven by your own history. Voice entry
-                            supports English, Ukrainian, German, French, and Spanish as primary languages, with Whisper large-v3-turbo
-                            providing broader coverage for other languages.
+                            supports English, Ukrainian, German, French, and Spanish as primary languages, with broader coverage for dozens
+                            more.
                         </Trans>
                     }
                     question={<Trans>What languages does the AI support?</Trans>}
@@ -181,8 +171,8 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            Every time you accept, edit, or reject a category suggestion, the embedding model index updates locally. The
-                            more you use Budgie, the more accurately the embedding model mirrors your personal spending patterns.
+                            Every time you accept, edit, or reject a category suggestion, Budgie updates its local index of your history.
+                            The more you use Budgie, the more closely its suggestions mirror your own spending patterns.
                         </Trans>
                     }
                     question={<Trans>How does AI improve over time?</Trans>}
