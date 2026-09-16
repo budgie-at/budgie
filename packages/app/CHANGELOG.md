@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.65.4](https://github.com/budgie-at/budgie/compare/v6.65.3...v6.65.4) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** compare split remainder in microunits ([2ea5df9](https://github.com/budgie-at/budgie/commit/2ea5df9a226a31f12103bd0dd731628dab8b0b57)), closes [#946](https://github.com/budgie-at/budgie/issues/946)
+
+
+
+
+
 ## [6.65.2](https://github.com/budgie-at/budgie/compare/v6.65.1...v6.65.2) (2026-09-15)
 
 
