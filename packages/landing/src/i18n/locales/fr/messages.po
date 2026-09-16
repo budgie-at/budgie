@@ -2755,7 +2755,7 @@ msgid "Aggregators sit between you and your bank, mirroring transactions to thei
 msgstr "Les agrégateurs s'intercalent entre vous et votre banque, copiant les transactions sur leurs serveurs. Budgie ne les utilise délibérément pas."
 
 #: src/app/[lang]/features/ai-auto-categorization/opengraph-image.tsx
-#: src/app/[lang]/features/ai-merchant-translation/opengraph-image.tsx
+#: src/app/[lang]/features/ai-category-translation/opengraph-image.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/opengraph-image.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
 #: src/app/[lang]/features/on-device-ai-budget-app/opengraph-image.tsx
@@ -2775,6 +2775,11 @@ msgstr "Catégorisation par IA"
 msgid "AI Categorization"
 msgstr "Catégorisation par IA"
 
+#: src/app/[lang]/ai-features/page.tsx
+#: src/app/[lang]/features/ai-category-translation/metadata.ts
+msgid "AI Category & Tag Translation"
+msgstr "Traduction des catégories et tags par IA"
+
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "AI category suggestion fills the gap for non-MCC transactions"
 msgstr "La suggestion de catégorie par IA comble les lacunes pour les transactions sans MCC"
@@ -2786,11 +2791,6 @@ msgstr ""
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "AI features have become standard in personal finance apps. Auto-categorization, spending insights, budget suggestions — the question is no longer whether your app uses AI, but where that AI runs. For most apps, the answer is: on a remote server, with your transaction data sent over the network to get there."
 msgstr "Les fonctionnalités d'IA sont devenues standard dans les applications de finances personnelles. Catégorisation automatique, aperçus des dépenses, suggestions de budget — la question n'est plus de savoir si votre application utilise l'IA, mais où cette IA s'exécute. Pour la plupart des applications, la réponse est : sur un serveur distant, avec vos données de transactions envoyées sur le réseau pour y arriver."
-
-#: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/features/ai-merchant-translation/metadata.ts
-msgid "AI Merchant Name Translation"
-msgstr "Traduction du nom du marchand par IA"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "AI on your phone is not free — it trades network round-trips for space on the device. Budgie is explicit about the bill, and none of it is charged until you ask for it."
@@ -3191,13 +3191,13 @@ msgstr "Les dépendances sont-elles régulièrement mises à jour ?"
 msgid "Are my backups safe if someone accesses my cloud storage?"
 msgstr "Mes sauvegardes sont-elles en sécurité si quelqu'un accède à mon stockage cloud ?"
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Are my original category and tag names kept?"
+msgstr "Mes noms de catégories et de tags d'origine sont-ils conservés ?"
+
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Are open banking APIs safer than screen scraping?"
 msgstr "Les API d'Open Banking sont-elles plus sures que le screen scraping ?"
-
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Are the original merchant strings kept?"
-msgstr "Les chaînes de marchands originales sont-elles conservées ?"
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Are the presets the same on every screen?"
@@ -3507,10 +3507,6 @@ msgstr "Fenêtre de re-synchronisation bancaire — Combler les transactions man
 #: src/app/[lang]/features/csv-import/opengraph-image.tsx
 msgid "bank statement"
 msgstr "relevé bancaire"
-
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Bank statements from Ukrainian, Greek, or Arabic-script banks come back full of unreadable merchant names — useless for search or analytics. Budgie rewrites each one into readable Latin text, adds search keywords, and keeps both forms. All of it happens on your phone."
-msgstr "Les relevés bancaires ukrainiens, grecs ou en écriture arabe reviennent remplis de noms de commerçants illisibles — inutilisables pour la recherche ou les statistiques. Budgie réécrit chacun d'eux en texte latin lisible, ajoute des mots-clés de recherche, et conserve les deux formes. Tout cela se passe sur votre téléphone."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
@@ -3897,9 +3893,9 @@ msgstr "Les deux appareils arrivent au meme etat final sans avoir besoin d'un se
 msgid "Both Erste statement layouts supported: classic and the 2026 modern format"
 msgstr "Les deux formats de relevé Erste Bank pris en charge : classique et le format moderne 2026"
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Both forms are searchable — search finds the merchant whichever one you remember"
-msgstr "Les deux formes sont recherchables — la recherche trouve le commerçant, quelle que soit celle dont vous vous souvenez"
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Both forms are searchable — search finds the category or tag whichever one you remember"
+msgstr "Les deux formes sont consultables — la recherche trouve la catégorie ou le tag, quelle que soit celle dont vous vous souvenez"
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Both legs are preserved (e.g. $1000 → €925) along with the FX rate at transfer time. See Account Transfers for details."
@@ -5305,6 +5301,10 @@ msgstr "Espèces, banque, épargne, crypto et dettes en un seul chiffre, convert
 msgid "categories"
 msgstr "catégories"
 
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Categories and tags you create or import in Ukrainian, Greek, or Arabic script are unreadable to search and suggestions built around Latin text. Budgie writes an English form for each one, adds search keywords, and keeps both forms. All of it happens on your phone."
+msgstr "Les catégories et tags que vous créez ou importez en écriture ukrainienne, grecque ou arabe sont illisibles pour la recherche et les suggestions conçues pour le texte latin. Budgie rédige une forme anglaise pour chacun, ajoute des mots-clés de recherche et conserve les deux formes. Tout cela se passe sur votre téléphone."
+
 #: src/app/[lang]/features/tag-analytics/page.tsx
 msgid "Categories answer \"what kind of expense\"; tags answer \"for what purpose\". Both views live in Analytics — switch between them with one tap. Categories give a structured budget view; tags give project-level and context-level views."
 msgstr "Les catégories répondent à \"quel type de dépense\" ; les étiquettes répondent à \"dans quel but\". Les deux vues se trouvent dans Analyses — basculez entre elles d'un seul appui. Les catégories donnent une vue budgétaire structurée ; les étiquettes donnent des vues au niveau du projet et du contexte."
@@ -5364,6 +5364,14 @@ msgstr "Catégorisez sans divulguer — le modèle fonctionne sur votre téléph
 msgid "Category"
 msgstr "Category"
 
+#: src/app/[lang]/features/ai-category-translation/opengraph-image.tsx
+msgid "Category & Tag Translation"
+msgstr "Traduction des catégories et tags"
+
+#: src/app/[lang]/features/ai-category-translation/metadata.ts
+msgid "Category & Tag Translation, On-Device — Budgie"
+msgstr "Traduction des catégories et tags, sur l'appareil — Budgie"
+
 #: src/app/[lang]/features/spending-analytics/metadata.ts
 msgid "Category and tag breakdown charts, monthly trends, and balance timelines — with drill-down from any chart slice to the underlying transactions. Analytics that find your gaps."
 msgstr "Graphiques de répartition par catégorie et étiquette, tendances mensuelles et chronologies de solde — avec accès depuis n’importe quelle tranche de graphique aux transactions sous-jacentes. Des analytiques qui trouvent vos lacunes."
@@ -5375,6 +5383,14 @@ msgstr "Répartitions par catégorie et par étiquette sur n’importe quelle p�
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Category and tag breakdowns for any period, with drill-down from any row to the transactions behind it."
 msgstr "Répartitions par catégorie et par tag pour n'importe quelle période, avec accès depuis chaque ligne aux transactions qui la composent."
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Category and tag names in Cyrillic, Greek, or Arabic get an English form — on your device, without sending anything to a server."
+msgstr "Les noms de catégories et de tags en cyrillique, en grec ou en arabe obtiennent une forme anglaise, sur votre appareil, sans rien envoyer à un serveur."
+
+#: src/app/[lang]/ai-features/page.tsx
+msgid "Category and tag translation for Cyrillic, Greek, and Arabic names"
+msgstr "Traduction des catégories et tags pour les noms cyrilliques, grecs et arabes"
 
 #: src/app/[lang]/features/spending-analytics/metadata.ts
 msgid "Category breakdown, tag breakdown, monthly trends — drill into any chart slice."
@@ -5393,8 +5409,8 @@ msgid "Category suggestions drawn from your own history — never from a cloud s
 msgstr "Des suggestions de catégorie tirées de votre propre historique — jamais d’un service cloud"
 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
-msgid "Category suggestions, tag suggestions, merchant clean-up, and voice entry all run on your phone, on both iOS and Android — nothing leaves the device."
-msgstr "Les suggestions de catégorie, les suggestions de tags, le nettoyage des commerçants et la saisie vocale s'exécutent tous sur votre téléphone, sur iOS comme sur Android — rien ne quitte l'appareil."
+msgid "Category suggestions, tag suggestions, category and tag translation, and voice entry all run on your phone, on both iOS and Android — nothing leaves the device."
+msgstr "Les suggestions de catégories, les suggestions de tags, la traduction des catégories et tags, et la saisie vocale s'exécutent toutes sur votre téléphone, sur iOS comme sur Android — rien ne quitte l'appareil."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Category-based analytics answer what kind of expense a transaction is — groceries, transport, dining. Tags answer a different and equally important question: what was it for? A dinner tagged as a #work-lunch, a #vacation flight charged to the same “Travel” category as a commute, a shared dinner that needs a #split label — these distinctions only surface when you have a dedicated tag reporting layer."
@@ -6374,26 +6390,26 @@ msgstr "Étiquettes de transactions personnalisées pour le suivi des dépenses 
 msgid "CVE (Common Vulnerabilities and Exposures) tracking and responses"
 msgstr "Le suivi et les réponses aux CVE (Common Vulnerabilities and Exposures)"
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
+#: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Cyrillic (Ukrainian, Russian, Bulgarian, Serbian), Greek, Arabic, Hebrew, Chinese, Japanese, Korean, Thai, and more."
 msgstr "Cyrillique (ukrainien, russe, bulgare, serbe), grec, arabe, hébreu, chinois, japonais, coréen, thaï, et plus encore."
 
-#: src/app/[lang]/features/ai-merchant-translation/opengraph-image.tsx
+#: src/app/[lang]/features/ai-category-translation/opengraph-image.tsx
 msgid "Cyrillic to English. On-device."
 msgstr "Du cyrillique à l’anglais. Sur l’appareil."
 
 #: src/app/[lang]/ai-features/page.tsx
-#: src/app/[lang]/features/ai-merchant-translation/metadata.ts
-msgid "Cyrillic, Greek, and Arabic merchant names become readable and searchable — on your phone."
-msgstr "Les noms de commerçants en cyrillique, grec et arabe deviennent lisibles et recherchables — sur votre téléphone."
+#: src/app/[lang]/features/ai-category-translation/metadata.ts
+msgid "Cyrillic, Greek, and Arabic category and tag names become readable and searchable — on your phone."
+msgstr "Les noms de catégories et de tags en cyrillique, en grec et en arabe deviennent lisibles et consultables, sur votre téléphone."
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
+#: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Cyrillic, Greek, Arabic, Chinese, Japanese, Korean, and more"
 msgstr "Cyrillique, grec, arabe, chinois, japonais, coréen, et plus encore"
 
-#: src/app/[lang]/features/ai-merchant-translation/metadata.ts
-msgid "Cyrillic, Greek, or Cyrillic-script merchant names get normalized to Latin so your transaction list reads cleanly. Runs on-device."
-msgstr "Les noms de marchands en cyrillique, grec ou écriture arabe sont normalisés en texte latin pour rendre votre liste de transactions plus lisible. Fonctionne sur l’appareil."
+#: src/app/[lang]/features/ai-category-translation/metadata.ts
+msgid "Cyrillic, Greek, or Arabic category and tag names get an English form so search and suggestions match either script. Runs on-device."
+msgstr "Les noms de catégories et de tags en cyrillique, en grec ou en arabe obtiennent une forme anglaise afin que la recherche et les suggestions correspondent aux deux écritures. Fonctionne sur l'appareil."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Daily prices backfilled only for the crypto accounts you actually hold"
@@ -6989,9 +7005,9 @@ msgstr "La date de retour cible déclenche-t-elle un rappel ?"
 msgid "Does this replace split transactions?"
 msgstr "Cela remplace-t-il les transactions fractionnées ?"
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Does this run on every transaction?"
-msgstr "Cela s'exécute-t-il sur chaque transaction ?"
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Does this run on every category and tag?"
+msgstr "Cela s'applique-t-il à chaque catégorie et chaque tag ?"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Does this work across two different banks?"
@@ -7082,9 +7098,9 @@ msgstr "Chaque champ a son propre sélecteur listant les en-têtes trouvés dans
 msgid "Each group is updated in bulk, which keeps large imports practical even when years of transactions need valuation."
 msgstr ""
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Each new transaction's title joins a translation queue. Budgie proposes a readable name plus search keywords, and saves both alongside the original — so search finds the merchant either way."
-msgstr "L'intitulé de chaque nouvelle transaction rejoint une file de traduction. Budgie propose un nom lisible ainsi que des mots-clés de recherche, et enregistre les deux aux côtés de l'original — ainsi la recherche trouve le commerçant dans les deux cas."
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Each new category or tag joins a translation queue. Budgie proposes an English form plus search keywords, and saves both alongside the original — so search and suggestions find it either way."
+msgstr "Chaque nouvelle catégorie ou nouveau tag rejoint une file de traduction. Budgie propose une forme anglaise et des mots-clés de recherche, puis enregistre les deux à côté de l'original — pour que la recherche et les suggestions le trouvent de toute façon."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Each of these groups brings different perspectives, skills, and motivations. A privacy researcher might notice data collection patterns that a security auditor overlooks. A developer integrating with the project might discover edge cases the original authors missed. This diversity of attention is a strength no single security team can replicate."
@@ -7121,6 +7137,10 @@ msgstr "Les membres en accès anticipé bénéficient de 50% de réduction sur l
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Easy to make formula errors"
 msgstr "Facile de faire des erreurs de formules"
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Edit any category or tag if its English form comes back wrong"
+msgstr "Modifiez n'importe quelle catégorie ou tag si sa forme anglaise est incorrecte"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Edit it until it fits"
@@ -7736,7 +7756,7 @@ msgstr "fonctionnalités"
 #: src/app/[lang]/features/account-management/page.tsx
 #: src/app/[lang]/features/account-transfers/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
+#: src/app/[lang]/features/ai-category-translation/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 #: src/app/[lang]/features/balance-adjustment/page.tsx
@@ -8127,14 +8147,6 @@ msgstr "Pour les utilisateurs qui souhaitent l'importation automatique de transa
 msgid "For users:"
 msgstr "Pour les utilisateurs :"
 
-#: src/app/[lang]/features/ai-merchant-translation/metadata.ts
-msgid "Foreign Merchant Name Normalizer — Budgie"
-msgstr "Normaliseur de noms de commerçants étrangers — Budgie"
-
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Foreign merchant names from Cyrillic, Greek, or Arabic bank statements get normalized to readable Latin — on your device, without sending anything to a server."
-msgstr "Les noms de commerçants étrangers provenant de relevés bancaires en cyrillique, grec ou arabe sont normalisés en latin lisible — sur votre appareil, sans rien envoyer à un serveur."
-
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Fork it if we disappear. The database format and the app are both yours to keep."
 msgstr "Forkez-le si nous disparaissons. Le format de la base de données et l’application vous appartiennent."
@@ -8467,7 +8479,7 @@ msgstr "Les positions se consolident dans le patrimoine net aux côtés des comp
 #: src/app/[lang]/features/account-management/page.tsx
 #: src/app/[lang]/features/account-transfers/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
+#: src/app/[lang]/features/ai-category-translation/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 #: src/app/[lang]/features/balance-adjustment/page.tsx
@@ -8778,7 +8790,7 @@ msgid "How is this different from the Tag Analytics page?"
 msgstr "En quoi est-ce différent de la page Analyses d'étiquettes ?"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
+#: src/app/[lang]/features/ai-category-translation/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/tag-analytics/page.tsx
@@ -9896,10 +9908,6 @@ msgstr "La correction manuelle se fait en un appui. Ouvrez la transaction consol
 msgid "Manual override is two taps in Settings. The theme switch is non-flickering on cold launch (no white-flash). Charts and accents recolor for legibility."
 msgstr "Le remplacement manuel est en deux touches dans les paramètres. Le changement de thème ne produit pas de scintillement au démarrage à froid (pas d'éclair blanc). Les graphiques et accents changent de couleur pour la lisibilité."
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Manual override per merchant if a name comes back wrong"
-msgstr "Correction manuelle par commerçant si un nom revient incorrect"
-
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Manual refund search can find same-currency expenses across accounts. Budgie sorts likely matches by amount and date so the closest refund target appears first."
 msgstr "La recherche manuelle de remboursement peut trouver des dépenses dans la même devise sur tous les comptes. Budgie trie les correspondances probables par montant et par date afin que la cible de remboursement la plus proche apparaisse en premier."
@@ -10042,10 +10050,6 @@ msgstr "Les modèles mentaux comptent. Dans une application local-first, différ
 msgid "Merchant Category Code — the universal 4-digit code your bank attaches to every card transaction. 5814 is \"fast food\", 4111 is \"transit\", 5411 is \"supermarket\", and so on."
 msgstr "Code de catégorie marchand — le code universel à 4 chiffres que votre banque attache à chaque transaction par carte. 5814 est « restauration rapide », 4111 est « transit », 5411 est « supermarché », etc."
 
-#: src/app/[lang]/ai-features/page.tsx
-msgid "Merchant name normalization for Cyrillic and foreign bank statements"
-msgstr "Normalisation des noms de commerçants pour les relevés bancaires cyrilliques et étrangers"
-
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Merchant recognised locally"
 msgstr "Commerçant reconnu en local"
@@ -10053,10 +10057,6 @@ msgstr "Commerçant reconnu en local"
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Merchant refunds arrive as positive income, but they usually reverse an earlier expense. Linking the income to that expense keeps income and spending analytics honest."
 msgstr "Les remboursements marchands arrivent comme des revenus positifs, mais ils annulent généralement une dépense précédente. Relier le revenu à cette dépense garde les analyses de revenus et de dépenses fidèles."
-
-#: src/app/[lang]/features/ai-merchant-translation/opengraph-image.tsx
-msgid "Merchant Translation"
-msgstr "Traduction des marchands"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "Merchants you have categorized before are recognized instantly"
@@ -10541,7 +10541,7 @@ msgstr "Suivi multidimensionnel sans tableurs."
 msgid "Multi-Language App — Budgie"
 msgstr "Application multilingue — Budgie"
 
-#: src/app/[lang]/features/ai-merchant-translation/opengraph-image.tsx
+#: src/app/[lang]/features/ai-category-translation/opengraph-image.tsx
 #: src/app/[lang]/features/multi-language-app/opengraph-image.tsx
 msgid "multilingual"
 msgstr "multilingue"
@@ -11426,9 +11426,9 @@ msgstr "Sur votre appareil. Lorsque vous définissez un code PIN, ce code PIN es
 msgid "On your phone"
 msgstr "Sur votre téléphone"
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "On your phone — no merchant name ever leaves it"
-msgstr "Sur votre téléphone — aucun nom de commerçant n'en sort jamais"
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "On your phone — no category or tag name ever leaves it"
+msgstr "Sur votre téléphone — aucun nom de catégorie ou de tag ne le quitte jamais"
 
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "On your phone, and nowhere else. Budgie has no account system and no server of its own, so there is nothing to upload and nothing for us to read. Set a PIN and the data is encrypted on the device with that PIN."
@@ -11847,9 +11847,9 @@ msgstr "Seulement l'autorisation de lecture"
 msgid "Only the rows without a category"
 msgstr "Uniquement les lignes sans catégorie"
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Only when needed. Latin-script merchants skip translation. Non-Latin strings flow through the queue automatically after sync or manual entry."
-msgstr "Uniquement si nécessaire. Les marchands en script latin ne sont pas traduits. Les chaînes non latines passent automatiquement par la file après une synchronisation ou une saisie manuelle."
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Only when needed. Latin-script names skip translation. Non-Latin names flow through the queue automatically after you create or import them."
+msgstr "Seulement quand c'est nécessaire. Les noms en écriture latine ne passent pas par la traduction. Les noms dans une autre écriture rejoignent automatiquement la file dès que vous les créez ou les importez."
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Open a bank-synced account and tap Re-sync. Picking a window moves that account's sync cursor back to the date you chose, so the next sync starts from there instead of walking the whole history again."
@@ -11949,6 +11949,10 @@ msgstr "Ouvrez Statistiques et touchez l'onglet Étiquettes. Chaque étiquette d
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Open the account menu and choose Close Deposit. Budgie moves the remaining balance to the destination you pick and archives the deposit."
 msgstr "Ouvrez le menu du compte et choisissez Clôturer le dépôt. Budgie transfère le solde restant vers le compte de destination que vous choisissez et archive le dépôt."
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Open the category or tag and edit its English form or keywords directly. Your edit is permanent for that category or tag."
+msgstr "Ouvrez la catégorie ou le tag et modifiez directement sa forme anglaise ou ses mots-clés. Votre modification est permanente pour cette catégorie ou ce tag."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/opengraph-image.tsx
 msgid "Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, amount, account, all pre-filled."
@@ -12073,9 +12077,9 @@ msgstr "Ou les quatre-vingt-dix derniers jours"
 msgid "organization"
 msgstr "organisation"
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Original Cyrillic or Greek strings are preserved for receipt-matching and audit; the normalized form is what your search queries hit. No data ever leaves your device."
-msgstr "Les chaînes cyrilliques ou grecques d'origine sont préservées pour la correspondance de reçus et l'audit ; la forme normalisée est ce que vos requêtes de recherche trouvent. Aucune donnée ne quitte jamais votre appareil."
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Original category and tag names stay untouched alongside the English form"
+msgstr "Les noms d'origine des catégories et tags restent inchangés à côté de la forme anglaise"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Original Description"
@@ -12088,10 +12092,6 @@ msgstr "Les entrées d’origine restent reliées sous la transaction consolidé
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Original FX kept per leg"
 msgstr "Taux de change d’origine conservé par leg"
-
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Original merchant string preserved for receipt-matching and audit"
-msgstr "Chaîne de marchand d’origine préservée pour la correspondance de reçus et l’audit"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Other applicable data protection and privacy laws"
@@ -14529,10 +14529,6 @@ msgstr "Touchez une ligne pour ouvrir les transactions derrière cette étiquett
 msgid "Tap any tag row to see every contributing transaction for the current period, with the same sort options and date filters available everywhere else in Analytics."
 msgstr "Touchez n'importe quelle ligne d'étiquette pour voir chaque transaction contributrice pour la période actuelle, avec les mêmes options de tri et filtres de date disponibles partout ailleurs dans les analytiques."
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Tap edit on any transaction and override the translated name manually. Your override is permanent for that merchant."
-msgstr "Touchez modifier sur n'importe quelle transaction et remplacez manuellement le nom traduit. Votre remplacement est permanent pour ce marchand."
-
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every transaction into a new or existing Erste account."
 msgstr "Touchez Importer → PDF Erste. Choisissez le fichier depuis Fichiers. Budgie analyse le document, affiche un aperçu et insère chaque transaction dans un compte Erste nouveau ou existant."
@@ -15128,6 +15124,10 @@ msgstr "La communauté de sécurité open source comprend :"
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "The operating system does the matching — Budgie never sees biometric data, only the result"
 msgstr "La comparaison est faite par le système d’exploitation — Budgie ne voit aucune donnée biométrique, seulement le résultat"
+
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "The original Cyrillic, Greek, or Arabic name stays exactly as you wrote it; the English form is what your search queries also match against. No data ever leaves your device."
+msgstr "Le nom d'origine en cyrillique, en grec ou en arabe reste exactement tel que vous l'avez écrit ; la forme anglaise est aussi ce que vos recherches trouvent. Aucune donnée ne quitte jamais votre appareil."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The other leg, still there"
@@ -16072,7 +16072,7 @@ msgstr "Les virements entre vos comptes ne sont ni des revenus ni des dépenses 
 msgid "Transfers between your own PrivatBank cards now get paired and classified correctly instead of sitting around as two unrelated entries; matching now checks the card number first and only falls back to the account number when that is unavailable. See <0>account transfers</0>."
 msgstr "Les virements entre vos propres cartes PrivatBank sont désormais correctement appariés et classés au lieu de rester comme deux écritures sans lien ; la correspondance vérifie désormais d'abord le numéro de carte et ne se rabat sur le numéro de compte que lorsque celui-ci est indisponible. Voir <0>virements entre comptes</0>."
 
-#: src/app/[lang]/features/ai-merchant-translation/opengraph-image.tsx
+#: src/app/[lang]/features/ai-category-translation/opengraph-image.tsx
 msgid "translation"
 msgstr "traduction"
 
@@ -16891,9 +16891,9 @@ msgstr "Ce qui se passe lors de la synchronisation entre appareils"
 msgid "What happens with accounts in another currency?"
 msgstr "Que se passe-t-il avec les comptes dans une autre devise ?"
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "What if a merchant name is translated wrongly?"
-msgstr "Que se passe-t-il si un nom de commerçant est mal traduit ?"
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "What if a category or tag is translated wrongly?"
+msgstr "Que se passe-t-il si une catégorie ou un tag est mal traduit ?"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "What if biometrics fail?"
@@ -17062,7 +17062,7 @@ msgstr "Quels compromis sont envisagés"
 #: src/app/[lang]/features/account-management/page.tsx
 #: src/app/[lang]/features/account-transfers/page.tsx
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
+#: src/app/[lang]/features/ai-category-translation/page.tsx
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 #: src/app/[lang]/features/balance-adjustment/page.tsx
@@ -17481,7 +17481,7 @@ msgstr "Quelles langues sont prises en charge ?"
 msgid "Which languages does voice entry support?"
 msgstr "Quelles langues la saisie vocale prend-elle en charge ?"
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
+#: src/app/[lang]/features/ai-category-translation/page.tsx
 msgid "Which scripts are supported?"
 msgstr "Quels systèmes d'écriture sont pris en charge ?"
 
@@ -17643,9 +17643,9 @@ msgstr "Pourquoi les frais ont besoin de leur propre type d’entrée"
 msgid "Why Financial Data Is the Worst Thing to Send to the Cloud"
 msgstr "Pourquoi les données financières sont la pire chose à envoyer dans le cloud"
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Why foreign merchant names break expense search"
-msgstr "Pourquoi les noms de marchands étrangers cassent la recherche de dépenses"
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Why foreign category and tag names break expense search"
+msgstr "Pourquoi les noms de catégories et de tags étrangers cassent la recherche de dépenses"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Why imported transactions need consolidation"
@@ -18333,9 +18333,9 @@ msgstr "Oui. L'intégralité du flux de saisie de transaction — montant, caté
 msgid "Yes. The on-device AI layer that powers category suggestions, voice entry, and merchant clean-up is part of the public repository. The pretrained models it runs are separately licensed third-party projects, credited on our licence page."
 msgstr "Oui. La couche IA sur l'appareil qui alimente les suggestions de catégories, la saisie vocale et le nettoyage des noms de commerçants fait partie du dépôt public. Les modèles préentraînés qu'elle exécute sont des projets tiers sous licence distincte, crédités sur notre page de licence."
 
-#: src/app/[lang]/features/ai-merchant-translation/page.tsx
-msgid "Yes. The original is preserved for receipt-matching and audit; the translated form is what your search queries hit."
-msgstr "Oui. L'original est préservé pour la correspondance des reçus et l'audit ; le formulaire traduit est ce que vos requêtes de recherche trouvent."
+#: src/app/[lang]/features/ai-category-translation/page.tsx
+msgid "Yes. The original name stays exactly as you wrote it; the English form is what your search queries also match against."
+msgstr "Oui. Le nom d'origine reste exactement tel que vous l'avez écrit ; la forme anglaise est aussi ce que vos recherches trouvent."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Yes. The pill counts only uncategorized transactions inside the active account, type, date, and tag filters, so the number always matches the list you are reviewing."

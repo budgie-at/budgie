@@ -27,7 +27,7 @@ export const FEATURE_METADATA = {
         'uncategorized-transactions',
         'date-filter-presets',
         'recurring-payments-calendar',
-        'ai-merchant-translation',
+        'ai-category-translation',
         'bank-fee-tracking'
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],

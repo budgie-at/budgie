@@ -121,8 +121,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     )`Budgie edit category screen showing an AI-generated metadata block with an English translation and search keywords`}
                     index={1}
                     locale={lang}
-                    scene="ai-merchant-translation-1"
-                    slug="ai-merchant-translation"
+                    scene="ai-category-translation-1"
+                    slug="ai-category-translation"
                 >
                     <FeatureStory.Callout y={0.4}>
                         <Trans>Written on your phone</Trans>
@@ -169,8 +169,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
-                            Category suggestions, tag suggestions, merchant clean-up, and voice entry all run on your phone, on both iOS and
-                            Android — nothing leaves the device.
+                            Category suggestions, tag suggestions, category and tag translation, and voice entry all run on your phone, on
+                            both iOS and Android — nothing leaves the device.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
@@ -238,8 +238,8 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                     question={<Trans>Which AI features run on my phone?</Trans>}
                     answer={
                         <Trans>
-                            Category suggestions, tag suggestions, merchant clean-up, and voice entry all run on your phone, on both iOS and
-                            Android — nothing leaves the device.
+                            Category suggestions, tag suggestions, category and tag translation, and voice entry all run on your phone, on
+                            both iOS and Android — nothing leaves the device.
                         </Trans>
                     }
                 />

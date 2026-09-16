@@ -26,7 +26,7 @@ export const FEATURE_METADATA = {
         'expense-tracking',
         'ai-tag-suggestions',
         'transaction-tags',
-        'ai-merchant-translation'
+        'ai-category-translation'
     ],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
     publishedAt: '2026-05-07',
