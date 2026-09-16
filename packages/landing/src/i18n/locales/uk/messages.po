@@ -4095,6 +4095,10 @@ msgstr "Budgie один раз завантажує модель Whisper large-v
 msgid "Budgie Edit Category form showing the icon tile, the name field and the AI-generated translation and search keywords"
 msgstr "Форма «Редагувати категорію» у Budgie зі значком, полем назви та згенерованими ШІ перекладом і ключовими словами"
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Budgie edit category screen showing an AI-generated metadata block with an English translation and search keywords"
+msgstr "Екран редагування категорії Budgie з блоком метаданих, згенерованих ШІ: англійський переклад і пошукові слова"
+
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie Edit Expense screen showing the Silpo merchant recognised and the Groceries category already filled in"
 msgstr "Екран Budgie «Редагувати витрату» з розпізнаним продавцем Silpo та вже заповненою категорією «Продукти»"
@@ -4500,10 +4504,6 @@ msgstr "Екран налаштувань Budgie з повним набором 
 msgid "Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch"
 msgstr "Екран налаштувань Budgie з розділом «Безпека»: картка блокування PIN-кодом над увімкненим перемикачем захисту від скриншотів"
 
-#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
-msgid "Budgie settings screen stating that every piece of financial data stays on the device with no cloud sync or tracking"
-msgstr "Екран налаштувань Budgie, який повідомляє, що всі фінансові дані залишаються на пристрої без хмарної синхронізації та відстеження"
-
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off"
 msgstr "Екран налаштувань Budgie з карткою «Конфіденційність», яка повідомляє, що всі фінансові дані зберігаються локально на пристрої, а під нею — група «Безпека», де блокування додатка ще не увімкнене, а захист від скріншотів вимкнений"
@@ -4512,11 +4512,16 @@ msgstr "Екран налаштувань Budgie з карткою «Конфі�
 msgid "Budgie settings screen with security, language, currency and default account rows and no sign-in row"
 msgstr "Екран налаштувань Budgie з рядками безпеки, мови, валюти та рахунку за замовчуванням і без рядка входу"
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Budgie settings screen with the AI section, the On-device AI toggle switched on and two model status cards below it"
+msgstr "Екран налаштувань Budgie з розділом ШІ, увімкненим перемикачем ШІ на пристрої та двома картками стану моделей під ним"
+
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Budgie settings screen with the General section showing the Language row set to the active language above Main Currency and Default Account"
 msgstr "Екран налаштувань Budgie з розділом «Загальне», де рядок «Мова» показує активну мову над пунктами «Основна валюта» та «Рахунок за замовчуванням»"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle"
 msgstr "Екран налаштувань Budgie з повідомленням про офлайн-роботу та приватність над перемикачем автоматичного призначення категорій за MCC-кодом"
 
@@ -4744,6 +4749,10 @@ msgstr "Budgie проти категорії"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie works fully offline. You can track expenses on a flight, review your budget in a remote cabin, or manage finances in areas with no cell coverage. Every feature works without network access."
 msgstr "Budgie працює повністю офлайн. Ви можете відстежувати витрати в літаку, переглядати бюджет у віддаленій хатинці або управляти фінансами в районах без мобільного покриття. Кожна функція працює без мережевого доступу."
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Budgie writes the English name and the search keywords for a foreign category with the model on the phone."
+msgstr "Budgie пише англійську назву та пошукові слова для іншомовної категорії моделлю просто на телефоні."
 
 #: src/app/[lang]/metadata.ts
 msgid "Budgie, the offline expense tracker that never phones home"
@@ -9035,6 +9044,10 @@ msgid "Indexed local SQLite queries, so the insight stays fast on long transacti
 msgstr "Індексовані локальні SQLite-запити, щоб інсайт залишався швидким навіть у довгих історіях транзакцій"
 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Inference is a local call"
+msgstr "Обчислення відбувається локально"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Inference runs in milliseconds for embeddings and a few seconds for the LLM, only when you trigger it. Background impact is negligible."
 msgstr "Вивід для вкладень займає мілісекунди, для LLM — кілька секунд, лише коли ви його запускаєте. Фоновий вплив є незначним."
 
@@ -9322,6 +9335,10 @@ msgstr "Ключові функції:"
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Keywords the selector searches on"
 msgstr "Ключові слова для пошуку"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Keywords you can search by"
+msgstr "Слова для пошуку"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Labels"
@@ -10613,6 +10630,7 @@ msgid "no cloud budget app"
 msgstr ""
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "No cloud sync, no tracking"
 msgstr "Без хмарної синхронізації й стеження"
 
@@ -11020,6 +11038,10 @@ msgstr "Ніщо на цьому екрані не питає, хто ви. Не
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Nothing opens before the PIN"
 msgstr "Нічого не відкриється до PIN"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Nothing to send, nothing sent"
+msgstr "Нічого надсилати, нічого не надіслано"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Nothing to sign into"
@@ -11512,13 +11534,25 @@ msgstr "Один екран налаштувань і два рядки, що з
 msgid "One sheet on the account's own settings screen: the whole history, or the last ninety, thirty or seven days."
 msgstr "Один аркуш на екрані налаштувань самого рахунку: уся історія або останні дев'яносто, тридцять чи сім днів."
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "One switch for every AI feature"
+msgstr "Один перемикач для всього ШІ"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "One switch in Settings → Security, right under the PIN-lock card"
 msgstr "Один перемикач у Налаштування → Безпека, одразу під карткою блокування PIN-кодом"
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "One switch in Settings, and categories, tags, translation and voice entry all run where your data already is."
+msgstr "Один перемикач у налаштуваннях — і категорії, теги, переклад і голос працюють там, де вже є ваші дані."
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "One switch, off by default, sitting directly under the PIN-lock card in the Security section."
 msgstr "Один перемикач, вимкнений за замовчуванням, розташований одразу під карткою блокування PIN-кодом у розділі «Безпека»."
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "One switch, one download"
+msgstr "Один перемикач, одне завантаження"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag chip, plus a count"
@@ -11942,6 +11976,10 @@ msgstr "Поєднується з блокуванням PIN-кодом для �
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Partial and full refunds — Budgie compares the refund amount with the original expense"
 msgstr "Часткові та повні повернення — Budgie порівнює суму повернення з початковою витратою"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Past that one download, no AI feature opens a connection. There is no provider in the loop to trust."
+msgstr "Після того одного завантаження жодна функція ШІ не відкриває з’єднання. Немає постачальника, якому треба довіряти."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone — then merges your P2P buys with the bank payment that funded them."
@@ -14833,6 +14871,10 @@ msgstr "Транзакції об'єднаної категорії перена
 msgid "The Missing categories screen opens with only those rows, carrying your account, date, type and tag filters across."
 msgstr "Екран «Без категорій» відкривається лише з цими рядками та переносить ваші фільтри рахунку, дати, типу й тегу."
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "The models sit on your phone"
+msgstr "Моделі живуть на вашому телефоні"
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The moment the app goes to the background. There is no grace period and no inactivity setting to get wrong — the next time you come back, the keypad is there."
 msgstr "Щойно застосунок іде у фон. Немає ні пільгового часу, ні налаштування неактивності, яке можна виставити неправильно — щойно ви повернетесь, клавіатура вже там."
@@ -14868,6 +14910,10 @@ msgstr ""
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The obvious pairs merge on import"
 msgstr "Очевидні пари об'єднуються під час імпорту"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "The On-device AI card is off until you turn it on. It then downloads about 2.5 GB of models, once."
+msgstr "Картка «ШІ на пристрої» вимкнена, доки ви її не увімкнете. Тоді вона один раз завантажує близько 2,5 ГБ моделей."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The open-source security community includes:"
@@ -15811,6 +15857,10 @@ msgstr "Перекладена форма індексується вбудов�
 #: src/app/[lang]/features/ai-merchant-translation/opengraph-image.tsx
 msgid "translation"
 msgstr "переклад"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Translation and learning progress"
+msgstr "Поступ перекладу й навчання"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Transmit viruses, malware, or any malicious code"
@@ -17716,6 +17766,10 @@ msgstr "Записує одразу на пристрій"
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Writes the whole database"
 msgstr "Записує всю базу даних"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Written by the on-device model"
+msgstr "Написано моделлю на пристрої"
 
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "xlsx"
