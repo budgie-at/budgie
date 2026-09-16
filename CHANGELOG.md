@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.11](https://github.com/budgie-at/budgie/compare/v6.67.10...v6.67.11) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** describe lazy ai model loading and the settings switch ([d731298](https://github.com/budgie-at/budgie/commit/d731298d6cae925ba1735332a0e4aa252877fdfd)), closes [#1106](https://github.com/budgie-at/budgie/issues/1106)
+* **landing:** describe the three analytics tabs including runway ([35f318e](https://github.com/budgie-at/budgie/commit/35f318e664e4072656df2e7c65375c7012f0af5f)), closes [#1057](https://github.com/budgie-at/budgie/issues/1057)
+
+
+
+
+
 ## [6.67.10](https://github.com/budgie-at/budgie/compare/v6.67.9...v6.67.10) (2026-09-16)
 
 **Note:** Version bump only for package @budgie-at/root
