@@ -7,6 +7,8 @@ import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { SyncBalanceAuthorityEnum } from '../../sync/enum/sync-balance-authority.enum';
+import { SyncEntityTable } from '../../sync/table/sync-entity.table';
 import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../constant/bank-authoritative-account-types.constant';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
@@ -58,11 +60,11 @@ export class AccountRepository {
         return await (tx ?? this.db).select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
 
-    async getAllActiveAccountsExceptBankAuthoritative(tx?: DB): Promise<AccountEntityInterface[]> {
+    async getAllActiveLedgerMaintainedAccounts(tx?: DB): Promise<AccountEntityInterface[]> {
         return await (tx ?? this.db)
             .select()
             .from(AccountEntityTable)
-            .where(and(isNull(AccountEntityTable.deletedAt), notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES)));
+            .where(and(isNull(AccountEntityTable.deletedAt), this.getLedgerMaintainedAccountConditionSql()));
     }
 
     findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {
@@ -129,8 +131,8 @@ export class AccountRepository {
         return await this.findActiveByIds(ids, tx);
     }
 
-    async findByIdsExceptBankAuthoritative(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
-        return await this.findActiveByIds(ids, tx, notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES));
+    async findLedgerMaintainedByIds(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
+        return await this.findActiveByIds(ids, tx, this.getLedgerMaintainedAccountConditionSql());
     }
 
     async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
@@ -220,9 +222,23 @@ export class AccountRepository {
             return [];
         }
 
-        return await (tx ?? this.db).query.AccountEntityTable.findMany({
-            where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt), typeCondition)
-        });
+        return await (tx ?? this.db)
+            .select()
+            .from(AccountEntityTable)
+            .where(and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt), typeCondition));
+    }
+
+    private getLedgerMaintainedAccountConditionSql() {
+        return and(
+            notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES),
+            sql`NOT EXISTS (
+                SELECT 1
+                FROM ${SyncEntityTable}
+                WHERE ${SyncEntityTable.accountId} = ${AccountEntityTable.id}
+                  AND ${SyncEntityTable.balanceAuthority} = ${SyncBalanceAuthorityEnum.PROVIDER}
+                  AND ${SyncEntityTable.deletedAt} IS NULL
+            )`
+        );
     }
 
     private buildSearchWhereClause(search: string, filter: AccountFilterInterface) {
