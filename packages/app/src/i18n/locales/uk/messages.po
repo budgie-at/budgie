@@ -851,6 +851,10 @@ msgstr "Перевірка"
 msgid "Checking Account"
 msgstr "Поточний рахунок"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
+msgstr "Оберіть «Excel» як формат експорту — файли PDF і CSV імпортувати не можна"
+
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
@@ -1843,10 +1847,6 @@ msgstr "Експортувати CSV"
 msgid "Export Database"
 msgstr "Експортувати базу даних"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Export your transactions to Excel"
-msgstr "Експортуйте транзакції в Excel"
-
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
 msgstr "Зовнішній ID"
@@ -2043,6 +2043,14 @@ msgstr "Як експортувати"
 msgid "Icon importer not found: {icon}"
 msgstr "Імпортер значків не знайдено: {icon}"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
+msgstr "Якщо Приват24 надсилає файл на пошту замість завантаження, збережіть вкладення зі своєї поштової скриньки"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Import"
+msgstr "Імпортувати"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Import a statement"
 msgstr "Імпортувати виписку"
@@ -2053,7 +2061,6 @@ msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Імпорт рахунків та транзакцій з PDF-виписки Erste Bank"
 
 #: src/app/(main)/create-account/index.tsx
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import accounts and transactions from Privatbank XLSX export"
 msgstr "Імпорт рахунків та транзакцій з XLSX-експорту Приватбанку"
 
@@ -2498,10 +2505,6 @@ msgstr "Найімовірніший баланс"
 msgid "Navigate to Account → Statements"
 msgstr "Перейдіть до Рахунок → Виписки"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Navigate to Menu → Statements"
-msgstr "Перейдіть до Меню → Виписки"
-
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 msgid "Net"
 msgstr "Чистий"
@@ -2766,6 +2769,10 @@ msgstr "Разово"
 msgid "One-off spike"
 msgstr "Разовий стрибок"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
+msgstr "Одноразовий імпорт виписки з Приват24 — це не постійна синхронізація, і кожен експорт охоплює лише одну картку чи рахунок"
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Перетворюються лише транзакції витрат і надходжень: витрати переказуються на цей рахунок, надходження — з нього. Інші типи залишаються без змін."
@@ -2796,17 +2803,21 @@ msgstr "Відкрийте Binance, щоб отримати API-ключ"
 msgid "Open George (Erste Bank online banking)"
 msgstr "Відкрийте George (онлайн-банкінг Erste Bank)"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Open its statement and choose a date range that covers your full history"
+msgstr "Відкрийте виписку та оберіть період, що охоплює всю вашу історію"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Monobank to get your token"
 msgstr "Відкрийте Монобанк, щоб отримати токен"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Open Privat24 and select the card or account you want to import"
+msgstr "Відкрийте Приват24 і виберіть картку або рахунок, який хочете імпортувати"
+
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Open settings"
 msgstr "Відкрити налаштування"
-
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Open the Privatbank24 app"
-msgstr "Відкрийте додаток Приват24"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
@@ -3170,6 +3181,10 @@ msgstr "Відновити з файлу резервної копії"
 #: src/ai/service/ai-system-status.service.ts
 msgid "Resuming AI…"
 msgstr "Відновлення ШІ…"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Return to Budgie and select the saved XLSX file below"
+msgstr "Поверніться до Budgie і виберіть нижче збережений файл XLSX"
 
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Returned"
