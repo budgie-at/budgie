@@ -9,9 +9,9 @@ export const FEATURE_METADATA = {
     slug: 'transaction-long-press-menu',
     tier: FeatureTierEnum.CORE,
     title: msg`Long-Press Quick Actions on Every Transaction`,
-    tagline: msg`Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required.`,
+    tagline: msg`Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert — no full edit form required.`,
     metaTitle: msg`Quick Edit Transaction App — Long-Press Menu — Budgie`,
-    metaDescription: msg`Long-press any transaction in Budgie for a native context menu: edit, delete, split, convert to transfer, or convert income to refund. Two taps where the rest of the market needs five.`,
+    metaDescription: msg`Long-press any transaction in Budgie for a popover menu: edit, convert to refund, convert to transfer, attach a debt, delete, or revert. Two taps where the rest of the market needs five.`,
     primaryKeyword: 'quick edit transaction app',
     seoKeywords: [
         'quick edit transaction app',
@@ -30,6 +30,6 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['budgie-offline-financial-data'],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-05-07',
+    updatedAt: '2026-09-16',
     ogTags: ['ux', 'gestures', 'productivity']
 } satisfies FeatureRegistryEntryInterface;

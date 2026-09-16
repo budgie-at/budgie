@@ -5940,6 +5940,10 @@ msgstr "Als Ausgabe gezählt"
 msgid "Counter-IBAN enrichment and transfer consolidation"
 msgstr "Gegen-IBAN-Anreicherung und Überweisungskonsolidierung"
 
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Counter-IBAN from Monobank as the primary signal; amount and time-window matching for banks that don't send one"
+msgstr "Counter-IBAN von Monobank als primäres Signal; Betrags- und Zeitfenster-Abgleich für Banken, die keine übermitteln"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Counter-IBAN stored"
 msgstr "Gegenpartei-IBAN gespeichert"
@@ -5947,10 +5951,6 @@ msgstr "Gegenpartei-IBAN gespeichert"
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Counter-IBAN stored from the corr_iban field, enabling smart transfer-pair consolidation"
 msgstr "Gegen-IBAN aus dem Feld corr_iban gespeichert, ermöglicht intelligente Überweisungspaar-Konsolidierung"
-
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Counter-IBAN stored per leg — primary signal for cross-account matching"
-msgstr "Gegenpartei-IBAN pro Buchungsseite gespeichert – primäres Signal für kontoübergreifenden Abgleich"
 
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Counting a merchant refund as earnings inflates every income report you run. Long-press the income row, choose Convert to Refund, and Budgie lists the expenses it could be reversing — same currency, any account, and never smaller than the refund itself."
@@ -6640,8 +6640,8 @@ msgid "Discover why source-available budgeting apps provide unmatched transparen
 msgstr "Entdecken Sie, warum Source-Available-Haushaltsbuch-Apps unübertroffene Transparenz und Sicherheit für Ihre Finanzdaten bieten."
 
 #: src/app/[lang]/features/split-transactions/metadata.ts
-msgid "Divide a single transaction across multiple categories with a remaining-budget indicator. Each split keeps its own tags and comment."
-msgstr "Eine einzelne Transaktion auf mehrere Kategorien aufteilen mit einem Restbudget-Indikator. Jede Aufteilung behält ihre eigenen Tags und Kommentare."
+msgid "Divide a single transaction across multiple categories with a running left-to-assign total. Each split keeps its own tags and comment."
+msgstr "Teilen Sie eine einzelne Transaktion auf mehrere Kategorien auf, mit einer laufenden Summe des noch zuzuweisenden Betrags. Jede Teilung behält ihre eigenen Tags und ihren eigenen Kommentar."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Do any of these apps work without internet?"
@@ -7011,12 +7011,12 @@ msgid "Edit, convert to a transfer, attach a debt or delete. A plain tap only op
 msgstr "Bearbeiten, in eine Umbuchung umwandeln, eine Schuld verknüpfen oder löschen. Ein einfacher Tipp öffnet die Zeile nur zum Lesen, sodass sich nichts versehentlich ändert."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Edit, convert to a transfer, attach a debt, or delete — every one of them starts from the list."
-msgstr "Bearbeiten, in eine Überweisung umwandeln, eine Schuld verknüpfen oder löschen – alles beginnt in der Liste."
+msgid "Edit, convert to refund, convert to transfer, attach a debt, delete, or revert — every one of them starts from the list."
+msgstr "Bearbeiten, in Rückerstattung umwandeln, in Überweisung umwandeln, Schuld anhängen, löschen oder rückgängig machen – jede dieser Aktionen startet direkt aus der Liste."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Edit, Delete, Split, Convert to Transfer, and Convert to Refund. The exact set depends on the transaction type — only income can become a refund, for example."
-msgstr "Bearbeiten, Löschen, Aufteilen, In Überweisung umwandeln und In Rückerstattung umwandeln. Die genaue Auswahl hängt vom Transaktionstyp ab – nur Einnahmen können zum Beispiel zu einer Rückerstattung werden."
+msgid "Edit, Convert to Refund, Convert to Transfer, Attach Debt, Delete, and Revert. The exact set depends on the transaction type — only income can become a refund, for example."
+msgstr "Bearbeiten, In Rückerstattung umwandeln, In Überweisung umwandeln, Schuld anhängen, Löschen und Rückgängig machen. Die genaue Auswahl hängt vom Transaktionstyp ab – nur Einnahmen können beispielsweise zu einer Rückerstattung werden."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Editing a transaction in most expense apps means tapping the row to open a detail screen, then tapping an edit button, then navigating form tabs, then saving, then going back. Common operations like deleting a duplicate or reclassifying an expense as a transfer should not cost five taps. Budgie surfaces all of them behind a single long-press gesture anchored to the transaction card itself."
@@ -8042,10 +8042,6 @@ msgstr ""
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Forkable"
 msgstr "Forkbar"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Four actions, no form"
-msgstr "Vier Aktionen, kein Formular"
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Four choices: the last 7, 30 or 90 days, or the whole history"
@@ -9654,13 +9650,16 @@ msgid "Long-press any transaction card for a native context menu — edit, delet
 msgstr "Drücke eine Transaktionskarte lange für ein natives Kontextmenü – bearbeiten, löschen, aufteilen, in Überweisung umwandeln oder Einnahmen in eine Rückerstattung umwandeln, ohne das vollständige Bearbeitungsformular zu öffnen."
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
+msgid "Long-press any transaction card to edit, convert to refund or transfer, attach a debt, delete, or revert — no full edit form required."
+msgstr "Halten Sie eine beliebige Transaktionskarte gedrückt, um zu bearbeiten, in Rückerstattung oder Überweisung umzuwandeln, eine Schuld anzuhängen, zu löschen oder rückgängig zu machen – kein vollständiges Bearbeitungsformular nötig."
+
 #: src/app/[lang]/features/transaction-long-press-menu/opengraph-image.tsx
 msgid "Long-press any transaction card to edit, delete, split, convert to transfer, or convert income to a refund — no full edit form required."
 msgstr "Drücke eine Transaktionskarte lange, um zu bearbeiten, zu löschen, aufzuteilen, in eine Überweisung umzuwandeln oder Einnahmen in eine Rückerstattung umzuwandeln – kein vollständiges Bearbeitungsformular nötig."
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
-msgid "Long-press any transaction in Budgie for a native context menu: edit, delete, split, convert to transfer, or convert income to refund. Two taps where the rest of the market needs five."
-msgstr "Drücke eine beliebige Transaktion in Budgie lange, um ein natives Kontextmenü zu öffnen: bearbeiten, löschen, aufteilen, in Überweisung umwandeln oder Einnahme in Rückerstattung umwandeln. Häufige Korrekturen brauchen nur ein paar Taps."
+msgid "Long-press any transaction in Budgie for a popover menu: edit, convert to refund, convert to transfer, attach a debt, delete, or revert. Two taps where the rest of the market needs five."
+msgstr "Halten Sie eine beliebige Transaktion in Budgie gedrückt, um ein Popover-Menü zu öffnen: bearbeiten, in Rückerstattung umwandeln, in Überweisung umwandeln, Schuld anhängen, löschen oder rückgängig machen. Zwei Tipps, wo der Rest des Marktes fünf braucht."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Long-press for every action"
@@ -10458,10 +10457,6 @@ msgstr "Native App-Erfahrung Priorität hat"
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Native iOS + Android"
 msgstr "Nativ iOS + Android"
-
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Native platform UI — system context menu on iPad, bottom sheet on iPhone and Android"
-msgstr "Natives Plattform-UI – System-Kontextmenü auf iPad, Bottom-Sheet auf iPhone und Android"
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "Native PrivatBank24 XLSX schema parser — no manual column mapping"
@@ -11474,6 +11469,10 @@ msgstr "Einer pro Transaktion – nie mehrdeutig, immer schnell zu scannen"
 msgid "One PIN. Real encryption."
 msgstr "Eine PIN. Echte Verschlüsselung."
 
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "One popover menu on every platform — no modal, no full-screen form to open first"
+msgstr "Ein Popover-Menü auf jeder Plattform – kein Modal, kein Vollbildformular, das zuerst geöffnet werden muss"
+
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "One real screen, rendered in whichever theme this page is in right now."
 msgstr "Ein echter Bildschirm, dargestellt im Design, das diese Seite gerade verwendet."
@@ -11970,8 +11969,8 @@ msgid "Page Not Found"
 msgstr "Seite nicht gefunden"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Pairs match if the implied FX rate falls within a plausible tolerance band. Cross-currency legs have to land within a minute of each other; same-currency pairs get a twelve-hour window. The original amounts in both currencies are preserved on each leg."
-msgstr "Paare passen zusammen, wenn der implizite Wechselkurs in eine plausible Toleranzspanne fällt. Fremdwährungsseiten müssen innerhalb einer Minute eintreffen; Paare in gleicher Währung haben ein Zwölf-Stunden-Fenster. Die ursprünglichen Beträge in beiden Währungen bleiben auf jeder Seite erhalten."
+msgid "Pairs match if the implied FX rate falls within a plausible tolerance band. Both legs still need to land within the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved on each leg."
+msgstr "Paare werden zusammengeführt, wenn der implizite Wechselkurs innerhalb einer plausiblen Toleranzspanne liegt. Beide Buchungen müssen weiterhin innerhalb desselben Zwölf-Stunden-Fensters liegen wie Paare in derselben Währung. Die ursprünglichen Beträge in beiden Währungen bleiben auf jeder Buchung erhalten."
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Pairs with the PIN lock for a fuller privacy seal"
@@ -12935,10 +12934,6 @@ msgstr "Versionshinweise"
 msgid "Reliable data integrity"
 msgstr "Zuverlässige Datenintegrität"
 
-#: src/app/[lang]/features/split-transactions/page.tsx
-msgid "Remaining-budget pill shows what's left to allocate as you build the split"
-msgstr "Restbudget-Schaltfläche zeigt, was beim Erstellen der Aufteilung noch zuzuweisen ist"
-
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
 msgid "Remove duplicate bank imports."
 msgstr "Doppelte Bankimporte entfernen."
@@ -13620,6 +13615,10 @@ msgstr "Einzelgerät-Fokus bedeutet keine automatische Cloud-Synchronisierung zw
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Single-device focus means no automatic sync between phone and tablet"
 msgstr "Einzelgerät-Fokus bedeutet keine automatische Synchronisierung zwischen Telefon und Tablet"
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Six actions, no form"
+msgstr "Sechs Aktionen, kein Formular"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Six monthly bars on that view show what you usually spend at the same place, in the same category"
@@ -14609,10 +14608,6 @@ msgstr "Das Einwilligungsmodell"
 msgid "The consent you provide to the app does not limit what Plaid collects. Plaid’s systems pull comprehensive data, and the app requests subsets through the API. The delta between what Plaid collects and what the app needs sits in Plaid’s infrastructure."
 msgstr "Die Einwilligung, die Sie einer App geben, begrenzt nicht zwingend, was Plaid sammelt. Plaid kann breite Kontodaten abrufen, während die App kleinere Teilmengen über die API anfordert. Die Lücke zwischen dem, was Plaid hat, und dem, was die App benötigt, bleibt in Plaids Infrastruktur."
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "The context menu uses native platform APIs — the system menu component on iPadOS and a bottom sheet on iPhone and Android — so the interaction is immediately familiar. There is no modal, no full-screen form, and no intermediate navigation step for the common actions."
-msgstr "Das Kontextmenü nutzt native Plattform-APIs – die Systemmenü-Komponente auf iPadOS und ein Bottom Sheet auf iPhone und Android – sodass die Interaktion sofort vertraut ist. Es gibt kein Modal, kein Vollbildformular und keinen Zwischenschritt für die üblichen Aktionen."
-
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "The converted value is stored together with the exchange rate for the date of the operation, so an old loan keeps the valuation it had when it was made instead of drifting with today's rate."
 msgstr "Der umgerechnete Wert wird zusammen mit dem Wechselkurs zum Buchungsdatum gespeichert, sodass ein altes Darlehen die Bewertung behält, die es bei der Vergabe hatte, statt sich mit dem heutigen Kurs zu verschieben."
@@ -14740,6 +14735,14 @@ msgstr ""
 #: src/app/[lang]/legal/license/page.tsx
 msgid "The following uses require explicit permission or a separate commercial license:"
 msgstr ""
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "The footer button doubles as your running total — it reads \"$X left to assign\" until the split is fully allocated, then it becomes Confirm Split. The original transaction becomes a parent with linked split entries underneath."
+msgstr "Die Schaltfläche am unteren Rand dient zugleich als laufende Summe – sie zeigt „$X übrig zum Zuweisen“, bis die Teilung vollständig zugewiesen ist, und wird dann zu Teilung bestätigen. Die ursprüngliche Transaktion wird zu einer übergeordneten Transaktion mit verknüpften Teilbuchungen darunter."
+
+#: src/app/[lang]/features/split-transactions/page.tsx
+msgid "The footer button tracks what's left to allocate, then turns into Confirm Split once it adds up"
+msgstr "Die Schaltfläche am unteren Rand zeigt, was noch zuzuweisen ist, und wird zu Teilung bestätigen, sobald alles aufgeht"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The four digits are the key"
@@ -15061,10 +15064,6 @@ msgstr "Die realen Auswirkungen der finanziellen Privatsphäre"
 msgid "The remainder counts down"
 msgstr "Der Rest zählt herunter"
 
-#: src/app/[lang]/features/split-transactions/page.tsx
-msgid "The remaining-budget pill shows what's left to allocate as you go. Save with Done; the original transaction becomes a parent with linked split entries underneath."
-msgstr "Die Restbudget-Schaltfläche zeigt, was beim Vorankommen noch zuzuweisen ist. Mit Fertig speichern; die ursprüngliche Transaktion wird zu einem übergeordneten Element mit darunter verlinkten Aufteilungseinträgen."
-
 #: src/app/[lang]/open-source/page.tsx
 msgid "The repository includes the full React Native app, the AI service layer with on-device LLM and embedding model integrations, the contracts package, and this landing page. Nothing is hidden behind a proprietary SDK or closed binary."
 msgstr "Das Repository enthält die vollständige React Native App, die KI-Serviceschicht mit geräteeigenen LLM- und Embedding-Modell-Integrationen, das Vertragspaket und diese Landing Page. Nichts ist hinter einem proprietären SDK oder einer geschlossenen Binärdatei verborgen."
@@ -15108,6 +15107,10 @@ msgstr "Dieselbe Budgie-Liste „Fehlende Kategorien“, deren erste Zeile ohne 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "The same matching runs between two banks and between a card and one of your jars: both legs are detected via counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your spending stats, no manual cleanup needed."
 msgstr "Derselbe Abgleich läuft zwischen zwei Banken und zwischen einer Karte und einem Ihrer Töpfe: Beide Seiten werden über die Gegen-IBAN und den Wechselkurs erkannt und dann zu einer einzigen Überweisung zusammengeführt – keine Doppelzählung in Ihrer Ausgabenstatistik, keine manuelle Nacharbeit."
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "The same popover menu opens on every platform, anchored to the transaction card. There is no modal, no full-screen form, and no intermediate navigation step for the common actions."
+msgstr "Dasselbe Popover-Menü öffnet sich auf jeder Plattform, verankert an der Transaktionskarte. Es gibt kein Modal, kein Vollbildformular und keinen zusätzlichen Navigationsschritt für die gängigen Aktionen."
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with a credit and a debit against the two accounts — no second transaction is created."
@@ -16019,8 +16022,8 @@ msgid "Two sources: (1) weekly/monthly SQL patterns over your own transactions, 
 msgstr "Zwei Quellen: (1) wöchentliche/monatliche SQL-Muster über Ihre eigenen Transaktionen und (2) ein 768-dim Embedding-Lookup, der den aktuellen Titel mit Ihren nächsten historischen Einträgen abgleicht. Keine Cloud-Aufrufe."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your spending doubles. Budgie matches the pair using amount, time window, and the counter-IBAN stored on each leg."
-msgstr "Zwei synchronisierte Banken sehen dieselbe Überweisung zweimal – einmal als Belastung, einmal als Gutschrift. Ohne Konsolidierung verdoppeln sich Ihre Ausgaben. Budgie gleicht das Paar anhand von Betrag, Zeitfenster und der auf jeder Buchungsseite gespeicherten Gegenpartei-IBAN ab."
+msgid "Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides it."
+msgstr "Zwei synchronisierte Banken sehen dieselbe Überweisung zweimal – einmal als Abbuchung, einmal als Gutschrift. Ohne Konsolidierung verdoppeln sich Ihre Ausgaben. Budgie gleicht das Paar anhand von Betrag, einem Zeitfenster und Counter-IBAN ab, sofern die Bank sie liefert."
 
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Two taps from list to done — long-press plus action, no intermediate screens"
@@ -17847,10 +17850,6 @@ msgstr "Ja — jeder Export trägt Datum und Uhrzeit im Namen, Dateien überschr
 msgid "Yes — IBAN extraction is part of the header parse. The IBAN is stored on the account and enables automatic transfer-pair detection between Erste and other accounts you own."
 msgstr "Ja – die IBAN-Extraktion ist Teil der Header-Analyse. Die IBAN wird auf dem Konto gespeichert und ermöglicht die automatische Erkennung von Überweisungspaaren zwischen Erste und anderen Konten, die Sie besitzen."
 
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-msgid "Yes — on iPadOS the menu uses the system context-menu UI; on iPhone and Android the menu is a sheet."
-msgstr "Ja – auf iPadOS verwendet das Menü die System-Kontextmenü-UI; auf iPhone und Android ist das Menü ein Sheet."
-
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Yes — once the Whisper model is cached on-device, voice entry works without any internet connection."
 msgstr "Ja – sobald das Whisper-Modell auf dem Gerät gecacht ist, funktioniert die Spracheingabe ohne Internetverbindung."
@@ -17875,10 +17874,6 @@ msgstr "Ja – standardmäßig System-Thema. In den Einstellungen auf Hell oder 
 msgid "Yes — tapping a category row on the budget detail screen opens the transaction list filtered to that category and that exact budget period."
 msgstr "Ja — ein Tipp auf eine Kategoriezeile im Budget-Detailbildschirm öffnet die Transaktionsliste gefiltert nach dieser Kategorie und genau diesem Budgetzeitraum."
 
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-msgid "Yes — that's the whole point. Counter-IBAN is the primary matching signal: both banks store the counterparty IBAN on their respective legs, so Budgie can link them directly. Monobank, PrivatBank, and Erste all expose counter-IBAN. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion."
-msgstr "Ja – das ist genau der Punkt. Gegen-IBAN ist das primäre Abgleichssignal: Beide Banken speichern die Gegenpartei-IBAN auf ihren jeweiligen Seiten, sodass Budgie sie direkt verknüpfen kann. Monobank, PrivatBank und Erste Bank legen alle Gegen-IBAN offen. Für grenzwährungsübergreifende Paare bestätigt ein Wechselkurs-Toleranzband die Übereinstimmung, wenn die Beträge aufgrund der Währungsumrechnung abweichen."
-
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 msgid "Yes — the encrypted backup is just a file. Save it anywhere you control: NAS, S3, your own server, your own cloud."
 msgstr "Ja – das verschlüsselte Backup ist nur eine Datei. Speichern Sie es überall, wo Sie die Kontrolle haben: NAS, S3, Ihr eigener Server, Ihre eigene Cloud."
@@ -17894,6 +17889,10 @@ msgstr "Ja – die MCC-Kurz- und Vollbeschreibung erscheinen im Transaktionsbear
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Yes — the original spending stat falls out immediately because transfers don't count as expenses."
 msgstr "Ja – die ursprüngliche Ausgabenstatistik fällt sofort heraus, weil Überweisungen nicht als Ausgaben zählen."
+
+#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
+msgid "Yes — the same popover menu opens on iPad, iPhone, and Android; there is no separate iPad presentation."
+msgstr "Ja – dasselbe Popover-Menü öffnet sich auf iPad, iPhone und Android; es gibt keine separate iPad-Darstellung."
 
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This Year or All Time. There is no custom range."
@@ -18042,6 +18041,10 @@ msgstr "Ja. Töpfe werden zusammen mit Ihren Karten abgerufen und bei der Einric
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Yes. Like other accounts, deposits have an “include in net worth” setting, so you can decide whether a locked deposit belongs in your net worth view."
 msgstr "Ja. Wie andere Konten haben Festgelder eine Einstellung „In Nettovermögen einbeziehen“, sodass Sie entscheiden können, ob ein gebundenes Festgeld in Ihre Nettovermögensansicht gehört."
+
+#: src/app/[lang]/features/transfer-pair-detection/page.tsx
+msgid "Yes. Monobank sends a counter-IBAN on every leg, so Budgie links those pairs directly. PrivatBank and Erste don't expose a counterparty IBAN at all, so Budgie falls back to matching on amount and a time window instead. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ due to FX conversion."
+msgstr "Ja. Monobank sendet bei jeder Buchung eine Counter-IBAN, sodass Budgie diese Paare direkt verknüpfen kann. PrivatBank und Erste stellen überhaupt keine Gegenpartei-IBAN bereit, sodass Budgie stattdessen auf den Abgleich von Betrag und Zeitfenster zurückgreift. Bei Paaren in unterschiedlichen Währungen bestätigt eine Toleranzspanne für den Wechselkurs den Treffer, wenn die Beträge durch die Umrechnung abweichen."
 
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "Yes. Monobank sync uses a personal API token that you generate yourself in your bank, and the request goes from your phone straight to the bank. For other banks you import a statement file instead. Budgie never asks for a banking password and there is no aggregator such as Plaid in between."
