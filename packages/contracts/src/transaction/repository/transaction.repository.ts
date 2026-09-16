@@ -697,7 +697,8 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(
                 and(
                     or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)),
-                    ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
+                    ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                    isNull(TransactionEntityTable.deletedAt)
                 )
             );
     }
