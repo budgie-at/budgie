@@ -4,7 +4,7 @@ FUNKTIONIERT OHNE NETZ
 Jede Buchung bleibt auf deinem Handy. Ausgaben erfassen, den Verlauf durchsehen und Auswertungen ansehen – alles ganz ohne Internetverbindung.
 
 JEDE AUSGABE IN SEKUNDEN
-Sag eine Ausgabe einfach an oder tippe sie ein, Budgie ordnet sie direkt auf dem Gerät der passenden Kategorie zu. Eine Ausgabe lässt sich in einem Schritt auf mehrere Kategorien oder Personen aufteilen.
+Sag eine Ausgabe einfach an oder tippe sie ein, Budgie ordnet sie direkt auf dem Gerät der passenden Kategorie zu. Eine Ausgabe lässt sich in einem Schritt auf mehrere Kategorien aufteilen.
 
 WO DAS GELD HINGEHT
 Auswertungen nach Kategorie und Tag zeigen ein Muster, bevor es zum Problem wird. Dein Vermögen über alle Konten, Karten und Währungen hinweg auf einen Blick.
@@ -29,7 +29,5 @@ AUSSERDEM
 • Spracheingabe, wenn Tippen gerade unpraktisch ist
 • PIN, biometrische Sperre und Schutz vor Screenshots
 • Kein Konto, kein Bank-Login, kein Abo
-
-Budgie befindet sich aktuell in der privaten Beta. Trag dich auf die Warteliste ein.
 
 Mehr unter budgie.at.
