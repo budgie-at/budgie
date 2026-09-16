@@ -3,7 +3,7 @@ import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
 import { SyncBalanceAuthorityEnum, SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, fetchSyncById, monobankStub } from '../../harness';
+import { fetchSyncById, monobankStub, stubMonobankProviderBalance } from '../../harness';
 import { fetchMonobankAdjustments } from '../../harness/db/fetch-monobank-adjustments';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { setupAnchoredMonobankFixture } from '../../harness/monobank/setup-anchored-monobank-fixture';
@@ -28,13 +28,7 @@ describe('monobank/anchored-forward-catch-up', () => {
 
     it('fetches a fresh provider balance after completed anchored forward catch-up', async () => {
         const fixture = setupAnchoredMonobankFixture();
-        monobankStub.statement([]);
-        monobankStub.clientInfo(
-            buildMonobank.clientInfo({
-                accounts: [buildMonobank.account({ id: fixture.externalId, balance: 100 })],
-                jars: []
-            })
-        );
+        stubMonobankProviderBalance(fixture.externalId, 100);
 
         await monobankSyncService.sync();
 

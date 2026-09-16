@@ -38,10 +38,8 @@ export abstract class AbstractSyncService {
 
     @Log(
         (account, tx) => `enter externalId=${account.id} currency=${account.currencyCode} hasTx=${String(isDefined(tx))}`,
-        (result, account, tx) =>
-            `done externalId=${account.id} accountId=${result.id} hasTx=${String(isDefined(tx))}`,
-        (error, account, tx) =>
-            `throw externalId=${account.id} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (result, account, tx) => `done externalId=${account.id} accountId=${result.id} hasTx=${String(isDefined(tx))}`,
+        (error, account, tx) => `throw externalId=${account.id} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     protected async getOrCreateSyncAccount(account: SyncAccountInterface, tx?: DB): Promise<AccountEntityInterface> {
         const existingAccount = await this.findExistingSyncAccount(account, tx);
