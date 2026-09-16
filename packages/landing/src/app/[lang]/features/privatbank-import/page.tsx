@@ -85,14 +85,20 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
+                        This is a one-time import from a Privat24 statement export, not a live sync — each export covers a single card or
+                        account, so a multi-card wallet needs one import per card.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
                         PrivatBank exports XLSX with a fixed schema and proprietary MCC labels. Budgie parses both, mapping each PrivatBank
                         category to the equivalent ISO MCC code so AI categorization downstream still works.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Long-press a PrivatBank account card on the home screen for a one-tap re-import — Budgie remembers the file and the
-                        column mapping.
+                        Long-press a PrivatBank account card on the home screen to jump straight to the file picker for that account — pick
+                        a fresh export and Budgie merges it in, skipping anything already imported.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -109,13 +115,18 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                         <Trans>PrivatBank&apos;s proprietary MCC labels map to ISO MCC codes automatically</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Long-press a PrivatBank account card on the home screen for a one-tap re-import</Trans>
+                        <Trans>
+                            Long-press a PrivatBank account card on the home screen to jump straight to the file picker for a fresh import
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Currency, FX, and counterparty fields all preserved</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Dedupes against existing transactions on re-import</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={5}>
+                        <Trans>One-time import per card or account — not a live sync, so re-run it whenever you want fresh data</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -126,19 +137,23 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Export the XLSX from your PrivatBank24 statements page. Open Budgie, tap Import → PrivatBank. Budgie validates the
-                        format, parses the rows, and writes them to your selected PrivatBank account.
+                        In the Privat24 app, select the card or account you want to import, open its statement, and choose a date range
+                        covering your full history. Export it as Excel — PDF and CSV aren&apos;t accepted — and if Privat24 emails the file
+                        instead of downloading it, save the attachment from your inbox. In Budgie, start a new account, choose PrivatBank,
+                        and pick the saved file. Budgie validates it, parses the rows, and writes them to your selected account.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>How do I export the XLSX from PrivatBank24?</Trans>}
+                    question={<Trans>How do I export from Privat24?</Trans>}
                     answer={
                         <Trans>
-                            Open privat24.ua in a browser, go to Statements, pick the date range, and use the XLSX export button. Save the
-                            file and import via Budgie&apos;s Import → PrivatBank flow.
+                            Open Privat24, select the card or account you want to import, and open its statement. Choose a date range that
+                            covers your full history, then export it as Excel — PDF and CSV files can&apos;t be imported. If Privat24 emails
+                            you the file instead of downloading it, save the attachment from your inbox, then pick it from Budgie&apos;s
+                            file picker.
                         </Trans>
                     }
                 />
@@ -154,7 +169,19 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                 <FeaturePageFaqItem
                     question={<Trans>Is the long-press shortcut destructive?</Trans>}
                     answer={
-                        <Trans>No. Re-import always dedupes by transaction ID, so re-pulling the same file is safe and idempotent.</Trans>
+                        <Trans>
+                            No — long-press just opens the file picker for that account. Re-importing the same export again is safe;
+                            anything already there is skipped.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Is this a live sync?</Trans>}
+                    answer={
+                        <Trans>
+                            No. This is a one-time import from a Privat24 statement export, and each export only covers a single card or
+                            account. Re-run the import whenever you want fresh data.
+                        </Trans>
                     }
                 />
                 <FeaturePageFaqItem
