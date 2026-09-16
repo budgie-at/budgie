@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.2](https://github.com/budgie-at/budgie/compare/v6.67.1...v6.67.2) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** keep category context on debt-account transfers ([20d7fec](https://github.com/budgie-at/budgie/commit/20d7fecc92f09017c1db4265271a898eb2894247))
+
+
+
+
+
 ## [6.67.1](https://github.com/budgie-at/budgie/compare/v6.67.0...v6.67.1) (2026-09-16)
 
 **Note:** Version bump only for package @budgie-at/app
