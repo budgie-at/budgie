@@ -151,7 +151,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     slug="screenshot-protection"
                 >
                     <FeatureStory.Callout y={0.42}>
-                        <Trans>App Lock: PIN and Face ID</Trans>
+                        <Trans>App Lock: PIN and Face ID or Touch ID</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout y={0.527}>
                         <Trans>Balances hidden from screenshots</Trans>

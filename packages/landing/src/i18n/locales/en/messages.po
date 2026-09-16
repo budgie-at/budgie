@@ -3044,8 +3044,8 @@ msgstr "App Lock, off by default"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "App Lock: PIN and Face ID"
-msgstr "App Lock: PIN and Face ID"
+msgid "App Lock: PIN and Face ID or Touch ID"
+msgstr "App Lock: PIN and Face ID or Touch ID"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "App requests connection to your bank"
@@ -3510,11 +3510,6 @@ msgstr "bank-data-safety"
 msgid "Bank-fee entries are included in category analytics even when attached to transfers"
 msgstr "Bank-fee entries are included in category analytics even when attached to transfers"
 
-#: src/app/[lang]/privacy/page.tsx
-#: src/app/[lang]/security/page.tsx
-msgid "Bank-grade biometric unlock — same Secure Enclave, same encryption key."
-msgstr "Bank-grade biometric unlock — same Secure Enclave, same encryption key."
-
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/metadata.ts
 msgid "Bank-issued codes do the work — coffee shops land in Food & Drink, gas stations in Transport."
@@ -3740,6 +3735,11 @@ msgstr "biometric finance app"
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Biometric lock + AES-256 encrypted storage"
 msgstr "Biometric lock + AES-256 encrypted storage"
+
+#: src/app/[lang]/privacy/page.tsx
+#: src/app/[lang]/security/page.tsx
+msgid "Biometric unlock hands Budgie only a yes or no — your PIN alone still derives the encryption key."
+msgstr "Biometric unlock hands Budgie only a yes or no — your PIN alone still derives the encryption key."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Biometric unlock is a shortcut past Budgie's lock screen. What encrypts the database underneath is still the four-digit PIN."
@@ -4529,8 +4529,8 @@ msgid "Budgie Settings screen with the Security group showing the App Lock card 
 msgstr "Budgie Settings screen with the Security group showing the App Lock card and the Screenshot Protection switch turned on"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID"
-msgstr "Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID"
+msgid "Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID or Touch ID"
+msgstr "Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID or Touch ID"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Budgie settings screen, Data Management section, listing the Import CSV, Export CSV, Import Database and Export Database rows"
@@ -7573,16 +7573,16 @@ msgid "Face ID drives the encryption key."
 msgstr "Face ID drives the encryption key."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Face ID opens the lock, the PIN owns the key"
-msgstr "Face ID opens the lock, the PIN owns the key"
+msgid "Face ID or Touch ID opens the lock, the PIN owns the key"
+msgstr "Face ID or Touch ID opens the lock, the PIN owns the key"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
-msgstr "Face ID unlock on the lock screen, offered when the device has it enrolled"
+msgid "Face ID or Touch ID unlock on the lock screen, offered when the device has one enrolled"
+msgstr "Face ID or Touch ID unlock on the lock screen, offered when the device has one enrolled"
 
 #: src/app/[lang]/features/biometric-authentication/metadata.ts
-msgid "Face ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real SQLCipher key, no device-passcode fallback."
-msgstr "Face ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real SQLCipher key, no device-passcode fallback."
+msgid "Face ID or Touch ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real encryption key, no device-passcode fallback."
+msgstr "Face ID or Touch ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real encryption key, no device-passcode fallback."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
