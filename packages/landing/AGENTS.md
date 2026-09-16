@@ -362,6 +362,14 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 Add JSON-LD for rich snippets where appropriate.
 
+### No implementation details in user-facing copy
+
+Never name libraries, runtimes, model names, database engines, encryption libraries, frameworks, file formats, or vendor SDKs in anything a visitor can read. Naming an implementation binds the product to it. Examples of banned terms: llama.cpp, whisper.cpp, ONNX, GGUF, Qwen, nomic, SQLCipher, SQLite, Drizzle, Expo, React Native, Hermes, Metal, AES, Lingui.
+
+Describe the outcome for the user instead: what they get, not what ships it. Verify the outcome against `packages/app` and cite that code in the PR description, never on the page.
+
+Applies to pages, metadata sidecars, FAQ copy, JSON-LD, blog articles, and OG text. Brand names of banks and exchanges the user connects to, and OS names, are product facts and stay.
+
 ## Platform & SEO Invariants
 
 **Viewport theme colors.** `export const viewport` in `src/app/[lang]/layout.tsx` keeps dual `themeColor` (light `#ffffff`, dark `#09090b`) plus `viewportFit: 'cover'`, and the manifest `theme_color` must match the light page background. Safari/WebKit paints the rubber-band overscroll and browser chrome from manifest `theme_color` / meta theme-color when the meta tag is missing — never reintroduce a decorative color there.

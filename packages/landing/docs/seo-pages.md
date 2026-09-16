@@ -28,6 +28,8 @@ Do not put visible body copy in registries, keyed content objects, static string
 
 Use `<Trans>` for JSX text and `t(i18n)` for string props. Do not build fixed static JSX lists by mapping over arrays of strings just to reduce file length.
 
+Visible copy states user outcomes and never names libraries, runtimes, models, database engines, frameworks, file formats, or vendor SDKs — see `AGENTS.md` → "No implementation details in user-facing copy".
+
 ### 3. Registries are enumeration and metadata sources only
 
 Registries may exist for listing pages, sitemap generation, related links, and metadata lookup. They must not carry visible body copy, FAQ body copy, hero bullet copy, long-form prose, or per-page rendered content.
