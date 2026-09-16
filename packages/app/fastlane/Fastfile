@@ -9,6 +9,9 @@ FASTLANE_DIR = File.expand_path(__dir__)
 APP_DIR = File.expand_path("..", FASTLANE_DIR)
 SCREENSHOTS_DIR = File.join(FASTLANE_DIR, "screenshots")
 COMPOSE_SCRIPT = File.join(SCREENSHOTS_DIR, "design", "compose-screenshots.sh")
+IOS_METADATA_PATH = File.join(FASTLANE_DIR, "metadata", "ios")
+ANDROID_METADATA_PATH = File.join(FASTLANE_DIR, "metadata", "android")
+IOS_COPYRIGHT_PATH = File.join(IOS_METADATA_PATH, "copyright.txt")
 
 # deliver assigns App Store screenshot slots by resolution, so a set captured at
 # the wrong size uploads alongside the existing store images instead of
@@ -49,6 +52,60 @@ end
 
 def ios_screenshots_path(variant)
   File.join(SCREENSHOTS_DIR, "variants", variant, "ios")
+end
+
+# eas submit uploads the bundle to the track named in eas.json, and supply
+# defaults to production, so the track is read from the same source instead of
+# being repeated here.
+def android_submit_track
+  submit_track = JSON.parse(File.read(File.join(APP_DIR, "eas.json"))).dig("submit", "production", "android", "track")
+  UI.user_error!("eas.json does not define submit.production.android.track") unless submit_track
+
+  submit_track
+end
+
+# App Store precheck rejects a copyright that does not carry the current year,
+# and it only runs once a build has already been submitted.
+def verify_copyright_year
+  UI.user_error!("Missing copyright file at #{IOS_COPYRIGHT_PATH}") unless File.file?(IOS_COPYRIGHT_PATH)
+
+  copyright = File.read(IOS_COPYRIGHT_PATH).strip
+  current_year = Time.now.year.to_s
+  UI.user_error!("#{IOS_COPYRIGHT_PATH} reads '#{copyright}' but must carry #{current_year}") unless copyright.include?(current_year)
+
+  UI.success("Copyright: #{copyright}")
+end
+
+# supply uploads whatever sits under metadata/android/<locale>/images and
+# reports success even when that is nothing at all, so the count is checked
+# rather than trusted.
+def android_image_counts
+  counts = Hash.new(0)
+
+  Dir.glob(File.join(ANDROID_METADATA_PATH, "*", "images", "**", "*.{png,jpg,jpeg}")).each do |path|
+    segments = path.delete_prefix("#{ANDROID_METADATA_PATH}/").split("/")
+    counts["#{segments[0]}/#{File.basename(segments[2], '.*')}"] += 1
+  end
+
+  counts
+end
+
+def verify_store_directory(label, path)
+  UI.user_error!("#{label} is missing at #{path}") unless Dir.exist?(path)
+  UI.user_error!("#{label} has no locales at #{path}") if Dir.children(path).empty?
+
+  UI.success("#{label}: #{path}")
+end
+
+# deliver/supply read every locale directory they find, so a missing locale
+# uploads nothing for it and leaves that store listing on its previous copy.
+# Only directories count: metadata/ios/copyright.txt is a file, not a locale.
+def verify_metadata_locale_coverage(label, path)
+  present = Dir.children(path).select { |child| Dir.exist?(File.join(path, child)) }.sort
+  missing = ASC_LOCALES - present
+  UI.user_error!("#{label} is missing locales: #{missing.join(', ')}") unless missing.empty?
+
+  present.each { |locale| UI.success("  #{locale}") }
 end
 
 # The App Store Connect API key reaches this lane by three different routes and
@@ -159,14 +216,43 @@ lane :store_preflight do
 
   UI.success("App Store version: #{app_store_version}")
   UI.success("Screenshot variant: #{variant}")
+  UI.success("Google Play track: #{android_submit_track}")
+
+  verify_copyright_year
+
   UI.user_error!("iOS screenshots are missing at #{path}") unless Dir.exist?(path)
   UI.user_error!("iOS screenshots have no locales at #{path}") if Dir.children(path).empty?
 
   verify_locale_coverage(path)
   verify_ios_screenshot_slots(path)
+
+  verify_store_directory("iOS metadata", IOS_METADATA_PATH)
+  verify_metadata_locale_coverage("iOS metadata", IOS_METADATA_PATH)
+  verify_store_directory("Android metadata", ANDROID_METADATA_PATH)
+  verify_metadata_locale_coverage("Android metadata", ANDROID_METADATA_PATH)
+
+  android_images = android_image_counts
+  if android_images.empty?
+    UI.important("No Play Store images under #{ANDROID_METADATA_PATH}/<locale>/images; android_screenshots would upload nothing")
+  else
+    android_images.sort.each { |label, count| UI.success("  Play #{label}: #{count}") }
+  end
 end
 
 platform :ios do
+  lane :ios_metadata do
+    app_store_connect_api_key(**asc_api_key_settings)
+
+    deliver(
+      app_version: app_store_version,
+      skip_binary_upload: true,
+      skip_screenshots: true,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      metadata_path: IOS_METADATA_PATH
+    )
+  end
+
   lane :ios_screenshots do
     variant = screenshot_variant
     compose_ci_variant if variant == "ci"
@@ -188,6 +274,48 @@ platform :ios do
       force: true,
       precheck_include_in_app_purchases: false,
       screenshots_path: path
+    )
+  end
+end
+
+platform :android do
+  # supply derives version codes from the binary it uploads, and these lanes
+  # upload none, so the release just submitted by eas is looked up on the
+  # track instead. Without it supply aborts with "Cannot find changelog
+  # because no version code given".
+  lane :android_metadata do
+    submit_track = android_submit_track
+    version_codes = google_play_track_version_codes(track: submit_track)
+    UI.user_error!("No release on the '#{submit_track}' track to attach changelogs to") if version_codes.empty?
+
+    supply(
+      track: submit_track,
+      version_code: version_codes.max,
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_screenshots: true,
+      skip_upload_images: true,
+      metadata_path: ANDROID_METADATA_PATH
+    )
+  end
+
+  lane :android_screenshots do
+    UI.user_error!("No Play Store images under #{ANDROID_METADATA_PATH}/<locale>/images") if android_image_counts.empty?
+
+    submit_track = android_submit_track
+    version_codes = google_play_track_version_codes(track: submit_track)
+    UI.user_error!("No release on the '#{submit_track}' track to attach screenshots to") if version_codes.empty?
+
+    supply(
+      track: submit_track,
+      version_code: version_codes.max,
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_screenshots: false,
+      skip_upload_images: false,
+      metadata_path: ANDROID_METADATA_PATH
     )
   end
 end
