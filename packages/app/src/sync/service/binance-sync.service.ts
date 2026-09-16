@@ -8,7 +8,13 @@ import { subYears } from 'date-fns/subYears';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountBalanceRepository, accountRepository, instrumentRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import {
+    accountBalanceRepository,
+    accountRepository,
+    instrumentRepository,
+    syncRepository,
+    transactionRepository
+} from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
@@ -27,7 +33,6 @@ import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
 import { binanceAssetCodeService } from './binance-asset-code.service';
 import { binanceSourceQuoteService } from './binance-source-quote.service';
-import { binanceTradeCursorService } from './binance-trade-cursor.service';
 import { syncIntegrationTokenService } from './sync-integration-token.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 
@@ -52,6 +57,8 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     private static readonly SOURCE_INPUT_YIELD_INTERVAL = 50;
     private static readonly FORWARD_OVERLAP_DAYS = 1;
     private static readonly FIAT_REFRESH_INTERVAL_MS = 23 * 60 * 60 * 1000;
+    // eslint-disable-next-line lingui/no-unlocalized-strings -- Stored sync-status text, mirrors the existing unlocalized lastError field
+    private static readonly C2C_UNAVAILABLE_WARNING = 'Binance P2P orders are unavailable: the API key is missing P2P read permission.';
     protected readonly provider = ExternalSourceEnum.BINANCE;
     // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
     protected readonly providerTitle = 'Binance';
@@ -143,12 +150,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         }
 
         const token = await this.resolveSyncToken(sync);
-        let changedCount = 0;
-        try {
-            changedCount = await this.runSyncPhases(sync, externalAccountId, token);
-        } finally {
-            await binanceTradeCursorService.persistRunSideEffects(sync, this.runSignedClient);
-        }
+        const changedCount = await this.runSyncPhasesAndPersist(sync, externalAccountId, token);
         if (isPositiveNumber(changedCount)) {
             await transactionService.updateAllBalances();
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC);
@@ -184,6 +186,24 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
             return changedCount;
         }
+    }
+
+    @Log(
+        sync => `enter syncId=${sync.id}`,
+        (_result, sync) => `done syncId=${sync.id}`,
+        (error, sync) => `throw syncId=${sync.id} error=${getErrorMessage(error)}`
+    )
+    private async persistRunSideEffects(sync: SyncEntityInterface): Promise<void> {
+        const client = this.runSignedClient;
+        if (!isDefined(client)) {
+            return;
+        }
+
+        const mergedCursors = this.mergeTradeCursors(this.parseTradeCursors(sync.binanceTradeCursor), client.getSymbolTradeCursors());
+        await syncRepository.update(sync.id, {
+            binanceTradeCursor: isNotEmptyArray(Object.keys(mergedCursors)) ? JSON.stringify(mergedCursors) : null,
+            lastWarning: client.isC2cUnavailable() ? AppBinanceSyncService.C2C_UNAVAILABLE_WARNING : null
+        });
     }
 
     protected override validateToken(token: string): void {
@@ -484,12 +504,47 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         this.providerSourceFailedThisRun = false;
     }
 
+    private async runSyncPhasesAndPersist(sync: SyncEntityInterface, externalAccountId: string, token: string): Promise<number> {
+        try {
+            return await this.runSyncPhases(sync, externalAccountId, token);
+        } finally {
+            await this.persistRunSideEffects(sync);
+        }
+    }
+
+    private mergeTradeCursors(
+        stored: BinanceTradeCursorMapInterface,
+        current: BinanceTradeCursorMapInterface
+    ): BinanceTradeCursorMapInterface {
+        const merged: BinanceTradeCursorMapInterface = { ...stored };
+        for (const [symbol, fromId] of Object.entries(current)) {
+            const storedFromId = merged[symbol];
+            merged[symbol] = isDefined(storedFromId) ? Math.max(storedFromId, fromId) : fromId;
+        }
+
+        return merged;
+    }
+
+    private parseTradeCursors(binanceTradeCursor: string | null): BinanceTradeCursorMapInterface {
+        if (!isNotEmptyString(binanceTradeCursor)) {
+            return {};
+        }
+
+        try {
+            const parsed = getSyncModule().BinanceTradeCursorMapSchema.safeParse(JSON.parse(binanceTradeCursor));
+
+            return parsed.success ? parsed.data : {};
+        } catch {
+            return {};
+        }
+    }
+
     private resolveResumeCursors(sync: SyncEntityInterface): BinanceTradeCursorMapInterface {
         if (sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt)) {
             return {};
         }
 
-        return binanceTradeCursorService.parse(sync.binanceTradeCursor);
+        return this.parseTradeCursors(sync.binanceTradeCursor);
     }
 
     private resolveWindowStart(sync: SyncEntityInterface): Date {

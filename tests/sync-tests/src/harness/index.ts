@@ -38,7 +38,7 @@ export {
     recentDayInMonthsAgo,
     resetBinanceSyncForResync,
     seedCryptoInstrument,
-    setupAdaUsdtForwardFixture,
+    setupAdaUsdtFixture,
     setupUsdtSpotFixtureWithBalances,
     stubEmptyBinanceBalances
 } from './binance/binance-scenario';
