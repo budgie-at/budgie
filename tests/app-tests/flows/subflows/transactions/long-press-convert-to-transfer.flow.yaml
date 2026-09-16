@@ -8,6 +8,8 @@ env:
 - extendedWaitUntil:
     visible:
       id: 'TransactionContextMenu.ConvertToTransferButton'
+- assertVisible:
+    id: 'TransactionContextMenu.StartDepositButton'
 - tapOn:
     id: 'TransactionContextMenu.ConvertToTransferButton'
 - waitForAnimationToEnd
