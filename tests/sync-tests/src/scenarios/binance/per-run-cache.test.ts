@@ -9,10 +9,10 @@ import {
     DEPOSIT_URL,
     EMPTY_FIAT_RESPONSE,
     FIAT_ORDERS_URL,
+    WITHDRAW_URL,
     buildBinance,
     stubBinanceServerTime,
-    stubEmptyC2cAndEarnRewards,
-    stubEmptyDepositAndWithdraw
+    stubEmptyC2cAndEarnRewards
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -21,7 +21,8 @@ describe('binance/per-run-cache', () => {
         stubBinanceServerTime();
         mockServer.use(http.get(FIAT_ORDERS_URL, () => HttpResponse.json(EMPTY_FIAT_RESPONSE)));
         stubEmptyC2cAndEarnRewards();
-        stubEmptyDepositAndWithdraw();
+        mockServer.use(http.get(WITHDRAW_URL, () => HttpResponse.json([])));
+        mockServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json([])));
         mockServer.use(
             http.get(
                 DEPOSIT_URL,
@@ -38,7 +39,8 @@ describe('binance/per-run-cache', () => {
         const btcResult = await client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
         const ethResult = await client.getTransactions('SPOT:ETH', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
 
-        expect([btcResult.success, ethResult.success]).toEqual([true, true]);
+        expect(btcResult.success).toBe(true);
+        expect(ethResult.success).toBe(true);
         if (btcResult.success && ethResult.success) {
             expect(btcResult.data.map(transaction => transaction.id)).toEqual(['dep-btc']);
             expect(ethResult.data.map(transaction => transaction.id)).toEqual(['dep-eth']);

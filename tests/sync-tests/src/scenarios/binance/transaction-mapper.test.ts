@@ -6,7 +6,6 @@ import { isDefined } from '@rnw-community/shared';
 import { buildBinance } from '../../harness';
 
 const ACCOUNT_ID = 'SPOT:BTC';
-const NET_AMOUNT_AFTER_TENTH_FEE = 0.9;
 
 describe('binance/transaction-mapper', () => {
     it('maps a deposit to INCOME with no fee and operationAmount equal to amount', () => {
@@ -28,7 +27,7 @@ describe('binance/transaction-mapper', () => {
         expect(transaction?.type).toBe(SyncTransactionTypeEnum.EXPENSE);
         expect(transaction?.amount).toBe(1);
         expect(transaction?.feeAmount).toBe(0.1);
-        expect(transaction?.operationAmount).toBeCloseTo(NET_AMOUNT_AFTER_TENTH_FEE, 10);
+        expect(transaction?.operationAmount).toBeCloseTo(0.9, 10);
     });
 
     it('reconciles net operationAmount plus fee back to the gross amount', () => {
