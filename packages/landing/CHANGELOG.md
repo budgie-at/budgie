@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** describe budgie by outcome in blog articles and the open-source page ([6ed4621](https://github.com/budgie-at/budgie/commit/6ed46219bbcad9673890f63d370f103ba5b0ede6)), closes [#1119](https://github.com/budgie-at/budgie/issues/1119) [#1121](https://github.com/budgie-at/budgie/issues/1121) [#1121](https://github.com/budgie-at/budgie/issues/1121)
+
+
+
+
+
 ## [6.67.15](https://github.com/budgie-at/budgie/compare/v6.67.14...v6.67.15) (2026-09-16)
 
 

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** keep own-card repair conversions consistent when an archived card is restored ([86be10e](https://github.com/budgie-at/budgie/commit/86be10ef284a40ee8ec21e4e4fd31707faab0926)), closes [#1077](https://github.com/budgie-at/budgie/issues/1077)
+* **app:** point the web smart app banner at Budgie's App Store id ([f14caff](https://github.com/budgie-at/budgie/commit/f14caffa72619bd5e26d6f987f4b1c6759c47851)), closes [#1150](https://github.com/budgie-at/budgie/issues/1150)
+* **app:** store the Binance C2C warning as an enum and localize it ([83a9f56](https://github.com/budgie-at/budgie/commit/83a9f56b6dc0b45b151294b5fc60df6c3f9e0615))
+* **bank-sync:** persist the Binance cursor, surface C2C availability and tighten P2P pairing ([0efbd02](https://github.com/budgie-at/budgie/commit/0efbd02701fa8a8febf935e38402f42f483e9104)), closes [#562](https://github.com/budgie-at/budgie/issues/562) [#561](https://github.com/budgie-at/budgie/issues/561) [#540](https://github.com/budgie-at/budgie/issues/540) [#1088](https://github.com/budgie-at/budgie/issues/1088)
+* **sync:** ignore the Binance trade cursor on backward runs ([a0c78b2](https://github.com/budgie-at/budgie/commit/a0c78b2b82b36d38f890b97ec6dee7df6e95a929))
+* **sync:** persist the Binance cursor after fatal runs ([077ef64](https://github.com/budgie-at/budgie/commit/077ef64cec4853864495e5fd864f5797272e91c2))
+
+
+
+
+
 ## [6.67.6](https://github.com/budgie-at/budgie/compare/v6.67.5...v6.67.6) (2026-09-16)
 
 
