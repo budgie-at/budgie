@@ -12,14 +12,13 @@ import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-f
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -82,16 +81,73 @@ export default async function OnDeviceAiBudgetAppPage(props: PageLangParam) {
                 }
             />
 
-            <FeaturePageMedia>
-                <AppShot
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>The models sit on your phone</Trans>}>
+                    <Trans>
+                        One switch in Settings, and categories, tags, translation and voice entry all run where your data already is.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>One switch, one download</Trans>}>
+                    <Trans>The On-device AI card is off until you turn it on. It then downloads about 2.5 GB of models, once.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
                     alt={t(
                         i18n
-                    )`Budgie settings screen stating that every piece of financial data stays on the device with no cloud sync or tracking`}
+                    )`Budgie settings screen with the AI section, the On-device AI toggle switched on and two model status cards below it`}
+                    index={0}
                     locale={lang}
+                    priority
                     scene="on-device-ai-budget-app-1"
                     slug="on-device-ai-budget-app"
-                />
-            </FeaturePageMedia>
+                >
+                    <FeatureStory.Callout y={0.622}>
+                        <Trans>One switch for every AI feature</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.748}>
+                        <Trans>Translation and learning progress</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Inference is a local call</Trans>}>
+                    <Trans>
+                        Budgie writes the English name and the search keywords for a foreign category with the model on the phone.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie edit category screen showing an AI-generated metadata block with an English translation and search keywords`}
+                    index={1}
+                    locale={lang}
+                    scene="ai-merchant-translation-1"
+                    slug="ai-merchant-translation"
+                >
+                    <FeatureStory.Callout y={0.4}>
+                        <Trans>Written by the on-device model</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.505}>
+                        <Trans>Keywords you can search by</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Nothing to send, nothing sent</Trans>}>
+                    <Trans>Past that one download, no AI feature opens a connection. There is no provider in the loop to trust.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle`}
+                    index={2}
+                    locale={lang}
+                    scene="ai-auto-categorization-2"
+                    slug="ai-auto-categorization"
+                >
+                    <FeatureStory.Callout y={0.23}>
+                        <Trans>No cloud sync, no tracking</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>

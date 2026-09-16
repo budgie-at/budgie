@@ -4095,6 +4095,10 @@ msgstr "Budgie lädt das Modell Whisper large-v3-turbo einmalig herunter und spe
 msgid "Budgie Edit Category form showing the icon tile, the name field and the AI-generated translation and search keywords"
 msgstr "Budgie-Formular Kategorie bearbeiten mit Symbolkachel, Namensfeld sowie KI-generierter Übersetzung und Suchbegriffen"
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Budgie edit category screen showing an AI-generated metadata block with an English translation and search keywords"
+msgstr "Budgie-Bildschirm zum Bearbeiten einer Kategorie mit einem Block aus KI-Metadaten mit englischer Übersetzung und Suchbegriffen"
+
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie Edit Expense screen showing the Silpo merchant recognised and the Groceries category already filled in"
 msgstr "Budgie-Bildschirm „Ausgabe bearbeiten“ mit erkanntem Händler Silpo und bereits ausgefüllter Kategorie Lebensmittel"
@@ -4500,10 +4504,6 @@ msgstr "Budgie-Einstellungen mit dem vollständigen Funktionsumfang, ohne Bezahl
 msgid "Budgie Settings screen showing the Security section with the PIN-lock card above an enabled Screenshot Protection switch"
 msgstr "Budgie-Einstellungsbildschirm mit dem Bereich Sicherheit: die PIN-Sperre-Karte über einem aktivierten Screenshot-Schutz-Schalter"
 
-#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
-msgid "Budgie settings screen stating that every piece of financial data stays on the device with no cloud sync or tracking"
-msgstr "Budgie-Einstellungen mit dem Hinweis, dass alle Finanzdaten auf dem Gerät bleiben, ohne Cloud-Synchronisierung und ohne Tracking"
-
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "Budgie Settings screen with a Privacy card stating all financial data is stored locally on the device, above a Security group where App Lock is not yet enabled and Screenshot Protection is off"
 msgstr "Budgie-Einstellungen mit einer Privatsphäre-Karte, die besagt, dass alle Finanzdaten lokal auf dem Gerät gespeichert werden, und darunter dem Bereich Sicherheit, in dem die App-Sperre noch nicht aktiviert und der Screenshot-Schutz ausgeschaltet ist"
@@ -4512,11 +4512,16 @@ msgstr "Budgie-Einstellungen mit einer Privatsphäre-Karte, die besagt, dass all
 msgid "Budgie settings screen with security, language, currency and default account rows and no sign-in row"
 msgstr "Budgie-Einstellungen mit Zeilen für Sicherheit, Sprache, Währung und Standardkonto und ohne Zeile zum Anmelden"
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Budgie settings screen with the AI section, the On-device AI toggle switched on and two model status cards below it"
+msgstr "Budgie-Einstellungen mit dem KI-Bereich, eingeschaltetem Schalter für KI auf dem Gerät und zwei Statuskarten der Modelle darunter"
+
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "Budgie settings screen with the General section showing the Language row set to the active language above Main Currency and Default Account"
 msgstr "Budgie-Einstellungsbildschirm mit dem Bereich „Allgemein“, in dem die Zeile „Sprache“ die aktive Sprache über Hauptwährung und Standardkonto zeigt"
 
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle"
 msgstr "Budgie-Einstellungen mit dem Offline- und Datenschutzhinweis über dem Schalter für die automatische MCC-Kategoriezuweisung"
 
@@ -4744,6 +4749,10 @@ msgstr "Budgie vs. die Kategorie"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Budgie works fully offline. You can track expenses on a flight, review your budget in a remote cabin, or manage finances in areas with no cell coverage. Every feature works without network access."
 msgstr "Budgie funktioniert vollständig offline. Sie können Ausgaben im Flugzeug verfolgen, Ihr Budget in einer abgelegenen Hütte überprüfen oder Finanzen in Gebieten ohne Mobilfunkabdeckung verwalten. Jede Funktion funktioniert ohne Netzwerkzugang."
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Budgie writes the English name and the search keywords for a foreign category with the model on the phone."
+msgstr "Budgie schreibt den englischen Namen und die Suchbegriffe einer fremdsprachigen Kategorie mit dem Modell auf dem Telefon."
 
 #: src/app/[lang]/metadata.ts
 msgid "Budgie, the offline expense tracker that never phones home"
@@ -9035,6 +9044,10 @@ msgid "Indexed local SQLite queries, so the insight stays fast on long transacti
 msgstr "Indizierte lokale SQLite-Abfragen, damit die Erkenntnis auch bei langen Transaktionshistorien schnell bleibt"
 
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Inference is a local call"
+msgstr "Die Berechnung bleibt lokal"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "Inference runs in milliseconds for embeddings and a few seconds for the LLM, only when you trigger it. Background impact is negligible."
 msgstr "Inferenz läuft in Millisekunden für Embeddings und einigen Sekunden für das LLM, nur wenn Sie sie auslösen. Der Hintergrundeinfluss ist vernachlässigbar."
 
@@ -9322,6 +9335,10 @@ msgstr "Wichtigste Funktionen:"
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Keywords the selector searches on"
 msgstr "Suchbegriffe für die Auswahl"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Keywords you can search by"
+msgstr "Suchbegriffe zum Finden"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Labels"
@@ -10613,6 +10630,7 @@ msgid "no cloud budget app"
 msgstr ""
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "No cloud sync, no tracking"
 msgstr "Keine Cloud-Sync, kein Tracking"
 
@@ -11020,6 +11038,10 @@ msgstr "Nichts auf diesem Bildschirm fragt, wer Sie sind. Es gibt kein Konto, ke
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Nothing opens before the PIN"
 msgstr "Vor der PIN öffnet sich nichts"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Nothing to send, nothing sent"
+msgstr "Nichts zu senden, nichts gesendet"
 
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Nothing to sign into"
@@ -11512,13 +11534,25 @@ msgstr "Ein Einstellungsbildschirm, und die zwei Zeilen, die alles ersetzen, was
 msgid "One sheet on the account's own settings screen: the whole history, or the last ninety, thirty or seven days."
 msgstr "Ein Blatt auf dem Einstellungsbildschirm des Kontos: der gesamte Verlauf oder die letzten neunzig, dreißig oder sieben Tage."
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "One switch for every AI feature"
+msgstr "Ein Schalter für alle KI-Funktionen"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "One switch in Settings → Security, right under the PIN-lock card"
 msgstr "Ein Schalter in Einstellungen → Sicherheit, direkt unter der PIN-Sperre-Karte"
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "One switch in Settings, and categories, tags, translation and voice entry all run where your data already is."
+msgstr "Ein Schalter in den Einstellungen, und Kategorien, Tags, Übersetzung und Spracheingabe laufen dort, wo Ihre Daten schon sind."
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "One switch, off by default, sitting directly under the PIN-lock card in the Security section."
 msgstr "Ein Schalter, standardmäßig deaktiviert, direkt unter der PIN-Sperre-Karte im Bereich Sicherheit."
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "One switch, one download"
+msgstr "Ein Schalter, ein Download"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag chip, plus a count"
@@ -11942,6 +11976,10 @@ msgstr "Ergänzt die PIN-Sperre für einen umfassenderen Schutz der Privatsphär
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "Partial and full refunds — Budgie compares the refund amount with the original expense"
 msgstr "Teil- und Vollrückerstattungen – Budgie vergleicht den Rückerstattungsbetrag mit der ursprünglichen Ausgabe"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Past that one download, no AI feature opens a connection. There is no provider in the loop to trust."
+msgstr "Nach diesem einen Download öffnet keine KI-Funktion eine Verbindung. Es gibt keinen Anbieter, dem Sie vertrauen müssten."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Paste a read-only API key and Budgie pulls your Binance balances and history straight to your phone — then merges your P2P buys with the bank payment that funded them."
@@ -14833,6 +14871,10 @@ msgstr "Die Transaktionen der zusammengeführten Kategorie werden der Zielkatego
 msgid "The Missing categories screen opens with only those rows, carrying your account, date, type and tag filters across."
 msgstr "Der Screen „Fehlende Kategorien“ öffnet sich nur mit diesen Zeilen und übernimmt deine Konto-, Datums-, Typ- und Tag-Filter."
 
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "The models sit on your phone"
+msgstr "Die Modelle liegen auf Ihrem Telefon"
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The moment the app goes to the background. There is no grace period and no inactivity setting to get wrong — the next time you come back, the keypad is there."
 msgstr "In dem Moment, in dem die App in den Hintergrund geht. Es gibt keine Karenzzeit und keine Inaktivitätseinstellung, die man falsch setzen könnte — beim nächsten Öffnen ist das Tastenfeld da."
@@ -14868,6 +14910,10 @@ msgstr ""
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The obvious pairs merge on import"
 msgstr "Die eindeutigen Paare führen sich beim Import zusammen"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "The On-device AI card is off until you turn it on. It then downloads about 2.5 GB of models, once."
+msgstr "Die Karte „KI auf dem Gerät“ ist aus, bis Sie sie einschalten. Dann lädt sie einmalig rund 2,5 GB Modelle."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The open-source security community includes:"
@@ -15811,6 +15857,10 @@ msgstr "Übersetzte Form durch Embeddings indiziert – Semantiksuche trifft, wo
 #: src/app/[lang]/features/ai-merchant-translation/opengraph-image.tsx
 msgid "translation"
 msgstr "Übersetzung"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Translation and learning progress"
+msgstr "Fortschritt von Übersetzung und Lernen"
 
 #: src/app/[lang]/legal/terms-of-service/page.tsx
 msgid "Transmit viruses, malware, or any malicious code"
@@ -17716,6 +17766,10 @@ msgstr "Schreibt direkt auf das Gerät"
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Writes the whole database"
 msgstr "Schreibt die ganze Datenbank"
+
+#: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
+msgid "Written by the on-device model"
+msgstr "Vom Modell auf dem Gerät"
 
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "xlsx"
