@@ -311,8 +311,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            Your PIN is the encryption key itself — nothing is derived from it, and nothing is generated or stored on your
-                            behalf. Here is what that means in practice:
+                            Your PIN is the encryption key itself — no separate key is derived, generated, or stored on your behalf. Here is
+                            what that means in practice:
                         </Trans>
                     </BlogArticleProse>
 

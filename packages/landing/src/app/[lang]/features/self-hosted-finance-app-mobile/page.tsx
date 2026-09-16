@@ -112,7 +112,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                 <FeatureStory.Point index={1}>
                     <Trans>
                         Export Database writes one file with everything, encrypted if you have a PIN set. Import Database restores it on a
-                        new phone after you pick the file and confirm.
+                        new phone after you pick the file and enter that PIN if the backup was encrypted.
                     </Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
@@ -167,7 +167,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                 </FeaturePageHeading>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Server-based finance apps</Trans>}>
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>On your phone, PIN-encrypted</Trans>}
+                        budgieValue={<Trans>On your phone, encrypted when a PIN is set</Trans>}
                         competitorValue={<Trans>Your VPS / Docker host</Trans>}
                         label={<Trans>Where data lives</Trans>}
                     />
