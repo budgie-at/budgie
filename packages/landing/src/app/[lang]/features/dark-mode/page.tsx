@@ -176,8 +176,8 @@ export default async function DarkModeFeaturePage(props: PageLangParam) {
                     question={<Trans>Why no white flash on cold launch?</Trans>}
                     answer={
                         <Trans>
-                            The native splash screen reads the OS theme directly so the transition into the React Native app stays in dark
-                            mode without an intermediate light state.
+                            The native splash screen reads the OS theme directly so the transition into the app stays in dark mode without
+                            an intermediate light state.
                         </Trans>
                     }
                 />

@@ -77,8 +77,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        Capture the whole Budgie database as one file — SQLCipher-encrypted with your PIN when you set one — and put it back
-                        on another device. No account, no upload.
+                        Capture the whole Budgie database as one file — encrypted with your PIN when you set one — and put it back on
+                        another device. No account, no upload.
                     </Trans>
                 }
             />
@@ -93,9 +93,9 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Step index={0} title={<Trans>One file holds the database</Trans>}>
                     <Trans>
-                        Export Database checkpoints the write-ahead log and copies the SQLite file itself — every transaction, account,
-                        category, tag and setting — then hands it to the system share sheet as a dated budgie-backup file. Set a PIN and
-                        that PIN is the SQLCipher key the file is encrypted with.
+                        Export Database copies the whole file behind the app — every transaction, account, category, tag and setting — then
+                        hands it to the system share sheet as a dated budgie-backup file. Set a PIN and that same PIN is what the file is
+                        encrypted with.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot alt={storyAlt} index={0} locale={lang} priority scene="database-backup-1" slug="database-backup">
@@ -107,8 +107,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 <FeatureStory.Step index={1} title={<Trans>Restore replaces what is there</Trans>}>
                     <Trans>
                         Import Database sits directly above it. Pick the file and Budgie warns you that it will replace all current data and
-                        cannot be undone; confirm and it swaps the database in — write-ahead sidecars included — and restarts. A backup
-                        encrypted with a PIN asks for that PIN first, and it becomes the app PIN on the restored database.
+                        cannot be undone; confirm and it swaps everything in and restarts. A backup encrypted with a PIN asks for that PIN
+                        first, and it becomes the app PIN on the restored data.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot alt={storyAlt} index={1} locale={lang} scene="database-backup-1" slug="database-backup">
@@ -149,12 +149,10 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>
-                            One file holds every transaction, account, category, tag and setting — it is the app&apos;s own SQLite database
-                        </Trans>
+                        <Trans>One file holds every transaction, account, category, tag and setting on your phone</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Set a PIN and the file is SQLCipher-encrypted with it — no vendor format, no conversion step</Trans>
+                        <Trans>Set a PIN and the file is encrypted with it — no vendor format, no conversion step</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>
@@ -187,9 +185,8 @@ export default async function DatabaseBackupFeaturePage(props: PageLangParam) {
                     question={<Trans>Is the backup file safe to upload to a cloud?</Trans>}
                     answer={
                         <Trans>
-                            If you have set a PIN, yes: the file is the SQLCipher database encrypted with that PIN, so a provider sees
-                            encrypted bytes rather than your transactions. Without a PIN the database is not encrypted and neither is the
-                            backup, so set one before the file leaves your device.
+                            If you have set a PIN, yes: the file is encrypted with that PIN, so a provider sees encrypted bytes rather than
+                            your transactions. Without a PIN nothing is encrypted, so set one before the file leaves your device.
                         </Trans>
                     }
                 />
