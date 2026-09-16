@@ -3045,8 +3045,8 @@ msgstr "Verrouillage de l'application, désactivé par défaut"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 #: src/app/[lang]/features/pin-app-lock/page.tsx
-msgid "App Lock: PIN and Face ID"
-msgstr "Verrouillage : code PIN et Face ID"
+msgid "App Lock: PIN and Face ID or Touch ID"
+msgstr "Verrouillage de l'app : code PIN et Face ID ou Touch ID"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "App requests connection to your bank"
@@ -3511,11 +3511,6 @@ msgstr ""
 msgid "Bank-fee entries are included in category analytics even when attached to transfers"
 msgstr "Les entrées de frais bancaires sont incluses dans les analyses par catégorie, même lorsqu’elles sont rattachées à des transferts"
 
-#: src/app/[lang]/privacy/page.tsx
-#: src/app/[lang]/security/page.tsx
-msgid "Bank-grade biometric unlock — same Secure Enclave, same encryption key."
-msgstr "Déverrouillage biométrique soutenu par le même matériel de plateforme que votre app bancaire."
-
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/metadata.ts
 msgid "Bank-issued codes do the work — coffee shops land in Food & Drink, gas stations in Transport."
@@ -3741,6 +3736,11 @@ msgstr ""
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Biometric lock + AES-256 encrypted storage"
 msgstr "Verrouillage biométrique + stockage chiffré AES-256"
+
+#: src/app/[lang]/privacy/page.tsx
+#: src/app/[lang]/security/page.tsx
+msgid "Biometric unlock hands Budgie only a yes or no — your PIN alone still derives the encryption key."
+msgstr "Le déverrouillage biométrique ne fournit à Budgie qu'un oui ou un non — seul votre code PIN continue de dériver la clé de chiffrement."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
 msgid "Biometric unlock is a shortcut past Budgie's lock screen. What encrypts the database underneath is still the four-digit PIN."
@@ -4530,8 +4530,8 @@ msgid "Budgie Settings screen with the Security group showing the App Lock card 
 msgstr "Écran Réglages de Budgie avec le groupe Sécurité : la carte Verrouillage de l'application et l'interrupteur Protection des captures d'écran activé"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID"
-msgstr "Écran Paramètres de Budgie avec la section Sécurité et une carte Verrouillage de l’application indiquant Sécurisez votre application avec un code PIN et Face ID"
+msgid "Budgie Settings screen with the Security section showing an App Lock card that reads Secure your app with PIN and Face ID or Touch ID"
+msgstr "Écran des paramètres Budgie avec la section Sécurité affichant une carte Verrouillage de l'app indiquant Protégez votre app avec un code PIN et Face ID ou Touch ID"
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Budgie settings screen, Data Management section, listing the Import CSV, Export CSV, Import Database and Export Database rows"
@@ -7574,16 +7574,16 @@ msgid "Face ID drives the encryption key."
 msgstr "Face ID pilote la clé de chiffrement."
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Face ID opens the lock, the PIN owns the key"
-msgstr "Face ID ouvre le verrou, le code PIN est la clé"
+msgid "Face ID or Touch ID opens the lock, the PIN owns the key"
+msgstr "Face ID ou Touch ID ouvre le verrou, le code PIN reste la clé"
 
 #: src/app/[lang]/features/biometric-authentication/page.tsx
-msgid "Face ID unlock on the lock screen, offered when the device has it enrolled"
-msgstr "Déverrouillage Face ID sur l’écran de verrouillage, proposé lorsque Face ID est configuré sur l’appareil"
+msgid "Face ID or Touch ID unlock on the lock screen, offered when the device has one enrolled"
+msgstr "Déverrouillage par Face ID ou Touch ID sur l'écran de verrouillage, proposé lorsque l'appareil en a un configuré"
 
 #: src/app/[lang]/features/biometric-authentication/metadata.ts
-msgid "Face ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real SQLCipher key, no device-passcode fallback."
-msgstr "Face ID déverrouille l'écran de verrouillage instantanément ; le système d'exploitation effectue la vérification et Budgie ne voit que le résultat. Votre code PIN reste la véritable clé SQLCipher, sans repli sur le code d'accès de l'appareil."
+msgid "Face ID or Touch ID unlocks the lock screen instantly; the OS matches, Budgie only sees the result. Your PIN stays the real encryption key, no device-passcode fallback."
+msgstr "Face ID ou Touch ID déverrouille instantanément l'écran de verrouillage ; le système d'exploitation effectue la comparaison, Budgie ne voit que le résultat. Votre code PIN reste la véritable clé de chiffrement, sans repli sur le code d'accès de l'appareil."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Facilitate optional bank synchronization (with your explicit consent)"
