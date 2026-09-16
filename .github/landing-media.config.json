@@ -52,7 +52,8 @@
         },
         {
             "name": "on-device-ai-budget-app-1",
-            "deepLink": "budgie://settings?anchor=ai"
+            "deepLink": "budgie://settings?anchor=ai",
+            "settleSeconds": 340
         },
         {
             "name": "no-bank-login-budget-app-1",
