@@ -3632,6 +3632,16 @@ msgstr "Витрачено"
 msgid "Split"
 msgstr "Розділити"
 
+#: src/app/convert-to-transfer.tsx
+#: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Start Deposit"
+msgstr "Розпочати депозит"
+
+#: src/app/convert-to-transfer.tsx
+msgid "Start Deposit?"
+msgstr "Розпочати депозит?"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Start from scratch and set every limit yourself"
 msgstr "Почніть з нуля та задайте кожен ліміт самостійно"
@@ -3842,6 +3852,10 @@ msgstr "Це конвертує витрату у переказ між раху
 #: src/app/convert-to-transfer.tsx
 msgid "This will convert the income to a transfer between accounts."
 msgstr "Це конвертує дохід у переказ між рахунками."
+
+#: src/app/convert-to-transfer.tsx
+msgid "This will create a new deposit account and convert this expense into a transfer into it."
+msgstr "Це створить новий депозитний рахунок і перетворить цю витрату на переказ на нього."
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "This will keep one entry with the full transaction amount."

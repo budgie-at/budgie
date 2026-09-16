@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, UserIconNameEnum, isExpenseTransaction, isIncomeTransaction } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum, isExpenseTransaction } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { emptyFn } from '@rnw-community/shared';
@@ -8,37 +8,35 @@ import { useTransactionListConvertToTransferBase } from '../../hook/use-transact
 import { buildConvertToTransferParams } from '../../utils/build-convert-to-transfer-params.util';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
-export const TransactionListConvertToTransferMenuItem = () => {
+export const TransactionListStartDepositMenuItem = () => {
     const { t } = useLingui();
     const { transaction, closeMenu, openConvertToTransfer, isConsolidated, categoryEntries } = useTransactionListConvertToTransferBase();
 
-    const isConvertibleTransaction = isExpenseTransaction(transaction) || isIncomeTransaction(transaction);
-    const isVisible = !isConsolidated && isConvertibleTransaction && categoryEntries.length === 1;
+    const isVisible = !isConsolidated && isExpenseTransaction(transaction) && categoryEntries.length === 1;
 
     if (!isVisible) {
         return null;
     }
 
-    const transactionType = isExpenseTransaction(transaction) ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
-
-    const handleConvert = () => {
+    const handleStartDeposit = () => {
         closeMenu(() => {
             const [sourceEntry] = categoryEntries;
 
             openConvertToTransfer({
-                ...buildConvertToTransferParams(transaction.id, transactionType, sourceEntry),
-                skipPostConvertNavigation: true
+                ...buildConvertToTransferParams(transaction.id, TransactionTypeEnum.EXPENSE, sourceEntry),
+                skipPostConvertNavigation: true,
+                startDeposit: true
             }).catch(emptyFn);
         });
     };
 
     return (
         <PopoverMenuItem
-            icon={UserIconNameEnum.ArrowRightLeft}
-            label={t`Convert to Transfer`}
+            icon={UserIconNameEnum.Landmark}
+            label={t`Start Deposit`}
             onPress={emptyFn}
-            onPressIn={handleConvert}
-            testID={TransactionListContextMenuSelector.ConvertToTransferButton}
+            onPressIn={handleStartDeposit}
+            testID={TransactionListContextMenuSelector.StartDepositButton}
         />
     );
 };
