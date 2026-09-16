@@ -89,9 +89,8 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                     </FeaturePageProse>
                     <FeaturePageProse>
                         <Trans>
-                            The repository includes the full React Native app, the AI service layer with on-device LLM and embedding model
-                            integrations, the contracts package, and this landing page. Nothing is hidden behind a proprietary SDK or closed
-                            binary.
+                            The repository includes the full mobile app, the on-device AI layer, the contracts package, and this landing
+                            page. Nothing is hidden behind a proprietary SDK or closed binary.
                         </Trans>
                     </FeaturePageProse>
                 </FeaturePageSection>
@@ -124,7 +123,7 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                         <Trans>
                             Public source is not just a development philosophy — it is a security property. Closed finance apps ask you to
                             trust that they do not log your transactions, share data with advertisers, or sell behavioral profiles. Budgie
-                            asks you to check. The on-device architecture, AES-256 encryption, and zero-telemetry design are all visible in
+                            asks you to check. The on-device architecture, encryption at rest, and zero-telemetry design are all visible in
                             the repository for any developer to verify.
                         </Trans>
                     </FeaturePageProse>
@@ -172,8 +171,9 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                     <FeaturePageFaqItem
                         answer={
                             <Trans>
-                                Yes. The AI service layer — including the embedding model integration and LLM orchestration — is part of the
-                                public repository. The underlying models (Qwen3, whisper.rn) are separately licensed projects.
+                                Yes. The on-device AI layer that powers category suggestions, voice entry, and merchant clean-up is part of
+                                the public repository. The pretrained models it runs are separately licensed third-party projects, credited
+                                on our licence page.
                             </Trans>
                         }
                         question={<Trans>Is the AI model integration also public source?</Trans>}
