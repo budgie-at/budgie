@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.15](https://github.com/budgie-at/budgie/compare/v6.67.14...v6.67.15) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** describe ai features by outcome instead of implementation ([c1b136e](https://github.com/budgie-at/budgie/commit/c1b136e1748fd97dfe31c3864e90a5f510226023)), closes [#1121](https://github.com/budgie-at/budgie/issues/1121)
+* **landing:** describe storage and encryption by outcome instead of implementation ([f4f46cc](https://github.com/budgie-at/budgie/commit/f4f46cc541c85b97114df479059c172254811ac9)), closes [#1121](https://github.com/budgie-at/budgie/issues/1121)
+
+
+
+
+
 ## [6.67.14](https://github.com/budgie-at/budgie/compare/v6.67.13...v6.67.14) (2026-09-16)
 
 
