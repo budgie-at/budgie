@@ -92,10 +92,11 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The Sync Data Repairs screen runs two checks in one pass: it finds duplicate imported rows, and it looks for
-                        transfers between your own cards that arrived as a separate income row and expense row instead of one transfer. It
-                        checks your imported banking connections that support this repair today, shows a count before changing anything, and
-                        only touches the rows involved once you confirm.
+                        The Sync Data Repairs screen runs several checks in one pass: it finds duplicate imported rows, cleans up a few
+                        rarer transfer-matching duplicates that only affect transfers, and looks for transfers between your own cards that
+                        arrived as a separate income row and expense row instead of one transfer. It checks your imported banking
+                        connections that support this repair today, shows a count before changing anything, and only touches the rows
+                        involved once you confirm.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -163,9 +164,9 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     question={<Trans>What does a sync data repair actually do?</Trans>}
                     answer={
                         <Trans>
-                            It runs two fixes on your imported banking connections: it soft-deletes duplicate imported rows, and it pairs
-                            transfers between your own cards that arrived as two separate rows into one. The screen shows a count before you
-                            confirm anything.
+                            It runs several fixes on your imported banking connections: it soft-deletes duplicate imported rows, cleans up a
+                            couple of rarer transfer-matching duplicates, and pairs transfers between your own cards that arrived as two
+                            separate rows into one. The screen shows a count before you confirm anything.
                         </Trans>
                     }
                 />
@@ -205,8 +206,8 @@ export default async function SyncDataRepairsFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             The receiving card has to be closed on your account, and its masked card number has to match exactly one of your
-                            closed cards within about half a day and the expected amount. If the card is still active, or the masked number
-                            matches more than one closed card, the repair leaves it alone.
+                            closed cards. A matching entry also has to turn up within about half a day and for the expected amount. If the
+                            card is still active, or the masked number matches more than one closed card, the repair leaves it alone.
                         </Trans>
                     }
                 />
