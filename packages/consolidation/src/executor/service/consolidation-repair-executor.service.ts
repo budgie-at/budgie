@@ -1,9 +1,8 @@
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { CANONICAL_CENT_TOLERANCE_AMOUNT } from '../../shared/constant/canonical-cent-tolerance.constant';
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { buildIbanBridgeChainCanonicalInput } from '../utils/build-iban-bridge-chain-canonical-input.util';
 
@@ -109,11 +108,11 @@ export class ConsolidationRepairExecutorService {
 
     @Log(
         candidate =>
-            `enter supersededCanonicalTransactionId=${candidate.supersededCanonicalTransactionId} canonicalTransactionId=${candidate.canonicalTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} timeDiff=${candidate.timeDiff}`,
+            `enter supersededCanonicalTransactionId=${candidate.supersededCanonicalTransactionId} canonicalTransactionId=${candidate.canonicalTransactionId} bridgeOriginTransactionId=${candidate.bridgeOriginTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} timeDiff=${candidate.timeDiff}`,
         (result, candidate) =>
-            `done result=${String(result)} supersededCanonicalTransactionId=${candidate.supersededCanonicalTransactionId} canonicalTransactionId=${candidate.canonicalTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} timeDiff=${candidate.timeDiff}`,
+            `done result=${String(result)} supersededCanonicalTransactionId=${candidate.supersededCanonicalTransactionId} canonicalTransactionId=${candidate.canonicalTransactionId} bridgeOriginTransactionId=${candidate.bridgeOriginTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} timeDiff=${candidate.timeDiff}`,
         (error, candidate) =>
-            `throw supersededCanonicalTransactionId=${candidate.supersededCanonicalTransactionId} canonicalTransactionId=${candidate.canonicalTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
+            `throw supersededCanonicalTransactionId=${candidate.supersededCanonicalTransactionId} canonicalTransactionId=${candidate.canonicalTransactionId} bridgeOriginTransactionId=${candidate.bridgeOriginTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
     )
     async consolidateIbanBridgeCanonicalSupersession(candidate: IbanBridgeCanonicalSupersessionCandidateInterface): Promise<boolean> {
         return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
@@ -180,25 +179,14 @@ export class ConsolidationRepairExecutorService {
         candidate: IbanBridgeCanonicalSupersessionCandidateInterface,
         tx: DB
     ): Promise<boolean> {
-        const candidateTransactionIds = [candidate.supersededCanonicalTransactionId, candidate.canonicalTransactionId];
+        const canonicalIdsOwningMovedEntries = [candidate.supersededCanonicalTransactionId, candidate.canonicalTransactionId];
         const transactions = await this.consolidationEligibilityService.findEligibleSourceTransactions(
-            candidateTransactionIds,
+            canonicalIdsOwningMovedEntries,
             tx,
-            candidateTransactionIds
+            canonicalIdsOwningMovedEntries
         );
 
-        if (!isDefined(transactions)) {
-            return false;
-        }
-
-        const supersededCanonical = transactions.find(transaction => transaction.id === candidate.supersededCanonicalTransactionId);
-        const canonical = transactions.find(transaction => transaction.id === candidate.canonicalTransactionId);
-
-        if (
-            !isDefined(supersededCanonical) ||
-            !isDefined(canonical) ||
-            !this.isCanonicalSupersessionStillEligible(candidate, supersededCanonical, canonical)
-        ) {
+        if (!isDefined(transactions) || !transactions.every(transaction => this.isUntouchedIbanBridgeCanonical(transaction))) {
             return false;
         }
 
@@ -209,57 +197,6 @@ export class ConsolidationRepairExecutorService {
         );
 
         return true;
-    }
-
-    private isCanonicalSupersessionStillEligible(
-        candidate: IbanBridgeCanonicalSupersessionCandidateInterface,
-        supersededCanonical: TransactionWithEntriesEntityInterface,
-        canonical: TransactionWithEntriesEntityInterface
-    ): boolean {
-        if (
-            !this.isUntouchedIbanBridgeCanonical(supersededCanonical) ||
-            !this.isUntouchedIbanBridgeCanonical(canonical) ||
-            supersededCanonical.fromAccountId !== candidate.sourceAccountId ||
-            supersededCanonical.toAccountId !== candidate.bridgeAccountId ||
-            canonical.fromAccountId !== candidate.sourceAccountId ||
-            canonical.toAccountId !== candidate.targetAccountId
-        ) {
-            return false;
-        }
-
-        const supersededSourceEntry = supersededCanonical.entries.find(
-            entry =>
-                !isDefined(entry.originalTransactionId) &&
-                entry.accountId === candidate.sourceAccountId &&
-                entry.type === TransactionEntryTypeEnum.CREDIT
-        );
-        const supersededTargetEntry = supersededCanonical.entries.find(
-            entry =>
-                !isDefined(entry.originalTransactionId) &&
-                entry.accountId === candidate.bridgeAccountId &&
-                entry.type === TransactionEntryTypeEnum.DEBIT
-        );
-        const canonicalSourceEntry = canonical.entries.find(
-            entry =>
-                !isDefined(entry.originalTransactionId) &&
-                entry.accountId === candidate.sourceAccountId &&
-                entry.type === TransactionEntryTypeEnum.CREDIT
-        );
-        if (
-            !isDefined(supersededSourceEntry) ||
-            !isDefined(supersededTargetEntry) ||
-            !isDefined(canonicalSourceEntry) ||
-            !isNotEmptyString(supersededSourceEntry.toIban)
-        ) {
-            return false;
-        }
-
-        return (
-            Math.abs(supersededSourceEntry.amount - candidate.sourceAmount) <= CANONICAL_CENT_TOLERANCE_AMOUNT &&
-            Math.abs(canonicalSourceEntry.amount - supersededSourceEntry.amount) <= CANONICAL_CENT_TOLERANCE_AMOUNT &&
-            canonicalSourceEntry.toIban === supersededSourceEntry.toIban &&
-            isPositiveNumber(supersededTargetEntry.amount)
-        );
     }
 
     private isUntouchedIbanBridgeCanonical(transaction: TransactionWithEntriesEntityInterface): boolean {
