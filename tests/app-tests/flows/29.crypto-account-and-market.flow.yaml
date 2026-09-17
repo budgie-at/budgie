@@ -375,7 +375,7 @@ appId: ${APP_ID}
           DEEP_LINK: 'budgie://settings?anchor=runway'
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.RunwayCryptoSwitch'
+          id: 'SettingsPage.RunwayPillSwitch'
           text: '1'
       timeout: 10000
 
@@ -424,9 +424,6 @@ appId: ${APP_ID}
           id: 'SettingsPage.RunwayPillSwitch'
           text: '1'
       timeout: 3000
-- assertVisible:
-      id: 'SettingsPage.RunwayCryptoSwitch'
-      text: '1'
 
 # --- Runway pill returns on home once "Show on home" is back on ---
 

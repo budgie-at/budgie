@@ -472,106 +472,6 @@ const shiftTransactionsFixtureToNow = () => {
     );
 };
 
-const shiftRunwayCryptoFixtureToNow = () => {
-    const sourcePath = path.join(fixturesDirectoryPath, '29.db');
-    const targetPath = path.join(outputDirectoryPath, '29.db');
-    const fiatAccountId = 1;
-    const defaultInstrumentId = 1;
-    const bitcoinInstrumentId = 34;
-    const ethereumInstrumentId = 35;
-    const eurToUsdRate = 1.1723329425556859;
-    const bitcoinToUsdRate = 2500.0;
-    const ethereumToUsdRate = 1800.0;
-    const runwayFiatBalance = 3_000_000_000;
-    const monthlyExpenseAmount = 1_500_000_000;
-    const monthlyIncomeAmount = 500_000_000;
-    const monthlyExpenseBaseAmount = Math.round(1500 * eurToUsdRate * 1_000_000);
-    const monthlyIncomeBaseAmount = Math.round(500 * eurToUsdRate * 1_000_000);
-    const housingCategoryId = 10;
-    const salaryCategoryId = 20;
-    const bitcoinExchangeRateId = 65;
-    const ethereumExchangeRateId = 66;
-
-    copyFixture(sourcePath, targetPath);
-    runSqlite(
-        targetPath,
-        `
-        BEGIN;
-
-        UPDATE account_balances
-        SET amount = ${runwayFiatBalance}, created_at = unixepoch('now'), updated_at = unixepoch('now')
-        WHERE account_id = ${fiatAccountId};
-
-        DELETE FROM transaction_entries WHERE transaction_id BETWEEN 2100 AND 2199;
-        DELETE FROM transactions WHERE id BETWEEN 2100 AND 2199;
-
-        CREATE TEMP TABLE runway_month (
-            months_ago INTEGER,
-            transaction_id INTEGER,
-            entry_id INTEGER,
-            kind TEXT,
-            entry_type TEXT,
-            amount INTEGER,
-            base_amount INTEGER,
-            category_id INTEGER
-        );
-
-        INSERT INTO runway_month VALUES
-            (1, 2101, 21010, 'EXPENSE', 'CREDIT', ${monthlyExpenseAmount}, ${monthlyExpenseBaseAmount}, ${housingCategoryId}),
-            (1, 2102, 21020, 'INCOME',  'DEBIT',  ${monthlyIncomeAmount},  ${monthlyIncomeBaseAmount},  ${salaryCategoryId}),
-            (2, 2103, 21030, 'EXPENSE', 'CREDIT', ${monthlyExpenseAmount}, ${monthlyExpenseBaseAmount}, ${housingCategoryId}),
-            (2, 2104, 21040, 'INCOME',  'DEBIT',  ${monthlyIncomeAmount},  ${monthlyIncomeBaseAmount},  ${salaryCategoryId}),
-            (3, 2105, 21050, 'EXPENSE', 'CREDIT', ${monthlyExpenseAmount}, ${monthlyExpenseBaseAmount}, ${housingCategoryId}),
-            (3, 2106, 21060, 'INCOME',  'DEBIT',  ${monthlyIncomeAmount},  ${monthlyIncomeBaseAmount},  ${salaryCategoryId});
-
-        INSERT INTO transactions (id, created_at, updated_at, type, title, operated_at, comment, to_account_id, from_account_id, exchange_rate, needs_embedding)
-        SELECT
-            runway_month.transaction_id,
-            unixepoch(date('now', 'start of month', '-' || runway_month.months_ago || ' months', '+9 days', '+12 hours')),
-            unixepoch(date('now', 'start of month', '-' || runway_month.months_ago || ' months', '+9 days', '+12 hours')),
-            runway_month.kind,
-            'E2E Runway History',
-            unixepoch(date('now', 'start of month', '-' || runway_month.months_ago || ' months', '+9 days', '+12 hours')),
-            '',
-            CASE WHEN runway_month.kind = 'INCOME' THEN ${fiatAccountId} ELSE NULL END,
-            CASE WHEN runway_month.kind = 'EXPENSE' THEN ${fiatAccountId} ELSE NULL END,
-            1.0,
-            0
-        FROM runway_month;
-
-        INSERT INTO transaction_entries (id, created_at, updated_at, type, account_id, category_id, transaction_id, amount, exchange_rate, category_source, kind, base_instrument_id, base_exchange_rate, base_amount)
-        SELECT
-            runway_month.entry_id,
-            unixepoch(date('now', 'start of month', '-' || runway_month.months_ago || ' months', '+9 days', '+12 hours')),
-            unixepoch(date('now', 'start of month', '-' || runway_month.months_ago || ' months', '+9 days', '+12 hours')),
-            runway_month.entry_type,
-            ${fiatAccountId},
-            runway_month.category_id,
-            runway_month.transaction_id,
-            runway_month.amount,
-            ${eurToUsdRate},
-            'USER',
-            'PRIMARY',
-            ${defaultInstrumentId},
-            ${eurToUsdRate},
-            runway_month.base_amount
-        FROM runway_month;
-
-        DELETE FROM exchange_rates WHERE base_instrument_id = ${bitcoinInstrumentId} AND quote_instrument_id = ${defaultInstrumentId};
-        INSERT INTO exchange_rates (id, created_at, updated_at, source, base_instrument_id, quote_instrument_id, rate)
-        VALUES (${bitcoinExchangeRateId}, unixepoch('now') - 900, unixepoch('now') - 900, 'coingecko.com', ${bitcoinInstrumentId}, ${defaultInstrumentId}, ${bitcoinToUsdRate});
-
-        DELETE FROM exchange_rates WHERE base_instrument_id = ${ethereumInstrumentId} AND quote_instrument_id = ${defaultInstrumentId};
-        INSERT INTO exchange_rates (id, created_at, updated_at, source, base_instrument_id, quote_instrument_id, rate)
-        VALUES (${ethereumExchangeRateId}, unixepoch('now') - 900, unixepoch('now') - 900, 'coingecko.com', ${ethereumInstrumentId}, ${defaultInstrumentId}, ${ethereumToUsdRate});
-
-        DROP TABLE runway_month;
-        COMMIT;
-        VACUUM;
-        `
-    );
-};
-
 const buildLocalNoonDate = (year, month, day) => new Date(year, month, day, 12, 0, 0, 0);
 
 const getClampedDay = (year, month, day) => {
@@ -589,6 +489,97 @@ const buildMonthlyTimestamp = (monthOffset, desiredDay) => {
     const targetDate = buildLocalNoonDate(targetYear, targetMonth, clampedDay);
 
     return Math.floor(targetDate.getTime() / 1000);
+};
+
+const generateRunwayCryptoFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '29.db');
+    const targetPath = path.join(outputDirectoryPath, '29.db');
+    const fiatAccountId = 1;
+    const defaultInstrumentId = 1;
+    const bitcoinInstrumentId = 34;
+    const ethereumInstrumentId = 35;
+    const eurToUsdRate = 1.1723329425556859;
+    const bitcoinToUsdRate = 2500.0;
+    const ethereumToUsdRate = 1800.0;
+    const runwayFiatBalance = 3_000_000_000;
+    const monthlyExpenseAmount = 1_500_000_000;
+    const monthlyIncomeAmount = 500_000_000;
+    const housingCategoryId = 10;
+    const salaryCategoryId = 20;
+    const historyDay = 10;
+    const firstTransactionId = 2101;
+    const monthlyExpenseBaseAmount = Math.round(monthlyExpenseAmount * eurToUsdRate);
+    const monthlyIncomeBaseAmount = Math.round(monthlyIncomeAmount * eurToUsdRate);
+    const rateUpdatedAtSql = "unixepoch('now') - 900";
+    const historyMonths = [-1, -2, -3].map(monthOffset => buildMonthlyTimestamp(monthOffset, historyDay));
+    const transactionValues = historyMonths
+        .flatMap((operatedAt, monthIndex) => [
+            `(${firstTransactionId + monthIndex * 2}, ${operatedAt}, ${operatedAt}, 'EXPENSE', 'E2E Runway History', ${operatedAt}, NULL, ${fiatAccountId}, 1.0)`,
+            `(${firstTransactionId + monthIndex * 2 + 1}, ${operatedAt}, ${operatedAt}, 'INCOME', 'E2E Runway History', ${operatedAt}, ${fiatAccountId}, NULL, 1.0)`
+        ])
+        .join(',\n            ');
+    const entryValues = historyMonths
+        .flatMap((operatedAt, monthIndex) => [
+            `(${operatedAt}, ${operatedAt}, 'CREDIT', ${fiatAccountId}, ${housingCategoryId}, ${firstTransactionId + monthIndex * 2}, ${monthlyExpenseAmount}, ${eurToUsdRate}, ${defaultInstrumentId}, ${eurToUsdRate}, ${monthlyExpenseBaseAmount})`,
+            `(${operatedAt}, ${operatedAt}, 'DEBIT', ${fiatAccountId}, ${salaryCategoryId}, ${firstTransactionId + monthIndex * 2 + 1}, ${monthlyIncomeAmount}, ${eurToUsdRate}, ${defaultInstrumentId}, ${eurToUsdRate}, ${monthlyIncomeBaseAmount})`
+        ])
+        .join(',\n            ');
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        UPDATE account_balances
+        SET amount = ${runwayFiatBalance}, created_at = unixepoch('now'), updated_at = unixepoch('now')
+        WHERE account_id = ${fiatAccountId};
+
+        DELETE FROM transaction_entries WHERE transaction_id BETWEEN 2100 AND 2199;
+        DELETE FROM transactions WHERE id BETWEEN 2100 AND 2199;
+
+        INSERT INTO transactions (
+            id,
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            to_account_id,
+            from_account_id,
+            exchange_rate
+        )
+        VALUES
+            ${transactionValues};
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount,
+            exchange_rate,
+            base_instrument_id,
+            base_exchange_rate,
+            base_amount
+        )
+        VALUES
+            ${entryValues};
+
+        DELETE FROM exchange_rates
+        WHERE base_instrument_id IN (${bitcoinInstrumentId}, ${ethereumInstrumentId}) AND quote_instrument_id = ${defaultInstrumentId};
+
+        INSERT INTO exchange_rates (created_at, updated_at, source, base_instrument_id, quote_instrument_id, rate)
+        VALUES
+            (${rateUpdatedAtSql}, ${rateUpdatedAtSql}, 'coingecko.com', ${bitcoinInstrumentId}, ${defaultInstrumentId}, ${bitcoinToUsdRate}),
+            (${rateUpdatedAtSql}, ${rateUpdatedAtSql}, 'coingecko.com', ${ethereumInstrumentId}, ${defaultInstrumentId}, ${ethereumToUsdRate});
+
+        COMMIT;
+        VACUUM;
+        `
+    );
 };
 
 const generateBudgetMultiCurrencyFixture = () => {
@@ -1021,7 +1012,7 @@ const shiftTransactionInfoFixtureToNow = () => {
 
 shiftTransactionsFixtureToNow();
 shiftTransactionInfoFixtureToNow();
-shiftRunwayCryptoFixtureToNow();
+generateRunwayCryptoFixture();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
 generateConsolidationFixture();
