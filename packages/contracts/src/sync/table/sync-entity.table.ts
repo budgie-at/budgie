@@ -31,14 +31,13 @@ export const SyncEntityTable = sqliteTable(
         backwardSyncedAt: int('backward_synced_at', { mode: 'timestamp' }),
         backwardSyncFromAt: int('backward_sync_from_at', { mode: 'timestamp' }),
         backwardSyncLimitAt: int('backward_sync_limit_at', { mode: 'timestamp' }),
-        backwardBatchSequence: int('backward_batch_sequence', { mode: 'number' }),
+        backwardBatchAt: int('backward_batch_at', { mode: 'timestamp_ms' }),
         forwardSyncedAt: int('forward_synced_at', { mode: 'timestamp' }),
         forwardSyncFromAt: int('forward_sync_from_at', { mode: 'timestamp' }),
         balanceAuthority: text('balance_authority', { enum: convertEnumToDrizzleEnum(SyncBalanceAuthorityEnum) })
             .$type<SyncBalanceAuthorityEnum>()
             .default(SyncBalanceAuthorityEnum.LEDGER)
             .notNull(),
-        balanceAnchorCapturedAt: int('balance_anchor_captured_at', { mode: 'timestamp' }),
         balanceAdjustmentTransactionId: int('balance_adjustment_transaction_id', { mode: 'number' }),
         transactionCount: int('transaction_count', { mode: 'number' }).default(0).notNull(),
         errorCount: int('error_count', { mode: 'number' }).default(0).notNull(),

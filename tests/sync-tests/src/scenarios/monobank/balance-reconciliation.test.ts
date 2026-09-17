@@ -1,8 +1,9 @@
 import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
-import { monobankBalanceReconciliationService } from '@app/sync/service/monobank-balance-reconciliation.service';
+import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import {
     AccountBalanceEntityTable,
     AccountTypeEnum,
+    ExternalSourceEnum,
     SyncBalanceAuthorityEnum,
     SyncModeEnum,
     SyncStatusEnum,
@@ -13,9 +14,13 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { fetchSyncById, seed } from '../../harness';
+import { fetchSyncById, seed, stubMonobankProviderBalance } from '../../harness';
 import { fetchMonobankAdjustments } from '../../harness/db/fetch-monobank-adjustments';
 import { insertOne } from '../../harness/db/insert-one';
+
+const EXTERNAL_ID = 'mono-reconciled';
+const PROVIDER_BALANCE_UNITS = 100;
+const PROVIDER_BALANCE = 1_000_000;
 
 const seedLedgerBalance = (accountId: number, ledgerBalance: number): void => {
     if (ledgerBalance === 0) {
@@ -51,64 +56,54 @@ const seedLedgerBalance = (accountId: number, ledgerBalance: number): void => {
     });
 };
 
-const seedAnchoredLedger = (ledgerBalance: number, providerBalance: number, adjustmentTransactionId: number | null = null) => {
-    const account = seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+const seedAnchoredLedger = (ledgerBalance: number, adjustmentTransactionId: number | null = null) => {
+    const account = seed.account({
+        externalId: EXTERNAL_ID,
+        externalSource: ExternalSourceEnum.MONOBANK,
+        type: AccountTypeEnum.BANK_SYNC,
+        instrumentId: 1
+    });
     const sync = seed.sync({
         accountId: account.id,
         mode: SyncModeEnum.FORWARD,
-        status: SyncStatusEnum.SYNCING,
+        status: SyncStatusEnum.IDLE,
         balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER,
-        balanceAnchorCapturedAt: new Date(),
         balanceAdjustmentTransactionId: adjustmentTransactionId
     });
-    insertOne(AccountBalanceEntityTable, { accountId: account.id, amount: providerBalance, updatedAt: new Date() });
+    insertOne(AccountBalanceEntityTable, { accountId: account.id, amount: PROVIDER_BALANCE, updatedAt: new Date() });
     seedLedgerBalance(account.id, ledgerBalance);
+    stubMonobankProviderBalance(EXTERNAL_ID, PROVIDER_BALANCE_UNITS);
 
     return { account, sync };
 };
 
-const finalize = async (syncId: number, accountId: number, providerBalance: number): Promise<void> => {
-    const completedAt = new Date();
-    await monobankBalanceReconciliationService.finalize({
-        syncId,
-        accountId,
-        providerBalance,
-        progressUpdate: {
-            status: SyncStatusEnum.IDLE,
-            forwardSyncFromAt: completedAt,
-            forwardSyncedAt: completedAt
-        },
-        isRunCurrent: () => true
-    });
-};
-
 describe('monobank/balance-reconciliation', () => {
     it('keeps an equal ledger without an adjustment', async () => {
-        const fixture = seedAnchoredLedger(1_000_000, 1_000_000);
+        const fixture = seedAnchoredLedger(PROVIDER_BALANCE);
 
-        await finalize(fixture.sync.id, fixture.account.id, 1_000_000);
+        await monobankSyncService.sync();
 
         expect(fetchMonobankAdjustments(fixture.account.id)).toHaveLength(0);
         expect(fetchSyncById(fixture.sync.id).balanceAdjustmentTransactionId).toBeNull();
     });
 
     it('creates one positive correction and makes a committed retry a no-op', async () => {
-        const fixture = seedAnchoredLedger(700_000, 1_000_000);
+        const fixture = seedAnchoredLedger(700_000);
 
-        await finalize(fixture.sync.id, fixture.account.id, 1_000_000);
-        await finalize(fixture.sync.id, fixture.account.id, 1_000_000);
+        await monobankSyncService.sync();
+        await monobankSyncService.sync();
 
         expect(fetchMonobankAdjustments(fixture.account.id)).toStrictEqual([
             expect.objectContaining({ amount: 300_000, entryType: TransactionEntryTypeEnum.DEBIT })
         ]);
-        expect(accountBalanceRepository.getByAccountId(fixture.account.id).get()?.balance).toBe(1_000_000);
+        expect(accountBalanceRepository.getByAccountId(fixture.account.id).get()?.balance).toBe(PROVIDER_BALANCE);
         expect(fetchSyncById(fixture.sync.id).balanceAuthority).toBe(SyncBalanceAuthorityEnum.LEDGER);
     });
 
     it('creates a credit correction for a negative delta', async () => {
-        const fixture = seedAnchoredLedger(1_200_000, 1_000_000);
+        const fixture = seedAnchoredLedger(1_200_000);
 
-        await finalize(fixture.sync.id, fixture.account.id, 1_000_000);
+        await monobankSyncService.sync();
 
         expect(fetchMonobankAdjustments(fixture.account.id)).toStrictEqual([
             expect.objectContaining({ amount: 200_000, entryType: TransactionEntryTypeEnum.CREDIT })
@@ -116,9 +111,9 @@ describe('monobank/balance-reconciliation', () => {
     });
 
     it('recovers when the recorded old adjustment was manually deleted', async () => {
-        const fixture = seedAnchoredLedger(700_000, 1_000_000, 99_999);
+        const fixture = seedAnchoredLedger(700_000, 99_999);
 
-        await finalize(fixture.sync.id, fixture.account.id, 1_000_000);
+        await monobankSyncService.sync();
 
         expect(fetchMonobankAdjustments(fixture.account.id)).toHaveLength(1);
         expect(fetchSyncById(fixture.sync.id).balanceAdjustmentTransactionId).not.toBe(99_999);

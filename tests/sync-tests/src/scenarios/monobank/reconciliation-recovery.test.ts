@@ -1,4 +1,5 @@
 import { accountBalanceRepository, syncRepository } from '@app/@generic/drizzle/db/db';
+import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { SYNC_ERROR_THRESHOLD } from '@app/sync/constant/sync-error-threshold.constant';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import {
@@ -10,27 +11,33 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, fetchSyncById, monobankStub, stubMonobankProviderBalance, testDb } from '../../harness';
+import { buildMonobank, fetchSyncById, monobankStub, seedExpenseEntry, stubMonobankProviderBalance, testDb } from '../../harness';
 import { fetchMonobankAdjustments } from '../../harness/db/fetch-monobank-adjustments';
 import { insertOne } from '../../harness/db/insert-one';
 import { setupAnchoredMonobankFixture } from '../../harness/monobank/setup-anchored-monobank-fixture';
 
 describe('monobank/reconciliation-recovery', () => {
-    it('leaves anchor and progress unchanged when fresh provider retrieval fails', async () => {
+    it('releases provider authority against the stored anchor when repeated failures disable the sync', async () => {
         const fixture = setupAnchoredMonobankFixture();
+        seedExpenseEntry(fixture.account.id, 200_000, 'Imported expense');
         await syncRepository.update(fixture.sync.id, { errorCount: SYNC_ERROR_THRESHOLD });
-        const initialSync = fetchSyncById(fixture.sync.id);
         monobankStub.statement([]);
         monobankStub.clientInfoFailure();
 
         await monobankSyncService.sync();
 
         expect(fetchSyncById(fixture.sync.id)).toMatchObject({
-            balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER,
-            forwardSyncFromAt: initialSync.forwardSyncFromAt,
-            forwardSyncedAt: null
+            enabled: false,
+            balanceAuthority: SyncBalanceAuthorityEnum.LEDGER
         });
-        expect(fetchMonobankAdjustments(fixture.account.id)).toHaveLength(0);
+        expect(fetchMonobankAdjustments(fixture.account.id)).toStrictEqual([
+            expect.objectContaining({ amount: 700_000, entryType: TransactionEntryTypeEnum.DEBIT })
+        ]);
+        expect(accountBalanceRepository.getByAccountId(fixture.account.id).get()?.balance).toBe(500_000);
+
+        await accountBalanceIncrementalService.updateAllBalances(true);
+
+        expect(accountBalanceRepository.getByAccountId(fixture.account.id).get()?.balance).toBe(500_000);
     });
 
     it('does not finalize after the run is interrupted during the provider response', async () => {
@@ -84,7 +91,7 @@ describe('monobank/reconciliation-recovery', () => {
             errorCount: SYNC_ERROR_THRESHOLD
         });
         const initialSync = fetchSyncById(fixture.sync.id);
-        const initialBalance = accountBalanceRepository.getByAccountId(fixture.account.id).get()?.balance;
+        const [initialBalance] = await accountBalanceRepository.getByAccountIds([fixture.account.id]);
         await testDb.$client.runAsync(
             `CREATE TRIGGER fail_sync_finalization
              BEFORE UPDATE OF balance_authority ON bank_syncs
@@ -100,11 +107,10 @@ describe('monobank/reconciliation-recovery', () => {
         expect(fetchMonobankAdjustments(fixture.account.id)).toStrictEqual([
             expect.objectContaining({ id: oldAdjustment.id, amount: 100_000 })
         ]);
-        expect(accountBalanceRepository.getByAccountId(fixture.account.id).get()?.balance).toBe(initialBalance);
+        expect(await accountBalanceRepository.getByAccountIds([fixture.account.id])).toStrictEqual([initialBalance]);
         expect(fetchSyncById(fixture.sync.id)).toMatchObject({
             balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER,
             balanceAdjustmentTransactionId: oldAdjustment.id,
-            balanceAnchorCapturedAt: initialSync.balanceAnchorCapturedAt,
             forwardSyncFromAt: initialSync.forwardSyncFromAt,
             forwardSyncedAt: initialSync.forwardSyncedAt
         });

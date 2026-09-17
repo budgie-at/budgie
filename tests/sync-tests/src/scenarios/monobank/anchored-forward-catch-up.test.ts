@@ -21,8 +21,7 @@ describe('monobank/anchored-forward-catch-up', () => {
 
         expect(fetchSyncById(fixture.sync.id)).toMatchObject({
             mode: SyncModeEnum.FORWARD,
-            balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER,
-            balanceAnchorCapturedAt: expect.any(Date)
+            balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER
         });
     });
 

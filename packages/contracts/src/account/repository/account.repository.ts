@@ -1,15 +1,13 @@
 import { subDays } from 'date-fns/subDays';
-import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
+import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, not, notInArray, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { SyncBalanceAuthorityEnum } from '../../sync/enum/sync-balance-authority.enum';
-import { SyncEntityTable } from '../../sync/table/sync-entity.table';
+import { getProviderAuthoritativeAccountConditionSql } from '../../sync/util/get-provider-authoritative-account-condition.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
-import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../constant/bank-authoritative-account-types.constant';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
@@ -151,8 +149,8 @@ export class AccountRepository {
         });
     }
 
-    findByIban(iban: string, tx?: DB) {
-        return (tx ?? this.db).query.AccountEntityTable.findFirst({
+    findByIban(iban: string) {
+        return this.db.query.AccountEntityTable.findFirst({
             where: and(eq(AccountEntityTable.iban, iban), isNull(AccountEntityTable.deletedAt))
         });
     }
@@ -229,16 +227,7 @@ export class AccountRepository {
     }
 
     private getLedgerMaintainedAccountConditionSql() {
-        return and(
-            notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES),
-            sql`NOT EXISTS (
-                SELECT 1
-                FROM ${SyncEntityTable}
-                WHERE ${SyncEntityTable.accountId} = ${AccountEntityTable.id}
-                  AND ${SyncEntityTable.balanceAuthority} = ${SyncBalanceAuthorityEnum.PROVIDER}
-                  AND ${SyncEntityTable.deletedAt} IS NULL
-            )`
-        );
+        return not(getProviderAuthoritativeAccountConditionSql(AccountEntityTable.id));
     }
 
     private buildSearchWhereClause(search: string, filter: AccountFilterInterface) {
