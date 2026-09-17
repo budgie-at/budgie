@@ -174,7 +174,6 @@ export { BANK_FEE_CATEGORY_ID } from './category/constant/bank-fee-category-id.c
 export { DEBT_PAYMENT_CATEGORY_ID } from './category/constant/debt-payment-category-id.constant';
 export { LENDING_CATEGORY_ID } from './category/constant/lending-category-id.constant';
 export { BORROWING_CATEGORY_ID } from './category/constant/borrowing-category-id.constant';
-export { DEBT_SYSTEM_CATEGORY_IDS } from './category/constant/debt-system-category-ids.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
 export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant';
 
