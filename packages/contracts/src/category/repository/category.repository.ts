@@ -7,7 +7,8 @@ import { TranslatableRepositoryBase } from '../../@generic/repository/translatab
 import { DB } from '../../@generic/type/db.type';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
-import { DEBT_SYSTEM_CATEGORY_IDS } from '../constant/debt-system-category-ids.constant';
+import { BORROWING_CATEGORY_ID } from '../constant/borrowing-category-id.constant';
+import { LENDING_CATEGORY_ID } from '../constant/lending-category-id.constant';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
 import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.interface';
 import { CategoryEntityTable } from '../table/category-entity.table';
@@ -36,7 +37,7 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         const trimmed = search.trim();
         const selectableFilter = or(
             eq(CategoryEntityTable.isSystemCategory, false),
-            inArray(CategoryEntityTable.id, DEBT_SYSTEM_CATEGORY_IDS)
+            inArray(CategoryEntityTable.id, [LENDING_CATEGORY_ID, BORROWING_CATEGORY_ID])
         );
         const baseFilter = includeDefault ? selectableFilter : and(eq(CategoryEntityTable.isDefault, false), selectableFilter);
         const sortedByUsage = this.buildLocalizedCategoryBaseQuery(language).leftJoin(
