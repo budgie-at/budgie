@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
-import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
+import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { aiModelResidencyService } from '../service/ai-model-residency.service';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
@@ -58,7 +58,7 @@ const extractAndMapTransactions = async (
 
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { accounts } = useSearchAccountsSortedQuery();
-    const { categories } = useAllCategoriesQuery();
+    const { categories } = useNonSystemCategoriesQuery();
     const [status, setStatus] = useState<CategorizationStatus>('idle');
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
     const [error, setError] = useState<string | null>(null);

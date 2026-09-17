@@ -400,6 +400,13 @@
             "when": 1789530687313,
             "tag": "0056_marvelous_menace",
             "breakpoints": true
+        },
+        {
+            "idx": 57,
+            "version": "6",
+            "when": 1789591227688,
+            "tag": "0057_add_debt_system_categories",
+            "breakpoints": true
         }
     ]
 }
