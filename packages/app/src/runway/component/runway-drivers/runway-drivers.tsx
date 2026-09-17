@@ -6,6 +6,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
+import { RunwaySelector } from '../../runway.selector';
 import { RunwayDriverRow } from '../runway-driver-row/runway-driver-row';
 
 import type { RunwayDriverInterface } from '../../interface/runway-driver.interface';
@@ -27,7 +28,7 @@ export const RunwayDrivers = (props: Props) => {
     const maxAmount = drivers.reduce((maximum, driver) => Math.max(maximum, driver.monthlyAmount), 0);
 
     return (
-        <Card className="gap-y-xl">
+        <Card testID={RunwaySelector.Drivers} className="gap-y-xl">
             <View className="gap-y-lg">
                 <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">{t`What's driving it`}</Text>
 
