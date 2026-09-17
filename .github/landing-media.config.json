@@ -232,7 +232,7 @@
             "flow": "flows/media/runway-3.flow.yaml"
         },
         {
-            "name": "runway-settings-1",
+            "name": "runway-4",
             "deepLink": "budgie://settings?anchor=runway"
         },
         {
