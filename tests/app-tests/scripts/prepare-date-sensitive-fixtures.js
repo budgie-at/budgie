@@ -478,8 +478,10 @@ const shiftRunwayCryptoFixtureToNow = () => {
     const fiatAccountId = 1;
     const defaultInstrumentId = 1;
     const bitcoinInstrumentId = 34;
+    const ethereumInstrumentId = 35;
     const eurToUsdRate = 1.1723329425556859;
     const bitcoinToUsdRate = 2500.0;
+    const ethereumToUsdRate = 1800.0;
     const runwayFiatBalance = 3_000_000_000;
     const monthlyExpenseAmount = 1_500_000_000;
     const monthlyIncomeAmount = 500_000_000;
@@ -488,6 +490,7 @@ const shiftRunwayCryptoFixtureToNow = () => {
     const housingCategoryId = 10;
     const salaryCategoryId = 20;
     const bitcoinExchangeRateId = 65;
+    const ethereumExchangeRateId = 66;
 
     copyFixture(sourcePath, targetPath);
     runSqlite(
@@ -557,6 +560,10 @@ const shiftRunwayCryptoFixtureToNow = () => {
         DELETE FROM exchange_rates WHERE base_instrument_id = ${bitcoinInstrumentId} AND quote_instrument_id = ${defaultInstrumentId};
         INSERT INTO exchange_rates (id, created_at, updated_at, source, base_instrument_id, quote_instrument_id, rate)
         VALUES (${bitcoinExchangeRateId}, unixepoch('now') - 900, unixepoch('now') - 900, 'coingecko.com', ${bitcoinInstrumentId}, ${defaultInstrumentId}, ${bitcoinToUsdRate});
+
+        DELETE FROM exchange_rates WHERE base_instrument_id = ${ethereumInstrumentId} AND quote_instrument_id = ${defaultInstrumentId};
+        INSERT INTO exchange_rates (id, created_at, updated_at, source, base_instrument_id, quote_instrument_id, rate)
+        VALUES (${ethereumExchangeRateId}, unixepoch('now') - 900, unixepoch('now') - 900, 'coingecko.com', ${ethereumInstrumentId}, ${defaultInstrumentId}, ${ethereumToUsdRate});
 
         DROP TABLE runway_month;
         COMMIT;
