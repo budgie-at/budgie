@@ -17,7 +17,8 @@ for locale in en-US fr-FR uk de-DE es-ES; do
         limit="${budget##*:}"
         path="${field%%/*}/$locale/${field#*/}"
         [ -f "$path" ] || fail "$path is missing"
-        content=$(cat "$path")
+        content=$(<"$path")
+        content="${content%$'\r'}"
         [ "${#content}" -le "$limit" ] || fail "$path is ${#content} characters, over the $limit budget"
         case "$field" in
             */keywords.txt) [[ $content != *", "* ]] || fail "$path has a space after a comma" ;;
