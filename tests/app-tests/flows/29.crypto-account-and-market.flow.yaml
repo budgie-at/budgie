@@ -364,7 +364,7 @@ appId: ${APP_ID}
           DEEP_LINK: 'budgie://analytics?tab=runway'
 - extendedWaitUntil:
       visible:
-          id: 'RunwayVerdict.Figure._12'
+          id: 'RunwayVerdict.Figure._15'
       timeout: 10000
 - assertVisible:
       id: 'RunwayVerdict.CryptoNote'
