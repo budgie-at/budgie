@@ -1954,7 +1954,7 @@ msgstr "Von"
 msgid "From {fromText}"
 msgstr "Ab {fromText}"
 
-#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "Von Konto"
@@ -2278,10 +2278,6 @@ msgstr "Übrig"
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Verliehen"
-
-#: src/account/service/account-debt-opening.service.ts
-msgid "Lent debt account expected"
-msgstr "Verliehenes Schuldkonto erwartet"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
@@ -3903,6 +3899,7 @@ msgstr "Nach"
 msgid "To {toText}"
 msgstr "Bis {toText}"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
 msgstr "Auf Konto"

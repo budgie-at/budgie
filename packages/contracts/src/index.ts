@@ -74,6 +74,7 @@ export { getDebtLedgerBalance } from './account-balance/util/get-debt-ledger-bal
 export { getDebtClosedAmount } from './account-balance/util/get-debt-closed-amount.util';
 
 export type { DebtAccountProgressSummaryInterface } from './account-balance/interface/debt-account-progress-summary.interface';
+export type { DebtLedgerAmountsInterface } from './account-balance/interface/debt-ledger-amounts.interface';
 
 export { SyncModeEnum } from './sync/enum/sync-mode.enum';
 export { SyncStatusEnum } from './sync/enum/sync-status.enum';

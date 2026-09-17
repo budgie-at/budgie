@@ -1955,7 +1955,7 @@ msgstr "From"
 msgid "From {fromText}"
 msgstr "From {fromText}"
 
-#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "From account"
@@ -2279,10 +2279,6 @@ msgstr "Left"
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Lent"
-
-#: src/account/service/account-debt-opening.service.ts
-msgid "Lent debt account expected"
-msgstr "Lent debt account expected"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
@@ -3904,6 +3900,7 @@ msgstr "To"
 msgid "To {toText}"
 msgstr "To {toText}"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
 msgstr "To account"
