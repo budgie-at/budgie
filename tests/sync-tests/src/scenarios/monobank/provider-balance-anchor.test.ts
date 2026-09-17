@@ -17,7 +17,6 @@ describe('monobank/provider-balance-anchor', () => {
         ];
         const jar = buildMonobank.jar({ id: 'mono-jar', balance: 7_525 });
         monobankStub.clientInfo(buildMonobank.clientInfo({ accounts, jars: [jar] }));
-        const startedAt = new Date();
 
         try {
             await monobankSyncService.setupAccountSyncBatch('token', ['mono-a', 'mono-b', 'mono-jar']);
@@ -31,8 +30,7 @@ describe('monobank/provider-balance-anchor', () => {
                 externalId: AccountEntityTable.externalId,
                 integrationId: AccountEntityTable.integrationId,
                 amount: AccountBalanceEntityTable.amount,
-                balanceAuthority: SyncEntityTable.balanceAuthority,
-                balanceAnchorCapturedAt: SyncEntityTable.balanceAnchorCapturedAt
+                balanceAuthority: SyncEntityTable.balanceAuthority
             })
             .from(AccountEntityTable)
             .innerJoin(SyncEntityTable, eq(SyncEntityTable.accountId, AccountEntityTable.id))
@@ -61,8 +59,5 @@ describe('monobank/provider-balance-anchor', () => {
             ])
         );
         expect(anchoredAccounts.every(account => account.integrationId !== null)).toBe(true);
-        expect(anchoredAccounts.every(account => (account.balanceAnchorCapturedAt?.getTime() ?? 0) >= startedAt.getTime() - 1_000)).toBe(
-            true
-        );
     });
 });

@@ -13,9 +13,8 @@ export const SyncCreateEntitySchema = convertToCreateEntitySchema(SyncEntitySche
     backwardSyncFromAt: true,
     backwardSyncLimitAt: true,
     backwardSyncedAt: true,
-    backwardBatchSequence: true,
+    backwardBatchAt: true,
     balanceAuthority: true,
-    balanceAnchorCapturedAt: true,
     balanceAdjustmentTransactionId: true,
     transactionCount: true
 });

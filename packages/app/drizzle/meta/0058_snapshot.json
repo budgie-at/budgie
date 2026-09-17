@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "a0854646-17fe-4126-a89b-72e6ffb61e5b",
+  "id": "4fce86dc-18b4-4224-bb42-ab6300637c81",
   "prevId": "9e086692-4f90-4db1-8279-a734e1a3c139",
   "tables": {
     "account_balances": {
@@ -2672,8 +2672,8 @@
           "notNull": false,
           "autoincrement": false
         },
-        "backward_batch_sequence": {
-          "name": "backward_batch_sequence",
+        "backward_batch_at": {
+          "name": "backward_batch_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -2700,13 +2700,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": "'LEDGER'"
-        },
-        "balance_anchor_captured_at": {
-          "name": "balance_anchor_captured_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         },
         "balance_adjustment_transaction_id": {
           "name": "balance_adjustment_transaction_id",

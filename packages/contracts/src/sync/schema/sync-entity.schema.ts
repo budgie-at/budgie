@@ -19,13 +19,12 @@ export const SyncEntitySchema = createSelectSchema(SyncEntityTable, {
     backwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync backward from (newest point going back).'),
     backwardSyncLimitAt: schema =>
         schema.nullable().default(null).describe('Earliest point backward sync should reach; null backfills the whole available history.'),
-    backwardBatchSequence: schema => schema.nullable().default(null).describe('Round-robin sequence of the latest backward sync batch.'),
+    backwardBatchAt: schema => schema.nullable().default(null).describe('Timestamp of the latest backward sync batch.'),
     forwardSyncedAt: schema => schema.nullable().default(null).describe('Timestamp of the last successful forward sync.'),
     forwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync forward from.'),
     balanceAuthority: zodEnum(SyncBalanceAuthorityEnum)
         .default(SyncBalanceAuthorityEnum.LEDGER)
         .describe('Whether the current balance comes from the ledger or a provider snapshot.'),
-    balanceAnchorCapturedAt: schema => schema.nullable().default(null).describe('Timestamp when the provider balance anchor was captured.'),
     balanceAdjustmentTransactionId: schema =>
         schema.nullable().default(null).describe('Transaction used to reconcile the ledger to the provider balance.'),
     transactionCount: number().nonnegative().default(0).describe('Total number of transactions synced.'),

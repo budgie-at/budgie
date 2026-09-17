@@ -1,4 +1,4 @@
-import { SyncBalanceAuthorityEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { subMonths } from 'date-fns/subMonths';
 import * as BackgroundTask from 'expo-background-task';
@@ -196,7 +196,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return;
         }
 
-        await syncRepository.updateProgress(sync.id, sync.mode, this.resolveProgressUpdate(sync, result));
+        await syncRepository.update(sync.id, this.resolveProgressUpdate(sync, result));
     }
 
     @Log(
@@ -236,9 +236,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
                     errorCount: 0,
                     lastError: null,
                     backwardSyncLimitAt,
-                    backwardBatchSequence: null,
-                    balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER,
-                    balanceAnchorCapturedAt: now
+                    backwardBatchAt: null
                 },
                 tx
             );
@@ -257,9 +255,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
                 backwardSyncedAt: earliestTransactionTime,
                 backwardSyncLimitAt,
                 forwardSyncFromAt: now,
-                forwardSyncedAt: null,
-                balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER,
-                balanceAnchorCapturedAt: now
+                forwardSyncedAt: null
             },
             tx
         );
@@ -334,7 +330,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         if (sync.mode === SyncModeEnum.BACKWARD) {
             const nextBackwardSyncedAt = isPositiveNumber(transactionCount) ? null : (sync.backwardSyncedAt ?? result.nextTo);
 
-            return { ...baseUpdate, backwardSyncedAt: nextBackwardSyncedAt, backwardSyncFromAt: result.nextTo };
+            return { ...baseUpdate, backwardSyncedAt: nextBackwardSyncedAt, backwardSyncFromAt: result.nextTo, backwardBatchAt: now };
         }
 
         return { ...baseUpdate, forwardSyncFromAt: result.nextFrom };
@@ -349,6 +345,10 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     protected async beforeUpdateAccountToken(): Promise<void> {
+        return Promise.resolve();
+    }
+
+    protected async releaseBalanceAuthority(_accountId: number): Promise<void> {
         return Promise.resolve();
     }
 
@@ -482,12 +482,15 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     private async disableFailedSyncs(enabledSyncs: SyncEntityInterface[], error: unknown, errorMessage: string): Promise<void> {
         const disableSyncPromises: Array<Promise<unknown>> = [];
         for (const sync of await this.resolveSyncsToDisable(enabledSyncs, error)) {
-            disableSyncPromises.push(
-                syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false })
-            );
+            disableSyncPromises.push(this.disableFailedSync(sync, errorMessage));
         }
 
         await Promise.all(disableSyncPromises);
+    }
+
+    private async disableFailedSync(sync: SyncEntityInterface, errorMessage: string): Promise<void> {
+        await syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false });
+        await this.releaseBalanceAuthority(sync.accountId).catch(emptyFn);
     }
 
     private async recordSyncsFailedWithoutDisabling(enabledSyncs: SyncEntityInterface[], errorMessage: string): Promise<void> {

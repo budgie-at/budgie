@@ -1,18 +1,17 @@
 /* eslint-disable max-lines -- File owns the account-balance ledger and valuation SQL pipeline that must stay together */
 import { Log } from '@budgie/logger';
-import { type SQL, type SQLWrapper, and, eq, inArray, isNull, ne, notInArray, or, sql } from 'drizzle-orm';
+import { type SQL, type SQLWrapper, and, eq, inArray, isNull, ne, notInArray, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { getExchangeRateWithHistoricalFallbackSql } from '../../@generic/util/get-exchange-rate-sql.util';
-import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../../account/constant/bank-authoritative-account-types.constant';
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
-import { SyncBalanceAuthorityEnum } from '../../sync/enum/sync-balance-authority.enum';
 import { SyncEntityTable } from '../../sync/table/sync-entity.table';
+import { getProviderAuthoritativeAccountConditionSql } from '../../sync/util/get-provider-authoritative-account-condition.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
@@ -63,9 +62,6 @@ export class AccountBalanceRepository {
             `throw accountId=${accountId} excludedTransactionId=${String(excludedTransactionId)} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async getLedgerBalanceExcludingTransaction(accountId: number, excludedTransactionId: number | null, tx?: DB): Promise<number> {
-        const excludedTransactionSql = isDefined(excludedTransactionId)
-            ? ne(TransactionEntryEntityTable.transactionId, excludedTransactionId)
-            : sql`1 = 1`;
         const [row] = await (tx ?? this.db)
             .select({ balance: sql<number>`COALESCE(${this.getTransactionsSumSql()}, 0)`.mapWith(Number) })
             .from(TransactionEntryEntityTable)
@@ -73,7 +69,7 @@ export class AccountBalanceRepository {
             .where(
                 and(
                     eq(TransactionEntryEntityTable.accountId, accountId),
-                    excludedTransactionSql,
+                    ...(isDefined(excludedTransactionId) ? [ne(TransactionEntryEntityTable.transactionId, excludedTransactionId)] : []),
                     isNull(TransactionEntryEntityTable.deletedAt),
                     accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
                     accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()
@@ -287,7 +283,7 @@ export class AccountBalanceRepository {
         const providerAuthoritativeAccountIdsSql = database
             .select({ id: AccountEntityTable.id })
             .from(AccountEntityTable)
-            .where(this.getProviderAuthoritativeConditionSql(AccountEntityTable.id));
+            .where(getProviderAuthoritativeAccountConditionSql(AccountEntityTable.id));
 
         await database
             .delete(AccountBalanceEntityTable)
@@ -328,26 +324,13 @@ export class AccountBalanceRepository {
         const lastBalanceUpdatedAtSql = sql`SELECT MAX(${AccountBalanceEntityTable.updatedAt}) FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${accountIdReference}`;
         const transactionsSumSinceLastBalanceSql = sql<number>`SELECT ${this.getTransactionsSumSql()} FROM ${TransactionEntryEntityTable} INNER JOIN ${TransactionEntityTable} ON ${TransactionEntityTable.id} = ${TransactionEntryEntityTable.transactionId} WHERE ${TransactionEntryEntityTable.accountId} = ${accountIdReference} AND ${TransactionEntryEntityTable.deletedAt} IS NULL AND ${accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql()} AND ${accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()} AND ((${lastBalanceUpdatedAtSql}) IS NULL OR ${TransactionEntryEntityTable.createdAt} > (${lastBalanceUpdatedAtSql}))`;
 
-        const ledgerSumSql = sql<number>`CASE WHEN ${this.getProviderAuthoritativeConditionSql(accountIdReference)} THEN 0 ELSE COALESCE((${transactionsSumSinceLastBalanceSql}), 0) END`;
+        const ledgerSumSql = sql<number>`CASE WHEN ${getProviderAuthoritativeAccountConditionSql(accountIdReference)} THEN 0 ELSE COALESCE((${transactionsSumSinceLastBalanceSql}), 0) END`;
 
         return sql<number>`COALESCE((${latestAccountBalanceSql}), 0) + ${ledgerSumSql}`;
     }
 
     private getTransactionsSumSql() {
         return sql<number>`SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT} THEN -${TransactionEntryEntityTable.amount} WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE} THEN -${TransactionEntryEntityTable.amount} WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.amount} ELSE 0 END)`;
-    }
-
-    private getProviderAuthoritativeConditionSql(accountIdReference: SQLWrapper = sql.raw('accounts.id')) {
-        return or(
-            inArray(sql.raw('accounts.type'), BANK_AUTHORITATIVE_ACCOUNT_TYPES),
-            sql`EXISTS (
-                SELECT 1
-                FROM ${SyncEntityTable}
-                WHERE ${SyncEntityTable.accountId} = ${accountIdReference}
-                  AND ${SyncEntityTable.balanceAuthority} = ${SyncBalanceAuthorityEnum.PROVIDER}
-                  AND ${SyncEntityTable.deletedAt} IS NULL
-            )`
-        );
     }
 
     private getTransactionEntryAmountSumSql(transactionEntryType: TransactionEntryTypeEnum) {

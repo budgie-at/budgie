@@ -29,8 +29,7 @@ export const setupAnchoredMonobankFixture = (mode = SyncModeEnum.FORWARD) => {
         backwardSyncFromAt: mode === SyncModeEnum.BACKWARD ? backwardSyncFromAt : null,
         backwardSyncedAt: mode === SyncModeEnum.BACKWARD ? backwardSweepStartedAt : null,
         forwardSyncFromAt: anchorCapturedAt,
-        balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER,
-        balanceAnchorCapturedAt: anchorCapturedAt
+        balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER
     });
     insertOne(AccountBalanceEntityTable, { accountId: account.id, amount: 500_000, updatedAt: anchorCapturedAt });
 
