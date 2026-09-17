@@ -37,6 +37,14 @@ export const buildMonobank = {
         accounts: accountIds.map(id => buildMonobank.account({ id })),
         jars: []
     }),
+    clientInfo: ({ accounts, jars }: Pick<ClientInfo, 'accounts' | 'jars'>): ClientInfo => ({
+        clientId: 'c1',
+        name: 'Test',
+        webHookUrl: '',
+        permissions: 'sp',
+        accounts,
+        jars
+    }),
     transaction: (overrides: MonobankTxOverrides): StatementItem => ({
         time: Math.floor(Date.now() / 1000),
         description: 'Test transaction',

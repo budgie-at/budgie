@@ -37,17 +37,17 @@ export abstract class AbstractSyncService {
     }
 
     @Log(
-        (account, _tx) => `enter externalId=${account.id} currency=${account.currencyCode}`,
-        (result, account, _tx) => `done externalId=${account.id} accountId=${result.id}`,
-        (error, account, _tx) => `throw externalId=${account.id} error=${getErrorMessage(error)}`
+        (account, tx) => `enter externalId=${account.id} currency=${account.currencyCode} hasTx=${String(isDefined(tx))}`,
+        (result, account, tx) => `done externalId=${account.id} accountId=${result.id} hasTx=${String(isDefined(tx))}`,
+        (error, account, tx) => `throw externalId=${account.id} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     protected async getOrCreateSyncAccount(account: SyncAccountInterface, tx?: DB): Promise<AccountEntityInterface> {
-        const existingAccount = await this.findExistingSyncAccount(account);
+        const existingAccount = await this.findExistingSyncAccount(account, tx);
         if (isDefined(existingAccount)) {
             return existingAccount;
         }
 
-        const instruments = await instrumentRepository.getAll();
+        const instruments = await instrumentRepository.getAll(tx);
         const instrument = instruments.find(item => item.code === account.currencyCode);
         if (!isDefined(instrument)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings
@@ -126,14 +126,14 @@ export abstract class AbstractSyncService {
         };
     }
 
-    private async findExistingSyncAccount(account: SyncAccountInterface): Promise<AccountEntityInterface | null> {
-        const existingByExternalId = await accountRepository.findByExternalIds([account.id]);
+    private async findExistingSyncAccount(account: SyncAccountInterface, tx?: DB): Promise<AccountEntityInterface | null> {
+        const existingByExternalId = await accountRepository.findByExternalIds([account.id], tx);
         if (isNotEmptyArray(existingByExternalId)) {
             return existingByExternalId[0];
         }
 
         if (isNotEmptyString(account.iban)) {
-            const existingByIban = await accountRepository.findByIbans([account.iban]);
+            const existingByIban = await accountRepository.findByIbans([account.iban], tx);
             if (isNotEmptyArray(existingByIban)) {
                 return existingByIban[0];
             }

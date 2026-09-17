@@ -76,6 +76,7 @@ export { getDebtClosedAmount } from './account-balance/util/get-debt-closed-amou
 export type { DebtAccountProgressSummaryInterface } from './account-balance/interface/debt-account-progress-summary.interface';
 
 export { SyncModeEnum } from './sync/enum/sync-mode.enum';
+export { SyncBalanceAuthorityEnum } from './sync/enum/sync-balance-authority.enum';
 export { SyncStatusEnum } from './sync/enum/sync-status.enum';
 export { SyncAssociationEnum } from './sync/enum/sync-association.enum';
 

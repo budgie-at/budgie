@@ -5,6 +5,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { SyncBalanceAuthorityEnum } from '../enum/sync-balance-authority.enum';
 import { SyncModeEnum } from '../enum/sync-mode.enum';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
 import { SyncEntityTable } from '../table/sync-entity.table';
@@ -76,16 +77,49 @@ export class SyncRepository {
             .where(eq(SyncEntityTable.accountId, accountId));
     }
 
+    @Log(
+        (id, tx) => `enter id=${id} hasTx=${String(isDefined(tx))}`,
+        (result, id, tx) => `done id=${id} hasTx=${String(isDefined(tx))} found=${String(isDefined(result))}`,
+        (error, id, tx) => `throw id=${id} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async getById(id: number, tx?: DB): Promise<SyncEntityInterface | undefined> {
+        return await (tx ?? this.db).query.SyncEntityTable.findFirst({
+            where: and(eq(SyncEntityTable.id, id), isNull(SyncEntityTable.deletedAt))
+        });
+    }
+
+    @Log(
+        (accountId, anchorCapturedAt, balanceAuthority, tx) =>
+            `enter accountId=${accountId} anchorCapturedAt=${anchorCapturedAt.toISOString()} balanceAuthority=${balanceAuthority} hasTx=${String(isDefined(tx))}`,
+        (_result, ...[accountId, anchorCapturedAt, balanceAuthority, tx]) =>
+            `done accountId=${accountId} anchorCapturedAt=${anchorCapturedAt.toISOString()} balanceAuthority=${balanceAuthority} hasTx=${String(isDefined(tx))}`,
+        (error, ...[accountId, anchorCapturedAt, balanceAuthority, tx]) =>
+            `throw accountId=${accountId} anchorCapturedAt=${anchorCapturedAt.toISOString()} balanceAuthority=${balanceAuthority} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async resetForResync(accountId: number, anchorCapturedAt: Date, balanceAuthority: SyncBalanceAuthorityEnum, tx?: DB): Promise<void> {
+        await (tx ?? this.db)
+            .update(SyncEntityTable)
+            .set({
+                mode: SyncModeEnum.BACKWARD,
+                status: SyncStatusEnum.IDLE,
+                backwardSyncFromAt: anchorCapturedAt,
+                backwardSyncedAt: null,
+                backwardSyncLimitAt: null,
+                forwardSyncFromAt: anchorCapturedAt,
+                forwardSyncedAt: null,
+                transactionCount: 0,
+                errorCount: 0,
+                lastError: null,
+                balanceAuthority,
+                backwardBatchAt: null
+            })
+            .where(eq(SyncEntityTable.accountId, accountId));
+    }
+
     async create(input: SyncCreateEntityInterface, tx?: DB): Promise<SyncEntityInterface> {
         const [sync] = await (tx ?? this.db).insert(SyncEntityTable).values([input]).returning();
 
         return sync;
-    }
-
-    async getById(id: number): Promise<SyncEntityInterface | undefined> {
-        return await this.db.query.SyncEntityTable.findFirst({
-            where: and(eq(SyncEntityTable.id, id), isNull(SyncEntityTable.deletedAt))
-        });
     }
 
     async getByAccountId(accountId: number, tx?: DB): Promise<SyncEntityInterface | undefined> {
@@ -118,15 +152,17 @@ export class SyncRepository {
     }
 
     async getPendingBackwardSync(provider: ExternalSourceEnum): Promise<SyncEntityInterface[]> {
-        return await this.selectWithActiveAccount().where(
-            and(
-                eq(SyncEntityTable.provider, provider),
-                eq(SyncEntityTable.enabled, true),
-                eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
-                isNull(SyncEntityTable.deletedAt),
-                isNull(AccountEntityTable.deletedAt)
+        return await this.selectWithActiveAccount()
+            .where(
+                and(
+                    eq(SyncEntityTable.provider, provider),
+                    eq(SyncEntityTable.enabled, true),
+                    eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
+                    isNull(SyncEntityTable.deletedAt),
+                    isNull(AccountEntityTable.deletedAt)
+                )
             )
-        );
+            .orderBy(asc(SyncEntityTable.backwardBatchAt), asc(SyncEntityTable.id));
     }
 
     async setStatus(id: number, status: SyncStatusEnum, tx?: DB): Promise<void> {
@@ -148,25 +184,6 @@ export class SyncRepository {
                 })
                 .where(eq(SyncEntityTable.id, id));
         }
-    }
-
-    async resetForResync(accountId: number, tx?: DB): Promise<void> {
-        const now = new Date();
-        await (tx ?? this.db)
-            .update(SyncEntityTable)
-            .set({
-                mode: SyncModeEnum.BACKWARD,
-                status: SyncStatusEnum.IDLE,
-                backwardSyncFromAt: now,
-                backwardSyncedAt: null,
-                backwardSyncLimitAt: null,
-                forwardSyncFromAt: now,
-                forwardSyncedAt: null,
-                transactionCount: 0,
-                errorCount: 0,
-                lastError: null
-            })
-            .where(eq(SyncEntityTable.accountId, accountId));
     }
 
     async truncate(tx?: DB): Promise<void> {

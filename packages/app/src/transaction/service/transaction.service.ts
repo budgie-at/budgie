@@ -174,6 +174,59 @@ class TransactionService {
     }
 
     @Log(
+        (accountId, delta, operatedAt, tx) =>
+            `enter accountId=${accountId} delta=${delta} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))}`,
+        (result, ...[accountId, delta, operatedAt, tx]) =>
+            `done accountId=${accountId} delta=${delta} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} transactionId=${result}`,
+        (error, ...[accountId, delta, operatedAt, tx]) =>
+            `throw accountId=${accountId} delta=${delta} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async createBalanceAdjustment(accountId: number, delta: number, operatedAt: Date, tx: DB): Promise<number> {
+        const amount = Math.abs(delta);
+        const isIncome = isPositiveNumber(delta);
+        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
+            accountId,
+            amount,
+            operatedAt,
+            externalSource: null,
+            tx
+        });
+        const transaction = await transactionRepository.create(
+            {
+                type: TransactionTypeEnum.ADJUSTMENT,
+                title: '',
+                comment: '',
+                externalId: null,
+                externalSource: null,
+                operatedAt,
+                exchangeRate: valuation.baseExchangeRate ?? 1,
+                fromAccountId: isIncome ? null : accountId,
+                toAccountId: isIncome ? accountId : null,
+                updatedBy: null
+            },
+            tx
+        );
+
+        await transactionEntryRepository.create(
+            {
+                accountId,
+                transactionId: transaction.id,
+                categoryId: null,
+                mccCategoryId: null,
+                amount,
+                type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
+                exchangeRate: valuation.baseExchangeRate ?? 1,
+                baseInstrumentId: valuation.baseInstrumentId,
+                baseExchangeRate: valuation.baseExchangeRate,
+                baseAmount: valuation.baseAmount
+            },
+            tx
+        );
+
+        return transaction.id;
+    }
+
+    @Log(
         (transactionId, ...[externalId, accountId, isIncome]) =>
             `enter transactionId=${transactionId} externalId=${externalId} accountId=${accountId} isIncome=${String(isIncome)}`,
         (result, ...[transactionId, externalId, accountId, isIncome]) =>
@@ -202,12 +255,13 @@ class TransactionService {
     }
 
     @Log(
-        accountId => `enter accountId=${accountId}`,
-        (result, accountId) => `done accountId=${accountId} earliestAt=${result?.toISOString() ?? 'null'}`,
-        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
+        (accountId, tx) => `enter accountId=${accountId} hasTx=${String(isDefined(tx))}`,
+        (result, accountId, tx) =>
+            `done accountId=${accountId} hasTx=${String(isDefined(tx))} earliestAt=${result?.toISOString() ?? 'null'}`,
+        (error, accountId, tx) => `throw accountId=${accountId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
-    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
-        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
+    async getEarliestTransactionTimeByAccountId(accountId: number, tx?: DB): Promise<Date | null> {
+        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest', tx);
     }
 
     @Log(

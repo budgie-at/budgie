@@ -19,7 +19,7 @@ import { AbstractSyncService } from './abstract-sync.service';
 import { syncIntegrationTokenService } from './sync-integration-token.service';
 import { syncWorkloadService } from './sync-workload.service';
 
-import type { SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
+import type { DB, SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
 import type { SyncBatchResultInterface } from '@budgie/sync';
 
 export abstract class AbstractPollingSyncService extends AbstractSyncService {
@@ -184,14 +184,18 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     @Log(
-        (sync, result) =>
-            `enter syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)}`,
-        (_result, sync, result) =>
-            `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, sync, result) =>
-            `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} error=${getErrorMessage(error)}`
+        (sync, result, runGeneration) =>
+            `enter syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration}`,
+        (_result, sync, result, runGeneration) =>
+            `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration}`,
+        (error, sync, result, runGeneration) =>
+            `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} runGeneration=${runGeneration} error=${getErrorMessage(error)}`
     )
-    protected async applyProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): Promise<void> {
+    protected async applyProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface, runGeneration: number): Promise<void> {
+        if (!this.isRunCurrent(runGeneration)) {
+            return;
+        }
+
         await syncRepository.update(sync.id, this.resolveProgressUpdate(sync, result));
     }
 
@@ -202,6 +206,59 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     )
     protected async resolveSyncToken(sync: SyncEntityInterface): Promise<string> {
         return syncIntegrationTokenService.resolveAccountToken(this.provider, sync.accountId);
+    }
+
+    @Log(
+        (accountId, token, historyDepth, tx) =>
+            `enter accountId=${accountId} tokenLen=${token.length} historyDepth=${historyDepth} hasTx=${String(isDefined(tx))}`,
+        (result, ...[accountId, token, historyDepth, tx]) =>
+            `done accountId=${accountId} tokenLen=${token.length} historyDepth=${historyDepth} hasTx=${String(isDefined(tx))} syncId=${result.id}`,
+        (error, ...[accountId, token, historyDepth, tx]) =>
+            `throw accountId=${accountId} tokenLen=${token.length} historyDepth=${historyDepth} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    protected async createOrUpdateSync(
+        accountId: number,
+        token: string,
+        historyDepth = SyncHistoryDepthEnum.FULL,
+        tx?: DB
+    ): Promise<SyncEntityInterface> {
+        const now = new Date();
+        const backwardSyncLimitAt = this.resolveBackwardSyncLimit(historyDepth, now);
+        const integration = await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token, tx);
+        await accountRepository.updateById(accountId, { integrationId: integration.id }, tx);
+
+        const existingSync = await syncRepository.getByAccountId(accountId, tx);
+        if (isDefined(existingSync)) {
+            return syncRepository.update(
+                existingSync.id,
+                {
+                    enabled: true,
+                    errorCount: 0,
+                    lastError: null,
+                    backwardSyncLimitAt,
+                    backwardBatchAt: null
+                },
+                tx
+            );
+        }
+
+        const earliestTransactionTime = await transactionService.getEarliestTransactionTimeByAccountId(accountId, tx);
+
+        return syncRepository.create(
+            {
+                accountId,
+                provider: this.provider,
+                enabled: true,
+                mode: SyncModeEnum.BACKWARD,
+                status: SyncStatusEnum.SYNCING,
+                backwardSyncFromAt: now,
+                backwardSyncedAt: earliestTransactionTime,
+                backwardSyncLimitAt,
+                forwardSyncFromAt: now,
+                forwardSyncedAt: null
+            },
+            tx
+        );
     }
 
     @Log(
@@ -251,32 +308,32 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return enabledSyncs.filter(sync => integrationIdByAccountId.get(sync.accountId) === credentialGroupIntegrationId);
     }
 
-    protected async createOrUpdateSync(accountId: number, token: string, historyDepth = SyncHistoryDepthEnum.FULL): Promise<void> {
+    protected resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {
         const now = new Date();
-        const backwardSyncLimitAt = this.resolveBackwardSyncLimit(historyDepth, now);
-        const integration = await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token);
-        await accountRepository.updateById(accountId, { integrationId: integration.id });
+        const transactionCount = result.transactionCount ?? result.transactions.length;
+        const baseUpdate = { transactionCount: sync.transactionCount + transactionCount, errorCount: 0, lastError: null };
 
-        const existingSync = await syncRepository.getByAccountId(accountId);
-        if (isDefined(existingSync)) {
-            await syncRepository.update(existingSync.id, { enabled: true, errorCount: 0, lastError: null, backwardSyncLimitAt });
-
-            return;
+        if (result.completed && sync.mode === SyncModeEnum.FORWARD) {
+            return { ...baseUpdate, status: SyncStatusEnum.IDLE, forwardSyncedAt: now, forwardSyncFromAt: now };
         }
 
-        const earliestTransactionTime = await transactionService.getEarliestTransactionTimeByAccountId(accountId);
-        await syncRepository.create({
-            accountId,
-            provider: this.provider,
-            enabled: true,
-            mode: SyncModeEnum.BACKWARD,
-            status: SyncStatusEnum.SYNCING,
-            backwardSyncFromAt: now,
-            backwardSyncedAt: earliestTransactionTime ?? null,
-            backwardSyncLimitAt,
-            forwardSyncFromAt: now,
-            forwardSyncedAt: null
-        });
+        if (result.completed) {
+            return {
+                ...baseUpdate,
+                mode: SyncModeEnum.FORWARD,
+                status: SyncStatusEnum.IDLE,
+                backwardSyncedAt: result.nextTo,
+                backwardSyncFromAt: result.nextFrom
+            };
+        }
+
+        if (sync.mode === SyncModeEnum.BACKWARD) {
+            const nextBackwardSyncedAt = isPositiveNumber(transactionCount) ? null : (sync.backwardSyncedAt ?? result.nextTo);
+
+            return { ...baseUpdate, backwardSyncedAt: nextBackwardSyncedAt, backwardSyncFromAt: result.nextTo, backwardBatchAt: now };
+        }
+
+        return { ...baseUpdate, forwardSyncFromAt: result.nextFrom };
     }
 
     protected async beforeProcessRun(_firstSyncToken: string, _runGeneration: number): Promise<void> {
@@ -288,6 +345,10 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     protected async beforeUpdateAccountToken(): Promise<void> {
+        return Promise.resolve();
+    }
+
+    protected async releaseBalanceAuthority(_accountId: number): Promise<void> {
         return Promise.resolve();
     }
 
@@ -421,12 +482,15 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     private async disableFailedSyncs(enabledSyncs: SyncEntityInterface[], error: unknown, errorMessage: string): Promise<void> {
         const disableSyncPromises: Array<Promise<unknown>> = [];
         for (const sync of await this.resolveSyncsToDisable(enabledSyncs, error)) {
-            disableSyncPromises.push(
-                syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false })
-            );
+            disableSyncPromises.push(this.disableFailedSync(sync, errorMessage));
         }
 
         await Promise.all(disableSyncPromises);
+    }
+
+    private async disableFailedSync(sync: SyncEntityInterface, errorMessage: string): Promise<void> {
+        await syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false });
+        await this.releaseBalanceAuthority(sync.accountId).catch(emptyFn);
     }
 
     private async recordSyncsFailedWithoutDisabling(enabledSyncs: SyncEntityInterface[], errorMessage: string): Promise<void> {
@@ -458,7 +522,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return false;
         }
 
-        await this.applyProgressUpdate(pendingSync, result);
+        await this.applyProgressUpdate(pendingSync, result, runGeneration);
         if (!this.isRunCurrent(runGeneration)) {
             return false;
         }
@@ -489,34 +553,6 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         if (pendingSync.mode === SyncModeEnum.FORWARD && result.completed) {
             this.processedForwardSyncIds.add(pendingSync.id);
         }
-    }
-
-    private resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {
-        const now = new Date();
-        const transactionCount = result.transactionCount ?? result.transactions.length;
-        const baseUpdate = { transactionCount: sync.transactionCount + transactionCount, errorCount: 0, lastError: null };
-
-        if (result.completed && sync.mode === SyncModeEnum.FORWARD) {
-            return { ...baseUpdate, status: SyncStatusEnum.IDLE, forwardSyncedAt: now, forwardSyncFromAt: now };
-        }
-
-        if (result.completed) {
-            return {
-                ...baseUpdate,
-                mode: SyncModeEnum.FORWARD,
-                status: SyncStatusEnum.IDLE,
-                backwardSyncedAt: result.nextTo,
-                backwardSyncFromAt: result.nextFrom
-            };
-        }
-
-        if (sync.mode === SyncModeEnum.BACKWARD) {
-            const nextBackwardSyncedAt = isPositiveNumber(transactionCount) ? null : (sync.backwardSyncedAt ?? result.nextTo);
-
-            return { ...baseUpdate, backwardSyncedAt: nextBackwardSyncedAt, backwardSyncFromAt: result.nextTo };
-        }
-
-        return { ...baseUpdate, forwardSyncFromAt: result.nextFrom };
     }
 
     abstract fetchAccountsPreview(token: string): Promise<SyncAccountPreviewInterface[]>;
