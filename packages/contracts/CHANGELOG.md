@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.71.0](https://github.com/budgie-at/budgie/compare/v6.70.0...v6.71.0) (2026-09-17)
+
+
+### Features
+
+* **contracts:** add Lending and Borrowing system categories ([825efc4](https://github.com/budgie-at/budgie/commit/825efc4005af14f77c51a0e1728d0ea40bb7318a))
+
+
+
+
+
 ## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
 
 
