@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { and, asc, eq, getTableColumns, isNull, lt, or, sql } from 'drizzle-orm';
+import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
@@ -89,37 +89,14 @@ export class SyncRepository {
     }
 
     @Log(
-        (id, mode, input, tx) => `enter id=${id} mode=${mode} inputMode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))}`,
-        (result, ...[id, mode, input, tx]) =>
-            `done id=${id} mode=${mode} inputMode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} sequence=${String(result.backwardBatchSequence)}`,
-        (error, ...[id, mode, input, tx]) =>
-            `throw id=${id} mode=${mode} inputMode=${input.mode ?? 'unchanged'} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (accountId, anchorCapturedAt, balanceAuthority, tx) =>
+            `enter accountId=${accountId} anchorCapturedAt=${anchorCapturedAt.toISOString()} balanceAuthority=${balanceAuthority} hasTx=${String(isDefined(tx))}`,
+        (_result, ...[accountId, anchorCapturedAt, balanceAuthority, tx]) =>
+            `done accountId=${accountId} anchorCapturedAt=${anchorCapturedAt.toISOString()} balanceAuthority=${balanceAuthority} hasTx=${String(isDefined(tx))}`,
+        (error, ...[accountId, anchorCapturedAt, balanceAuthority, tx]) =>
+            `throw accountId=${accountId} anchorCapturedAt=${anchorCapturedAt.toISOString()} balanceAuthority=${balanceAuthority} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
-    async updateProgress(id: number, mode: SyncModeEnum, input: SyncUpdateEntityInterface, tx?: DB): Promise<SyncEntityInterface> {
-        const backwardSequenceUpdate =
-            mode === SyncModeEnum.BACKWARD
-                ? {
-                      backwardBatchSequence: sql<number>`COALESCE((SELECT MAX(sequence_source.backward_batch_sequence) FROM bank_syncs AS sequence_source WHERE sequence_source.provider = (SELECT current_sync.provider FROM bank_syncs AS current_sync WHERE current_sync.id = ${id})), 0) + 1`
-                  }
-                : {};
-        const [sync] = await (tx ?? this.db)
-            .update(SyncEntityTable)
-            .set({ ...input, ...backwardSequenceUpdate })
-            .where(eq(SyncEntityTable.id, id))
-            .returning();
-
-        return sync;
-    }
-
-    @Log(
-        (accountId, anchorCapturedAt, tx) =>
-            `enter accountId=${accountId} anchorCapturedAt=${anchorCapturedAt.toISOString()} hasTx=${String(isDefined(tx))}`,
-        (_result, accountId, anchorCapturedAt, tx) =>
-            `done accountId=${accountId} anchorCapturedAt=${anchorCapturedAt.toISOString()} hasTx=${String(isDefined(tx))}`,
-        (error, accountId, anchorCapturedAt, tx) =>
-            `throw accountId=${accountId} anchorCapturedAt=${anchorCapturedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async resetForResync(accountId: number, anchorCapturedAt: Date, tx?: DB): Promise<void> {
+    async resetForResync(accountId: number, anchorCapturedAt: Date, balanceAuthority: SyncBalanceAuthorityEnum, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(SyncEntityTable)
             .set({
@@ -133,9 +110,8 @@ export class SyncRepository {
                 transactionCount: 0,
                 errorCount: 0,
                 lastError: null,
-                balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER,
-                balanceAnchorCapturedAt: anchorCapturedAt,
-                backwardBatchSequence: null
+                balanceAuthority,
+                backwardBatchAt: null
             })
             .where(eq(SyncEntityTable.accountId, accountId));
     }
@@ -186,11 +162,7 @@ export class SyncRepository {
                     isNull(AccountEntityTable.deletedAt)
                 )
             )
-            .orderBy(
-                sql`CASE WHEN ${SyncEntityTable.backwardBatchSequence} IS NULL THEN 0 ELSE 1 END`,
-                asc(SyncEntityTable.backwardBatchSequence),
-                asc(SyncEntityTable.id)
-            );
+            .orderBy(asc(SyncEntityTable.backwardBatchAt), asc(SyncEntityTable.id));
     }
 
     async setStatus(id: number, status: SyncStatusEnum, tx?: DB): Promise<void> {

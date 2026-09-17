@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "a0854646-17fe-4126-a89b-72e6ffb61e5b",
-  "prevId": "9e086692-4f90-4db1-8279-a734e1a3c139",
+  "id": "4fce86dc-18b4-4224-bb42-ab6300637c81",
+  "prevId": "031dd728-acf8-440c-884d-00391e6742ce",
   "tables": {
     "account_balances": {
       "name": "account_balances",
@@ -2482,6 +2482,14 @@
           "autoincrement": false,
           "default": false
         },
+        "is_widget_amounts_enabled": {
+          "name": "is_widget_amounts_enabled",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
         "apply_mcc_default_category": {
           "name": "apply_mcc_default_category",
           "type": "integer",
@@ -2672,13 +2680,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "backward_batch_sequence": {
-          "name": "backward_batch_sequence",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "forward_synced_at": {
           "name": "forward_synced_at",
           "type": "integer",
@@ -2688,28 +2689,6 @@
         },
         "forward_sync_from_at": {
           "name": "forward_sync_from_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "balance_authority": {
-          "name": "balance_authority",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'LEDGER'"
-        },
-        "balance_anchor_captured_at": {
-          "name": "balance_anchor_captured_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "balance_adjustment_transaction_id": {
-          "name": "balance_adjustment_transaction_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -2734,6 +2713,42 @@
         "last_error": {
           "name": "last_error",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "last_warning": {
+          "name": "last_warning",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "binance_trade_cursor": {
+          "name": "binance_trade_cursor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "backward_batch_at": {
+          "name": "backward_batch_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "balance_authority": {
+          "name": "balance_authority",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'LEDGER'"
+        },
+        "balance_adjustment_transaction_id": {
+          "name": "balance_adjustment_transaction_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
