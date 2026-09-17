@@ -1,8 +1,11 @@
 import {
     AccountDebtTypeEnum,
     AccountNatureEnum,
+    BORROWING_CATEGORY_ID,
+    CategorySourceEnum,
     DebtEventDirectionEnum,
     DebtEventSourceEnum,
+    LENDING_CATEGORY_ID,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -21,7 +24,6 @@ import {
     transactionRepository
 } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { transactionDebtSettlementService } from '../../transaction/service/transaction-debt-settlement.service';
@@ -29,48 +31,52 @@ import { getTransactionCategoryEntries } from '../../transaction/utils/get-trans
 import { updateDebtTargetBaseValuation } from '../util/update-debt-target-base-valuation.util';
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
+import { accountService } from './account.service';
 
-import type { BuildDebtTransferEntryParamsInterface } from '../interface/build-debt-transfer-entry-params.interface';
-import type { CreateOpeningDebtTransferParamsInterface } from '../interface/create-opening-debt-transfer-params.interface';
 import type {
     AccountEntityInterface,
     DB,
     DebtAccountCreateInputInterface,
-    TransactionEntryCreateEntityInterface,
+    TransactionEntityInterface,
+    TransactionEntryEntityInterface,
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
 class AccountDebtOpeningService {
     @Log(
-        (input, fromAccountId) => `enter title="${input.title}" debtType=${input.debtType} fromAccountId=${fromAccountId}`,
-        (result, input, fromAccountId) =>
-            `done accountId=${result.id} title="${input.title}" debtType=${input.debtType} fromAccountId=${fromAccountId}`,
-        (error, input, fromAccountId) =>
-            `throw title="${input.title}" debtType=${input.debtType} fromAccountId=${fromAccountId} error=${getErrorMessage(error)}`
+        (input, fundingAccountId) => `enter title="${input.title}" debtType=${input.debtType} fundingAccountId=${fundingAccountId}`,
+        (result, input, fundingAccountId) =>
+            `done accountId=${result.id} title="${input.title}" debtType=${input.debtType} fundingAccountId=${fundingAccountId}`,
+        (error, input, fundingAccountId) =>
+            `throw title="${input.title}" debtType=${input.debtType} fundingAccountId=${fundingAccountId} error=${getErrorMessage(error)}`
     )
-    async createLentDebtFromTransfer(input: DebtAccountCreateInputInterface, fromAccountId: number): Promise<AccountEntityInterface> {
+    async openDebtWithFundingAccount(input: DebtAccountCreateInputInterface, fundingAccountId: number): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
-            this.assertDebtType(input.debtType, AccountDebtTypeEnum.LENT);
-
-            const operatedAt = new Date();
-            const fromAccount = await this.getAccountOrFail(fromAccountId, tx);
+            const fundingAccount = await this.getAccountOrFail(fundingAccountId, tx);
+            const fundingAmount = this.getPositiveOpeningAmount(input.targetBalance);
+            const transaction = await this.createFundingTransaction(input, fundingAccountId, tx);
+            const entry = await this.createFundingEntry(transaction, fundingAccountId, fundingAmount, tx);
             const account = await this.createZeroTargetDebtAccount(input, tx);
-            const fromAmount = this.getPositiveOpeningAmount(input.currentBalance);
-            const conversion = await exchangeRatesService.convert(fromAccount.instrumentId, account.instrumentId, fromAmount);
-            const valuedAccount = await this.updateDebtTargetAmount(account, conversion.amount, operatedAt, tx);
+            const conversion = await exchangeRatesService.convert(fundingAccount.instrumentId, account.instrumentId, fundingAmount);
+            const valuedAccount = await this.updateDebtTargetAmount(account, Math.round(conversion.amount), transaction.operatedAt, tx);
 
-            await this.createOpeningDebtTransfer({
-                fromAccountId,
-                toAccountId: account.id,
-                fromAmount,
-                toAmount: conversion.amount,
-                exchangeRate: conversion.exchangeRate,
-                operatedAt,
-                title: input.title,
+            await debtEventRepository.create(
+                {
+                    debtAccountId: valuedAccount.id,
+                    transactionId: transaction.id,
+                    transactionEntryId: entry.id,
+                    direction: DebtEventDirectionEnum.OPEN,
+                    source: DebtEventSourceEnum.OPENING,
+                    amount: valuedAccount.targetBalance,
+                    baseInstrumentId: valuedAccount.targetBaseInstrumentId,
+                    baseExchangeRate: valuedAccount.targetBaseExchangeRate,
+                    baseAmount: valuedAccount.targetBaseAmount,
+                    operatedAt: transaction.operatedAt
+                },
                 tx
-            });
-
-            await accountBalanceIncrementalService.updateBalancesByAccountIds([fromAccountId, account.id], tx);
+            );
+            await accountService.syncManualDebtEvents(valuedAccount, convertToMicroUnits(input.currentBalance), transaction.operatedAt, tx);
+            await accountBalanceIncrementalService.updateBalancesByAccountIds([fundingAccountId, valuedAccount.id], tx);
 
             return valuedAccount;
         });
@@ -89,7 +95,7 @@ class AccountDebtOpeningService {
         incomeTransactionId: number
     ): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
-            this.assertDebtType(input.debtType, AccountDebtTypeEnum.BORROW);
+            this.assertBorrowedDebtType(input.debtType);
 
             const transaction = await this.getOpeningIncomeTransaction(incomeTransactionId, tx);
             const primaryEntry = this.getSingleOpeningIncomeEntry(transaction);
@@ -113,111 +119,65 @@ class AccountDebtOpeningService {
         return accountRepository.create({ ...input, targetBalance: 0, order: count + 1, nature }, tx);
     }
 
-    private async createOpeningDebtTransfer({
-        fromAccountId,
-        toAccountId,
-        fromAmount,
-        toAmount,
-        exchangeRate,
-        operatedAt,
-        title,
-        tx
-    }: CreateOpeningDebtTransferParamsInterface): Promise<void> {
-        const transaction = await transactionRepository.create(
+    private async createFundingTransaction(
+        input: DebtAccountCreateInputInterface,
+        fundingAccountId: number,
+        tx: DB
+    ): Promise<TransactionEntityInterface> {
+        const isLentDebt = input.debtType === AccountDebtTypeEnum.LENT;
+
+        return transactionRepository.create(
             {
-                type: TransactionTypeEnum.DEBT,
-                title,
+                type: isLentDebt ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
+                title: input.title,
                 comment: '',
                 externalId: null,
                 externalSource: null,
-                operatedAt,
-                exchangeRate,
-                fromAccountId,
-                toAccountId,
+                operatedAt: new Date(),
+                exchangeRate: 1,
+                fromAccountId: isLentDebt ? fundingAccountId : null,
+                toAccountId: isLentDebt ? null : fundingAccountId,
                 updatedBy: null
             },
             tx
         );
-        const [fromValuation, toValuation] = await Promise.all([
-            entryBaseValuationService.valueMicroUnitEntry({
-                accountId: fromAccountId,
-                amount: fromAmount,
-                operatedAt,
-                externalSource: null,
-                tx
-            }),
-            entryBaseValuationService.valueMicroUnitEntry({
-                accountId: toAccountId,
-                amount: toAmount,
-                operatedAt,
-                externalSource: null,
-                tx
-            })
-        ]);
-
-        const createdEntries = await transactionEntryRepository.bulkCreate(
-            [
-                this.buildDebtTransferEntry({
-                    transactionId: transaction.id,
-                    accountId: fromAccountId,
-                    type: TransactionEntryTypeEnum.CREDIT,
-                    amount: fromAmount,
-                    valuation: fromValuation
-                }),
-                this.buildDebtTransferEntry({
-                    transactionId: transaction.id,
-                    accountId: toAccountId,
-                    type: TransactionEntryTypeEnum.DEBIT,
-                    amount: toAmount,
-                    valuation: toValuation
-                })
-            ],
-            tx
-        );
-        const debtEntry = createdEntries.find(entry => entry.accountId === toAccountId);
-
-        if (isDefined(debtEntry)) {
-            await debtEventRepository.create(
-                {
-                    debtAccountId: toAccountId,
-                    transactionId: transaction.id,
-                    transactionEntryId: debtEntry.id,
-                    direction: DebtEventDirectionEnum.OPEN,
-                    source: DebtEventSourceEnum.TRANSFER,
-                    amount: debtEntry.amount,
-                    baseInstrumentId: debtEntry.baseInstrumentId,
-                    baseExchangeRate: debtEntry.baseExchangeRate,
-                    baseAmount: debtEntry.baseAmount,
-                    operatedAt
-                },
-                tx
-            );
-        }
     }
 
-    private buildDebtTransferEntry({
-        transactionId,
-        accountId,
-        type,
-        amount,
-        valuation
-    }: BuildDebtTransferEntryParamsInterface): TransactionEntryCreateEntityInterface {
-        return {
-            transactionId,
-            accountId,
-            categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
-            mccCategoryId: null,
-            type,
-            kind: TransactionEntryKindEnum.PRIMARY,
+    private async createFundingEntry(
+        transaction: TransactionEntityInterface,
+        fundingAccountId: number,
+        amount: number,
+        tx: DB
+    ): Promise<TransactionEntryEntityInterface> {
+        const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
+        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
+            accountId: fundingAccountId,
             amount,
-            externalId: null,
-            exchangeRate: 1,
-            baseInstrumentId: valuation.baseInstrumentId,
-            baseExchangeRate: valuation.baseExchangeRate,
-            baseAmount: valuation.baseAmount,
-            toIban: null,
-            originalTransactionId: null
-        };
+            operatedAt: transaction.operatedAt,
+            externalSource: null,
+            tx
+        });
+
+        return transactionEntryRepository.create(
+            {
+                transactionId: transaction.id,
+                accountId: fundingAccountId,
+                categoryId: isExpense ? LENDING_CATEGORY_ID : BORROWING_CATEGORY_ID,
+                categorySource: CategorySourceEnum.DEBT_SETTLEMENT,
+                mccCategoryId: null,
+                type: isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
+                kind: TransactionEntryKindEnum.PRIMARY,
+                amount,
+                externalId: null,
+                exchangeRate: 1,
+                baseInstrumentId: valuation.baseInstrumentId,
+                baseExchangeRate: valuation.baseExchangeRate,
+                baseAmount: valuation.baseAmount,
+                toIban: null,
+                originalTransactionId: null
+            },
+            tx
+        );
     }
 
     private getPositiveOpeningAmount(amount: number): number {
@@ -265,16 +225,10 @@ class AccountDebtOpeningService {
         return account;
     }
 
-    private assertDebtType(debtType: AccountDebtTypeEnum, expectedDebtType: AccountDebtTypeEnum): void {
-        if (debtType === expectedDebtType) {
-            return;
+    private assertBorrowedDebtType(debtType: AccountDebtTypeEnum): void {
+        if (debtType !== AccountDebtTypeEnum.BORROW) {
+            throw new Error(t`Borrowed debt account expected`);
         }
-
-        if (expectedDebtType === AccountDebtTypeEnum.LENT) {
-            throw new Error(t`Lent debt account expected`);
-        }
-
-        throw new Error(t`Borrowed debt account expected`);
     }
 
     private async updateDebtTargetAmount(

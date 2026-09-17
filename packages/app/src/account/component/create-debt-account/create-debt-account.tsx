@@ -41,50 +41,39 @@ export const CreateDebtAccount = () => {
         instrumentId: defaultInstrument.id
     };
 
-    const { control, handleSubmit, instrument, debtType, setValue, getValues, isSubmitting } = useDebtAccountForm(
-        initialValues,
-        async values => {
-            const effectiveOpeningAccountId = values.debtType === AccountDebtTypeEnum.LENT ? openingAccountId : null;
-
-            if (isDefined(effectiveOpeningAccountId)) {
-                return accountDebtOpeningService.createLentDebtFromTransfer(
-                    { ...values, targetBalance: values.currentBalance },
-                    effectiveOpeningAccountId
-                );
-            }
-
-            return accountService.createDebt(values);
+    const { control, handleSubmit, instrument, debtType, isSubmitting } = useDebtAccountForm(initialValues, async values => {
+        if (isDefined(openingAccountId)) {
+            return accountDebtOpeningService.openDebtWithFundingAccount(values, openingAccountId);
         }
-    );
+
+        return accountService.createDebt(values);
+    });
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
-    const isOpeningFromAccount = isLentDebt && isDefined(openingAccountId);
     const variant = ACCOUNT_COLOR.DEBT;
     const stickyInstrument = useStickyDefinedValue(instrument);
     const balanceFieldLabel = isLentDebt ? t`Already returned` : t`Already repaid`;
-
-    const handleCreateDebtAccountSubmit = () => {
-        if (isOpeningFromAccount) {
-            setValue('targetBalance', getValues('currentBalance'), { shouldDirty: false, shouldValidate: false });
-        }
-
-        return handleSubmit();
-    };
+    const openingAccountLabel = isLentDebt ? t`From account` : t`To account`;
 
     if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
     }
 
     return (
-        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleCreateDebtAccountSubmit} isSubmitting={isSubmitting}>
+        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
             <CreateAccountCoreFields
                 variant={variant}
                 control={control}
                 instrumentSymbol={stickyInstrument.symbol}
                 balanceFieldLabel={balanceFieldLabel}
             >
-                {isLentDebt && <DebtOpeningAccountField accountId={openingAccountId} variant={variant} onChange={setOpeningAccountId} />}
+                <DebtOpeningAccountField
+                    accountId={openingAccountId}
+                    label={openingAccountLabel}
+                    variant={variant}
+                    onChange={setOpeningAccountId}
+                />
 
-                {!isOpeningFromAccount && <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} />}
+                <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} />
 
                 <DebtAccountTypeField control={control} />
 
