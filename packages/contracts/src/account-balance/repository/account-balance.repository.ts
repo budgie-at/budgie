@@ -10,6 +10,8 @@ import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
+import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { SyncEntityTable } from '../../sync/table/sync-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
@@ -25,6 +27,7 @@ import { accountBalanceLedgerSqlBuilder } from './account-balance-ledger-sql.bui
 import type { DB } from '../../@generic/type/db.type';
 import type { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
 import type { AccountBalanceEntityInterface } from '../entity/account-balance-entity.interface';
+import type { DebtLedgerAmountsInterface } from '../interface/debt-ledger-amounts.interface';
 
 export class AccountBalanceRepository {
     private static readonly CRYPTO_ACCOUNT_TYPES = [AccountTypeEnum.CRYPTO, AccountTypeEnum.CRYPTO_SYNC];
@@ -52,6 +55,23 @@ export class AccountBalanceRepository {
             .groupBy(TransactionEntryEntityTable.accountId);
 
         return new Map(results.map(({ accountId, delta }) => [accountId, delta]));
+    }
+
+    @Log(
+        accountIds => `enter accountIds=${accountIds.join(',')}`,
+        result => `done debtAccountCount=${result.length}`,
+        (error, accountIds) => `throw accountIds=${accountIds.join(',')} error=${getErrorMessage(error)}`
+    )
+    async getDebtLedgerAmounts(accountIds: number[], tx?: DB): Promise<DebtLedgerAmountsInterface[]> {
+        return await (tx ?? this.db)
+            .select({
+                accountId: DebtEventEntityTable.debtAccountId,
+                openedAmount: this.getDebtEventDirectionSumSql(DebtEventDirectionEnum.OPEN),
+                closedAmount: this.getDebtEventDirectionSumSql(DebtEventDirectionEnum.CLOSE)
+            })
+            .from(DebtEventEntityTable)
+            .where(and(inArray(DebtEventEntityTable.debtAccountId, accountIds), isNull(DebtEventEntityTable.deletedAt)))
+            .groupBy(DebtEventEntityTable.debtAccountId);
     }
 
     getAssetClassTotals(defaultInstrumentId: number) {
@@ -264,6 +284,12 @@ export class AccountBalanceRepository {
         await database
             .delete(AccountBalanceEntityTable)
             .where(notInArray(AccountBalanceEntityTable.accountId, bankAuthoritativeAccountIdsSql));
+    }
+
+    private getDebtEventDirectionSumSql(direction: DebtEventDirectionEnum) {
+        return sql<number>`COALESCE(SUM(CASE WHEN ${DebtEventEntityTable.direction} = ${direction} THEN ${DebtEventEntityTable.amount} ELSE 0 END), 0)`.mapWith(
+            Number
+        );
     }
 
     private buildNetWorthExchangeRateConversionSql(defaultInstrumentId: number) {

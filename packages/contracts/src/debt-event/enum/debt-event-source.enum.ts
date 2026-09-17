@@ -1,6 +1,7 @@
 export enum DebtEventSourceEnum {
     MANUAL = 'MANUAL',
     TRANSFER = 'TRANSFER',
+    OPENING = 'OPENING',
     INCOME_ATTACHMENT = 'INCOME_ATTACHMENT',
     MIGRATION = 'MIGRATION'
 }
