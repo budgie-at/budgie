@@ -31,4 +31,8 @@ export class IbanBridgeCanonicalSupersessionConsolidationFamilyService extends C
     protected getSourceTransactionIds(candidate: IbanBridgeCanonicalSupersessionCandidateInterface): number[] {
         return [candidate.supersededCanonicalTransactionId, candidate.canonicalTransactionId];
     }
+
+    protected override getScopeTransactionIds(candidate: IbanBridgeCanonicalSupersessionCandidateInterface): number[] {
+        return [candidate.supersededCanonicalTransactionId, candidate.canonicalTransactionId, candidate.bridgeOriginTransactionId];
+    }
 }

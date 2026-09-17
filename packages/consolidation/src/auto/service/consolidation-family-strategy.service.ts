@@ -50,6 +50,10 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
         return false;
     }
 
+    protected getScopeTransactionIds(candidate: Candidate): number[] {
+        return this.getSourceTransactionIds(candidate);
+    }
+
     private async buildRunnableCandidates(context: ConsolidationFamilyRunContextInterface): Promise<Candidate[]> {
         const candidates = await this.findCandidates(context.scope);
         await this.yieldControl();
@@ -102,7 +106,7 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
             return true;
         }
 
-        return this.getSourceTransactionIds(candidate).some(sourceTransactionId => scope.transactionIds.includes(sourceTransactionId));
+        return this.getScopeTransactionIds(candidate).some(scopeTransactionId => scope.transactionIds.includes(scopeTransactionId));
     }
 
     private buildBlockedSourceTransactionIds(candidates: Candidate[]): number[] {

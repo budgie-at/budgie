@@ -41,11 +41,6 @@ export class ConsolidationFamilyRegistryService {
                 this.consolidationRepairExecutorService,
                 this.yieldControl
             ),
-            new IbanBridgeCanonicalSupersessionConsolidationFamilyService(
-                this.repositories.ibanBridgeTransferRepository,
-                this.consolidationRepairExecutorService,
-                this.yieldControl
-            ),
             new IbanBridgeCanonicalDuplicateConsolidationFamilyService(
                 this.repositories.ibanBridgeTransferRepository,
                 this.consolidationRepairExecutorService,
@@ -54,6 +49,11 @@ export class ConsolidationFamilyRegistryService {
             new IbanBridgeTransferConsolidationFamilyService(
                 this.repositories.ibanBridgeTransferRepository,
                 this.consolidationExecutorService,
+                this.yieldControl
+            ),
+            new IbanBridgeCanonicalSupersessionConsolidationFamilyService(
+                this.repositories.ibanBridgeTransferRepository,
+                this.consolidationRepairExecutorService,
                 this.yieldControl
             ),
             new ExistingTransferIncomeDuplicateConsolidationFamilyService(
