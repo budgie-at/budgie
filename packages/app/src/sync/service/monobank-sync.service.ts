@@ -95,28 +95,33 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     }
 
     @Log(
-        sync => `enter syncId=${sync.id} mode=${sync.mode}`,
-        (result, sync) =>
-            `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} transactionIds=${result.transactions
+        (sync, runGeneration) => `enter syncId=${sync.id} mode=${sync.mode} runGeneration=${runGeneration}`,
+        (result, sync, runGeneration) =>
+            `done syncId=${sync.id} mode=${sync.mode} runGeneration=${runGeneration} transactionCount=${result.transactions.length} transactionIds=${result.transactions
                 .slice(0, 5)
                 .map(transaction => transaction.id)
                 .join(',')} completed=${result.completed}`,
-        (error, sync) => `throw syncId=${sync.id} mode=${sync.mode} error=${getErrorMessage(error)}`
+        (error, sync, runGeneration) =>
+            `throw syncId=${sync.id} mode=${sync.mode} runGeneration=${runGeneration} error=${getErrorMessage(error)}`
     )
-    protected override async executeSyncBatch(sync: SyncEntityInterface): Promise<SyncBatchResultInterface> {
+    protected override async executeSyncBatch(sync: SyncEntityInterface, runGeneration: number): Promise<SyncBatchResultInterface> {
         const account = await accountRepository.findById(sync.accountId);
-        if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
-            return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
+        if (!this.isRunCurrent(runGeneration)) {
+            return this.buildInterruptedBatchResult();
         }
 
-        const token = await this.resolveSyncToken(sync);
-        const result = await this.fetchTransactionBatch(sync, account.externalId, token);
-        await microPause();
+        if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
+            const now = new Date();
 
-        const changedTransactions = await this.processFetchedTransactions(result.transactions, account.id);
-        await this.reconcileChangedTransactions(changedTransactions);
+            return { transactions: [], nextTo: now, nextFrom: now, completed: true };
+        }
 
-        await microPause();
+        const result = await this.fetchCurrentTransactionBatch(sync, account.externalId, runGeneration);
+        if (!isDefined(result)) {
+            return this.buildInterruptedBatchResult();
+        }
+
+        await this.commitFetchedBatch(result, account.id, runGeneration);
 
         return result;
     }
@@ -162,67 +167,79 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     }
 
     @Log(
-        changedTransactions => `enter changedTransactionCount=${changedTransactions.length}`,
-        (result, changedTransactions) => `done changedTransactionCount=${changedTransactions.length} result=${String(result)}`,
-        (error, changedTransactions) => `throw changedTransactionCount=${changedTransactions.length} error=${getErrorMessage(error)}`
+        (changedTransactions, runGeneration) =>
+            `enter runGeneration=${runGeneration} changedTransactionCount=${changedTransactions.length}`,
+        (result, changedTransactions, runGeneration) =>
+            `done runGeneration=${runGeneration} changedTransactionCount=${changedTransactions.length} result=${String(result)}`,
+        (error, changedTransactions, runGeneration) =>
+            `throw runGeneration=${runGeneration} changedTransactionCount=${changedTransactions.length} error=${getErrorMessage(error)}`
     )
     private async reconcileChangedTransactions(
-        changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>
+        changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>,
+        runGeneration: number
     ): Promise<void> {
         const consolidationScope = consolidationScopeService.buildFromTransactions(changedTransactions);
-        if (!isDefined(consolidationScope)) {
+        if (!this.isRunCurrent(runGeneration) || !isDefined(consolidationScope)) {
             return;
         }
 
         try {
             await transferConsolidationService.consolidate(consolidationScope);
         } finally {
-            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
+            if (this.isRunCurrent(runGeneration)) {
+                transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
+            }
         }
     }
 
     @Log(
-        (transactions, accountId) => `enter accountId=${accountId} transactionCount=${transactions.length}`,
-        (result, transactions, accountId) =>
-            `done accountId=${accountId} transactionCount=${transactions.length} changedTransactionCount=${result.length}`,
-        (error, transactions, accountId) =>
-            `throw accountId=${accountId} transactionCount=${transactions.length} error=${getErrorMessage(error)}`
+        (transactions, accountId, runGeneration) =>
+            `enter accountId=${accountId} runGeneration=${runGeneration} transactionCount=${transactions.length}`,
+        (result, transactions, accountId, runGeneration) =>
+            `done accountId=${accountId} runGeneration=${runGeneration} transactionCount=${transactions.length} changedTransactionCount=${result.length}`,
+        (error, transactions, accountId, runGeneration) =>
+            `throw accountId=${accountId} runGeneration=${runGeneration} transactionCount=${transactions.length} error=${getErrorMessage(error)}`
     )
     private async processFetchedTransactions(
         transactions: SyncBatchResultInterface['transactions'],
-        accountId: number
+        accountId: number,
+        runGeneration: number
     ): Promise<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]> {
         if (!isNotEmptyArray(transactions)) {
             return [];
         }
 
         const existingTransactionIdMap = await transactionService.findIdMapByExternalSource(this.provider);
+        if (!this.isRunCurrent(runGeneration)) {
+            return [];
+        }
+
         const newTransactions = transactions.filter(bankTransaction => !existingTransactionIdMap.has(bankTransaction.id));
         const existingTransactions = transactions.filter(bankTransaction => existingTransactionIdMap.has(bankTransaction.id));
 
-        const createdTransactions = await this.createNewTransactions(newTransactions, accountId);
-        const updatedTransactionCount = await this.updateExistingTransactions(existingTransactions, accountId);
-        const updatedTransactions = this.buildExistingTransactionScopeSeeds(existingTransactions, existingTransactionIdMap);
-
-        if (isPositiveNumber(updatedTransactionCount)) {
+        const createdTransactions = await this.createNewTransactions(newTransactions, accountId, runGeneration);
+        const updatedTransactionCount = await this.updateExistingTransactions(existingTransactions, accountId, runGeneration);
+        if (this.isRunCurrent(runGeneration) && isPositiveNumber(updatedTransactionCount)) {
             await transactionService.updateAllBalances();
         }
 
-        return [...createdTransactions, ...updatedTransactions];
+        return [...createdTransactions, ...this.buildExistingTransactionScopeSeeds(existingTransactions, existingTransactionIdMap)];
     }
 
     @Log(
-        (newTransactions, accountId) => `enter accountId=${accountId} transactionCount=${newTransactions.length}`,
-        (result, newTransactions, accountId) =>
-            `done accountId=${accountId} transactionCount=${newTransactions.length} createdTransactionCount=${result.length}`,
-        (error, newTransactions, accountId) =>
-            `throw accountId=${accountId} transactionCount=${newTransactions.length} error=${getErrorMessage(error)}`
+        (newTransactions, accountId, runGeneration) =>
+            `enter accountId=${accountId} runGeneration=${runGeneration} transactionCount=${newTransactions.length}`,
+        (result, newTransactions, accountId, runGeneration) =>
+            `done accountId=${accountId} runGeneration=${runGeneration} transactionCount=${newTransactions.length} createdTransactionCount=${result.length}`,
+        (error, newTransactions, accountId, runGeneration) =>
+            `throw accountId=${accountId} runGeneration=${runGeneration} transactionCount=${newTransactions.length} error=${getErrorMessage(error)}`
     )
     private async createNewTransactions(
         newTransactions: SyncBatchResultInterface['transactions'],
-        accountId: number
+        accountId: number,
+        runGeneration: number
     ): Promise<TransactionEntityInterface[]> {
-        if (!isNotEmptyArray(newTransactions)) {
+        if (!this.isRunCurrent(runGeneration) || !isNotEmptyArray(newTransactions)) {
             return [];
         }
 
@@ -234,11 +251,15 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             })
         );
         const prepared = await ruleEngineService.prepareCreateInputsForRules(inputs);
+        if (!this.isRunCurrent(runGeneration)) {
+            return [];
+        }
+
         const createdTransactions = await transactionService.bulkCreate(prepared.transactionInputs);
         const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
         const postCreateTransactionInputs = prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined);
 
-        if (isNotEmptyArray(postCreateTransactionIds)) {
+        if (this.isRunCurrent(runGeneration) && isNotEmptyArray(postCreateTransactionIds)) {
             ruleApplicationDrainerService.enqueueTransactions(postCreateTransactionIds, postCreateTransactionInputs);
         }
 
@@ -246,21 +267,27 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     }
 
     @Log(
-        (existingTransactions, accountId) => `enter accountId=${accountId} transactionCount=${existingTransactions.length}`,
-        (result, existingTransactions, accountId) =>
-            `done accountId=${accountId} transactionCount=${existingTransactions.length} updatedTransactionCount=${result}`,
-        (error, existingTransactions, accountId) =>
-            `throw accountId=${accountId} transactionCount=${existingTransactions.length} error=${getErrorMessage(error)}`
+        (existingTransactions, accountId, runGeneration) =>
+            `enter accountId=${accountId} runGeneration=${runGeneration} transactionCount=${existingTransactions.length}`,
+        (result, existingTransactions, accountId, runGeneration) =>
+            `done accountId=${accountId} runGeneration=${runGeneration} transactionCount=${existingTransactions.length} updatedTransactionCount=${result}`,
+        (error, existingTransactions, accountId, runGeneration) =>
+            `throw accountId=${accountId} runGeneration=${runGeneration} transactionCount=${existingTransactions.length} error=${getErrorMessage(error)}`
     )
     private async updateExistingTransactions(
         existingTransactions: SyncBatchResultInterface['transactions'],
-        accountId: number
+        accountId: number,
+        runGeneration: number
     ): Promise<number> {
-        if (!isNotEmptyArray(existingTransactions)) {
+        if (!this.isRunCurrent(runGeneration) || !isNotEmptyArray(existingTransactions)) {
             return 0;
         }
 
         for (const bankTransaction of existingTransactions) {
+            if (!this.isRunCurrent(runGeneration)) {
+                return 0;
+            }
+
             await transactionService.update(await mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
             await microPause();
         }
@@ -331,6 +358,43 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         const { SyncAccountTypeEnum } = getSyncModule();
 
         return account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : super.accountIcon(account);
+    }
+
+    private async fetchCurrentTransactionBatch(
+        sync: SyncEntityInterface,
+        externalAccountId: string,
+        runGeneration: number
+    ): Promise<SyncBatchResultInterface | null> {
+        const token = await this.resolveSyncToken(sync);
+        if (!this.isRunCurrent(runGeneration)) {
+            return null;
+        }
+
+        const result = await this.fetchTransactionBatch(sync, externalAccountId, token);
+
+        return this.isRunCurrent(runGeneration) ? result : null;
+    }
+
+    private async commitFetchedBatch(result: SyncBatchResultInterface, accountId: number, runGeneration: number): Promise<void> {
+        await microPause();
+        if (!this.isRunCurrent(runGeneration)) {
+            return;
+        }
+
+        const changedTransactions = await this.processFetchedTransactions(result.transactions, accountId, runGeneration);
+        if (!this.isRunCurrent(runGeneration)) {
+            return;
+        }
+
+        await this.reconcileChangedTransactions(changedTransactions, runGeneration);
+
+        await microPause();
+    }
+
+    private buildInterruptedBatchResult(): SyncBatchResultInterface {
+        const now = new Date();
+
+        return { transactions: [], nextTo: now, nextFrom: now, completed: false };
     }
 }
 
