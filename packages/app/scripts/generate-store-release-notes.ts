@@ -323,7 +323,11 @@ function buildShortenRetryPrompt(originalUserPrompt: string, violations: LengthV
 }
 
 const localeReleaseNotesResponseSchema = z.object({
-    locales: z.object(Object.fromEntries(appLocales.map(appLocale => [appLocale, z.object({ appStore: z.string(), play: z.string() })])))
+    locales: z.object(
+        Object.fromEntries(
+            appLocales.map(appLocale => [appLocale, z.object({ appStore: z.string().trim().min(1), play: z.string().trim().min(1) })])
+        )
+    )
 });
 
 type LocaleReleaseNotesMap = z.infer<typeof localeReleaseNotesResponseSchema>['locales'];
@@ -363,8 +367,18 @@ function checkReleaseNotesFreshness(): void {
         return;
     }
 
-    const stateFileContents: unknown = JSON.parse(readFileSync(stateFilePath, 'utf8'));
-    const state = releaseNotesStateSchema.parse(stateFileContents);
+    let state: ReleaseNotesState;
+
+    try {
+        const stateFileContents: unknown = JSON.parse(readFileSync(stateFilePath, 'utf8'));
+        state = releaseNotesStateSchema.parse(stateFileContents);
+    } catch (error) {
+        console.log(
+            `Store release notes state file is invalid; regenerate with "pnpm store:notes" from packages/app. (${getErrorMessage(error)})`
+        );
+
+        return;
+    }
 
     let commitSubjectsSinceGeneration: string[] = [];
 
