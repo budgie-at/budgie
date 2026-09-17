@@ -14,6 +14,7 @@ fastlane/
 │   ├── ios/
 │   │   ├── copyright.txt
 │   │   └── <asc-locale>/{name,subtitle,keywords,promotional_text,description,release_notes,support_url}.txt
+│   ├── release-notes-state.json  # base tag/commit the committed notes were generated from
 │   └── android/
 │       └── <locale>/
 │           ├── title.txt
@@ -184,6 +185,30 @@ missing from either.
 | Release notes / changelog    | 4000      | 500        |
 
 Keywords are comma-separated with no spaces after the commas.
+
+## Release notes workflow (local-first)
+
+Release notes are generated locally, never in CI, and the committed files are
+the source of truth. Run `pnpm store:notes` from `packages/app` before cutting
+a release, then commit `metadata/ios/**/release_notes.txt`,
+`metadata/android/**/changelogs/default.txt`, and
+`metadata/release-notes-state.json`.
+
+`scripts/generate-store-release-notes.ts` collects the user-facing commits
+since the latest `v*` tag (types `feat`, `fix`, `perf`, unscoped or scoped
+`app`) and reads the version from `packages/app/package.json`.
+
+- With `ANTHROPIC_API_KEY` set it asks Claude (`STORE_NOTES_MODEL`, default
+  `claude-opus-5`) for App Store and Play copy in all five locales (`en`,
+  `fr`, `uk`, `de`, `es`) in one structured-output call, then trims each field
+  at a line boundary to the store limits (3900 / 490 codepoints).
+- Without the key, or when the call fails, it writes a plain English
+  "What's new" list to `en-US` only and reports which locale files still hold
+  the previous release's copy, so they can be translated by hand or through
+  the same agent flow that maintains the Lingui catalogs.
+
+`pnpm store:notes --check` reports whether user-facing commits landed after
+the state file was written. It only warns and never blocks a release.
 
 ## Refresh procedure
 
