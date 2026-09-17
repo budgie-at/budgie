@@ -18,7 +18,7 @@ import type { BudgetAlertTriggerInterface, BudgetSpentInterface } from '@budgie/
 import type { BudgetEntityInterface } from '@budgie/contracts';
 
 class BudgetAlertMonitorService {
-    private static readonly MINIMUM_INTERVAL_SECONDS = 15 * 60;
+    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
     private static readonly STORAGE_KEY_PREFIX = '@budgie:budget-alerts-fired';
     private static readonly FiredTriggersSchema = z.array(z.string());
 
@@ -46,12 +46,20 @@ class BudgetAlertMonitorService {
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     async registerBackgroundTask(): Promise<void> {
-        if (await TaskManager.isTaskRegisteredAsync(BudgetBackgroundTaskNameEnum.ALERT_MONITOR)) {
+        const options = await TaskManager.getTaskOptionsAsync<BackgroundTask.BackgroundTaskOptions | null>(
+            BudgetBackgroundTaskNameEnum.ALERT_MONITOR
+        );
+
+        if (options?.minimumInterval === BudgetAlertMonitorService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES) {
             return;
         }
 
+        if (isDefined(options)) {
+            await BackgroundTask.unregisterTaskAsync(BudgetBackgroundTaskNameEnum.ALERT_MONITOR);
+        }
+
         await BackgroundTask.registerTaskAsync(BudgetBackgroundTaskNameEnum.ALERT_MONITOR, {
-            minimumInterval: BudgetAlertMonitorService.MINIMUM_INTERVAL_SECONDS
+            minimumInterval: BudgetAlertMonitorService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
         });
     }
 
