@@ -188,9 +188,6 @@ importers:
 
   packages/app:
     dependencies:
-      '@anthropic-ai/sdk':
-        specifier: ^0.115.0
-        version: 0.115.0(zod@4.5.1)
       '@budgie/ai':
         specifier: workspace:^
         version: link:../ai
@@ -429,6 +426,9 @@ importers:
         specifier: 4.5.1
         version: 4.5.1
     devDependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.115.0
+        version: 0.115.0(zod@4.5.1)
       '@babel/core':
         specifier: 7.29.7
         version: 7.29.7(supports-color@8.1.1)

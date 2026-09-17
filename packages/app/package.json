@@ -27,7 +27,6 @@
         "web": "expo start --web"
     },
     "dependencies": {
-        "@anthropic-ai/sdk": "^0.115.0",
         "@budgie/ai": "workspace:^",
         "@budgie/budget": "workspace:*",
         "@budgie/consolidation": "workspace:*",
@@ -109,6 +108,7 @@
         "zod": "4.5.1"
     },
     "devDependencies": {
+        "@anthropic-ai/sdk": "^0.115.0",
         "@babel/core": "7.29.7",
         "@babel/plugin-transform-class-static-block": "7.29.7",
         "@expo/metro-config": "57.0.12",
