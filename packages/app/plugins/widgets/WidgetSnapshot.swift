@@ -6,6 +6,7 @@ struct WidgetThemeColors: Codable {
     let secondary: String
     let positive: String
     let destructive: String
+    let warning: String?
 }
 
 struct WidgetPaletteData: Codable {
@@ -27,6 +28,8 @@ struct WidgetStrings: Codable {
     let income: String
     let transfer: String
     let addExpense: String
+    let runwayTitle: String
+    let notEnoughData: String
     let empty: String
 
     init(from decoder: Decoder) throws {
@@ -46,6 +49,8 @@ struct WidgetStrings: Codable {
         income = try container.decodeIfPresent(String.self, forKey: .income) ?? fallback.income
         transfer = try container.decodeIfPresent(String.self, forKey: .transfer) ?? fallback.transfer
         addExpense = try container.decodeIfPresent(String.self, forKey: .addExpense) ?? fallback.addExpense
+        runwayTitle = try container.decodeIfPresent(String.self, forKey: .runwayTitle) ?? fallback.runwayTitle
+        notEnoughData = try container.decodeIfPresent(String.self, forKey: .notEnoughData) ?? fallback.notEnoughData
         empty = try container.decodeIfPresent(String.self, forKey: .empty) ?? fallback.empty
     }
 
@@ -63,6 +68,8 @@ struct WidgetStrings: Codable {
         income: String,
         transfer: String,
         addExpense: String,
+        runwayTitle: String,
+        notEnoughData: String,
         empty: String
     ) {
         self.netWorthTitle = netWorthTitle
@@ -78,6 +85,8 @@ struct WidgetStrings: Codable {
         self.income = income
         self.transfer = transfer
         self.addExpense = addExpense
+        self.runwayTitle = runwayTitle
+        self.notEnoughData = notEnoughData
         self.empty = empty
     }
 }
@@ -110,6 +119,11 @@ struct NetWorthSnapshot: Codable {
     let history: [Double]
 }
 
+struct RunwaySnapshot: Codable {
+    let isPositive: Bool
+    let label: String
+}
+
 struct QuickAddCategory: Codable {
     let id: Int
     let title: String
@@ -123,6 +137,7 @@ struct WidgetSnapshot: Codable {
     let palette: WidgetPaletteData
     let netWorth: NetWorthSnapshot?
     let budget: BudgetSnapshot?
+    let runway: RunwaySnapshot?
     let quickAddCategories: [QuickAddCategory]?
 }
 
@@ -145,6 +160,8 @@ enum SnapshotStore {
         income: "Income",
         transfer: "Transfer",
         addExpense: "Add expense",
+        runwayTitle: "Runway",
+        notEnoughData: "Not enough history yet",
         empty: "No accounts yet"
     )
 

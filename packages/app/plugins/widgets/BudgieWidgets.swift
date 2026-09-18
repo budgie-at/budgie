@@ -10,5 +10,6 @@ struct BudgieWidgets: WidgetBundle {
         SpendingMediumWidget()
         QuickAddWidget()
         QuickAddMediumWidget()
+        RunwayWidget()
     }
 }
