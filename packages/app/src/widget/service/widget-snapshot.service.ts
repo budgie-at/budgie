@@ -57,8 +57,10 @@ class WidgetSnapshotService {
     private static readonly HISTORY_LIMIT = 30;
     private static readonly TOP_CATEGORY_COUNT = 3;
     private static readonly TOP_ACCOUNT_TYPE_COUNT = 4;
+    private static readonly MASKED_AMOUNT = '•••';
 
     private isPublishing = false;
+    private areAmountsMasked = false;
     private debounceTimer: ReturnType<typeof setTimeout> | null = null;
     private unsubscribeDatabaseRefresh: () => void = emptyFn;
 
@@ -137,6 +139,8 @@ class WidgetSnapshotService {
         const instrument = settings?.defaultInstrument ?? DEFAULT_INSTRUMENT;
         const language = settings?.language ?? LanguageEnum.EN;
         const decimalPlaces = (settings?.showCents ?? true) ? DEFAULT_DECIMAL_PLACES : 0;
+
+        this.areAmountsMasked = !(settings?.isWidgetAmountsEnabled ?? true);
 
         return {
             version: WidgetSnapshotService.SNAPSHOT_VERSION,
@@ -350,6 +354,10 @@ class WidgetSnapshotService {
         instrument: InstrumentEntityInterface,
         language: LanguageEnum
     ): string {
+        if (this.areAmountsMasked) {
+            return WidgetSnapshotService.MASKED_AMOUNT;
+        }
+
         if (computation.isPositive) {
             const formattedNet = this.formatWithSymbol(convertFromMicroUnits(computation.net), instrument.symbol, language, 0);
 
@@ -406,6 +414,10 @@ class WidgetSnapshotService {
     }
 
     private formatWithSymbol(value: number, symbol: string, language: LanguageEnum, decimalPlaces: number): string {
+        if (this.areAmountsMasked) {
+            return WidgetSnapshotService.MASKED_AMOUNT;
+        }
+
         return `${symbol}${new Intl.NumberFormat(languageToLocale(language), {
             style: 'decimal',
             minimumFractionDigits: decimalPlaces,
@@ -418,6 +430,10 @@ class WidgetSnapshotService {
     }
 
     private formatDelta(value: number, instrument: InstrumentEntityInterface, language: LanguageEnum, decimalPlaces: number): string {
+        if (this.areAmountsMasked) {
+            return WidgetSnapshotService.MASKED_AMOUNT;
+        }
+
         return `${this.resolveDeltaPrefix(value)}${this.formatAmount(Math.abs(value), instrument, language, decimalPlaces)}`;
     }
 
