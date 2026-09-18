@@ -2,6 +2,7 @@ import type { WidgetBudgetSnapshotInterface } from './widget-budget-snapshot.int
 import type { WidgetNetWorthSnapshotInterface } from './widget-net-worth-snapshot.interface';
 import type { WidgetPaletteInterface } from './widget-palette.interface';
 import type { WidgetQuickAddCategoryInterface } from './widget-quick-add-category.interface';
+import type { WidgetRunwaySnapshotInterface } from './widget-runway-snapshot.interface';
 import type { WidgetSnapshotStringsInterface } from './widget-snapshot-strings.interface';
 
 export interface WidgetSnapshotInterface {
@@ -12,5 +13,6 @@ export interface WidgetSnapshotInterface {
     readonly palette: WidgetPaletteInterface;
     readonly netWorth: WidgetNetWorthSnapshotInterface | null;
     readonly budget: WidgetBudgetSnapshotInterface | null;
+    readonly runway: WidgetRunwaySnapshotInterface | null;
     readonly quickAddCategories: readonly WidgetQuickAddCategoryInterface[];
 }

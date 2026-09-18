@@ -1,5 +1,5 @@
 import { budgetPeriodService, budgetSpentService } from '@budgie/budget';
-import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, LanguageEnum } from '@budgie/contracts';
+import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, LanguageEnum, RUNWAY_WINDOW_MONTHS } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
@@ -25,6 +25,8 @@ import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-u
 import { formatBudgetPeriodLabel } from '../../budget/utils/format-budget-period-label.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { languageToLocale } from '../../i18n/util/language-to-locale.util';
+import { RUNWAY_MINIMUM_MONTHS } from '../../runway/constant/runway-minimum-months.constant';
+import { computeRunway } from '../../runway/utils/compute-runway.util';
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
 import { dark, light } from '../../theme/provider/theme.provider';
 import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant';
@@ -36,6 +38,7 @@ import type { WidgetBudgetSnapshotInterface } from '../interface/widget-budget-s
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
 import type { WidgetPaletteInterface } from '../interface/widget-palette.interface';
 import type { WidgetQuickAddCategoryInterface } from '../interface/widget-quick-add-category.interface';
+import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-snapshot.interface';
 import type { WidgetSnapshotStringsInterface } from '../interface/widget-snapshot-strings.interface';
 import type { WidgetSnapshotInterface } from '../interface/widget-snapshot.interface';
 import type { WidgetThemeColorsInterface } from '../interface/widget-theme-colors.interface';
@@ -141,6 +144,7 @@ class WidgetSnapshotService {
             palette: this.buildPalette(),
             netWorth: await this.buildNetWorth(instrument, language, decimalPlaces),
             budget: await this.buildBudget(language, decimalPlaces),
+            runway: await this.buildRunway(instrument, language, settings?.isRunwayCryptoIncluded ?? false),
             quickAddCategories: await this.buildQuickAddCategories(language)
         };
     }
@@ -160,6 +164,8 @@ class WidgetSnapshotService {
             income: i18n._(msg`Income`),
             transfer: i18n._(msg`Transfer`),
             addExpense: i18n._(msg`Add expense`),
+            runwayTitle: i18n._(msg`Runway`),
+            notEnoughData: i18n._(msg`Not enough history yet`),
             empty: i18n._(msg`No accounts yet`)
         };
     }
@@ -171,6 +177,7 @@ class WidgetSnapshotService {
     private buildThemeColors(theme: typeof light): WidgetThemeColorsInterface {
         return {
             background: this.toHexColor(theme['--color-primary-reverse']),
+            warning: this.toHexColor(theme['--color-dark-warning-foreground']),
             primary: this.toHexColor(theme['--color-primary']),
             secondary: this.toHexColor(theme['--color-secondary-foreground']),
             positive: this.toHexColor(theme['--color-positive-foreground']),
@@ -307,6 +314,45 @@ class WidgetSnapshotService {
             periodLabel: formatBudgetPeriodLabel(budget, this.buildMonthDayFormatter(language)),
             categories: await this.buildBudgetCategories(limits, spent.spentByCategory, language)
         };
+    }
+
+    private async buildRunway(
+        instrument: InstrumentEntityInterface,
+        language: LanguageEnum,
+        isCryptoIncluded: boolean
+    ): Promise<WidgetRunwaySnapshotInterface | null> {
+        const [series, liquidRows] = await Promise.all([
+            statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrument.id, RUNWAY_WINDOW_MONTHS),
+            accountBalanceRepository.getLiquidTotal(instrument.id, isCryptoIncluded)
+        ]);
+        const computation = computeRunway({
+            series,
+            liquid: liquidRows.at(0)?.total ?? 0,
+            irregularMonthlyAmount: 0,
+            referenceDate: new Date()
+        });
+
+        if (computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {
+            return null;
+        }
+
+        return { isPositive: computation.isPositive, label: this.buildRunwayLabel(computation, instrument, language) };
+    }
+
+    private buildRunwayLabel(
+        computation: ReturnType<typeof computeRunway>,
+        instrument: InstrumentEntityInterface,
+        language: LanguageEnum
+    ): string {
+        if (computation.isPositive) {
+            const formattedNet = this.formatWithSymbol(convertFromMicroUnits(computation.net), instrument.symbol, language, 0);
+
+            return i18n._(msg`+${formattedNet} / mo`);
+        }
+
+        const formattedMonths = new Intl.NumberFormat(languageToLocale(language)).format(Math.round(computation.runwayMonths ?? 0));
+
+        return i18n._(msg`≈ ${formattedMonths} mo`);
     }
 
     private async buildQuickAddCategories(language: LanguageEnum): Promise<readonly WidgetQuickAddCategoryInterface[]> {

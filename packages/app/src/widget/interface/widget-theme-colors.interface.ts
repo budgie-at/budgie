@@ -4,4 +4,5 @@ export interface WidgetThemeColorsInterface {
     readonly secondary: string;
     readonly positive: string;
     readonly destructive: string;
+    readonly warning: string;
 }
