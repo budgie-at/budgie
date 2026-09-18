@@ -13,6 +13,7 @@ import { binanceSyncService } from '../../sync/service/binance-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
+import { widgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { scheduleIdleCallback } from '../utils/schedule-idle-callback.util';
 
 const SPLASH_HIDE_DELAY_MS = 200;
@@ -45,6 +46,8 @@ const initializeAppServices = async (): Promise<void> => {
     await monobankSyncService.registerBackgroundTask().catch(emptyFn);
     await binanceSyncService.registerBackgroundTask().catch(emptyFn);
     await budgetAlertMonitorService.registerBackgroundTask().catch(emptyFn);
+    await widgetSnapshotService.registerBackgroundTask().catch(emptyFn);
+    widgetSnapshotService.start();
     await syncWorkloadService.run('startup', syncAppData);
     await onboardingService.initializeLocale().catch(emptyFn);
     void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
