@@ -141,8 +141,8 @@ struct SpendingWidgetView: View {
             }
 
             VStack(spacing: 5) {
-                ForEach(budget.categories, id: \.title) { category in
-                    SpendingCategoryRow(category: category, palette: palette)
+                ForEach(budget.categories.indices, id: \.self) { index in
+                    SpendingCategoryRow(category: budget.categories[index], palette: palette)
                 }
             }
 

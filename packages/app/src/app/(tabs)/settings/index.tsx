@@ -2,7 +2,7 @@ import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
@@ -104,21 +104,23 @@ export default function SettingsPage() {
                                     />
                                 }
                             />
-                            <SettingsCard
-                                icon={UserIconNameEnum.LayoutDashboard}
-                                variant="pink"
-                                title={t`Amounts in Widgets`}
-                                description={t`Show balances on home screen widgets instead of hiding them`}
-                                testID={SettingsPageSelector.WidgetAmountsCard}
-                                right={
-                                    <ThemedSwitch
-                                        className="my-auto"
-                                        testID={SettingsPageSelector.WidgetAmountsSwitch}
-                                        onValueChange={handleToggle('isWidgetAmountsEnabled')}
-                                        value={isWidgetAmountsEnabled}
-                                    />
-                                }
-                            />
+                            {Platform.OS === 'ios' && (
+                                <SettingsCard
+                                    icon={UserIconNameEnum.LayoutDashboard}
+                                    variant="pink"
+                                    title={t`Amounts in Widgets`}
+                                    description={t`Show balances on home screen widgets instead of hiding them`}
+                                    testID={SettingsPageSelector.WidgetAmountsCard}
+                                    right={
+                                        <ThemedSwitch
+                                            className="my-auto"
+                                            testID={SettingsPageSelector.WidgetAmountsSwitch}
+                                            onValueChange={handleToggle('isWidgetAmountsEnabled')}
+                                            value={isWidgetAmountsEnabled}
+                                        />
+                                    }
+                                />
+                            )}
                         </Animated.View>
                     </SettingsGroup>
                 </View>
