@@ -164,8 +164,6 @@ class WidgetSnapshotService {
             income: i18n._(msg`Income`),
             transfer: i18n._(msg`Transfer`),
             addExpense: i18n._(msg`Add expense`),
-            runwayTitle: i18n._(msg`Runway`),
-            notEnoughData: i18n._(msg`Not enough history yet`),
             empty: i18n._(msg`No accounts yet`)
         };
     }
