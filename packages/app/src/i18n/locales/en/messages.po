@@ -383,10 +383,6 @@ msgstr "Add category"
 msgid "Add deposit"
 msgstr "Add deposit"
 
-#: src/widget/service/widget-snapshot.service.ts
-msgid "Add expense"
-msgstr "Add expense"
-
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Add item"

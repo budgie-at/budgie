@@ -382,10 +382,6 @@ msgstr "Kategorie hinzufügen"
 msgid "Add deposit"
 msgstr "Einlage hinzufügen"
 
-#: src/widget/service/widget-snapshot.service.ts
-msgid "Add expense"
-msgstr "Ausgabe hinzufügen"
-
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Eintrag hinzufügen"
