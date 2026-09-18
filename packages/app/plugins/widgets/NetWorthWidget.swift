@@ -87,20 +87,22 @@ struct NetWorthRunwayRow: View {
     }
 }
 
-struct NetWorthSplitRow: View {
-    let title: String
-    let value: String
+struct NetWorthAccountTypeRow: View {
+    let total: AccountTypeTotal
     let palette: WidgetPalette
 
     var body: some View {
-        HStack {
-            Text(title)
-                .font(.caption)
+        HStack(spacing: 6) {
+            Text(total.label)
+                .font(.caption2)
                 .foregroundColor(palette.secondary)
-            Spacer()
-            Text(value)
-                .font(.caption)
+                .lineLimit(1)
+            Spacer(minLength: 4)
+            Text(total.formattedTotal)
+                .font(.caption2.weight(.medium))
                 .foregroundColor(palette.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
         }
     }
 }
@@ -126,33 +128,40 @@ struct NetWorthWidgetView: View {
     @ViewBuilder
     private var content: some View {
         if let netWorth = entry.snapshot?.netWorth {
-            VStack(alignment: .leading, spacing: 6) {
-                Text(entry.strings.netWorthTitle)
-                    .font(.caption)
-                    .foregroundColor(palette.secondary)
-                Text(netWorth.formattedTotal)
-                    .font(.title2.weight(.semibold))
-                    .foregroundColor(palette.primary)
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
-                    .privacySensitive()
-
-                if let runway = entry.snapshot?.runway {
-                    NetWorthRunwayRow(runway: runway, palette: palette)
-                        .privacySensitive()
-                }
-
-                if isMedium {
-                    NetWorthDeltaText(netWorth: netWorth, label: entry.strings.thisMonth, palette: palette)
-                        .privacySensitive()
-                    Spacer(minLength: 2)
-                    NetWorthSplitRow(title: entry.strings.fiat, value: netWorth.formattedFiat, palette: palette)
+            HStack(alignment: .top, spacing: 14) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(entry.strings.netWorthTitle)
+                        .font(.caption)
+                        .foregroundColor(palette.secondary)
+                    Text(netWorth.formattedTotal)
+                        .font(.title2.weight(.semibold))
+                        .foregroundColor(palette.primary)
+                        .minimumScaleFactor(0.6)
+                        .lineLimit(1)
                         .privacySensitive()
 
-                    if netWorth.hasCrypto {
-                        NetWorthSplitRow(title: entry.strings.crypto, value: netWorth.formattedCrypto, palette: palette)
+                    if let runway = entry.snapshot?.runway {
+                        NetWorthRunwayRow(runway: runway, palette: palette)
                             .privacySensitive()
                     }
+
+                    if isMedium {
+                        NetWorthDeltaText(netWorth: netWorth, label: entry.strings.thisMonth, palette: palette)
+                            .privacySensitive()
+                    }
+
+                    Spacer(minLength: 0)
+                }
+
+                if isMedium, let accountTypes = netWorth.accountTypes, !accountTypes.isEmpty {
+                    VStack(alignment: .leading, spacing: 5) {
+                        ForEach(accountTypes, id: \.label) { total in
+                            NetWorthAccountTypeRow(total: total, palette: palette)
+                        }
+                        Spacer(minLength: 0)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .privacySensitive()
                 }
             }
         } else {
@@ -178,7 +187,7 @@ struct NetWorthMediumWidget: Widget {
             NetWorthWidgetView(entry: entry, isMedium: true)
         }
         .configurationDisplayName("Net worth breakdown")
-        .description("Your balance and runway, split by cash and crypto.")
+        .description("Your balance and runway, broken down by account type.")
         .supportedFamilies([.systemMedium])
     }
 }

@@ -17,8 +17,6 @@ struct WidgetPaletteData: Codable {
 struct WidgetStrings: Codable {
     let netWorthTitle: String
     let thisMonth: String
-    let fiat: String
-    let crypto: String
     let budgetTitle: String
     let perDay: String
     let left: String
@@ -36,8 +34,6 @@ struct WidgetStrings: Codable {
 
         netWorthTitle = try container.decodeIfPresent(String.self, forKey: .netWorthTitle) ?? fallback.netWorthTitle
         thisMonth = try container.decodeIfPresent(String.self, forKey: .thisMonth) ?? fallback.thisMonth
-        fiat = try container.decodeIfPresent(String.self, forKey: .fiat) ?? fallback.fiat
-        crypto = try container.decodeIfPresent(String.self, forKey: .crypto) ?? fallback.crypto
         budgetTitle = try container.decodeIfPresent(String.self, forKey: .budgetTitle) ?? fallback.budgetTitle
         perDay = try container.decodeIfPresent(String.self, forKey: .perDay) ?? fallback.perDay
         left = try container.decodeIfPresent(String.self, forKey: .left) ?? fallback.left
@@ -53,8 +49,6 @@ struct WidgetStrings: Codable {
     init(
         netWorthTitle: String,
         thisMonth: String,
-        fiat: String,
-        crypto: String,
         budgetTitle: String,
         perDay: String,
         left: String,
@@ -68,8 +62,6 @@ struct WidgetStrings: Codable {
     ) {
         self.netWorthTitle = netWorthTitle
         self.thisMonth = thisMonth
-        self.fiat = fiat
-        self.crypto = crypto
         self.budgetTitle = budgetTitle
         self.perDay = perDay
         self.left = left
@@ -101,13 +93,16 @@ struct BudgetSnapshot: Codable {
     let categories: [BudgetCategorySnapshot]
 }
 
+struct AccountTypeTotal: Codable {
+    let label: String
+    let formattedTotal: String
+}
+
 struct NetWorthSnapshot: Codable {
     let formattedTotal: String
     let formattedDelta: String
     let deltaDirection: String
-    let formattedFiat: String
-    let formattedCrypto: String
-    let hasCrypto: Bool
+    let accountTypes: [AccountTypeTotal]?
     let history: [Double]
 }
 
@@ -141,8 +136,6 @@ enum SnapshotStore {
     static let fallbackStrings = WidgetStrings(
         netWorthTitle: "Net worth",
         thisMonth: "This month",
-        fiat: "Cash",
-        crypto: "Crypto",
         budgetTitle: "Budget",
         perDay: "per day",
         left: "left",
