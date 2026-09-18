@@ -1,18 +1,28 @@
+import { budgetPeriodService, budgetSpentService } from '@budgie/budget';
 import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, LanguageEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
-import { startOfMonth } from 'date-fns';
+import { differenceInCalendarDays, startOfMonth } from 'date-fns';
 import * as BackgroundTask from 'expo-background-task';
 import Constants from 'expo-constants';
 import * as TaskManager from 'expo-task-manager';
 
-import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { canPublishWidgetSnapshot, clearWidgetSnapshot, publishWidgetSnapshot, readWidgetSnapshot } from '../../../modules/widget-bridge';
-import { accountBalanceRepository, settingsRepository, statisticsRepository } from '../../@generic/drizzle/db/db';
+import {
+    accountBalanceRepository,
+    budgetCategoryLimitRepository,
+    budgetRepository,
+    categoryRepository,
+    instrumentRepository,
+    settingsRepository,
+    statisticsRepository
+} from '../../@generic/drizzle/db/db';
 import { databaseRefreshService } from '../../@generic/service/database-refresh.service';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { formatBudgetPeriodLabel } from '../../budget/utils/format-budget-period-label.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { languageToLocale } from '../../i18n/util/language-to-locale.util';
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
@@ -21,12 +31,15 @@ import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant'
 import { WidgetDeltaDirectionEnum } from '../enum/widget-delta-direction.enum';
 import { WidgetSnapshotHistorySchema } from '../schema/widget-snapshot-history.schema';
 
+import type { WidgetBudgetCategoryInterface } from '../interface/widget-budget-category.interface';
+import type { WidgetBudgetSnapshotInterface } from '../interface/widget-budget-snapshot.interface';
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
 import type { WidgetPaletteInterface } from '../interface/widget-palette.interface';
 import type { WidgetSnapshotStringsInterface } from '../interface/widget-snapshot-strings.interface';
 import type { WidgetSnapshotInterface } from '../interface/widget-snapshot.interface';
 import type { WidgetThemeColorsInterface } from '../interface/widget-theme-colors.interface';
 import type { WidgetSnapshotHistoryType } from '../schema/widget-snapshot-history.schema';
+import type { BudgetCategorySpentInterface } from '@budgie/budget';
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 class WidgetSnapshotService {
@@ -37,6 +50,7 @@ class WidgetSnapshotService {
     private static readonly SNAPSHOT_VERSION = 1;
     private static readonly HISTORY_LIMIT = 30;
     private static readonly CRYPTO_ACCOUNT_TYPES = [AccountTypeEnum.CRYPTO, AccountTypeEnum.CRYPTO_SYNC];
+    private static readonly TOP_CATEGORY_COUNT = 3;
 
     private isPublishing = false;
     private debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -124,7 +138,8 @@ class WidgetSnapshotService {
             locale: languageToLocale(language),
             strings: this.buildStrings(),
             palette: this.buildPalette(),
-            netWorth: await this.buildNetWorth(instrument, language, decimalPlaces)
+            netWorth: await this.buildNetWorth(instrument, language, decimalPlaces),
+            budget: await this.buildBudget(language, decimalPlaces)
         };
     }
 
@@ -134,6 +149,11 @@ class WidgetSnapshotService {
             thisMonth: i18n._(msg`This month`),
             fiat: i18n._(msg`Cash`),
             crypto: i18n._(msg`Crypto`),
+            budgetTitle: i18n._(msg`Budget`),
+            perDay: i18n._(msg`per day`),
+            left: i18n._(msg`left`),
+            daysLeft: i18n._(msg`days left`),
+            noBudget: i18n._(msg`No active budget`),
             empty: i18n._(msg`No accounts yet`)
         };
     }
@@ -242,12 +262,95 @@ class WidgetSnapshotService {
         }
     }
 
-    private formatAmount(value: number, instrument: InstrumentEntityInterface, language: LanguageEnum, decimalPlaces: number): string {
-        return `${instrument.symbol}${new Intl.NumberFormat(languageToLocale(language), {
+    private async buildBudget(language: LanguageEnum, decimalPlaces: number): Promise<WidgetBudgetSnapshotInterface | null> {
+        const budget = await budgetRepository.getActive();
+
+        if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId) || !isPositiveNumber(budget.overallLimit)) {
+            return null;
+        }
+
+        const { periodStart, nextPeriodStart } = budgetPeriodService.computePeriodWindow(
+            budget.periodStartDay,
+            budget.useLastDayOfMonth,
+            new Date()
+        );
+        const [entries, limits, instrument] = await Promise.all([
+            budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId),
+            budgetCategoryLimitRepository.getByBudget(budget.id),
+            instrumentRepository.findByIdAsync(budget.instrumentId)
+        ]);
+        const spent = budgetSpentService.computeSpent(entries, budget.instrumentId);
+        const symbol = instrument?.symbol ?? DEFAULT_INSTRUMENT.symbol;
+        const spentAmount = convertFromMicroUnits(spent.spentOverall);
+        const limitAmount = convertFromMicroUnits(budget.overallLimit);
+        const daysRemaining = Math.max(differenceInCalendarDays(budgetPeriodService.getInclusiveEnd(nextPeriodStart), new Date()) + 1, 1);
+
+        return {
+            formattedSpent: this.formatWithSymbol(spentAmount, symbol, language, decimalPlaces),
+            formattedLimit: this.formatWithSymbol(limitAmount, symbol, language, decimalPlaces),
+            formattedRemaining: this.formatWithSymbol(Math.max(limitAmount - spentAmount, 0), symbol, language, decimalPlaces),
+            progressRatio: spentAmount / limitAmount,
+            isOverLimit: spentAmount > limitAmount,
+            daysRemaining,
+            formattedSafePerDay: this.formatWithSymbol(
+                Math.max(limitAmount - spentAmount, 0) / daysRemaining,
+                symbol,
+                language,
+                decimalPlaces
+            ),
+            periodLabel: formatBudgetPeriodLabel(budget, this.buildMonthDayFormatter(language)),
+            categories: await this.buildBudgetCategories(limits, spent.spentByCategory, language)
+        };
+    }
+
+    private buildMonthDayFormatter(language: LanguageEnum): (date: Date) => string {
+        const formatter = new Intl.DateTimeFormat(languageToLocale(language), { month: 'short', day: 'numeric' });
+
+        return date => formatter.format(date);
+    }
+
+    private async buildBudgetCategories(
+        limits: Awaited<ReturnType<typeof budgetCategoryLimitRepository.getByBudget>>,
+        spentByCategory: readonly BudgetCategorySpentInterface[],
+        language: LanguageEnum
+    ): Promise<readonly WidgetBudgetCategoryInterface[]> {
+        const ranked = limits
+            .map(limit => ({
+                categoryId: limit.categoryId,
+                progressRatio:
+                    convertFromMicroUnits(spentByCategory.find(entry => entry.categoryId === limit.categoryId)?.spent ?? 0) /
+                    convertFromMicroUnits(limit.limitAmount)
+            }))
+            .sort((first, second) => second.progressRatio - first.progressRatio)
+            .slice(0, WidgetSnapshotService.TOP_CATEGORY_COUNT);
+
+        return await Promise.all(ranked.map(entry => this.buildBudgetCategory(entry.categoryId, entry.progressRatio, language)));
+    }
+
+    private async buildBudgetCategory(
+        categoryId: number,
+        progressRatio: number,
+        language: LanguageEnum
+    ): Promise<WidgetBudgetCategoryInterface> {
+        const [category] = await categoryRepository.findById(categoryId, language);
+
+        return {
+            title: isDefined(category) ? category.title : i18n._(msg`Category`),
+            progressRatio,
+            isOverLimit: progressRatio >= 1
+        };
+    }
+
+    private formatWithSymbol(value: number, symbol: string, language: LanguageEnum, decimalPlaces: number): string {
+        return `${symbol}${new Intl.NumberFormat(languageToLocale(language), {
             style: 'decimal',
             minimumFractionDigits: decimalPlaces,
             maximumFractionDigits: decimalPlaces
         }).format(value)}`;
+    }
+
+    private formatAmount(value: number, instrument: InstrumentEntityInterface, language: LanguageEnum, decimalPlaces: number): string {
+        return this.formatWithSymbol(value, instrument.symbol, language, decimalPlaces);
     }
 
     private formatDelta(value: number, instrument: InstrumentEntityInterface, language: LanguageEnum, decimalPlaces: number): string {

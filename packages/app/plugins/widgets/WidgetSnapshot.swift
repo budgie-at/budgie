@@ -18,7 +18,30 @@ struct WidgetStrings: Codable {
     let thisMonth: String
     let fiat: String
     let crypto: String
+    let budgetTitle: String
+    let perDay: String
+    let left: String
+    let daysLeft: String
+    let noBudget: String
     let empty: String
+}
+
+struct BudgetCategorySnapshot: Codable {
+    let title: String
+    let progressRatio: Double
+    let isOverLimit: Bool
+}
+
+struct BudgetSnapshot: Codable {
+    let formattedSpent: String
+    let formattedLimit: String
+    let formattedRemaining: String
+    let progressRatio: Double
+    let isOverLimit: Bool
+    let daysRemaining: Int
+    let formattedSafePerDay: String
+    let periodLabel: String
+    let categories: [BudgetCategorySnapshot]
 }
 
 struct NetWorthSnapshot: Codable {
@@ -38,6 +61,7 @@ struct WidgetSnapshot: Codable {
     let strings: WidgetStrings
     let palette: WidgetPaletteData
     let netWorth: NetWorthSnapshot?
+    let budget: BudgetSnapshot?
 }
 
 enum SnapshotStore {
@@ -50,6 +74,11 @@ enum SnapshotStore {
         thisMonth: "This month",
         fiat: "Cash",
         crypto: "Crypto",
+        budgetTitle: "Budget",
+        perDay: "per day",
+        left: "left",
+        daysLeft: "days left",
+        noBudget: "No active budget",
         empty: "No accounts yet"
     )
 
