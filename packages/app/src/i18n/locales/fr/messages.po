@@ -2896,6 +2896,10 @@ msgstr "Budget autres : {threshold}% dépensé"
 msgid "Other budget: limit reached"
 msgstr "Budget autres : limite atteinte"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "over"
+msgstr "de trop"
+
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
 msgid "Over budget"

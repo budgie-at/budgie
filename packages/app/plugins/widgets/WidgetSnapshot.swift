@@ -20,6 +20,7 @@ struct WidgetStrings: Codable {
     let budgetTitle: String
     let perDay: String
     let left: String
+    let over: String
     let daysLeft: String
     let noBudget: String
     let expense: String
@@ -37,6 +38,7 @@ struct WidgetStrings: Codable {
         budgetTitle = try container.decodeIfPresent(String.self, forKey: .budgetTitle) ?? fallback.budgetTitle
         perDay = try container.decodeIfPresent(String.self, forKey: .perDay) ?? fallback.perDay
         left = try container.decodeIfPresent(String.self, forKey: .left) ?? fallback.left
+        over = try container.decodeIfPresent(String.self, forKey: .over) ?? fallback.over
         daysLeft = try container.decodeIfPresent(String.self, forKey: .daysLeft) ?? fallback.daysLeft
         noBudget = try container.decodeIfPresent(String.self, forKey: .noBudget) ?? fallback.noBudget
         expense = try container.decodeIfPresent(String.self, forKey: .expense) ?? fallback.expense
@@ -52,6 +54,7 @@ struct WidgetStrings: Codable {
         budgetTitle: String,
         perDay: String,
         left: String,
+        over: String,
         daysLeft: String,
         noBudget: String,
         expense: String,
@@ -65,6 +68,7 @@ struct WidgetStrings: Codable {
         self.budgetTitle = budgetTitle
         self.perDay = perDay
         self.left = left
+        self.over = over
         self.daysLeft = daysLeft
         self.noBudget = noBudget
         self.expense = expense
@@ -139,6 +143,7 @@ enum SnapshotStore {
         budgetTitle: "Budget",
         perDay: "per day",
         left: "left",
+        over: "over",
         daysLeft: "days left",
         noBudget: "No active budget",
         expense: "Expense",

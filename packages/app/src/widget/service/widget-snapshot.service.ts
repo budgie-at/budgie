@@ -162,6 +162,7 @@ class WidgetSnapshotService {
             budgetTitle: i18n._(msg`Budget`),
             perDay: i18n._(msg`per day`),
             left: i18n._(msg`left`),
+            over: i18n._(msg`over`),
             daysLeft: i18n._(msg`days left`),
             noBudget: i18n._(msg`No active budget`),
             expense: i18n._(msg`Expense`),
@@ -311,7 +312,7 @@ class WidgetSnapshotService {
         return {
             formattedSpent: this.formatWithSymbol(spentAmount, symbol, language, decimalPlaces),
             formattedLimit: this.formatWithSymbol(limitAmount, symbol, language, decimalPlaces),
-            formattedRemaining: this.formatWithSymbol(Math.max(limitAmount - spentAmount, 0), symbol, language, decimalPlaces),
+            formattedRemaining: this.formatWithSymbol(Math.abs(limitAmount - spentAmount), symbol, language, decimalPlaces),
             progressRatio: spentAmount / limitAmount,
             isOverLimit: spentAmount > limitAmount,
             daysRemaining,

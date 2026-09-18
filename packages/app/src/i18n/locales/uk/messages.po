@@ -2896,6 +2896,10 @@ msgstr "Бюджет «Інше»: використано {threshold}%"
 msgid "Other budget: limit reached"
 msgstr "Бюджет «Інше»: ліміт досягнуто"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "over"
+msgstr "перевитрата"
+
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
 msgid "Over budget"
