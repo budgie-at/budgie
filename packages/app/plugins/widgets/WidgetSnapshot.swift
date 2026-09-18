@@ -23,7 +23,63 @@ struct WidgetStrings: Codable {
     let left: String
     let daysLeft: String
     let noBudget: String
+    let expense: String
+    let income: String
+    let transfer: String
+    let addExpense: String
     let empty: String
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let fallback = SnapshotStore.fallbackStrings
+
+        netWorthTitle = try container.decodeIfPresent(String.self, forKey: .netWorthTitle) ?? fallback.netWorthTitle
+        thisMonth = try container.decodeIfPresent(String.self, forKey: .thisMonth) ?? fallback.thisMonth
+        fiat = try container.decodeIfPresent(String.self, forKey: .fiat) ?? fallback.fiat
+        crypto = try container.decodeIfPresent(String.self, forKey: .crypto) ?? fallback.crypto
+        budgetTitle = try container.decodeIfPresent(String.self, forKey: .budgetTitle) ?? fallback.budgetTitle
+        perDay = try container.decodeIfPresent(String.self, forKey: .perDay) ?? fallback.perDay
+        left = try container.decodeIfPresent(String.self, forKey: .left) ?? fallback.left
+        daysLeft = try container.decodeIfPresent(String.self, forKey: .daysLeft) ?? fallback.daysLeft
+        noBudget = try container.decodeIfPresent(String.self, forKey: .noBudget) ?? fallback.noBudget
+        expense = try container.decodeIfPresent(String.self, forKey: .expense) ?? fallback.expense
+        income = try container.decodeIfPresent(String.self, forKey: .income) ?? fallback.income
+        transfer = try container.decodeIfPresent(String.self, forKey: .transfer) ?? fallback.transfer
+        addExpense = try container.decodeIfPresent(String.self, forKey: .addExpense) ?? fallback.addExpense
+        empty = try container.decodeIfPresent(String.self, forKey: .empty) ?? fallback.empty
+    }
+
+    init(
+        netWorthTitle: String,
+        thisMonth: String,
+        fiat: String,
+        crypto: String,
+        budgetTitle: String,
+        perDay: String,
+        left: String,
+        daysLeft: String,
+        noBudget: String,
+        expense: String,
+        income: String,
+        transfer: String,
+        addExpense: String,
+        empty: String
+    ) {
+        self.netWorthTitle = netWorthTitle
+        self.thisMonth = thisMonth
+        self.fiat = fiat
+        self.crypto = crypto
+        self.budgetTitle = budgetTitle
+        self.perDay = perDay
+        self.left = left
+        self.daysLeft = daysLeft
+        self.noBudget = noBudget
+        self.expense = expense
+        self.income = income
+        self.transfer = transfer
+        self.addExpense = addExpense
+        self.empty = empty
+    }
 }
 
 struct BudgetCategorySnapshot: Codable {
@@ -35,7 +91,7 @@ struct BudgetCategorySnapshot: Codable {
 struct BudgetSnapshot: Codable {
     let formattedSpent: String
     let formattedLimit: String
-    let formattedRemaining: String
+    let formattedRemaining: String?
     let progressRatio: Double
     let isOverLimit: Bool
     let daysRemaining: Int
@@ -54,6 +110,11 @@ struct NetWorthSnapshot: Codable {
     let history: [Double]
 }
 
+struct QuickAddCategory: Codable {
+    let id: Int
+    let title: String
+}
+
 struct WidgetSnapshot: Codable {
     let version: Int
     let generatedAtMs: Double
@@ -62,6 +123,7 @@ struct WidgetSnapshot: Codable {
     let palette: WidgetPaletteData
     let netWorth: NetWorthSnapshot?
     let budget: BudgetSnapshot?
+    let quickAddCategories: [QuickAddCategory]?
 }
 
 enum SnapshotStore {
@@ -79,6 +141,10 @@ enum SnapshotStore {
         left: "left",
         daysLeft: "days left",
         noBudget: "No active budget",
+        expense: "Expense",
+        income: "Income",
+        transfer: "Transfer",
+        addExpense: "Add expense",
         empty: "No accounts yet"
     )
 

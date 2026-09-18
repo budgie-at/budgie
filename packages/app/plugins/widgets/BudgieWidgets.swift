@@ -8,5 +8,7 @@ struct BudgieWidgets: WidgetBundle {
         NetWorthMediumWidget()
         SpendingWidget()
         SpendingMediumWidget()
+        QuickAddWidget()
+        QuickAddMediumWidget()
     }
 }

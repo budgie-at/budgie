@@ -101,7 +101,7 @@ struct SpendingWidgetView: View {
     }
 
     private func primaryAmountText(_ budget: BudgetSnapshot) -> String {
-        isMedium ? "\(budget.formattedSpent) / \(budget.formattedLimit)" : "\(budget.formattedRemaining) \(entry.strings.left)"
+        isMedium ? "\(budget.formattedSpent) / \(budget.formattedLimit)" : "\(budget.formattedRemaining ?? budget.formattedSpent) \(entry.strings.left)"
     }
 
     @ViewBuilder
