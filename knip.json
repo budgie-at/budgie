@@ -8,6 +8,8 @@
         "packages/app/lingui.config.js",
         "packages/app/fingerprint.config.js",
         "packages/app/plugins/with-vec-xcframework-fix.js",
+        "packages/app/plugins/with-widget-extension.js",
+        "packages/app/plugins/app-extension-target.js",
         "scripts/after-install.cjs",
         "tests/app-tests/scripts/prepare-date-sensitive-fixtures.js",
         "packages/contracts/babel.config.js",
