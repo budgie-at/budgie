@@ -48,6 +48,10 @@ struct WidgetPalette {
         resolve(colors?.destructive) ?? .red
     }
 
+    var warning: Color {
+        resolve(colors?.warning) ?? .orange
+    }
+
     private func resolve(_ hex: String?) -> Color? {
         guard let hex else {
             return nil
