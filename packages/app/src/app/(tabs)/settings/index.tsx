@@ -52,6 +52,7 @@ export default function SettingsPage() {
     const isAiBuildDisabled = !isAiEnabled();
 
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
+    const isWidgetAmountsEnabled = useSetting('isWidgetAmountsEnabled');
     const showCents = useSetting('showCents');
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
@@ -100,6 +101,21 @@ export default function SettingsPage() {
                                         testID={SettingsPageSelector.ScreenshotProtectionSwitch}
                                         onValueChange={handleToggle('isScreenshotProtectionEnabled')}
                                         value={isScreenshotProtectionEnabled}
+                                    />
+                                }
+                            />
+                            <SettingsCard
+                                icon={UserIconNameEnum.LayoutDashboard}
+                                variant="pink"
+                                title={t`Amounts in Widgets`}
+                                description={t`Show balances on home screen widgets instead of hiding them`}
+                                testID={SettingsPageSelector.WidgetAmountsCard}
+                                right={
+                                    <ThemedSwitch
+                                        className="my-auto"
+                                        testID={SettingsPageSelector.WidgetAmountsSwitch}
+                                        onValueChange={handleToggle('isWidgetAmountsEnabled')}
+                                        value={isWidgetAmountsEnabled}
                                     />
                                 }
                             />

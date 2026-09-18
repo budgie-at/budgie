@@ -188,6 +188,7 @@ msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
+#: src/widget/service/widget-snapshot.service.ts
 msgid "+{formattedNet} / mo"
 msgstr "+{formattedNet} / Mon."
 
@@ -204,6 +205,7 @@ msgid ">"
 msgstr ">"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
+#: src/widget/service/widget-snapshot.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} Mon."
 
@@ -380,6 +382,10 @@ msgstr "Kategorie hinzufügen"
 msgid "Add deposit"
 msgstr "Einlage hinzufügen"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "Add expense"
+msgstr "Ausgabe hinzufügen"
+
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Eintrag hinzufügen"
@@ -480,6 +486,10 @@ msgstr "Betrag"
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "Amount first. Budgie picks the account and guesses the category."
 msgstr "Zuerst der Betrag. Budgie wählt das Konto und schätzt die Kategorie."
+
+#: src/app/(tabs)/settings/index.tsx
+msgid "Amounts in Widgets"
+msgstr "Beträge in Widgets"
 
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "and"
@@ -677,6 +687,7 @@ msgid "Borrowed debt account expected"
 msgstr "Geliehenes Schuldkonto erwartet"
 
 #: src/app/(tabs)/settings/index.tsx
+#: src/widget/service/widget-snapshot.service.ts
 msgid "Budget"
 msgstr "Budget"
 
@@ -811,6 +822,7 @@ msgstr "Kategorisiert Transaktionen, schlägt Tags vor und transkribiert Sprachn
 #: src/category/components/category-form-selector/category-form-selector.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/widget/service/widget-snapshot.service.ts
 msgid "Category"
 msgstr "Kategorie"
 
@@ -1414,6 +1426,10 @@ msgstr "Datum"
 msgid "Day {selectedDay}"
 msgstr "Tag {selectedDay}"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "days left"
+msgstr "Tage übrig"
+
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Days Remaining"
 msgstr "Verbleibende Tage"
@@ -1830,6 +1846,7 @@ msgstr "Erwartetes Rückgabedatum (Optional)"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/widget/service/widget-snapshot.service.ts
 msgid "Expense"
 msgstr "Ausgabe"
 
@@ -2151,6 +2168,7 @@ msgstr "Inklusive Krypto"
 #: src/transaction/components/statistics-content/statistics-content.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/widget/service/widget-snapshot.service.ts
 msgid "Income"
 msgstr "Einnahmen"
 
@@ -2267,6 +2285,10 @@ msgstr "Transaktionen werden gelernt"
 #: src/ai/service/ai-embedding-status.service.ts
 msgid "Learning up to date"
 msgstr "Lernen aktuell"
+
+#: src/widget/service/widget-snapshot.service.ts
+msgid "left"
+msgstr "übrig"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
@@ -2508,6 +2530,10 @@ msgstr "Zu Konto → Kontoauszüge navigieren"
 msgid "Net"
 msgstr "Netto"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "Net worth"
+msgstr "Nettovermögen"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
 msgstr "Neues Konto"
@@ -2547,12 +2573,17 @@ msgstr "Noch keine Konten in dieser Integration"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
+#: src/widget/service/widget-snapshot.service.ts
 msgid "No accounts yet"
 msgstr "Noch keine Konten"
 
 #: src/app/transaction-account-filter.tsx
 msgid "No Accounts Yet"
 msgstr "Noch keine Konten"
+
+#: src/widget/service/widget-snapshot.service.ts
+msgid "No active budget"
+msgstr "Kein aktives Budget"
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 msgid "No Archived Accounts"
@@ -2915,6 +2946,10 @@ msgstr "Fügen Sie Ihr Binance-API-Secret ein:"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
 msgstr "PDF-Kontoauszug"
+
+#: src/widget/service/widget-snapshot.service.ts
+msgid "per day"
+msgstr "pro Tag"
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "per month"
@@ -3539,6 +3574,10 @@ msgstr "Alle Beträge anzeigen"
 msgid "Show all dates"
 msgstr "Alle Daten anzeigen"
 
+#: src/app/(tabs)/settings/index.tsx
+msgid "Show balances on home screen widgets instead of hiding them"
+msgstr "Salden in Widgets auf dem Startbildschirm anzeigen, statt sie zu verbergen"
+
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Show budget on home"
 msgstr "Budget auf Startseite anzeigen"
@@ -3820,6 +3859,10 @@ msgstr "Diese Sicherung ist mit einer PIN geschützt. Beim Import werden alle ak
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Dieser konsolidierte Transfer hat keine verschobenen Quelleinträge."
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "This month"
+msgstr "Diesen Monat"
+
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Month"
 msgstr "Dieser Monat"
@@ -3996,6 +4039,7 @@ msgstr "Transkription fehlgeschlagen"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/widget/service/widget-snapshot.service.ts
 msgid "Transfer"
 msgstr "Überweisung"
 
