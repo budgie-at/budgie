@@ -128,8 +128,20 @@ struct NetWorthWidgetView: View {
     @ViewBuilder
     private var content: some View {
         if let netWorth = entry.snapshot?.netWorth {
-            HStack(alignment: .top, spacing: 14) {
-                VStack(alignment: .leading, spacing: 6) {
+            if isMedium {
+                mediumContent(netWorth)
+            } else {
+                smallContent(netWorth)
+            }
+        } else {
+            WidgetEmptyState(message: entry.strings.empty, palette: palette)
+        }
+    }
+
+    private func mediumContent(_ netWorth: NetWorthSnapshot) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 3) {
                     Text(entry.strings.netWorthTitle)
                         .font(.caption)
                         .foregroundColor(palette.secondary)
@@ -139,33 +151,48 @@ struct NetWorthWidgetView: View {
                         .minimumScaleFactor(0.6)
                         .lineLimit(1)
                         .privacySensitive()
-
-                    if let runway = entry.snapshot?.runway {
-                        NetWorthRunwayRow(runway: runway, palette: palette)
-                            .privacySensitive()
-                    }
-
-                    if isMedium {
-                        NetWorthDeltaText(netWorth: netWorth, label: entry.strings.thisMonth, palette: palette)
-                            .privacySensitive()
-                    }
-
-                    Spacer(minLength: 0)
+                    NetWorthDeltaText(netWorth: netWorth, label: entry.strings.thisMonth, palette: palette)
+                        .privacySensitive()
                 }
 
-                if isMedium, let accountTypes = netWorth.accountTypes, !accountTypes.isEmpty {
-                    VStack(alignment: .leading, spacing: 5) {
-                        ForEach(accountTypes, id: \.label) { total in
-                            NetWorthAccountTypeRow(total: total, palette: palette)
-                        }
-                        Spacer(minLength: 0)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .privacySensitive()
+                Spacer(minLength: 8)
+
+                if let runway = entry.snapshot?.runway {
+                    NetWorthRunwayRow(runway: runway, palette: palette)
+                        .privacySensitive()
                 }
             }
-        } else {
-            WidgetEmptyState(message: entry.strings.empty, palette: palette)
+
+            if let accountTypes = netWorth.accountTypes, !accountTypes.isEmpty {
+                VStack(spacing: 5) {
+                    ForEach(accountTypes, id: \.label) { total in
+                        NetWorthAccountTypeRow(total: total, palette: palette)
+                    }
+                }
+            }
+
+            Spacer(minLength: 0)
+        }
+    }
+
+    private func smallContent(_ netWorth: NetWorthSnapshot) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(entry.strings.netWorthTitle)
+                .font(.caption)
+                .foregroundColor(palette.secondary)
+            Text(netWorth.formattedTotal)
+                .font(.title2.weight(.semibold))
+                .foregroundColor(palette.primary)
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+                .privacySensitive()
+
+            if let runway = entry.snapshot?.runway {
+                NetWorthRunwayRow(runway: runway, palette: palette)
+                    .privacySensitive()
+            }
+
+            Spacer(minLength: 0)
         }
     }
 }
