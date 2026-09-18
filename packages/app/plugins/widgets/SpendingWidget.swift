@@ -100,46 +100,86 @@ struct SpendingWidgetView: View {
             .environment(\.locale, Locale(identifier: entry.snapshot?.locale ?? "en-US"))
     }
 
-    private func primaryAmountText(_ budget: BudgetSnapshot) -> String {
-        isMedium ? "\(budget.formattedSpent) / \(budget.formattedLimit)" : "\(budget.formattedRemaining ?? budget.formattedSpent) \(entry.strings.left)"
-    }
-
     @ViewBuilder
     private var content: some View {
         if let budget = entry.snapshot?.budget {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(entry.strings.budgetTitle)
-                        .font(.caption)
-                        .foregroundColor(palette.secondary)
-                    Text(primaryAmountText(budget))
-                        .font(.footnote.weight(.semibold))
-                        .foregroundColor(palette.primary)
-                        .minimumScaleFactor(0.5)
-                        .lineLimit(1)
-                        .privacySensitive()
-                    Text("\(budget.formattedSafePerDay) \(entry.strings.perDay)")
-                        .font(.caption2)
-                        .foregroundColor(palette.secondary)
-                        .privacySensitive()
-                    Text("\(budget.daysRemaining) \(entry.strings.daysLeft)")
-                        .font(.caption2)
-                        .foregroundColor(palette.secondary)
-
-                    if isMedium {
-                        Spacer(minLength: 2)
-                        ForEach(budget.categories, id: \.title) { category in
-                            SpendingCategoryRow(category: category, palette: palette)
-                        }
-                    }
-                }
-
-                SpendingProgressRing(budget: budget, palette: palette)
-                    .frame(width: 52, height: 52)
+            if isMedium {
+                mediumContent(budget)
+            } else {
+                smallContent(budget)
             }
         } else {
             WidgetEmptyState(message: entry.strings.noBudget, palette: palette)
         }
+    }
+
+    private func mediumContent(_ budget: BudgetSnapshot) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .center, spacing: 12) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(entry.strings.budgetTitle)
+                        .font(.caption)
+                        .foregroundColor(palette.secondary)
+                    Text("\(budget.formattedSpent) / \(budget.formattedLimit)")
+                        .font(.title3.weight(.semibold))
+                        .foregroundColor(palette.primary)
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                        .privacySensitive()
+                    Text(paceText(budget))
+                        .font(.caption2)
+                        .foregroundColor(palette.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .privacySensitive()
+                }
+
+                Spacer(minLength: 8)
+
+                SpendingProgressRing(budget: budget, palette: palette)
+                    .frame(width: 48, height: 48)
+            }
+
+            VStack(spacing: 5) {
+                ForEach(budget.categories, id: \.title) { category in
+                    SpendingCategoryRow(category: category, palette: palette)
+                }
+            }
+
+            Spacer(minLength: 0)
+        }
+    }
+
+    private func smallContent(_ budget: BudgetSnapshot) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(entry.strings.budgetTitle)
+                    .font(.caption)
+                    .foregroundColor(palette.secondary)
+                Text("\(budget.formattedRemaining ?? budget.formattedSpent) \(entry.strings.left)")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundColor(palette.primary)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+                    .privacySensitive()
+                Text("\(budget.formattedSafePerDay) \(entry.strings.perDay)")
+                    .font(.caption2)
+                    .foregroundColor(palette.secondary)
+                    .privacySensitive()
+                Text("\(budget.daysRemaining) \(entry.strings.daysLeft)")
+                    .font(.caption2)
+                    .foregroundColor(palette.secondary)
+
+                Spacer(minLength: 0)
+            }
+
+            SpendingProgressRing(budget: budget, palette: palette)
+                .frame(width: 52, height: 52)
+        }
+    }
+
+    private func paceText(_ budget: BudgetSnapshot) -> String {
+        "\(budget.formattedSafePerDay) \(entry.strings.perDay) · \(budget.daysRemaining) \(entry.strings.daysLeft)"
     }
 }
 
