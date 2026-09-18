@@ -10,7 +10,15 @@ const { addAppExtensionTarget } = require('./app-extension-target');
 const TARGET = 'BudgieWidgets';
 const SOURCE_DIR = path.join(__dirname, 'widgets');
 
-const SWIFT_FILES = ['BudgieWidgets.swift', 'WidgetBackground.swift', 'PlaceholderWidget.swift'];
+const SWIFT_FILES = [
+    'BudgieWidgets.swift',
+    'WidgetSnapshot.swift',
+    'WidgetPalette.swift',
+    'WidgetLinks.swift',
+    'WidgetBackground.swift',
+    'WidgetEmptyState.swift',
+    'NetWorthWidget.swift'
+];
 
 const ENTITLEMENTS_FILE = `${TARGET}.entitlements`;
 const PLIST_FILE = 'Info.plist';

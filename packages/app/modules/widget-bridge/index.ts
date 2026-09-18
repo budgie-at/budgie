@@ -11,4 +11,6 @@ export const canPublishWidgetSnapshot = (): boolean => isDefined(widgetBridge) &
 export const publishWidgetSnapshot = async (json: string): Promise<boolean> =>
     isDefined(widgetBridge) ? await widgetBridge.publish(json) : false;
 
+export const readWidgetSnapshot = async (): Promise<string | null> => (isDefined(widgetBridge) ? await widgetBridge.read() : null);
+
 export const clearWidgetSnapshot = async (): Promise<boolean> => (isDefined(widgetBridge) ? await widgetBridge.clear() : false);
