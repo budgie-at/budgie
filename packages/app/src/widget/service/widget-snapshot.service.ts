@@ -25,6 +25,7 @@ import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-u
 import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
 import { formatBudgetPeriodLabel } from '../../budget/utils/format-budget-period-label.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
+import { i18nEnsureLanguageActivated } from '../../i18n/util/i18n.util';
 import { languageToLocale } from '../../i18n/util/language-to-locale.util';
 import { RUNWAY_MINIMUM_MONTHS } from '../../runway/constant/runway-minimum-months.constant';
 import { computeRunway } from '../../runway/utils/compute-runway.util';
@@ -141,6 +142,8 @@ class WidgetSnapshotService {
         const decimalPlaces = (settings?.showCents ?? true) ? DEFAULT_DECIMAL_PLACES : 0;
 
         this.areAmountsMasked = !(settings?.isWidgetAmountsEnabled ?? true);
+
+        await i18nEnsureLanguageActivated(language);
 
         return {
             version: WidgetSnapshotService.SNAPSHOT_VERSION,
@@ -388,6 +391,7 @@ class WidgetSnapshotService {
         language: LanguageEnum
     ): Promise<readonly WidgetBudgetCategoryInterface[]> {
         const ranked = limits
+            .filter(limit => isPositiveNumber(limit.limitAmount))
             .map(limit => ({
                 categoryId: limit.categoryId,
                 progressRatio:

@@ -55,7 +55,7 @@ const applyBuildSettings = (project, xcodeConfig, { targetName, bundleId, entitl
         settings.SWIFT_VERSION = '"5.0"';
         settings.TARGETED_DEVICE_FAMILY = '"1"';
         settings.CODE_SIGN_STYLE = 'Automatic';
-        settings.SWIFT_OPTIMIZATION_LEVEL = '"-Onone"';
+        settings.SWIFT_OPTIMIZATION_LEVEL = configurations[key].name === 'Debug' ? '"-Onone"' : '"-O"';
     }
 };
 
