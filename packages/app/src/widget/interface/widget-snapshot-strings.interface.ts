@@ -8,5 +8,9 @@ export interface WidgetSnapshotStringsInterface {
     readonly left: string;
     readonly daysLeft: string;
     readonly noBudget: string;
+    readonly expense: string;
+    readonly income: string;
+    readonly transfer: string;
+    readonly addExpense: string;
     readonly empty: string;
 }
