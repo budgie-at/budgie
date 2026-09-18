@@ -31,22 +31,28 @@ struct QuickAddActionTile: View {
     let palette: WidgetPalette
 
     var body: some View {
-        Link(destination: destination ?? URL(string: "budgie://")!) {
-            VStack(spacing: 4) {
-                Image(systemName: symbolName)
-                    .font(.title3)
-                    .foregroundColor(palette.primary)
-                Text(title)
-                    .font(.caption2)
-                    .foregroundColor(palette.secondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
-            .background(palette.secondary.opacity(0.12))
-            .cornerRadius(10)
+        if let destination {
+            Link(destination: destination) { tile }
+        } else {
+            tile
         }
+    }
+
+    private var tile: some View {
+        VStack(spacing: 5) {
+            Image(systemName: symbolName)
+                .font(.system(size: 19, weight: .medium))
+                .foregroundColor(palette.primary)
+                .frame(height: 21)
+            Text(title)
+                .font(.caption2)
+                .foregroundColor(palette.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(palette.secondary.opacity(0.12))
+        .cornerRadius(12)
     }
 }
 
@@ -55,17 +61,23 @@ struct QuickAddCategoryChip: View {
     let palette: WidgetPalette
 
     var body: some View {
-        Link(destination: WidgetLinks.createExpense(categoryId: category.id) ?? URL(string: "budgie://")!) {
-            Text(category.title)
-                .font(.caption2)
-                .foregroundColor(palette.primary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 5)
-                .background(palette.secondary.opacity(0.12))
-                .cornerRadius(8)
+        if let destination = WidgetLinks.createExpense(categoryId: category.id) {
+            Link(destination: destination) { chip }
+        } else {
+            chip
         }
+    }
+
+    private var chip: some View {
+        Text(category.title)
+            .font(.caption2)
+            .foregroundColor(palette.primary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
+            .padding(.horizontal, 6)
+            .frame(maxWidth: .infinity, minHeight: 30)
+            .background(palette.secondary.opacity(0.12))
+            .cornerRadius(9)
     }
 }
 
@@ -83,13 +95,14 @@ struct QuickAddWidgetView: View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             .widgetBackground(palette.background)
+            .widgetURL(WidgetLinks.createExpense)
             .environment(\.locale, Locale(identifier: entry.snapshot?.locale ?? "en-US"))
     }
 
     @ViewBuilder
     private var content: some View {
         if isMedium {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(spacing: 8) {
                 HStack(spacing: 8) {
                     QuickAddActionTile(
                         title: entry.strings.expense,
@@ -112,18 +125,18 @@ struct QuickAddWidgetView: View {
                 }
 
                 if let categories = entry.snapshot?.quickAddCategories, !categories.isEmpty {
-                    HStack(spacing: 6) {
+                    HStack(spacing: 8) {
                         ForEach(categories, id: \.id) { category in
                             QuickAddCategoryChip(category: category, palette: palette)
                         }
-                        Spacer(minLength: 0)
                     }
+                    .fixedSize(horizontal: false, vertical: true)
                 }
             }
         } else {
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
                 Image(systemName: "plus.circle.fill")
-                    .font(.largeTitle)
+                    .font(.system(size: 34, weight: .medium))
                     .foregroundColor(palette.primary)
                 Text(entry.strings.addExpense)
                     .font(.caption)
@@ -139,7 +152,6 @@ struct QuickAddWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "BudgieQuickAdd", provider: QuickAddProvider()) { entry in
             QuickAddWidgetView(entry: entry, isMedium: false)
-                .widgetURL(WidgetLinks.createExpense)
         }
         .configurationDisplayName("Quick add")
         .description("Log an expense without hunting for the app.")
