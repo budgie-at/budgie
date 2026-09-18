@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import WidgetKit
 
 struct QuickAddEntry: TimelineEntry {
@@ -81,6 +82,41 @@ struct QuickAddCategoryChip: View {
     }
 }
 
+struct QuickAddLogoTile: View {
+    let palette: WidgetPalette
+
+    var body: some View {
+        if let destination = WidgetLinks.home {
+            Link(destination: destination) { tile }
+        } else {
+            tile
+        }
+    }
+
+    private var tile: some View {
+        glyph
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(palette.secondary.opacity(0.12))
+            .cornerRadius(12)
+    }
+
+    @ViewBuilder
+    private var glyph: some View {
+        if let logo = UIImage(named: "budgie-glyph") {
+            Image(uiImage: logo)
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .foregroundColor(palette.primary)
+                .padding(14)
+        } else {
+            Image(systemName: "app.fill")
+                .font(.title2)
+                .foregroundColor(palette.primary)
+        }
+    }
+}
+
 struct QuickAddWidgetView: View {
     let entry: QuickAddEntry
     let isMedium: Bool
@@ -134,16 +170,31 @@ struct QuickAddWidgetView: View {
                 }
             }
         } else {
-            VStack(alignment: .leading, spacing: 8) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 34, weight: .medium))
-                    .foregroundColor(palette.primary)
-                Text(entry.strings.addExpense)
-                    .font(.caption)
-                    .foregroundColor(palette.secondary)
-                    .lineLimit(2)
+            VStack(spacing: 6) {
+                HStack(spacing: 6) {
+                    QuickAddActionTile(
+                        title: entry.strings.expense,
+                        symbolName: "minus.circle",
+                        destination: WidgetLinks.createExpense,
+                        palette: palette
+                    )
+                    QuickAddActionTile(
+                        title: entry.strings.income,
+                        symbolName: "plus.circle",
+                        destination: WidgetLinks.createIncome,
+                        palette: palette
+                    )
+                }
+                HStack(spacing: 6) {
+                    QuickAddActionTile(
+                        title: entry.strings.transfer,
+                        symbolName: "arrow.left.arrow.right",
+                        destination: WidgetLinks.createTransfer,
+                        palette: palette
+                    )
+                    QuickAddLogoTile(palette: palette)
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
     }
 }
@@ -154,7 +205,7 @@ struct QuickAddWidget: Widget {
             QuickAddWidgetView(entry: entry, isMedium: false)
         }
         .configurationDisplayName("Quick add")
-        .description("Log an expense without hunting for the app.")
+        .description("Expense, income and transfer in one tap.")
         .supportedFamilies([.systemSmall])
     }
 }
