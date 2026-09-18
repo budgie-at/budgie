@@ -33,6 +33,15 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         return this.buildLocalizedCategoryBaseQuery(language).where(eq(CategoryEntityTable.isSystemCategory, false));
     }
 
+    getMostUsedCategories(language: LanguageEnum, limit: number) {
+        return this.buildLocalizedCategoryBaseQuery(language)
+            .leftJoin(TransactionEntryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+            .where(eq(CategoryEntityTable.isSystemCategory, false))
+            .groupBy(CategoryEntityTable.id)
+            .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`)
+            .limit(limit);
+    }
+
     findBySearchQuery(search: string, includeDefault: boolean, language: LanguageEnum) {
         const trimmed = search.trim();
         const selectableFilter = or(
