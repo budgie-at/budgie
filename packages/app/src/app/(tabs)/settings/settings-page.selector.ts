@@ -12,6 +12,8 @@ export const SettingsPageSelector = {
     AppLockBiometricSwitch: 'SettingsPage.AppLockBiometricSwitch',
     ScreenshotProtectionCard: 'SettingsPage.ScreenshotProtectionCard',
     ScreenshotProtectionSwitch: 'SettingsPage.ScreenshotProtectionSwitch',
+    WidgetAmountsCard: 'SettingsPage.WidgetAmountsCard',
+    WidgetAmountsSwitch: 'SettingsPage.WidgetAmountsSwitch',
     LanguageCard: (code: string) => `SettingsPage.LanguageCard.${normalizePart(code)}` as const,
     MainCurrencyCard: (code: string) => `SettingsPage.MainCurrencyCard.${normalizePart(code)}` as const,
     DefaultAccountCard: (account: Pick<AccountEntityInterface, 'id' | 'title'> | null) =>
