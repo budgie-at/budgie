@@ -22,6 +22,7 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { databaseRefreshService } from '../../@generic/service/database-refresh.service';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
 import { formatBudgetPeriodLabel } from '../../budget/utils/format-budget-period-label.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { languageToLocale } from '../../i18n/util/language-to-locale.util';
@@ -33,6 +34,7 @@ import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant'
 import { WidgetDeltaDirectionEnum } from '../enum/widget-delta-direction.enum';
 import { WidgetSnapshotHistorySchema } from '../schema/widget-snapshot-history.schema';
 
+import type { WidgetAccountTypeTotalInterface } from '../interface/widget-account-type-total.interface';
 import type { WidgetBudgetCategoryInterface } from '../interface/widget-budget-category.interface';
 import type { WidgetBudgetSnapshotInterface } from '../interface/widget-budget-snapshot.interface';
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
@@ -53,8 +55,8 @@ class WidgetSnapshotService {
     private static readonly PUBLISH_DEBOUNCE_MS = 2_000;
     private static readonly SNAPSHOT_VERSION = 1;
     private static readonly HISTORY_LIMIT = 30;
-    private static readonly CRYPTO_ACCOUNT_TYPES = [AccountTypeEnum.CRYPTO, AccountTypeEnum.CRYPTO_SYNC];
     private static readonly TOP_CATEGORY_COUNT = 3;
+    private static readonly TOP_ACCOUNT_TYPE_COUNT = 4;
 
     private isPublishing = false;
     private debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -153,8 +155,6 @@ class WidgetSnapshotService {
         return {
             netWorthTitle: i18n._(msg`Net worth`),
             thisMonth: i18n._(msg`This month`),
-            fiat: i18n._(msg`Cash`),
-            crypto: i18n._(msg`Crypto`),
             budgetTitle: i18n._(msg`Budget`),
             perDay: i18n._(msg`per day`),
             left: i18n._(msg`left`),
@@ -215,29 +215,37 @@ class WidgetSnapshotService {
         }
 
         const total = convertFromMicroUnits(netWorthRows.at(0)?.netWorth ?? 0);
-        const cryptoTotal = this.sumConvertedBalance(homeRows, true);
         const monthlyNet = convertFromMicroUnits((monthRows.at(0)?.income ?? 0) - (monthRows.at(0)?.expense ?? 0));
 
         return {
             formattedTotal: this.formatAmount(total, instrument, language, decimalPlaces),
             formattedDelta: this.formatDelta(monthlyNet, instrument, language, decimalPlaces),
             deltaDirection: this.resolveDeltaDirection(monthlyNet),
-            formattedFiat: this.formatAmount(total - cryptoTotal, instrument, language, decimalPlaces),
-            formattedCrypto: this.formatAmount(cryptoTotal, instrument, language, decimalPlaces),
-            hasCrypto: cryptoTotal !== 0,
+            accountTypes: this.buildAccountTypeTotals(homeRows, instrument, language, decimalPlaces),
             history: await this.buildHistory(total)
         };
     }
 
-    private sumConvertedBalance(rows: Awaited<ReturnType<typeof accountBalanceRepository.getHomeAccountRows>>, isCrypto: boolean): number {
-        return rows
-            .filter(
-                row =>
-                    row.account.includeInNetWorth &&
-                    row.account.isActive &&
-                    WidgetSnapshotService.CRYPTO_ACCOUNT_TYPES.includes(row.account.type) === isCrypto
-            )
-            .reduce((total, row) => total + convertFromMicroUnits(row.convertedBalance), 0);
+    private buildAccountTypeTotals(
+        rows: Awaited<ReturnType<typeof accountBalanceRepository.getHomeAccountRows>>,
+        instrument: InstrumentEntityInterface,
+        language: LanguageEnum,
+        decimalPlaces: number
+    ): readonly WidgetAccountTypeTotalInterface[] {
+        const totals = new Map<AccountTypeEnum, number>();
+
+        rows.filter(row => row.account.includeInNetWorth && row.account.isActive).forEach(row => {
+            totals.set(row.account.type, (totals.get(row.account.type) ?? 0) + convertFromMicroUnits(row.convertedBalance));
+        });
+
+        return [...totals.entries()]
+            .filter(([, amount]) => amount !== 0)
+            .sort(([, first], [, second]) => Math.abs(second) - Math.abs(first))
+            .slice(0, WidgetSnapshotService.TOP_ACCOUNT_TYPE_COUNT)
+            .map(([type, amount]) => ({
+                label: i18n._(ACCOUNT_TYPE[type]),
+                formattedTotal: this.formatAmount(amount, instrument, language, decimalPlaces)
+            }));
     }
 
     private async buildHistory(total: number): Promise<readonly number[]> {

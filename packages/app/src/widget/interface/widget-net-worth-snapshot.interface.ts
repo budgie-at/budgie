@@ -1,11 +1,10 @@
 import type { WidgetDeltaDirectionEnum } from '../enum/widget-delta-direction.enum';
+import type { WidgetAccountTypeTotalInterface } from './widget-account-type-total.interface';
 
 export interface WidgetNetWorthSnapshotInterface {
     readonly formattedTotal: string;
     readonly formattedDelta: string;
     readonly deltaDirection: WidgetDeltaDirectionEnum;
-    readonly formattedFiat: string;
-    readonly formattedCrypto: string;
-    readonly hasCrypto: boolean;
+    readonly accountTypes: readonly WidgetAccountTypeTotalInterface[];
     readonly history: readonly number[];
 }
