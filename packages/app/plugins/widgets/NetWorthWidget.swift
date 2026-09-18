@@ -65,6 +65,28 @@ struct NetWorthDeltaText: View {
     }
 }
 
+struct NetWorthRunwayRow: View {
+    let runway: RunwaySnapshot
+    let palette: WidgetPalette
+
+    private var accent: Color {
+        runway.isPositive ? palette.positive : palette.warning
+    }
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: runway.isPositive ? "chart.line.uptrend.xyaxis" : "chart.line.downtrend.xyaxis")
+                .font(.caption2)
+                .foregroundColor(accent)
+            Text(runway.label)
+                .font(.caption.weight(.medium))
+                .foregroundColor(accent)
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+        }
+    }
+}
+
 struct NetWorthSplitRow: View {
     let title: String
     let value: String
@@ -114,10 +136,15 @@ struct NetWorthWidgetView: View {
                     .minimumScaleFactor(0.6)
                     .lineLimit(1)
                     .privacySensitive()
-                NetWorthDeltaText(netWorth: netWorth, label: entry.strings.thisMonth, palette: palette)
-                    .privacySensitive()
+
+                if let runway = entry.snapshot?.runway {
+                    NetWorthRunwayRow(runway: runway, palette: palette)
+                        .privacySensitive()
+                }
 
                 if isMedium {
+                    NetWorthDeltaText(netWorth: netWorth, label: entry.strings.thisMonth, palette: palette)
+                        .privacySensitive()
                     Spacer(minLength: 2)
                     NetWorthSplitRow(title: entry.strings.fiat, value: netWorth.formattedFiat, palette: palette)
                         .privacySensitive()
@@ -140,7 +167,7 @@ struct NetWorthWidget: Widget {
             NetWorthWidgetView(entry: entry, isMedium: false)
         }
         .configurationDisplayName("Net worth")
-        .description("Your total balance across every account.")
+        .description("Your total balance, and whether you are growing or burning.")
         .supportedFamilies([.systemSmall])
     }
 }
@@ -151,7 +178,7 @@ struct NetWorthMediumWidget: Widget {
             NetWorthWidgetView(entry: entry, isMedium: true)
         }
         .configurationDisplayName("Net worth breakdown")
-        .description("Your total balance, split by cash and crypto.")
+        .description("Your balance and runway, split by cash and crypto.")
         .supportedFamilies([.systemMedium])
     }
 }

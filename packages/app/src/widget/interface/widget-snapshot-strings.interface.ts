@@ -12,7 +12,5 @@ export interface WidgetSnapshotStringsInterface {
     readonly income: string;
     readonly transfer: string;
     readonly addExpense: string;
-    readonly runwayTitle: string;
-    readonly notEnoughData: string;
     readonly empty: string;
 }
