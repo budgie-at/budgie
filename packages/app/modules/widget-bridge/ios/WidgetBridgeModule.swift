@@ -23,6 +23,14 @@ public final class WidgetBridgeModule: Module {
             return true
         }
 
+        AsyncFunction("read") { () -> String? in
+            guard let container = Self.containerURL() else {
+                return nil
+            }
+
+            return try? String(contentsOf: container.appendingPathComponent(Self.snapshotName), encoding: .utf8)
+        }
+
         AsyncFunction("clear") { () -> Bool in
             guard let container = Self.containerURL() else {
                 return false
