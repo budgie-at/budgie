@@ -156,7 +156,7 @@ struct SpendingWidgetView: View {
                 Text(entry.strings.budgetTitle)
                     .font(.caption)
                     .foregroundColor(palette.secondary)
-                Text("\(budget.formattedRemaining ?? budget.formattedSpent) \(entry.strings.left)")
+                Text(remainingText(budget))
                     .font(.footnote.weight(.semibold))
                     .foregroundColor(palette.primary)
                     .minimumScaleFactor(0.5)
@@ -176,6 +176,13 @@ struct SpendingWidgetView: View {
             SpendingProgressRing(budget: budget, palette: palette)
                 .frame(width: 52, height: 52)
         }
+    }
+
+    private func remainingText(_ budget: BudgetSnapshot) -> String {
+        let amount = budget.formattedRemaining ?? budget.formattedSpent
+        let suffix = budget.isOverLimit ? entry.strings.over : entry.strings.left
+
+        return "\(amount) \(suffix)"
     }
 
     private func paceText(_ budget: BudgetSnapshot) -> String {
