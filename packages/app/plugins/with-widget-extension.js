@@ -19,8 +19,7 @@ const SWIFT_FILES = [
     'WidgetEmptyState.swift',
     'NetWorthWidget.swift',
     'SpendingWidget.swift',
-    'QuickAddWidget.swift',
-    'RunwayWidget.swift'
+    'QuickAddWidget.swift'
 ];
 
 const ENTITLEMENTS_FILE = `${TARGET}.entitlements`;
