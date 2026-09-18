@@ -59,7 +59,7 @@ const applyBuildSettings = (project, xcodeConfig, { targetName, bundleId, entitl
     }
 };
 
-function addAppExtensionTarget(project, xcodeConfig, { targetName, bundleId, sourceFiles, groupFiles, entitlementsFile }) {
+function addAppExtensionTarget(project, xcodeConfig, { targetName, bundleId, sourceFiles, groupFiles, resourceFiles, entitlementsFile }) {
     const deploymentTarget = readAppDeploymentTarget(project);
 
     addTargetGroup(project, targetName, groupFiles ?? sourceFiles);
@@ -67,7 +67,7 @@ function addAppExtensionTarget(project, xcodeConfig, { targetName, bundleId, sou
     const target = project.addTarget(targetName, 'app_extension', targetName, bundleId);
 
     project.addBuildPhase(sourceFiles, 'PBXSourcesBuildPhase', 'Sources', target.uuid);
-    project.addBuildPhase([], 'PBXResourcesBuildPhase', 'Resources', target.uuid);
+    project.addBuildPhase(resourceFiles ?? [], 'PBXResourcesBuildPhase', 'Resources', target.uuid);
     project.addBuildPhase([], 'PBXFrameworksBuildPhase', 'Frameworks', target.uuid);
 
     applyBuildSettings(project, xcodeConfig, {

@@ -22,6 +22,8 @@ const SWIFT_FILES = [
     'QuickAddWidget.swift'
 ];
 
+const RESOURCE_FILES = ['budgie-glyph.png'];
+
 const ENTITLEMENTS_FILE = `${TARGET}.entitlements`;
 const PLIST_FILE = 'Info.plist';
 
@@ -56,7 +58,7 @@ const withSources = config =>
 
             fs.mkdirSync(targetDir, { recursive: true });
 
-            for (const file of SWIFT_FILES) {
+            for (const file of [...SWIFT_FILES, ...RESOURCE_FILES]) {
                 fs.copyFileSync(path.join(SOURCE_DIR, file), path.join(targetDir, file));
             }
 
@@ -97,6 +99,8 @@ const withTarget = config =>
             targetName: TARGET,
             bundleId: `${appBundleId}.${TARGET}`,
             sourceFiles: SWIFT_FILES,
+            groupFiles: [...SWIFT_FILES, ...RESOURCE_FILES],
+            resourceFiles: RESOURCE_FILES,
             entitlementsFile: ENTITLEMENTS_FILE
         });
 
