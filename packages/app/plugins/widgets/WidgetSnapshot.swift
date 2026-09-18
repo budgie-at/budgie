@@ -26,7 +26,6 @@ struct WidgetStrings: Codable {
     let expense: String
     let income: String
     let transfer: String
-    let addExpense: String
     let empty: String
 
     init(from decoder: Decoder) throws {
@@ -44,7 +43,6 @@ struct WidgetStrings: Codable {
         expense = try container.decodeIfPresent(String.self, forKey: .expense) ?? fallback.expense
         income = try container.decodeIfPresent(String.self, forKey: .income) ?? fallback.income
         transfer = try container.decodeIfPresent(String.self, forKey: .transfer) ?? fallback.transfer
-        addExpense = try container.decodeIfPresent(String.self, forKey: .addExpense) ?? fallback.addExpense
         empty = try container.decodeIfPresent(String.self, forKey: .empty) ?? fallback.empty
     }
 
@@ -60,7 +58,6 @@ struct WidgetStrings: Codable {
         expense: String,
         income: String,
         transfer: String,
-        addExpense: String,
         empty: String
     ) {
         self.netWorthTitle = netWorthTitle
@@ -74,7 +71,6 @@ struct WidgetStrings: Codable {
         self.expense = expense
         self.income = income
         self.transfer = transfer
-        self.addExpense = addExpense
         self.empty = empty
     }
 }
@@ -115,11 +111,6 @@ struct RunwaySnapshot: Codable {
     let label: String
 }
 
-struct QuickAddCategory: Codable {
-    let id: Int
-    let title: String
-}
-
 struct WidgetSnapshot: Codable {
     let version: Int
     let generatedAtMs: Double
@@ -129,7 +120,6 @@ struct WidgetSnapshot: Codable {
     let netWorth: NetWorthSnapshot?
     let budget: BudgetSnapshot?
     let runway: RunwaySnapshot?
-    let quickAddCategories: [QuickAddCategory]?
 }
 
 enum SnapshotStore {
@@ -149,7 +139,6 @@ enum SnapshotStore {
         expense: "Expense",
         income: "Income",
         transfer: "Transfer",
-        addExpense: "Add expense",
         empty: "No accounts yet"
     )
 

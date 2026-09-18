@@ -382,10 +382,6 @@ msgstr "Додати категорію"
 msgid "Add deposit"
 msgstr "Додати депозит"
 
-#: src/widget/service/widget-snapshot.service.ts
-msgid "Add expense"
-msgstr "Додати витрату"
-
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Додати запис"
