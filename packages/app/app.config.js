@@ -28,6 +28,8 @@ const getUniqueIdentifier = isAndroid => {
     return prefix;
 };
 
+const getAppGroup = () => `group.${getUniqueIdentifier(false)}`;
+
 const getAppName = () => {
     if (IS_DEV) {
         return 'budgie (Dev)';
@@ -61,7 +63,11 @@ export default ({ config }) => ({
         associatedDomains: ['applinks:budgie.at'],
         entitlements: {
             'com.apple.developer.kernel.extended-virtual-addressing': true,
-            'com.apple.developer.kernel.increased-memory-limit': true
+            'com.apple.developer.kernel.increased-memory-limit': true,
+            'com.apple.security.application-groups': [getAppGroup()]
+        },
+        infoPlist: {
+            BudgieAppGroup: getAppGroup()
         },
         icon: {
             dark: './assets/icons/ios-dark.png',
@@ -123,6 +129,7 @@ export default ({ config }) => ({
             }
         ],
         './plugins/with-vec-xcframework-fix',
+        './plugins/with-widget-extension',
         'expo-asset',
         'expo-image',
         [
