@@ -96,8 +96,7 @@ struct QuickAddLogoTile: View {
     private var tile: some View {
         glyph
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(palette.secondary.opacity(0.12))
-            .cornerRadius(12)
+            .contentShape(Rectangle())
     }
 
     @ViewBuilder
@@ -108,7 +107,7 @@ struct QuickAddLogoTile: View {
                 .resizable()
                 .scaledToFit()
                 .foregroundColor(palette.primary)
-                .padding(14)
+                .padding(10)
         } else {
             Image(systemName: "app.fill")
                 .font(.title2)
