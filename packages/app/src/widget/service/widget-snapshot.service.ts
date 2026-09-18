@@ -40,7 +40,6 @@ import type { WidgetBudgetCategoryInterface } from '../interface/widget-budget-c
 import type { WidgetBudgetSnapshotInterface } from '../interface/widget-budget-snapshot.interface';
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
 import type { WidgetPaletteInterface } from '../interface/widget-palette.interface';
-import type { WidgetQuickAddCategoryInterface } from '../interface/widget-quick-add-category.interface';
 import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-snapshot.interface';
 import type { WidgetSnapshotStringsInterface } from '../interface/widget-snapshot-strings.interface';
 import type { WidgetSnapshotInterface } from '../interface/widget-snapshot.interface';
@@ -153,8 +152,7 @@ class WidgetSnapshotService {
             palette: this.buildPalette(),
             netWorth: await this.buildNetWorth(instrument, language, decimalPlaces),
             budget: await this.buildBudget(language, decimalPlaces),
-            runway: await this.buildRunway(instrument, language, settings?.isRunwayCryptoIncluded ?? false),
-            quickAddCategories: await this.buildQuickAddCategories(language)
+            runway: await this.buildRunway(instrument, language, settings?.isRunwayCryptoIncluded ?? false)
         };
     }
 
@@ -171,7 +169,6 @@ class WidgetSnapshotService {
             expense: i18n._(msg`Expense`),
             income: i18n._(msg`Income`),
             transfer: i18n._(msg`Transfer`),
-            addExpense: i18n._(msg`Add expense`),
             empty: i18n._(msg`No accounts yet`)
         };
     }
@@ -371,12 +368,6 @@ class WidgetSnapshotService {
         const formattedMonths = new Intl.NumberFormat(languageToLocale(language)).format(Math.round(computation.runwayMonths ?? 0));
 
         return i18n._(msg`≈ ${formattedMonths} mo`);
-    }
-
-    private async buildQuickAddCategories(language: LanguageEnum): Promise<readonly WidgetQuickAddCategoryInterface[]> {
-        const rows = await categoryRepository.getMostUsedCategories(language, WidgetSnapshotService.TOP_CATEGORY_COUNT);
-
-        return rows.map(row => ({ id: row.id, title: row.title }));
     }
 
     private buildMonthDayFormatter(language: LanguageEnum): (date: Date) => string {

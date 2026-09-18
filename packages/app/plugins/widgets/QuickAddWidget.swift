@@ -57,31 +57,6 @@ struct QuickAddActionTile: View {
     }
 }
 
-struct QuickAddCategoryChip: View {
-    let category: QuickAddCategory
-    let palette: WidgetPalette
-
-    var body: some View {
-        if let destination = WidgetLinks.createExpense(categoryId: category.id) {
-            Link(destination: destination) { chip }
-        } else {
-            chip
-        }
-    }
-
-    private var chip: some View {
-        Text(category.title)
-            .font(.caption2)
-            .foregroundColor(palette.primary)
-            .lineLimit(1)
-            .minimumScaleFactor(0.6)
-            .padding(.horizontal, 6)
-            .frame(maxWidth: .infinity, minHeight: 30)
-            .background(palette.secondary.opacity(0.12))
-            .cornerRadius(9)
-    }
-}
-
 struct QuickAddLogoTile: View {
     let palette: WidgetPalette
 
@@ -118,7 +93,6 @@ struct QuickAddLogoTile: View {
 
 struct QuickAddWidgetView: View {
     let entry: QuickAddEntry
-    let isMedium: Bool
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -127,95 +101,45 @@ struct QuickAddWidgetView: View {
     }
 
     var body: some View {
-        content
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-            .widgetBackground(palette.background)
-            .widgetURL(WidgetLinks.createExpense)
-            .environment(\.locale, Locale(identifier: entry.snapshot?.locale ?? "en-US"))
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        if isMedium {
-            VStack(spacing: 8) {
-                HStack(spacing: 8) {
-                    QuickAddActionTile(
-                        title: entry.strings.expense,
-                        symbolName: "minus.circle",
-                        destination: WidgetLinks.createExpense,
-                        palette: palette
-                    )
-                    QuickAddActionTile(
-                        title: entry.strings.income,
-                        symbolName: "plus.circle",
-                        destination: WidgetLinks.createIncome,
-                        palette: palette
-                    )
-                    QuickAddActionTile(
-                        title: entry.strings.transfer,
-                        symbolName: "arrow.left.arrow.right",
-                        destination: WidgetLinks.createTransfer,
-                        palette: palette
-                    )
-                }
-
-                if let categories = entry.snapshot?.quickAddCategories, !categories.isEmpty {
-                    HStack(spacing: 8) {
-                        ForEach(categories, id: \.id) { category in
-                            QuickAddCategoryChip(category: category, palette: palette)
-                        }
-                    }
-                    .fixedSize(horizontal: false, vertical: true)
-                }
+        VStack(spacing: 6) {
+            HStack(spacing: 6) {
+                QuickAddActionTile(
+                    title: entry.strings.expense,
+                    symbolName: "minus.circle",
+                    destination: WidgetLinks.createExpense,
+                    palette: palette
+                )
+                QuickAddActionTile(
+                    title: entry.strings.income,
+                    symbolName: "plus.circle",
+                    destination: WidgetLinks.createIncome,
+                    palette: palette
+                )
             }
-        } else {
-            VStack(spacing: 6) {
-                HStack(spacing: 6) {
-                    QuickAddActionTile(
-                        title: entry.strings.expense,
-                        symbolName: "minus.circle",
-                        destination: WidgetLinks.createExpense,
-                        palette: palette
-                    )
-                    QuickAddActionTile(
-                        title: entry.strings.income,
-                        symbolName: "plus.circle",
-                        destination: WidgetLinks.createIncome,
-                        palette: palette
-                    )
-                }
-                HStack(spacing: 6) {
-                    QuickAddActionTile(
-                        title: entry.strings.transfer,
-                        symbolName: "arrow.left.arrow.right",
-                        destination: WidgetLinks.createTransfer,
-                        palette: palette
-                    )
-                    QuickAddLogoTile(palette: palette)
-                }
+            HStack(spacing: 6) {
+                QuickAddActionTile(
+                    title: entry.strings.transfer,
+                    symbolName: "arrow.left.arrow.right",
+                    destination: WidgetLinks.createTransfer,
+                    palette: palette
+                )
+                QuickAddLogoTile(palette: palette)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .widgetBackground(palette.background)
+        .widgetURL(WidgetLinks.createExpense)
+        .environment(\.locale, Locale(identifier: entry.snapshot?.locale ?? "en-US"))
     }
 }
 
 struct QuickAddWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "BudgieQuickAdd", provider: QuickAddProvider()) { entry in
-            QuickAddWidgetView(entry: entry, isMedium: false)
+            QuickAddWidgetView(entry: entry)
         }
         .configurationDisplayName("Quick add")
         .description("Expense, income and transfer in one tap.")
         .supportedFamilies([.systemSmall])
-    }
-}
-
-struct QuickAddMediumWidget: Widget {
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "BudgieQuickAddMedium", provider: QuickAddProvider()) { entry in
-            QuickAddWidgetView(entry: entry, isMedium: true)
-        }
-        .configurationDisplayName("Quick add actions")
-        .description("Expense, income and transfer, plus your most used categories.")
-        .supportedFamilies([.systemMedium])
     }
 }
