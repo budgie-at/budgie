@@ -56,6 +56,10 @@ const applyBuildSettings = (project, xcodeConfig, { targetName, bundleId, entitl
         settings.TARGETED_DEVICE_FAMILY = '"1"';
         settings.CODE_SIGN_STYLE = 'Automatic';
         settings.SWIFT_OPTIMIZATION_LEVEL = configurations[key].name === 'Debug' ? '"-Onone"' : '"-O"';
+        settings.CC = '""';
+        settings.CXX = '""';
+        settings.LD = '""';
+        settings.LDPLUSPLUS = '""';
     }
 };
 
