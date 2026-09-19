@@ -1,0 +1,461 @@
+import { budgetPeriodService, budgetSpentService } from '@budgie/budget';
+import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, LanguageEnum, RUNWAY_WINDOW_MONTHS } from '@budgie/contracts';
+import { Log } from '@budgie/logger';
+import { i18n } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
+import { differenceInCalendarDays, startOfMonth } from 'date-fns';
+import * as BackgroundTask from 'expo-background-task';
+import Constants from 'expo-constants';
+import * as TaskManager from 'expo-task-manager';
+
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+
+import { canPublishWidgetSnapshot, clearWidgetSnapshot, publishWidgetSnapshot, readWidgetSnapshot } from '../../../modules/widget-bridge';
+import {
+    accountBalanceRepository,
+    budgetCategoryLimitRepository,
+    budgetRepository,
+    categoryRepository,
+    instrumentRepository,
+    settingsRepository,
+    statisticsRepository
+} from '../../@generic/drizzle/db/db';
+import { databaseRefreshService } from '../../@generic/service/database-refresh.service';
+import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
+import { formatBudgetPeriodLabel } from '../../budget/utils/format-budget-period-label.util';
+import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
+import { i18nEnsureLanguageActivated } from '../../i18n/util/i18n.util';
+import { languageToLocale } from '../../i18n/util/language-to-locale.util';
+import { RUNWAY_MINIMUM_MONTHS } from '../../runway/constant/runway-minimum-months.constant';
+import { computeRunway } from '../../runway/utils/compute-runway.util';
+import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
+import { dark, light } from '../../theme/provider/theme.provider';
+import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant';
+import { WidgetDeltaDirectionEnum } from '../enum/widget-delta-direction.enum';
+import { WidgetSnapshotHistorySchema } from '../schema/widget-snapshot-history.schema';
+
+import type { WidgetAccountTypeTotalInterface } from '../interface/widget-account-type-total.interface';
+import type { WidgetBudgetCategoryInterface } from '../interface/widget-budget-category.interface';
+import type { WidgetBudgetSnapshotInterface } from '../interface/widget-budget-snapshot.interface';
+import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
+import type { WidgetPaletteInterface } from '../interface/widget-palette.interface';
+import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-snapshot.interface';
+import type { WidgetSnapshotStringsInterface } from '../interface/widget-snapshot-strings.interface';
+import type { WidgetSnapshotInterface } from '../interface/widget-snapshot.interface';
+import type { WidgetThemeColorsInterface } from '../interface/widget-theme-colors.interface';
+import type { WidgetSnapshotHistoryType } from '../schema/widget-snapshot-history.schema';
+import type { BudgetCategorySpentInterface } from '@budgie/budget';
+import type { InstrumentEntityInterface } from '@budgie/contracts';
+
+class WidgetSnapshotService {
+    private static readonly APP_VARIANT_EXTRA_KEY = 'appVariant';
+    private static readonly E2E_APP_VARIANT = 'e2e';
+    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
+    private static readonly PUBLISH_DEBOUNCE_MS = 2_000;
+    private static readonly SNAPSHOT_VERSION = 1;
+    private static readonly HISTORY_LIMIT = 30;
+    private static readonly TOP_CATEGORY_COUNT = 3;
+    private static readonly TOP_ACCOUNT_TYPE_COUNT = 4;
+    private static readonly MASKED_AMOUNT = '•••';
+
+    private isPublishing = false;
+    private areAmountsMasked = false;
+    private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+    private unsubscribeDatabaseRefresh: () => void = emptyFn;
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    start(): void {
+        if (this.isDisabled()) {
+            return;
+        }
+
+        this.unsubscribeDatabaseRefresh = databaseRefreshService.subscribe(this.schedulePublish);
+        this.schedulePublish();
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    stop(): void {
+        this.unsubscribeDatabaseRefresh();
+        this.unsubscribeDatabaseRefresh = emptyFn;
+        this.cancelScheduledPublish();
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async registerBackgroundTask(): Promise<void> {
+        if (this.isDisabled()) {
+            return;
+        }
+
+        if (await TaskManager.isTaskRegisteredAsync(WIDGET_SNAPSHOT_TASK)) {
+            return;
+        }
+
+        await BackgroundTask.registerTaskAsync(WIDGET_SNAPSHOT_TASK, {
+            minimumInterval: WidgetSnapshotService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
+        });
+    }
+
+    @Log('enter', result => `done isPublished=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    async publish(): Promise<boolean> {
+        if (this.isDisabled() || this.isPublishing) {
+            return false;
+        }
+
+        this.isPublishing = true;
+
+        try {
+            return await publishWidgetSnapshot(JSON.stringify(await this.buildSnapshot()));
+        } finally {
+            this.isPublishing = false;
+        }
+    }
+
+    @Log('enter', result => `done isCleared=${result}`, error => `throw error=${getErrorMessage(error)}`)
+    async clear(): Promise<boolean> {
+        this.cancelScheduledPublish();
+
+        return await clearWidgetSnapshot();
+    }
+
+    private readonly schedulePublish = (): void => {
+        this.cancelScheduledPublish();
+
+        this.debounceTimer = setTimeout(() => {
+            this.debounceTimer = null;
+            void this.publish().catch(emptyFn);
+        }, WidgetSnapshotService.PUBLISH_DEBOUNCE_MS);
+    };
+
+    private cancelScheduledPublish(): void {
+        if (isDefined(this.debounceTimer)) {
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = null;
+        }
+    }
+
+    private async buildSnapshot(): Promise<WidgetSnapshotInterface> {
+        const settings = await settingsRepository.findSettings();
+        const instrument = settings?.defaultInstrument ?? DEFAULT_INSTRUMENT;
+        const language = settings?.language ?? LanguageEnum.EN;
+        const decimalPlaces = (settings?.showCents ?? true) ? DEFAULT_DECIMAL_PLACES : 0;
+
+        this.areAmountsMasked = !(settings?.isWidgetAmountsEnabled ?? true);
+
+        await i18nEnsureLanguageActivated(language);
+
+        return {
+            version: WidgetSnapshotService.SNAPSHOT_VERSION,
+            generatedAtMs: Date.now(),
+            locale: languageToLocale(language),
+            strings: this.buildStrings(),
+            palette: this.buildPalette(),
+            netWorth: await this.buildNetWorth(instrument, language, decimalPlaces),
+            budget: await this.buildBudget(language, decimalPlaces),
+            runway: await this.buildRunway(instrument, language, settings?.isRunwayCryptoIncluded ?? false)
+        };
+    }
+
+    private buildStrings(): WidgetSnapshotStringsInterface {
+        return {
+            netWorthTitle: i18n._(msg`Net worth`),
+            thisMonth: i18n._(msg`This month`),
+            budgetTitle: i18n._(msg`Budget`),
+            perDay: i18n._(msg`per day`),
+            left: i18n._(msg`left`),
+            over: i18n._(msg`over`),
+            daysLeft: i18n._(msg`days left`),
+            noBudget: i18n._(msg`No active budget`),
+            expense: i18n._(msg`Expense`),
+            income: i18n._(msg`Income`),
+            transfer: i18n._(msg`Transfer`),
+            empty: i18n._(msg`No accounts yet`)
+        };
+    }
+
+    private buildPalette(): WidgetPaletteInterface {
+        return { light: this.buildThemeColors(light), dark: this.buildThemeColors(dark) };
+    }
+
+    private buildThemeColors(theme: typeof light): WidgetThemeColorsInterface {
+        return {
+            background: this.toHexColor(theme['--color-primary-reverse']),
+            warning: this.toHexColor(theme['--color-dark-warning-foreground']),
+            primary: this.toHexColor(theme['--color-primary']),
+            secondary: this.toHexColor(theme['--color-secondary-foreground']),
+            positive: this.toHexColor(theme['--color-positive-foreground']),
+            destructive: this.toHexColor(theme['--color-destructive-foreground'])
+        };
+    }
+
+    private toHexColor(value: string): string {
+        const channels = /(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)/u.exec(value);
+
+        if (!isDefined(channels)) {
+            return '#000000';
+        }
+
+        return `#${channels
+            .slice(1, 4)
+            .map(channel => Math.round(Number(channel)).toString(16).padStart(2, '0'))
+            .join('')}`;
+    }
+
+    private async buildNetWorth(
+        instrument: InstrumentEntityInterface,
+        language: LanguageEnum,
+        decimalPlaces: number
+    ): Promise<WidgetNetWorthSnapshotInterface | null> {
+        const [netWorthRows, homeRows, monthRows] = await Promise.all([
+            accountBalanceRepository.getNetWorth(instrument.id),
+            accountBalanceRepository.getHomeAccountRows(instrument.id),
+            statisticsRepository.getTotalIncomeAndExpenseQuery(
+                { ...DEFAULT_TRANSACTION_FILTER, date: { from: startOfMonth(new Date()), to: null } },
+                instrument.id
+            )
+        ]);
+
+        if (!isNotEmptyArray(homeRows)) {
+            return null;
+        }
+
+        const total = convertFromMicroUnits(netWorthRows.at(0)?.netWorth ?? 0);
+        const monthlyNet = convertFromMicroUnits((monthRows.at(0)?.income ?? 0) - (monthRows.at(0)?.expense ?? 0));
+
+        return {
+            formattedTotal: this.formatAmount(total, instrument, language, decimalPlaces),
+            formattedDelta: this.formatDelta(monthlyNet, instrument, language, decimalPlaces),
+            deltaDirection: this.resolveDeltaDirection(monthlyNet),
+            accountTypes: this.buildAccountTypeTotals(homeRows, instrument, language, decimalPlaces),
+            history: await this.buildHistory(total)
+        };
+    }
+
+    private buildAccountTypeTotals(
+        rows: Awaited<ReturnType<typeof accountBalanceRepository.getHomeAccountRows>>,
+        instrument: InstrumentEntityInterface,
+        language: LanguageEnum,
+        decimalPlaces: number
+    ): readonly WidgetAccountTypeTotalInterface[] {
+        const totals = new Map<AccountTypeEnum, number>();
+
+        rows.filter(row => row.account.includeInNetWorth && row.account.isActive).forEach(row => {
+            totals.set(row.account.type, (totals.get(row.account.type) ?? 0) + convertFromMicroUnits(row.convertedBalance));
+        });
+
+        return [...totals.entries()]
+            .filter(([, amount]) => amount !== 0)
+            .sort(([, first], [, second]) => Math.abs(second) - Math.abs(first))
+            .slice(0, WidgetSnapshotService.TOP_ACCOUNT_TYPE_COUNT)
+            .map(([type, amount]) => ({
+                label: i18n._(ACCOUNT_TYPE[type]),
+                formattedTotal: this.formatAmount(amount, instrument, language, decimalPlaces)
+            }));
+    }
+
+    private async buildHistory(total: number): Promise<readonly number[]> {
+        const previous = await this.readPreviousSnapshot();
+        const history = [...(previous?.netWorth?.history ?? [])];
+        const isSameDay =
+            isDefined(previous) &&
+            new Date(previous.generatedAtMs).toDateString() === new Date().toDateString() &&
+            isNotEmptyArray(history);
+
+        if (isSameDay) {
+            history[history.length - 1] = total;
+        } else {
+            history.push(total);
+        }
+
+        return history.slice(-WidgetSnapshotService.HISTORY_LIMIT);
+    }
+
+    private async readPreviousSnapshot(): Promise<WidgetSnapshotHistoryType | null> {
+        const raw = await readWidgetSnapshot();
+
+        if (!isDefined(raw)) {
+            return null;
+        }
+
+        try {
+            const parsed = WidgetSnapshotHistorySchema.safeParse(JSON.parse(raw));
+
+            return parsed.success ? parsed.data : null;
+        } catch {
+            return null;
+        }
+    }
+
+    private async buildBudget(language: LanguageEnum, decimalPlaces: number): Promise<WidgetBudgetSnapshotInterface | null> {
+        const budget = await budgetRepository.getActive();
+
+        if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId) || !isPositiveNumber(budget.overallLimit)) {
+            return null;
+        }
+
+        const { periodStart, nextPeriodStart } = budgetPeriodService.computePeriodWindow(
+            budget.periodStartDay,
+            budget.useLastDayOfMonth,
+            new Date()
+        );
+        const [entries, limits, instrument] = await Promise.all([
+            budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId),
+            budgetCategoryLimitRepository.getByBudget(budget.id),
+            instrumentRepository.findByIdAsync(budget.instrumentId)
+        ]);
+        const spent = budgetSpentService.computeSpent(entries, budget.instrumentId);
+        const symbol = instrument?.symbol ?? DEFAULT_INSTRUMENT.symbol;
+        const spentAmount = convertFromMicroUnits(spent.spentOverall);
+        const limitAmount = convertFromMicroUnits(budget.overallLimit);
+        const daysRemaining = Math.max(differenceInCalendarDays(budgetPeriodService.getInclusiveEnd(nextPeriodStart), new Date()) + 1, 1);
+
+        return {
+            formattedSpent: this.formatWithSymbol(spentAmount, symbol, language, decimalPlaces),
+            formattedLimit: this.formatWithSymbol(limitAmount, symbol, language, decimalPlaces),
+            formattedRemaining: this.formatWithSymbol(Math.abs(limitAmount - spentAmount), symbol, language, decimalPlaces),
+            progressRatio: spentAmount / limitAmount,
+            isOverLimit: spentAmount > limitAmount,
+            daysRemaining,
+            formattedSafePerDay: this.formatWithSymbol(
+                Math.max(limitAmount - spentAmount, 0) / daysRemaining,
+                symbol,
+                language,
+                decimalPlaces
+            ),
+            periodLabel: formatBudgetPeriodLabel(budget, this.buildMonthDayFormatter(language)),
+            categories: await this.buildBudgetCategories(limits, spent.spentByCategory, language)
+        };
+    }
+
+    private async buildRunway(
+        instrument: InstrumentEntityInterface,
+        language: LanguageEnum,
+        isCryptoIncluded: boolean
+    ): Promise<WidgetRunwaySnapshotInterface | null> {
+        const [series, liquidRows] = await Promise.all([
+            statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrument.id, RUNWAY_WINDOW_MONTHS),
+            accountBalanceRepository.getLiquidTotal(instrument.id, isCryptoIncluded)
+        ]);
+        const computation = computeRunway({
+            series,
+            liquid: liquidRows.at(0)?.total ?? 0,
+            irregularMonthlyAmount: 0,
+            referenceDate: new Date()
+        });
+
+        if (computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {
+            return null;
+        }
+
+        return { isPositive: computation.isPositive, label: this.buildRunwayLabel(computation, instrument, language) };
+    }
+
+    private buildRunwayLabel(
+        computation: ReturnType<typeof computeRunway>,
+        instrument: InstrumentEntityInterface,
+        language: LanguageEnum
+    ): string {
+        if (this.areAmountsMasked) {
+            return WidgetSnapshotService.MASKED_AMOUNT;
+        }
+
+        if (computation.isPositive) {
+            const formattedNet = this.formatWithSymbol(convertFromMicroUnits(computation.net), instrument.symbol, language, 0);
+
+            return i18n._(msg`+${formattedNet} / mo`);
+        }
+
+        const formattedMonths = new Intl.NumberFormat(languageToLocale(language)).format(Math.round(computation.runwayMonths ?? 0));
+
+        return i18n._(msg`≈ ${formattedMonths} mo`);
+    }
+
+    private buildMonthDayFormatter(language: LanguageEnum): (date: Date) => string {
+        const formatter = new Intl.DateTimeFormat(languageToLocale(language), { month: 'short', day: 'numeric' });
+
+        return date => formatter.format(date);
+    }
+
+    private async buildBudgetCategories(
+        limits: Awaited<ReturnType<typeof budgetCategoryLimitRepository.getByBudget>>,
+        spentByCategory: readonly BudgetCategorySpentInterface[],
+        language: LanguageEnum
+    ): Promise<readonly WidgetBudgetCategoryInterface[]> {
+        const ranked = limits
+            .filter(limit => isPositiveNumber(limit.limitAmount))
+            .map(limit => ({
+                categoryId: limit.categoryId,
+                progressRatio:
+                    convertFromMicroUnits(spentByCategory.find(entry => entry.categoryId === limit.categoryId)?.spent ?? 0) /
+                    convertFromMicroUnits(limit.limitAmount)
+            }))
+            .sort((first, second) => second.progressRatio - first.progressRatio)
+            .slice(0, WidgetSnapshotService.TOP_CATEGORY_COUNT);
+
+        return await Promise.all(ranked.map(entry => this.buildBudgetCategory(entry.categoryId, entry.progressRatio, language)));
+    }
+
+    private async buildBudgetCategory(
+        categoryId: number,
+        progressRatio: number,
+        language: LanguageEnum
+    ): Promise<WidgetBudgetCategoryInterface> {
+        const [category] = await categoryRepository.findById(categoryId, language);
+
+        return {
+            title: isDefined(category) ? category.title : i18n._(msg`Category`),
+            progressRatio,
+            isOverLimit: progressRatio >= 1
+        };
+    }
+
+    private formatWithSymbol(value: number, symbol: string, language: LanguageEnum, decimalPlaces: number): string {
+        if (this.areAmountsMasked) {
+            return WidgetSnapshotService.MASKED_AMOUNT;
+        }
+
+        return `${symbol}${new Intl.NumberFormat(languageToLocale(language), {
+            style: 'decimal',
+            minimumFractionDigits: decimalPlaces,
+            maximumFractionDigits: decimalPlaces
+        }).format(value)}`;
+    }
+
+    private formatAmount(value: number, instrument: InstrumentEntityInterface, language: LanguageEnum, decimalPlaces: number): string {
+        return this.formatWithSymbol(value, instrument.symbol, language, decimalPlaces);
+    }
+
+    private formatDelta(value: number, instrument: InstrumentEntityInterface, language: LanguageEnum, decimalPlaces: number): string {
+        if (this.areAmountsMasked) {
+            return WidgetSnapshotService.MASKED_AMOUNT;
+        }
+
+        return `${this.resolveDeltaPrefix(value)}${this.formatAmount(Math.abs(value), instrument, language, decimalPlaces)}`;
+    }
+
+    private resolveDeltaPrefix(value: number): string {
+        if (value > 0) {
+            return '+';
+        }
+
+        return value < 0 ? '-' : '';
+    }
+
+    private resolveDeltaDirection(value: number): WidgetDeltaDirectionEnum {
+        if (value > 0) {
+            return WidgetDeltaDirectionEnum.UP;
+        }
+
+        return value < 0 ? WidgetDeltaDirectionEnum.DOWN : WidgetDeltaDirectionEnum.FLAT;
+    }
+
+    private isDisabled(): boolean {
+        return this.isE2EApp() || !canPublishWidgetSnapshot();
+    }
+
+    private isE2EApp(): boolean {
+        return Constants.expoConfig?.extra?.[WidgetSnapshotService.APP_VARIANT_EXTRA_KEY] === WidgetSnapshotService.E2E_APP_VARIANT;
+    }
+}
+
+export const widgetSnapshotService = new WidgetSnapshotService();
