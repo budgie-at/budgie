@@ -81,19 +81,20 @@ describe('opening a debt from a funding account', () => {
         expect(readBalance(fundingAccount.id)).toBe(-expectedDebtBalance);
     });
 
-    it('stores the event in the debt instrument and the entry in the funding instrument', async () => {
+    it('keeps the entered target in the debt instrument and converts only the funding entry', async () => {
         const usdInstrument = await requireInstrument(CurrencyEnum.USD);
         const eurInstrument = await requireInstrument(CurrencyEnum.EUR);
-        await exchangeRateRepository.upsert(usdInstrument.id, eurInstrument.id, 0.5, 'test');
+        await exchangeRateRepository.upsert(eurInstrument.id, usdInstrument.id, 2, 'test');
 
         const fundingAccount = seed.account({ title: 'Euro account', type: AccountTypeEnum.BANK_SYNC, instrumentId: eurInstrument.id });
         const debtAccount = await openDebt(AccountDebtTypeEnum.LENT, fundingAccount, usdInstrument.id);
         const [entry] = readEntries(fundingAccount.id);
 
-        expect(entry.amount).toBe(OPENING_AMOUNT * PRECISION);
-        expect(debtAccount.targetBalance).toBe(2 * OPENING_AMOUNT * PRECISION);
-        expect(readDebtEvents(debtAccount.id)[0].amount).toBe(2 * OPENING_AMOUNT * PRECISION);
-        expect(readBalance(debtAccount.id)).toBe(2 * OPENING_AMOUNT * PRECISION);
+        expect(entry.amount).toBe((OPENING_AMOUNT / 2) * PRECISION);
+        expect(debtAccount.targetBalance).toBe(OPENING_AMOUNT * PRECISION);
+        expect(readDebtEvents(debtAccount.id)[0].amount).toBe(OPENING_AMOUNT * PRECISION);
+        expect(readBalance(debtAccount.id)).toBe(OPENING_AMOUNT * PRECISION);
+        expect(readBalance(fundingAccount.id)).toBe(-(OPENING_AMOUNT / 2) * PRECISION);
     });
 
     it('recomputes the debt ledger balance from events when all balances are truncated', async () => {
