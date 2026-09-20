@@ -85,6 +85,11 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async whenIdle(): Promise<void> {
+        await this.pendingBatchPromise.catch(emptyFn);
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     resume(): void {
         if (this.snapshot.state !== DrainerStateEnum.PAUSED) {
             return;
