@@ -53,12 +53,12 @@ class AccountDebtOpeningService {
     async openDebtWithFundingAccount(input: DebtAccountCreateInputInterface, fundingAccountId: number): Promise<AccountEntityInterface> {
         return transactionAsync(db, async tx => {
             const fundingAccount = await this.getAccountOrFail(fundingAccountId, tx);
-            const fundingAmount = this.getPositiveOpeningAmount(input.targetBalance);
-            const transaction = await this.createFundingTransaction(input, fundingAccountId, tx);
-            const entry = await this.createFundingEntry(transaction, fundingAccountId, fundingAmount, tx);
+            const targetAmount = this.getPositiveOpeningAmount(input.targetBalance);
             const account = await this.createZeroTargetDebtAccount(input, tx);
-            const conversion = await exchangeRatesService.convert(fundingAccount.instrumentId, account.instrumentId, fundingAmount);
-            const valuedAccount = await this.updateDebtTargetAmount(account, Math.round(conversion.amount), transaction.operatedAt, tx);
+            const conversion = await exchangeRatesService.convert(account.instrumentId, fundingAccount.instrumentId, targetAmount);
+            const transaction = await this.createFundingTransaction(input, fundingAccountId, tx);
+            const entry = await this.createFundingEntry(transaction, fundingAccountId, Math.round(conversion.amount), tx);
+            const valuedAccount = await this.updateDebtTargetAmount(account, targetAmount, transaction.operatedAt, tx);
 
             await debtEventRepository.create(
                 {
