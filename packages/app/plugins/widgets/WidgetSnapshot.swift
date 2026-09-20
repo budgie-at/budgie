@@ -1,4 +1,5 @@
 import Foundation
+import WidgetKit
 
 struct WidgetThemeColors: Codable {
     let background: String
@@ -103,7 +104,6 @@ struct NetWorthSnapshot: Codable {
     let formattedDelta: String
     let deltaDirection: String
     let accountTypes: [AccountTypeTotal]?
-    let history: [Double]
 }
 
 struct RunwaySnapshot: Codable {
@@ -164,5 +164,41 @@ enum SnapshotStore {
         }
 
         return FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: group)
+    }
+}
+
+struct WidgetSnapshotEntry: TimelineEntry {
+    let date: Date
+    let snapshot: WidgetSnapshot?
+
+    var strings: WidgetStrings {
+        snapshot?.strings ?? SnapshotStore.fallbackStrings
+    }
+}
+
+struct SnapshotProvider: TimelineProvider {
+    func placeholder(in context: Context) -> WidgetSnapshotEntry {
+        WidgetSnapshotEntry(date: Date(), snapshot: nil)
+    }
+
+    func getSnapshot(in context: Context, completion: @escaping (WidgetSnapshotEntry) -> Void) {
+        completion(WidgetSnapshotEntry(date: Date(), snapshot: SnapshotStore.load()))
+    }
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<WidgetSnapshotEntry>) -> Void) {
+        let now = Date()
+        let snapshot = SnapshotStore.load()
+        let nextMidnight = Calendar.current.nextDate(
+            after: now,
+            matching: DateComponents(hour: 0, minute: 0),
+            matchingPolicy: .nextTime
+        ) ?? now.addingTimeInterval(3600)
+
+        completion(
+            Timeline(
+                entries: [WidgetSnapshotEntry(date: now, snapshot: snapshot), WidgetSnapshotEntry(date: nextMidnight, snapshot: snapshot)],
+                policy: .atEnd
+            )
+        )
     }
 }

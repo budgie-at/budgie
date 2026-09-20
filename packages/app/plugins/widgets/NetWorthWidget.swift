@@ -1,42 +1,6 @@
 import SwiftUI
 import WidgetKit
 
-struct NetWorthEntry: TimelineEntry {
-    let date: Date
-    let snapshot: WidgetSnapshot?
-
-    var strings: WidgetStrings {
-        snapshot?.strings ?? SnapshotStore.fallbackStrings
-    }
-}
-
-struct NetWorthProvider: TimelineProvider {
-    func placeholder(in context: Context) -> NetWorthEntry {
-        NetWorthEntry(date: Date(), snapshot: nil)
-    }
-
-    func getSnapshot(in context: Context, completion: @escaping (NetWorthEntry) -> Void) {
-        completion(NetWorthEntry(date: Date(), snapshot: SnapshotStore.load()))
-    }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<NetWorthEntry>) -> Void) {
-        let now = Date()
-        let snapshot = SnapshotStore.load()
-        let nextMidnight = Calendar.current.nextDate(
-            after: now,
-            matching: DateComponents(hour: 0, minute: 0),
-            matchingPolicy: .nextTime
-        ) ?? now.addingTimeInterval(3600)
-
-        completion(
-            Timeline(
-                entries: [NetWorthEntry(date: now, snapshot: snapshot), NetWorthEntry(date: nextMidnight, snapshot: snapshot)],
-                policy: .atEnd
-            )
-        )
-    }
-}
-
 struct NetWorthDeltaText: View {
     let netWorth: NetWorthSnapshot
     let label: String
@@ -108,7 +72,7 @@ struct NetWorthAccountTypeRow: View {
 }
 
 struct NetWorthWidgetView: View {
-    let entry: NetWorthEntry
+    let entry: WidgetSnapshotEntry
     let isMedium: Bool
 
     @Environment(\.colorScheme) private var colorScheme
@@ -199,7 +163,7 @@ struct NetWorthWidgetView: View {
 
 struct NetWorthWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "BudgieNetWorth", provider: NetWorthProvider()) { entry in
+        StaticConfiguration(kind: "BudgieNetWorth", provider: SnapshotProvider()) { entry in
             NetWorthWidgetView(entry: entry, isMedium: false)
         }
         .configurationDisplayName("Net worth")
@@ -210,7 +174,7 @@ struct NetWorthWidget: Widget {
 
 struct NetWorthMediumWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "BudgieNetWorthMedium", provider: NetWorthProvider()) { entry in
+        StaticConfiguration(kind: "BudgieNetWorthMedium", provider: SnapshotProvider()) { entry in
             NetWorthWidgetView(entry: entry, isMedium: true)
         }
         .configurationDisplayName("Net worth breakdown")

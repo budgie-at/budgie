@@ -10,7 +10,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { canPublishWidgetSnapshot, clearWidgetSnapshot, publishWidgetSnapshot, readWidgetSnapshot } from '../../../modules/widget-bridge';
+import { canPublishWidgetSnapshot, clearWidgetSnapshot, publishWidgetSnapshot } from '../../../modules/widget-bridge';
 import {
     accountBalanceRepository,
     budgetCategoryLimitRepository,
@@ -33,7 +33,6 @@ import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.
 import { dark, light } from '../../theme/provider/theme.provider';
 import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant';
 import { WidgetDeltaDirectionEnum } from '../enum/widget-delta-direction.enum';
-import { WidgetSnapshotHistorySchema } from '../schema/widget-snapshot-history.schema';
 
 import type { WidgetAccountTypeTotalInterface } from '../interface/widget-account-type-total.interface';
 import type { WidgetBudgetCategoryInterface } from '../interface/widget-budget-category.interface';
@@ -44,7 +43,6 @@ import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-s
 import type { WidgetSnapshotStringsInterface } from '../interface/widget-snapshot-strings.interface';
 import type { WidgetSnapshotInterface } from '../interface/widget-snapshot.interface';
 import type { WidgetThemeColorsInterface } from '../interface/widget-theme-colors.interface';
-import type { WidgetSnapshotHistoryType } from '../schema/widget-snapshot-history.schema';
 import type { BudgetCategorySpentInterface } from '@budgie/budget';
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
@@ -54,7 +52,6 @@ class WidgetSnapshotService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
     private static readonly PUBLISH_DEBOUNCE_MS = 2_000;
     private static readonly SNAPSHOT_VERSION = 1;
-    private static readonly HISTORY_LIMIT = 30;
     private static readonly TOP_CATEGORY_COUNT = 3;
     private static readonly TOP_ACCOUNT_TYPE_COUNT = 4;
     private static readonly MASKED_AMOUNT = '•••';
@@ -62,7 +59,6 @@ class WidgetSnapshotService {
     private isPublishing = false;
     private areAmountsMasked = false;
     private debounceTimer: ReturnType<typeof setTimeout> | null = null;
-    private unsubscribeDatabaseRefresh: () => void = emptyFn;
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     start(): void {
@@ -70,15 +66,8 @@ class WidgetSnapshotService {
             return;
         }
 
-        this.unsubscribeDatabaseRefresh = databaseRefreshService.subscribe(this.schedulePublish);
+        databaseRefreshService.subscribe(this.schedulePublish);
         this.schedulePublish();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    stop(): void {
-        this.unsubscribeDatabaseRefresh();
-        this.unsubscribeDatabaseRefresh = emptyFn;
-        this.cancelScheduledPublish();
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -223,17 +212,16 @@ class WidgetSnapshotService {
         const monthlyNet = convertFromMicroUnits((monthRows.at(0)?.income ?? 0) - (monthRows.at(0)?.expense ?? 0));
 
         return {
-            formattedTotal: this.formatAmount(total, instrument, language, decimalPlaces),
-            formattedDelta: this.formatDelta(monthlyNet, instrument, language, decimalPlaces),
+            formattedTotal: this.formatWithSymbol(total, instrument.symbol, language, decimalPlaces),
+            formattedDelta: this.formatDelta(monthlyNet, instrument.symbol, language, decimalPlaces),
             deltaDirection: this.resolveDeltaDirection(monthlyNet),
-            accountTypes: this.buildAccountTypeTotals(homeRows, instrument, language, decimalPlaces),
-            history: await this.buildHistory(total)
+            accountTypes: this.buildAccountTypeTotals(homeRows, instrument.symbol, language, decimalPlaces)
         };
     }
 
     private buildAccountTypeTotals(
         rows: Awaited<ReturnType<typeof accountBalanceRepository.getHomeAccountRows>>,
-        instrument: InstrumentEntityInterface,
+        symbol: string,
         language: LanguageEnum,
         decimalPlaces: number
     ): readonly WidgetAccountTypeTotalInterface[] {
@@ -249,41 +237,8 @@ class WidgetSnapshotService {
             .slice(0, WidgetSnapshotService.TOP_ACCOUNT_TYPE_COUNT)
             .map(([type, amount]) => ({
                 label: i18n._(ACCOUNT_TYPE[type]),
-                formattedTotal: this.formatAmount(amount, instrument, language, decimalPlaces)
+                formattedTotal: this.formatWithSymbol(amount, symbol, language, decimalPlaces)
             }));
-    }
-
-    private async buildHistory(total: number): Promise<readonly number[]> {
-        const previous = await this.readPreviousSnapshot();
-        const history = [...(previous?.netWorth?.history ?? [])];
-        const isSameDay =
-            isDefined(previous) &&
-            new Date(previous.generatedAtMs).toDateString() === new Date().toDateString() &&
-            isNotEmptyArray(history);
-
-        if (isSameDay) {
-            history[history.length - 1] = total;
-        } else {
-            history.push(total);
-        }
-
-        return history.slice(-WidgetSnapshotService.HISTORY_LIMIT);
-    }
-
-    private async readPreviousSnapshot(): Promise<WidgetSnapshotHistoryType | null> {
-        const raw = await readWidgetSnapshot();
-
-        if (!isDefined(raw)) {
-            return null;
-        }
-
-        try {
-            const parsed = WidgetSnapshotHistorySchema.safeParse(JSON.parse(raw));
-
-            return parsed.success ? parsed.data : null;
-        } catch {
-            return null;
-        }
     }
 
     private async buildBudget(language: LanguageEnum, decimalPlaces: number): Promise<WidgetBudgetSnapshotInterface | null> {
@@ -347,20 +302,16 @@ class WidgetSnapshotService {
             return null;
         }
 
-        return { isPositive: computation.isPositive, label: this.buildRunwayLabel(computation, instrument, language) };
+        return { isPositive: computation.isPositive, label: this.buildRunwayLabel(computation, instrument.symbol, language) };
     }
 
-    private buildRunwayLabel(
-        computation: ReturnType<typeof computeRunway>,
-        instrument: InstrumentEntityInterface,
-        language: LanguageEnum
-    ): string {
+    private buildRunwayLabel(computation: ReturnType<typeof computeRunway>, symbol: string, language: LanguageEnum): string {
         if (this.areAmountsMasked) {
             return WidgetSnapshotService.MASKED_AMOUNT;
         }
 
         if (computation.isPositive) {
-            const formattedNet = this.formatWithSymbol(convertFromMicroUnits(computation.net), instrument.symbol, language, 0);
+            const formattedNet = this.formatWithSymbol(convertFromMicroUnits(computation.net), symbol, language, 0);
 
             return i18n._(msg`+${formattedNet} / mo`);
         }
@@ -421,16 +372,12 @@ class WidgetSnapshotService {
         }).format(value)}`;
     }
 
-    private formatAmount(value: number, instrument: InstrumentEntityInterface, language: LanguageEnum, decimalPlaces: number): string {
-        return this.formatWithSymbol(value, instrument.symbol, language, decimalPlaces);
-    }
-
-    private formatDelta(value: number, instrument: InstrumentEntityInterface, language: LanguageEnum, decimalPlaces: number): string {
+    private formatDelta(value: number, symbol: string, language: LanguageEnum, decimalPlaces: number): string {
         if (this.areAmountsMasked) {
             return WidgetSnapshotService.MASKED_AMOUNT;
         }
 
-        return `${this.resolveDeltaPrefix(value)}${this.formatAmount(Math.abs(value), instrument, language, decimalPlaces)}`;
+        return `${this.resolveDeltaPrefix(value)}${this.formatWithSymbol(Math.abs(value), symbol, language, decimalPlaces)}`;
     }
 
     private resolveDeltaPrefix(value: number): string {
