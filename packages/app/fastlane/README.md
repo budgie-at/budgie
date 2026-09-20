@@ -185,6 +185,20 @@ missing from either.
 
 Keywords are comma-separated with no spaces after the commas.
 
+## CI contract
+
+`native-publish.yml` runs `fastlane store_preflight` as the pre-submit command
+on both platforms, so a broken tree fails in seconds instead of after the build
+and submission, then `fastlane <platform> <platform>_metadata` after submit,
+adding `<platform>_screenshots` when the `push_screenshots` dispatch input is
+`true`. The Android half stays inert until `enable-android: true`
+(budgie-at/budgie#1148).
+
+`.github/scripts/check-store-metadata.sh` mirrors the field budgets and the
+keywords rule on every pull request, without fastlane or Ruby.
+`store_preflight` stays the release-time authority: only it checks the resolved
+screenshot variant and the PNG slot sizes.
+
 ## Refresh procedure
 
 1. Build the E2E app and capture on a Mac — see
