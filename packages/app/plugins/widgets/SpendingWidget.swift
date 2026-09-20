@@ -1,42 +1,6 @@
 import SwiftUI
 import WidgetKit
 
-struct SpendingEntry: TimelineEntry {
-    let date: Date
-    let snapshot: WidgetSnapshot?
-
-    var strings: WidgetStrings {
-        snapshot?.strings ?? SnapshotStore.fallbackStrings
-    }
-}
-
-struct SpendingProvider: TimelineProvider {
-    func placeholder(in context: Context) -> SpendingEntry {
-        SpendingEntry(date: Date(), snapshot: nil)
-    }
-
-    func getSnapshot(in context: Context, completion: @escaping (SpendingEntry) -> Void) {
-        completion(SpendingEntry(date: Date(), snapshot: SnapshotStore.load()))
-    }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<SpendingEntry>) -> Void) {
-        let now = Date()
-        let snapshot = SnapshotStore.load()
-        let nextMidnight = Calendar.current.nextDate(
-            after: now,
-            matching: DateComponents(hour: 0, minute: 0),
-            matchingPolicy: .nextTime
-        ) ?? now.addingTimeInterval(3600)
-
-        completion(
-            Timeline(
-                entries: [SpendingEntry(date: now, snapshot: snapshot), SpendingEntry(date: nextMidnight, snapshot: snapshot)],
-                policy: .atEnd
-            )
-        )
-    }
-}
-
 struct SpendingProgressRing: View {
     let budget: BudgetSnapshot
     let palette: WidgetPalette
@@ -83,7 +47,7 @@ struct SpendingCategoryRow: View {
 }
 
 struct SpendingWidgetView: View {
-    let entry: SpendingEntry
+    let entry: WidgetSnapshotEntry
     let isMedium: Bool
 
     @Environment(\.colorScheme) private var colorScheme
@@ -192,7 +156,7 @@ struct SpendingWidgetView: View {
 
 struct SpendingWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "BudgieSpending", provider: SpendingProvider()) { entry in
+        StaticConfiguration(kind: "BudgieSpending", provider: SnapshotProvider()) { entry in
             SpendingWidgetView(entry: entry, isMedium: false)
         }
         .configurationDisplayName("Budget")
@@ -203,7 +167,7 @@ struct SpendingWidget: Widget {
 
 struct SpendingMediumWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "BudgieSpendingMedium", provider: SpendingProvider()) { entry in
+        StaticConfiguration(kind: "BudgieSpendingMedium", provider: SnapshotProvider()) { entry in
             SpendingWidgetView(entry: entry, isMedium: true)
         }
         .configurationDisplayName("Budget by category")

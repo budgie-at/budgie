@@ -29,8 +29,4 @@ enum WidgetLinks {
     static var createTransfer: URL? {
         route("create-transaction/transfer")
     }
-
-    static func createExpense(categoryId: Int) -> URL? {
-        route("create-transaction/expense?categoryId=\(categoryId)")
-    }
 }

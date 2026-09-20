@@ -2,29 +2,6 @@ import SwiftUI
 import UIKit
 import WidgetKit
 
-struct QuickAddEntry: TimelineEntry {
-    let date: Date
-    let snapshot: WidgetSnapshot?
-
-    var strings: WidgetStrings {
-        snapshot?.strings ?? SnapshotStore.fallbackStrings
-    }
-}
-
-struct QuickAddProvider: TimelineProvider {
-    func placeholder(in context: Context) -> QuickAddEntry {
-        QuickAddEntry(date: Date(), snapshot: nil)
-    }
-
-    func getSnapshot(in context: Context, completion: @escaping (QuickAddEntry) -> Void) {
-        completion(QuickAddEntry(date: Date(), snapshot: SnapshotStore.load()))
-    }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<QuickAddEntry>) -> Void) {
-        completion(Timeline(entries: [QuickAddEntry(date: Date(), snapshot: SnapshotStore.load())], policy: .never))
-    }
-}
-
 struct QuickAddActionTile: View {
     let title: String
     let symbolName: String
@@ -92,7 +69,7 @@ struct QuickAddLogoTile: View {
 }
 
 struct QuickAddWidgetView: View {
-    let entry: QuickAddEntry
+    let entry: WidgetSnapshotEntry
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -135,7 +112,7 @@ struct QuickAddWidgetView: View {
 
 struct QuickAddWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "BudgieQuickAdd", provider: QuickAddProvider()) { entry in
+        StaticConfiguration(kind: "BudgieQuickAdd", provider: SnapshotProvider()) { entry in
             QuickAddWidgetView(entry: entry)
         }
         .configurationDisplayName("Quick add")

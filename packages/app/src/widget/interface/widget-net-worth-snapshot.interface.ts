@@ -6,5 +6,4 @@ export interface WidgetNetWorthSnapshotInterface {
     readonly formattedDelta: string;
     readonly deltaDirection: WidgetDeltaDirectionEnum;
     readonly accountTypes: readonly WidgetAccountTypeTotalInterface[];
-    readonly history: readonly number[];
 }
