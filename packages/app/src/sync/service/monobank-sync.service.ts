@@ -167,28 +167,22 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
     }
 
     @Log(
-        (changedTransactions, runGeneration) =>
-            `enter runGeneration=${runGeneration} changedTransactionCount=${changedTransactions.length}`,
-        (result, changedTransactions, runGeneration) =>
-            `done runGeneration=${runGeneration} changedTransactionCount=${changedTransactions.length} result=${String(result)}`,
-        (error, changedTransactions, runGeneration) =>
-            `throw runGeneration=${runGeneration} changedTransactionCount=${changedTransactions.length} error=${getErrorMessage(error)}`
+        changedTransactions => `enter changedTransactionCount=${changedTransactions.length}`,
+        (result, changedTransactions) => `done changedTransactionCount=${changedTransactions.length} result=${String(result)}`,
+        (error, changedTransactions) => `throw changedTransactionCount=${changedTransactions.length} error=${getErrorMessage(error)}`
     )
     private async reconcileChangedTransactions(
-        changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>,
-        runGeneration: number
+        changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>
     ): Promise<void> {
         const consolidationScope = consolidationScopeService.buildFromTransactions(changedTransactions);
-        if (!this.isRunCurrent(runGeneration) || !isDefined(consolidationScope)) {
+        if (!isDefined(consolidationScope)) {
             return;
         }
 
         try {
             await transferConsolidationService.consolidate(consolidationScope);
         } finally {
-            if (this.isRunCurrent(runGeneration)) {
-                transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
-            }
+            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
         }
     }
 
@@ -219,7 +213,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
         const createdTransactions = await this.createNewTransactions(newTransactions, accountId, runGeneration);
         const updatedTransactionCount = await this.updateExistingTransactions(existingTransactions, accountId, runGeneration);
-        if (this.isRunCurrent(runGeneration) && isPositiveNumber(updatedTransactionCount)) {
+        if (isPositiveNumber(updatedTransactionCount)) {
             await transactionService.updateAllBalances();
         }
 
@@ -259,7 +253,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         const postCreateTransactionIds = prepared.postCreateIndexes.map(index => createdTransactions[index]?.id).filter(isDefined);
         const postCreateTransactionInputs = prepared.postCreateIndexes.map(index => prepared.transactionInputs[index]).filter(isDefined);
 
-        if (this.isRunCurrent(runGeneration) && isNotEmptyArray(postCreateTransactionIds)) {
+        if (isNotEmptyArray(postCreateTransactionIds)) {
             ruleApplicationDrainerService.enqueueTransactions(postCreateTransactionIds, postCreateTransactionInputs);
         }
 
@@ -284,10 +278,6 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         }
 
         for (const bankTransaction of existingTransactions) {
-            if (!this.isRunCurrent(runGeneration)) {
-                return 0;
-            }
-
             await transactionService.update(await mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
             await microPause();
         }
@@ -382,11 +372,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         }
 
         const changedTransactions = await this.processFetchedTransactions(result.transactions, accountId, runGeneration);
-        if (!this.isRunCurrent(runGeneration)) {
-            return;
-        }
-
-        await this.reconcileChangedTransactions(changedTransactions, runGeneration);
+        await this.reconcileChangedTransactions(changedTransactions);
 
         await microPause();
     }
