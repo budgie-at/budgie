@@ -377,13 +377,9 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
 
         try {
             await this.afterSyncRun();
-        } catch (error: unknown) {
+        } finally {
             this.completeSyncRun(runGeneration);
-
-            throw error;
         }
-
-        this.completeSyncRun(runGeneration);
     }
 
     private completeSyncRun(runGeneration: number): void {

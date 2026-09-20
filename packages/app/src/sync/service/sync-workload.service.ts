@@ -149,13 +149,9 @@ class SyncWorkloadService {
     private async drain(drainGeneration: number): Promise<void> {
         try {
             await this.drainQueuedTasks(drainGeneration);
-        } catch (error: unknown) {
+        } finally {
             this.finishDrain(drainGeneration);
-
-            throw error;
         }
-
-        this.finishDrain(drainGeneration);
     }
 
     private async drainQueuedTasks(drainGeneration: number): Promise<void> {
