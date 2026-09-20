@@ -7,11 +7,11 @@ import {
     AccountTypeEnum,
     BANK_FEE_CATEGORY_ID,
     CategorySourceEnum,
-    DEBT_PAYMENT_CATEGORY_ID,
     DebtEventDirectionEnum,
     DebtEventEntityTable,
     DebtEventSourceEnum,
     ExternalSourceEnum,
+    LENDING_CATEGORY_ID,
     PRECISION,
     TransactionEntryEntityTable,
     TransactionEntryKindEnum,
@@ -195,7 +195,7 @@ describe('debt settlement fee entries', () => {
         const updatedCreditEntry = fetchEntryById(creditEntry.id);
         const updatedFeeEntry = fetchEntryById(feeEntry.id);
 
-        expect(updatedCreditEntry?.categoryId).toBe(DEBT_PAYMENT_CATEGORY_ID);
+        expect(updatedCreditEntry?.categoryId).toBe(LENDING_CATEGORY_ID);
         expect(updatedCreditEntry?.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
         expect(updatedFeeEntry?.categoryId).toBe(BANK_FEE_CATEGORY_ID);
         expect(updatedFeeEntry?.categorySource).toBe(CategorySourceEnum.FEE);
