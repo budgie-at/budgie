@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.71.2](https://github.com/budgie-at/budgie/compare/v6.71.1...v6.71.2) (2026-09-20)
+
+
+### Bug Fixes
+
+* **app:** skip stale residency suspension after AppState resume race ([49eb8c6](https://github.com/budgie-at/budgie/commit/49eb8c6ae71ba271e3546aad27ce0e1aa5bb3ef9))
+* **app:** wait for in-flight AI batches before releasing model contexts ([e9c0272](https://github.com/budgie-at/budgie/commit/e9c02726d1b18867ac341fa222abaad887f91f0a))
+
+
+
+
+
 ## [6.71.1](https://github.com/budgie-at/budgie/compare/v6.71.0...v6.71.1) (2026-09-20)
 
 
