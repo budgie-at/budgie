@@ -4,6 +4,7 @@ import {
     type AccountBalanceEntityInterface,
     type AccountEntityInterface,
     type DB,
+    getDebtLedgerBalance,
     transactionAsync
 } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
@@ -11,7 +12,7 @@ import { i18n } from '@lingui/core';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountBalanceRepository, accountRepository, db } from '../../@generic/drizzle/db/db';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
@@ -103,9 +104,11 @@ class AccountBalanceIncrementalService {
         const currentBalances = await accountBalanceRepository.getByAccountIds(accountIds, tx);
         const deltaMap = await accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds, tx);
 
+        const debtLedgerBalances = await this.getDebtLedgerBalances(accounts, tx);
+
         const balancesMap = this.buildBalancesMap(currentBalances);
 
-        const balancesToInsert = accounts.map(account => this.buildBalanceInput(account.id, balancesMap, deltaMap));
+        const balancesToInsert = accounts.map(account => this.buildBalanceInput(account, balancesMap, deltaMap, debtLedgerBalances));
 
         await this.upsertBalances(balancesToInsert, tx);
         this.assertDepositBalancesNotWorsened(balancesToInsert, previousDepositBalances);
@@ -120,18 +123,48 @@ class AccountBalanceIncrementalService {
     }
 
     private buildBalanceInput(
-        accountId: number,
+        account: AccountEntityInterface,
         balancesMap: Map<number, number>,
-        deltaMap: Map<number, number>
+        deltaMap: Map<number, number>,
+        debtLedgerBalances: Map<number, number>
     ): AccountBalanceCreateEntityInterface {
-        const base = balancesMap.get(accountId) ?? 0;
-        const delta = deltaMap.get(accountId) ?? 0;
+        const debtLedgerBalance = debtLedgerBalances.get(account.id);
 
         return {
-            amount: base + delta,
-            accountId,
+            amount: debtLedgerBalance ?? (balancesMap.get(account.id) ?? 0) + (deltaMap.get(account.id) ?? 0),
+            accountId: account.id,
             updatedAt: new Date()
         };
+    }
+
+    private async getDebtLedgerBalances(accounts: AccountEntityInterface[], tx?: DB): Promise<Map<number, number>> {
+        const debtAccounts = accounts.filter(account => account.type === AccountTypeEnum.DEBT);
+
+        if (isEmptyArray(debtAccounts)) {
+            return new Map();
+        }
+
+        const ledgerAmounts = await accountBalanceRepository.getDebtLedgerAmounts(
+            debtAccounts.map(({ id }) => id),
+            tx
+        );
+        const ledgerAmountsMap = new Map(ledgerAmounts.map(ledgerAmount => [ledgerAmount.accountId, ledgerAmount]));
+
+        return debtAccounts.reduce((map, account) => {
+            const ledgerAmount = ledgerAmountsMap.get(account.id);
+            const openedAmount = ledgerAmount?.openedAmount ?? 0;
+
+            map.set(
+                account.id,
+                getDebtLedgerBalance(
+                    ledgerAmount?.closedAmount ?? 0,
+                    account.debtType,
+                    isPositiveNumber(openedAmount) ? openedAmount : account.targetBalance
+                )
+            );
+
+            return map;
+        }, new Map<number, number>());
     }
 
     private async truncateBalances(truncate: boolean, tx?: DB): Promise<void> {
