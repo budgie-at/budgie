@@ -3,11 +3,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { buildTestDb, createTestRepositories } from '@budgie-at/test-kit';
-import {
-    DebtEventDirectionEnum,
-    DebtEventSourceEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { DebtEventDirectionEnum, DebtEventSourceEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { expect } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';

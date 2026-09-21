@@ -150,7 +150,7 @@ describe('debt/debt-v2-money-legs-migration', () => {
             'INCOME'
         );
         expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.SAME_INSTRUMENT_EVENT_ID)).toMatchObject({
-            amount: DebtV2LegacyShapeFixture.SAME_INSTRUMENT_REPAYMENT_AMOUNT,
+            amount: DebtV2LegacyShapeFixture.SAME_INSTRUMENT_REAL_EVENT_AMOUNT,
             direction: 'CLOSE',
             transactionEntryId: DebtV2LegacyShapeFixture.SAME_INSTRUMENT_FUNDING_ENTRY_ID
         });
@@ -192,7 +192,10 @@ describe('debt/debt-v2-money-legs-migration', () => {
     });
 
     it('rebuilds debt ledger balances from events and leaves funding balances alone', () => {
-        expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.LENT_ACCOUNT_ID)?.amount).toBe(800_000_000);
+        const lentBalanceAmount = findBalance(firstRun.balances, DebtV2LegacyShapeFixture.LENT_ACCOUNT_ID)?.amount;
+
+        expect(lentBalanceAmount).toBe(800_000_000);
+        expect(Number.isInteger(lentBalanceAmount)).toBe(true);
         expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.BORROW_ACCOUNT_ID)?.amount).toBe(-380_000_000);
         expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.MIRROR_ACCOUNT_ID)?.amount).toBe(1_600_000_000);
         expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.USD_FUNDING_ACCOUNT_ID)?.amount).toBe(
