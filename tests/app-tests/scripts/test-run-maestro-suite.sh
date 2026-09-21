@@ -40,6 +40,15 @@ exit 0
 EOF
 chmod +x "$TEMP_DIR/bin/xcrun"
 
+cat > "$TEMP_DIR/bin/simslim" <<'EOF'
+#!/bin/bash
+set -euo pipefail
+printf 'simslim %s\n' "$*" >> "$MOCK_XCRUN_LOG"
+[ "$1" = verify ] && exit 1
+exit 0
+EOF
+chmod +x "$TEMP_DIR/bin/simslim"
+
 cat > "$TEMP_DIR/bin/maestro" <<'EOF'
 #!/bin/bash
 set -euo pipefail

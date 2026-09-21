@@ -60,6 +60,9 @@ set -euo pipefail
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/slim-simulator.sh"
+
 CONFIG_PATH="$REPO_ROOT/.github/store-screenshots.config.json"
 OUTPUT_ROOT="$REPO_ROOT/packages/app/fastlane/screenshots"
 APP_PATH=''
@@ -318,7 +321,10 @@ boot_simulator() {
     xcrun simctl boot "$udid" 2>/dev/null || true
     perl -e 'alarm shift; exec @ARGV' "$BOOTSTATUS_TIMEOUT_SECONDS" xcrun simctl bootstatus "$udid" -b >/dev/null ||
         bootstatus_exit=$?
-    [ "$bootstatus_exit" -eq 0 ] && return 0
+    [ "$bootstatus_exit" -eq 0 ] && {
+        slim_simulator "$udid" || fail "simslim could not slim simulator '$udid'"
+        return 0
+    }
     if [ "$bootstatus_exit" -eq 142 ]; then
         fail "xcrun simctl bootstatus timed out after ${BOOTSTATUS_TIMEOUT_SECONDS}s waiting for simulator '$udid'; it is wedged"
     fi

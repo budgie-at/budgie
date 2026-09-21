@@ -143,6 +143,19 @@ printf '%s\n' "\$*" >> "$MAESTRO_LOG"
 EOF
 chmod +x "$STUB_BIN/maestro"
 
+# Stands in for simslim: reports drift so the slim path runs, records every call.
+SIMSLIM_BIN="$WORK_DIR/simslim-bin"
+SIMSLIM_LOG="$WORK_DIR/simslim.log"
+mkdir -p "$SIMSLIM_BIN"
+cat > "$SIMSLIM_BIN/simslim" <<EOF
+#!/bin/bash
+printf '%s\n' "\$*" >> "$SIMSLIM_LOG"
+[ "\$1" = 'verify' ] && exit 1
+exit 0
+EOF
+chmod +x "$SIMSLIM_BIN/simslim"
+PATH="$SIMSLIM_BIN:$PATH"
+
 SEED_HOOK="$WORK_DIR/seed.sh"
 cat > "$SEED_HOOK" <<EOF
 #!/bin/bash
@@ -175,6 +188,10 @@ assert_contains "$XCRUN_CALLS" 'simctl launch NEW-UDID com.vitalyiegorov.budgie.
 assert_contains "$XCRUN_CALLS" 'simctl openurl NEW-UDID budgie://transactions' 'the deep link is opened'
 assert_contains "$XCRUN_CALLS" "simctl io NEW-UDID screenshot $RUN_OUTPUT/raw/ios/iphone-17-pro-max/de/light/02-transactions.png" 'the screenshot lands in the fixed layout'
 assert_contains "$XCRUN_CALLS" 'simctl shutdown NEW-UDID' 'the simulator is shut down so its CoreSimulator workers are reclaimed'
+
+SIMSLIM_CALLS=$(cat "$SIMSLIM_LOG")
+assert_contains "$SIMSLIM_CALLS" 'verify NEW-UDID --profile' 'the booted simulator is checked against the committed slim profile'
+assert_contains "$SIMSLIM_CALLS" 'on NEW-UDID --no-reboot --profile' 'a drifted simulator is slimmed in place before any capture'
 
 REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 MAESTRO_CALLS=$(cat "$MAESTRO_LOG")
@@ -323,7 +340,7 @@ assert_contains "$SEED_FAIL_OUTPUT" '1 attempt(s)' 'a failed seed is not retried
 NO_MAESTRO_BIN="$WORK_DIR/no-maestro-bin"
 mkdir -p "$NO_MAESTRO_BIN"
 cp "$STUB_BIN/xcrun" "$NO_MAESTRO_BIN/xcrun"
-MINIMAL_PATH="$NO_MAESTRO_BIN:$(dirname "$(command -v jq)"):/usr/bin:/bin"
+MINIMAL_PATH="$NO_MAESTRO_BIN:$SIMSLIM_BIN:$(dirname "$(command -v jq)"):/usr/bin:/bin"
 NO_MAESTRO_OUTPUT=$(PATH="$MINIMAL_PATH" bash "$TARGET" \
     --config "$RUN_CONFIG" \
     --device 'iPhone 17 Pro Max' \

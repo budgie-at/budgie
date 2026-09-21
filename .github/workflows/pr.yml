@@ -228,7 +228,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v1.23.1 # v1.23.1
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v2.0.0 # v2.0.0
         with:
             app-dir: packages/app
             scheme: budgie
@@ -247,7 +247,7 @@ jobs:
         permissions:
             contents: read
             pull-requests: read
-        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@v1.23.1 # v1.23.1
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@v2.0.0 # v2.0.0
         with:
             working-directory: packages/app
             platforms: ios,android
@@ -264,7 +264,7 @@ jobs:
         name: iOS Maestro E2E
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.23.1 # v1.23.1
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v2.0.0 # v2.0.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -286,6 +286,8 @@ jobs:
             flow-retries: '1'
             maestro-version: '2.6.1'
             simulator-device: iPhone 17 Pro
+            simslim-version: '0.10.0'
+            simslim-sha256: eec00b27f0694fa899fb3bbc71362309a9da11ec670f430633cfae855eaf4a1d
             simulator-slim-profile: tests/app-tests/simslim.ci.json
             simulator-slim-repair: 'true'
             simulator-requires: push,universal-links
