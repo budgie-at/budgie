@@ -5,7 +5,6 @@ export interface WidgetSnapshotStringsInterface {
     readonly perDay: string;
     readonly left: string;
     readonly over: string;
-    readonly daysLeft: string;
     readonly noBudget: string;
     readonly expense: string;
     readonly income: string;

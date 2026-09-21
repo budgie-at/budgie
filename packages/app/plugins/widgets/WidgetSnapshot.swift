@@ -22,7 +22,6 @@ struct WidgetStrings: Codable {
     let perDay: String
     let left: String
     let over: String
-    let daysLeft: String
     let noBudget: String
     let expense: String
     let income: String
@@ -39,7 +38,6 @@ struct WidgetStrings: Codable {
         perDay = try container.decodeIfPresent(String.self, forKey: .perDay) ?? fallback.perDay
         left = try container.decodeIfPresent(String.self, forKey: .left) ?? fallback.left
         over = try container.decodeIfPresent(String.self, forKey: .over) ?? fallback.over
-        daysLeft = try container.decodeIfPresent(String.self, forKey: .daysLeft) ?? fallback.daysLeft
         noBudget = try container.decodeIfPresent(String.self, forKey: .noBudget) ?? fallback.noBudget
         expense = try container.decodeIfPresent(String.self, forKey: .expense) ?? fallback.expense
         income = try container.decodeIfPresent(String.self, forKey: .income) ?? fallback.income
@@ -54,7 +52,6 @@ struct WidgetStrings: Codable {
         perDay: String,
         left: String,
         over: String,
-        daysLeft: String,
         noBudget: String,
         expense: String,
         income: String,
@@ -67,7 +64,6 @@ struct WidgetStrings: Codable {
         self.perDay = perDay
         self.left = left
         self.over = over
-        self.daysLeft = daysLeft
         self.noBudget = noBudget
         self.expense = expense
         self.income = income
@@ -88,7 +84,7 @@ struct BudgetSnapshot: Codable {
     let formattedRemaining: String?
     let progressRatio: Double
     let isOverLimit: Bool
-    let daysRemaining: Int
+    let formattedDaysLeft: String
     let formattedSafePerDay: String
     let periodLabel: String
     let categories: [BudgetCategorySnapshot]
@@ -134,7 +130,6 @@ enum SnapshotStore {
         perDay: "per day",
         left: "left",
         over: "over",
-        daysLeft: "days left",
         noBudget: "No active budget",
         expense: "Expense",
         income: "Income",

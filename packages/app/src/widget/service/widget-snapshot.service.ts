@@ -2,7 +2,7 @@ import { budgetPeriodService, budgetSpentService } from '@budgie/budget';
 import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, LanguageEnum, RUNWAY_WINDOW_MONTHS } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
-import { msg } from '@lingui/core/macro';
+import { msg, plural } from '@lingui/core/macro';
 import { differenceInCalendarDays, startOfMonth } from 'date-fns';
 import * as BackgroundTask from 'expo-background-task';
 import Constants from 'expo-constants';
@@ -153,7 +153,6 @@ class WidgetSnapshotService {
             perDay: i18n._(msg`per day`),
             left: i18n._(msg`left`),
             over: i18n._(msg`over`),
-            daysLeft: i18n._(msg`days left`),
             noBudget: i18n._(msg`No active budget`),
             expense: i18n._(msg`Expense`),
             income: i18n._(msg`Income`),
@@ -270,7 +269,7 @@ class WidgetSnapshotService {
             formattedRemaining: this.formatWithSymbol(Math.abs(limitAmount - spentAmount), symbol, language, decimalPlaces),
             progressRatio: spentAmount / limitAmount,
             isOverLimit: spentAmount > limitAmount,
-            daysRemaining,
+            formattedDaysLeft: plural(daysRemaining, { one: '# day left', other: '# days left' }),
             formattedSafePerDay: this.formatWithSymbol(
                 Math.max(limitAmount - spentAmount, 0) / daysRemaining,
                 symbol,

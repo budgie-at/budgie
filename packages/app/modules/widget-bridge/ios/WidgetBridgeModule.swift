@@ -17,7 +17,10 @@ public final class WidgetBridgeModule: Module {
                 return false
             }
 
-            try Data(json.utf8).write(to: container.appendingPathComponent(Self.snapshotName), options: .atomic)
+            try Data(json.utf8).write(
+                to: container.appendingPathComponent(Self.snapshotName),
+                options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication]
+            )
             WidgetCenter.shared.reloadAllTimelines()
 
             return true
@@ -28,7 +31,13 @@ public final class WidgetBridgeModule: Module {
                 return false
             }
 
-            try? FileManager.default.removeItem(at: container.appendingPathComponent(Self.snapshotName))
+            do {
+                try FileManager.default.removeItem(at: container.appendingPathComponent(Self.snapshotName))
+            } catch let error as CocoaError where error.code == .fileNoSuchFile {
+            } catch {
+                return false
+            }
+
             WidgetCenter.shared.reloadAllTimelines()
 
             return true
