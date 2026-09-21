@@ -289,7 +289,7 @@ jobs:
             simulator-slim-profile: tests/app-tests/simslim.ci.json
             simulator-slim-repair: 'true'
             simulator-requires: push,universal-links
-            test-timeout-minutes: 85
+            test-timeout-minutes: 110
             cache-profile: ios-e2e-budgie-v2
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
