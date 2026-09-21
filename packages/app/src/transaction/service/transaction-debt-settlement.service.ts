@@ -1,10 +1,11 @@
 import {
     AccountDebtTypeEnum,
     AccountTypeEnum,
+    BORROWING_CATEGORY_ID,
     CategorySourceEnum,
-    DEBT_PAYMENT_CATEGORY_ID,
     DebtEventDirectionEnum,
     DebtEventSourceEnum,
+    LENDING_CATEGORY_ID,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -137,21 +138,23 @@ class TransactionDebtSettlementService {
     }
 
     @Log(
-        (transaction, primaryEntry) =>
-            `enter transactionId=${transaction.id} entryId=${primaryEntry.id} currentCategoryId=${primaryEntry.categoryId ?? 'null'}`,
-        (result, transaction) => `done assigned=${String(result)} transactionId=${transaction.id}`,
-        (error, transaction) => `throw transactionId=${transaction.id} error=${getErrorMessage(error)}`
+        (primaryEntry, debtAccount) =>
+            `enter transactionId=${primaryEntry.transactionId} entryId=${primaryEntry.id} currentCategoryId=${primaryEntry.categoryId ?? 'null'} debtAccountId=${debtAccount.id} debtType=${debtAccount.debtType}`,
+        (result, primaryEntry, debtAccount) => `done assigned=${String(result)} entryId=${primaryEntry.id} debtAccountId=${debtAccount.id}`,
+        (error, primaryEntry, debtAccount) =>
+            `throw entryId=${primaryEntry.id} debtAccountId=${debtAccount.id} error=${getErrorMessage(error)}`
     )
     private async assignDebtPaymentCategory(
-        transaction: Pick<TransactionWithEntriesEntityInterface, 'id' | 'type'>,
         primaryEntry: TransactionEntryEntityInterface,
+        debtAccount: Pick<AccountEntityInterface, 'id' | 'debtType'>,
         tx: DB
     ): Promise<boolean> {
-        if (!this.isCategorizableExpenseSettlement(transaction, primaryEntry)) {
+        if (isDefined(primaryEntry.categoryId)) {
             return false;
         }
 
-        const category = await categoryRepository.findActiveById(DEBT_PAYMENT_CATEGORY_ID, tx);
+        const categoryId = debtAccount.debtType === AccountDebtTypeEnum.LENT ? LENDING_CATEGORY_ID : BORROWING_CATEGORY_ID;
+        const category = await categoryRepository.findActiveById(categoryId, tx);
 
         if (!isDefined(category)) {
             return false;
@@ -159,7 +162,7 @@ class TransactionDebtSettlementService {
 
         await transactionEntryRepository.updateById(
             primaryEntry.id,
-            { categoryId: DEBT_PAYMENT_CATEGORY_ID, categorySource: CategorySourceEnum.DEBT_SETTLEMENT },
+            { categoryId, categorySource: CategorySourceEnum.DEBT_SETTLEMENT },
             tx
         );
 
@@ -187,7 +190,7 @@ class TransactionDebtSettlementService {
             tx
         );
         await transactionRepository.touchUpdatedAt(transaction.id, tx);
-        await this.assignDebtPaymentCategory(transaction, primaryEntry, tx);
+        await this.assignDebtPaymentCategory(primaryEntry, debtAccount, tx);
         await accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id], tx);
 
         return debtAccount;
@@ -242,21 +245,10 @@ class TransactionDebtSettlementService {
         return conversion.amount;
     }
 
-    private isCategorizableExpenseSettlement(
-        transaction: Pick<TransactionWithEntriesEntityInterface, 'type'>,
-        primaryEntry: Pick<TransactionEntryEntityInterface, 'categoryId'>
-    ): boolean {
-        return transaction.type === TransactionTypeEnum.EXPENSE && !isDefined(primaryEntry.categoryId);
-    }
-
     private async revertDebtPaymentCategory(transaction: TransactionWithEntriesEntityInterface, tx: DB): Promise<void> {
         const [primaryEntry] = this.getPrimaryEntries(transaction);
 
-        if (
-            !isDefined(primaryEntry) ||
-            primaryEntry.categoryId !== DEBT_PAYMENT_CATEGORY_ID ||
-            primaryEntry.categorySource !== CategorySourceEnum.DEBT_SETTLEMENT
-        ) {
+        if (!isDefined(primaryEntry) || primaryEntry.categorySource !== CategorySourceEnum.DEBT_SETTLEMENT) {
             return;
         }
 
