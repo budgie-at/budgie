@@ -41,9 +41,11 @@ appId: ${APP_ID}
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - assertVisible:
-    id: 'TransactionCard.Badge.Adjustment'
+    id: 'DebtAccountBalance.OutstandingAmount.${INCREASE_OUTSTANDING}'
 - assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
+    id: 'DebtAccountBalance.PaidAmount.${INCREASE_TO}'
+- assertNotVisible:
+    id: 'TransactionCard.Badge.Adjustment'
 
 - runFlow:
     file: open-visible-account-settings.flow.yaml
@@ -62,11 +64,11 @@ appId: ${APP_ID}
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
 - assertVisible:
+    id: 'DebtAccountBalance.OutstandingAmount.${DECREASE_OUTSTANDING}'
+- assertVisible:
+    id: 'DebtAccountBalance.PaidAmount.${DECREASE_TO}'
+- assertNotVisible:
     id: 'TransactionCard.Badge.Adjustment'
-- assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.${INCREASE_DELTA}'
-- assertVisible:
-    id: 'TransactionCard.AdjustmentAmount.${DECREASE_DELTA}'
 
 - runFlow: exit-account-details-to-home.flow.yaml
 

@@ -6,7 +6,6 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     getDebtClosedAmount,
-    getDebtLedgerBalance,
     transactionAsync
 } from '@budgie/contracts';
 
@@ -23,7 +22,6 @@ import {
 } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
@@ -76,10 +74,9 @@ class AccountService {
             );
             const valuedAccount = await updateDebtTargetBaseValuation(createdAccount, operatedAt, tx);
             const returnedAmount = convertToMicroUnits(input.currentBalance);
-            const ledgerBalance = convertFromMicroUnits(getDebtLedgerBalance(returnedAmount, input.debtType, targetBalance));
 
-            await this.adjustBalanceTo(createdAccount.id, ledgerBalance, tx, operatedAt);
             await this.syncManualDebtEvents(valuedAccount, returnedAmount, operatedAt, tx);
+            await accountBalanceIncrementalService.updateBalancesByAccountIds([valuedAccount.id], tx);
 
             return valuedAccount;
         });
@@ -230,6 +227,31 @@ class AccountService {
         }
     }
 
+    async syncManualDebtEvents(account: AccountEntityInterface, returnedAmount: number, operatedAt: Date, tx: DB): Promise<void> {
+        const debtEvents = await debtEventRepository.findByAccountId(account.id, tx);
+        const manualDebtEvents = debtEvents.filter(debtEvent => debtEvent.source === DebtEventSourceEnum.MANUAL);
+        const openedAmount = isPositiveNumber(account.targetBalance) ? account.targetBalance : 0;
+        const transactionOpenedAmount = debtEvents.reduce(
+            (sum, debtEvent) =>
+                debtEvent.source !== DebtEventSourceEnum.MANUAL && debtEvent.direction === DebtEventDirectionEnum.OPEN
+                    ? sum + debtEvent.amount
+                    : sum,
+            0
+        );
+
+        const manualOpenedAmount = Math.max(openedAmount - transactionOpenedAmount, 0);
+
+        await this.upsertManualDebtEvent(account, manualDebtEvents, DebtEventDirectionEnum.OPEN, manualOpenedAmount, operatedAt, tx);
+        await this.upsertManualDebtEvent(
+            account,
+            manualDebtEvents,
+            DebtEventDirectionEnum.CLOSE,
+            getDebtClosedAmount(returnedAmount, transactionOpenedAmount + manualOpenedAmount),
+            operatedAt,
+            tx
+        );
+    }
+
     private async unconsolidateActiveAutoByAccountId(id: number, tx: DB): Promise<void> {
         const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIds([id], tx);
 
@@ -259,12 +281,9 @@ class AccountService {
         const returnedAmount = isNumber(currentBalance)
             ? convertToMicroUnits(currentBalance)
             : await this.getDebtReturnedAmount(valuedAccount, tx);
-        const ledgerBalance = convertFromMicroUnits(
-            getDebtLedgerBalance(returnedAmount, valuedAccount.debtType, valuedAccount.targetBalance)
-        );
 
-        await this.adjustBalanceTo(valuedAccount.id, ledgerBalance, tx, operatedAt);
         await this.syncManualDebtEvents(valuedAccount, returnedAmount, operatedAt, tx);
+        await accountBalanceIncrementalService.updateBalancesByAccountIds([valuedAccount.id], tx);
 
         return valuedAccount;
     }
@@ -342,31 +361,6 @@ class AccountService {
         );
 
         await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro, updatedAt: new Date() }, tx);
-    }
-
-    private async syncManualDebtEvents(account: AccountEntityInterface, returnedAmount: number, operatedAt: Date, tx: DB): Promise<void> {
-        const debtEvents = await debtEventRepository.findByAccountId(account.id, tx);
-        const manualDebtEvents = debtEvents.filter(debtEvent => debtEvent.source === DebtEventSourceEnum.MANUAL);
-        const openedAmount = isPositiveNumber(account.targetBalance) ? account.targetBalance : 0;
-        const transactionOpenedAmount = debtEvents.reduce(
-            (sum, debtEvent) =>
-                debtEvent.source !== DebtEventSourceEnum.MANUAL && debtEvent.direction === DebtEventDirectionEnum.OPEN
-                    ? sum + debtEvent.amount
-                    : sum,
-            0
-        );
-
-        const manualOpenedAmount = Math.max(openedAmount - transactionOpenedAmount, 0);
-
-        await this.upsertManualDebtEvent(account, manualDebtEvents, DebtEventDirectionEnum.OPEN, manualOpenedAmount, operatedAt, tx);
-        await this.upsertManualDebtEvent(
-            account,
-            manualDebtEvents,
-            DebtEventDirectionEnum.CLOSE,
-            getDebtClosedAmount(returnedAmount, transactionOpenedAmount + manualOpenedAmount),
-            operatedAt,
-            tx
-        );
     }
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Existing private orchestration keeps positional arguments

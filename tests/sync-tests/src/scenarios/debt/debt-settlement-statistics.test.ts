@@ -137,7 +137,7 @@ describe('debt settlement statistics', () => {
             debtType: AccountDebtTypeEnum.LENT,
             expectedCategoryAmount: 100 * PRECISION,
             expectedCashBalance: -200 * PRECISION,
-            expectedDebtBalance: 300 * PRECISION,
+            expectedDebtBalance: 200 * PRECISION,
             expectedExpense: 0,
             expectedIncome: 100 * PRECISION,
             expectedRemainingDebt: 200 * PRECISION,
@@ -150,7 +150,7 @@ describe('debt settlement statistics', () => {
         const { cashBalance, debtBalance, debtEvent } = await attachTransactionToFundedLentDebt(300 * PRECISION);
 
         expect(cashBalance?.balance).toBe(-200 * PRECISION);
-        expect(debtBalance?.balance).toBe(300 * PRECISION);
+        expect(debtBalance?.balance).toBe(200 * PRECISION);
         expect(debtEvent?.direction).toBe(DebtEventDirectionEnum.CLOSE);
         expect(debtEvent?.amount).toBe(100 * PRECISION);
     });
@@ -299,17 +299,14 @@ describe('debt settlement statistics', () => {
         expectTargetBackedDebtProgress(debtAccount, cashAccount);
     });
 
-    it('stores historical base valuation on debt account adjustment entries at creation', async () => {
+    it('stores historical base valuation on the debt account at creation without an adjustment entry', async () => {
         const { euroInstrument, usdInstrument } = await setupUsdDebtExchangeRateScenario();
         const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 2_000, 15_000, usdInstrument.id);
-        const adjustmentEntry = findAdjustmentEntry(account.id);
 
         expect(account.targetBaseInstrumentId).toBe(euroInstrument.id);
         expect(account.targetBaseExchangeRate).toBe(HISTORICAL_USD_TO_EUR_RATE);
         expect(account.targetBaseAmount).toBe(12_000 * PRECISION);
-        expect(adjustmentEntry?.baseInstrumentId).toBe(euroInstrument.id);
-        expect(adjustmentEntry?.baseExchangeRate).toBe(HISTORICAL_USD_TO_EUR_RATE);
-        expect(adjustmentEntry?.baseAmount).toBe(10_400 * PRECISION);
+        expect(findAdjustmentEntry(account.id)).toBeUndefined();
     });
 
     it('uses stored base valuation for converted home debt progress', async () => {
@@ -507,8 +504,8 @@ describe('debt settlement statistics', () => {
         expectDebtProgressSummary(summary, 0, 300 * PRECISION, 300 * PRECISION, 100);
     });
 
-    it('creates a lent debt account from a real outgoing transfer without an opening adjustment', async () => {
-        const debtAccount = await createTransferOpenedLentDebt();
+    it('creates a lent debt account from a funding account expense without an opening adjustment', async () => {
+        const debtAccount = await createFundedLentDebt();
         const summary = buildSummaryFromDebtAccount(debtAccount);
         const adjustmentEntry = findAdjustmentEntry(debtAccount.id);
 
@@ -518,7 +515,7 @@ describe('debt settlement statistics', () => {
     });
 
     it('keeps a returned amount above the target when transaction events opened more than the target', async () => {
-        const debtAccount = await createTransferOpenedLentDebt();
+        const debtAccount = await createFundedLentDebt();
 
         insertOne(DebtEventEntityTable, {
             debtAccountId: debtAccount.id,
@@ -537,8 +534,8 @@ describe('debt settlement statistics', () => {
         expectDebtProgressSummary(buildSummaryFromDebtAccount(debtAccount), 250 * PRECISION, 750 * PRECISION, 1_000 * PRECISION, 75);
     });
 
-    it('keeps a transfer opened lent debt total unchanged when its account settings are saved', async () => {
-        const debtAccount = await createTransferOpenedLentDebt();
+    it('keeps a funded lent debt total unchanged when its account settings are saved', async () => {
+        const debtAccount = await createFundedLentDebt();
 
         await accountService.updateDebtById(debtAccount.id, {
             debtType: AccountDebtTypeEnum.LENT,
@@ -637,10 +634,10 @@ const createDebtAccount = (debtType: AccountDebtTypeEnum, currentBalance: number
         deadline: null
     });
 
-const createTransferOpenedLentDebt = async () => {
+const createFundedLentDebt = async () => {
     const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
 
-    return accountDebtOpeningService.createLentDebtFromTransfer(
+    return accountDebtOpeningService.openDebtWithFundingAccount(
         {
             title: 'Oleh owes me',
             iban: null,
@@ -648,7 +645,7 @@ const createTransferOpenedLentDebt = async () => {
             instrumentId: cashAccount.instrumentId,
             type: AccountTypeEnum.DEBT,
             debtType: AccountDebtTypeEnum.LENT,
-            currentBalance: 500,
+            currentBalance: 0,
             targetBalance: 500,
             contactId: null,
             deadline: null
