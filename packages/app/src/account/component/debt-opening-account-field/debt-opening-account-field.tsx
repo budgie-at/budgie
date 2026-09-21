@@ -1,5 +1,5 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { type GestureResponderEvent, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -72,9 +72,17 @@ export const DebtOpeningAccountField = ({ accountId, label, variant, onChange }:
                 >
                     {selectedAccountTitle}
                 </Text>
-                {isDefined(selectedAccount) && (
+                {isDefined(selectedAccount) ? (
                     <Text className="text-xs text-secondary-foreground" numberOfLines={1}>
                         {formattedBalance}
+                    </Text>
+                ) : (
+                    <Text
+                        className="text-xs text-secondary-foreground"
+                        numberOfLines={1}
+                        testID={CreateAccountScreenSelector.ManualOpeningHint}
+                    >
+                        <Trans>Optional — without it the amount stays manual</Trans>
                     </Text>
                 )}
             </View>
