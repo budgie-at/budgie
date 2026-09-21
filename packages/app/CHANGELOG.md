@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.72.0](https://github.com/budgie-at/budgie/compare/v6.71.2...v6.72.0) (2026-09-21)
+
+
+### Bug Fixes
+
+* **app:** associate Binance accounts before syncing ([153f9e4](https://github.com/budgie-at/budgie/commit/153f9e4f1e0e87cb272590154fa80e313c4c2001))
+* **app:** complete monobank side effects the run already committed ([a220b4e](https://github.com/budgie-at/budgie/commit/a220b4e1160e7c6a37dc9e1662153d63c3c033b2))
+* **app:** define background tasks at bundle startup ([5bc2a47](https://github.com/budgie-at/budgie/commit/5bc2a47b5bbf2f6eae8f6a57f88edfb54f8e8c5f))
+* **app:** keep the debt target in the debt instrument when opening from a funding account ([6733567](https://github.com/budgie-at/budgie/commit/6733567e8dcf8ee128dec798a941100760bacd06))
+* **app:** preserve invalid account sync completion ([de03db7](https://github.com/budgie-at/budgie/commit/de03db7d56d833740e97c494dc9f553a1579d3ce))
+* **app:** recover bank sync after iOS suspension ([c3bd8a8](https://github.com/budgie-at/budgie/commit/c3bd8a83b317d29c7cb442eee38d358faab1998b))
+* **app:** restore fifteen-minute background scheduling ([b7754f3](https://github.com/budgie-at/budgie/commit/b7754f3d767f0d1f3ae2c0a60cd10baf095db761))
+* **app:** stop interrupted Monobank side effects ([c2c3e9c](https://github.com/budgie-at/budgie/commit/c2c3e9c36b71968d3539da09b68a3e60ae779b8e))
+
+
+### Features
+
+* **app:** categorise debt repayments by direction ([85fc3e1](https://github.com/budgie-at/budgie/commit/85fc3e1f935511f6431d66fde7fa589b61f60b74))
+* **app:** open a debt as a real transaction from a funding account ([b398f06](https://github.com/budgie-at/budgie/commit/b398f064484889b38567b894fc6a7ca73a698bce))
+
+
+
+
+
 ## [6.71.2](https://github.com/budgie-at/budgie/compare/v6.71.1...v6.71.2) (2026-09-20)
 
 
