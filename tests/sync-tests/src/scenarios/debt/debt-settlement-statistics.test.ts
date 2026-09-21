@@ -16,6 +16,7 @@ import {
     AccountEntityTable,
     AccountDebtTypeEnum,
     AccountTypeEnum,
+    BORROWING_CATEGORY_ID,
     CategoryEntityTable,
     CurrencyEnum,
     DEFAULT_TRANSACTION_FILTER,
@@ -23,6 +24,7 @@ import {
     DebtEventEntityTable,
     DebtEventSourceEnum,
     ExternalSourceEnum,
+    LENDING_CATEGORY_ID,
     LanguageEnum,
     PRECISION,
     TransactionEntryEntityTable,
@@ -32,6 +34,7 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import { eq } from 'drizzle-orm';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
@@ -43,9 +46,11 @@ import { seed } from '../../harness/seed/seed';
 
 import type {
     AccountEntityInterface,
+    DateRangeInterface,
     DebtAccountProgressSummaryInterface,
     DebtEventCreateEntityInterface,
     TransactionCreateEntityInterface,
+    TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryEntityInterface
 } from '@budgie/contracts';
@@ -1021,12 +1026,13 @@ const createIncomeTransaction = (cashAccountId: number, categoryId: number, amou
 };
 
 const createTransaction = (
-    transaction: Pick<TransactionCreateEntityInterface, 'type' | 'title' | 'externalSource' | 'fromAccountId' | 'toAccountId'>
+    transaction: Pick<TransactionCreateEntityInterface, 'type' | 'title' | 'externalSource' | 'fromAccountId' | 'toAccountId'>,
+    operatedAt = new Date('2026-06-02T12:00:00.000Z')
 ) =>
     insertOne(TransactionEntityTable, {
         ...transaction,
         externalId: null,
-        operatedAt: new Date('2026-06-02T12:00:00.000Z'),
+        operatedAt,
         comment: '',
         exchangeRate: 1,
         updatedBy: null
@@ -1113,3 +1119,291 @@ const createDebtEvent = ({
         operatedAt
     } satisfies DebtEventCreateEntityInterface);
 };
+
+const DEBT_V2_JANUARY_OPERATED_AT = new Date('2026-01-15T12:00:00.000Z');
+const DEBT_V2_MARCH_OPERATED_AT = new Date('2026-03-10T12:00:00.000Z');
+const DEBT_V2_MARCH_LATER_OPERATED_AT = new Date('2026-03-20T12:00:00.000Z');
+const DEBT_V2_JANUARY_RANGE: DateRangeInterface = {
+    from: new Date('2026-01-01T00:00:00.000Z'),
+    to: new Date('2026-01-31T23:59:59.999Z')
+};
+const DEBT_V2_MARCH_RANGE: DateRangeInterface = {
+    from: new Date('2026-03-01T00:00:00.000Z'),
+    to: new Date('2026-03-31T23:59:59.999Z')
+};
+const DEBT_V2_TOTAL_AMOUNT = 500 * PRECISION;
+const DEBT_V2_REPAYMENT_AMOUNT = 200 * PRECISION;
+const DEBT_V2_CATEGORY_ID_BY_DEBT_TYPE: Record<AccountDebtTypeEnum, number> = {
+    [AccountDebtTypeEnum.LENT]: LENDING_CATEGORY_ID,
+    [AccountDebtTypeEnum.BORROW]: BORROWING_CATEGORY_ID
+};
+
+const getOppositeTransactionType = (
+    type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME
+): TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME =>
+    type === TransactionTypeEnum.EXPENSE ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
+
+const getOpeningTransactionType = (debtType: AccountDebtTypeEnum): TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME =>
+    debtType === AccountDebtTypeEnum.LENT ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
+
+const openFundedDebt = async (
+    debtType: AccountDebtTypeEnum,
+    fundingAccount: Pick<AccountEntityInterface, 'id' | 'instrumentId'>,
+    targetAmount: number,
+    instrumentId = fundingAccount.instrumentId
+): Promise<AccountEntityInterface> =>
+    accountDebtOpeningService.openDebtWithFundingAccount(
+        {
+            title: debtType === AccountDebtTypeEnum.LENT ? 'Alex owes me' : 'I owe Alex',
+            iban: null,
+            icon: UserIconNameEnum.HandCoins,
+            instrumentId,
+            type: AccountTypeEnum.DEBT,
+            debtType,
+            currentBalance: 0,
+            targetBalance: convertFromMicroUnits(targetAmount),
+            contactId: null,
+            deadline: null
+        },
+        fundingAccount.id
+    );
+
+const createFundingAccountTransaction = (
+    type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
+    accountId: number,
+    operatedAt: Date,
+    amount: number
+): TransactionEntityInterface => {
+    const isExpense = type === TransactionTypeEnum.EXPENSE;
+    const transaction = createTransaction(
+        {
+            type,
+            title: isExpense ? 'Sent to Alex' : 'Alex returned money',
+            externalSource: ExternalSourceEnum.MONOBANK,
+            fromAccountId: isExpense ? accountId : null,
+            toAccountId: isExpense ? null : accountId
+        },
+        operatedAt
+    );
+
+    createTransactionEntry({
+        transactionId: transaction.id,
+        accountId,
+        type: isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
+        kind: TransactionEntryKindEnum.PRIMARY,
+        amount,
+        categoryId: null
+    });
+
+    return transaction;
+};
+
+const readCategoryRows = (
+    type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
+    instrumentId: number,
+    date: DateRangeInterface | null
+) => {
+    const filter = { ...DEFAULT_TRANSACTION_FILTER, date };
+
+    return type === TransactionTypeEnum.EXPENSE
+        ? statisticsRepository.getExpenseByCategoryQuery(filter, instrumentId, LanguageEnum.EN).all()
+        : statisticsRepository.getIncomeByCategoryQuery(filter, instrumentId, LanguageEnum.EN).all();
+};
+
+const readCategoryAmount = (
+    type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
+    categoryId: number,
+    instrumentId: number,
+    date: DateRangeInterface | null
+): number => readCategoryRows(type, instrumentId, date).find(row => row.category?.id === categoryId)?.amount ?? 0;
+
+const readDebtAccountEntries = (accountId: number): TransactionEntryEntityInterface[] =>
+    testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId)).all();
+
+const expectDebtTile = (
+    accountId: number,
+    expected: { outstandingAmount: number; overpaidAmount?: number; paidAmount: number; totalAmount: number }
+): void => {
+    const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(accountId).get();
+
+    expect(progress).toBeDefined();
+
+    if (!isDefined(progress)) {
+        return;
+    }
+
+    expect(progress.outstandingAmount).toBe(expected.outstandingAmount);
+    expect(progress.overpaidAmount).toBe(expected.overpaidAmount ?? 0);
+    expect(progress.paidAmount).toBe(expected.paidAmount);
+    expect(progress.totalAmount).toBe(expected.totalAmount);
+};
+
+const openJanuaryFundedDebt = async (debtType: AccountDebtTypeEnum, totalAmount: number) => {
+    const fundingAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
+    const categoryId = DEBT_V2_CATEGORY_ID_BY_DEBT_TYPE[debtType];
+    const openingType = getOpeningTransactionType(debtType);
+    const repaymentType = getOppositeTransactionType(openingType);
+
+    vi.useFakeTimers({ now: DEBT_V2_JANUARY_OPERATED_AT });
+    const debtAccount = await openFundedDebt(debtType, fundingAccount, totalAmount);
+    vi.useRealTimers();
+
+    return { categoryId, debtAccount, fundingAccount, openingType, repaymentType };
+};
+
+const attachMarchRepayment = async (
+    fundingAccountId: number,
+    debtAccountId: number,
+    type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
+    amount: number,
+    operatedAt = DEBT_V2_MARCH_OPERATED_AT
+): Promise<TransactionEntityInterface> => {
+    const repayment = createFundingAccountTransaction(type, fundingAccountId, operatedAt, amount);
+
+    await transactionDebtSettlementService.attach({ transactionId: repayment.id, debtAccountId });
+
+    return repayment;
+};
+
+describe('debt v2 analytics — both ways', () => {
+    it.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])(
+        'books a %s opening as one month of analytics and a later repayment as another, with nothing on the debt account',
+        async debtType => {
+            const { categoryId, debtAccount, fundingAccount, openingType, repaymentType } = await openJanuaryFundedDebt(
+                debtType,
+                DEBT_V2_TOTAL_AMOUNT
+            );
+
+            expect(readCategoryAmount(openingType, categoryId, fundingAccount.instrumentId, DEBT_V2_JANUARY_RANGE)).toBe(
+                DEBT_V2_TOTAL_AMOUNT
+            );
+            expect(
+                readCategoryAmount(getOppositeTransactionType(openingType), categoryId, fundingAccount.instrumentId, DEBT_V2_JANUARY_RANGE)
+            ).toBe(0);
+
+            await attachMarchRepayment(fundingAccount.id, debtAccount.id, repaymentType, DEBT_V2_REPAYMENT_AMOUNT);
+
+            expect(readCategoryAmount(repaymentType, categoryId, fundingAccount.instrumentId, DEBT_V2_MARCH_RANGE)).toBe(
+                DEBT_V2_REPAYMENT_AMOUNT
+            );
+            expect(
+                readCategoryAmount(getOppositeTransactionType(repaymentType), categoryId, fundingAccount.instrumentId, DEBT_V2_MARCH_RANGE)
+            ).toBe(0);
+            expect(readCategoryAmount(openingType, categoryId, fundingAccount.instrumentId, DEBT_V2_JANUARY_RANGE)).toBe(
+                DEBT_V2_TOTAL_AMOUNT
+            );
+            expect(readDebtAccountEntries(debtAccount.id)).toHaveLength(0);
+            expectDebtTile(debtAccount.id, {
+                outstandingAmount: DEBT_V2_TOTAL_AMOUNT - DEBT_V2_REPAYMENT_AMOUNT,
+                paidAmount: DEBT_V2_REPAYMENT_AMOUNT,
+                totalAmount: DEBT_V2_TOTAL_AMOUNT
+            });
+        }
+    );
+
+    it.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])(
+        'aggregates a partial and a full %s repayment in the same month into one category row',
+        async debtType => {
+            const { categoryId, debtAccount, fundingAccount, repaymentType } = await openJanuaryFundedDebt(debtType, DEBT_V2_TOTAL_AMOUNT);
+
+            await attachMarchRepayment(fundingAccount.id, debtAccount.id, repaymentType, 100 * PRECISION, DEBT_V2_MARCH_OPERATED_AT);
+            await attachMarchRepayment(fundingAccount.id, debtAccount.id, repaymentType, 200 * PRECISION, DEBT_V2_MARCH_LATER_OPERATED_AT);
+
+            const rows = readCategoryRows(repaymentType, fundingAccount.instrumentId, DEBT_V2_MARCH_RANGE).filter(
+                row => row.category?.id === categoryId
+            );
+
+            expect(rows).toHaveLength(1);
+            expect(rows[0]?.amount).toBe(300 * PRECISION);
+        }
+    );
+
+    it.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])(
+        'counts a %s overpayment as real money moved while the tile clamps remaining to zero',
+        async debtType => {
+            const overpaymentAmount = 700 * PRECISION;
+            const { categoryId, debtAccount, fundingAccount, repaymentType } = await openJanuaryFundedDebt(debtType, DEBT_V2_TOTAL_AMOUNT);
+
+            await attachMarchRepayment(fundingAccount.id, debtAccount.id, repaymentType, overpaymentAmount);
+
+            expect(readCategoryAmount(repaymentType, categoryId, fundingAccount.instrumentId, DEBT_V2_MARCH_RANGE)).toBe(overpaymentAmount);
+            expectDebtTile(debtAccount.id, {
+                outstandingAmount: 0,
+                overpaidAmount: overpaymentAmount - DEBT_V2_TOTAL_AMOUNT,
+                paidAmount: overpaymentAmount,
+                totalAmount: DEBT_V2_TOTAL_AMOUNT
+            });
+        }
+    );
+
+    it('values the lent opening in the funding entry base valuation while the tile stays in the debt account instrument', async () => {
+        const { euroInstrument, usdInstrument } = await setupUsdDebtExchangeRateScenario();
+        const fundingAccount = seed.account({ title: 'USD account', type: AccountTypeEnum.BANK_SYNC, instrumentId: usdInstrument.id });
+
+        const debtAccount = await openFundedDebt(AccountDebtTypeEnum.LENT, fundingAccount, DEBT_V2_TOTAL_AMOUNT, usdInstrument.id);
+
+        const expectedBaseAmount = Math.round(DEBT_V2_TOTAL_AMOUNT * HISTORICAL_USD_TO_EUR_RATE);
+
+        expect(readCategoryAmount(TransactionTypeEnum.EXPENSE, LENDING_CATEGORY_ID, euroInstrument.id, null)).toBe(expectedBaseAmount);
+        expect(readCategoryAmount(TransactionTypeEnum.EXPENSE, LENDING_CATEGORY_ID, usdInstrument.id, null)).toBe(DEBT_V2_TOTAL_AMOUNT);
+        expectDebtTile(debtAccount.id, {
+            outstandingAmount: DEBT_V2_TOTAL_AMOUNT,
+            paidAmount: 0,
+            totalAmount: DEBT_V2_TOTAL_AMOUNT
+        });
+    });
+
+    it.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])(
+        'keeps a manual %s debt out of every month of analytics while the tile still tracks progress',
+        async debtType => {
+            const categoryId = DEBT_V2_CATEGORY_ID_BY_DEBT_TYPE[debtType];
+            const account = await accountService.createDebt({
+                title: debtType === AccountDebtTypeEnum.LENT ? 'Manual lend' : 'Manual borrow',
+                iban: null,
+                icon: UserIconNameEnum.HandCoins,
+                instrumentId: 1,
+                type: AccountTypeEnum.DEBT,
+                debtType,
+                currentBalance: 200,
+                targetBalance: 500,
+                contactId: null,
+                deadline: null
+            });
+
+            expect(readCategoryAmount(TransactionTypeEnum.EXPENSE, categoryId, 1, null)).toBe(0);
+            expect(readCategoryAmount(TransactionTypeEnum.INCOME, categoryId, 1, null)).toBe(0);
+            expect(readDebtAccountEntries(account.id)).toHaveLength(0);
+            expectDebtTile(account.id, {
+                outstandingAmount: 300 * PRECISION,
+                paidAmount: 200 * PRECISION,
+                totalAmount: 500 * PRECISION
+            });
+        }
+    );
+
+    it.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])(
+        'reverts a detached %s repayment to its prior category while removing it from the repaid figure',
+        async debtType => {
+            const { categoryId, debtAccount, fundingAccount, repaymentType } = await openJanuaryFundedDebt(debtType, DEBT_V2_TOTAL_AMOUNT);
+            const repayment = await attachMarchRepayment(fundingAccount.id, debtAccount.id, repaymentType, DEBT_V2_REPAYMENT_AMOUNT);
+
+            expect(readCategoryAmount(repaymentType, categoryId, fundingAccount.instrumentId, DEBT_V2_MARCH_RANGE)).toBe(
+                DEBT_V2_REPAYMENT_AMOUNT
+            );
+
+            await transactionDebtSettlementService.detach(repayment.id);
+
+            expect(readCategoryAmount(repaymentType, categoryId, fundingAccount.instrumentId, DEBT_V2_MARCH_RANGE)).toBe(0);
+            const uncategorizedRow = readCategoryRows(repaymentType, fundingAccount.instrumentId, DEBT_V2_MARCH_RANGE).find(
+                row => !isDefined(row.category)
+            );
+
+            expect(uncategorizedRow?.amount).toBe(DEBT_V2_REPAYMENT_AMOUNT);
+            expectDebtTile(debtAccount.id, {
+                outstandingAmount: DEBT_V2_TOTAL_AMOUNT,
+                paidAmount: 0,
+                totalAmount: DEBT_V2_TOTAL_AMOUNT
+            });
+        }
+    );
+});
