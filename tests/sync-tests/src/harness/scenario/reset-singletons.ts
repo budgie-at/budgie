@@ -4,10 +4,16 @@ import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 export const resetSingletons = (): void => {
-    Object.assign(binanceSyncService, { fiatSyncedAtMs: null, isRunning: false });
-    Object.assign(monobankSyncService, { isRunning: false, mccCategoryLookupMap: new Map() });
+    Object.assign(binanceSyncService, { fiatSyncedAtMs: null, isRunning: false, runGeneration: 0, runRequested: false });
+    Object.assign(monobankSyncService, {
+        isRunning: false,
+        mccCategoryLookupMap: new Map(),
+        runGeneration: 0,
+        runRequested: false
+    });
     Object.assign(syncWorkloadService, {
         backgroundQueue: [],
+        drainGeneration: 0,
         isAcceptingWork: true,
         isRunning: false,
         queuedUserWorkListeners: new Set(),

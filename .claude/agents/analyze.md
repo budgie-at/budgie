@@ -36,7 +36,7 @@ packages/
 │       ├── constant/, entity/, enum/, input/, interface/
 │       ├── repository/, relations/, schema/, table/
 ├── landing/            # Next.js 15 marketing site
-└── bank-sync/          # Bank integration package
+└── sync/          # Bank integration package
 ```
 
 ## Analysis Protocol
@@ -126,7 +126,7 @@ Evaluate against Budgie standards:
 [2-3 sentences: what was analyzed, key findings, overall health]
 
 ## Scope
-- **Packages**: [app, contracts, landing, bank-sync]
+- **Packages**: [app, contracts, landing, sync]
 - **Files analyzed**: [count]
 - **Estimated LOC**: [number]
 

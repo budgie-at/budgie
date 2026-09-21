@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Bank Connection Management — Budgie';
@@ -15,7 +16,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     return createFeatureOgImage(
         t(i18n)`Bank Connections — One Credential, Many Accounts`,
         t(i18n)`Cards, jars, and deposits share a single connection, so a token change is a one-time job.`,
-        [t(i18n)`bank sync`, t(i18n)`accounts`, t(i18n)`credentials`]
+        [t(i18n)`bank sync`, t(i18n)`accounts`, t(i18n)`credentials`],
+        resolveOgPlate('bank-integration-management', lang)
     );
 };
 

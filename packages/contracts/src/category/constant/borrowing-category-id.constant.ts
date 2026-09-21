@@ -1,0 +1,1 @@
+export const BORROWING_CATEGORY_ID = 100001;

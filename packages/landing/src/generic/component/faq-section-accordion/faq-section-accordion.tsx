@@ -12,8 +12,8 @@ export const FaqSectionAccordion = () => {
     const storageQuestion = <Trans>Where is my financial data stored?</Trans>;
     const storageAnswer = (
         <Trans>
-            In a SQLite database on your phone, and nowhere else. Budgie has no account system and no server of its own, so there is nothing
-            to upload and nothing for us to read. Set a PIN and the database is encrypted on the device with SQLCipher using that PIN.
+            On your phone, and nowhere else. Budgie has no account system and no server of its own, so there is nothing to upload and
+            nothing for us to read. Set a PIN and the data is encrypted on the device with that PIN.
         </Trans>
     );
     const offlineQuestion = <Trans>Does Budgie work without an internet connection?</Trans>;

@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'PrivatBank XLSX Import — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`PrivatBank Import`, t(i18n)`XLSX, MCC-mapped, two taps.`, [
-        t(i18n)`privatbank`,
-        t(i18n)`xlsx`,
-        t(i18n)`import`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`PrivatBank Import`,
+        t(i18n)`XLSX, MCC-mapped, two taps.`,
+        [t(i18n)`privatbank`, t(i18n)`xlsx`, t(i18n)`import`],
+        resolveOgPlate('privatbank-import', lang)
+    );
 };
 
 export default OgImage;

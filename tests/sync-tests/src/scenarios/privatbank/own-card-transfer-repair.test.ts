@@ -1,3 +1,5 @@
+import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
+import { accountService } from '@app/account/service/account.service';
 import { unpairedOwnCardTransferRepairService } from '@app/sync/service/unpaired-own-card-transfer-repair.service';
 import { transactionTransferService } from '@app/transaction/service/transaction-transfer.service';
 import {
@@ -8,7 +10,7 @@ import {
     TransactionEntryEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { describe, expect, it, vi } from 'vitest';
 
 import { fetchTransactionById, seed, testDb } from '../../harness';
@@ -74,6 +76,26 @@ const seedArchivedOwnCardScenario = (): {
     archiveAccount(archivedCard.id);
 
     return { archivedCard, income, liveCard };
+};
+
+const seedArchivedCardWithMask = (externalId: string | null, iban: string): AccountEntityInterface => {
+    const archivedCard = seed.account({
+        title: 'Privatbank •4321',
+        type: AccountTypeEnum.BANK_SYNC,
+        externalSource: ExternalSourceEnum.PRIVATBANK,
+        externalId,
+        iban
+    });
+
+    archiveAccount(archivedCard.id);
+
+    return archivedCard;
+};
+
+const expectRepairedFromCounterpart = async (archivedCard: AccountEntityInterface, income: TransactionEntityInterface): Promise<void> => {
+    expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
+    expect(await unpairedOwnCardTransferRepairService.repair()).toBe(1);
+    expect(fetchTransactionById(income.id).fromAccountId).toBe(archivedCard.id);
 };
 
 describe('privatbank/own-card-transfer-repair', () => {
@@ -173,5 +195,61 @@ describe('privatbank/own-card-transfer-repair', () => {
         archiveAccount(archivedCard.id);
 
         expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+    });
+
+    it('matches the counterpart card by external_id when its IBAN suffix differs', async () => {
+        const liveCard = seedPrivatbankCard('1234');
+        const archivedCard = seedArchivedCardWithMask('4000 **** **** 4321', 'UA00PRIVATBANK9999');
+        const income = seedOwnCardIncome(liveCard.id);
+
+        await expectRepairedFromCounterpart(archivedCard, income);
+    });
+
+    it('falls back to the IBAN suffix when the counterpart card has no external_id', async () => {
+        const liveCard = seedPrivatbankCard('1234');
+        const archivedCard = seedArchivedCardWithMask(null, 'UA00PRIVATBANK4321');
+        const income = seedOwnCardIncome(liveCard.id);
+
+        await expectRepairedFromCounterpart(archivedCard, income);
+    });
+
+    it('deletes the superseded counterpart leg so restoring the archived card does not double count it', async () => {
+        const liveCard = seedPrivatbankCard('1234');
+        const archivedCard = seedPrivatbankCard('4321');
+        const income = seedOwnCardIncome(liveCard.id);
+        const supersededExpense = seedOwnCardCounterpartExpense(archivedCard.id);
+
+        softDeleteTransaction(supersededExpense.id);
+        archiveAccount(archivedCard.id);
+
+        expect(await unpairedOwnCardTransferRepairService.repair()).toBe(1);
+        expect(fetchTransactionById(supersededExpense.id)).toBeUndefined();
+
+        await accountService.restoreById(archivedCard.id);
+
+        const liveExpensesOnArchivedCard = testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(
+                and(
+                    eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
+                    eq(TransactionEntityTable.fromAccountId, archivedCard.id),
+                    isNull(TransactionEntityTable.deletedAt)
+                )
+            )
+            .all();
+
+        expect(liveExpensesOnArchivedCard).toHaveLength(0);
+        expect(fetchTransactionById(income.id).type).toBe(TransactionTypeEnum.TRANSFER);
+    });
+
+    it('keeps the archived counterpart balance at 0 after the repair leaves a live transfer leg on it', async () => {
+        const { archivedCard } = seedArchivedOwnCardScenario();
+
+        await unpairedOwnCardTransferRepairService.repair();
+
+        const archivedBalanceRow = accountBalanceRepository.getArchivedAccountBalance(archivedCard.id).get();
+
+        expect(archivedBalanceRow?.balance).toBe(0);
     });
 });

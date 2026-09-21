@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'MCC Auto-Categorization — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`MCC Auto-Category`, t(i18n)`Bank-issued codes do the work.`, [
-        t(i18n)`mcc`,
-        t(i18n)`categorization`,
-        t(i18n)`bank sync`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`MCC Auto-Category`,
+        t(i18n)`Bank-issued codes do the work.`,
+        [t(i18n)`mcc`, t(i18n)`categorization`, t(i18n)`bank sync`],
+        resolveOgPlate('mcc-auto-category', lang)
+    );
 };
 
 export default OgImage;

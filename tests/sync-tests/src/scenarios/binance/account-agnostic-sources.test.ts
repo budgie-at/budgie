@@ -9,6 +9,7 @@ import {
 } from '@budgie/contracts';
 import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
+import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -24,6 +25,7 @@ import {
     stubEmptyBinanceBalances,
     testDb
 } from '../../harness';
+import { mockServer } from '../../harness/scenario/mock-server';
 
 const fetchAccountByExternalId = (externalId: string) =>
     testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, externalId)).all();
@@ -97,6 +99,36 @@ const expectSourceAccounts = (usdtFundingAccountId: number, eurExternalId: strin
 };
 
 describe('binance/account-agnostic-sources', () => {
+    it('associates orphan Binance sync accounts before requesting provider balances', async () => {
+        const instrument = seedCryptoInstrument('LTC');
+        const orphanExternalId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'LTC' });
+        const orphanAccount = seed.account({
+            externalId: orphanExternalId,
+            externalSource: ExternalSourceEnum.BINANCE,
+            type: AccountTypeEnum.CRYPTO_SYNC,
+            instrumentId: instrument.id
+        });
+        const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+        const integrationIdsAtProviderRequests: Array<number | null> = [];
+        mockServer.use(
+            http.post('https://api.binance.com/sapi/v3/asset/getUserAsset', () => {
+                const [accountAtRequest] = testDb
+                    .select()
+                    .from(AccountEntityTable)
+                    .where(eq(AccountEntityTable.id, orphanAccount.id))
+                    .all();
+                integrationIdsAtProviderRequests.push(accountAtRequest.integrationId);
+
+                return HttpResponse.json([]);
+            })
+        );
+
+        await binanceSyncService.sync();
+
+        const [seededAccount] = fetchAccountByExternalId(externalId);
+        expect(integrationIdsAtProviderRequests[0]).toBe(seededAccount.integrationId);
+    });
+
     it('associates accounts discovered during sync with the active Binance integration', async () => {
         seedCryptoInstrument('ETH');
         const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });

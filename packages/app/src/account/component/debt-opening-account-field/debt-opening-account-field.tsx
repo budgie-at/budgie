@@ -16,11 +16,12 @@ import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-v
 
 interface Props {
     readonly accountId: number | null;
+    readonly label: string;
     readonly variant: ColorPaletteVariant;
     readonly onChange: (accountId: number | null) => void;
 }
 
-export const DebtOpeningAccountField = ({ accountId, variant, onChange }: Props) => {
+export const DebtOpeningAccountField = ({ accountId, label, variant, onChange }: Props) => {
     const { t } = useLingui();
     const [openAccountSelector] = useAccountSelectorModal();
     const { icon, selectedAccount, formattedBalance } = useAccountSelector({
@@ -45,7 +46,6 @@ export const DebtOpeningAccountField = ({ accountId, variant, onChange }: Props)
         onChange(null);
     };
 
-    const label = t`From account`;
     const selectedAccountTitle = selectedAccount?.title ?? t`Select account`;
     const isInactiveAccount = isDefined(selectedAccount) && !selectedAccount.isActive;
 

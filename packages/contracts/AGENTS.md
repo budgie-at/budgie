@@ -1,6 +1,6 @@
 # Contracts Package
 
-Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Zod schemas, repository classes, and TypeScript types used by `app`, `ai`, and `bank-sync` packages.
+Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Zod schemas, repository classes, and TypeScript types used by `app`, `ai`, and `sync` packages.
 
 ## Commands
 

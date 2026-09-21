@@ -3,6 +3,60 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.72.0](https://github.com/budgie-at/budgie/compare/v6.71.2...v6.72.0) (2026-09-21)
+
+
+### Features
+
+* **contracts:** add an opening debt event source and a live debt ledger query ([2de77b0](https://github.com/budgie-at/budgie/commit/2de77b09488d145055e186ac885a4bb351072c8c))
+
+
+
+
+
+# [6.71.0](https://github.com/budgie-at/budgie/compare/v6.70.0...v6.71.0) (2026-09-17)
+
+
+### Features
+
+* **contracts:** add Lending and Borrowing system categories ([825efc4](https://github.com/budgie-at/budgie/commit/825efc4005af14f77c51a0e1728d0ea40bb7318a))
+
+
+
+
+
+## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** keep own-card repair conversions consistent when an archived card is restored ([86be10e](https://github.com/budgie-at/budgie/commit/86be10ef284a40ee8ec21e4e4fd31707faab0926)), closes [#1077](https://github.com/budgie-at/budgie/issues/1077)
+* **app:** store the Binance C2C warning as an enum and localize it ([83a9f56](https://github.com/budgie-at/budgie/commit/83a9f56b6dc0b45b151294b5fc60df6c3f9e0615))
+* **bank-sync:** persist the Binance cursor, surface C2C availability and tighten P2P pairing ([0efbd02](https://github.com/budgie-at/budgie/commit/0efbd02701fa8a8febf935e38402f42f483e9104)), closes [#562](https://github.com/budgie-at/budgie/issues/562) [#561](https://github.com/budgie-at/budgie/issues/561) [#540](https://github.com/budgie-at/budgie/issues/540) [#1088](https://github.com/budgie-at/budgie/issues/1088)
+
+
+
+
+
+## [6.67.6](https://github.com/budgie-at/budgie/compare/v6.67.5...v6.67.6) (2026-09-16)
+
+
+### Performance Improvements
+
+* **app:** archive large accounts without locking the database ([04967ec](https://github.com/budgie-at/budgie/commit/04967eccf00342ee8d5d7612a98d71fe96fd9f03)), closes [#831](https://github.com/budgie-at/budgie/issues/831)
+
+
+
+
+
+## [6.67.3](https://github.com/budgie-at/budgie/compare/v6.67.2...v6.67.3) (2026-09-16)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
 # [6.65.0](https://github.com/budgie-at/budgie/compare/v6.64.4...v6.65.0) (2026-09-15)
 
 

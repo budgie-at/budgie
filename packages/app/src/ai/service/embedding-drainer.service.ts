@@ -82,6 +82,11 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    async whenIdle(): Promise<void> {
+        await Promise.all([this.merchant.whenIdle(), this.comment.whenIdle()]);
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     resume(): void {
         this.merchant.resume();
         this.comment.resume();

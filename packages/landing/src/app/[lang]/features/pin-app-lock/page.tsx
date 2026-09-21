@@ -74,8 +74,8 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        A 4-digit PIN unlocks the app and unlocks the SQLCipher database. Without the PIN, the database file is unreadable —
-                        even with full filesystem access.
+                        A 4-digit PIN unlocks the app and unlocks your data. Without the PIN, the database file is unreadable — even with
+                        full filesystem access.
                     </Trans>
                 }
             />
@@ -113,7 +113,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Step index={1} title={<Trans>The four digits are the key</Trans>}>
                     <Trans>
-                        The PIN is what SQLCipher opens the database with. Budgie keeps it in the device keychain, marked this-device-only,
+                        The PIN is what the app opens the database with. Budgie keeps it in the device keychain, marked this-device-only,
                         and hands it to the database as the encryption key; changing the PIN re-encrypts the whole file under the new one.
                         The fourth digit submits on its own — a wrong PIN clears the dots and says so, and there is no reset that hands the
                         data back.
@@ -151,7 +151,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     slug="screenshot-protection"
                 >
                     <FeatureStory.Callout y={0.42}>
-                        <Trans>App Lock: PIN and Face ID</Trans>
+                        <Trans>App Lock: PIN and Face ID or Touch ID</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout y={0.527}>
                         <Trans>Balances hidden from screenshots</Trans>
@@ -166,7 +166,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 <FeaturePageProse>
                     <Trans>
                         Most app locks are decoration — a screen you can bypass by reading the storage layer. Budgie&apos;s PIN is wired to
-                        SQLCipher, so the same digits that pass the lock screen also derive the database encryption key.
+                        the database encryption itself, so the same digits that pass the lock screen are the encryption key.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -183,7 +183,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>PIN derives the SQLCipher database encryption key — not just a screen guard</Trans>
+                        <Trans>PIN is the database encryption key — not just a screen guard</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>A 4-digit PIN, set from Settings → Security</Trans>
@@ -233,7 +233,7 @@ export default async function PinAppLockFeaturePage(props: PageLangParam) {
                     question={<Trans>Does the lock work if my phone is jailbroken?</Trans>}
                     answer={
                         <Trans>
-                            SQLCipher with a strong PIN protects against filesystem-level access, but a jailbroken device with active
+                            Encryption with a strong PIN protects against filesystem-level access, but a jailbroken device with active
                             malware can capture the PIN at entry time. Don&apos;t unlock Budgie on a compromised device.
                         </Trans>
                     }

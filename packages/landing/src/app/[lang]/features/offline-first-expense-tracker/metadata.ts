@@ -11,7 +11,7 @@ export const FEATURE_METADATA = {
     title: msg`Offline-First Expense Tracker`,
     tagline: msg`Every transaction lives on your device. No cloud account, no sign-up.`,
     metaTitle: msg`Offline-First Expense Tracker — Budgie`,
-    metaDescription: msg`Budgie is a 100% offline-first expense tracker. Your financial data never leaves your phone — encrypted SQLite, no cloud servers, no account required to start.`,
+    metaDescription: msg`Budgie is a 100% offline-first expense tracker. Your financial data never leaves your phone — encrypted with your PIN once you set one, no cloud servers, no account required to start.`,
     primaryKeyword: 'offline expense tracker app',
     seoKeywords: [
         'offline expense tracker',

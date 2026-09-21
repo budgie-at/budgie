@@ -967,7 +967,7 @@ export default async function CloudBudgetingPrivacyRisksArticle(props: PageLangP
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Local-only storage</strong>: All data stored in SQLite on your device
+                                <strong>Local-only storage</strong>: All data stored in a local database on your device
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>

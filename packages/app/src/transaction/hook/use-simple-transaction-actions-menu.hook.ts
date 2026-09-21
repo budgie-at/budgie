@@ -13,6 +13,7 @@ import { useRevertConsolidation } from './use-revert-consolidation.hook';
 
 import type { SimpleTransactionActionsMenuParamsInterface } from '../interface/simple-transaction-actions-menu-params.interface';
 
+// eslint-disable-next-line max-statements -- Actions menu orchestration computing eligibility and handlers for multiple transaction conversion actions
 export const useSimpleTransactionActionsMenu = ({
     transaction,
     transactionAccountId,
@@ -34,7 +35,7 @@ export const useSimpleTransactionActionsMenu = ({
         transactionAccountId
     });
 
-    const handleOpenConvert = () => {
+    const handleOpenConvert = (startDeposit = false) => {
         if (!isDefined(sourceEntry)) {
             return;
         }
@@ -45,15 +46,19 @@ export const useSimpleTransactionActionsMenu = ({
             excludeAccountId: (transactionType === TransactionTypeEnum.EXPENSE ? transaction.fromAccountId : transaction.toAccountId) ?? 0,
             sourceAmount: convertFromMicroUnits(sourceEntry.amount),
             sourceInstrumentId: sourceEntry.account.instrumentId,
-            sourceCode: sourceEntry.account.instrument.code
+            sourceCode: sourceEntry.account.instrument.code,
+            startDeposit
         });
     };
+    const handleOpenStartDeposit = () => void handleOpenConvert(true);
 
     const canConvertToRefund =
         transactionType === TransactionTypeEnum.INCOME && !isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
     const refundConvertProps = canConvertToRefund ? { onConvertToRefund: handleOpenRefundConvert } : {};
     const canConvertToTransfer = persistedCategoryEntries.length === 1 && categoryEntryCount === 1;
     const transferConvertProps = canConvertToTransfer ? { onConvertToTransfer: handleOpenConvert } : {};
+    const canStartDeposit = canConvertToTransfer && transactionType === TransactionTypeEnum.EXPENSE && !isConsolidated;
+    const startDepositProps = canStartDeposit ? { onStartDeposit: handleOpenStartDeposit } : {};
     const debtSettlementProps = debtSettlementActions.hasDebtSettlement
         ? { onDetachDebtSettlement: debtSettlementActions.handleDetachDebtSettlement }
         : {
@@ -71,6 +76,7 @@ export const useSimpleTransactionActionsMenu = ({
             onFeePress,
             ...refundConvertProps,
             ...transferConvertProps,
+            ...startDepositProps,
             ...debtSettlementProps
         },
         debtSettlementAccountTitle: debtSettlementActions.debtSettlementAccountTitle

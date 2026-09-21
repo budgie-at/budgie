@@ -10,10 +10,10 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     author: 'Budgie Team',
     readingTimeMinutes: 15,
     title: msg`How Budgie Keeps Your Financial Data Off the Cloud`,
-    description: msg`A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private.`,
+    description: msg`A deep-dive into how Budgie keeps your financial data on your device: local storage, encryption at rest, and one encrypted backup file with no cloud copy.`,
     tags: ['privacy', 'security', 'architecture', 'encryption', 'open-source', 'offline-first'],
-    seoKeywords: ['offline expense tracker', 'private finance app', 'local budget app', 'SQLite expense tracker'],
-    seoDescription: msg`Discover exactly how Budgie keeps your financial data off the cloud. Learn about our SQLite architecture, AES-256 encryption, device-to-device sync, and open-source transparency.`,
+    seoKeywords: ['offline expense tracker', 'private finance app', 'local budget app', 'encrypted expense tracker'],
+    seoDescription: msg`Discover exactly how Budgie keeps your financial data off the cloud: local-only storage, encryption at rest, encrypted backups, and open-source transparency.`,
     relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'open-source-budgeting-transparency'],
     relatedFeatureSlugs: ['offline-first-expense-tracker', 'pin-app-lock', 'database-backup', 'biometric-authentication']
 };

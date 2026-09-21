@@ -3,8 +3,11 @@ import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budg
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
+import { useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { PageHeader } from '../@generic/component/page-header/page-header';
 import { ModalPage } from '../@generic/component/page/modal-page';
@@ -37,6 +40,7 @@ export default function ConvertToTransferModal() {
     const excludeAccountId = currentParams?.excludeAccountId ?? 0;
     const sourceAmount = currentParams?.sourceAmount ?? 0;
     const skipPostConvertNavigation = currentParams?.skipPostConvertNavigation === true;
+    const startDeposit = currentParams?.startDeposit === true;
 
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const colorVariant = isExpense ? 'default' : 'positive';
@@ -45,6 +49,7 @@ export default function ConvertToTransferModal() {
     const toAccountId = isExpense ? 0 : excludeAccountId;
 
     const depositCreateAction = useDepositCreateAction(isExpense, excludeAccountId, sourceAmount);
+    const hasStartedDepositRef = useRef(false);
 
     const form = useForm<TransactionCreateInputInterface>({
         mode: 'onSubmit',
@@ -64,9 +69,31 @@ export default function ConvertToTransferModal() {
         })
     });
 
-    const description = isExpense
+    useEffect(() => {
+        if (!startDeposit || !isDefined(depositCreateAction) || hasStartedDepositRef.current) {
+            return;
+        }
+
+        hasStartedDepositRef.current = true;
+
+        depositCreateAction
+            .onCreate()
+            .then(
+                createdAccountId =>
+                    isDefined(createdAccountId) && void form.setValue('toAccountId', createdAccountId, { shouldValidate: true })
+            )
+            .catch(() => void Toast.show({ type: 'error', text1: depositCreateAction.errorMessage }));
+    }, [startDeposit, depositCreateAction, form]);
+
+    const conversionDescription = isExpense
         ? t`This will convert the expense to a transfer between accounts.`
         : t`This will convert the income to a transfer between accounts.`;
+    const description = startDeposit
+        ? t`This will create a new deposit account and convert this expense into a transfer into it.`
+        : conversionDescription;
+    const pageTitle = startDeposit ? t`Start Deposit` : t`Convert to Transfer`;
+    const confirmTitle = startDeposit ? t`Start Deposit?` : t`Convert to Transfer?`;
+    const confirmText = startDeposit ? t`Start Deposit` : t`Convert`;
 
     const handleCancel = () => {
         resolveConvertToTransfer(false);
@@ -75,9 +102,9 @@ export default function ConvertToTransferModal() {
     // eslint-disable-next-line max-statements -- Conversion flow with confirmation dialog and error handling
     const handleSubmit = async () => {
         const confirmed = await confirmAlert({
-            title: t`Convert to Transfer?`,
+            title: confirmTitle,
             message: description,
-            confirmText: t`Convert`,
+            confirmText,
             cancelText: t`Cancel`,
             isDestructive: false
         });
@@ -118,10 +145,7 @@ export default function ConvertToTransferModal() {
 
     return (
         <FormProvider {...form}>
-            <ModalPage
-                testID={ConvertToTransferModalSelector.Page}
-                header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />}
-            >
+            <ModalPage testID={ConvertToTransferModalSelector.Page} header={<PageHeader title={pageTitle} onGoBack={handleCancel} />}>
                 <TransferToAccountCreateActionContext value={depositCreateAction}>
                     <TransferQuickForm variant={colorVariant} onSubmit={handleSubmit} onCancel={handleCancel} />
                 </TransferToAccountCreateActionContext>

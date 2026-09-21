@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/landing",
-    "version": "6.65.3",
+    "version": "6.69.0",
     "private": true,
     "scripts": {
         "build": "pnpm media:check && next build",
@@ -11,8 +11,9 @@
         "lint": "oxlint --type-aware . && eslint .",
         "lint:eslint": "eslint .",
         "lint:fix": "oxlint --type-aware --fix . && eslint --fix .",
-        "media:check": "node scripts/media-manifest.mjs --check",
+        "media:check": "node scripts/media-manifest.mjs --check && node scripts/og-plate.mjs --check",
         "media:manifest": "node scripts/media-manifest.mjs",
+        "media:og": "node scripts/og-plate.mjs",
         "release:start": "next start",
         "start": "next dev",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."

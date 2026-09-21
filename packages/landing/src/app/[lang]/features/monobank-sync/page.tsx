@@ -142,7 +142,7 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                 <FeaturePageProse>
                     <Trans>
                         Monobank exposes a clean public API, so Budgie talks to it directly from your phone using your token — no Plaid, no
-                        data broker. Every transaction lands in your local SQLite database the moment it arrives.
+                        data broker. Every transaction lands on your phone the moment it arrives.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -257,8 +257,8 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     question={<Trans>Where does my Monobank token live?</Trans>}
                     answer={
                         <Trans>
-                            In Budgie&apos;s local database on your device. When you set a PIN, that database is encrypted with a SQLCipher
-                            key held in your platform&apos;s keystore; the token itself is never sent to a Budgie server (we have none).
+                            On your device. When you set a PIN, that PIN is held in your platform&apos;s keystore and is what your data is
+                            encrypted with; the token itself is never sent to a Budgie server (we have none).
                         </Trans>
                     }
                 />

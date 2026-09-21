@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Dark Mode — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`Dark Mode`, t(i18n)`True black. OLED-friendly. No white flash.`, [
-        t(i18n)`dark mode`,
-        t(i18n)`ui`,
-        t(i18n)`theme`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`Dark Mode`,
+        t(i18n)`True black. OLED-friendly. No white flash.`,
+        [t(i18n)`dark mode`, t(i18n)`ui`, t(i18n)`theme`],
+        resolveOgPlate('dark-mode', lang)
+    );
 };
 
 export default OgImage;

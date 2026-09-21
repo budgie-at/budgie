@@ -13,11 +13,18 @@ export const CreatePrivatbankAccount = () => {
     const config: CreateFileBankAccountConfigInterface = {
         mimeType: XLSX_MIME_TYPE,
         title: t`Import Privatbank`,
-        description: t`Import accounts and transactions from Privatbank XLSX export`,
-        steps: [t`Open the Privatbank24 app`, t`Navigate to Menu → Statements`, t`Export your transactions to Excel`],
+        description: t`One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account`,
+        steps: [
+            t`Open Privat24 and select the card or account you want to import`,
+            t`Open its statement and choose a date range that covers your full history`,
+            t`Choose "Excel" as the export format — PDF and CSV files can't be imported`,
+            t`If Privat24 emails you the file instead of downloading it, save the attachment from your inbox`,
+            t`Return to Budgie and select the saved XLSX file below`
+        ],
         fileIcon: UserIconNameEnum.FileSpreadsheet,
         fileTypeLabel: t`XLSX export`,
         selectFileText: t`Select the exported XLSX file`,
+        ctaLabel: t`Import`,
         importPreview: privatbankSyncService.importPreview.bind(privatbankSyncService),
         executeImportForSelectedAccounts: privatbankSyncService.executeImportForSelectedAccounts.bind(privatbankSyncService)
     };

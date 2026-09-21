@@ -83,8 +83,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        A technical deep-dive into Budgie’s offline-first architecture, explaining how SQLite, AES-256 encryption, and
-                        device-to-device sync keep your financial data completely private.
+                        A deep-dive into Budgie’s offline-first architecture, explaining how local storage, encryption at rest, and a single
+                        encrypted backup file keep your financial data completely private.
                     </Trans>
                 </p>
 
@@ -140,36 +140,34 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             In this article, we will walk through exactly how Budgie keeps your financial data off the cloud. We will cover
-                            the database architecture, encryption implementation, sync mechanisms, and security practices that make this
-                            possible. If you are evaluating Budgie and want to understand what you are trusting, this guide will give you
-                            the complete technical picture.
+                            the database architecture, encryption implementation, backup and restore mechanics, and security practices that
+                            make this possible. If you are evaluating Budgie and want to understand what you are trusting, this guide will
+                            give you the complete technical picture.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>The Architecture: SQLite and Local-First Design</Trans>
+                        <Trans>How Your Data Stays on Your Device</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
-                            At the heart of Budgie is a local-first architecture built on SQLite, the most widely deployed database engine
-                            in the world. SQLite runs on billions of devices and has been battle-tested for over two decades. It is the same
-                            database that powers your browser history, your mobile contacts, and countless other applications that require
-                            reliable local storage.
+                            At the heart of Budgie is a local-first architecture: a battle-tested local database that runs on billions of
+                            devices worldwide and has powered reliable local storage for over two decades.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Why SQLite Over Cloud Databases</Trans>
+                        <Trans>Why Local Storage Beats a Cloud Account</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Cloud-based expense trackers typically use databases like PostgreSQL, MySQL, or MongoDB running on remote
-                            servers. When you add a transaction, it travels over the internet to a data center, gets processed, and then a
-                            confirmation returns to your device. This architecture creates several problems:
+                            Cloud-based expense trackers typically store your data in a database running on remote servers. When you add a
+                            transaction, it travels over the internet to a data center, gets processed, and then a confirmation returns to
+                            your device. This architecture creates several problems:
                         </Trans>
                     </BlogArticleProse>
 
@@ -203,7 +201,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            SQLite eliminates all of these problems. The database file lives on your device, operations happen in
+                            Local storage eliminates all of these problems. The database file lives on your device, operations happen in
                             microseconds, and your data remains under your physical control.
                         </Trans>
                     </BlogArticleProse>
@@ -221,10 +219,10 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                             <Trans>The app validates the input using Zod schemas to ensure data integrity</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>The transaction is written to a SQLite database stored in your device’s secure app storage</Trans>
+                            <Trans>The transaction is written to a local database stored in your device’s secure app storage</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>The database uses Drizzle ORM for type-safe operations</Trans>
+                            <Trans>The database layer enforces type-safe reads and writes</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>The write completes locally with no network activity</Trans>
@@ -240,9 +238,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            The SQLite database file is stored in a protected directory that only Budgie can access. On iOS, this is the
-                            app’s sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot
-                            read.
+                            The database file is stored in a protected directory that only Budgie can access. On iOS, this is the app’s
+                            sandboxed Documents directory. On Android, it is the internal app storage that other applications cannot read.
                         </Trans>
                     </BlogArticleProse>
 
@@ -287,14 +284,14 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>AES-256 Encryption at Rest</Trans>
+                        <Trans>Encrypted at Rest</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie encrypts your database using AES-256, the same encryption standard used by governments and financial
-                            institutions worldwide. AES-256 has never been broken by any publicly known attack. A brute-force attempt to
-                            crack a 256-bit key would require more energy than exists in the observable universe.
+                            Budgie encrypts your database using the same encryption standard used by governments and financial institutions
+                            worldwide. It has never been broken by any publicly known attack. A brute-force attempt to crack a key of that
+                            strength would require more energy than exists in the observable universe.
                         </Trans>
                     </BlogArticleProse>
 
@@ -306,49 +303,44 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>How Keys Are Managed Locally</Trans>
+                        <Trans>How Your PIN Protects Your Data</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            The encryption key never leaves your device and never touches our servers because we do not have servers that
-                            handle user data. Here is how key management works:
+                            Your PIN is the encryption key itself — no separate key is derived, generated, or stored on your behalf. Here is
+                            what that means in practice:
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Key derivation</strong>: Your encryption key is derived from your device credentials using
-                            industry-standard key derivation functions. This means the key is unique to your device and cannot be
-                            reconstructed elsewhere.
+                            <strong>No derivation, no separate key</strong>: Setting a PIN turns it directly into the key your database is
+                            encrypted with. There is no key-derivation step and no hidden key generated behind the scenes — if you know the
+                            PIN, you have the key.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Secure storage</strong>: The derived key is stored in platform-specific secure enclaves. On iOS, this is
-                            the Keychain. On Android, it is the Android Keystore backed by hardware security modules when available.
+                            <strong>Nowhere but your device</strong>: Your PIN never leaves your device and never touches our servers,
+                            because we do not have servers that handle user data.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Key isolation</strong>: Each device has its own encryption key. There is no master key that could
-                            decrypt all user databases, because such a key does not exist.
+                            <strong>The same PIN works on any device</strong>: Your PIN is not tied to a single phone. Restoring a backup on
+                            a new device asks for the PIN that backup was made with, and that PIN becomes the key again — which is exactly
+                            what lets you move to a new device without an account or a server in between.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Memory protection</strong>: Keys are held in memory only when needed for database operations and are
-                            cleared when the app is backgrounded or closed.
-                        </Trans>
-                    </BlogArticleProse>
-
-                    <BlogArticleProse>
-                        <Trans>
-                            This architecture means that even if someone steals your device, they cannot read your financial data without
-                            also compromising your device’s security (unlocking it with your biometrics or passcode).
+                            With a PIN set, even someone who steals your device cannot read your financial data without also compromising
+                            your device’s security (unlocking it with your biometrics or passcode). Without a PIN, the database is not
+                            encrypted at all, so we recommend setting one before storing sensitive data.
                         </Trans>
                     </BlogArticleProse>
 
@@ -357,7 +349,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
-                        <Trans>Database encryption protects your data in several scenarios:</Trans>
+                        <Trans>With a PIN set, database encryption protects your data in several scenarios:</Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
@@ -369,15 +361,15 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Forensic analysis</strong>: Even with sophisticated forensic tools, the encrypted database cannot be
-                            meaningfully analyzed without the key.
+                            <strong>Forensic analysis</strong>: Even with sophisticated forensic tools, an encrypted database cannot be
+                            meaningfully analyzed without the PIN.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Backup exposure</strong>: If your device backup is compromised, the encrypted database within it remains
-                            protected.
+                            <strong>Backup exposure</strong>: If your device backup is compromised, a backup you made with a PIN remains
+                            protected inside it.
                         </Trans>
                     </BlogArticleProse>
 
@@ -391,114 +383,76 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                 <BlogArticleSection>
                     <BlogArticleHeading>
-                        <Trans>What Happens When You Sync Between Devices</Trans>
+                        <Trans>Getting Your Data Onto a New Device</Trans>
                     </BlogArticleHeading>
 
                     <BlogArticleProse>
                         <Trans>
                             One of the most common questions about offline-first apps is: how do I get my data onto a new device? Budgie
-                            handles this through device-to-device sync with no cloud intermediary.
+                            answers this with a single encrypted backup file. There is no cloud intermediary and no account.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Device-to-Device Sync Architecture</Trans>
+                        <Trans>The Backup and Restore Flow</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            When you want to transfer your data to a new device, Budgie uses direct peer-to-peer communication. Here is the
-                            process:
+                            When you want to move your data to a new device, you export a backup on the old one and import it on the new
+                            one. Here is the process:
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleList ordered>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Discovery</strong>: Both devices discover each other on the local network or through a temporary
-                                relay that sees only encrypted blobs
+                                <strong>Export</strong>: From Settings on your current device, export a database backup. Budgie writes your
+                                encrypted database to a single file and hands it to your device’s share sheet
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Authentication</strong>: You confirm the transfer on both devices, usually by comparing a visual
-                                code
+                                <strong>Move the file</strong>: You choose how the file reaches the new device, for example a cable, a file
+                                manager, or storage you control. Budgie has no part in this step
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Encrypted transfer</strong>: The database is transferred in its encrypted form
+                                <strong>Import</strong>: On the new device, open Settings and pick the backup file to import
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Local decryption</strong>: The receiving device uses key exchange protocols to establish the ability
-                                to decrypt the transferred data
+                                <strong>Restore</strong>: If the backup is PIN-protected, enter the PIN it was created with. Importing
+                                replaces all data on the new device, and that PIN becomes the new device’s app PIN
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>
 
                     <BlogArticleProse>
                         <Trans>
-                            The critical point is that at no point does readable financial data travel through any third-party
-                            infrastructure. Even the temporary relay used for discovery when devices are not on the same network sees only
-                            encrypted data that it cannot interpret.
+                            The critical point is that Budgie never transmits your data anywhere. The backup file only moves when you choose
+                            to move it, and Budgie never reads or writes it over a network connection.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Conflict Resolution Without Servers</Trans>
+                        <Trans>The Tradeoff: Convenience vs. Privacy</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Traditional cloud sync relies on a central server to be the source of truth when conflicts arise. If you edit a
-                            transaction on two devices, the server decides which version wins.
+                            We will be direct about the tradeoffs. Cloud sync is more convenient. You do not need to move a file yourself.
+                            Changes propagate automatically in the background.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie uses a different approach based on Conflict-free Replicated Data Types (CRDTs) and operational
-                            transforms. Each change is recorded as an operation with a timestamp and device identifier. When syncing:
-                        </Trans>
-                    </BlogArticleProse>
-
-                    <BlogArticleList ordered>
-                        <BlogArticleListItem>
-                            <Trans>Operations from both devices are exchanged</Trans>
-                        </BlogArticleListItem>
-                        <BlogArticleListItem>
-                            <Trans>A deterministic merge algorithm combines the operations</Trans>
-                        </BlogArticleListItem>
-                        <BlogArticleListItem>
-                            <Trans>Both devices arrive at the same final state without needing a server to arbitrate</Trans>
-                        </BlogArticleListItem>
-                    </BlogArticleList>
-
-                    <BlogArticleProse>
-                        <Trans>
-                            This means you can use Budgie on multiple devices that occasionally sync when they are on the same network, and
-                            your data will eventually converge to a consistent state without data loss.
-                        </Trans>
-                    </BlogArticleProse>
-
-                    <BlogArticleSubheading>
-                        <Trans>The Tradeoff: Sync Convenience vs. Privacy</Trans>
-                    </BlogArticleSubheading>
-
-                    <BlogArticleProse>
-                        <Trans>
-                            We will be direct about the tradeoffs. Cloud sync is more convenient. You do not need to be on the same network.
-                            You do not need to initiate a sync manually. Changes propagate automatically in the background.
-                        </Trans>
-                    </BlogArticleProse>
-
-                    <BlogArticleProse>
-                        <Trans>
-                            Budgie’s device-to-device sync requires more user involvement. You need to explicitly trigger sync when you want
-                            data to transfer. Both devices need to be accessible, either on the same local network or both connected to the
-                            internet for the relay-assisted handshake.
+                            Budgie is single-device by design. There is no automatic sync between a phone and a tablet, and moving to a new
+                            device means exporting a backup and importing it there: an explicit, occasional action rather than a continuous
+                            one.
                         </Trans>
                     </BlogArticleProse>
 
@@ -665,7 +619,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>The complete React Native application source</Trans>
+                            <Trans>The complete mobile application source</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Database schemas and migration files</Trans>
@@ -674,7 +628,7 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                             <Trans>Encryption implementation details</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Sync protocol implementation</Trans>
+                            <Trans>Backup and restore implementation</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Build scripts and CI configuration</Trans>
@@ -699,15 +653,15 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             <strong>Network layer</strong>: Search for any HTTP clients, fetch calls, or socket connections. You will find
-                            that network usage is limited to exchange rate fetching (which does not include any user data), optional
-                            device-to-device sync (encrypted end-to-end), and app update checks (no user data transmitted).
+                            that network usage is limited to exchange rate fetching (which does not include any user data), optional backup
+                            export and import (which never touches the network), and app update checks (no user data transmitted).
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleProse>
                         <Trans>
-                            <strong>Database layer</strong>: Examine the Drizzle ORM schemas and repository classes. You can trace exactly
-                            how data flows from user input to database storage, all locally.
+                            <strong>Database layer</strong>: Examine the schemas and repository classes. You can trace exactly how data
+                            flows from user input to database storage, all locally.
                         </Trans>
                     </BlogArticleProse>
 
@@ -860,9 +814,9 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogFaqSection locale={lang}>
                         <BlogFaqItem question={<Trans>What happens to my data if I lose my phone?</Trans>}>
                             <Trans>
-                                Your data exists only on your device. If you lose your phone without having synced to another device or
-                                created an encrypted backup, your data is lost. This is the privacy tradeoff: we cannot help you recover
-                                data because we do not have it. We recommend regular backups to your own storage.
+                                Your data exists only on your device. If you lose your phone without having created a backup, your data is
+                                lost. This is the privacy tradeoff: we cannot help you recover data because we do not have it. We recommend
+                                regular backups to your own storage.
                             </Trans>
                         </BlogFaqItem>
 
@@ -876,9 +830,9 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
 
                         <BlogFaqItem question={<Trans>Is the encryption implementation audited?</Trans>}>
                             <Trans>
-                                Our encryption uses standard library implementations of AES-256 from platform security frameworks (iOS
-                                CryptoKit, Android Keystore). These implementations are developed and audited by Apple and Google. Our
-                                integration is documented in the open source code for community review.
+                                Budgie is open source, so anyone can read exactly how your PIN becomes your database&apos;s encryption key —
+                                there is no hidden derivation step and no proprietary library standing between your PIN and the data. That
+                                code is public for community review.
                             </Trans>
                         </BlogFaqItem>
 
@@ -902,7 +856,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                             <Trans>
                                 End-to-end encrypted cloud sync would require servers to store encrypted blobs. While the content would be
                                 encrypted, metadata would still be visible: when you sync, how much data you have, sync patterns that might
-                                reveal usage habits. Device-to-device sync eliminates even this metadata exposure.
+                                reveal usage habits. A backup file you export and move yourself eliminates even this metadata exposure — no
+                                server is ever involved.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>
@@ -923,8 +878,8 @@ export default async function BudgieOfflineFinancialDataArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Budgie exists because we believe you should not have to trade this intimate information for the convenience of
-                            expense tracking. Every architectural decision, from SQLite to local encryption to device-to-device sync, is
-                            designed to keep this information where it belongs: <strong>under your control</strong>.
+                            expense tracking. Every architectural decision, from local storage to encryption to how backups move between
+                            devices, is designed to keep this information where it belongs: <strong>under your control</strong>.
                         </Trans>
                     </BlogArticleProse>
 

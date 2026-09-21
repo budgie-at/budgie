@@ -4,6 +4,7 @@ import { AppState } from 'react-native';
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
 import { AiCoordinatorSnapshotInterface } from '../interface/ai-coordinator-snapshot.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
@@ -15,12 +16,16 @@ import { aiModelResidencyService } from './ai-model-residency.service';
 import { aiTranslationStatusService } from './ai-translation-status.service';
 import { aiUmbrellaStatusService } from './ai-umbrella-status.service';
 import { SnapshotStore } from './base-subsystem.service';
+import { chatService } from './chat.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
 import { translationDrainerService } from './translation-drainer.service';
 
 import type { AppStateStatus } from 'react-native';
 
 class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface> {
+    private static readonly DRAINER_IDLE_GRACE_MS = 5_000;
+    private static readonly DRAINER_ABORT_GRACE_MS = 2_000;
+
     private started = false;
     private releaseTimer: ReturnType<typeof setTimeout> | null = null;
     private appStateSubscription: { remove: () => void } | null = null;
@@ -122,7 +127,25 @@ class AiCoordinatorService extends SnapshotStore<AiCoordinatorSnapshotInterface>
         aiUmbrellaStatusService.stop();
         translationDrainerService.stop();
         embeddingDrainerService.stop();
+        await this.settleInFlightBatches();
+        if (this.started && !this.snapshot.isSuspended) {
+            return;
+        }
         await aiModelResidencyService.suspend();
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    private async settleInFlightBatches(): Promise<void> {
+        const idle = Promise.all([translationDrainerService.whenIdle(), embeddingDrainerService.whenIdle()]);
+        const isSettled = await Promise.race([
+            idle.then(() => true),
+            microPause(AiCoordinatorService.DRAINER_IDLE_GRACE_MS).then(() => false)
+        ]);
+        if (isSettled) {
+            return;
+        }
+        chatService.interrupt();
+        await Promise.race([idle, microPause(AiCoordinatorService.DRAINER_ABORT_GRACE_MS)]);
     }
 
     private scheduleStartSubsystems(): void {

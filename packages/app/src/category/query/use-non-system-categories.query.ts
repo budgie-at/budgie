@@ -1,0 +1,20 @@
+import { isDefined } from '@rnw-community/shared';
+
+import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useSetting } from '../../settings/hook/use-setting.hook';
+
+import type { CategoryEntityInterface } from '@budgie/contracts';
+
+const EMPTY_CATEGORIES: CategoryEntityInterface[] = [];
+
+export const useNonSystemCategoriesQuery = () => {
+    const language = useSetting('language');
+    const { data, error, updatedAt } = useDatabaseLiveQuery(categoryRepository.findAllNonSystemLocalized(language), [language]);
+
+    if (!isDefined(data)) {
+        return { isLoading: true, categories: EMPTY_CATEGORIES, updatedAt: null, error };
+    }
+
+    return { categories: data, isLoading: false, updatedAt, error };
+};

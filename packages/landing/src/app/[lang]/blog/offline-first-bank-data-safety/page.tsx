@@ -390,9 +390,9 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                     <BlogArticleProse>
                         <Trans>
-                            For supported banks, Budgie connects directly from your device to the bank API using OAuth tokens stored in the
-                            encrypted local database. The sync runs on your device; Budgie servers are not involved in the data flow.
-                            Transaction data is written directly to the local SQLite database.
+                            For supported banks, Budgie connects directly from your device to the bank API using OAuth tokens stored in your
+                            local database, encrypted if you have a PIN set. The sync runs on your device; Budgie servers are not involved
+                            in the data flow. Transaction data is written directly to that local database.
                         </Trans>
                     </BlogArticleProse>
 
@@ -409,26 +409,27 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Encrypted Local Storage</Trans>
+                        <Trans>Local Storage, Encrypted With Your PIN</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Whether data arrives via direct sync or manual import, it is stored in the same AES-256 encrypted SQLite
-                            database. The database is protected by your device PIN, biometric authentication, or a dedicated app lock. No
-                            transaction data is stored on Budgie servers at any point.
+                            Whether data arrives via direct sync or manual import, it is stored in the same local database. Set a PIN and
+                            that PIN becomes the key your data is encrypted with; biometric unlock is just a faster way past the lock
+                            screen, and your PIN stays the key either way. No transaction data is stored on Budgie servers at any point.
                         </Trans>
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Encrypted Backup</Trans>
+                        <Trans>Backup, Encrypted With Your PIN</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            When you create a backup, the encrypted database file is exported to your chosen destination — iCloud, Google
-                            Drive, a local network share, or a USB-connected device. Budgie does not receive or store the backup.
-                            Restoration reads the file from the same destination and decrypts it locally.
+                            When you create a backup, the database file — encrypted if you have a PIN set — is exported to your chosen
+                            destination — iCloud, Google Drive, a local network share, or a USB-connected device. Budgie does not receive or
+                            store the backup. Restoring it later reads the file back from wherever you put it and asks for that
+                            backup&apos;s PIN if it was encrypted.
                         </Trans>
                     </BlogArticleProse>
                 </BlogArticleSection>
@@ -466,10 +467,9 @@ export default async function OfflineFirstBankDataSafetyPage(props: PageLangPara
 
                         <BlogFaqItem question={<Trans>How does Budgie handle OAuth tokens for direct sync?</Trans>}>
                             <Trans>
-                                OAuth tokens for direct bank sync are stored in the encrypted local database on your device alongside your
-                                transaction data. They are protected by the same AES-256 encryption and device authentication as your
-                                financial records. Revoking a token from your bank portal immediately terminates all sync access without
-                                requiring any action inside Budgie.
+                                OAuth tokens for direct bank sync are stored in your local database on your device alongside your
+                                transaction data, protected the same way — encrypted with your PIN if you have one set. Revoking a token
+                                from your bank portal immediately terminates all sync access without requiring any action inside Budgie.
                             </Trans>
                         </BlogFaqItem>
 
