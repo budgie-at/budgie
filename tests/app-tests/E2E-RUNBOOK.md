@@ -13,7 +13,7 @@ cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean
 
 # 1b. Slim the target simulator before anything is installed on it (see AGENTS.md
 #     "Simulator Dev Testing"); brew install mobai-app/tap/simslim if missing
-simslim on <UDID> --no-reboot --profile ../../tests/app-tests/simslim.ci.json
+. ../../tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <UDID>
 
 # 2. Build + install Release on the booted sim (use the real booted UDID from `xcrun simctl list devices booted`)
 APP_VARIANT=e2e EXPO_PUBLIC_AI_DISABLE=true EXPO_PUBLIC_LOGGING_DISABLE=true \

@@ -19,7 +19,7 @@ pnpm i18n:sync                # Extract & compile i18n translations
 pnpm i18n:sync
 ```
 
-Before `pnpm ios` against a simulator you booted yourself, slim it: `simslim on <udid> --no-reboot --profile ../../tests/app-tests/simslim.ci.json`. Every simulator this repo touches runs slim — see root `AGENTS.md`, "Simulator Dev Testing".
+Before `pnpm ios` against a simulator you booted yourself, slim it: `. ../../tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`. Every simulator this repo touches runs slim — see root `AGENTS.md`, "Simulator Dev Testing".
 
 ## Structure
 

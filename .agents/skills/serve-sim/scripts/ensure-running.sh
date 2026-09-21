@@ -9,7 +9,7 @@ set -u
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../../.." && pwd)
 # shellcheck disable=SC1091
-. "$REPO_ROOT/tests/app-tests/scripts/slim-simulator.sh"
+. "$REPO_ROOT/tests/app-tests/scripts/mobile-ci-slim-simulator.sh"
 
 if ! slim_booted_simulators; then
   echo "ensure-running: every simulator must run slim before serve-sim drives it." >&2

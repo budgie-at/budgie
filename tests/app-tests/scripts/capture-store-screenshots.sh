@@ -61,7 +61,7 @@ SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../.." && pwd)
 
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/slim-simulator.sh"
+. "$SCRIPT_DIR/mobile-ci-slim-simulator.sh"
 
 CONFIG_PATH="$REPO_ROOT/.github/store-screenshots.config.json"
 OUTPUT_ROOT="$REPO_ROOT/packages/app/fastlane/screenshots"

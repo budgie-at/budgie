@@ -54,6 +54,14 @@ exit 0
 EOF
 chmod +x "$STUB_BIN/xcrun" "$STUB_BIN/defaults" "$STUB_BIN/simslim"
 
+export MOBILE_CI_SLIM_HELPER="$WORK_DIR/slim-simulator.sh"
+cat > "$MOBILE_CI_SLIM_HELPER" <<'EOF'
+slim_simulator() {
+    simslim verify "$1" --profile stub >/dev/null 2>&1 && return 0
+    simslim on "$1" --no-reboot --profile stub
+}
+EOF
+
 HOME="$WORK_DIR/home" SETTLE_SECONDS=0 PATH="$STUB_BIN:$PATH" \
     bash "$SCRIPT_DIR/prewarm-ios-simulators.sh"
 
