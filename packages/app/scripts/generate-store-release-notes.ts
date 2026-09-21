@@ -19,6 +19,8 @@ const playCodepointLimit = 490;
 
 const storeNotesModel = process.env['STORE_NOTES_MODEL'] ?? 'claude-opus-5';
 
+const fallbackReleaseNotes = "What's new:\n- Stability and quality improvements.";
+
 const userFacingCommitTypes = new Set(['feat', 'fix', 'perf']);
 const userFacingCommitScopes = new Set(['app']);
 
@@ -187,11 +189,15 @@ async function generateLocalizedReleaseNotes(bullets: string[], version: string)
 }
 
 function writeFallbackEnglishReleaseNotes(bullets: string[]): void {
-    const releaseNotes = isEmptyArray(bullets)
-        ? "What's new:\n- Stability and quality improvements."
-        : ["What's new:", ...bullets.map(bullet => `- ${bullet}`)].join('\n');
+    writeStoreNotes(storeLocales.en, fallbackReleaseNotes, fallbackReleaseNotes);
 
-    writeStoreNotes(storeLocales.en, releaseNotes, releaseNotes);
+    if (!isEmptyArray(bullets)) {
+        console.warn('Commit subjects are developer copy and are never published. Write the English notes by hand from:');
+
+        for (const bullet of bullets) {
+            console.warn(`  - ${bullet}`);
+        }
+    }
 
     console.warn('Locale release notes still hold the previous release copy and need a human/agent translation:');
 
