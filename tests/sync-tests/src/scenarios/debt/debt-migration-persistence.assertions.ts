@@ -235,7 +235,7 @@ export class DebtMigrationPersistenceAssertions {
     private assertAmbiguousAdjustment(snapshot: DebtMigrationPersistedSnapshotInterface): void {
         expect(snapshot.transactions).toEqual([
             expect.objectContaining({
-                deletedAt: null,
+                deletedAt: expect.any(Number),
                 fromAccountId: null,
                 id: DebtMigrationPersistenceAssertions.AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID,
                 toAccountId: DebtMigrationPersistenceAssertions.AMBIGUOUS_ACCOUNT_ID,
@@ -250,7 +250,7 @@ export class DebtMigrationPersistenceAssertions {
                 baseExchangeRate: 0.92,
                 baseInstrumentId: 2,
                 categoryId: null,
-                deletedAt: null,
+                deletedAt: expect.any(Number),
                 id: 2016,
                 kind: TransactionEntryKindEnum.PRIMARY,
                 transactionId: DebtMigrationPersistenceAssertions.AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID,

@@ -14,9 +14,13 @@ import type { LaterDebtTransferSnapshotInterface } from './interface/later-debt-
 import type { DB } from '@budgie/contracts';
 import type Database from 'better-sqlite3';
 
-export class LaterDebtTransferPreservationAssertions {
+export class LaterDebtTransferMigrationAssertions {
     private static readonly DEBT_EVENT_ID = Number('100');
     private static readonly DEBT_ENTRY_ID = Number('2101');
+    private static readonly FUNDING_ACCOUNT_ID = Number('100');
+    private static readonly FUNDING_ENTRY_ID = Number('2100');
+    private static readonly FUNDING_ENTRY_AMOUNT = Number('10000000000');
+    private static readonly FUNDING_ENTRY_CATEGORY_ID = Number('10');
     private static readonly IMMUTABLE_TIMESTAMP = Number('1783623600');
     private static readonly MANUAL_CLOSE_AMOUNT = Number('4100000000');
     private static readonly OPERATED_AT = Number('1780963200');
@@ -33,15 +37,15 @@ export class LaterDebtTransferPreservationAssertions {
 
     snapshot(sqlite: Database.Database): LaterDebtTransferSnapshotInterface {
         const transaction = sqlite
-            .prepare<[], LaterDebtTransferSnapshotInterface['transaction']>(LaterDebtTransferPreservationAssertions.TRANSACTION_SQL)
+            .prepare<[], LaterDebtTransferSnapshotInterface['transaction']>(LaterDebtTransferMigrationAssertions.TRANSACTION_SQL)
             .get();
         const transactionEntries = sqlite
             .prepare<[], LaterDebtTransferSnapshotInterface['transactionEntries'][number]>(
-                LaterDebtTransferPreservationAssertions.TRANSACTION_ENTRIES_SQL
+                LaterDebtTransferMigrationAssertions.TRANSACTION_ENTRIES_SQL
             )
             .all();
         const debtEvent = sqlite
-            .prepare<[], LaterDebtTransferSnapshotInterface['debtEvent']>(LaterDebtTransferPreservationAssertions.DEBT_EVENT_SQL)
+            .prepare<[], LaterDebtTransferSnapshotInterface['debtEvent']>(LaterDebtTransferMigrationAssertions.DEBT_EVENT_SQL)
             .get();
         const snapshot = {
             debtEvent: this.requireRow(debtEvent, 'Later debt event was not found in the generated fixture'),
@@ -58,9 +62,9 @@ export class LaterDebtTransferPreservationAssertions {
         const afterMigration = await this.readMigratedSnapshot(db);
 
         await this.assertNotIncludedAsClose(db);
-        this.assertTransactionPreserved(beforeMigration, afterMigration);
-        this.assertEntriesPreserved(beforeMigration, afterMigration);
-        this.assertEventPreserved(beforeMigration, afterMigration);
+        this.assertTransactionMigrated(afterMigration);
+        this.assertEntriesMigrated(afterMigration);
+        this.assertEventMigrated(beforeMigration, afterMigration);
         await this.assertManualCloseRepaired(db);
     }
 
@@ -69,19 +73,19 @@ export class LaterDebtTransferPreservationAssertions {
             comment: 'Must remain an opening transfer',
             consolidationParentTransactionId: null,
             consolidationType: null,
-            createdAt: LaterDebtTransferPreservationAssertions.IMMUTABLE_TIMESTAMP,
+            createdAt: LaterDebtTransferMigrationAssertions.IMMUTABLE_TIMESTAMP,
             deletedAt: null,
             exchangeRate: 1,
             externalId: null,
             externalSource: null,
             fromAccountId: 101,
-            id: LaterDebtTransferPreservationAssertions.TRANSACTION_ID,
+            id: LaterDebtTransferMigrationAssertions.TRANSACTION_ID,
             needsEmbedding: 0,
-            operatedAt: LaterDebtTransferPreservationAssertions.OPERATED_AT,
+            operatedAt: LaterDebtTransferMigrationAssertions.OPERATED_AT,
             title: 'Later borrowed principal transfer',
             toAccountId: 100,
             type: TransactionTypeEnum.DEBT,
-            updatedAt: LaterDebtTransferPreservationAssertions.IMMUTABLE_TIMESTAMP,
+            updatedAt: LaterDebtTransferMigrationAssertions.IMMUTABLE_TIMESTAMP,
             updatedBy: null
         });
         this.assertFixtureEntries(snapshot.transactionEntries);
@@ -98,7 +102,7 @@ export class LaterDebtTransferPreservationAssertions {
                 baseInstrumentId: 2,
                 categoryId: 10,
                 categorySource: CategorySourceEnum.USER,
-                createdAt: LaterDebtTransferPreservationAssertions.IMMUTABLE_TIMESTAMP,
+                createdAt: LaterDebtTransferMigrationAssertions.IMMUTABLE_TIMESTAMP,
                 deletedAt: null,
                 exchangeRate: 1,
                 externalId: null,
@@ -107,9 +111,9 @@ export class LaterDebtTransferPreservationAssertions {
                 mccCategoryId: null,
                 originalTransactionId: null,
                 toIban: null,
-                transactionId: LaterDebtTransferPreservationAssertions.TRANSACTION_ID,
+                transactionId: LaterDebtTransferMigrationAssertions.TRANSACTION_ID,
                 type: TransactionEntryTypeEnum.DEBIT,
-                updatedAt: LaterDebtTransferPreservationAssertions.IMMUTABLE_TIMESTAMP
+                updatedAt: LaterDebtTransferMigrationAssertions.IMMUTABLE_TIMESTAMP
             },
             {
                 accountId: 101,
@@ -119,18 +123,18 @@ export class LaterDebtTransferPreservationAssertions {
                 baseInstrumentId: 2,
                 categoryId: null,
                 categorySource: CategorySourceEnum.USER,
-                createdAt: LaterDebtTransferPreservationAssertions.IMMUTABLE_TIMESTAMP,
+                createdAt: LaterDebtTransferMigrationAssertions.IMMUTABLE_TIMESTAMP,
                 deletedAt: null,
                 exchangeRate: 1,
                 externalId: null,
-                id: LaterDebtTransferPreservationAssertions.DEBT_ENTRY_ID,
+                id: LaterDebtTransferMigrationAssertions.DEBT_ENTRY_ID,
                 kind: TransactionEntryKindEnum.PRIMARY,
                 mccCategoryId: null,
                 originalTransactionId: null,
                 toIban: null,
-                transactionId: LaterDebtTransferPreservationAssertions.TRANSACTION_ID,
+                transactionId: LaterDebtTransferMigrationAssertions.TRANSACTION_ID,
                 type: TransactionEntryTypeEnum.CREDIT,
-                updatedAt: LaterDebtTransferPreservationAssertions.IMMUTABLE_TIMESTAMP
+                updatedAt: LaterDebtTransferMigrationAssertions.IMMUTABLE_TIMESTAMP
             }
         ]);
     }
@@ -141,35 +145,33 @@ export class LaterDebtTransferPreservationAssertions {
             baseAmount: 230_000_000,
             baseExchangeRate: 0.92,
             baseInstrumentId: 2,
-            createdAt: LaterDebtTransferPreservationAssertions.IMMUTABLE_TIMESTAMP,
+            createdAt: LaterDebtTransferMigrationAssertions.IMMUTABLE_TIMESTAMP,
             debtAccountId: 101,
             deletedAt: null,
             direction: DebtEventDirectionEnum.OPEN,
-            id: LaterDebtTransferPreservationAssertions.DEBT_EVENT_ID,
-            operatedAt: LaterDebtTransferPreservationAssertions.OPERATED_AT,
+            id: LaterDebtTransferMigrationAssertions.DEBT_EVENT_ID,
+            operatedAt: LaterDebtTransferMigrationAssertions.OPERATED_AT,
             source: DebtEventSourceEnum.TRANSFER,
-            transactionEntryId: LaterDebtTransferPreservationAssertions.DEBT_ENTRY_ID,
-            transactionId: LaterDebtTransferPreservationAssertions.TRANSACTION_ID,
-            updatedAt: LaterDebtTransferPreservationAssertions.IMMUTABLE_TIMESTAMP
+            transactionEntryId: LaterDebtTransferMigrationAssertions.DEBT_ENTRY_ID,
+            transactionId: LaterDebtTransferMigrationAssertions.TRANSACTION_ID,
+            updatedAt: LaterDebtTransferMigrationAssertions.IMMUTABLE_TIMESTAMP
         });
     }
 
     private async readMigratedSnapshot(db: DB): Promise<LaterDebtTransferSnapshotInterface> {
         const [transaction, transactionEntries, debtEvent] = await Promise.all([
             db.$client.getFirstAsync<LaterDebtTransferSnapshotInterface['transaction']>(
-                LaterDebtTransferPreservationAssertions.TRANSACTION_SQL
+                LaterDebtTransferMigrationAssertions.TRANSACTION_SQL
             ),
             db.$client.getAllAsync<LaterDebtTransferSnapshotInterface['transactionEntries'][number]>(
-                LaterDebtTransferPreservationAssertions.TRANSACTION_ENTRIES_SQL
+                LaterDebtTransferMigrationAssertions.TRANSACTION_ENTRIES_SQL
             ),
-            db.$client.getFirstAsync<LaterDebtTransferSnapshotInterface['debtEvent']>(
-                LaterDebtTransferPreservationAssertions.DEBT_EVENT_SQL
-            )
+            db.$client.getFirstAsync<LaterDebtTransferSnapshotInterface['debtEvent']>(LaterDebtTransferMigrationAssertions.DEBT_EVENT_SQL)
         ]);
 
         return {
-            debtEvent: this.requireRow(debtEvent, 'Later debt event was removed by migration 0036'),
-            transaction: this.requireRow(transaction, 'Later debt transaction was removed by migration 0036'),
+            debtEvent: this.requireRow(debtEvent, 'Later debt event was removed by the debt v2 migration'),
+            transaction: this.requireRow(transaction, 'Later debt transaction was removed by the debt v2 migration'),
             transactionEntries
         };
     }
@@ -182,25 +184,48 @@ export class LaterDebtTransferPreservationAssertions {
         expect(closingEvents).toHaveLength(0);
     }
 
-    private assertTransactionPreserved(
-        beforeMigration: LaterDebtTransferSnapshotInterface,
-        afterMigration: LaterDebtTransferSnapshotInterface
-    ): void {
-        expect(afterMigration.transaction).toEqual(beforeMigration.transaction);
+    private assertTransactionMigrated(afterMigration: LaterDebtTransferSnapshotInterface): void {
+        expect(afterMigration.transaction).toMatchObject({
+            fromAccountId: null,
+            id: LaterDebtTransferMigrationAssertions.TRANSACTION_ID,
+            toAccountId: LaterDebtTransferMigrationAssertions.FUNDING_ACCOUNT_ID,
+            type: TransactionTypeEnum.INCOME
+        });
     }
 
-    private assertEntriesPreserved(
-        beforeMigration: LaterDebtTransferSnapshotInterface,
-        afterMigration: LaterDebtTransferSnapshotInterface
-    ): void {
-        expect(afterMigration.transactionEntries).toEqual(beforeMigration.transactionEntries);
+    private assertEntriesMigrated(afterMigration: LaterDebtTransferSnapshotInterface): void {
+        const fundingEntry = afterMigration.transactionEntries.find(
+            transactionEntry => transactionEntry.id === LaterDebtTransferMigrationAssertions.FUNDING_ENTRY_ID
+        );
+        const debtEntry = afterMigration.transactionEntries.find(
+            transactionEntry => transactionEntry.id === LaterDebtTransferMigrationAssertions.DEBT_ENTRY_ID
+        );
+
+        expect(fundingEntry).toMatchObject({
+            accountId: LaterDebtTransferMigrationAssertions.FUNDING_ACCOUNT_ID,
+            amount: LaterDebtTransferMigrationAssertions.FUNDING_ENTRY_AMOUNT,
+            categoryId: LaterDebtTransferMigrationAssertions.FUNDING_ENTRY_CATEGORY_ID,
+            categorySource: CategorySourceEnum.USER,
+            deletedAt: null,
+            type: TransactionEntryTypeEnum.DEBIT
+        });
+        expect(debtEntry?.deletedAt).toBeTypeOf('number');
     }
 
-    private assertEventPreserved(
+    private assertEventMigrated(
         beforeMigration: LaterDebtTransferSnapshotInterface,
         afterMigration: LaterDebtTransferSnapshotInterface
     ): void {
-        expect(afterMigration.debtEvent).toEqual(beforeMigration.debtEvent);
+        expect(afterMigration.debtEvent).toMatchObject({
+            amount: beforeMigration.debtEvent.amount,
+            baseAmount: beforeMigration.debtEvent.baseAmount,
+            baseExchangeRate: beforeMigration.debtEvent.baseExchangeRate,
+            baseInstrumentId: beforeMigration.debtEvent.baseInstrumentId,
+            debtAccountId: beforeMigration.debtEvent.debtAccountId,
+            direction: DebtEventDirectionEnum.OPEN,
+            source: DebtEventSourceEnum.OPENING,
+            transactionEntryId: LaterDebtTransferMigrationAssertions.FUNDING_ENTRY_ID
+        });
     }
 
     private async assertManualCloseRepaired(db: DB): Promise<void> {
@@ -208,7 +233,7 @@ export class LaterDebtTransferPreservationAssertions {
             "SELECT amount FROM debt_events WHERE debt_account_id = 101 AND direction = 'CLOSE' AND source = 'MANUAL' AND deleted_at IS NULL"
         );
 
-        expect(manualClosingEvents).toEqual([{ amount: LaterDebtTransferPreservationAssertions.MANUAL_CLOSE_AMOUNT }]);
+        expect(manualClosingEvents).toEqual([{ amount: LaterDebtTransferMigrationAssertions.MANUAL_CLOSE_AMOUNT }]);
     }
 
     private requireRow<T>(row: T | null | undefined, errorMessage: string): T {

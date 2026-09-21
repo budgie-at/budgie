@@ -6,8 +6,6 @@ import { buildTestDb, createTestRepositories } from '@budgie-at/test-kit';
 import {
     DebtEventDirectionEnum,
     DebtEventSourceEnum,
-    TransactionEntryKindEnum,
-    TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { expect } from 'vitest';
@@ -95,30 +93,13 @@ export class DebtMigrationRepairScenario {
             toAccountId: adjustmentTransaction.toAccountId,
             type: adjustmentTransaction.type
         }).toEqual({
-            deletedAt: null,
+            deletedAt: expect.any(Date),
             fromAccountId: null,
             id: DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID,
             toAccountId: DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID,
             type: TransactionTypeEnum.ADJUSTMENT
         });
-        expect(adjustmentTransaction.entries).toHaveLength(1);
-        expect(
-            adjustmentTransaction.entries.map(transactionEntry => ({
-                accountId: transactionEntry.accountId,
-                amount: transactionEntry.amount,
-                deletedAt: transactionEntry.deletedAt,
-                kind: transactionEntry.kind,
-                type: transactionEntry.type
-            }))
-        ).toEqual([
-            {
-                accountId: DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID,
-                amount: DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_AMOUNT,
-                deletedAt: null,
-                kind: TransactionEntryKindEnum.PRIMARY,
-                type: TransactionEntryTypeEnum.DEBIT
-            }
-        ]);
+        expect(adjustmentTransaction.entries).toHaveLength(0);
     }
 
     private assertAmbiguousEvents(debtEvents: DebtEventEntityInterface[]): void {
