@@ -190,7 +190,8 @@ Keywords are comma-separated with no spaces after the commas.
 
 `native-publish.yml` runs `fastlane store_preflight` as the pre-submit command
 on both platforms, so a broken tree fails in seconds instead of after the build
-and submission, then `fastlane <platform> <platform>_metadata` after submit,
+and submission, then `pnpm store:notes -- --check` (warn-only, never blocks the
+publish) followed by `fastlane <platform> <platform>_metadata` after submit,
 adding `<platform>_screenshots` when the `push_screenshots` dispatch input is
 `true`. The Android half stays inert until `enable-android: true`
 (budgie-at/budgie#1148).
