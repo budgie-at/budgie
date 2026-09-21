@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.73.0](https://github.com/budgie-at/budgie/compare/v6.72.0...v6.73.0) (2026-09-21)
+
+
+### Bug Fixes
+
+* **app:** never publish raw commit subjects as store release notes ([8f0c79e](https://github.com/budgie-at/budgie/commit/8f0c79e0a4e906febe20b9ea1ba9c6caafc64dc9))
+* **app:** reject empty release notes and keep --check non-blocking ([d466ecf](https://github.com/budgie-at/budgie/commit/d466ecf746a24b27805db78c27720750306f99c7))
+
+
+### Features
+
+* **app:** generate localized store release notes from the commit log ([05603dc](https://github.com/budgie-at/budgie/commit/05603dc8c0d14c1621d2c658d4540bd1ef8eb841))
+
+
+
+
+
 # [6.72.0](https://github.com/budgie-at/budgie/compare/v6.71.2...v6.72.0) (2026-09-21)
 
 
