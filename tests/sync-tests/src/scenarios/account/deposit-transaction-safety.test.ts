@@ -15,7 +15,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { seed, testDb } from '../../harness';
+import { buildTransferInput, seed, testDb } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const OPERATED_AT_YEAR = 2026;
@@ -71,39 +71,6 @@ const buildIncomeInput = (accountId: number, amount: number) => ({
     entries: [
         {
             accountId,
-            type: TransactionEntryTypeEnum.DEBIT,
-            kind: TransactionEntryKindEnum.PRIMARY,
-            amount,
-            categoryId: null,
-            mccCategoryId: null
-        }
-    ]
-});
-
-const buildTransferInput = (fromAccountId: number, toAccountId: number, amount: number) => ({
-    type: TransactionTypeEnum.TRANSFER,
-    title: 'Deposit transfer',
-    amount,
-    operatedAt: OPERATED_AT,
-    comment: '',
-    fromAccountId,
-    toAccountId,
-    exchangeRate: 1,
-    externalId: null,
-    externalSource: null,
-    updatedBy: null,
-    tagIds: [],
-    entries: [
-        {
-            accountId: fromAccountId,
-            type: TransactionEntryTypeEnum.CREDIT,
-            kind: TransactionEntryKindEnum.PRIMARY,
-            amount,
-            categoryId: null,
-            mccCategoryId: null
-        },
-        {
-            accountId: toAccountId,
             type: TransactionEntryTypeEnum.DEBIT,
             kind: TransactionEntryKindEnum.PRIMARY,
             amount,
@@ -244,9 +211,9 @@ describe('account/deposit-transaction-safety', () => {
 
         seedBalance(depositAccount.id, 50 * PRECISION);
 
-        await expect(transactionService.createInternalTransfer(buildTransferInput(depositAccount.id, bankAccount.id, 70))).rejects.toThrow(
-            NEGATIVE_DEPOSIT_BALANCE_ERROR
-        );
+        await expect(
+            transactionService.createInternalTransfer(buildTransferInput(depositAccount.id, bankAccount.id, 70, OPERATED_AT))
+        ).rejects.toThrow(NEGATIVE_DEPOSIT_BALANCE_ERROR);
 
         expect(fetchTransactionCount()).toBe(0);
         expect(fetchTransactionEntryCount()).toBe(0);
@@ -265,7 +232,7 @@ describe('account/deposit-transaction-safety', () => {
         expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(IMPROVED_LEGACY_NEGATIVE_BALANCE);
 
         await expect(
-            transactionService.createInternalTransfer(buildTransferInput(depositAccount.id, seed.account().id, 50))
+            transactionService.createInternalTransfer(buildTransferInput(depositAccount.id, seed.account().id, 50, OPERATED_AT))
         ).rejects.toThrow(NEGATIVE_DEPOSIT_BALANCE_ERROR);
 
         expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(IMPROVED_LEGACY_NEGATIVE_BALANCE);
