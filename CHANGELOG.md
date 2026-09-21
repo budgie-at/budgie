@@ -3,6 +3,342 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.72.0](https://github.com/budgie-at/budgie/compare/v6.71.2...v6.72.0) (2026-09-21)
+
+
+### Bug Fixes
+
+* **app:** associate Binance accounts before syncing ([153f9e4](https://github.com/budgie-at/budgie/commit/153f9e4f1e0e87cb272590154fa80e313c4c2001))
+* **app:** complete monobank side effects the run already committed ([a220b4e](https://github.com/budgie-at/budgie/commit/a220b4e1160e7c6a37dc9e1662153d63c3c033b2))
+* **app:** define background tasks at bundle startup ([5bc2a47](https://github.com/budgie-at/budgie/commit/5bc2a47b5bbf2f6eae8f6a57f88edfb54f8e8c5f))
+* **app:** keep the debt target in the debt instrument when opening from a funding account ([6733567](https://github.com/budgie-at/budgie/commit/6733567e8dcf8ee128dec798a941100760bacd06))
+* **app:** preserve invalid account sync completion ([de03db7](https://github.com/budgie-at/budgie/commit/de03db7d56d833740e97c494dc9f553a1579d3ce))
+* **app:** recover bank sync after iOS suspension ([c3bd8a8](https://github.com/budgie-at/budgie/commit/c3bd8a83b317d29c7cb442eee38d358faab1998b))
+* **app:** restore fifteen-minute background scheduling ([b7754f3](https://github.com/budgie-at/budgie/commit/b7754f3d767f0d1f3ae2c0a60cd10baf095db761))
+* **app:** stop interrupted Monobank side effects ([c2c3e9c](https://github.com/budgie-at/budgie/commit/c2c3e9c36b71968d3539da09b68a3e60ae779b8e))
+
+
+### Features
+
+* **app:** categorise debt repayments by direction ([85fc3e1](https://github.com/budgie-at/budgie/commit/85fc3e1f935511f6431d66fde7fa589b61f60b74))
+* **app:** open a debt as a real transaction from a funding account ([b398f06](https://github.com/budgie-at/budgie/commit/b398f064484889b38567b894fc6a7ca73a698bce))
+* **contracts:** add an opening debt event source and a live debt ledger query ([2de77b0](https://github.com/budgie-at/budgie/commit/2de77b09488d145055e186ac885a4bb351072c8c))
+
+
+
+
+
+## [6.71.2](https://github.com/budgie-at/budgie/compare/v6.71.1...v6.71.2) (2026-09-20)
+
+
+### Bug Fixes
+
+* **app:** skip stale residency suspension after AppState resume race ([49eb8c6](https://github.com/budgie-at/budgie/commit/49eb8c6ae71ba271e3546aad27ce0e1aa5bb3ef9))
+* **app:** wait for in-flight AI batches before releasing model contexts ([e9c0272](https://github.com/budgie-at/budgie/commit/e9c02726d1b18867ac341fa222abaad887f91f0a))
+
+
+
+
+
+## [6.71.1](https://github.com/budgie-at/budgie/compare/v6.71.0...v6.71.1) (2026-09-20)
+
+
+### Bug Fixes
+
+* normalize crlf in store metadata gate ([91ec827](https://github.com/budgie-at/budgie/commit/91ec8273296c2811abd3ed52ab657a098214c78e))
+
+
+
+
+
+# [6.71.0](https://github.com/budgie-at/budgie/compare/v6.70.0...v6.71.0) (2026-09-17)
+
+
+### Features
+
+* **contracts:** add Lending and Borrowing system categories ([825efc4](https://github.com/budgie-at/budgie/commit/825efc4005af14f77c51a0e1728d0ea40bb7318a))
+
+
+
+
+
+# [6.70.0](https://github.com/budgie-at/budgie/compare/v6.69.0...v6.70.0) (2026-09-16)
+
+
+### Features
+
+* **app:** start a deposit from a synced expense ([24e6fb4](https://github.com/budgie-at/budgie/commit/24e6fb4e61d1533f1da772c3239bb8da177dbdc4)), closes [#668](https://github.com/budgie-at/budgie/issues/668)
+
+
+
+
+
+# [6.69.0](https://github.com/budgie-at/budgie/compare/v6.68.0...v6.69.0) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** correct store copy claims per coordinator review ([820b188](https://github.com/budgie-at/budgie/commit/820b1885b22a41bcfd5e7b4e3fa9d6bad4ccb150))
+* **app:** sync play store copy with corrected app store descriptions ([e983034](https://github.com/budgie-at/budgie/commit/e9830343e466d090f9d8686ac84879915acb3a87))
+
+
+### Features
+
+* **app:** app store metadata for all five locales with budget gate ([c876277](https://github.com/budgie-at/budgie/commit/c876277025bb533748d6985fef821df89882c275)), closes [#1145](https://github.com/budgie-at/budgie/issues/1145) [#1141](https://github.com/budgie-at/budgie/issues/1141)
+* **app:** google play metadata and changelogs for all five locales ([dc1ebd8](https://github.com/budgie-at/budgie/commit/dc1ebd83c8e4338fe05a8d4426f6ecb2eec691dc)), closes [#1142](https://github.com/budgie-at/budgie/issues/1142)
+
+
+
+
+
+# [6.68.0](https://github.com/budgie-at/budgie/compare/v6.67.18...v6.68.0) (2026-09-16)
+
+
+### Features
+
+* **app:** add fastlane deliver/supply metadata lanes and Android Appfile wiring ([80d8369](https://github.com/budgie-at/budgie/commit/80d8369a3b959305d50d6edc9f803f83b06136e9))
+
+
+
+
+
+## [6.67.18](https://github.com/budgie-at/budgie/compare/v6.67.17...v6.67.18) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** replace fictional device-to-device sync with real backup flow ([80a9c93](https://github.com/budgie-at/budgie/commit/80a9c93639fc73ff101e6aae6c7e2001ed9df801))
+
+
+
+
+
+## [6.67.17](https://github.com/budgie-at/budgie/compare/v6.67.16...v6.67.17) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** rescope merchant translation page to category and tag translation ([187ad09](https://github.com/budgie-at/budgie/commit/187ad09137984adf1e810ecf2e89eacb3d64c18a)), closes [#1138](https://github.com/budgie-at/budgie/issues/1138)
+
+
+
+
+
+## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** keep own-card repair conversions consistent when an archived card is restored ([86be10e](https://github.com/budgie-at/budgie/commit/86be10ef284a40ee8ec21e4e4fd31707faab0926)), closes [#1077](https://github.com/budgie-at/budgie/issues/1077)
+* **app:** point the web smart app banner at Budgie's App Store id ([f14caff](https://github.com/budgie-at/budgie/commit/f14caffa72619bd5e26d6f987f4b1c6759c47851)), closes [#1150](https://github.com/budgie-at/budgie/issues/1150)
+* **app:** store the Binance C2C warning as an enum and localize it ([83a9f56](https://github.com/budgie-at/budgie/commit/83a9f56b6dc0b45b151294b5fc60df6c3f9e0615))
+* **bank-sync:** persist the Binance cursor, surface C2C availability and tighten P2P pairing ([0efbd02](https://github.com/budgie-at/budgie/commit/0efbd02701fa8a8febf935e38402f42f483e9104)), closes [#562](https://github.com/budgie-at/budgie/issues/562) [#561](https://github.com/budgie-at/budgie/issues/561) [#540](https://github.com/budgie-at/budgie/issues/540) [#1088](https://github.com/budgie-at/budgie/issues/1088)
+* **landing:** describe budgie by outcome in blog articles and the open-source page ([6ed4621](https://github.com/budgie-at/budgie/commit/6ed46219bbcad9673890f63d370f103ba5b0ede6)), closes [#1119](https://github.com/budgie-at/budgie/issues/1119) [#1121](https://github.com/budgie-at/budgie/issues/1121) [#1121](https://github.com/budgie-at/budgie/issues/1121)
+* **sync:** ignore the Binance trade cursor on backward runs ([a0c78b2](https://github.com/budgie-at/budgie/commit/a0c78b2b82b36d38f890b97ec6dee7df6e95a929))
+* **sync:** persist the Binance cursor after fatal runs ([077ef64](https://github.com/budgie-at/budgie/commit/077ef64cec4853864495e5fd864f5797272e91c2))
+
+
+
+
+
+## [6.67.15](https://github.com/budgie-at/budgie/compare/v6.67.14...v6.67.15) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** describe ai features by outcome instead of implementation ([c1b136e](https://github.com/budgie-at/budgie/commit/c1b136e1748fd97dfe31c3864e90a5f510226023)), closes [#1121](https://github.com/budgie-at/budgie/issues/1121)
+* **landing:** describe storage and encryption by outcome instead of implementation ([f4f46cc](https://github.com/budgie-at/budgie/commit/f4f46cc541c85b97114df479059c172254811ac9)), closes [#1121](https://github.com/budgie-at/budgie/issues/1121)
+
+
+
+
+
+## [6.67.14](https://github.com/budgie-at/budgie/compare/v6.67.13...v6.67.14) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** address CodeRabbit encryption-claim findings on PR 1131 ([f2d9ab6](https://github.com/budgie-at/budgie/commit/f2d9ab6371a3cc9eeddeaeb12d30f13ea548025f))
+* **landing:** correct encryption claims in blog articles and the self-hosted page ([4d086ef](https://github.com/budgie-at/budgie/commit/4d086ef9b11fce6208396b3499a361d7ac275cf1))
+
+
+
+
+
+## [6.67.13](https://github.com/budgie-at/budgie/compare/v6.67.12...v6.67.13) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** state the real encryption and backup model ([2ed0903](https://github.com/budgie-at/budgie/commit/2ed0903e231b8304d3e6d93d834e2a98297ab19a)), closes [#1107](https://github.com/budgie-at/budgie/issues/1107)
+
+
+
+
+
+## [6.67.12](https://github.com/budgie-at/budgie/compare/v6.67.11...v6.67.12) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** correct sync data repair wording and translations ([4da21eb](https://github.com/budgie-at/budgie/commit/4da21ebdd0da44b357752ec3cce626b39d5750ce)), closes [#1129](https://github.com/budgie-at/budgie/issues/1129)
+* **landing:** describe every sync data repair including own-card transfers ([d41062d](https://github.com/budgie-at/budgie/commit/d41062d2b22bfdb305bb57cb62a88b32b7b92320))
+
+
+
+
+
+## [6.67.11](https://github.com/budgie-at/budgie/compare/v6.67.10...v6.67.11) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** describe lazy ai model loading and the settings switch ([d731298](https://github.com/budgie-at/budgie/commit/d731298d6cae925ba1735332a0e4aa252877fdfd)), closes [#1106](https://github.com/budgie-at/budgie/issues/1106)
+* **landing:** describe the three analytics tabs including runway ([35f318e](https://github.com/budgie-at/budgie/commit/35f318e664e4072656df2e7c65375c7012f0af5f)), closes [#1057](https://github.com/budgie-at/budgie/issues/1057)
+
+
+
+
+
+## [6.67.10](https://github.com/budgie-at/budgie/compare/v6.67.9...v6.67.10) (2026-09-16)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.67.9](https://github.com/budgie-at/budgie/compare/v6.67.8...v6.67.9) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** match the privatbank import page to the current privat24 flow ([dd8ac30](https://github.com/budgie-at/budgie/commit/dd8ac3045d30f7eb718d850c0e7e12a45c7fdd45))
+
+
+
+
+
+## [6.67.8](https://github.com/budgie-at/budgie/compare/v6.67.7...v6.67.8) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** describe biometrics for face id and fingerprint ([abdfe18](https://github.com/budgie-at/budgie/commit/abdfe18f60a2466c5c773728510bfa90a62ce716)), closes [#1059](https://github.com/budgie-at/budgie/issues/1059)
+* **landing:** remove runtime names from the ai pages ([95fa358](https://github.com/budgie-at/budgie/commit/95fa3580c86eebc8a760c432a9025a8cd8f9b350)), closes [#1105](https://github.com/budgie-at/budgie/issues/1105)
+
+
+
+
+
+## [6.67.7](https://github.com/budgie-at/budgie/compare/v6.67.6...v6.67.7) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** correct iban, split and action-menu copy ([6f5ed84](https://github.com/budgie-at/budgie/commit/6f5ed8402eeb69ef3a4c47c5c6eeeea8acb9c0a4))
+
+
+
+
+
+## [6.67.6](https://github.com/budgie-at/budgie/compare/v6.67.5...v6.67.6) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** describe recurring detection as computed and read-only ([c2d8f54](https://github.com/budgie-at/budgie/commit/c2d8f544d9f3fc97995c54b350d155fc28684e6d))
+
+
+### Performance Improvements
+
+* **app:** archive large accounts without locking the database ([04967ec](https://github.com/budgie-at/budgie/commit/04967eccf00342ee8d5d7612a98d71fe96fd9f03)), closes [#831](https://github.com/budgie-at/budgie/issues/831)
+
+
+
+
+
+## [6.67.5](https://github.com/budgie-at/budgie/compare/v6.67.4...v6.67.5) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** use the budgie logo as the og card brand mark ([f6bc7e7](https://github.com/budgie-at/budgie/commit/f6bc7e7bd52cc04ae7a4c8ff48e0d0cf3b9831f3)), closes [#1102](https://github.com/budgie-at/budgie/issues/1102)
+
+
+
+
+
+## [6.67.4](https://github.com/budgie-at/budgie/compare/v6.67.3...v6.67.4) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** match own-card transfer masks against the card number before the IBAN suffix ([c277060](https://github.com/budgie-at/budgie/commit/c2770604d8f3c8f5907a9065affa27881a55be3b)), closes [#1074](https://github.com/budgie-at/budgie/issues/1074) [#1078](https://github.com/budgie-at/budgie/issues/1078)
+
+
+
+
+
+## [6.67.3](https://github.com/budgie-at/budgie/compare/v6.67.2...v6.67.3) (2026-09-16)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.67.2](https://github.com/budgie-at/budgie/compare/v6.67.1...v6.67.2) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** keep category context on debt-account transfers ([20d7fec](https://github.com/budgie-at/budgie/commit/20d7fecc92f09017c1db4265271a898eb2894247))
+
+
+
+
+
+## [6.67.1](https://github.com/budgie-at/budgie/compare/v6.67.0...v6.67.1) (2026-09-16)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+# [6.67.0](https://github.com/budgie-at/budgie/compare/v6.66.0...v6.67.0) (2026-09-16)
+
+
+### Bug Fixes
+
+* **landing:** detect stale og plates and constrain the plate locale ([93fec55](https://github.com/budgie-at/budgie/commit/93fec55984c6bc77c7826c3ee6ec5fb659884b34))
+
+
+### Features
+
+* **landing:** og images with product imagery for features, hubs and blog ([b0a66e7](https://github.com/budgie-at/budgie/commit/b0a66e74653b44ead05782e636db2f28c0dc1bde))
+
+
+
+
+
+# [6.66.0](https://github.com/budgie-at/budgie/compare/v6.65.3...v6.66.0) (2026-09-16)
+
+
+### Bug Fixes
+
+* **app:** compare split remainder in microunits ([2ea5df9](https://github.com/budgie-at/budgie/commit/2ea5df9a226a31f12103bd0dd731628dab8b0b57)), closes [#946](https://github.com/budgie-at/budgie/issues/946)
+
+
+### Features
+
+* **landing:** add on-device-ai-budget-app steps story ([97bd640](https://github.com/budgie-at/budgie/commit/97bd64036c2a1309a2c3bc0f8eed0855ae61e65b))
+
+
+
+
+
 ## [6.65.3](https://github.com/budgie-at/budgie/compare/v6.65.2...v6.65.3) (2026-09-16)
 
 **Note:** Version bump only for package @budgie-at/root

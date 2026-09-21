@@ -11,6 +11,7 @@ class SyncWorkloadService {
     private readonly backgroundQueue: SyncWorkloadQueuedTaskInterface[] = [];
     private readonly userQueue: SyncWorkloadQueuedTaskInterface[] = [];
     private readonly queuedUserWorkListeners = new Set<() => void>();
+    private drainGeneration = 0;
     private isAcceptingWork = true;
     private isRunning = false;
 
@@ -23,6 +24,13 @@ class SyncWorkloadService {
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
     resumeAcceptingWork(): void {
         this.isAcceptingWork = true;
+    }
+
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    interruptActiveWork(): void {
+        this.drainGeneration += 1;
+        this.isRunning = false;
+        this.startDrain();
     }
 
     @Log(
@@ -128,33 +136,45 @@ class SyncWorkloadService {
     }
 
     private startDrain(): void {
-        this.drain().catch((error: unknown) => void emptyFn(error));
-    }
-
-    private async drain(): Promise<void> {
-        if (this.isRunning) {
+        if (this.isRunning || !this.hasQueuedWork()) {
             return;
         }
 
         this.isRunning = true;
+        this.drainGeneration += 1;
+        const { drainGeneration } = this;
+        this.drain(drainGeneration).catch((error: unknown) => void emptyFn(error));
+    }
+
+    private async drain(drainGeneration: number): Promise<void> {
         try {
-            await this.drainQueuedTasks();
+            await this.drainQueuedTasks(drainGeneration);
         } finally {
-            this.isRunning = false;
-            if (this.hasQueuedWork()) {
-                this.startDrain();
-            }
+            this.finishDrain(drainGeneration);
         }
     }
 
-    private async drainQueuedTasks(): Promise<void> {
+    private async drainQueuedTasks(drainGeneration: number): Promise<void> {
+        if (drainGeneration !== this.drainGeneration) {
+            return;
+        }
+
         const task = this.takeNextTask();
         if (!isDefined(task)) {
             return;
         }
 
         await task.run();
-        await this.drainQueuedTasks();
+        await this.drainQueuedTasks(drainGeneration);
+    }
+
+    private finishDrain(drainGeneration: number): void {
+        if (drainGeneration !== this.drainGeneration) {
+            return;
+        }
+
+        this.isRunning = false;
+        this.startDrain();
     }
 
     private takeNextTask(): SyncWorkloadQueuedTaskInterface | null {

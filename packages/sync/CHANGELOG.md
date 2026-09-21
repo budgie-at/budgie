@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.67.16](https://github.com/budgie-at/budgie/compare/v6.67.15...v6.67.16) (2026-09-16)
+
+
+### Bug Fixes
+
+* **bank-sync:** persist the Binance cursor, surface C2C availability and tighten P2P pairing ([0efbd02](https://github.com/budgie-at/budgie/commit/0efbd02701fa8a8febf935e38402f42f483e9104)), closes [#562](https://github.com/budgie-at/budgie/issues/562) [#561](https://github.com/budgie-at/budgie/issues/561) [#540](https://github.com/budgie-at/budgie/issues/540) [#1088](https://github.com/budgie-at/budgie/issues/1088)
+
+
+
+
+
+## [6.67.3](https://github.com/budgie-at/budgie/compare/v6.67.2...v6.67.3) (2026-09-16)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
 # [6.51.0](https://github.com/budgie-at/budgie/compare/v6.50.1...v6.51.0) (2026-09-12)
 
 

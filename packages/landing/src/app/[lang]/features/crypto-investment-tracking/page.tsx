@@ -174,7 +174,9 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                 <FeaturePageProse>
                     <Trans>
                         Most expense apps end at fiat. Budgie has crypto holdings as first-class instruments — each one has a quantity, an
-                        instrument symbol, and a daily price. Net worth rolls them all up.
+                        instrument symbol, and a daily price. Net worth rolls them all up. Runway is the exception: it counts only cash and
+                        bank balances by default, and only folds crypto into that forecast once you switch on Include crypto in Settings →
+                        Runway.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>

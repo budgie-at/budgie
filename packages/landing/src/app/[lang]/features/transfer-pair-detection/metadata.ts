@@ -24,6 +24,6 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: ['sync-data-repairs', 'account-transfers', 'convert-to-refund', 'bank-resync-window', 'convert-to-transfer'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
     publishedAt: '2026-05-01',
-    updatedAt: '2026-05-07',
+    updatedAt: '2026-09-16',
     ogTags: ['transfers', 'deduplication', 'smart']
 } satisfies FeatureRegistryEntryInterface;

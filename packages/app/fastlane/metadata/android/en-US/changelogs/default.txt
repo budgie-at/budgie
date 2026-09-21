@@ -1,0 +1,1 @@
+This build focuses on getting the numbers right: crypto sync with Binance is more reliable after interrupted runs, and own-card transfer repairs behave correctly after restoring an archived card. Also included: dozens of smaller translation and stability fixes across the app.

@@ -62,7 +62,7 @@
 
 ### Package-Specific Commands
 
-- **Integration suites**: `pnpm --filter @budgie-at/bank-sync-tests test`, `pnpm --filter @budgie-at/budget-tests test`, and `pnpm --filter @budgie-at/consolidation-tests test`
+- **Integration suites**: `pnpm --filter @budgie-at/sync-tests test`, `pnpm --filter @budgie-at/budget-tests test`, and `pnpm --filter @budgie-at/consolidation-tests test`
 - **App package**:
     - `cd packages/app && pnpm start` (starts Expo dev server with dev client)
     - `pnpm ios` (runs iOS app) / `pnpm android` (runs Android app)
@@ -144,7 +144,7 @@
 ├── packages/
 │   ├── app/              # React Native (Expo) mobile app
 │   ├── ai/               # AI and LLM services
-│   ├── bank-sync/        # Bank integrations
+│   ├── sync/        # Bank integrations
 │   ├── budget/           # Budget domain logic
 │   ├── consolidation/    # Transaction consolidation
 │   ├── contracts/        # Shared TypeScript schemas and repositories
@@ -152,7 +152,7 @@
 │   └── landing/          # Next.js marketing website
 ├── tests/
 │   ├── app-tests/        # Maestro E2E tests
-│   ├── bank-sync-tests/  # Bank-sync integration tests
+│   ├── sync-tests/  # Bank-sync integration tests
 │   ├── budget-tests/     # Budget integration tests
 │   └── consolidation-tests/ # Consolidation integration tests
 ├── .github/workflows/    # CI/CD pipelines
@@ -341,7 +341,7 @@ The root `readme.md` backlog tracks restoring automated `UPPER_CASE` enum-member
 
 ### Integration Tests
 
-- `tests/bank-sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/` are dedicated Vitest integration workspaces
+- `tests/sync-tests/`, `tests/budget-tests/`, and `tests/consolidation-tests/` are dedicated Vitest integration workspaces
 - They currently contain 73 test files and are the suites executed by root `pnpm test` and `pnpm test:coverage`
 
 ## Coding Standards and Best Practices

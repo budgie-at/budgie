@@ -133,6 +133,8 @@ appId: ${APP_ID}
       id: 'TransactionActionsMenu.AttachDebtSettlementButton'
 - assertVisible:
       id: 'TransactionActionsMenu.ConvertToTransferButton'
+- assertVisible:
+      id: 'TransactionActionsMenu.StartDepositButton'
 - assertNotVisible:
       id: 'TransactionActionsMenu.ConvertToRefundButton'
 - assertNotVisible:
@@ -160,6 +162,8 @@ appId: ${APP_ID}
       id: 'TransactionActionsMenu.AttachDebtSettlementButton'
 - assertVisible:
       id: 'TransactionActionsMenu.ConvertToTransferButton'
+- assertVisible:
+      id: 'TransactionActionsMenu.StartDepositButton'
 - assertNotVisible:
       id: 'TransactionActionsMenu.ConvertToRefundButton'
 - assertNotVisible:

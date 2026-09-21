@@ -45,8 +45,10 @@ export { BINANCE_RATE_LIMIT_MS } from './binance/constant/binance-rate-limit-ms.
 export { BINANCE_API_MANAGEMENT_URL } from './binance/constant/binance-api-management-url.constant';
 export { BINANCE_NO_NUMERIC_CODE } from './binance/constant/binance-no-numeric-code.constant';
 export { BinanceCredentialsSchema } from './binance/constant/binance-credentials.schema';
+export { BinanceTradeCursorMapSchema } from './binance/constant/binance-trade-cursor-map.schema';
 
 export type { BinanceCredentialsInterface } from './binance/constant/binance-credentials.schema';
+export type { BinanceTradeCursorMapInterface } from './binance/constant/binance-trade-cursor-map.schema';
 export type { BinanceAccountIdInterface } from './binance/interface/binance-account-id.interface';
 export type { BinanceTransferInterface } from './binance/interface/binance-transfer.interface';
 export type { BinanceAssetBalanceApiInterface } from './binance/interface/binance-asset-balance-api.schema';

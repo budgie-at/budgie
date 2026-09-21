@@ -4,7 +4,7 @@ import { getLogger } from '@budgie/logger';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { useAllCategoriesQuery } from '../../category/query/use-all-categories.query';
+import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
@@ -27,7 +27,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
 
     const { status: embeddingStatus } = useEmbedding();
     const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
-    const { categories, isLoading: isCategoriesLoading } = useAllCategoriesQuery();
+    const { categories, isLoading: isCategoriesLoading } = useNonSystemCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
     const hasCategoriesLoaded = isNotEmptyArray(categories);
 

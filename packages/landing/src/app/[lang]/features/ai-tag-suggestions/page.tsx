@@ -73,8 +73,8 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 locale={lang}
                 tagline={
                     <Trans>
-                        After selecting a category, the on-device LLM proposes up to three tags as tappable pill chips — with an embedding
-                        fallback that stays instant even when the model is still warming up.
+                        After selecting a category, the on-device model proposes up to three tags as tappable pill chips — with a lighter
+                        fallback that answers while that model is still loading.
                     </Trans>
                 }
             />
@@ -93,32 +93,30 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Automatic tag suggestions eliminate the friction without removing control. After you pick a category, the on-device
-                        LLM looks at the merchant name, category, and your historical tagging patterns to propose the three most relevant
-                        tags as pill-shaped chips. A single tap adds the tag. You can still type new ones — the suggestions are additive,
-                        not a replacement for the text field.
+                        Automatic tag suggestions eliminate the friction without removing control. After you pick a category, Budgie looks
+                        at the merchant name, the category, and how you have tagged similar transactions before, then proposes the three
+                        most relevant tags as pill-shaped chips. A single tap adds the tag. You can still type new ones — the suggestions
+                        are additive, not a replacement for the text field.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>LLM primary, embedding fallback — always fast</Trans>
+                    <Trans>Two paths to a suggestion, so you rarely wait</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        The primary engine is the on-device Qwen3 1.7B language model. It ranks tag candidates from your existing tag
-                        vocabulary by semantic similarity to the transaction context — matching phrasing variations that a simple text
-                        lookup would miss. When the LLM is still loading or busy with another inference, the embedding fallback takes over:
-                        a nearest-neighbor lookup over 768-dimensional embeddings of your past tagged transactions, running in milliseconds
-                        without waiting for the LLM.
+                        The main path ranks candidates from the tags you already use by how well they fit the transaction in front of you —
+                        catching phrasing variations that a simple text lookup would miss. It is prepared on demand, so the very first
+                        suggestion after a pause waits a moment. While it is still warming up or busy with another request, a faster lookup
+                        over your past tagged transactions takes over and answers without waiting.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Both engines run entirely on your device. No network call, no vendor profiling. The LLM never sees a raw tag
-                        vocabulary upload — it reasons from the transaction context and returns ranked suggestions from the tags you already
-                        use in Budgie.
+                        Both paths run entirely on your device. No network call, no vendor profiling. Nothing about your tags is ever
+                        uploaded — every suggestion comes from the tags you already use in Budgie.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -132,13 +130,13 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                         <Trans>Up to three tag suggestions as tappable pills after category selection — zero typing required</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>LLM-powered ranking with embedding fallback keeps suggestions instant on any device</Trans>
+                        <Trans>A second, lighter path answers whenever the main model is still loading or busy</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Additive interface — suggestions sit alongside the text field, never replacing it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Fully offline — both engines run on-device with no cloud dependency</Trans>
+                        <Trans>Fully offline — both paths run on your phone with no cloud dependency</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -148,17 +146,17 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     question={<Trans>How are tags chosen?</Trans>}
                     answer={
                         <Trans>
-                            The LLM ranks candidates by similarity to your past tag usage on similar transactions. The top three become
-                            tappable pills.
+                            Budgie ranks candidates by how closely they match the way you tagged similar transactions before. The top three
+                            become tappable pills.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What if the LLM is slow on my phone?</Trans>}
+                    question={<Trans>What if my phone is slow?</Trans>}
                     answer={
                         <Trans>
-                            The embedding fallback runs in milliseconds and proposes the same tags from a 768-dim nearest-neighbor lookup
-                            over your history.
+                            A lighter fallback proposes tags from a lookup over your own tagged history, so suggestions appear instantly
+                            even while the larger model is still warming up.
                         </Trans>
                     }
                 />
@@ -168,7 +166,7 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does this work offline?</Trans>}
-                    answer={<Trans>Yes. Both engines run on-device.</Trans>}
+                    answer={<Trans>Yes. Both paths run on your phone.</Trans>}
                 />
             </FeaturePageFaqSection>
 

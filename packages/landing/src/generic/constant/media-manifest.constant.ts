@@ -196,72 +196,72 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
         kind: MediaKindEnum.STILL
     },
     {
-        slug: 'ai-merchant-translation',
+        slug: 'ai-category-translation',
         locale: 'de',
-        scene: 'ai-merchant-translation-1',
+        scene: 'ai-category-translation-1',
         theme: MediaThemeEnum.DARK,
         kind: MediaKindEnum.STILL
     },
     {
-        slug: 'ai-merchant-translation',
+        slug: 'ai-category-translation',
         locale: 'de',
-        scene: 'ai-merchant-translation-1',
+        scene: 'ai-category-translation-1',
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
     {
-        slug: 'ai-merchant-translation',
+        slug: 'ai-category-translation',
         locale: 'en',
-        scene: 'ai-merchant-translation-1',
+        scene: 'ai-category-translation-1',
         theme: MediaThemeEnum.DARK,
         kind: MediaKindEnum.STILL
     },
     {
-        slug: 'ai-merchant-translation',
+        slug: 'ai-category-translation',
         locale: 'en',
-        scene: 'ai-merchant-translation-1',
+        scene: 'ai-category-translation-1',
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
     {
-        slug: 'ai-merchant-translation',
+        slug: 'ai-category-translation',
         locale: 'es',
-        scene: 'ai-merchant-translation-1',
+        scene: 'ai-category-translation-1',
         theme: MediaThemeEnum.DARK,
         kind: MediaKindEnum.STILL
     },
     {
-        slug: 'ai-merchant-translation',
+        slug: 'ai-category-translation',
         locale: 'es',
-        scene: 'ai-merchant-translation-1',
+        scene: 'ai-category-translation-1',
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
     {
-        slug: 'ai-merchant-translation',
+        slug: 'ai-category-translation',
         locale: 'fr',
-        scene: 'ai-merchant-translation-1',
+        scene: 'ai-category-translation-1',
         theme: MediaThemeEnum.DARK,
         kind: MediaKindEnum.STILL
     },
     {
-        slug: 'ai-merchant-translation',
+        slug: 'ai-category-translation',
         locale: 'fr',
-        scene: 'ai-merchant-translation-1',
+        scene: 'ai-category-translation-1',
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
     {
-        slug: 'ai-merchant-translation',
+        slug: 'ai-category-translation',
         locale: 'uk',
-        scene: 'ai-merchant-translation-1',
+        scene: 'ai-category-translation-1',
         theme: MediaThemeEnum.DARK,
         kind: MediaKindEnum.STILL
     },
     {
-        slug: 'ai-merchant-translation',
+        slug: 'ai-category-translation',
         locale: 'uk',
-        scene: 'ai-merchant-translation-1',
+        scene: 'ai-category-translation-1',
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },

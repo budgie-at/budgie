@@ -777,9 +777,9 @@ export default async function LocalFirstMovementDevelopersArticle(props: PageLan
 
                     <BlogArticleProse>
                         <Trans>
-                            All your financial data, including transactions, accounts, budgets, and categories, is stored in a local SQLite
-                            database on your device. We use Drizzle ORM for type-safe database operations, ensuring data integrity while
-                            keeping everything local.
+                            All your financial data, including transactions, accounts, budgets, and categories, is stored in a local
+                            database on your device, with type-safe operations that keep data integrity intact while keeping everything
+                            local.
                         </Trans>
                     </BlogArticleProse>
 

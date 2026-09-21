@@ -664,6 +664,10 @@ msgstr "Billing Dates"
 msgid "Binance"
 msgstr "Binance"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
+msgstr "Binance P2P orders are unavailable: the API key is missing P2P read permission."
+
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric Authentication"
 msgstr "Biometric Authentication"
@@ -851,6 +855,10 @@ msgstr "Checking"
 #: src/app/(main)/create-account/index.tsx
 msgid "Checking Account"
 msgstr "Checking Account"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
+msgstr "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
@@ -1844,10 +1852,6 @@ msgstr "Export CSV"
 msgid "Export Database"
 msgstr "Export Database"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Export your transactions to Excel"
-msgstr "Export your transactions to Excel"
-
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
 msgstr "External ID"
@@ -1951,7 +1955,7 @@ msgstr "From"
 msgid "From {fromText}"
 msgstr "From {fromText}"
 
-#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "From account"
@@ -2044,6 +2048,14 @@ msgstr "How to export"
 msgid "Icon importer not found: {icon}"
 msgstr "Icon importer not found: {icon}"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
+msgstr "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Import"
+msgstr "Import"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Import a statement"
 msgstr "Import a statement"
@@ -2054,7 +2066,6 @@ msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Import accounts and transactions from Erste Bank PDF statement"
 
 #: src/app/(main)/create-account/index.tsx
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import accounts and transactions from Privatbank XLSX export"
 msgstr "Import accounts and transactions from Privatbank XLSX export"
 
@@ -2268,10 +2279,6 @@ msgstr "Left"
 #: src/account/constant/account-debt-type.constant.ts
 msgid "Lent"
 msgstr "Lent"
-
-#: src/account/service/account-debt-opening.service.ts
-msgid "Lent debt account expected"
-msgstr "Lent debt account expected"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Less Than"
@@ -2498,10 +2505,6 @@ msgstr "Most likely balance"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
 msgstr "Navigate to Account → Statements"
-
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Navigate to Menu → Statements"
-msgstr "Navigate to Menu → Statements"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 msgid "Net"
@@ -2767,6 +2770,10 @@ msgstr "One-off"
 msgid "One-off spike"
 msgstr "One-off spike"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
+msgstr "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
 msgstr "Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged."
@@ -2797,17 +2804,21 @@ msgstr "Open Binance to get your API key"
 msgid "Open George (Erste Bank online banking)"
 msgstr "Open George (Erste Bank online banking)"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Open its statement and choose a date range that covers your full history"
+msgstr "Open its statement and choose a date range that covers your full history"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Monobank to get your token"
 msgstr "Open Monobank to get your token"
 
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Open Privat24 and select the card or account you want to import"
+msgstr "Open Privat24 and select the card or account you want to import"
+
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Open settings"
 msgstr "Open settings"
-
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Open the Privatbank24 app"
-msgstr "Open the Privatbank24 app"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
@@ -3171,6 +3182,10 @@ msgstr "Restore from a backup file"
 #: src/ai/service/ai-system-status.service.ts
 msgid "Resuming AI…"
 msgstr "Resuming AI…"
+
+#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
+msgid "Return to Budgie and select the saved XLSX file below"
+msgstr "Return to Budgie and select the saved XLSX file below"
 
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Returned"
@@ -3614,6 +3629,16 @@ msgstr "Spent"
 msgid "Split"
 msgstr "Split"
 
+#: src/app/convert-to-transfer.tsx
+#: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
+#: src/transaction/components/update-transaction-actions-menu/update-transaction-actions-menu.tsx
+msgid "Start Deposit"
+msgstr "Start Deposit"
+
+#: src/app/convert-to-transfer.tsx
+msgid "Start Deposit?"
+msgstr "Start Deposit?"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Start from scratch and set every limit yourself"
 msgstr "Start from scratch and set every limit yourself"
@@ -3825,6 +3850,10 @@ msgstr "This will convert the expense to a transfer between accounts."
 msgid "This will convert the income to a transfer between accounts."
 msgstr "This will convert the income to a transfer between accounts."
 
+#: src/app/convert-to-transfer.tsx
+msgid "This will create a new deposit account and convert this expense into a transfer into it."
+msgstr "This will create a new deposit account and convert this expense into a transfer into it."
+
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "This will keep one entry with the full transaction amount."
 msgstr "This will keep one entry with the full transaction amount."
@@ -3871,6 +3900,7 @@ msgstr "To"
 msgid "To {toText}"
 msgstr "To {toText}"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
 msgstr "To account"
@@ -4174,6 +4204,10 @@ msgstr "Volume"
 #: src/sync/utils/build-sync-status-label.util.ts
 msgid "Waiting"
 msgstr "Waiting"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Warning"
+msgstr "Warning"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."

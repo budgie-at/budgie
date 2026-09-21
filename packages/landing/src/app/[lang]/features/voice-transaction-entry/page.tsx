@@ -74,7 +74,7 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 tagline={
                     <Trans>
                         Say &ldquo;twelve for coffee, forty for the taxi, and eight euros for parking&rdquo; and Budgie logs all three.
-                        whisper.rn (whisper.cpp backend) and the on-device LLM both run locally — no audio leaves your phone.
+                        Transcription and parsing both happen on your phone — the audio never leaves it.
                     </Trans>
                 }
             />
@@ -86,8 +86,8 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 <FeaturePageProse>
                     <Trans>
                         Voice is the fastest input mode for an expense — but every voice budgeting app today streams microphone data to a
-                        vendor server. Budgie keeps the audio stream entirely on the device, then runs whisper.rn (a whisper.cpp-backed
-                        React Native library) for transcription and a local LLM for entity extraction.
+                        vendor server. Budgie keeps the audio entirely on the device: it becomes text there, and the amounts and categories
+                        are pulled out there too.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -105,12 +105,10 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>
-                            whisper.rn (whisper.cpp backend) runs Whisper large-v3-turbo locally for accurate, multilingual transcription
-                        </Trans>
+                        <Trans>Accurate, multilingual transcription that happens on your phone</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>On-device LLM splits natural speech into multiple transactions, each with its own amount and category</Trans>
+                        <Trans>Natural speech is split into multiple transactions, each with its own amount and category</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>Audio never leaves the device — no Siri-style cloud round-trip</Trans>
@@ -131,7 +129,7 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                         <Trans>The spoken currency picks the matching account automatically</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
-                        <Trans>Works during the AI model loading phase too — visual progress indicator built-in</Trans>
+                        <Trans>The record button shows a progress ring while the one-time download finishes</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
@@ -142,10 +140,10 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM
-                        extracts one or more transactions from the transcription — each with its own amount, category, and account — and
-                        opens a review sheet before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if
-                        the transcription went wrong.
+                        Tap the mic in the quick-entry sheet. Your speech becomes text on the phone, and one or more transactions are pulled
+                        out of it — each with its own amount, category, and the account matching the currency you said — then a review sheet
+                        opens before anything is saved. Edit any row by hand, or tap re-record to replace the whole batch if the
+                        transcription went wrong.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -178,9 +176,9 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     question={<Trans>Which languages does voice entry support?</Trans>}
                     answer={
                         <Trans>
-                            Budgie downloads the Whisper large-v3-turbo model once and caches it on the device. It covers English,
-                            Ukrainian, German, French, and Spanish as primary languages, plus dozens more. Transcription quality scales with
-                            language coverage in the model.
+                            Voice entry downloads what it needs once and keeps it on the device — only after you switch On-device AI on in
+                            Settings, and only the first time you record. It covers English, Ukrainian, German, French, and Spanish as
+                            primary languages, plus dozens more, and follows your phone&apos;s language automatically.
                         </Trans>
                     }
                 />
@@ -188,13 +186,13 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                     question={<Trans>Is my voice recorded anywhere?</Trans>}
                     answer={
                         <Trans>
-                            No. The microphone stream feeds whisper.rn directly in-process; the audio buffer is discarded after
-                            transcription. Nothing is saved, sent, or logged.
+                            No. The microphone feeds transcription directly on the device, and the audio is discarded once it has become
+                            text. Nothing is saved, sent, or logged.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What if Whisper mishears me?</Trans>}
+                    question={<Trans>What if it mishears me?</Trans>}
                     answer={
                         <Trans>
                             Every extracted row appears in the review sheet before you save. Edit any row manually, or tap re-record to
@@ -204,9 +202,7 @@ export default async function VoiceTransactionEntryFeaturePage(props: PageLangPa
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Does it work offline?</Trans>}
-                    answer={
-                        <Trans>Yes — once the Whisper model is cached on-device, voice entry works without any internet connection.</Trans>
-                    }
+                    answer={<Trans>Yes — after the one-time download, voice entry works without any internet connection.</Trans>}
                 />
             </FeaturePageFaqSection>
 

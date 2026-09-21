@@ -333,7 +333,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                             <Trans>Store data locally or on infrastructure you control</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Offer comprehensive export functionality (CSV, JSON, SQL)</Trans>
+                            <Trans>Offer comprehensive export functionality (CSV, JSON, or a full database file)</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Never lock you into a proprietary format</Trans>
@@ -929,10 +929,10 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>Clean, modern codebase built with React Native and Expo</Trans>
+                            <Trans>Open source and auditable end to end</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Local SQLite database with Drizzle ORM (you can query your own data)</Trans>
+                            <Trans>Your data in a local file you can open and query yourself</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Planned API for power users to build custom integrations</Trans>
@@ -1596,7 +1596,7 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                     <BlogArticleProse>
                         <Trans>
                             Budgie is native mobile-first, completely offline-capable, and radically private. Your data lives on your device
-                            in a SQLite database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app
+                            in a local database you can query directly. Bank sync, when used, employs zero-knowledge architecture. The app
                             is open source so you can verify every claim we make.
                         </Trans>
                     </BlogArticleProse>
@@ -1628,7 +1628,8 @@ export default async function MintAlternativesDevelopersArticle(props: PageLangP
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Modern tech stack</strong>: React Native, Expo, Drizzle ORM, TypeScript throughout.
+                                <strong>Modern, native tech stack</strong>: A clean, type-safe codebase built for native mobile from day
+                                one.
                             </Trans>
                         </BlogArticleListItem>
                     </BlogArticleList>

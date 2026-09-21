@@ -24,9 +24,9 @@ export const ProofBand = ({ locale }: Props) => (
 
                     <p className="text-sm md:text-base leading-relaxed text-muted-foreground text-pretty">
                         <Trans>
-                            Every transaction, budget and chart is computed from a SQLite database on your phone. There is no account to
-                            create, so there is nothing to sign into, nothing to sync and nothing to leak. Turn the radio off and the app
-                            behaves exactly the same.
+                            Every transaction, budget and chart is computed on your phone. There is no account to create, so there is
+                            nothing to sign into, nothing to sync and nothing to leak. Turn the radio off and the app behaves exactly the
+                            same.
                         </Trans>
                     </p>
 

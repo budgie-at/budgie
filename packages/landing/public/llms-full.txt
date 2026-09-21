@@ -141,7 +141,7 @@ Source: https://budgie.at/en/ai-features
 Qwen3 1.7B and a 768-dim embedding model run entirely on your phone. Smart suggestions, voice entry, and auto-categorization — no data leaves your device.
 
 - Qwen3 1.7B runs on your phone — no API key, no subscription
-- 768-dimensional embedding model for instant category suggestions
+- Category suggestions drawn from your own history — never from a cloud service
 - Voice transaction entry via whisper.rn — audio never leaves the device
 - Merchant name normalization for Cyrillic and foreign bank statements
 - Every AI correction improves future suggestions via on-device learning
@@ -154,7 +154,7 @@ Correction loop — every accepted or edited suggestion updates the embedding in
 
 ## FAQ
 
-Which AI models does Budgie use? Budgie uses two on-device models: Qwen3 1.7B for natural-language understanding and chat, and a 768-dimensional embedding model for nearest-neighbor categorization from your own transaction history. Both run locally with no external API call.
+Which AI models does Budgie use? Three, all on your device: a language model for natural-language understanding and chat, a 768-dimensional embedding model for nearest-neighbor categorization from your own transaction history, and a speech model for voice entry. Every one of them runs locally with no external API call.
 
 How large are the model downloads? The embedding model is approximately 90 MB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features and cached on-device.
 
@@ -255,7 +255,7 @@ Source: https://budgie.at/en/features/ai-auto-categorization
 
 Two on-device models — Qwen3 1.7B for chat and a 768-dim Nomic embedding model — categorize transactions, suggest tags, and learn from your corrections. Your statements never leave the phone.
 
-Cloud "AI" budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees your supermarket habits. Budgie loads both models once, then keeps every inference local — same accuracy, zero data exfiltration.
+Cloud "AI" budgeting apps stream every merchant string to a remote LLM, which often means OpenAI sees your supermarket habits. Budgie keeps every inference on your own device — same accuracy, zero data exfiltration.
 
 The two-stage pipeline runs embedding lookup first for instant nearest-neighbor categorization from your own history, then falls back to Qwen3 1.7B for novel transactions the embedding index has not seen before. Every accepted or edited suggestion updates the 768-dim index immediately — accuracy compounds over time.
 
@@ -274,7 +274,7 @@ How big is the model download? Roughly 1 GB combined: Qwen3 1.7B Q4 for the lang
 
 Can I correct the AI's suggestions? Always. Every transaction lets you accept, edit, or reject the suggestion. Your corrections feed back into the 768-dim embedding index immediately.
 
-Does Budgie use OpenAI or any cloud LLM? No. Inference uses ONNX Runtime locally. There is no fallback to a cloud model and no telemetry about your transactions.
+Does Budgie use OpenAI or any cloud LLM? No. Every inference runs on your own device. There is no fallback to a cloud model and no telemetry about your transactions.
 
 ---
 
@@ -290,7 +290,7 @@ What you get:
 - On-device LLM extracts amount, merchant, date, and category from natural speech
 - Audio never leaves the device — no Siri-style cloud round-trip
 - Pre-fills the same quick-entry form — confirm or correct
-- Works during the AI model loading phase too — visual progress indicator
+- The record button shows a progress ring while the speech model downloads and loads
 
 How it works: Tap the mic in the quick-entry sheet. whisper.rn transcribes locally using the whisper.cpp engine. The local LLM extracts amount, merchant, and date hints from the transcription and applies the same on-device category suggestion pipeline used for typed transactions.
 
@@ -364,7 +364,7 @@ Source: https://budgie.at/en/features/on-device-ai-budget-app
 
 Cloud AI assistants for budgeting send every transaction to a remote server for "intelligence". Budgie runs the LLM and embeddings on your phone — your data never leaves.
 
-Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run via ONNX Runtime on iOS and Android. Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features.
+Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run entirely on your phone on iOS and Android, and voice entry adds a third model — nothing leaves the device. Roughly 1 GB combined. The download is one-time, opt-in, and only triggers if you turn on AI features.
 
 Feature comparison — Budgie vs. Cloud AI budget assistants:
 - Where AI runs: on your phone vs. vendor's cloud
@@ -376,7 +376,7 @@ Feature comparison — Budgie vs. Cloud AI budget assistants:
 
 ## FAQ
 
-Which models does Budgie run on-device? Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run via ONNX Runtime on iOS and Android.
+Which models does Budgie run on-device? Qwen3 1.7B for chat-style suggestions and a 768-dim embedding model for nearest-neighbor lookups. Both run entirely on your phone on iOS and Android, and voice entry adds a third model — nothing leaves the device.
 
 How big is the download? Roughly 1 GB combined. One-time, opt-in.
 
@@ -719,13 +719,13 @@ What happens if I lose my phone? Without a backup file, your data is gone — th
 
 ## AI Features
 
-Which AI models does Budgie use? Budgie uses two on-device models: Qwen3 1.7B for natural-language understanding and chat, and a 768-dimensional embedding model for nearest-neighbor categorization. Both run locally with no external API call.
+Which AI models does Budgie use? Three, all on your device: a language model for natural-language understanding and chat, a 768-dimensional embedding model for nearest-neighbor categorization, and a speech model for voice entry. Every one of them runs locally with no external API call.
 
 Does the AI work offline? Yes. Both models live on your device after the one-time download.
 
-How large are the model downloads? The embedding model is approximately 90 MB. Qwen3 1.7B in quantized form is approximately 1.1 GB. Both are downloaded once on first use of AI features.
+How large are the model downloads? About 1.6 GB for the two models behind categorization and suggestions, plus a further 0.9 GB if you use voice entry. Nothing downloads until you switch On-device AI on in Settings, and then only when you first use the feature that needs it.
 
-Does Budgie use OpenAI or any cloud LLM? No. Inference uses ONNX Runtime locally. There is no fallback to a cloud model.
+Does Budgie use OpenAI or any cloud LLM? No. Every inference runs on your own device. There is no fallback to a cloud model.
 
 Does voice entry send audio to a server? No. Voice entry uses whisper.rn which transcribes audio directly on your device. Your voice recordings are never streamed to any external server.
 

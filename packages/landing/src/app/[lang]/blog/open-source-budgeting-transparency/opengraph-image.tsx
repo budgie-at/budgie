@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createBlogOgImage } from '../../../../blog/component/blog-og-image/blog-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Source-Available Budgeting: Why Transparency Matters for Your Money';
@@ -12,11 +13,11 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createBlogOgImage(t(i18n)`Source-Available Budgeting: Why Transparency Matters for Your Money`, [
-        t(i18n)`source-available`,
-        t(i18n)`transparency`,
-        t(i18n)`budgeting`
-    ]);
+    return createBlogOgImage(
+        t(i18n)`Source-Available Budgeting: Why Transparency Matters for Your Money`,
+        [t(i18n)`source-available`, t(i18n)`transparency`, t(i18n)`budgeting`],
+        resolveOgPlate('open-source-budget-app-mobile', lang)
+    );
 };
 
 export default OgImage;

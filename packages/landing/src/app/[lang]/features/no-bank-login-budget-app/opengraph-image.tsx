@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'Budget App Without Bank Login — No Aggregator — Budgie';
@@ -17,7 +18,8 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         t(
             i18n
         )`Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to your bank directly via tokens or imports statements you download yourself.`,
-        [t(i18n)`privacy`, t(i18n)`aggregator`, t(i18n)`bank-sync`]
+        [t(i18n)`privacy`, t(i18n)`aggregator`, t(i18n)`bank-sync`],
+        resolveOgPlate('no-bank-login-budget-app', lang)
     );
 };
 

@@ -108,8 +108,11 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Four actions, no form</Trans>}>
-                    <Trans>Edit, convert to a transfer, attach a debt, or delete — every one of them starts from the list.</Trans>
+                <FeatureStory.Step index={1} title={<Trans>Six actions, no form</Trans>}>
+                    <Trans>
+                        Edit, convert to refund, convert to transfer, attach a debt, delete, or revert — every one of them starts from the
+                        list.
+                    </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
                     alt={t(i18n)`Budgie context menu open over the dimmed transaction list, with delete last and marked in red`}
@@ -161,9 +164,8 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The context menu uses native platform APIs — the system menu component on iPadOS and a bottom sheet on iPhone and
-                        Android — so the interaction is immediately familiar. There is no modal, no full-screen form, and no intermediate
-                        navigation step for the common actions.
+                        The same popover menu opens on every platform, anchored to the transaction card. There is no modal, no full-screen
+                        form, and no intermediate navigation step for the common actions.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -180,7 +182,7 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                         <Trans>Context-aware menu — actions adapt to transaction type so you never see an invalid option</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Native platform UI — system context menu on iPad, bottom sheet on iPhone and Android</Trans>
+                        <Trans>One popover menu on every platform — no modal, no full-screen form to open first</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
                         <Trans>Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer</Trans>
@@ -201,8 +203,8 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     question={<Trans>What actions are available?</Trans>}
                     answer={
                         <Trans>
-                            Edit, Delete, Split, Convert to Transfer, and Convert to Refund. The exact set depends on the transaction type —
-                            only income can become a refund, for example.
+                            Edit, Convert to Refund, Convert to Transfer, Attach Debt, Delete, and Revert. The exact set depends on the
+                            transaction type — only income can become a refund, for example.
                         </Trans>
                     }
                 />
@@ -215,7 +217,9 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 <FeaturePageFaqItem
                     question={<Trans>Does this work on iPad?</Trans>}
                     answer={
-                        <Trans>Yes — on iPadOS the menu uses the system context-menu UI; on iPhone and Android the menu is a sheet.</Trans>
+                        <Trans>
+                            Yes — the same popover menu opens on iPad, iPhone, and Android; there is no separate iPad presentation.
+                        </Trans>
                     }
                 />
             </FeaturePageFaqSection>

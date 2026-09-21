@@ -2,6 +2,7 @@
 import { t } from '@lingui/core/macro';
 
 import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
+import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 
 export const alt = 'CSV Bank Statement Import — Budgie';
@@ -12,11 +13,12 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
     const { lang } = await params;
     const i18n = getI18nInstance(lang);
 
-    return createFeatureOgImage(t(i18n)`CSV Import`, t(i18n)`Any bank, any column order — map it or use a built-in preset.`, [
-        t(i18n)`csv`,
-        t(i18n)`import`,
-        t(i18n)`bank statement`
-    ]);
+    return createFeatureOgImage(
+        t(i18n)`CSV Import`,
+        t(i18n)`Any bank, any column order — map it or use a built-in preset.`,
+        [t(i18n)`csv`, t(i18n)`import`, t(i18n)`bank statement`],
+        resolveOgPlate('csv-import', lang)
+    );
 };
 
 export default OgImage;

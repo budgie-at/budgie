@@ -9,7 +9,8 @@ pnpm start                    # Development server (next dev)
 pnpm build                    # Production build
 pnpm i18n:sync                # Extract & compile i18n translations
 pnpm media:manifest           # Rescan public/media and regenerate the committed media manifest
-pnpm media:check              # Verify manifest freshness, asset budgets and <AppShot>/<AppClip> usages
+pnpm media:og                 # Regenerate the dark OG device plates in public/og-plate from public/media
+pnpm media:check              # Verify manifest freshness, OG plate coverage, asset budgets and <AppShot>/<AppClip> usages
 pnpm ts                       # Native TypeScript 7 check
 pnpm lint                     # Oxlint + 13-rule ESLint fallback
 ```
@@ -361,6 +362,14 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
 
 Add JSON-LD for rich snippets where appropriate.
 
+### No implementation details in user-facing copy
+
+Never name libraries, runtimes, model names, database engines, encryption libraries, frameworks, file formats, or vendor SDKs in anything a visitor can read. Naming an implementation binds the product to it. Examples of banned terms: llama.cpp, whisper.cpp, ONNX, GGUF, Qwen, nomic, SQLCipher, SQLite, Drizzle, Expo, React Native, Hermes, Metal, AES, Lingui.
+
+Describe the outcome for the user instead: what they get, not what ships it. Verify the outcome against `packages/app` and cite that code in the PR description, never on the page.
+
+Applies to pages, metadata sidecars, FAQ copy, JSON-LD, blog articles, and OG text. Brand names of banks and exchanges the user connects to, and OS names, are product facts and stay.
+
 ## Platform & SEO Invariants
 
 **Viewport theme colors.** `export const viewport` in `src/app/[lang]/layout.tsx` keeps dual `themeColor` (light `#ffffff`, dark `#09090b`) plus `viewportFit: 'cover'`, and the manifest `theme_color` must match the light page background. Safari/WebKit paints the rubber-band overscroll and browser chrome from manifest `theme_color` / meta theme-color when the meta tag is missing — never reintroduce a decorative color there.
@@ -369,7 +378,9 @@ Add JSON-LD for rich snippets where appropriate.
 
 **Security header baseline.** Set in `next.config.ts`: `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, HSTS `max-age=63072000; includeSubDomains` (no preload), `Permissions-Policy` denying camera/microphone/geolocation/payment, and `X-Permitted-Cross-Domain-Policies: none`. Preserve all of it when editing config.
 
-**OG image coverage.** Every `page.tsx` SEO route (feature page, blog article, hub) must have a sibling `opengraph-image.tsx` using the shared builders (`createFeatureOgImage` / `createBlogOgImage`). App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`; never commit binary icon variants next to them.
+**OG image coverage.** Every `page.tsx` SEO route (feature page, blog article, hub) must have a sibling `opengraph-image.tsx` using the shared builders (`createFeatureOgImage` / `createBlogOgImage`), which both render the one shared `OgCard` composition. App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`; never commit binary icon variants next to them.
+
+**OG product imagery.** `OgCard` composites a locale-matched dark device plate resolved by `resolveOgPlate(mediaSlug, lang)` and degrades to the text-only card when the slug has no capture. The media slug is a page-local literal in the `opengraph-image.tsx`, never a registry field. Plates live in `public/og-plate/<media-slug>/<locale>.jpg` and are generated from `public/media` by `pnpm media:og`, because satori decodes only PNG/JPEG/GIF/SVG and rejects the WebP and AVIF stills. Re-run `pnpm media:og` after any capture change; `pnpm media:check` fails on a missing plate, an orphaned plate, or a stale one, by comparing the committed `public/og-plate/fingerprint.json` against a fresh hash of every source capture.
 
 **Metadata char budgets.** Titles fit 60 chars including the ` | Budgie` template suffix; descriptions fit 160 chars. The `fitText` util (`src/generic/util/fit-text.util.ts`) is applied inside the metadata builders, so page copy in sidecars may be longer — the builder clamps. Page-author details: `docs/seo-pages.md`.
 

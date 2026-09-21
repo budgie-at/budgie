@@ -28,6 +28,8 @@ Do not put visible body copy in registries, keyed content objects, static string
 
 Use `<Trans>` for JSX text and `t(i18n)` for string props. Do not build fixed static JSX lists by mapping over arrays of strings just to reduce file length.
 
+Visible copy states user outcomes and never names libraries, runtimes, models, database engines, frameworks, file formats, or vendor SDKs — see `AGENTS.md` → "No implementation details in user-facing copy".
+
 ### 3. Registries are enumeration and metadata sources only
 
 Registries may exist for listing pages, sitemap generation, related links, and metadata lookup. They must not carry visible body copy, FAQ body copy, hero bullet copy, long-form prose, or per-page rendered content.
@@ -142,7 +144,7 @@ Do not rebuild page body content from registries in listing components.
 
 ### 11. OG image on every SEO route
 
-Every `page.tsx` SEO route (feature page, blog article, hub) must ship a sibling `opengraph-image.tsx`. Build it with the shared OG image builders (`createFeatureOgImage` / `createBlogOgImage`) instead of hand-rolling a new OG renderer. OG images are for social sharing only: on-site blog artwork (card thumbnails and the article hero) is rendered by `BlogCover`, which derives a deterministic accent hue, motif family, and composition from the article slug and tags, and peeks a framed product still resolved from `relatedFeatureSlugs` through `resolveArticleShot`. Never point an on-site `<Image>` at an `opengraph-image` route.
+Every `page.tsx` SEO route (feature page, blog article, hub) must ship a sibling `opengraph-image.tsx`. Build it with the shared OG image builders (`createFeatureOgImage` / `createBlogOgImage`) instead of hand-rolling a new OG renderer; both render the single `OgCard` composition in `src/generic/component/og-card`, which composites a locale-matched dark device plate from `resolveOgPlate(mediaSlug, lang)` and falls back to the text-only card when the slug has no capture. OG images are for social sharing only: on-site blog artwork (card thumbnails and the article hero) is rendered by `BlogCover`, which derives a deterministic accent hue, motif family, and composition from the article slug and tags, and peeks a framed product still resolved from `relatedFeatureSlugs` through `resolveArticleShot`. Never point an on-site `<Image>` at an `opengraph-image` route.
 
 The metadata builders never set `openGraph.images` / `twitter.images` — config-based images override file-based conventions, and the file must own `og:image`. When a route has no file yet, the root layout's static fallback applies.
 

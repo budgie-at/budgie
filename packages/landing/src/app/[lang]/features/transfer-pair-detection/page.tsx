@@ -155,7 +155,7 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 <FeaturePageProse>
                     <Trans>
                         Two synced banks see the same transfer twice — once as a debit, once as a credit. Without consolidation, your
-                        spending doubles. Budgie matches the pair using amount, time window, and the counter-IBAN stored on each leg.
+                        spending doubles. Budgie matches the pair using amount, a time window, and counter-IBAN when the bank provides it.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -172,7 +172,10 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Counter-IBAN stored per leg — primary signal for cross-account matching</Trans>
+                        <Trans>
+                            Counter-IBAN from Monobank as the primary signal; amount and time-window matching for banks that don&apos;t send
+                            one
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>Amount + time-window matching catches transfers and refunds without perfect bank metadata</Trans>
@@ -203,10 +206,10 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     question={<Trans>Does this work across two different banks?</Trans>}
                     answer={
                         <Trans>
-                            Yes — that&apos;s the whole point. Counter-IBAN is the primary matching signal: both banks store the
-                            counterparty IBAN on their respective legs, so Budgie can link them directly. Monobank, PrivatBank, and Erste
-                            all expose counter-IBAN. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the
-                            amounts differ due to FX conversion.
+                            Yes. Monobank sends a counter-IBAN on every leg, so Budgie links those pairs directly. PrivatBank and Erste
+                            don&apos;t expose a counterparty IBAN at all, so Budgie falls back to matching on amount and a time window
+                            instead. For cross-currency pairs, an exchange-rate tolerance band confirms the match when the amounts differ
+                            due to FX conversion.
                         </Trans>
                     }
                 />
@@ -214,9 +217,9 @@ export default async function TransferPairDetectionFeaturePage(props: PageLangPa
                     question={<Trans>What about cross-currency transfers?</Trans>}
                     answer={
                         <Trans>
-                            Pairs match if the implied FX rate falls within a plausible tolerance band. Cross-currency legs have to land
-                            within a minute of each other; same-currency pairs get a twelve-hour window. The original amounts in both
-                            currencies are preserved on each leg.
+                            Pairs match if the implied FX rate falls within a plausible tolerance band. Both legs still need to land within
+                            the same twelve-hour window as same-currency pairs. The original amounts in both currencies are preserved on
+                            each leg.
                         </Trans>
                     }
                 />

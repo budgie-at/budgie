@@ -47,14 +47,14 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        PIN, biometrics, screenshot protection, and AES-256 encrypted storage. Budgie secures your financial data at every
-                        layer.
+                        PIN, biometrics, screenshot protection, and on-device encryption the moment you set a PIN. Budgie secures your
+                        financial data at every layer.
                     </Trans>
                 }
             >
                 <PillarHubHeroBulletList>
                     <PillarHubHeroBulletItem>
-                        <Trans>AES-256 encrypted SQLite — your database is unreadable without your key</Trans>
+                        <Trans>Set a PIN and your data is encrypted on the device — unreadable without those digits</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
                         <Trans>PIN lock enforced before any transaction or balance is visible</Trans>
@@ -66,7 +66,7 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                         <Trans>Automatic screenshot blur hides balances in the iOS and Android app switcher</Trans>
                     </PillarHubHeroBulletItem>
                     <PillarHubHeroBulletItem>
-                        <Trans>Backups are encrypted before leaving your device — the key stays with you</Trans>
+                        <Trans>A backup copies the database as it is — encrypted if your PIN was set when you exported</Trans>
                     </PillarHubHeroBulletItem>
                 </PillarHubHeroBulletList>
             </PillarHubHero>
@@ -76,13 +76,13 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/pin-app-lock`}
                         index={0}
-                        tagline={<Trans>The PIN unlocks the app and unlocks SQLCipher — no PIN, no readable database.</Trans>}
+                        tagline={<Trans>The PIN unlocks the app and unlocks your data — no PIN, no readable database.</Trans>}
                         title={<Trans>PIN App Lock — Locks With the Encryption Key</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/biometric-authentication`}
                         index={1}
-                        tagline={<Trans>Bank-grade biometric unlock — same Secure Enclave, same encryption key.</Trans>}
+                        tagline={<Trans>Biometric unlock hands Budgie only a yes or no — your PIN stays the key.</Trans>}
                         title={<Trans>Face ID / Touch ID Authentication</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
@@ -94,7 +94,7 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/database-backup`}
                         index={3}
-                        tagline={<Trans>One encrypted file. No account. Restore on any device in seconds.</Trans>}
+                        tagline={<Trans>One file. No account. Restore by picking it — encrypted if your PIN was set.</Trans>}
                         title={<Trans>Database Backup &amp; Restore</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
@@ -116,8 +116,9 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            Budgie stores all financial data in an SQLCipher-backed SQLite database encrypted with AES-256. The encryption
-                            key is derived from your device keychain and never transmitted off the device.
+                            Set a PIN and Budgie encrypts your data on the device, with that PIN as the key itself. The PIN is the only key
+                            and it never leaves your device. Remove the PIN and the file is rewritten unencrypted — private to the app
+                            sandbox, but no longer protected.
                         </Trans>
                     }
                     question={<Trans>How is the database encrypted?</Trans>}
@@ -143,11 +144,12 @@ export default async function SecurityPillarHubPage(props: PageLangParam) {
                 <FeaturePageFaqItem
                     answer={
                         <Trans>
-                            Yes. Backups are encrypted on your device before upload using your device-derived key. Anyone with access to
-                            your iCloud Drive or Google Drive would only see an encrypted blob — not your financial data.
+                            If a PIN was set when you exported, yes — the backup is a copy of your already-encrypted data, so anyone with
+                            your cloud account sees an unreadable file. Export with no PIN set and the copy is unencrypted. Budgie never
+                            uploads anything itself; you choose where the file goes through the share sheet.
                         </Trans>
                     }
-                    question={<Trans>Are my encrypted backups safe if someone accesses my cloud storage?</Trans>}
+                    question={<Trans>Are my backups safe if someone accesses my cloud storage?</Trans>}
                 />
                 <FeaturePageFaqItem
                     answer={
