@@ -38,14 +38,6 @@ const syncAppData = async (): Promise<void> => {
 };
 
 const initializeAppServices = async (): Promise<void> => {
-    await Promise.all([
-        import('../../account/task/account-balance-incremental.task'),
-        import('../../budget/task/budget-alert-monitor.task'),
-        import('../../exchange-rate/task/exchange-rate-sync.task'),
-        import('../../sync/task/monobank-sync.task'),
-        import('../../sync/task/binance-sync.task'),
-        import('../../sync/task/transfer-consolidation.task')
-    ]);
     await authService.ensurePinBackgroundAccessibility().catch(emptyFn);
     await exchangeRatesSyncService.registerBackgroundTask().catch(emptyFn);
     await accountBalanceIncrementalService.registerBackgroundTask().catch(emptyFn);
