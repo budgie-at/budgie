@@ -143,7 +143,7 @@ printf '%s\n' "\$*" >> "$MAESTRO_LOG"
 EOF
 chmod +x "$STUB_BIN/maestro"
 
-# Stands in for simslim: reports drift so the slim path runs, records every call.
+# Stands in for simslim and for mobile-ci's shared helper, so the run stays offline.
 SIMSLIM_BIN="$WORK_DIR/simslim-bin"
 SIMSLIM_LOG="$WORK_DIR/simslim.log"
 mkdir -p "$SIMSLIM_BIN"
@@ -155,6 +155,14 @@ exit 0
 EOF
 chmod +x "$SIMSLIM_BIN/simslim"
 PATH="$SIMSLIM_BIN:$PATH"
+
+export MOBILE_CI_SLIM_HELPER="$WORK_DIR/slim-simulator.sh"
+cat > "$MOBILE_CI_SLIM_HELPER" <<'EOF'
+slim_simulator() {
+    simslim verify "$1" --profile stub >/dev/null 2>&1 && return 0
+    simslim on "$1" --no-reboot --profile stub
+}
+EOF
 
 SEED_HOOK="$WORK_DIR/seed.sh"
 cat > "$SEED_HOOK" <<EOF

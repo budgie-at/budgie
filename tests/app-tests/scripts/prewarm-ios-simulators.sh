@@ -8,7 +8,7 @@ set -euo pipefail
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/slim-simulator.sh"
+. "$SCRIPT_DIR/mobile-ci-slim-simulator.sh"
 
 DEVICE_TYPE='com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro'
 DEVICE_NAME='iPhone 17 Pro'

@@ -8,7 +8,7 @@ set -u
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../../.." && pwd)
 # shellcheck disable=SC1091
-. "$REPO_ROOT/tests/app-tests/scripts/slim-simulator.sh"
+. "$REPO_ROOT/tests/app-tests/scripts/mobile-ci-slim-simulator.sh"
 
 fail() {
   echo "serve-sim prereq check failed: $1" >&2

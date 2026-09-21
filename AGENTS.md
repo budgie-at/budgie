@@ -537,12 +537,13 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ### Every simulator runs slim (canonical rule)
 
-Every iOS simulator this repo touches — local Mac, remote Mac fleet, or CI — runs slim through [simslim](https://github.com/MobAI-App/simslim). A stock simulator boots ~180 daemons at roughly 4 GB `phys_footprint`; a slim one boots ~70 at about a quarter of that, which is what lets a Mac run the same shard count as CI. The order is always **boot → slim → install → drive**: slimming after the app is installed and the fixtures are injected wastes a boot cycle, and slimming before the device is booted is only possible for a shut-down device.
+Every iOS simulator this repo touches — local Mac, remote Mac fleet, or CI — runs slim, in the order **boot → slim → install → drive**. The rule, the reasoning, and the `profiles/ci.json` profile are owned by mobile-ci: [docs/self-hosted-runners.md#every-simulator-runs-slim](https://github.com/rnw-community/mobile-ci/blob/v2.1.0/docs/self-hosted-runners.md#every-simulator-runs-slim). Budgie commits no profile and no copy of the helper.
 
-- Install it once per Mac: `brew install mobai-app/tap/simslim`. Every repo script that boots a simulator fails fast with that hint when it is missing.
-- The profile is `tests/app-tests/simslim.ci.json`, the single source of truth for local and CI alike. Scripts source `slim_simulator` from `tests/app-tests/scripts/slim-simulator.sh`, which verifies against that profile and applies `simslim on <udid> --no-reboot --profile <profile>` only on drift — idempotent, and it never drops an installed app or a seeded fixture.
-- Drive a simulator by hand and you own the same step: `xcrun simctl boot <udid>`, then `simslim on <udid> --no-reboot --profile tests/app-tests/simslim.ci.json`, then install and drive. `simslim doctor <udid> --requires push,universal-links` proves the features the flows need survived; `simslim measure <udid>` reports the footprint.
-- In CI nothing calls simslim by hand: `rnw-community/mobile-ci` v2 leases the device through its `simulator-lease` action, and each caller passes `simslim-version`, `simslim-sha256`, `simulator-slim-profile`, `simulator-slim-repair` and `simulator-requires`. The tart-runner-fleet base image ships simslim preinstalled and its devices already slimmed, so the pinned version is reused from `PATH` rather than downloaded.
+How to invoke it here:
+
+- Once per Mac: `brew install mobai-app/tap/simslim`.
+- By hand: `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then install and drive. That shim fetches mobile-ci's shared `scripts/slim-simulator.sh` at `MOBILE_CI_REF` (the single pin, currently `v2.1.0`), caches it, and fails fast when it cannot. Every repo script that boots a simulator sources it.
+- In CI nothing is passed: the `ios-maestro.yml` and `store-screenshots.yml` callers default `simulator-slim-profile` to `bundled`, and only `simulator-requires` stays per consumer.
 
 ### serve-sim
 
@@ -578,7 +579,7 @@ Rules:
     2. `pnpm install && pnpm build` with `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` (install pnpm first: `npm i -g pnpm@11.24.0`).
     3. `cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean`.
     4. `xcodebuild -workspace ios/budgieE2E.xcworkspace -scheme budgieE2E -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,id=<udid>' -derivedDataPath ~/runway-derived CODE_SIGNING_ALLOWED=NO build`. Do not use `expo run:ios` — it mis-detects the simulator UDID as a physical device and demands code signing.
-    5. `xcrun simctl boot <udid>`, then `simslim on <udid> --no-reboot --profile tests/app-tests/simslim.ci.json`, then `xcrun simctl install <udid> …/budgieE2E.app`; inject a DB at `<app-container>/Documents/SQLite/budgie.db`; `xcrun simctl launch <udid> com.vitalyiegorov.budgie.e2e`; deep-link `budgie://<route>` and tap the system "Open?" prompt via serve-sim.
+    5. `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then `xcrun simctl install <udid> …/budgieE2E.app`; inject a DB at `<app-container>/Documents/SQLite/budgie.db`; `xcrun simctl launch <udid> com.vitalyiegorov.budgie.e2e`; deep-link `budgie://<route>` and tap the system "Open?" prompt via serve-sim.
     6. Stream on the Mac (`npx --yes serve-sim -p <port> <udid>`), expose with `cloudflared tunnel --url http://127.0.0.1:<port>`, and open the `*.trycloudflare.com` URL in the T3 preview. Drive with `serve-sim tap -d <udid> <x> <y>` and `serve-sim gesture -d <udid> '{"type":"begin","x":..,"y":..}'`.
 7. **Xcode 26 toolchain** — `expo-modules-jsi@57.0.6` ships invalid `SWIFT_RETURNS_RETAINED` annotations on the `RuntimeScheduler` constructors that newer clang (Xcode 26.2/26.3/26.6) rejects. The repo carries `patches/expo-modules-jsi@57.0.6.patch` (via `pnpm-workspace.yaml` `patchedDependencies`) removing them — do not remove it, and do not try to bump the dependency (all released versions, including 58.0.0, still ship the bug).
 

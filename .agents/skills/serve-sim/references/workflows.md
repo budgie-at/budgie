@@ -137,7 +137,7 @@ xcrun simctl terminate booted com.acme.MyApp
 # xcrun simctl shutdown booted
 # xcrun simctl erase booted
 # xcrun simctl boot <UDID>
-# simslim on <UDID> --no-reboot --profile tests/app-tests/simslim.ci.json
+# . tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <UDID>
 
 # Restart serve-sim
 npx serve-sim --detach -q

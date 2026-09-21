@@ -20,7 +20,7 @@ cd "$WORKSPACE_DIR"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/driver-failure-pattern.sh"
 # shellcheck disable=SC1091
-. "$SCRIPT_DIR/slim-simulator.sh"
+. "$SCRIPT_DIR/mobile-ci-slim-simulator.sh"
 
 APP_ID="$1"
 shift
