@@ -306,13 +306,13 @@ FROM accounts
 INNER JOIN (
     SELECT
         debt_accounts.id AS account_id,
-        MAX(
+        CAST(ROUND(MAX(
             CASE
                 WHEN opened_totals.opened_amount > 0 THEN opened_totals.opened_amount
                 ELSE debt_accounts.target_balance
             END - closed_totals.closed_amount,
             0
-        ) AS remaining_amount
+        )) AS INTEGER) AS remaining_amount
     FROM accounts debt_accounts
     INNER JOIN (
         SELECT
