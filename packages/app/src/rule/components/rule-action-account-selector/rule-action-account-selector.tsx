@@ -1,4 +1,5 @@
 import {
+    AccountTypeEnum,
     RuleConditionCreateInputInterface,
     RuleConditionFieldEnum,
     RuleConditionOperatorEnum,
@@ -60,7 +61,11 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
 
     const renderSelector = ({ field: { onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.accountId`>) => {
         const handleOpen = async () => {
-            const selectedAccountId = await openAccountSelector({ initialAccountId: accountId ?? null, onlyActive: false });
+            const selectedAccountId = await openAccountSelector({
+                initialAccountId: accountId ?? null,
+                excludeAccountTypes: [AccountTypeEnum.DEBT],
+                onlyActive: false
+            });
 
             if (isDefined(selectedAccountId)) {
                 onChange(selectedAccountId);

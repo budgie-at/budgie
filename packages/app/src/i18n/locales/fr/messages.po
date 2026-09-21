@@ -477,11 +477,6 @@ msgstr "Déjà en cours de synchronisation"
 msgid "Amount"
 msgstr "Montant"
 
-#: src/app/(main)/create-transaction/transfer.tsx
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
-msgid "Amount exceeds debt account balance"
-msgstr "Le montant dépasse le solde du compte de dette"
-
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "Amount first. Budgie picks the account and guesses the category."
 msgstr "Le montant d'abord. Budgie choisit le compte et devine la catégorie."
@@ -1445,6 +1440,10 @@ msgstr "Le compte de dette ne peut pas correspondre au compte de transaction"
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account not found"
 msgstr "Compte de dette introuvable"
+
+#: src/transaction/utils/assert-transfer-accounts-are-not-debt.util.ts
+msgid "Debt accounts cannot take part in transfers"
+msgstr "Les comptes de dette ne peuvent pas participer aux virements"
 
 #: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Debts & loans"
