@@ -96,6 +96,10 @@ msgstr "{count, plural, one {Ця категорія має # транзакці
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
+msgstr "{daysRemaining, plural, one {Залишився # день} few {Залишилося # дні} many {Залишилося # днів} other {Залишилося # дня}}"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
@@ -1421,10 +1425,6 @@ msgstr "Дата"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Day {selectedDay}"
 msgstr "День {selectedDay}"
-
-#: src/widget/service/widget-snapshot.service.ts
-msgid "days left"
-msgstr "днів лишилось"
 
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Days Remaining"

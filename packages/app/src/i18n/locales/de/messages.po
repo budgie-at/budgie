@@ -96,6 +96,10 @@ msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Dieser Tag hat # Transaktion. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen wird.} other {Dieser Tag hat # Transaktionen. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen werden.}}"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
+msgstr "{daysRemaining, plural, one {# Tag übrig} other {# Tage übrig}}"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
@@ -1421,10 +1425,6 @@ msgstr "Datum"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Day {selectedDay}"
 msgstr "Tag {selectedDay}"
-
-#: src/widget/service/widget-snapshot.service.ts
-msgid "days left"
-msgstr "Tage übrig"
 
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Days Remaining"

@@ -130,7 +130,7 @@ struct SpendingWidgetView: View {
                     .font(.caption2)
                     .foregroundColor(palette.secondary)
                     .privacySensitive()
-                Text("\(budget.daysRemaining) \(entry.strings.daysLeft)")
+                Text(budget.formattedDaysLeft)
                     .font(.caption2)
                     .foregroundColor(palette.secondary)
 
@@ -150,7 +150,7 @@ struct SpendingWidgetView: View {
     }
 
     private func paceText(_ budget: BudgetSnapshot) -> String {
-        "\(budget.formattedSafePerDay) \(entry.strings.perDay) · \(budget.daysRemaining) \(entry.strings.daysLeft)"
+        "\(budget.formattedSafePerDay) \(entry.strings.perDay) · \(budget.formattedDaysLeft)"
     }
 }
 

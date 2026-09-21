@@ -6,7 +6,7 @@ export interface WidgetBudgetSnapshotInterface {
     readonly formattedRemaining: string;
     readonly progressRatio: number;
     readonly isOverLimit: boolean;
-    readonly daysRemaining: number;
+    readonly formattedDaysLeft: string;
     readonly formattedSafePerDay: string;
     readonly periodLabel: string;
     readonly categories: readonly WidgetBudgetCategoryInterface[];
