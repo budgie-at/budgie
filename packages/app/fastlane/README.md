@@ -216,10 +216,13 @@ since the latest `v*` tag (types `feat`, `fix`, `perf`, unscoped or scoped
   `claude-opus-5`) for App Store and Play copy in all five locales (`en`,
   `fr`, `uk`, `de`, `es`) in one structured-output call, then trims each field
   at a line boundary to the store limits (3900 / 490 codepoints).
-- Without the key, or when the call fails, it writes a plain English
-  "What's new" list to `en-US` only and reports which locale files still hold
-  the previous release's copy, so they can be translated by hand or through
-  the same agent flow that maintains the Lingui catalogs.
+- Without the key, or when the call fails, it writes a generic "Stability and
+  quality improvements" line to `en-US` only. Commit subjects are developer
+  copy — they name migrations, libraries and internals — so they are printed
+  to the terminal as raw material for hand-written notes, never published. The
+  run also reports which locale files still hold the previous release's copy,
+  so they can be translated by hand or through the same agent flow that
+  maintains the Lingui catalogs.
 
 `pnpm store:notes --check` reports whether user-facing commits landed after
 the state file was written. It only warns and never blocks a release.
