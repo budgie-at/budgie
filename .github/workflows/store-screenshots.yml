@@ -26,14 +26,12 @@ jobs:
         name: Capture and upload store screenshots
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@v1.23.1 # v1.23.1
+        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@v2.1.0 # v2.1.0
         with:
             config-path: .github/store-screenshots.config.json
             package-manager: pnpm
             expo-use-precompiled-modules: true
             maestro-version: '2.8.0'
-            simulator-slim-profile: tests/app-tests/simslim.ci.json
-            simulator-slim-repair: 'true'
             simulator-requires: push,universal-links
             # The 00-prime scene is a Maestro flow whose only job is to grant iOS's
             # one-per-install "Open in budgie?" deep-link trust; mobile-ci requires

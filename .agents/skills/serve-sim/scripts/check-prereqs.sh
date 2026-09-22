@@ -5,6 +5,11 @@
 
 set -u
 
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+REPO_ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/../../../.." && pwd)
+# shellcheck disable=SC1091
+. "$REPO_ROOT/tests/app-tests/scripts/mobile-ci-slim-simulator.sh"
+
 fail() {
   echo "serve-sim prereq check failed: $1" >&2
   exit 1
@@ -38,9 +43,15 @@ if [[ "$MACOS_MAJOR" -lt 14 ]]; then
   echo "warning: macOS $(sw_vers -productVersion) detected. The 'camera' subcommand requires macOS 14+." >&2
 fi
 
-# A booted simulator is required for most commands
-if ! xcrun simctl list devices booted 2>/dev/null | grep -q "Booted"; then
-  echo "warning: no booted simulator detected. Boot one with Xcode > Simulator or 'xcrun simctl boot <UDID>'." >&2
+if ! command -v simslim >/dev/null 2>&1; then
+  fail "simslim not found. Install it with: brew install mobai-app/tap/simslim"
+fi
+
+# A booted simulator is required for most commands, and it must run slim
+if [[ -z "$(booted_simulator_udids)" ]]; then
+  echo "warning: no booted simulator detected. Boot one with Xcode > Simulator or 'xcrun simctl boot <UDID>', then re-run this check to slim it." >&2
+elif ! slim_booted_simulators; then
+  fail "simslim could not slim every booted simulator."
 fi
 
 echo "serve-sim prereqs OK."
