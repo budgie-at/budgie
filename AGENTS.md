@@ -88,6 +88,41 @@ Use the repo package scopes without the npm namespace prefix:
 
 The `Native runtime fingerprint` check fails any PR that moves the app's Expo fingerprint (`runtimeVersion: { policy: 'fingerprint' }`), because OTA updates published after such a PR merges target a runtime no shipped binary has: a fingerprint change requires a store build via `native-publish.yml` before OTA resumes, and the `native-change-acknowledged` label is how you acknowledge that and let the PR through.
 
+### Pull requests do not compile native code
+
+From mobile-ci **v3.0.0** a pull request never runs `pod install` or `xcodebuild`
+when a base binary exists for its native key. `pr.yml`'s `ios-maestro` job, the
+`media-smoke` lane and `store-screenshots.yml` all plan first on the Linux pool
+`trf-linux-amd64-4x8`: they compute the native key, fetch the base published at
+`ghcr.io/budgie-at/budgie/e2e-base`, repack this commit's JavaScript into it, and
+hand the result to Maestro. No Mac slot is claimed. A Mac build happens only for
+a key nothing has published a base for.
+
+`.github/workflows/ios-native-cache.yml` is the warm-up that publishes the base.
+It runs on a push to `main` touching `packages/app/**`, the lockfile or the
+workspace manifests, and it can be dispatched with `force-base: true` for the two
+things a fingerprint cannot see: a native change inside an ignored path, and a
+value compiled into the binary that was rotated.
+
+Three rules hold this together, and breaking any one of them silently makes every
+pull request build natively again (or, worse, test the wrong binary):
+
+- **`fingerprint-env` is one address.** `pr.yml`, `media-smoke.yml`,
+  `store-screenshots.yml` and `ios-native-cache.yml` pass byte-identical
+  `APP_VARIANT=e2e` + `EXPO_PUBLIC_AI_DISABLE=true` +
+  `EXPO_PUBLIC_LOGGING_DISABLE=true`. A single differing byte and the warm-up
+  publishes under a key nobody looks up.
+- **`fingerprint-env`, `repack-env` and `build-env` are the same set per lane.**
+  `app.config.js` branches on all three variables, so the key must see exactly
+  what the build and the re-bundle see. `ios-e2e-ai-build.yml` is the deliberate
+  exception: it builds the AI-enabled app, whose `llama.rn` and
+  `react-native-audio-api` config plugins are real native surface, so it passes
+  its own set without `EXPO_PUBLIC_AI_DISABLE` and gets its own native key.
+- **`packages/app/fingerprint.config.js` is the correctness boundary**, and it is
+  the only file the key hashes - there is no `.fingerprintignore`. Every entry in
+  `ignorePaths` promises that path cannot change the native binary; when that
+  promise breaks, dispatch the warm-up with `force-base: true`.
+
 ## Structure
 
 ```
@@ -537,12 +572,12 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ### Every simulator runs slim (canonical rule)
 
-Every iOS simulator this repo touches — local Mac, remote Mac fleet, or CI — runs slim, in the order **boot → slim → install → drive**. The rule, the reasoning, and the `profiles/ci.json` profile are owned by mobile-ci: [docs/self-hosted-runners.md#every-simulator-runs-slim](https://github.com/rnw-community/mobile-ci/blob/v2.1.0/docs/self-hosted-runners.md#every-simulator-runs-slim). Budgie commits no profile and no copy of the helper.
+Every iOS simulator this repo touches — local Mac, remote Mac fleet, or CI — runs slim, in the order **boot → slim → install → drive**. The rule, the reasoning, and the `profiles/ci.json` profile are owned by mobile-ci: [docs/self-hosted-runners.md#every-simulator-runs-slim](https://github.com/rnw-community/mobile-ci/blob/v3.0.0/docs/self-hosted-runners.md#every-simulator-runs-slim). Budgie commits no profile and no copy of the helper.
 
 How to invoke it here:
 
 - Once per Mac: `brew install mobai-app/tap/simslim`.
-- By hand: `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then install and drive. That shim fetches mobile-ci's shared `scripts/slim-simulator.sh` at `MOBILE_CI_REF` (the single pin, currently `v2.1.0`), caches it, and fails fast when it cannot. Every repo script that boots a simulator sources it.
+- By hand: `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then install and drive. That shim fetches mobile-ci's shared `scripts/slim-simulator.sh` at `MOBILE_CI_REF` (the single pin, currently `v3.0.0`), caches it, and fails fast when it cannot. Every repo script that boots a simulator sources it.
 - In CI nothing is passed: the `ios-maestro.yml` and `store-screenshots.yml` callers default `simulator-slim-profile` to `bundled`, and only `simulator-requires` stays per consumer.
 
 ### serve-sim

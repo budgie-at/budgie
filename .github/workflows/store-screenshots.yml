@@ -24,15 +24,34 @@ permissions:
 jobs:
     screenshots:
         name: Capture and upload store screenshots
+        # A reusable workflow can only narrow the token it is given; see pr.yml.
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@v2.1.0 # v2.1.0
+            packages: write
+            actions: read
+        uses: rnw-community/mobile-ci/.github/workflows/store-screenshots.yml@v3.0.0 # v3.0.0
         with:
             config-path: .github/store-screenshots.config.json
             package-manager: pnpm
             expo-use-precompiled-modules: true
             maestro-version: '2.8.0'
             simulator-requires: push,universal-links
+            # Not loadable from config-path (outside its allowed-keys list), and
+            # byte-identical to pr.yml / media-smoke.yml / ios-native-cache.yml:
+            # the four e2e lanes have to agree on one native key or none of them
+            # ever finds the base the warm-up published.
+            fingerprint-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            repack-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            expect-config: |
+                extra.appVariant=e2e
+                extra.aiEnabled=false
+                extra.loggingEnabled=false
             # The 00-prime scene is a Maestro flow whose only job is to grant iOS's
             # one-per-install "Open in budgie?" deep-link trust; mobile-ci requires
             # every flow-backed scene to emit exactly one takeScreenshot, so its PNG
