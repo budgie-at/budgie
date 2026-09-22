@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.74.0](https://github.com/budgie-at/budgie/compare/v6.73.1...v6.74.0) (2026-09-22)
+
+
+### Bug Fixes
+
+* **app:** round rebuilt debt ledger balances to integer micro-units ([787b8d1](https://github.com/budgie-at/budgie/commit/787b8d10da82a5cf7fcc423ab753e3965fe2c62c))
+
+
+### Features
+
+* **app:** migrate legacy debt openings to funding-account transactions ([0af39a7](https://github.com/budgie-at/budgie/commit/0af39a7a7af808a6b432d350259988d7c9253461))
+
+
+
+
+
 ## [6.73.1](https://github.com/budgie-at/budgie/compare/v6.73.0...v6.73.1) (2026-09-21)
 
 **Note:** Version bump only for package @budgie-at/app

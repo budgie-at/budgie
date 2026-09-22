@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.74.0](https://github.com/budgie-at/budgie/compare/v6.73.1...v6.74.0) (2026-09-22)
+
+
+### Bug Fixes
+
+* **app:** round rebuilt debt ledger balances to integer micro-units ([787b8d1](https://github.com/budgie-at/budgie/commit/787b8d10da82a5cf7fcc423ab753e3965fe2c62c))
+* **consolidation:** scope and tighten stale bridge canonical supersession ([41eb80f](https://github.com/budgie-at/budgie/commit/41eb80f91810fcb927f8dca282d63624b548c50e))
+* **consolidation:** supersede stale bridge canonicals ([85420c0](https://github.com/budgie-at/budgie/commit/85420c0289f6731c2622d923041edfd84d4c9475))
+* **landing:** make AI pattern-suggestion scene fixtures time-deterministic ([0c8d80f](https://github.com/budgie-at/budgie/commit/0c8d80f7518af35e21f816b493f9a0c922c21eb7))
+* require a booted simulator before serve-sim ensure-running slims ([d7b71cb](https://github.com/budgie-at/budgie/commit/d7b71cb8bd156104f7296b97e1a24b6899b8dc21))
+
+
+### Features
+
+* **app:** migrate legacy debt openings to funding-account transactions ([0af39a7](https://github.com/budgie-at/budgie/commit/0af39a7a7af808a6b432d350259988d7c9253461))
+
+
+
+
+
 ## [6.73.1](https://github.com/budgie-at/budgie/compare/v6.73.0...v6.73.1) (2026-09-21)
 
 **Note:** Version bump only for package @budgie-at/root
