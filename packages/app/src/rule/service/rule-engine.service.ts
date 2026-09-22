@@ -534,7 +534,7 @@ class RuleEngineService {
 
         const converted = await this.convertRuleTransferAmount(accounts, candidate.originalEntry.amount);
 
-        return this.buildRuleTransferConversionResult({ ...candidate, accounts, converted });
+        return this.buildRuleTransferConversionResult({ ...candidate, converted });
     }
 
     private async findRuleTransferCandidate(
@@ -564,7 +564,6 @@ class RuleEngineService {
         transaction,
         originalEntry,
         accountIds,
-        accounts,
         converted
     }: RuleTransferConversionBuildInputInterface): RuleTransferConversionInterface {
         return {
@@ -574,7 +573,7 @@ class RuleEngineService {
             toAccountId: accountIds.toAccountId,
             convertedAmount: converted.convertedAmount,
             exchangeRate: converted.exchangeRate,
-            transactionType: this.resolveRuleTransferTransactionType(accounts)
+            transactionType: TransactionTypeEnum.TRANSFER
         };
     }
 
@@ -624,13 +623,11 @@ class RuleEngineService {
             return null;
         }
 
-        return { fromAccount, toAccount };
-    }
+        if (fromAccount.type === AccountTypeEnum.DEBT || toAccount.type === AccountTypeEnum.DEBT) {
+            return null;
+        }
 
-    private resolveRuleTransferTransactionType(accounts: RuleTransferAccountsInterface): TransactionTypeEnum {
-        return accounts.fromAccount.type === AccountTypeEnum.DEBT || accounts.toAccount.type === AccountTypeEnum.DEBT
-            ? TransactionTypeEnum.DEBT
-            : TransactionTypeEnum.TRANSFER;
+        return { fromAccount, toAccount };
     }
 
     private buildRuleTransferEntries({
