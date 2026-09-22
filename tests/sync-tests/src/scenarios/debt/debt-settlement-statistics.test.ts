@@ -1307,14 +1307,19 @@ describe('debt v2 analytics — both ways', () => {
             const { categoryId, debtAccount, fundingAccount, repaymentType } = await openJanuaryFundedDebt(debtType, DEBT_V2_TOTAL_AMOUNT);
 
             await attachMarchRepayment(fundingAccount.id, debtAccount.id, repaymentType, 100 * PRECISION, DEBT_V2_MARCH_OPERATED_AT);
-            await attachMarchRepayment(fundingAccount.id, debtAccount.id, repaymentType, 200 * PRECISION, DEBT_V2_MARCH_LATER_OPERATED_AT);
+            await attachMarchRepayment(fundingAccount.id, debtAccount.id, repaymentType, 400 * PRECISION, DEBT_V2_MARCH_LATER_OPERATED_AT);
 
             const rows = readCategoryRows(repaymentType, fundingAccount.instrumentId, DEBT_V2_MARCH_RANGE).filter(
                 row => row.category?.id === categoryId
             );
 
             expect(rows).toHaveLength(1);
-            expect(rows[0]?.amount).toBe(300 * PRECISION);
+            expect(rows[0]?.amount).toBe(DEBT_V2_TOTAL_AMOUNT);
+            expectDebtTile(debtAccount.id, {
+                outstandingAmount: 0,
+                paidAmount: DEBT_V2_TOTAL_AMOUNT,
+                totalAmount: DEBT_V2_TOTAL_AMOUNT
+            });
         }
     );
 
