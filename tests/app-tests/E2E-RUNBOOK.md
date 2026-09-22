@@ -11,6 +11,10 @@ export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 # 1. Clean native tree for the e2e variant
 cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean
 
+# 1b. Slim the target simulator before anything is installed on it (see AGENTS.md
+#     "Simulator Dev Testing"); brew install mobai-app/tap/simslim if missing
+. ../../tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <UDID>
+
 # 2. Build + install Release on the booted sim (use the real booted UDID from `xcrun simctl list devices booted`)
 APP_VARIANT=e2e EXPO_PUBLIC_AI_DISABLE=true EXPO_PUBLIC_LOGGING_DISABLE=true \
   npx expo run:ios --configuration Release --scheme budgieE2E --device <UDID> --port 8082

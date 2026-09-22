@@ -535,6 +535,18 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ## Simulator Dev Testing
 
+### Every simulator runs slim (canonical rule)
+
+Every iOS simulator this repo touches — local Mac, remote Mac fleet, or CI — runs slim, in the order **boot → slim → install → drive**. The rule, the reasoning, and the `profiles/ci.json` profile are owned by mobile-ci: [docs/self-hosted-runners.md#every-simulator-runs-slim](https://github.com/rnw-community/mobile-ci/blob/v2.1.0/docs/self-hosted-runners.md#every-simulator-runs-slim). Budgie commits no profile and no copy of the helper.
+
+How to invoke it here:
+
+- Once per Mac: `brew install mobai-app/tap/simslim`.
+- By hand: `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then install and drive. That shim fetches mobile-ci's shared `scripts/slim-simulator.sh` at `MOBILE_CI_REF` (the single pin, currently `v2.1.0`), caches it, and fails fast when it cannot. Every repo script that boots a simulator sources it.
+- In CI nothing is passed: the `ios-maestro.yml` and `store-screenshots.yml` callers default `simulator-slim-profile` to `bundled`, and only `simulator-requires` stays per consumer.
+
+### serve-sim
+
 1. For dev-client feature checks and debugging, use the local `serve-sim` skill and the Codex in-app browser.
 2. Read `.agents/skills/serve-sim/SKILL.md` before using serve-sim. Follow its referenced workflow files when interacting with the simulator.
 3. Always check existing serve-sim state first: `npx --yes serve-sim --list -q`. Reuse a matching running device when it exists.
@@ -562,12 +574,12 @@ Rules:
 3. Reuse the installed E2E app with `--skip-install` when it is current (bundle id `com.vitalyiegorov.budgie.e2e`); otherwise pass a packaged `Base.app` with `--app`. Force a rebuild when app UI changed.
 4. Check the data volume before capturing: `df -h /System/Volumes/Data`. DerivedData and stale simulator devices fill it, and a full volume makes Maestro fail with `No space left on device`. Delete `~/Library/Developer/Xcode/DerivedData/*` and stale `*-derived` trees when low.
 5. A single-scene run replaces the whole device raw directory, so pass every scene you need to one invocation; copy assets and repo changes back with `scp` or `git pull`.
-6. **Interactive simulator runs (dev checks)** — use `serve-sim` (Evan Bacon): `npx --yes serve-sim`; `slimsim` does not exist on npm. Verified path on macmini (Xcode 26.6 + iOS 26.5 runtime):
+6. **Interactive simulator runs (dev checks)** — use `serve-sim` (Evan Bacon): `npx --yes serve-sim`. Both Macs need `simslim` on `PATH` (`brew install mobai-app/tap/simslim`) because every simulator runs slim — see [Simulator Dev Testing](#every-simulator-runs-slim-canonical-rule). Verified path on macmini (Xcode 26.6 + iOS 26.5 runtime):
     1. Sync the worktree with a tar pipe — macmini's `rsync` is `openrsync` and rejects GNU flags: `tar czf - --exclude=.git --exclude=node_modules --exclude=dist … . | ssh macmini 'tar xzf - -C ~/budgie-runway'`.
     2. `pnpm install && pnpm build` with `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` (install pnpm first: `npm i -g pnpm@11.24.0`).
     3. `cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean`.
     4. `xcodebuild -workspace ios/budgieE2E.xcworkspace -scheme budgieE2E -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,id=<udid>' -derivedDataPath ~/runway-derived CODE_SIGNING_ALLOWED=NO build`. Do not use `expo run:ios` — it mis-detects the simulator UDID as a physical device and demands code signing.
-    5. `xcrun simctl install <udid> …/budgieE2E.app`; inject a DB at `<app-container>/Documents/SQLite/budgie.db`; `xcrun simctl launch <udid> com.vitalyiegorov.budgie.e2e`; deep-link `budgie://<route>` and tap the system "Open?" prompt via serve-sim.
+    5. `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then `xcrun simctl install <udid> …/budgieE2E.app`; inject a DB at `<app-container>/Documents/SQLite/budgie.db`; `xcrun simctl launch <udid> com.vitalyiegorov.budgie.e2e`; deep-link `budgie://<route>` and tap the system "Open?" prompt via serve-sim.
     6. Stream on the Mac (`npx --yes serve-sim -p <port> <udid>`), expose with `cloudflared tunnel --url http://127.0.0.1:<port>`, and open the `*.trycloudflare.com` URL in the T3 preview. Drive with `serve-sim tap -d <udid> <x> <y>` and `serve-sim gesture -d <udid> '{"type":"begin","x":..,"y":..}'`.
 7. **Xcode 26 toolchain** — `expo-modules-jsi@57.0.6` ships invalid `SWIFT_RETURNS_RETAINED` annotations on the `RuntimeScheduler` constructors that newer clang (Xcode 26.2/26.3/26.6) rejects. The repo carries `patches/expo-modules-jsi@57.0.6.patch` (via `pnpm-workspace.yaml` `patchedDependencies`) removing them — do not remove it, and do not try to bump the dependency (all released versions, including 58.0.0, still ship the bug).
 
@@ -580,7 +592,7 @@ Never print `~/.cloudflared` secrets or tunnel tokens; kill Metro/serve-sim/clou
 3. A deep link is acceptable only for navigation shortcuts, for example opening Settings at a specific anchor.
 4. Seed fixtures through simulator or emulator setup scripts, not through hidden app services.
 5. Run Maestro verification only against a clean E2E build installed fresh from the current branch. Dev-client or Metro runs are useful for debugging, but they are not acceptance evidence and must not be reported as passing E2E.
-6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id. Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
+6. Before any E2E verification claim, rebuild the E2E app with `APP_VARIANT=e2e`, reinstall `com.vitalyiegorov.budgie.e2e`, refresh fixtures, then run Maestro against that bundle id — against a slim simulator, per [Simulator Dev Testing](#every-simulator-runs-slim-canonical-rule). Local build/run procedure and cache/stale-binary traps: `tests/app-tests/E2E-RUNBOOK.md`.
 7. If Maestro needs a stable selector for an existing control, add a `testID` to that control instead of using fragile coordinates where possible.
 8. Any new `testID` or other app-code change used by E2E requires rebuilding and reinstalling the E2E app before rerunning the test.
 9. When an app component derives a child or state-specific `testID` from a base id, use `testID` from `packages/app/src/@generic/utils/test-id.util.ts` and spread it in JSX, for example `<Text {...testID(parentTestID, 'Label')} />`. If the component already has a `testID` prop in scope, alias the import as `testIDProps`. Do not hand-build strings like `` `${testID}.Label` `` inside components. Selector factory files that intentionally create canonical ids are excluded.

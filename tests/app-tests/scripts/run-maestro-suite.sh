@@ -19,6 +19,8 @@ cd "$WORKSPACE_DIR"
 
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/driver-failure-pattern.sh"
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/mobile-ci-slim-simulator.sh"
 
 APP_ID="$1"
 shift
@@ -439,6 +441,7 @@ reboot_ios_simulator_if_needed() {
     xcrun simctl shutdown "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
     xcrun simctl boot "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
     xcrun simctl bootstatus "$DETECTED_SIMULATOR_UDID" -b >/dev/null
+    slim_simulator "$DETECTED_SIMULATOR_UDID"
     refresh_ios_fixture_state
 }
 
@@ -629,6 +632,7 @@ reset_ios_simulator_after_ax_driver_failure() {
     xcrun simctl shutdown "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
     xcrun simctl boot "$DETECTED_SIMULATOR_UDID" >/dev/null 2>&1 || true
     xcrun simctl bootstatus "$DETECTED_SIMULATOR_UDID" -b >/dev/null
+    slim_simulator "$DETECTED_SIMULATOR_UDID"
     refresh_ios_fixture_state
 }
 
@@ -714,6 +718,10 @@ if [ -z "$RECURRING_EMPTY_DAY" ]; then
 fi
 
 DETECTED_SIMULATOR_UDID="${DETECTED_SIMULATOR_UDID:-$(detect_booted_simulator_udid || true)}"
+
+if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
+    slim_simulator "$DETECTED_SIMULATOR_UDID"
+fi
 
 if [ -z "$E2E_CSV_FIXTURES_URI" ]; then
     echo "Could not resolve E2E_CSV_FIXTURES_URI for $APP_ID; CSV-import flows will fail." >&2

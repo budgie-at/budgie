@@ -43,7 +43,9 @@ pnpm --filter @budgie-at/app-tests screenshots:capture --app <path/to/Budgie.app
 ```
 
 The runner mirrors mobile-ci's `capture-screenshots-ios` action in direct mode
-exactly: it boots the manifest's simulator by name, installs the `.app`, applies
+exactly: it boots the manifest's simulator by name, slims it with `simslim`
+(install it first: `brew install mobai-app/tap/simslim` — see root `AGENTS.md`,
+"Simulator Dev Testing"), installs the `.app`, applies
 the 9:41 status bar override, primes the deep-link trust (below), and then for
 every locale x appearance x scene terminates the app, runs the seed hook, sets
 the appearance, launches with the locale arguments, opens the scene's deep link,
