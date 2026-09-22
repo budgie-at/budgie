@@ -43,8 +43,24 @@
             "flow": "flows/media/budget-planning-2.flow.yaml"
         },
         {
+            "name": "ai-auto-categorization-1",
+            "flow": "flows/media/ai-auto-categorization-1.flow.yaml"
+        },
+        {
             "name": "ai-auto-categorization-2",
             "deepLink": "budgie://settings?anchor=ai"
+        },
+        {
+            "name": "ai-transaction-suggestions-1",
+            "flow": "flows/media/ai-transaction-suggestions-1.flow.yaml"
+        },
+        {
+            "name": "ai-tag-suggestions-1",
+            "flow": "flows/media/ai-tag-suggestions-1.flow.yaml"
+        },
+        {
+            "name": "voice-transaction-entry-1",
+            "flow": "flows/media/voice-transaction-entry-1.flow.yaml"
         },
         {
             "name": "ai-merchant-translation-1",
