@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "4fce86dc-18b4-4224-bb42-ab6300637c81",
-  "prevId": "031dd728-acf8-440c-884d-00391e6742ce",
+  "id": "7ea23c6d-ee41-4407-81fb-d58b548925d4",
+  "prevId": "b4e0f1c7-5d2a-4a8e-9f31-7c6a0d2b8e50",
   "tables": {
     "account_balances": {
       "name": "account_balances",
@@ -2738,16 +2738,15 @@
           "notNull": false,
           "autoincrement": false
         },
-        "balance_authority": {
-          "name": "balance_authority",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "'LEDGER'"
-        },
         "balance_adjustment_transaction_id": {
           "name": "balance_adjustment_transaction_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "setup_balance": {
+          "name": "setup_balance",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,

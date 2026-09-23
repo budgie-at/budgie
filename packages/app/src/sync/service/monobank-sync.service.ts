@@ -1,14 +1,8 @@
 /* eslint-disable no-await-in-loop -- Sync orchestration requires sequential awaits */
 import { consolidationScopeService } from '@budgie/consolidation';
-import {
-    AccountTypeEnum,
-    ExternalSourceEnum,
-    SyncBalanceAuthorityEnum,
-    SyncModeEnum,
-    transactionAsync,
-    UserIconNameEnum
-} from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
+import { subSeconds } from 'date-fns/subSeconds';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
@@ -16,6 +10,7 @@ import { accountBalanceRepository, accountRepository, db, syncRepository, transa
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
+import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -29,21 +24,14 @@ import { getSyncModule, loadSyncModule } from '../util/load-sync-module.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
+import { syncIntegrationTokenService } from './sync-integration-token.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 import { transferConsolidationService } from './transfer-consolidation.service';
 
-import type {
-    DB,
-    MccCategoryLookupInterface,
-    SyncEntityInterface,
-    SyncUpdateEntityInterface,
-    TransactionEntityInterface
-} from '@budgie/contracts';
+import type { MccCategoryLookupInterface, SyncEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 import type { SyncAccountInterface, SyncBatchResultInterface } from '@budgie/sync';
 
 class AppMonobankSyncService extends AbstractPollingSyncService {
-    private static readonly BALANCE_FINALIZATION_INTERRUPTED_ERROR = new Error('MONOBANK_BALANCE_FINALIZATION_INTERRUPTED');
-
     override readonly supportsAddAccounts: boolean = true;
 
     protected readonly provider = ExternalSourceEnum.MONOBANK;
@@ -70,21 +58,6 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         return this.mapAccountsToPreview(bankAccounts);
     }
 
-    @Log(
-        accountId => `enter accountId=${accountId}`,
-        (result, accountId) => `done accountId=${accountId} balance=${String(result)}`,
-        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
-    )
-    async fetchFreshProviderBalanceByAccountId(accountId: number): Promise<number | null> {
-        const sync = await syncRepository.getByAccountId(accountId);
-        const account = await accountRepository.findById(accountId);
-        if (!isDefined(sync) || !isDefined(account) || !isNotEmptyString(account.externalId)) {
-            return null;
-        }
-
-        return this.fetchProviderBalance(account.externalId, await this.resolveSyncToken(sync));
-    }
-
     @InvalidateDatabaseLiveQuery()
     @Log(
         (token, externalIds, historyDepth) =>
@@ -102,42 +75,45 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         await loadSyncModule();
         const bankAccounts = await this.fetchBankAccountsAndJars(token);
 
-        const selectedAccounts = bankAccounts.filter(account => externalIds.includes(account.id));
-
-        await transactionAsync(db, async tx => {
-            for (const bankAccount of selectedAccounts) {
-                const account = await this.getOrCreateSyncAccount(bankAccount, tx);
-                const sync = await this.createOrUpdateSync(account.id, token, historyDepth, tx);
-                await syncRepository.update(sync.id, { balanceAuthority: SyncBalanceAuthorityEnum.PROVIDER }, tx);
-                await accountBalanceRepository.upsert(
-                    { accountId: account.id, amount: convertToMicroUnits(bankAccount.balance), updatedAt: new Date() },
-                    tx
-                );
+        for (const externalId of externalIds) {
+            const bankAccount = bankAccounts.find(acc => acc.id === externalId);
+            if (isDefined(bankAccount)) {
+                const account = await this.getOrCreateSyncAccount(bankAccount);
+                await this.createOrUpdateSync(account.id, token, historyDepth, this.getOwnBalance(bankAccount));
             }
-        });
+        }
 
         void this.registerBackgroundTask();
         void this.sync();
     }
 
-    @InvalidateDatabaseLiveQuery()
     @Log(
         (accountId, enabled) => `enter accountId=${accountId} enabled=${String(enabled)}`,
         (result, accountId, enabled) => `done accountId=${accountId} enabled=${String(enabled)} result=${String(result)}`,
         (error, accountId, enabled) => `throw accountId=${accountId} enabled=${String(enabled)} error=${getErrorMessage(error)}`
     )
     override async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
-        if (!enabled) {
-            await transactionAsync(db, async tx => {
-                await this.releaseBalanceAuthority(accountId, tx);
-                await syncRepository.setEnabled(accountId, false, tx);
-            });
+        await super.setAccountSyncEnabled(accountId, enabled);
+        if (enabled) {
+            void this.sync();
+        }
+    }
 
-            return;
+    @Log(
+        accountId => `enter accountId=${accountId}`,
+        (result, accountId) => `done accountId=${accountId} setupBalance=${result}`,
+        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
+    )
+    async fetchSetupBalance(accountId: number): Promise<number> {
+        const account = await accountRepository.findById(accountId);
+        const token = await syncIntegrationTokenService.resolveAccountToken(this.provider, accountId);
+        const bankAccounts = await this.fetchBankAccountsAndJars(token);
+        const bankAccount = bankAccounts.find(item => item.id === account?.externalId);
+        if (!isDefined(bankAccount)) {
+            throw new Error(UNKNOWN_SYNC_ERROR);
         }
 
-        await syncRepository.setEnabled(accountId, enabled);
-        void this.sync();
+        return this.getOwnBalance(bankAccount);
     }
 
     @Log(
@@ -156,63 +132,20 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             return this.buildInterruptedBatchResult();
         }
 
-        return this.executeAccountSyncBatch(sync, account, runGeneration);
-    }
+        if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
+            const now = new Date();
 
-    @Log(
-        (sync, { transactions, completed }, runGeneration) =>
-            `enter monobankSyncId=${sync.id} authority=${sync.balanceAuthority} mode=${sync.mode} importedIds=${transactions.map(transaction => transaction.id).join(',')} batchComplete=${String(completed)} generation=${runGeneration}`,
-        (_result, sync, { transactions, completed }, runGeneration) =>
-            `done monobankSyncId=${sync.id} authority=${sync.balanceAuthority} mode=${sync.mode} importedIds=${transactions.map(transaction => transaction.id).join(',')} batchComplete=${String(completed)} generation=${runGeneration}`,
-        (error, sync, { transactions, completed }, runGeneration) =>
-            `throw monobankSyncId=${sync.id} authority=${sync.balanceAuthority} mode=${sync.mode} importedIds=${transactions.map(transaction => transaction.id).join(',')} batchComplete=${String(completed)} generation=${runGeneration} error=${getErrorMessage(error)}`
-    )
-    protected override async applyProgressUpdate(
-        sync: SyncEntityInterface,
-        result: SyncBatchResultInterface,
-        runGeneration: number
-    ): Promise<void> {
-        const shouldReconcile =
-            sync.mode === SyncModeEnum.FORWARD && result.completed && sync.balanceAuthority === SyncBalanceAuthorityEnum.PROVIDER;
-        if (!shouldReconcile) {
-            await super.applyProgressUpdate(sync, result, runGeneration);
-
-            return;
+            return { transactions: [], nextTo: now, nextFrom: now, completed: true };
         }
 
-        const providerBalance = await this.fetchFreshProviderBalanceByAccountId(sync.accountId);
-        if (!isDefined(providerBalance) || !this.isRunCurrent(runGeneration)) {
-            await super.applyProgressUpdate(sync, result, runGeneration);
-
-            return;
+        const result = await this.fetchCurrentTransactionBatch(sync, account.externalId, runGeneration);
+        if (!isDefined(result)) {
+            return this.buildInterruptedBatchResult();
         }
 
-        await this.finalizeProviderBalance(sync, providerBalance, this.resolveProgressUpdate(sync, result), runGeneration).catch(
-            (error: unknown) => {
-                if (error !== AppMonobankSyncService.BALANCE_FINALIZATION_INTERRUPTED_ERROR) {
-                    throw error;
-                }
-            }
-        );
-    }
+        await this.commitFetchedBatch(result, account.id, runGeneration);
 
-    @Log(
-        accountId => `enter accountId=${accountId}`,
-        (_result, accountId) => `done accountId=${accountId}`,
-        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
-    )
-    protected override async releaseBalanceAuthority(accountId: number, tx: DB): Promise<void> {
-        const sync = await syncRepository.getByAccountId(accountId, tx);
-        if (!isDefined(sync) || sync.balanceAuthority !== SyncBalanceAuthorityEnum.PROVIDER) {
-            return;
-        }
-
-        const storedBalances = await accountBalanceRepository.getByAccountIds([accountId], tx);
-        if (!isNotEmptyArray(storedBalances)) {
-            return;
-        }
-
-        await this.replaceBalanceAdjustment(sync, storedBalances[0].amount, {}, { runGeneration: null, tx });
+        return result;
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -273,6 +206,42 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         } finally {
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
         }
+    }
+
+    @InvalidateDatabaseLiveQuery()
+    @Log(
+        (sync, setupBalance, result) =>
+            `enter syncId=${sync.id} accountId=${sync.accountId} setupBalance=${setupBalance} transactionCount=${result.transactions.length}`,
+        (_result, ...[sync, setupBalance, result]) =>
+            `done syncId=${sync.id} accountId=${sync.accountId} setupBalance=${setupBalance} transactionCount=${result.transactions.length}`,
+        (error, ...[sync, setupBalance, result]) =>
+            `throw syncId=${sync.id} accountId=${sync.accountId} setupBalance=${setupBalance} transactionCount=${result.transactions.length} error=${getErrorMessage(error)}`
+    )
+    private async completeBackwardHistory(
+        sync: SyncEntityInterface,
+        setupBalance: number,
+        result: SyncBatchResultInterface
+    ): Promise<void> {
+        const setupAt = sync.forwardSyncFromAt ?? new Date();
+        const oldestTransactionAt = await transactionService.getEarliestTransactionTimeByAccountId(sync.accountId);
+        const openingBalanceAt = isDefined(oldestTransactionAt) ? subSeconds(oldestTransactionAt, 1) : setupAt;
+
+        await transactionAsync(db, async tx => {
+            if (isDefined(sync.balanceAdjustmentTransactionId)) {
+                await transactionRepository.deleteById(sync.balanceAdjustmentTransactionId, tx);
+            }
+
+            const delta = setupBalance - (await accountBalanceRepository.getLedgerBalanceUntil(sync.accountId, setupAt, tx));
+            const balanceAdjustmentTransactionId =
+                delta === 0 ? null : await transactionService.createBalanceAdjustment(sync.accountId, delta, openingBalanceAt, tx);
+
+            await syncRepository.update(
+                sync.id,
+                { ...this.resolveProgressUpdate(sync, result), setupBalance: null, balanceAdjustmentTransactionId },
+                tx
+            );
+            await accountBalanceIncrementalService.updateBalancesByAccountIds([sync.accountId], tx);
+        });
     }
 
     @Log(
@@ -415,51 +384,14 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         return [...accounts, ...jars];
     }
 
-    @Log(
-        (externalAccountId, token) => `enter externalAccountId=${externalAccountId} tokenLen=${token.length}`,
-        (result, externalAccountId, token) => `done externalAccountId=${externalAccountId} tokenLen=${token.length} balance=${result}`,
-        (error, externalAccountId, token) =>
-            `throw externalAccountId=${externalAccountId} tokenLen=${token.length} error=${getErrorMessage(error)}`
-    )
-    private async fetchProviderBalance(externalAccountId: string, token: string): Promise<number> {
-        const bankAccounts = await this.fetchBankAccountsAndJars(token);
-        const bankAccount = bankAccounts.find(account => account.id === externalAccountId);
-        if (!isDefined(bankAccount)) {
-            throw new Error(UNKNOWN_SYNC_ERROR);
+    protected override async applyProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): Promise<void> {
+        if (sync.mode !== SyncModeEnum.BACKWARD || !result.completed || !isDefined(sync.setupBalance)) {
+            await super.applyProgressUpdate(sync, result);
+
+            return;
         }
 
-        return convertToMicroUnits(bankAccount.balance);
-    }
-
-    @InvalidateDatabaseLiveQuery()
-    @Log(
-        (sync, providerBalance) => `enter syncId=${sync.id} accountId=${sync.accountId} providerBalance=${providerBalance}`,
-        (_result, ...[sync, providerBalance]) => `done syncId=${sync.id} accountId=${sync.accountId} providerBalance=${providerBalance}`,
-        (error, ...[sync, providerBalance]) =>
-            `throw syncId=${sync.id} accountId=${sync.accountId} providerBalance=${providerBalance} error=${getErrorMessage(error)}`
-    )
-    private async finalizeProviderBalance(
-        sync: SyncEntityInterface,
-        providerBalance: number,
-        progressUpdate: SyncUpdateEntityInterface,
-        runGeneration: number
-    ): Promise<void> {
-        await transactionAsync(db, async tx => {
-            const currentSync = await syncRepository.getById(sync.id, tx);
-            if (!isDefined(currentSync)) {
-                return;
-            }
-
-            if (currentSync.accountId !== sync.accountId || currentSync.balanceAuthority !== SyncBalanceAuthorityEnum.PROVIDER) {
-                return;
-            }
-
-            if (!this.isRunCurrent(runGeneration)) {
-                return;
-            }
-
-            await this.replaceBalanceAdjustment(currentSync, providerBalance, progressUpdate, { runGeneration, tx });
-        });
+        await this.completeBackwardHistory(sync, sync.setupBalance, result);
     }
 
     protected override generateAccountTitle(account: SyncAccountInterface): string {
@@ -484,27 +416,6 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         const { SyncAccountTypeEnum } = getSyncModule();
 
         return account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : super.accountIcon(account);
-    }
-
-    private async executeAccountSyncBatch(
-        sync: SyncEntityInterface,
-        account: Awaited<ReturnType<typeof accountRepository.findById>>,
-        runGeneration: number
-    ): Promise<SyncBatchResultInterface> {
-        if (!isDefined(account) || !isNotEmptyString(account.externalId)) {
-            const now = new Date();
-
-            return { transactions: [], nextTo: now, nextFrom: now, completed: true };
-        }
-
-        const result = await this.fetchCurrentTransactionBatch(sync, account.externalId, runGeneration);
-        if (!isDefined(result)) {
-            return this.buildInterruptedBatchResult();
-        }
-
-        await this.commitFetchedBatch(result, account.id, runGeneration);
-
-        return result;
     }
 
     private async fetchCurrentTransactionBatch(
@@ -534,49 +445,8 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         await microPause();
     }
 
-    private async replaceBalanceAdjustment(
-        sync: SyncEntityInterface,
-        providerBalance: number,
-        progressUpdate: SyncUpdateEntityInterface,
-        context: { readonly runGeneration: number | null; readonly tx: DB }
-    ): Promise<void> {
-        const ledgerBalance = await accountBalanceRepository.getLedgerBalanceExcludingTransaction(
-            sync.accountId,
-            sync.balanceAdjustmentTransactionId,
-            context.tx
-        );
-        this.assertBalanceFinalizationCurrent(context.runGeneration);
-
-        const delta = providerBalance - ledgerBalance;
-
-        if (isDefined(sync.balanceAdjustmentTransactionId)) {
-            await transactionRepository.deleteById(sync.balanceAdjustmentTransactionId, context.tx);
-            this.assertBalanceFinalizationCurrent(context.runGeneration);
-        }
-
-        const adjustmentTransactionId =
-            delta === 0 ? null : await transactionService.createBalanceAdjustment(sync.accountId, delta, new Date(), context.tx);
-        this.assertBalanceFinalizationCurrent(context.runGeneration);
-
-        await accountBalanceRepository.upsert({ accountId: sync.accountId, amount: providerBalance, updatedAt: new Date() }, context.tx);
-        this.assertBalanceFinalizationCurrent(context.runGeneration);
-
-        await syncRepository.update(
-            sync.id,
-            {
-                ...progressUpdate,
-                balanceAuthority: SyncBalanceAuthorityEnum.LEDGER,
-                balanceAdjustmentTransactionId: adjustmentTransactionId
-            },
-            context.tx
-        );
-        this.assertBalanceFinalizationCurrent(context.runGeneration);
-    }
-
-    private assertBalanceFinalizationCurrent(runGeneration: number | null): void {
-        if (isDefined(runGeneration) && !this.isRunCurrent(runGeneration)) {
-            throw AppMonobankSyncService.BALANCE_FINALIZATION_INTERRUPTED_ERROR;
-        }
+    private getOwnBalance(bankAccount: SyncAccountInterface): number {
+        return convertToMicroUnits(bankAccount.balance) - convertToMicroUnits(bankAccount.creditLimit);
     }
 
     private buildInterruptedBatchResult(): SyncBatchResultInterface {

@@ -1,4 +1,4 @@
-import { SyncModeEnum, SyncStatusEnum, transactionAsync } from '@budgie/contracts';
+import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { subMonths } from 'date-fns/subMonths';
 import * as BackgroundTask from 'expo-background-task';
@@ -6,7 +6,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository, db, syncRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, syncRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -19,7 +19,7 @@ import { AbstractSyncService } from './abstract-sync.service';
 import { syncIntegrationTokenService } from './sync-integration-token.service';
 import { syncWorkloadService } from './sync-workload.service';
 
-import type { DB, SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
+import type { SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
 import type { SyncBatchResultInterface } from '@budgie/sync';
 
 export abstract class AbstractPollingSyncService extends AbstractSyncService {
@@ -184,18 +184,14 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     @Log(
-        (sync, result, runGeneration) =>
-            `enter syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration}`,
-        (_result, sync, result, runGeneration) =>
-            `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)} runGeneration=${runGeneration}`,
-        (error, sync, result, runGeneration) =>
-            `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} runGeneration=${runGeneration} error=${getErrorMessage(error)}`
+        (sync, result) =>
+            `enter syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)}`,
+        (_result, sync, result) =>
+            `done syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} completed=${String(result.completed)}`,
+        (error, sync, result) =>
+            `throw syncId=${sync.id} mode=${sync.mode} transactionCount=${result.transactions.length} error=${getErrorMessage(error)}`
     )
-    protected async applyProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface, runGeneration: number): Promise<void> {
-        if (!this.isRunCurrent(runGeneration)) {
-            return;
-        }
-
+    protected async applyProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): Promise<void> {
         await syncRepository.update(sync.id, this.resolveProgressUpdate(sync, result));
     }
 
@@ -206,59 +202,6 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     )
     protected async resolveSyncToken(sync: SyncEntityInterface): Promise<string> {
         return syncIntegrationTokenService.resolveAccountToken(this.provider, sync.accountId);
-    }
-
-    @Log(
-        (accountId, token, historyDepth, tx) =>
-            `enter accountId=${accountId} tokenLen=${token.length} historyDepth=${historyDepth} hasTx=${String(isDefined(tx))}`,
-        (result, ...[accountId, token, historyDepth, tx]) =>
-            `done accountId=${accountId} tokenLen=${token.length} historyDepth=${historyDepth} hasTx=${String(isDefined(tx))} syncId=${result.id}`,
-        (error, ...[accountId, token, historyDepth, tx]) =>
-            `throw accountId=${accountId} tokenLen=${token.length} historyDepth=${historyDepth} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    protected async createOrUpdateSync(
-        accountId: number,
-        token: string,
-        historyDepth = SyncHistoryDepthEnum.FULL,
-        tx?: DB
-    ): Promise<SyncEntityInterface> {
-        const now = new Date();
-        const backwardSyncLimitAt = this.resolveBackwardSyncLimit(historyDepth, now);
-        const integration = await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token, tx);
-        await accountRepository.updateById(accountId, { integrationId: integration.id }, tx);
-
-        const existingSync = await syncRepository.getByAccountId(accountId, tx);
-        if (isDefined(existingSync)) {
-            return syncRepository.update(
-                existingSync.id,
-                {
-                    enabled: true,
-                    errorCount: 0,
-                    lastError: null,
-                    backwardSyncLimitAt,
-                    backwardBatchAt: null
-                },
-                tx
-            );
-        }
-
-        const earliestTransactionTime = await transactionService.getEarliestTransactionTimeByAccountId(accountId, tx);
-
-        return syncRepository.create(
-            {
-                accountId,
-                provider: this.provider,
-                enabled: true,
-                mode: SyncModeEnum.BACKWARD,
-                status: SyncStatusEnum.SYNCING,
-                backwardSyncFromAt: now,
-                backwardSyncedAt: earliestTransactionTime,
-                backwardSyncLimitAt,
-                forwardSyncFromAt: now,
-                forwardSyncedAt: null
-            },
-            tx
-        );
     }
 
     @Log(
@@ -308,11 +251,37 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return enabledSyncs.filter(sync => integrationIdByAccountId.get(sync.accountId) === credentialGroupIntegrationId);
     }
 
-    @InvalidateDatabaseLiveQuery()
-    private async disableFailedSync(sync: SyncEntityInterface, errorMessage: string): Promise<void> {
-        await transactionAsync(db, async tx => {
-            await this.releaseBalanceAuthority(sync.accountId, tx);
-            await syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false }, tx);
+    protected async createOrUpdateSync(
+        accountId: number,
+        token: string,
+        historyDepth = SyncHistoryDepthEnum.FULL,
+        setupBalance: number | null = null
+    ): Promise<void> {
+        const now = new Date();
+        const backwardSyncLimitAt = this.resolveBackwardSyncLimit(historyDepth, now);
+        const integration = await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token);
+        await accountRepository.updateById(accountId, { integrationId: integration.id });
+
+        const existingSync = await syncRepository.getByAccountId(accountId);
+        if (isDefined(existingSync)) {
+            await syncRepository.update(existingSync.id, { enabled: true, errorCount: 0, lastError: null, backwardSyncLimitAt });
+
+            return;
+        }
+
+        const earliestTransactionTime = await transactionService.getEarliestTransactionTimeByAccountId(accountId);
+        await syncRepository.create({
+            accountId,
+            provider: this.provider,
+            enabled: true,
+            mode: SyncModeEnum.BACKWARD,
+            status: SyncStatusEnum.SYNCING,
+            backwardSyncFromAt: now,
+            backwardSyncedAt: earliestTransactionTime ?? null,
+            backwardSyncLimitAt,
+            forwardSyncFromAt: now,
+            forwardSyncedAt: null,
+            setupBalance
         });
     }
 
@@ -353,10 +322,6 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     }
 
     protected async beforeUpdateAccountToken(): Promise<void> {
-        return Promise.resolve();
-    }
-
-    protected async releaseBalanceAuthority(_accountId: number, _tx: DB): Promise<void> {
         return Promise.resolve();
     }
 
@@ -486,7 +451,9 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
     private async disableFailedSyncs(enabledSyncs: SyncEntityInterface[], error: unknown, errorMessage: string): Promise<void> {
         const disableSyncPromises: Array<Promise<unknown>> = [];
         for (const sync of await this.resolveSyncsToDisable(enabledSyncs, error)) {
-            disableSyncPromises.push(this.disableFailedSync(sync, errorMessage));
+            disableSyncPromises.push(
+                syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false })
+            );
         }
 
         await Promise.all(disableSyncPromises);
@@ -521,7 +488,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return false;
         }
 
-        await this.applyProgressUpdate(pendingSync, result, runGeneration);
+        await this.applyProgressUpdate(pendingSync, result);
         if (!this.isRunCurrent(runGeneration)) {
             return false;
         }

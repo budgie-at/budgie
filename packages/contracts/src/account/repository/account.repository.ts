@@ -1,13 +1,13 @@
 import { subDays } from 'date-fns/subDays';
-import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, not, notInArray, sql } from 'drizzle-orm';
+import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { getProviderAuthoritativeAccountConditionSql } from '../../sync/util/get-provider-authoritative-account-condition.util';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../constant/bank-authoritative-account-types.constant';
 import { AccountCreateEntityInterface } from '../entity/account-create-entity.interface';
 import { AccountUpdateEntityInterface } from '../entity/account-update-entity.interface';
 import { AccountAssociationEnum } from '../enum/account-association.enum';
@@ -58,11 +58,11 @@ export class AccountRepository {
         return await (tx ?? this.db).select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
     }
 
-    async getAllActiveLedgerMaintainedAccounts(tx?: DB): Promise<AccountEntityInterface[]> {
+    async getAllActiveAccountsExceptBankAuthoritative(tx?: DB): Promise<AccountEntityInterface[]> {
         return await (tx ?? this.db)
             .select()
             .from(AccountEntityTable)
-            .where(and(isNull(AccountEntityTable.deletedAt), this.getLedgerMaintainedAccountConditionSql()));
+            .where(and(isNull(AccountEntityTable.deletedAt), notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES)));
     }
 
     findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {
@@ -129,16 +129,16 @@ export class AccountRepository {
         return await this.findActiveByIds(ids, tx);
     }
 
-    async findLedgerMaintainedByIds(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
-        return await this.findActiveByIds(ids, tx, this.getLedgerMaintainedAccountConditionSql());
+    async findByIdsExceptBankAuthoritative(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
+        return await this.findActiveByIds(ids, tx, notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES));
     }
 
-    async findByExternalIds(externalIds: string[], tx?: DB): Promise<AccountEntityInterface[]> {
+    async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
         if (!isNotEmptyArray(externalIds)) {
             return [];
         }
 
-        return await (tx ?? this.db).query.AccountEntityTable.findMany({
+        return await this.db.query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
         });
     }
@@ -155,12 +155,12 @@ export class AccountRepository {
         });
     }
 
-    async findByIbans(ibans: string[], tx?: DB): Promise<AccountEntityInterface[]> {
+    async findByIbans(ibans: string[]): Promise<AccountEntityInterface[]> {
         if (!isNotEmptyArray(ibans)) {
             return [];
         }
 
-        return await (tx ?? this.db).query.AccountEntityTable.findMany({
+        return await this.db.query.AccountEntityTable.findMany({
             where: and(inArray(AccountEntityTable.iban, ibans), isNull(AccountEntityTable.deletedAt))
         });
     }
@@ -220,14 +220,9 @@ export class AccountRepository {
             return [];
         }
 
-        return await (tx ?? this.db)
-            .select()
-            .from(AccountEntityTable)
-            .where(and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt), typeCondition));
-    }
-
-    private getLedgerMaintainedAccountConditionSql() {
-        return not(getProviderAuthoritativeAccountConditionSql(AccountEntityTable.id));
+        return await (tx ?? this.db).query.AccountEntityTable.findMany({
+            where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt), typeCondition)
+        });
     }
 
     private buildSearchWhereClause(search: string, filter: AccountFilterInterface) {

@@ -3,7 +3,6 @@ import { number, enum as zodEnum } from 'zod';
 
 import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
-import { SyncBalanceAuthorityEnum } from '../enum/sync-balance-authority.enum';
 import { SyncModeEnum } from '../enum/sync-mode.enum';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
 import { SyncWarningEnum } from '../enum/sync-warning.enum';
@@ -20,14 +19,13 @@ export const SyncEntitySchema = createSelectSchema(SyncEntityTable, {
     backwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync backward from (newest point going back).'),
     backwardSyncLimitAt: schema =>
         schema.nullable().default(null).describe('Earliest point backward sync should reach; null backfills the whole available history.'),
-    backwardBatchAt: schema => schema.nullable().default(null).describe('Timestamp of the latest backward sync batch.'),
+    backwardBatchAt: schema => schema.nullable().default(null).describe('Timestamp of the latest backward batch, used to rotate accounts.'),
     forwardSyncedAt: schema => schema.nullable().default(null).describe('Timestamp of the last successful forward sync.'),
     forwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync forward from.'),
-    balanceAuthority: zodEnum(SyncBalanceAuthorityEnum)
-        .default(SyncBalanceAuthorityEnum.LEDGER)
-        .describe('Whether the current balance comes from the ledger or a provider snapshot.'),
+    setupBalance: schema =>
+        schema.nullable().default(null).describe('Provider balance captured at setup, shown until backward history completes.'),
     balanceAdjustmentTransactionId: schema =>
-        schema.nullable().default(null).describe('Transaction used to reconcile the ledger to the provider balance.'),
+        schema.nullable().default(null).describe('Opening balance adjustment created when backward history completed.'),
     transactionCount: number().nonnegative().default(0).describe('Total number of transactions synced.'),
     errorCount: number().nonnegative().default(0).describe('Number of consecutive sync errors.'),
     lastError: schema => schema.nullable().default(null).describe('Last error message if sync failed.'),

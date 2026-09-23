@@ -7,14 +7,8 @@ import type { ClientInfo, StatementItem } from '@liaugust/monobank-sdk';
 const STATEMENT_ENDPOINT = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
 
 export const monobankStub = {
-    clientInfo: (info: ClientInfo, onRequest?: () => void): void => {
-        mockServer.use(
-            http.get('https://api.monobank.ua/personal/client-info', () => {
-                onRequest?.();
-
-                return HttpResponse.json(info);
-            })
-        );
+    clientInfo: (info: ClientInfo): void => {
+        mockServer.use(http.get('https://api.monobank.ua/personal/client-info', () => HttpResponse.json(info)));
     },
     clientInfoFailure: (): void => {
         mockServer.use(
@@ -32,11 +26,26 @@ export const monobankStub = {
             mockServer.use(http.get(STATEMENT_ENDPOINT, () => HttpResponse.json(batch), { once: true }));
         }
     },
-    recordStatementAccountIds: (requestedAccountIds: string[], onRequest?: () => void): void => {
+    statementThen: (history: StatementItem[], onLaterRequest: () => Promise<void> | void): void => {
+        let isHistoryServed = false;
+        mockServer.use(
+            http.get(STATEMENT_ENDPOINT, async () => {
+                if (isHistoryServed) {
+                    await onLaterRequest();
+
+                    return HttpResponse.json([]);
+                }
+
+                isHistoryServed = true;
+
+                return HttpResponse.json(history);
+            })
+        );
+    },
+    recordStatementAccountIds: (requestedAccountIds: string[]): void => {
         mockServer.use(
             http.get(STATEMENT_ENDPOINT, ({ params }) => {
                 requestedAccountIds.push(String(params['account']));
-                onRequest?.();
 
                 return HttpResponse.json([]);
             })

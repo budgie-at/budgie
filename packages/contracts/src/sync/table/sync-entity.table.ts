@@ -4,7 +4,6 @@ import { convertEnumToDrizzleEnum } from '../../@generic/util/convert-enum-to-dr
 import { withBaseEntityTableColumns } from '../../@generic/util/with-base-entity-table-columns.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
-import { SyncBalanceAuthorityEnum } from '../enum/sync-balance-authority.enum';
 import { SyncModeEnum } from '../enum/sync-mode.enum';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
 import { SyncWarningEnum } from '../enum/sync-warning.enum';
@@ -34,10 +33,7 @@ export const SyncEntityTable = sqliteTable(
         backwardBatchAt: int('backward_batch_at', { mode: 'timestamp_ms' }),
         forwardSyncedAt: int('forward_synced_at', { mode: 'timestamp' }),
         forwardSyncFromAt: int('forward_sync_from_at', { mode: 'timestamp' }),
-        balanceAuthority: text('balance_authority', { enum: convertEnumToDrizzleEnum(SyncBalanceAuthorityEnum) })
-            .$type<SyncBalanceAuthorityEnum>()
-            .default(SyncBalanceAuthorityEnum.LEDGER)
-            .notNull(),
+        setupBalance: int('setup_balance', { mode: 'number' }),
         balanceAdjustmentTransactionId: int('balance_adjustment_transaction_id', { mode: 'number' }),
         transactionCount: int('transaction_count', { mode: 'number' }).default(0).notNull(),
         errorCount: int('error_count', { mode: 'number' }).default(0).notNull(),

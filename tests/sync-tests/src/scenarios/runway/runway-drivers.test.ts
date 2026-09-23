@@ -19,12 +19,28 @@ import {
 import { sql } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { explainQueryPlan, requireInstrument, testDb } from '../../harness';
+import { requireInstrument, testDb } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { seed } from '../../harness/seed/seed';
 
 import type { RunwayDriverBreakdownInterface } from '@app/runway/interface/runway-driver-breakdown.interface';
 import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
+
+interface QueryPlanStepInterface {
+    readonly detail: string;
+}
+
+interface ToSqlQueryInterface {
+    readonly toSQL: () => { readonly sql: string; readonly params: readonly unknown[] };
+}
+
+const explainQueryPlan = (query: ToSqlQueryInterface): QueryPlanStepInterface[] => {
+    const { sql: queryText, params } = query.toSQL();
+    const segments = queryText.split('?').map((segment: string) => sql.raw(segment));
+    const fragments = segments.flatMap((segment, index: number) => (index < params.length ? [segment, sql`${params[index]}`] : [segment]));
+
+    return testDb.all<QueryPlanStepInterface>(sql`EXPLAIN QUERY PLAN ${sql.join(fragments, sql``)}`);
+};
 
 const REGULAR_MONTHLY_AMOUNT = 100 * PRECISION;
 const ONE_OFF_AMOUNT = 60 * PRECISION;

@@ -77,7 +77,6 @@ export type { DebtAccountProgressSummaryInterface } from './account-balance/inte
 export type { DebtLedgerAmountsInterface } from './account-balance/interface/debt-ledger-amounts.interface';
 
 export { SyncModeEnum } from './sync/enum/sync-mode.enum';
-export { SyncBalanceAuthorityEnum } from './sync/enum/sync-balance-authority.enum';
 export { SyncStatusEnum } from './sync/enum/sync-status.enum';
 export { SyncAssociationEnum } from './sync/enum/sync-association.enum';
 export { SyncWarningEnum } from './sync/enum/sync-warning.enum';
