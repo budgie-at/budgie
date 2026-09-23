@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "031dd728-acf8-440c-884d-00391e6742ce",
-  "prevId": "2314aba4-12d3-44b1-9577-36238562d049",
+  "id": "09e32a13-f66c-4bdb-bc66-6aeb8c2c1fab",
+  "prevId": "b4e0f1c7-5d2a-4a8e-9f31-7c6a0d2b8e50",
   "tables": {
     "account_balances": {
       "name": "account_balances",
@@ -2727,6 +2727,28 @@
         "binance_trade_cursor": {
           "name": "binance_trade_cursor",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "backward_batch_at": {
+          "name": "backward_batch_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "balance_authority": {
+          "name": "balance_authority",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'LEDGER'"
+        },
+        "balance_adjustment_transaction_id": {
+          "name": "balance_adjustment_transaction_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
