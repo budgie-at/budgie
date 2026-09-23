@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.75.0](https://github.com/budgie-at/budgie/compare/v6.74.2...v6.75.0) (2026-09-23)
+
+
+### Features
+
+* **app:** debt v2 funding-account ui and maestro coverage ([d5d126c](https://github.com/budgie-at/budgie/commit/d5d126cacf8ece6c1c051458dbd64da958bd8fa1))
+
+
+
+
+
 ## [6.74.2](https://github.com/budgie-at/budgie/compare/v6.74.1...v6.74.2) (2026-09-23)
 
 **Note:** Version bump only for package @budgie-at/app
