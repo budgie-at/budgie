@@ -16,6 +16,7 @@ mkdir -p "$TEMP_DIR/bin" "$TEMP_DIR/scripts" "$TEMP_DIR/fixtures" "$TEMP_DIR/loc
 cp "$SCRIPT_DIR/prepare-date-sensitive-fixtures.js" "$TEMP_DIR/scripts/"
 cp "$WORKSPACE_DIR/fixtures/07.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/14.db" "$TEMP_DIR/fixtures/"
+cp "$WORKSPACE_DIR/fixtures/29.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/31-transaction-info.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/budget-multi-currency.db" "$TEMP_DIR/fixtures/"
 
@@ -104,6 +105,7 @@ for output_directory in "$TEMP_DIR/output-1" "$TEMP_DIR/output-2"; do
         20-recurring-calendar.db \
         21.db \
         22.db \
+        29.db \
         31-transaction-info.db \
         budget-multi-currency.db; do
         test -f "$output_directory/$database_name"

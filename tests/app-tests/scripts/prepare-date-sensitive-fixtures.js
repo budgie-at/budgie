@@ -491,6 +491,97 @@ const buildMonthlyTimestamp = (monthOffset, desiredDay) => {
     return Math.floor(targetDate.getTime() / 1000);
 };
 
+const generateRunwayCryptoFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '29.db');
+    const targetPath = path.join(outputDirectoryPath, '29.db');
+    const fiatAccountId = 1;
+    const defaultInstrumentId = 1;
+    const bitcoinInstrumentId = 34;
+    const ethereumInstrumentId = 35;
+    const eurToUsdRate = 1.1723329425556859;
+    const bitcoinToUsdRate = 2500.0;
+    const ethereumToUsdRate = 1800.0;
+    const runwayFiatBalance = 3_000_000_000;
+    const monthlyExpenseAmount = 1_500_000_000;
+    const monthlyIncomeAmount = 500_000_000;
+    const housingCategoryId = 10;
+    const salaryCategoryId = 20;
+    const historyDay = 10;
+    const firstTransactionId = 2101;
+    const monthlyExpenseBaseAmount = Math.round(monthlyExpenseAmount * eurToUsdRate);
+    const monthlyIncomeBaseAmount = Math.round(monthlyIncomeAmount * eurToUsdRate);
+    const rateUpdatedAtSql = "unixepoch('now') - 900";
+    const historyMonths = [-1, -2, -3].map(monthOffset => buildMonthlyTimestamp(monthOffset, historyDay));
+    const transactionValues = historyMonths
+        .flatMap((operatedAt, monthIndex) => [
+            `(${firstTransactionId + monthIndex * 2}, ${operatedAt}, ${operatedAt}, 'EXPENSE', 'E2E Runway History', ${operatedAt}, NULL, ${fiatAccountId}, 1.0)`,
+            `(${firstTransactionId + monthIndex * 2 + 1}, ${operatedAt}, ${operatedAt}, 'INCOME', 'E2E Runway History', ${operatedAt}, ${fiatAccountId}, NULL, 1.0)`
+        ])
+        .join(',\n            ');
+    const entryValues = historyMonths
+        .flatMap((operatedAt, monthIndex) => [
+            `(${operatedAt}, ${operatedAt}, 'CREDIT', ${fiatAccountId}, ${housingCategoryId}, ${firstTransactionId + monthIndex * 2}, ${monthlyExpenseAmount}, ${eurToUsdRate}, ${defaultInstrumentId}, ${eurToUsdRate}, ${monthlyExpenseBaseAmount})`,
+            `(${operatedAt}, ${operatedAt}, 'DEBIT', ${fiatAccountId}, ${salaryCategoryId}, ${firstTransactionId + monthIndex * 2 + 1}, ${monthlyIncomeAmount}, ${eurToUsdRate}, ${defaultInstrumentId}, ${eurToUsdRate}, ${monthlyIncomeBaseAmount})`
+        ])
+        .join(',\n            ');
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        UPDATE account_balances
+        SET amount = ${runwayFiatBalance}, created_at = unixepoch('now'), updated_at = unixepoch('now')
+        WHERE account_id = ${fiatAccountId};
+
+        DELETE FROM transaction_entries WHERE transaction_id BETWEEN 2100 AND 2199;
+        DELETE FROM transactions WHERE id BETWEEN 2100 AND 2199;
+
+        INSERT INTO transactions (
+            id,
+            created_at,
+            updated_at,
+            type,
+            title,
+            operated_at,
+            to_account_id,
+            from_account_id,
+            exchange_rate
+        )
+        VALUES
+            ${transactionValues};
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount,
+            exchange_rate,
+            base_instrument_id,
+            base_exchange_rate,
+            base_amount
+        )
+        VALUES
+            ${entryValues};
+
+        DELETE FROM exchange_rates
+        WHERE base_instrument_id IN (${bitcoinInstrumentId}, ${ethereumInstrumentId}) AND quote_instrument_id = ${defaultInstrumentId};
+
+        INSERT INTO exchange_rates (created_at, updated_at, source, base_instrument_id, quote_instrument_id, rate)
+        VALUES
+            (${rateUpdatedAtSql}, ${rateUpdatedAtSql}, 'coingecko.com', ${bitcoinInstrumentId}, ${defaultInstrumentId}, ${bitcoinToUsdRate}),
+            (${rateUpdatedAtSql}, ${rateUpdatedAtSql}, 'coingecko.com', ${ethereumInstrumentId}, ${defaultInstrumentId}, ${ethereumToUsdRate});
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 const generateBudgetMultiCurrencyFixture = () => {
     const sourcePath = path.join(fixturesDirectoryPath, 'budget-multi-currency.db');
     const targetPath = path.join(outputDirectoryPath, 'budget-multi-currency.db');
@@ -921,6 +1012,7 @@ const shiftTransactionInfoFixtureToNow = () => {
 
 shiftTransactionsFixtureToNow();
 shiftTransactionInfoFixtureToNow();
+generateRunwayCryptoFixture();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
 generateConsolidationFixture();

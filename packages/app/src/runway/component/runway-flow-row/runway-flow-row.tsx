@@ -3,6 +3,7 @@ import { View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
+import { RunwaySelector } from '../../runway.selector';
 import { getRunwayAmountVariant } from '../../utils/get-runway-amount-variant.util';
 import { RunwayFlowCell } from '../runway-flow-cell/runway-flow-cell';
 
@@ -17,7 +18,7 @@ export const RunwayFlowRow = ({ computation }: Props) => {
     const net = convertFromMicroUnits(computation.net);
 
     return (
-        <Card size="md" className="flex-row items-center">
+        <Card testID={RunwaySelector.FlowRow} size="md" className="flex-row items-center">
             <RunwayFlowCell label={t`Expenses`} amount={convertFromMicroUnits(computation.burn)} variant="primary" />
             <View className="h-8 w-px bg-secondary-corner" />
             <RunwayFlowCell label={t`Income`} amount={convertFromMicroUnits(computation.income)} variant="primary" />

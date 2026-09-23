@@ -174,7 +174,7 @@ install_database_fixture "$DYNAMIC_FIXTURES_DIR/20-recurring-calendar.db" "20.db
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/21.db" "21.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/22.db" "22.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/25.db" "25.db"
-install_database_fixture "$SCRIPT_DIR/../fixtures/29.db" "29.db"
+install_database_fixture "$DYNAMIC_FIXTURES_DIR/29.db" "29.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/31-debt.db" "31-debt.db"
 install_database_fixture "$SCRIPT_DIR/../fixtures/35-debt-migration-repair.db" "35-debt-migration-repair.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/31-transaction-info.db" "31-transaction-info.db"
