@@ -13,10 +13,6 @@ IOS_METADATA_PATH = File.join(FASTLANE_DIR, "metadata", "ios")
 ANDROID_METADATA_PATH = File.join(FASTLANE_DIR, "metadata", "android")
 IOS_COPYRIGHT_PATH = File.join(IOS_METADATA_PATH, "copyright.txt")
 
-# supply's fixed image slots - it rejects a wrong-sized upload at submission
-# time, after the build has already shipped, so the exact dimensions are
-# gated locally instead. en-US is the only locale required because neither
-# asset carries text (see screenshots/design/compose-play-store-assets.sh).
 ANDROID_HERO_IMAGES = {
   "featureGraphic.png" => [1024, 500],
   "icon.png" => [512, 512]
