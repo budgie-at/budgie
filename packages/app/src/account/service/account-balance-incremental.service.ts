@@ -132,8 +132,7 @@ class AccountBalanceIncrementalService {
 
         return {
             amount: debtLedgerBalance ?? (balancesMap.get(account.id) ?? 0) + (deltaMap.get(account.id) ?? 0),
-            accountId: account.id,
-            updatedAt: new Date()
+            accountId: account.id
         };
     }
 

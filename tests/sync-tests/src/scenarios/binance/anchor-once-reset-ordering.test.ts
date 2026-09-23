@@ -71,7 +71,7 @@ describe('binance/anchor-once-reset-ordering', () => {
 
     it('anchors an existing account to zero when Binance omits the asset from balances', async () => {
         const { account } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-        await accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION, updatedAt: new Date() });
+        await accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION });
         binanceStub.spotBalances([buildBinance.balance({ asset: 'ETH', free: '2' })]);
 
         await binanceSyncService.sync();
@@ -81,7 +81,7 @@ describe('binance/anchor-once-reset-ordering', () => {
 
     it('does not anchor an existing account to zero when Binance reports an unrepresentable balance', async () => {
         const { account } = setupBinanceFixture({ asset: 'PEPE', mode: SyncModeEnum.BACKWARD });
-        await accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION, updatedAt: new Date() });
+        await accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION });
         binanceStub.spotBalances([buildBinance.balance({ asset: 'PEPE', free: '99999999999' })]);
 
         await binanceSyncService.sync();
