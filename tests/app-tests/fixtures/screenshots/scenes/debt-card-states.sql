@@ -33,12 +33,12 @@ INSERT INTO debt_events (id, created_at, updated_at, debt_account_id, transactio
     (9091, unixepoch('now') - 20 * 86400, unixepoch('now') - 20 * 86400, 909, NULL, NULL, 'CLOSE', 'MANUAL', 250000000000, unixepoch('now') - 20 * 86400);
 
 INSERT INTO account_balances (id, created_at, updated_at, account_id, amount) VALUES
-    (9901, unixepoch('now') - 60 * 86400, unixepoch('now') - 60 * 86400, 901, 0),
-    (9902, unixepoch('now') - 60 * 86400, unixepoch('now') - 60 * 86400, 902, 0),
+    (9901, unixepoch('now') - 60 * 86400, unixepoch('now') - 60 * 86400, 901, 1000000000),
+    (9902, unixepoch('now') - 60 * 86400, unixepoch('now') - 60 * 86400, 902, 750000000),
     (9903, unixepoch('now') - 90 * 86400, unixepoch('now') - 90 * 86400, 903, 0),
     (9904, unixepoch('now') - 60 * 86400, unixepoch('now') - 60 * 86400, 904, 0),
-    (9905, unixepoch('now') - 60 * 86400, unixepoch('now') - 60 * 86400, 905, 0),
-    (9906, unixepoch('now') - 60 * 86400, unixepoch('now') - 60 * 86400, 906, 0),
+    (9905, unixepoch('now') - 60 * 86400, unixepoch('now') - 60 * 86400, 905, -1000000000),
+    (9906, unixepoch('now') - 60 * 86400, unixepoch('now') - 60 * 86400, 906, -750000000),
     (9907, unixepoch('now') - 90 * 86400, unixepoch('now') - 90 * 86400, 907, 0),
     (9908, unixepoch('now') - 60 * 86400, unixepoch('now') - 60 * 86400, 908, 0),
-    (9909, unixepoch('now') - 200 * 86400, unixepoch('now') - 200 * 86400, 909, 0);
+    (9909, unixepoch('now') - 200 * 86400, unixepoch('now') - 200 * 86400, 909, 984567890000);

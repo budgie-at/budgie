@@ -44,3 +44,63 @@ appId: ${APP_ID}
           DECREASE_TO: '250'
           DECREASE_OUTSTANDING: '750'
           NET_WORTH_WHEN_INCLUDED: '750'
+
+- runFlow:
+      file: subflows/accounts/create-liability-account.flow.yaml
+      env:
+          ACCOUNT_TYPE_ID: 'CreateAccount.CASH'
+          ACCOUNT_NAME: 'E2E Lent Funding'
+          CURRENCY_CODE: 'GBP'
+          ACCOUNT_AMOUNT: '900'
+
+- assertVisible:
+      id: 'AccountCard.Balance.E2E_Lent_Funding.900'
+
+- runFlow:
+      file: subflows/accounts/create-debt-account.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Lent From Cash'
+          CURRENCY_CODE: 'GBP'
+          CURRENT_BALANCE: '0'
+          DEBT_TYPE: 'LENT'
+          TARGET_BALANCE: '400'
+          FUNDING_ACCOUNT_NAME: 'E2E Lent Funding'
+          FUNDING_ACCOUNT_NAME_ID: 'E2E_Lent_Funding'
+
+- assertVisible:
+      id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_From_Cash.400'
+- assertVisible:
+      id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_From_Cash.0'
+- assertVisible:
+      id: 'DebtAccountCardSummary.TotalAmount.E2E_Lent_From_Cash.400'
+
+- scrollUntilVisible:
+      element:
+          id: 'AccountCard.Balance.E2E_Lent_Funding.500'
+      direction: UP
+- assertVisible:
+      id: 'AccountCard.Balance.E2E_Lent_Funding.500'
+
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Lent Funding'
+
+- assertVisible:
+      id: 'TransactionCard.EntryCategoryAmount.Lending.400'
+
+- runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
+
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'E2E Lent From Cash'
+
+- assertVisible:
+      id: 'DebtAccountBalance.OutstandingAmount.400'
+- assertVisible:
+      id: 'DebtAccountBalance.PaidAmount.0'
+- assertVisible:
+      id: 'DebtAccountBalance.TotalAmount.400'
+- assertVisible:
+      id: 'TransactionCard.EntryCategoryAmount.Lending.400'
