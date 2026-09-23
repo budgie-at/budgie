@@ -139,6 +139,18 @@ export default ({ config }) => ({
                         name: 'NetWorth',
                         displayName: 'Net worth',
                         description: 'Your total balance, and whether you are growing or burning.',
+                        ios: { supportedFamilies: ['systemSmall', 'systemMedium'] }
+                    },
+                    {
+                        name: 'Budget',
+                        displayName: 'Budget',
+                        description: "How much of this period's budget is left.",
+                        ios: { supportedFamilies: ['systemSmall', 'systemMedium'] }
+                    },
+                    {
+                        name: 'QuickAdd',
+                        displayName: 'Quick add',
+                        description: 'Expense, income and transfer in one tap.',
                         ios: { supportedFamilies: ['systemSmall'] }
                     }
                 ]

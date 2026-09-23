@@ -11,7 +11,10 @@ import * as TaskManager from 'expo-task-manager';
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { canPublishWidgetSnapshot, clearWidgetSnapshot, publishWidgetSnapshot } from '../../../modules/widget-bridge';
+import BudgetWidget from '../widget/budget.widget';
 import NetWorthWidget from '../widget/net-worth.widget';
+import QuickAddWidget from '../widget/quick-add.widget';
+import '../widget/seed-widgets.dev';
 import {
     accountBalanceRepository,
     budgetCategoryLimitRepository,
@@ -101,10 +104,33 @@ class WidgetSnapshotService {
                 netWorth: snapshot.netWorth,
                 runway: snapshot.runway,
                 palette: snapshot.palette,
+                deltaColorLight: this.resolveDeltaColor(snapshot, snapshot.palette.light),
+                deltaColorDark: this.resolveDeltaColor(snapshot, snapshot.palette.dark),
                 netWorthTitle: snapshot.strings.netWorthTitle,
                 thisMonth: snapshot.strings.thisMonth,
                 empty: snapshot.strings.empty,
                 homeUrl: 'budgie://'
+            });
+            BudgetWidget.updateSnapshot({
+                budget: snapshot.budget,
+                palette: snapshot.palette,
+                budgetTitle: snapshot.strings.budgetTitle,
+                perDay: snapshot.strings.perDay,
+                left: snapshot.strings.left,
+                over: snapshot.strings.over,
+                noBudget: snapshot.strings.noBudget,
+                budgetUrl: 'budgie://budget'
+            });
+            QuickAddWidget.updateSnapshot({
+                palette: snapshot.palette,
+                expense: snapshot.strings.expense,
+                income: snapshot.strings.income,
+                transfer: snapshot.strings.transfer,
+                expenseUrl: 'budgie://create-transaction/expense',
+                incomeUrl: 'budgie://create-transaction/income',
+                transferUrl: 'budgie://create-transaction/transfer',
+                homeUrl: 'budgie://',
+                glyphPath: ''
             });
 
             return await publishWidgetSnapshot(JSON.stringify(snapshot));
@@ -134,6 +160,18 @@ class WidgetSnapshotService {
             clearTimeout(this.debounceTimer);
             this.debounceTimer = null;
         }
+    }
+
+    private resolveDeltaColor(snapshot: WidgetSnapshotInterface, colors: WidgetThemeColorsInterface): string {
+        if (snapshot.netWorth?.deltaDirection === WidgetDeltaDirectionEnum.UP) {
+            return colors.positive;
+        }
+
+        if (snapshot.netWorth?.deltaDirection === WidgetDeltaDirectionEnum.DOWN) {
+            return colors.destructive;
+        }
+
+        return colors.secondary;
     }
 
     private async buildSnapshot(): Promise<WidgetSnapshotInterface> {
