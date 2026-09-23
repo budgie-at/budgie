@@ -1,0 +1,22 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://analytics?tab=runway'
+
+- extendedWaitUntil:
+      visible:
+          id: '^RunwayVerdict[.]Figure[.].+$'
+      timeout: 15000
+
+- scrollUntilVisible:
+      element:
+          id: 'RunwayFlowRow'
+      direction: DOWN
+      speed: 20
+      centerElement: true
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene
