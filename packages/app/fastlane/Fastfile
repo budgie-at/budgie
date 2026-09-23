@@ -13,6 +13,15 @@ IOS_METADATA_PATH = File.join(FASTLANE_DIR, "metadata", "ios")
 ANDROID_METADATA_PATH = File.join(FASTLANE_DIR, "metadata", "android")
 IOS_COPYRIGHT_PATH = File.join(IOS_METADATA_PATH, "copyright.txt")
 
+# supply's fixed image slots - it rejects a wrong-sized upload at submission
+# time, after the build has already shipped, so the exact dimensions are
+# gated locally instead. en-US is the only locale required because neither
+# asset carries text (see screenshots/design/compose-play-store-assets.sh).
+ANDROID_HERO_IMAGES = {
+  "featureGraphic.png" => [1024, 500],
+  "icon.png" => [512, 512]
+}.freeze
+
 # deliver assigns App Store screenshot slots by resolution, so a set captured at
 # the wrong size uploads alongside the existing store images instead of
 # replacing them.
@@ -80,6 +89,22 @@ def android_image_counts
   end
 
   counts
+end
+
+def verify_android_hero_images
+  images_path = File.join(ANDROID_METADATA_PATH, "en-US", "images")
+
+  ANDROID_HERO_IMAGES.each do |filename, (expected_width, expected_height)|
+    path = File.join(images_path, filename)
+    UI.user_error!("Missing Play Store asset at #{path}") unless File.file?(path)
+
+    width, height = png_dimensions(path)
+    unless width == expected_width && height == expected_height
+      UI.user_error!("#{path} is #{width}x#{height}, expected #{expected_width}x#{expected_height}")
+    end
+
+    UI.success("  #{filename}: #{width}x#{height}")
+  end
 end
 
 def verify_store_tree(label, path)
@@ -249,6 +274,7 @@ lane :store_preflight do
   else
     android_images.sort.each { |label, count| UI.success("  Play #{label}: #{count}") }
   end
+  verify_android_hero_images
 end
 
 platform :ios do
