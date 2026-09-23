@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.75.2](https://github.com/budgie-at/budgie/compare/v6.75.1...v6.75.2) (2026-09-23)
+
+
+### Bug Fixes
+
+* **contracts:** stop double counting balance entries written in the snapshot millisecond ([dca8bc7](https://github.com/budgie-at/budgie/commit/dca8bc741cb493b83ce5d4f484d2759f30fee433))
+
+
+
+
+
 ## [6.75.1](https://github.com/budgie-at/budgie/compare/v6.75.0...v6.75.1) (2026-09-23)
 
 **Note:** Version bump only for package @budgie-at/root

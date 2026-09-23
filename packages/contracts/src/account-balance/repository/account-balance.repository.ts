@@ -4,6 +4,7 @@ import { type SQL, type SQLWrapper, and, eq, inArray, isNull, ne, notInArray, sq
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
 import { getExchangeRateWithHistoricalFallbackSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
@@ -128,13 +129,16 @@ export class AccountBalanceRepository {
             );
     }
 
-    async upsert(input: AccountBalanceCreateEntityInterface, tx?: DB): Promise<AccountBalanceEntityInterface> {
+    async upsert(
+        input: Pick<AccountBalanceCreateEntityInterface, 'accountId' | 'amount'>,
+        tx?: DB
+    ): Promise<AccountBalanceEntityInterface> {
         const [accountBalance] = await (tx ?? this.db)
             .insert(AccountBalanceEntityTable)
             .values([input])
             .onConflictDoUpdate({
                 target: AccountBalanceEntityTable.accountId,
-                set: { amount: input.amount, updatedAt: input.updatedAt ?? new Date() }
+                set: { amount: input.amount, updatedAt: CURRENT_TIMESTAMP }
             })
             .returning();
 

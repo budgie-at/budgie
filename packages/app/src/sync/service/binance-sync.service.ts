@@ -578,7 +578,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
     }
 
     private async anchorAccountBalance(accountId: number, balance: number): Promise<void> {
-        await accountBalanceRepository.upsert({ accountId, amount: convertToMicroUnits(balance), updatedAt: new Date() });
+        await accountBalanceRepository.upsert({ accountId, amount: convertToMicroUnits(balance) });
     }
 
     private async getOrCreateAccount(exchangeAccount: SyncAccountInterface, instrumentId: number, integrationId: number) {
