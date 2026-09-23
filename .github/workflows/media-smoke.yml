@@ -22,9 +22,12 @@ permissions:
 jobs:
     media-flows:
         name: Landing media flows
+        # A reusable workflow can only narrow the token it is given; see pr.yml.
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v2.1.0 # v2.1.0
+            packages: write
+            actions: read
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.0.2 # v3.0.2
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -45,12 +48,25 @@ jobs:
             maestro-version: '2.8.0'
             simulator-device: iPhone 17 Pro
             simulator-requires: push,universal-links
-            test-timeout-minutes: 25
-            cache-profile: ios-e2e-budgie-v2
+            # Measured on #1182: 41 scenarios need ~26.5 min end to end (~3.3 min
+            # of job setup + ~23 min of flows), so the old 25-minute cap cancelled
+            # a shard whose every flow was passing. 40 leaves real headroom.
+            test-timeout-minutes: 40
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
             build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
             expo-use-precompiled-modules: true
-            repack-on-hit: true
+            fingerprint-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            repack-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            expect-config: |
+                extra.appVariant=e2e
+                extra.aiEnabled=false
+                extra.loggingEnabled=false
