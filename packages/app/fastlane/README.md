@@ -78,12 +78,13 @@ the iOS and Android lanes.
 
 `store_preflight` resolves the active variant, prints the app store version, the
 Play track, the copyright line, per-locale screenshot counts, each metadata tree
-path and its locales, and warns (not fails) while the Play image directory is
-empty. It fails when a screenshot locale folder is missing, when any PNG's pixel
+path and its locales, and warns while the Play image directory is empty. It
+fails when a screenshot locale folder is missing, when any PNG's pixel
 size matches no App Store slot, when `metadata/ios/copyright.txt` carries a stale
 year, when either metadata tree is missing a locale or is missing entirely, or
 when `featureGraphic.png`/`icon.png` under `metadata/android/en-US/images` is
-missing or the wrong size (see "Play asset list"). Run it after touching the
+missing, not a PNG, the wrong size, or the wrong color type: the feature graphic
+must be 24-bit RGB without alpha and the icon 32-bit RGBA (see "Play asset list"). Run it after touching the
 Fastfile, the compose script, or the metadata trees.
 
 `verify_field_budgets` is the per-file budget gate `store_preflight` runs after
