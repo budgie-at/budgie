@@ -64,12 +64,11 @@ class SyncIntegrationTokenService {
     }
 
     @Log(
-        (provider, token, tx) =>
-            `enter integration provider=${provider} tokenPreview="${token.slice(0, 4)}" tokenLen=${token.length} transaction=${String(isDefined(tx))}`,
+        (provider, token, tx) => `enter integration provider=${provider} tokenLen=${token.length} transaction=${String(isDefined(tx))}`,
         (result, provider, token, tx) =>
-            `done integrationId=${result.id} provider=${provider} tokenPreview="${token.slice(0, 4)}" tokenLen=${token.length} transaction=${String(isDefined(tx))}`,
+            `done integrationId=${result.id} provider=${provider} tokenLen=${token.length} transaction=${String(isDefined(tx))}`,
         (error, provider, token, tx) =>
-            `throw integration provider=${provider} tokenPreview="${token.slice(0, 4)}" tokenLen=${token.length} transaction=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+            `throw integration provider=${provider} tokenLen=${token.length} transaction=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async getOrCreateIntegration(provider: ExternalSourceEnum, token: string, tx?: DB): Promise<BankIntegrationEntityInterface> {
         const existingIntegration = await bankIntegrationRepository.findByProviderAndToken(provider, token, tx);
