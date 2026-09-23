@@ -53,7 +53,7 @@ const applyBuildSettings = (project, xcodeConfig, { targetName, bundleId, entitl
 
         settings.IPHONEOS_DEPLOYMENT_TARGET = deploymentTarget;
         settings.SWIFT_VERSION = '"5.0"';
-        settings.TARGETED_DEVICE_FAMILY = '"1"';
+        settings.TARGETED_DEVICE_FAMILY = '"1,2"';
         settings.CODE_SIGN_STYLE = 'Automatic';
         settings.SWIFT_OPTIMIZATION_LEVEL = configurations[key].name === 'Debug' ? '"-Onone"' : '"-O"';
         settings.CC = '""';

@@ -25,7 +25,17 @@ struct WidgetPalette {
     let colors: WidgetThemeColors?
 
     init(snapshot: WidgetSnapshot?, colorScheme: ColorScheme) {
-        colors = colorScheme == .dark ? snapshot?.palette.dark : snapshot?.palette.light
+        let isDark: Bool
+        switch snapshot?.theme {
+        case "LIGHT":
+            isDark = false
+        case "DARK":
+            isDark = true
+        default:
+            isDark = colorScheme == .dark
+        }
+
+        colors = isDark ? snapshot?.palette.dark : snapshot?.palette.light
     }
 
     var background: Color {

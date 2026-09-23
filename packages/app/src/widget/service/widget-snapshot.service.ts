@@ -3,7 +3,8 @@ import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, LanguageEnum, RUNWAY_WINDO
 import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { msg, plural } from '@lingui/core/macro';
-import { differenceInCalendarDays, startOfMonth } from 'date-fns';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { startOfMonth } from 'date-fns/startOfMonth';
 import * as BackgroundTask from 'expo-background-task';
 import Constants from 'expo-constants';
 import * as TaskManager from 'expo-task-manager';
@@ -30,6 +31,7 @@ import { languageToLocale } from '../../i18n/util/language-to-locale.util';
 import { RUNWAY_MINIMUM_MONTHS } from '../../runway/constant/runway-minimum-months.constant';
 import { computeRunway } from '../../runway/utils/compute-runway.util';
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
+import { DEFAULT_SETTINGS } from '../../settings/constants/default-settings.constant';
 import { dark, light } from '../../theme/provider/theme.provider';
 import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant';
 import { WidgetDeltaDirectionEnum } from '../enum/widget-delta-direction.enum';
@@ -87,7 +89,13 @@ class WidgetSnapshotService {
 
     @Log('enter', result => `done isPublished=${result}`, error => `throw error=${getErrorMessage(error)}`)
     async publish(): Promise<boolean> {
-        if (this.isDisabled() || this.isPublishing) {
+        if (this.isDisabled()) {
+            return false;
+        }
+
+        if (this.isPublishing) {
+            this.schedulePublish();
+
             return false;
         }
 
@@ -137,6 +145,7 @@ class WidgetSnapshotService {
             version: WidgetSnapshotService.SNAPSHOT_VERSION,
             generatedAtMs: Date.now(),
             locale: languageToLocale(language),
+            theme: settings?.theme ?? DEFAULT_SETTINGS.theme,
             strings: this.buildStrings(),
             palette: this.buildPalette(),
             netWorth: await this.buildNetWorth(instrument, language, decimalPlaces),
@@ -226,7 +235,7 @@ class WidgetSnapshotService {
     ): readonly WidgetAccountTypeTotalInterface[] {
         const totals = new Map<AccountTypeEnum, number>();
 
-        rows.filter(row => row.account.includeInNetWorth && row.account.isActive).forEach(row => {
+        rows.filter(row => row.account.includeInNetWorth).forEach(row => {
             totals.set(row.account.type, (totals.get(row.account.type) ?? 0) + convertFromMicroUnits(row.convertedBalance));
         });
 

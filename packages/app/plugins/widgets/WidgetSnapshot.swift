@@ -111,6 +111,7 @@ struct WidgetSnapshot: Codable {
     let version: Int
     let generatedAtMs: Double
     let locale: String
+    let theme: String?
     let strings: WidgetStrings
     let palette: WidgetPaletteData
     let netWorth: NetWorthSnapshot?
@@ -181,19 +182,6 @@ struct SnapshotProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<WidgetSnapshotEntry>) -> Void) {
-        let now = Date()
-        let snapshot = SnapshotStore.load()
-        let nextMidnight = Calendar.current.nextDate(
-            after: now,
-            matching: DateComponents(hour: 0, minute: 0),
-            matchingPolicy: .nextTime
-        ) ?? now.addingTimeInterval(3600)
-
-        completion(
-            Timeline(
-                entries: [WidgetSnapshotEntry(date: now, snapshot: snapshot), WidgetSnapshotEntry(date: nextMidnight, snapshot: snapshot)],
-                policy: .atEnd
-            )
-        )
+        completion(Timeline(entries: [WidgetSnapshotEntry(date: Date(), snapshot: SnapshotStore.load())], policy: .never))
     }
 }
