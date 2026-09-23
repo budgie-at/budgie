@@ -403,7 +403,6 @@ appId: ${APP_ID}
       direction: UP
       speed: 20
       centerElement: true
-      optional: true
 - assertNotVisible:
       id: 'RunwayPill'
 
