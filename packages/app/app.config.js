@@ -148,7 +148,7 @@ export default ({ config }) => ({
                         name: 'QuickAdd',
                         displayName: 'Quick add',
                         description: 'Expense, income and transfer in one tap.',
-                        ios: { supportedFamilies: ['systemSmall'] }
+                        ios: { supportedFamilies: ['systemMedium'] }
                     }
                 ]
             }

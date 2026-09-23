@@ -2569,7 +2569,6 @@ msgstr "У цій інтеграції ще немає рахунків"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
-#: src/widget/service/widget-snapshot.service.ts
 msgid "No accounts yet"
 msgstr "Ще немає рахунків"
 
@@ -2824,6 +2823,10 @@ msgstr "Можна конвертувати лише доходи з одним 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
 msgstr "Відкрийте Binance, щоб отримати API-ключ"
+
+#: src/widget/service/widget-snapshot.service.ts
+msgid "Open Budgie to see your finances"
+msgstr "Відкрийте Budgie, щоб побачити свої фінанси"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"

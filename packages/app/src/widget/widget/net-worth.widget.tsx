@@ -14,7 +14,6 @@ import { createWidget, type WidgetEnvironment } from 'expo-widgets';
 import { WidgetNameEnum } from '../enum/widget-name.enum';
 
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
-import type { WidgetPaletteInterface } from '../interface/widget-palette.interface';
 import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-snapshot.interface';
 import type { WidgetSnapshotStringsInterface } from '../interface/widget-snapshot-strings.interface';
 
@@ -22,7 +21,6 @@ interface Props {
     readonly isEmpty: boolean;
     readonly netWorth: WidgetNetWorthSnapshotInterface;
     readonly runway: WidgetRunwaySnapshotInterface;
-    readonly palette: WidgetPaletteInterface;
     readonly strings: WidgetSnapshotStringsInterface;
     readonly homeUrl: string;
 }
@@ -30,31 +28,29 @@ interface Props {
 const NetWorth = (props: Props, environment: WidgetEnvironment) => {
     'widget';
 
-    const isDark = environment.colorScheme === 'dark';
-    const colors = isDark ? props.palette.dark : props.palette.light;
-    const deltaColor = isDark ? props.netWorth.deltaColorDark : props.netWorth.deltaColorLight;
-    const runwayColor = props.runway.isPositive ? colors.positive : colors.warning;
+    const backgroundColor = environment.colorScheme === 'dark' ? 'black' : 'white';
+    const runwayColor = props.runway.isPositive ? 'green' : 'orange';
     const runwaySymbol = props.runway.isPositive ? 'chart.line.uptrend.xyaxis' : 'chart.line.downtrend.xyaxis';
     const style = {
         container: [
-            containerBackground(colors.background, 'widget'),
+            containerBackground(backgroundColor, 'widget'),
             widgetURL(props.homeUrl),
             frame({ maxWidth: Infinity, maxHeight: Infinity, alignment: 'topLeading' })
         ],
-        caption: [font({ size: 13 }), foregroundStyle(colors.secondary)],
+        caption: [font({ size: 13 }), foregroundStyle('secondary')],
         total: [
             font({ size: 22, weight: 'semibold' }),
-            foregroundStyle(colors.primary),
+            foregroundStyle('primary'),
             minimumScaleFactor(0.6),
             lineLimit(1),
             privacySensitive(true)
         ],
-        delta: [font({ size: 12 }), foregroundStyle(deltaColor)],
-        detail: [font({ size: 12 }), foregroundStyle(colors.secondary)],
+        delta: [font({ size: 12 }), foregroundStyle(props.netWorth.deltaColor)],
+        detail: [font({ size: 12 }), foregroundStyle('secondary')],
         sensitive: [privacySensitive(true)],
         runway: [font({ size: 12, weight: 'medium' }), foregroundStyle(runwayColor), minimumScaleFactor(0.6), lineLimit(1)],
-        rowLabel: [font({ size: 11 }), foregroundStyle(colors.secondary), lineLimit(1)],
-        rowValue: [font({ size: 11, weight: 'medium' }), foregroundStyle(colors.primary), lineLimit(1), privacySensitive(true)]
+        rowLabel: [font({ size: 11 }), foregroundStyle('secondary'), lineLimit(1)],
+        rowValue: [font({ size: 11, weight: 'medium' }), foregroundStyle('primary'), lineLimit(1), privacySensitive(true)]
     };
 
     if (props.isEmpty) {

@@ -16,13 +16,11 @@ import { createWidget, type WidgetEnvironment } from 'expo-widgets';
 import { WidgetNameEnum } from '../enum/widget-name.enum';
 
 import type { WidgetBudgetSnapshotInterface } from '../interface/widget-budget-snapshot.interface';
-import type { WidgetPaletteInterface } from '../interface/widget-palette.interface';
 import type { WidgetSnapshotStringsInterface } from '../interface/widget-snapshot-strings.interface';
 
 interface Props {
     readonly isEmpty: boolean;
     readonly budget: WidgetBudgetSnapshotInterface;
-    readonly palette: WidgetPaletteInterface;
     readonly strings: WidgetSnapshotStringsInterface;
     readonly budgetUrl: string;
 }
@@ -30,23 +28,23 @@ interface Props {
 const Budget = (props: Props, environment: WidgetEnvironment) => {
     'widget';
 
-    const colors = environment.colorScheme === 'dark' ? props.palette.dark : props.palette.light;
-    const accent = props.budget.isOverLimit ? colors.destructive : colors.primary;
+    const backgroundColor = environment.colorScheme === 'dark' ? 'black' : 'white';
+    const accent = props.budget.isOverLimit ? 'red' : 'primary';
     const suffix = props.budget.isOverLimit ? props.strings.over : props.strings.left;
-    const emphasis = [foregroundStyle(colors.primary), minimumScaleFactor(0.5), lineLimit(1), privacySensitive(true)];
+    const emphasis = [foregroundStyle('primary'), minimumScaleFactor(0.5), lineLimit(1), privacySensitive(true)];
     const style = {
         container: [
-            containerBackground(colors.background, 'widget'),
+            containerBackground(backgroundColor, 'widget'),
             widgetURL(props.budgetUrl),
             frame({ maxWidth: Infinity, maxHeight: Infinity, alignment: 'topLeading' })
         ],
-        caption: [font({ size: 13 }), foregroundStyle(colors.secondary)],
+        caption: [font({ size: 13 }), foregroundStyle('secondary')],
         remaining: [font({ size: 13, weight: 'semibold' }), ...emphasis],
         amounts: [font({ size: 19, weight: 'semibold' }), ...emphasis],
-        detail: [font({ size: 11 }), foregroundStyle(colors.secondary), privacySensitive(true)],
-        plain: [font({ size: 11 }), foregroundStyle(colors.secondary)],
-        pace: [font({ size: 11 }), foregroundStyle(colors.secondary), lineLimit(1), minimumScaleFactor(0.6), privacySensitive(true)],
-        rowLabel: [font({ size: 12 }), foregroundStyle(colors.secondary), lineLimit(1)],
+        detail: [font({ size: 11 }), foregroundStyle('secondary'), privacySensitive(true)],
+        plain: [font({ size: 11 }), foregroundStyle('secondary')],
+        pace: [font({ size: 11 }), foregroundStyle('secondary'), lineLimit(1), minimumScaleFactor(0.6), privacySensitive(true)],
+        rowLabel: [font({ size: 12 }), foregroundStyle('secondary'), lineLimit(1)],
         percent: [font({ size: 12, weight: 'semibold' }), foregroundStyle(accent)],
         ringSmall: [frame({ width: 52, height: 52 })],
         ringMedium: [frame({ width: 48, height: 48 })],
@@ -62,16 +60,15 @@ const Budget = (props: Props, environment: WidgetEnvironment) => {
     }
 
     const ratio = Math.min(Math.max(props.budget.progressRatio, 0), 1);
-    const percent = `${Math.round(props.budget.progressRatio * 100)}%`;
     const categoryRows = props.budget.categories.map(category => ({
         title: category.title,
-        percent: `${Math.round(category.progressRatio * 100)}%`,
-        modifiers: [font({ size: 12, weight: 'medium' }), foregroundStyle(category.isOverLimit ? colors.destructive : colors.primary)]
+        percent: category.formattedProgress,
+        modifiers: [font({ size: 12, weight: 'medium' }), foregroundStyle(category.isOverLimit ? 'red' : 'primary')]
     }));
     const ring = (
         <ZStack>
             <Gauge value={ratio} min={0} max={1} modifiers={style.gauge} />
-            <Text modifiers={style.percent}>{percent}</Text>
+            <Text modifiers={style.percent}>{props.budget.formattedProgress}</Text>
         </ZStack>
     );
 
