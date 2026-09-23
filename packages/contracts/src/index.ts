@@ -326,6 +326,7 @@ export type { ExistingTransferChainReclaimCandidateInterface } from './transacti
 export type { BridgeClaimRepairCandidateInterface } from './transaction/interface/bridge-claim-repair-candidate.interface';
 export type { ExistingTransferIncomeDuplicateCandidateInterface } from './transaction/interface/existing-transfer-income-duplicate-candidate.interface';
 export type { IbanBridgeCanonicalDuplicateCandidateInterface } from './transaction/interface/iban-bridge-canonical-duplicate-candidate.interface';
+export type { IbanBridgeCanonicalSupersessionCandidateInterface } from './transaction/interface/iban-bridge-canonical-supersession-candidate.interface';
 export type { IbanBridgeChainTransferCandidateInterface } from './transaction/interface/iban-bridge-chain-transfer-candidate.interface';
 export type { IbanBridgeTransferCandidateInterface } from './transaction/interface/iban-bridge-transfer-candidate.interface';
 export type { RefundAutoConfidenceBucket } from './transaction/interface/refund-auto-confidence-bucket.type';

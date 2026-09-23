@@ -2351,10 +2351,6 @@ msgstr "Una alternativa más ligera propone etiquetas a partir de una búsqueda 
 msgid "A limit per category"
 msgstr "Un límite por categoría"
 
-#: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "A loan made in another currency is worth what it was worth on the day it was made, not what today's rate says. Budgie stores the exchange rate used for a debt's target balance along with the converted amount, looking up the rate for the operation date — or the closest earlier one it has — and bridging through your base currency when there is no direct pair."
-msgstr "Un préstamo hecho en otra divisa vale lo que valía el día en que se concedió, no lo que diga el tipo de cambio de hoy. Budgie guarda el tipo de cambio usado para el saldo objetivo de una deuda junto con el importe convertido, buscando la tasa de la fecha de la operación — o la más cercana anterior que tenga — y pasando por tu divisa base cuando no hay un par directo."
-
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "A lot shipped between August and September 2026 with zero announcement. Here is what changed, grouped by area, with no marketing gloss — just what the app does differently today."
 msgstr "Entre agosto y septiembre de 2026 se publicó mucho sin ningún anuncio. Esto es lo que cambió, agrupado por área, sin barniz de marketing: solo lo que la app hace diferente hoy."
@@ -3256,8 +3252,8 @@ msgid "Attach a repayment you already recorded"
 msgstr "Vincula un pago que ya registraste"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Attach an existing income or expense to a debt as a settlement, without inventing a second transaction"
-msgstr "Vincula un ingreso o gasto ya existente a una deuda como liquidación, sin inventar una segunda transacción"
+msgid "Attach an existing income or expense to a debt as a repayment, without inventing a second transaction"
+msgstr "Vincula un ingreso o gasto ya existente a una deuda como reembolso, sin inventar una segunda transacción"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Attach to a debt"
@@ -4710,8 +4706,8 @@ msgid "Budgie Terms of Service - Read our terms and conditions for using our pri
 msgstr "Budgie Terms of Service - Condiciones para usar Budgie, la app privada de seguimiento de gastos"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Budgie tracks money you owe and money owed to you as first-class accounts, with a direction, a due date and a running balance."
-msgstr "Budgie registra el dinero que debes y el que te deben como cuentas de pleno derecho, con dirección, fecha de vencimiento y saldo actual."
+msgid "Budgie tracks money you owe and money owed to you as first-class accounts, with a direction, a due date and a running balance — and every euro that moves is a real expense or income, filed under Lending or Borrowing."
+msgstr "Budgie registra el dinero que debes y el que te deben como cuentas de primera clase, con una dirección, una fecha límite y un saldo continuo, y cada euro que se mueve es un gasto o ingreso real, clasificado como Préstamo o Endeudamiento."
 
 #: src/app/[lang]/features/date-filter-presets/page.tsx
 msgid "Budgie transaction list filtered to Last Month, showing the active chip and 73 matching transactions"
@@ -6143,10 +6139,6 @@ msgstr "Búsqueda manual entre cuentas: encuentra gastos en la misma moneda aunq
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Cross-currency conversion supported — dual-amount input after destination pick"
 msgstr "Conversión entre divisas compatible: entrada de importe doble tras seleccionar el destino"
-
-#: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Cross-currency debts valued at the right moment"
-msgstr "Deudas en divisas cruzadas valoradas en el momento correcto"
 
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Cross-currency dual-amount display: pin send or receive, system computes the other"
@@ -8875,6 +8867,10 @@ msgstr "Cómo tus datos permanecen en tu dispositivo"
 msgid "How Your PIN Protects Your Data"
 msgstr "Cómo tu PIN protege tus datos"
 
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "I already had debts before this change — do I need to redo anything?"
+msgstr "Ya tenía deudas registradas antes de este cambio: ¿tengo que rehacer algo?"
+
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "I found recurring subscriptions I had completely forgotten about. Cancelled them straight away, and those small amounts really add up."
 msgstr "Encontré suscripciones recurrentes que había olvidado por completo. Las cancelé al momento, y esas pequeñas cantidades suman de verdad."
@@ -9548,6 +9544,10 @@ msgid "Legal Assessment"
 msgstr "Evaluacion legal"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Lending and repayments are categorized Lending or Borrowing automatically, and count toward your monthly spending and income"
+msgstr "Los préstamos y reembolsos se categorizan automáticamente como Préstamo o Endeudamiento, y cuentan en tus gastos e ingresos mensuales"
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Lent or borrowed"
 msgstr "Prestado o tomado en préstamo"
 
@@ -9834,10 +9834,6 @@ msgstr ""
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Major features are discussed in public GitHub issues before implementation"
 msgstr "Las funciones principales se discuten en issues públicos de GitHub antes de la implementación"
-
-#: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Make a transfer between the debt account and a real cash/bank account. The debt balance hits zero; archive the account if you want it off the home screen."
-msgstr "Realiza una transferencia entre la cuenta de deuda y una cuenta real de efectivo/banco. El saldo de la deuda llega a cero; archiva la cuenta si ya no la necesitas."
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Make your changes with clear, descriptive commit messages"
@@ -10604,8 +10600,8 @@ msgid "Net worth and account balances answer a different question from spending 
 msgstr ""
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Net worth respects debt direction: liabilities reduce, receivables increase. Settling the debt is just a transfer to or from the debt account; balance hits zero, you can archive."
-msgstr "El patrimonio neto respeta la dirección de la deuda: los pasivos reducen, los créditos aumentan. Liquidar la deuda es solo una transferencia hacia o desde la cuenta de deuda."
+msgid "Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the debt account itself. Lending money books an expense; a repayment books an income — both on the account the money actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against repaid, until you archive it."
+msgstr "El patrimonio neto respeta la dirección de la deuda: los pasivos la reducen, las cuentas por cobrar la aumentan. Pero ninguna transacción toca nunca la cuenta de deuda en sí. Prestar dinero registra un gasto; un reembolso registra un ingreso, ambos en la cuenta por la que realmente pasó el dinero, ambos bajo Préstamo o Endeudamiento. La cuenta de deuda solo lleva el marcador: pendiente frente a lo devuelto, hasta que la archives."
 
 #: src/generic/util/build-landing-json-ld.util.ts
 msgid "Net worth tracker"
@@ -10938,8 +10934,8 @@ msgid "No. An adjustment is reconciliation, not cash flow. Budgie deliberately e
 msgstr "No. Un ajuste es conciliación, no flujo de caja. Budgie excluye los ajustes a propósito del cotejo de reglas, así que corregir un saldo nunca contamina una regla que escribiste para ingresos o gastos reales."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "No. Attach the income that already arrived to the debt and it counts as a settlement against that debt account. The transaction itself is untouched."
-msgstr "No. Vincula el ingreso que ya llegó a la deuda y cuenta como una liquidación contra esa cuenta de deuda. La transacción en sí no se toca."
+msgid "No. Attach the income that already arrived to the debt. Budgie categorizes it Lending automatically, moves the debt's remaining balance, and the transaction stays exactly where your bank put it — still counted as income."
+msgstr "No. Vincula el ingreso que ya llegó a la deuda. Budgie lo categoriza automáticamente como Préstamo, actualiza el saldo pendiente de la deuda, y la transacción permanece exactamente donde tu banco la puso, sigue contando como ingreso."
 
 #: src/app/[lang]/security/page.tsx
 msgid "No. Because Budgie stores all data locally and has no backend that receives financial information, there is no server to breach. The entire attack surface is limited to your device."
@@ -10972,6 +10968,10 @@ msgstr "No. Todo esto llega con la actualización habitual de la aplicación. Ru
 #: src/app/[lang]/features/ai-auto-categorization/page.tsx
 msgid "No. Everything is worked out on your own device. There is no cloud fallback and no telemetry about your transactions."
 msgstr "No. Todo se resuelve en tu propio dispositivo. No hay alternativa en la nube ni telemetría sobre tus transacciones."
+
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "No. Existing debts migrate automatically the first time you open the updated app, and are recategorized as Lending or Borrowing without any prompts."
+msgstr "No. Las deudas existentes se migran automáticamente la primera vez que abres la app actualizada, y se recategorizan como Préstamo o Endeudamiento sin preguntas."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "No. Exports are manual only — Budgie never writes a backup file on its own, and there is no scheduler and no reminder to turn on. Nothing is written until you tap Export Database."
@@ -13005,6 +13005,10 @@ msgstr "conciliar"
 msgid "Reconcile without fake income."
 msgstr "Concilia sin ingresos ficticios."
 
+#: src/app/[lang]/features/debt-tracking/page.tsx
+msgid "Record or attach the repayment as a normal income or expense — Budgie categorizes it Lending or Borrowing and moves the remaining balance. No transfer ever touches the debt account itself; archive it once it's repaid."
+msgstr "Registra o vincula el reembolso como un ingreso o gasto normal: Budgie lo categoriza como Préstamo o Endeudamiento y actualiza el saldo pendiente. Ninguna transferencia toca nunca la cuenta de deuda en sí; archívala una vez pagada."
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Recreate your category structure (often an opportunity to simplify)"
 msgstr "Recrea tu estructura de categorías (a menudo una oportunidad para simplificar)"
@@ -13124,8 +13128,8 @@ msgid "repair"
 msgstr "reparación"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long before you think about the debt. Instead of deleting it and re-entering a transfer, attach that transaction to the debt: it is recorded as a settlement against the debt account and the balance moves accordingly, while the original transaction stays exactly where your bank put it."
-msgstr "Los pagos casi nunca llegan etiquetados. Un amigo te devuelve dinero y aparece en tu cuenta como un ingreso normal mucho antes de que pienses en la deuda. En lugar de eliminarlo y volver a introducir una transferencia, vincula esa transacción a la deuda: se registra como una liquidación contra la cuenta de deuda y el saldo se ajusta en consecuencia, mientras que la transacción original se queda exactamente donde tu banco la puso."
+msgid "Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long before you think about the debt. Attach that transaction to the debt instead of re-entering it: Budgie files it under Lending or Borrowing and moves the debt's remaining balance, while it stays exactly where your bank put it and keeps counting as income."
+msgstr "Los reembolsos rara vez llegan etiquetados. Un amigo te devuelve dinero y aterriza en tu cuenta como ingreso normal mucho antes de que pienses en la deuda. Vincula esa transacción a la deuda en lugar de volver a introducirla: Budgie la clasifica como Préstamo o Endeudamiento y actualiza el saldo pendiente de la deuda, mientras permanece exactamente donde tu banco la puso y sigue contando como ingreso."
 
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Repeat rows are matched on the bank's transaction id, not inserted again"
@@ -13718,10 +13722,6 @@ msgstr "La configuración tiene los dos exportes como filas normales, cada una j
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Settings keeps Export Database and Import Database as two neighbouring rows. Between them they do everything a hosted account would have done."
 msgstr "Ajustes mantiene «Exportar base de datos» e «Importar base de datos» como dos filas vecinas. Entre las dos hacen todo lo que habría hecho una cuenta alojada."
-
-#: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Settle by transfer to a real account — no awkward \"expense\" workarounds"
-msgstr "Liquidar mediante transferencia a una cuenta real: sin la necesidad de crear «gastos» artificiales"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Setup asks for one credential and spells out how to scope it — for Binance, an API key and secret with reading enabled and trading and withdrawals switched off. Budgie stores it on the bank, not on an account, and fetches whatever that key can see."
@@ -15974,8 +15974,8 @@ msgid "Track in any currency. Sum in yours. Daily FX-rate refresh keeps the math
 msgstr "Registra en cualquier divisa. Resume en la tuya. La actualización diaria de tipos de cambio mantiene los cálculos correctos."
 
 #: src/app/[lang]/features/debt-tracking/metadata.ts
-msgid "Track money lent to friends or borrowed from others as first-class debt accounts with explicit direction, target balances, return dates, and contact links. Attach a repayment you already recorded, and value cross-currency debts at the historical rate."
-msgstr "Rastrea el dinero prestado a amigos o tomado prestado de otros como cuentas de deuda de primera clase, con dirección explícita, saldos objetivo, fechas de devolución y enlaces a contactos. Vincula un pago que ya registraste, y valora las deudas en divisas cruzadas al tipo de cambio histórico."
+msgid "Track money lent or borrowed as first-class debt accounts. Lending and repayments book real income or expense, so they count in your monthly analytics."
+msgstr "Registra el dinero prestado o pedido como cuentas de deuda de primera clase. Los préstamos y reembolsos generan ingresos o gastos reales, por lo que cuentan en tus estadísticas mensuales."
 
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Track unlimited bank accounts, cash wallets, deposits, crypto, and debt — grouped, colored, archived, and renamed however you want."
@@ -17194,8 +17194,8 @@ msgid "When a merchant refunds a purchase, the money reappears on your card as a
 msgstr "Cuando un comercio reembolsa una compra, el dinero reaparece en tu tarjeta como una transacción positiva. La mayoría de apps de gastos lo registran como ingreso, algo técnicamente correcto para el flujo de caja pero engañoso para analizar ingresos reales."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "When a repayment lands as ordinary income, open the transaction and pick the debt it belongs to. Budgie lists your debt accounts so you can attach it instead of recording a second transaction."
-msgstr "Cuando un pago llega como ingreso ordinario, abre la transacción y elige la deuda a la que pertenece. Budgie lista tus cuentas de deuda para que la vincules en lugar de registrar una segunda transacción."
+msgid "When a repayment lands as ordinary income, open the transaction and pick the debt it belongs to. Budgie files it under Lending or Borrowing and moves the debt's remaining balance, instead of you recording a second transaction."
+msgstr "Cuando un reembolso llega como ingreso normal, abre la transacción y elige la deuda a la que pertenece. Budgie la clasifica como Préstamo o Endeudamiento y actualiza el saldo pendiente de la deuda, en lugar de que tengas que registrar una segunda transacción."
 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "When both agree, the suggestion chips appear immediately. When they diverge, the recurring pattern wins for amount and category while the history match adds tag and comment hints. Every accepted or corrected suggestion is taken into account, so the next similar entry lands even closer."

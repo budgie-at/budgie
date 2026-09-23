@@ -13,9 +13,12 @@ permissions:
 jobs:
     build:
         name: AI capture build
+        # A reusable workflow can only narrow the token it is given; see pr.yml.
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.23.1 # v1.23.1
+            packages: write
+            actions: read
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.0.2 # v3.0.2
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -32,15 +35,29 @@ jobs:
             flow-retries: '1'
             maestro-version: '2.8.0'
             simulator-device: iPhone 17 Pro
-            simulator-slim-profile: tests/app-tests/simslim.ci.json
-            simulator-slim-repair: 'true'
             simulator-requires: push,universal-links
             build-timeout-minutes: 120
             test-timeout-minutes: 20
-            cache-profile: ios-e2e-ai-budgie-v1
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
             build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
             expo-use-precompiled-modules: true
+            # This lane builds the AI-enabled app, so its native surface differs
+            # from every other lane: app.config.js only adds the llama.rn and
+            # react-native-audio-api config plugins when EXPO_PUBLIC_AI_DISABLE
+            # is unset. fingerprint-env therefore mirrors this job's own
+            # build-env and nothing else, giving this lane its own native key -
+            # sharing the e2e lanes' fingerprint-env would repack the
+            # AI-disabled base and test an app with no AI native code at all.
+            fingerprint-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            repack-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            expect-config: |
+                extra.appVariant=e2e
+                extra.aiEnabled=true
+                extra.loggingEnabled=false

@@ -133,16 +133,17 @@ npx serve-sim --kill
 # Terminate your app
 xcrun simctl terminate booted com.acme.MyApp
 
-# (Optional) erase the simulator entirely — destroys app data
+# (Optional) erase the simulator entirely — destroys app data and the slim overrides
 # xcrun simctl shutdown booted
 # xcrun simctl erase booted
 # xcrun simctl boot <UDID>
+# . tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <UDID>
 
 # Restart serve-sim
 npx serve-sim --detach -q
 ```
 
-The full erase is destructive — only do it when the user explicitly asks.
+The full erase is destructive — only do it when the user explicitly asks. An erase also drops the simulator's slim overrides, so re-slim before driving it again; `scripts/ensure-running.sh` does that for you. Why every simulator runs slim: root `AGENTS.md`, "Simulator Dev Testing".
 
 ## Workflow 6: Drive a multi-step gesture reliably
 

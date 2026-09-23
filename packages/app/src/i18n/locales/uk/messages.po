@@ -477,11 +477,6 @@ msgstr "Вже синхронізується"
 msgid "Amount"
 msgstr "Сума"
 
-#: src/app/(main)/create-transaction/transfer.tsx
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
-msgid "Amount exceeds debt account balance"
-msgstr "Сума перевищує баланс боргового рахунку"
-
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "Amount first. Budgie picks the account and guesses the category."
 msgstr "Спочатку сума. Budgie обере рахунок і вгадає категорію."
@@ -1445,6 +1440,10 @@ msgstr "Борговий рахунок не може збігатися з ра
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account not found"
 msgstr "Борговий рахунок не знайдено"
+
+#: src/transaction/utils/assert-transfer-accounts-are-not-debt.util.ts
+msgid "Debt accounts cannot take part in transfers"
+msgstr "Боргові рахунки не можуть брати участь у переказах"
 
 #: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Debts & loans"
@@ -2822,6 +2821,10 @@ msgstr "Відкрити налаштування"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
 msgstr "Оператор"
+
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+msgid "Optional — without it the amount stays manual"
+msgstr "Необов’язково — без нього сума залишається ручною"
 
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"

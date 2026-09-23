@@ -1,9 +1,29 @@
-name: Seed iOS native app cache
+name: Warm the iOS e2e base binary
+
+# The warm-up. From mobile-ci v3 a pull request never compiles native code when
+# a base binary exists for its native key: it fetches the base, repacks this
+# commit's JavaScript into it on Linux, and hands the result to Maestro. A base
+# is only ever published from the default branch, so this workflow is what makes
+# the very next pull request cheap. It plans on Linux first - a push that moved
+# no native surface finds every key already published and claims no Mac at all.
 
 on:
     workflow_dispatch:
+        inputs:
+            force-base:
+                description: Rebuild and re-publish the base even when its native key already has one (a rotated compiled-in secret, or a native change inside an ignored path).
+                type: boolean
+                default: false
     push:
         branches: [main]
+        paths:
+            - 'packages/app/**'
+            - 'packages/*/package.json'
+            - 'package.json'
+            - 'pnpm-lock.yaml'
+            - 'pnpm-workspace.yaml'
+            - 'patches/**'
+            - '.github/workflows/ios-native-cache.yml'
     schedule:
         - cron: '0 3 * * *'
 
@@ -16,10 +36,16 @@ permissions:
 
 jobs:
     seed:
-        name: Seed native cache
+        name: Warm the base binary
+        # A reusable workflow can only narrow the token it is given, and this
+        # repository's default workflow token permission is read. Without
+        # packages: write the run plans fine, builds fine, and fails at publish -
+        # leaving every pull request compiling natively.
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@v1.23.1 # v1.23.1
+            packages: write
+            actions: read
+        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@v3.0.2 # v3.0.2
         with:
             ios-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             ios-targets: >-
@@ -27,7 +53,16 @@ jobs:
                 "prebuildCommand":"npx expo prebuild -p ios --clean --no-install"}]
             android-targets: '[]'
             ios-cache-profile: ios-e2e-budgie-v2
+            publish-base: true
+            force-base: ${{ inputs.force-base || false }}
             build-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            # Byte-identical to pr.yml, media-smoke.yml and store-screenshots.yml.
+            # These two blocks are two halves of one address: a single differing
+            # byte publishes a base under a key no pull request ever looks up.
+            fingerprint-env: |
                 APP_VARIANT=e2e
                 EXPO_PUBLIC_AI_DISABLE=true
                 EXPO_PUBLIC_LOGGING_DISABLE=true

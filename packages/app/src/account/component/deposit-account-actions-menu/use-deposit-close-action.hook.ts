@@ -1,3 +1,4 @@
+import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -39,7 +40,10 @@ export const useDepositCloseAction = (accountId: number, balance: number, instru
         setIsLoading(true);
 
         try {
-            const destinationAccountId = await openAccountSelector({ excludeAccountId: accountId });
+            const destinationAccountId = await openAccountSelector({
+                excludeAccountId: accountId,
+                excludeAccountTypes: [AccountTypeEnum.DEBT]
+            });
 
             if (!isDefined(destinationAccountId)) {
                 return;

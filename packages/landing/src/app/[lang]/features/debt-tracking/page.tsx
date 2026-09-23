@@ -84,7 +84,7 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 <FeatureStory.Intro heading={<Trans>Loans between people are accounts too</Trans>}>
                     <Trans>
                         Budgie tracks money you owe and money owed to you as first-class accounts, with a direction, a due date and a
-                        running balance.
+                        running balance — and every euro that moves is a real expense or income, filed under Lending or Borrowing.
                     </Trans>
                 </FeatureStory.Intro>
 
@@ -137,8 +137,9 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Step index={2} title={<Trans>Attach a repayment you already logged</Trans>}>
                     <Trans>
-                        When a repayment lands as ordinary income, open the transaction and pick the debt it belongs to. Budgie lists your
-                        debt accounts so you can attach it instead of recording a second transaction.
+                        When a repayment lands as ordinary income, open the transaction and pick the debt it belongs to. Budgie files it
+                        under Lending or Borrowing and moves the debt&apos;s remaining balance, instead of you recording a second
+                        transaction.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -169,8 +170,10 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Net worth respects debt direction: liabilities reduce, receivables increase. Settling the debt is just a transfer to
-                        or from the debt account; balance hits zero, you can archive.
+                        Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the
+                        debt account itself. Lending money books an expense; a repayment books an income — both on the account the money
+                        actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against
+                        repaid, until you archive it.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -190,15 +193,16 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         <Trans>Target balance and return date for closing the loop</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Settle by transfer to a real account — no awkward &quot;expense&quot; workarounds</Trans>
+                        <Trans>
+                            Lending and repayments are categorized Lending or Borrowing automatically, and count toward your monthly
+                            spending and income
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
                         <Trans>Archive when settled — debt drops off the home screen but stays in history</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
-                        <Trans>
-                            Attach an existing income or expense to a debt as a settlement, without inventing a second transaction
-                        </Trans>
+                        <Trans>Attach an existing income or expense to a debt as a repayment, without inventing a second transaction</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={6}>
                         <Trans>Debts in another currency are valued with the exchange rate from the day the money actually moved</Trans>
@@ -213,23 +217,9 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 <FeaturePageProse>
                     <Trans>
                         Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long
-                        before you think about the debt. Instead of deleting it and re-entering a transfer, attach that transaction to the
-                        debt: it is recorded as a settlement against the debt account and the balance moves accordingly, while the original
-                        transaction stays exactly where your bank put it.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Cross-currency debts valued at the right moment</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        A loan made in another currency is worth what it was worth on the day it was made, not what today&apos;s rate says.
-                        Budgie stores the exchange rate used for a debt&apos;s target balance along with the converted amount, looking up
-                        the rate for the operation date — or the closest earlier one it has — and bridging through your base currency when
-                        there is no direct pair.
+                        before you think about the debt. Attach that transaction to the debt instead of re-entering it: Budgie files it
+                        under Lending or Borrowing and moves the debt&apos;s remaining balance, while it stays exactly where your bank put
+                        it and keeps counting as income.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -257,8 +247,8 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     question={<Trans>How do I settle a debt?</Trans>}
                     answer={
                         <Trans>
-                            Make a transfer between the debt account and a real cash/bank account. The debt balance hits zero; archive the
-                            account if you want it off the home screen.
+                            Record or attach the repayment as a normal income or expense — Budgie categorizes it Lending or Borrowing and
+                            moves the remaining balance. No transfer ever touches the debt account itself; archive it once it&apos;s repaid.
                         </Trans>
                     }
                 />
@@ -266,8 +256,9 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     question={<Trans>My friend repaid me by bank transfer — do I have to re-enter it?</Trans>}
                     answer={
                         <Trans>
-                            No. Attach the income that already arrived to the debt and it counts as a settlement against that debt account.
-                            The transaction itself is untouched.
+                            No. Attach the income that already arrived to the debt. Budgie categorizes it Lending automatically, moves the
+                            debt&apos;s remaining balance, and the transaction stays exactly where your bank put it — still counted as
+                            income.
                         </Trans>
                     }
                 />
@@ -286,6 +277,15 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         <Trans>
                             Currently it&apos;s informational — surfaced in the account detail and recurring view. Push reminders are on the
                             roadmap.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>I already had debts before this change — do I need to redo anything?</Trans>}
+                    answer={
+                        <Trans>
+                            No. Existing debts migrate automatically the first time you open the updated app, and are recategorized as
+                            Lending or Borrowing without any prompts.
                         </Trans>
                     }
                 />

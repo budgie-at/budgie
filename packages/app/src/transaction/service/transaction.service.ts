@@ -1,7 +1,6 @@
 /* eslint-disable max-lines -- approved by liaugust: one transaction service; merging main's deposit-safety guards pushed it past 500 */
 import {
     type AccountEntityInterface,
-    AccountTypeEnum,
     type DB,
     ExternalSourceEnum,
     type TransactionCreateInputInterface,
@@ -36,6 +35,7 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
+import { assertTransferAccountsAreNotDebt } from '../utils/assert-transfer-accounts-are-not-debt.util';
 import { buildAdditionalTransferEntries } from '../utils/build-additional-transfer-entries.util';
 import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
@@ -504,28 +504,11 @@ class TransactionService {
             toAccount,
             fromAmountInMicroUnits
         );
-        const isDebtTransaction = toAccount.type === AccountTypeEnum.DEBT || fromAccount.type === AccountTypeEnum.DEBT;
-        const transaction = await transactionRepository.create(
-            {
-                ...input,
-                exchangeRate,
-                externalId: null,
-                externalSource: null,
-                type: isDebtTransaction ? TransactionTypeEnum.DEBT : input.type
-            },
-            tx
-        );
-        const createdEntries = await this.createTransferEntries(
-            transaction,
-            input,
-            { fromEntry, toEntry, fromAmountInMicroUnits, toAmount },
-            tx
-        );
+        assertTransferAccountsAreNotDebt([fromAccount, toAccount]);
 
-        if (isDebtTransaction) {
-            await transactionDebtSettlementService.createFromTransfer(transaction, createdEntries, [fromAccount, toAccount], tx);
-        }
+        const transaction = await transactionRepository.create({ ...input, exchangeRate, externalId: null, externalSource: null }, tx);
 
+        await this.createTransferEntries(transaction, input, { fromEntry, toEntry, fromAmountInMicroUnits, toAmount }, tx);
         await this.finalizeInternalTransfer(input, transaction.id, tx);
 
         return transaction;

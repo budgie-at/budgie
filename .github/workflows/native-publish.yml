@@ -47,7 +47,7 @@ jobs:
     needs: assert-ai
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@v1.23.1 # v1.23.1
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@v3.0.2 # v3.0.2
     with:
       enable-ios: true
       enable-android: false
@@ -74,6 +74,7 @@ jobs:
       ios-post-submit-command: |
         export PATH="$HOME/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
         export EXPO_ASC_API_KEY_PATH="$PWD/asc_api_key.p8"
+        pnpm store:notes -- --check
         fastlane ios ios_metadata
         if [ "$PUSH_SCREENSHOTS" = 'true' ]; then
           fastlane ios ios_screenshots
@@ -84,6 +85,7 @@ jobs:
       android-post-submit-command: |
         export PATH="$HOME/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
         export GOOGLE_SERVICE_ACCOUNT_KEY_PATH="$PWD/google-service-account.json"
+        pnpm store:notes -- --check
         fastlane android android_metadata
         if [ "$PUSH_SCREENSHOTS" = 'true' ]; then
           fastlane android android_screenshots

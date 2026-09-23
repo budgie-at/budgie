@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.74.0](https://github.com/budgie-at/budgie/compare/v6.73.1...v6.74.0) (2026-09-22)
+
+
+### Bug Fixes
+
+* **consolidation:** scope and tighten stale bridge canonical supersession ([41eb80f](https://github.com/budgie-at/budgie/commit/41eb80f91810fcb927f8dca282d63624b548c50e))
+* **consolidation:** supersede stale bridge canonicals ([85420c0](https://github.com/budgie-at/budgie/commit/85420c0289f6731c2622d923041edfd84d4c9475))
+
+
+
+
+
+# [6.72.0](https://github.com/budgie-at/budgie/compare/v6.71.2...v6.72.0) (2026-09-21)
+
+
+### Features
+
+* **contracts:** add an opening debt event source and a live debt ledger query ([2de77b0](https://github.com/budgie-at/budgie/commit/2de77b09488d145055e186ac885a4bb351072c8c))
+
+
+
+
+
 # [6.71.0](https://github.com/budgie-at/budgie/compare/v6.70.0...v6.71.0) (2026-09-17)
 
 

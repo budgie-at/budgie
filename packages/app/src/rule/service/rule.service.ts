@@ -1,9 +1,10 @@
-import { transactionAsync } from '@budgie/contracts';
+import { RuleActionTypeEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { db, ruleActionRepository, ruleConditionRepository, ruleRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, db, ruleActionRepository, ruleConditionRepository, ruleRepository } from '../../@generic/drizzle/db/db';
+import { assertTransferAccountsAreNotDebt } from '../../transaction/utils/assert-transfer-accounts-are-not-debt.util';
 
 import type { DB, RuleCreateInputInterface, RuleEntityInterface, RuleUpdateInputInterface } from '@budgie/contracts';
 
@@ -32,6 +33,8 @@ class RuleService {
     )
     async create(input: RuleCreateInputInterface): Promise<RuleEntityInterface> {
         return transactionAsync(db, async tx => {
+            await this.assertTransferActionsAreNotDebt(input.actions, tx);
+
             const createdRule = await ruleRepository.create(
                 {
                     enabled: input.enabled,
@@ -109,10 +112,22 @@ class RuleService {
         }
     }
 
+    private async assertTransferActionsAreNotDebt(actions: RuleCreateInputInterface['actions'], tx: DB): Promise<void> {
+        const accountIds = actions
+            .filter(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER)
+            .map(action => action.accountId)
+            .filter(isDefined);
+        const accounts = await Promise.all(accountIds.map(async accountId => accountRepository.findById(accountId, tx)));
+
+        assertTransferAccountsAreNotDebt(accounts.filter(isDefined));
+    }
+
     private async syncRuleActions(id: number, actions: RuleUpdateInputInterface['actions'], tx: DB): Promise<void> {
         if (!isDefined(actions)) {
             return;
         }
+
+        await this.assertTransferActionsAreNotDebt(actions, tx);
         await ruleActionRepository.deleteByRuleId(id, tx);
         if (isNotEmptyArray(actions)) {
             await ruleActionRepository.bulkCreate(
