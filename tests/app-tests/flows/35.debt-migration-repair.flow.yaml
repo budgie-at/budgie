@@ -85,3 +85,29 @@ appId: ${APP_ID}
       element:
           id: 'DebtAccountCardSummary.OutstandingAmount.USD_borrowed_debt.36934'
       direction: DOWN
+
+- scrollUntilVisible:
+      element:
+          id: 'DebtAccountCardSummary.OutstandingAmount.Ambiguous_borrowed_debt.9000'
+      direction: DOWN
+      visibilityPercentage: 40
+- waitForAnimationToEnd
+
+- assertVisible:
+      id: 'DebtAccountCardSummary.PaidAmount.Ambiguous_borrowed_debt.1000'
+- assertVisible:
+      id: 'DebtAccountCardSummary.TotalAmount.Ambiguous_borrowed_debt.10000'
+
+- runFlow:
+      file: subflows/accounts/open-account-details.flow.yaml
+      env:
+          ACCOUNT_NAME: 'Ambiguous borrowed debt'
+
+- assertVisible:
+      id: 'DebtAccountBalance.OutstandingAmount.9000'
+- assertVisible:
+      id: 'DebtAccountBalance.PaidAmount.1000'
+- assertVisible:
+      id: 'DebtAccountBalance.TotalAmount.10000'
+- assertNotVisible:
+      id: 'TransactionCard.Badge.Adjustment'

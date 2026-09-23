@@ -106,12 +106,13 @@
 3. **eas-update-preview** (hosted `ubuntu-24.04`, mobile-impact changes only):
     - Exports iOS and Android bundles and publishes an EAS Update to the development channel
 
-4. **fingerprint-guard** (`rnw-community/mobile-ci`'s reusable `expo-fingerprint-guard.yml` workflow, pinned to `v1.23.0`, mobile-impact changes only):
+4. **fingerprint-guard** (`rnw-community/mobile-ci`'s reusable `expo-fingerprint-guard.yml` workflow, pinned to `v3.0.2`, mobile-impact changes only):
     - Fingerprints `packages/app` with `APP_VARIANT=production` for iOS and Android at the PR head and at the merge base, and fails when they differ — a moved fingerprint means published OTA updates no longer reach shipped binaries until a new store build ships
     - The `native-change-acknowledged` label downgrades that failure to a warning; the label is read live, so re-running the job after labelling is enough
 
-5. **ios-maestro** (`rnw-community/mobile-ci`'s reusable `ios-maestro.yml` workflow, pinned to `v1.23.0`, mobile-impact changes after code quality):
-    - Build job on self-hosted Apple Silicon `macos-builder`: reuses a fingerprinted native app when possible (repacking the current PR's JS bundle into the cached shell via `repack-on-hit`), and falls back to a full native build when required
+5. **ios-maestro** (`rnw-community/mobile-ci`'s reusable `ios-maestro.yml` workflow, pinned to `v3.0.2`, mobile-impact changes after code quality):
+    - Plan job on the self-hosted Linux pool `trf-linux-amd64-4x8`: computes the target's native key, fetches the base binary published for it, and repacks this commit's JavaScript into it. This is the normal outcome — **no Mac slot is claimed at all**
+    - Build job on self-hosted Apple Silicon `macos-builder`: runs only for a native key with no published base, and publishes the base it built when the ref is `main`. `.github/workflows/ios-native-cache.yml` is the warm-up that normally does that instead
     - Test job on two self-hosted Apple Silicon `macos-maestro` shards: downloads the built app and runs the 43 entry flows assigned via `tests/app-tests/shards/shard-0.txt` and `shard-1.txt`
     - There is no Android E2E job in the current PR workflow
 
@@ -120,7 +121,7 @@
 
 ### Store Screenshots Workflow (.github/workflows/store-screenshots.yml)
 
-`workflow_dispatch`-only pipeline that captures localized App Store screenshots via `rnw-community/mobile-ci`'s reusable `store-screenshots.yml` (pinned `v1.23.0`), driven by the checked-in `.github/store-screenshots.config.json` (capture manifest, deep-link scenes, seed command, and upload/dedupe settings — every app-shaped input lives there instead of the caller's `with:` block). It builds the same `e2e` iOS target and reuses the same `ios-e2e-budgie-v2` native-app cache profile as `pr.yml`'s `ios-maestro` job and `ios-native-cache.yml`. The `upload` dispatch input (default `false`) maps to the reusable workflow's `upload-screenshots`; when true, the upload job runs `fastlane ios ios_screenshots` from `packages/app` and dedupes App Store Connect via `asc-dedupe-screenshots`. See `.github/workflows/asc-dedupe-screenshots.yml` for the standalone dedupe-only workflow and `.github/workflows/pr-closed-cleanup.yml` for the reusable queued-run cleanup on PR close.
+`workflow_dispatch`-only pipeline that captures localized App Store screenshots via `rnw-community/mobile-ci`'s reusable `store-screenshots.yml` (pinned `v3.0.2`), driven by the checked-in `.github/store-screenshots.config.json` (capture manifest, deep-link scenes, seed command, and upload/dedupe settings — every app-shaped input lives there instead of the caller's `with:` block). It captures on the same `e2e` iOS target and the same native key as `pr.yml`'s `ios-maestro` job, `media-smoke.yml` and `ios-native-cache.yml`, so it repacks the base binary those lanes share; `fingerprint-env`, `repack-env` and `expect-config` stay in the caller's `with:` block because they are outside the config file's allowed-keys list. The `upload` dispatch input (default `false`) maps to the reusable workflow's `upload-screenshots`; when true, the upload job runs `fastlane ios ios_screenshots` from `packages/app` and dedupes App Store Connect via `asc-dedupe-screenshots`. See `.github/workflows/asc-dedupe-screenshots.yml` for the standalone dedupe-only workflow and `.github/workflows/pr-closed-cleanup.yml` for the reusable queued-run cleanup on PR close.
 
 ### Main Branch Workflow (.github/workflows/main.yml)
 
