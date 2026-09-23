@@ -2823,6 +2823,10 @@ msgstr "Open settings"
 msgid "Operator"
 msgstr "Operator"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+msgid "Optional — without it the amount stays manual"
+msgstr "Optional — without it the amount stays manual"
+
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "or"
