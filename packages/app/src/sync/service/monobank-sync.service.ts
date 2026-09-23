@@ -42,6 +42,8 @@ import type {
 import type { SyncAccountInterface, SyncBatchResultInterface } from '@budgie/sync';
 
 class AppMonobankSyncService extends AbstractPollingSyncService {
+    private static readonly BALANCE_FINALIZATION_INTERRUPTED_ERROR = new Error('MONOBANK_BALANCE_FINALIZATION_INTERRUPTED');
+
     override readonly supportsAddAccounts: boolean = true;
 
     protected readonly provider = ExternalSourceEnum.MONOBANK;
@@ -118,19 +120,23 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         void this.sync();
     }
 
+    @InvalidateDatabaseLiveQuery()
     @Log(
         (accountId, enabled) => `enter accountId=${accountId} enabled=${String(enabled)}`,
         (result, accountId, enabled) => `done accountId=${accountId} enabled=${String(enabled)} result=${String(result)}`,
         (error, accountId, enabled) => `throw accountId=${accountId} enabled=${String(enabled)} error=${getErrorMessage(error)}`
     )
     override async setAccountSyncEnabled(accountId: number, enabled: boolean): Promise<void> {
-        await super.setAccountSyncEnabled(accountId, enabled);
         if (!enabled) {
-            await this.releaseBalanceAuthority(accountId);
+            await transactionAsync(db, async tx => {
+                await this.releaseBalanceAuthority(accountId, tx);
+                await syncRepository.setEnabled(accountId, false, tx);
+            });
 
             return;
         }
 
+        await syncRepository.setEnabled(accountId, enabled);
         void this.sync();
     }
 
@@ -181,7 +187,13 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             return;
         }
 
-        await this.finalizeProviderBalance(sync.id, sync.accountId, providerBalance, this.resolveProgressUpdate(sync, result));
+        await this.finalizeProviderBalance(sync, providerBalance, this.resolveProgressUpdate(sync, result), runGeneration).catch(
+            (error: unknown) => {
+                if (error !== AppMonobankSyncService.BALANCE_FINALIZATION_INTERRUPTED_ERROR) {
+                    throw error;
+                }
+            }
+        );
     }
 
     @Log(
@@ -189,18 +201,18 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         (_result, accountId) => `done accountId=${accountId}`,
         (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
     )
-    protected override async releaseBalanceAuthority(accountId: number): Promise<void> {
-        const sync = await syncRepository.getByAccountId(accountId);
+    protected override async releaseBalanceAuthority(accountId: number, tx: DB): Promise<void> {
+        const sync = await syncRepository.getByAccountId(accountId, tx);
         if (!isDefined(sync) || sync.balanceAuthority !== SyncBalanceAuthorityEnum.PROVIDER) {
             return;
         }
 
-        const storedBalances = await accountBalanceRepository.getByAccountIds([accountId]);
+        const storedBalances = await accountBalanceRepository.getByAccountIds([accountId], tx);
         if (!isNotEmptyArray(storedBalances)) {
             return;
         }
 
-        await this.finalizeProviderBalance(sync.id, accountId, storedBalances[0].amount, {});
+        await this.replaceBalanceAdjustment(sync, storedBalances[0].amount, {}, { runGeneration: null, tx });
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -421,29 +433,32 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
     @InvalidateDatabaseLiveQuery()
     @Log(
-        (syncId, accountId, providerBalance) => `enter syncId=${syncId} accountId=${accountId} providerBalance=${providerBalance}`,
-        (_result, ...[syncId, accountId, providerBalance]) =>
-            `done syncId=${syncId} accountId=${accountId} providerBalance=${providerBalance}`,
-        (error, ...[syncId, accountId, providerBalance]) =>
-            `throw syncId=${syncId} accountId=${accountId} providerBalance=${providerBalance} error=${getErrorMessage(error)}`
+        (sync, providerBalance) => `enter syncId=${sync.id} accountId=${sync.accountId} providerBalance=${providerBalance}`,
+        (_result, ...[sync, providerBalance]) => `done syncId=${sync.id} accountId=${sync.accountId} providerBalance=${providerBalance}`,
+        (error, ...[sync, providerBalance]) =>
+            `throw syncId=${sync.id} accountId=${sync.accountId} providerBalance=${providerBalance} error=${getErrorMessage(error)}`
     )
     private async finalizeProviderBalance(
-        syncId: number,
-        accountId: number,
+        sync: SyncEntityInterface,
         providerBalance: number,
-        progressUpdate: SyncUpdateEntityInterface
+        progressUpdate: SyncUpdateEntityInterface,
+        runGeneration: number
     ): Promise<void> {
         await transactionAsync(db, async tx => {
-            const sync = await syncRepository.getById(syncId, tx);
-            if (!isDefined(sync)) {
+            const currentSync = await syncRepository.getById(sync.id, tx);
+            if (!isDefined(currentSync)) {
                 return;
             }
 
-            if (sync.accountId !== accountId || sync.balanceAuthority !== SyncBalanceAuthorityEnum.PROVIDER) {
+            if (currentSync.accountId !== sync.accountId || currentSync.balanceAuthority !== SyncBalanceAuthorityEnum.PROVIDER) {
                 return;
             }
 
-            await this.replaceBalanceAdjustment(sync, providerBalance, progressUpdate, tx);
+            if (!this.isRunCurrent(runGeneration)) {
+                return;
+            }
+
+            await this.replaceBalanceAdjustment(currentSync, providerBalance, progressUpdate, { runGeneration, tx });
         });
     }
 
@@ -523,23 +538,29 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         sync: SyncEntityInterface,
         providerBalance: number,
         progressUpdate: SyncUpdateEntityInterface,
-        tx: DB
+        context: { readonly runGeneration: number | null; readonly tx: DB }
     ): Promise<void> {
         const ledgerBalance = await accountBalanceRepository.getLedgerBalanceExcludingTransaction(
             sync.accountId,
             sync.balanceAdjustmentTransactionId,
-            tx
+            context.tx
         );
+        this.assertBalanceFinalizationCurrent(context.runGeneration);
+
         const delta = providerBalance - ledgerBalance;
 
         if (isDefined(sync.balanceAdjustmentTransactionId)) {
-            await transactionRepository.deleteById(sync.balanceAdjustmentTransactionId, tx);
+            await transactionRepository.deleteById(sync.balanceAdjustmentTransactionId, context.tx);
+            this.assertBalanceFinalizationCurrent(context.runGeneration);
         }
 
         const adjustmentTransactionId =
-            delta === 0 ? null : await transactionService.createBalanceAdjustment(sync.accountId, delta, new Date(), tx);
+            delta === 0 ? null : await transactionService.createBalanceAdjustment(sync.accountId, delta, new Date(), context.tx);
+        this.assertBalanceFinalizationCurrent(context.runGeneration);
 
-        await accountBalanceRepository.upsert({ accountId: sync.accountId, amount: providerBalance, updatedAt: new Date() }, tx);
+        await accountBalanceRepository.upsert({ accountId: sync.accountId, amount: providerBalance, updatedAt: new Date() }, context.tx);
+        this.assertBalanceFinalizationCurrent(context.runGeneration);
+
         await syncRepository.update(
             sync.id,
             {
@@ -547,8 +568,15 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
                 balanceAuthority: SyncBalanceAuthorityEnum.LEDGER,
                 balanceAdjustmentTransactionId: adjustmentTransactionId
             },
-            tx
+            context.tx
         );
+        this.assertBalanceFinalizationCurrent(context.runGeneration);
+    }
+
+    private assertBalanceFinalizationCurrent(runGeneration: number | null): void {
+        if (isDefined(runGeneration) && !this.isRunCurrent(runGeneration)) {
+            throw AppMonobankSyncService.BALANCE_FINALIZATION_INTERRUPTED_ERROR;
+        }
     }
 
     private buildInterruptedBatchResult(): SyncBatchResultInterface {

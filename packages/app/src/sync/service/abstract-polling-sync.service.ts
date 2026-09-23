@@ -1,4 +1,4 @@
-import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { SyncModeEnum, SyncStatusEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { subMonths } from 'date-fns/subMonths';
 import * as BackgroundTask from 'expo-background-task';
@@ -6,7 +6,7 @@ import * as TaskManager from 'expo-task-manager';
 
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository, syncRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, db, syncRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { transactionService } from '../../transaction/service/transaction.service';
@@ -308,6 +308,14 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return enabledSyncs.filter(sync => integrationIdByAccountId.get(sync.accountId) === credentialGroupIntegrationId);
     }
 
+    @InvalidateDatabaseLiveQuery()
+    private async disableFailedSync(sync: SyncEntityInterface, errorMessage: string): Promise<void> {
+        await transactionAsync(db, async tx => {
+            await this.releaseBalanceAuthority(sync.accountId, tx);
+            await syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false }, tx);
+        });
+    }
+
     protected resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {
         const now = new Date();
         const transactionCount = result.transactionCount ?? result.transactions.length;
@@ -348,7 +356,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return Promise.resolve();
     }
 
-    protected async releaseBalanceAuthority(_accountId: number): Promise<void> {
+    protected async releaseBalanceAuthority(_accountId: number, _tx: DB): Promise<void> {
         return Promise.resolve();
     }
 
@@ -482,11 +490,6 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         }
 
         await Promise.all(disableSyncPromises);
-    }
-
-    private async disableFailedSync(sync: SyncEntityInterface, errorMessage: string): Promise<void> {
-        await syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false });
-        await this.releaseBalanceAuthority(sync.accountId).catch(emptyFn);
     }
 
     private async recordSyncsFailedWithoutDisabling(enabledSyncs: SyncEntityInterface[], errorMessage: string): Promise<void> {
