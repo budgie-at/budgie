@@ -11,6 +11,7 @@ import * as TaskManager from 'expo-task-manager';
 import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { canPublishWidgetSnapshot, clearWidgetSnapshot, publishWidgetSnapshot } from '../../../modules/widget-bridge';
+import NetWorthWidget from '../widget/net-worth.widget';
 import {
     accountBalanceRepository,
     budgetCategoryLimitRepository,
@@ -94,7 +95,19 @@ class WidgetSnapshotService {
         this.isPublishing = true;
 
         try {
-            return await publishWidgetSnapshot(JSON.stringify(await this.buildSnapshot()));
+            const snapshot = await this.buildSnapshot();
+
+            NetWorthWidget.updateSnapshot({
+                netWorth: snapshot.netWorth,
+                runway: snapshot.runway,
+                palette: snapshot.palette,
+                netWorthTitle: snapshot.strings.netWorthTitle,
+                thisMonth: snapshot.strings.thisMonth,
+                empty: snapshot.strings.empty,
+                homeUrl: 'budgie://'
+            });
+
+            return await publishWidgetSnapshot(JSON.stringify(snapshot));
         } finally {
             this.isPublishing = false;
         }

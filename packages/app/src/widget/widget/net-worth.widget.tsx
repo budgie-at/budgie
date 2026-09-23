@@ -10,6 +10,7 @@ import {
 } from '@expo/ui/swift-ui/modifiers';
 import { createWidget, type WidgetEnvironment } from 'expo-widgets';
 
+import { WidgetDeltaDirectionEnum } from '../enum/widget-delta-direction.enum';
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
 import type { WidgetPaletteInterface } from '../interface/widget-palette.interface';
 import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-snapshot.interface';
@@ -26,6 +27,17 @@ interface Props {
 
 const NetWorth = (props: Props, environment: WidgetEnvironment) => {
     'widget';
+
+    if (props === undefined || props.palette === undefined) {
+        return (
+            <VStack modifiers={[containerBackground('#B00020', 'widget')]}>
+                <Text modifiers={[font({ size: 12, weight: 'semibold' }), foregroundStyle('#FFFFFF')]}>no props</Text>
+                <Text modifiers={[font({ size: 9 }), foregroundStyle('#FFFFFF')]}>
+                    {Object.keys(props ?? {}).join(',')}
+                </Text>
+            </VStack>
+        );
+    }
 
     const colors = environment.colorScheme === 'dark' ? props.palette.dark : props.palette.light;
 
@@ -94,4 +106,38 @@ const NetWorth = (props: Props, environment: WidgetEnvironment) => {
     );
 };
 
-export default createWidget('NetWorth', NetWorth);
+const netWorthWidget = createWidget('NetWorth', NetWorth);
+
+netWorthWidget.updateSnapshot({
+    netWorth: {
+        formattedTotal: '€1,234.56',
+        formattedDelta: '+€78.90',
+        deltaDirection: WidgetDeltaDirectionEnum.UP,
+        accountTypes: []
+    },
+    runway: { isPositive: true, label: '+€309/mo' },
+    palette: {
+        light: {
+            background: '#FFFFFF',
+            primary: '#111111',
+            secondary: '#7A7A7A',
+            positive: '#1FA971',
+            destructive: '#D92D20',
+            warning: '#F79009'
+        },
+        dark: {
+            background: '#000000',
+            primary: '#FFFFFF',
+            secondary: '#9A9A9A',
+            positive: '#3DDC97',
+            destructive: '#FF5A5F',
+            warning: '#FDB022'
+        }
+    },
+    netWorthTitle: 'Net worth',
+    thisMonth: 'this month',
+    empty: 'No data yet',
+    homeUrl: 'budgie://'
+});
+
+export default netWorthWidget;

@@ -129,7 +129,21 @@ export default ({ config }) => ({
             }
         ],
         './plugins/with-vec-xcframework-fix',
-        './plugins/with-widget-extension',
+        [
+            'expo-widgets',
+            {
+                bundleIdentifier: `${getUniqueIdentifier(false)}.BudgieWidgets`,
+                groupIdentifier: getAppGroup(),
+                widgets: [
+                    {
+                        name: 'NetWorth',
+                        displayName: 'Net worth',
+                        description: 'Your total balance, and whether you are growing or burning.',
+                        ios: { supportedFamilies: ['systemSmall'] }
+                    }
+                ]
+            }
+        ],
         'expo-asset',
         'expo-image',
         [
