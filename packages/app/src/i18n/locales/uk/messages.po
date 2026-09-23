@@ -2849,6 +2849,10 @@ msgstr "Відкрити налаштування"
 msgid "Operator"
 msgstr "Оператор"
 
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+msgid "Optional — without it the amount stays manual"
+msgstr "Необов’язково — без нього сума залишається ручною"
+
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "або"

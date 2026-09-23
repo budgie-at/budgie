@@ -46,7 +46,7 @@ jobs:
     needs: assert-ai
     permissions:
       contents: write
-    uses: rnw-community/mobile-ci/.github/workflows/native-dev-release.yml@v2.1.0 # v2.1.0
+    uses: rnw-community/mobile-ci/.github/workflows/native-dev-release.yml@v3.0.2 # v3.0.2
     with:
       enable-ios: true
       enable-android: false

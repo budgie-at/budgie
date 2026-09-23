@@ -19,6 +19,7 @@ export const CreateAccountScreenSelector = {
     OpeningAccountSelector: 'AccountForm.OpeningAccountSelector',
     SelectedOpeningAccount: (name: string) => `AccountForm.SelectedOpeningAccount.${normalizePart(name)}` as const,
     ClearOpeningAccount: 'AccountForm.ClearOpeningAccount',
+    ManualOpeningHint: 'AccountForm.ManualOpeningHint',
     ContactSelector: 'AccountForm.ContactSelector',
     ContactOption: (name: string) => `AccountForm.ContactOption.${normalizePart(name)}` as const,
     SelectedContact: (name: string) => `AccountForm.SelectedContact.${normalizePart(name)}` as const,
