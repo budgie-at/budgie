@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "6.71.2",
+    "version": "6.75.1",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -22,6 +22,7 @@
         "prebuild": "expo prebuild --clean",
         "prebuild:dev": "EXPO_PUBLIC_AI_DISABLE=true APP_VARIANT=development expo prebuild --clean",
         "start": "expo start --dev-client -c",
+        "store:notes": "node --experimental-strip-types scripts/generate-store-release-notes.ts",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p .",
         "web": "expo start --web"
     },
@@ -107,6 +108,7 @@
         "zod": "4.5.1"
     },
     "devDependencies": {
+        "@anthropic-ai/sdk": "^0.115.0",
         "@babel/core": "7.29.7",
         "@babel/plugin-transform-class-static-block": "7.29.7",
         "@expo/metro-config": "57.0.12",

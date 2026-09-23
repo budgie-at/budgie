@@ -477,11 +477,6 @@ msgstr "Ya sincronizando"
 msgid "Amount"
 msgstr "Cantidad"
 
-#: src/app/(main)/create-transaction/transfer.tsx
-#: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
-msgid "Amount exceeds debt account balance"
-msgstr "El monto excede el saldo de la cuenta de deuda"
-
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "Amount first. Budgie picks the account and guesses the category."
 msgstr "Primero la cantidad. Budgie elige la cuenta y adivina la categoría."
@@ -1445,6 +1440,10 @@ msgstr "La cuenta de deuda no puede coincidir con la cuenta de la transacción"
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Debt account not found"
 msgstr "Cuenta de deuda no encontrada"
+
+#: src/transaction/utils/assert-transfer-accounts-are-not-debt.util.ts
+msgid "Debt accounts cannot take part in transfers"
+msgstr "Las cuentas de deuda no pueden participar en transferencias"
 
 #: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Debts & loans"
@@ -2822,6 +2821,10 @@ msgstr "Abrir configuración"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
 msgstr "Operador"
+
+#: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+msgid "Optional — without it the amount stays manual"
+msgstr "Opcional: sin ella el importe sigue siendo manual"
 
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"

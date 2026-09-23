@@ -1,4 +1,7 @@
 appId: ${APP_ID}
+env:
+    FUNDING_ACCOUNT_NAME: ${FUNDING_ACCOUNT_NAME || ''}
+    FUNDING_ACCOUNT_NAME_ID: ${FUNDING_ACCOUNT_NAME_ID || ''}
 ---
 
 - runFlow: open-new-account.flow.yaml
@@ -102,6 +105,38 @@ appId: ${APP_ID}
 - eraseText: 100
 - inputText: ${TARGET_BALANCE}
 - waitForAnimationToEnd
+
+- scrollUntilVisible:
+      element:
+          id: 'AccountForm.OpeningAccountSelector'
+      direction: UP
+- waitForAnimationToEnd
+
+- runFlow:
+      when:
+          true: ${FUNDING_ACCOUNT_NAME == ''}
+      commands:
+          - assertVisible:
+                id: 'AccountForm.ManualOpeningHint'
+
+- runFlow:
+      when:
+          true: ${FUNDING_ACCOUNT_NAME != ''}
+      commands:
+          - tapOn:
+                id: 'AccountForm.OpeningAccountSelector'
+          - extendedWaitUntil:
+                visible:
+                    id: 'AccountPickerBottomSheet.Input'
+                timeout: 10000
+          - runFlow:
+                file: ../shared/select-account-by-search.flow.yaml
+                env:
+                    ACCOUNT_NAME: ${FUNDING_ACCOUNT_NAME}
+          - extendedWaitUntil:
+                visible:
+                    id: 'AccountForm.SelectedOpeningAccount.${FUNDING_ACCOUNT_NAME_ID}'
+                timeout: 5000
 
 - extendedWaitUntil:
       visible:

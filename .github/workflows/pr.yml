@@ -228,7 +228,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v1.23.1 # v1.23.1
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v3.0.2 # v3.0.2
         with:
             app-dir: packages/app
             scheme: budgie
@@ -247,7 +247,7 @@ jobs:
         permissions:
             contents: read
             pull-requests: read
-        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@v1.23.1 # v1.23.1
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@v3.0.2 # v3.0.2
         with:
             working-directory: packages/app
             platforms: ios,android
@@ -262,9 +262,15 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact, code-quality]
         name: iOS Maestro E2E
+        # A reusable workflow can only narrow the token it is given: the base
+        # binary every pull request repacks is fetched (packages) and published
+        # (packages: write, default-branch runs) by mobile-ci's plan/build jobs,
+        # and this repository's default workflow token permission is read.
         permissions:
             contents: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v1.23.1 # v1.23.1
+            packages: write
+            actions: read
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.0.2 # v3.0.2
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -286,18 +292,26 @@ jobs:
             flow-retries: '1'
             maestro-version: '2.6.1'
             simulator-device: iPhone 17 Pro
-            simulator-slim-profile: tests/app-tests/simslim.ci.json
-            simulator-slim-repair: 'true'
             simulator-requires: push,universal-links
-            test-timeout-minutes: 85
-            cache-profile: ios-e2e-budgie-v2
+            test-timeout-minutes: 110
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
             build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
             rct-use-prebuilt-rncore: true
             rct-use-rn-dep: true
             expo-use-precompiled-modules: true
-            repack-on-hit: true
+            fingerprint-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            repack-env: |
+                APP_VARIANT=e2e
+                EXPO_PUBLIC_AI_DISABLE=true
+                EXPO_PUBLIC_LOGGING_DISABLE=true
+            expect-config: |
+                extra.appVariant=e2e
+                extra.aiEnabled=false
+                extra.loggingEnabled=false
 
     store-screenshots-gallery:
         name: Store screenshots gallery

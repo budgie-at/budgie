@@ -3,6 +3,106 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.75.1](https://github.com/budgie-at/budgie/compare/v6.75.0...v6.75.1) (2026-09-23)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.75.0](https://github.com/budgie-at/budgie/compare/v6.74.2...v6.75.0) (2026-09-23)
+
+
+### Features
+
+* **app:** debt v2 funding-account ui and maestro coverage ([d5d126c](https://github.com/budgie-at/budgie/commit/d5d126cacf8ece6c1c051458dbd64da958bd8fa1))
+
+
+
+
+
+## [6.74.2](https://github.com/budgie-at/budgie/compare/v6.74.1...v6.74.2) (2026-09-23)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.74.1](https://github.com/budgie-at/budgie/compare/v6.74.0...v6.74.1) (2026-09-23)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.74.0](https://github.com/budgie-at/budgie/compare/v6.73.1...v6.74.0) (2026-09-22)
+
+
+### Bug Fixes
+
+* **app:** round rebuilt debt ledger balances to integer micro-units ([787b8d1](https://github.com/budgie-at/budgie/commit/787b8d10da82a5cf7fcc423ab753e3965fe2c62c))
+
+
+### Features
+
+* **app:** migrate legacy debt openings to funding-account transactions ([0af39a7](https://github.com/budgie-at/budgie/commit/0af39a7a7af808a6b432d350259988d7c9253461))
+
+
+
+
+
+## [6.73.1](https://github.com/budgie-at/budgie/compare/v6.73.0...v6.73.1) (2026-09-21)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.73.0](https://github.com/budgie-at/budgie/compare/v6.72.0...v6.73.0) (2026-09-21)
+
+
+### Bug Fixes
+
+* **app:** never publish raw commit subjects as store release notes ([8f0c79e](https://github.com/budgie-at/budgie/commit/8f0c79e0a4e906febe20b9ea1ba9c6caafc64dc9))
+* **app:** reject empty release notes and keep --check non-blocking ([d466ecf](https://github.com/budgie-at/budgie/commit/d466ecf746a24b27805db78c27720750306f99c7))
+
+
+### Features
+
+* **app:** generate localized store release notes from the commit log ([05603dc](https://github.com/budgie-at/budgie/commit/05603dc8c0d14c1621d2c658d4540bd1ef8eb841))
+
+
+
+
+
+# [6.72.0](https://github.com/budgie-at/budgie/compare/v6.71.2...v6.72.0) (2026-09-21)
+
+
+### Bug Fixes
+
+* **app:** associate Binance accounts before syncing ([153f9e4](https://github.com/budgie-at/budgie/commit/153f9e4f1e0e87cb272590154fa80e313c4c2001))
+* **app:** complete monobank side effects the run already committed ([a220b4e](https://github.com/budgie-at/budgie/commit/a220b4e1160e7c6a37dc9e1662153d63c3c033b2))
+* **app:** define background tasks at bundle startup ([5bc2a47](https://github.com/budgie-at/budgie/commit/5bc2a47b5bbf2f6eae8f6a57f88edfb54f8e8c5f))
+* **app:** keep the debt target in the debt instrument when opening from a funding account ([6733567](https://github.com/budgie-at/budgie/commit/6733567e8dcf8ee128dec798a941100760bacd06))
+* **app:** preserve invalid account sync completion ([de03db7](https://github.com/budgie-at/budgie/commit/de03db7d56d833740e97c494dc9f553a1579d3ce))
+* **app:** recover bank sync after iOS suspension ([c3bd8a8](https://github.com/budgie-at/budgie/commit/c3bd8a83b317d29c7cb442eee38d358faab1998b))
+* **app:** restore fifteen-minute background scheduling ([b7754f3](https://github.com/budgie-at/budgie/commit/b7754f3d767f0d1f3ae2c0a60cd10baf095db761))
+* **app:** stop interrupted Monobank side effects ([c2c3e9c](https://github.com/budgie-at/budgie/commit/c2c3e9c36b71968d3539da09b68a3e60ae779b8e))
+
+
+### Features
+
+* **app:** categorise debt repayments by direction ([85fc3e1](https://github.com/budgie-at/budgie/commit/85fc3e1f935511f6431d66fde7fa589b61f60b74))
+* **app:** open a debt as a real transaction from a funding account ([b398f06](https://github.com/budgie-at/budgie/commit/b398f064484889b38567b894fc6a7ca73a698bce))
+
+
+
+
+
 ## [6.71.2](https://github.com/budgie-at/budgie/compare/v6.71.1...v6.71.2) (2026-09-20)
 
 

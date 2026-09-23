@@ -1,5 +1,4 @@
 import {
-    AccountTypeEnum,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryKindEnum,
@@ -24,6 +23,7 @@ import { entryBaseValuationService } from '../../money-data/service/entry-base-v
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
 import { BuildTransferEntryCreateEntityInputInterface } from '../interface/build-transfer-entry-create-entity-input.interface';
 import { TransferConversionResultInterface } from '../interface/transfer-conversion-result.interface';
+import { assertTransferAccountsAreNotDebt } from '../utils/assert-transfer-accounts-are-not-debt.util';
 import { buildTransferEntries } from '../utils/build-transfer-entries.util';
 import { createTransactionInput } from '../utils/create-transaction-input.util';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
@@ -163,7 +163,6 @@ class TransactionTransferService {
     ): Promise<TransferConversionResultInterface> {
         const transaction = await this.getTransferConversionTransaction(params.id, direction, tx);
         const [transactionEntry] = getTransactionCategoryEntries(transaction.entries);
-        const { amount } = transactionEntry;
         const hasCustomRate = isPositiveNumber(params.customExchangeRate) && params.customExchangeRate !== 1;
         const isExpense = direction === 'expense';
         const fromAccountId = isExpense ? this.requireTransferAccountId(transaction.fromAccountId, 'source') : params.accountId;
@@ -172,25 +171,28 @@ class TransactionTransferService {
             accountService.findByIdIncludingArchivedOrFail(fromAccountId),
             accountService.findByIdIncludingArchivedOrFail(toAccountId)
         ]);
+
+        assertTransferAccountsAreNotDebt([fromAccount, toAccount]);
+
         const conversion = await exchangeRatesService.convert(
             isExpense ? fromAccount.instrumentId : toAccount.instrumentId,
             isExpense ? toAccount.instrumentId : fromAccount.instrumentId,
-            amount
+            transactionEntry.amount
         );
         const exchangeRate = hasCustomRate && isDefined(params.customExchangeRate) ? params.customExchangeRate : conversion.exchangeRate;
         const convertedAmount =
-            hasCustomRate && isDefined(params.customExchangeRate) ? amount / params.customExchangeRate : conversion.amount;
+            hasCustomRate && isDefined(params.customExchangeRate) ? transactionEntry.amount / params.customExchangeRate : conversion.amount;
 
         return {
             creditAccountId: fromAccountId,
-            creditAmount: isExpense ? amount : convertedAmount,
+            creditAmount: isExpense ? transactionEntry.amount : convertedAmount,
             debitAccountId: toAccountId,
-            debitAmount: isExpense ? convertedAmount : amount,
+            debitAmount: isExpense ? convertedAmount : transactionEntry.amount,
             exchangeRate,
             fromAccountId,
             operatedAt: transaction.operatedAt,
             toAccountId,
-            transactionType: this.resolveTransferTransactionType(fromAccount.type, toAccount.type),
+            transactionType: TransactionTypeEnum.TRANSFER,
             feeEntries: getTransactionFeeEntries(transaction.entries),
             sourceEntry: transactionEntry
         };
@@ -264,12 +266,6 @@ class TransactionTransferService {
             baseAmount: valuation.baseAmount,
             toIban: null
         };
-    }
-
-    private resolveTransferTransactionType(fromAccountType: AccountTypeEnum, toAccountType: AccountTypeEnum): TransactionTypeEnum {
-        return toAccountType === AccountTypeEnum.DEBT || fromAccountType === AccountTypeEnum.DEBT
-            ? TransactionTypeEnum.DEBT
-            : TransactionTypeEnum.TRANSFER;
     }
 
     private requireTransferAccountId(accountId: number | null, kind: 'source' | 'destination'): number {

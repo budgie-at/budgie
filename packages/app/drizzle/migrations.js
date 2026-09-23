@@ -59,6 +59,7 @@ import m0055 from './0055_add_runway_settings.sql';
 import m0056 from './0056_marvelous_menace.sql';
 import m0057 from './0057_add_debt_system_categories.sql';
 import m0059 from './0059_add_sync_balance_authority.sql';
+import m0060 from './0060_debt_v2_money_legs.sql';
 import journal from './meta/_journal.json';
 
 export default {
@@ -122,6 +123,7 @@ export default {
         m0055,
         m0056,
         m0057,
-        m0059
+        m0059,
+        m0060
     }
 };

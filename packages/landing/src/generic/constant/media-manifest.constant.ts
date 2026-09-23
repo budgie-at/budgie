@@ -58,6 +58,76 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
     {
         slug: 'ai-auto-categorization',
         locale: 'de',
+        scene: 'ai-auto-categorization-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-auto-categorization',
+        locale: 'de',
+        scene: 'ai-auto-categorization-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-auto-categorization',
+        locale: 'en',
+        scene: 'ai-auto-categorization-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-auto-categorization',
+        locale: 'en',
+        scene: 'ai-auto-categorization-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-auto-categorization',
+        locale: 'es',
+        scene: 'ai-auto-categorization-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-auto-categorization',
+        locale: 'es',
+        scene: 'ai-auto-categorization-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-auto-categorization',
+        locale: 'fr',
+        scene: 'ai-auto-categorization-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-auto-categorization',
+        locale: 'fr',
+        scene: 'ai-auto-categorization-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-auto-categorization',
+        locale: 'uk',
+        scene: 'ai-auto-categorization-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-auto-categorization',
+        locale: 'uk',
+        scene: 'ai-auto-categorization-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-auto-categorization',
+        locale: 'de',
         scene: 'ai-auto-categorization-2',
         theme: MediaThemeEnum.DARK,
         kind: MediaKindEnum.STILL
@@ -192,6 +262,86 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
         slug: 'ai-category-translation',
         locale: 'uk',
         scene: 'ai-category-translation-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    { slug: 'ai-tag-suggestions', locale: 'de', scene: 'ai-tag-suggestions-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'ai-tag-suggestions', locale: 'de', scene: 'ai-tag-suggestions-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'ai-tag-suggestions', locale: 'en', scene: 'ai-tag-suggestions-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'ai-tag-suggestions', locale: 'en', scene: 'ai-tag-suggestions-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'ai-tag-suggestions', locale: 'es', scene: 'ai-tag-suggestions-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'ai-tag-suggestions', locale: 'es', scene: 'ai-tag-suggestions-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'ai-tag-suggestions', locale: 'fr', scene: 'ai-tag-suggestions-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'ai-tag-suggestions', locale: 'fr', scene: 'ai-tag-suggestions-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    { slug: 'ai-tag-suggestions', locale: 'uk', scene: 'ai-tag-suggestions-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
+    { slug: 'ai-tag-suggestions', locale: 'uk', scene: 'ai-tag-suggestions-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
+    {
+        slug: 'ai-transaction-suggestions',
+        locale: 'de',
+        scene: 'ai-transaction-suggestions-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-transaction-suggestions',
+        locale: 'de',
+        scene: 'ai-transaction-suggestions-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-transaction-suggestions',
+        locale: 'en',
+        scene: 'ai-transaction-suggestions-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-transaction-suggestions',
+        locale: 'en',
+        scene: 'ai-transaction-suggestions-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-transaction-suggestions',
+        locale: 'es',
+        scene: 'ai-transaction-suggestions-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-transaction-suggestions',
+        locale: 'es',
+        scene: 'ai-transaction-suggestions-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-transaction-suggestions',
+        locale: 'fr',
+        scene: 'ai-transaction-suggestions-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-transaction-suggestions',
+        locale: 'fr',
+        scene: 'ai-transaction-suggestions-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-transaction-suggestions',
+        locale: 'uk',
+        scene: 'ai-transaction-suggestions-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'ai-transaction-suggestions',
+        locale: 'uk',
+        scene: 'ai-transaction-suggestions-1',
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
@@ -1945,6 +2095,76 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
         slug: 'uncategorized-transactions',
         locale: 'uk',
         scene: 'uncategorized-transactions-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'voice-transaction-entry',
+        locale: 'de',
+        scene: 'voice-transaction-entry-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'voice-transaction-entry',
+        locale: 'de',
+        scene: 'voice-transaction-entry-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'voice-transaction-entry',
+        locale: 'en',
+        scene: 'voice-transaction-entry-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'voice-transaction-entry',
+        locale: 'en',
+        scene: 'voice-transaction-entry-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'voice-transaction-entry',
+        locale: 'es',
+        scene: 'voice-transaction-entry-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'voice-transaction-entry',
+        locale: 'es',
+        scene: 'voice-transaction-entry-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'voice-transaction-entry',
+        locale: 'fr',
+        scene: 'voice-transaction-entry-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'voice-transaction-entry',
+        locale: 'fr',
+        scene: 'voice-transaction-entry-1',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'voice-transaction-entry',
+        locale: 'uk',
+        scene: 'voice-transaction-entry-1',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'voice-transaction-entry',
+        locale: 'uk',
+        scene: 'voice-transaction-entry-1',
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     }

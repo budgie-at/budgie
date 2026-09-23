@@ -7,6 +7,7 @@ export { seedBitcoinCryptoAccount } from './seed/seed-bitcoin-crypto-account';
 export { seedRefundStatisticsScenario } from './seed/seed-refund-statistics-scenario';
 export { runRefundScenario } from './seed/run-refund-scenario';
 export { seedAmountTransferPair } from './seed/seed-amount-transfer-pair';
+export { buildTransferInput } from './seed/build-transfer-input';
 export { StubFileBankSyncService } from './file-sync/stub-file-bank-sync-service';
 export { expectSingleConsolidation } from './consolidation/expect-single-consolidation';
 export { expectAtmCashWithdrawalConsolidation } from './consolidation/expect-atm-cash-withdrawal-consolidation';

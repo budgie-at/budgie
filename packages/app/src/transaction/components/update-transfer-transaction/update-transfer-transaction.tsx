@@ -1,7 +1,6 @@
-import { AccountTypeEnum, TransactionEntryTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
+import { TransactionEntryTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect } from 'react';
-import { FormProvider, useWatch } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -9,8 +8,6 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
-import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
-import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useTransactionFeeFormActions } from '../../hook/use-transaction-fee-form-actions.hook';
@@ -39,21 +36,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
         onAfterSubmit: () => void markForEmbedding(transaction.id)
     });
 
-    const [fromAccountId, amount] = useWatch({
-        control: form.control,
-        name: ['fromAccountId', 'amount']
-    });
-    const { account } = useGetAccountByIdQuery(fromAccountId ?? 0);
-    const { balance } = useAccountBalanceQuery(fromAccountId ?? 0);
-
     const handleGoBack = () => void goBackOrReplace('/');
-    useEffect(() => {
-        if (account?.type === AccountTypeEnum.DEBT && amount > balance) {
-            form.setError('amount', { type: 'custom', message: t`Amount exceeds debt account balance` });
-        } else {
-            form.clearErrors('amount');
-        }
-    }, [account?.type, amount, balance, form, t]);
 
     return (
         <FormProvider {...form}>
