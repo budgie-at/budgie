@@ -24,7 +24,7 @@ let languageActivationRequestId = 0;
 i18n.load(LanguageEnum.EN, enMessages);
 i18n.activate(LanguageEnum.EN);
 
-const loadLanguageMessages = (language: LanguageEnum): Promise<Messages> => {
+export const i18nLoadLanguageMessages = (language: LanguageEnum): Promise<Messages> => {
     const existingPromise = languageMessagesPromises.get(language);
 
     if (isDefined(existingPromise)) {
@@ -42,7 +42,7 @@ export const i18nEnsureLanguageActivated = async (language: LanguageEnum): Promi
     languageActivationRequestId += 1;
     const requestId = languageActivationRequestId;
 
-    const messages = await loadLanguageMessages(language);
+    const messages = await i18nLoadLanguageMessages(language);
 
     i18n.load(language, messages);
 

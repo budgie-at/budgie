@@ -69,7 +69,7 @@ class AuthService {
     }
 
     async createPin(pin: string, isBiometricEnabled: boolean): Promise<void> {
-        await widgetSnapshotService.clear().catch(emptyFn);
+        await widgetSnapshotService.mask().catch(emptyFn);
         await this.rekeyDatabase({
             nextKey: pin,
             nextSettings: {

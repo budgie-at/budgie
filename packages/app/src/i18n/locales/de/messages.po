@@ -2569,7 +2569,6 @@ msgstr "Noch keine Konten in dieser Integration"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
-#: src/widget/service/widget-snapshot.service.ts
 msgid "No accounts yet"
 msgstr "Noch keine Konten"
 
@@ -2824,6 +2823,10 @@ msgstr "Nur Einnahmen mit einem Eintrag können umgewandelt werden"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
 msgstr "Öffnen Sie Binance, um Ihren API-Schlüssel zu erhalten"
+
+#: src/widget/service/widget-snapshot.service.ts
+msgid "Open Budgie to see your finances"
+msgstr "Öffnen Sie Budgie, um Ihre Finanzen zu sehen"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"

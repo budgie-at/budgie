@@ -2569,7 +2569,6 @@ msgstr "Aún no hay cuentas en esta integración"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
-#: src/widget/service/widget-snapshot.service.ts
 msgid "No accounts yet"
 msgstr "Aún no hay cuentas"
 
@@ -2824,6 +2823,10 @@ msgstr "Solo se pueden convertir ingresos de una sola entrada"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
 msgstr "Abra Binance para obtener su clave API"
+
+#: src/widget/service/widget-snapshot.service.ts
+msgid "Open Budgie to see your finances"
+msgstr "Abra Budgie para ver sus finanzas"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
