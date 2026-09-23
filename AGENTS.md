@@ -572,12 +572,12 @@ Free-form `context: string`. Convention: hook/file/component name. Instantiate o
 
 ### Every simulator runs slim (canonical rule)
 
-Every iOS simulator this repo touches — local Mac, remote Mac fleet, or CI — runs slim, in the order **boot → slim → install → drive**. The rule, the reasoning, and the `profiles/ci.json` profile are owned by mobile-ci: [docs/self-hosted-runners.md#every-simulator-runs-slim](https://github.com/rnw-community/mobile-ci/blob/v3.0.0/docs/self-hosted-runners.md#every-simulator-runs-slim). Budgie commits no profile and no copy of the helper.
+Every iOS simulator this repo touches — local Mac, remote Mac fleet, or CI — runs slim, in the order **boot → slim → install → drive**. The rule, the reasoning, and the `profiles/ci.json` profile are owned by mobile-ci: [docs/self-hosted-runners.md#every-simulator-runs-slim](https://github.com/rnw-community/mobile-ci/blob/v3.0.2/docs/self-hosted-runners.md#every-simulator-runs-slim). Budgie commits no profile and no copy of the helper.
 
 How to invoke it here:
 
 - Once per Mac: `brew install mobai-app/tap/simslim`.
-- By hand: `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then install and drive. That shim fetches mobile-ci's shared `scripts/slim-simulator.sh` at `MOBILE_CI_REF` (the single pin, currently `v3.0.0`), caches it, and fails fast when it cannot. Every repo script that boots a simulator sources it.
+- By hand: `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then install and drive. That shim fetches mobile-ci's shared `scripts/slim-simulator.sh` at `MOBILE_CI_REF` (the single pin, currently `v3.0.2`), caches it, and fails fast when it cannot. Every repo script that boots a simulator sources it.
 - In CI nothing is passed: the `ios-maestro.yml` and `store-screenshots.yml` callers default `simulator-slim-profile` to `bundled`, and only `simulator-requires` stays per consumer.
 
 ### serve-sim

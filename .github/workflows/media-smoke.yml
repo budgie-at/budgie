@@ -27,7 +27,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.0.0 # v3.0.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.0.2 # v3.0.2
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -48,7 +48,10 @@ jobs:
             maestro-version: '2.8.0'
             simulator-device: iPhone 17 Pro
             simulator-requires: push,universal-links
-            test-timeout-minutes: 25
+            # Measured on #1182: 41 scenarios need ~26.5 min end to end (~3.3 min
+            # of job setup + ~23 min of flows), so the old 25-minute cap cancelled
+            # a shard whose every flow was passing. 40 leaves real headroom.
+            test-timeout-minutes: 40
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
             build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
