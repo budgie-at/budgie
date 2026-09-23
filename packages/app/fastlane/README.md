@@ -83,7 +83,7 @@ fails when a screenshot locale folder is missing, when any PNG's pixel
 size matches no App Store slot, when `metadata/ios/copyright.txt` carries a stale
 year, when either metadata tree is missing a locale or is missing entirely, or
 when `featureGraphic.png`/`icon.png` under `metadata/android/en-US/images` is
-missing, not a PNG, the wrong size, or the wrong color type: the feature graphic
+missing, not a PNG, the wrong size, not 8 bits per channel, or the wrong color type: the feature graphic
 must be 24-bit RGB without alpha and the icon 32-bit RGBA (see "Play asset list"). Run it after touching the
 Fastfile, the compose script, or the metadata trees.
 

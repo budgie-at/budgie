@@ -106,9 +106,9 @@ def verify_android_hero_images
       UI.user_error!("#{path} is #{width}x#{height}, expected #{expected_width}x#{expected_height}")
     end
 
-    color_type = header.getbyte(25)
-    unless color_type == expected_color_type
-      UI.user_error!("#{path} has PNG color type #{color_type}, expected #{expected_color_type}")
+    bit_depth, color_type = header.getbyte(24), header.getbyte(25)
+    unless bit_depth == 8 && color_type == expected_color_type
+      UI.user_error!("#{path} is #{bit_depth}-bit PNG color type #{color_type}, expected 8-bit color type #{expected_color_type}")
     end
 
     UI.success("  #{filename}: #{width}x#{height}")
