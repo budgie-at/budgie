@@ -101,7 +101,7 @@ def verify_android_hero_images
     header = File.binread(path, 26)
     UI.user_error!("#{path} is not a PNG") unless header.start_with?(PNG_SIGNATURE)
 
-    width, height = header[16, 8].unpack("N2")
+    width, height = png_dimensions(path)
     unless width == expected_width && height == expected_height
       UI.user_error!("#{path} is #{width}x#{height}, expected #{expected_width}x#{expected_height}")
     end
