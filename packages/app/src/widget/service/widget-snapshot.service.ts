@@ -1,17 +1,20 @@
 import { budgetPeriodService, budgetSpentService } from '@budgie/budget';
-import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, LanguageEnum, RUNWAY_WINDOW_MONTHS } from '@budgie/contracts';
+import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, LanguageEnum, RUNWAY_WINDOW_MONTHS, ThemeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { msg, plural } from '@lingui/core/macro';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { startOfMonth } from 'date-fns/startOfMonth';
+import { Asset } from 'expo-asset';
 import * as BackgroundTask from 'expo-background-task';
 import Constants from 'expo-constants';
+import { File } from 'expo-file-system';
 import * as TaskManager from 'expo-task-manager';
+import { widgetsDirectory } from 'expo-widgets';
 
-import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { canPublishWidgetSnapshot, clearWidgetSnapshot, publishWidgetSnapshot } from '../../../modules/widget-bridge';
+import glyphModule from '../../../assets/budgie-glyph.png';
 import {
     accountBalanceRepository,
     budgetCategoryLimitRepository,
@@ -35,10 +38,14 @@ import { DEFAULT_SETTINGS } from '../../settings/constants/default-settings.cons
 import { dark, light } from '../../theme/provider/theme.provider';
 import { WIDGET_SNAPSHOT_TASK } from '../constant/widget-snapshot-task.constant';
 import { WidgetDeltaDirectionEnum } from '../enum/widget-delta-direction.enum';
+import BudgetWidget from '../widget/budget.widget';
+import NetWorthWidget from '../widget/net-worth.widget';
+import QuickAddWidget from '../widget/quick-add.widget';
 
 import type { WidgetAccountTypeTotalInterface } from '../interface/widget-account-type-total.interface';
 import type { WidgetBudgetCategoryInterface } from '../interface/widget-budget-category.interface';
 import type { WidgetBudgetSnapshotInterface } from '../interface/widget-budget-snapshot.interface';
+import type { WidgetLinksInterface } from '../interface/widget-links.interface';
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
 import type { WidgetPaletteInterface } from '../interface/widget-palette.interface';
 import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-snapshot.interface';
@@ -53,12 +60,43 @@ class WidgetSnapshotService {
     private static readonly E2E_APP_VARIANT = 'e2e';
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
     private static readonly PUBLISH_DEBOUNCE_MS = 2_000;
-    private static readonly SNAPSHOT_VERSION = 1;
+    private static readonly BUDGET_URL = 'budgie://budget';
+    private static readonly LINKS: WidgetLinksInterface = {
+        expenseUrl: 'budgie://create-transaction/expense',
+        incomeUrl: 'budgie://create-transaction/income',
+        transferUrl: 'budgie://create-transaction/transfer',
+        homeUrl: 'budgie://'
+    };
+
+    private static readonly EMPTY_NET_WORTH: WidgetNetWorthSnapshotInterface = {
+        formattedTotal: '',
+        formattedDelta: '',
+        deltaDirection: WidgetDeltaDirectionEnum.FLAT,
+        deltaColorLight: '',
+        deltaColorDark: '',
+        accountTypes: []
+    };
+
+    private static readonly EMPTY_RUNWAY: WidgetRunwaySnapshotInterface = { isPositive: true, label: '' };
+
+    private static readonly EMPTY_BUDGET: WidgetBudgetSnapshotInterface = {
+        formattedSpent: '',
+        formattedLimit: '',
+        formattedRemaining: '',
+        progressRatio: 0,
+        isOverLimit: false,
+        formattedDaysLeft: '',
+        formattedSafePerDay: '',
+        periodLabel: '',
+        categories: []
+    };
+
     private static readonly TOP_CATEGORY_COUNT = 3;
     private static readonly TOP_ACCOUNT_TYPE_COUNT = 4;
     private static readonly MASKED_AMOUNT = '•••';
 
     private isPublishing = false;
+    private glyphPath = '';
     private areAmountsMasked = false;
     private debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -102,7 +140,10 @@ class WidgetSnapshotService {
         this.isPublishing = true;
 
         try {
-            return await publishWidgetSnapshot(JSON.stringify(await this.buildSnapshot()));
+            this.glyphPath = await this.resolveGlyphPath().catch(() => '');
+            this.pushToWidgets(await this.buildSnapshot());
+
+            return true;
         } finally {
             this.isPublishing = false;
         }
@@ -112,7 +153,53 @@ class WidgetSnapshotService {
     async clear(): Promise<boolean> {
         this.cancelScheduledPublish();
 
-        return await clearWidgetSnapshot();
+        NetWorthWidget.updateTimeline([]);
+        BudgetWidget.updateTimeline([]);
+        QuickAddWidget.updateTimeline([]);
+
+        return await Promise.resolve(true);
+    }
+
+    @Log('enter', result => `done glyphPath="${result}"`, error => `throw error=${getErrorMessage(error)}`)
+    private async resolveGlyphPath(): Promise<string> {
+        const asset = Asset.fromModule(glyphModule);
+        await asset.downloadAsync();
+
+        if (!isNotEmptyString(asset.localUri)) {
+            return '';
+        }
+
+        const target = new File(`${widgetsDirectory}/budgie-glyph.png`);
+        if (target.exists) {
+            target.delete();
+        }
+        await new File(asset.localUri).copy(target);
+
+        return target.uri;
+    }
+
+    private pushToWidgets(snapshot: WidgetSnapshotInterface): void {
+        NetWorthWidget.updateSnapshot({
+            isEmpty: !isDefined(snapshot.netWorth),
+            netWorth: snapshot.netWorth ?? WidgetSnapshotService.EMPTY_NET_WORTH,
+            runway: snapshot.runway ?? WidgetSnapshotService.EMPTY_RUNWAY,
+            palette: snapshot.palette,
+            strings: snapshot.strings,
+            homeUrl: WidgetSnapshotService.LINKS.homeUrl
+        });
+        BudgetWidget.updateSnapshot({
+            isEmpty: !isDefined(snapshot.budget),
+            budget: snapshot.budget ?? WidgetSnapshotService.EMPTY_BUDGET,
+            palette: snapshot.palette,
+            strings: snapshot.strings,
+            budgetUrl: WidgetSnapshotService.BUDGET_URL
+        });
+        QuickAddWidget.updateSnapshot({
+            palette: snapshot.palette,
+            strings: snapshot.strings,
+            links: WidgetSnapshotService.LINKS,
+            glyphPath: this.glyphPath
+        });
     }
 
     private readonly schedulePublish = (): void => {
@@ -142,12 +229,8 @@ class WidgetSnapshotService {
         await i18nEnsureLanguageActivated(language);
 
         return {
-            version: WidgetSnapshotService.SNAPSHOT_VERSION,
-            generatedAtMs: Date.now(),
-            locale: languageToLocale(language),
-            theme: settings?.theme ?? DEFAULT_SETTINGS.theme,
             strings: this.buildStrings(),
-            palette: this.buildPalette(),
+            palette: this.buildPalette(settings?.theme ?? DEFAULT_SETTINGS.theme),
             netWorth: await this.buildNetWorth(instrument, language, decimalPlaces),
             budget: await this.buildBudget(language, decimalPlaces),
             runway: await this.buildRunway(instrument, language, settings?.isRunwayCryptoIncluded ?? false)
@@ -170,8 +253,19 @@ class WidgetSnapshotService {
         };
     }
 
-    private buildPalette(): WidgetPaletteInterface {
-        return { light: this.buildThemeColors(light), dark: this.buildThemeColors(dark) };
+    private buildPalette(theme: ThemeEnum): WidgetPaletteInterface {
+        const lightColors = this.buildThemeColors(light);
+        const darkColors = this.buildThemeColors(dark);
+
+        if (theme === ThemeEnum.LIGHT) {
+            return { light: lightColors, dark: lightColors };
+        }
+
+        if (theme === ThemeEnum.DARK) {
+            return { light: darkColors, dark: darkColors };
+        }
+
+        return { light: lightColors, dark: darkColors };
     }
 
     private buildThemeColors(theme: typeof light): WidgetThemeColorsInterface {
@@ -223,6 +317,8 @@ class WidgetSnapshotService {
             formattedTotal: this.formatWithSymbol(total, instrument.symbol, language, decimalPlaces),
             formattedDelta: this.formatDelta(monthlyNet, instrument.symbol, language, decimalPlaces),
             deltaDirection: this.resolveDeltaDirection(monthlyNet),
+            deltaColorLight: this.resolveDeltaColor(monthlyNet, this.buildThemeColors(light)),
+            deltaColorDark: this.resolveDeltaColor(monthlyNet, this.buildThemeColors(dark)),
             accountTypes: this.buildAccountTypeTotals(homeRows, instrument.symbol, language, decimalPlaces)
         };
     }
@@ -396,6 +492,18 @@ class WidgetSnapshotService {
         return value < 0 ? '-' : '';
     }
 
+    private resolveDeltaColor(monthlyNet: number, colors: WidgetThemeColorsInterface): string {
+        if (this.resolveDeltaDirection(monthlyNet) === WidgetDeltaDirectionEnum.UP) {
+            return colors.positive;
+        }
+
+        if (this.resolveDeltaDirection(monthlyNet) === WidgetDeltaDirectionEnum.DOWN) {
+            return colors.destructive;
+        }
+
+        return colors.secondary;
+    }
+
     private resolveDeltaDirection(value: number): WidgetDeltaDirectionEnum {
         if (value > 0) {
             return WidgetDeltaDirectionEnum.UP;
@@ -405,7 +513,7 @@ class WidgetSnapshotService {
     }
 
     private isDisabled(): boolean {
-        return this.isE2EApp() || !canPublishWidgetSnapshot();
+        return this.isE2EApp();
     }
 
     private isE2EApp(): boolean {

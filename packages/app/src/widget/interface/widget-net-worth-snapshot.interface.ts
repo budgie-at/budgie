@@ -5,5 +5,7 @@ export interface WidgetNetWorthSnapshotInterface {
     readonly formattedTotal: string;
     readonly formattedDelta: string;
     readonly deltaDirection: WidgetDeltaDirectionEnum;
+    readonly deltaColorLight: string;
+    readonly deltaColorDark: string;
     readonly accountTypes: readonly WidgetAccountTypeTotalInterface[];
 }

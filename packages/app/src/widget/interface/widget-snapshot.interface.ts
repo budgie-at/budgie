@@ -3,13 +3,8 @@ import type { WidgetNetWorthSnapshotInterface } from './widget-net-worth-snapsho
 import type { WidgetPaletteInterface } from './widget-palette.interface';
 import type { WidgetRunwaySnapshotInterface } from './widget-runway-snapshot.interface';
 import type { WidgetSnapshotStringsInterface } from './widget-snapshot-strings.interface';
-import type { ThemeEnum } from '@budgie/contracts';
 
 export interface WidgetSnapshotInterface {
-    readonly version: number;
-    readonly generatedAtMs: number;
-    readonly locale: string;
-    readonly theme: ThemeEnum;
     readonly strings: WidgetSnapshotStringsInterface;
     readonly palette: WidgetPaletteInterface;
     readonly netWorth: WidgetNetWorthSnapshotInterface | null;
