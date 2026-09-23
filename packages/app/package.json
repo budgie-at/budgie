@@ -80,6 +80,7 @@
         "expo-system-ui": "~57.0.3",
         "expo-task-manager": "~57.0.14",
         "expo-updates": "~57.0.19",
+        "expo-widgets": "^57.0.20",
         "ky": "^2.1.0",
         "llama.rn": "^0.12.4",
         "lucide-react-native": "^1.38.0",
