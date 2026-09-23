@@ -66,9 +66,6 @@ export default ({ config }) => ({
             'com.apple.developer.kernel.increased-memory-limit': true,
             'com.apple.security.application-groups': [getAppGroup()]
         },
-        infoPlist: {
-            BudgieAppGroup: getAppGroup()
-        },
         icon: {
             dark: './assets/icons/ios-dark.png',
             light: './assets/icons/ios-light.png',
@@ -129,7 +126,33 @@ export default ({ config }) => ({
             }
         ],
         './plugins/with-vec-xcframework-fix',
-        './plugins/with-widget-extension',
+        [
+            'expo-widgets',
+            {
+                bundleIdentifier: `${getUniqueIdentifier(false)}.BudgieWidgets`,
+                groupIdentifier: getAppGroup(),
+                widgets: [
+                    {
+                        name: 'NetWorth',
+                        displayName: 'Net worth',
+                        description: 'Your total balance, and whether you are growing or burning.',
+                        ios: { supportedFamilies: ['systemSmall', 'systemMedium'] }
+                    },
+                    {
+                        name: 'Budget',
+                        displayName: 'Budget',
+                        description: "How much of this period's budget is left.",
+                        ios: { supportedFamilies: ['systemSmall', 'systemMedium'] }
+                    },
+                    {
+                        name: 'QuickAdd',
+                        displayName: 'Quick add',
+                        description: 'Expense, income and transfer in one tap.',
+                        ios: { supportedFamilies: ['systemSmall'] }
+                    }
+                ]
+            }
+        ],
         'expo-asset',
         'expo-image',
         [
