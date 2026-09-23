@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { accountBalanceRepository, exchangeRateRepository } from '@app/@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
+import { accountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
+import { transactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
 import { buildTestDb, createTestRepositories } from '@budgie-at/test-kit';
 import {
     AccountDebtTypeEnum,
@@ -11,7 +13,14 @@ import {
     CurrencyEnum,
     DebtEventDirectionEnum,
     DebtEventEntityTable,
-    DebtEventSourceEnum
+    DebtEventSourceEnum,
+    ExternalSourceEnum,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum,
+    UserIconNameEnum
 } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
@@ -26,7 +35,12 @@ import { seed } from '../../harness/seed/seed';
 import { LegacyDebtContractFixture } from './legacy-debt-contract-fixture';
 
 import type { DebtProgressContractInterface } from './interface/debt-progress-contract.interface';
-import type { AccountEntityInterface, DebtEventEntityInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    DebtEventEntityInterface,
+    TransactionCreateEntityInterface,
+    TransactionEntryCreateEntityInterface
+} from '@budgie/contracts';
 
 const OPERATED_AT = new Date('2026-06-02T12:00:00.000Z');
 const scenarioDirectory = resolve(fileURLToPath(import.meta.url), '..');
@@ -119,6 +133,60 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
         const account = seedPartiallySettledDebt(debtType);
 
         expectDebtProgressContract(account.id, { outstandingAmount: 750, paidAmount: 250, totalAmount: 1_000, percentage: 25 });
+    });
+
+    it('reports the same partial-settlement contract when opened and repaid through the v2 funding-account flow', async () => {
+        const fundingAccount = seed.account({ title: 'Funding account', type: AccountTypeEnum.BANK_SYNC });
+        const debtAccount = await accountDebtOpeningService.openDebtWithFundingAccount(
+            {
+                title: debtType === AccountDebtTypeEnum.LENT ? 'Alex owes me' : 'I owe Alex',
+                iban: null,
+                icon: UserIconNameEnum.HandCoins,
+                instrumentId: fundingAccount.instrumentId,
+                type: AccountTypeEnum.DEBT,
+                debtType,
+                currentBalance: 0,
+                targetBalance: 1_000,
+                contactId: null,
+                deadline: null
+            },
+            fundingAccount.id
+        );
+        const repaymentType = debtType === AccountDebtTypeEnum.LENT ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
+        const isRepaymentExpense = repaymentType === TransactionTypeEnum.EXPENSE;
+        const repayment = insertOne(TransactionEntityTable, {
+            type: repaymentType,
+            title: 'Repayment',
+            externalId: null,
+            externalSource: ExternalSourceEnum.MONOBANK,
+            operatedAt: OPERATED_AT,
+            comment: '',
+            exchangeRate: 1,
+            updatedBy: null,
+            fromAccountId: isRepaymentExpense ? fundingAccount.id : null,
+            toAccountId: isRepaymentExpense ? null : fundingAccount.id
+        } satisfies TransactionCreateEntityInterface);
+
+        insertOne(TransactionEntryEntityTable, {
+            transactionId: repayment.id,
+            accountId: fundingAccount.id,
+            type: isRepaymentExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT,
+            kind: TransactionEntryKindEnum.PRIMARY,
+            amount: convertToMicroUnits(250),
+            categoryId: null,
+            mccCategoryId: null,
+            externalId: null,
+            exchangeRate: 1,
+            baseInstrumentId: 1,
+            baseExchangeRate: 1,
+            baseAmount: convertToMicroUnits(250),
+            toIban: null,
+            originalTransactionId: null
+        } satisfies TransactionEntryCreateEntityInterface);
+
+        await transactionDebtSettlementService.attach({ transactionId: repayment.id, debtAccountId: debtAccount.id });
+
+        expectDebtProgressContract(debtAccount.id, { outstandingAmount: 750, paidAmount: 250, totalAmount: 1_000, percentage: 25 });
     });
 
     it('sums the section total in the default instrument when the debt is already in the default currency', () => {
