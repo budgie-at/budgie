@@ -360,7 +360,7 @@ class AccountService {
             tx
         );
 
-        await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro, updatedAt: new Date() }, tx);
+        await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
     }
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Existing private orchestration keeps positional arguments
