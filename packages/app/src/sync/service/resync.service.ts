@@ -1,9 +1,9 @@
-import { SyncBalanceAuthorityEnum, transactionAsync } from '@budgie/contracts';
+import { transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { accountBalanceRepository, db, syncRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { db, syncRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 
@@ -23,45 +23,21 @@ class ResyncService {
         (error, input) => `throw accountId=${input.accountId} sinceDays=${String(input.sinceDays)} error=${getErrorMessage(error)}`
     )
     async resync(input: ResyncInputInterface): Promise<void> {
-        const providerBalance = isDefined(input.sinceDays)
-            ? null
-            : await monobankSyncService.fetchFreshProviderBalanceByAccountId(input.accountId).catch(() => null);
-        const anchorCapturedAt = new Date();
-
-        await transactionAsync(db, async tx => {
-            if (isDefined(input.sinceDays)) {
-                await this.resyncWindowed(input.accountId, input.sinceDays, tx);
-
-                return;
-            }
-
-            await this.resyncFull(input.accountId, providerBalance, anchorCapturedAt, tx);
-        });
+        const { accountId, sinceDays } = input;
+        if (isDefined(sinceDays)) {
+            await transactionAsync(db, async tx => this.resyncWindowed(accountId, sinceDays, tx));
+        } else {
+            const setupBalance = await monobankSyncService.fetchSetupBalance(accountId);
+            await transactionAsync(db, async tx => this.resyncFull(accountId, setupBalance, tx));
+        }
 
         syncWorkloadService.run('manual-monobank-resync', () => monobankSyncService.sync()).catch(emptyFn);
     }
 
-    @Log(
-        (accountId, providerBalance, anchorCapturedAt, tx) =>
-            `enter accountId=${accountId} providerBalance=${String(providerBalance)} anchorCapturedAt=${anchorCapturedAt.toISOString()} hasTx=${String(isDefined(tx))}`,
-        (_result, ...[accountId, providerBalance, anchorCapturedAt, tx]) =>
-            `done accountId=${accountId} providerBalance=${String(providerBalance)} anchorCapturedAt=${anchorCapturedAt.toISOString()} hasTx=${String(isDefined(tx))}`,
-        (error, ...[accountId, providerBalance, anchorCapturedAt, tx]) =>
-            `throw accountId=${accountId} providerBalance=${String(providerBalance)} anchorCapturedAt=${anchorCapturedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    private async resyncFull(accountId: number, providerBalance: number | null, anchorCapturedAt: Date, tx: DB): Promise<void> {
+    private async resyncFull(accountId: number, setupBalance: number, tx: DB): Promise<void> {
         const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIds([accountId], tx);
         await this.unconsolidateCanonicals(canonicals, tx);
-        await syncRepository.resetForResync(
-            accountId,
-            anchorCapturedAt,
-            isDefined(providerBalance) ? SyncBalanceAuthorityEnum.PROVIDER : SyncBalanceAuthorityEnum.LEDGER,
-            tx
-        );
-
-        if (isDefined(providerBalance)) {
-            await accountBalanceRepository.upsert({ accountId, amount: providerBalance, updatedAt: anchorCapturedAt }, tx);
-        }
+        await syncRepository.resetForResync(accountId, setupBalance, tx);
     }
 
     private async resyncWindowed(accountId: number, sinceDays: number, tx: DB): Promise<void> {

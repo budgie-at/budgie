@@ -1,26 +1,15 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import {
-    AccountTypeEnum,
-    SyncBalanceAuthorityEnum,
-    SyncModeEnum,
-    TransactionEntityTable,
-    TransactionEntryEntityTable
-} from '@budgie/contracts';
+import { AccountTypeEnum, SyncModeEnum, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, fetchSyncById, monobankStub, seed, testDb } from '../../harness';
+import { buildMonobank, monobankStub, seed, testDb } from '../../harness';
 
 describe('monobank/consolidation-survives-resync', () => {
     it('re-importing a consolidated source transaction must not destroy the canonical TRANSFER (regression: bug 2)', async () => {
         const fromAccount = seed.account({ externalId: 'mono-acc-1', type: AccountTypeEnum.BANK_SYNC });
         const toAccount = seed.account({ externalId: 'mono-acc-2', type: AccountTypeEnum.BANK_SYNC });
-        const sync = seed.sync({
-            accountId: fromAccount.id,
-            mode: SyncModeEnum.FORWARD,
-            forwardSyncFromAt: new Date(2026, 0, 1),
-            balanceAuthority: SyncBalanceAuthorityEnum.LEDGER
-        });
+        seed.sync({ accountId: fromAccount.id, mode: SyncModeEnum.FORWARD, forwardSyncFromAt: new Date(2026, 0, 1) });
 
         const operatedAt = new Date(2026, 0, 15);
 
@@ -155,6 +144,5 @@ describe('monobank/consolidation-survives-resync', () => {
         expect(shadowEntry).toHaveLength(1);
         expect(shadowEntry[0].originalTransactionId).toBe(sourceExpense.id);
         expect(shadowEntry[0].transactionId).toBe(canonicalTransfer.id);
-        expect(fetchSyncById(sync.id).balanceAuthority).toBe(SyncBalanceAuthorityEnum.LEDGER);
     });
 });

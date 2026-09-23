@@ -182,15 +182,10 @@ class TransactionService {
             `throw accountId=${accountId} delta=${delta} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async createBalanceAdjustment(accountId: number, delta: number, operatedAt: Date, tx: DB): Promise<number> {
-        const amount = Math.abs(delta);
         const isIncome = isPositiveNumber(delta);
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-            accountId,
-            amount,
-            operatedAt,
-            externalSource: null,
-            tx
-        });
+        const amount = Math.abs(delta);
+        const valuation = await entryBaseValuationService.valueMicroUnitEntry({ accountId, amount, operatedAt, externalSource: null, tx });
+
         const transaction = await transactionRepository.create(
             {
                 type: TransactionTypeEnum.ADJUSTMENT,
@@ -255,13 +250,12 @@ class TransactionService {
     }
 
     @Log(
-        (accountId, tx) => `enter accountId=${accountId} hasTx=${String(isDefined(tx))}`,
-        (result, accountId, tx) =>
-            `done accountId=${accountId} hasTx=${String(isDefined(tx))} earliestAt=${result?.toISOString() ?? 'null'}`,
-        (error, accountId, tx) => `throw accountId=${accountId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        accountId => `enter accountId=${accountId}`,
+        (result, accountId) => `done accountId=${accountId} earliestAt=${result?.toISOString() ?? 'null'}`,
+        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
     )
-    async getEarliestTransactionTimeByAccountId(accountId: number, tx?: DB): Promise<Date | null> {
-        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest', tx);
+    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
+        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
     }
 
     @Log(

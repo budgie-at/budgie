@@ -7,7 +7,6 @@ import { InstrumentPriceProviderEnum } from '../enum/instrument-price-provider.e
 import { InstrumentTypeEnum } from '../enum/instrument-type.enum';
 import { InstrumentEntityTable } from '../table/instrument-entity.table';
 
-import type { DB } from '../../@generic/type/db.type';
 import type * as schema from '../../schema';
 import type { InstrumentEntityInterface } from '../entity/instrument-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
@@ -20,8 +19,8 @@ export class InstrumentRepository {
         result => `done codes=${result.map(instrument => instrument.code).join(',')}`,
         error => `throw error=${getErrorMessage(error)}`
     )
-    async getAll(tx?: DB): Promise<InstrumentEntityInterface[]> {
-        return await (tx ?? this.db).query.InstrumentEntityTable.findMany();
+    async getAll(): Promise<InstrumentEntityInterface[]> {
+        return await this.db.query.InstrumentEntityTable.findMany();
     }
 
     @Log(
