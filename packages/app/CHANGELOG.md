@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.77.0](https://github.com/budgie-at/budgie/compare/v6.76.0...v6.77.0) (2026-09-24)
+
+
+### Bug Fixes
+
+* **app:** address widget review findings ([e3338e5](https://github.com/budgie-at/budgie/commit/e3338e58a1ee8a627ec088d97ef5ac6f21487103))
+* **app:** address widget review findings ([9ddbb94](https://github.com/budgie-at/budgie/commit/9ddbb94d523f7ab3504c3c7440d9b5025324ee16))
+* **app:** make quick add medium and harden expo widgets ([7c11ead](https://github.com/budgie-at/budgie/commit/7c11eadeaf031a88b9ca6547a08deea685c533ea))
+* **app:** order widget amounts migration after shipped 0060 ([025d5ad](https://github.com/budgie-at/budgie/commit/025d5ad98e8fd2cb7038a587b000b632f79cfeb1))
+* **app:** pluralise the widget days-left text and harden the snapshot file ([6c217ac](https://github.com/budgie-at/budgie/commit/6c217ac8ee79e273c2946f69f1a0367d2310410d))
+* **app:** release the widget lock when the PIN rekey fails ([ab990d3](https://github.com/budgie-at/budgie/commit/ab990d3255e9a4f18f63b2faec05374ee68af277))
+* **app:** show the overspend when a budget is over its limit ([5242007](https://github.com/budgie-at/budgie/commit/524200723db599dac6f9d91272a3fd6ed6ce71b8))
+* **app:** stop the widget target inheriting the ccache compiler ([fcffad4](https://github.com/budgie-at/budgie/commit/fcffad44f242ed9c8bc581b8261093f1d45889f3))
+
+
+### Features
+
+* **app:** add ios widget extension target ([383a337](https://github.com/budgie-at/budgie/commit/383a337c32da0e3ed9fe6c81ade97840add78bd6))
+* **app:** add net worth ios widget ([50dcb30](https://github.com/budgie-at/budgie/commit/50dcb30308f0db519b594754a3e7cdbfef3b00a7))
+* **app:** add quick add ios widget ([20bd2ef](https://github.com/budgie-at/budgie/commit/20bd2eff7932dffcf5088cff664efe43c31b95bd))
+* **app:** add runway ios widget ([4b6f22b](https://github.com/budgie-at/budgie/commit/4b6f22badb2e14377c97f2e8e0a54186a2012336))
+* **app:** add spending ios widget ([bb075e8](https://github.com/budgie-at/budgie/commit/bb075e8e10970fb2708d76377ae114ec53e0189a))
+* **app:** break the net worth widget down by account type ([e1bb60c](https://github.com/budgie-at/budgie/commit/e1bb60cdc988f8e7c400d7da2867012aff0766f6))
+* **app:** hide widget amounts for users with a pin ([ba8e599](https://github.com/budgie-at/budgie/commit/ba8e599921df2cedfddc58b8250b7460472a0a88))
+* **app:** make the small quick add widget a four-square grid ([5464019](https://github.com/budgie-at/budgie/commit/5464019d4b9bccdad9cc5e76ffcb0d0f0ffb3e26))
+* **app:** publish widget snapshot to the shared app group ([6c6143d](https://github.com/budgie-at/budgie/commit/6c6143d0df7177cf9d8f31d59c851c6b6cc1ed63))
+
+
+
+
+
 # [6.76.0](https://github.com/budgie-at/budgie/compare/v6.75.2...v6.76.0) (2026-09-24)
 
 
