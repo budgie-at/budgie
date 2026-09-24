@@ -228,7 +228,7 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
-        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v3.0.2 # v3.0.2
+        uses: rnw-community/mobile-ci/.github/workflows/expo-ota-preview.yml@v3.1.0 # v3.1.0
         with:
             app-dir: packages/app
             scheme: budgie
@@ -247,7 +247,7 @@ jobs:
         permissions:
             contents: read
             pull-requests: read
-        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@v3.0.2 # v3.0.2
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@v3.1.0 # v3.1.0
         with:
             working-directory: packages/app
             platforms: ios,android
@@ -270,7 +270,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.0.2 # v3.0.2
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@v3.1.0 # v3.1.0
         with:
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
@@ -290,8 +290,8 @@ jobs:
             pre-test-command: bash tests/app-tests/scripts/setup-ios-e2e-fixtures.sh "$SIMULATOR_UDID" "$APP_ID"
             pre-flow-command: bash tests/app-tests/scripts/seed-flow-fixture.sh
             flow-retries: '1'
-            maestro-version: '2.6.1'
             simulator-device: iPhone 17 Pro
+            simulator-reduce-motion: 'true'
             simulator-requires: push,universal-links
             test-timeout-minutes: 110
             install-command: pnpm install --frozen-lockfile
