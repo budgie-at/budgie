@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.78.0](https://github.com/budgie-at/budgie/compare/v6.77.0...v6.78.0) (2026-09-24)
+
+
+### Bug Fixes
+
+* **app:** capture a setup balance only for Monobank full resyncs ([17bd76c](https://github.com/budgie-at/budgie/commit/17bd76cd335356426cfe61deb19f473c033c0241))
+* **sync:** release provider balance authority and simplify reconciliation ([b4356f3](https://github.com/budgie-at/budgie/commit/b4356f3acf6f34377fe95d5d6f28430640033ef5)), closes [#1159](https://github.com/budgie-at/budgie/issues/1159) [#1167](https://github.com/budgie-at/budgie/issues/1167) [#1167](https://github.com/budgie-at/budgie/issues/1167)
+
+
+### Features
+
+* **app:** anchor Monobank balances during setup ([ff0d361](https://github.com/budgie-at/budgie/commit/ff0d361a977a62637f3d2519ea5bfa93587225af))
+* **app:** preserve provider-authoritative balances ([a3a33b7](https://github.com/budgie-at/budgie/commit/a3a33b734b4f19b2ace8dc437a7e1e2f4a958193))
+* **app:** reconcile Monobank balances atomically ([bb24ae0](https://github.com/budgie-at/budgie/commit/bb24ae013602cffdf39b3d65d3c888ed3a797992))
+* **app:** replace Monobank corrections on full resync ([cf33fa3](https://github.com/budgie-at/budgie/commit/cf33fa3ae82bd2ada0d27b91c27a41163e600887))
+* **app:** rotate Monobank backward batches fairly ([927eaf8](https://github.com/budgie-at/budgie/commit/927eaf808c85a1afe2944d6a2e1878554b674f20))
+* **contracts:** persist sync balance authority ([e756009](https://github.com/budgie-at/budgie/commit/e7560094f7e8d456a565c872bc31280169d19762))
+
+
+
+
+
 ## [6.75.2](https://github.com/budgie-at/budgie/compare/v6.75.1...v6.75.2) (2026-09-23)
 
 
