@@ -76,6 +76,9 @@ class AuthService {
                 isBiometricEnabled,
                 isPinEnabled: true
             }
+        }).catch((error: unknown) => {
+            widgetSnapshotService.unlock();
+            throw error;
         });
     }
 
