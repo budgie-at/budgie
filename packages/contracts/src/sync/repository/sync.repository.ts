@@ -152,7 +152,7 @@ export class SyncRepository {
         }
     }
 
-    async resetForResync(accountId: number, setupBalance: number, tx?: DB): Promise<void> {
+    async resetForResync(accountId: number, setupBalance: number | null, tx?: DB): Promise<void> {
         const now = new Date();
         await (tx ?? this.db)
             .update(SyncEntityTable)

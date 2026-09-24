@@ -5,6 +5,7 @@ import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { resyncService } from '@app/sync/service/resync.service';
 import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
 import {
+    ExternalSourceEnum,
     SyncModeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
@@ -16,7 +17,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { buildMonobank, monobankStub, testDb } from '../../harness';
+import { buildMonobank, monobankStub, seed, testDb } from '../../harness';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 import type { Account } from '@liaugust/monobank-sdk';
@@ -156,5 +157,16 @@ describe('monobank/setup-balance', () => {
 
         expect(failedResyncMode).toBe(SyncModeEnum.FORWARD);
         expectReconciledTo(account.id, 1_000_000_000);
+    });
+
+    it('resyncs a Binance account fully without capturing a Monobank setup balance', async () => {
+        const account = seed.account({ externalId: 'binance-spot' });
+        seed.sync({ accountId: account.id, provider: ExternalSourceEnum.BINANCE });
+        const fetchSetupBalanceSpy = vi.spyOn(monobankSyncService, 'fetchSetupBalance');
+
+        await resyncService.resync({ accountId: account.id, sinceDays: null });
+
+        expect(fetchSetupBalanceSpy).not.toHaveBeenCalled();
+        await expect(syncRepository.getByAccountId(account.id)).resolves.toMatchObject({ mode: SyncModeEnum.BACKWARD, setupBalance: null });
     });
 });
