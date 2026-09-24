@@ -96,6 +96,10 @@ msgstr "{count, plural, one {Ця категорія має # транзакці
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
+msgstr "{daysRemaining, plural, one {Залишився # день} few {Залишилося # дні} many {Залишилося # днів} other {Залишилося # дня}}"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {category}"
 msgstr "{formattedAmount} · {category}"
@@ -188,6 +192,7 @@ msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
+#: src/widget/service/widget-snapshot.service.ts
 msgid "+{formattedNet} / mo"
 msgstr "+{formattedNet} / міс."
 
@@ -204,6 +209,7 @@ msgid ">"
 msgstr ">"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
+#: src/widget/service/widget-snapshot.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} міс."
 
@@ -677,6 +683,7 @@ msgid "Borrowed debt account expected"
 msgstr "Очікувався рахунок позиченого боргу"
 
 #: src/app/(tabs)/settings/index.tsx
+#: src/widget/service/widget-snapshot.service.ts
 msgid "Budget"
 msgstr "Бюджет"
 
@@ -811,6 +818,7 @@ msgstr "Категоризує транзакції, пропонує теги �
 #: src/category/components/category-form-selector/category-form-selector.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/widget/service/widget-snapshot.service.ts
 msgid "Category"
 msgstr "Категорія"
 
@@ -1830,6 +1838,7 @@ msgstr "Очікувана дата повернення (Необов'язко�
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/widget/service/widget-snapshot.service.ts
 msgid "Expense"
 msgstr "Витрата"
 
@@ -2151,6 +2160,7 @@ msgstr "Включно з криптовалютою"
 #: src/transaction/components/statistics-content/statistics-content.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/widget/service/widget-snapshot.service.ts
 msgid "Income"
 msgstr "Дохід"
 
@@ -2267,6 +2277,10 @@ msgstr "Навчання на транзакціях"
 #: src/ai/service/ai-embedding-status.service.ts
 msgid "Learning up to date"
 msgstr "Навчання актуальне"
+
+#: src/widget/service/widget-snapshot.service.ts
+msgid "left"
+msgstr "лишилось"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
@@ -2508,6 +2522,10 @@ msgstr "Перейдіть до Рахунок → Виписки"
 msgid "Net"
 msgstr "Чистий"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "Net worth"
+msgstr "Чисті активи"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
 msgstr "Новий рахунок"
@@ -2553,6 +2571,10 @@ msgstr "Ще немає рахунків"
 #: src/app/transaction-account-filter.tsx
 msgid "No Accounts Yet"
 msgstr "Ще немає рахунків"
+
+#: src/widget/service/widget-snapshot.service.ts
+msgid "No active budget"
+msgstr "Немає активного бюджету"
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 msgid "No Archived Accounts"
@@ -2798,6 +2820,10 @@ msgstr "Можна конвертувати лише доходи з одним 
 msgid "Open Binance to get your API key"
 msgstr "Відкрийте Binance, щоб отримати API-ключ"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "Open Budgie to see your finances"
+msgstr "Відкрийте Budgie, щоб побачити свої фінанси"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "Відкрийте George (онлайн-банкінг Erste Bank)"
@@ -2864,6 +2890,10 @@ msgstr "Бюджет «Інше»: використано {threshold}%"
 msgid "Other budget: limit reached"
 msgstr "Бюджет «Інше»: ліміт досягнуто"
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "over"
+msgstr "перевитрата"
+
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
 msgid "Over budget"
@@ -2919,6 +2949,10 @@ msgstr "Вставте свій API-секрет Binance:"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
 msgstr "PDF-виписка"
+
+#: src/widget/service/widget-snapshot.service.ts
+msgid "per day"
+msgstr "на день"
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "per month"
@@ -3824,6 +3858,10 @@ msgstr "Ця резервна копія захищена PIN-кодом. Імп
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Цей консолідований переказ не має перенесених вихідних записів."
 
+#: src/widget/service/widget-snapshot.service.ts
+msgid "This month"
+msgstr "Цього місяця"
+
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Month"
 msgstr "Цього місяця"
@@ -4000,6 +4038,7 @@ msgstr "Помилка транскрипції"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/widget/service/widget-snapshot.service.ts
 msgid "Transfer"
 msgstr "Переказ"
 

@@ -3,13 +3,14 @@ import { Log } from '@budgie/logger';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
 import { databaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
 import { databaseRekeyService } from '../../@generic/drizzle/service/database-rekey.service';
 import { RekeyParamsInterface } from '../../@generic/drizzle/service/interface/rekey-params.interface';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
+import { widgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { PIN_KEY } from '../constant/pin-key.constant';
 import { PIN_SECURE_STORE_OPTIONS } from '../constant/pin-secure-store-options.constant';
 import { BiometricTypesInterface } from '../interface/biometric-types.interface';
@@ -68,12 +69,16 @@ class AuthService {
     }
 
     async createPin(pin: string, isBiometricEnabled: boolean): Promise<void> {
+        await widgetSnapshotService.mask().catch(emptyFn);
         await this.rekeyDatabase({
             nextKey: pin,
             nextSettings: {
                 isBiometricEnabled,
                 isPinEnabled: true
             }
+        }).catch((error: unknown) => {
+            widgetSnapshotService.unlock();
+            throw error;
         });
     }
 
