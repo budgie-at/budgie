@@ -1,4 +1,4 @@
-import { transactionAsync } from '@budgie/contracts';
+import { ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -27,14 +27,16 @@ class ResyncService {
         if (isDefined(sinceDays)) {
             await transactionAsync(db, async tx => this.resyncWindowed(accountId, sinceDays, tx));
         } else {
-            const setupBalance = await monobankSyncService.fetchSetupBalance(accountId);
+            const sync = await syncRepository.getByAccountId(accountId);
+            const setupBalance =
+                sync?.provider === ExternalSourceEnum.MONOBANK ? await monobankSyncService.fetchSetupBalance(accountId) : null;
             await transactionAsync(db, async tx => this.resyncFull(accountId, setupBalance, tx));
         }
 
         syncWorkloadService.run('manual-monobank-resync', () => monobankSyncService.sync()).catch(emptyFn);
     }
 
-    private async resyncFull(accountId: number, setupBalance: number, tx: DB): Promise<void> {
+    private async resyncFull(accountId: number, setupBalance: number | null, tx: DB): Promise<void> {
         const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIds([accountId], tx);
         await this.unconsolidateCanonicals(canonicals, tx);
         await syncRepository.resetForResync(accountId, setupBalance, tx);
