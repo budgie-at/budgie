@@ -27,6 +27,8 @@ env:
 - tapOn:
       id: '${CARD_ID}'
 
+- waitForAnimationToEnd
+
 - extendedWaitUntil:
       visible:
           id: '${DESTINATION_ID}'
