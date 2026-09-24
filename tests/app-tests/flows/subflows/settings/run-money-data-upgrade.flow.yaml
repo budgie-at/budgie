@@ -13,7 +13,6 @@ appId: ${APP_ID}
           id: 'SettingsPage.MoneyDataUpgradeCard'
       direction: DOWN
       centerElement: true
-      timeout: 45000
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:

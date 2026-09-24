@@ -14,13 +14,11 @@ import { createWidget, type WidgetEnvironment } from 'expo-widgets';
 import { WidgetNameEnum } from '../enum/widget-name.enum';
 
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
-import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-snapshot.interface';
 import type { WidgetSnapshotStringsInterface } from '../interface/widget-snapshot-strings.interface';
 
 interface Props {
     readonly isEmpty: boolean;
     readonly netWorth: WidgetNetWorthSnapshotInterface;
-    readonly runway: WidgetRunwaySnapshotInterface;
     readonly strings: WidgetSnapshotStringsInterface;
     readonly homeUrl: string;
 }
@@ -29,8 +27,8 @@ const NetWorth = (props: Props, environment: WidgetEnvironment) => {
     'widget';
 
     const backgroundColor = environment.colorScheme === 'dark' ? 'black' : 'white';
-    const runwayColor = props.runway.isPositive ? 'green' : 'orange';
-    const runwaySymbol = props.runway.isPositive ? 'chart.line.uptrend.xyaxis' : 'chart.line.downtrend.xyaxis';
+    const runwayColor = props.netWorth.runway.isPositive ? 'green' : 'orange';
+    const runwaySymbol = props.netWorth.runway.isPositive ? 'chart.line.uptrend.xyaxis' : 'chart.line.downtrend.xyaxis';
     const style = {
         container: [
             containerBackground(backgroundColor, 'widget'),
@@ -70,10 +68,10 @@ const NetWorth = (props: Props, environment: WidgetEnvironment) => {
         </HStack>
     );
     const runway =
-        props.runway.label === '' ? null : (
+        props.netWorth.runway.label === '' ? null : (
             <HStack spacing={4} modifiers={style.sensitive}>
                 <Image systemName={runwaySymbol} size={11} color={runwayColor} />
-                <Text modifiers={style.runway}>{props.runway.label}</Text>
+                <Text modifiers={style.runway}>{props.netWorth.runway.label}</Text>
             </HStack>
         );
 

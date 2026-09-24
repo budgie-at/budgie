@@ -12,13 +12,18 @@ env:
       waitToSettleTimeoutMs: 1000
       optional: true
 
-- scrollUntilVisible:
-      element:
-          id: '${CARD_ID}'
-      direction: DOWN
-      speed: 20
-      centerElement: true
-      waitToSettleTimeoutMs: 1000
+- runFlow:
+      when:
+          notVisible:
+              id: '${CARD_ID}'
+      commands:
+          - scrollUntilVisible:
+                element:
+                    id: '${CARD_ID}'
+                direction: DOWN
+                speed: 20
+                centerElement: true
+                waitToSettleTimeoutMs: 1000
 
 - waitForAnimationToEnd
 - extendedWaitUntil:

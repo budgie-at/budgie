@@ -65,10 +65,9 @@ class WidgetSnapshotService {
         formattedTotal: '',
         formattedDelta: '',
         deltaColor: 'secondary',
-        accountTypes: []
+        accountTypes: [],
+        runway: { isPositive: true, label: '' }
     };
-
-    private static readonly EMPTY_RUNWAY: WidgetRunwaySnapshotInterface = { isPositive: true, label: '' };
 
     private static readonly EMPTY_BUDGET: WidgetBudgetSnapshotInterface = {
         formattedSpent: '',
@@ -151,7 +150,6 @@ class WidgetSnapshotService {
         NetWorthWidget.updateSnapshot({
             isEmpty: !isDefined(snapshot.netWorth),
             netWorth: snapshot.netWorth ?? WidgetSnapshotService.EMPTY_NET_WORTH,
-            runway: snapshot.runway ?? WidgetSnapshotService.EMPTY_RUNWAY,
             strings: snapshot.strings,
             homeUrl: WidgetSnapshotService.LINKS.homeUrl
         });
@@ -200,14 +198,13 @@ class WidgetSnapshotService {
             language,
             locale: languageToLocale(language),
             decimalPlaces: (settings?.showCents ?? true) ? DEFAULT_DECIMAL_PLACES : 0,
-            isMasked: isMaskForced || !(settings?.isWidgetAmountsEnabled ?? true)
+            isMasked: isMaskForced || (settings?.isPinEnabled ?? false)
         };
 
         return {
             strings: this.buildStrings(context.i18n),
-            netWorth: await this.buildNetWorth(instrument, context),
-            budget: await this.buildBudget(context),
-            runway: await this.buildRunway(instrument, settings?.isRunwayCryptoIncluded ?? false, context)
+            netWorth: await this.buildNetWorth(instrument, settings?.isRunwayCryptoIncluded ?? false, context),
+            budget: await this.buildBudget(context)
         };
     }
 
@@ -229,6 +226,7 @@ class WidgetSnapshotService {
 
     private async buildNetWorth(
         instrument: InstrumentEntityInterface,
+        isRunwayCryptoIncluded: boolean,
         context: WidgetSnapshotContextInterface
     ): Promise<WidgetNetWorthSnapshotInterface | null> {
         const [netWorthRows, homeRows, monthRows] = await Promise.all([
@@ -251,7 +249,8 @@ class WidgetSnapshotService {
             formattedTotal: this.formatWithSymbol(total, instrument.symbol, context),
             formattedDelta: this.formatDelta(monthlyNet, instrument.symbol, context),
             deltaColor: this.resolveDeltaColor(monthlyNet),
-            accountTypes: this.buildAccountTypeTotals(homeRows, instrument.symbol, context)
+            accountTypes: this.buildAccountTypeTotals(homeRows, instrument.symbol, context),
+            runway: (await this.buildRunway(instrument, isRunwayCryptoIncluded, context)) ?? WidgetSnapshotService.EMPTY_NET_WORTH.runway
         };
     }
 

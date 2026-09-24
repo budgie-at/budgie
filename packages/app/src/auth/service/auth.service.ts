@@ -74,8 +74,7 @@ class AuthService {
             nextKey: pin,
             nextSettings: {
                 isBiometricEnabled,
-                isPinEnabled: true,
-                isWidgetAmountsEnabled: false
+                isPinEnabled: true
             }
         });
     }
