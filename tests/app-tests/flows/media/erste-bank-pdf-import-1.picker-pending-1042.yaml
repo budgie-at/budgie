@@ -17,7 +17,6 @@ appId: ${APP_ID}
           id: 'CreateAccount.ERSTE'
       direction: DOWN
       timeout: 10000
-      visibilityPercentage: 80
       centerElement: false
       speed: 20
 

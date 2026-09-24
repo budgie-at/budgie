@@ -58,7 +58,7 @@ appId: ${APP_ID}
           id: 'TagPickerBottomSheet.Input'
 - tapOn:
       id: 'TagPickerBottomSheet.Input'
-- eraseText: 80
+- eraseText: 20
 - inputText: 'E2E Txn Primary Tag'
 - tapOn:
       id: 'TagPickerBottomSheet.CreateButton'

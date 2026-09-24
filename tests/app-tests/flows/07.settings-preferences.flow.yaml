@@ -10,8 +10,6 @@ appId: ${APP_ID}
       env:
           DEEP_LINK: 'budgie://settings?anchor=general'
 
-- waitForAnimationToEnd
-
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.LanguageCard.en'
@@ -20,6 +18,7 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
+          SETTINGS_ANCHOR: 'general'
           CARD_ID: '^SettingsPage[.]LanguageCard[.].+$'
           DESTINATION_ID: 'LanguageSelector.SearchInput'
 - tapOn:
@@ -39,6 +38,7 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
+          SETTINGS_ANCHOR: 'general'
           CARD_ID: '^SettingsPage[.]LanguageCard[.].+$'
           DESTINATION_ID: 'LanguageSelector.SearchInput'
 - tapOn:
@@ -58,6 +58,7 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
+          SETTINGS_ANCHOR: 'general'
           CARD_ID: '^SettingsPage[.]MainCurrencyCard[.].+$'
           DESTINATION_ID: 'CurrencySelector.SearchInput'
 - tapOn:
@@ -77,6 +78,7 @@ appId: ${APP_ID}
 - runFlow:
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
+          SETTINGS_ANCHOR: 'general'
           CARD_ID: '^SettingsPage[.]DefaultAccountCard[.].+$'
           DESTINATION_ID: 'AccountPickerBottomSheet.Input'
 - tapOn:
@@ -132,7 +134,6 @@ appId: ${APP_ID}
       file: subflows/navigation/open-deep-link.flow.yaml
       env:
           DEEP_LINK: 'budgie://settings?anchor=appearance'
-- waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.ShowCentsCard'

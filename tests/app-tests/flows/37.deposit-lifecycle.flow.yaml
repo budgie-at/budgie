@@ -20,14 +20,14 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'CreateAccount.Amount'
-- eraseText: 100
+- eraseText: 20
 - inputText: '500'
 
 - tapOn:
       id: 'AccountForm.NameInput'
 - inputText: 'E2E Deposit Account'
 - tapOn:
-      text: 'Deposit Account'
+      id: 'AccountForm.ScrollView.Header'
 
 - scrollUntilVisible:
       element:
@@ -36,10 +36,10 @@ appId: ${APP_ID}
       centerElement: true
 - tapOn:
       id: 'AccountForm.InterestRateInput'
-- eraseText: 100
+- eraseText: 20
 - inputText: '12'
 - tapOn:
-      text: 'Deposit Account'
+      id: 'AccountForm.ScrollView.Header'
 
 - scrollUntilVisible:
       element:
@@ -312,7 +312,7 @@ appId: ${APP_ID}
       centerElement: true
 - tapOn:
       id: 'AccountForm.InterestRateInput'
-- eraseText: 100
+- eraseText: 20
 - inputText: '5'
 - tapOn:
       text: 'Account Settings'

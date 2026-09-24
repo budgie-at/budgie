@@ -14,7 +14,6 @@ appId: ${APP_ID}
           id: 'CreateAccount.ERSTE'
       direction: DOWN
       timeout: 10000
-      visibilityPercentage: 80
       centerElement: false
       speed: 20
 
@@ -35,7 +34,6 @@ appId: ${APP_ID}
           id: 'AccountCard.Erste EUR'
       direction: DOWN
       timeout: 10000
-      visibilityPercentage: 30
 
 - assertVisible:
       id: 'AccountCard.Balance.Erste_EUR._478'
@@ -92,7 +90,6 @@ appId: ${APP_ID}
       direction: DOWN
       timeout: 20000
       speed: 20
-      visibilityPercentage: 30
 
 - evalScript: ${output.phase = 'edit-then-reimport-no-duplicate'}
 
@@ -171,7 +168,6 @@ appId: ${APP_ID}
       direction: DOWN
       timeout: 20000
       speed: 20
-      visibilityPercentage: 30
 
 - runFlow:
       file: subflows/transactions/long-press-edit-transaction.flow.yaml

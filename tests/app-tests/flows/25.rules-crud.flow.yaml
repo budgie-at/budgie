@@ -51,7 +51,7 @@ env:
 
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
-- eraseText
+- eraseText: 15
 - inputText: Netflix Updated
 
 - tapOn: Done
@@ -77,13 +77,6 @@ env:
 - tapOn:
     id: 'RulesPage.RuleCardEnabledSwitch.0'
 - waitForAnimationToEnd
-
-- runFlow:
-    when:
-      visible: 'Edit Rule'
-    commands:
-      - tapOn: 'Cancel'
-      - waitForAnimationToEnd
 
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
@@ -641,8 +634,8 @@ env:
     env:
       CATEGORY_NAME: ${CATEGORY_NAME}
 
-- runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
+- tapOn:
+    id: 'RuleForm.Footer.SubmitButton'
 - extendedWaitUntil:
     visible:
       id: 'RulesPage.Page'
@@ -785,7 +778,6 @@ env:
 
 - tapOn:
     id: 'TabBar.Transactions'
-- waitForAnimationToEnd
 
 - extendedWaitUntil:
     visible:

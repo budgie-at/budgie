@@ -34,7 +34,6 @@ env:
 
 - tapOn:
     id: 'TransactionForm.CategorySelector.Title'
-- waitForAnimationToEnd
 - runFlow:
     file: ../shared/select-category-by-search.flow.yaml
     env:
@@ -56,7 +55,6 @@ env:
 
 - tapOn:
     id: 'PageHeader.BackButton'
-- waitForAnimationToEnd
 
 - runFlow:
     file: ../navigate-to-rules.flow.yaml

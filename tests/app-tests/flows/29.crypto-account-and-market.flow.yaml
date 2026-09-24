@@ -163,7 +163,6 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'CryptoGroup.Toggle.BTC'
-- waitForAnimationToEnd
 - extendedWaitUntil:
       notVisible:
           id: 'AccountCard.E2E Crypto Vault'

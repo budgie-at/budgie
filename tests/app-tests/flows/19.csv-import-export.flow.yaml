@@ -42,7 +42,6 @@ appId: ${APP_ID}
     direction: DOWN
     timeout: 10000
     speed: 20
-    visibilityPercentage: 30
     centerElement: true
 
 - waitForAnimationToEnd
@@ -158,10 +157,7 @@ appId: ${APP_ID}
     direction: DOWN
     timeout: 10000
     speed: 20
-    visibilityPercentage: 30
     centerElement: true
-
-- waitForAnimationToEnd
 
 - assertNotVisible:
     id: 'TransactionCard.Category.Other'

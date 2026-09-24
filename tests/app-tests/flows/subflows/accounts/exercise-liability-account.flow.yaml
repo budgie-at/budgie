@@ -111,7 +111,6 @@ appId: ${APP_ID}
     id: 'AccountForm.ActiveRow'
 - tapOn:
     id: 'AccountForm.SubmitButton'
-- waitForAnimationToEnd
 
 - extendedWaitUntil:
     visible:
