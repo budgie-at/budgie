@@ -27,7 +27,7 @@ appId: ${APP_ID}
       id: 'AccountForm.NameInput'
 - inputText: 'E2E Deposit Account'
 - tapOn:
-      id: 'AccountForm.ScrollView.Header'
+      text: 'Deposit Account'
 
 - scrollUntilVisible:
       element:
@@ -39,7 +39,7 @@ appId: ${APP_ID}
 - eraseText: 20
 - inputText: '12'
 - tapOn:
-      id: 'AccountForm.ScrollView.Header'
+      text: 'Deposit Account'
 
 - scrollUntilVisible:
       element:
