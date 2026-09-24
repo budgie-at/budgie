@@ -1,1 +1,1 @@
-export type SettingToggleKey = 'isBudgetWidgetEnabled' | 'isRunwayCryptoIncluded' | 'isRunwayPillEnabled' | 'isWidgetAmountsEnabled';
+export type SettingToggleKey = 'isBudgetWidgetEnabled' | 'isRunwayCryptoIncluded' | 'isRunwayPillEnabled';

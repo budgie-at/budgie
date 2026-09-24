@@ -414,13 +414,6 @@
             "when": 1789850000000,
             "tag": "0060_debt_v2_money_legs",
             "breakpoints": true
-        },
-        {
-            "idx": 61,
-            "version": "6",
-            "when": 1790166928464,
-            "tag": "0061_high_martin_li",
-            "breakpoints": true
         }
     ]
 }

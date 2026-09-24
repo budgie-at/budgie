@@ -487,10 +487,6 @@ msgstr "Сума"
 msgid "Amount first. Budgie picks the account and guesses the category."
 msgstr "Спочатку сума. Budgie обере рахунок і вгадає категорію."
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "Amounts in Widgets"
-msgstr "Суми у віджетах"
-
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "and"
 msgstr "та"
@@ -3580,10 +3576,6 @@ msgstr "Показати всі суми"
 #: src/app/date-filter.tsx
 msgid "Show all dates"
 msgstr "Показати всі дати"
-
-#: src/app/(tabs)/settings/index.tsx
-msgid "Show balances on home screen widgets instead of hiding them"
-msgstr "Показувати баланси у віджетах на головному екрані замість того, щоб їх приховувати"
 
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Show budget on home"

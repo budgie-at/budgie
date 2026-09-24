@@ -14,7 +14,6 @@ appId: ${APP_ID}
       direction: DOWN
       centerElement: true
       waitToSettleTimeoutMs: 1000
-      timeout: 45000
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
