@@ -1,8 +1,8 @@
 /* eslint-disable max-lines -- File owns the account-balance ledger and valuation SQL pipeline that must stay together */
 import { Log } from '@budgie/logger';
-import { type SQL, type SQLWrapper, and, eq, inArray, isNull, notInArray, sql } from 'drizzle-orm';
+import { type SQL, type SQLWrapper, and, eq, inArray, isNull, lte, notInArray, sql } from 'drizzle-orm';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
 import { getExchangeRateWithHistoricalFallbackSql } from '../../@generic/util/get-exchange-rate-sql.util';
@@ -14,6 +14,7 @@ import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
+import { SyncModeEnum } from '../../sync/enum/sync-mode.enum';
 import { SyncEntityTable } from '../../sync/table/sync-entity.table';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -73,6 +74,32 @@ export class AccountBalanceRepository {
             .from(DebtEventEntityTable)
             .where(and(inArray(DebtEventEntityTable.debtAccountId, accountIds), isNull(DebtEventEntityTable.deletedAt)))
             .groupBy(DebtEventEntityTable.debtAccountId);
+    }
+
+    @Log(
+        (accountId, operatedUntil, tx) =>
+            `enter accountId=${accountId} operatedUntil=${operatedUntil.toISOString()} hasTx=${String(isDefined(tx))}`,
+        (result, accountId, operatedUntil, tx) =>
+            `done accountId=${accountId} operatedUntil=${operatedUntil.toISOString()} hasTx=${String(isDefined(tx))} balance=${result}`,
+        (error, accountId, operatedUntil, tx) =>
+            `throw accountId=${accountId} operatedUntil=${operatedUntil.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async getLedgerBalanceUntil(accountId: number, operatedUntil: Date, tx?: DB): Promise<number> {
+        const [row] = await (tx ?? this.db)
+            .select({ balance: sql<number>`COALESCE(${this.getTransactionsSumSql()}, 0)`.mapWith(Number) })
+            .from(TransactionEntryEntityTable)
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+            .where(
+                and(
+                    eq(TransactionEntryEntityTable.accountId, accountId),
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    lte(TransactionEntityTable.operatedAt, operatedUntil),
+                    accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
+                    accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()
+                )
+            );
+
+        return row.balance;
     }
 
     getAssetClassTotals(defaultInstrumentId: number) {
@@ -332,7 +359,9 @@ export class AccountBalanceRepository {
 
         const ledgerSumSql = sql<number>`CASE WHEN ${inArray(sql.raw('accounts.type'), BANK_AUTHORITATIVE_ACCOUNT_TYPES)} THEN 0 ELSE COALESCE((${transactionsSumSinceLastBalanceSql}), 0) END`;
 
-        return sql<number>`COALESCE((${latestAccountBalanceSql}), 0) + ${ledgerSumSql}`;
+        const setupBalanceSql = sql<number>`SELECT ${SyncEntityTable.setupBalance} FROM ${SyncEntityTable} WHERE ${SyncEntityTable.accountId} = ${accountIdReference} AND ${SyncEntityTable.mode} = ${SyncModeEnum.BACKWARD} AND ${SyncEntityTable.deletedAt} IS NULL`;
+
+        return sql<number>`COALESCE((${setupBalanceSql}), COALESCE((${latestAccountBalanceSql}), 0) + ${ledgerSumSql})`;
     }
 
     private getTransactionsSumSql() {

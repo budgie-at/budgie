@@ -3,8 +3,6 @@ import {
     AccountNatureEnum,
     DebtEventDirectionEnum,
     DebtEventSourceEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
     getDebtClosedAmount,
     transactionAsync
 } from '@budgie/contracts';
@@ -25,7 +23,7 @@ import { foregroundWorkloadService } from '../../@generic/service/foreground-wor
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
-import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { transactionService } from '../../transaction/service/transaction.service';
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 import { updateDebtTargetBaseValuation } from '../util/update-debt-target-base-valuation.util';
 
@@ -324,41 +322,7 @@ class AccountService {
             return;
         }
 
-        const isIncome = isPositiveNumber(delta);
-        const amount = Math.abs(delta);
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({ accountId, amount, operatedAt, externalSource: null, tx });
-
-        const transaction = await transactionRepository.create(
-            {
-                type: TransactionTypeEnum.ADJUSTMENT,
-                title: '',
-                comment: '',
-                externalId: null,
-                externalSource: null,
-                operatedAt,
-                exchangeRate: valuation.baseExchangeRate ?? 1,
-                fromAccountId: isIncome ? null : accountId,
-                toAccountId: isIncome ? accountId : null,
-                updatedBy: null
-            },
-            tx
-        );
-
-        await transactionEntryRepository.create(
-            {
-                accountId,
-                transactionId: transaction.id,
-                categoryId: null,
-                mccCategoryId: null,
-                amount,
-                type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
-                exchangeRate: valuation.baseExchangeRate ?? 1,
-                baseInstrumentId: valuation.baseInstrumentId,
-                baseExchangeRate: valuation.baseExchangeRate,
-                baseAmount: valuation.baseAmount
-            },
-            tx
-        );
+        await transactionService.createBalanceAdjustment(accountId, delta, operatedAt, tx);
 
         await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
     }

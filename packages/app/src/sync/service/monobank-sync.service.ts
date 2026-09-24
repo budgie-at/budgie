@@ -1,17 +1,21 @@
 /* eslint-disable no-await-in-loop -- Sync orchestration requires sequential awaits */
 import { consolidationScopeService } from '@budgie/consolidation';
-import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, UserIconNameEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
+import { subSeconds } from 'date-fns/subSeconds';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository } from '../../@generic/drizzle/db/db';
+import { accountBalanceRepository, accountRepository, db, syncRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
+import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '../../rule/service/rule-engine.service';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
+import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';
 import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
@@ -20,6 +24,7 @@ import { getSyncModule, loadSyncModule } from '../util/load-sync-module.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
 import { AbstractPollingSyncService } from './abstract-polling-sync.service';
+import { syncIntegrationTokenService } from './sync-integration-token.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 import { transferConsolidationService } from './transfer-consolidation.service';
 
@@ -74,7 +79,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             const bankAccount = bankAccounts.find(acc => acc.id === externalId);
             if (isDefined(bankAccount)) {
                 const account = await this.getOrCreateSyncAccount(bankAccount);
-                await this.createOrUpdateSync(account.id, token, historyDepth);
+                await this.createOrUpdateSync(account.id, token, historyDepth, this.getOwnBalance(bankAccount));
             }
         }
 
@@ -92,6 +97,23 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         if (enabled) {
             void this.sync();
         }
+    }
+
+    @Log(
+        accountId => `enter accountId=${accountId}`,
+        (result, accountId) => `done accountId=${accountId} setupBalance=${result}`,
+        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
+    )
+    async fetchSetupBalance(accountId: number): Promise<number> {
+        const account = await accountRepository.findById(accountId);
+        const token = await syncIntegrationTokenService.resolveAccountToken(this.provider, accountId);
+        const bankAccounts = await this.fetchBankAccountsAndJars(token);
+        const bankAccount = bankAccounts.find(item => item.id === account?.externalId);
+        if (!isDefined(bankAccount)) {
+            throw new Error(UNKNOWN_SYNC_ERROR);
+        }
+
+        return this.getOwnBalance(bankAccount);
     }
 
     @Log(
@@ -184,6 +206,42 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         } finally {
             transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
         }
+    }
+
+    @InvalidateDatabaseLiveQuery()
+    @Log(
+        (sync, setupBalance, result) =>
+            `enter syncId=${sync.id} accountId=${sync.accountId} setupBalance=${setupBalance} transactionCount=${result.transactions.length}`,
+        (_result, ...[sync, setupBalance, result]) =>
+            `done syncId=${sync.id} accountId=${sync.accountId} setupBalance=${setupBalance} transactionCount=${result.transactions.length}`,
+        (error, ...[sync, setupBalance, result]) =>
+            `throw syncId=${sync.id} accountId=${sync.accountId} setupBalance=${setupBalance} transactionCount=${result.transactions.length} error=${getErrorMessage(error)}`
+    )
+    private async completeBackwardHistory(
+        sync: SyncEntityInterface,
+        setupBalance: number,
+        result: SyncBatchResultInterface
+    ): Promise<void> {
+        const setupAt = sync.forwardSyncFromAt ?? new Date();
+        const oldestTransactionAt = await transactionService.getEarliestTransactionTimeByAccountId(sync.accountId);
+        const openingBalanceAt = isDefined(oldestTransactionAt) ? subSeconds(oldestTransactionAt, 1) : setupAt;
+
+        await transactionAsync(db, async tx => {
+            if (isDefined(sync.balanceAdjustmentTransactionId)) {
+                await transactionRepository.deleteById(sync.balanceAdjustmentTransactionId, tx);
+            }
+
+            const delta = setupBalance - (await accountBalanceRepository.getLedgerBalanceUntil(sync.accountId, setupAt, tx));
+            const balanceAdjustmentTransactionId =
+                delta === 0 ? null : await transactionService.createBalanceAdjustment(sync.accountId, delta, openingBalanceAt, tx);
+
+            await syncRepository.update(
+                sync.id,
+                { ...this.resolveProgressUpdate(sync, result), setupBalance: null, balanceAdjustmentTransactionId },
+                tx
+            );
+            await accountBalanceIncrementalService.updateBalancesByAccountIds([sync.accountId], tx);
+        });
     }
 
     @Log(
@@ -326,6 +384,16 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         return [...accounts, ...jars];
     }
 
+    protected override async applyProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): Promise<void> {
+        if (sync.mode !== SyncModeEnum.BACKWARD || !result.completed || !isDefined(sync.setupBalance)) {
+            await super.applyProgressUpdate(sync, result);
+
+            return;
+        }
+
+        await this.completeBackwardHistory(sync, sync.setupBalance, result);
+    }
+
     protected override generateAccountTitle(account: SyncAccountInterface): string {
         const { SyncAccountTypeEnum } = getSyncModule();
 
@@ -375,6 +443,10 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         await this.reconcileChangedTransactions(changedTransactions);
 
         await microPause();
+    }
+
+    private getOwnBalance(bankAccount: SyncAccountInterface): number {
+        return convertToMicroUnits(bankAccount.balance) - convertToMicroUnits(bankAccount.creditLimit);
     }
 
     private buildInterruptedBatchResult(): SyncBatchResultInterface {
