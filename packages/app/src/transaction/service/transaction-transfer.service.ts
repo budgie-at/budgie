@@ -181,7 +181,9 @@ class TransactionTransferService {
         );
         const exchangeRate = hasCustomRate && isDefined(params.customExchangeRate) ? params.customExchangeRate : conversion.exchangeRate;
         const convertedAmount =
-            hasCustomRate && isDefined(params.customExchangeRate) ? transactionEntry.amount / params.customExchangeRate : conversion.amount;
+            hasCustomRate && isDefined(params.customExchangeRate)
+                ? Math.round(transactionEntry.amount / params.customExchangeRate)
+                : conversion.amount;
 
         return {
             creditAccountId: fromAccountId,

@@ -421,6 +421,13 @@
             "when": 1790190104767,
             "tag": "0062_add_monobank_setup_balance",
             "breakpoints": true
+        },
+        {
+            "idx": 63,
+            "version": "6",
+            "when": 1790285451031,
+            "tag": "0063_round_debt_event_micro_units",
+            "breakpoints": true
         }
     ]
 }
