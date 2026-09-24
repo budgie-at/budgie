@@ -1,4 +1,4 @@
-import { transactionAsync } from '@budgie/contracts';
+import { ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
 import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
@@ -23,21 +23,23 @@ class ResyncService {
         (error, input) => `throw accountId=${input.accountId} sinceDays=${String(input.sinceDays)} error=${getErrorMessage(error)}`
     )
     async resync(input: ResyncInputInterface): Promise<void> {
-        await transactionAsync(db, async tx => {
-            if (isDefined(input.sinceDays)) {
-                await this.resyncWindowed(input.accountId, input.sinceDays, tx);
-            } else {
-                await this.resyncFull(input.accountId, tx);
-            }
-        });
+        const { accountId, sinceDays } = input;
+        if (isDefined(sinceDays)) {
+            await transactionAsync(db, async tx => this.resyncWindowed(accountId, sinceDays, tx));
+        } else {
+            const sync = await syncRepository.getByAccountId(accountId);
+            const setupBalance =
+                sync?.provider === ExternalSourceEnum.MONOBANK ? await monobankSyncService.fetchSetupBalance(accountId) : null;
+            await transactionAsync(db, async tx => this.resyncFull(accountId, setupBalance, tx));
+        }
 
         syncWorkloadService.run('manual-monobank-resync', () => monobankSyncService.sync()).catch(emptyFn);
     }
 
-    private async resyncFull(accountId: number, tx: DB): Promise<void> {
+    private async resyncFull(accountId: number, setupBalance: number | null, tx: DB): Promise<void> {
         const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIds([accountId], tx);
         await this.unconsolidateCanonicals(canonicals, tx);
-        await syncRepository.resetForResync(accountId, tx);
+        await syncRepository.resetForResync(accountId, setupBalance, tx);
     }
 
     private async resyncWindowed(accountId: number, sinceDays: number, tx: DB): Promise<void> {

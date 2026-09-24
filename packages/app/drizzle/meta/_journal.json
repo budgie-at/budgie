@@ -414,6 +414,13 @@
             "when": 1789850000000,
             "tag": "0060_debt_v2_money_legs",
             "breakpoints": true
+        },
+        {
+            "idx": 62,
+            "version": "6",
+            "when": 1790190104767,
+            "tag": "0062_add_monobank_setup_balance",
+            "breakpoints": true
         }
     ]
 }

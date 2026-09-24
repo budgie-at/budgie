@@ -251,7 +251,12 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         return enabledSyncs.filter(sync => integrationIdByAccountId.get(sync.accountId) === credentialGroupIntegrationId);
     }
 
-    protected async createOrUpdateSync(accountId: number, token: string, historyDepth = SyncHistoryDepthEnum.FULL): Promise<void> {
+    protected async createOrUpdateSync(
+        accountId: number,
+        token: string,
+        historyDepth = SyncHistoryDepthEnum.FULL,
+        setupBalance: number | null = null
+    ): Promise<void> {
         const now = new Date();
         const backwardSyncLimitAt = this.resolveBackwardSyncLimit(historyDepth, now);
         const integration = await syncIntegrationTokenService.getOrCreateIntegration(this.provider, token);
@@ -275,8 +280,37 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             backwardSyncedAt: earliestTransactionTime ?? null,
             backwardSyncLimitAt,
             forwardSyncFromAt: now,
-            forwardSyncedAt: null
+            forwardSyncedAt: null,
+            setupBalance
         });
+    }
+
+    protected resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {
+        const now = new Date();
+        const transactionCount = result.transactionCount ?? result.transactions.length;
+        const baseUpdate = { transactionCount: sync.transactionCount + transactionCount, errorCount: 0, lastError: null };
+
+        if (result.completed && sync.mode === SyncModeEnum.FORWARD) {
+            return { ...baseUpdate, status: SyncStatusEnum.IDLE, forwardSyncedAt: now, forwardSyncFromAt: now };
+        }
+
+        if (result.completed) {
+            return {
+                ...baseUpdate,
+                mode: SyncModeEnum.FORWARD,
+                status: SyncStatusEnum.IDLE,
+                backwardSyncedAt: result.nextTo,
+                backwardSyncFromAt: result.nextFrom
+            };
+        }
+
+        if (sync.mode === SyncModeEnum.BACKWARD) {
+            const nextBackwardSyncedAt = isPositiveNumber(transactionCount) ? null : (sync.backwardSyncedAt ?? result.nextTo);
+
+            return { ...baseUpdate, backwardSyncedAt: nextBackwardSyncedAt, backwardSyncFromAt: result.nextTo, backwardBatchAt: now };
+        }
+
+        return { ...baseUpdate, forwardSyncFromAt: result.nextFrom };
     }
 
     protected async beforeProcessRun(_firstSyncToken: string, _runGeneration: number): Promise<void> {
@@ -485,34 +519,6 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
         if (pendingSync.mode === SyncModeEnum.FORWARD && result.completed) {
             this.processedForwardSyncIds.add(pendingSync.id);
         }
-    }
-
-    private resolveProgressUpdate(sync: SyncEntityInterface, result: SyncBatchResultInterface): SyncUpdateEntityInterface {
-        const now = new Date();
-        const transactionCount = result.transactionCount ?? result.transactions.length;
-        const baseUpdate = { transactionCount: sync.transactionCount + transactionCount, errorCount: 0, lastError: null };
-
-        if (result.completed && sync.mode === SyncModeEnum.FORWARD) {
-            return { ...baseUpdate, status: SyncStatusEnum.IDLE, forwardSyncedAt: now, forwardSyncFromAt: now };
-        }
-
-        if (result.completed) {
-            return {
-                ...baseUpdate,
-                mode: SyncModeEnum.FORWARD,
-                status: SyncStatusEnum.IDLE,
-                backwardSyncedAt: result.nextTo,
-                backwardSyncFromAt: result.nextFrom
-            };
-        }
-
-        if (sync.mode === SyncModeEnum.BACKWARD) {
-            const nextBackwardSyncedAt = isPositiveNumber(transactionCount) ? null : (sync.backwardSyncedAt ?? result.nextTo);
-
-            return { ...baseUpdate, backwardSyncedAt: nextBackwardSyncedAt, backwardSyncFromAt: result.nextTo };
-        }
-
-        return { ...baseUpdate, forwardSyncFromAt: result.nextFrom };
     }
 
     abstract fetchAccountsPreview(token: string): Promise<SyncAccountPreviewInterface[]>;

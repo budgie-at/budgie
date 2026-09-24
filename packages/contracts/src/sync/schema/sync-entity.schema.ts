@@ -19,8 +19,13 @@ export const SyncEntitySchema = createSelectSchema(SyncEntityTable, {
     backwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync backward from (newest point going back).'),
     backwardSyncLimitAt: schema =>
         schema.nullable().default(null).describe('Earliest point backward sync should reach; null backfills the whole available history.'),
+    backwardBatchAt: schema => schema.nullable().default(null).describe('Timestamp of the latest backward batch, used to rotate accounts.'),
     forwardSyncedAt: schema => schema.nullable().default(null).describe('Timestamp of the last successful forward sync.'),
     forwardSyncFromAt: schema => schema.nullable().default(null).describe('Timestamp to sync forward from.'),
+    setupBalance: schema =>
+        schema.nullable().default(null).describe('Provider balance captured at setup, shown until backward history completes.'),
+    balanceAdjustmentTransactionId: schema =>
+        schema.nullable().default(null).describe('Opening balance adjustment created when backward history completed.'),
     transactionCount: number().nonnegative().default(0).describe('Total number of transactions synced.'),
     errorCount: number().nonnegative().default(0).describe('Number of consecutive sync errors.'),
     lastError: schema => schema.nullable().default(null).describe('Last error message if sync failed.'),

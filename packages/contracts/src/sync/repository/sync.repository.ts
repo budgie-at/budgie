@@ -118,15 +118,17 @@ export class SyncRepository {
     }
 
     async getPendingBackwardSync(provider: ExternalSourceEnum): Promise<SyncEntityInterface[]> {
-        return await this.selectWithActiveAccount().where(
-            and(
-                eq(SyncEntityTable.provider, provider),
-                eq(SyncEntityTable.enabled, true),
-                eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
-                isNull(SyncEntityTable.deletedAt),
-                isNull(AccountEntityTable.deletedAt)
+        return await this.selectWithActiveAccount()
+            .where(
+                and(
+                    eq(SyncEntityTable.provider, provider),
+                    eq(SyncEntityTable.enabled, true),
+                    eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
+                    isNull(SyncEntityTable.deletedAt),
+                    isNull(AccountEntityTable.deletedAt)
+                )
             )
-        );
+            .orderBy(asc(SyncEntityTable.backwardBatchAt), asc(SyncEntityTable.id));
     }
 
     async setStatus(id: number, status: SyncStatusEnum, tx?: DB): Promise<void> {
@@ -150,7 +152,7 @@ export class SyncRepository {
         }
     }
 
-    async resetForResync(accountId: number, tx?: DB): Promise<void> {
+    async resetForResync(accountId: number, setupBalance: number | null, tx?: DB): Promise<void> {
         const now = new Date();
         await (tx ?? this.db)
             .update(SyncEntityTable)
@@ -162,6 +164,8 @@ export class SyncRepository {
                 backwardSyncLimitAt: null,
                 forwardSyncFromAt: now,
                 forwardSyncedAt: null,
+                backwardBatchAt: null,
+                setupBalance,
                 transactionCount: 0,
                 errorCount: 0,
                 lastError: null
