@@ -743,6 +743,10 @@ env:
 
 - runFlow:
     file: subflows/rules/delete-first-rule.flow.yaml
+- extendedWaitUntil:
+    notVisible:
+      id: 'RulesPage.RuleCard.1'
+    timeout: 10000
 - waitForAnimationToEnd
 
 - runFlow:
