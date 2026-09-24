@@ -57,7 +57,7 @@ class AccountDebtOpeningService {
             const account = await this.createZeroTargetDebtAccount(input, tx);
             const conversion = await exchangeRatesService.convert(account.instrumentId, fundingAccount.instrumentId, targetAmount);
             const transaction = await this.createFundingTransaction(input, fundingAccountId, tx);
-            const entry = await this.createFundingEntry(transaction, fundingAccountId, Math.round(conversion.amount), tx);
+            const entry = await this.createFundingEntry(transaction, fundingAccountId, conversion.amount, tx);
             const valuedAccount = await this.updateDebtTargetAmount(account, targetAmount, transaction.operatedAt, tx);
 
             await debtEventRepository.create(
