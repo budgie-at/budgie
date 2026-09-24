@@ -124,6 +124,12 @@ class WidgetSnapshotService {
         return await this.enqueue(async () => await this.write(true));
     }
 
+    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
+    unlock(): void {
+        this.isLocked = false;
+        this.schedulePublish();
+    }
+
     private async enqueue(task: () => Promise<boolean>): Promise<boolean> {
         const run = this.pendingWrite.then(task);
 
