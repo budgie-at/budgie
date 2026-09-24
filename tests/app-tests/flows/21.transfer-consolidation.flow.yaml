@@ -61,10 +61,16 @@ appId: ${APP_ID}
       timeout: 5000
       centerElement: true
       optional: true
+- evalScript: ${output.consolidatedCardVisible = false}
 - runFlow:
       when:
-          notVisible:
+          visible:
               id: 'TransactionCard.Label.E2E_Consolidation_P1_Out'
+      commands:
+          - evalScript: ${output.consolidatedCardVisible = true}
+- runFlow:
+      when:
+          true: ${!output.consolidatedCardVisible}
       commands:
           - scrollUntilVisible:
                 element:

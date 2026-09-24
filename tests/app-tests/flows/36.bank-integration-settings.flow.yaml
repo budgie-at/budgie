@@ -139,7 +139,6 @@ appId: ${APP_ID}
       element:
           id: 'BankIntegration.AddDepositButton'
       direction: DOWN
-- waitForAnimationToEnd
 - assertVisible:
       id: 'BankIntegration.AccountRow.15'
 - assertVisible:

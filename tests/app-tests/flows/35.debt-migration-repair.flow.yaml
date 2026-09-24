@@ -9,8 +9,6 @@ appId: ${APP_ID}
       element:
           id: 'AccountCard.USD borrowed debt'
       direction: DOWN
-      visibilityPercentage: 40
-- waitForAnimationToEnd
 
 - assertVisible:
       id: 'DebtAccountCardSummary.OutstandingAmount.USD_borrowed_debt.36934'
@@ -90,8 +88,6 @@ appId: ${APP_ID}
       element:
           id: 'DebtAccountCardSummary.OutstandingAmount.Ambiguous_borrowed_debt.9000'
       direction: DOWN
-      visibilityPercentage: 40
-- waitForAnimationToEnd
 
 - assertVisible:
       id: 'DebtAccountCardSummary.PaidAmount.Ambiguous_borrowed_debt.1000'

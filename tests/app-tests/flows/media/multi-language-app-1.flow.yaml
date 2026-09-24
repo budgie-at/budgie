@@ -13,6 +13,7 @@ appId: ${APP_ID}
 - runFlow:
       file: ../subflows/navigation/open-settings-card.flow.yaml
       env:
+          SETTINGS_ANCHOR: 'general'
           CARD_ID: '^SettingsPage[.]LanguageCard[.].+$'
           DESTINATION_ID: 'LanguageSelector.SearchInput'
 

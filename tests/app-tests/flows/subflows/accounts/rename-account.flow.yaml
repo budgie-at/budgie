@@ -7,7 +7,7 @@ appId: ${APP_ID}
     direction: UP
 - tapOn:
     id: 'AccountForm.NameInput'
-- eraseText: 60
+- eraseText: 30
 - inputText: ${UPDATED_ACCOUNT_NAME}
 - tapOn:
     text: 'ACCOUNT NAME & ICON'
