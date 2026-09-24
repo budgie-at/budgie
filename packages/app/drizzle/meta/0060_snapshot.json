@@ -2482,14 +2482,6 @@
           "autoincrement": false,
           "default": false
         },
-        "is_widget_amounts_enabled": {
-          "name": "is_widget_amounts_enabled",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": true
-        },
         "apply_mcc_default_category": {
           "name": "apply_mcc_default_category",
           "type": "integer",

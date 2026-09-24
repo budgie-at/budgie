@@ -28,6 +28,8 @@ const getUniqueIdentifier = isAndroid => {
     return prefix;
 };
 
+const getAppGroup = () => `group.${getUniqueIdentifier(false)}`;
+
 const getAppName = () => {
     if (IS_DEV) {
         return 'budgie (Dev)';
@@ -61,7 +63,8 @@ export default ({ config }) => ({
         associatedDomains: ['applinks:budgie.at'],
         entitlements: {
             'com.apple.developer.kernel.extended-virtual-addressing': true,
-            'com.apple.developer.kernel.increased-memory-limit': true
+            'com.apple.developer.kernel.increased-memory-limit': true,
+            'com.apple.security.application-groups': [getAppGroup()]
         },
         icon: {
             dark: './assets/icons/ios-dark.png',
@@ -123,6 +126,33 @@ export default ({ config }) => ({
             }
         ],
         './plugins/with-vec-xcframework-fix',
+        [
+            'expo-widgets',
+            {
+                bundleIdentifier: `${getUniqueIdentifier(false)}.BudgieWidgets`,
+                groupIdentifier: getAppGroup(),
+                widgets: [
+                    {
+                        name: 'NetWorth',
+                        displayName: 'Net worth',
+                        description: 'Your total balance, and whether you are growing or burning.',
+                        ios: { supportedFamilies: ['systemSmall', 'systemMedium'] }
+                    },
+                    {
+                        name: 'Budget',
+                        displayName: 'Budget',
+                        description: "How much of this period's budget is left.",
+                        ios: { supportedFamilies: ['systemSmall', 'systemMedium'] }
+                    },
+                    {
+                        name: 'QuickAdd',
+                        displayName: 'Quick add',
+                        description: 'Expense, income and transfer in one tap.',
+                        ios: { supportedFamilies: ['systemMedium'] }
+                    }
+                ]
+            }
+        ],
         'expo-asset',
         'expo-image',
         [

@@ -5,4 +5,5 @@ import './src/exchange-rate/task/exchange-rate-sync.task';
 import './src/sync/task/binance-sync.task';
 import './src/sync/task/monobank-sync.task';
 import './src/sync/task/transfer-consolidation.task';
+import './src/widget/task/widget-snapshot.task';
 import 'expo-router/entry';
