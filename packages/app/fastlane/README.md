@@ -21,7 +21,10 @@ fastlane/
 │           ├── short_description.txt
 │           ├── full_description.txt
 │           ├── changelogs/default.txt
-│           └── images/phoneScreenshots/*.png
+│           └── images/
+│               ├── phoneScreenshots/*.png
+│               ├── featureGraphic.png   # en-US only, see "Play asset list"
+│               └── icon.png             # en-US only, see "Play asset list"
 └── screenshots/
     ├── deployed-variant.json  # which appearance the store currently carries
     ├── design/                # captions, palette and the composition script
@@ -38,6 +41,24 @@ Screenshots are captured against the E2E build
 
 Both the iOS and Android `metadata/` trees carry real ASO copy for all five
 locales. Play screenshots are a separate sub-issue.
+
+### Play asset list
+
+`supply`'s fixed image slots, both under `metadata/android/en-US/images/`:
+
+- `featureGraphic.png` — exactly `1024x500`, 24-bit PNG, no alpha.
+- `icon.png` — exactly `512x512`, 32-bit PNG (with alpha channel), within
+  1024 KB.
+
+Neither asset carries locale text, so `en-US` is the only copy `supply`
+needs. Regenerate both from the app's own icon mark with:
+
+```bash
+packages/app/fastlane/screenshots/design/compose-play-store-assets.sh
+```
+
+`store_preflight` fails if either file is missing or its dimensions drift
+from the spec above.
 
 ## Lanes
 
@@ -57,11 +78,14 @@ the iOS and Android lanes.
 
 `store_preflight` resolves the active variant, prints the app store version, the
 Play track, the copyright line, per-locale screenshot counts, each metadata tree
-path and its locales, and warns (not fails) while the Play image directory is
-empty. It fails when a screenshot locale folder is missing, when any PNG's pixel
+path and its locales, and warns while the Play image directory is empty. It
+fails when a screenshot locale folder is missing, when any PNG's pixel
 size matches no App Store slot, when `metadata/ios/copyright.txt` carries a stale
-year, or when either metadata tree is missing a locale or is missing entirely.
-Run it after touching the Fastfile, the compose script, or the metadata trees.
+year, when either metadata tree is missing a locale or is missing entirely, or
+when `featureGraphic.png`/`icon.png` under `metadata/android/en-US/images` is
+missing, not a PNG, the wrong size, not 8 bits per channel, or the wrong color type: the feature graphic
+must be 24-bit RGB without alpha and the icon 32-bit RGBA (see "Play asset list"). Run it after touching the
+Fastfile, the compose script, or the metadata trees.
 
 `verify_field_budgets` is the per-file budget gate `store_preflight` runs after
 `verify_store_tree`: for every `ASC_LOCALES` entry it checks that every required
