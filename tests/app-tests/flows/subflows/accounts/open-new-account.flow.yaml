@@ -31,6 +31,7 @@ appId: ${APP_ID}
       - waitForAnimationToEnd
       - tapOn:
           id: 'ActionItem.AddAccount.Label'
+- waitForAnimationToEnd
 - extendedWaitUntil:
     visible:
       id: 'CreateAccount.BANK'
