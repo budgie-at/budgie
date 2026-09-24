@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.76.0](https://github.com/budgie-at/budgie/compare/v6.75.2...v6.76.0) (2026-09-24)
+
+
+### Bug Fixes
+
+* **app:** gate Play asset PNG signature and color type ([5147d43](https://github.com/budgie-at/budgie/commit/5147d43acb94851c2bb234e90c58b73504fed6a0))
+* **app:** require 8-bit Play asset PNGs ([b0183e3](https://github.com/budgie-at/budgie/commit/b0183e3df80e62e7f32251da982ab826a126d998))
+
+
+### Features
+
+* **app:** add Play feature graphic and hi-res icon with dimension gates ([2536ebe](https://github.com/budgie-at/budgie/commit/2536ebe5f51068b14d58480f3115bbd46e341f86))
+
+
+
+
+
 ## [6.75.2](https://github.com/budgie-at/budgie/compare/v6.75.1...v6.75.2) (2026-09-23)
 
 
