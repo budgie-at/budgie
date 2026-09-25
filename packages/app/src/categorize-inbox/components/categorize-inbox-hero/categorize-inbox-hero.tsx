@@ -74,23 +74,23 @@ export const CategorizeInboxHero = ({ assignments }: Props) => {
     }
 
     return (
-        <Card size="md" variant="positive" className="mb-md flex-row items-center gap-x-lg" testID={CategorizeInboxHeroSelector.Card}>
-            <CircleIcon
-                icon={UserIconNameEnum.Sparkles}
-                variant="primary"
-                size={40}
-                iconSize={20}
-                border={false}
-                iconClassName="text-positive-foreground"
-            />
+        <Card size="md" variant="positive" className="mb-md gap-y-lg" testID={CategorizeInboxHeroSelector.Card}>
+            <View className="flex-row items-center gap-x-lg">
+                <CircleIcon
+                    icon={UserIconNameEnum.Sparkles}
+                    variant="primary"
+                    size={40}
+                    iconSize={20}
+                    border={false}
+                    iconClassName="text-positive-foreground"
+                />
 
-            <View className="flex-1 gap-y-xxs">
-                <Text className="text-primary text-md font-semibold" numberOfLines={1}>
-                    {readyText}
-                </Text>
-                <Text className="text-secondary-foreground text-xs" numberOfLines={1}>
-                    {merchantsText}
-                </Text>
+                <View className="flex-1 gap-y-xxs">
+                    <Text className="text-primary text-md font-semibold">{readyText}</Text>
+                    <Text className="text-secondary-foreground text-xs" numberOfLines={1}>
+                        {merchantsText}
+                    </Text>
+                </View>
             </View>
 
             <Button

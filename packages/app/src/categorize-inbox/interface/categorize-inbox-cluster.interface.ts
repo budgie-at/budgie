@@ -15,6 +15,7 @@ export interface CategorizeInboxClusterInterface {
     readonly sourceAccountId: number;
     readonly candidates: CategorizeInboxCandidateInterface[];
     readonly isConfident: boolean;
+    readonly hasEvidence: boolean;
     readonly transferKind: CategorizeInboxTransferKindEnum | null;
     readonly ruleConditionValue: string;
     readonly section: CategorizeInboxSectionEnum;
