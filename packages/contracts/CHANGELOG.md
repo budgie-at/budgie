@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.78.1](https://github.com/budgie-at/budgie/compare/v6.78.0...v6.78.1) (2026-09-25)
+
+
+### Bug Fixes
+
+* **contracts:** project balance upsert input to accountId and amount ([9f6fb79](https://github.com/budgie-at/budgie/commit/9f6fb792b948359ac70129890d32e7943ff68987))
+
+
+
+
+
 # [6.78.0](https://github.com/budgie-at/budgie/compare/v6.77.0...v6.78.0) (2026-09-24)
 
 
