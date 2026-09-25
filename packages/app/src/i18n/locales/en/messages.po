@@ -319,6 +319,10 @@ msgstr "About 6 minutes"
 msgid "About a minute"
 msgstr "About a minute"
 
+#: src/categorize-inbox/hook/use-categorize-inbox-top-suggestion.hook.ts
+msgid "Accept suggestion"
+msgstr "Accept suggestion"
+
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -2113,8 +2117,8 @@ msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
 #: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
-msgid "Hide transactions"
-msgstr "Hide transactions"
+msgid "Hide transactions for {displayTitle}"
+msgstr "Hide transactions for {displayTitle}"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Historical valuation failed"
@@ -3722,8 +3726,8 @@ msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
 
 #: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
-msgid "Show transactions"
-msgstr "Show transactions"
+msgid "Show transactions for {displayTitle}"
+msgstr "Show transactions for {displayTitle}"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show transactions when any main amount is inside this range, regardless of currency."

@@ -19,9 +19,17 @@ class CategorizeInboxEngineService {
     private static readonly LEGAL_FORM_TOKENS: Record<LanguageEnum, readonly string[]> = {
         [LanguageEnum.EN]: ['ltd', 'llc', 'inc', 'co', 'bv'],
         [LanguageEnum.UK]: ['тов', 'фоп', 'пп', 'ооо'],
-        [LanguageEnum.DE]: ['gmbh', 'ag', 'kg', 'og'],
+        [LanguageEnum.DE]: ['gmbh', 'ges', 'ag', 'kg', 'og'],
         [LanguageEnum.FR]: ['sa'],
         [LanguageEnum.ES]: ['sa', 'srl']
+    };
+
+    private static readonly PAYMENT_TYPE_PREFIX_KEYWORDS: Record<LanguageEnum, readonly string[]> = {
+        [LanguageEnum.EN]: ['card\\s+payment', 'pos\\s+purchase', 'pos'],
+        [LanguageEnum.UK]: ['оплата', 'покупка', 'платіж'],
+        [LanguageEnum.DE]: ['kartenzahlung', 'lastschrifteinzug', 'lastschrift', 'überweisung', 'gutschrift'],
+        [LanguageEnum.FR]: ['paiement\\s+carte', 'prélèvement', 'virement'],
+        [LanguageEnum.ES]: ['pago\\s+con\\s+tarjeta', 'transferencia', 'compra']
     };
 
     private static readonly ATM_KEYWORDS: Record<LanguageEnum, readonly string[]> = {
@@ -43,11 +51,25 @@ class CategorizeInboxEngineService {
     private static readonly LEGAL_FORMS = new Set(Object.values(CategorizeInboxEngineService.LEGAL_FORM_TOKENS).flat());
     private static readonly ATM_PATTERN = CategorizeInboxEngineService.buildKeywordPattern(CategorizeInboxEngineService.ATM_KEYWORDS);
     private static readonly CARD_PATTERN = CategorizeInboxEngineService.buildKeywordPattern(CategorizeInboxEngineService.CARD_KEYWORDS);
+    private static readonly PAYMENT_TYPE_PREFIX_PATTERN = CategorizeInboxEngineService.buildKeywordPattern(
+        CategorizeInboxEngineService.PAYMENT_TYPE_PREFIX_KEYWORDS,
+        true
+    );
+
     private static readonly MASKED_PAN_PATTERN = /\d{4,6}\*+\d{2,4}/u;
     private static readonly ATM_MCC_CODES: ReadonlySet<string | null> = new Set(['6010', '6011']);
     private static readonly CARD_TRANSFER_MCC_CODES: ReadonlySet<string | null> = new Set(['4829']);
     private static readonly NOISE_PATTERN = /(?<![\p{L}\p{N}])\p{L}{2,8}:\S+|https?:\/\/\S+|\bwww\.|\d{4,6}\*+\d{2,4}|\+?\d[\d\s-]{6,}\d/gu;
-    private static readonly TRAILING_REFERENCE_PATTERN = /(?:[\s.:*-]*(?:\*\S*|\d{1,2}\.\d{1,2}\.?|\d{1,2}:\d{2}|\d{2,}))+$/gu;
+    private static readonly REFERENCE_NOISE_PATTERN = new RegExp(
+        `(?<![\\p{L}\\p{N}])\\p{L}{2,8}:\\S+|${CategorizeInboxEngineService.MASKED_PAN_PATTERN.source}|\\+?\\d[\\d\\s-]{6,}\\d|\\b\\d{1,2}[./]\\d{1,2}(?:[./]\\d{2,4})?\\b|\\b\\d{1,2}:\\d{2}\\b`,
+        'u'
+    );
+
+    private static readonly TRAILING_LEGAL_FORM_PATTERN = new RegExp(
+        `[\\s.,-]*(?<!\\p{L})(?:ges\\.?\\s*m\\.?\\s*b\\.?\\s*h\\.?|(?:${[...CategorizeInboxEngineService.LEGAL_FORMS].join('|')})\\.?)\\s*$`,
+        'iu'
+    );
+
     private static readonly EDGE_PUNCTUATION_PATTERN = /^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu;
     private static readonly DIACRITIC_PATTERN = /\p{Diacritic}/gu;
     private static readonly TOKEN_SEPARATOR_PATTERN = /[^\p{L}]+/u;
@@ -169,18 +191,25 @@ class CategorizeInboxEngineService {
     }
 
     private resolveDisplayTitle(variantCount: number, ruleConditionValue: string, mostFrequentTitle: string): string {
-        const { NOISE_PATTERN, TRAILING_REFERENCE_PATTERN, EDGE_PUNCTUATION_PATTERN } = CategorizeInboxEngineService;
-
         if (variantCount === 1) {
-            const cleaned = mostFrequentTitle.replace(NOISE_PATTERN, ' ').replace(TRAILING_REFERENCE_PATTERN, '').trim();
-
-            return cleaned.length >= 3 ? cleaned : mostFrequentTitle.trim();
+            return this.cleanDisplayTitle(mostFrequentTitle);
         }
 
-        const commonSubstring = ruleConditionValue.replace(EDGE_PUNCTUATION_PATTERN, '');
+        const commonSubstring = ruleConditionValue.replace(CategorizeInboxEngineService.EDGE_PUNCTUATION_PATTERN, '');
         const originalCasedSubstring = this.resolveOriginalCasing(commonSubstring, mostFrequentTitle);
+        const candidate = originalCasedSubstring.length >= 3 ? originalCasedSubstring : mostFrequentTitle;
 
-        return originalCasedSubstring.length >= 3 ? originalCasedSubstring : mostFrequentTitle;
+        return this.cleanDisplayTitle(candidate);
+    }
+
+    private cleanDisplayTitle(title: string): string {
+        const { PAYMENT_TYPE_PREFIX_PATTERN, REFERENCE_NOISE_PATTERN, TRAILING_LEGAL_FORM_PATTERN } = CategorizeInboxEngineService;
+        const withoutPrefix = title.replace(PAYMENT_TYPE_PREFIX_PATTERN, '').trimStart();
+        const noiseMatch = REFERENCE_NOISE_PATTERN.exec(withoutPrefix);
+        const cutTitle = isDefined(noiseMatch) ? withoutPrefix.slice(0, noiseMatch.index) : withoutPrefix;
+        const cleaned = cutTitle.replace(TRAILING_LEGAL_FORM_PATTERN, '').trim();
+
+        return cleaned.length >= 3 ? cleaned : title.trim();
     }
 
     private resolveOriginalCasing(substring: string, sourceTitle: string): string {
@@ -207,11 +236,14 @@ class CategorizeInboxEngineService {
                   ));
         const total = this.sumValues(counts.values());
         const topCount = Math.max(0, ...counts.values());
+        const candidates = isPositiveNumber(counts.size)
+            ? this.rankCategoryIds(counts)
+                  .slice(0, LIMITS.chipCount)
+                  .map(categoryId => ({ categoryId, probability: (counts.get(categoryId) ?? 0) / (total + 1) }))
+            : [];
 
         return {
-            candidates: this.rankCategoryIds(counts)
-                .slice(0, LIMITS.chipCount)
-                .map(categoryId => ({ categoryId, probability: (counts.get(categoryId) ?? 0) / (total + 1) })),
+            candidates,
             isConfident: isDefined(historyCounts) && topCount >= LIMITS.confidentCount && topCount / total >= LIMITS.confidentShare,
             hasEvidence: isPositiveNumber(counts.size)
         };
@@ -228,8 +260,10 @@ class CategorizeInboxEngineService {
     }
 
     private merchantKey(title: string): string {
-        const { LIMITS, NOISE_PATTERN, DIACRITIC_PATTERN, TOKEN_SEPARATOR_PATTERN, LEGAL_FORMS } = CategorizeInboxEngineService;
-        const cleaned = title.normalize('NFKD').replace(DIACRITIC_PATTERN, '').toLowerCase().replace(NOISE_PATTERN, ' ');
+        const { LIMITS, NOISE_PATTERN, DIACRITIC_PATTERN, TOKEN_SEPARATOR_PATTERN, LEGAL_FORMS, PAYMENT_TYPE_PREFIX_PATTERN } =
+            CategorizeInboxEngineService;
+        const withoutPrefix = title.toLowerCase().replace(PAYMENT_TYPE_PREFIX_PATTERN, ' ');
+        const cleaned = withoutPrefix.normalize('NFKD').replace(DIACRITIC_PATTERN, '').replace(NOISE_PATTERN, ' ');
         const tokens = cleaned.split(TOKEN_SEPARATOR_PATTERN).filter(token => token.length >= 2 && !LEGAL_FORMS.has(token));
         const key = [...new Set(tokens)].slice(0, LIMITS.merchantTokenCount).join(' ');
 
@@ -331,8 +365,10 @@ class CategorizeInboxEngineService {
         return [...values].reduce((total, value) => total + value, 0);
     }
 
-    private static buildKeywordPattern(keywords: Record<LanguageEnum, readonly string[]>): RegExp {
-        return new RegExp(`(?<!\\p{L})(?:${Object.values(keywords).flat().join('|')})(?!\\p{L})`, 'u');
+    private static buildKeywordPattern(keywords: Record<LanguageEnum, readonly string[]>, anchored = false): RegExp {
+        const alternation = `(?:${Object.values(keywords).flat().join('|')})(?!\\p{L})`;
+
+        return anchored ? new RegExp(`^${alternation}`, 'iu') : new RegExp(`(?<!\\p{L})${alternation}`, 'u');
     }
 }
 

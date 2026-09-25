@@ -13,12 +13,13 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { useCategorizeInboxTopSuggestion } from '../../hook/use-categorize-inbox-top-suggestion.hook';
 import { CategorizeInboxClusterRowsSelector } from '../categorize-inbox-cluster-rows/categorize-inbox-cluster-rows.selector';
 
 import type { CategorizeInboxClusterInterface } from '../../interface/categorize-inbox-cluster.interface';
 
 interface Props {
-    readonly cluster: Pick<CategorizeInboxClusterInterface, 'key' | 'displayTitle' | 'totalBaseAmount' | 'rows'>;
+    readonly cluster: CategorizeInboxClusterInterface;
     readonly countText: string;
     readonly icon?: UserIconNameEnum;
 }
@@ -28,6 +29,7 @@ export const CategorizeInboxClusterSummary = ({ cluster, countText, icon }: Prop
     const { defaultInstrument } = useSettingsContext();
     const protectAmount = useProtectedAmountLabel();
     const { expandedClusterKey, excludedTransactionIds, toggleExpanded } = useCategorizeInboxContext();
+    const topSuggestion = useCategorizeInboxTopSuggestion(cluster);
 
     const handleTogglePress = (): void => void toggleExpanded(cluster.key);
 
@@ -40,7 +42,8 @@ export const CategorizeInboxClusterSummary = ({ cluster, countText, icon }: Prop
         ? protectAmount(convertFromMicroUnits(cluster.totalBaseAmount), defaultInstrument.symbol)
         : null;
     const chevronIcon = isExpanded ? UserIconNameEnum.ChevronUp : UserIconNameEnum.ChevronDown;
-    const toggleLabel = isExpanded ? t`Hide transactions` : t`Show transactions`;
+    const { displayTitle } = cluster;
+    const toggleLabel = isExpanded ? t`Hide transactions for ${displayTitle}` : t`Show transactions for ${displayTitle}`;
     const accessibilityState = { expanded: isExpanded };
 
     return (
@@ -53,10 +56,11 @@ export const CategorizeInboxClusterSummary = ({ cluster, countText, icon }: Prop
                 accessibilityRole="button"
                 accessibilityState={accessibilityState}
                 accessibilityLabel={toggleLabel}
+                {...topSuggestion?.accessibilityProps}
                 {...testID(CategorizeInboxClusterRowsSelector.Toggle, cluster.key)}
             >
                 <Text className="text-primary text-sm font-semibold" numberOfLines={1}>
-                    {cluster.displayTitle}
+                    {displayTitle}
                 </Text>
                 <View className="flex-row items-center gap-x-xs">
                     <Text className="text-secondary-foreground text-xs shrink" numberOfLines={1}>
