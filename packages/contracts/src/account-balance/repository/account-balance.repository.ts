@@ -136,7 +136,7 @@ export class AccountBalanceRepository {
     ): Promise<AccountBalanceEntityInterface> {
         const [accountBalance] = await (tx ?? this.db)
             .insert(AccountBalanceEntityTable)
-            .values([input])
+            .values([{ accountId: input.accountId, amount: input.amount }])
             .onConflictDoUpdate({
                 target: AccountBalanceEntityTable.accountId,
                 set: { amount: input.amount, updatedAt: CURRENT_TIMESTAMP }
