@@ -699,7 +699,6 @@ appId: ${APP_ID}
       notVisible:
           id: 'SplitEntryRow.Amount.0'
       timeout: 5000
-- waitForAnimationToEnd
 
 - runFlow:
       file: subflows/transactions/enter-comment.flow.yaml

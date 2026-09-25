@@ -3,11 +3,21 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionForm.SubmitButton'
 - waitForAnimationToEnd
+- evalScript: ${output.returnedToTransactionInfo = true}
 - runFlow:
     when:
       visible:
-        id: 'TransactionInfo.Page'
+        id: 'TransactionsPage.Container'
     commands:
+      - evalScript: ${output.returnedToTransactionInfo = false}
+- runFlow:
+    when:
+      true: ${output.returnedToTransactionInfo}
+    commands:
+      - extendedWaitUntil:
+          visible:
+            id: 'TransactionInfo.Page'
+          timeout: 5000
       - tapOn:
           id: 'PageHeader.BackButton'
       - waitForAnimationToEnd

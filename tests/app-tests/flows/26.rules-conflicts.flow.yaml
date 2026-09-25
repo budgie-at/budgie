@@ -42,7 +42,6 @@ env:
 - inputText: 'Other'
 
 - tapOn: Done
-- waitForAnimationToEnd
 
 - extendedWaitUntil:
     visible:

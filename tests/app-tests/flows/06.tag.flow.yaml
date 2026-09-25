@@ -80,7 +80,7 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'TagPage.SearchInput'
-- eraseText: 50
+- eraseText: 15
 
 - assertVisible:
       id: 'TagCard.E2E Tag Primary'
@@ -94,7 +94,7 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'TagForm.Input'
-- eraseText: 80
+- eraseText: 25
 - inputText: 'E2E Tag Updated'
 - pressKey: enter
 - waitForAnimationToEnd

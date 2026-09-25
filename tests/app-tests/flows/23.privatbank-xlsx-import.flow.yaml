@@ -14,7 +14,6 @@ appId: ${APP_ID}
           id: 'CreateAccount.PRIVATBANK'
       direction: DOWN
       timeout: 10000
-      visibilityPercentage: 80
       centerElement: false
       speed: 20
 
@@ -35,7 +34,6 @@ appId: ${APP_ID}
           id: 'AccountCard.Privatbank •1234'
       direction: DOWN
       timeout: 10000
-      visibilityPercentage: 30
 
 - assertVisible:
       id: 'AccountCard.Balance.Privatbank_1234.747'
@@ -69,7 +67,6 @@ appId: ${APP_ID}
       direction: DOWN
       timeout: 10000
       speed: 20
-      visibilityPercentage: 30
 
 - assertVisible:
       id: 'TransactionCard.FeeMetadata.3'
@@ -84,7 +81,15 @@ appId: ${APP_ID}
 
 - evalScript: ${output.phase = 'existing-account-quick-import'}
 
-- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings?anchor=general'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 15000
 
 - scrollUntilVisible:
       element:
@@ -135,7 +140,6 @@ appId: ${APP_ID}
       direction: DOWN
       timeout: 20000
       speed: 20
-      visibilityPercentage: 30
 
 - evalScript: ${output.phase = 'edit-then-reimport-no-duplicate'}
 
@@ -208,7 +212,6 @@ appId: ${APP_ID}
       direction: DOWN
       timeout: 20000
       speed: 20
-      visibilityPercentage: 30
 
 - tapOn:
       id: 'TransactionCard.Label.E2E_Privatbank_Coffee'

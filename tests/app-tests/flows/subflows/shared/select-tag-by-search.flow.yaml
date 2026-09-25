@@ -17,15 +17,6 @@ env:
 - tapOn:
     id: 'TagPickerBottomSheet.Card.${TAG_NAME}'
     retryTapIfNoChange: true
-- runFlow:
-    when:
-      visible:
-        id: 'TagPickerBottomSheet.Input'
-    commands:
-      - waitForAnimationToEnd
-      - tapOn:
-          id: 'TagPickerBottomSheet.Card.${TAG_NAME}'
-          retryTapIfNoChange: true
 - extendedWaitUntil:
     notVisible:
       id: 'TagPickerBottomSheet.Input'

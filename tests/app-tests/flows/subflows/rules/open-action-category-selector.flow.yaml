@@ -2,15 +2,16 @@ appId: ${APP_ID}
 ---
 - tapOn:
       id: 'RuleForm.Action.${ACTION_INDEX}.CategorySelector'
-- extendedWaitUntil:
-      visible:
-          id: 'CategoryPickerBottomSheet.Input'
-      timeout: 2000
-      optional: true
+- evalScript: ${output.categoryPickerOpened = false}
 - runFlow:
       when:
-          notVisible:
+          visible:
               id: 'CategoryPickerBottomSheet.Input'
+      commands:
+          - evalScript: ${output.categoryPickerOpened = true}
+- runFlow:
+      when:
+          true: ${!output.categoryPickerOpened}
       commands:
           - tapOn:
                 id: 'RuleForm.Action.${ACTION_INDEX}.CategorySelector.Value'
