@@ -104,6 +104,8 @@ env:
       id: 'AccountForm.TargetBalanceInput'
 - eraseText: 100
 - inputText: ${TARGET_BALANCE}
+- tapOn:
+      text: 'Debt Account'
 - waitForAnimationToEnd
 
 - scrollUntilVisible:
