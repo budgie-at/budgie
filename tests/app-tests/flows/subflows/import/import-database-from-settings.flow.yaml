@@ -20,15 +20,16 @@ env:
                 visible:
                     id: 'TabBar.Home'
                 timeout: 30000
-          - extendedWaitUntil:
-                visible:
-                    id: 'HomePage.TotalBalance'
-                timeout: 5000
-                optional: true
+          - evalScript: ${output.homeBalanceVisible = false}
           - runFlow:
                 when:
-                    notVisible:
+                    visible:
                         id: 'HomePage.TotalBalance'
+                commands:
+                    - evalScript: ${output.homeBalanceVisible = true}
+          - runFlow:
+                when:
+                    true: ${!output.homeBalanceVisible}
                 commands:
                     - tapOn:
                           id: 'TabBar.Home'

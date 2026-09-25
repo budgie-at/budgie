@@ -1,6 +1,7 @@
 appId: ${APP_ID}
 ---
 
+- evalScript: ${output.createAccountOpened = false}
 - tapOn:
     id: 'TabBar.Home'
 - waitForAnimationToEnd
@@ -15,30 +16,18 @@ appId: ${APP_ID}
           visible:
             id: 'CreateAccount.BANK'
           timeout: 10000
+      - evalScript: ${output.createAccountOpened = true}
 
 - runFlow:
     when:
-      notVisible:
-        id: 'CreateAccount.BANK'
+      true: ${!output.createAccountOpened}
     commands:
-      - runFlow:
-          when:
-            visible:
-              id: 'ActionButton'
-          commands:
-            - tapOn:
-                id: 'ActionButton'
-      - runFlow:
-          when:
-            notVisible:
-              id: 'ActionButton'
-          commands:
-            - extendedWaitUntil:
-                visible:
-                  id: 'ActionButton'
-                timeout: 10000
-            - tapOn:
-                id: 'ActionButton'
+      - extendedWaitUntil:
+          visible:
+            id: 'ActionButton'
+          timeout: 10000
+      - tapOn:
+          id: 'ActionButton'
       - waitForAnimationToEnd
       - extendedWaitUntil:
           visible:
