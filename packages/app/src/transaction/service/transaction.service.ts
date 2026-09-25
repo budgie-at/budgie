@@ -532,7 +532,7 @@ class TransactionService {
         );
 
         return {
-            amount: hasCustomExchangeRate ? fromAmountInMicroUnits / input.exchangeRate : amount,
+            amount: hasCustomExchangeRate ? Math.round(fromAmountInMicroUnits / input.exchangeRate) : amount,
             exchangeRate: hasCustomExchangeRate ? input.exchangeRate : exchangeRate
         };
     }
