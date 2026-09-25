@@ -134,6 +134,10 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
             );
     }
 
+    protected override buildAccountCondition(accountIds: number[] | null) {
+        return this.buildEntryAccountCondition(accountIds);
+    }
+
     private chunkTransactionIds(transactionIds: number[]): number[][] {
         const { UPDATE_CHUNK_SIZE } = TransactionCategorizeInboxRepository;
         const chunks: number[][] = [];

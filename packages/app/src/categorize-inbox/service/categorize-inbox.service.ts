@@ -32,18 +32,17 @@ class CategorizeInboxService {
     async assignMany(assignments: CategorizeInboxAssignmentInterface[]): Promise<CategorizeInboxAssignmentInterface[]> {
         const groupedByCategoryId = this.groupAssignmentsByCategoryId(assignments);
 
-        return [...groupedByCategoryId].reduce<Promise<CategorizeInboxAssignmentInterface[]>>(
-            async (previousAppliedPromise, [categoryId, categoryAssignments]) => {
-                const previousApplied = await previousAppliedPromise;
-                const transactionIds = categoryAssignments.flatMap(assignment => assignment.transactionIds);
-                const updatedTransactionIds = await transactionAsync(db, tx => this.applyChunk(transactionIds, categoryId, tx));
-                const applied = [...previousApplied, ...this.narrowToUpdated(categoryAssignments, new Set(updatedTransactionIds))];
+        return transactionAsync(db, tx =>
+            [...groupedByCategoryId].reduce<Promise<CategorizeInboxAssignmentInterface[]>>(
+                async (previousAppliedPromise, [categoryId, categoryAssignments]) => {
+                    const previousApplied = await previousAppliedPromise;
+                    const transactionIds = categoryAssignments.flatMap(assignment => assignment.transactionIds);
+                    const updatedTransactionIds = await this.applyChunk(transactionIds, categoryId, tx);
 
-                await microPause();
-
-                return applied;
-            },
-            Promise.resolve([])
+                    return [...previousApplied, ...this.narrowToUpdated(categoryAssignments, new Set(updatedTransactionIds))];
+                },
+                Promise.resolve([])
+            )
         );
     }
 
