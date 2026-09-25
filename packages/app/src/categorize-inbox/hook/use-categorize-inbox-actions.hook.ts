@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -28,6 +28,7 @@ export const useCategorizeInboxActions = (inbox: CategorizeInboxInterface): Cate
     const [expandedClusterKey, setExpandedClusterKey] = useState<string | null>(null);
     const [undoAssignments, setUndoAssignments] = useState<CategorizeInboxAssignmentInterface[] | null>(null);
     const [initialRowCount, setInitialRowCount] = useState(inbox.totalRowCount);
+    const writeQueueRef = useRef<Promise<void>>(Promise.resolve());
     const { items, acceptableAssignments, remainingCount, excludedTransactionIds, toggleExcluded, hideTransactions, showTransactions } =
         useCategorizeInboxVisibility(inbox);
 
@@ -35,22 +36,20 @@ export const useCategorizeInboxActions = (inbox: CategorizeInboxInterface): Cate
         setInitialRowCount(inbox.totalRowCount);
     }
 
-    const handleWriteError = (error: unknown): void => {
-        hapticNotification(NotificationFeedbackType.Error);
-        showErrorToast(t`Could not categorize transactions`, getErrorMessage(error));
+    const enqueueWrite = (write: () => Promise<void>, rollback: () => void): void => {
+        writeQueueRef.current = writeQueueRef.current.then(write).catch((error: unknown) => {
+            rollback();
+            hapticNotification(NotificationFeedbackType.Error);
+            showErrorToast(t`Could not categorize transactions`, getErrorMessage(error));
+        });
     };
 
-    const runAssignment = async (assignments: CategorizeInboxAssignmentInterface[], transactionIds: number[]): Promise<void> => {
-        try {
-            const applied = await categorizeInboxService.assignMany(assignments);
+    const runAssignment = async (assignments: CategorizeInboxAssignmentInterface[]): Promise<void> => {
+        const applied = await categorizeInboxService.assignMany(assignments);
 
-            if (isNotEmptyArray(applied)) {
-                setUndoAssignments(applied);
-                hapticNotification(NotificationFeedbackType.Success);
-            }
-        } catch (error) {
-            showTransactions(transactionIds);
-            handleWriteError(error);
+        if (isNotEmptyArray(applied)) {
+            setUndoAssignments(applied);
+            hapticNotification(NotificationFeedbackType.Success);
         }
     };
 
@@ -58,7 +57,10 @@ export const useCategorizeInboxActions = (inbox: CategorizeInboxInterface): Cate
         const transactionIds = assignments.flatMap(assignment => assignment.transactionIds);
 
         hideTransactions(transactionIds);
-        void runAssignment(assignments, transactionIds);
+        enqueueWrite(
+            () => runAssignment(assignments),
+            () => void showTransactions(transactionIds)
+        );
     };
 
     const handleAssignCluster = (cluster: CategorizeInboxClusterInterface, categoryId: number): void => {
@@ -86,7 +88,10 @@ export const useCategorizeInboxActions = (inbox: CategorizeInboxInterface): Cate
         setUndoAssignments(null);
         showTransactions(undoAssignments.flatMap(assignment => assignment.transactionIds));
 
-        void categorizeInboxService.undo(undoAssignments).catch(handleWriteError);
+        enqueueWrite(
+            () => categorizeInboxService.undo(undoAssignments),
+            () => void setUndoAssignments(previous => previous ?? undoAssignments)
+        );
     };
 
     const handleToggleExpanded = (clusterKey: string): void =>

@@ -14,12 +14,12 @@ import type { LegendListRenderItemProps } from '@legendapp/list/react-native';
 
 interface Props {
     readonly items: CategorizeInboxListItemType[];
+    readonly dockHeight: number;
 }
 
 const ESTIMATED_ITEM_SIZE = 112;
-const DOCK_CLEARANCE = 176;
 
-export const CategorizeInboxList = ({ items }: Props) => {
+export const CategorizeInboxList = ({ items, dockHeight }: Props) => {
     const { bottom } = useSafeAreaInsets();
 
     const keyExtractor = (item: CategorizeInboxListItemType): string => item.key;
@@ -43,7 +43,7 @@ export const CategorizeInboxList = ({ items }: Props) => {
         return <CategorizeInboxClusterCard cluster={item.cluster} />;
     };
 
-    const contentContainerStyle = { gap: LEGEND_LIST_CONTENT_GAP, paddingBottom: bottom + DOCK_CLEARANCE };
+    const contentContainerStyle = { gap: LEGEND_LIST_CONTENT_GAP, paddingBottom: bottom + dockHeight + LEGEND_LIST_CONTENT_GAP };
 
     return (
         <BudgieLegendList
