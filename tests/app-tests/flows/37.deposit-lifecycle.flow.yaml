@@ -20,7 +20,7 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'CreateAccount.Amount'
-- eraseText: 20
+- eraseText: 100
 - inputText: '500'
 
 - tapOn:
@@ -36,7 +36,7 @@ appId: ${APP_ID}
       centerElement: true
 - tapOn:
       id: 'AccountForm.InterestRateInput'
-- eraseText: 20
+- eraseText: 100
 - inputText: '12'
 - tapOn:
       text: 'Deposit Account'
@@ -312,7 +312,7 @@ appId: ${APP_ID}
       centerElement: true
 - tapOn:
       id: 'AccountForm.InterestRateInput'
-- eraseText: 20
+- eraseText: 100
 - inputText: '5'
 - tapOn:
       text: 'Account Settings'
