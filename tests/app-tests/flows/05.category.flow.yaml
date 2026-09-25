@@ -105,7 +105,7 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'CategoryPage.SearchInput'
-- eraseText: 50
+- eraseText: 15
 
 - assertVisible:
       id: 'CategoryCard.E2E Category Primary'
@@ -127,7 +127,7 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'CategoryForm.Input'
-- eraseText: 80
+- eraseText: 30
 - inputText: 'E2E Category Updated'
 - pressKey: enter
 - waitForAnimationToEnd

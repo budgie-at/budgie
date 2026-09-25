@@ -1,8 +1,14 @@
 appId: ${APP_ID}
 ---
+- evalScript: ${output.accountAlreadySelected = false}
 - runFlow:
       when:
-          notVisible: ${ACCOUNT_NAME}
+          visible: ${ACCOUNT_NAME}
+      commands:
+          - evalScript: ${output.accountAlreadySelected = true}
+- runFlow:
+      when:
+          true: ${!output.accountAlreadySelected}
       commands:
           - retry:
                 maxRetries: 3

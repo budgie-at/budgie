@@ -7,7 +7,6 @@ appId: ${APP_ID}
       id: 'CategoryPickerBottomSheet.Input'
 - tapOn:
     id: 'CategoryPickerBottomSheet.Input'
-- waitForAnimationToEnd
 - inputText: ${CATEGORY_NAME}
 - tapOn: Done
 - extendedWaitUntil:

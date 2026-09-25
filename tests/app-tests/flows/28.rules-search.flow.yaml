@@ -39,11 +39,6 @@ env:
 
 - tapOn:
       id: 'RuleForm.Footer.SubmitButton'
-- runFlow:
-      when:
-          visible: 'Apply to existing transactions?'
-      commands:
-          - tapOn: 'Skip'
 - extendedWaitUntil:
       visible:
           id: 'RulesPage.Page'
@@ -85,11 +80,6 @@ env:
 
 - tapOn:
       id: 'RuleForm.Footer.SubmitButton'
-- runFlow:
-      when:
-          visible: 'Apply to existing transactions?'
-      commands:
-          - tapOn: 'Skip'
 - extendedWaitUntil:
       visible:
           id: 'RulesPage.Page'
@@ -109,7 +99,7 @@ env:
 - assertNotVisible:
       id: 'RulesPage.RuleCard.1'
 
-- eraseText
+- eraseText: 25
 - inputText: ${CATEGORY_NAME}
 - assertVisible:
       id: 'RulesPage.RuleCard.0'
@@ -118,7 +108,7 @@ env:
 - assertVisible:
       id: 'RulesPage.RuleCard.1'
 
-- eraseText
+- eraseText: 25
 - inputText: MissingRuleSearch
 - assertVisible:
       id: 'RulesPage.EmptyState'
@@ -127,7 +117,7 @@ env:
 - assertVisible:
       text: 'Try a different search term'
 
-- eraseText
+- eraseText: 25
 - assertVisible:
       id: 'RulesPage.RuleCard.0'
 
