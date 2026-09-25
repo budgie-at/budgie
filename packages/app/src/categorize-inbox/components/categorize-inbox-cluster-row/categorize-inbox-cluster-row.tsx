@@ -23,7 +23,7 @@ interface Props {
     readonly displayTitle: string;
 }
 
-const rowVariants = cva('flex-row items-center gap-x-md py-sm', {
+const rowVariants = cva('flex-row items-center gap-x-xs', {
     variants: { isIncluded: { true: '', false: 'opacity-40' } }
 });
 
@@ -31,7 +31,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
     const { t } = useLingui();
     const { formatDayAndMonthAndYear } = useFormatDate();
     const protectAmount = useProtectedAmountLabel();
-    const { excludedTransactionIds, isBusy, toggleExcluded, assignRow } = useCategorizeInboxContext();
+    const { excludedTransactionIds, toggleExcluded, assignRow } = useCategorizeInboxContext();
     const [openCategorySelector] = useCategorySelectorModal();
 
     const handleTogglePress = (): void => void toggleExcluded(row.transactionId);
@@ -55,6 +55,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
         <View className={rowVariants({ isIncluded })} {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}>
             <HapticPressable
                 onPress={handleTogglePress}
+                className="h-11 w-11 items-center justify-center"
                 accessibilityRole="checkbox"
                 accessibilityState={accessibilityState}
                 accessibilityLabel={t`Include in bulk action`}
@@ -78,7 +79,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
 
             <HapticPressable
                 onPress={handlePickCategoryPress}
-                disabled={isBusy}
+                className="h-11 w-11 items-center justify-center"
                 accessibilityRole="button"
                 accessibilityLabel={t`Pick a category for this transaction`}
                 {...testID(CategorizeInboxClusterRowSelector.PickCategory, row.transactionId)}

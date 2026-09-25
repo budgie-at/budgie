@@ -29,17 +29,21 @@ export const CategorizeInboxOneOffRow = ({ cluster }: Props) => {
 
     return (
         <Card size="sm" className="gap-y-md" {...testID(CategorizeInboxOneOffRowSelector.Row, cluster.key)}>
-            <View className="flex-row items-baseline gap-x-md">
+            <View className="flex-row items-center gap-x-xl">
                 <Text className="text-primary text-sm font-semibold flex-1" numberOfLines={1}>
                     {cluster.displayTitle}
                 </Text>
-                <Text className="text-secondary-foreground text-xs">{formatDayAndMonthAndYear(row.operatedAt)}</Text>
-                <Text className="text-primary text-sm font-medium">
+                <Text className="text-primary text-sm font-semibold">
                     {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
                 </Text>
             </View>
 
-            <CategorizeInboxSuggestionChips cluster={cluster} />
+            <View className="flex-row items-center gap-x-sm">
+                <Text className="text-secondary-foreground text-xs flex-1" numberOfLines={1}>
+                    {formatDayAndMonthAndYear(row.operatedAt)}
+                </Text>
+                <CategorizeInboxSuggestionChips cluster={cluster} />
+            </View>
         </Card>
     );
 };

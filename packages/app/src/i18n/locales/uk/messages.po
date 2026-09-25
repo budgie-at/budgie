@@ -41,35 +41,20 @@ msgstr "{0, plural, one {# зняття готівки} few {# зняття го
 msgid "{0, plural, one {# card transfer} other {# card transfers}}"
 msgstr "{0, plural, one {# переказ між картками} few {# перекази між картками} many {# переказів між картками} other {# переказу між картками}}"
 
-#. placeholder {0}: inbox.totalRowCount
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
-msgid "{0, plural, one {# left} other {# left}}"
-msgstr "{0, plural, one {Залишилася #} few {Залишилося #} many {Залишилося #} other {Залишилося #}}"
+#. placeholder {0}: categoryIds.size
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+msgid "{0, plural, one {# category} other {# categories}}"
+msgstr "{0, plural, one {# категорія} few {# категорії} many {# категорій} other {# категорії}}"
 
 #. placeholder {0}: cluster.rows.length
 #: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
 
-#. placeholder {0}: cluster.variantCount
-#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
-msgid "{0, plural, one {# variant} other {# variants}}"
-msgstr "{0, plural, one {# варіант} few {# варіанти} many {# варіантів} other {# варіанта}}"
-
-#. placeholder {0}: includedAssignments.length
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{0, plural, one {across # merchant} other {across # merchants}}"
-msgstr "{0, plural, one {у # продавця} few {у # продавців} many {у # продавців} other {у # продавця}}"
-
 #. placeholder {0}: transactionIds.length
 #: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
 msgid "{0, plural, one {Move # transaction to this account?} other {Move # transactions to this account?}}"
 msgstr "{0, plural, one {Перемістити # транзакцію на цей рахунок?} few {Перемістити # транзакції на цей рахунок?} many {Перемістити # транзакцій на цей рахунок?} other {Перемістити # транзакції на цей рахунок?}}"
-
-#. placeholder {0}: cluster.rows.length
-#: src/categorize-inbox/components/categorize-inbox-cluster-rows/categorize-inbox-cluster-rows.tsx
-msgid "{0, plural, one {Review # transaction} other {Review # transactions}}"
-msgstr "{0, plural, one {Переглянути # транзакцію} few {Переглянути # транзакції} many {Переглянути # транзакцій} other {Переглянути # транзакції}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
@@ -103,6 +88,14 @@ msgstr "{availableCount, plural, one {# стовпець доступний} few
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# категорія} few {# категорії} many {# категорій} other {# категорії}}"
+
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
+msgstr "{categorizedCount, plural, one {# категоризовано за цей сеанс} few {# категоризовано за цей сеанс} many {# категоризовано за цей сеанс} other {# категоризовано за цей сеанс}}"
+
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "{categorizedCount, plural, one {# done} other {# done}}"
+msgstr "{categorizedCount, plural, one {# готово} few {# готово} many {# готово} other {# готово}}"
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: {threshold}% spent"
@@ -164,10 +157,6 @@ msgstr "{formattedRemaining} понад бюджет"
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 msgstr "{found, plural, one {# збіг з високою впевненістю} few {# збіги з високою впевненістю} many {# збігів з високою впевненістю} other {# збігу з високою впевненістю}}"
 
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{hiddenCategoryCount, plural, one {+# more category} other {+# more categories}}"
-msgstr "{hiddenCategoryCount, plural, one {+ще # категорія} few {+ще # категорії} many {+ще # категорій} other {+ще # категорії}}"
-
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
 msgstr "{loadedDays}/{totalDays} днів"
@@ -199,21 +188,21 @@ msgstr "{percentage}% витрат"
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "{remainingCount, plural, one {# left} other {# left}}"
+msgstr "{remainingCount, plural, one {Залишилася #} few {Залишилося #} many {Залишилося #} other {Залишилося #}}"
+
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# categorized} other {# categorized}}"
 msgstr "{rowCount, plural, one {# категоризовано} few {# категоризовано} many {# категоризовано} other {# категоризовано}}"
 
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{rowCount, plural, one {# transaction ready} other {# transactions ready}}"
-msgstr "{rowCount, plural, one {# транзакція готова} few {# транзакції готові} many {# транзакцій готові} other {# транзакції готові}}"
-
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{rowCount, plural, one {Accept # suggestion?} other {Accept # suggestions?}}"
-msgstr "{rowCount, plural, one {Прийняти # пропозицію?} few {Прийняти # пропозиції?} many {Прийняти # пропозицій?} other {Прийняти # пропозиції?}}"
-
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
-msgid "{rowCount} → {categoryTitle}"
-msgstr "{rowCount} → {categoryTitle}"
+msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
+msgstr "{rowCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
+
+#: src/categorize-inbox/components/categorize-inbox-accept-all-button/categorize-inbox-accept-all-button.tsx
+msgid "{rowCount, plural, one {Accept # suggestion} other {Accept # suggestions}}"
+msgstr "{rowCount, plural, one {Прийняти # пропозицію} few {Прийняти # пропозиції} many {Прийняти # пропозицій} other {Прийняти # пропозиції}}"
 
 #: src/app/transaction-account-filter.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
@@ -231,7 +220,7 @@ msgstr "{selectedCount, plural, =0 {Показати всі теги} one {По�
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# схожа транзакція} other {# схожих транзакцій}}"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-rows/categorize-inbox-cluster-rows.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
 msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{skippedCount, plural, one {# пропущено} few {# пропущено} many {# пропущено} other {# пропущено}}"
 
@@ -328,14 +317,6 @@ msgstr "Близько 6 хвилин"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About a minute"
 msgstr "Близько хвилини"
-
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "Accept"
-msgstr "Прийняти"
-
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "Accept all"
-msgstr "Прийняти всі"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -551,10 +532,6 @@ msgstr "Вже повернуто"
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
 msgstr "Вже синхронізується"
-
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
-msgid "Always"
-msgstr "Завжди"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
@@ -843,7 +820,6 @@ msgstr "Може тривати годинами"
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
 #: src/import/components/import-database/import-database.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
@@ -897,6 +873,10 @@ msgstr "Категоризує транзакції, пропонує теги �
 #: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
 msgid "Categorize"
 msgstr "Категоризувати"
+
+#: src/categorize-inbox/components/categorize-inbox-suggestion-chip/categorize-inbox-suggestion-chip.tsx
+msgid "Categorize as {categoryTitle}"
+msgstr "Категоризувати як {categoryTitle}"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -1396,6 +1376,7 @@ msgstr "Створити PIN-код"
 msgid "Create a read-only API key and secret"
 msgstr "Створіть API-ключ і секрет лише для читання"
 
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Create a rule"
 msgstr "Створити правило"
@@ -1641,6 +1622,7 @@ msgid "Do not sync history"
 msgstr "Не синхронізувати історію"
 
 #: src/app/import-column-mapper.tsx
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 msgid "Done"
@@ -2129,6 +2111,10 @@ msgstr "Приховано з Головної"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
 
+#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+msgid "Hide transactions"
+msgstr "Сховати транзакції"
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Historical valuation failed"
 msgstr "Не вдалося виконати історичну оцінку"
@@ -2616,10 +2602,6 @@ msgstr "місяців залишилось"
 msgid "More categories"
 msgstr "Інші категорії"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips.tsx
-msgid "More…"
-msgstr "Інше…"
-
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Most likely balance"
 msgstr "Найімовірніший баланс"
@@ -2637,8 +2619,8 @@ msgid "Navigate to Account → Statements"
 msgstr "Перейдіть до Рахунок → Виписки"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
-msgid "Needs your review"
-msgstr "Потребує вашої перевірки"
+msgid "Needs review"
+msgstr "Потребують перевірки"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 msgid "Net"
@@ -2981,10 +2963,6 @@ msgstr "Необов’язково — без нього сума залиша�
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "або"
-
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
-msgid "Or categorize as"
-msgstr "Або категоризувати як"
 
 #: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
 msgid "Organise spending your own way"
@@ -3579,6 +3557,7 @@ msgstr "Вибрати всі"
 msgid "Select all categories"
 msgstr "Оберіть усі категорії"
 
+#: src/categorize-inbox/components/categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips.tsx
 #: src/transaction/components/split-entry-row/split-entry-row.tsx
 msgid "Select category"
 msgstr "Обрати категорію"
@@ -3740,6 +3719,10 @@ msgstr "Показати вибраний діапазон"
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
 msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
+
+#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+msgid "Show transactions"
+msgstr "Показати транзакції"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
@@ -4277,7 +4260,6 @@ msgstr "типовий місяць {amount}"
 msgid "Ukrainian"
 msgstr "Українська"
 
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "Uncategorized"

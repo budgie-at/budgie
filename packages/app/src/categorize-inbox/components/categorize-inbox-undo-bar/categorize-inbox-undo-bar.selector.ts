@@ -1,5 +1,5 @@
 export const CategorizeInboxUndoBarSelector = {
     Bar: 'CategorizeInboxUndoBar',
-    AlwaysButton: 'CategorizeInboxUndoBar.AlwaysButton',
+    RuleButton: 'CategorizeInboxUndoBar.RuleButton',
     UndoButton: 'CategorizeInboxUndoBar.UndoButton'
 } as const;

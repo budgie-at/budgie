@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { LEGEND_LIST_CONTENT_GAP, LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
@@ -14,13 +14,14 @@ import type { LegendListRenderItemProps } from '@legendapp/list/react-native';
 
 interface Props {
     readonly items: CategorizeInboxListItemType[];
-    readonly children: ReactElement;
 }
 
-const ESTIMATED_ITEM_SIZE = 160;
-const CONTENT_CONTAINER_STYLE = { gap: LEGEND_LIST_CONTENT_GAP, paddingBottom: 128 };
+const ESTIMATED_ITEM_SIZE = 112;
+const DOCK_CLEARANCE = 160;
 
-export const CategorizeInboxList = ({ items, children }: Props) => {
+export const CategorizeInboxList = ({ items }: Props) => {
+    const { bottom } = useSafeAreaInsets();
+
     const keyExtractor = (item: CategorizeInboxListItemType): string => item.key;
 
     const getItemType = (item: CategorizeInboxListItemType): string =>
@@ -28,7 +29,7 @@ export const CategorizeInboxList = ({ items, children }: Props) => {
 
     const renderItem = ({ item }: LegendListRenderItemProps<CategorizeInboxListItemType>) => {
         if (item.kind === CategorizeInboxListItemKindEnum.SECTION_HEADER) {
-            return <CategorizeInboxSectionHeader section={item.section} count={item.count} />;
+            return <CategorizeInboxSectionHeader section={item.section} rowCount={item.count} />;
         }
 
         if (item.cluster.section === CategorizeInboxSectionEnum.TRANSFERS) {
@@ -42,6 +43,8 @@ export const CategorizeInboxList = ({ items, children }: Props) => {
         return <CategorizeInboxClusterCard cluster={item.cluster} />;
     };
 
+    const contentContainerStyle = { gap: LEGEND_LIST_CONTENT_GAP, paddingBottom: bottom + DOCK_CLEARANCE };
+
     return (
         <BudgieLegendList
             style={LEGEND_LIST_STYLE}
@@ -50,8 +53,7 @@ export const CategorizeInboxList = ({ items, children }: Props) => {
             getItemType={getItemType}
             renderItem={renderItem}
             estimatedItemSize={ESTIMATED_ITEM_SIZE}
-            contentContainerStyle={CONTENT_CONTAINER_STYLE}
-            ListHeaderComponent={children}
+            contentContainerStyle={contentContainerStyle}
         />
     );
 };

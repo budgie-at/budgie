@@ -15,7 +15,7 @@ import type { CategorizeInboxListItemType } from '../type/categorize-inbox-list-
 import type { CategoryEvidenceRowInterface, CategorizeInboxRowInterface } from '@budgie/contracts';
 
 class CategorizeInboxEngineService {
-    private static readonly LIMITS = { chipCount: 3, confidentShare: 0.85, confidentCount: 2, merchantTokenCount: 3 } as const;
+    private static readonly LIMITS = { chipCount: 2, confidentShare: 0.85, confidentCount: 2, merchantTokenCount: 3 } as const;
     private static readonly LEGAL_FORM_TOKENS: Record<LanguageEnum, readonly string[]> = {
         [LanguageEnum.EN]: ['ltd', 'llc', 'inc', 'co', 'bv'],
         [LanguageEnum.UK]: ['тов', 'фоп', 'пп', 'ооо'],
@@ -84,7 +84,6 @@ class CategorizeInboxEngineService {
     private buildContext(evidence: CategoryEvidenceRowInterface[], defaultInstrumentId: number): CategorizeInboxBuildContextInterface {
         const titledEvidence = evidence.filter(row => isNotEmptyString(row.title.trim()));
         const brandEvidence = titledEvidence.filter(row => isDefined(this.brandKey(row.title)));
-        const global = this.groupBy(evidence, row => row.type);
         const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId));
 
         return {
@@ -92,7 +91,6 @@ class CategorizeInboxEngineService {
             merchant: this.groupBy(titledEvidence, row => `${row.type}|${this.merchantKey(row.title)}`),
             brand: this.groupBy(brandEvidence, row => `${row.type}|${this.brandKey(row.title)}`),
             mcc: this.groupBy(mccEvidence, row => `${row.type}|${row.mccCategoryId}`),
-            popularCategoryIds: new Map([...global.keys()].map(type => [type, this.rankCategoryIds(this.countCategories(global, [type]))])),
             defaultInstrumentId
         };
     }
@@ -209,10 +207,9 @@ class CategorizeInboxEngineService {
                   ));
         const total = this.sumValues(counts.values());
         const topCount = Math.max(0, ...counts.values());
-        const categoryIds = new Set([...this.rankCategoryIds(counts), ...(context.popularCategoryIds.get(type) ?? [])]);
 
         return {
-            candidates: [...categoryIds]
+            candidates: this.rankCategoryIds(counts)
                 .slice(0, LIMITS.chipCount)
                 .map(categoryId => ({ categoryId, probability: (counts.get(categoryId) ?? 0) / (total + 1) })),
             isConfident: isDefined(historyCounts) && topCount >= LIMITS.confidentCount && topCount / total >= LIMITS.confidentShare,
@@ -284,7 +281,7 @@ class CategorizeInboxEngineService {
                 kind: CategorizeInboxListItemKindEnum.SECTION_HEADER,
                 key: `section-${section}`,
                 section,
-                count: sectionClusters.length
+                count: this.sumValues(sectionClusters.map(cluster => cluster.rows.length))
             };
 
             return isNotEmptyArray(clusterItems) ? [header, ...clusterItems] : [];

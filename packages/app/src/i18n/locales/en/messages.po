@@ -42,35 +42,20 @@ msgstr "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 msgid "{0, plural, one {# card transfer} other {# card transfers}}"
 msgstr "{0, plural, one {# card transfer} other {# card transfers}}"
 
-#. placeholder {0}: inbox.totalRowCount
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
-msgid "{0, plural, one {# left} other {# left}}"
-msgstr "{0, plural, one {# left} other {# left}}"
+#. placeholder {0}: categoryIds.size
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+msgid "{0, plural, one {# category} other {# categories}}"
+msgstr "{0, plural, one {# category} other {# categories}}"
 
 #. placeholder {0}: cluster.rows.length
 #: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# transaction} other {# transactions}}"
 
-#. placeholder {0}: cluster.variantCount
-#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
-msgid "{0, plural, one {# variant} other {# variants}}"
-msgstr "{0, plural, one {# variant} other {# variants}}"
-
-#. placeholder {0}: includedAssignments.length
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{0, plural, one {across # merchant} other {across # merchants}}"
-msgstr "{0, plural, one {across # merchant} other {across # merchants}}"
-
 #. placeholder {0}: transactionIds.length
 #: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
 msgid "{0, plural, one {Move # transaction to this account?} other {Move # transactions to this account?}}"
 msgstr "{0, plural, one {Move # transaction to this account?} other {Move # transactions to this account?}}"
-
-#. placeholder {0}: cluster.rows.length
-#: src/categorize-inbox/components/categorize-inbox-cluster-rows/categorize-inbox-cluster-rows.tsx
-msgid "{0, plural, one {Review # transaction} other {Review # transactions}}"
-msgstr "{0, plural, one {Review # transaction} other {Review # transactions}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
@@ -104,6 +89,14 @@ msgstr "{availableCount, plural, one {# column available} other {# columns avail
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# category} other {# categories}}"
+
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
+msgstr "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
+
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "{categorizedCount, plural, one {# done} other {# done}}"
+msgstr "{categorizedCount, plural, one {# done} other {# done}}"
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: {threshold}% spent"
@@ -165,10 +158,6 @@ msgstr "{formattedRemaining} over budget"
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 msgstr "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{hiddenCategoryCount, plural, one {+# more category} other {+# more categories}}"
-msgstr "{hiddenCategoryCount, plural, one {+# more category} other {+# more categories}}"
-
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
 msgstr "{loadedDays}/{totalDays} days"
@@ -200,21 +189,21 @@ msgstr "{percentage}% of expenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "{remainingCount, plural, one {# left} other {# left}}"
+msgstr "{remainingCount, plural, one {# left} other {# left}}"
+
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# categorized} other {# categorized}}"
 msgstr "{rowCount, plural, one {# categorized} other {# categorized}}"
 
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{rowCount, plural, one {# transaction ready} other {# transactions ready}}"
-msgstr "{rowCount, plural, one {# transaction ready} other {# transactions ready}}"
-
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{rowCount, plural, one {Accept # suggestion?} other {Accept # suggestions?}}"
-msgstr "{rowCount, plural, one {Accept # suggestion?} other {Accept # suggestions?}}"
-
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
-msgid "{rowCount} → {categoryTitle}"
-msgstr "{rowCount} → {categoryTitle}"
+msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
+msgstr "{rowCount, plural, one {# transaction} other {# transactions}}"
+
+#: src/categorize-inbox/components/categorize-inbox-accept-all-button/categorize-inbox-accept-all-button.tsx
+msgid "{rowCount, plural, one {Accept # suggestion} other {Accept # suggestions}}"
+msgstr "{rowCount, plural, one {Accept # suggestion} other {Accept # suggestions}}"
 
 #: src/app/transaction-account-filter.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
@@ -232,7 +221,7 @@ msgstr "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show 
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-rows/categorize-inbox-cluster-rows.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
 msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{skippedCount, plural, one {# skipped} other {# skipped}}"
 
@@ -329,14 +318,6 @@ msgstr "About 6 minutes"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About a minute"
 msgstr "About a minute"
-
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "Accept"
-msgstr "Accept"
-
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "Accept all"
-msgstr "Accept all"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -552,10 +533,6 @@ msgstr "Already returned"
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
 msgstr "Already syncing"
-
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
-msgid "Always"
-msgstr "Always"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
@@ -844,7 +821,6 @@ msgstr "Can take hours"
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
 #: src/import/components/import-database/import-database.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
@@ -898,6 +874,10 @@ msgstr "Categorises transactions, suggests tags and transcribes voice notes on t
 #: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
 msgid "Categorize"
 msgstr "Categorize"
+
+#: src/categorize-inbox/components/categorize-inbox-suggestion-chip/categorize-inbox-suggestion-chip.tsx
+msgid "Categorize as {categoryTitle}"
+msgstr "Categorize as {categoryTitle}"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -1397,6 +1377,7 @@ msgstr "Create a PIN"
 msgid "Create a read-only API key and secret"
 msgstr "Create a read-only API key and secret"
 
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Create a rule"
 msgstr "Create a rule"
@@ -1642,6 +1623,7 @@ msgid "Do not sync history"
 msgstr "Do not sync history"
 
 #: src/app/import-column-mapper.tsx
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 msgid "Done"
@@ -2130,6 +2112,10 @@ msgstr "Hidden from Home"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
+#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+msgid "Hide transactions"
+msgstr "Hide transactions"
+
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Historical valuation failed"
 msgstr "Historical valuation failed"
@@ -2617,10 +2603,6 @@ msgstr "months left"
 msgid "More categories"
 msgstr "More categories"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips.tsx
-msgid "More…"
-msgstr "More…"
-
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Most likely balance"
 msgstr "Most likely balance"
@@ -2638,8 +2620,8 @@ msgid "Navigate to Account → Statements"
 msgstr "Navigate to Account → Statements"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
-msgid "Needs your review"
-msgstr "Needs your review"
+msgid "Needs review"
+msgstr "Needs review"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 msgid "Net"
@@ -2982,10 +2964,6 @@ msgstr "Optional — without it the amount stays manual"
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "or"
-
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
-msgid "Or categorize as"
-msgstr "Or categorize as"
 
 #: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
 msgid "Organise spending your own way"
@@ -3580,6 +3558,7 @@ msgstr "Select all"
 msgid "Select all categories"
 msgstr "Select all categories"
 
+#: src/categorize-inbox/components/categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips.tsx
 #: src/transaction/components/split-entry-row/split-entry-row.tsx
 msgid "Select category"
 msgstr "Select category"
@@ -3741,6 +3720,10 @@ msgstr "Show selected range"
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
 msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
+
+#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+msgid "Show transactions"
+msgstr "Show transactions"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
@@ -4278,7 +4261,6 @@ msgstr "typical month {amount}"
 msgid "Ukrainian"
 msgstr "Ukrainian"
 
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "Uncategorized"
