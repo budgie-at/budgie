@@ -3725,6 +3725,10 @@ msgstr "Show budget on home"
 msgid "Show Cents"
 msgstr "Show Cents"
 
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "Show list"
+msgstr "Show list"
+
 #: src/runway/component/runway-settings-section/runway-settings-section.tsx
 msgid "Show on home"
 msgstr "Show on home"

@@ -3724,6 +3724,10 @@ msgstr "Показувати бюджет на головній"
 msgid "Show Cents"
 msgstr "Показати копійки"
 
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "Show list"
+msgstr "Показати список"
+
 #: src/runway/component/runway-settings-section/runway-settings-section.tsx
 msgid "Show on home"
 msgstr "Показувати на головній"
