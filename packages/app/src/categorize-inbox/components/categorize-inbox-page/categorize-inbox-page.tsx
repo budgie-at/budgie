@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
 
-import { isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
@@ -46,6 +46,7 @@ export const CategorizeInboxPage = ({ params }: Props) => {
         });
 
     const remainingText = t({ message: plural(inbox.totalRowCount, { one: '# left', other: '# left' }) });
+    const progressBar = isPositiveNumber(progress) ? <AiProgressBar progress={progress} /> : null;
     const footer = isDefined(contextValue.undoAssignments) ? (
         <StickyFooterBand>
             <CategorizeInboxUndoBar assignments={contextValue.undoAssignments} />
@@ -77,7 +78,7 @@ export const CategorizeInboxPage = ({ params }: Props) => {
                         title={t`Categorize`}
                         description={remainingText}
                         onGoBack={handleGoBack}
-                        bottom={<AiProgressBar progress={progress} />}
+                        bottom={progressBar}
                         right={
                             <CircularActionButton
                                 icon={UserIconNameEnum.List}

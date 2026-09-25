@@ -42,7 +42,7 @@ export const CategorizeInboxSuggestionChip = ({ cluster, candidate, index }: Pro
     const handlePress = (): void => void assignCluster(cluster, candidate.categoryId);
 
     const category = categoriesById.get(candidate.categoryId);
-    const isTop = index === 0;
+    const isTop = index === 0 && cluster.hasEvidence;
     const percentText = isTop && cluster.isConfident ? `${Math.round(candidate.probability * PERCENT_MULTIPLIER)}%` : null;
 
     if (!isDefined(category)) {
