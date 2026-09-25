@@ -24,6 +24,7 @@ export const FEATURE_METADATA = {
         'ai-auto-categorization',
         'mcc-auto-category',
         'uncategorized-transactions',
+        'bulk-categorize-transactions',
         'custom-categories',
         'transaction-tags',
         'convert-to-transfer'
