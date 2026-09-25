@@ -3,9 +3,12 @@ appId: ${APP_ID}
 - evalScript: ${output.accountAlreadySelected = false}
 - runFlow:
       when:
-          visible: ${ACCOUNT_NAME}
+          visible:
+              id: 'TransactionForm\.SelectedAccount\..*'
       commands:
-          - evalScript: ${output.accountAlreadySelected = true}
+          - copyTextFrom:
+                id: 'TransactionForm\.SelectedAccount\..*'
+          - evalScript: ${output.accountAlreadySelected = maestro.copiedText == ACCOUNT_NAME}
 - runFlow:
       when:
           true: ${!output.accountAlreadySelected}
