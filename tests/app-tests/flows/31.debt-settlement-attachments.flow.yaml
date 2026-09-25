@@ -7,36 +7,6 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
-- runFlow:
-      file: subflows/transactions/open-transaction-form.flow.yaml
-      env:
-          ACTION_ITEM_ID: 'ActionItem.Expense'
-          FORM_TITLE: 'New Expense'
-
-- tapOn:
-      id: 'TransactionKeypad.Digit.1'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-
-- runFlow:
-      file: subflows/transactions/select-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E Txn Account'
-
-- runFlow:
-      file: subflows/categories/create-category-from-transaction.flow.yaml
-      env:
-          CATEGORY_NAME: 'E2E Debt Attachment Category'
-
-- runFlow:
-      file: subflows/transactions/enter-comment.flow.yaml
-      env:
-          COMMENT: 'E2E Debt Attach Expense'
-
-- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
-
 - extendedWaitUntil:
       visible:
           id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
@@ -92,36 +62,6 @@ appId: ${APP_ID}
 - runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
-
-- runFlow:
-      file: subflows/transactions/open-transaction-form.flow.yaml
-      env:
-          ACTION_ITEM_ID: 'ActionItem.Income'
-          FORM_TITLE: 'New Income'
-
-- tapOn:
-      id: 'TransactionKeypad.Digit.1'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-- tapOn:
-      id: 'TransactionKeypad.Digit.9'
-
-- runFlow:
-      file: subflows/transactions/select-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E Txn Account'
-
-- runFlow:
-      file: subflows/categories/select-category.flow.yaml
-      env:
-          CATEGORY_NAME: 'E2E Debt Attachment Category'
-
-- runFlow:
-      file: subflows/transactions/enter-comment.flow.yaml
-      env:
-          COMMENT: 'E2E Debt Attach Income'
-
-- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
 - extendedWaitUntil:
       visible:
@@ -239,40 +179,11 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
-- runFlow:
-      file: subflows/transactions/open-transaction-form.flow.yaml
-      env:
-          ACTION_ITEM_ID: 'ActionItem.Expense'
-          FORM_TITLE: 'New Expense'
-
-- tapOn:
-      id: 'TransactionKeypad.Digit.5'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-
-- runFlow:
-      file: subflows/transactions/select-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E EUR Debt Funding Account'
-
-- runFlow:
-      file: subflows/categories/select-category.flow.yaml
-      env:
-          CATEGORY_NAME: 'E2E Debt Attachment Category'
-
-- runFlow:
-      file: subflows/transactions/enter-comment.flow.yaml
-      env:
-          COMMENT: 'E2E Lent Debt Extra Lending'
-
-- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
-
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'TransactionCard.Label.E2E_Lent_Debt_Extra_Lending'
-      timeout: 5000
+      direction: DOWN
+- waitForAnimationToEnd
 
 - longPressOn:
       id: 'TransactionCard.Label.E2E_Lent_Debt_Extra_Lending'
@@ -331,42 +242,11 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
-- runFlow:
-      file: subflows/transactions/open-transaction-form.flow.yaml
-      env:
-          ACTION_ITEM_ID: 'ActionItem.Expense'
-          FORM_TITLE: 'New Expense'
-
-- tapOn:
-      id: 'TransactionKeypad.Digit.2'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-
-- runFlow:
-      file: subflows/transactions/select-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E Txn Account'
-
-- runFlow:
-      file: subflows/categories/select-category.flow.yaml
-      env:
-          CATEGORY_NAME: 'E2E Debt Attachment Category'
-
-- runFlow:
-      file: subflows/transactions/enter-comment.flow.yaml
-      env:
-          COMMENT: 'E2E Borrowed Debt Attach Expense'
-
-- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
-
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Expense'
-      timeout: 5000
+      direction: DOWN
+- waitForAnimationToEnd
 
 - tapOn:
       id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Expense'
@@ -402,10 +282,10 @@ appId: ${APP_ID}
 
 - runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Expense'
-      timeout: 5000
+      direction: DOWN
 - assertVisible: 'Debt · E2E Borrowed Debt'
 
 - tapOn:
@@ -435,41 +315,6 @@ appId: ${APP_ID}
 - runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
-
-- runFlow:
-      file: subflows/transactions/open-transaction-form.flow.yaml
-      env:
-          ACTION_ITEM_ID: 'ActionItem.Income'
-          FORM_TITLE: 'New Income'
-
-- tapOn:
-      id: 'TransactionKeypad.Digit.1'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-- tapOn:
-      id: 'TransactionKeypad.Digit.9'
-
-- runFlow:
-      file: subflows/transactions/select-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E Txn Account'
-
-- runFlow:
-      file: subflows/categories/select-category.flow.yaml
-      env:
-          CATEGORY_NAME: 'E2E Debt Attachment Category'
-
-- runFlow:
-      file: subflows/transactions/enter-comment.flow.yaml
-      env:
-          COMMENT: 'E2E Borrowed Debt Attach Income'
-
-- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
-
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Income'
-      timeout: 5000
 
 - runFlow:
       file: subflows/navigation/open-deep-link.flow.yaml
@@ -517,10 +362,10 @@ appId: ${APP_ID}
 
 - runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Income'
-      timeout: 5000
+      direction: DOWN
 - assertVisible: 'Debt · E2E Borrowed Debt'
 
 - tapOn:
@@ -552,41 +397,6 @@ appId: ${APP_ID}
 - runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
-
-- runFlow:
-      file: subflows/transactions/open-transaction-form.flow.yaml
-      env:
-          ACTION_ITEM_ID: 'ActionItem.Income'
-          FORM_TITLE: 'New Income'
-
-- tapOn:
-      id: 'TransactionKeypad.Digit.3'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-
-- runFlow:
-      file: subflows/transactions/select-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E Txn Account'
-
-- runFlow:
-      file: subflows/categories/select-category.flow.yaml
-      env:
-          CATEGORY_NAME: 'E2E Debt Attachment Category'
-
-- runFlow:
-      file: subflows/transactions/enter-comment.flow.yaml
-      env:
-          COMMENT: 'E2E Completed Debt Attach Income'
-
-- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
-
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionCard.Label.E2E_Completed_Debt_Attach_Income'
-      timeout: 5000
 
 - runFlow:
       file: subflows/navigation/open-deep-link.flow.yaml
@@ -624,10 +434,10 @@ appId: ${APP_ID}
 
 - runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'TransactionCard.Label.E2E_Completed_Debt_Attach_Income'
-      timeout: 5000
+      direction: DOWN
 - assertVisible: 'Debt · E2E Completed Debt'
 
 - tapOn:
@@ -661,56 +471,11 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
-- runFlow:
-      file: subflows/transactions/open-transaction-form.flow.yaml
-      env:
-          ACTION_ITEM_ID: 'ActionItem.Expense'
-          FORM_TITLE: 'New Expense'
-
-- tapOn:
-      id: 'TransactionKeypad.Digit.1'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-
-- runFlow:
-      file: subflows/transactions/select-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E Txn Account'
-
-- runFlow:
-      file: subflows/categories/select-category.flow.yaml
-      env:
-          CATEGORY_NAME: 'E2E Debt Attachment Category'
-
-- tapOn:
-      id: 'TransactionFeePill'
-- extendedWaitUntil:
-      visible:
-          id: 'SplitEntryRow.Amount.0'
-      timeout: 5000
-- tapOn:
-      id: 'SplitEntryRow.Amount.0'
-- inputText: '5'
-- tapOn:
-      id: 'TransactionFeeModal.SaveButton'
-- extendedWaitUntil:
-      notVisible:
-          id: 'SplitEntryRow.Amount.0'
-      timeout: 5000
-
-- runFlow:
-      file: subflows/transactions/enter-comment.flow.yaml
-      env:
-          COMMENT: 'E2E Fee Debt Attach Expense'
-
-- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
-
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'TransactionCard.Label.E2E_Fee_Debt_Attach_Expense'
-      timeout: 5000
+      direction: DOWN
+- waitForAnimationToEnd
 
 - longPressOn:
       id: 'TransactionCard.Label.E2E_Fee_Debt_Attach_Expense'
@@ -759,40 +524,11 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 
-- runFlow:
-      file: subflows/transactions/open-transaction-form.flow.yaml
-      env:
-          ACTION_ITEM_ID: 'ActionItem.Expense'
-          FORM_TITLE: 'New Expense'
-
-- tapOn:
-      id: 'TransactionKeypad.Digit.1'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-- tapOn:
-      id: 'TransactionKeypad.Digit.0'
-
-- runFlow:
-      file: subflows/transactions/select-account.flow.yaml
-      env:
-          ACCOUNT_NAME: 'E2E Txn Account'
-
-- runFlow:
-      file: subflows/categories/select-category.flow.yaml
-      env:
-          CATEGORY_NAME: 'E2E Debt Attachment Category'
-
-- runFlow:
-      file: subflows/transactions/enter-comment.flow.yaml
-      env:
-          COMMENT: 'E2E Cross Currency Debt Attach'
-
-- runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
-
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'TransactionCard.Label.E2E_Cross_Currency_Debt_Attach'
-      timeout: 5000
+      direction: DOWN
+- waitForAnimationToEnd
 
 - longPressOn:
       id: 'TransactionCard.Label.E2E_Cross_Currency_Debt_Attach'
@@ -871,10 +607,10 @@ appId: ${APP_ID}
 
 - runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'TransactionCard.Label.E2E_Debt_Category_Attach'
-      timeout: 5000
+      direction: UP
 - assertVisible:
       id: 'TransactionCard.Category.Lending'
 

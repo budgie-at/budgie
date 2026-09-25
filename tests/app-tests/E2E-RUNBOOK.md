@@ -48,7 +48,7 @@ sqlite3 /tmp/fx/14.db "SELECT type, COUNT(*) FROM transactions WHERE deleted_at 
 
 ## Not every `NN.db` a flow imports is a file in `fixtures/`
 
-`setup-ios-e2e-fixtures.sh` is the only source of truth for what lands on the simulator, and many fixture names are **aliases or generated copies**, not tracked files. `install_database_fixture ".../01.db" "23.db"` means flow 23 imports `23.db` on the device while the repo only stores `01.db`; `14.db`, `20.db`, `21.db`, `22.db`, `31-transaction-info.db` and `budget-multi-currency.db` are generated into a temp dir by `prepare-date-sensitive-fixtures.js`.
+`setup-ios-e2e-fixtures.sh` is the only source of truth for what lands on the simulator, and many fixture names are **aliases or generated copies**, not tracked files. `install_database_fixture ".../01.db" "23.db"` means flow 23 imports `23.db` on the device while the repo only stores `01.db`; `14.db`, `15.db`, `20.db`, `21.db`, `22.db`, `31-debt.db`, `31-transaction-info.db`, `34-matching-rules.db` and `budget-multi-currency.db` are generated into a temp dir by `prepare-date-sensitive-fixtures.js`.
 
 So a flow referencing `FIXTURE_ROW_ID_MATCH: 'NN.db'` with no `tests/app-tests/fixtures/NN.db` on disk is **normal, not a missing fixture**. Check the install script before "fixing" it, and never commit a stray `fixtures/NN.db` for an aliased name — it would be dead weight the script ignores.
 
