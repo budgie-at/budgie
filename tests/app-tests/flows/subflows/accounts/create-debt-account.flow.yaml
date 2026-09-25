@@ -124,6 +124,14 @@ env:
           true: ${FUNDING_ACCOUNT_NAME != ''}
       commands:
           - tapOn:
+                text: 'Debt Account'
+          - waitForAnimationToEnd
+          - scrollUntilVisible:
+                element:
+                    id: 'AccountForm.CurrencySelector'
+                direction: UP
+          - waitForAnimationToEnd
+          - tapOn:
                 id: 'AccountForm.OpeningAccountSelector'
           - extendedWaitUntil:
                 visible:
