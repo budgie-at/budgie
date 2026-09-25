@@ -3724,6 +3724,10 @@ msgstr "Mostrar presupuesto en el inicio"
 msgid "Show Cents"
 msgstr "Mostrar centavos"
 
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "Show list"
+msgstr "Mostrar lista"
+
 #: src/runway/component/runway-settings-section/runway-settings-section.tsx
 msgid "Show on home"
 msgstr "Mostrar en el inicio"

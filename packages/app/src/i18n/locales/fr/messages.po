@@ -3724,6 +3724,10 @@ msgstr "Afficher le budget sur l'accueil"
 msgid "Show Cents"
 msgstr "Afficher les centimes"
 
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "Show list"
+msgstr "Afficher la liste"
+
 #: src/runway/component/runway-settings-section/runway-settings-section.tsx
 msgid "Show on home"
 msgstr "Afficher sur l'accueil"

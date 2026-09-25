@@ -6,8 +6,9 @@ import { ActivityIndicator, View } from 'react-native';
 
 import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { Page } from '../../../@generic/component/page/page';
 import { StickyFooterBand } from '../../../@generic/component/sticky-footer-band/sticky-footer-band';
@@ -80,11 +81,15 @@ export const CategorizeInboxPage = ({ params }: Props) => {
                         onGoBack={handleGoBack}
                         bottom={progressBar}
                         right={
-                            <CircularActionButton
-                                icon={UserIconNameEnum.List}
+                            <HapticPressable
+                                className="ml-auto h-10 w-10 items-center justify-center"
                                 onPress={handleShowList}
                                 testID={CategorizeInboxPageSelector.ShowListButton}
-                            />
+                                accessibilityRole="button"
+                                accessibilityLabel={t`Show list`}
+                            >
+                                <CircleIcon icon={UserIconNameEnum.List} variant="ghost" size={40} iconSize={24} border={false} />
+                            </HapticPressable>
                         }
                     />
                 }
