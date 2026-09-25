@@ -133,6 +133,7 @@ env:
                 centerElement: true
                 waitToSettleTimeoutMs: 2000
 
+- evalScript: ${output.fileRowTappedById = false}
 - waitForAnimationToEnd
 
 - runFlow:
@@ -143,11 +144,11 @@ env:
           - tapOn:
                 id: '${FILE_ROW_ID_MATCH}'
                 retryTapIfNoChange: true
+          - evalScript: ${output.fileRowTappedById = true}
 
 - runFlow:
       when:
-          notVisible:
-              id: '${FILE_ROW_ID_MATCH}'
+          true: ${!output.fileRowTappedById}
       commands:
           - tapOn:
                 text: '${FILE_ROW_TEXT_MATCH}'
