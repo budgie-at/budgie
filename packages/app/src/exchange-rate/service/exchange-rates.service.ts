@@ -17,7 +17,7 @@ class ExchangeRatesService {
         const exchangeRate = await exchangeRateRepository.findByBaseAndQuoteIds(toInstrumentId, fromInstrumentId);
 
         if (isDefined(exchangeRate)) {
-            return { amount: fromAmountInMicroUnits / exchangeRate.rate, exchangeRate: exchangeRate.rate };
+            return { amount: Math.round(fromAmountInMicroUnits / exchangeRate.rate), exchangeRate: exchangeRate.rate };
         }
 
         const baseInstrument = await this.getBaseInstrument();
@@ -36,7 +36,7 @@ class ExchangeRatesService {
         }
 
         return {
-            amount: fromAmountInMicroUnits / baseFromExchangeRate.rate / baseToExchangeRate.rate,
+            amount: Math.round(fromAmountInMicroUnits / baseFromExchangeRate.rate / baseToExchangeRate.rate),
             exchangeRate: baseToExchangeRate.rate
         };
     }
