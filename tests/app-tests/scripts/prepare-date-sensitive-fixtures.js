@@ -979,6 +979,200 @@ const generateRefundConsolidationFixture = () => {
     );
 };
 
+const generateLongPressActionsFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '12.db');
+    const targetPath = path.join(outputDirectoryPath, '15.db');
+    const now = Math.floor(Date.now() / 1000);
+    const deleteOperatedAt = now - 60;
+    const convertOperatedAt = now - 120;
+    const expenseSourceAccountId = 1;
+    const deleteCategoryId = 40;
+    const convertCategoryId = 41;
+    const deleteAmount = 25_000_000;
+    const convertAmount = 30_000_000;
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        INSERT INTO categories (id, created_at, updated_at, title, icon, title_search)
+        VALUES
+            (${deleteCategoryId}, ${now}, ${now}, 'E2E LongPress Delete', 'Folder', 'e2e longpress delete'),
+            (${convertCategoryId}, ${now}, ${now}, 'E2E LongPress Convert', 'Folder', 'e2e longpress convert');
+
+        INSERT INTO transactions (created_at, updated_at, type, title, operated_at, comment, from_account_id, exchange_rate)
+        VALUES
+            (${deleteOperatedAt}, ${deleteOperatedAt}, 'EXPENSE', '', ${deleteOperatedAt}, 'E2E LongPress Delete Txn', ${expenseSourceAccountId}, 1.0),
+            (${convertOperatedAt}, ${convertOperatedAt}, 'EXPENSE', '', ${convertOperatedAt}, 'E2E LongPress Convert Txn', ${expenseSourceAccountId}, 1.0);
+
+        INSERT INTO transaction_entries (created_at, updated_at, type, account_id, category_id, transaction_id, amount)
+        SELECT created_at, updated_at, 'CREDIT', ${expenseSourceAccountId}, ${deleteCategoryId}, id, ${deleteAmount}
+        FROM transactions
+        WHERE comment = 'E2E LongPress Delete Txn';
+
+        INSERT INTO transaction_entries (created_at, updated_at, type, account_id, category_id, transaction_id, amount)
+        SELECT created_at, updated_at, 'CREDIT', ${expenseSourceAccountId}, ${convertCategoryId}, id, ${convertAmount}
+        FROM transactions
+        WHERE comment = 'E2E LongPress Convert Txn';
+
+        UPDATE account_balances
+        SET amount = amount - ${deleteAmount + convertAmount}, updated_at = ${now}
+        WHERE account_id = ${expenseSourceAccountId};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
+const generateMatchingRulesFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '25.db');
+    const targetPath = path.join(outputDirectoryPath, '34-matching-rules.db');
+    const now = Math.floor(Date.now() / 1000);
+    const rulesTestAccountId = 3;
+    const rulesTestCategoryId = 42;
+    const groceriesCategoryId = 11;
+    const rulesTestTagId = 1;
+    const expenseAmount = 25_000_000;
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        INSERT INTO rules (id, created_at, updated_at, enabled, condition_match_type)
+        VALUES
+            (1, ${now}, ${now}, 1, 'ALL'),
+            (2, ${now}, ${now}, 1, 'ALL');
+
+        INSERT INTO rule_conditions (created_at, updated_at, rule_id, field, operator, value)
+        VALUES
+            (${now}, ${now}, 1, 'COMMENT', 'CONTAINS', 'E2E Pill Navigation'),
+            (${now}, ${now}, 2, 'COMMENT', 'CONTAINS', 'Pill Navigation');
+
+        INSERT INTO rule_actions (created_at, updated_at, rule_id, type, category_id, tag_id)
+        VALUES
+            (${now}, ${now}, 1, 'SET_CATEGORY', ${groceriesCategoryId}, NULL),
+            (${now}, ${now}, 2, 'ADD_TAG', NULL, ${rulesTestTagId});
+
+        INSERT INTO transactions (id, created_at, updated_at, type, title, operated_at, comment, from_account_id, exchange_rate, needs_embedding)
+        VALUES
+            (9, ${now}, ${now}, 'EXPENSE', '', ${now}, 'E2E Pill Navigation', ${rulesTestAccountId}, 1.0, 1),
+            (10, ${now}, ${now}, 'EXPENSE', '', ${now}, 'Solo Pill Navigation', ${rulesTestAccountId}, 1.0, 1);
+
+        INSERT INTO transaction_entries (created_at, updated_at, type, account_id, category_id, transaction_id, amount)
+        VALUES
+            (${now}, ${now}, 'CREDIT', ${rulesTestAccountId}, ${rulesTestCategoryId}, 9, ${expenseAmount}),
+            (${now}, ${now}, 'CREDIT', ${rulesTestAccountId}, ${rulesTestCategoryId}, 10, ${expenseAmount});
+
+        UPDATE account_balances
+        SET amount = amount - ${expenseAmount * 2}, updated_at = ${now}
+        WHERE account_id = ${rulesTestAccountId};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
+const generateDebtSettlementFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '31-debt.db');
+    const targetPath = path.join(outputDirectoryPath, '31-debt.db');
+    const now = Math.floor(Date.now() / 1000);
+    const usdInstrumentId = 1;
+    const eurInstrumentId = 2;
+    const transactionAccountId = 1;
+    const eurFundingAccountId = 3;
+    const attachmentCategoryId = 41;
+    const bankFeeCategoryId = 32;
+    const feeTransactionId = 14;
+    const feeAmount = 5_000_000;
+    const eurToUsdRateSql = `(SELECT 1.0 / rate FROM historical_exchange_rates WHERE source_instrument_id = ${usdInstrumentId} AND target_instrument_id = ${eurInstrumentId} ORDER BY rate_date DESC LIMIT 1)`;
+    const transactions = [
+        { id: 8, type: 'EXPENSE', comment: 'E2E Debt Attach Expense', accountId: transactionAccountId, amount: 100_000_000 },
+        { id: 9, type: 'INCOME', comment: 'E2E Debt Attach Income', accountId: transactionAccountId, amount: 109_000_000 },
+        { id: 10, type: 'EXPENSE', comment: 'E2E Lent Debt Extra Lending', accountId: eurFundingAccountId, amount: 500_000_000 },
+        { id: 11, type: 'EXPENSE', comment: 'E2E Borrowed Debt Attach Expense', accountId: transactionAccountId, amount: 2_000_000_000 },
+        { id: 12, type: 'INCOME', comment: 'E2E Borrowed Debt Attach Income', accountId: transactionAccountId, amount: 109_000_000 },
+        { id: 13, type: 'INCOME', comment: 'E2E Completed Debt Attach Income', accountId: transactionAccountId, amount: 300_000_000 },
+        { id: feeTransactionId, type: 'EXPENSE', comment: 'E2E Fee Debt Attach Expense', accountId: transactionAccountId, amount: 100_000_000 },
+        { id: 15, type: 'EXPENSE', comment: 'E2E Cross Currency Debt Attach', accountId: transactionAccountId, amount: 100_000_000 }
+    ];
+    const getOperatedAt = transactionId => now - (transactionId - 7) * 60;
+    const getSignedAmount = ({ type, amount }) => (type === 'INCOME' ? amount : -amount);
+    const getAccountDelta = accountId =>
+        transactions
+            .filter(transaction => transaction.accountId === accountId)
+            .reduce((total, transaction) => total + getSignedAmount(transaction), 0);
+    const transactionValues = transactions
+        .map(({ id, type, comment, accountId }) => {
+            const operatedAt = getOperatedAt(id);
+            const toAccountId = type === 'INCOME' ? accountId : 'NULL';
+            const fromAccountId = type === 'INCOME' ? 'NULL' : accountId;
+
+            return `(${id}, ${operatedAt}, ${operatedAt}, '${type}', '', ${operatedAt}, '${comment}', ${toAccountId}, ${fromAccountId}, 1.0, 1)`;
+        })
+        .join(',\n            ');
+    const entryValues = transactions
+        .map(({ id, type, accountId, amount }) => {
+            const operatedAt = getOperatedAt(id);
+            const entryType = type === 'INCOME' ? 'DEBIT' : 'CREDIT';
+            const baseExchangeRate = accountId === eurFundingAccountId ? eurToUsdRateSql : '1.0';
+
+            return `(${operatedAt}, ${operatedAt}, '${entryType}', ${accountId}, ${attachmentCategoryId}, ${id}, ${amount}, 1.0, 'USER', ${usdInstrumentId}, ${baseExchangeRate}, CAST(ROUND(${amount} * ${baseExchangeRate}) AS INTEGER), 'PRIMARY')`;
+        })
+        .join(',\n            ');
+    const feeOperatedAt = getOperatedAt(feeTransactionId);
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        INSERT INTO categories (id, created_at, updated_at, title, icon, title_search)
+        VALUES (${attachmentCategoryId}, ${now}, ${now}, 'E2E Debt Attachment Category', 'Folder', 'e2e debt attachment category');
+
+        INSERT INTO transactions (id, created_at, updated_at, type, title, operated_at, comment, to_account_id, from_account_id, exchange_rate, needs_embedding)
+        VALUES
+            ${transactionValues};
+
+        INSERT INTO transaction_entries (
+            created_at,
+            updated_at,
+            type,
+            account_id,
+            category_id,
+            transaction_id,
+            amount,
+            exchange_rate,
+            category_source,
+            base_instrument_id,
+            base_exchange_rate,
+            base_amount,
+            kind
+        )
+        VALUES
+            ${entryValues},
+            (${feeOperatedAt}, ${feeOperatedAt}, 'FEE', ${transactionAccountId}, ${bankFeeCategoryId}, ${feeTransactionId}, ${feeAmount}, 1.0, 'FEE', ${usdInstrumentId}, 1.0, ${feeAmount}, 'PRIMARY');
+
+        UPDATE account_balances
+        SET amount = amount + ${getAccountDelta(transactionAccountId) - feeAmount}, updated_at = ${now}
+        WHERE account_id = ${transactionAccountId};
+
+        UPDATE account_balances
+        SET amount = amount + ${getAccountDelta(eurFundingAccountId)}, updated_at = ${now}
+        WHERE account_id = ${eurFundingAccountId};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 const shiftTransactionInfoFixtureToNow = () => {
     const sourcePath = path.join(fixturesDirectoryPath, '31-transaction-info.db');
     const targetPath = path.join(outputDirectoryPath, '31-transaction-info.db');
@@ -1017,3 +1211,6 @@ generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
 generateConsolidationFixture();
 generateRefundConsolidationFixture();
+generateLongPressActionsFixture();
+generateMatchingRulesFixture();
+generateDebtSettlementFixture();
