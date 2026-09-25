@@ -84,6 +84,12 @@ appId: ${APP_ID}
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
       visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+      timeout: 5000
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
           id: 'TransactionCard.Label.E2E_Filter_Income'
 
 - tapOn:
@@ -316,6 +322,12 @@ appId: ${APP_ID}
       timeout: 5000
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Uncategorized_Income'
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+      timeout: 5000
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:

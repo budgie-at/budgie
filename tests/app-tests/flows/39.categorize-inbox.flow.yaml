@@ -19,7 +19,7 @@ appId: ${APP_ID}
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
 
-- assertVisible: '3 left'
+- assertVisible: '3 left.*'
 - assertVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
 - assertVisible:
@@ -31,19 +31,19 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxUndoBar'
       timeout: 5000
-- assertVisible: '1 left'
+- assertVisible: '1 left.*'
 - assertNotVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
 
 - tapOn:
       id: 'CategorizeInboxUndoBar.UndoButton'
-- assertVisible: '3 left'
+- assertVisible: '3 left.*'
 - assertVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
 
 - tapOn:
       id: 'CategorizeInboxSuggestionChip.EXPENSE\|confident coffee.0'
-- assertVisible: '1 left'
+- assertVisible: '1 left.*'
 - assertNotVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
 
@@ -63,4 +63,4 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
-- assertVisible: '1 left'
+- assertVisible: '1 left.*'
