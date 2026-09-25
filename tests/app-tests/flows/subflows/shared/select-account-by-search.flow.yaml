@@ -2,6 +2,7 @@ appId: ${APP_ID}
 ---
 - tapOn:
       id: 'AccountPickerBottomSheet.Input'
+      waitToSettleTimeoutMs: 500
 - inputText: ${ACCOUNT_NAME}
 - tapOn: Done
 - waitForAnimationToEnd

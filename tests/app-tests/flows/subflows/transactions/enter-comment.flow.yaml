@@ -10,15 +10,18 @@ appId: ${APP_ID}
     centerElement: true
 - tapOn:
     id: 'TransactionForm.CommentInput'
+    waitToSettleTimeoutMs: 500
 - extendedWaitUntil:
     visible:
       id: 'NoteInput.Input'
     timeout: 5000
 - tapOn:
     id: 'NoteInput.Input'
+    waitToSettleTimeoutMs: 500
 - inputText: ${COMMENT}
 - tapOn:
     id: 'NoteInput.SubmitButton'
+    waitToSettleTimeoutMs: 500
 - extendedWaitUntil:
     notVisible:
       id: 'NoteInput.Input'

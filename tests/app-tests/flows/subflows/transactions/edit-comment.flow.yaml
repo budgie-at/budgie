@@ -2,6 +2,7 @@ appId: ${APP_ID}
 ---
 - tapOn:
     id: 'TransactionForm.CommentInput'
+    waitToSettleTimeoutMs: 500
 - extendedWaitUntil:
     visible:
       id: 'NoteInput.Input'
@@ -12,6 +13,7 @@ appId: ${APP_ID}
 - inputText: ${COMMENT}
 - tapOn:
     id: 'NoteInput.SubmitButton'
+    waitToSettleTimeoutMs: 500
 - extendedWaitUntil:
     notVisible:
       id: 'NoteInput.Input'

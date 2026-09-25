@@ -2,11 +2,13 @@ appId: ${APP_ID}
 ---
 - tapOn:
       id: 'TransactionForm.CategorySelector.Title'
+      waitToSettleTimeoutMs: 500
 - extendedWaitUntil:
       visible:
           id: 'CategoryPickerBottomSheet.Input'
 - tapOn:
       id: 'CategoryPickerBottomSheet.Input'
+      waitToSettleTimeoutMs: 500
 - inputText: ${CATEGORY_NAME}
 - tapOn: Done
 - waitForAnimationToEnd

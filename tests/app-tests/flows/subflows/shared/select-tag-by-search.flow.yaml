@@ -7,6 +7,7 @@ env:
       id: 'TagPickerBottomSheet.Input'
 - tapOn:
     id: 'TagPickerBottomSheet.Input'
+    waitToSettleTimeoutMs: 500
 - inputText: ${TAG_NAME}
 - tapOn: Done
 - extendedWaitUntil:
