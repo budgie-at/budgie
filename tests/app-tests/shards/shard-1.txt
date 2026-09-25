@@ -10,7 +10,6 @@
 18.security-screenshot-protection.flow.yaml
 21.transfer-consolidation.flow.yaml
 22.refund-consolidation.flow.yaml
-23.privatbank-xlsx-import.flow.yaml
 24.split-transaction-and-analytics.flow.yaml
 25.rules-crud.flow.yaml
 26.rules-application.flow.yaml
