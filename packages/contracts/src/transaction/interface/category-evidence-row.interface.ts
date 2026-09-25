@@ -6,5 +6,4 @@ export interface CategoryEvidenceRowInterface {
     readonly mccCategoryId: number | null;
     readonly categoryId: number;
     readonly count: number;
-    readonly recentCount: number;
 }

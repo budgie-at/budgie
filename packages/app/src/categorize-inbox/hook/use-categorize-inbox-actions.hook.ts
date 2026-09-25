@@ -1,282 +1,116 @@
-import { AccountTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { useRouter } from 'expo-router';
+import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { useState } from 'react';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
-import { useAccountSelectorModal } from '../../account/context/account-selector-modal.context';
-import { useCategorySelectorModal } from '../../category/context/category-selector-modal.context';
 import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
-import { AnalyticsTransactionsModeEnum } from '../../transaction/enum/analytics-transactions-mode.enum';
-import { transactionTransferService } from '../../transaction/service/transaction-transfer.service';
-import { buildUncategorizedRouteParams } from '../../transaction/utils/build-uncategorized-route-params.util';
-import { CategorizeInboxTransferKindEnum } from '../enum/categorize-inbox-transfer-kind.enum';
 import { categorizeInboxService } from '../service/categorize-inbox.service';
 
 import type { CategorizeInboxActionsInterface } from '../interface/categorize-inbox-actions.interface';
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
 import type { CategorizeInboxClusterInterface } from '../interface/categorize-inbox-cluster.interface';
-import type { CategorizeInboxInterface } from '../interface/categorize-inbox.interface';
-import type { CategorizeInboxRowInterface, TransactionFilterInterface } from '@budgie/contracts';
+import type { CategorizeInboxRowInterface } from '@budgie/contracts';
 
-const UNDO_STACK_LIMIT = 5;
-const ACCEPT_SUMMARY_TOP_CATEGORY_COUNT = 5;
+const PERCENT_MULTIPLIER = 100;
 
-// eslint-disable-next-line max-lines-per-function, max-statements -- Orchestration hook owns every Categorize Inbox handler, busy state, and the undo stack
-export const useCategorizeInboxActions = (
-    inbox: CategorizeInboxInterface,
-    filters: TransactionFilterInterface
-): CategorizeInboxActionsInterface => {
+// eslint-disable-next-line max-statements -- Orchestration hook owns the inbox busy state, exclusions, expansion and the single undo
+export const useCategorizeInboxActions = (totalRowCount: number): CategorizeInboxActionsInterface => {
     const { t } = useLingui();
-    const router = useRouter();
     const { categories } = useNonSystemCategoriesQuery();
+    const [hapticNotification] = useVibration();
 
-    const [excludedTransactionIds, setExcludedTransactionIds] = useState<Set<number>>(new Set());
+    const [excludedTransactionIds, setExcludedTransactionIds] = useState<ReadonlySet<number>>(new Set());
     const [expandedClusterKey, setExpandedClusterKey] = useState<string | null>(null);
     const [isBusy, setIsBusy] = useState(false);
-    const [undoStack, setUndoStack] = useState<CategorizeInboxAssignmentInterface[][]>([]);
+    const [undoAssignments, setUndoAssignments] = useState<CategorizeInboxAssignmentInterface[] | null>(null);
+    const [initialRowCount, setInitialRowCount] = useState(totalRowCount);
 
-    const [openAccountSelector] = useAccountSelectorModal();
-    const [openCategorySelector] = useCategorySelectorModal();
+    if (totalRowCount > initialRowCount) {
+        setInitialRowCount(totalRowCount);
+    }
 
-    const pushUndoEntry = (assignments: CategorizeInboxAssignmentInterface[]): void =>
-        void setUndoStack(previous => [assignments, ...previous].slice(0, UNDO_STACK_LIMIT));
+    const runExclusive = async (action: () => Promise<void>): Promise<void> => {
+        setIsBusy(true);
+        try {
+            await action();
+        } finally {
+            setIsBusy(false);
+        }
+    };
 
-    const handleToggleExpanded = (key: string): void => void setExpandedClusterKey(previous => (previous === key ? null : key));
+    const runAssignment = (action: () => Promise<CategorizeInboxAssignmentInterface[]>): void =>
+        void runExclusive(async () => {
+            const applied = await action();
+
+            setUndoAssignments(isNotEmptyArray(applied) ? applied : null);
+
+            if (isNotEmptyArray(applied)) {
+                hapticNotification(NotificationFeedbackType.Success);
+            }
+        }).catch((error: unknown) => void showErrorToast(t`Could not categorize transactions`, getErrorMessage(error)));
+
+    const handleAssign = (assignments: CategorizeInboxAssignmentInterface[]): void =>
+        void runAssignment(() => categorizeInboxService.assignMany(assignments));
+
+    const handleAssignCluster = (cluster: CategorizeInboxClusterInterface, categoryId: number): void => {
+        const transactionIds = cluster.rows
+            .map(row => row.transactionId)
+            .filter(transactionId => !excludedTransactionIds.has(transactionId));
+
+        if (isEmptyArray(transactionIds)) {
+            return;
+        }
+
+        handleAssign([{ clusterKey: cluster.key, categoryId, transactionIds, ruleConditionValue: cluster.ruleConditionValue }]);
+    };
+
+    const handleAssignRow = (row: CategorizeInboxRowInterface, categoryId: number): void =>
+        void handleAssign([
+            { clusterKey: String(row.transactionId), categoryId, transactionIds: [row.transactionId], ruleConditionValue: '' }
+        ]);
+
+    const handleUndo = (): void => {
+        if (isDefined(undoAssignments)) {
+            runAssignment(async () => {
+                await categorizeInboxService.undo(undoAssignments);
+
+                return [];
+            });
+        }
+    };
+
+    const handleToggleExpanded = (clusterKey: string): void =>
+        void setExpandedClusterKey(previous => (previous === clusterKey ? null : clusterKey));
 
     const handleToggleExcluded = (transactionId: number): void =>
         void setExcludedTransactionIds(previous => {
             const next = new Set(previous);
 
-            if (next.has(transactionId)) {
-                next.delete(transactionId);
-            } else {
+            if (!next.delete(transactionId)) {
                 next.add(transactionId);
             }
 
             return next;
         });
 
-    const handleAssignCluster = async (cluster: CategorizeInboxClusterInterface, categoryId: number): Promise<void> => {
-        const transactionIds = cluster.rows
-            .map(row => row.transactionId)
-            .filter(transactionId => !excludedTransactionIds.has(transactionId));
-
-        if (isEmptyArray(transactionIds)) {
-            return;
-        }
-
-        setIsBusy(true);
-        try {
-            const assignments = await categorizeInboxService.assignMany([
-                { clusterKey: cluster.key, categoryId, transactionIds, ruleConditionValue: cluster.ruleConditionValue }
-            ]);
-            pushUndoEntry(assignments);
-        } catch (error) {
-            showErrorToast(t`Could not categorize transactions`, getErrorMessage(error));
-        } finally {
-            setIsBusy(false);
-        }
-    };
-
-    const handleAssignRow = async (row: CategorizeInboxRowInterface, categoryId: number): Promise<void> => {
-        setIsBusy(true);
-        try {
-            const transactionIds = await categorizeInboxService.assign([row.transactionId], categoryId);
-            pushUndoEntry([{ clusterKey: `row-${row.transactionId}`, categoryId, transactionIds, ruleConditionValue: row.title }]);
-        } catch (error) {
-            showErrorToast(t`Could not categorize transactions`, getErrorMessage(error));
-        } finally {
-            setIsBusy(false);
-        }
-    };
-
-    const handlePickOtherCategory = async (cluster: CategorizeInboxClusterInterface): Promise<void> => {
-        const categoryId = await openCategorySelector({ description: cluster.displayTitle });
-
-        if (isDefined(categoryId)) {
-            await handleAssignCluster(cluster, categoryId);
-        }
-    };
-
-    // eslint-disable-next-line max-statements -- Handles ATM vs card-transfer account selection, confirmation, and the transfer service call
-    const handleConvertClusterToTransfer = async (cluster: CategorizeInboxClusterInterface): Promise<void> => {
-        const isAtmWithdrawal = cluster.transferKind === CategorizeInboxTransferKindEnum.ATM_WITHDRAWAL;
-        const accountId = isAtmWithdrawal
-            ? await openAccountSelector({
-                  includeAccountTypes: [AccountTypeEnum.CASH],
-                  excludeAccountId: cluster.sourceAccountId,
-                  onlyActive: true,
-                  emptyStateDescription: t`Create a cash account to track ATM withdrawals`
-              })
-            : await openAccountSelector({ excludeAccountTypes: [AccountTypeEnum.DEBT], excludeAccountId: cluster.sourceAccountId });
-
-        if (!isDefined(accountId)) {
-            return;
-        }
-
-        const transactionIds = cluster.rows
-            .map(row => row.transactionId)
-            .filter(transactionId => !excludedTransactionIds.has(transactionId));
-
-        if (isEmptyArray(transactionIds)) {
-            return;
-        }
-
-        const confirmed = await confirmAlert({
-            title: t({
-                message: plural(transactionIds.length, {
-                    one: 'Convert # transaction to transfer?',
-                    other: 'Convert # transactions to transfers?'
-                })
-            }),
-            confirmText: t`Convert`,
-            cancelText: t`Cancel`
-        });
-
-        if (!confirmed) {
-            return;
-        }
-
-        const transactionType = cluster.type === TransactionTypeEnum.INCOME ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
-
-        setIsBusy(true);
-        try {
-            const result = await transactionTransferService.convertManyToTransfer(transactionIds, transactionType, accountId);
-
-            if (isPositiveNumber(result.failed)) {
-                showErrorToast(t`Some transactions could not be converted`, t`Please try again later`);
-            }
-        } catch (error) {
-            showErrorToast(t`Some transactions could not be converted`, getErrorMessage(error));
-        } finally {
-            setIsBusy(false);
-        }
-    };
-
-    const confidentAssignments = inbox.confidentAssignments
-        .map(assignment => ({
-            ...assignment,
-            transactionIds: assignment.transactionIds.filter(transactionId => !excludedTransactionIds.has(transactionId))
-        }))
-        .filter(assignment => isNotEmptyArray(assignment.transactionIds));
-    const confidentRowCount = confidentAssignments.reduce((total, assignment) => total + assignment.transactionIds.length, 0);
-
-    const buildAcceptSummaryMessage = (): string => {
-        const rowCountByCategoryId = new Map<number, number>();
-
-        for (const assignment of confidentAssignments) {
-            const previousCount = rowCountByCategoryId.get(assignment.categoryId) ?? 0;
-            rowCountByCategoryId.set(assignment.categoryId, previousCount + assignment.transactionIds.length);
-        }
-
-        const sortedEntries = [...rowCountByCategoryId.entries()].sort(([, firstCount], [, secondCount]) => secondCount - firstCount);
-        const topEntries = sortedEntries.slice(0, ACCEPT_SUMMARY_TOP_CATEGORY_COUNT);
-        const remainingCategoryCount = sortedEntries.length - topEntries.length;
-        const topLines = topEntries.map(([categoryId, rowCount]) => {
-            const categoryTitle = categories.find(category => category.id === categoryId)?.title ?? t`Uncategorized`;
-
-            return `${categoryTitle} — ${rowCount}`;
-        });
-        const moreLine = isPositiveNumber(remainingCategoryCount)
-            ? [t({ message: plural(remainingCategoryCount, { one: '+# more category', other: '+# more categories' }) })]
-            : [];
-
-        return [...topLines, ...moreLine].join('\n');
-    };
-
-    const handleAcceptConfident = async (): Promise<void> => {
-        if (isEmptyArray(confidentAssignments)) {
-            return;
-        }
-
-        const confirmed = await confirmAlert({
-            title: t({
-                message: plural(confidentRowCount, { one: 'Accept # confident suggestion?', other: 'Accept # confident suggestions?' })
-            }),
-            message: buildAcceptSummaryMessage(),
-            confirmText: t`Accept`,
-            cancelText: t`Cancel`
-        });
-
-        if (!confirmed) {
-            return;
-        }
-
-        setIsBusy(true);
-        try {
-            const applied = await categorizeInboxService.assignMany(confidentAssignments);
-            pushUndoEntry(applied);
-        } catch (error) {
-            showErrorToast(t`Could not categorize transactions`, getErrorMessage(error));
-        } finally {
-            setIsBusy(false);
-        }
-    };
-
-    const handleUndo = async (): Promise<void> => {
-        const latestUndoEntry = undoStack.at(0);
-
-        if (!isDefined(latestUndoEntry)) {
-            return;
-        }
-
-        setIsBusy(true);
-        try {
-            await categorizeInboxService.undo(latestUndoEntry);
-            setUndoStack(previous => previous.slice(1));
-        } catch (error) {
-            showErrorToast(t`Could not categorize transactions`, getErrorMessage(error));
-        } finally {
-            setIsBusy(false);
-        }
-    };
-
-    const handleDismissUndo = (): void => void setUndoStack(previous => previous.slice(1));
-
-    const handleUndoPress = (): void => void handleUndo();
-
-    const handleAcceptConfidentPress = (): void => void handleAcceptConfident();
-
-    const handleGoBack = (): void => void router.back();
-
-    const handleShowList = (): void => {
-        router.replace({
-            pathname: '/analytics/transactions',
-            params: buildUncategorizedRouteParams(filters, AnalyticsTransactionsModeEnum.UNCATEGORIZED)
-        });
-    };
-
-    const latestUndoAssignments = undoStack.at(0);
-    const assignedRowCount = (latestUndoAssignments ?? []).reduce((total, assignment) => total + assignment.transactionIds.length, 0);
-    const singleAssignment = isDefined(latestUndoAssignments) && latestUndoAssignments.length === 1 ? latestUndoAssignments[0] : null;
-
-    const contextValue = {
-        excludedTransactionIds,
-        expandedClusterKey,
-        isBusy,
-        toggleExpanded: handleToggleExpanded,
-        toggleExcluded: handleToggleExcluded,
-        assignCluster: handleAssignCluster,
-        assignRow: handleAssignRow,
-        pickOtherCategory: handlePickOtherCategory,
-        convertClusterToTransfer: handleConvertClusterToTransfer
-    };
-
     return {
-        contextValue,
-        confidentRowCount,
-        undoAssignments: latestUndoAssignments ?? null,
-        assignedRowCount,
-        singleAssignment,
-        handleAcceptConfidentPress,
-        handleUndoPress,
-        handleDismissUndo,
-        handleShowList,
-        handleGoBack
+        progress: isPositiveNumber(initialRowCount) ? ((initialRowCount - totalRowCount) / initialRowCount) * PERCENT_MULTIPLIER : 0,
+        contextValue: {
+            categoriesById: new Map(categories.map(category => [category.id, category])),
+            excludedTransactionIds,
+            expandedClusterKey,
+            isBusy,
+            undoAssignments,
+            toggleExpanded: handleToggleExpanded,
+            toggleExcluded: handleToggleExcluded,
+            assign: handleAssign,
+            assignCluster: handleAssignCluster,
+            assignRow: handleAssignRow,
+            undo: handleUndo,
+            runExclusive
+        }
     };
 };

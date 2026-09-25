@@ -1,4 +1,3 @@
 export const CategorizeInboxClusterCardSelector = {
-    Card: 'CategorizeInboxClusterCard',
-    ExpandToggle: 'CategorizeInboxClusterCard.ExpandToggle'
+    Card: 'CategorizeInboxClusterCard'
 } as const;

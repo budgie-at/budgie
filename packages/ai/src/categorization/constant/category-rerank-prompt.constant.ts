@@ -1,1 +1,0 @@
-export const CATEGORY_RERANK_SYSTEM_PROMPT = `You assign a spending category to a bank merchant for one person. Pick the single best category id from CATEGORIES. The person's own PAST EXAMPLES are the strongest evidence; merchant name and MCC come next. Titles may be Ukrainian, German or English. If nothing fits well, answer 0. Reply only with JSON {"categoryId": <id>}.`;

@@ -433,7 +433,6 @@ export type { CommentDistanceResultInterface } from './merchant-embedding/interf
 export type { MerchantPendingContextInterface } from './merchant-embedding/interface/merchant-pending-context.interface';
 export type { SimilarCommentsParamsInterface } from './merchant-embedding/interface/similar-comments-params.interface';
 export type { UpsertMerchantEmbeddingParamsInterface } from './merchant-embedding/interface/upsert-merchant-embedding-params.interface';
-export type { MerchantEmbeddingExampleInterface } from './merchant-embedding/interface/merchant-embedding-example.interface';
 
 export { MerchantEmbeddingRepository } from './merchant-embedding/repository/merchant-embedding.repository';
 

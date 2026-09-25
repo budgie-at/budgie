@@ -1,8 +1,9 @@
-import type { CategorizeInboxEvidenceIndex } from '../service/categorize-inbox-evidence-index';
-import type { CategorizeInboxPosteriorInterface } from './categorize-inbox-posterior.interface';
+import { CategoryEvidenceRowInterface } from '@budgie/contracts';
 
 export interface CategorizeInboxBuildContextInterface {
-    readonly index: CategorizeInboxEvidenceIndex;
+    readonly exact: ReadonlyMap<string, CategoryEvidenceRowInterface[]>;
+    readonly merchant: ReadonlyMap<string, CategoryEvidenceRowInterface[]>;
+    readonly mcc: ReadonlyMap<string, CategoryEvidenceRowInterface[]>;
+    readonly popularCategoryIds: ReadonlyMap<string, number[]>;
     readonly defaultInstrumentId: number;
-    readonly posteriors: Map<string, CategorizeInboxPosteriorInterface>;
 }

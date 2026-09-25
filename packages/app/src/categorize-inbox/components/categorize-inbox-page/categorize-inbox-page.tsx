@@ -1,22 +1,25 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
+import { ActivityIndicator, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { Page } from '../../../@generic/component/page/page';
 import { StickyFooterBand } from '../../../@generic/component/sticky-footer-band/sticky-footer-band';
+import { AiProgressBar } from '../../../settings/components/ai-progress-bar/ai-progress-bar';
+import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 import { buildUncategorizedFilters } from '../../../transaction/utils/build-uncategorized-filters.util';
+import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
 import { CategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxActions } from '../../hook/use-categorize-inbox-actions.hook';
 import { useCategorizeInbox } from '../../hook/use-categorize-inbox.hook';
+import { CategorizeInboxHero } from '../categorize-inbox-hero/categorize-inbox-hero';
 import { CategorizeInboxList } from '../categorize-inbox-list/categorize-inbox-list';
-import { CategorizeInboxMakeRuleButton } from '../categorize-inbox-make-rule-button/categorize-inbox-make-rule-button';
-import { CategorizeInboxProgress } from '../categorize-inbox-progress/categorize-inbox-progress';
 import { CategorizeInboxUndoBar } from '../categorize-inbox-undo-bar/categorize-inbox-undo-bar';
 
 import { CategorizeInboxPageSelector } from './categorize-inbox-page.selector';
@@ -29,72 +32,62 @@ interface Props {
 
 export const CategorizeInboxPage = ({ params }: Props) => {
     const { t } = useLingui();
+    const router = useRouter();
 
     const filters = buildUncategorizedFilters(params);
-    const { inbox, isLoading, enrichmentStatus } = useCategorizeInbox(filters);
-    const {
-        contextValue,
-        confidentRowCount,
-        undoAssignments,
-        assignedRowCount,
-        singleAssignment,
-        handleAcceptConfidentPress,
-        handleUndoPress,
-        handleDismissUndo,
-        handleShowList,
-        handleGoBack
-    } = useCategorizeInboxActions(inbox, filters);
+    const { inbox, isLoading } = useCategorizeInbox(filters);
+    const { contextValue, progress } = useCategorizeInboxActions(inbox.totalRowCount);
 
-    const remainingText = t({ message: plural(inbox.totalRowCount, { one: '# transaction left', other: '# transactions left' }) });
-    const isEmpty = isEmptyArray(inbox.clusters);
+    const handleGoBack = (): void => void router.back();
+    const handleShowList = (): void =>
+        void router.replace({
+            pathname: '/analytics/transactions',
+            params: buildUncategorizedRouteParams(filters, AnalyticsTransactionsModeEnum.UNCATEGORIZED)
+        });
 
-    const header = (
-        <PageHeader
-            title={t`Categorize`}
-            description={remainingText}
-            onGoBack={handleGoBack}
-            right={
-                <CircularActionButton
-                    icon={UserIconNameEnum.List}
-                    onPress={handleShowList}
-                    testID={CategorizeInboxPageSelector.ShowListButton}
-                />
-            }
-        />
-    );
-
-    const footer =
-        isDefined(undoAssignments) && isNotEmptyArray(undoAssignments) ? (
-            <StickyFooterBand>
-                <CategorizeInboxUndoBar assignedRowCount={assignedRowCount} onUndo={handleUndoPress} onDismiss={handleDismissUndo}>
-                    {isDefined(singleAssignment) ? <CategorizeInboxMakeRuleButton assignment={singleAssignment} /> : null}
-                </CategorizeInboxUndoBar>
-            </StickyFooterBand>
-        ) : null;
-
-    const inboxContent = (
-        <>
-            <CategorizeInboxProgress
-                confidentRowCount={confidentRowCount}
-                enrichmentStatus={enrichmentStatus}
-                onAcceptConfident={handleAcceptConfidentPress}
+    const remainingText = t({ message: plural(inbox.totalRowCount, { one: '# left', other: '# left' }) });
+    const footer = isDefined(contextValue.undoAssignments) ? (
+        <StickyFooterBand>
+            <CategorizeInboxUndoBar assignments={contextValue.undoAssignments} />
+        </StickyFooterBand>
+    ) : null;
+    const listContent = isEmptyArray(inbox.items) ? (
+        <View className="flex-1 justify-center">
+            <EmptyState
+                circleIcon={UserIconNameEnum.PartyPopper}
+                title={t`All caught up`}
+                description={t`Every transaction has a category.`}
             />
-            <CategorizeInboxList items={inbox.items} />
-        </>
+        </View>
+    ) : (
+        <CategorizeInboxList items={inbox.items}>
+            <CategorizeInboxHero assignments={inbox.confidentAssignments} />
+        </CategorizeInboxList>
     );
-    const emptyContent = (
-        <EmptyState
-            circleIcon={UserIconNameEnum.CircleCheckBig}
-            title={t`All caught up`}
-            description={t`Every transaction has a category.`}
-        />
-    );
-    const nonLoadingContent = isEmpty ? emptyContent : inboxContent;
-    const content = isLoading ? <ActivityIndicator size="large" /> : nonLoadingContent;
+    const content = isLoading ? <ActivityIndicator size="large" /> : listContent;
 
     return (
         <CategorizeInboxContext.Provider value={contextValue}>
-            <Page header={header} footer={footer} testID={CategorizeInboxPageSelector.Container}>
+            <Page
+                testID={CategorizeInboxPageSelector.Container}
+                footer={footer}
+                header={
+                    <PageHeader
+                        size="md"
+                        title={t`Categorize`}
+                        description={remainingText}
+                        onGoBack={handleGoBack}
+                        bottom={<AiProgressBar progress={progress} />}
+                        right={
+                            <CircularActionButton
+                                icon={UserIconNameEnum.List}
+                                onPress={handleShowList}
+                                testID={CategorizeInboxPageSelector.ShowListButton}
+                            />
+                        }
+                    />
+                }
+            >
                 {content}
             </Page>
         </CategorizeInboxContext.Provider>
