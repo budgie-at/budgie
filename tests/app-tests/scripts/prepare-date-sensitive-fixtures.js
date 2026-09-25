@@ -979,6 +979,77 @@ const generateRefundConsolidationFixture = () => {
     );
 };
 
+const generateCategorizeInboxFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '07.db');
+    const targetPath = path.join(outputDirectoryPath, '39.db');
+
+    const now = Math.floor(Date.now() / 1000);
+    const day = 24 * 60 * 60;
+    const usdId = 1;
+    const restaurantsCategoryId = 12;
+
+    const historicalCoffeeAmountOne = 5_000_000;
+    const historicalCoffeeAmountTwo = 6_000_000;
+    const uncategorizedCoffeeAmountOne = 7_000_000;
+    const uncategorizedCoffeeAmountTwo = 8_000_000;
+    const uncategorizedFillerAmount = 9_000_000;
+    const accountBalance = -(
+        historicalCoffeeAmountOne +
+        historicalCoffeeAmountTwo +
+        uncategorizedCoffeeAmountOne +
+        uncategorizedCoffeeAmountTwo +
+        uncategorizedFillerAmount
+    );
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        DELETE FROM transaction_entries;
+        DELETE FROM transactions;
+        DELETE FROM transaction_tags;
+        DELETE FROM account_balances;
+        DELETE FROM accounts;
+        DELETE FROM sqlite_sequence
+        WHERE name IN ('transactions', 'transaction_entries', 'accounts', 'account_balances', 'transaction_tags');
+
+        INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, type, nature, instrument_id, is_active, include_in_net_worth)
+        VALUES (1, ${now}, ${now}, 'Wallet', 1, 'E2E Categorize Bank', 'BANK', 'ASSET', ${usdId}, 1, 1);
+
+        INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, to_account_id)
+        VALUES
+            (1, ${now - 20 * day}, ${now - 20 * day}, 'EXPENSE', 'E2E Confident Coffee', '', ${now - 20 * day}, 1.0, NULL),
+            (2, ${now - 15 * day}, ${now - 15 * day}, 'EXPENSE', 'E2E Confident Coffee', '', ${now - 15 * day}, 1.0, NULL),
+            (3, ${now - 2 * day},  ${now - 2 * day},  'EXPENSE', 'E2E Confident Coffee', '', ${now - 2 * day},  1.0, NULL),
+            (4, ${now - 1 * day},  ${now - 1 * day},  'EXPENSE', 'E2E Confident Coffee', '', ${now - 1 * day},  1.0, NULL),
+            (5, ${now - 3 * day},  ${now - 3 * day},  'EXPENSE', 'E2E Categorize Filler', '', ${now - 3 * day}, 1.0, NULL);
+
+        INSERT INTO transaction_entries (transaction_id, account_id, type, category_id, amount)
+        VALUES
+            (1, 1, 'CREDIT', ${restaurantsCategoryId}, ${historicalCoffeeAmountOne}),
+            (2, 1, 'CREDIT', ${restaurantsCategoryId}, ${historicalCoffeeAmountTwo}),
+            (3, 1, 'CREDIT', NULL, ${uncategorizedCoffeeAmountOne}),
+            (4, 1, 'CREDIT', NULL, ${uncategorizedCoffeeAmountTwo}),
+            (5, 1, 'CREDIT', NULL, ${uncategorizedFillerAmount});
+
+        INSERT INTO account_balances (account_id, amount, created_at, updated_at)
+        VALUES (1, ${accountBalance}, ${now}, ${now});
+
+        UPDATE settings
+        SET default_account_id = 1,
+            default_instrument_id = ${usdId},
+            language = 'en',
+            show_cents = 0,
+            updated_at = ${now};
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 const shiftTransactionInfoFixtureToNow = () => {
     const sourcePath = path.join(fixturesDirectoryPath, '31-transaction-info.db');
     const targetPath = path.join(outputDirectoryPath, '31-transaction-info.db');
@@ -1017,3 +1088,4 @@ generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
 generateConsolidationFixture();
 generateRefundConsolidationFixture();
+generateCategorizeInboxFixture();
