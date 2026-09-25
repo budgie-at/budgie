@@ -277,6 +277,7 @@ export type { SimilarTransactionStatsInterface } from './transaction/interface/s
 export type { SimilarTransactionStatsQueryInterface } from './transaction/interface/similar-transaction-stats-query.interface';
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
+export { TransactionCategorizeInboxRepository } from './transaction/repository/transaction-categorize-inbox.repository';
 
 export { TransactionEmbeddingRepository } from './transaction-embedding/repository/transaction-embedding.repository';
 
@@ -310,6 +311,8 @@ export type { TransactionPatternQueryInterface } from './transaction/interface/t
 export type { AmountPatternQueryInterface } from './transaction/interface/amount-pattern-query.interface';
 export type { RecurringChargeCandidateInterface } from './transaction/interface/recurring-charge-candidate.interface';
 export type { RecurringChargeCandidateQueryInterface } from './transaction/interface/recurring-charge-candidate-query.interface';
+export type { CategorizeInboxRowInterface } from './transaction/interface/categorize-inbox-row.interface';
+export type { CategoryEvidenceRowInterface } from './transaction/interface/category-evidence-row.interface';
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
@@ -430,6 +433,7 @@ export type { CommentDistanceResultInterface } from './merchant-embedding/interf
 export type { MerchantPendingContextInterface } from './merchant-embedding/interface/merchant-pending-context.interface';
 export type { SimilarCommentsParamsInterface } from './merchant-embedding/interface/similar-comments-params.interface';
 export type { UpsertMerchantEmbeddingParamsInterface } from './merchant-embedding/interface/upsert-merchant-embedding-params.interface';
+export type { MerchantEmbeddingExampleInterface } from './merchant-embedding/interface/merchant-embedding-example.interface';
 
 export { MerchantEmbeddingRepository } from './merchant-embedding/repository/merchant-embedding.repository';
 

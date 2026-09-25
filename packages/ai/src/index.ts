@@ -19,9 +19,17 @@ export { stripThinkingTags } from './@generic/util/strip-thinking-tags.util';
 export { EmbeddingService } from './embedding/service/embedding.service';
 export { EmbeddingSuggestionService } from './embedding/service/embedding-suggestion.service';
 
+export type { EmbeddingCategoryEvidenceInterface } from './embedding/interface/embedding-category-evidence.interface';
+
 export { buildTransactionContext } from './embedding/util/build-transaction-context.util';
 export { buildMerchantContext } from './embedding/util/build-merchant-context.util';
 export { buildCommentContext } from './embedding/util/build-comment-context.util';
+
+export { CATEGORY_RERANK_SYSTEM_PROMPT } from './categorization/constant/category-rerank-prompt.constant';
+export type { CategoryRerankCandidateInterface } from './categorization/interface/category-rerank-candidate.interface';
+export type { CategoryRerankExampleInterface } from './categorization/interface/category-rerank-example.interface';
+export type { CategoryRerankMerchantInterface } from './categorization/interface/category-rerank-merchant.interface';
+export { CategoryRerankLlmService } from './categorization/service/category-rerank-llm.service';
 
 export type { SuggestionInternalStatus } from './suggestion/interface/suggestion-internal-status.type';
 export type { SuggestionStatus } from './suggestion/interface/suggestion-status.type';

@@ -36,6 +36,8 @@ import type { SimilarTransactionStatsQueryInterface } from '../interface/similar
 import type { SimilarTransactionStatsInterface } from '../interface/similar-transaction-stats.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
+    private static readonly TOUCH_CHUNK_SIZE = 500;
+
     private static readonly NON_INDEXABLE_EMBEDDING_TYPES: TransactionTypeEnum[] = [
         TransactionTypeEnum.TRANSFER,
         TransactionTypeEnum.ADJUSTMENT
@@ -405,6 +407,30 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .update(TransactionEntityTable)
             .set({ consolidationParentTransactionId: null })
             .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId));
+    }
+
+    @Log(
+        (ids, tx) => `enter transactionCount=${ids.length} inTx=${String(isDefined(tx))}`,
+        (...[, ids, tx]) => `done transactionCount=${ids.length} inTx=${String(isDefined(tx))}`,
+        (error, ids, tx) => `throw transactionCount=${ids.length} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async touchUpdatedAtByIds(ids: number[], tx?: DB): Promise<void> {
+        if (isEmptyArray(ids)) {
+            return;
+        }
+
+        const runner = tx ?? this.db;
+        const { TOUCH_CHUNK_SIZE } = TransactionRepository;
+        const chunks: number[][] = [];
+
+        for (let start = 0; start < ids.length; start += TOUCH_CHUNK_SIZE) {
+            chunks.push(ids.slice(start, start + TOUCH_CHUNK_SIZE));
+        }
+
+        await chunks.reduce<Promise<void>>(async (previousChunkPromise, chunk) => {
+            await previousChunkPromise;
+            await runner.update(TransactionEntityTable).set({ updatedAt: new Date() }).where(inArray(TransactionEntityTable.id, chunk));
+        }, Promise.resolve());
     }
 
     async touchUpdatedAt(id: number, tx?: DB): Promise<void> {

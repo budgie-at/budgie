@@ -28,6 +28,7 @@ import {
     SettingsRepository,
     StatisticsRepository,
     TagRepository,
+    TransactionCategorizeInboxRepository,
     TransactionEmbeddingRepository,
     TransactionEntryPositionRepository,
     TransactionEntryRepository,
@@ -137,6 +138,7 @@ export const transactionEntryRepository = new TransactionEntryRepository(db);
 export const transactionEntryPositionRepository = new TransactionEntryPositionRepository(db);
 export const transactionPatternRepository = new TransactionPatternRepository(db);
 export const transactionRepository = new TransactionRepository(db);
+export const transactionCategorizeInboxRepository = new TransactionCategorizeInboxRepository(db);
 export const transactionTagsRepository = new TransactionTagsRepository(db);
 export const merchantEmbeddingRepository = new MerchantEmbeddingRepository(db);
 export const commentEmbeddingRepository = new CommentEmbeddingRepository(db);

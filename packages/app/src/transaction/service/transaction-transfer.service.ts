@@ -15,6 +15,7 @@ import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/sha
 import { accountBalanceRepository, db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
 import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
@@ -32,10 +33,13 @@ import { getTransactionFeeEntries } from '../utils/get-transaction-fee-entries.u
 import { transactionService } from './transaction.service';
 
 import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
+import type { ApplyRuleResultInterface } from '../../rule/interface/apply-rule-result.interface';
 import type { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
 import type { DB, TransactionCreateInputInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 
 class TransactionTransferService {
+    private static readonly CONVERT_MANY_YIELD_INTERVAL = 20;
+
     @InvalidateDatabaseLiveQuery()
     async convertExpenseToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
         return this.convertToTransfer(params, 'expense');
@@ -44,6 +48,46 @@ class TransactionTransferService {
     @InvalidateDatabaseLiveQuery()
     async convertIncomeToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
         return this.convertToTransfer(params, 'income');
+    }
+
+    @Log(
+        (transactionIds, transactionType, accountId) =>
+            `enter transactionCount=${transactionIds.length} transactionType=${transactionType} accountId=${accountId}`,
+        (result, transactionIds, transactionType, accountId) =>
+            `done applied=${result.applied} failed=${result.failed} total=${result.total} transactionCount=${transactionIds.length} transactionType=${transactionType} accountId=${accountId}`,
+        (error, transactionIds, transactionType, accountId) =>
+            `throw transactionCount=${transactionIds.length} transactionType=${transactionType} accountId=${accountId} error=${getErrorMessage(error)}`
+    )
+    @InvalidateDatabaseLiveQuery()
+    async convertManyToTransfer(
+        transactionIds: number[],
+        transactionType: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
+        accountId: number
+    ): Promise<ApplyRuleResultInterface> {
+        const direction = this.resolveConvertManyDirection(transactionType);
+
+        const { applied, failed } = await transactionIds.reduce<Promise<Pick<ApplyRuleResultInterface, 'applied' | 'failed'>>>(
+            async (previousResultPromise, id, index) => {
+                const previousResult = await previousResultPromise;
+                const isSucceeded = await this.convertToTransfer({ id, accountId, customExchangeRate: 1 }, direction).then(
+                    () => true,
+                    () => false
+                );
+                const nextResult = {
+                    applied: previousResult.applied + (isSucceeded ? 1 : 0),
+                    failed: previousResult.failed + (isSucceeded ? 0 : 1)
+                };
+
+                if ((index + 1) % TransactionTransferService.CONVERT_MANY_YIELD_INTERVAL === 0) {
+                    await microPause();
+                }
+
+                return nextResult;
+            },
+            Promise.resolve({ applied: 0, failed: 0 })
+        );
+
+        return { applied, failed, total: transactionIds.length };
     }
 
     @Log(
@@ -76,6 +120,10 @@ class TransactionTransferService {
 
             await accountService.archiveByIdInTransaction(depositAccountId, tx);
         });
+    }
+
+    private resolveConvertManyDirection(transactionType: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME): 'expense' | 'income' {
+        return transactionType === TransactionTypeEnum.EXPENSE ? 'expense' : 'income';
     }
 
     private async convertToTransfer(

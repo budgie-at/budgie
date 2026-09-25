@@ -60,6 +60,10 @@ const getAnalyticsMode = (value: string | null): AnalyticsTransactionsModeEnum |
         return AnalyticsTransactionsModeEnum.UNCATEGORIZED;
     }
 
+    if (value === AnalyticsTransactionsModeEnum.CATEGORIZE) {
+        return AnalyticsTransactionsModeEnum.CATEGORIZE;
+    }
+
     return null;
 };
 

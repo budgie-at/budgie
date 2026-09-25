@@ -12,6 +12,14 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+      timeout: 10000
+
+- tapOn:
+      id: 'CategorizeInboxPage.ShowListButton'
+
+- extendedWaitUntil:
+      visible:
           id: 'PageHeader.BackButton'
       timeout: 10000
 

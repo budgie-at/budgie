@@ -69,6 +69,11 @@ appId: ${APP_ID}
 - tapOn:
       id: 'UncategorizedTransactionsPill.Button'
 - extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+- tapOn:
+      id: 'CategorizeInboxPage.ShowListButton'
+- extendedWaitUntil:
       visible: 'Missing categories'
 - assertVisible: 'Income'
 - assertVisible:
@@ -299,6 +304,12 @@ appId: ${APP_ID}
 - assertVisible: '1 missing category'
 - tapOn:
       id: 'UncategorizedTransactionsPill.Button'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+      timeout: 5000
+- tapOn:
+      id: 'CategorizeInboxPage.ShowListButton'
 - extendedWaitUntil:
       visible:
           id: 'TransactionCard.Label.E2E_Uncategorized_Large_Income'
