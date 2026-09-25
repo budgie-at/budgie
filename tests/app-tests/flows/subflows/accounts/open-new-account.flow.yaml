@@ -22,24 +22,12 @@ appId: ${APP_ID}
     when:
       true: ${!output.createAccountOpened}
     commands:
-      - runFlow:
-          when:
-            visible:
-              id: 'ActionButton'
-          commands:
-            - tapOn:
-                id: 'ActionButton'
-      - runFlow:
-          when:
-            notVisible:
-              id: 'ActionButton'
-          commands:
-            - extendedWaitUntil:
-                visible:
-                  id: 'ActionButton'
-                timeout: 10000
-            - tapOn:
-                id: 'ActionButton'
+      - extendedWaitUntil:
+          visible:
+            id: 'ActionButton'
+          timeout: 10000
+      - tapOn:
+          id: 'ActionButton'
       - waitForAnimationToEnd
       - extendedWaitUntil:
           visible:
