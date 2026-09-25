@@ -128,8 +128,9 @@ env:
           - waitForAnimationToEnd
           - scrollUntilVisible:
                 element:
-                    id: 'AccountForm.OpeningAccountSelector'
+                    id: 'AccountForm.CurrencySelector'
                 direction: UP
+          - waitForAnimationToEnd
           - tapOn:
                 id: 'AccountForm.OpeningAccountSelector'
           - extendedWaitUntil:
