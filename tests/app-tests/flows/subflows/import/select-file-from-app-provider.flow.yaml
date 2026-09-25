@@ -157,30 +157,41 @@ env:
 
 - waitForAnimationToEnd
 
+- evalScript: ${output.filePickerClosed = false}
 - runFlow:
       when:
-          visible: 'Continue'
+          notVisible: 'Cancel|Continue|Open'
       commands:
-          - tapOn: 'Continue'
-          - waitForAnimationToEnd
+          - evalScript: ${output.filePickerClosed = true}
+
+- runFlow:
+      when:
+          true: ${!output.filePickerClosed}
+      commands:
           - runFlow:
                 when:
-                    visible:
-                        id: '${FILE_ROW_ID_MATCH}'
+                    visible: 'Continue'
                 commands:
-                    - tapOn:
-                          id: '${FILE_ROW_ID_MATCH}'
-                          retryTapIfNoChange: true
-          - runFlow:
-                when:
-                    notVisible:
-                        id: '${FILE_ROW_ID_MATCH}'
-                commands:
-                    - tapOn:
-                          text: '${FILE_ROW_TEXT_MATCH}'
-                          retryTapIfNoChange: true
-                          optional: true
-          - waitForAnimationToEnd
+                    - tapOn: 'Continue'
+                    - waitForAnimationToEnd
+                    - runFlow:
+                          when:
+                              visible:
+                                  id: '${FILE_ROW_ID_MATCH}'
+                          commands:
+                              - tapOn:
+                                    id: '${FILE_ROW_ID_MATCH}'
+                                    retryTapIfNoChange: true
+                    - runFlow:
+                          when:
+                              notVisible:
+                                  id: '${FILE_ROW_ID_MATCH}'
+                          commands:
+                              - tapOn:
+                                    text: '${FILE_ROW_TEXT_MATCH}'
+                                    retryTapIfNoChange: true
+                                    optional: true
+                    - waitForAnimationToEnd
 
 - runFlow:
       when:
@@ -206,7 +217,11 @@ env:
 
 - runFlow:
       when:
-          visible: 'Open'
+          true: ${!output.filePickerClosed || FILE_PICKER_REPEAT_TAP == 'true'}
       commands:
-          - tapOn:
-                text: 'Open'
+          - runFlow:
+                when:
+                    visible: 'Open'
+                commands:
+                    - tapOn:
+                          text: 'Open'
