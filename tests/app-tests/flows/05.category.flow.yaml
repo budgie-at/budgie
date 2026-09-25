@@ -5,10 +5,10 @@ appId: ${APP_ID}
       env:
           FIXTURE_ROW_ID_MATCH: '05.db'
 
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 - runFlow:
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
-          SETTINGS_ANCHOR: 'organization'
           CARD_ID: 'SettingsPage.ManageCategoriesCard'
           DESTINATION_ID: 'CategoryPage.SearchInput'
 

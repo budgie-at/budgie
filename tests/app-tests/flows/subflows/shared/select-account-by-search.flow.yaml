@@ -11,6 +11,7 @@ appId: ${APP_ID}
 - tapOn:
       id: 'AccountPickerBottomSheet.Option.${ACCOUNT_NAME}'
       retryTapIfNoChange: true
+- waitForAnimationToEnd
 - extendedWaitUntil:
       notVisible:
           id: 'AccountPickerBottomSheet.Input'
