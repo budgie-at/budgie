@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.78.1](https://github.com/budgie-at/budgie/compare/v6.78.0...v6.78.1) (2026-09-25)
+
+
+### Bug Fixes
+
+* **app:** store debt event amounts as integer micro-units ([6bc45c6](https://github.com/budgie-at/budgie/commit/6bc45c6e6988a77f5fa2ab3253987b4a0640d796))
+
+
+
+
+
 # [6.78.0](https://github.com/budgie-at/budgie/compare/v6.77.0...v6.78.0) (2026-09-24)
 
 
