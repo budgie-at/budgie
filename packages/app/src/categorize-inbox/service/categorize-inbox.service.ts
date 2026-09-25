@@ -5,7 +5,6 @@ import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shar
 
 import { db, transactionCategorizeInboxRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
 import type { DB } from '@budgie/contracts';
@@ -53,17 +52,18 @@ class CategorizeInboxService {
     )
     @InvalidateDatabaseLiveQuery()
     async undo(assignments: CategorizeInboxAssignmentInterface[]): Promise<void> {
-        await assignments.reduce<Promise<void>>(async (previousAssignmentPromise, assignment) => {
-            await previousAssignmentPromise;
-            await transactionAsync(db, async tx => {
+        const groupedByCategoryId = this.groupAssignmentsByCategoryId(assignments);
+
+        await transactionAsync(db, async tx => {
+            await [...groupedByCategoryId].reduce<Promise<void>>(async (previousCategoryPromise, [categoryId, categoryAssignments]) => {
+                await previousCategoryPromise;
                 await transactionCategorizeInboxRepository.clearCategoryByTransactionIds(
-                    assignment.transactionIds,
-                    assignment.categoryId,
+                    categoryAssignments.flatMap(assignment => assignment.transactionIds),
+                    categoryId,
                     tx
                 );
-            });
-            await microPause();
-        }, Promise.resolve());
+            }, Promise.resolve());
+        });
     }
 
     @Log(
@@ -82,8 +82,7 @@ class CategorizeInboxService {
             tx
         );
 
-        await transactionRepository.markForEmbeddingByIds(updatedTransactionIds, tx);
-        await transactionRepository.touchUpdatedAtByIds(updatedTransactionIds, tx);
+        await transactionRepository.touchAndMarkForEmbeddingByIds(updatedTransactionIds, tx);
 
         return updatedTransactionIds;
     }

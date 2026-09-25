@@ -39,10 +39,10 @@ export const CategorizeInboxOneOffRow = ({ cluster }: Props) => {
             </View>
 
             <View className="flex-row items-center gap-x-sm">
-                <Text className="text-secondary-foreground text-xs flex-1" numberOfLines={1}>
+                <CategorizeInboxSuggestionChips cluster={cluster} />
+                <Text className="text-secondary-foreground text-xs flex-1 text-right" numberOfLines={1}>
                     {formatDayAndMonthAndYear(row.operatedAt)}
                 </Text>
-                <CategorizeInboxSuggestionChips cluster={cluster} />
             </View>
         </Card>
     );

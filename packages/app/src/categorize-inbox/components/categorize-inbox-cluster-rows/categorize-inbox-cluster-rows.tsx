@@ -17,7 +17,7 @@ export const CategorizeInboxClusterRows = ({ cluster }: Props) => {
     }
 
     return (
-        <View className="border-t border-secondary-corner pt-sm">
+        <View className="border-t border-secondary-corner gap-y-lg pt-lg">
             {cluster.rows.map(row => (
                 <CategorizeInboxClusterRow key={row.transactionId} row={row} displayTitle={cluster.displayTitle} />
             ))}
