@@ -9,51 +9,57 @@ import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error
 import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
 import { categorizeInboxService } from '../service/categorize-inbox.service';
 
+import { useCategorizeInboxVisibility } from './use-categorize-inbox-visibility.hook';
+
 import type { CategorizeInboxActionsInterface } from '../interface/categorize-inbox-actions.interface';
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
 import type { CategorizeInboxClusterInterface } from '../interface/categorize-inbox-cluster.interface';
+import type { CategorizeInboxInterface } from '../interface/categorize-inbox.interface';
 import type { CategorizeInboxRowInterface } from '@budgie/contracts';
 
 const PERCENT_MULTIPLIER = 100;
 
-// eslint-disable-next-line max-statements -- Orchestration hook owns the inbox busy state, exclusions, expansion and the single undo
-export const useCategorizeInboxActions = (totalRowCount: number): CategorizeInboxActionsInterface => {
+// eslint-disable-next-line max-statements -- Orchestration hook owns the inbox writes, optimistic hiding, expansion and the single undo
+export const useCategorizeInboxActions = (inbox: CategorizeInboxInterface): CategorizeInboxActionsInterface => {
     const { t } = useLingui();
     const { categories } = useNonSystemCategoriesQuery();
     const [hapticNotification] = useVibration();
 
-    const [excludedTransactionIds, setExcludedTransactionIds] = useState<ReadonlySet<number>>(new Set());
     const [expandedClusterKey, setExpandedClusterKey] = useState<string | null>(null);
-    const [isBusy, setIsBusy] = useState(false);
     const [undoAssignments, setUndoAssignments] = useState<CategorizeInboxAssignmentInterface[] | null>(null);
-    const [initialRowCount, setInitialRowCount] = useState(totalRowCount);
+    const [initialRowCount, setInitialRowCount] = useState(inbox.totalRowCount);
+    const { items, acceptableAssignments, remainingCount, excludedTransactionIds, toggleExcluded, hideTransactions, showTransactions } =
+        useCategorizeInboxVisibility(inbox);
 
-    if (totalRowCount > initialRowCount) {
-        setInitialRowCount(totalRowCount);
+    if (inbox.totalRowCount > initialRowCount) {
+        setInitialRowCount(inbox.totalRowCount);
     }
 
-    const runExclusive = async (action: () => Promise<void>): Promise<void> => {
-        setIsBusy(true);
+    const handleWriteError = (error: unknown): void => {
+        hapticNotification(NotificationFeedbackType.Error);
+        showErrorToast(t`Could not categorize transactions`, getErrorMessage(error));
+    };
+
+    const runAssignment = async (assignments: CategorizeInboxAssignmentInterface[], transactionIds: number[]): Promise<void> => {
         try {
-            await action();
-        } finally {
-            setIsBusy(false);
+            const applied = await categorizeInboxService.assignMany(assignments);
+
+            if (isNotEmptyArray(applied)) {
+                setUndoAssignments(applied);
+                hapticNotification(NotificationFeedbackType.Success);
+            }
+        } catch (error) {
+            showTransactions(transactionIds);
+            handleWriteError(error);
         }
     };
 
-    const runAssignment = (action: () => Promise<CategorizeInboxAssignmentInterface[]>): void =>
-        void runExclusive(async () => {
-            const applied = await action();
+    const handleAssign = (assignments: CategorizeInboxAssignmentInterface[]): void => {
+        const transactionIds = assignments.flatMap(assignment => assignment.transactionIds);
 
-            setUndoAssignments(isNotEmptyArray(applied) ? applied : null);
-
-            if (isNotEmptyArray(applied)) {
-                hapticNotification(NotificationFeedbackType.Success);
-            }
-        }).catch((error: unknown) => void showErrorToast(t`Could not categorize transactions`, getErrorMessage(error)));
-
-    const handleAssign = (assignments: CategorizeInboxAssignmentInterface[]): void =>
-        void runAssignment(() => categorizeInboxService.assignMany(assignments));
+        hideTransactions(transactionIds);
+        void runAssignment(assignments, transactionIds);
+    };
 
     const handleAssignCluster = (cluster: CategorizeInboxClusterInterface, categoryId: number): void => {
         const transactionIds = cluster.rows
@@ -73,44 +79,40 @@ export const useCategorizeInboxActions = (totalRowCount: number): CategorizeInbo
         ]);
 
     const handleUndo = (): void => {
-        if (isDefined(undoAssignments)) {
-            runAssignment(async () => {
-                await categorizeInboxService.undo(undoAssignments);
-
-                return [];
-            });
+        if (!isDefined(undoAssignments)) {
+            return;
         }
+
+        setUndoAssignments(null);
+        showTransactions(undoAssignments.flatMap(assignment => assignment.transactionIds));
+
+        void categorizeInboxService.undo(undoAssignments).catch(handleWriteError);
     };
 
     const handleToggleExpanded = (clusterKey: string): void =>
         void setExpandedClusterKey(previous => (previous === clusterKey ? null : clusterKey));
 
-    const handleToggleExcluded = (transactionId: number): void =>
-        void setExcludedTransactionIds(previous => {
-            const next = new Set(previous);
-
-            if (!next.delete(transactionId)) {
-                next.add(transactionId);
-            }
-
-            return next;
-        });
+    const categorizedCount = initialRowCount - remainingCount;
 
     return {
-        progress: isPositiveNumber(initialRowCount) ? ((initialRowCount - totalRowCount) / initialRowCount) * PERCENT_MULTIPLIER : 0,
+        items,
+        acceptableAssignments,
+        remainingCount,
+        categorizedCount,
+        progress: isPositiveNumber(initialRowCount) ? (categorizedCount / initialRowCount) * PERCENT_MULTIPLIER : 0,
         contextValue: {
             categoriesById: new Map(categories.map(category => [category.id, category])),
             excludedTransactionIds,
             expandedClusterKey,
-            isBusy,
             undoAssignments,
             toggleExpanded: handleToggleExpanded,
-            toggleExcluded: handleToggleExcluded,
+            toggleExcluded,
+            hideTransactions,
+            showTransactions,
             assign: handleAssign,
             assignCluster: handleAssignCluster,
             assignRow: handleAssignRow,
-            undo: handleUndo,
-            runExclusive
+            undo: handleUndo
         }
     };
 };

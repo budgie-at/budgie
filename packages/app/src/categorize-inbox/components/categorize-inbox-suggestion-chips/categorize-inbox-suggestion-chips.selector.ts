@@ -1,3 +1,4 @@
 export const CategorizeInboxSuggestionChipsSelector = {
-    More: 'CategorizeInboxSuggestionChips.More'
+    More: 'CategorizeInboxSuggestionChips.More',
+    SelectCategory: 'CategorizeInboxSuggestionChips.SelectCategory'
 } as const;
