@@ -18,6 +18,23 @@ env:
                     microphone: allow
           - extendedWaitUntil:
                 visible:
+                    id: 'TabBar.Home'
+                timeout: 30000
+          - extendedWaitUntil:
+                visible:
+                    id: 'HomePage.TotalBalance'
+                timeout: 5000
+                optional: true
+          - runFlow:
+                when:
+                    notVisible:
+                        id: 'HomePage.TotalBalance'
+                commands:
+                    - tapOn:
+                          id: 'TabBar.Home'
+                    - waitForAnimationToEnd
+          - extendedWaitUntil:
+                visible:
                     id: 'HomePage.TotalBalance'
                 timeout: 30000
 
