@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.78.2](https://github.com/budgie-at/budgie/compare/v6.78.1...v6.78.2) (2026-09-25)
+
+
+### Bug Fixes
+
+* **app:** stop skeleton placeholders pulsing when reduce motion is on ([aff0149](https://github.com/budgie-at/budgie/commit/aff01499fec99252ed3b56871730538e400586c1))
+
+
+
+
+
 ## [6.78.1](https://github.com/budgie-at/budgie/compare/v6.78.0...v6.78.1) (2026-09-25)
 
 
