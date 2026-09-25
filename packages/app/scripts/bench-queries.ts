@@ -137,8 +137,7 @@ const BENCHES: readonly BenchInterface[] = [
     {
         name: 'categorize_inbox_evidence',
         sql: `SELECT t.title, t.type, te.mcc_category_id AS mccCategoryId, te.category_id AS categoryId,
-                     COUNT(*) AS count,
-                     SUM(CASE WHEN t.operated_at >= ? THEN 1 ELSE 0 END) AS recentCount
+                     COUNT(*) AS count
               FROM transaction_entries te
               JOIN transactions t ON t.id = te.transaction_id
               JOIN categories c ON c.id = te.category_id
@@ -146,8 +145,7 @@ const BENCHES: readonly BenchInterface[] = [
                 AND te.kind = 'PRIMARY' AND te.type != 'FEE' AND te.category_source != 'MCC_DEFAULT'
                 AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL AND t.type IN ('EXPENSE','INCOME')
                 AND c.is_system_category = 0 AND c.deleted_at IS NULL
-              GROUP BY t.title, t.type, te.mcc_category_id, te.category_id`,
-        params: [NOW - 365 * 24 * 60 * 60] as const
+              GROUP BY t.title, t.type, te.mcc_category_id, te.category_id`
     },
     {
         name: 'category_search_prefix',

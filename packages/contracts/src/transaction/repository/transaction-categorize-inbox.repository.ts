@@ -113,17 +113,14 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
             .orderBy(desc(TransactionEntityTable.operatedAt));
     }
 
-    findLabeledEvidence(recentSince: Date) {
-        const recentCountSql = sql<number>`SUM(CASE WHEN ${TransactionEntityTable.operatedAt} >= ${recentSince} THEN 1 ELSE 0 END)`;
-
+    findLabeledEvidence() {
         return this.db
             .select({
                 title: TransactionEntityTable.title,
                 type: TransactionEntityTable.type,
                 mccCategoryId: TransactionEntryEntityTable.mccCategoryId,
                 categoryId: sql<number>`${TransactionEntryEntityTable.categoryId}`.mapWith(Number),
-                count: sql<number>`COUNT(*)`,
-                recentCount: recentCountSql
+                count: sql<number>`COUNT(*)`
             })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))

@@ -19,7 +19,6 @@ import {
     EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD
 } from '../../@generic/constant/embedding.constant';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
-import { EmbeddingCategoryEvidenceInterface } from '../interface/embedding-category-evidence.interface';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
 import { EmbeddingSuggestionRepositoriesInterface } from '../interface/embedding-suggestion-repositories.interface';
 import { buildTransactionContext } from '../util/build-transaction-context.util';
@@ -31,8 +30,6 @@ import type { SuggestionContextInterface } from '../interface/suggestion-context
 
 export class EmbeddingSuggestionService {
     private static readonly MCC_BLEND_WEIGHT = 7 / 10;
-    private static readonly CATEGORY_EVIDENCE_SCORE_LIMIT = 5;
-    private static readonly CATEGORY_EVIDENCE_EXAMPLE_LIMIT = 6;
 
     constructor(
         private readonly repositories: EmbeddingSuggestionRepositoriesInterface,
@@ -68,8 +65,19 @@ export class EmbeddingSuggestionService {
             ? this.getMccCategorySuggestions(mccCategoryId, EMBEDDING_CATEGORY_SUGGESTION_LIMIT)
             : Promise.resolve([]);
 
-        const [[merchantResults, commentResults], mccRows] = await Promise.all([
-            this.findCategorySimilarityResults(resolved.serialized, resolved.distanceThreshold),
+        const [merchantResults, commentResults, mccRows] = await Promise.all([
+            this.repositories.merchant.findSimilarCategories(
+                resolved.serialized,
+                EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+                resolved.distanceThreshold,
+                EMBEDDING_CATEGORY_SUGGESTION_LIMIT
+            ),
+            this.repositories.comment.findSimilarCategories(
+                resolved.serialized,
+                EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+                resolved.distanceThreshold,
+                EMBEDDING_CATEGORY_SUGGESTION_LIMIT
+            ),
             mccLookup
         ]);
 
@@ -146,43 +154,6 @@ export class EmbeddingSuggestionService {
     }
 
     @Log(
-        (transactionTitle, mccDescription, comment) =>
-            `enter title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}"`,
-        (result, transactionTitle, mccDescription, comment) =>
-            `done title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" scoreCount=${result.scores.length} exampleCount=${result.examples.length}`,
-        (error, transactionTitle, mccDescription, comment) =>
-            `throw title="${transactionTitle}" mcc="${mccDescription ?? 'none'}" comment="${comment}" error=${getErrorMessage(error)}`
-    )
-    async scoreCategoryEvidence(
-        transactionTitle: string,
-        mccDescription: string | null,
-        comment: string
-    ): Promise<EmbeddingCategoryEvidenceInterface> {
-        const resolved = await this.prepareSuggestion(transactionTitle, mccDescription, comment, '');
-        if (!isDefined(resolved)) {
-            return { scores: [], examples: [] };
-        }
-
-        const [[merchantResults, commentResults], examples] = await Promise.all([
-            this.findCategorySimilarityResults(resolved.serialized, resolved.distanceThreshold),
-            this.repositories.merchant.findNearestExamples(
-                resolved.serialized,
-                EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                resolved.distanceThreshold,
-                EmbeddingSuggestionService.CATEGORY_EVIDENCE_EXAMPLE_LIMIT
-            )
-        ]);
-
-        const scoreMap = this.buildCategoryScoreMap(merchantResults, commentResults);
-        const scores = [...scoreMap.entries()]
-            .map(([categoryId, score]) => ({ categoryId, score }))
-            .sort((first, second) => second.score - first.score)
-            .slice(0, EmbeddingSuggestionService.CATEGORY_EVIDENCE_SCORE_LIMIT);
-
-        return { scores, examples };
-    }
-
-    @Log(
         context => `enter context="${context}"`,
         (result, context) => `done context="${context}" resolved=${String(isDefined(result))}`,
         (error, context) => `throw context="${context}" error=${getErrorMessage(error)}`
@@ -233,26 +204,6 @@ export class EmbeddingSuggestionService {
         const distanceThreshold = hasVoiceContext ? EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD : EMBEDDING_VEC_DISTANCE_THRESHOLD;
 
         return { context, distanceThreshold };
-    }
-
-    private findCategorySimilarityResults(
-        serialized: Uint8Array,
-        distanceThreshold: number
-    ): Promise<[CategoryScoreResultInterface[], CategoryScoreResultInterface[]]> {
-        return Promise.all([
-            this.repositories.merchant.findSimilarCategories(
-                serialized,
-                EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                distanceThreshold,
-                EMBEDDING_CATEGORY_SUGGESTION_LIMIT
-            ),
-            this.repositories.comment.findSimilarCategories(
-                serialized,
-                EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-                distanceThreshold,
-                EMBEDDING_CATEGORY_SUGGESTION_LIMIT
-            )
-        ]);
     }
 
     private buildCategoryScoreMap(

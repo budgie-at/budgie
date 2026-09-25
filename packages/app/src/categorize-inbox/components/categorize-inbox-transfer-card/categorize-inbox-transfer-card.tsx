@@ -1,15 +1,24 @@
-import { useLingui } from '@lingui/react/macro';
+import { AccountTypeEnum, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
+
+import { getErrorMessage, isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
+import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
+import { transactionTransferService } from '../../../transaction/service/transaction-transfer.service';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxTransferKindEnum } from '../../enum/categorize-inbox-transfer-kind.enum';
-import { CategorizeInboxCategoryChips } from '../categorize-inbox-category-chips/categorize-inbox-category-chips';
-import { CategorizeInboxClusterCardHeader } from '../categorize-inbox-cluster-card-header/categorize-inbox-cluster-card-header';
-import { CategorizeInboxClusterCardSelector } from '../categorize-inbox-cluster-card/categorize-inbox-cluster-card.selector';
-import { CategorizeInboxClusterExpandToggle } from '../categorize-inbox-cluster-expand-toggle/categorize-inbox-cluster-expand-toggle';
 import { CategorizeInboxClusterRows } from '../categorize-inbox-cluster-rows/categorize-inbox-cluster-rows';
+import { CategorizeInboxClusterSummary } from '../categorize-inbox-cluster-summary/categorize-inbox-cluster-summary';
+import { CategorizeInboxSuggestionChips } from '../categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips';
+
+import { CategorizeInboxTransferCardSelector } from './categorize-inbox-transfer-card.selector';
 
 import type { CategorizeInboxClusterInterface } from '../../interface/categorize-inbox-cluster.interface';
 
@@ -19,27 +28,83 @@ interface Props {
 
 export const CategorizeInboxTransferCard = ({ cluster }: Props) => {
     const { t } = useLingui();
-    const { isBusy, expandedClusterKey, convertClusterToTransfer } = useCategorizeInboxContext();
+    const { excludedTransactionIds, isBusy, runExclusive } = useCategorizeInboxContext();
+    const [openAccountSelector] = useAccountSelectorModal();
 
-    const handleConvertPress = () => void convertClusterToTransfer(cluster);
+    const isAtmWithdrawal = cluster.transferKind === CategorizeInboxTransferKindEnum.ATM_WITHDRAWAL;
+    const transactionIds = cluster.rows.map(row => row.transactionId).filter(transactionId => !excludedTransactionIds.has(transactionId));
 
-    const isExpanded = expandedClusterKey === cluster.key;
-    const explanationText =
-        cluster.transferKind === CategorizeInboxTransferKindEnum.ATM_WITHDRAWAL
-            ? t`Looks like an ATM cash withdrawal`
-            : t`Looks like a transfer between cards`;
+    const handleConvert = async (accountId: number): Promise<void> => {
+        const transactionType = cluster.type === TransactionTypeEnum.INCOME ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
+        const result = await transactionTransferService.convertManyToTransfer(transactionIds, transactionType, accountId);
+
+        if (isPositiveNumber(result.failed)) {
+            showErrorToast(t`Some transactions could not be converted`, t`Please try again later`);
+        }
+    };
+
+    const handleMove = async (): Promise<void> => {
+        const accountId = await openAccountSelector(
+            isAtmWithdrawal
+                ? {
+                      includeAccountTypes: [AccountTypeEnum.CASH],
+                      excludeAccountId: cluster.sourceAccountId,
+                      onlyActive: true,
+                      emptyStateDescription: t`Create a cash account to track ATM withdrawals`
+                  }
+                : { excludeAccountTypes: [AccountTypeEnum.DEBT], excludeAccountId: cluster.sourceAccountId, onlyActive: true }
+        );
+
+        if (!isDefined(accountId) || isEmptyArray(transactionIds)) {
+            return;
+        }
+
+        const isConfirmed = await confirmAlert({
+            title: t({
+                message: plural(transactionIds.length, {
+                    one: 'Move # transaction to this account?',
+                    other: 'Move # transactions to this account?'
+                })
+            }),
+            confirmText: t`Move`,
+            cancelText: t`Cancel`
+        });
+
+        if (isConfirmed) {
+            await runExclusive(() => handleConvert(accountId));
+        }
+    };
+
+    const handleMovePress = (): void =>
+        void handleMove().catch(
+            (error: unknown) => void showErrorToast(t`Some transactions could not be converted`, getErrorMessage(error))
+        );
+
+    const countText = isAtmWithdrawal
+        ? t({ message: plural(cluster.rows.length, { one: '# ATM withdrawal', other: '# ATM withdrawals' }) })
+        : t({ message: plural(cluster.rows.length, { one: '# card transfer', other: '# card transfers' }) });
+    const icon = isAtmWithdrawal ? UserIconNameEnum.Banknote : UserIconNameEnum.ArrowRightLeft;
 
     return (
-        <Card className="gap-y-lg" {...testID(CategorizeInboxClusterCardSelector.Card, cluster.key)}>
-            <CategorizeInboxClusterCardHeader title={cluster.displayTitle} subtitle={explanationText} />
+        <Card size="md" className="gap-y-lg" {...testID(CategorizeInboxTransferCardSelector.Card, cluster.key)}>
+            <CategorizeInboxClusterSummary cluster={cluster} countText={countText} icon={icon} />
 
-            <Button content={t`Convert to transfer`} onPress={handleConvertPress} disabled={isBusy} size="sm" variant="secondary" />
+            <Button
+                content={t`Move to account…`}
+                variant="cta"
+                size="sm"
+                onPress={handleMovePress}
+                disabled={isBusy}
+                {...testID(CategorizeInboxTransferCardSelector.MoveButton, cluster.key)}
+            />
 
-            <CategorizeInboxCategoryChips cluster={cluster} />
+            <Text className="text-secondary-foreground text-xs">
+                <Trans>Or categorize as</Trans>
+            </Text>
 
-            <CategorizeInboxClusterExpandToggle clusterKey={cluster.key} />
+            <CategorizeInboxSuggestionChips cluster={cluster} />
 
-            {isExpanded ? <CategorizeInboxClusterRows cluster={cluster} /> : null}
+            <CategorizeInboxClusterRows cluster={cluster} />
         </Card>
     );
 };

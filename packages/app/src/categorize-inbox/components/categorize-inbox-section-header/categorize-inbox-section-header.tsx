@@ -11,18 +11,17 @@ interface Props {
 export const CategorizeInboxSectionHeader = ({ section, count }: Props) => {
     const { t } = useLingui();
 
-    const sectionTitles: [CategorizeInboxSectionEnum, string][] = [
-        [CategorizeInboxSectionEnum.CONFIDENT, t`Ready to accept`],
-        [CategorizeInboxSectionEnum.TRANSFERS, t`Transfers`],
-        [CategorizeInboxSectionEnum.REVIEW, t`Needs your review`],
-        [CategorizeInboxSectionEnum.ONE_OFFS, t`One-offs`]
-    ];
-    const title = sectionTitles.find(([sectionValue]) => sectionValue === section)?.[1] ?? '';
+    const sectionTitles: Record<CategorizeInboxSectionEnum, string> = {
+        [CategorizeInboxSectionEnum.CONFIDENT]: t`Ready to accept`,
+        [CategorizeInboxSectionEnum.TRANSFERS]: t`Transfers`,
+        [CategorizeInboxSectionEnum.REVIEW]: t`Needs your review`,
+        [CategorizeInboxSectionEnum.ONE_OFFS]: t`One-offs`
+    };
 
     return (
-        <View className="bg-primary-reverse py-sm flex-row items-center justify-between">
-            <Text className="text-secondary-foreground uppercase text-xs">{title}</Text>
-            <Text className="text-secondary-foreground text-xs">{count}</Text>
+        <View className="flex-row items-center gap-x-sm pt-md">
+            <Text className="text-secondary-foreground uppercase text-xs font-medium">{sectionTitles[section]}</Text>
+            <Text className="text-secondary-foreground/60 text-xs">{count}</Text>
         </View>
     );
 };
