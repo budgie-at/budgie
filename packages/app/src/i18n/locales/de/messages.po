@@ -31,6 +31,26 @@ msgstr " • {embeddingPending} Tx ausstehend"
 msgid "{0, plural, one {# account created} other {# accounts created}}"
 msgstr "{0, plural, one {# Konto erstellt} other {# Konten erstellt}}"
 
+#. placeholder {0}: inbox.totalRowCount
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "{0, plural, one {# transaction left} other {# transactions left}}"
+msgstr "{0, plural, one {# Transaktion übrig} other {# Transaktionen übrig}}"
+
+#. placeholder {0}: cluster.rowCount
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+msgid "{0, plural, one {# transaction} other {# transactions}}"
+msgstr "{0, plural, one {# Transaktion} other {# Transaktionen}}"
+
+#. placeholder {0}: cluster.variantCount
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+msgid "{0, plural, one {+# variant} other {+# variants}}"
+msgstr "{0, plural, one {+# Variante} other {+# Varianten}}"
+
+#. placeholder {0}: transactionIds.length
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+msgid "{0, plural, one {Convert # transaction to transfer?} other {Convert # transactions to transfers?}}"
+msgstr "{0, plural, one {# Transaktion in Überweisung umwandeln?} other {# Transaktionen in Überweisungen umwandeln?}}"
+
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
@@ -56,6 +76,10 @@ msgstr "{applied, plural, one {# passende Transaktion aktualisiert} other {# pas
 msgid "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
 msgstr "{approxTransactions, plural, one {~# Transaktion} other {~# Transaktionen}}"
 
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+msgid "{assignedRowCount, plural, one {# categorized} other {# categorized}}"
+msgstr "{assignedRowCount, plural, one {# kategorisiert} other {# kategorisiert}}"
+
 #: src/app/import-column-mapper.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verfügbar}}"
@@ -71,6 +95,14 @@ msgstr "{categoryName}: {threshold}% ausgegeben"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: Limit erreicht"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+msgid "{confidentRowCount, plural, one {Accept # confident suggestion?} other {Accept # confident suggestions?}}"
+msgstr "{confidentRowCount, plural, one {# sicheren Vorschlag akzeptieren?} other {# sichere Vorschläge akzeptieren?}}"
+
+#: src/categorize-inbox/components/categorize-inbox-progress/categorize-inbox-progress.tsx
+msgid "{confidentRowCount, plural, one {Accept # confident suggestion} other {Accept # confident suggestions}}"
+msgstr "{confidentRowCount, plural, one {# sicheren Vorschlag akzeptieren} other {# sichere Vorschläge akzeptieren}}"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
@@ -154,6 +186,10 @@ msgstr "{percentage}% der Ausgaben"
 #: src/tag/components/tag-statistics-card/tag-statistics-card.tsx
 msgid "{percentage}% of income"
 msgstr "{percentage}% der Einnahmen"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+msgid "{remainingCategoryCount, plural, one {+# more category} other {+# more categories}}"
+msgstr "{remainingCategoryCount, plural, one {+# weitere Kategorie} other {+# weitere Kategorien}}"
 
 #: src/app/transaction-account-filter.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
@@ -264,6 +300,10 @@ msgstr "Etwa 6 Minuten"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About a minute"
 msgstr "Etwa eine Minute"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+msgid "Accept"
+msgstr "Akzeptieren"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -411,6 +451,7 @@ msgid "Adjustment"
 msgstr "Anpassung"
 
 #: src/app/(tabs)/settings/index.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-chip/categorize-inbox-category-chip.tsx
 msgid "AI"
 msgstr "KI"
 
@@ -437,6 +478,10 @@ msgstr "Alle"
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "All accounts already added"
 msgstr "Alle Konten wurden bereits hinzugefügt"
+
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "All caught up"
+msgstr "Alles erledigt"
 
 #: src/app/import-column-mapper.tsx
 msgid "All columns have been assigned"
@@ -763,6 +808,7 @@ msgstr "Kann Stunden dauern"
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
 #: src/import/components/import-database/import-database.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
@@ -811,6 +857,10 @@ msgstr "Importe automatisch kategorisieren"
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
 msgstr "Kategorisiert Transaktionen, schlägt Tags vor und transkribiert Sprachnotizen direkt auf diesem Gerät. Lädt einmalig etwa 2,5 GB an Modellen herunter – am besten über WLAN."
+
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "Categorize"
+msgstr "Kategorisieren"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -999,6 +1049,7 @@ msgid "Conversion failed"
 msgstr "Konvertierung fehlgeschlagen"
 
 #: src/app/convert-to-transfer.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "Convert"
@@ -1012,6 +1063,10 @@ msgstr "In Rückerstattung umwandeln"
 #: src/transaction/hooks/use-convert-to-refund-action.hook.ts
 msgid "Convert to Refund?"
 msgstr "In Rückerstattung umwandeln?"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
+msgid "Convert to transfer"
+msgstr "In Überweisung umwandeln"
 
 #: src/app/convert-to-transfer.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
@@ -1053,6 +1108,10 @@ msgstr "Konto konnte nicht archiviert werden"
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Could not attach debt"
 msgstr "Schuld konnte nicht verknüpft werden"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+msgid "Could not categorize transactions"
+msgstr "Transaktionen konnten nicht kategorisiert werden"
 
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Could not check sync data"
@@ -1284,6 +1343,10 @@ msgstr "Gedeckt durch dein liquides Guthaben"
 #: src/export/components/export-database/export-database.tsx
 msgid "Create a backup of all your data"
 msgstr "Erstellen Sie eine Sicherung aller Ihrer Daten"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+msgid "Create a cash account to track ATM withdrawals"
+msgstr "Bargeldkonto erstellen, um Abhebungen am Geldautomaten zu erfassen"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
@@ -1533,6 +1596,10 @@ msgstr "Details"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
 msgstr "App-Sperre deaktivieren"
+
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+msgid "Dismiss"
+msgstr "Verwerfen"
 
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Display the budget card on the home screen"
@@ -1796,6 +1863,10 @@ msgstr "Erste Bank"
 msgid "Every account from this bank is already linked."
 msgstr "Jedes Konto dieser Bank ist bereits verknüpft."
 
+#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+msgid "Every transaction has a category."
+msgstr "Jede Transaktion hat eine Kategorie."
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
 msgstr "Alltägliche Transaktionen und Ausgaben"
@@ -1924,6 +1995,10 @@ msgstr "Kategorien filtern"
 #: src/app/transaction-tag-filter.tsx
 msgid "Filter tags"
 msgstr "Tags filtern"
+
+#: src/categorize-inbox/components/categorize-inbox-progress/categorize-inbox-progress.tsx
+msgid "Finding similar merchants…"
+msgstr "Ähnliche Händler werden gesucht…"
 
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "First expense added"
@@ -2134,6 +2209,10 @@ msgstr "Inaktive Konten"
 msgid "Include crypto"
 msgstr "Krypto einbeziehen"
 
+#: src/categorize-inbox/components/categorize-inbox-exception-row/categorize-inbox-exception-row.tsx
+msgid "Include in bulk action"
+msgstr "In Sammelaktion einbeziehen"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Include in file imports"
@@ -2332,9 +2411,21 @@ msgstr "Wird geladen..."
 msgid "Lock it down"
 msgstr "Sperren Sie es ab"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
+msgid "Looks like a transfer between cards"
+msgstr "Sieht nach einer Überweisung zwischen Karten aus"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
+msgid "Looks like an ATM cash withdrawal"
+msgstr "Sieht nach einer Bargeldabhebung am Geldautomaten aus"
+
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
 msgstr "Hauptwährung"
+
+#: src/categorize-inbox/components/categorize-inbox-make-rule-button/categorize-inbox-make-rule-button.tsx
+msgid "Make rule"
+msgstr "Regel erstellen"
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/settings/components/budget-management-card/budget-management-card.tsx
@@ -2517,6 +2608,10 @@ msgstr "Wahrscheinlichster Kontostand"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
 msgstr "Zu Konto → Kontoauszüge navigieren"
+
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Needs your review"
+msgstr "Braucht deine Prüfung"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 msgid "Net"
@@ -2790,6 +2885,10 @@ msgstr "Einmalig"
 msgid "One-off spike"
 msgstr "Einmaliger Ausschlag"
 
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "One-offs"
+msgstr "Einmalige Ausgaben"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
 msgstr "Einmaliger Import aus einem Privat24-Kontoauszug – kein Live-Abgleich, und jeder Export umfasst nur eine Karte oder ein Konto"
@@ -2889,6 +2988,11 @@ msgstr "Sonstiges Budget: {threshold}% verbraucht"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: limit reached"
 msgstr "Sonstiges Budget: Limit erreicht"
+
+#: src/categorize-inbox/components/categorize-inbox-exception-row/categorize-inbox-exception-row.tsx
+#: src/categorize-inbox/components/categorize-inbox-other-chip/categorize-inbox-other-chip.tsx
+msgid "Other…"
+msgstr "Andere…"
 
 #: src/widget/service/widget-snapshot.service.ts
 msgid "over"
@@ -3002,6 +3106,7 @@ msgstr "Bitte versuchen Sie es erneut"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/tags.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
 #: src/category/components/category-form/category-form.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Please try again later"
@@ -3091,6 +3196,10 @@ msgstr "Resync der letzten 90 Tage beginnt beim nächsten Sync."
 #: src/app/resync-window-picker.tsx
 msgid "Re-sync transactions"
 msgstr "Transaktionen neu synchronisieren"
+
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Ready to accept"
+msgstr "Bereit zum Akzeptieren"
 
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 msgid "Rebuild"
@@ -3615,6 +3724,10 @@ msgstr "Überspringen"
 msgid "Smarter, without the cloud"
 msgstr "Schlauer, ganz ohne Cloud"
 
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+msgid "Some transactions could not be converted"
+msgstr "Einige Transaktionen konnten nicht umgewandelt werden"
+
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
 msgstr "Einige Transaktionen können auf mehrere Regeln zutreffen. Die erste passende Regel hat Vorrang."
@@ -3962,6 +4075,7 @@ msgid "To repay"
 msgstr "Zu zahlen"
 
 #: src/@generic/constant/date-period.constant.ts
+#: src/categorize-inbox/components/categorize-inbox-exception-row/categorize-inbox-exception-row.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Today"
 msgstr "Heute"
@@ -4058,6 +4172,10 @@ msgstr "Vom Konto übertragen"
 msgid "Transfer To Account"
 msgstr "Auf Konto übertragen"
 
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Transfers"
+msgstr "Überweisungen"
+
 #: src/ai/service/ai-system-status.service.ts
 msgid "Translating {translationPending} of {total}{trailer}"
 msgstr "Übersetzung {translationPending} von {total}{trailer}"
@@ -4126,6 +4244,7 @@ msgstr "typischer Monat {amount}"
 msgid "Ukrainian"
 msgstr "Ukrainisch"
 
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "Uncategorized"
@@ -4138,6 +4257,10 @@ msgstr "Entkonsolidieren"
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Unconsolidate transaction?"
 msgstr "Transaktion entkonsolidieren?"
+
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+msgid "Undo"
+msgstr "Rückgängig"
 
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
 msgid "Unknown"
@@ -4298,6 +4421,7 @@ msgstr "Funktioniert offline"
 msgid "XLSX export"
 msgstr "XLSX-Export"
 
+#: src/categorize-inbox/components/categorize-inbox-exception-row/categorize-inbox-exception-row.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Yesterday"
 msgstr "Gestern"

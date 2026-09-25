@@ -10,15 +10,20 @@ import { MerchantEmbeddingEntityTable } from '../table/merchant-embedding-entity
 import { MerchantEmbeddingTagEntityTable } from '../table/merchant-embedding-tag-entity.table';
 
 import type { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
+import type { MerchantEmbeddingExampleInterface } from '../interface/merchant-embedding-example.interface';
 import type { MerchantPendingContextInterface } from '../interface/merchant-pending-context.interface';
 import type { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
 import type { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params.interface';
 
+const MERCHANT_VEC_NEIGHBOURS_SQL = `
+    SELECT rowid, distance FROM merchant_embedding_vec
+    WHERE embedding MATCH ? ORDER BY distance LIMIT ?
+`;
+
 const SIMILAR_CATEGORIES_QUERY = `
     SELECT me.category_id as categoryId,
            SUM(1.0 / (vec.distance + 0.01)) as score
-    FROM (SELECT rowid, distance FROM merchant_embedding_vec
-          WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+    FROM (${MERCHANT_VEC_NEIGHBOURS_SQL}) vec
     JOIN merchant_embeddings me ON me.id = vec.rowid
     WHERE me.deleted_at IS NULL AND vec.distance < ?
     GROUP BY me.category_id
@@ -29,8 +34,7 @@ const SIMILAR_CATEGORIES_QUERY = `
 const SIMILAR_TAGS_QUERY = `
     SELECT met.tag_id as tagId,
            SUM(1.0 / (vec.distance + 0.01)) as score
-    FROM (SELECT rowid, distance FROM merchant_embedding_vec
-          WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+    FROM (${MERCHANT_VEC_NEIGHBOURS_SQL}) vec
     JOIN merchant_embeddings me ON me.id = vec.rowid
     JOIN merchant_embedding_tags met ON met.merchant_embedding_id = me.id
     WHERE me.deleted_at IS NULL AND vec.distance < ? AND me.category_id = ?
@@ -41,13 +45,22 @@ const SIMILAR_TAGS_QUERY = `
 
 const SIMILAR_COMMENTS_QUERY = `
     SELECT me.comment as comment, MIN(vec.distance) as bestDistance
-    FROM (SELECT rowid, distance FROM merchant_embedding_vec
-          WHERE embedding MATCH ? ORDER BY distance LIMIT ?) vec
+    FROM (${MERCHANT_VEC_NEIGHBOURS_SQL}) vec
     JOIN merchant_embeddings me ON me.id = vec.rowid
     WHERE me.deleted_at IS NULL AND vec.distance < ?
         AND me.comment != '' AND me.category_id = ?
     GROUP BY me.comment
     ORDER BY bestDistance
+    LIMIT ?
+`;
+
+const NEAREST_EXAMPLES_QUERY = `
+    SELECT me.title as title, me.category_id as categoryId, MIN(vec.distance) as distance
+    FROM (${MERCHANT_VEC_NEIGHBOURS_SQL}) vec
+    JOIN merchant_embeddings me ON me.id = vec.rowid
+    WHERE me.deleted_at IS NULL AND vec.distance < ?
+    GROUP BY me.title, me.category_id
+    ORDER BY distance
     LIMIT ?
 `;
 
@@ -123,6 +136,28 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             distanceThreshold,
             categoryId,
             commentLimit
+        ]);
+    }
+
+    @Log(
+        (queryEmbedding, vecLimit, distanceThreshold, limit) =>
+            `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} limit=${limit}`,
+        (result, ...[queryEmbedding, vecLimit, distanceThreshold, limit]) =>
+            `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} limit=${limit} count=${result.length}`,
+        (error, ...[queryEmbedding, vecLimit, distanceThreshold, limit]) =>
+            `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${vecLimit} distanceThreshold=${distanceThreshold} limit=${limit} error=${getErrorMessage(error)}`
+    )
+    async findNearestExamples(
+        queryEmbedding: Uint8Array,
+        vecLimit: number,
+        distanceThreshold: number,
+        limit: number
+    ): Promise<MerchantEmbeddingExampleInterface[]> {
+        return await this.db.$client.getAllAsync<MerchantEmbeddingExampleInterface>(NEAREST_EXAMPLES_QUERY, [
+            convertEmbeddingToJson(queryEmbedding),
+            vecLimit,
+            distanceThreshold,
+            limit
         ]);
     }
 
