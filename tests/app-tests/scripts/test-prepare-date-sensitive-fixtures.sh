@@ -15,8 +15,11 @@ trap cleanup EXIT
 mkdir -p "$TEMP_DIR/bin" "$TEMP_DIR/scripts" "$TEMP_DIR/fixtures" "$TEMP_DIR/locks"
 cp "$SCRIPT_DIR/prepare-date-sensitive-fixtures.js" "$TEMP_DIR/scripts/"
 cp "$WORKSPACE_DIR/fixtures/07.db" "$TEMP_DIR/fixtures/"
+cp "$WORKSPACE_DIR/fixtures/12.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/14.db" "$TEMP_DIR/fixtures/"
+cp "$WORKSPACE_DIR/fixtures/25.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/29.db" "$TEMP_DIR/fixtures/"
+cp "$WORKSPACE_DIR/fixtures/31-debt.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/31-transaction-info.db" "$TEMP_DIR/fixtures/"
 cp "$WORKSPACE_DIR/fixtures/budget-multi-currency.db" "$TEMP_DIR/fixtures/"
 
@@ -102,11 +105,14 @@ test -z "$(find "$TEMP_DIR/fixtures" -maxdepth 1 -type f \( -name '*.db-wal' -o 
 for output_directory in "$TEMP_DIR/output-1" "$TEMP_DIR/output-2"; do
     for database_name in \
         14.db \
+        15.db \
         20-recurring-calendar.db \
         21.db \
         22.db \
         29.db \
+        31-debt.db \
         31-transaction-info.db \
+        34-matching-rules.db \
         budget-multi-currency.db; do
         test -f "$output_directory/$database_name"
         test "$(sqlite3 "$output_directory/$database_name" 'PRAGMA integrity_check;')" = ok
