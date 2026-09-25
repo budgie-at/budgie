@@ -414,7 +414,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         (...[, ids, tx]) => `done transactionCount=${ids.length} inTx=${String(isDefined(tx))}`,
         (error, ids, tx) => `throw transactionCount=${ids.length} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
-    async touchUpdatedAtByIds(ids: number[], tx?: DB): Promise<void> {
+    async touchAndMarkForEmbeddingByIds(ids: number[], tx?: DB): Promise<void> {
         if (isEmptyArray(ids)) {
             return;
         }
@@ -429,7 +429,13 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
         await chunks.reduce<Promise<void>>(async (previousChunkPromise, chunk) => {
             await previousChunkPromise;
-            await runner.update(TransactionEntityTable).set({ updatedAt: new Date() }).where(inArray(TransactionEntityTable.id, chunk));
+            await runner
+                .update(TransactionEntityTable)
+                .set({
+                    updatedAt: new Date(),
+                    needsEmbedding: sql`CASE WHEN ${isNull(TransactionEntityTable.deletedAt)} AND ${notInArray(TransactionEntityTable.type, TransactionRepository.NON_INDEXABLE_EMBEDDING_TYPES)} THEN 1 ELSE ${TransactionEntityTable.needsEmbedding} END`
+                })
+                .where(inArray(TransactionEntityTable.id, chunk));
         }, Promise.resolve());
     }
 

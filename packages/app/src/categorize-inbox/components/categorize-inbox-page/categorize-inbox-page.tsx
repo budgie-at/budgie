@@ -42,7 +42,7 @@ export const CategorizeInboxPage = ({ params }: Props) => {
 
     const handleGoBack = (): void => void router.back();
     const handleShowList = (): void =>
-        void router.replace({
+        void router.push({
             pathname: '/analytics/transactions',
             params: buildUncategorizedRouteParams(filters, AnalyticsTransactionsModeEnum.UNCATEGORIZED)
         });
@@ -57,14 +57,18 @@ export const CategorizeInboxPage = ({ params }: Props) => {
     const footer =
         isDefined(contextValue.undoAssignments) || isNotEmptyArray(acceptableAssignments) ? (
             <StickyFooterBand>
-                <View className="gap-y-md px-5xl pb-md">
-                    {isDefined(contextValue.undoAssignments) ? (
-                        <CategorizeInboxUndoBar
-                            key={contextValue.undoAssignments[0].clusterKey}
-                            assignments={contextValue.undoAssignments}
-                        />
-                    ) : null}
-                    {isNotEmptyArray(acceptableAssignments) ? <CategorizeInboxAcceptAllButton assignments={acceptableAssignments} /> : null}
+                <View className="bg-primary-reverse pt-lg">
+                    <View className="gap-y-md px-5xl pb-md">
+                        {isDefined(contextValue.undoAssignments) ? (
+                            <CategorizeInboxUndoBar
+                                key={contextValue.undoAssignments[0].clusterKey}
+                                assignments={contextValue.undoAssignments}
+                            />
+                        ) : null}
+                        {isNotEmptyArray(acceptableAssignments) ? (
+                            <CategorizeInboxAcceptAllButton assignments={acceptableAssignments} />
+                        ) : null}
+                    </View>
                 </View>
             </StickyFooterBand>
         ) : null;

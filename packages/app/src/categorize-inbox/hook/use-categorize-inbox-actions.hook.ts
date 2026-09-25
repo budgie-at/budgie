@@ -93,13 +93,14 @@ export const useCategorizeInboxActions = (inbox: CategorizeInboxInterface): Cate
         void setExpandedClusterKey(previous => (previous === clusterKey ? null : clusterKey));
 
     const categorizedCount = initialRowCount - remainingCount;
+    const sessionRowCount = categorizedCount + remainingCount;
 
     return {
         items,
         acceptableAssignments,
         remainingCount,
         categorizedCount,
-        progress: isPositiveNumber(initialRowCount) ? (categorizedCount / initialRowCount) * PERCENT_MULTIPLIER : 0,
+        progress: isPositiveNumber(sessionRowCount) ? (categorizedCount / sessionRowCount) * PERCENT_MULTIPLIER : 0,
         contextValue: {
             categoriesById: new Map(categories.map(category => [category.id, category])),
             excludedTransactionIds,

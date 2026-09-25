@@ -17,7 +17,7 @@ interface Props {
 }
 
 const ESTIMATED_ITEM_SIZE = 112;
-const DOCK_CLEARANCE = 160;
+const DOCK_CLEARANCE = 176;
 
 export const CategorizeInboxList = ({ items }: Props) => {
     const { bottom } = useSafeAreaInsets();
