@@ -1,73 +1,14 @@
 appId: ${APP_ID}
-env:
-  ACCOUNT_NAME: Rules Test Account
-  FIRST_RULE_MATCH: E2E Pill Navigation
-  SECOND_RULE_MATCH: Pill Navigation
-  TAG_NAME: Rules Test Tag
-  TRANSACTION_CATEGORY_NAME: Rules Test Category
 ---
 - runFlow:
-    file: setup/setup-rules-test.flow.yaml
-
-- runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
-
-- runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RuleForm.SelectorCard.COMMENT'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- inputText: ${FIRST_RULE_MATCH}
-- tapOn: Done
-
-- tapOn:
-    id: 'RuleForm.Action.0.TypeSelector'
-- tapOn:
-    id: 'RuleForm.SelectorCard.SET_CATEGORY'
-- waitForAnimationToEnd
-
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.CategorySelector'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'RuleForm.Action.0.CategorySelector'
-- runFlow:
-    file: subflows/shared/select-category-by-search.flow.yaml
+    file: subflows/import/import-database-from-settings.flow.yaml
     env:
-      CATEGORY_NAME: Groceries
-
-- tapOn:
-    id: 'RuleForm.Footer.SubmitButton'
-- extendedWaitUntil:
-    visible:
-      id: 'RulesPage.Page'
-    timeout: 10000
-- waitForAnimationToEnd
-
-- assertVisible:
-    id: 'RulesPage.RuleCard.0'
-
-- runFlow:
-    file: subflows/transactions/create-expense.flow.yaml
-    env:
-      AMOUNT: 25
-      ACCOUNT_NAME: ${ACCOUNT_NAME}
-      CATEGORY_NAME: ${TRANSACTION_CATEGORY_NAME}
-      COMMENT: ${FIRST_RULE_MATCH}
+      FIXTURE_ROW_ID_MATCH: '34-matching-rules.db'
 
 - runFlow:
     file: subflows/navigation/open-deep-link.flow.yaml
     env:
-      DEEP_LINK: budgie://transactions/9/expense
+      DEEP_LINK: budgie://transactions/10/expense
 
 - extendedWaitUntil:
     visible:
@@ -94,51 +35,6 @@ env:
 
 - tapOn:
     id: 'PageHeader.BackButton'
-
-- runFlow:
-    file: subflows/navigate-to-rules.flow.yaml
-
-- runFlow:
-    file: subflows/rules/open-create-rule-form.flow.yaml
-
-- tapOn:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RuleForm.SelectorCard.COMMENT'
-- waitForAnimationToEnd
-- tapOn:
-    id: 'RuleForm.Condition.0.ValueInput'
-- inputText: ${SECOND_RULE_MATCH}
-- tapOn: Done
-
-- tapOn:
-    id: 'RuleForm.Action.0.TypeSelector'
-- tapOn:
-    id: 'RuleForm.SelectorCard.ADD_TAG'
-- waitForAnimationToEnd
-
-- scrollUntilVisible:
-    element:
-      id: 'RuleForm.Action.0.TagSelector'
-    direction: DOWN
-    centerElement: true
-
-- tapOn:
-    id: 'RuleForm.Action.0.TagSelector'
-- waitForAnimationToEnd
-- runFlow:
-    file: subflows/shared/select-tag-by-search.flow.yaml
-    env:
-      TAG_NAME: ${TAG_NAME}
-
-- runFlow:
-    file: subflows/rules/submit-rule-skip-existing.flow.yaml
-
-- assertVisible:
-    id: 'RulesPage.RuleCard.0'
-- assertVisible:
-    id: 'RulesPage.RuleCard.1'
 
 - runFlow:
     file: subflows/navigation/open-deep-link.flow.yaml
