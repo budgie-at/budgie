@@ -786,18 +786,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     protected override buildAccountCondition(accountIds: number[] | null) {
-        if (isNotEmptyArray(accountIds)) {
-            const condition = or(
-                inArray(TransactionEntityTable.fromAccountId, accountIds),
-                inArray(TransactionEntityTable.toAccountId, accountIds),
-                inArray(TransactionEntityTable.id, this.buildTransactionIdsByEntryAccountIdsQuery(accountIds)),
-                inArray(TransactionEntityTable.id, this.buildTransactionIdsByDebtEventAccountIdsQuery(accountIds))
-            );
-
-            return isDefined(condition) ? [condition] : [];
-        }
-
-        return [];
+        return this.buildEntryAccountCondition(accountIds);
     }
 
     private async findByIdsWithEntriesWhere(
@@ -833,26 +822,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
             or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
         );
-    }
-
-    private buildTransactionIdsByEntryAccountIdsQuery(accountIds: number[]) {
-        return this.db
-            .select({ transactionId: TransactionEntryEntityTable.transactionId })
-            .from(TransactionEntryEntityTable)
-            .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), this.buildLedgerEntryCondition()));
-    }
-
-    private buildTransactionIdsByDebtEventAccountIdsQuery(accountIds: number[]) {
-        return this.db
-            .select({ transactionId: DebtEventEntityTable.transactionId })
-            .from(DebtEventEntityTable)
-            .where(
-                and(
-                    inArray(DebtEventEntityTable.debtAccountId, accountIds),
-                    isNotNull(DebtEventEntityTable.transactionId),
-                    isNull(DebtEventEntityTable.deletedAt)
-                )
-            );
     }
 
     private buildSimilarStatsSql(query: SimilarTransactionStatsQueryInterface): string {
