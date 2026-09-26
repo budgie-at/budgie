@@ -2463,6 +2463,10 @@ msgstr "Un graphique de prix dans votre propre base de données — carte de pri
 msgid "A project that ignores security issues or dismisses user concerns is sending clear signals about its priorities. Conversely, a project with thoughtful, timely responses to concerns demonstrates genuine commitment to its users."
 msgstr "Un projet qui ignore les problèmes de sécurité ou rejette les préoccupations des utilisateurs envoie des signaux clairs sur ses priorités. À l'inverse, un projet offrant des réponses réfléchies et rapides aux préoccupations démontre un engagement authentique envers ses utilisateurs."
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "A re-sync window backfills recent history without touching your manual edits"
+msgstr "Une fenêtre de resynchronisation récupère l'historique récent sans toucher à vos modifications manuelles"
+
 #: src/app/[lang]/features/convert-to-refund/page.tsx
 msgid "A refund is not income"
 msgstr "Un remboursement n'est pas un revenu"
@@ -3122,6 +3126,7 @@ msgstr ""
 msgid "Another subscription to manage"
 msgstr "Encore un abonnement à gérer"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/csv-import/metadata.ts
 msgid "Any bank, any column order — map it on one screen or start from a built-in preset."
 msgstr "N'importe quelle banque, n'importe quel ordre de colonnes — associez-les sur un seul écran ou partez d'un préréglage intégré."
@@ -3420,6 +3425,10 @@ msgstr "La détection automatique analyse l’historique des transactions pour t
 msgid "Automated alerts and notifications"
 msgstr "Alertes et notifications automatisées"
 
+#: src/app/[lang]/bank-sync/metadata.ts
+msgid "automatic bank sync"
+msgstr "synchronisation bancaire automatique"
+
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Automatic evaluation runs on Monobank sync, bank file sync, and CSV import. For everything else, saving or editing a rule re-applies it across your existing transactions, which covers manual entries too."
 msgstr "L'évaluation automatique se déclenche à la synchronisation Monobank, à la synchronisation de fichiers bancaires et à l'import CSV. Pour tout le reste, enregistrer ou modifier une règle la réapplique à vos transactions existantes, y compris les saisies manuelles."
@@ -3552,6 +3561,7 @@ msgstr "Exigences de connexion bancaire"
 msgid "Bank Connections"
 msgstr "Connexions bancaires"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/bank-integration-management/metadata.ts
 #: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
 #: src/app/[lang]/features/bank-integration-management/page.tsx
@@ -3613,6 +3623,10 @@ msgstr "Fenêtre de re-synchronisation bancaire — Combler les transactions man
 msgid "bank statement"
 msgstr "relevé bancaire"
 
+#: src/app/[lang]/bank-sync/metadata.ts
+msgid "bank statement import app"
+msgstr "application d'import de relevés bancaires"
+
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
@@ -3631,9 +3645,22 @@ msgstr "Synchronisation bancaire"
 msgid "Bank Sync"
 msgstr "Synchro bancaire"
 
+#: src/app/[lang]/bank-sync/metadata.ts
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Bank Sync & Statement Import — Bring Your Bank Data In"
+msgstr "Synchronisation bancaire et import de relevés — Intégrez vos données bancaires"
+
+#: src/app/[lang]/bank-sync/metadata.ts
+msgid "Bank Sync & Statement Import — Budgie"
+msgstr "Synchronisation bancaire et import de relevés — Budgie"
+
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Bank sync available"
 msgstr "Synchronisation bancaire disponible"
+
+#: src/app/[lang]/bank-sync/metadata.ts
+msgid "bank sync budget app"
+msgstr "application budget avec synchronisation bancaire"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Bank sync can be unreliable"
@@ -3891,6 +3918,7 @@ msgstr "synchronisation binance"
 msgid "Binance Sync"
 msgstr "Synchronisation Binance"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/binance-sync/metadata.ts
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 #: src/app/[lang]/features/binance-sync/page.tsx
@@ -4224,6 +4252,7 @@ msgstr "Écran Connecter Monobank de Budgie avec la ligne Obtenir le jeton API e
 msgid "Budgie consolidates obvious transfers and merchant refunds automatically, and leaves anything ambiguous exactly as it imported it."
 msgstr "Budgie consolide automatiquement les virements évidents et les remboursements de commerçants, et laisse tout ce qui est ambigu exactement tel qu'il a été importé."
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/transfer-pair-detection/metadata.ts
 msgid "Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review."
 msgstr "Budgie consolide automatiquement les virements et remboursements marchands évidents, puis laisse les correspondances ambiguës à vérifier."
@@ -5357,6 +5386,10 @@ msgstr "Puis-je annuler un virement ?"
 msgid "Can I undo the conversion?"
 msgstr "Puis-je annuler la conversion ?"
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Can I use bank sync and CSV import together?"
+msgstr "Puis-je utiliser la synchronisation bancaire et l'import CSV ensemble ?"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Can I use multiple Monobank accounts?"
 msgstr "Puis-je utiliser plusieurs comptes Monobank ?"
@@ -5413,6 +5446,7 @@ msgstr "Les paiements par carte d'un commerce inconnu atterrissent quand même d
 msgid "Cards and jars arrive"
 msgstr "Les cartes et les cagnottes arrivent"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/bank-integration-management/metadata.ts
 #: src/app/[lang]/features/bank-integration-management/opengraph-image.tsx
 msgid "Cards, jars, and deposits share a single connection, so a token change is a one-time job."
@@ -5676,6 +5710,7 @@ msgstr "Le choix d'une application de budget est personnel. Le \"meilleur\" choi
 msgid "Choosing a Mint replacement isn’t just about features. It’s about values. Ask yourself:"
 msgstr "Choisir un remplacement pour Mint n'est pas qu'une question de fonctionnalités. C'est une question de valeurs. Demandez-vous :"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/metadata.ts
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Classic and modern PDF formats — full statement import in seconds."
@@ -6034,13 +6069,25 @@ msgstr "Confirmez pour ajouter les transactions à vos comptes"
 msgid "Conflict-Free Replicated Data Types (CRDTs)"
 msgstr "Types de données répliquées sans conflit (CRDTs)"
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Connect a supported bank for automatic sync, or bring in statements from PDF, XLSX, or CSV. Budgie catches duplicate imports, pairs up transfers on its own, and lets you fix a bad sync without starting over."
+msgstr "Connectez une banque compatible pour une synchronisation automatique, ou importez des relevés en PDF, XLSX ou CSV. Budgie détecte les importations en double, associe les virements tout seul et vous permet de corriger une synchronisation ratée sans tout recommencer."
+
 #: src/app/[lang]/features/binance-sync/metadata.ts
 msgid "Connect Binance with a read-only API key. Spot, Funding, and Simple Earn balances, P2P orders, trades, Convert, and Earn rewards sync to your device, and P2P buys merge with the matching bank payment."
 msgstr "Connectez Binance avec une clé API en lecture seule. Les soldes Spot, Funding et Simple Earn, les ordres P2P, les trades, Convert et les récompenses Earn se synchronisent sur votre appareil, et les achats P2P fusionnent avec le paiement bancaire correspondant."
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Connect Monobank once and new transactions, jars, and FX rates arrive on their own"
+msgstr "Connectez Monobank une fois, et les nouvelles transactions, jars et taux de change arrivent tout seuls"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Connect the bank once"
 msgstr "Connectez la banque une fois"
+
+#: src/app/[lang]/bank-sync/metadata.ts
+msgid "Connect your bank for automatic sync, or import statements from PDF, XLSX, or CSV. Budgie catches duplicate imports, matches transfers automatically, and lets you fix a bad sync without starting over."
+msgstr "Connectez votre banque pour une synchronisation automatique, ou importez des relevés en PDF, XLSX ou CSV. Budgie détecte les importations en double, associe les virements automatiquement et vous permet de corriger une synchronisation ratée sans tout recommencer."
 
 #: src/app/[lang]/features/monobank-sync/metadata.ts
 msgid "Connect your Monobank account with a personal API token. Cards and jars, full transaction history, FX rates, and counter-IBANs sync straight to your device — no Plaid."
@@ -6424,6 +6471,11 @@ msgstr ""
 msgid "CSV and PDF Import"
 msgstr "Import CSV et PDF"
 
+#: src/app/[lang]/bank-sync/metadata.ts
+msgid "CSV bank import"
+msgstr "import bancaire CSV"
+
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/csv-import/metadata.ts
 #: src/app/[lang]/features/csv-import/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
@@ -6868,6 +6920,7 @@ msgstr "Jetons API directs ou PDF/CSV"
 msgid "Direct API Tokens vs Aggregator OAuth"
 msgstr "Jetons API directs vs OAuth d'agrégateur"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/monobank-sync/metadata.ts
 msgid "Direct API. No aggregator. Full transaction history to your device."
 msgstr "API directe. Aucun agrégateur. Historique complet des transactions sur votre appareil."
@@ -6960,6 +7013,10 @@ msgstr "Dois-je créer un compte pour utiliser Budgie ?"
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Do I need to do anything to get these changes?"
 msgstr "Dois-je faire quelque chose pour obtenir ces changements ?"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Do I need to give Budgie my bank login?"
+msgstr "Dois-je donner à Budgie mes identifiants bancaires ?"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Do I need to turn on On-device AI?"
@@ -7208,6 +7265,10 @@ msgstr "Explorez depuis n'importe quelle ligne d'étiquette vers ses transaction
 msgid "drill-down"
 msgstr "exploration détaillée"
 
+#: src/app/[lang]/bank-sync/metadata.ts
+msgid "duplicate transaction cleanup"
+msgstr "nettoyage des transactions en double"
+
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
 msgid "duplicates"
 msgstr "doublons"
@@ -7435,6 +7496,7 @@ msgstr "Erste Bank"
 msgid "Erste Bank does not expose a public API for personal accounts. PDF statements are the only export. Budgie ships a parser tuned to the exact Erste statement layout — both the classic and the new 2026 modern format."
 msgstr "Erste Bank n'expose pas d'API publique pour les comptes personnels. Les relevés PDF sont le seul export. Budgie intègre un parseur adapté au format exact des relevés Erste Bank — à la fois le format classique et le nouveau format moderne 2026."
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/metadata.ts
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
@@ -8072,6 +8134,10 @@ msgstr "Trouvez les transactions non catégorisées avant qu'elles faussent votr
 msgid "Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows — manual entries are never touched."
 msgstr "Trouve les imports en double et associe les virements entre vos propres cartes arrivés sous forme de deux lignes séparées — les saisies manuelles ne sont jamais concernées."
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Finds duplicate imports and pairs your own-card transfers that arrived as two separate rows."
+msgstr "Détecte les importations en double et associe les virements entre vos propres cartes arrivés en deux lignes distinctes."
+
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Finishing bank-sync setup returns you to onboarding instead of leaving you stranded on the sync screen."
 msgstr "La fin de la configuration de la synchronisation bancaire vous ramène à l'accueil guidé au lieu de vous laisser bloqué sur l'écran de synchronisation."
@@ -8641,6 +8707,7 @@ msgid "Holdings roll up into net worth alongside fiat accounts"
 msgstr "Les positions se consolident dans le patrimoine net aux côtés des comptes fiat"
 
 #: src/app/[lang]/ai-features/page.tsx
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
@@ -10528,6 +10595,10 @@ msgstr "monobank"
 msgid "Monobank"
 msgstr "Monobank"
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Monobank and Binance connect with a personal API key for live, automatic sync. Erste and PrivatBank statements import directly from PDF or XLSX, and any other bank works through flexible CSV import with column mapping or a built-in preset."
+msgstr "Monobank et Binance se connectent avec une clé API personnelle pour une synchronisation automatique en direct. Les relevés Erste et PrivatBank s'importent directement depuis un PDF ou un XLSX, et toute autre banque fonctionne via l'import CSV flexible avec mappage de colonnes ou un modèle intégré."
+
 #: src/app/[lang]/features/monobank-sync/metadata.ts
 msgid "Monobank Auto-Sync — Budgie"
 msgstr "Synchronisation automatique Monobank — Budgie"
@@ -10548,6 +10619,7 @@ msgstr "Les cartes et cagnottes Monobank arrivent via votre propre jeton, direct
 msgid "Monobank connections can add more accounts later without re-entering the token, with the ones you already have filtered out"
 msgstr "Les connexions Monobank peuvent ajouter d’autres comptes plus tard sans ressaisir le jeton, en filtrant ceux que vous avez déjà"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/monobank-sync/metadata.ts
 msgid "Monobank Expense Tracker — Direct API Sync, No Plaid"
 msgstr "Traqueur de dépenses Monobank — Synchronisation directe via API, sans Plaid"
@@ -11038,6 +11110,10 @@ msgstr "Aucune limite. Ajoutez autant de lignes de division que nécessaire ; l
 msgid "No limit. Layer as many as you need; one of them can be promoted to “primary” so it stands out as a highlighted pill on the transaction list."
 msgstr "Aucune limite. Ajoutez-en autant que nécessaire ; l'une d'elles peut être promue « principale » pour se démarquer sous forme de pastille mise en évidence dans la liste des transactions."
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "No live connection? Import statements from Erste PDF, PrivatBank XLSX, or any bank's CSV"
+msgstr "Pas de connexion en direct ? Importez des relevés depuis un PDF Erste, un XLSX PrivatBank ou le CSV de n'importe quelle banque"
+
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "No lock icons, no tiers"
 msgstr "Aucun cadenas, aucun palier"
@@ -11226,6 +11302,10 @@ msgstr "Non. Les dettes existantes migrent automatiquement dès la première ouv
 msgid "No. Exports are manual only — Budgie never writes a backup file on its own, and there is no scheduler and no reminder to turn on. Nothing is written until you tap Export Database."
 msgstr "Non. Les exports sont uniquement manuels : Budgie n'écrit jamais de fichier de sauvegarde de lui-même, et il n'existe ni planificateur ni rappel à activer. Rien n'est écrit tant que vous ne touchez pas « Exporter la base de données »."
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "No. Live sync uses a personal API key you generate yourself, scoped to reading your data, never your account password. Statement imports need no credentials at all — you just pick the exported file."
+msgstr "Non. La synchronisation en direct utilise une clé API personnelle que vous générez vous-même, limitée à la lecture de vos données, jamais le mot de passe de votre compte. Les imports de relevés ne nécessitent aucun identifiant : vous choisissez simplement le fichier exporté."
+
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "No. PDF parsing happens entirely on-device — your statement never leaves your phone."
 msgstr "Non. L’analyse du PDF se fait entièrement sur l’appareil — votre relevé ne quitte jamais votre téléphone."
@@ -11410,6 +11490,10 @@ msgstr "Rien n’arrive à vos données, car Budgie ne les possède pas. Tout es
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Nothing is applied until you accept it, and every accept or edit counts immediately. There is no re-training step and no model update to wait for: the next similar transaction simply lands closer. The longer you use Budgie, the more its suggestions look like your own habits."
 msgstr "Rien n'est appliqué tant que vous ne l'acceptez pas, et chaque acceptation ou modification compte immédiatement. Il n'y a aucune étape de réentraînement ni de mise à jour de modèle à attendre : la prochaine transaction similaire se rapproche tout simplement. Plus vous utilisez Budgie longtemps, plus ses suggestions ressemblent à vos propres habitudes."
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Nothing is lost. Each connection commits what it fetched to your local database as it completes, and every row carries a source id, so the next sync picks up where it left off without creating duplicates."
+msgstr "Rien n'est perdu. Chaque connexion enregistre ce qu'elle a récupéré dans votre base de données locale dès que c'est terminé, et chaque ligne porte un identifiant source, si bien que la synchronisation suivante reprend là où elle s'est arrêtée sans créer de doublons."
 
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "Nothing is written until you tap Save — the whole batch commits in one database transaction, so you never end up with half a sentence logged"
@@ -12045,6 +12129,7 @@ msgstr "Remplissage du formulaire en un geste — catégorie, tags, commentaire 
 msgid "One-time import per card or account — not a live sync, so re-run it whenever you want fresh data"
 msgstr "Import ponctuel par carte ou par compte — pas de synchronisation en direct, relancez-le donc dès que vous voulez des données à jour"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/privatbank-import/metadata.ts
 msgid "One-time import, MCC-mapped — long-press an account card to jump to the picker."
 msgstr "Import ponctuel, avec correspondance MCC — appuyez longuement sur une carte de compte pour accéder au sélecteur de fichiers."
@@ -12922,6 +13007,7 @@ msgstr "PrivatBank exporte en XLSX avec un schéma fixe et des étiquettes MCC p
 msgid "PrivatBank Import"
 msgstr "Import PrivatBank"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/privatbank-import/metadata.ts
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "PrivatBank XLSX Import"
@@ -13087,6 +13173,7 @@ msgstr "Récupérer une tranche, pas tout"
 msgid "Re-pull a slice. Keep your edits."
 msgstr "Récupérez une tranche. Conservez vos modifications."
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/bank-resync-window/metadata.ts
 msgid "Re-pull a slice. Keep your edits. No nuke-from-orbit."
 msgstr "Resynchronisez une période sans perdre vos modifications."
@@ -13158,6 +13245,10 @@ msgstr "Des clés API en lecture seule signées sur votre appareil. Aucune garde
 #: src/app/[lang]/features/offline-first-expense-tracker/page.tsx
 msgid "Read-only at best"
 msgstr "Lecture seule au mieux"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Read-only Binance sync brings crypto balances into the same view — no trading, no withdrawals"
+msgstr "La synchronisation Binance en lecture seule affiche vos soldes crypto dans la même vue — pas de trading, pas de retraits"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Read-only or nothing"
@@ -14139,6 +14230,7 @@ msgstr "Suggestions de dépenses intelligentes pour mobile — Budgie"
 msgid "Smart Transaction Suggestions — Tap and Done"
 msgstr "Suggestions de transactions intelligentes — Touchez et c'est fait"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/transfer-pair-detection/metadata.ts
 msgid "Smart Transfer and Refund Consolidation"
 msgstr "Consolidation intelligente des virements et remboursements"
@@ -14376,6 +14468,7 @@ msgstr "Repérez la fuite lente avant qu'elle ne facture."
 msgid "Spot trades and Convert land as transfers between two of your asset accounts, not as fake income"
 msgstr "Les trades Spot et Convert arrivent comme des transferts entre deux de vos comptes d'actifs, pas comme un faux revenu"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/binance-sync/metadata.ts
 #: src/app/[lang]/features/binance-sync/opengraph-image.tsx
 msgid "Spot, Funding, and Simple Earn balances plus P2P, trades, and rewards — signed with a read-only API key."
@@ -14641,6 +14734,7 @@ msgstr "Passer à l'import CSV de Budgie élimine totalement l'agrégateur. Tél
 msgid "sync"
 msgstr "synchronisation"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/sync-data-repairs/metadata.ts
 #: src/app/[lang]/features/sync-data-repairs/opengraph-image.tsx
 msgid "Sync Data Repairs"
@@ -14669,6 +14763,10 @@ msgstr "Intervalle de synchronisation"
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Sync method"
 msgstr "Méthode de synchronisation"
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Sync repairs find duplicate imports and pair your own-card transfers automatically"
+msgstr "Les réparations de synchronisation détectent les importations en double et associent automatiquement les virements entre vos propres cartes"
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Sync the account the money left and the account it landed in, and each one imports its own leg — an expense on one side, an income on the other. Left alone, one movement lands in your ledger twice."
@@ -17105,6 +17203,10 @@ msgstr "Que se passe-t-il lors d'un virement en devises étrangères ?"
 msgid "What happens if a historical rate is missing?"
 msgstr ""
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "What happens if a sync fails partway through?"
+msgstr "Que se passe-t-il si une synchronisation échoue en cours de route ?"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "What happens if I close one of the accounts?"
 msgstr "Que se passe-t-il si je ferme l'un des comptes ?"
@@ -17752,6 +17854,10 @@ msgstr "Quels actifs puis-je suivre ?"
 msgid "Which balances are included?"
 msgstr "Quels soldes sont inclus ?"
 
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Which banks does Budgie support?"
+msgstr "Quelles banques Budgie prend-il en charge ?"
+
 #: src/app/[lang]/features/no-bank-login-budget-app/page.tsx
 msgid "Which banks have direct API support?"
 msgstr "Quelles banques bénéficient d'un support API direct ?"
@@ -18165,6 +18271,7 @@ msgstr "Le parseur détectera-t-il correctement mon IBAN ?"
 msgid "Will this slow down my transaction list?"
 msgstr "Cela ralentira-t-il ma liste de transactions ?"
 
+#: src/app/[lang]/bank-sync/page.tsx
 #: src/app/[lang]/features/bank-resync-window/metadata.ts
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Windowed Bank Re-sync"
@@ -18523,6 +18630,10 @@ msgstr "Oui. Chaque compte a une devise fixe. Les instantanés quotidiens des ta
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Yes. Each account has an “Include in net worth” toggle so you can keep, say, a business escrow account separate from your personal balance sheet."
 msgstr "Oui. Chaque compte dispose d'un bouton « Inclure dans le patrimoine net » afin que vous puissiez garder, par exemple, un compte séquestre professionnel séparé de votre bilan personnel."
+
+#: src/app/[lang]/bank-sync/page.tsx
+msgid "Yes. Each account picks the method that fits its bank — live sync, a one-time statement import, or manual entry — and they all sit side by side in the same budget. Sync data repairs and transfer detection run across every account regardless of how its transactions arrived."
+msgstr "Oui. Chaque compte choisit la méthode adaptée à sa banque — synchronisation en direct, import ponctuel de relevé ou saisie manuelle — et ils coexistent tous dans le même budget. Les réparations de synchronisation et la détection des virements s'appliquent à tous les comptes, quelle que soit la façon dont leurs transactions sont arrivées."
 
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "Yes. Each consolidation run rescans recent entries against existing ones, so transfers and refunds can match retroactively when enough matching info arrives."
