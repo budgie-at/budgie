@@ -18,18 +18,22 @@ export const FEATURE_METADATA = {
         'long-press transaction menu',
         'context menu expense tracker',
         'transaction quick actions',
-        'gesture-driven budget app'
+        'gesture-driven budget app',
+        'convert expense to transfer',
+        'convert income to refund',
+        'partial refund tracker',
+        'reclassify transaction app'
     ],
     relatedFeatureSlugs: [
         'expense-tracking',
-        'convert-to-transfer',
-        'convert-to-refund',
+        'account-transfers',
+        'transfer-pair-detection',
         'split-transactions',
         'transaction-tags',
         'ai-transaction-suggestions'
     ],
     relatedArticleSlugs: ['budgie-offline-financial-data'],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-09-16',
+    updatedAt: '2026-09-26',
     ogTags: ['ux', 'gestures', 'productivity']
 } satisfies FeatureRegistryEntryInterface;

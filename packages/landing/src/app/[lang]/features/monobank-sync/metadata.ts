@@ -16,7 +16,7 @@ export const FEATURE_METADATA = {
     seoKeywords: ['monobank sync', 'monobank api', 'monobank expense tracker', 'monobank jar tracking', 'monobank budget app'],
     relatedFeatureSlugs: [
         'sync-data-repairs',
-        'offline-first-expense-tracker',
+        'expense-tracking',
         'bank-integration-management',
         'binance-sync',
         'bank-resync-window',
