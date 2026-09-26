@@ -28,7 +28,6 @@ appId: ${APP_ID}
       file: subflows/import/import-privatbank-xlsx-from-picker.flow.yaml
       env:
           XLSX_ROW_ID_MATCH: 'privatbank-statement-001, xlsx'
-          FILE_PICKER_SEARCH_TEXT: 'privatbank-statement-001'
 
 - scrollUntilVisible:
       element:
@@ -120,7 +119,6 @@ appId: ${APP_ID}
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
           FILE_ROW_ID_MATCH: 'privatbank-statement-002, xlsx'
-          FILE_PICKER_SEARCH_TEXT: 'privatbank-statement-002'
           FILE_PICKER_INITIAL_SCROLL_SHIFT: 'DOWN'
 
 - extendedWaitUntil:
@@ -198,7 +196,6 @@ appId: ${APP_ID}
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
           FILE_ROW_ID_MATCH: 'privatbank-statement-002, xlsx'
-          FILE_PICKER_SEARCH_TEXT: 'privatbank-statement-002'
           FILE_PICKER_INITIAL_SCROLL_SHIFT: 'DOWN'
 
 - extendedWaitUntil:

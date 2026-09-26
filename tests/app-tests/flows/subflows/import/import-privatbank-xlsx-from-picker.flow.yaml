@@ -1,7 +1,6 @@
 appId: ${APP_ID}
 env:
     XLSX_ROW_ID_MATCH: ${XLSX_ROW_ID_MATCH}
-    FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT || ''}
 ---
 - extendedWaitUntil:
       visible:
@@ -16,7 +15,6 @@ env:
       file: select-file-from-app-provider.flow.yaml
       env:
           FILE_ROW_ID_MATCH: ${XLSX_ROW_ID_MATCH}
-          FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT}
 
 - extendedWaitUntil:
       visible:
