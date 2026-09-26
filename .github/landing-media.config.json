@@ -320,8 +320,8 @@
             "flow": "flows/media/uncategorized-transactions-2.flow.yaml"
         },
         {
-            "name": "uncategorized-transactions-3",
-            "flow": "flows/media/uncategorized-transactions-3.flow.yaml"
+            "name": "bulk-categorize-transactions-1",
+            "flow": "flows/media/bulk-categorize-transactions-1.flow.yaml"
         },
         {
             "name": "convert-to-refund-1",
