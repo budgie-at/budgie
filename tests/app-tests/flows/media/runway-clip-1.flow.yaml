@@ -1,0 +1,36 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'RunwayPill'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: poster
+
+- startRecording: clip
+
+- waitForAnimationToEnd
+
+- tapOn:
+      id: 'RunwayPill'
+
+- extendedWaitUntil:
+      visible:
+          id: '^RunwayVerdict[.]Figure[.].+$'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- swipe:
+      direction: UP
+
+- waitForAnimationToEnd
+
+- stopRecording
