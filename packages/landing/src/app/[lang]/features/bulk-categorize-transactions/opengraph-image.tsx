@@ -17,7 +17,7 @@ const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         t(i18n)`Bulk Categorize Transactions`,
         t(i18n)`Group by merchant. One tap per group.`,
         [t(i18n)`bulk`, t(i18n)`merchants`, t(i18n)`on-device`],
-        resolveOgPlate('uncategorized-transactions', lang)
+        resolveOgPlate('bulk-categorize-transactions', lang)
     );
 };
 
