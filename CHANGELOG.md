@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.83.0](https://github.com/budgie-at/budgie/compare/v6.82.2...v6.83.0) (2026-09-26)
+
+
+### Bug Fixes
+
+* **landing:** correct runway translation wording in de, fr, and uk ([22f648f](https://github.com/budgie-at/budgie/commit/22f648fcef4f00a29b06416be234045bf45a100f))
+
+
+### Features
+
+* **landing:** add the runway feature page ([e0307c9](https://github.com/budgie-at/budgie/commit/e0307c9ff381780fc31d89428563ffcf53955836))
+
+
+
+
+
 ## [6.82.2](https://github.com/budgie-at/budgie/compare/v6.82.1...v6.82.2) (2026-09-26)
 
 
