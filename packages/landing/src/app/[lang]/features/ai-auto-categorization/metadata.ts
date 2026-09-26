@@ -27,6 +27,7 @@ export const FEATURE_METADATA = {
         'categorization-rules',
         'custom-categories',
         'uncategorized-transactions',
+        'bulk-categorize-transactions',
         'recurring-payments-calendar'
     ],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app', 'on-device-ai-budget-app-explainer'],

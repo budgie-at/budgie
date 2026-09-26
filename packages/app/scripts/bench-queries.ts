@@ -119,6 +119,35 @@ const BENCHES: readonly BenchInterface[] = [
               LIMIT 15`
     },
     {
+        name: 'categorize_inbox_rows',
+        sql: `SELECT t.id AS transactionId, t.type, t.title, t.comment, t.operated_at,
+                     te.account_id, te.amount, te.base_amount, te.base_instrument_id, te.to_iban, te.mcc_category_id,
+                     a.instrument_id, i.symbol, mcc.mcc, mcc.full_description
+              FROM transaction_entries te
+              INNER JOIN transactions t ON t.id = te.transaction_id
+              INNER JOIN accounts a ON a.id = te.account_id
+              INNER JOIN instruments i ON i.id = a.instrument_id
+              LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+              WHERE te.category_id IS NULL AND te.deleted_at IS NULL AND te.original_transaction_id IS NULL
+                AND te.kind = 'PRIMARY' AND te.type != 'FEE'
+                AND t.type IN ('EXPENSE', 'INCOME')
+                AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL
+              ORDER BY t.operated_at DESC`
+    },
+    {
+        name: 'categorize_inbox_evidence',
+        sql: `SELECT t.title, t.type, te.mcc_category_id AS mccCategoryId, te.category_id AS categoryId,
+                     COUNT(*) AS count
+              FROM transaction_entries te
+              JOIN transactions t ON t.id = te.transaction_id
+              JOIN categories c ON c.id = te.category_id
+              WHERE te.category_id IS NOT NULL AND te.deleted_at IS NULL AND te.original_transaction_id IS NULL
+                AND te.kind = 'PRIMARY' AND te.type != 'FEE' AND te.category_source != 'MCC_DEFAULT'
+                AND t.deleted_at IS NULL AND t.consolidation_parent_transaction_id IS NULL AND t.type IN ('EXPENSE','INCOME')
+                AND c.is_system_category = 0 AND c.deleted_at IS NULL
+              GROUP BY t.title, t.type, te.mcc_category_id, te.category_id`
+    },
+    {
         name: 'category_search_prefix',
         sql: `SELECT c.* FROM categories c
               LEFT JOIN transaction_entries te ON te.category_id = c.id

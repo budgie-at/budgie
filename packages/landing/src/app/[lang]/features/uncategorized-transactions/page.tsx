@@ -1,6 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import Link from 'next/link';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
@@ -106,7 +107,8 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
 
                 <FeatureStory.Step index={1} title={<Trans>Tap it for a focused list</Trans>}>
                     <Trans>
-                        The Missing categories screen opens with only those rows, carrying your account, date, type and tag filters across.
+                        The pill opens the Categorize inbox, and the list button in its header shows only those rows, carrying your account,
+                        date, type and tag filters across.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -154,6 +156,18 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     <Trans>
                         Budgie turns that cleanup into a visible workflow. When the current filter contains uncategorized transactions, a
                         compact missing-category pill appears above the list with the exact count.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        Tapping the pill opens the Categorize inbox, which groups those transactions by merchant so you can{' '}
+                        <Link
+                            className="font-semibold underline underline-offset-4"
+                            href={`/${lang}/features/bulk-categorize-transactions`}
+                        >
+                            categorize them in bulk
+                        </Link>{' '}
+                        with suggestions learned from your own past choices.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -210,8 +224,9 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     question={<Trans>Can AI categorize the missing transactions?</Trans>}
                     answer={
                         <Trans>
-                            Yes. You can still use Budgie&apos;s on-device AI category suggestions, MCC mapping, or manual categories. The
-                            missing-category page simply finds the gaps so you know what to fix.
+                            Yes. The pill opens the Categorize inbox, which suggests a category for each merchant group from your own
+                            history and can accept every confident suggestion at once. On-device AI suggestions, MCC mapping and manual
+                            categories keep working alongside it.
                         </Trans>
                     }
                 />

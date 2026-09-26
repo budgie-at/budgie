@@ -129,6 +129,17 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         }
                         title={<Trans>MCC Auto-Categorization</Trans>}
                     />
+                    <PillarHubFeatureGrid.Item
+                        href={`/${lang}/features/bulk-categorize-transactions`}
+                        index={6}
+                        tagline={
+                            <Trans>
+                                Uncategorized transactions grouped by merchant, with suggestions from your own history. No AI download
+                                needed.
+                            </Trans>
+                        }
+                        title={<Trans>Bulk Transaction Categorization</Trans>}
+                    />
                 </PillarHubFeatureGrid>
             </PillarHubSection>
 

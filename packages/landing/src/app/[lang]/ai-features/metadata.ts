@@ -15,5 +15,5 @@ export const AI_FEATURES_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
         msg`offline AI finance app`
     ],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-09-16'
+    updatedAt: '2026-09-25'
 };
