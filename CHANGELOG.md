@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.82.2](https://github.com/budgie-at/budgie/compare/v6.82.1...v6.82.2) (2026-09-26)
+
+
+### Bug Fixes
+
+* **app:** swipe runway verdict flow by direction, not coordinates ([fc1bd9a](https://github.com/budgie-at/budgie/commit/fc1bd9aec8e546296ec4768be8cd67ec61e0a5d0))
+
+
+
+
+
 ## [6.82.1](https://github.com/budgie-at/budgie/compare/v6.82.0...v6.82.1) (2026-09-26)
 
 
