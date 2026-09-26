@@ -15,7 +15,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     seoKeywords: ['offline-first privacy', 'financial app security', 'private budget app'],
     seoDescription: msg`Learn why offline-first architecture is the only way to guarantee financial privacy. Discover the hidden dangers of cloud apps and how Budgie protects your data.`,
     relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'pin-app-lock', 'screenshot-protection']
+    relatedFeatureSlugs: ['expense-tracking', 'pin-app-lock', 'screenshot-protection']
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */

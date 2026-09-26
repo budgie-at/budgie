@@ -10,7 +10,7 @@ Budgie's source code is publicly available under a source-available license (htt
 
 ## Key Features
 
-- [Offline-First Expense Tracker](https://budgie.at/en/features/offline-first-expense-tracker): Core features run entirely on-device; no internet, no sign-up, encrypted local storage.
+- [Offline-First Expense Tracker](https://budgie.at/en/offline-first): Core features run entirely on-device; no internet, no sign-up, encrypted local storage.
 - [On-Device AI Auto-Categorization](https://budgie.at/en/features/ai-auto-categorization): A local LLM plus an on-device embedding model categorize transactions; corrections feed the local index. No cloud API.
 - [Voice Transaction Entry](https://budgie.at/en/features/voice-transaction-entry): Speak an expense; on-device speech recognition transcribes it — audio never leaves the phone.
 - [Monobank Auto-Sync](https://budgie.at/en/features/monobank-sync): Direct Monobank API via your personal token — no Plaid, no aggregator.
@@ -32,10 +32,10 @@ Budgie's source code is publicly available under a source-available license (htt
 
 ## Comparisons
 
-- [Private Budget App Alternative](https://budgie.at/en/features/private-budget-app-alternative): Budgie vs. cloud PFM apps.
+- [Private Budget App Alternative](https://budgie.at/en/privacy): Budgie vs. cloud PFM apps.
 - [Subscription-Free Budget App](https://budgie.at/en/features/subscription-free-budget-app): Free core + optional one-time unlock vs. monthly subscriptions.
-- [Budget App Without Bank Login](https://budgie.at/en/features/no-bank-login-budget-app): Direct API tokens and PDF/CSV import instead of aggregators.
-- [On-Device AI Budget App](https://budgie.at/en/features/on-device-ai-budget-app): Local inference vs. cloud AI assistants.
+- [Budget App Without Bank Login](https://budgie.at/en/privacy): Direct API tokens and PDF/CSV import instead of aggregators.
+- [On-Device AI Budget App](https://budgie.at/en/ai-features): Local inference vs. cloud AI assistants.
 
 ## Blog
 

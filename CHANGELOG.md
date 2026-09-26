@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.81.0](https://github.com/budgie-at/budgie/compare/v6.80.0...v6.81.0) (2026-09-26)
+
+
+### Bug Fixes
+
+* **landing:** correct AI download, offline, and OAuth copy accuracy ([4c510a9](https://github.com/budgie-at/budgie/commit/4c510a96a576150d00d5f59ce44f7ec52f5d8dae))
+
+
+### Features
+
+* **landing:** merge overlapping feature pages into their hubs ([f2067f0](https://github.com/budgie-at/budgie/commit/f2067f0e7120ab709544cbe87a02d185e0cd0a66)), closes [#1213](https://github.com/budgie-at/budgie/issues/1213)
+
+
+
+
+
 # [6.80.0](https://github.com/budgie-at/budgie/compare/v6.79.0...v6.80.0) (2026-09-26)
 
 

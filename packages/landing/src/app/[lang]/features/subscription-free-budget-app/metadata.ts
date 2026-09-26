@@ -22,7 +22,7 @@ export const FEATURE_METADATA = {
         'pay once finance app',
         'no subscription personal finance'
     ],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'monobank-sync', 'spending-analytics', 'open-source-budget-app-mobile'],
+    relatedFeatureSlugs: ['expense-tracking', 'monobank-sync', 'spending-analytics', 'self-hosted-finance-app-mobile'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-05-07',

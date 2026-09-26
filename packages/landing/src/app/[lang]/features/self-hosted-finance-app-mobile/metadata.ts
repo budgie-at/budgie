@@ -22,7 +22,7 @@ export const FEATURE_METADATA = {
         'on-device personal finance',
         'mobile-first self-hosted'
     ],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'database-backup', 'data-export', 'open-source-budget-app-mobile'],
+    relatedFeatureSlugs: ['expense-tracking', 'database-backup', 'data-export', 'subscription-free-budget-app'],
     relatedArticleSlugs: ['local-first-movement-developers', 'budgie-offline-financial-data'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-05-07',
