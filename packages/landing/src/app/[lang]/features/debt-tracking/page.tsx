@@ -275,8 +275,8 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                     question={<Trans>Does the target return date trigger a reminder?</Trans>}
                     answer={
                         <Trans>
-                            Currently it&apos;s informational — surfaced in the account detail and recurring view. Push reminders are on the
-                            roadmap.
+                            Currently it&apos;s informational — surfaced on the debt account card and in the account details view. Push
+                            reminders are on the roadmap.
                         </Trans>
                     }
                 />
