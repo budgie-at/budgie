@@ -24,7 +24,7 @@ export const CategorizeDemoRawRow = ({ index, slot, amount, children }: Props) =
     const position = { top: `${top}rem` };
 
     return (
-        <div className="cdemo-raw" data-cdemo-dy={offset.toFixed(OFFSET_PRECISION)} style={position}>
+        <div className="cdemo-raw" data-cdemo-dy={offset.toFixed(OFFSET_PRECISION)} data-slot={slot} style={position}>
             <span className="cdemo-raw-title">{children}</span>
             <span className="cdemo-amount">{amount}</span>
         </div>
