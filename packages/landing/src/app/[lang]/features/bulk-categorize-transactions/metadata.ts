@@ -23,7 +23,7 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: [
         'uncategorized-transactions',
         'categorization-rules',
-        'convert-to-transfer',
+        'transaction-long-press-menu',
         'mcc-auto-category',
         'ai-auto-categorization',
         'custom-categories'

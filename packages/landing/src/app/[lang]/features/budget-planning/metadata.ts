@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'expense-tracking',
         'multi-currency',
         'recurring-payments-calendar',
-        'offline-first-expense-tracker'
+        'database-backup'
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
     publishedAt: '2026-09-02',

@@ -15,7 +15,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     seoKeywords: ['YNAB alternatives', 'privacy budget app', 'YNAB replacement'],
     seoDescription: msg`Best YNAB alternatives for privacy-conscious users. Detailed comparison of offline-first, open-source budget apps with YNAB migration guide.`,
     relatedArticleSlugs: ['mint-alternatives-developers', 'cloud-budgeting-privacy-risks'],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'custom-categories', 'transaction-tags', 'recurring-payments-calendar']
+    relatedFeatureSlugs: ['expense-tracking', 'custom-categories', 'transaction-tags', 'recurring-payments-calendar']
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */

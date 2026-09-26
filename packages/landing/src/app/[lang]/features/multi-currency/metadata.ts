@@ -21,7 +21,6 @@ export const FEATURE_METADATA = {
         'foreign currency tracker'
     ],
     relatedFeatureSlugs: [
-        'crypto-price-history',
         'balance-adjustment',
         'account-management',
         'net-worth-tracker',
