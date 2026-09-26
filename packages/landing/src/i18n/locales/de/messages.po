@@ -6372,8 +6372,8 @@ msgid "Currency, FX, and counterparty fields all preserved"
 msgstr "Währungs-, Wechselkurs- und Gegenparteienfelder werden alle gespeichert"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Currently it's informational — surfaced in the account detail and recurring view. Push reminders are on the roadmap."
-msgstr "Aktuell dient es nur zur Information – es wird in den Kontodetails und der Wiederholungsansicht angezeigt. Push-Erinnerungen sind auf der Roadmap."
+msgid "Currently it's informational — surfaced on the debt account card and in the account details view. Push reminders are on the roadmap."
+msgstr "Aktuell dient es nur zur Information – es wird auf der Schulden-Konto-Karte und in den Kontodetails angezeigt. Push-Erinnerungen sind auf der Roadmap."
 
 #: src/app/[lang]/features/custom-categories/opengraph-image.tsx
 msgid "custom"
