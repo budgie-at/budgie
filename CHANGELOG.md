@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.82.0](https://github.com/budgie-at/budgie/compare/v6.81.0...v6.82.0) (2026-09-26)
+
+
+### Features
+
+* **landing:** add bank sync pillar hub ([73b3f92](https://github.com/budgie-at/budgie/commit/73b3f92dcaf299cbe3d3c17e861df6d22ab954c9))
+
+
+
+
+
 # [6.81.0](https://github.com/budgie-at/budgie/compare/v6.80.0...v6.81.0) (2026-09-26)
 
 
