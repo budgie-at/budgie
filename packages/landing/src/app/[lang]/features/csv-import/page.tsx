@@ -1,6 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import Link from 'next/link';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
@@ -147,6 +148,18 @@ export default async function CsvImportFeaturePage(props: PageLangParam) {
                         The importer builds the ledger out of the file: accounts and categories are created from the values it finds, MCC
                         codes resolve to categories, and rows with both account legs become transfers. Dates are read as MM/DD/YYYY HH:MM:SS
                         or YYYY-MM-DD, and amounts use a dot as the decimal separator.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        Rows the file leaves without a category are grouped by merchant afterwards, so you can{' '}
+                        <Link
+                            className="font-semibold underline underline-offset-4"
+                            href={`/${lang}/features/bulk-categorize-transactions`}
+                        >
+                            categorize them in bulk
+                        </Link>{' '}
+                        instead of one by one.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>

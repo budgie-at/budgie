@@ -1,4 +1,4 @@
-/* eslint-disable max-lines-per-function */
+/* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
@@ -216,6 +216,12 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                     <FeaturePageBenefitGridItem index={6}>
                         <Trans>Charts read from your own database, so they keep working with no connection</Trans>
                     </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={7}>
+                        <Trans>Reachable straight from the crypto group on the home screen</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={8}>
+                        <Trans>Older history backfills from CoinGecko one day at a time, with a visible progress indicator</Trans>
+                    </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
@@ -266,6 +272,33 @@ export default async function CryptoInvestmentTrackingFeaturePage(props: PageLan
                         <Trans>
                             Yes. Prices are stored in your local database, so the market screen renders from what you already have. A
                             connection is only needed to extend the history further back.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Do I need an account or an API key?</Trans>}
+                    answer={
+                        <Trans>
+                            No. There is no ticker connection and no account; the backfill uses CoinGecko&apos;s public endpoints and writes
+                            the results into your local database.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>How far back does the history go?</Trans>}
+                    answer={
+                        <Trans>
+                            The app ships a year of daily closes for the nine largest assets. Beyond that, the background queue fills in
+                            older days a day at a time until it catches up.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What does the progress indicator show?</Trans>}
+                    answer={
+                        <Trans>
+                            The backfill reports its progress per asset, so you can see how much of the older history is still filling in
+                            and when it has finished.
                         </Trans>
                     }
                 />

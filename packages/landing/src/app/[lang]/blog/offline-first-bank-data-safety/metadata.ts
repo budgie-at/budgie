@@ -15,7 +15,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     seoKeywords: ['offline-first finance', 'bank data safety', 'Plaid alternative', 'no bank login budget app'],
     seoDescription: msg`Financial aggregators are high-value breach targets. Discover how offline-first architecture, direct bank APIs, and CSV/PDF imports keep your bank data safe without Plaid.`,
     relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'offline-first-privacy-financial-app'],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'monobank-sync', 'no-bank-login-budget-app']
+    relatedFeatureSlugs: ['expense-tracking', 'monobank-sync', 'csv-import']
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */

@@ -63,7 +63,7 @@ export default async function LandingPage(props: PageLangParam) {
             >
                 <CapabilityBento.Anchor
                     alt={t(i18n)`Budgie settings screen showing the 100% offline and private card above app lock and screenshot protection`}
-                    href={`/${lang}/features/offline-first-expense-tracker`}
+                    href={`/${lang}/offline-first`}
                     locale={lang}
                     scene="offline-first-expense-tracker-2"
                     slug="offline-first-expense-tracker"

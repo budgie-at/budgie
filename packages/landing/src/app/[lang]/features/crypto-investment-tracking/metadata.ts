@@ -18,11 +18,13 @@ export const FEATURE_METADATA = {
         'crypto + bank tracker',
         'bitcoin portfolio tracker app',
         'crypto net worth tracker',
-        'crypto price history app'
+        'crypto price history app',
+        'offline crypto chart',
+        'coin price sparkline'
     ],
-    relatedFeatureSlugs: ['crypto-price-history', 'binance-sync', 'net-worth-tracker', 'account-management', 'multi-currency'],
+    relatedFeatureSlugs: ['binance-sync', 'net-worth-tracker', 'account-management', 'multi-currency'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'historical-exchange-rates-budget-analytics'],
     publishedAt: '2025-11-17',
-    updatedAt: '2026-09-16',
+    updatedAt: '2026-09-26',
     ogTags: ['crypto', 'bitcoin', 'net worth']
 } satisfies FeatureRegistryEntryInterface;

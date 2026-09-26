@@ -1,6 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import Link from 'next/link';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
@@ -93,6 +94,18 @@ export default async function ErsteBankPdfImportFeaturePage(props: PageLangParam
                     <Trans>
                         The parser extracts account holder, IBAN, opening/closing balances, and every transaction line including value date,
                         booking date, and reference text. MCC is inferred from booking-text patterns where present.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        Statement lines that still have no category wait in the{' '}
+                        <Link
+                            className="font-semibold underline underline-offset-4"
+                            href={`/${lang}/features/bulk-categorize-transactions`}
+                        >
+                            Categorize inbox
+                        </Link>
+                        , grouped by merchant with suggestions from your past choices.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
