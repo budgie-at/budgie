@@ -105,10 +105,16 @@ export default async function UncategorizedTransactionsFeaturePage(props: PageLa
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Tap it for a focused list</Trans>}>
+                <FeatureStory.Step index={1} title={<Trans>Open the list behind the inbox</Trans>}>
                     <Trans>
-                        The pill opens the Categorize inbox, and the list button in its header shows only those rows, carrying your account,
-                        date, type and tag filters across.
+                        The pill opens the{' '}
+                        <Link
+                            className="font-semibold underline underline-offset-4"
+                            href={`/${lang}/features/bulk-categorize-transactions`}
+                        >
+                            Categorize inbox
+                        </Link>{' '}
+                        for bulk work. The list button in its header shows only these rows, with your filters carried across.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot

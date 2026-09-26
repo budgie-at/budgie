@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'machine learning expense categorization'
     ],
     relatedFeatureSlugs: [
-        'offline-first-expense-tracker',
+        'expense-tracking',
         'voice-transaction-entry',
         'mcc-auto-category',
         'categorization-rules',

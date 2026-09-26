@@ -3,6 +3,78 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.82.1](https://github.com/budgie-at/budgie/compare/v6.82.0...v6.82.1) (2026-09-26)
+
+
+### Bug Fixes
+
+* **landing:** correct where the debt return date appears ([6f58981](https://github.com/budgie-at/budgie/commit/6f58981ea211b4d73e14ed61069112a0774a4c55))
+
+
+
+
+
+# [6.82.0](https://github.com/budgie-at/budgie/compare/v6.81.0...v6.82.0) (2026-09-26)
+
+
+### Features
+
+* **landing:** add bank sync pillar hub ([73b3f92](https://github.com/budgie-at/budgie/commit/73b3f92dcaf299cbe3d3c17e861df6d22ab954c9))
+
+
+
+
+
+# [6.81.0](https://github.com/budgie-at/budgie/compare/v6.80.0...v6.81.0) (2026-09-26)
+
+
+### Bug Fixes
+
+* **landing:** correct AI download, offline, and OAuth copy accuracy ([4c510a9](https://github.com/budgie-at/budgie/commit/4c510a96a576150d00d5f59ce44f7ec52f5d8dae))
+
+
+### Features
+
+* **landing:** merge overlapping feature pages into their hubs ([f2067f0](https://github.com/budgie-at/budgie/commit/f2067f0e7120ab709544cbe87a02d185e0cd0a66)), closes [#1213](https://github.com/budgie-at/budgie/issues/1213)
+
+
+
+
+
+# [6.80.0](https://github.com/budgie-at/budgie/compare/v6.79.0...v6.80.0) (2026-09-26)
+
+
+### Features
+
+* **landing:** tell the bulk categorize story with real inbox media ([0d8980c](https://github.com/budgie-at/budgie/commit/0d8980cd7e70c0968cf5b336ded1f2494af3c39f))
+
+
+
+
+
+# [6.79.0](https://github.com/budgie-at/budgie/compare/v6.78.2...v6.79.0) (2026-09-26)
+
+
+### Bug Fixes
+
+* **app:** coalesce per-row database change events in live queries ([85ef12b](https://github.com/budgie-at/budgie/commit/85ef12b499f88b3a32a8ba8f927bc499d3140a95))
+* **app:** make categorize inbox assignMany atomic and align inbox account filter ([eea011c](https://github.com/budgie-at/budgie/commit/eea011cd695c4957582ed94af5e137fc0dfcc734))
+* **app:** reset categorize inbox dock height when the dock hides ([7f2252d](https://github.com/budgie-at/budgie/commit/7f2252d014a0bb8e42770a939f5ac450676a2cea))
+* **app:** sharpen categorize inbox suggestions and titles ([083ecdd](https://github.com/budgie-at/budgie/commit/083ecddf315d3077dbeaaeee342083ef763260fe))
+* **app:** use the standard ghost header action on the categorize inbox ([7f37421](https://github.com/budgie-at/budgie/commit/7f37421259729a4fd195b68c85169c21cea57f29))
+
+
+### Features
+
+* **app:** add categorize inbox with hybrid on-device suggestions ([8f5a856](https://github.com/budgie-at/budgie/commit/8f5a856ef81d0b2aabfa20ae2a3528b3b1ba9241))
+* **app:** redesign categorize inbox for dense one-thumb triage ([2a9f2b4](https://github.com/budgie-at/budgie/commit/2a9f2b4b5fd6275e01991782e457b1e72c744977))
+* **app:** swipe to accept inbox suggestions and clean merchant titles ([10c543d](https://github.com/budgie-at/budgie/commit/10c543d653544958771c3a23be72c7380d4629b6))
+* **landing:** add bulk categorize transactions feature page ([12129fe](https://github.com/budgie-at/budgie/commit/12129fe7926e052c1ec355a2cec26aacbf35c6da))
+
+
+
+
+
 ## [6.78.2](https://github.com/budgie-at/budgie/compare/v6.78.1...v6.78.2) (2026-09-25)
 
 

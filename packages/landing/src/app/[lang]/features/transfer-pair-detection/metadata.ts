@@ -21,7 +21,7 @@ export const FEATURE_METADATA = {
         'IBAN match transfer',
         'cross-currency transfer detection'
     ],
-    relatedFeatureSlugs: ['sync-data-repairs', 'account-transfers', 'convert-to-refund', 'bank-resync-window', 'convert-to-transfer'],
+    relatedFeatureSlugs: ['sync-data-repairs', 'account-transfers', 'transaction-long-press-menu', 'bank-resync-window'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
     publishedAt: '2026-05-01',
     updatedAt: '2026-09-16',

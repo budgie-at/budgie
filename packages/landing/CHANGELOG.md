@@ -3,6 +3,66 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.82.1](https://github.com/budgie-at/budgie/compare/v6.82.0...v6.82.1) (2026-09-26)
+
+
+### Bug Fixes
+
+* **landing:** correct where the debt return date appears ([6f58981](https://github.com/budgie-at/budgie/commit/6f58981ea211b4d73e14ed61069112a0774a4c55))
+
+
+
+
+
+# [6.82.0](https://github.com/budgie-at/budgie/compare/v6.81.0...v6.82.0) (2026-09-26)
+
+
+### Features
+
+* **landing:** add bank sync pillar hub ([73b3f92](https://github.com/budgie-at/budgie/commit/73b3f92dcaf299cbe3d3c17e861df6d22ab954c9))
+
+
+
+
+
+# [6.81.0](https://github.com/budgie-at/budgie/compare/v6.80.0...v6.81.0) (2026-09-26)
+
+
+### Bug Fixes
+
+* **landing:** correct AI download, offline, and OAuth copy accuracy ([4c510a9](https://github.com/budgie-at/budgie/commit/4c510a96a576150d00d5f59ce44f7ec52f5d8dae))
+
+
+### Features
+
+* **landing:** merge overlapping feature pages into their hubs ([f2067f0](https://github.com/budgie-at/budgie/commit/f2067f0e7120ab709544cbe87a02d185e0cd0a66)), closes [#1213](https://github.com/budgie-at/budgie/issues/1213)
+
+
+
+
+
+# [6.80.0](https://github.com/budgie-at/budgie/compare/v6.79.0...v6.80.0) (2026-09-26)
+
+
+### Features
+
+* **landing:** tell the bulk categorize story with real inbox media ([0d8980c](https://github.com/budgie-at/budgie/commit/0d8980cd7e70c0968cf5b336ded1f2494af3c39f))
+
+
+
+
+
+# [6.79.0](https://github.com/budgie-at/budgie/compare/v6.78.2...v6.79.0) (2026-09-26)
+
+
+### Features
+
+* **landing:** add bulk categorize transactions feature page ([12129fe](https://github.com/budgie-at/budgie/commit/12129fe7926e052c1ec355a2cec26aacbf35c6da))
+
+
+
+
+
 # [6.74.0](https://github.com/budgie-at/budgie/compare/v6.73.1...v6.74.0) (2026-09-22)
 
 **Note:** Version bump only for package @budgie-at/landing
