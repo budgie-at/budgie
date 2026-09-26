@@ -1208,7 +1208,7 @@ shiftTransactionsFixtureToNow();
 shiftTransactionInfoFixtureToNow();
 const generateCategorizeInboxFixture = () => {
     const sourcePath = path.join(fixturesDirectoryPath, '07.db');
-    const targetPath = path.join(outputDirectoryPath, '39.db');
+    const targetPath = path.join(outputDirectoryPath, 'uncategorized-inbox.db');
 
     const now = Math.floor(Date.now() / 1000);
     const day = 24 * 60 * 60;
