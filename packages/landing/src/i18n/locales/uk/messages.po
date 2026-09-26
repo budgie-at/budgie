@@ -2514,6 +2514,10 @@ msgstr "Усі впевнені пропозиції приймаються ра
 msgid "Accept everything that is certain"
 msgstr "Прийміть усе, у чому немає сумнівів"
 
+#: src/app/[lang]/privacy/page.tsx
+msgid "Access token held by aggregator"
+msgstr "Токен доступу зберігається в агрегатора"
+
 #: src/app/[lang]/features/screenshot-protection/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
@@ -3449,6 +3453,10 @@ msgstr "Банк + агрегатор + додаток"
 msgid "Bank + cash + deposit + crypto + debt"
 msgstr "Банк + готівка + депозити + крипто + борги"
 
+#: src/app/[lang]/privacy/page.tsx
+msgid "Bank access"
+msgstr "Доступ до банку"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Bank account synchronization"
 msgstr "Синхронізація банківських рахунків"
@@ -3498,10 +3506,6 @@ msgstr "Банківські з’єднання стали повноцінни
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Bank Connections Without Plaid"
 msgstr "Банківські підключення без Plaid"
-
-#: src/app/[lang]/privacy/page.tsx
-msgid "Bank credentials"
-msgstr "Банківські облікові дані"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "bank data safety"
@@ -3919,8 +3923,8 @@ msgid "Both amounts are shown together (e.g. $1000 → €925). Pin either side;
 msgstr "Обидві суми показані разом (напр. $1000 → €925). Закріпіть будь-яку зі сторін; курс зберігається разом із переказом, тож звірка між валютами лишається точною."
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
-msgstr "Обидва можуть бути безпечними при правильному впровадженні. Різниця — у поверхні загрози: прямі токени — від банку до вас; агрегаторний OAuth додає третю сторону з вашими обліковими даними та потоком транзакцій."
+msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with an access token and your transaction stream."
+msgstr "Обидва варіанти можуть бути безпечними за правильної реалізації. Різниця в поверхні атаки: прямі токени з'єднують лише банк і вас; OAuth через агрегатора додає третю сторону з токеном доступу та історією ваших транзакцій."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Both Erste statement layouts supported: classic and the 2026 modern format"
@@ -8364,10 +8368,6 @@ msgstr "Групи, а не рядки"
 msgid "Headline Features"
 msgstr "Головні функції"
 
-#: src/app/[lang]/privacy/page.tsx
-msgid "Held by aggregator"
-msgstr "Зберігається агрегатором"
-
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Held in its own currency"
 msgstr "Ведеться у власній валюті"
@@ -10616,8 +10616,8 @@ msgid "Never worry about service availability"
 msgstr "Ніколи не турбуйтеся про доступність сервісу"
 
 #: src/app/[lang]/ai-features/page.tsx
-msgid "New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch controls it, and about 2.5 GB downloads once."
-msgstr "На нових встановленнях картка On-device AI спершу вимкнена; якщо ви вже користувалися AI раніше, вона залишиться увімкненою. У будь-якому разі керує все один перемикач, і близько 2,5 ГБ завантажується один раз."
+msgid "New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch controls it, and each model downloads only when you first use the feature that needs it — about 2.5 GB in total if you use every feature including voice entry."
+msgstr "Нові встановлення починаються з вимкненою карткою «ШІ на пристрої»; якщо ви вже користувалися ШІ, вона залишається увімкненою. У будь-якому разі перемикач керує нею, і кожна модель завантажується лише тоді, коли ви вперше використовуєте функцію, яка її потребує — загалом близько 2,5 ГБ, якщо використовувати всі функції, включно з голосовим введенням."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
@@ -11675,13 +11675,13 @@ msgstr "Усім керує один перемикач у налаштуван�
 msgid "One switch in Settings, and categories, tags, translation and voice entry all run where your data already is."
 msgstr "Один перемикач у налаштуваннях — і категорії, теги, переклад і голос працюють там, де вже є ваші дані."
 
+#: src/app/[lang]/ai-features/page.tsx
+msgid "One switch, downloads on demand"
+msgstr "Один перемикач, завантаження за потреби"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "One switch, off by default, sitting directly under the PIN-lock card in the Security section."
 msgstr "Один перемикач, вимкнений за замовчуванням, розташований одразу під карткою блокування PIN-кодом у розділі «Безпека»."
-
-#: src/app/[lang]/ai-features/page.tsx
-msgid "One switch, one download"
-msgstr "Один перемикач, одне завантаження"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag chip, plus a count"
@@ -17801,8 +17801,8 @@ msgid "Works for both expense and income transactions"
 msgstr "Працює для транзакцій витрат і доходів"
 
 #: src/app/[lang]/offline-first/page.tsx
-msgid "Works in airplane mode, tunnels, and rural areas — every feature, every time"
-msgstr "Працює в режимі польоту, тунелях і сільській місцевості — кожна функція, кожного разу"
+msgid "Works in airplane mode, tunnels, and rural areas — logging expenses, viewing analytics, and managing categories all run on your device"
+msgstr "Працює в режимі польоту, в тунелях і сільській місцевості — облік витрат, перегляд аналітики та керування категоріями виконуються на вашому пристрої"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx

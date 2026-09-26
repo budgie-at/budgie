@@ -2514,6 +2514,10 @@ msgstr "Todas las sugerencias seguras aceptadas de una vez, con Deshacer"
 msgid "Accept everything that is certain"
 msgstr "Acepta todo lo que es seguro"
 
+#: src/app/[lang]/privacy/page.tsx
+msgid "Access token held by aggregator"
+msgstr "Token de acceso en poder del agregador"
+
 #: src/app/[lang]/features/screenshot-protection/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
@@ -3449,6 +3453,10 @@ msgstr "Banco + agregador + app"
 msgid "Bank + cash + deposit + crypto + debt"
 msgstr "Banco + efectivo + depósito + cripto + deuda"
 
+#: src/app/[lang]/privacy/page.tsx
+msgid "Bank access"
+msgstr "Acceso bancario"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Bank account synchronization"
 msgstr "Sincronización de cuentas bancarias"
@@ -3498,10 +3506,6 @@ msgstr "Las conexiones bancarias pasaron a ser un objeto de primera clase, se la
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Bank Connections Without Plaid"
 msgstr "Conexiones bancarias sin Plaid"
-
-#: src/app/[lang]/privacy/page.tsx
-msgid "Bank credentials"
-msgstr "Credenciales bancarias"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "bank data safety"
@@ -3919,8 +3923,8 @@ msgid "Both amounts are shown together (e.g. $1000 → €925). Pin either side;
 msgstr "Ambos importes se muestran juntos (p. ej. 1000 $ → 925 €). Fija el lado que quieras; el tipo de cambio se guarda en la transferencia, así que la conciliación entre divisas sigue siendo exacta."
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
-msgstr "Ambos pueden ser seguros cuando se implementan correctamente. La diferencia es la superficie de amenaza: los tokens directos van del banco a ti; el OAuth de agregador añade un tercero con tus credenciales y tu flujo de transacciones."
+msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with an access token and your transaction stream."
+msgstr "Ambos pueden ser seguros si se implementan correctamente. La diferencia está en la superficie de ataque: los tokens directos conectan solo el banco y usted; el OAuth de un agregador añade un tercero con un token de acceso y su historial de transacciones."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Both Erste statement layouts supported: classic and the 2026 modern format"
@@ -8364,10 +8368,6 @@ msgstr "Grupos, no filas"
 msgid "Headline Features"
 msgstr "Funciones destacadas"
 
-#: src/app/[lang]/privacy/page.tsx
-msgid "Held by aggregator"
-msgstr "En manos del agregador"
-
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Held in its own currency"
 msgstr "Mantenida en su propia moneda"
@@ -10616,8 +10616,8 @@ msgid "Never worry about service availability"
 msgstr "Nunca te preocupes por la disponibilidad del servicio"
 
 #: src/app/[lang]/ai-features/page.tsx
-msgid "New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch controls it, and about 2.5 GB downloads once."
-msgstr "Las instalaciones nuevas empiezan con la tarjeta de IA en el dispositivo desactivada; si ya estabas usando la IA, permanece activada. En cualquier caso, el interruptor la controla, y unos 2.5 GB se descargan una vez."
+msgid "New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch controls it, and each model downloads only when you first use the feature that needs it — about 2.5 GB in total if you use every feature including voice entry."
+msgstr "Las instalaciones nuevas empiezan con la tarjeta de IA en el dispositivo desactivada; si ya usaba la IA, permanece activada. En cualquier caso, el interruptor la controla, y cada modelo se descarga solo cuando usa por primera vez la función que lo necesita: unos 2,5 GB en total si usa todas las funciones, incluida la entrada por voz."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
@@ -11675,13 +11675,13 @@ msgstr "Un solo interruptor en Ajustes controla todo. Desactívalo y nada se des
 msgid "One switch in Settings, and categories, tags, translation and voice entry all run where your data already is."
 msgstr "Un interruptor en los ajustes, y categorías, etiquetas, traducción y voz funcionan donde ya están tus datos."
 
+#: src/app/[lang]/ai-features/page.tsx
+msgid "One switch, downloads on demand"
+msgstr "Un interruptor, descargas bajo demanda"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "One switch, off by default, sitting directly under the PIN-lock card in the Security section."
 msgstr "Un interruptor, desactivado de forma predeterminada, justo debajo de la tarjeta de bloqueo por PIN en la sección Seguridad."
-
-#: src/app/[lang]/ai-features/page.tsx
-msgid "One switch, one download"
-msgstr "Un interruptor, una descarga"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag chip, plus a count"
@@ -17801,8 +17801,8 @@ msgid "Works for both expense and income transactions"
 msgstr "Funciona para transacciones de gastos e ingresos"
 
 #: src/app/[lang]/offline-first/page.tsx
-msgid "Works in airplane mode, tunnels, and rural areas — every feature, every time"
-msgstr "Funciona en modo avión, en túneles y en zonas rurales: todas las funciones, siempre"
+msgid "Works in airplane mode, tunnels, and rural areas — logging expenses, viewing analytics, and managing categories all run on your device"
+msgstr "Funciona en modo avión, túneles y zonas rurales: registrar gastos, ver analíticas y gestionar categorías se ejecutan todos en su dispositivo"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx

@@ -220,8 +220,8 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Aggregator-based PFM apps</Trans>}>
                     <FeaturePageCategoryComparison.Row
                         budgieValue={<Trans>Never shared</Trans>}
-                        competitorValue={<Trans>Held by aggregator</Trans>}
-                        label={<Trans>Bank credentials</Trans>}
+                        competitorValue={<Trans>Access token held by aggregator</Trans>}
+                        label={<Trans>Bank access</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
                         budgieValue={<Trans>Direct API tokens or PDF/CSV</Trans>}
@@ -345,7 +345,7 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are
-                            bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream.
+                            bank-to-you; aggregator OAuth adds a third party with an access token and your transaction stream.
                         </Trans>
                     }
                 />

@@ -154,10 +154,11 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                     </Trans>
                 </FeatureStory.Intro>
 
-                <FeatureStory.Step index={0} title={<Trans>One switch, one download</Trans>}>
+                <FeatureStory.Step index={0} title={<Trans>One switch, downloads on demand</Trans>}>
                     <Trans>
                         New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch
-                        controls it, and about 2.5 GB downloads once.
+                        controls it, and each model downloads only when you first use the feature that needs it — about 2.5 GB in total if
+                        you use every feature including voice entry.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
