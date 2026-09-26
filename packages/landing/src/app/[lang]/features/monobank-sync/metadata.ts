@@ -17,6 +17,7 @@ export const FEATURE_METADATA = {
     relatedFeatureSlugs: [
         'sync-data-repairs',
         'expense-tracking',
+        'bulk-categorize-transactions',
         'bank-integration-management',
         'binance-sync',
         'bank-resync-window',
