@@ -70,6 +70,10 @@ msgstr ""
 msgid "< $30 one-time"
 msgstr "< 30 $ paiement unique"
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "<0/> left"
+msgstr "<0/> restantes"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>2020-2022</0>: Feature stagnation. While competitors innovated, Mint’s interface remained largely unchanged."
 msgstr "<0>2020-2022</0> : Stagnation des fonctionnalités. Alors que les concurrents innovaient, l'interface de Mint est restée pratiquement inchangée."
@@ -77,10 +81,6 @@ msgstr "<0>2020-2022</0> : Stagnation des fonctionnalités. Alors que les concur
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "<0>2022</0>: Increasing sync issues. Bank connections became unreliable, with users reporting days of failed syncs."
 msgstr "<0>2022</0> : Problèmes de synchronisation croissants. Les connexions bancaires sont devenues peu fiables, avec des utilisateurs signalant des jours entiers de synchronisations échouées."
-
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "<0>Accept everything that is certain.</0> One button at the bottom accepts every confident suggestion at once, and Undo reverses your last categorization if you change your mind. Open a group and untick any row first to keep it in the inbox for later."
-msgstr "<0>Acceptez d’un coup tout ce qui est sûr.</0> Un seul bouton en bas de l’écran accepte toutes les suggestions fiables, et Annuler revient sur votre dernière catégorisation si vous changez d’avis. Pour garder une opération de côté, ouvrez d’abord le groupe et décochez sa ligne : elle reste dans la liste pour plus tard."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "<0>Access</0>: Your data is always accessible within the app"
@@ -552,10 +552,6 @@ msgstr "<0>Stockage des données</0>: À votre choix"
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "<0>Database layer</0>: Examine the schemas and repository classes. You can trace exactly how data flows from user input to database storage, all locally."
 msgstr "<0>Couche de base de données</0> : examinez les schémas et les classes de dépôt. Vous pouvez retracer exactement comment les données circulent de la saisie utilisateur jusqu'au stockage en base de données, entièrement en local."
-
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "<0>Decide the rest yourself.</0> Merchants you have never categorized land under Needs review or One-offs, where you pick the category. The plain list of uncategorized transactions is always one tap away in the header."
-msgstr "<0>Le reste, c’est vous qui décidez.</0> Les commerçants que vous n’avez jamais catégorisés arrivent dans « À vérifier » ou « Ponctuelles », où vous choisissez vous-même la catégorie. La simple liste des transactions non catégorisées reste accessible d’un toucher depuis l’en-tête."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Delete old accounts</0>: After migration, fully delete cloud-based app accounts and revoke aggregator access"
@@ -1169,10 +1165,6 @@ msgstr "<0>Stockage sur l'appareil</0> — chaque transaction, compte et catégo
 msgid "<0>One-time purchase:</0> No ongoing relationship or data motivation"
 msgstr "<0>Achat unique :</0> Pas de relation continue ni de motivation à monétiser les données"
 
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "<0>Open it from the pill.</0> The <1>missing categories pill</1> above your transaction list counts what still has no category. Tap it and the inbox opens with the same account, date, type, tag and amount filters you were looking at."
-msgstr "<0>Ouvrez-le depuis la pastille.</0> La <1>pastille des catégories manquantes</1>, au-dessus de votre liste de transactions, compte ce qui n’a pas encore de catégorie. Touchez-la et l’écran de catégorisation s’ouvre avec les mêmes filtres de compte, de date, de type, de tag et de montant que ceux que vous consultiez."
-
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "<0>Open source codebase</0> — If the developer stops maintaining the app, the community can fork it. The code is auditable. You can verify that the privacy claims are real."
 msgstr "<0>Code source ouvert</0> — Si le développeur cesse de maintenir l'application, la communauté peut en faire un fork. Le code est auditable. Vous pouvez vérifier que les affirmations sur la confidentialité sont réelles."
@@ -1504,10 +1496,6 @@ msgstr "<0>Questions de retention</0> : Qu'advient-il des bandes de sauvegarde, 
 msgid "<0>Retention</0> — Transaction data is retained beyond the active period of any individual app connection. Deleting the app does not automatically delete the data from the aggregator."
 msgstr "<0>Conservation</0> — Les données de transactions sont conservées au-delà de la période active de toute connexion d'application individuelle. La suppression de l'application ne supprime pas automatiquement les données de l'agrégateur."
 
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "<0>Review groups, not rows.</0> Transactions from the same merchant are grouped even when the bank adds reference numbers, masked card numbers or company suffixes to the description. Each group shows how many transactions it holds and what they add up to."
-msgstr "<0>Passez en revue des groupes, pas des lignes.</0> Les transactions d’un même commerçant sont regroupées même quand la banque ajoute au libellé des références, des numéros de carte masqués ou des mentions comme « SAS ». Chaque groupe indique combien de transactions il contient et leur total."
-
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "<0>Review Plaid connections</0>: Visit my.plaid.com to see and manage your Plaid connections"
 msgstr "<0>Verifiez les connexions Plaid</0> : Visitez [my.plaid.com](https://my.plaid.com) pour voir et gerer vos connexions Plaid"
@@ -1655,10 +1643,6 @@ msgstr "<0>Abonnement :</0> Revenus récurrents, pression potentielle pour moné
 #: src/app/[lang]/legal/license/page.tsx
 msgid "<0>TanStack Query</0> MIT License - Data fetching and state management"
 msgstr ""
-
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "<0>Tap a suggestion.</0> Each group offers up to two categories, ranked by how you categorized that merchant before. When your past choices clearly agree, the top suggestion carries a check mark and the group sits under Ready to accept. One tap, or a swipe to the right, categorizes the whole group."
-msgstr "<0>Touchez une suggestion.</0> Chaque groupe propose jusqu’à deux catégories, classées selon la façon dont vous avez catégorisé ce commerçant jusqu’ici. Quand vos choix passés concordent clairement, la première suggestion porte une coche et le groupe figure dans « Prêtes à accepter ». Un toucher, ou un balayage vers la droite, catégorise tout le groupe."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "<0>The backend services</0> - All server-side code for optional features like bank sync"
@@ -2149,10 +2133,6 @@ msgstr ""
 msgid "5.3 Third-Party Services"
 msgstr ""
 
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "6 categorized this session"
-msgstr "6 catégorisées pendant cette session"
-
 #: src/app/[lang]/legal/license/page.tsx
 msgid "6. Contributing to Budgie"
 msgstr ""
@@ -2560,12 +2540,16 @@ msgid "Academic researchers studying software security"
 msgstr "Des chercheurs universitaires étudiant la sécurité des logiciels"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "Accept 5 suggestions"
-msgstr "Accepter 5 suggestions"
+msgid "Accept 2 suggestions"
+msgstr "Accepter 2 suggestions"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Accept every confident suggestion at once, with Undo"
 msgstr "Toutes les suggestions fiables acceptées d’un coup, avec Annuler"
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Accept everything that is certain"
+msgstr "Acceptez tout ce qui est sûr"
 
 #: src/app/[lang]/features/screenshot-protection/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
@@ -2749,6 +2733,10 @@ msgstr "Les SDK publicitaires qui construisent des profils d'utilisateurs"
 msgid "After 17 years of helping millions track their spending, Mint officially shut down on March 23, 2024. If you’re a developer who relied on Mint, you’re probably feeling frustrated, betrayed, and maybe a bit anxious about where your financial data will live next."
 msgstr "Après 17 ans à aider des millions de personnes à suivre leurs dépenses, Mint a officiellement fermé ses portes le 23 mars 2024. Si vous êtes un développeur qui comptait sur Mint, vous ressentez probablement de la frustration, un sentiment de trahison, et peut-être une certaine anxiété quant à l'avenir de vos données financières."
 
+#: src/app/[lang]/features/privatbank-import/page.tsx
+msgid "After each import, anything left without a category is ready for <0>bulk categorization</0>: one tap on a suggestion sorts a whole merchant group."
+msgstr "Après chaque import, tout ce qui reste sans catégorie est prêt pour la <0>catégorisation en masse</0> : une touche sur une suggestion classe tout un groupe de commerçant."
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "After evaluating all these options, we built Budgie because none of them fully satisfied what we wanted as developers."
 msgstr "Après avoir évalué toutes ces options, nous avons créé Budgie parce qu'aucune d'entre elles ne satisfaisait pleinement ce que nous recherchions en tant que développeurs."
@@ -2780,8 +2768,8 @@ msgid "After selecting a category, the on-device model proposes up to three tags
 msgstr "Après avoir sélectionné une catégorie, le modèle embarqué propose jusqu’à trois tags sous forme de pastilles à toucher — avec une solution de repli plus légère qui répond pendant que ce modèle charge encore."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "After you categorize a group, the bar at the bottom of the screen offers to create a rule. The rule editor opens already filled in with the words the group has in common and the category you just picked."
-msgstr "Une fois un groupe catégorisé, la barre en bas de l’écran propose de créer une règle. L’éditeur de règles s’ouvre déjà rempli, avec les mots communs à tout le groupe et la catégorie que vous venez de choisir."
+msgid "After you categorize a single group, the bar at the bottom of the screen offers to create a rule. The rule editor opens already filled in with the words the group has in common and the category you just picked."
+msgstr "Une fois un seul groupe catégorisé, la barre en bas de l’écran propose de créer une règle. L’éditeur de règles s’ouvre déjà rempli, avec les mots communs à tout le groupe et la catégorie que vous venez de choisir."
 
 #: src/app/[lang]/features/no-bank-login-budget-app/opengraph-image.tsx
 msgid "aggregator"
@@ -2905,16 +2893,11 @@ msgstr "Toutes les fonctionnalités de Budgie"
 msgid "All Budgie Features — Offline-First Expense Tracker"
 msgstr "Toutes les fonctionnalités de Budgie — Gestionnaire de dépenses hors-ligne"
 
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "All caught up"
-msgstr "Tout est à jour"
-
 #: src/app/[lang]/offline-first/page.tsx
 msgid "All charts, category breakdowns, tag analytics, and net-worth calculations run against the local database. They work identically whether you are connected or not."
 msgstr "Tous les graphiques, détails par catégorie, analyses d'étiquettes et calculs de patrimoine net s'exécutent sur la base de données locale. Ils fonctionnent de manière identique que vous soyez connecté ou non."
 
 #: src/feature/component/feature-page-hero/feature-page-hero.tsx
-#: src/feature/component/feature-page-stage-hero/feature-page-stage-hero.tsx
 #: src/feature/component/pillar-hub-hero/pillar-hub-hero.tsx
 #: src/generic/component/footer/footer.tsx
 msgid "All Features"
@@ -3107,8 +3090,8 @@ msgid "And the lock that enforces it"
 msgstr "Et le verrouillage qui l’applique"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "Animated example: six bank transactions are grouped by merchant, five are categorized with one tap and an ATM withdrawal is moved to an account."
-msgstr "Exemple animé : six transactions bancaires sont regroupées par commerçant, cinq sont catégorisées d’un seul toucher et un retrait au distributeur est déplacé vers un compte."
+msgid "Animated example: six bank transactions are grouped by merchant, two confident groups are categorized with one tap, and an ATM withdrawal waits under Transfers."
+msgstr "Exemple animé : six transactions bancaires sont regroupées par commerçant, deux groupes sûrs sont catégorisés d’une touche, et un retrait au distributeur attend dans « Virements »."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Annual cost over 5 years"
@@ -3338,7 +3321,7 @@ msgstr "RETRAIT DAB 4974**1234 PARIS BASTILLE 12/03"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "ATM WIEN FAVORITENSTR"
-msgstr "RETRAIT DAB PARIS BASTILLE"
+msgstr "Retrait DAB Paris"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "ATM withdrawals and card transfers are not spending"
@@ -3349,8 +3332,8 @@ msgid "ATM withdrawals and card transfers moved to the right account instead of 
 msgstr "Retraits d’espèces et virements entre cartes envoyés sur le bon compte au lieu d’être comptés comme dépenses"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "ATM withdrawals go to one of your cash accounts, card transfers to any other active account. Budgie asks you to confirm, then <0>turns the whole group into transfers</0> so your balances stay right."
-msgstr "Les retraits vont sur l’un de vos comptes d’espèces, les virements entre cartes sur n’importe quel autre compte actif. Budgie vous demande de confirmer, puis <0>transforme tout le groupe en virements</0> pour que vos soldes restent justes."
+msgid "ATM withdrawals go to one of your cash accounts, card transfers to another of your accounts. You pick the account and confirm, then Budgie <0>turns the whole group into transfers</0> so your balances stay right."
+msgstr "Les retraits vont sur l’un de vos comptes d’espèces, les virements entre cartes sur un autre de vos comptes. Vous choisissez le compte et confirmez, puis Budgie <0>transforme tout le groupe en virements</0> pour que vos soldes restent justes."
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Attach a repayment you already logged"
@@ -4196,6 +4179,10 @@ msgstr "Onglet d'analyse Catégories de Budgie avec les puces de filtre date et 
 msgid "Budgie Categories screen listing user-created categories with their icons above a search field"
 msgstr "Écran Catégories de Budgie listant les catégories créées par l'utilisateur avec leurs icônes au-dessus d'un champ de recherche"
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Budgie Categorize screen listing merchant cards, each with a suggested category chip"
+msgstr "Écran de catégorisation de Budgie listant des cartes de commerçants, chacune avec une catégorie suggérée"
+
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Budgie category picker open over the Edit Category form, listing the categories to merge into"
 msgstr "Sélecteur de catégories de Budgie ouvert par-dessus le formulaire Modifier la catégorie, listant les catégories de fusion"
@@ -4882,13 +4869,13 @@ msgstr "Liste des transactions Budgie avec un menu contextuel par appui long pro
 msgid "Budgie transaction list with a missing categories pill between the filter chips and the rows"
 msgstr "Liste des transactions Budgie avec une pastille de catégories manquantes entre les filtres et les lignes"
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Budgie transaction list with a yellow missing categories pill above the first rows"
+msgstr "Liste des transactions Budgie avec une pastille jaune de catégories manquantes au-dessus des premières lignes"
+
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "Budgie transaction list with the context menu open on an expense row, Convert to Transfer among the actions"
 msgstr "Liste des transactions Budgie avec le menu contextuel ouvert sur une ligne de dépense, Convertir en virement parmi les actions"
-
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "Budgie transaction list with the missing categories pill that opens the Categorize inbox"
-msgstr "Liste des transactions de Budgie avec la pastille des catégories manquantes qui ouvre l’écran de catégorisation"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie transactions list showing 81 transactions loaded with no network request in flight"
@@ -5063,13 +5050,13 @@ msgstr "Outil d'import YNAB intégré disponible"
 msgid "bulk"
 msgstr "en masse"
 
-#: src/app/[lang]/features/bulk-categorize-transactions/metadata.ts
-msgid "Bulk Categorize Bank Transactions in One Tap"
-msgstr "Catégoriser ses transactions bancaires en masse"
-
 #: src/app/[lang]/features/bulk-categorize-transactions/opengraph-image.tsx
 msgid "Bulk Categorize Transactions"
 msgstr "Catégoriser en masse"
+
+#: src/app/[lang]/features/bulk-categorize-transactions/metadata.ts
+msgid "Bulk Categorize Transactions by Merchant — Budgie"
+msgstr "Catégoriser ses transactions en masse — Budgie"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/features/bulk-categorize-transactions/metadata.ts
@@ -5503,8 +5490,8 @@ msgid "Categorize Bank Transactions in Bulk"
 msgstr "Catégorisez vos transactions bancaires en masse"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/metadata.ts
-msgid "Categorize bank transactions in bulk. Budgie groups uncategorized rows by merchant, suggests categories from your own history and applies them in one tap."
-msgstr "Catégorisez vos transactions bancaires en masse : Budgie les regroupe par commerçant et suggère des catégories d’après votre historique, en un toucher."
+msgid "Categorize bank transactions in bulk. Budgie groups them by merchant, suggests categories from your history and accepts the confident ones in one tap."
+msgstr "Catégorisez vos transactions en masse. Budgie les regroupe par commerçant, suggère des catégories d’après votre historique et accepte les sûres d’une touche."
 
 #: src/app/[lang]/features/ai-auto-categorization/opengraph-image.tsx
 msgid "Categorize without leaking — model runs on your phone."
@@ -6017,6 +6004,10 @@ msgstr "Des conditions sur le titre, le commentaire, le montant, le MCC, le comp
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Conditions you wrote yourself"
 msgstr "Des conditions que tu écris"
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Confident groups sit under Ready to accept. One button categorizes them all, and Undo reverses it."
+msgstr "Les groupes sûrs sont rangés dans « Prêtes à accepter ». Un bouton les catégorise tous, et « Annuler » revient en arrière."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Confirm once it adds up"
@@ -8362,6 +8353,10 @@ msgstr "De la règle que tu as écrite à ce qui reste à l'IA"
 msgid "From an empty sheet to a list you can read"
 msgstr "D'un formulaire vide à une liste lisible"
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "From backlog to done in three screens"
+msgstr "Du retard au propre en trois écrans"
+
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "From bank connections, yes. Crypto exchange connections do not offer deposit accounts, since the concept does not map onto them."
 msgstr "Depuis les connexions bancaires, oui. Les connexions aux plateformes crypto n'offrent pas de comptes de dépôt, car le concept ne s'y applique pas."
@@ -8556,7 +8551,7 @@ msgstr "Les agences gouvernementales ne demanderont pas l'accès"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Groceries"
-msgstr "Courses"
+msgstr "Épicerie"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/opengraph-image.tsx
 msgid "Group by merchant. One tap per group."
@@ -8577,6 +8572,14 @@ msgstr "Regroupés sous la banque"
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Groups convert as they sum"
 msgstr "Les groupes convertissent en additionnant"
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Groups without a clear history land under Needs review, and single transactions under One-offs. Pick the category yourself, and that choice becomes the history behind the next suggestion."
+msgstr "Les groupes sans historique clair arrivent dans « À vérifier », et les transactions isolées dans « Ponctuelles ». Choisissez vous-même la catégorie : ce choix nourrit la prochaine suggestion."
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Groups, not rows"
+msgstr "Des groupes, pas des lignes"
 
 #: src/feature/component/features-hub-grid/features-hub-grid.tsx
 msgid "Headline Features"
@@ -9037,10 +9040,6 @@ msgstr "À quelle vitesse l'application se reverrouille-t-elle ?"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "How technical are you?"
 msgstr "Quel est votre niveau technique ?"
-
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "How the Categorize inbox works"
-msgstr "Comment fonctionne l’écran de catégorisation"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "How the Voice Flow Works"
@@ -9651,7 +9650,6 @@ msgstr "Rejoignez la liste d'attente — soyez le premier à essayer le gestionn
 #: src/blog/component/blog-article-cta/blog-article-cta.tsx
 #: src/feature/component/feature-page-cta/feature-page-cta.tsx
 #: src/feature/component/feature-page-hero/feature-page-hero.tsx
-#: src/feature/component/feature-page-stage-hero/feature-page-stage-hero.tsx
 #: src/feature/component/pillar-hub-hero/pillar-hub-hero.tsx
 #: src/generic/component/footer/footer.tsx
 #: src/generic/component/header/header.tsx
@@ -9767,13 +9765,13 @@ msgstr "Découvrez pourquoi le code source public compte pour les logiciels fina
 msgid "Learn why public source matters for financial software. How to audit apps yourself and how Budgie's transparent development protects your data."
 msgstr "Découvrez pourquoi le code source public compte pour les logiciels financiers. Comment auditer les applications vous-même et comment le développement transparent de Budgie protège vos données."
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Learned from your past choices"
+msgstr "Tirée de vos choix passés"
+
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Learning curve for the methodology"
 msgstr "Courbe d'apprentissage pour la méthodologie"
-
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "left"
-msgstr "restantes"
 
 #: src/app/[lang]/legal/layout.tsx
 #: src/generic/component/footer/footer.tsx
@@ -11798,6 +11796,10 @@ msgstr "Un badge. Scannez une longue liste en un coup d’œil."
 msgid "One bank connection holds the credential and backs every account under it — cards, jars, and deposits. Change the token once and all of them follow; close one account and the rest keep syncing."
 msgstr "Une connexion bancaire détient l'identifiant et alimente tous les comptes qui en dépendent — cartes, cagnottes et dépôts. Changez le jeton une seule fois et tous suivent ; fermez un compte et les autres continuent de se synchroniser."
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "One card per merchant"
+msgstr "Une carte par commerçant"
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "One coin, three screens"
 msgstr "Une pièce, trois écrans"
@@ -12001,6 +12003,10 @@ msgstr "Une étiquette par transaction peut être promue « principale » et se 
 msgid "One tap exports the whole history — no range to pick, no partial file to reconcile later"
 msgstr "Un seul geste exporte tout l'historique : aucune période à choisir, aucun fichier partiel à rapprocher ensuite"
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "One tap, with Undo"
+msgstr "Une touche, avec Annuler"
+
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "One total, your base currency"
 msgstr "Un total, votre devise de base"
@@ -12056,6 +12062,10 @@ msgstr "Pratiques continues"
 #: src/app/[lang]/features/bank-resync-window/page.tsx
 msgid "Only as far back as the bank's API serves. Re-sync drives the Monobank connection; PrivatBank and Erste arrive as file imports, where the range is whatever you export. CSV import is the universal fallback."
 msgstr "Seulement aussi loin que l'API de la banque le permet. La resynchronisation pilote la connexion Monobank ; PrivatBank et Erste arrivent sous forme d'imports de fichiers, où la plage correspond à ce que vous exportez. L'import CSV reste la solution universelle."
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Only confident groups"
+msgstr "Seulement les groupes sûrs"
 
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Only fees are spending"
@@ -12212,6 +12222,10 @@ msgstr "Ouvrez le formulaire de dépense et Budgie propose des suggestions sous 
 #: src/app/[lang]/features/ai-transaction-suggestions/metadata.ts
 msgid "Open the expense form and Budgie offers pill-shaped suggestions from your own history — category, tags, comment, and amount, all filled in."
 msgstr "Ouvrez le formulaire de dépense et Budgie propose des suggestions sous forme de pastilles issues de votre propre historique — catégorie, tags, commentaire et montant, tous remplis."
+
+#: src/app/[lang]/features/uncategorized-transactions/page.tsx
+msgid "Open the list behind the inbox"
+msgstr "La liste derrière l’écran"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Open the sheet, type the amount, tap save — that's the typical flow once defaults are tuned to your habits. The form picks your default account, the most-likely category, and today's date automatically."
@@ -12970,10 +12984,6 @@ msgstr "Suivi de dépenses privé — Sur votre appareil, hors du cloud"
 msgid "Private Expense Tracker — On-Device — Budgie"
 msgstr "Suivi de dépenses privé — Sur l'appareil — Budgie"
 
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "Private, and sharper every time you use it"
-msgstr "Privé, et plus précis à chaque utilisation"
-
 #: src/generic/component/testimonials-section/testimonials-slider.tsx
 msgid "Product manager"
 msgstr "Chef de produit"
@@ -13402,8 +13412,8 @@ msgid "Repeat rows are matched on the bank's transaction id, not inserted again"
 msgstr "Les lignes répétées sont appariées sur l'identifiant de transaction de la banque, pas insérées à nouveau"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "Replay"
-msgstr "Rejouer"
+msgid "Replay demo"
+msgstr "Rejouer la démo"
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Report bugs and usability issues"
@@ -13562,6 +13572,10 @@ msgstr "Regroupez chaque compte bancaire, portefeuille d'espèces, dépôt, avoi
 msgid "Roughly 1.6 GB for categorization and suggestions, or 2.5 GB with voice entry. The download is one-time, opt-in, and only starts if you turn on AI features."
 msgstr "Environ 1,6 Go pour la catégorisation et les suggestions, ou 2,5 Go avec la saisie vocale. Le téléchargement est unique, facultatif, et ne démarre que si vous activez les fonctionnalités d'IA."
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Rows from one merchant share a card, even with reference or card numbers added. The chip is what you chose before."
+msgstr "Les lignes d’un même commerçant partagent une carte, même avec des numéros de référence ou de carte. La pastille reprend votre choix passé."
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Rows group under the month, each one carrying its category icon, its tags and the account it came from."
 msgstr "Les lignes se regroupent par mois, chacune portant son icône de catégorie, ses étiquettes et le compte d'origine."
@@ -13569,6 +13583,10 @@ msgstr "Les lignes se regroupent par mois, chacune portant son icône de catégo
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Rows still without a category"
 msgstr "Lignes encore sans catégorie"
+
+#: src/app/[lang]/features/csv-import/page.tsx
+msgid "Rows the file leaves without a category are grouped by merchant afterwards, so you can <0>categorize them in bulk</0> instead of one by one."
+msgstr "Les lignes que le fichier laisse sans catégorie sont ensuite regroupées par commerçant, pour que vous puissiez <0>les catégoriser en masse</0> plutôt qu’une par une."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Rule-based automation for categorization"
@@ -14405,6 +14423,10 @@ msgstr "Partir d'un préréglage intégré"
 msgid "Start from a template built out of your own recent spending, from a generic starter budget, or from an empty canvas"
 msgstr "Partez d'un modèle construit à partir de vos dépenses récentes, d'un budget de départ générique, ou d'une page blanche"
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Start from the pill"
+msgstr "Partez de la pastille"
+
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Start Simple"
 msgstr "Commencez simplement"
@@ -14412,6 +14434,10 @@ msgstr "Commencez simplement"
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "Startup performance: on-device AI without a slow launch"
 msgstr "Performance de démarrage : IA embarquée sans lancement lent"
+
+#: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
+msgid "Statement lines that still have no category wait in the <0>Categorize inbox</0>, grouped by merchant with suggestions from your past choices."
+msgstr "Les lignes du relevé encore sans catégorie attendent sur l’<0>écran de catégorisation</0>, regroupées par commerçant avec des suggestions tirées de vos choix passés."
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Statement-based banks get a connection too, so imported accounts group under one roof"
@@ -14596,13 +14622,13 @@ msgstr ""
 msgid "Suggestions are proposals — nothing is applied until you tap one, and every form works exactly the same if you ignore them. Settings → AI shows what the on-device AI is doing and how far along it is."
 msgstr "Les suggestions sont des propositions — rien n'est appliqué tant que vous n'en touchez pas une, et chaque formulaire fonctionne exactement de la même façon si vous les ignorez. Réglages → IA montre ce que fait l'IA embarquée et où elle en est."
 
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "Suggestions are worked out on your phone from transactions you have already categorized. Nothing is uploaded, there is nothing extra to download, and the inbox works offline. Every group you categorize becomes history that makes the suggestions for your next import more accurate."
-msgstr "Les suggestions sont calculées sur votre téléphone à partir des transactions que vous avez déjà catégorisées. Rien n’est envoyé, rien de plus n’est à télécharger, et tout fonctionne hors ligne. Chaque groupe catégorisé enrichit votre historique et rend les suggestions de votre prochain import plus précises."
-
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Support for 150+ currencies"
 msgstr "Support de plus de 150 devises"
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Swipe a group to the right to accept it, with haptic feedback on every save"
+msgstr "Balayez un groupe vers la droite pour l’accepter, avec un retour haptique à chaque enregistrement"
 
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Swipe up to switch apps and whatever was on screen a moment ago is still there in the preview — including account balances and net worth. Screenshot Protection replaces those numbers with a placeholder for as long as Budgie isn't the active app."
@@ -14795,10 +14821,6 @@ msgstr "Touchez n'importe quelle ligne d'étiquette pour voir chaque transaction
 msgid "Tap Import → Erste PDF. Pick the file from Files. Budgie parses the document, shows a preview, and inserts every transaction into a new or existing Erste account."
 msgstr "Touchez Importer → PDF Erste. Choisissez le fichier depuis Fichiers. Budgie analyse le document, affiche un aperçu et insère chaque transaction dans un compte Erste nouveau ou existant."
 
-#: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "Tap it for a focused list"
-msgstr "Touchez-la pour une liste ciblée"
-
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "Tap it, the rule exists"
 msgstr "Touche-la, la règle existe"
@@ -14822,6 +14844,10 @@ msgstr "Touchez le micro dans la feuille de saisie rapide. Votre voix devient du
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tap the missing categories pill above your transaction list. The Categorize inbox groups every uncategorized transaction by merchant, so one tap on a suggestion categorizes the whole group, and a single button accepts every confident suggestion in one go."
 msgstr "Touchez la pastille des catégories manquantes au-dessus de votre liste de transactions. L’écran de catégorisation regroupe toutes les transactions non catégorisées par commerçant : un toucher sur une suggestion catégorise tout le groupe, et un seul bouton accepte toutes les suggestions fiables d’un coup."
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Tap to open the inbox"
+msgstr "Touchez pour ouvrir"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Tapping a transaction opens a read-only detail view — editing is a deliberate second step"
@@ -15128,6 +15154,10 @@ msgstr "La correction conserve le taux de change du jour où elle a été enregi
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The count above your list, the focused list behind it, and the row you open to fix."
 msgstr "Le compteur au-dessus de votre liste, la liste filtrée derrière et la ligne que vous ouvrez pour corriger."
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "The count on your list, the merchant groups behind it, and the button that clears every certain one."
+msgstr "Le compteur sur votre liste, les groupes de commerçants derrière, et le bouton qui règle tout ce qui est sûr."
 
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "The CRDT research community has developed structures for various use cases: maps, graphs, JSON documents, and rich text. Libraries like Yjs, Automerge, and CRDTs provide production-ready implementations."
@@ -15439,13 +15469,17 @@ msgstr "La période vous suit"
 msgid "The personal finance app market has exploded. Mint, YNAB, Copilot, Monarch Money, Lunch Money, and dozens of others promise to help you manage your money. Most offer free tiers or low monthly subscriptions that seem reasonable for the value provided."
 msgstr "Le marche des applications de finances personnelles a explose. Mint, YNAB, Copilot, Monarch Money, Lunch Money et des dizaines d'autres promettent de vous aider a gerer votre argent. La plupart offrent des niveaux gratuits ou des abonnements mensuels modestes qui semblent raisonnables par rapport a la valeur offerte."
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "The pill above your transactions counts what still has no category under your filters. Tap it to open the inbox."
+msgstr "La pastille au-dessus de vos transactions compte ce qui n’a pas encore de catégorie dans vos filtres. Touchez-la pour ouvrir l’écran."
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The pill counts what you missed"
 msgstr "La pastille compte ce qui manque"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
-msgid "The pill opens the Categorize inbox, and the list button in its header shows only those rows, carrying your account, date, type and tag filters across."
-msgstr "La pastille ouvre l’écran de catégorisation, et le bouton liste de son en-tête n’affiche que ces lignes, en conservant vos filtres de compte, de date, de type et de tag."
+msgid "The pill opens the <0>Categorize inbox</0> for bulk work. The list button in its header shows only these rows, with your filters carried across."
+msgstr "La pastille ouvre l’<0>écran de catégorisation</0> pour le travail en masse. Le bouton liste de son en-tête n’affiche que ces lignes, avec vos filtres."
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "The PIN is the encryption key — there's no recovery mechanism, by design. Keep your PIN somewhere safe (a password manager works) or use the database backup feature to restore from a known-good state."
@@ -15580,6 +15614,10 @@ msgstr "L'écran Règles montre ce que tu as décidé, règle par règle : les c
 #: src/app/[lang]/features/multi-language-app/page.tsx
 msgid "The same app, five languages deep"
 msgstr "La même application, cinq langues en profondeur"
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "The same Budgie Categorize screen with the accept all suggestions button at the bottom"
+msgstr "Le même écran de catégorisation de Budgie avec le bouton pour accepter toutes les suggestions en bas"
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The same Budgie Missing categories list with its first uncategorised row ready to open"
@@ -15859,8 +15897,8 @@ msgid "These Terms, together with our Privacy Policy and any other legal notices
 msgstr ""
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "They are collected under Transfers with a Move to account action instead of a category. ATM withdrawals go to a cash account, card transfers to another of your accounts, and the whole group becomes transfers once you confirm."
-msgstr "Ils sont rassemblés dans « Virements » avec l’action « Déplacer vers un compte » au lieu d’une catégorie. Les retraits vont sur un compte d’espèces, les virements entre cartes sur un autre de vos comptes, et tout le groupe devient des virements après votre confirmation."
+msgid "They are collected under Transfers with a Move to account action instead of a category. ATM withdrawals go to a cash account you pick, card transfers to another of your accounts, and the whole group becomes transfers once you confirm."
+msgstr "Ils sont rassemblés dans « Virements » avec l’action « Déplacer vers un compte » au lieu d’une catégorie. Les retraits vont sur le compte d’espèces que vous choisissez, les virements entre cartes sur un autre de vos comptes, et tout le groupe devient des virements après votre confirmation."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "They are income or expense transactions without a category. Budgie calls them missing categories in the app because the next action is to assign a category and clean up your reports."
@@ -16630,6 +16668,10 @@ msgstr "Le compartiment Non étiqueté fait remonter chaque transaction sans ét
 msgid "Untagged is not an error state — it is what is left over. Anything in the period carrying no tag is grouped into a single Untagged row inside the list it belongs to, counted separately for income and for spending, so its total sits beside the tags you did apply. Tapping it opens those transactions, where you can add the missing label. Budgie does not force you to tag everything, but it will not hide the gap either."
 msgstr "« Sans étiquette » n'est pas un état d'erreur : c'est ce qui reste. Tout ce qui, dans la période, ne porte pas d'étiquette est regroupé dans une seule ligne « Sans étiquette » au sein de la liste concernée, comptée séparément pour les revenus et pour les dépenses, si bien que son total se place à côté des étiquettes que vous avez posées. La toucher ouvre ces transactions, où vous pouvez ajouter l'étiquette manquante. Budgie ne vous force pas à tout étiqueter, mais il ne masque pas le trou non plus."
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Untick a row to leave it for later, or give just that row a different category"
+msgstr "Décochez une ligne pour la garder pour plus tard, ou donnez-lui seule une autre catégorie"
+
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Up to three tag suggestions as tappable pills after category selection — zero typing required"
 msgstr "Jusqu'à trois suggestions d'étiquettes sous forme de pastilles cliquables après la sélection de la catégorie — aucune saisie requise"
@@ -16968,6 +17010,10 @@ msgstr "Qu'en est-il des virements en devises étrangères ?"
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "What about end-to-end encrypted cloud budgeting apps?"
 msgstr "Qu'en est-il des applications de budget cloud avec chiffrement de bout en bout ?"
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "What about merchants Budgie has not seen before?"
+msgstr "Et les commerçants que Budgie ne connaît pas encore ?"
 
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 msgid "What about multi-device sync?"
@@ -18441,8 +18487,8 @@ msgid "Yes, fully. Every core feature — logging expenses, viewing analytics, m
 msgstr "Oui, complètement. Chaque fonctionnalité principale — enregistrement des dépenses, consultation des analyses, gestion des catégories — s'exécute entièrement sur votre appareil. Internet n'est utilisé que lorsque vous activez la synchronisation bancaire, les téléchargements de modèles IA ou les mises à jour des taux de change."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-msgid "Yes, once you save a rule. After categorizing a group, tap the rule button in the bar at the bottom: the rule editor opens pre-filled and, once saved, categorizes matching transactions on every future bank sync and import. Even without a rule, your choices make the next suggestions more accurate."
-msgstr "Oui, dès que vous enregistrez une règle. Après avoir catégorisé un groupe, touchez le bouton règle dans la barre du bas : l’éditeur s’ouvre prérempli et, une fois la règle enregistrée, catégorise les transactions correspondantes à chaque synchronisation bancaire et à chaque import. Même sans règle, vos choix rendent les suggestions suivantes plus précises."
+msgid "Yes, once you save a rule. After you categorize a single group, tap the rule button in the bar at the bottom: the rule editor opens pre-filled and, once saved, categorizes matching transactions on every future bank sync and import. Even without a rule, your choices make the next suggestions more accurate."
+msgstr "Oui, dès que vous enregistrez une règle. Après avoir catégorisé un seul groupe, touchez le bouton règle dans la barre du bas : l’éditeur s’ouvre prérempli et, une fois la règle enregistrée, catégorise les transactions correspondantes à chaque synchronisation bancaire et à chaque import. Même sans règle, vos choix rendent les suggestions suivantes plus précises."
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Yes, with consent. When you agree to terms of service and privacy policies, you typically grant broad data collection and sharing rights. The legal framework in most jurisdictions allows extensive data use if disclosed in policies most users never read. GDPR in Europe provides stronger protections, including data minimization requirements, but enforcement varies. In the US, financial data protection is fragmented across state laws with no comprehensive federal standard."

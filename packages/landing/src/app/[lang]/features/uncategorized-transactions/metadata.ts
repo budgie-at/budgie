@@ -16,8 +16,8 @@ export const FEATURE_METADATA = {
     seoKeywords: [
         'uncategorized transactions',
         'missing category transactions',
-        'categorize expenses app',
-        'expense category cleanup',
+        'transactions without category',
+        'find uncategorized expenses',
         'budget analytics cleanup'
     ],
     relatedFeatureSlugs: [
@@ -30,6 +30,6 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
     publishedAt: '2026-05-18',
-    updatedAt: '2026-09-25',
+    updatedAt: '2026-09-26',
     ogTags: ['uncategorized', 'categories', 'analytics']
 } satisfies FeatureRegistryEntryInterface;
