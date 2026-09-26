@@ -15,7 +15,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     seoKeywords: ['cloud budget app privacy', 'Plaid data risks', 'financial app data breaches'],
     seoDescription: msg`Technical analysis of privacy risks in cloud budgeting apps: Plaid data sharing, real data breaches, screen-scraping dangers, and how to evaluate financial app security.`,
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'monobank-sync', 'screenshot-protection']
+    relatedFeatureSlugs: ['expense-tracking', 'monobank-sync', 'screenshot-protection']
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */

@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'dual-amount transfer',
         'FX transfer tracking'
     ],
-    relatedFeatureSlugs: ['transfer-pair-detection', 'convert-to-transfer', 'multi-currency', 'bank-resync-window'],
+    relatedFeatureSlugs: ['transfer-pair-detection', 'transaction-long-press-menu', 'multi-currency', 'bank-resync-window'],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'budgie-offline-financial-data'],
     publishedAt: '2025-12-19',
     updatedAt: '2026-05-03',

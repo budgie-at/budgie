@@ -221,7 +221,7 @@ Is the AI model integration also public source? Yes. The AI service layer — in
 ---
 
 # Feature: Offline-First Expense Tracker
-Source: https://budgie.at/en/features/offline-first-expense-tracker
+Source: https://budgie.at/en/offline-first
 
 Every transaction lives on your device. No cloud account, no sign-up — your finances stay in your pocket, even on a plane or in a tunnel.
 
@@ -360,7 +360,7 @@ How do crypto and stock holdings price? Either by manual price update or by impo
 ---
 
 # Feature: On-Device AI Budget App
-Source: https://budgie.at/en/features/on-device-ai-budget-app
+Source: https://budgie.at/en/ai-features
 
 Cloud AI assistants for budgeting send every transaction to a remote server for "intelligence". Budgie runs the LLM and embeddings on your phone — your data never leaves.
 
@@ -387,7 +387,7 @@ Does on-device AI drain battery? Inference runs in milliseconds for embeddings a
 ---
 
 # Feature: Private Budget App Alternative
-Source: https://budgie.at/en/features/private-budget-app-alternative
+Source: https://budgie.at/en/privacy
 
 Cloud-based personal finance apps mirror every transaction to their servers. Budgie keeps your ledger on your device. No account, no aggregator, no exposure.
 
@@ -443,7 +443,7 @@ Is "subscription-free" really durable? The app source is public. Even if Budgie 
 ---
 
 # Comparison: Budget App Without Bank Login
-Source: https://budgie.at/en/features/no-bank-login-budget-app
+Source: https://budgie.at/en/privacy
 
 Aggregators sit between you and your bank, mirroring every transaction to their servers. Budgie talks to your bank directly via tokens or imports statements you download yourself.
 
@@ -467,7 +467,7 @@ Which banks have direct API support? Monobank today; we add direct integrations 
 ---
 
 # Comparison: Open-Source Budget App for Mobile
-Source: https://budgie.at/en/features/open-source-budget-app-mobile
+Source: https://budgie.at/en/open-source
 
 Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line.
 
