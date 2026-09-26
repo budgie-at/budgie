@@ -1,6 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import Link from 'next/link';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
@@ -99,6 +100,18 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                     <Trans>
                         Long-press a PrivatBank account card on the home screen to jump straight to the file picker for that account — pick
                         a fresh export and Budgie merges it in, skipping anything already imported.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        After each import, anything left without a category is ready for{' '}
+                        <Link
+                            className="font-semibold underline underline-offset-4"
+                            href={`/${lang}/features/bulk-categorize-transactions`}
+                        >
+                            bulk categorization
+                        </Link>
+                        : one tap on a suggestion sorts a whole merchant group.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>

@@ -10,15 +10,16 @@ export const FEATURE_METADATA = {
     tier: FeatureTierEnum.CORE,
     title: msg`Bulk Transaction Categorization`,
     tagline: msg`Uncategorized bank transactions grouped by merchant, with suggestions learned from your own choices. One tap per group.`,
-    metaTitle: msg`Bulk Categorize Bank Transactions in One Tap`,
-    metaDescription: msg`Categorize bank transactions in bulk. Budgie groups uncategorized rows by merchant, suggests categories from your own history and applies them in one tap.`,
+    metaTitle: msg`Bulk Categorize Transactions by Merchant — Budgie`,
+    metaDescription: msg`Categorize bank transactions in bulk. Budgie groups them by merchant, suggests categories from your history and accepts the confident ones in one tap.`,
     primaryKeyword: 'bulk categorize transactions',
     seoKeywords: [
         'bulk categorize transactions',
         'categorize bank transactions',
         'categorize multiple transactions at once',
         'batch categorize expenses',
-        'categorize imported transactions'
+        'categorize imported transactions',
+        'categorize expenses app'
     ],
     relatedFeatureSlugs: [
         'uncategorized-transactions',
@@ -30,6 +31,6 @@ export const FEATURE_METADATA = {
     ],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'ynab-alternatives-privacy'],
     publishedAt: '2026-09-25',
-    updatedAt: '2026-09-25',
+    updatedAt: '2026-09-26',
     ogTags: ['categorize', 'bulk', 'merchants']
 } satisfies FeatureRegistryEntryInterface;
