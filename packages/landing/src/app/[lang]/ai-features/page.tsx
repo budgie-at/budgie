@@ -1,9 +1,13 @@
-/* eslint-disable max-lines-per-function -- SEO page keeps unique content inline instead of registry-driven */
-import { msg } from '@lingui/core/macro';
+/* eslint-disable max-lines, max-lines-per-function -- SEO page keeps unique content inline instead of registry-driven */
+import { msg, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
+import { FeaturePageCategoryComparison } from '../../../feature/component/feature-page-category-comparison/feature-page-category-comparison';
 import { FeaturePageFaqItem } from '../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../feature/component/feature-page-faq-section/feature-page-faq-section';
+import { FeaturePageHeading } from '../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeaturePageSection } from '../../../feature/component/feature-page-section/feature-page-section';
+import { FeatureStory } from '../../../feature/component/feature-story/feature-story';
 import { PillarHubBreadcrumbs } from '../../../feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs';
 import { PillarHubFeatureGrid } from '../../../feature/component/pillar-hub-feature-grid/pillar-hub-feature-grid';
 import { PillarHubHeroBulletItem } from '../../../feature/component/pillar-hub-hero-bullet-item/pillar-hub-hero-bullet-item';
@@ -143,6 +147,113 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                 </PillarHubFeatureGrid>
             </PillarHubSection>
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>It all happens on your phone</Trans>}>
+                    <Trans>
+                        One switch in Settings, and categories, tags, translation and voice entry all run where your data already is.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>One switch, downloads on demand</Trans>}>
+                    <Trans>
+                        New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch
+                        controls it, and each model downloads only when you first use the feature that needs it — about 2.5 GB in total if
+                        you use every feature including voice entry.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie settings screen with the AI section, the On-device AI toggle switched on and two AI status cards below it`}
+                    index={0}
+                    locale={lang}
+                    scene="on-device-ai-budget-app-1"
+                    slug="on-device-ai-budget-app"
+                >
+                    <FeatureStory.Callout y={0.622}>
+                        <Trans>One switch for every AI feature</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.748}>
+                        <Trans>Translation and learning progress</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Nothing goes out to be processed</Trans>}>
+                    <Trans>Budgie writes the English name and the search keywords for a foreign category right on the phone.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie edit category screen showing an AI-generated metadata block with an English translation and search keywords`}
+                    index={1}
+                    locale={lang}
+                    scene="ai-category-translation-1"
+                    slug="ai-category-translation"
+                >
+                    <FeatureStory.Callout y={0.4}>
+                        <Trans>Written on your phone</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.505}>
+                        <Trans>Keywords you can search by</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Nothing to send, nothing sent</Trans>}>
+                    <Trans>Past that one download, no AI feature opens a connection. There is no provider in the loop to trust.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie settings screen with the offline-and-private notice above the automatic MCC category assignment toggle`}
+                    index={2}
+                    locale={lang}
+                    scene="ai-auto-categorization-2"
+                    slug="ai-auto-categorization"
+                >
+                    <FeatureStory.Callout y={0.23}>
+                        <Trans>No cloud sync, no tracking</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Feature comparison</Trans>
+                </FeaturePageHeading>
+                <FeaturePageCategoryComparison categoryLabel={<Trans>Cloud AI budget assistants</Trans>}>
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>On your phone</Trans>}
+                        competitorValue={<Trans>Vendor&apos;s cloud / remote AI service</Trans>}
+                        label={<Trans>Where AI runs</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Nothing</Trans>}
+                        competitorValue={<Trans>Every transaction title, often more</Trans>}
+                        label={<Trans>What gets sent</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Yes</Trans>}
+                        competitorValue={<Trans>No</Trans>}
+                        label={<Trans>Works offline</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>No</Trans>}
+                        competitorValue={<Trans>Often yes</Trans>}
+                        label={<Trans>AI subscription required</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Total — no provider exists</Trans>}
+                        competitorValue={<Trans>Bound by their privacy policy</Trans>}
+                        label={<Trans>Privacy from AI provider</Trans>}
+                    />
+                    <FeaturePageCategoryComparison.Row
+                        budgieValue={<Trans>Improves with your corrections</Trans>}
+                        competitorValue={<Trans>Static, plus your data trains their model</Trans>}
+                        label={<Trans>Suggestion quality</Trans>}
+                    />
+                </FeaturePageCategoryComparison>
+            </FeaturePageSection>
+
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     answer={
@@ -201,6 +312,34 @@ export default async function AiFeaturesPillarHubPage(props: PageLangParam) {
                         </Trans>
                     }
                     question={<Trans>Can I turn AI off?</Trans>}
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Which AI features run on my phone?</Trans>}
+                    answer={
+                        <Trans>
+                            Category suggestions, tag suggestions, category and tag translation, and voice entry all run on your phone, on
+                            both iOS and Android — nothing leaves the device.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>How is this different from a cloud AI assistant?</Trans>}
+                    answer={
+                        <Trans>
+                            A cloud assistant ships your transaction titles to a remote service and trusts the provider&apos;s privacy
+                            policy. Budgie does the work on your device — there&apos;s no provider to trust.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Does on-device AI drain battery?</Trans>}
+                    answer={
+                        <Trans>
+                            Nothing runs until you trigger it. Budgie gets ready when the feature that needs it starts, stays ready for
+                            about half a minute after you finish, and lets go when the app goes to the background — so the first request
+                            after a pause waits a moment and the ones after it do not.
+                        </Trans>
+                    }
                 />
             </FeaturePageFaqSection>
         </PillarHubPageShell>

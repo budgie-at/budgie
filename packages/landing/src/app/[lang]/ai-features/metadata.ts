@@ -12,8 +12,9 @@ export const AI_FEATURES_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
         msg`private AI budget app`,
         msg`offline AI expense tracker`,
         msg`AI auto-categorization app`,
-        msg`offline AI finance app`
+        msg`offline AI finance app`,
+        msg`on-device AI budget app`
     ],
     publishedAt: '2026-05-07',
-    updatedAt: '2026-09-25'
+    updatedAt: '2026-09-26'
 };

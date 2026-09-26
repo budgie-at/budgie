@@ -1,17 +1,21 @@
-/* eslint-disable max-lines-per-function -- SEO page keeps unique content inline instead of registry-driven */
-import { msg } from '@lingui/core/macro';
+/* eslint-disable max-lines, max-lines-per-function -- SEO page keeps unique content inline instead of registry-driven */
+import { msg, t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
+import { FeaturePageCategoryComparison } from '../../../feature/component/feature-page-category-comparison/feature-page-category-comparison';
 import { FeaturePageFaqItem } from '../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../feature/component/feature-page-heading/feature-page-heading';
 import { FeaturePageProse } from '../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageSection } from '../../../feature/component/feature-page-section/feature-page-section';
+import { FeatureStory } from '../../../feature/component/feature-story/feature-story';
 import { PillarHubBreadcrumbs } from '../../../feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs';
+import { PillarHubFeatureGrid } from '../../../feature/component/pillar-hub-feature-grid/pillar-hub-feature-grid';
 import { PillarHubHeroBulletItem } from '../../../feature/component/pillar-hub-hero-bullet-item/pillar-hub-hero-bullet-item';
 import { PillarHubHeroBulletList } from '../../../feature/component/pillar-hub-hero-bullet-list/pillar-hub-hero-bullet-list';
 import { PillarHubHero } from '../../../feature/component/pillar-hub-hero/pillar-hub-hero';
 import { PillarHubPageShell } from '../../../feature/component/pillar-hub-page-shell/pillar-hub-page-shell';
+import { PillarHubSection } from '../../../feature/component/pillar-hub-section/pillar-hub-section';
 import { buildPillarHubRouteMetadata } from '../../../feature/util/build-pillar-hub-route-metadata.util';
 import { buildSoftwareSourceCodeJsonLd } from '../../../feature/util/build-software-source-code-json-ld.util';
 import { JsonLd } from '../../../generic/component/json-ld/json-ld';
@@ -76,6 +80,40 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                     </PillarHubHeroBulletList>
                 </PillarHubHero>
 
+                <PillarHubSection>
+                    <PillarHubFeatureGrid>
+                        <PillarHubFeatureGrid.Item
+                            href={`/${lang}/features/self-hosted-finance-app-mobile`}
+                            index={0}
+                            tagline={
+                                <Trans>
+                                    Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data
+                                    ownership with zero ops — your phone is the server.
+                                </Trans>
+                            }
+                            title={<Trans>Self-Hosted Finance App on Mobile — Without Running a Server</Trans>}
+                        />
+                        <PillarHubFeatureGrid.Item
+                            href={`/${lang}/features/subscription-free-budget-app`}
+                            index={1}
+                            tagline={<Trans>No monthly fee and no paid tier — every feature ships in the app you install.</Trans>}
+                            title={<Trans>Subscription-Free Budget App</Trans>}
+                        />
+                        <PillarHubFeatureGrid.Item
+                            href={`/${lang}/features/data-export`}
+                            index={2}
+                            tagline={<Trans>CSV for spreadsheets. A full database backup for restore. Both yours, never ours.</Trans>}
+                            title={<Trans>Export Every Transaction You&apos;ve Logged</Trans>}
+                        />
+                        <PillarHubFeatureGrid.Item
+                            href={`/${lang}/features/database-backup`}
+                            index={3}
+                            tagline={<Trans>One file. No account. Restore by picking it — encrypted if your PIN was set.</Trans>}
+                            title={<Trans>Database Backup &amp; Restore</Trans>}
+                        />
+                    </PillarHubFeatureGrid>
+                </PillarHubSection>
+
                 <FeaturePageSection>
                     <FeaturePageHeading>
                         <Trans>Read the Code, Verify the Claims</Trans>
@@ -129,6 +167,76 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                     </FeaturePageProse>
                 </FeaturePageSection>
 
+                <FeatureStory>
+                    <FeatureStory.Intro heading={<Trans>Every promise here has a file behind it</Trans>}>
+                        <Trans>One settings screen, and a public repository where every line of it can be checked.</Trans>
+                    </FeatureStory.Intro>
+
+                    <FeatureStory.Point index={0}>
+                        <Trans>
+                            Read the code that holds your money. The repository is the product, and nothing about how Budgie stores or
+                            protects your data is compiled in secret.
+                        </Trans>
+                    </FeatureStory.Point>
+
+                    <FeatureStory.Shot
+                        alt={t(i18n)`Budgie settings screen listing the privacy, security and general options the app ships with`}
+                        index={0}
+                        locale={lang}
+                        scene="open-source-budget-app-mobile-1"
+                        slug="open-source-budget-app-mobile"
+                    >
+                        <FeatureStory.Callout index={0} y={0.262}>
+                            <Trans>Read the code behind this claim</Trans>
+                        </FeatureStory.Callout>
+                        <FeatureStory.Callout index={1} y={0.403}>
+                            <Trans>And the lock that enforces it</Trans>
+                        </FeatureStory.Callout>
+                    </FeatureStory.Shot>
+
+                    <FeatureStory.Point index={1}>
+                        <Trans>
+                            Scroll Settings end to end and there is no analytics group, because there is no telemetry to switch off.
+                        </Trans>
+                    </FeatureStory.Point>
+                    <FeatureStory.Point index={2}>
+                        <Trans>Fork it if we disappear. The database format and the app are both yours to keep.</Trans>
+                    </FeatureStory.Point>
+                </FeatureStory>
+
+                <FeaturePageSection>
+                    <FeaturePageHeading>
+                        <Trans>Feature comparison</Trans>
+                    </FeaturePageHeading>
+                    <FeaturePageCategoryComparison categoryLabel={<Trans>Closed-source budget apps</Trans>}>
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Public on GitHub</Trans>}
+                            competitorValue={<Trans>Closed</Trans>}
+                            label={<Trans>Source code</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Verifiable in source</Trans>}
+                            competitorValue={<Trans>Marketing copy only</Trans>}
+                            label={<Trans>Privacy claims</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Yes</Trans>}
+                            competitorValue={<Trans>No</Trans>}
+                            label={<Trans>Forkable</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Yes</Trans>}
+                            competitorValue={<Trans>No</Trans>}
+                            label={<Trans>Community PRs accepted</Trans>}
+                        />
+                        <FeaturePageCategoryComparison.Row
+                            budgieValue={<Trans>Low — fork survives</Trans>}
+                            competitorValue={<Trans>High — shutdown = data loss risk</Trans>}
+                            label={<Trans>Vendor risk</Trans>}
+                        />
+                    </FeaturePageCategoryComparison>
+                </FeaturePageSection>
+
                 <FeaturePageFaqSection locale={lang}>
                     <FeaturePageFaqItem
                         answer={
@@ -177,6 +285,18 @@ export default async function OpenSourcePillarHubPage(props: PageLangParam) {
                             </Trans>
                         }
                         question={<Trans>Is the AI model integration also public source?</Trans>}
+                    />
+                    <FeaturePageFaqItem
+                        question={<Trans>Can I self-build?</Trans>}
+                        answer={<Trans>Yes. The repository ships with build instructions for iOS and Android.</Trans>}
+                    />
+                    <FeaturePageFaqItem
+                        question={<Trans>What if Budgie shuts down?</Trans>}
+                        answer={
+                            <Trans>
+                                The code stays public. The community can keep building. Your data stays on your device regardless.
+                            </Trans>
+                        }
                     />
                 </FeaturePageFaqSection>
             </PillarHubPageShell>

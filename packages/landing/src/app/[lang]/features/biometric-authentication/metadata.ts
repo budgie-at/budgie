@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'fingerprint lock screen app',
         'private expense tracker biometrics'
     ],
-    relatedFeatureSlugs: ['pin-app-lock', 'screenshot-protection', 'offline-first-expense-tracker'],
+    relatedFeatureSlugs: ['pin-app-lock', 'screenshot-protection', 'expense-tracking'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
     publishedAt: '2025-12-18',
     updatedAt: '2026-09-16',

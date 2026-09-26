@@ -15,7 +15,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     seoKeywords: ['offline expense tracker', 'private finance app', 'local budget app', 'encrypted expense tracker'],
     seoDescription: msg`Discover exactly how Budgie keeps your financial data off the cloud: local-only storage, encryption at rest, encrypted backups, and open-source transparency.`,
     relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'open-source-budgeting-transparency'],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'pin-app-lock', 'database-backup', 'biometric-authentication']
+    relatedFeatureSlugs: ['expense-tracking', 'pin-app-lock', 'database-backup', 'biometric-authentication']
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */

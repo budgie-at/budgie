@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'PIN-protected expense tracker',
         'finance app screen lock'
     ],
-    relatedFeatureSlugs: ['biometric-authentication', 'screenshot-protection', 'offline-first-expense-tracker', 'database-backup'],
+    relatedFeatureSlugs: ['biometric-authentication', 'screenshot-protection', 'expense-tracking', 'database-backup'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'offline-first-privacy-financial-app'],
     publishedAt: '2025-12-18',
     updatedAt: '2026-05-03',

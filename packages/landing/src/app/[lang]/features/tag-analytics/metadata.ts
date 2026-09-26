@@ -9,20 +9,22 @@ export const FEATURE_METADATA = {
     slug: 'tag-analytics',
     tier: FeatureTierEnum.POWER,
     title: msg`Tag-Based Spending Analytics`,
-    tagline: msg`A dedicated Tags tab in analytics with per-tag totals and a drillable Untagged bucket that surfaces every gap in your labeling.`,
+    tagline: msg`A Tags tab in Analytics with income and spending totalled tag by tag, each with its share of the period, plus an Untagged row for every gap in your labeling.`,
     metaTitle: msg`Spending Analytics by Tag — Drillable Reports — Budgie`,
-    metaDescription: msg`See income, expense, and net per tag in a dedicated analytics tab. The Untagged bucket finds every transaction missing a label so nothing falls through.`,
+    metaDescription: msg`See income and spending per tag in a dedicated Analytics tab, each with its share of the period. The Untagged row finds every transaction missing a label.`,
     primaryKeyword: 'spending by tag analytics',
     seoKeywords: [
         'spending by tag analytics',
         'tag-based budget app',
         'project expense analytics',
         'shared expense analytics',
-        'reimbursable expense tracker'
+        'reimbursable expense tracker',
+        'analytics by tag mobile',
+        'untagged transactions report'
     ],
-    relatedFeatureSlugs: ['transaction-tags', 'primary-tag', 'spending-analytics', 'date-filter-presets'],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedFeatureSlugs: ['transaction-tags', 'primary-tag', 'spending-analytics', 'date-filter-presets', 'ai-tag-suggestions'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers', 'budgie-offline-financial-data'],
     publishedAt: '2026-01-04',
-    updatedAt: '2026-09-16',
+    updatedAt: '2026-09-26',
     ogTags: ['tags', 'analytics', 'drill-down']
 } satisfies FeatureRegistryEntryInterface;

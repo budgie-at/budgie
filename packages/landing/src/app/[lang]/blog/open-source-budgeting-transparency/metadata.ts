@@ -15,7 +15,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     seoKeywords: ['source available budget app', 'transparent finance app', 'public source security'],
     seoDescription: msg`Learn why public source matters for financial software. How to audit apps yourself and how Budgie's transparent development protects your data.`,
     relatedArticleSlugs: ['budgie-offline-financial-data', 'local-first-movement-developers'],
-    relatedFeatureSlugs: ['offline-first-expense-tracker', 'data-export', 'database-backup']
+    relatedFeatureSlugs: ['expense-tracking', 'data-export', 'database-backup']
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */
