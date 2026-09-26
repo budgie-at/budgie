@@ -241,7 +241,7 @@
         },
         {
             "name": "runway-2",
-            "flow": "flows/media/runway-2.flow.yaml"
+            "deepLink": "budgie://analytics?tab=runway"
         },
         {
             "name": "runway-3",
@@ -405,6 +405,13 @@
         {
             "name": "home-hero-clip-1",
             "flow": "flows/media/home-hero-clip-1.flow.yaml",
+            "locales": [
+                "en"
+            ]
+        },
+        {
+            "name": "runway-clip-1",
+            "flow": "flows/media/runway-clip-1.flow.yaml",
             "locales": [
                 "en"
             ]
