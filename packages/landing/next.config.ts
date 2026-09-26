@@ -18,12 +18,21 @@ const nextConfig: NextConfig = {
     },
     async redirects() {
         return [
-            {
-                source: `/:lang(${SUPPORTED_LOCALES.join('|')})/features/ai-merchant-translation`,
-                destination: '/:lang/features/ai-category-translation',
-                permanent: true
-            }
-        ];
+            ['ai-merchant-translation', '/features/ai-category-translation'],
+            ['statistics-tags-tab', '/features/tag-analytics'],
+            ['crypto-price-history', '/features/crypto-investment-tracking'],
+            ['on-device-ai-budget-app', '/ai-features'],
+            ['open-source-budget-app-mobile', '/open-source'],
+            ['offline-first-expense-tracker', '/offline-first'],
+            ['private-budget-app-alternative', '/privacy'],
+            ['no-bank-login-budget-app', '/privacy'],
+            ['convert-to-transfer', '/features/transaction-long-press-menu'],
+            ['convert-to-refund', '/features/transaction-long-press-menu']
+        ].map(([retiredSlug, destination]) => ({
+            source: `/:lang(${SUPPORTED_LOCALES.join('|')})/features/${retiredSlug}`,
+            destination: `/:lang${destination}`,
+            permanent: true
+        }));
     },
     async headers() {
         return [

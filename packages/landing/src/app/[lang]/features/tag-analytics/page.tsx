@@ -16,6 +16,7 @@ import { FeaturePageRelatedArticles } from '../../../../feature/component/featur
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -73,27 +74,104 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                 locale={lang}
                 tagline={
                     <Trans>
-                        A dedicated Tags tab lives in Analytics next to the Categories and Runway tabs — per-tag income, expense, and net
-                        totals, plus a drillable Untagged bucket that surfaces every transaction missing a label.
+                        Switch to the Tags tab in Analytics for income and spending totalled tag by tag, each with its share of the period
+                        and the transactions behind it.
                     </Trans>
                 }
             />
 
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>The question a category cannot answer</Trans>}>
+                    <Trans>
+                        One screen: the Tags tab beside Categories, income totalled tag by tag, then spending, each with its share of the
+                        period.
+                    </Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Categories cannot answer every question</Trans>}>
+                    <Trans>
+                        A category says what kind of expense something is. Which trip, which project, which person is a different question,
+                        and that is what a tag records. Analytics keeps a Tags tab beside Categories, under the same period and filter
+                        chips.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Analytics Tags tab with an overview of spent, income and balance above an income-by-tag list and a spending-by-tag list, each row showing a total and its share of the period`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="statistics-tags-tab-1"
+                    slug="statistics-tags-tab"
+                >
+                    <FeatureStory.Callout index={0} y={0.123}>
+                        <Trans>Tags, beside Categories</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} y={0.459}>
+                        <Trans>Income totalled per tag</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={2} y={0.583}>
+                        <Trans>Its share of the period</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Income and spending, tag by tag</Trans>}>
+                    <Trans>
+                        The tab splits in two: income by tag first, then spending by tag, each row a tag with its total for the period. The
+                        same tag can appear on both lists, so a tag that earns and costs is not flattened into one figure.
+                    </Trans>
+                </FeatureStory.Step>
+
+                <FeatureStory.Step index={2} title={<Trans>Every tag carries its share</Trans>}>
+                    <Trans>
+                        Under each total is that tag&apos;s share — of the period&apos;s income, or of its expenses. The shares can add up
+                        past 100%, because a transaction can carry several tags and counts in full under each of them. Tapping a row opens
+                        the transactions behind it.
+                    </Trans>
+                </FeatureStory.Step>
+            </FeatureStory>
+
             <FeaturePageSection>
                 <FeaturePageHeading>
-                    <Trans>Why the Tags tab answers questions categories can&apos;t</Trans>
+                    <Trans>Why category analytics alone leaves money unlabeled</Trans>
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Categories tell you what kind of expense. Tags tell you for what purpose — &quot;Italy trip total&quot;,
-                        &quot;shared rent&quot;, &quot;reimbursable meals&quot;. Switch to the Tags tab in Analytics and every tag becomes
-                        its own row with income, expense, and net broken out separately.
+                        Category-based analytics answer what kind of expense a transaction is — groceries, transport, dining. Tags answer a
+                        different and equally important question: what was it for? A dinner tagged as a #work-lunch, a #vacation flight
+                        charged to the same &ldquo;Travel&rdquo; category as a commute, a shared dinner that needs a #split label — these
+                        distinctions only surface when you have a dedicated tag reporting layer.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        The Untagged bucket collects every transaction that carries zero tags. It is a deliberate gap-finder — tap it to see
-                        the full list, label what you missed, and watch the bucket shrink.
+                        The Tags tab in Budgie Analytics puts per-tag totals on the same screen as the category breakdown, reachable with a
+                        single tap on the tab switcher. It lists income by tag and spending by tag separately, each row carrying that
+                        tag&apos;s total for the active period and its share of it. Tapping a row opens the transactions behind it, filtered
+                        to that tag. Whatever in the period carries no tag at all shows up as an Untagged row instead of quietly
+                        disappearing.
+                    </Trans>
+                </FeaturePageProse>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>The Untagged row is the gap</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        Untagged is not an error state — it is what is left over. Anything in the period carrying no tag is grouped into a
+                        single Untagged row inside the list it belongs to, counted separately for income and for spending, so its total sits
+                        beside the tags you did apply. Tapping it opens those transactions, where you can add the missing label. Budgie does
+                        not force you to tag everything, but it will not hide the gap either.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        The totals are a live query, so the Untagged row shrinks as you label transactions during a review pass.
+                        Budgie&apos;s on-device suggestions propose tags on the transaction form itself, which is usually quicker than
+                        picking each one by hand.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -104,34 +182,20 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Dedicated Tags tab in Analytics, next to Categories and Runway — one tap to switch views</Trans>
+                        <Trans>Income by tag and spending by tag, one tap from the Analytics tab bar</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Per-tag income, expense, and net totals — each tag row broken out separately</Trans>
+                        <Trans>An Untagged row for whatever in the period carries no label, and the transactions behind it</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Untagged bucket surfaces every transaction missing a label — drill in and fix gaps</Trans>
+                        <Trans>
+                            Reads the same period and filters as the Categories tab — This Month, Last Month, This Year and the rest
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Drill from any tag row into its underlying transactions with the same date filters</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Respects the global date-range preset — Last Week, Last Month, Custom, or All Time</Trans>
+                        <Trans>Tap any row to open the transactions behind that tag for the active period</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Open Statistics and tap the Tags tab. Each tag becomes a sortable row showing income, expense, and net for the
-                        active date range. The Untagged row aggregates every transaction without a tag. Tap any row to drill into the full
-                        transaction list filtered to that tag.
-                    </Trans>
-                </FeaturePageProse>
             </FeaturePageSection>
 
             <FeaturePageFaqSection locale={lang}>
@@ -146,29 +210,29 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What&apos;s in the Untagged bucket?</Trans>}
+                    question={<Trans>What&apos;s the Untagged bucket?</Trans>}
                     answer={
                         <Trans>
-                            Every transaction that carries zero tags. Tapping the Untagged row opens the full transaction list so you can
-                            label them retroactively — the bucket is a deliberate gap-finder, not a catch-all category.
+                            Whatever in the period has no tag at all. It appears as an Untagged row — one in the income list, one in the
+                            spending list — and tapping it opens those transactions so you can label them.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I see income totals per tag?</Trans>}
+                    question={<Trans>Can I drill down from a tag?</Trans>}
                     answer={
                         <Trans>
-                            Yes. Each tag row shows separate income, expense, and net totals — useful when a tag spans both (refunds tagged
-                            #vacation appear in the income column for that tag).
+                            Yes. Tapping a row opens the transaction list for that tag over the active period. A row belongs either to the
+                            income list or to the spending list, and the list opens on that side.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>Can I drill into a tag&apos;s transactions?</Trans>}
+                    question={<Trans>Does this work with the date filter presets?</Trans>}
                     answer={
                         <Trans>
-                            Tap any tag row to see every contributing transaction for the current period, with the same sort options and
-                            date filters available everywhere else in Analytics.
+                            Yes — the Tags tab reads whatever period is active: This Month, Last Month, This Week, Last Week, Today, This
+                            Year or All Time. There is no custom range.
                         </Trans>
                     }
                 />

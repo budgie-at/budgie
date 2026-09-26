@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.80.0](https://github.com/budgie-at/budgie/compare/v6.79.0...v6.80.0) (2026-09-26)
+
+
+### Features
+
+* **landing:** tell the bulk categorize story with real inbox media ([0d8980c](https://github.com/budgie-at/budgie/commit/0d8980cd7e70c0968cf5b336ded1f2494af3c39f))
+
+
+
+
+
 # [6.79.0](https://github.com/budgie-at/budgie/compare/v6.78.2...v6.79.0) (2026-09-26)
 
 
