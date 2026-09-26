@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
@@ -20,7 +21,15 @@ export const CategorizeInboxDock = ({ acceptableAssignments, onHeightChange }: P
 
     const handleLayout = (event: LayoutChangeEvent): void => void onHeightChange(event.nativeEvent.layout.height);
 
-    if (!isDefined(undoAssignments) && isEmptyArray(acceptableAssignments)) {
+    const isHidden = !isDefined(undoAssignments) && isEmptyArray(acceptableAssignments);
+
+    useEffect(() => {
+        if (isHidden) {
+            onHeightChange(0);
+        }
+    }, [isHidden, onHeightChange]);
+
+    if (isHidden) {
         return null;
     }
 
