@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly slot: number;
-    readonly exit: 'accept' | 'move';
+    readonly count?: number;
     readonly title: ReactNode;
     readonly meta: ReactNode;
     readonly amount: string;
@@ -12,8 +12,8 @@ interface Props {
     readonly children: ReactNode;
 }
 
-export const CategorizeDemoCard = ({ slot, exit, title, meta, amount, icon, children }: Props) => (
-    <div className="cdemo-card" data-exit={exit} data-slot={slot}>
+export const CategorizeDemoCard = ({ slot, count, title, meta, amount, icon, children }: Props) => (
+    <div className="cdemo-card" data-count={count} data-slot={slot}>
         <div className="cdemo-card-top">
             {isDefined(icon) ? <span className="cdemo-card-icon">{icon}</span> : null}
             <span className="cdemo-card-heading">

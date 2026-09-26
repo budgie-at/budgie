@@ -4,33 +4,34 @@
 import { RotateCcw } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
-import { isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import type { ReactNode } from 'react';
 
 const STATIC_QUERY = '(prefers-reduced-motion:reduce)';
 const START_THRESHOLD = 0.6;
-const RAW_ROW_STAGGER_MS = 45;
+const START_DWELL_MS = 1200;
+const RAW_ROW_STAGGER_MS = 60;
 const RAW_ROW_SCALE = 0.94;
-const GROUP_AT_MS = 900;
-const LIGHT_AT_MS = 2300;
-const PRESS_AT_MS = 3900;
-const ACCEPT_AT_MS = 4050;
-const SHIFT_AT_MS = 4600;
-const MOVE_PRESS_AT_MS = 5500;
-const MOVE_AT_MS = 5650;
-const DONE_AT_MS = 6200;
-const COUNT_TICK_MS = 80;
+const GROUP_AT_MS = 600;
+const LIGHT_AT_MS = 1700;
+const PRESS_AT_MS = 2700;
+const ACCEPT_AT_MS = 2850;
+const CARD_EXIT_STAGGER_MS = 70;
+const SHIFT_OVERLAP_MS = 180;
+const SHIFT_AT_MS = ACCEPT_AT_MS + SHIFT_OVERLAP_MS;
+const REWIND_AT_MS = 4600;
+const REWIND_FADE_MS = 220;
+const SETTLE_AT_MS = REWIND_AT_MS + REWIND_FADE_MS;
 const PHASES: readonly (readonly [number, string])[] = [
     [GROUP_AT_MS, 'data-grouped'],
     [LIGHT_AT_MS, 'data-lit'],
     [PRESS_AT_MS, 'data-pressed'],
     [ACCEPT_AT_MS, 'data-accepted'],
     [SHIFT_AT_MS, 'data-shifted'],
-    [MOVE_PRESS_AT_MS, 'data-moving'],
-    [MOVE_AT_MS, 'data-moved'],
-    [DONE_AT_MS, 'data-done']
+    [REWIND_AT_MS, 'data-rewinding']
 ];
+const REWOUND_PHASES = ['data-pressed', 'data-accepted', 'data-shifted'];
 
 interface Props {
     readonly replay: ReactNode;
@@ -53,11 +54,27 @@ const writeCount = (panel: HTMLElement, done: number) => {
     }
 };
 
+const buildCountTicks = (panel: HTMLElement): (readonly [number, number])[] =>
+    Array.from(panel.querySelectorAll<HTMLElement>('.cdemo-card[data-count]')).reduce<(readonly [number, number])[]>(
+        (ticks, card, index) => [
+            ...ticks,
+            [ACCEPT_AT_MS + index * CARD_EXIT_STAGGER_MS, (ticks.at(-1)?.[1] ?? 0) + Number(card.dataset.count)]
+        ],
+        []
+    );
+
 const collapseRawRows = (panel: HTMLElement) => {
-    panel.querySelectorAll<HTMLElement>('[data-cdemo-dy]').forEach((row, index) => {
-        row.style.transitionDelay = `${index * RAW_ROW_STAGGER_MS}ms`;
+    panel.querySelectorAll<HTMLElement>('[data-cdemo-dy]').forEach(row => {
+        row.style.transitionDelay = `${Number(row.dataset.slot) * RAW_ROW_STAGGER_MS}ms`;
         row.style.transform = `translateY(${row.dataset.cdemoDy ?? 0}rem) scale(${RAW_ROW_SCALE})`;
     });
+};
+
+const withoutTransitions = (root: HTMLElement, apply: () => void) => {
+    root.setAttribute('data-resetting', '');
+    apply();
+    root.getBoundingClientRect();
+    root.removeAttribute('data-resetting');
 };
 
 const resetPanel = (panel: HTMLElement) => {
@@ -69,43 +86,39 @@ const resetPanel = (panel: HTMLElement) => {
     writeCount(panel, 0);
 };
 
-const buildCountTicks = (total: number): (readonly [number, number])[] => [
-    ...Array.from({ length: Math.max(total - 1, 0) }, (_, index): readonly [number, number] => [
-        ACCEPT_AT_MS + (index + 1) * COUNT_TICK_MS,
-        index + 1
-    ]),
-    [MOVE_AT_MS, total]
-];
+const settlePanel = (root: HTMLElement, panel: HTMLElement) => {
+    withoutTransitions(root, () => {
+        REWOUND_PHASES.forEach(attribute => void panel.removeAttribute(attribute));
+        writeCount(panel, 0);
+    });
+    panel.removeAttribute('data-rewinding');
+};
 
 export const CategorizeDemoPlayer = ({ replay, children }: Props) => {
     const rootRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
     const timersRef = useRef<number[]>([]);
-
-    const play = () => {
-        const panel = panelRef.current;
-
-        if (!isDefined(panel)) {
-            return;
-        }
-
-        const applyPhase = (attribute: string) => {
-            if (attribute === 'data-grouped') {
-                collapseRawRows(panel);
-            }
-
-            panel.setAttribute(attribute, '');
-        };
-
-        timersRef.current = [
-            ...PHASES.map(([delay, attribute]) => window.setTimeout(applyPhase, delay, attribute)),
-            ...buildCountTicks(readTotal(panel)).map(([delay, done]) => window.setTimeout(writeCount, delay, panel, done))
-        ];
-    };
+    const observerRef = useRef<IntersectionObserver>(null);
 
     const stop = () => {
         timersRef.current.forEach(timer => void window.clearTimeout(timer));
         timersRef.current = [];
+    };
+
+    const play = () => {
+        const root = rootRef.current;
+        const panel = panelRef.current;
+
+        if (!isDefined(root) || !isDefined(panel)) {
+            return;
+        }
+
+        timersRef.current = [
+            window.setTimeout(collapseRawRows, GROUP_AT_MS, panel),
+            ...PHASES.map(([delay, attribute]) => window.setTimeout(() => void panel.setAttribute(attribute, ''), delay)),
+            ...buildCountTicks(panel).map(([delay, done]) => window.setTimeout(writeCount, delay, panel, done)),
+            window.setTimeout(settlePanel, SETTLE_AT_MS, root, panel)
+        ];
     };
 
     const handleReplay = () => {
@@ -116,11 +129,9 @@ export const CategorizeDemoPlayer = ({ replay, children }: Props) => {
             return;
         }
 
+        observerRef.current?.disconnect();
         stop();
-        root.setAttribute('data-resetting', '');
-        resetPanel(panel);
-        root.getBoundingClientRect();
-        root.removeAttribute('data-resetting');
+        withoutTransitions(root, () => void resetPanel(panel));
         play();
     };
 
@@ -133,19 +144,23 @@ export const CategorizeDemoPlayer = ({ replay, children }: Props) => {
 
         const observer = new IntersectionObserver(
             entries => {
+                stop();
+
                 if (!entries.some(entry => entry.isIntersecting)) {
                     return;
                 }
 
-                observer.disconnect();
-
-                if (isEmptyArray(timersRef.current)) {
-                    play();
-                }
+                timersRef.current = [
+                    window.setTimeout(() => {
+                        observer.disconnect();
+                        play();
+                    }, START_DWELL_MS)
+                ];
             },
             { threshold: START_THRESHOLD }
         );
 
+        observerRef.current = observer;
         observer.observe(panel);
 
         return () => {
