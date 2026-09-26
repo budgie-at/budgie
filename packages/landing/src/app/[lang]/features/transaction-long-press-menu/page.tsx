@@ -1,4 +1,4 @@
-/* eslint-disable max-lines-per-function */
+/* eslint-disable max-lines, max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
@@ -83,7 +83,8 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Every change starts on the list</Trans>}>
                     <Trans>
-                        Three screens: the press that opens the menu, the four actions behind it, and the one screen a conversion needs.
+                        Five screens: the press that opens the menu, the actions behind it, a transfer finished in one screen, and a refund
+                        linked to the purchase it reverses.
                     </Trans>
                 </FeatureStory.Intro>
 
@@ -148,6 +149,54 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                         <Trans>Pick the destination account</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
+
+                <FeatureStory.Step index={3} title={<Trans>A refund is not income</Trans>}>
+                    <Trans>
+                        Counting a merchant refund as earnings inflates every income report you run. Long-press the income row, choose
+                        Convert to Refund, and Budgie lists the expenses it could be reversing — same currency, any account, and never
+                        smaller than the refund itself.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Convert to Refund picker listing same-currency expenses with a search field and a disabled Convert button`}
+                    index={3}
+                    locale={lang}
+                    scene="convert-to-refund-1"
+                    slug="convert-to-refund"
+                >
+                    <FeatureStory.Callout y={0.249}>
+                        <Trans>Likeliest match sorted first</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.855}>
+                        <Trans>Search by merchant or account</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={4} title={<Trans>Link it to what it reverses</Trans>}>
+                    <Trans>
+                        Pick the expense and convert. The refund stops standing on its own: it attaches to that purchase, the expense is
+                        marked Refunded, and analytics counts the purchase net of what came back — under its original category, not as new
+                        income. Tap Revert on the refunded transaction to pull the two rows apart again.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie Convert to Refund picker with one expense row selected and checked, and the Convert button now enabled`}
+                    index={4}
+                    locale={lang}
+                    scene="convert-to-refund-2"
+                    slug="convert-to-refund"
+                >
+                    <FeatureStory.Callout y={0.249}>
+                        <Trans>Pick the expense it reverses</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.907}>
+                        <Trans>Convert enables on selection</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
             </FeatureStory>
 
             <FeaturePageSection>
@@ -190,6 +239,75 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 </FeaturePageBenefitGrid>
             </FeaturePageSection>
 
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Convert a Transaction to a Transfer</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        Mistakes happen. You log a transfer as an expense, the spending stats inflate, the destination account doesn&apos;t
+                        credit. Budgie&apos;s &quot;Convert to transfer&quot; action takes the existing transaction and turns it into a
+                        transfer to the account you pick.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        The transaction becomes a single transfer with a credit entry and a debit entry against the two accounts, balances
+                        reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageBenefitGrid>
+                    <FeaturePageBenefitGridItem index={0}>
+                        <Trans>One-tap action from any transaction&apos;s long-press menu</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={1}>
+                        <Trans>One transaction carries both account entries automatically — no double-entry by you</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={2}>
+                        <Trans>Spending analytics updates in place — old expense falls out cleanly</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3}>
+                        <Trans>Cross-currency conversion supported — dual-amount input after destination pick</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={4}>
+                        <Trans>Fee entries on the original transaction carry over to the transfer automatically</Trans>
+                    </FeaturePageBenefitGridItem>
+                </FeaturePageBenefitGrid>
+            </FeaturePageSection>
+
+            <FeaturePageSection>
+                <FeaturePageHeading>
+                    <Trans>Convert Income to Refund</Trans>
+                </FeaturePageHeading>
+                <FeaturePageProse>
+                    <Trans>
+                        When a merchant refunds a purchase, the money reappears on your card as a positive transaction. Most expense
+                        trackers record it as income — which is technically accurate in a cash-flow sense but misleading for actual income
+                        analysis.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageProse>
+                    <Trans>
+                        Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports
+                        partial refunds, and keeps the audit trail visible from the transaction detail screen.
+                    </Trans>
+                </FeaturePageProse>
+                <FeaturePageBenefitGrid>
+                    <FeaturePageBenefitGridItem index={0}>
+                        <Trans>Clean income totals — refund income links back to the expense instead of counting as earnings</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={1}>
+                        <Trans>Partial and full refunds — Budgie compares the refund amount with the original expense</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={2}>
+                        <Trans>Cross-account manual search — find same-currency expenses even when the refund lands elsewhere</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={3}>
+                        <Trans>Reversible audit trail — Revert restores the original income and expense rows</Trans>
+                    </FeaturePageBenefitGridItem>
+                </FeaturePageBenefitGrid>
+            </FeaturePageSection>
+
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
                     question={<Trans>How do I open the menu?</Trans>}
@@ -219,6 +337,77 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     answer={
                         <Trans>
                             Yes — the same popover menu opens on iPad, iPhone, and Android; there is no separate iPad presentation.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What does &quot;Convert to Transfer&quot; actually do?</Trans>}
+                    answer={
+                        <Trans>
+                            The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with
+                            a credit and a debit against the two accounts — no second transaction is created.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Will my analytics update?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes — the original spending stat falls out immediately because transfers don&apos;t count as expenses.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I undo the conversion?</Trans>}
+                    answer={
+                        <Trans>
+                            No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating
+                            the expense or income entry yourself.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Does this work for cross-currency?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. The dual-amount input opens after picking the destination account. Original amount is preserved on the
+                            source leg; destination leg gets your specified amount.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Why would I convert income to a refund?</Trans>}
+                    answer={
+                        <Trans>
+                            Merchant refunds arrive as positive income, but they usually reverse an earlier expense. Linking the income to
+                            that expense keeps income and spending analytics honest.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I refund only part of an expense?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Pick the original expense and Budgie marks the refund as partial when the refunded amount is lower than the
+                            expense amount.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>Can I undo a refund link?</Trans>}
+                    answer={
+                        <Trans>
+                            Yes. Open the refunded transaction and tap Revert. The income and expense return to their original standalone
+                            state.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What if the expense is on another account?</Trans>}
+                    answer={
+                        <Trans>
+                            Manual refund search can find same-currency expenses across accounts. Budgie sorts likely matches by amount and
+                            date so the closest refund target appears first.
                         </Trans>
                     }
                 />
