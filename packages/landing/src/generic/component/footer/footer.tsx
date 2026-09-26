@@ -102,7 +102,7 @@ export const Footer = async ({ lang }: Props) => {
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/features/offline-first-expense-tracker`}
+                                    href={`/${lang}/offline-first`}
                                 >
                                     <Trans>Offline-First</Trans>
                                 </Link>
