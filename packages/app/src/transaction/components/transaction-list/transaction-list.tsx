@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
@@ -13,6 +13,7 @@ import { AnalyticsTransactionsModeEnum } from '../../enum/analytics-transactions
 import { useGetTransactionCountQuery } from '../../query/use-get-transaction-count.query';
 import { useGetTransactionsQuery } from '../../query/use-get-transactions.query';
 import { useGetUncategorizedTransactionCountQuery } from '../../query/use-get-uncategorized-transaction-count.query';
+import { buildUncategorizedRouteParams } from '../../utils/build-uncategorized-route-params.util';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
@@ -31,35 +32,6 @@ const useTransactionListFilters = (accountId: number | null, externalFilters: Tr
     const activeFilters = externalFilters ?? { ...internalFilters, accountIds: baseAccountIds ?? internalFilters.accountIds };
 
     return { activeFilters, setInternalFilters };
-};
-
-const buildNullableArrayParam = (values: readonly (number | string)[] | null): string | null => {
-    if (isNotEmptyArray(values)) {
-        return values.join(',');
-    }
-
-    return null;
-};
-
-const buildUncategorizedRouteParams = (activeFilters: TransactionFilterInterface) => {
-    const types = buildNullableArrayParam(activeFilters.types);
-    const accountIds = buildNullableArrayParam(activeFilters.accountIds);
-    const tagIds = buildNullableArrayParam(activeFilters.tagIds);
-    const startDate = activeFilters.date?.from?.toISOString() ?? null;
-    const endDate = activeFilters.date?.to?.toISOString() ?? null;
-    const amountFrom = activeFilters.amount?.from?.toString() ?? null;
-    const amountTo = activeFilters.amount?.to?.toString() ?? null;
-
-    return {
-        mode: AnalyticsTransactionsModeEnum.UNCATEGORIZED,
-        ...(isDefined(types) && { types }),
-        ...(isDefined(accountIds) && { accountIds }),
-        ...(isDefined(tagIds) && { tagIds }),
-        ...(isDefined(startDate) && { startDate }),
-        ...(isDefined(endDate) && { endDate }),
-        ...(isDefined(amountFrom) && { amountFrom }),
-        ...(isDefined(amountTo) && { amountTo })
-    };
 };
 
 // eslint-disable-next-line max-statements -- List orchestration component with multiple query hooks and handlers
@@ -89,7 +61,7 @@ export const TransactionList = ({ accountId = null, filters: externalFilters, sh
     const handleUncategorizedPress = () => {
         router.push({
             pathname: '/analytics/transactions',
-            params: buildUncategorizedRouteParams(activeFilters)
+            params: buildUncategorizedRouteParams(activeFilters, AnalyticsTransactionsModeEnum.CATEGORIZE)
         });
     };
 

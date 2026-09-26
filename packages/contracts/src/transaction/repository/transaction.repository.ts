@@ -36,6 +36,8 @@ import type { SimilarTransactionStatsQueryInterface } from '../interface/similar
 import type { SimilarTransactionStatsInterface } from '../interface/similar-transaction-stats.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
+    private static readonly TOUCH_CHUNK_SIZE = 500;
+
     private static readonly NON_INDEXABLE_EMBEDDING_TYPES: TransactionTypeEnum[] = [
         TransactionTypeEnum.TRANSFER,
         TransactionTypeEnum.ADJUSTMENT
@@ -407,6 +409,36 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId));
     }
 
+    @Log(
+        (ids, tx) => `enter transactionCount=${ids.length} inTx=${String(isDefined(tx))}`,
+        (...[, ids, tx]) => `done transactionCount=${ids.length} inTx=${String(isDefined(tx))}`,
+        (error, ids, tx) => `throw transactionCount=${ids.length} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async touchAndMarkForEmbeddingByIds(ids: number[], tx?: DB): Promise<void> {
+        if (isEmptyArray(ids)) {
+            return;
+        }
+
+        const runner = tx ?? this.db;
+        const { TOUCH_CHUNK_SIZE } = TransactionRepository;
+        const chunks: number[][] = [];
+
+        for (let start = 0; start < ids.length; start += TOUCH_CHUNK_SIZE) {
+            chunks.push(ids.slice(start, start + TOUCH_CHUNK_SIZE));
+        }
+
+        await chunks.reduce<Promise<void>>(async (previousChunkPromise, chunk) => {
+            await previousChunkPromise;
+            await runner
+                .update(TransactionEntityTable)
+                .set({
+                    updatedAt: new Date(),
+                    needsEmbedding: sql`CASE WHEN ${isNull(TransactionEntityTable.deletedAt)} AND ${notInArray(TransactionEntityTable.type, TransactionRepository.NON_INDEXABLE_EMBEDDING_TYPES)} THEN 1 ELSE ${TransactionEntityTable.needsEmbedding} END`
+                })
+                .where(inArray(TransactionEntityTable.id, chunk));
+        }, Promise.resolve());
+    }
+
     async touchUpdatedAt(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
     }
@@ -760,18 +792,7 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     protected override buildAccountCondition(accountIds: number[] | null) {
-        if (isNotEmptyArray(accountIds)) {
-            const condition = or(
-                inArray(TransactionEntityTable.fromAccountId, accountIds),
-                inArray(TransactionEntityTable.toAccountId, accountIds),
-                inArray(TransactionEntityTable.id, this.buildTransactionIdsByEntryAccountIdsQuery(accountIds)),
-                inArray(TransactionEntityTable.id, this.buildTransactionIdsByDebtEventAccountIdsQuery(accountIds))
-            );
-
-            return isDefined(condition) ? [condition] : [];
-        }
-
-        return [];
+        return this.buildEntryAccountCondition(accountIds);
     }
 
     private async findByIdsWithEntriesWhere(
@@ -807,26 +828,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
             or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
         );
-    }
-
-    private buildTransactionIdsByEntryAccountIdsQuery(accountIds: number[]) {
-        return this.db
-            .select({ transactionId: TransactionEntryEntityTable.transactionId })
-            .from(TransactionEntryEntityTable)
-            .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), this.buildLedgerEntryCondition()));
-    }
-
-    private buildTransactionIdsByDebtEventAccountIdsQuery(accountIds: number[]) {
-        return this.db
-            .select({ transactionId: DebtEventEntityTable.transactionId })
-            .from(DebtEventEntityTable)
-            .where(
-                and(
-                    inArray(DebtEventEntityTable.debtAccountId, accountIds),
-                    isNotNull(DebtEventEntityTable.transactionId),
-                    isNull(DebtEventEntityTable.deletedAt)
-                )
-            );
     }
 
     private buildSimilarStatsSql(query: SimilarTransactionStatsQueryInterface): string {

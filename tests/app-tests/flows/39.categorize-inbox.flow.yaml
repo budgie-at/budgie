@@ -1,0 +1,67 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: subflows/import/import-database-from-settings.flow.yaml
+      env:
+          FIXTURE_ROW_ID_MATCH: 'uncategorized-inbox.db(, db)?'
+          FILE_PICKER_SEARCH_TEXT: 'uncategorized-inbox'
+
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'UncategorizedTransactionsPill.Button'
+      timeout: 5000
+- assertVisible: '3 missing categories'
+- tapOn:
+      id: 'UncategorizedTransactionsPill.Button'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+      timeout: 5000
+
+- assertVisible: '3 left.*'
+- assertVisible:
+      id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
+- assertVisible:
+      id: 'CategorizeInboxAcceptAllButton.Button'
+
+- tapOn:
+      id: 'CategorizeInboxAcceptAllButton.Button'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxUndoBar'
+      timeout: 5000
+- assertVisible: '1 left.*'
+- assertNotVisible:
+      id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
+
+- tapOn:
+      id: 'CategorizeInboxUndoBar.UndoButton'
+- assertVisible: '3 left.*'
+- assertVisible:
+      id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
+
+- tapOn:
+      id: 'CategorizeInboxSuggestionChip.EXPENSE\|confident coffee.0'
+- assertVisible: '1 left.*'
+- assertNotVisible:
+      id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
+
+- tapOn:
+      id: 'CategorizeInboxPage.ShowListButton'
+- extendedWaitUntil:
+      visible: 'Missing categories'
+      timeout: 5000
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Categorize_Filler'
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Confident_Coffee'
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+      timeout: 5000
+- assertVisible: '1 left.*'

@@ -20,7 +20,7 @@ export const FEATURE_METADATA = {
         'transfer reclassification',
         'expense to transfer'
     ],
-    relatedFeatureSlugs: ['account-transfers', 'transfer-pair-detection'],
+    relatedFeatureSlugs: ['account-transfers', 'transfer-pair-detection', 'bulk-categorize-transactions'],
     relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
     publishedAt: '2026-01-05',
     updatedAt: '2026-05-03',

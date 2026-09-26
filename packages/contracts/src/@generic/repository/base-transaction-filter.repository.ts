@@ -1,7 +1,8 @@
-import { SQL, and, eq, gte, inArray, isNull, lte, notInArray } from 'drizzle-orm';
+import { SQL, and, eq, gte, inArray, isNotNull, isNull, lte, notInArray, or } from 'drizzle-orm';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
+import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transaction-entry-kind.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
@@ -56,6 +57,21 @@ export abstract class BaseTransactionFilterRepository {
         return [];
     }
 
+    protected buildEntryAccountCondition(accountIds: number[] | null): SQL[] {
+        if (isNotEmptyArray(accountIds)) {
+            const condition = or(
+                inArray(TransactionEntityTable.fromAccountId, accountIds),
+                inArray(TransactionEntityTable.toAccountId, accountIds),
+                inArray(TransactionEntityTable.id, this.buildTransactionIdsByEntryAccountIdsQuery(accountIds)),
+                inArray(TransactionEntityTable.id, this.buildTransactionIdsByDebtEventAccountIdsQuery(accountIds))
+            );
+
+            return isDefined(condition) ? [condition] : [];
+        }
+
+        return [];
+    }
+
     protected buildDateCondition({ from, to }: DateRangeInterface) {
         const parts: SQL[] = [];
 
@@ -104,6 +120,26 @@ export abstract class BaseTransactionFilterRepository {
 
     protected buildLedgerEntryCondition() {
         return and(isNull(TransactionEntryEntityTable.originalTransactionId), isNull(TransactionEntryEntityTable.deletedAt));
+    }
+
+    protected buildTransactionIdsByEntryAccountIdsQuery(accountIds: number[]) {
+        return this.db
+            .select({ transactionId: TransactionEntryEntityTable.transactionId })
+            .from(TransactionEntryEntityTable)
+            .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), this.buildLedgerEntryCondition()));
+    }
+
+    protected buildTransactionIdsByDebtEventAccountIdsQuery(accountIds: number[]) {
+        return this.db
+            .select({ transactionId: DebtEventEntityTable.transactionId })
+            .from(DebtEventEntityTable)
+            .where(
+                and(
+                    inArray(DebtEventEntityTable.debtAccountId, accountIds),
+                    isNotNull(DebtEventEntityTable.transactionId),
+                    isNull(DebtEventEntityTable.deletedAt)
+                )
+            );
     }
 
     private buildUncategorizedCondition() {
