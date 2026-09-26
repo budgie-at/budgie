@@ -2487,9 +2487,17 @@ msgstr "Une seconde voie, plus légère, répond dès que le modèle principal c
 msgid "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
 msgstr "Un seul interrupteur Mode Sombre dans les Réglages — suit le thème du système par défaut, à basculer manuellement à tout moment"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "A single month says little about your habits. Runway only counts finished calendar months, up to the last six, and appears once at least three of them have transactions. Until then the pill stays hidden and the Runway tab tells you how many complete months it has so far."
+msgstr "Un seul mois en dit peu sur vos habitudes. L'autonomie ne compte que les mois civils terminés, jusqu'aux six derniers, et apparaît dès qu'au moins trois d'entre eux contiennent des transactions. D'ici là, la pastille reste masquée et l'onglet Autonomie vous indique combien de mois complets il a déjà."
+
 #: src/app/[lang]/blog/whats-new-september-2026/metadata.ts
 msgid "A single Runway verdict replaces the old cash-flow widget, on-device AI comes back for existing installs with a real off switch and loads only while it's needed, and a batch of import and transfer fixes lands. Here is everything from the September 2026 cycle."
 msgstr "Un seul verdict Runway remplace l'ancien widget de flux de trésorerie, l'IA embarquée revient pour les installations existantes avec un vrai interrupteur pour la désactiver et ne se charge qu'en cas de besoin, et un lot de correctifs d'import et de virement arrive. Voici tout ce qui vient du cycle de septembre 2026."
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "A small pill on Home shows the months left or what you add a month. Tap it for the full picture."
+msgstr "Une petite pastille sur l'accueil affiche les mois restants ou ce que vous gagnez par mois. Touchez-la pour tout voir."
 
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "A source of crashes around backup restore, PIN changes, and resetting the app is gone: those operations now run strictly one at a time instead of racing each other."
@@ -2530,6 +2538,10 @@ msgstr "Un virement est un type à part entière"
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "A transfer, not an expense"
 msgstr "Un virement, pas une dépense"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "A typical month in numbers"
+msgstr "Un mois typique en chiffres"
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "A year of daily prices for BTC, ETH, BNB, SOL, XRP, TRX, USDT, USDC, and HYPE ships with the app, in euro and dollar"
@@ -2728,6 +2740,10 @@ msgstr "Ajoutez-le en trois appuis"
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Add tests for new functionality"
 msgstr ""
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Added in a typical month"
+msgstr "Gagné sur un mois typique"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Additive interface — suggestions sit alongside the text field, never replacing it"
@@ -3863,6 +3879,10 @@ msgstr "Au-dela de l'architecture elle-meme, la maniere dont nous developpons et
 msgid "Bi-monthly and quarterly too"
 msgstr "Bimestriel et trimestriel aussi"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Biggest costs come first"
+msgstr "Les plus grosses dépenses d'abord"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "BILLA DANKT"
 msgstr "CARREFOUR CITY"
@@ -4203,6 +4223,10 @@ msgstr "Sélecteur de catégories de Budgie ouvert par-dessus le formulaire Modi
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie Commercial Licensing"
 msgstr ""
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Budgie compares what you earn and spend in a typical month with the money in your cash and bank accounts. If you spend more than you earn, it shows how many months are left and when the money runs out. If you earn more, it shows how much you add each month."
+msgstr "Budgie compare ce que vous gagnez et dépensez sur un mois typique avec l'argent de vos comptes espèces et bancaires. Si vous dépensez plus que vous ne gagnez, il indique combien de mois il reste et quand l'argent s'épuise. Si vous gagnez plus, il indique ce que vous ajoutez chaque mois."
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Budgie Connect Binance screen with a Get API Key row, four numbered setup instructions and empty API key and secret fields"
@@ -4685,6 +4709,18 @@ msgstr "Écran Récurrents de Budgie avec le 15 sélectionné et une liste des p
 msgid "Budgie Rules screen: four rules, each with its conditions above the category and tag it sets, and an on-off switch"
 msgstr "Écran Règles de Budgie : quatre règles, chacune avec ses conditions au-dessus de la catégorie et du tag qu'elle applique, et un interrupteur"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Budgie Runway monthly history with a one-off month highlighted above the spending drivers by category"
+msgstr "Historique mensuel de l'autonomie dans Budgie avec un mois exceptionnel mis en évidence, au-dessus des moteurs de dépenses par catégorie"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Budgie Runway tab with a burning verdict, a run-out month, a meter and the monthly expenses, income and net"
+msgstr "Onglet Autonomie de Budgie avec un verdict en baisse, le mois d'épuisement, une jauge et les dépenses, revenus et solde net mensuels"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Budgie Runway tab with a growing verdict showing the amount added per month and the months of expenses covered"
+msgstr "Onglet Autonomie de Budgie avec un verdict en croissance, le montant gagné par mois et les mois de dépenses couverts"
+
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Budgie scans your history for amount and cadence patterns and plots every recurring charge on a month calendar."
 msgstr "Budgie analyse votre historique à la recherche de montants et de rythmes récurrents et place chaque prélèvement récurrent sur un calendrier mensuel."
@@ -4741,6 +4777,10 @@ msgstr "Écran des paramètres Budgie avec la section Sécurité affichant une c
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Budgie settings screen, Data Management section, listing the Import CSV, Export CSV, Import Database and Export Database rows"
 msgstr "Écran des réglages de Budgie, section Gestion des données, avec les lignes Importer CSV, Exporter CSV, Importer la base de données et Exporter la base de données"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Budgie settings with the Runway section showing the show on home and include crypto switches"
+msgstr "Paramètres de Budgie avec la section Autonomie et les interrupteurs Afficher sur l'accueil et Inclure les cryptos"
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "Budgie ships historical daily exchange-rate seeds in the local database migration."
@@ -5047,6 +5087,10 @@ msgstr "Construire un logiciel local-first nécessite de résoudre des problème
 msgid "Built {formattedPublishedAt}"
 msgstr "Compilé le {formattedPublishedAt}"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Built on a typical month, not a lucky one"
+msgstr "Calculé sur un mois typique, pas sur un mois chanceux"
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Built-in presets for Budgie's own export, SmartBudget and FinEye fill every selector in one tap"
 msgstr "Les préréglages intégrés pour l'export de Budgie, SmartBudget et FinEye remplissent tous les sélecteurs en une touche"
@@ -5075,6 +5119,10 @@ msgstr "Catégoriser en masse"
 #: src/app/[lang]/features/bulk-categorize-transactions/metadata.ts
 msgid "Bulk Transaction Categorization"
 msgstr "Catégorisation des transactions en masse"
+
+#: src/app/[lang]/features/runway/opengraph-image.tsx
+msgid "burn rate"
+msgstr "taux de dépense"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Business Model"
@@ -5223,6 +5271,10 @@ msgstr "Puis-je aussi filtrer par montant ?"
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Can I have multiple backups?"
 msgstr "Puis-je avoir plusieurs sauvegardes ?"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Can I hide the runway pill?"
+msgstr "Puis-je masquer la pastille d'autonomie ?"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "Can I import a pre-built category tree?"
@@ -6237,6 +6289,10 @@ msgstr "Contre-IBAN stocké depuis le champ corr_iban, permettant une consolidat
 msgid "Counting a merchant refund as earnings inflates every income report you run. Long-press the income row, choose Convert to Refund, and Budgie lists the expenses it could be reversing — same currency, any account, and never smaller than the refund itself."
 msgstr "Compter le remboursement d'un commerçant comme un gain gonfle chacun de vos rapports de revenus. Appuyez longuement sur la ligne de revenu, choisissez Convertir en remboursement, et Budgie liste les dépenses qu'il pourrait annuler — même devise, n'importe quel compte, et jamais inférieures au remboursement lui-même."
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Counts down a one-year scale"
+msgstr "Un décompte sur une échelle d'un an"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "Covers every protected amount Budgie renders, not just the home screen"
 msgstr "Couvre chaque montant protégé affiché par Budgie, pas seulement l'écran d'accueil"
@@ -6368,6 +6424,10 @@ msgstr "Les avoirs crypto côtoient vos comptes fiat avec la même expérience"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Crypto is not a separate tab. Holdings group by instrument under their own heading, after the bank and cash accounts, on the screen you already open. The total at the top counts them like everything else, and the two chips underneath split it into what you hold in cash and what you hold in coin."
 msgstr "La crypto n'a pas d'onglet séparé. Les positions sont regroupées par instrument sous leur propre en-tête, après les comptes bancaires et les espèces, sur l'écran que vous ouvrez déjà. Le total en haut les compte comme tout le reste, et les deux pastilles en dessous le répartissent entre ce que vous détenez en espèces et ce que vous détenez en crypto."
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Crypto is opt-in"
+msgstr "Les cryptos sur demande"
 
 #: src/app/[lang]/features/crypto-investment-tracking/opengraph-image.tsx
 msgid "Crypto Portfolio"
@@ -6973,6 +7033,10 @@ msgstr "Les cagnottes se synchronisent-elles aussi ?"
 msgid "Do local-first apps support real-time collaboration?"
 msgstr "Les applications local-first prennent-elles en charge la collaboration en temps réel ?"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Do my analytics filters change the result?"
+msgstr "Mes filtres d'analyse changent-ils le résultat ?"
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Do not publicly disclose the vulnerability until we have addressed it"
 msgstr ""
@@ -7106,6 +7170,10 @@ msgstr "Le code source public signifie-t-il que quelqu'un peut modifier mon appl
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Does running on my phone make the suggestions worse?"
 msgstr "Le fait de s'exécuter sur mon téléphone rend-il les suggestions moins bonnes ?"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Does Runway count my crypto and savings?"
+msgstr "L'autonomie compte-t-elle mes cryptos et mon épargne ?"
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Does split mode work for income too?"
@@ -7279,6 +7347,10 @@ msgstr "Chaque type a son propre formulaire"
 #: src/generic/component/waitlist-form/waitlist-success.tsx
 msgid "Early access members get 50% off lifetime"
 msgstr "Les membres en accès anticipé bénéficient de 50% de réduction sur l’accès à vie"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Earn more than you spend and Runway shows what you add each month and how many months of spending you have."
+msgstr "Si vous gagnez plus que vous ne dépensez, l'autonomie montre ce que vous ajoutez chaque mois et combien de mois de dépenses vous avez."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Easy to make formula errors"
@@ -7947,6 +8019,7 @@ msgstr "fonctionnalités"
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+#: src/app/[lang]/features/runway/page.tsx
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 #: src/app/[lang]/features/spending-analytics/page.tsx
@@ -8306,6 +8379,10 @@ msgstr "Pour les utilisateurs qui souhaitent l'importation automatique de transa
 msgid "For users:"
 msgstr "Pour les utilisateurs :"
 
+#: src/app/[lang]/features/runway/opengraph-image.tsx
+msgid "forecast"
+msgstr "prévision"
+
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "Fork it if we disappear. The database format and the app are both yours to keep."
 msgstr "Forkez-le si nous disparaissons. Le format de la base de données et l’application vous appartiennent."
@@ -8377,6 +8454,10 @@ msgstr "De la parole à un lot enregistré"
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "From the month's total to one receipt"
 msgstr "Du total du mois à un seul reçu"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "From the pill under your balance to the costs behind the number."
+msgstr "De la pastille sous votre solde jusqu'aux dépenses derrière le chiffre."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "From your own history. Budgie looks at how you categorized the same or a similar merchant before and ranks those categories. Only groups where your past choices clearly agree are marked ready to accept, and nothing is sent to a server."
@@ -8578,6 +8659,10 @@ msgstr "Regroupés sous la banque"
 msgid "Groups convert as they sum"
 msgstr "Les groupes convertissent en additionnant"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Growing is a verdict too"
+msgstr "La croissance est aussi un verdict"
+
 #: src/feature/component/features-hub-grid/features-hub-grid.tsx
 msgid "Headline Features"
 msgstr "Fonctionnalités phares"
@@ -8601,6 +8686,10 @@ msgstr "Voici la premiere question que tout professionnel de l'informatique devr
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Hidden Telemetry and Tracking"
 msgstr "Télémétrie et pistage cachés"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Hide the pill from Home, or let Runway count your crypto at today's market value."
+msgstr "Masquez la pastille de l'accueil ou laissez l'autonomie compter vos cryptos à leur valeur de marché actuelle."
 
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "High — shutdown = data loss risk"
@@ -8699,6 +8788,7 @@ msgstr "Les positions se consolident dans le patrimoine net aux côtés des comp
 #: src/app/[lang]/features/privatbank-import/page.tsx
 #: src/app/[lang]/features/private-budget-app-alternative/page.tsx
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
+#: src/app/[lang]/features/runway/page.tsx
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 #: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
 #: src/app/[lang]/features/spending-analytics/page.tsx
@@ -8993,6 +9083,10 @@ msgstr "Quelle est la taille du téléchargement unique ?"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "How long it’s retained"
 msgstr "Combien de temps elles sont conservées"
+
+#: src/app/[lang]/features/runway/opengraph-image.tsx
+msgid "How long your money lasts at today's pace."
+msgstr "Combien de temps votre argent tient au rythme actuel."
 
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "How many splits can I make per transaction?"
@@ -9362,6 +9456,10 @@ msgstr "« Revenus par catégorie » et « Dépenses par catégorie » listent c
 msgid "Income by tag and spending by tag, one tap from the Analytics tab bar"
 msgstr "Revenus par étiquette et dépenses par étiquette, à une touche depuis la barre d'onglets des analyses"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Income stays above spending"
+msgstr "Revenus au-dessus des dépenses"
+
 #: src/app/[lang]/features/statistics-tags-tab/page.tsx
 msgid "Income totalled per tag"
 msgstr "Revenus totalisés par étiquette"
@@ -9583,6 +9681,10 @@ msgstr ""
 msgid "Is YNAB safe to use?"
 msgstr "YNAB est-il sûr à utiliser ?"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "It adds the monthly average of costs that come in bursts, such as an annual insurance payment or a holiday, on top of your typical month. The months left, the run-out month and the forecast then show the more cautious picture. Switch it off to go back."
+msgstr "Cette option ajoute à votre mois typique la moyenne mensuelle des dépenses qui arrivent par à-coups, comme une assurance annuelle ou des vacances. Les mois restants, le mois d'épuisement et la prévision montrent alors une vision plus prudente. Désactivez-la pour revenir en arrière."
+
 #: src/app/[lang]/features/on-device-ai-budget-app/page.tsx
 msgid "It all happens on your phone"
 msgstr "Tout se passe sur votre téléphone"
@@ -9606,6 +9708,10 @@ msgstr "Elle se classe toute seule"
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "It is not. And the aggregator pattern carries risks that are rarely disclosed clearly to users. This article explains what aggregators do, why mass aggregation creates a high-value breach target, and how an offline-first architecture provides a structurally safer alternative."
 msgstr "Non. Et le schéma des agrégateurs comporte des risques qui sont rarement clairement divulgués aux utilisateurs. Cet article explique ce que font les agrégateurs, pourquoi l'agrégation massive crée une cible de violation de valeur élevée, et comment une architecture hors ligne d'abord offre une alternative structurellement plus sûre."
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "It is your cash and bank balance divided by how much more you spend than you earn in a typical month. If nothing changes, that is how long the money lasts, and Runway shows the month it would run out."
+msgstr "C'est votre solde en espèces et en banque divisé par ce que vous dépensez en plus de vos revenus sur un mois typique. Si rien ne change, c'est la durée pendant laquelle l'argent tient, et l'autonomie indique le mois où il s'épuiserait."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "It only acts when the receiving card is no longer active on your account, when the masked card number on the transaction matches exactly one of your closed cards, and when a matching entry turns up within about half a day and within the expected amount. If the receiving card is still active, this repair leaves it alone — that's by design, not a bug."
@@ -10584,6 +10690,10 @@ msgstr "Le calendrier en grille mensuelle trace les prochains renouvellements ;
 msgid "Monthly Budget Planning — Budgie"
 msgstr "Planification budgétaire mensuelle — Budgie"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Monthly history flags one-off months, and your biggest categories or tags are listed by monthly cost."
+msgstr "L'historique mensuel signale les mois exceptionnels, et vos principales catégories ou étiquettes sont classées par coût mensuel."
+
 #: src/app/[lang]/offline-first/page.tsx
 msgid "Monthly limits, a home-screen widget, and 80% / 100% alerts computed and deduplicated on your device."
 msgstr "Des limites mensuelles, un widget sur l'écran d'accueil, et des alertes à 80 % / 100 % calculées et dédupliquées sur votre appareil."
@@ -10600,6 +10710,18 @@ msgstr "Abonnement mensuel requis"
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Monthly. Budgie tracks one active budget over a monthly cycle, and both the detail screen and the home widget print the exact start and end dates of the period the numbers cover."
 msgstr "Mensuel. Budgie suit un budget actif sur un cycle mensuel, et l'écran de détail comme le widget d'accueil affichent les dates exactes de début et de fin de la période couverte par les chiffres."
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Months left at this pace"
+msgstr "Mois restants à ce rythme"
+
+#: src/app/[lang]/features/runway/metadata.ts
+msgid "Months left at your current pace, or how much you add each month. Right next to your balance."
+msgstr "Les mois restants à votre rythme actuel, ou ce que vous ajoutez chaque mois. Juste à côté de votre solde."
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Months left, and the month it ends"
+msgstr "Les mois restants et le mois final"
 
 #: src/feature/component/features-hub-grid/features-hub-grid.tsx
 msgid "More Features"
@@ -11233,6 +11355,10 @@ msgstr "Non. L’analyse du PDF se fait entièrement sur l’appareil — votre 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "No. Rules are explicit conditions you wrote and can read back. AI categorization is a separate on-device suggestion engine for merchants no rule covers yet."
 msgstr "Non. Les règles sont des conditions explicites que vous avez écrites et pouvez relire. La catégorisation par IA est un moteur de suggestion distinct, sur l'appareil, pour les commerçants qu'aucune règle ne couvre encore."
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "No. Runway always uses all your transactions from the last complete months, whatever dates or filters you picked on the other analytics tabs."
+msgstr "Non. L'autonomie utilise toujours toutes vos transactions des derniers mois complets, quels que soient les dates ou filtres choisis dans les autres onglets d'analyse."
 
 #: src/app/[lang]/security/page.tsx
 msgid "No. Screenshot protection automatically blurs all sensitive screens when the app moves to the background, preventing balance exposure in the iOS and Android recent-apps view."
@@ -11897,6 +12023,10 @@ msgstr "Un seul PIN. Vrai chiffrement."
 msgid "One popover menu on every platform — no modal, no full-screen form to open first"
 msgstr "Un seul menu contextuel sur toutes les plateformes — pas de fenêtre modale, pas de formulaire plein écran à ouvrir d'abord"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "One question, answered on Home"
+msgstr "Une question, une réponse sur l'accueil"
+
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "One real screen, rendered in whichever theme this page is in right now."
 msgstr "Un vrai écran, affiché dans le thème actuellement utilisé par cette page."
@@ -12020,6 +12150,10 @@ msgstr "Une ligne de virement, pas deux"
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "One uncategorized grocery run can make your food budget look better than it is. A few missing categories across income and expenses can distort category charts, month-end reviews, and spending trends."
 msgstr "Une course alimentaire non catégorisée peut rendre votre budget alimentation plus favorable qu'il ne l'est. Quelques catégories manquantes dans les revenus et dépenses peuvent fausser les graphiques par catégorie, les bilans de fin de mois et les tendances de dépenses."
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "One-off months stand out"
+msgstr "Les mois exceptionnels ressortent"
 
 #: src/app/[lang]/features/convert-to-transfer/page.tsx
 msgid "One-tap action from any transaction's long-press menu"
@@ -13550,6 +13684,10 @@ msgstr "Revoquer l'acces via les parametres des applications connectees de votre
 msgid "Rewind a week, not a year"
 msgstr "Rembobiner d'une semaine, pas d'un an"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Right under your balance"
+msgstr "Juste sous votre solde"
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Roadmap Transparency"
 msgstr "Transparence de la feuille de route"
@@ -13620,8 +13758,26 @@ msgstr "S'exécute sur votre téléphone, pas dans le cloud — aucune clé d'AP
 
 #: src/app/[lang]/blog/whats-new-september-2026/opengraph-image.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
+#: src/app/[lang]/features/runway/opengraph-image.tsx
 msgid "runway"
 msgstr "runway"
+
+#: src/app/[lang]/features/runway/opengraph-image.tsx
+msgid "Runway"
+msgstr "Autonomie"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Runway looks at your last six complete calendar months and leaves out the month still in progress. It takes the middle value of your monthly spending and of your monthly income, so one expensive holiday or one unusually large payment does not swing the answer."
+msgstr "L'autonomie examine vos six derniers mois civils complets et laisse de côté le mois en cours. Elle retient la valeur médiane de vos dépenses et de vos revenus mensuels, pour qu'un voyage coûteux ou un paiement inhabituellement élevé ne fausse pas la réponse."
+
+#: src/app/[lang]/features/runway/metadata.ts
+msgid "Runway: How Long Will My Money Last?"
+msgstr "Autonomie : combien de temps durera mon argent ?"
+
+#: src/app/[lang]/features/runway/metadata.ts
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Runway: How Long Your Money Lasts"
+msgstr "Autonomie : combien de temps votre argent tient"
 
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "Runway: one verdict instead of a dashboard"
@@ -13655,6 +13811,10 @@ msgstr "Enregistrer une règle l'applique rétroactivement aux transactions corr
 msgid "Saving is instant"
 msgstr "L'enregistrement est instantané"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Savings, deposits and investments are never counted, because they are not money you spend from day to day. Crypto is left out by default. Turn on Include crypto in Settings and Runway counts it at today's market value, with a note on the verdict so you know it is included."
+msgstr "L'épargne, les dépôts et les placements ne sont jamais comptés, car ce n'est pas de l'argent que vous dépensez au quotidien. Les cryptos sont exclues par défaut. Activez Inclure les cryptos dans les paramètres et l'autonomie les compte à leur valeur de marché actuelle, avec une mention sur le verdict pour que vous le sachiez."
+
 #: src/app/[lang]/features/voice-transaction-entry/metadata.ts
 msgid "Say \"twelve for coffee, forty for the taxi, and eight euros for parking\" and Budgie logs all three as a reviewable batch. The audio never leaves your phone."
 msgstr "Dites \"douze pour le café, quarante pour le taxi et huit euros pour le stationnement\" et Budgie enregistre les trois comme un lot à vérifier. L'audio ne quitte jamais votre téléphone."
@@ -13687,6 +13847,10 @@ msgstr "Capture vidéo des analyses Budgie filtrant les dépenses par catégorie
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Screen recording of the Monobank group on the Budgie home screen opening its synced accounts"
 msgstr "Capture vidéo du groupe Monobank sur l’écran d’accueil de Budgie ouvrant ses comptes synchronisés"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Screen recording of the runway pill under the Budgie home balance opening the Runway tab"
+msgstr "Enregistrement d'écran de la pastille d'autonomie sous le solde de l'accueil Budgie qui ouvre l'onglet Autonomie"
 
 #: src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx
 msgid "Screen scraping means a third party can do anything you can do in your bank account. They choose not to, but the technical capability exists."
@@ -13820,6 +13984,10 @@ msgstr "Des entrées de journal des modifications axées sur la sécurité montr
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Security-sensitive changes receive extra scrutiny"
 msgstr "Les changements sensibles en matière de sécurité font l'objet d'un examen approfondi"
+
+#: src/app/[lang]/features/runway/metadata.ts
+msgid "See how many months your cash and bank balance lasts at your current pace, when it runs out, and what drives your spending. Worked out on your phone."
+msgstr "Voyez combien de mois votre solde en espèces et en banque tient à votre rythme actuel, quand il s'épuise et ce qui pèse sur vos dépenses. Calculé sur votre téléphone."
 
 #: src/app/[lang]/features/tag-analytics/metadata.ts
 msgid "See income, expense, and net per tag in a dedicated analytics tab. The Untagged bucket finds every transaction missing a label so nothing falls through."
@@ -14112,6 +14280,10 @@ msgstr "Six barres mensuelles sur cette vue montrent ce que vous dépensez habit
 #: src/app/[lang]/features/no-bank-login-budget-app/metadata.ts
 msgid "Skip the aggregator. Budgie syncs Monobank via your personal API token and imports any bank's PDF or CSV statement directly. Your credentials never leave you."
 msgstr "Contournez l'agrégateur. Budgie synchronise Monobank via votre jeton API personnel et importe directement le relevé PDF ou CSV de n'importe quelle banque. Vos identifiants ne vous quittent jamais."
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Small costs fold into Other"
+msgstr "Les petites dépenses vont dans Autres"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Small team (bus factor risk)"
@@ -15005,6 +15177,10 @@ msgstr "L'arrière-plan est noir uni, pas un panneau gris assombri posé sur un 
 msgid "The Backup and Restore Flow"
 msgstr "Le déroulé de la sauvegarde et de la restauration"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "The balance it spends down is money you can actually use: your cash and bank accounts, including synced ones. Savings, deposits and investments stay out, and so does crypto unless you switch it on."
+msgstr "Le solde pris en compte est l'argent dont vous disposez vraiment : vos comptes espèces et bancaires, y compris synchronisés. L'épargne, les dépôts et les placements restent à l'écart, tout comme les cryptos, sauf si vous les activez."
+
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "The bank already told you what it was"
 msgstr "La banque vous l'a déjà dit"
@@ -15439,6 +15615,10 @@ msgstr "La période vous suit"
 msgid "The personal finance app market has exploded. Mint, YNAB, Copilot, Monarch Money, Lunch Money, and dozens of others promise to help you manage your money. Most offer free tiers or low monthly subscriptions that seem reasonable for the value provided."
 msgstr "Le marche des applications de finances personnelles a explose. Mint, YNAB, Copilot, Monarch Money, Lunch Money et des dizaines d'autres promettent de vous aider a gerer votre argent. La plupart offrent des niveaux gratuits ou des abonnements mensuels modestes qui semblent raisonnables par rapport a la valeur offerte."
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "The pill can go"
+msgstr "La pastille peut disparaître"
+
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "The pill counts what you missed"
 msgstr "La pastille compte ce qui manque"
@@ -15809,6 +15989,10 @@ msgstr "Puis il récupère les comptes"
 #: src/app/[lang]/blog/local-first-movement-developers/page.tsx
 msgid "Then layer sync on top. Modern sync engines make this incremental approach practical. You do not need to design for distributed systems from day one."
 msgstr "Puis ajoutez la synchronisation par-dessus. Les moteurs de synchronisation modernes rendent cette approche incrémentale pratique. Vous n'avez pas besoin de concevoir pour les systèmes distribués dès le premier jour."
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Then Runway says Growing and shows how much you add in a typical month, plus how many months of expenses your balance already covers. There is no run-out month, because at that pace the money does not run out."
+msgstr "L'autonomie affiche alors En croissance, avec ce que vous ajoutez sur un mois typique et le nombre de mois de dépenses que votre solde couvre déjà. Il n'y a pas de mois d'épuisement, car à ce rythme l'argent ne s'épuise pas."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Then tap save"
@@ -16788,6 +16972,10 @@ msgstr "Saisie vocale des transactions — l'audio ne quitte jamais l'appareil"
 msgid "Voice-to-Expense, On-Device — Budgie"
 msgstr "Voix vers dépense, sur l'appareil — Budgie"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Want the cautious view? Switch on Include one-offs and the monthly average of irregular costs, like insurance or holidays, is added to your spending. The verdict and the balance forecast update straight away."
+msgstr "Envie d'une vision prudente ? Activez Inclure les dépenses ponctuelles et la moyenne mensuelle des dépenses irrégulières, comme les assurances ou les vacances, s'ajoute à vos dépenses. Le verdict et la prévision de solde se mettent à jour aussitôt."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Watch the number add up"
 msgstr "Voyez le chiffre se former"
@@ -17045,6 +17233,10 @@ msgstr "Que couvre « Depuis toujours » ?"
 msgid "What does \"Convert to Transfer\" actually do?"
 msgstr "Que fait réellement « Convertir en virement » ?"
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "What does “months left” mean?"
+msgstr "Que signifie « mois restants » ?"
+
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "What does “primary tag” mean?"
 msgstr "Que signifie « étiquette principale » ?"
@@ -17056,6 +17248,10 @@ msgstr "Que fait réellement « principale » ?"
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "What does a sync data repair actually do?"
 msgstr "Que fait réellement une réparation des données de synchronisation ?"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "What does Include one-offs do?"
+msgstr "À quoi sert Inclure les dépenses ponctuelles ?"
 
 #: src/app/[lang]/features/custom-categories/page.tsx
 msgid "What does merging two categories do?"
@@ -17076,6 +17272,10 @@ msgstr "Que change exactement la correction des virements entre vos propres cart
 #: src/app/[lang]/features/crypto-price-history/page.tsx
 msgid "What does the progress indicator show?"
 msgstr "Que montre l'indicateur de progression ?"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "What drives the number"
+msgstr "Ce qui pèse sur le chiffre"
 
 #: src/app/[lang]/blog/mint-shutdown-private-alternative/page.tsx
 msgid "What Durable Means for a Finance App"
@@ -17188,6 +17388,10 @@ msgstr "Que se passe-t-il si la biométrie échoue ?"
 #: src/app/[lang]/features/open-source-budget-app-mobile/page.tsx
 msgid "What if Budgie shuts down?"
 msgstr "Que se passe-t-il si Budgie ferme ?"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "What if I earn more than I spend?"
+msgstr "Et si je gagne plus que je ne dépense ?"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "What if I forget my PIN?"
@@ -17604,6 +17808,10 @@ msgstr "Lorsque vous ouvrez la plupart des applications de suivi de depenses, qu
 msgid "When you opt into optional features, we may use the following trusted third-party services:"
 msgstr ""
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "When you spend more than you earn, Runway divides your balance by the gap and names the month it runs out."
+msgstr "Quand vous dépensez plus que vous ne gagnez, l'autonomie divise votre solde par l'écart et indique le mois où il s'épuise."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "When you use a closed-source financial app, you have no way to verify what actually happens to your data. The company might claim your information is encrypted, stored securely, and never shared. But how do you know? Their privacy policy is a legal document written by lawyers, not a technical specification you can verify against actual code."
 msgstr "Lorsque vous utilisez une application financière à code fermé, vous n'avez aucun moyen de vérifier ce qui se passe réellement avec vos données. L'entreprise peut affirmer que vos informations sont chiffrées, stockées en toute sécurité et jamais partagées. Mais comment le savez-vous ? Leur politique de confidentialité est un document juridique rédigé par des avocats, pas une spécification technique vérifiable par rapport au code réel."
@@ -17800,6 +18008,10 @@ msgstr ""
 msgid "While we strive to provide accurate information, we do not warrant the accuracy, completeness, or reliability of:"
 msgstr ""
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "While you are burning, a meter counts the months left on a one-year scale. While you are growing there is nothing to count down, so the meter steps aside."
+msgstr "Quand vous êtes en baisse, une jauge affiche les mois restants sur une échelle d'un an. Quand vous êtes en croissance, il n'y a rien à décompter et la jauge disparaît."
+
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Who has access to it"
 msgstr "Qui y a accès"
@@ -17913,6 +18125,10 @@ msgstr "Pourquoi des doublons apparaissent-ils ?"
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "Why do other apps charge monthly?"
 msgstr "Pourquoi les autres applications facturent-elles mensuellement ?"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Why does Runway need three complete months?"
+msgstr "Pourquoi l'autonomie a-t-elle besoin de trois mois complets ?"
 
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Why does this matter? Consider these scenarios:"
@@ -18672,6 +18888,10 @@ msgstr "Oui. Les transactions se dédoublonnent par leur référence de réserva
 msgid "Yes. Transfer is a first-class transaction type with explicit source and destination accounts; it never inflates your spending stats."
 msgstr "Oui. Le virement est un type de transaction de premier ordre avec des comptes source et destination explicites ; il ne gonfle jamais vos statistiques de dépenses."
 
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Yes. Turn off Show on home in the Runway section of Settings. The Runway tab stays available in Analytics."
+msgstr "Oui. Désactivez Afficher sur l'accueil dans la section Autonomie des paramètres. L'onglet Autonomie reste disponible dans les analyses."
+
 #: src/app/[lang]/blog/ynab-alternatives-privacy/opengraph-image.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "ynab"
@@ -18988,6 +19208,10 @@ msgstr "Votre banque, sans intermédiaire"
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Your banking credentials are encrypted and stored locally on your device"
 msgstr "Vos identifiants bancaires sont chiffrés et stockés localement sur votre appareil"
+
+#: src/app/[lang]/features/runway/page.tsx
+msgid "Your call in Settings"
+msgstr "À vous de choisir dans les paramètres"
 
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "Your card, your jars, and the deposit you opened last month all hang off one connection — so renewing a token is a single edit, not a rebuild."
