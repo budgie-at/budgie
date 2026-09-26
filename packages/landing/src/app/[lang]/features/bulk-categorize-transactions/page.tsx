@@ -262,9 +262,9 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        ATM withdrawals go to one of your cash accounts, card transfers to another of your accounts. You pick the account
-                        and confirm, then Budgie{' '}
-                        <Link className={linkClassName} href={`/${lang}/features/convert-to-transfer`}>
+                        ATM withdrawals go to one of your cash accounts, card transfers to any other active account. Budgie asks you to
+                        confirm, then{' '}
+                        <Link className={linkClassName} href={`/${lang}/features/transaction-long-press-menu`}>
                             turns the whole group into transfers
                         </Link>{' '}
                         so your balances stay right.
