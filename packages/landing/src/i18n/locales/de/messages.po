@@ -7229,7 +7229,7 @@ msgstr "Early-Access-Mitglieder erhalten 50% Rabatt auf lebenslangen Zugriff"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Earn more than you spend and Runway shows what you add each month and how many months of spending you have."
-msgstr "Nehmen Sie mehr ein, als Sie ausgeben, zeigt die Reichweite Ihr monatliches Plus und wie viele Monate Ausgaben gedeckt sind."
+msgstr "Nehmen Sie mehr ein, als Sie ausgeben, zeigt die Reichweite Ihr monatliches Plus und für wie viele Monate Ihr Guthaben die Ausgaben deckt."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Easy to make formula errors"

@@ -13506,7 +13506,7 @@ msgstr "Працює на вашому телефоні, а не в хмарі �
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/features/runway/opengraph-image.tsx
 msgid "runway"
-msgstr "runway"
+msgstr "запас"
 
 #: src/app/[lang]/features/runway/opengraph-image.tsx
 msgid "Runway"
