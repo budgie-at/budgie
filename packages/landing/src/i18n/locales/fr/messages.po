@@ -2460,7 +2460,7 @@ msgstr "Un seul verdict Runway remplace l'ancien widget de flux de trésorerie, 
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "A small pill on Home shows the months left or what you add a month. Tap it for the full picture."
-msgstr "Une petite pastille sur l'accueil affiche les mois restants ou ce que vous gagnez par mois. Touchez-la pour tout voir."
+msgstr "Une petite pastille sur l'accueil affiche les mois restants ou ce que vous ajoutez par mois. Touchez-la pour tout voir."
 
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 msgid "A source of crashes around backup restore, PIN changes, and resetting the app is gone: those operations now run strictly one at a time instead of racing each other."
@@ -2698,7 +2698,7 @@ msgstr ""
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Added in a typical month"
-msgstr "Gagné sur un mois typique"
+msgstr "Ajouté sur un mois typique"
 
 #: src/app/[lang]/features/ai-tag-suggestions/page.tsx
 msgid "Additive interface — suggestions sit alongside the text field, never replacing it"
@@ -4658,7 +4658,7 @@ msgstr "Onglet Autonomie de Budgie avec un verdict en baisse, le mois d'épuisem
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Budgie Runway tab with a growing verdict showing the amount added per month and the months of expenses covered"
-msgstr "Onglet Autonomie de Budgie avec un verdict en croissance, le montant gagné par mois et les mois de dépenses couverts"
+msgstr "Onglet Autonomie de Budgie avec un verdict en croissance, le montant ajouté par mois et les mois de dépenses couverts"
 
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Budgie scans your history for amount and cadence patterns and plots every recurring charge on a month calendar."
