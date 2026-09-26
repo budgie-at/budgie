@@ -6492,8 +6492,8 @@ msgid "Currency, FX, and counterparty fields all preserved"
 msgstr "Поля валюти, FX та контрагента — всі збережені"
 
 #: src/app/[lang]/features/debt-tracking/page.tsx
-msgid "Currently it's informational — surfaced in the account detail and recurring view. Push reminders are on the roadmap."
-msgstr "Наразі це інформаційно — відображається в деталях рахунку та в представленні регулярних платежів. Push-нагадування заплановані на майбутнє."
+msgid "Currently it's informational — surfaced on the debt account card and in the account details view. Push reminders are on the roadmap."
+msgstr "Наразі це інформаційно — відображається на картці боргового рахунку та в деталях рахунку. Push-нагадування заплановані на майбутнє."
 
 #: src/app/[lang]/features/custom-categories/opengraph-image.tsx
 msgid "custom"
