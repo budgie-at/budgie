@@ -213,7 +213,10 @@ export default async function OfflineFirstPillarHubPage(props: PageLangParam) {
                 </FeaturePageHeading>
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Works in airplane mode, tunnels, and rural areas — every feature, every time</Trans>
+                        <Trans>
+                            Works in airplane mode, tunnels, and rural areas — logging expenses, viewing analytics, and managing categories
+                            all run on your device
+                        </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
                         <Trans>No sign-up, no email, no account — install and start logging</Trans>

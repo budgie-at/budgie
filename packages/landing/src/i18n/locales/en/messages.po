@@ -2513,6 +2513,10 @@ msgstr "Accept every confident suggestion at once, with Undo"
 msgid "Accept everything that is certain"
 msgstr "Accept everything that is certain"
 
+#: src/app/[lang]/privacy/page.tsx
+msgid "Access token held by aggregator"
+msgstr "Access token held by aggregator"
+
 #: src/app/[lang]/features/screenshot-protection/metadata.ts
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
@@ -3448,6 +3452,10 @@ msgstr "Bank + aggregator + app"
 msgid "Bank + cash + deposit + crypto + debt"
 msgstr "Bank + cash + deposit + crypto + debt"
 
+#: src/app/[lang]/privacy/page.tsx
+msgid "Bank access"
+msgstr "Bank access"
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "Bank account synchronization"
 msgstr "Bank account synchronization"
@@ -3497,10 +3505,6 @@ msgstr "Bank connections became a first-class object, Binance sync shipped, depo
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Bank Connections Without Plaid"
 msgstr "Bank Connections Without Plaid"
-
-#: src/app/[lang]/privacy/page.tsx
-msgid "Bank credentials"
-msgstr "Bank credentials"
 
 #: src/app/[lang]/blog/offline-first-bank-data-safety/page.tsx
 msgid "bank data safety"
@@ -3918,8 +3922,8 @@ msgid "Both amounts are shown together (e.g. $1000 → €925). Pin either side;
 msgstr "Both amounts are shown together (e.g. $1000 → €925). Pin either side; the exchange rate is saved on the transfer so reconciliation across currencies stays exact."
 
 #: src/app/[lang]/privacy/page.tsx
-msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
-msgstr "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with your credentials and your transaction stream."
+msgid "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with an access token and your transaction stream."
+msgstr "Both can be secure when implemented correctly. The difference is the threat surface: direct tokens are bank-to-you; aggregator OAuth adds a third party with an access token and your transaction stream."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Both Erste statement layouts supported: classic and the 2026 modern format"
@@ -8363,10 +8367,6 @@ msgstr "Groups, not rows"
 msgid "Headline Features"
 msgstr "Headline Features"
 
-#: src/app/[lang]/privacy/page.tsx
-msgid "Held by aggregator"
-msgstr "Held by aggregator"
-
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "Held in its own currency"
 msgstr "Held in its own currency"
@@ -10615,8 +10615,8 @@ msgid "Never worry about service availability"
 msgstr "Never worry about service availability"
 
 #: src/app/[lang]/ai-features/page.tsx
-msgid "New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch controls it, and about 2.5 GB downloads once."
-msgstr "New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch controls it, and about 2.5 GB downloads once."
+msgid "New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch controls it, and each model downloads only when you first use the feature that needs it — about 2.5 GB in total if you use every feature including voice entry."
+msgstr "New installs start with the On-device AI card off; if you were already using AI, it stays on. Either way the switch controls it, and each model downloads only when you first use the feature that needs it — about 2.5 GB in total if you use every feature including voice entry."
 
 #: src/app/[lang]/blog/historical-exchange-rates-budget-analytics/page.tsx
 msgid "New transactions follow the same rule at write time. Manual entries, CSV imports, and <0>bank sync</0> transactions save their base amount as they are inserted when the source does not already provide a usable valuation."
@@ -11674,13 +11674,13 @@ msgstr "One switch in Settings controls the whole thing. Turn it off and nothing
 msgid "One switch in Settings, and categories, tags, translation and voice entry all run where your data already is."
 msgstr "One switch in Settings, and categories, tags, translation and voice entry all run where your data already is."
 
+#: src/app/[lang]/ai-features/page.tsx
+msgid "One switch, downloads on demand"
+msgstr "One switch, downloads on demand"
+
 #: src/app/[lang]/features/screenshot-protection/page.tsx
 msgid "One switch, off by default, sitting directly under the PIN-lock card in the Security section."
 msgstr "One switch, off by default, sitting directly under the PIN-lock card in the Security section."
-
-#: src/app/[lang]/ai-features/page.tsx
-msgid "One switch, one download"
-msgstr "One switch, one download"
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "One tag chip, plus a count"
@@ -17800,8 +17800,8 @@ msgid "Works for both expense and income transactions"
 msgstr "Works for both expense and income transactions"
 
 #: src/app/[lang]/offline-first/page.tsx
-msgid "Works in airplane mode, tunnels, and rural areas — every feature, every time"
-msgstr "Works in airplane mode, tunnels, and rural areas — every feature, every time"
+msgid "Works in airplane mode, tunnels, and rural areas — logging expenses, viewing analytics, and managing categories all run on your device"
+msgstr "Works in airplane mode, tunnels, and rural areas — logging expenses, viewing analytics, and managing categories all run on your device"
 
 #: src/app/[lang]/ai-features/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
