@@ -21,7 +21,6 @@ export const FEATURE_METADATA = {
         'binance simple earn balance'
     ],
     relatedFeatureSlugs: [
-        'crypto-price-history',
         'crypto-investment-tracking',
         'monobank-sync',
         'bank-integration-management',

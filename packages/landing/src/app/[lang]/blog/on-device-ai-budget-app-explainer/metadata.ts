@@ -15,7 +15,7 @@ export const ARTICLE_METADATA: ArticleRegistryEntryInterface = {
     seoKeywords: ['on-device AI budget app', 'private AI finance', 'offline AI finance app', 'offline AI expense tracker'],
     seoDescription: msg`How AI that runs on your phone keeps spending data private: what stays local, what it costs in storage and battery, and what it can and cannot do.`,
     relatedArticleSlugs: ['offline-first-privacy-financial-app', 'budgie-offline-financial-data'],
-    relatedFeatureSlugs: ['ai-auto-categorization', 'voice-transaction-entry', 'ai-transaction-suggestions', 'on-device-ai-budget-app']
+    relatedFeatureSlugs: ['ai-auto-categorization', 'voice-transaction-entry', 'ai-transaction-suggestions', 'ai-tag-suggestions']
 };
 
 /* oxlint-enable lingui/no-unlocalized-strings */

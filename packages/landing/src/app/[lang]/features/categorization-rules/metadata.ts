@@ -27,7 +27,7 @@ export const FEATURE_METADATA = {
         'bulk-categorize-transactions',
         'custom-categories',
         'transaction-tags',
-        'convert-to-transfer'
+        'transaction-long-press-menu'
     ],
     relatedArticleSlugs: ['mint-alternatives-developers', 'ynab-alternatives-privacy'],
     publishedAt: '2026-09-02',
