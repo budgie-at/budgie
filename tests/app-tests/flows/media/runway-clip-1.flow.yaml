@@ -29,8 +29,7 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 
 - swipe:
-      start: 50%, 60%
-      end: 50%, 45%
+      direction: UP
 
 - waitForAnimationToEnd
 
