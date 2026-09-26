@@ -13,15 +13,14 @@ import { FeaturePageCta } from '../../../../feature/component/feature-page-cta/f
 import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
 import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
 import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
-import { FeaturePageMedia } from '../../../../feature/component/feature-page-media/feature-page-media';
+import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageRelatedArticles } from '../../../../feature/component/feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
-import { FeaturePageStageHero } from '../../../../feature/component/feature-page-stage-hero/feature-page-stage-hero';
 import { FeaturePageWebPageJsonLd } from '../../../../feature/component/feature-page-web-page-json-ld/feature-page-web-page-json-ld';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { buildFeaturePageMetadata } from '../../../../feature/util/build-feature-page-metadata.util';
-import { AppShot } from '../../../../generic/component/app-shot/app-shot';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -73,7 +72,7 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                 title={title}
                 updatedAt={FEATURE_METADATA.updatedAt}
             />
-            <FeaturePageStageHero
+            <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
                 heading={<Trans>Categorize Bank Transactions in Bulk</Trans>}
                 locale={lang}
@@ -85,13 +84,18 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                 }
             >
                 <CategorizeDemo
-                    label={t(
-                        i18n
-                    )`Animated example: six bank transactions are grouped by merchant, five are categorized with one tap and an ATM withdrawal is moved to an account.`}
-                    replay={<Trans>Replay</Trans>}
+                    caption={
+                        <Trans>
+                            Animated example: six bank transactions are grouped by merchant, two confident groups are categorized with one
+                            tap, and an ATM withdrawal waits under Transfers.
+                        </Trans>
+                    }
+                    replay={<Trans>Replay demo</Trans>}
                 >
-                    <CategorizeDemo.Header title={<Trans>Categorize</Trans>} total={6}>
-                        <Trans>left</Trans>
+                    <CategorizeDemo.Header title={<Trans>Categorize</Trans>}>
+                        <Trans>
+                            <CategorizeDemo.Count total={6} /> left
+                        </Trans>
                     </CategorizeDemo.Header>
 
                     <CategorizeDemo.RawRow amount={t(i18n)`−€23.15`} index={0} slot={0}>
@@ -113,12 +117,12 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                         <Trans>Kartenzahlung BILLA DANKT 1030 WIEN 09.03 12:10</Trans>
                     </CategorizeDemo.RawRow>
 
-                    <CategorizeDemo.SectionLabel count={5} slot={0}>
+                    <CategorizeDemo.SectionLabel count={2} slot={0}>
                         <Trans>Ready to accept</Trans>
                     </CategorizeDemo.SectionLabel>
                     <CategorizeDemo.Card
                         amount={t(i18n)`−€72.92`}
-                        exit="accept"
+                        count={3}
                         meta={<Trans>3 transactions</Trans>}
                         slot={0}
                         title={<Trans>BILLA DANKT</Trans>}
@@ -132,7 +136,7 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     </CategorizeDemo.Card>
                     <CategorizeDemo.Card
                         amount={t(i18n)`−€59.80`}
-                        exit="accept"
+                        count={2}
                         meta={<Trans>2 transactions</Trans>}
                         slot={1}
                         title={<Trans>FITINN</Trans>}
@@ -147,7 +151,6 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     </CategorizeDemo.SectionLabel>
                     <CategorizeDemo.Card
                         amount={t(i18n)`−€100.00`}
-                        exit="move"
                         icon={<Banknote size={14} />}
                         meta={<Trans>1 ATM withdrawal</Trans>}
                         slot={2}
@@ -159,13 +162,72 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     </CategorizeDemo.Card>
 
                     <CategorizeDemo.Accept>
-                        <Trans>Accept 5 suggestions</Trans>
+                        <Trans>Accept 2 suggestions</Trans>
                     </CategorizeDemo.Accept>
-                    <CategorizeDemo.Done title={<Trans>All caught up</Trans>}>
-                        <Trans>6 categorized this session</Trans>
-                    </CategorizeDemo.Done>
                 </CategorizeDemo>
-            </FeaturePageStageHero>
+            </FeaturePageHero>
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>From backlog to done in three screens</Trans>}>
+                    <Trans>The count on your list, the merchant groups behind it, and the button that clears every certain one.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Step index={0} title={<Trans>Start from the pill</Trans>}>
+                    <Trans>
+                        The pill above your transactions counts what still has no category under your filters. Tap it to open the inbox.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie transaction list with a yellow missing categories pill above the first rows`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="uncategorized-transactions-1"
+                    slug="uncategorized-transactions"
+                >
+                    <FeatureStory.Callout y={0.204}>
+                        <Trans>Tap to open the inbox</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={1} title={<Trans>Groups, not rows</Trans>}>
+                    <Trans>
+                        Rows from one merchant share a card, even with reference or card numbers added. The chip is what you chose before.
+                    </Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie Categorize screen listing merchant cards, each with a suggested category chip`}
+                    index={1}
+                    locale={lang}
+                    scene="bulk-categorize-transactions-1"
+                    slug="bulk-categorize-transactions"
+                >
+                    <FeatureStory.Callout y={0.226}>
+                        <Trans>One card per merchant</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.278}>
+                        <Trans>Learned from your past choices</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={2} title={<Trans>Accept everything that is certain</Trans>}>
+                    <Trans>Confident groups sit under Ready to accept. One button categorizes them all, and Undo reverses it.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`The same Budgie Categorize screen with the accept all suggestions button at the bottom`}
+                    index={2}
+                    locale={lang}
+                    scene="bulk-categorize-transactions-1"
+                    slug="bulk-categorize-transactions"
+                >
+                    <FeatureStory.Callout y={0.177}>
+                        <Trans>Only confident groups</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout y={0.885}>
+                        <Trans>One tap, with Undo</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
@@ -187,58 +249,6 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                 </FeaturePageProse>
             </FeaturePageSection>
 
-            <FeaturePageMedia>
-                <AppShot
-                    alt={t(i18n)`Budgie transaction list with the missing categories pill that opens the Categorize inbox`}
-                    locale={lang}
-                    scene="uncategorized-transactions-1"
-                    slug="uncategorized-transactions"
-                />
-            </FeaturePageMedia>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How the Categorize inbox works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        <strong>Open it from the pill.</strong> The{' '}
-                        <Link className={linkClassName} href={`/${lang}/features/uncategorized-transactions`}>
-                            missing categories pill
-                        </Link>{' '}
-                        above your transaction list counts what still has no category. Tap it and the inbox opens with the same account,
-                        date, type, tag and amount filters you were looking at.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        <strong>Review groups, not rows.</strong> Transactions from the same merchant are grouped even when the bank adds
-                        reference numbers, masked card numbers or company suffixes to the description. Each group shows how many
-                        transactions it holds and what they add up to.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        <strong>Tap a suggestion.</strong> Each group offers up to two categories, ranked by how you categorized that
-                        merchant before. When your past choices clearly agree, the top suggestion carries a check mark and the group sits
-                        under Ready to accept. One tap, or a swipe to the right, categorizes the whole group.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        <strong>Accept everything that is certain.</strong> One button at the bottom accepts every confident suggestion at
-                        once, and Undo reverses your last categorization if you change your mind. Open a group and untick any row first to
-                        keep it in the inbox for later.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        <strong>Decide the rest yourself.</strong> Merchants you have never categorized land under Needs review or One-offs,
-                        where you pick the category. The plain list of uncategorized transactions is always one tap away in the header.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
             <FeaturePageSection>
                 <FeaturePageHeading>
                     <Trans>ATM withdrawals and card transfers are not spending</Trans>
@@ -252,8 +262,8 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        ATM withdrawals go to one of your cash accounts, card transfers to any other active account. Budgie asks you to
-                        confirm, then{' '}
+                        ATM withdrawals go to one of your cash accounts, card transfers to another of your accounts. You pick the account
+                        and confirm, then Budgie{' '}
                         <Link className={linkClassName} href={`/${lang}/features/convert-to-transfer`}>
                             turns the whole group into transfers
                         </Link>{' '}
@@ -268,8 +278,8 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        After you categorize a group, the bar at the bottom of the screen offers to create a rule. The rule editor opens
-                        already filled in with the words the group has in common and the category you just picked.
+                        After you categorize a single group, the bar at the bottom of the screen offers to create a rule. The rule editor
+                        opens already filled in with the words the group has in common and the category you just picked.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -279,19 +289,6 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                             categorization rule
                         </Link>{' '}
                         runs on every future bank sync and import. Budgie also offers to apply it to matching transactions you already have.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Private, and sharper every time you use it</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Suggestions are worked out on your phone from transactions you have already categorized. Nothing is uploaded, there
-                        is nothing extra to download, and the inbox works offline. Every group you categorize becomes history that makes the
-                        suggestions for your next import more accurate.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -311,12 +308,18 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                         <Trans>Accept every confident suggestion at once, with Undo</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={3}>
-                        <Trans>ATM withdrawals and card transfers moved to the right account instead of counted as spending</Trans>
+                        <Trans>Swipe a group to the right to accept it, with haptic feedback on every save</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Any group turned into a rule for future imports</Trans>
+                        <Trans>Untick a row to leave it for later, or give just that row a different category</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={5}>
+                        <Trans>ATM withdrawals and card transfers moved to the right account instead of counted as spending</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={6}>
+                        <Trans>Any group turned into a rule for future imports</Trans>
+                    </FeaturePageBenefitGridItem>
+                    <FeaturePageBenefitGridItem index={7}>
                         <Trans>Runs entirely on your phone and works offline</Trans>
                     </FeaturePageBenefitGridItem>
                 </FeaturePageBenefitGrid>
@@ -361,8 +364,8 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     answer={
                         <Trans>
                             They are collected under Transfers with a Move to account action instead of a category. ATM withdrawals go to a
-                            cash account, card transfers to another of your accounts, and the whole group becomes transfers once you
-                            confirm.
+                            cash account you pick, card transfers to another of your accounts, and the whole group becomes transfers once
+                            you confirm.
                         </Trans>
                     }
                 />
@@ -370,9 +373,18 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     question={<Trans>Will new transactions from the same merchant be categorized automatically?</Trans>}
                     answer={
                         <Trans>
-                            Yes, once you save a rule. After categorizing a group, tap the rule button in the bar at the bottom: the rule
-                            editor opens pre-filled and, once saved, categorizes matching transactions on every future bank sync and import.
-                            Even without a rule, your choices make the next suggestions more accurate.
+                            Yes, once you save a rule. After you categorize a single group, tap the rule button in the bar at the bottom:
+                            the rule editor opens pre-filled and, once saved, categorizes matching transactions on every future bank sync
+                            and import. Even without a rule, your choices make the next suggestions more accurate.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What about merchants Budgie has not seen before?</Trans>}
+                    answer={
+                        <Trans>
+                            Groups without a clear history land under Needs review, and single transactions under One-offs. Pick the
+                            category yourself, and that choice becomes the history behind the next suggestion.
                         </Trans>
                     }
                 />
