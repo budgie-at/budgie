@@ -31,6 +31,11 @@ msgstr " • {embeddingPending} tx en file d'attente"
 msgid "{0, plural, one {# account created} other {# accounts created}}"
 msgstr "{0, plural, one {# compte créé} other {# comptes créés}}"
 
+#. placeholder {0}: labels.length
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+msgid "{0, plural, one {# tag} other {# tags}}"
+msgstr "{0, plural, one {# étiquette} other {# étiquettes}}"
+
 #. placeholder {0}: rows.length
 #: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
@@ -137,10 +142,6 @@ msgstr "{formattedRemaining} au-dessus du budget"
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 msgstr "{found, plural, one {# correspondance fiable} other {# correspondances fiables}}"
 
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
-msgid "{groupCount, plural, one {# group} other {# groups}}"
-msgstr "{groupCount, plural, one {# groupe} other {# groupes}}"
-
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
 msgstr "{loadedDays}/{totalDays} jours"
@@ -172,7 +173,6 @@ msgstr "{percentage}% des dépenses"
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{remainingCount, plural, one {# left} other {# left}}"
 msgstr "{remainingCount, plural, one {# restante} other {# restantes}}"
@@ -236,10 +236,6 @@ msgstr "{taggedCount, plural, one {# étiquetée pendant cette session} other {#
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
-
-#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
-msgid "+ Tags"
-msgstr "+ Étiquettes"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot.service.ts
@@ -881,10 +877,6 @@ msgstr "Catégoriser"
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize as {categoryTitle}"
 msgstr "Catégoriser comme {categoryTitle}"
-
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
-msgid "Categorized {displayTitle} → {categoryTitle}"
-msgstr "Catégorisé : {displayTitle} → {categoryTitle}"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -3937,10 +3929,6 @@ msgstr "Étiqueter comme {tagTitle}"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Tag Name"
 msgstr "Nom de l'étiquette"
-
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
-msgid "Tagged {displayTitle} → {tagTitle}"
-msgstr "Étiqueté : {displayTitle} → {tagTitle}"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx

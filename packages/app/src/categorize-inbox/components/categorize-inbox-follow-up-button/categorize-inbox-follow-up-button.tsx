@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -33,7 +32,7 @@ export const CategorizeInboxFollowUpButton = ({ lastWrite, onFollowUp }: Props) 
         <HapticPressable
             onPress={handlePress}
             disabled={isApplied}
-            className="h-11 items-center justify-center px-sm"
+            className="h-11 w-11 items-center justify-center"
             accessibilityRole="button"
             accessibilityLabel={t`Add tags to these transactions`}
             accessibilityState={accessibilityState}
@@ -42,9 +41,7 @@ export const CategorizeInboxFollowUpButton = ({ lastWrite, onFollowUp }: Props) 
             {isApplied ? (
                 <Icon icon={UserIconNameEnum.Check} size={18} className="text-positive-foreground" />
             ) : (
-                <Text className="text-sm font-semibold text-primary" numberOfLines={1}>
-                    <Trans>+ Tags</Trans>
-                </Text>
+                <Icon icon={UserIconNameEnum.Tag} size={18} className="text-secondary-foreground" />
             )}
         </HapticPressable>
     );
