@@ -2,6 +2,7 @@ import { createModalContext } from '../../@generic/utils/create-modal-context/cr
 
 export interface TagsSelectorModalParams {
     readonly initialTagIds?: number[];
+    readonly suggestedTagIds?: number[];
     readonly excludeTagIds?: number[];
     readonly description?: string;
     readonly singleSelect?: boolean;
