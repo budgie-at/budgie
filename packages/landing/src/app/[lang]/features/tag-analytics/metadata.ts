@@ -22,9 +22,16 @@ export const FEATURE_METADATA = {
         'analytics by tag mobile',
         'untagged transactions report'
     ],
-    relatedFeatureSlugs: ['transaction-tags', 'primary-tag', 'spending-analytics', 'date-filter-presets', 'ai-tag-suggestions'],
+    relatedFeatureSlugs: [
+        'transaction-tags',
+        'primary-tag',
+        'spending-analytics',
+        'date-filter-presets',
+        'ai-tag-suggestions',
+        'bulk-categorize-transactions'
+    ],
     relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers', 'budgie-offline-financial-data'],
     publishedAt: '2026-01-04',
-    updatedAt: '2026-09-26',
+    updatedAt: '2026-09-27',
     ogTags: ['tags', 'analytics', 'drill-down']
 } satisfies FeatureRegistryEntryInterface;

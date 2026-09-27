@@ -1,6 +1,7 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import Link from 'next/link';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
 import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
@@ -163,8 +164,15 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     <Trans>
                         Untagged is not an error state — it is what is left over. Anything in the period carrying no tag is grouped into a
                         single Untagged row inside the list it belongs to, counted separately for income and for spending, so its total sits
-                        beside the tags you did apply. Tapping it opens those transactions, where you can add the missing label. Budgie does
-                        not force you to tag everything, but it will not hide the gap either.
+                        beside the tags you did apply. Tapping it opens those transactions grouped by merchant, with tags suggested from
+                        your history, so you can{' '}
+                        <Link
+                            className="font-semibold underline underline-offset-4"
+                            href={`/${lang}/features/bulk-categorize-transactions`}
+                        >
+                            tag them in bulk
+                        </Link>
+                        . Budgie does not force you to tag everything, but it will not hide the gap either.
                     </Trans>
                 </FeaturePageProse>
                 <FeaturePageProse>
@@ -214,7 +222,8 @@ export default async function TagAnalyticsFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Whatever in the period has no tag at all. It appears as an Untagged row — one in the income list, one in the
-                            spending list — and tapping it opens those transactions so you can label them.
+                            spending list — and tapping it opens those transactions grouped by merchant, with suggested tags, so you can
+                            label them in bulk.
                         </Trans>
                     }
                 />

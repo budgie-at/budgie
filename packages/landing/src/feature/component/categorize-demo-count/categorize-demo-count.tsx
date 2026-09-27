@@ -1,9 +1,10 @@
 interface Props {
-    readonly total: number;
+    readonly from: number;
+    readonly to: number;
 }
 
-export const CategorizeDemoCount = ({ total }: Props) => (
-    <span data-cdemo-count data-total={total}>
-        {total}
+export const CategorizeDemoCount = ({ from, to }: Props) => (
+    <span data-cdemo-count data-from={from} data-to={to}>
+        {from}
     </span>
 );
