@@ -2683,10 +2683,6 @@ msgstr "Actual Budget: The Self-Hoster’s Dream"
 msgid "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 msgstr "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 
-#: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "Add a transaction without opening the app"
-msgstr "Add a transaction without opening the app"
-
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Add another category row"
@@ -14419,6 +14415,10 @@ msgstr "Spreadsheets: The Ultimate Control Option"
 msgid "SQLite database you own and control"
 msgstr "SQLite database you own and control"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Start a transaction from your Home Screen"
+msgstr "Start a transaction from your Home Screen"
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Start from a built-in preset"
 msgstr "Start from a built-in preset"
@@ -18154,8 +18154,8 @@ msgid "widgets"
 msgstr "widgets"
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "Widgets refresh right after you add, edit or sync a transaction, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
-msgstr "Widgets refresh right after you add, edit or sync a transaction, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
+msgid "Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
+msgstr "Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Will Budgie ever charge for features?"

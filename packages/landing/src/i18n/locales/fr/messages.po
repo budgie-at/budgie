@@ -2684,10 +2684,6 @@ msgstr "Actual Budget : Le rêve de l'auto-hébergeur"
 msgid "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 msgstr "Actual est un outil de budget axé sur la confidentialité avec une forte approche local-first. Il propose la méthode des enveloppes budgétaires, des capacités de synchronisation bancaire, et des options auto-hébergées et cloud. Si vous préférez le budget par enveloppes et souhaitez une expérience orientée bureau, Actual mérite d'être considéré."
 
-#: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "Add a transaction without opening the app"
-msgstr "Ajouter une transaction sans ouvrir l'application"
-
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Ajouter une autre ligne de catégorie"
@@ -11337,7 +11333,7 @@ msgstr "Non. Bien que n'importe qui puisse proposer des modifications au code, v
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "No. Widgets are built to be read closed. They pick up every change you make inside the app and keep themselves current on a schedule in the background."
-msgstr "Non. Les widgets sont conçus pour être lus fermés. Ils enregistrent chaque changement que vous faites dans l'application et restent à jour en arrière-plan selon un calendrier."
+msgstr "Non. Les widgets sont conçus pour être lus fermés. Ils prennent en compte chaque changement que vous faites dans l'application et restent à jour en arrière-plan selon un calendrier."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. You open the screen, review the counts, and confirm on the repair card. Nothing changes before that."
@@ -14420,6 +14416,10 @@ msgstr "Tableurs : l'option du contrôle absolu"
 msgid "SQLite database you own and control"
 msgstr "Base de données SQLite que vous possédez et contrôlez"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Start a transaction from your Home Screen"
+msgstr "Démarrer une transaction depuis votre écran d'accueil"
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Start from a built-in preset"
 msgstr "Partir d'un préréglage intégré"
@@ -15391,7 +15391,7 @@ msgstr "L'écran de démarrage natif lit directement le thème du système d'exp
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "The net worth widget mirrors the total at the top of Home, and the larger size adds how much it moved this month and whether you are growing or burning. Tap it and Budgie opens straight to Home."
-msgstr "Le widget patrimoine net reflète le total en haut de l'accueil, et le format plus grand ajoute son évolution ce mois-ci ainsi que si vous êtes en croissance ou en consommation. Un appui dessus ouvre Budgie directement sur l'accueil."
+msgstr "Le widget patrimoine net reflète le total en haut de l'accueil, et le format plus grand ajoute son évolution ce mois-ci ainsi que si votre patrimoine augmente ou diminue. Un appui dessus ouvre Budgie directement sur l'accueil."
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "The net worth widget opens Home, the budget widget opens the budget screen, and each quick add tile opens the new-transaction screen already set to expense, income or transfer."
@@ -18155,8 +18155,8 @@ msgid "widgets"
 msgstr "widgets"
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "Widgets refresh right after you add, edit or sync a transaction, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
-msgstr "Les widgets se mettent à jour dès que vous ajoutez, modifiez ou synchronisez une transaction, et continuent en arrière-plan selon un calendrier pour que les chiffres restent proches de la réalité même quand Budgie est fermé."
+msgid "Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
+msgstr "Les widgets prennent en compte un ajout, une modification ou une synchronisation dès qu'iOS les autorise à se rafraîchir, et continuent de se rafraîchir en arrière-plan pour que les chiffres restent à jour même quand Budgie est fermé."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Will Budgie ever charge for features?"

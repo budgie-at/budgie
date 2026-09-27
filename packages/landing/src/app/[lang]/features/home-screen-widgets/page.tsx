@@ -126,7 +126,7 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={2} title={<Trans>Add a transaction without opening the app</Trans>}>
+                <FeatureStory.Step index={2} title={<Trans>Start a transaction from your Home Screen</Trans>}>
                     <Trans>
                         The quick add widget carries three taps: expense, income and transfer. Each one jumps straight into the same
                         new-transaction screen you would reach from inside Budgie, already set to that type.
@@ -160,7 +160,7 @@ export default async function HomeScreenWidgetsFeaturePage(props: PageLangParam)
                 </FeaturePageProse>
                 <FeaturePageProse>
                     <Trans>
-                        Widgets refresh right after you add, edit or sync a transaction, and keep refreshing in the background so the
+                        Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so the
                         numbers stay close to current even while Budgie stays closed.
                     </Trans>
                 </FeaturePageProse>

@@ -2684,10 +2684,6 @@ msgstr "Actual Budget: Мрія ентузіаста самохостингу"
 msgid "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 msgstr "Actual — це орієнтований на конфіденційність інструмент бюджетування з сильним підходом local-first. Він пропонує методологію конвертного бюджетування, можливості синхронізації з банком та варіанти як для самостійного розгортання, так і для хмари. Якщо ви віддаєте перевагу конвертному стилю бюджетування та хочете десктопний досвід, Actual варто розглянути."
 
-#: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "Add a transaction without opening the app"
-msgstr "Додати транзакцію, не відкриваючи застосунок"
-
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Додати ще один рядок категорії"
@@ -14420,6 +14416,10 @@ msgstr "Електронні таблиці: варіант абсолютног
 msgid "SQLite database you own and control"
 msgstr "База даних SQLite, яку ви контролюєте"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Start a transaction from your Home Screen"
+msgstr "Почати транзакцію з головного екрана"
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Start from a built-in preset"
 msgstr "Почніть із вбудованого шаблону"
@@ -18155,8 +18155,8 @@ msgid "widgets"
 msgstr "віджети"
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "Widgets refresh right after you add, edit or sync a transaction, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
-msgstr "Віджети оновлюються одразу після того, як ви додаєте, редагуєте чи синхронізуєте транзакцію, а також продовжують оновлюватися у фоновому режимі за розкладом, тож цифри залишаються близькими до актуальних, навіть коли Budgie закритий."
+msgid "Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
+msgstr "Віджети підхоплюють додавання, редагування чи синхронізацію, щойно iOS дозволяє їм оновитися, і продовжують оновлюватися у фоні, тож цифри лишаються актуальними, навіть коли Budgie закрито."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Will Budgie ever charge for features?"
