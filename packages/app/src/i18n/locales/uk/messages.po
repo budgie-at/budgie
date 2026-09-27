@@ -31,6 +31,11 @@ msgstr " • {embeddingPending} транзакц. у черзі"
 msgid "{0, plural, one {# account created} other {# accounts created}}"
 msgstr "{0, plural, one {# рахунок створено} few {# рахунки створено} many {# рахунків створено} other {# рахунка створено}}"
 
+#. placeholder {0}: labels.length
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+msgid "{0, plural, one {# tag} other {# tags}}"
+msgstr "{0, plural, one {# тег} few {# теги} many {# тегів} other {# тегів}}"
+
 #. placeholder {0}: rows.length
 #: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
@@ -137,10 +142,6 @@ msgstr "{formattedRemaining} понад бюджет"
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 msgstr "{found, plural, one {# збіг з високою впевненістю} few {# збіги з високою впевненістю} many {# збігів з високою впевненістю} other {# збігу з високою впевненістю}}"
 
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
-msgid "{groupCount, plural, one {# group} other {# groups}}"
-msgstr "{groupCount, plural, one {# група} few {# групи} many {# груп} other {# групи}}"
-
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
 msgstr "{loadedDays}/{totalDays} днів"
@@ -172,7 +173,6 @@ msgstr "{percentage}% витрат"
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{remainingCount, plural, one {# left} other {# left}}"
 msgstr "{remainingCount, plural, one {Залишилася #} few {Залишилося #} many {Залишилося #} other {Залишилося #}}"
@@ -236,10 +236,6 @@ msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
-
-#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
-msgid "+ Tags"
-msgstr "+ Теги"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot.service.ts
@@ -881,10 +877,6 @@ msgstr "Категоризувати"
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize as {categoryTitle}"
 msgstr "Категоризувати як {categoryTitle}"
-
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
-msgid "Categorized {displayTitle} → {categoryTitle}"
-msgstr "Категоризовано: {displayTitle} → {categoryTitle}"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -3937,10 +3929,6 @@ msgstr "Додати тег {tagTitle}"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Tag Name"
 msgstr "Назва тегу"
-
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
-msgid "Tagged {displayTitle} → {tagTitle}"
-msgstr "Тег додано: {displayTitle} → {tagTitle}"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx

@@ -44,7 +44,6 @@ export const CategorizeInboxTagPage = ({ params }: Props) => {
         pickRowLabel: t`Pick tags for this transaction`,
         writeFailed: t`Could not tag transactions`,
         assignAs: tagTitle => t`Tag as ${tagTitle}`,
-        assignedTo: (displayTitle, tagTitle) => t`Tagged ${displayTitle} → ${tagTitle}`,
         assignedCount: rowCount => t({ message: plural(rowCount, { one: 'Tagged # transaction', other: 'Tagged # transactions' }) }),
         doneThisSession: taggedCount =>
             t({ message: plural(taggedCount, { one: '# tagged this session', other: '# tagged this session' }) })

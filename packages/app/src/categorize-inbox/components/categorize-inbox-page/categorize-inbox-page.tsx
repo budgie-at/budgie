@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
@@ -42,7 +41,6 @@ export const CategorizeInboxPage = ({ params, strategy }: Props) => {
     const handleShowList = (): void =>
         void router.push({ pathname: '/analytics/transactions', params: strategy.buildListRouteParams(filters) });
 
-    const remainingText = t({ message: plural(remainingCount, { one: '# left', other: '# left' }) });
     const emptyDescription = isPositiveNumber(categorizedCount) ? strategy.doneThisSession(categorizedCount) : strategy.emptyDescription;
     const hasPanel = !inbox.isLoading && (isNotEmptyArray(items) || isDefined(lastWrite));
     const panel = hasPanel ? (
@@ -73,7 +71,6 @@ export const CategorizeInboxPage = ({ params, strategy }: Props) => {
                     <PageHeader
                         size="md"
                         title={strategy.pageTitle}
-                        description={remainingText}
                         onGoBack={handleGoBack}
                         right={
                             <HapticPressable

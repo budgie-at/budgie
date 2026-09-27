@@ -65,7 +65,6 @@ export const CategorizeInboxCategoryPage = ({ params }: Props) => {
         pickRowLabel: t`Pick a category for this transaction`,
         writeFailed: t`Could not categorize transactions`,
         assignAs: categoryTitle => t`Categorize as ${categoryTitle}`,
-        assignedTo: (displayTitle, categoryTitle) => t`Categorized ${displayTitle} → ${categoryTitle}`,
         assignedCount: rowCount =>
             t({ message: plural(rowCount, { one: 'Categorized # transaction', other: 'Categorized # transactions' }) }),
         doneThisSession: categorizedCount =>
