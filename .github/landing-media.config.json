@@ -12,17 +12,8 @@
         {
             "platform": "ios",
             "device": "iPhone 17 Pro Max",
-            "locales": [
-                "en",
-                "fr",
-                "uk",
-                "de",
-                "es"
-            ],
-            "appearances": [
-                "light",
-                "dark"
-            ]
+            "locales": ["en", "fr", "uk", "de", "es"],
+            "appearances": ["light", "dark"]
         }
     ],
     "capture-scenes": [
@@ -324,6 +315,10 @@
             "flow": "flows/media/bulk-categorize-transactions-1.flow.yaml"
         },
         {
+            "name": "bulk-categorize-transactions-2",
+            "flow": "flows/media/bulk-categorize-transactions-2.flow.yaml"
+        },
+        {
             "name": "convert-to-refund-1",
             "flow": "flows/media/convert-to-refund-1.flow.yaml"
         },
@@ -370,51 +365,37 @@
         {
             "name": "voice-transaction-entry-clip-1",
             "flow": "flows/media/voice-transaction-entry-clip-1.flow.yaml",
-            "locales": [
-                "en"
-            ]
+            "locales": ["en"]
         },
         {
             "name": "ai-auto-categorization-clip-1",
             "flow": "flows/media/ai-auto-categorization-clip-1.flow.yaml",
-            "locales": [
-                "en"
-            ]
+            "locales": ["en"]
         },
         {
             "name": "monobank-sync-clip-1",
             "flow": "flows/media/monobank-sync-clip-1.flow.yaml",
-            "locales": [
-                "en"
-            ]
+            "locales": ["en"]
         },
         {
             "name": "pin-app-lock-clip-1",
             "flow": "flows/media/pin-app-lock-clip-1.flow.yaml",
-            "locales": [
-                "en"
-            ]
+            "locales": ["en"]
         },
         {
             "name": "spending-analytics-clip-1",
             "flow": "flows/media/spending-analytics-clip-1.flow.yaml",
-            "locales": [
-                "en"
-            ]
+            "locales": ["en"]
         },
         {
             "name": "home-hero-clip-1",
             "flow": "flows/media/home-hero-clip-1.flow.yaml",
-            "locales": [
-                "en"
-            ]
+            "locales": ["en"]
         },
         {
             "name": "runway-clip-1",
             "flow": "flows/media/runway-clip-1.flow.yaml",
-            "locales": [
-                "en"
-            ]
+            "locales": ["en"]
         }
     ],
     "screenshots-dir": "tests/app-tests",
