@@ -8,7 +8,7 @@
 # Site Overview
 Source: https://budgie.at/en
 
-Budgie is a privacy-first, offline-first expense tracker for iOS and Android. Every transaction is stored on-device in an encrypted SQLite database — no cloud account, no aggregator, no server ever sees your financial data. Core features are free; advanced AI and bank-sync features are an optional one-time purchase. Currently in private beta with a waitlist.
+Budgie is a privacy-first, offline-first expense tracker for iOS and Android. Every transaction is stored on-device in an encrypted SQLite database — no cloud account, no aggregator, no server ever sees your financial data. Budgie is completely free, with no subscription, no ads, and no in-app purchase. Currently in private beta with a waitlist.
 
 Your bank knows everything. Mint sold your data. YNAB stores it on their servers. Budgie keeps your finances on your device — encrypted, offline, and yours alone.
 
@@ -62,7 +62,7 @@ Qwen3 1.7B (Q4 quantized) runs entirely on your phone — your questions never r
 Source: https://budgie.at/en
 
 - Platforms: iOS and Android
-- Pricing: Free core; advanced AI and bank-sync features are an optional one-time purchase (not a subscription)
+- Pricing: Completely free — no subscription, no ads, no in-app purchase
 - License: Source-available (public repository at github.com/budgie-at/budgie)
 - Data storage: On-device encrypted SQLite (SQLCipher AES-256)
 - Encryption key storage: iOS Keychain / Android Keystore (hardware-backed where available)
@@ -399,7 +399,7 @@ Feature comparison:
 - Where transactions live: encrypted on your device vs. vendor's cloud + aggregator
 - Account required: no vs. yes
 - Bank login: optional, direct API tokens vs. required, via aggregator
-- Subscription: free for core, optional one-time unlock vs. monthly recurring
+- Subscription: completely free vs. monthly recurring
 - AI runs: on your phone vs. in the vendor cloud
 - Public source: yes vs. no
 
@@ -418,14 +418,14 @@ Is the privacy claim verifiable? Yes — Budgie's source is public. Read the net
 # Feature: Subscription-Free Budget App
 Source: https://budgie.at/en/features/subscription-free-budget-app
 
-Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own.
+Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no tier.
 
-Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations.
+Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free.
 
 Feature comparison:
-- Pricing: free core, optional one-time unlock vs. monthly recurring
-- What you keep when you stop paying: everything, full access vs. read-only or nothing
-- Annual cost over 5 years: less than $30 one-time vs. $300+ recurring
+- Pricing: free vs. monthly recurring
+- What you keep: everything, always vs. read-only or nothing if you stop paying
+- Cost over 5 years: $0 vs. $300+ recurring
 - Bank sync: direct API or PDF/CSV vs. aggregator (often paid tier)
 - Offline use: full vs. limited or none
 - Public source: yes vs. no
@@ -434,9 +434,9 @@ The app source is public. Even if Budgie disappeared, the community could keep b
 
 ## FAQ
 
-What's free vs. paid in Budgie? Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations.
+Is anything in Budgie paid? No. Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free.
 
-What happens if I stop paying? Nothing — there's nothing to stop. The unlock is one-time, not a subscription.
+Does Budgie have ads or a paid tier? No. There is no paid tier and no ads — every feature ships free in the app you install.
 
 Is "subscription-free" really durable? The app source is public. Even if Budgie disappeared, the community could keep building it.
 
@@ -664,7 +664,7 @@ Data Storage Location: Local-first/Offline-first (data stored exclusively on you
 
 ## Comparison Table
 
-Budgie: Device only storage, optional bank sync, yes open source, free (Premium TBD), iOS and Android, best for privacy maximalists who want modern UX.
+Budgie: Device only storage, optional bank sync, yes open source, free, iOS and Android, best for privacy maximalists who want modern UX.
 
 Actual Budget: Local/Self-hosted storage, optional plugin bank sync, yes open source, free (self-hosted), Web and Desktop, best for technical users wanting full control.
 
@@ -745,6 +745,6 @@ How does Budgie sync without an aggregator? Two paths: (1) direct API tokens for
 
 ## Pricing
 
-What's free vs. paid in Budgie? Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations.
+Is anything in Budgie paid? No. Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free.
 
-What happens if I stop paying? Nothing — there's nothing to stop. The unlock is one-time, not a subscription.
+Does Budgie have ads or a paid tier? No. There is no paid tier and no ads — every feature ships free in the app you install.
