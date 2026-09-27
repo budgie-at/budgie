@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.84.2](https://github.com/budgie-at/budgie/compare/v6.84.1...v6.84.2) (2026-09-27)
+
+
+### Bug Fixes
+
+* **app:** round fractional micro-units left by cross-currency transfers ([86d8e97](https://github.com/budgie-at/budgie/commit/86d8e97cacc08a2dc04f8921ff13870ee08b1892)), closes [#1198](https://github.com/budgie-at/budgie/issues/1198)
+
+
+
+
+
 ## [6.84.1](https://github.com/budgie-at/budgie/compare/v6.84.0...v6.84.1) (2026-09-27)
 
 
