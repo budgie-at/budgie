@@ -21,9 +21,9 @@ describe('category/translation-drainer-interrupted-completion', () => {
 
     it('leaves titleEn NULL and keeps the row pending when the completion is interrupted mid-generation', async () => {
         const row = await createCategoryRow();
-        spyOnGenerate().mockRejectedValue(new Error('Completion interrupted'));
+        spyOnGenerate().mockRejectedValue(new Error('completionInterrupted'));
 
-        await expect(translationDrainerService['processRow'](row)).rejects.toThrow('Completion interrupted');
+        await expect(translationDrainerService['processRow'](row)).rejects.toThrow('completionInterrupted');
 
         const [persisted] = await categoryRepository.findById(row.id, LanguageEnum.EN);
         expect(persisted.titleEn).toBeNull();
