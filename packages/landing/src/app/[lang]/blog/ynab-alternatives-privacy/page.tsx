@@ -399,7 +399,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Price</strong>: Free (Premium TBD)
+                                <strong>Price</strong>: Free
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -1746,9 +1746,9 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         <BlogFaqItem question={<Trans>What’s the best free YNAB alternative?</Trans>}>
                             <Trans>
                                 For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with
-                                strong privacy. Both are open source and can run entirely on your own hardware. Budgie also offers a free
-                                tier with core budgeting functionality. If privacy isn’t your primary concern and you just want free, there
-                                are many options, but most involve trading your data for access.
+                                strong privacy. Both are open source and can run entirely on your own hardware. Budgie is also completely
+                                free, with no paid tier. If privacy isn’t your primary concern and you just want free, there are many
+                                options, but most involve trading your data for access.
                             </Trans>
                         </BlogFaqItem>
 
