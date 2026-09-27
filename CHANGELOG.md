@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.83.1](https://github.com/budgie-at/budgie/compare/v6.83.0...v6.83.1) (2026-09-27)
+
+
+### Bug Fixes
+
+* **app:** create the missing app review detail before uploading store metadata ([25a5ae1](https://github.com/budgie-at/budgie/commit/25a5ae121a82999248d954287192e4a82af91d71))
+
+
+
+
+
 # [6.83.0](https://github.com/budgie-at/budgie/compare/v6.82.2...v6.83.0) (2026-09-26)
 
 
