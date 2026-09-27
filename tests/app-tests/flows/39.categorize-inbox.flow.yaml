@@ -22,6 +22,8 @@ appId: ${APP_ID}
 
 - assertVisible: '3 left.*'
 - assertVisible:
+      id: 'CategorizeInboxPanel.Progress'
+- assertVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
 - assertVisible:
       id: 'CategorizeInboxAcceptAllButton.Button'
@@ -33,6 +35,7 @@ appId: ${APP_ID}
           id: 'CategorizeInboxUndoBar'
       timeout: 5000
 - assertVisible: '1 left.*'
+- assertVisible: '1 left · 2 done'
 - assertNotVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
 

@@ -5,8 +5,10 @@ import type { CategorizeInboxContextValueInterface } from './categorize-inbox-co
 export interface CategorizeInboxActionsInterface {
     readonly contextValue: CategorizeInboxContextValueInterface;
     readonly items: CategorizeInboxListItemType[];
+    readonly expandedClusterKey: string | null;
     readonly acceptableAssignments: CategorizeInboxAssignmentInterface[];
+    readonly undoAssignments: CategorizeInboxAssignmentInterface[] | null;
+    readonly undo: () => void;
     readonly remainingCount: number;
     readonly categorizedCount: number;
-    readonly progress: number;
 }

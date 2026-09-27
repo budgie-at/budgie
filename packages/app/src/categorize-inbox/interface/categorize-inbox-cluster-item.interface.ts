@@ -3,7 +3,7 @@ import { CategorizeInboxListItemKindEnum } from '../enum/categorize-inbox-list-i
 import { CategorizeInboxClusterInterface } from './categorize-inbox-cluster.interface';
 
 export interface CategorizeInboxClusterItemInterface {
-    readonly kind: CategorizeInboxListItemKindEnum.CLUSTER;
+    readonly kind: CategorizeInboxListItemKindEnum.CLUSTER | CategorizeInboxListItemKindEnum.ONE_OFF;
     readonly key: string;
     readonly cluster: CategorizeInboxClusterInterface;
 }

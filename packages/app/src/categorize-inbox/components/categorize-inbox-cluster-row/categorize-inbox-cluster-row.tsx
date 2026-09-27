@@ -7,11 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { testID } from '../../../@generic/utils/test-id.util';
-import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 
 import { CategorizeInboxClusterRowSelector } from './categorize-inbox-cluster-row.selector';
@@ -29,22 +25,10 @@ const rowVariants = cva('flex-row items-center gap-x-xs', {
 
 export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
     const { t } = useLingui();
-    const { formatDayAndMonthAndYear } = useFormatDate();
-    const protectAmount = useProtectedAmountLabel();
-    const { excludedTransactionIds, toggleExcluded, assignRow } = useCategorizeInboxContext();
-    const [openCategorySelector] = useCategorySelectorModal();
+    const { excludedTransactionIds, formatDate, formatMicroAmount, toggleExcluded, pickRowCategory } = useCategorizeInboxContext();
 
     const handleTogglePress = (): void => void toggleExcluded(row.transactionId);
-
-    const handlePickCategory = async (): Promise<void> => {
-        const categoryId = await openCategorySelector({ description: row.title });
-
-        if (isDefined(categoryId)) {
-            assignRow(row, categoryId);
-        }
-    };
-
-    const handlePickCategoryPress = (): void => void handlePickCategory();
+    const handlePickCategoryPress = (): void => void pickRowCategory(row);
 
     const isIncluded = !excludedTransactionIds.has(row.transactionId);
     const checkboxIcon = isIncluded ? UserIconNameEnum.SquareCheck : UserIconNameEnum.Square;
@@ -70,12 +54,10 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
                         {ownTitle}
                     </Text>
                 ) : null}
-                <Text className="text-secondary-foreground text-xs">{formatDayAndMonthAndYear(row.operatedAt)}</Text>
+                <Text className="text-secondary-foreground text-xs">{formatDate(row.operatedAt)}</Text>
             </View>
 
-            <Text className="text-primary text-sm font-medium">
-                {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
-            </Text>
+            <Text className="text-primary text-sm font-medium">{formatMicroAmount(row.amount, row.instrumentSymbol)}</Text>
 
             <HapticPressable
                 onPress={handlePickCategoryPress}
