@@ -2446,6 +2446,10 @@ msgstr "Un rediseño del cromado de pantalla: desenfoque progresivo detrás de l
 msgid "A second, lighter path answers whenever the main model is still loading or busy"
 msgstr "Una segunda vía, más ligera, responde siempre que el modelo principal sigue cargando u ocupado"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "A short message instead of numbers, so an empty widget never looks like a zero balance."
+msgstr "Un mensaje breve en lugar de cifras, para que un widget vacío nunca parezca un saldo cero."
+
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
 msgstr "Un único interruptor de Modo Oscuro en Ajustes: sigue el tema de tu sistema por defecto y puedes cambiarlo manualmente cuando quieras"
@@ -2684,6 +2688,10 @@ msgstr "Actual Budget: El sueño del autoalojamiento"
 msgid "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 msgstr "Actual es una herramienta de presupuesto enfocada en la privacidad con un fuerte enfoque local-first. Ofrece la metodología de presupuesto por sobres, capacidades de sincronización bancaria y opciones tanto auto-alojadas como en la nube. Si prefieres el presupuesto por sobres y quieres una experiencia centrada en escritorio, Actual vale la pena considerarlo."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Add a transaction without opening the app"
+msgstr "Añadir una transacción sin abrir la aplicación"
+
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Añadir otra fila de categoría"
@@ -2692,9 +2700,17 @@ msgstr "Añadir otra fila de categoría"
 msgid "Add it in three taps"
 msgstr "Añádelo en tres toques"
 
+#: src/app/[lang]/features/home-screen-widgets/metadata.ts
+msgid "Add net worth, budget, and quick-add widgets to your iPhone Home Screen. Check your numbers at a glance, then tap straight into adding a transaction."
+msgstr "Añade widgets de patrimonio neto, presupuesto y añadido rápido a la pantalla de inicio de tu iPhone. Consulta tus cifras de un vistazo y entra directamente a añadir una transacción."
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Add tests for new functionality"
 msgstr ""
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Add them to your Home Screen and your numbers are already there before you unlock your phone."
+msgstr "Añádelos a tu pantalla de inicio y tus cifras ya estarán ahí antes de desbloquear el teléfono."
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Added in a typical month"
@@ -4158,6 +4174,10 @@ msgstr "Pantalla de detalle del presupuesto de Budgie con el 95 % del presupuest
 msgid "Budgie budget details screen with a monthly budget bar and per-category limits"
 msgstr "Pantalla de detalle del presupuesto de Budgie con la barra mensual y límites por categoría"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Budgie budget screen header showing spent, left and percentage that the budget widget mirrors"
+msgstr "Cabecera de la pantalla de presupuesto de Budgie con gastado, restante y porcentaje, que el widget de presupuesto refleja"
+
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password."
 msgstr "Budgie llama a la API de Monobank directamente con un token que generas tú. Sin agregador, sin contraseña bancaria."
@@ -4363,6 +4383,10 @@ msgstr "Pantalla de inicio de Budgie con las cuentas agrupadas en las secciones 
 msgid "Budgie home screen with the total balance header above every account section"
 msgstr "Pantalla de inicio de Budgie con la cabecera de saldo total sobre todas las secciones de cuentas"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Budgie home screen with the total balance header that the net worth widget mirrors"
+msgstr "Pantalla de inicio de Budgie con la cabecera de saldo total que el widget de patrimonio neto refleja"
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups"
 msgstr "Pantalla de inicio de Budgie con el saldo total dividido en una etiqueta de efectivo y otra de cripto, encima de los grupos de cuentas bancarias, de efectivo y de cripto"
@@ -4567,6 +4591,10 @@ msgstr "Formulario de nueva cuenta de depósito de Budgie con campos de moneda, 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
 msgstr "Formulario de nuevo gasto de Budgie con la hoja de etiquetas abierta sobre una cuadrícula de etiquetas con búsqueda"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Budgie new expense screen that a tap on the quick add expense tile opens directly"
+msgstr "Pantalla de nuevo gasto de Budgie que abre directamente un toque en la ficha de gasto del widget de añadido rápido"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie New Expense screen with the amount keypad open and Main Checking preselected as the account"
@@ -5094,6 +5122,10 @@ msgstr "¿Una transacción puede no tener etiqueta principal?"
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Can AI categorize the missing transactions?"
 msgstr "¿Puede la IA categorizar las transacciones pendientes?"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Can anyone read my amounts by looking at my Home Screen?"
+msgstr "¿Puede alguien leer mis cifras con solo mirar mi pantalla de inicio?"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Can be entirely self-hosted"
@@ -6904,6 +6936,10 @@ msgstr "¿Necesito hacer algo para obtener estos cambios?"
 msgid "Do I need to give Budgie my bank login?"
 msgstr "¿Tengo que darle a Budgie las credenciales de mi banco?"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Do I need to keep Budgie open for the numbers to stay right?"
+msgstr "¿Necesito mantener Budgie abierto para que las cifras sean correctas?"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Do I need to turn on On-device AI?"
 msgstr "¿Necesito activar «On-device AI»?"
@@ -6939,6 +6975,10 @@ msgstr "¿Necesitan las alertas conexión a internet?"
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Do the charts work offline?"
 msgstr "¿Los gráficos funcionan sin conexión?"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Do the widgets update on their own?"
+msgstr "¿Se actualizan los widgets por sí solos?"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Do transfer fees show up as expenses?"
@@ -7850,6 +7890,7 @@ msgstr "funciones"
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/expense-tracking/page.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -7900,6 +7941,7 @@ msgstr "Las comisiones funcionan en gastos, ingresos y transferencias — no sol
 msgid "Fetch Accounts, then choose"
 msgstr "Obtener cuentas y luego elegir"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Fiat and crypto, split out"
 msgstr "Fiat y cripto, por separado"
@@ -8619,6 +8661,7 @@ msgstr "Las posiciones se consolidan en el patrimonio neto junto a las cuentas f
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/expense-tracking/page.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -8662,6 +8705,20 @@ msgstr "Home agrupa las deudas por dirección: «Debes» y «Te deben», cada un
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
 msgstr "La pantalla de inicio mantiene toda la conexión en un grupo Monobank, y el engranaje que hay al lado vuelve a abrir las cuentas."
+
+#: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
+msgid "home screen"
+msgstr "pantalla de inicio"
+
+#: src/app/[lang]/features/home-screen-widgets/metadata.ts
+#: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Home Screen Widgets"
+msgstr "Widgets de pantalla de inicio"
+
+#: src/app/[lang]/features/home-screen-widgets/metadata.ts
+msgid "Home Screen Widgets — Budgie"
+msgstr "Widgets de pantalla de inicio — Budgie"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Home-screen widget with the period dates, an overall progress bar, and your closest-to-the-limit categories"
@@ -8929,6 +8986,10 @@ msgstr "¿Cuántas etiquetas puedo añadir a una transacción?"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "How much do you value privacy?"
 msgstr "¿Cuánto valoras la privacidad?"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "How much of the month is left"
+msgstr "Cuánto queda del mes"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "How much storage do the AI models use?"
@@ -9864,6 +9925,10 @@ msgstr "Los sistemas local-first eligen disponibilidad. Siempre puedes trabajar,
 msgid "local-llm"
 msgstr ""
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Locked when you are, current when it matters"
+msgstr "Bloqueado cuando tú lo estás, actualizado cuando importa"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use."
 msgstr "Registra gastos, ingresos y transferencias en segundos con un formulario de entrada rápida en hoja inferior diseñado para uso con una sola mano."
@@ -10764,6 +10829,10 @@ msgstr "Patrimonio neto"
 msgid "Net worth and account balances answer a different question from spending analytics. Net worth asks, “What are my holdings worth now?” Spending analytics asks, “What did this cost me then?” Those questions should not share the same conversion rule."
 msgstr ""
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Net worth and budget come in a small size for just the headline number, or a larger size that adds the detail underneath. Quick add is one size, sized for its three tiles."
+msgstr "El patrimonio neto y el presupuesto vienen en un tamaño pequeño solo para la cifra principal, o uno más grande que añade el detalle debajo. El añadido rápido tiene un único tamaño, pensado para sus tres fichas."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the debt account itself. Lending money books an expense; a repayment books an income — both on the account the money actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against repaid, until you archive it."
 msgstr "El patrimonio neto respeta la dirección de la deuda: los pasivos la reducen, las cuentas por cobrar la aumentan. Pero ninguna transacción toca nunca la cuenta de deuda en sí. Prestar dinero registra un gasto; un reembolso registra un ingreso, ambos en la cuenta por la que realmente pasó el dinero, ambos bajo Préstamo o Endeudamiento. La cuenta de deuda solo lleva el marcador: pendiente frente a lo devuelto, hasta que la archives."
@@ -10792,6 +10861,18 @@ msgstr "Rastreador de patrimonio neto para móvil — Budgie"
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Net worth trendline alongside"
 msgstr "Línea de tendencia del patrimonio neto incluida"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Net worth, budget, and a quick way to add a transaction, right on your iPhone Home Screen. No need to open Budgie to check where you stand."
+msgstr "Patrimonio neto, presupuesto y una forma rápida de añadir una transacción, directamente en la pantalla de inicio de tu iPhone. No necesitas abrir Budgie para ver cómo estás."
+
+#: src/app/[lang]/features/home-screen-widgets/metadata.ts
+msgid "Net worth, budget, and quick add — right on your iPhone Home Screen, no need to open the app."
+msgstr "Patrimonio neto, presupuesto y añadido rápido — directamente en la pantalla de inicio de tu iPhone, sin abrir la aplicación."
+
+#: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
+msgid "Net worth, budget, and quick add on your iPhone Home Screen."
+msgstr "Patrimonio neto, presupuesto y añadido rápido en la pantalla de inicio de tu iPhone."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Never lock you into a proprietary format"
@@ -11238,6 +11319,10 @@ msgstr "No. La entrada por voz transcribe el audio directamente en tu dispositiv
 msgid "No. While anyone can propose changes to the code, you control which version you run. Updates only install when you choose to update the app. If you’re concerned about a particular version, you can review the changes before updating or even build your own version from source. The open nature of the code means changes are visible and reviewable, actually giving you more control rather than less."
 msgstr "No. Aunque cualquiera puede proponer cambios al código, tú controlas qué versión ejecutas. Las actualizaciones solo se instalan cuando decides actualizar la aplicación. Si te preocupa una versión particular, puedes revisar los cambios antes de actualizar o incluso compilar tu propia versión desde el código fuente. La naturaleza abierta del código significa que los cambios son visibles y revisables, lo que en realidad te da más control, no menos."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "No. Widgets are built to be read closed. They pick up every change you make inside the app and keep themselves current on a schedule in the background."
+msgstr "No. Los widgets están pensados para leerse con la aplicación cerrada. Recogen cada cambio que haces dentro de la aplicación y se mantienen actualizados en segundo plano según un calendario."
+
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. You open the screen, review the counts, and confirm on the repair card. Nothing changes before that."
 msgstr "No. Abres la pantalla, revisas los recuentos y confirmas en la tarjeta de reparación. Nada cambia antes de eso."
@@ -11282,6 +11367,10 @@ msgstr "No todos los bancos ofrecen un programa de API, y no todos los bancos so
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Not for this job. Sorting your own expenses is a narrow task: the vocabulary is small, and your own history is a far stronger signal than anything a general model could add. A cloud service would be guessing from other people's data; Budgie is matching against yours."
 msgstr "No para esta tarea. Ordenar tus propios gastos es una tarea concreta: el vocabulario es pequeño, y tu propio historial es una señal mucho más fuerte que cualquier cosa que un modelo general pudiera aportar. Un servicio en la nube estaría adivinando a partir de datos de otras personas; Budgie compara con los tuyos."
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Not if you have a PIN set. Every amount on every widget is replaced with dots the moment a PIN is on, with no separate switch to remember."
+msgstr "No, si tienes un PIN configurado. En cuanto el PIN está activo, cada cifra de cada widget se sustituye por puntos, sin ningún interruptor aparte que recordar."
 
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Not pursuing legal action against good-faith security research"
@@ -12387,6 +12476,10 @@ msgstr "Anulaciones por MCC para preferencias personales: configura una vez, se 
 msgid "Per-MCC overrides let you bend the default mapping — point all 4111 (transit) into your \"Commute\" category instead of \"Travel\" once and never touch it again."
 msgstr "Las anulaciones por MCC te permiten ajustar el mapeo predeterminado: dirige todos los 4111 (tránsito) a tu categoría «Transporte» en lugar del predeterminado."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Percentage of the limit used"
+msgstr "Porcentaje del límite utilizado"
+
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "performance"
 msgstr "rendimiento"
@@ -12957,6 +13050,10 @@ msgstr "El código fuente público prospera con la participación de la comunida
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "Published audit reports from recognized security firms"
 msgstr "Informes de auditoría publicados por empresas de seguridad reconocidas"
+
+#: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
+msgid "quick add"
+msgstr "añadido rápido"
 
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Quick Edit Transaction App — Long-Press Menu — Budgie"
@@ -13862,6 +13959,10 @@ msgstr "Configura un PIN y Budgie cifra la base de datos usando ese PIN como cla
 #: src/app/[lang]/security/page.tsx
 msgid "Set a PIN and Budgie encrypts your data on the device, with that PIN as the key itself. The PIN is the only key and it never leaves your device. Remove the PIN and the file is rewritten unencrypted — private to the app sandbox, but no longer protected."
 msgstr "Configura un PIN y Budgie cifra tus datos en el dispositivo, con ese PIN como la clave misma. El PIN es la única clave y nunca sale de tu dispositivo. Si eliminas el PIN, el archivo se reescribe sin cifrar — privado dentro del sandbox de la app, pero ya no protegido."
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Set a PIN and every amount on every widget turns into dots. The layout stays, so you still see that a budget is running low or that net worth moved, just not the figures themselves."
+msgstr "Configura un PIN y cada cifra de cada widget se convertirá en puntos. El diseño se mantiene, así que sigues viendo que un presupuesto se está agotando o que el patrimonio neto ha cambiado, solo que no las cifras en sí."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Set a PIN and the file is encrypted with it — no vendor format, no conversion step"
@@ -14930,6 +15031,10 @@ msgstr "Conclusión"
 msgid "The budget itself is kept in your default currency, and spending recorded on accounts in other currencies is converted into it using the exchange rates stored on your device."
 msgstr "El presupuesto en sí se mantiene en tu moneda predeterminada, y el gasto registrado en cuentas de otras divisas se convierte a ella usando los tipos de cambio guardados en tu dispositivo."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "The budget widget carries the same spent, left and percentage as the budget screen, and the larger size adds your top categories. Tap it and Budgie opens the budget screen for the active period."
+msgstr "El widget de presupuesto muestra los mismos datos de gastado, restante y porcentaje que la pantalla de presupuesto, y el tamaño más grande añade tus principales categorías. Al tocarlo, Budgie abre la pantalla de presupuesto del periodo activo."
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The Budgie Difference: Privacy-First Financial Management"
 msgstr "La diferencia de Budgie: Gestión financiera con prioridad en la privacidad"
@@ -15272,6 +15377,14 @@ msgstr "La forma mas privada de incorporar datos bancarios en Budgie es la impor
 msgid "The native splash screen reads the OS theme directly so the transition into the app stays in dark mode without an intermediate light state."
 msgstr "La pantalla de inicio nativa lee directamente el tema del sistema operativo, de modo que la transición hacia la aplicación permanece en modo oscuro sin un estado claro intermedio."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "The net worth widget mirrors the total at the top of Home, and the larger size adds how much it moved this month and whether you are growing or burning. Tap it and Budgie opens straight to Home."
+msgstr "El widget de patrimonio neto refleja el total de la parte superior de Inicio, y el tamaño más grande añade cuánto ha cambiado este mes y si estás creciendo o gastando más de la cuenta. Al tocarlo, Budgie se abre directamente en Inicio."
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "The net worth widget opens Home, the budget widget opens the budget screen, and each quick add tile opens the new-transaction screen already set to expense, income or transfer."
+msgstr "El widget de patrimonio neto abre Inicio, el widget de presupuesto abre la pantalla de presupuesto, y cada ficha de añadido rápido abre la pantalla de nueva transacción ya configurada como gasto, ingreso o transferencia."
+
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "The newest rate for every currency pair is stored on your device"
 msgstr "El tipo más reciente de cada par de monedas se guarda en tu dispositivo"
@@ -15425,6 +15538,10 @@ msgstr "La pregunta que una categoría no puede responder"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The question isn’t whether you should use an offline-first financial app. The question is: why would you trust your financial privacy to anything else?"
 msgstr "La pregunta no es si deberías usar una aplicación financiera sin conexión. La pregunta es: ¿por qué confiarías tu privacidad financiera a otra cosa?"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "The quick add widget carries three taps: expense, income and transfer. Each one jumps straight into the same new-transaction screen you would reach from inside Budgie, already set to that type."
+msgstr "El widget de añadido rápido ofrece tres toques: gasto, ingreso y transferencia. Cada uno lleva directamente a la misma pantalla de nueva transacción a la que llegarías desde dentro de Budgie, ya configurada con ese tipo."
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The Quick rule pill writes it for you"
@@ -15720,6 +15837,7 @@ msgid "Then Runway says Growing and shows how much you add in a typical month, p
 msgstr "Entonces la autonomía indica En crecimiento y muestra lo que suma en un mes típico y cuántos meses de gastos cubre ya su saldo. No hay mes de agotamiento, porque a ese ritmo el dinero no se acaba."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Then tap save"
 msgstr "Luego pulsa guardar"
 
@@ -16035,6 +16153,14 @@ msgstr "Tres pantallas: la lista de Reglas, la píldora Regla rápida en una tra
 msgid "Three screens: the transfer form that names both accounts, the cross-currency pair with the rate it converted at, and the analytics that counted neither side."
 msgstr "Tres pantallas: el formulario de transferencia que nombra ambas cuentas, el par entre divisas con el tipo de cambio aplicado y la analítica que no contó ninguno de los dos lados."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Three widgets, one glance"
+msgstr "Tres widgets, un vistazo"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Three: net worth, budget, and quick add. Net worth and budget come in a small and a larger size, and quick add comes in one size with three tiles for expense, income and transfer."
+msgstr "Tres: patrimonio neto, presupuesto y añadido rápido. El patrimonio neto y el presupuesto vienen en un tamaño pequeño y otro más grande, y el añadido rápido en un único tamaño con tres fichas para gasto, ingreso y transferencia."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Time series"
 msgstr "Series temporales"
@@ -16107,6 +16233,11 @@ msgstr "Total — no existe ningún proveedor"
 msgid "Total balance up top"
 msgstr "Saldo total arriba"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Total balance, before you unlock"
+msgstr "Saldo total, antes de desbloquear"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Total in your base currency"
 msgstr "Total en tu moneda base"
@@ -16418,6 +16549,7 @@ msgid "Two-tap entry: smart defaults for account, category, and date pick the ri
 msgstr "Entrada en dos toques: valores predeterminados inteligentes para cuenta, categoría y fecha seleccionan los valores correctos"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Type the amount"
 msgstr "Escribe el importe"
 
@@ -16961,6 +17093,10 @@ msgstr "¿Qué hace Recalcular saldos?"
 msgid "What does Screenshot Protection actually hide?"
 msgstr "¿Qué oculta realmente Protección de capturas?"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "What does the budget widget show if I have no active budget?"
+msgstr "¿Qué muestra el widget de presupuesto si no tengo un presupuesto activo?"
+
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "What does the own-card transfer fix actually change?"
 msgstr "¿Qué cambia exactamente la corrección de transferencias entre tarjetas propias?"
@@ -17170,6 +17306,7 @@ msgid "What Is On-Device AI?"
 msgstr "¿Qué es la IA en el dispositivo?"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "What is still left"
 msgstr "Lo que todavía queda"
 
@@ -17580,6 +17717,10 @@ msgstr "¿Dónde se ejecuta la IA de Budgie?"
 msgid "Where does my Monobank token live?"
 msgstr "¿Dónde vive mi token de Monobank?"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Where does tapping a widget take me?"
+msgstr "¿Adónde lleva tocar un widget?"
+
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "Where is my financial data stored?"
 msgstr "¿Dónde se guardan mis datos financieros?"
@@ -17671,6 +17812,10 @@ msgstr "¿Qué alfabetos son compatibles?"
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Which tag chip the list shows"
 msgstr "Qué chip de etiqueta muestra la lista"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Which widgets does Budgie offer?"
+msgstr "¿Qué widgets ofrece Budgie?"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Which YNAB alternative has the best mobile app?"
@@ -18000,6 +18145,14 @@ msgstr "Por que elegimos la privacidad sobre la comodidad"
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Why would I convert income to a refund?"
 msgstr "¿Por qué convertiría un ingreso en reembolso?"
+
+#: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
+msgid "widgets"
+msgstr "widgets"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Widgets refresh right after you add, edit or sync a transaction, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
+msgstr "Los widgets se actualizan justo después de añadir, editar o sincronizar una transacción, y siguen actualizándose en segundo plano para que las cifras se mantengan al día incluso con Budgie cerrado."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Will Budgie ever charge for features?"
@@ -18540,6 +18693,10 @@ msgstr ""
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Yes. The suggestion engine runs on every form variant — expense, income, and transfer."
 msgstr "Sí. El motor de sugerencias se ejecuta en cada variante de formulario — gasto, ingreso y transferencia."
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Yes. They refresh right after a transaction changes inside Budgie, and again periodically in the background, so you do not need to open the app to see a current number."
+msgstr "Sí. Se actualizan justo después de que cambie una transacción en Budgie, y también periódicamente en segundo plano, así que no necesitas abrir la aplicación para ver una cifra actual."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Yes. Transactions deduplicate by their booking reference, so re-importing skips known rows and inserts only new ones."
