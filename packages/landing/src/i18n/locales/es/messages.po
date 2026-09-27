@@ -2684,10 +2684,6 @@ msgstr "Actual Budget: El sueño del autoalojamiento"
 msgid "Actual is a privacy-focused budgeting tool with a strong local-first approach. It offers envelope budgeting methodology, bank syncing capabilities, and both self-hosted and cloud options. If you prefer envelope-style budgeting and want a desktop-focused experience, Actual is worth considering."
 msgstr "Actual es una herramienta de presupuesto enfocada en la privacidad con un fuerte enfoque local-first. Ofrece la metodología de presupuesto por sobres, capacidades de sincronización bancaria y opciones tanto auto-alojadas como en la nube. Si prefieres el presupuesto por sobres y quieres una experiencia centrada en escritorio, Actual vale la pena considerarlo."
 
-#: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "Add a transaction without opening the app"
-msgstr "Añadir una transacción sin abrir la aplicación"
-
 #: src/app/[lang]/features/split-transactions/page.tsx
 msgid "Add another category row"
 msgstr "Añadir otra fila de categoría"
@@ -14420,6 +14416,10 @@ msgstr "Hojas de cálculo: la opción del control absoluto"
 msgid "SQLite database you own and control"
 msgstr "Base de datos SQLite que tú posees y controlas"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Start a transaction from your Home Screen"
+msgstr "Inicia una transacción desde tu pantalla de inicio"
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Start from a built-in preset"
 msgstr "Parte de un ajuste incluido"
@@ -15391,7 +15391,7 @@ msgstr "La pantalla de inicio nativa lee directamente el tema del sistema operat
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "The net worth widget mirrors the total at the top of Home, and the larger size adds how much it moved this month and whether you are growing or burning. Tap it and Budgie opens straight to Home."
-msgstr "El widget de patrimonio neto refleja el total de la parte superior de Inicio, y el tamaño más grande añade cuánto ha cambiado este mes y si estás creciendo o gastando más de la cuenta. Al tocarlo, Budgie se abre directamente en Inicio."
+msgstr "El widget de patrimonio neto refleja el total de la parte superior de Inicio, y el tamaño más grande añade cuánto ha cambiado este mes y si tu patrimonio aumenta o disminuye. Al tocarlo, Budgie se abre directamente en Inicio."
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "The net worth widget opens Home, the budget widget opens the budget screen, and each quick add tile opens the new-transaction screen already set to expense, income or transfer."
@@ -18155,8 +18155,8 @@ msgid "widgets"
 msgstr "widgets"
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
-msgid "Widgets refresh right after you add, edit or sync a transaction, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
-msgstr "Los widgets se actualizan justo después de añadir, editar o sincronizar una transacción, y siguen actualizándose en segundo plano para que las cifras se mantengan al día incluso con Budgie cerrado."
+msgid "Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
+msgstr "Los widgets recogen una adición, edición o sincronización en cuanto iOS les permite actualizarse, y siguen actualizándose en segundo plano para que las cifras se mantengan al día incluso con Budgie cerrado."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Will Budgie ever charge for features?"
