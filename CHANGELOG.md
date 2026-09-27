@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.83.2](https://github.com/budgie-at/budgie/compare/v6.83.1...v6.83.2) (2026-09-27)
+
+
+### Bug Fixes
+
+* **landing:** say budgie is free instead of promising a one-time purchase ([39b72b0](https://github.com/budgie-at/budgie/commit/39b72b05abd5df61c7a28e761d52f85da6a8471e))
+
+
+
+
+
 ## [6.83.1](https://github.com/budgie-at/budgie/compare/v6.83.0...v6.83.1) (2026-09-27)
 
 
