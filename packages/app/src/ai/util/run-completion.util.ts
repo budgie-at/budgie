@@ -2,8 +2,6 @@ import { GenerateOptionsInterface, stripThinkingTags } from '@budgie/ai';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { InterruptedCompletionError } from '../error/interrupted-completion.error';
-
 import { DEFAULT_MAX_TOKENS, GENERATION_CONFIG, STOP_TOKENS } from './ai-constants.util';
 
 import type { LlamaContext } from 'llama.rn';
@@ -32,7 +30,8 @@ export const runCompletion = async (
     });
 
     if (result.interrupted && options?.throwOnInterrupt === true) {
-        throw new InterruptedCompletionError();
+        // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, not user-facing
+        throw new Error('Completion interrupted');
     }
 
     return stripThinkingTags(result.text.trim());
