@@ -42,8 +42,8 @@ export const FaqSectionAccordion = () => {
     const subscriptionQuestion = <Trans>Is there a subscription?</Trans>;
     const subscriptionAnswer = (
         <Trans>
-            No. The expense tracker itself never expires and has no paywall. Bank sync and on-device AI are an optional one-time unlock, not
-            a recurring charge.
+            No. Budgie is completely free, with no paywall and no paid tier. The expense tracker, bank sync, and on-device AI never expire
+            and never charge you.
         </Trans>
     );
     const faqPage = buildFaqSectionJsonLd({

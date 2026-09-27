@@ -1,6 +1,6 @@
 # Budgie
 
-> Budgie is a privacy-first, offline-first expense tracker for iOS and Android. Every transaction is stored on-device in an encrypted SQLite database — no cloud account, no aggregator, no server ever sees your financial data. Core features are free; advanced AI and bank-sync features are an optional one-time purchase. Currently in private beta with a waitlist at https://budgie.at.
+> Budgie is a privacy-first, offline-first expense tracker for iOS and Android. Every transaction is stored on-device in an encrypted SQLite database — no cloud account, no aggregator, no server ever sees your financial data. Budgie is completely free, with no subscription, no ads, and no in-app purchase. Currently in private beta with a waitlist at https://budgie.at.
 
 Budgie's source code is publicly available under a source-available license (https://github.com/budgie-at/budgie). The app UI is available in English, Ukrainian, French, German, and Spanish.
 
@@ -33,7 +33,7 @@ Budgie's source code is publicly available under a source-available license (htt
 ## Comparisons
 
 - [Private Budget App Alternative](https://budgie.at/en/privacy): Budgie vs. cloud PFM apps.
-- [Subscription-Free Budget App](https://budgie.at/en/features/subscription-free-budget-app): Free core + optional one-time unlock vs. monthly subscriptions.
+- [Subscription-Free Budget App](https://budgie.at/en/features/subscription-free-budget-app): Completely free vs. monthly subscriptions.
 - [Budget App Without Bank Login](https://budgie.at/en/privacy): Direct API tokens and PDF/CSV import instead of aggregators.
 - [On-Device AI Budget App](https://budgie.at/en/ai-features): Local inference vs. cloud AI assistants.
 
