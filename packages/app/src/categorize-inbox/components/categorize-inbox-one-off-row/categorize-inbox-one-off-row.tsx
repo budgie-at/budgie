@@ -3,11 +3,11 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { testID } from '../../../@generic/utils/test-id.util';
-import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { useCategorizeInboxTopSuggestion } from '../../hook/use-categorize-inbox-top-suggestion.hook';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { CategorizeInboxSuggestionChips } from '../categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips';
-import { CategorizeInboxSwipeToAccept } from '../categorize-inbox-swipe-to-accept/categorize-inbox-swipe-to-accept';
 
 import { CategorizeInboxOneOffRowSelector } from './categorize-inbox-one-off-row.selector';
 
@@ -18,8 +18,8 @@ interface Props {
 }
 
 export const CategorizeInboxOneOffRow = ({ cluster }: Props) => {
-    const { formatDate, formatMicroAmount } = useCategorizeInboxContext();
-    const topSuggestion = useCategorizeInboxTopSuggestion(cluster);
+    const protectAmount = useProtectedAmountLabel();
+    const { formatDayAndMonthAndYear } = useFormatDate();
 
     const [row] = cluster.rows;
 
@@ -28,22 +28,22 @@ export const CategorizeInboxOneOffRow = ({ cluster }: Props) => {
     }
 
     return (
-        <CategorizeInboxSwipeToAccept cluster={cluster}>
-            <Card size="sm" className="gap-y-md" {...testID(CategorizeInboxOneOffRowSelector.Row, cluster.key)}>
-                <View className="flex-row items-center gap-x-xl" accessible {...topSuggestion?.accessibilityProps}>
-                    <Text className="text-primary text-sm font-semibold flex-1" numberOfLines={1}>
-                        {cluster.displayTitle}
-                    </Text>
-                    <Text className="text-primary text-sm font-semibold">{formatMicroAmount(row.amount, row.instrumentSymbol)}</Text>
-                </View>
+        <Card size="sm" className="gap-y-md" {...testID(CategorizeInboxOneOffRowSelector.Row, cluster.key)}>
+            <View className="flex-row items-center gap-x-xl" accessible>
+                <Text className="text-primary text-sm font-semibold flex-1" numberOfLines={1}>
+                    {cluster.displayTitle}
+                </Text>
+                <Text className="text-primary text-sm font-semibold">
+                    {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
+                </Text>
+            </View>
 
-                <View className="flex-row items-center gap-x-sm">
-                    <CategorizeInboxSuggestionChips cluster={cluster} />
-                    <Text className="text-secondary-foreground text-xs flex-1 text-right" numberOfLines={1}>
-                        {formatDate(row.operatedAt)}
-                    </Text>
-                </View>
-            </Card>
-        </CategorizeInboxSwipeToAccept>
+            <View className="flex-row items-center gap-x-sm">
+                <CategorizeInboxSuggestionChips cluster={cluster} />
+                <Text className="text-secondary-foreground text-xs flex-1 text-right" numberOfLines={1}>
+                    {formatDayAndMonthAndYear(row.operatedAt)}
+                </Text>
+            </View>
+        </Card>
     );
 };

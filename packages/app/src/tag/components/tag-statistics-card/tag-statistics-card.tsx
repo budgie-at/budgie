@@ -34,7 +34,7 @@ export const TagStatisticsCard = ({ tag, amount, percentage, variant, filters, i
     const router = useRouter();
 
     const microAmount = convertFromMicroUnits(amount);
-    const cardTestID = TagStatisticsCardSelector.Card(tag.title);
+    const cardTestID = isDefined(tag.id) ? TagStatisticsCardSelector.Card(tag.title) : TagStatisticsCardSelector.Untagged;
     const amountTestID = TagStatisticsCardSelector.Amount(tag.title, amount);
     /* jscpd:ignore-end */
 

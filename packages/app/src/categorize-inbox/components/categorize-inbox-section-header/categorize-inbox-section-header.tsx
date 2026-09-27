@@ -3,8 +3,10 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { testID } from '../../../@generic/utils/test-id.util';
-import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { CategorizeInboxSectionEnum } from '../../enum/categorize-inbox-section.enum';
 
 import { CategorizeInboxSectionHeaderSelector } from './categorize-inbox-section-header.selector';
@@ -17,14 +19,17 @@ interface Props {
 
 export const CategorizeInboxSectionHeader = ({ section, rowCount, totalBaseAmount }: Props) => {
     const { t } = useLingui();
-    const { formatBaseMicroAmount } = useCategorizeInboxContext();
+    const protectAmount = useProtectedAmountLabel();
+    const { defaultInstrument } = useSettingsContext();
 
     const sectionTitles: Record<CategorizeInboxSectionEnum, string> = {
         [CategorizeInboxSectionEnum.CONFIDENT]: t`Ready to accept`,
         [CategorizeInboxSectionEnum.REVIEW]: t`Needs review`,
         [CategorizeInboxSectionEnum.ONE_OFFS]: t`One-offs`
     };
-    const summaryText = isDefined(totalBaseAmount) ? `${rowCount} · ${formatBaseMicroAmount(totalBaseAmount)}` : String(rowCount);
+    const summaryText = isDefined(totalBaseAmount)
+        ? `${rowCount} · ${protectAmount(convertFromMicroUnits(totalBaseAmount), defaultInstrument.symbol)}`
+        : String(rowCount);
 
     return (
         <View

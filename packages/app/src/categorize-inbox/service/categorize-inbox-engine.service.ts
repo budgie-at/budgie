@@ -3,10 +3,8 @@ import { LanguageEnum } from '@budgie/contracts';
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { CategorizeInboxListItemKindEnum } from '../enum/categorize-inbox-list-item-kind.enum';
 import { CategorizeInboxSectionEnum } from '../enum/categorize-inbox-section.enum';
 
-import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
 import type { CategorizeInboxBuildContextInterface } from '../interface/categorize-inbox-build-context.interface';
 import type { CategorizeInboxClusterInterface } from '../interface/categorize-inbox-cluster.interface';
 import type { CategorizeInboxScoreInterface } from '../interface/categorize-inbox-score.interface';
@@ -34,8 +32,9 @@ class CategorizeInboxEngineService {
     };
 
     private static readonly LEGAL_FORMS = new Set(Object.values(CategorizeInboxEngineService.LEGAL_FORM_TOKENS).flat());
-    private static readonly PAYMENT_TYPE_PREFIX_PATTERN = CategorizeInboxEngineService.buildPrefixPattern(
-        CategorizeInboxEngineService.PAYMENT_TYPE_PREFIX_KEYWORDS
+    private static readonly PAYMENT_TYPE_PREFIX_PATTERN = new RegExp(
+        `^(?:${Object.values(CategorizeInboxEngineService.PAYMENT_TYPE_PREFIX_KEYWORDS).flat().join('|')})(?!\\p{L})`,
+        'iu'
     );
 
     private static readonly MASKED_PAN_PATTERN = /\d{4,6}\*+\d{2,4}/u;
@@ -92,7 +91,7 @@ class CategorizeInboxEngineService {
         const placements = this.placeNewClusters(visibleClusters, session.placements);
         const placementOrder = new Map([...placements.keys()].map((key, index) => [key, index]));
         const placedClusters = visibleClusters
-            .map(cluster => this.reusePrevious(this.pinSection(cluster, placements), clustersByKey.get(cluster.key)))
+            .map(cluster => this.reusePrevious({ ...cluster, section: placements.get(cluster.key) ?? cluster.section }, clustersByKey))
             .sort((left, right) => (placementOrder.get(left.key) ?? 0) - (placementOrder.get(right.key) ?? 0));
         const isUnchanged =
             placedClusters.length === clustersByKey.size && placedClusters.every(cluster => clustersByKey.get(cluster.key) === cluster);
@@ -105,29 +104,8 @@ class CategorizeInboxEngineService {
         };
     }
 
-    buildAssignment(
-        source: Pick<CategorizeInboxClusterInterface, 'key' | 'displayTitle' | 'ruleConditionValue'>,
-        rows: CategorizeInboxRowInterface[],
-        labelId: number
-    ): CategorizeInboxAssignmentInterface | null {
-        return isNotEmptyArray(rows)
-            ? {
-                  clusterKey: source.key,
-                  displayTitle: source.displayTitle,
-                  labelId,
-                  transactionIds: rows.map(row => row.transactionId),
-                  rows,
-                  ruleConditionValue: source.ruleConditionValue
-              }
-            : null;
-    }
-
     suggestLabelIds(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): number[] {
-        return isNotEmptyArray(rows) ? this.scoreRows(rows, context).candidates.map(candidate => candidate.labelId) : [];
-    }
-
-    startSession(): CategorizeInboxSessionInterface {
-        return { placements: new Map(), clustersByKey: new Map(), peakRowCount: 0 };
+        return isNotEmptyArray(rows) ? this.scoreRows(rows, context).candidateLabelIds : [];
     }
 
     private buildCluster(
@@ -135,21 +113,17 @@ class CategorizeInboxEngineService {
         rows: CategorizeInboxRowInterface[],
         context: CategorizeInboxBuildContextInterface
     ): CategorizeInboxClusterInterface {
-        const { candidates, isConfident, hasEvidence } = this.scoreRows(rows, context);
+        const { candidateLabelIds, isConfident } = this.scoreRows(rows, context);
         const titles = rows.map(row => row.title);
         const mostFrequentTitle = this.mostFrequent(titles);
         const ruleConditionValue = this.buildRuleConditionValue(titles, mostFrequentTitle);
-        const variantCount = new Set(titles).size;
 
         return {
             key,
-            displayTitle: this.resolveDisplayTitle(variantCount, ruleConditionValue, mostFrequentTitle),
-            variantCount,
+            displayTitle: this.resolveDisplayTitle(new Set(titles).size, ruleConditionValue, mostFrequentTitle),
             rows,
             totalBaseAmount: this.sumBaseAmounts(rows, context.defaultInstrumentId),
-            candidates,
-            isConfident,
-            hasEvidence,
+            candidateLabelIds,
             ruleConditionValue,
             section: this.resolveSection(isConfident, rows.length)
         };
@@ -185,15 +159,6 @@ class CategorizeInboxEngineService {
         );
     }
 
-    private pinSection(
-        cluster: CategorizeInboxClusterInterface,
-        placements: ReadonlyMap<string, CategorizeInboxSectionEnum>
-    ): CategorizeInboxClusterInterface {
-        const section = placements.get(cluster.key) ?? cluster.section;
-
-        return { ...cluster, section, isConfident: section === CategorizeInboxSectionEnum.CONFIDENT };
-    }
-
     private placeNewClusters(
         clusters: readonly CategorizeInboxClusterInterface[],
         placements: ReadonlyMap<string, CategorizeInboxSectionEnum>
@@ -210,19 +175,20 @@ class CategorizeInboxEngineService {
 
     private reusePrevious(
         cluster: CategorizeInboxClusterInterface,
-        previous: CategorizeInboxClusterInterface | undefined
+        clustersByKey: ReadonlyMap<string, CategorizeInboxClusterInterface>
     ): CategorizeInboxClusterInterface {
+        const previous = clustersByKey.get(cluster.key);
+
         return isDefined(previous) && this.isSameCluster(previous, cluster) ? previous : cluster;
     }
 
     private isSameCluster(previous: CategorizeInboxClusterInterface, next: CategorizeInboxClusterInterface): boolean {
         return (
             previous.section === next.section &&
-            previous.hasEvidence === next.hasEvidence &&
             previous.displayTitle === next.displayTitle &&
             previous.ruleConditionValue === next.ruleConditionValue &&
             previous.totalBaseAmount === next.totalBaseAmount &&
-            previous.candidates.map(candidate => candidate.labelId).join() === next.candidates.map(candidate => candidate.labelId).join() &&
+            previous.candidateLabelIds.join() === next.candidateLabelIds.join() &&
             previous.rows.length === next.rows.length &&
             previous.rows.every((row, index) => this.isSameRow(row, next.rows[index]))
         );
@@ -284,16 +250,10 @@ class CategorizeInboxEngineService {
                   ));
         const total = this.sumValues(counts.values());
         const topCount = Math.max(0, ...counts.values());
-        const candidates = isPositiveNumber(counts.size)
-            ? this.rankLabelIds(counts)
-                  .slice(0, LIMITS.chipCount)
-                  .map(labelId => ({ labelId, probability: (counts.get(labelId) ?? 0) / (total + 1) }))
-            : [];
 
         return {
-            candidates,
-            isConfident: isDefined(historyCounts) && topCount >= LIMITS.confidentCount && topCount / total >= LIMITS.confidentShare,
-            hasEvidence: isPositiveNumber(counts.size)
+            candidateLabelIds: this.rankLabelIds(counts).slice(0, LIMITS.chipCount),
+            isConfident: isDefined(historyCounts) && topCount >= LIMITS.confidentCount && topCount / total >= LIMITS.confidentShare
         };
     }
 
@@ -346,25 +306,15 @@ class CategorizeInboxEngineService {
     private buildListItems(clusters: readonly CategorizeInboxClusterInterface[]): CategorizeInboxListItemType[] {
         return CategorizeInboxEngineService.SECTION_ORDER.flatMap((section): CategorizeInboxListItemType[] => {
             const sectionClusters = clusters.filter(cluster => cluster.section === section);
-            const clusterKind =
-                section === CategorizeInboxSectionEnum.ONE_OFFS
-                    ? CategorizeInboxListItemKindEnum.ONE_OFF
-                    : CategorizeInboxListItemKindEnum.CLUSTER;
             const baseAmounts = sectionClusters.map(cluster => cluster.totalBaseAmount).filter(isDefined);
-            const header: CategorizeInboxListItemType = {
-                kind: CategorizeInboxListItemKindEnum.SECTION_HEADER,
+            const header = {
                 key: `section-${section}`,
                 section,
                 count: this.sumValues(sectionClusters.map(cluster => cluster.rows.length)),
                 totalBaseAmount: isNotEmptyArray(baseAmounts) ? this.sumValues(baseAmounts) : null
             };
 
-            return isNotEmptyArray(sectionClusters)
-                ? [
-                      header,
-                      ...sectionClusters.map((cluster): CategorizeInboxListItemType => ({ kind: clusterKind, key: cluster.key, cluster }))
-                  ]
-                : [];
+            return isNotEmptyArray(sectionClusters) ? [header, ...sectionClusters] : [];
         });
     }
 
@@ -409,10 +359,6 @@ class CategorizeInboxEngineService {
 
     private sumValues(values: Iterable<number>): number {
         return [...values].reduce((total, value) => total + value, 0);
-    }
-
-    private static buildPrefixPattern(keywords: Record<LanguageEnum, readonly string[]>): RegExp {
-        return new RegExp(`^(?:${Object.values(keywords).flat().join('|')})(?!\\p{L})`, 'iu');
     }
 }
 

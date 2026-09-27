@@ -1,112 +1,113 @@
-import { useState } from 'react';
+import { useLingui } from '@lingui/react/macro';
+import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
+import { useRef, useState } from 'react';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
-import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amount-label.hook';
-import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
-import { useSettingsContext } from '../../settings/context/settings.context';
-import { useCategorizeInboxStrategy } from '../context/categorize-inbox-strategy.context';
-import { CategorizeInboxListItemKindEnum } from '../enum/categorize-inbox-list-item-kind.enum';
-import { CategorizeInboxSectionEnum } from '../enum/categorize-inbox-section.enum';
-import { categorizeInboxEngineService } from '../service/categorize-inbox-engine.service';
-
-import { useCategorizeInboxSession } from './use-categorize-inbox-session.hook';
-import { useCategorizeInboxVisibility } from './use-categorize-inbox-visibility.hook';
-import { useCategorizeInboxWrites } from './use-categorize-inbox-writes.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
+import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
+import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
+import { categorizeInboxService } from '../service/categorize-inbox.service';
 
 import type { CategorizeInboxActionsInterface } from '../interface/categorize-inbox-actions.interface';
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
-import type { CategorizeInboxClusterInterface } from '../interface/categorize-inbox-cluster.interface';
-import type { CategorizeInboxDataInterface } from '../interface/categorize-inbox-data.interface';
-import type { CategorizeInboxRowInterface } from '@budgie/contracts';
+import type { CategorizeInboxLastWriteInterface } from '../interface/categorize-inbox-last-write.interface';
+import type { CategorizeInboxStrategyInterface } from '../interface/categorize-inbox-strategy.interface';
+import type { CategorizeInboxVisibilityInterface } from '../interface/categorize-inbox-visibility.interface';
 
-export const useCategorizeInboxActions = (inbox: CategorizeInboxDataInterface): CategorizeInboxActionsInterface => {
-    const protectAmount = useProtectedAmountLabel();
-    const { formatDayAndMonthAndYear } = useFormatDate();
-    const { defaultInstrument } = useSettingsContext();
-    const { pickLabels } = useCategorizeInboxStrategy();
+const toTransactionIds = (assignments: CategorizeInboxAssignmentInterface[]): number[] =>
+    assignments.flatMap(assignment => assignment.rows.map(row => row.transactionId));
 
-    const [expandedClusterKey, setExpandedClusterKey] = useState<string | null>(null);
-    const visibility = useCategorizeInboxVisibility(inbox.rows);
-    const { items, remainingCount, categorizedCount } = useCategorizeInboxSession(inbox, visibility.hiddenTransactionIds);
-    const { lastWrite, assign, applyFollowUp, undo } = useCategorizeInboxWrites(visibility);
+export const useCategorizeInboxActions = (
+    strategy: CategorizeInboxStrategyInterface,
+    visibility: CategorizeInboxVisibilityInterface
+): CategorizeInboxActionsInterface => {
+    const { t } = useLingui();
+    const [hapticNotification] = useVibration();
+    const [lastWrite, setLastWrite] = useState<CategorizeInboxLastWriteInterface | null>(null);
+    const writeQueueRef = useRef(Promise.resolve());
 
-    const toClusterAssignment = (cluster: CategorizeInboxClusterInterface, labelId: number): CategorizeInboxAssignmentInterface | null =>
-        categorizeInboxEngineService.buildAssignment(
-            cluster,
-            cluster.rows.filter(row => !visibility.excludedTransactionIds.has(row.transactionId)),
-            labelId
+    const enqueueWrite = (write: () => Promise<void>, rollback: () => void, failedMessage: string): void => {
+        writeQueueRef.current = writeQueueRef.current.then(write).catch((error: unknown) => {
+            rollback();
+            hapticNotification(NotificationFeedbackType.Error);
+            showErrorToast(failedMessage, getErrorMessage(error));
+        });
+    };
+
+    const assign = (assignments: CategorizeInboxAssignmentInterface[]): void => {
+        visibility.hideTransactions(toTransactionIds(assignments));
+        enqueueWrite(
+            async () => {
+                const applied = await categorizeInboxService.assign(strategy.labelKind, assignments);
+
+                if (isNotEmptyArray(applied)) {
+                    setLastWrite({ assignments: applied, followUpAssignments: [] });
+                    hapticNotification(NotificationFeedbackType.Success);
+                }
+            },
+            () => void visibility.showTransactions(toTransactionIds(assignments)),
+            strategy.writeFailed
         );
+    };
 
-    const toRowAssignment = (row: CategorizeInboxRowInterface, labelId: number): CategorizeInboxAssignmentInterface | null =>
-        categorizeInboxEngineService.buildAssignment(
-            { key: String(row.transactionId), displayTitle: row.title, ruleConditionValue: '' },
-            [row],
-            labelId
-        );
-
-    const assignLabels = (labelIds: number[], toLabelAssignment: (labelId: number) => CategorizeInboxAssignmentInterface | null): void => {
-        const assignments = labelIds.map(toLabelAssignment).filter(isDefined);
-
-        if (isNotEmptyArray(assignments)) {
-            assign(assignments);
+    const assignLabels = (source: Omit<CategorizeInboxAssignmentInterface, 'labelId'>, labelIds: number[] | null): void => {
+        if (isNotEmptyArray(labelIds) && isNotEmptyArray(source.rows)) {
+            assign(labelIds.map(labelId => ({ ...source, labelId })));
         }
     };
 
-    const handlePickClusterLabels = async (cluster: CategorizeInboxClusterInterface): Promise<void> => {
-        const labelIds = await pickLabels(
-            cluster.displayTitle,
-            cluster.candidates.map(candidate => candidate.labelId)
+    const pickLabels = async (source: Omit<CategorizeInboxAssignmentInterface, 'labelId'>, suggestedLabelIds: number[]): Promise<void> =>
+        void assignLabels(source, await strategy.pickLabels(source.displayTitle, suggestedLabelIds));
+
+    const undo = (write: CategorizeInboxLastWriteInterface): void => {
+        setLastWrite(null);
+        visibility.showTransactions(toTransactionIds(write.assignments));
+        enqueueWrite(
+            async () => {
+                if (isNotEmptyArray(write.followUpAssignments)) {
+                    await categorizeInboxService.undo(CategorizeInboxLabelKindEnum.TAG, write.followUpAssignments);
+                }
+
+                await categorizeInboxService.undo(strategy.labelKind, write.assignments);
+            },
+            () => void setLastWrite(previous => previous ?? write),
+            strategy.writeFailed
         );
-
-        if (isDefined(labelIds)) {
-            assignLabels(labelIds, labelId => toClusterAssignment(cluster, labelId));
-        }
     };
 
-    const handlePickRowLabels = async (row: CategorizeInboxRowInterface): Promise<void> => {
-        const labelIds = await pickLabels(row.title, []);
+    const applyFollowUp = async (write: CategorizeInboxLastWriteInterface): Promise<void> => {
+        const tagIds = await strategy.pickFollowUpTagIds?.(write.assignments[0]);
 
-        if (isDefined(labelIds)) {
-            assignLabels(labelIds, labelId => toRowAssignment(row, labelId));
+        if (isNotEmptyArray(tagIds)) {
+            enqueueWrite(
+                async () => {
+                    const followUpAssignments = await categorizeInboxService.assign(
+                        CategorizeInboxLabelKindEnum.TAG,
+                        tagIds.map(labelId => ({ ...write.assignments[0], labelId }))
+                    );
+
+                    setLastWrite(previous => (previous === write ? { ...write, followUpAssignments } : previous));
+                    hapticNotification(NotificationFeedbackType.Success);
+                },
+                emptyFn,
+                t`Could not tag transactions`
+            );
         }
     };
-
-    const acceptableAssignments = items
-        .map(item => {
-            const isConfidentCluster =
-                item.kind === CategorizeInboxListItemKindEnum.CLUSTER && item.cluster.section === CategorizeInboxSectionEnum.CONFIDENT;
-            const topCandidate = isConfidentCluster ? item.cluster.candidates.at(0) : null;
-
-            return isConfidentCluster && isDefined(topCandidate) ? toClusterAssignment(item.cluster, topCandidate.labelId) : null;
-        })
-        .filter(isDefined);
 
     return {
-        items,
-        expandedClusterKey,
-        acceptableAssignments,
         lastWrite,
         undo,
-        remainingCount,
-        categorizedCount,
+        applyFollowUp,
         contextValue: {
-            excludedTransactionIds: visibility.excludedTransactionIds,
-            expandedClusterKey,
-            hasAppliedFollowUp: isNotEmptyArray(lastWrite?.followUpAssignments),
-            formatMicroAmount: (microAmount, instrumentSymbol) => protectAmount(convertFromMicroUnits(microAmount), instrumentSymbol),
-            formatBaseMicroAmount: microAmount => protectAmount(convertFromMicroUnits(microAmount), defaultInstrument.symbol),
-            formatDate: formatDayAndMonthAndYear,
-            toggleExpanded: clusterKey => void setExpandedClusterKey(previous => (previous === clusterKey ? null : clusterKey)),
-            toggleExcluded: visibility.toggleExcluded,
+            strategy,
+            ...visibility,
             assign,
-            applyFollowUp,
-            assignCluster: (cluster, labelId) =>
-                void assignLabels([labelId], clusterLabelId => toClusterAssignment(cluster, clusterLabelId)),
-            assignRow: (row, labelId) => void assignLabels([labelId], rowLabelId => toRowAssignment(row, rowLabelId)),
-            pickClusterLabels: handlePickClusterLabels,
-            pickRowLabels: handlePickRowLabels
+            assignCluster: (cluster, labelId) => void assignLabels({ ...cluster, rows: visibility.includedRows(cluster) }, [labelId]),
+            pickClusterLabels: cluster => pickLabels({ ...cluster, rows: visibility.includedRows(cluster) }, cluster.candidateLabelIds),
+            pickRowLabels: row =>
+                pickLabels({ key: String(row.transactionId), displayTitle: row.title, rows: [row], ruleConditionValue: '' }, [])
         }
     };
 };

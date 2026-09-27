@@ -1,7 +1,4 @@
-import { CategorizeInboxCandidateInterface } from './categorize-inbox-candidate.interface';
-
 export interface CategorizeInboxScoreInterface {
-    readonly candidates: CategorizeInboxCandidateInterface[];
+    readonly candidateLabelIds: number[];
     readonly isConfident: boolean;
-    readonly hasEvidence: boolean;
 }

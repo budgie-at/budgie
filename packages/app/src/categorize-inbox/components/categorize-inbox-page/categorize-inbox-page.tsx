@@ -13,7 +13,6 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { Page } from '../../../@generic/component/page/page';
 import { buildUncategorizedFilters } from '../../../transaction/utils/build-uncategorized-filters.util';
-import { useCategorizeInboxStrategy } from '../../context/categorize-inbox-strategy.context';
 import { CategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxActions } from '../../hook/use-categorize-inbox-actions.hook';
 import { useCategorizeInbox } from '../../hook/use-categorize-inbox.hook';
@@ -23,26 +22,28 @@ import { CategorizeInboxPanel } from '../categorize-inbox-panel/categorize-inbox
 import { CategorizeInboxPageSelector } from './categorize-inbox-page.selector';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../../transaction/interface/analytics-transactions-route-params.interface';
+import type { CategorizeInboxStrategyInterface } from '../../interface/categorize-inbox-strategy.interface';
 
 interface Props {
     readonly params: AnalyticsTransactionsRouteParamsInterface;
+    readonly strategy: CategorizeInboxStrategyInterface;
 }
 
-export const CategorizeInboxPage = ({ params }: Props) => {
+export const CategorizeInboxPage = ({ params, strategy }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const { copy, buildListRouteParams } = useCategorizeInboxStrategy();
 
     const filters = buildUncategorizedFilters(params);
-    const inbox = useCategorizeInbox(filters);
-    const { contextValue, items, expandedClusterKey, acceptableAssignments, lastWrite, undo, remainingCount, categorizedCount } =
-        useCategorizeInboxActions(inbox);
+    const inbox = useCategorizeInbox(filters, strategy);
+    const { contextValue, lastWrite, undo, applyFollowUp } = useCategorizeInboxActions(strategy, inbox.visibility);
+    const { items, remainingCount, categorizedCount, acceptableAssignments } = inbox;
 
     const handleGoBack = (): void => void router.back();
-    const handleShowList = (): void => void router.push({ pathname: '/analytics/transactions', params: buildListRouteParams(filters) });
+    const handleShowList = (): void =>
+        void router.push({ pathname: '/analytics/transactions', params: strategy.buildListRouteParams(filters) });
 
     const remainingText = t({ message: plural(remainingCount, { one: '# left', other: '# left' }) });
-    const emptyDescription = isPositiveNumber(categorizedCount) ? copy.doneThisSession(categorizedCount) : copy.emptyDescription;
+    const emptyDescription = isPositiveNumber(categorizedCount) ? strategy.doneThisSession(categorizedCount) : strategy.emptyDescription;
     const hasPanel = !inbox.isLoading && (isNotEmptyArray(items) || isDefined(lastWrite));
     const panel = hasPanel ? (
         <CategorizeInboxPanel
@@ -51,6 +52,7 @@ export const CategorizeInboxPage = ({ params }: Props) => {
             acceptableAssignments={acceptableAssignments}
             lastWrite={lastWrite}
             onUndo={undo}
+            onFollowUp={applyFollowUp}
         />
     ) : null;
     const listContent = isEmptyArray(items) ? (
@@ -59,7 +61,7 @@ export const CategorizeInboxPage = ({ params }: Props) => {
             <Button variant="ghost" size="sm" content={t`Done`} onPress={handleGoBack} className="self-center px-7xl" />
         </View>
     ) : (
-        <CategorizeInboxList items={items} expandedClusterKey={expandedClusterKey} />
+        <CategorizeInboxList items={items} />
     );
 
     return (
@@ -70,7 +72,7 @@ export const CategorizeInboxPage = ({ params }: Props) => {
                 header={
                     <PageHeader
                         size="md"
-                        title={copy.pageTitle}
+                        title={strategy.pageTitle}
                         description={remainingText}
                         onGoBack={handleGoBack}
                         right={

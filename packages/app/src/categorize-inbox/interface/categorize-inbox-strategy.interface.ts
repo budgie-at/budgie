@@ -1,22 +1,27 @@
 import type { RulePrefillDataInterface } from '../../rule/interface/rule-prefill-data.interface';
-import type { CategorizeInboxEvidenceQueryType } from '../type/categorize-inbox-evidence-query.type';
-import type { CategorizeInboxRowsQueryType } from '../type/categorize-inbox-rows-query.type';
+import type { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
 import type { CategorizeInboxAssignmentInterface } from './categorize-inbox-assignment.interface';
-import type { CategorizeInboxCopyInterface } from './categorize-inbox-copy.interface';
-import type { CategorizeInboxFollowUpInterface } from './categorize-inbox-follow-up.interface';
 import type { CategorizeInboxLabelInterface } from './categorize-inbox-label.interface';
-import type { TransactionFilterInterface } from '@budgie/contracts';
+import type { TransactionCategorizeInboxRepository, TransactionFilterInterface } from '@budgie/contracts';
 import type { UnknownInputParams } from 'expo-router';
 
 export interface CategorizeInboxStrategyInterface {
+    readonly labelKind: CategorizeInboxLabelKindEnum;
     readonly labelsById: ReadonlyMap<number, CategorizeInboxLabelInterface>;
-    readonly copy: CategorizeInboxCopyInterface;
-    readonly followUp: CategorizeInboxFollowUpInterface | null;
-    readonly findRows: (filters: TransactionFilterInterface) => CategorizeInboxRowsQueryType;
-    readonly findEvidence: () => CategorizeInboxEvidenceQueryType;
-    readonly assignMany: (assignments: CategorizeInboxAssignmentInterface[]) => Promise<CategorizeInboxAssignmentInterface[]>;
-    readonly undo: (assignments: CategorizeInboxAssignmentInterface[]) => Promise<void>;
+    readonly pageTitle: string;
+    readonly emptyDescription: string;
+    readonly selectLabel: string;
+    readonly moreLabels: string;
+    readonly pickRowLabel: string;
+    readonly writeFailed: string;
+    readonly assignAs: (labelTitle: string) => string;
+    readonly assignedTo: (displayTitle: string, labelTitle: string) => string;
+    readonly assignedCount: (count: number) => string;
+    readonly doneThisSession: (count: number) => string;
+    readonly findRows: (filters: TransactionFilterInterface) => ReturnType<TransactionCategorizeInboxRepository['findUncategorizedRows']>;
+    readonly findEvidence: () => ReturnType<TransactionCategorizeInboxRepository['findCategoryEvidence' | 'findTagEvidence']>;
     readonly pickLabels: (description: string, suggestedLabelIds: number[]) => Promise<number[] | null>;
+    readonly pickFollowUpTagIds: ((assignment: CategorizeInboxAssignmentInterface) => Promise<number[] | null>) | null;
     readonly buildRuleActions: (labelIds: number[]) => Pick<RulePrefillDataInterface, 'categoryId' | 'tagIds'>;
     readonly buildListRouteParams: (filters: TransactionFilterInterface) => UnknownInputParams;
 }

@@ -2,20 +2,13 @@ import { CategorizeInboxRowInterface } from '@budgie/contracts';
 
 import { CategorizeInboxAssignmentInterface } from './categorize-inbox-assignment.interface';
 import { CategorizeInboxClusterInterface } from './categorize-inbox-cluster.interface';
+import { CategorizeInboxStrategyInterface } from './categorize-inbox-strategy.interface';
+import { CategorizeInboxVisibilityInterface } from './categorize-inbox-visibility.interface';
 
-export interface CategorizeInboxContextValueInterface {
-    readonly excludedTransactionIds: ReadonlySet<number>;
-    readonly expandedClusterKey: string | null;
-    readonly hasAppliedFollowUp: boolean;
-    readonly formatMicroAmount: (microAmount: number, instrumentSymbol: string) => string;
-    readonly formatBaseMicroAmount: (microAmount: number) => string;
-    readonly formatDate: (date: Date) => string;
-    readonly toggleExpanded: (clusterKey: string) => void;
-    readonly toggleExcluded: (transactionId: number) => void;
+export interface CategorizeInboxContextValueInterface extends CategorizeInboxVisibilityInterface {
+    readonly strategy: CategorizeInboxStrategyInterface;
     readonly assign: (assignments: CategorizeInboxAssignmentInterface[]) => void;
-    readonly applyFollowUp: (assignment: CategorizeInboxAssignmentInterface) => Promise<void>;
     readonly assignCluster: (cluster: CategorizeInboxClusterInterface, labelId: number) => void;
-    readonly assignRow: (row: CategorizeInboxRowInterface, labelId: number) => void;
     readonly pickClusterLabels: (cluster: CategorizeInboxClusterInterface) => Promise<void>;
     readonly pickRowLabels: (row: CategorizeInboxRowInterface) => Promise<void>;
 }

@@ -9,30 +9,28 @@ import { testID } from '../../../@generic/utils/test-id.util';
 import { SuggestionPillContent } from '../../../transaction/components/suggestion-pill-content/suggestion-pill-content';
 import { categorizeInboxChipVariants } from '../../constant/categorize-inbox-chip-variants.constant';
 import { CATEGORIZE_INBOX_RAIL_HIT_SLOP } from '../../constant/categorize-inbox-rail-hit-slop.constant';
-import { useCategorizeInboxStrategy } from '../../context/categorize-inbox-strategy.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { CategorizeInboxSectionEnum } from '../../enum/categorize-inbox-section.enum';
 
 import { CategorizeInboxSuggestionChipSelector } from './categorize-inbox-suggestion-chip.selector';
 
 import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import type { CategorizeInboxCandidateInterface } from '../../interface/categorize-inbox-candidate.interface';
 import type { CategorizeInboxClusterInterface } from '../../interface/categorize-inbox-cluster.interface';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
-    readonly candidate: CategorizeInboxCandidateInterface;
+    readonly labelId: number;
     readonly index: number;
 }
 
-export const CategorizeInboxSuggestionChip = ({ cluster, candidate, index }: Props) => {
-    const { labelsById, copy } = useCategorizeInboxStrategy();
-    const { assignCluster } = useCategorizeInboxContext();
+export const CategorizeInboxSuggestionChip = ({ cluster, labelId, index }: Props) => {
+    const { strategy, assignCluster } = useCategorizeInboxContext();
 
-    const handlePress = (): void => void assignCluster(cluster, candidate.labelId);
+    const handlePress = (): void => void assignCluster(cluster, labelId);
 
-    const label = labelsById.get(candidate.labelId);
+    const label = strategy.labelsById.get(labelId);
     const isTopCandidate = index === 0;
-    const isConfident = cluster.isConfident && isTopCandidate;
+    const isConfident = cluster.section === CategorizeInboxSectionEnum.CONFIDENT && isTopCandidate;
     const topVariant: ColorPaletteVariant = isConfident ? 'positive' : 'ghost';
     const variant: ColorPaletteVariant = isTopCandidate ? topVariant : 'primary';
 
@@ -46,7 +44,7 @@ export const CategorizeInboxSuggestionChip = ({ cluster, candidate, index }: Pro
             hitSlop={CATEGORIZE_INBOX_RAIL_HIT_SLOP}
             className={cn(categorizeInboxChipVariants({ variant }), 'shrink')}
             accessibilityRole="button"
-            accessibilityLabel={copy.assignAs(label.title)}
+            accessibilityLabel={strategy.assignAs(label.title)}
             {...testID(CategorizeInboxSuggestionChipSelector.Chip, cluster.key, index)}
         >
             <SuggestionPillContent icon={label.icon} title={label.title} />

@@ -32,8 +32,8 @@ msgstr " • {embeddingPending} tx queued"
 msgid "{0, plural, one {# account created} other {# accounts created}}"
 msgstr "{0, plural, one {# account created} other {# accounts created}}"
 
-#. placeholder {0}: cluster.rows.length
-#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+#. placeholder {0}: rows.length
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# transaction} other {# transactions}}"
 
@@ -70,11 +70,11 @@ msgstr "{availableCount, plural, one {# column available} other {# columns avail
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# category} other {# categories}}"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
 msgstr "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
 
-#: src/categorize-inbox/components/categorize-inbox-progress/categorize-inbox-progress.tsx
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{categorizedCount, plural, one {# done} other {# done}}"
 msgstr "{categorizedCount, plural, one {# done} other {# done}}"
 
@@ -174,7 +174,7 @@ msgid "{percentage}% of income"
 msgstr "{percentage}% of income"
 
 #: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
-#: src/categorize-inbox/components/categorize-inbox-progress/categorize-inbox-progress.tsx
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{remainingCount, plural, one {# left} other {# left}}"
 msgstr "{remainingCount, plural, one {# left} other {# left}}"
 
@@ -182,15 +182,15 @@ msgstr "{remainingCount, plural, one {# left} other {# left}}"
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{rowCount, plural, one {# transaction} other {# transactions}}"
 
-#: src/categorize-inbox/components/categorize-inbox-accept-all-button/categorize-inbox-accept-all-button.tsx
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{rowCount, plural, one {Accept # suggestion} other {Accept # suggestions}}"
 msgstr "{rowCount, plural, one {Accept # suggestion} other {Accept # suggestions}}"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "{rowCount, plural, one {Categorized # transaction} other {Categorized # transactions}}"
 msgstr "{rowCount, plural, one {Categorized # transaction} other {Categorized # transactions}}"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 
@@ -210,7 +210,7 @@ msgstr "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show 
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{skippedCount, plural, one {# skipped} other {# skipped}}"
 
@@ -230,7 +230,7 @@ msgstr "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical mo
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# item} other {# items}}"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 
@@ -238,7 +238,7 @@ msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this s
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-follow-up.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
 msgid "+ Tags"
 msgstr "+ Tags"
 
@@ -315,10 +315,6 @@ msgstr "About 6 minutes"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About a minute"
 msgstr "About a minute"
-
-#: src/categorize-inbox/hook/use-categorize-inbox-top-suggestion.hook.ts
-msgid "Accept suggestion"
-msgstr "Accept suggestion"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -453,11 +449,11 @@ msgstr "Add my first expense"
 msgid "Add Tag"
 msgstr "Add Tag"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "Add tags"
 msgstr "Add tags"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-follow-up.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
 msgid "Add tags to these transactions"
 msgstr "Add tags to these transactions"
 
@@ -879,15 +875,15 @@ msgstr "Categorise imports automatically"
 msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
 msgstr "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
 
-#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize"
 msgstr "Categorize"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize as {categoryTitle}"
 msgstr "Categorize as {categoryTitle}"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorized {displayTitle} → {categoryTitle}"
 msgstr "Categorized {displayTitle} → {categoryTitle}"
 
@@ -1133,7 +1129,7 @@ msgstr "Could not archive account"
 msgid "Could not attach debt"
 msgstr "Could not attach debt"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Could not categorize transactions"
 msgstr "Could not categorize transactions"
 
@@ -1308,8 +1304,8 @@ msgstr "Could not select database backup"
 msgid "Could not set up sync"
 msgstr "Could not set up sync"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-follow-up.hook.ts
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
 msgid "Could not tag transactions"
 msgstr "Could not tag transactions"
 
@@ -1390,7 +1386,7 @@ msgstr "Create a PIN"
 msgid "Create a read-only API key and secret"
 msgstr "Create a read-only API key and secret"
 
-#: src/categorize-inbox/components/categorize-inbox-rule-button/categorize-inbox-rule-button.tsx
+#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Create a rule"
 msgstr "Create a rule"
@@ -1886,11 +1882,11 @@ msgstr "Erste Bank"
 msgid "Every account from this bank is already linked."
 msgstr "Every account from this bank is already linked."
 
-#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Every transaction has a category."
 msgstr "Every transaction has a category."
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "Every transaction has a tag."
 msgstr "Every transaction has a tag."
 
@@ -2129,7 +2125,7 @@ msgstr "Hidden from Home"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Hide account balances and net worth when taking screenshots"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "Hide transactions for {displayTitle}"
 msgstr "Hide transactions for {displayTitle}"
 
@@ -2616,11 +2612,11 @@ msgstr "Monthly Total"
 msgid "months left"
 msgstr "months left"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "More categories"
 msgstr "More categories"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "More tags"
 msgstr "More tags"
 
@@ -3084,7 +3080,7 @@ msgstr "per month"
 msgid "Permission to access contacts was denied."
 msgstr "Permission to access contacts was denied."
 
-#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Pick a category for this transaction"
 msgstr "Pick a category for this transaction"
 
@@ -3100,7 +3096,7 @@ msgstr "Pick a window. Existing data is preserved."
 msgid "Pick any. We'll create the accounts for you — rename or remove them later."
 msgstr "Pick any. We'll create the accounts for you — rename or remove them later."
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "Pick tags for this transaction"
 msgstr "Pick tags for this transaction"
 
@@ -3574,7 +3570,7 @@ msgstr "Select all"
 msgid "Select all categories"
 msgstr "Select all categories"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 #: src/transaction/components/split-entry-row/split-entry-row.tsx
 msgid "Select category"
 msgstr "Select category"
@@ -3619,7 +3615,7 @@ msgstr "Select source"
 msgid "Select Tag"
 msgstr "Select Tag"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "Select tags"
 msgstr "Select tags"
 
@@ -3741,7 +3737,7 @@ msgstr "Show selected range"
 msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "Show transactions for {displayTitle}"
 msgstr "Show transactions for {displayTitle}"
 
@@ -3935,7 +3931,7 @@ msgstr "Tag → {tagTitle}"
 msgid "Tag a transaction"
 msgstr "Tag a transaction"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "Tag as {tagTitle}"
 msgstr "Tag as {tagTitle}"
 
@@ -3943,7 +3939,7 @@ msgstr "Tag as {tagTitle}"
 msgid "Tag Name"
 msgstr "Tag Name"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "Tagged {displayTitle} → {tagTitle}"
 msgstr "Tagged {displayTitle} → {tagTitle}"
 
@@ -3973,9 +3969,9 @@ msgstr "Tap \"Get API Key\" above and sign in to Binance"
 msgid "Tap \"Get API Token\" above and log in to Monobank"
 msgstr "Tap \"Get API Token\" above and log in to Monobank"
 
-#: src/categorize-inbox/components/categorize-inbox-panel-hint/categorize-inbox-panel-hint.tsx
-msgid "Tap a suggestion or swipe right"
-msgstr "Tap a suggestion or swipe right"
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+msgid "Tap a suggestion to accept it"
+msgstr "Tap a suggestion to accept it"
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"

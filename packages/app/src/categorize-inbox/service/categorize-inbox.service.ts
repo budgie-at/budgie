@@ -1,7 +1,7 @@
 import { CategorySourceEnum, TransactionUpdatedByEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { db, transactionCategorizeInboxRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
@@ -41,14 +41,6 @@ class CategorizeInboxService {
         );
     }
 
-    @Log(
-        (labelKind, transactionIds, labelId, tx) =>
-            `enter labelKind=${labelKind} transactionCount=${transactionIds.length} labelId=${labelId} inTx=${String(isDefined(tx))}`,
-        (result, ...[labelKind, transactionIds, labelId, tx]) =>
-            `done labelKind=${labelKind} appliedCount=${result.length} transactionCount=${transactionIds.length} labelId=${labelId} inTx=${String(isDefined(tx))}`,
-        (error, ...[labelKind, transactionIds, labelId, tx]) =>
-            `throw labelKind=${labelKind} transactionCount=${transactionIds.length} labelId=${labelId} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
     private async applyLabel(
         labelKind: CategorizeInboxLabelKindEnum,
         transactionIds: number[],
@@ -96,7 +88,7 @@ class CategorizeInboxService {
             async (previousAppliedPromise, [labelId, labelAssignments]) => {
                 const previousApplied = await previousAppliedPromise;
                 const appliedTransactionIds = await applyLabel(
-                    labelAssignments.flatMap(assignment => assignment.transactionIds),
+                    labelAssignments.flatMap(assignment => assignment.rows.map(row => row.transactionId)),
                     labelId
                 );
 
@@ -111,12 +103,8 @@ class CategorizeInboxService {
         appliedTransactionIds: ReadonlySet<number>
     ): CategorizeInboxAssignmentInterface[] {
         return assignments
-            .map(assignment => ({
-                ...assignment,
-                transactionIds: assignment.transactionIds.filter(transactionId => appliedTransactionIds.has(transactionId)),
-                rows: assignment.rows.filter(row => appliedTransactionIds.has(row.transactionId))
-            }))
-            .filter(assignment => isNotEmptyArray(assignment.transactionIds));
+            .map(assignment => ({ ...assignment, rows: assignment.rows.filter(row => appliedTransactionIds.has(row.transactionId)) }))
+            .filter(assignment => isNotEmptyArray(assignment.rows));
     }
 
     private groupAssignmentsByLabelId(

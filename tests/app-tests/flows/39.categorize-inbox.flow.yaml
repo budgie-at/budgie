@@ -44,6 +44,8 @@ appId: ${APP_ID}
 - assertVisible: '3 left.*'
 - assertVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
+- assertVisible:
+      id: 'CategorizeInboxAcceptAllButton.Button'
 
 - tapOn:
       id: 'CategorizeInboxSuggestionChip.EXPENSE\|confident coffee.0'

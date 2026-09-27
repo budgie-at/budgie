@@ -1,14 +1,15 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { testID } from '../../../@generic/utils/test-id.util';
-import { useCategorizeInboxStrategy } from '../../context/categorize-inbox-strategy.context';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 
 import { CategorizeInboxClusterRowSelector } from './categorize-inbox-cluster-row.selector';
@@ -20,25 +21,23 @@ interface Props {
     readonly displayTitle: string;
 }
 
-const rowVariants = cva('flex-row items-center gap-x-xs', {
-    variants: { isIncluded: { true: '', false: 'opacity-40' } }
-});
-
 export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
     const { t } = useLingui();
-    const { copy } = useCategorizeInboxStrategy();
-    const { excludedTransactionIds, formatDate, formatMicroAmount, toggleExcluded, pickRowLabels } = useCategorizeInboxContext();
+    const protectAmount = useProtectedAmountLabel();
+    const { formatDayAndMonthAndYear } = useFormatDate();
+    const { strategy, excludedTransactionIds, toggleExcluded, pickRowLabels } = useCategorizeInboxContext();
 
     const handleTogglePress = (): void => void toggleExcluded(row.transactionId);
     const handlePickLabelsPress = (): void => void pickRowLabels(row);
 
     const isIncluded = !excludedTransactionIds.has(row.transactionId);
+    const rowClassName = isIncluded ? 'flex-row items-center gap-x-xs' : 'flex-row items-center gap-x-xs opacity-40';
     const checkboxIcon = isIncluded ? UserIconNameEnum.SquareCheck : UserIconNameEnum.Square;
     const accessibilityState = { checked: isIncluded };
     const ownTitle = row.title === displayTitle ? null : row.title;
 
     return (
-        <View className={rowVariants({ isIncluded })} {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}>
+        <View className={rowClassName} {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}>
             <HapticPressable
                 onPress={handleTogglePress}
                 className="h-11 w-11 items-center justify-center"
@@ -56,16 +55,18 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
                         {ownTitle}
                     </Text>
                 ) : null}
-                <Text className="text-secondary-foreground text-xs">{formatDate(row.operatedAt)}</Text>
+                <Text className="text-secondary-foreground text-xs">{formatDayAndMonthAndYear(row.operatedAt)}</Text>
             </View>
 
-            <Text className="text-primary text-sm font-medium">{formatMicroAmount(row.amount, row.instrumentSymbol)}</Text>
+            <Text className="text-primary text-sm font-medium">
+                {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
+            </Text>
 
             <HapticPressable
                 onPress={handlePickLabelsPress}
                 className="h-11 w-11 items-center justify-center"
                 accessibilityRole="button"
-                accessibilityLabel={copy.pickRowLabel}
+                accessibilityLabel={strategy.pickRowLabel}
                 {...testID(CategorizeInboxClusterRowSelector.PickCategory, row.transactionId)}
             >
                 <Icon icon={UserIconNameEnum.EllipsisVertical} size={16} className="text-secondary-foreground" />
