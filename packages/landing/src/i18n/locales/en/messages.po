@@ -65,10 +65,6 @@ msgstr "#vacation, #shared, #reimbursable — quantified."
 msgid "© {year} Budgie. All rights reserved."
 msgstr "© {year} Budgie. All rights reserved."
 
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "< $30 one-time"
-msgstr "< $30 one-time"
-
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "<0/> left"
 msgstr "<0/> left"
@@ -1348,10 +1344,6 @@ msgid "<0>Price</0>: Free"
 msgstr "<0>Price</0>: Free"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "<0>Price</0>: Free (Premium TBD)"
-msgstr "<0>Price</0>: Free (Premium TBD)"
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Price</0>: Free (self-hosted)"
 msgstr "<0>Price</0>: Free (self-hosted)"
 
@@ -1862,6 +1854,10 @@ msgstr "−€72.92"
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "−€8.47"
 msgstr "−€8.47"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "$0"
+msgstr "$0"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "$300+ recurring"
@@ -3062,10 +3058,6 @@ msgstr "And the lock that enforces it"
 msgid "Animated example: six bank transactions are grouped by merchant, two confident groups are categorized with one tap, and an ATM withdrawal waits under Transfers."
 msgstr "Animated example: six bank transactions are grouped by merchant, two confident groups are categorized with one tap, and an ATM withdrawal waits under Transfers."
 
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Annual cost over 5 years"
-msgstr "Annual cost over 5 years"
-
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Anonymous usage analytics (e.g., feature usage patterns, crash reports) - opt-in only"
 msgstr "Anonymous usage analytics (e.g., feature usage patterns, crash reports) - opt-in only"
@@ -3602,6 +3594,10 @@ msgstr "Bank Sync & Statement Import — Bring Your Bank Data In"
 msgid "Bank Sync & Statement Import — Budgie"
 msgstr "Bank Sync & Statement Import — Budgie"
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Bank sync and on-device AI are free too. The tracker itself never expires."
+msgstr "Bank sync and on-device AI are free too. The tracker itself never expires."
+
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Bank sync available"
 msgstr "Bank sync available"
@@ -4030,8 +4026,8 @@ msgid "budget app"
 msgstr "budget app"
 
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
-msgid "Budget App No Subscription — Free Core, One-Time Pro — Budgie"
-msgstr "Budget App No Subscription — Free Core, One-Time Pro — Budgie"
+msgid "Budget App No Subscription — 100% Free — Budgie"
+msgstr "Budget App No Subscription — 100% Free — Budgie"
 
 #: src/app/[lang]/privacy/metadata.ts
 msgid "budget app without bank login"
@@ -4438,6 +4434,10 @@ msgstr "Budgie is built on the principle that you shouldn’t have to trust us. 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie is committed to transparency, security, and community collaboration. We believe that open source software is essential for building trust, especially when it comes to financial applications that handle sensitive personal data. By making our source code publicly available, we enable security audits, community contributions, and user verification of our privacy claims."
 msgstr "Budgie is committed to transparency, security, and community collaboration. We believe that open source software is essential for building trust, especially when it comes to financial applications that handle sensitive personal data. By making our source code publicly available, we enable security audits, community contributions, and user verification of our privacy claims."
+
+#: src/generic/component/waitlist-form/waitlist-success.tsx
+msgid "Budgie is completely free — nothing to unlock later"
+msgstr "Budgie is completely free — nothing to unlock later"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie is designed as a mobile-first, offline application. There’s no server component to self-host because your data never leaves your device. This is intentional: it eliminates the complexity and security responsibility of running your own server while providing even stronger privacy guarantees."
@@ -6148,6 +6148,10 @@ msgstr "Correction loop — every accepted or edited suggestion counts immediate
 msgid "Cost of budgeting"
 msgstr "Cost of budgeting"
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Cost over 5 years"
+msgstr "Cost over 5 years"
+
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Counted as spending"
 msgstr "Counted as spending"
@@ -6971,6 +6975,10 @@ msgstr "Does Budgie change my original imported amounts?"
 msgid "Does Budgie distinguish transfers from expenses?"
 msgstr "Does Budgie distinguish transfers from expenses?"
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Does Budgie have ads or a paid tier?"
+msgstr "Does Budgie have ads or a paid tier?"
+
 #: src/app/[lang]/security/page.tsx
 msgid "Does Budgie have any server-side security risks?"
 msgstr "Does Budgie have any server-side security risks?"
@@ -7221,10 +7229,6 @@ msgstr "Each split, its own category"
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Each type brings its own form"
 msgstr "Each type brings its own form"
-
-#: src/generic/component/waitlist-form/waitlist-success.tsx
-msgid "Early access members get 50% off lifetime"
-msgstr "Early access members get 50% off lifetime"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Earn more than you spend and Runway shows what you add each month and how many months of spending you have."
@@ -7578,8 +7582,8 @@ msgid "Every well-maintained open-source project has an issue tracker where bugs
 msgstr "Every well-maintained open-source project has an issue tracker where bugs, feature requests, and concerns are discussed. This is a goldmine of information about how the project operates:"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Everything — full access"
-msgstr "Everything — full access"
+msgid "Everything — always"
+msgstr "Everything — always"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Everything above runs from a database on the device. Aeroplane mode changes nothing about what you can see or do."
@@ -8175,8 +8179,8 @@ msgid "For Other Apps"
 msgstr "For Other Apps"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with strong privacy. Both are open source and can run entirely on your own hardware. Budgie also offers a free tier with core budgeting functionality. If privacy isn’t your primary concern and you just want free, there are many options, but most involve trading your data for access."
-msgstr "For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with strong privacy. Both are open source and can run entirely on your own hardware. Budgie also offers a free tier with core budgeting functionality. If privacy isn’t your primary concern and you just want free, there are many options, but most involve trading your data for access."
+msgid "For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with strong privacy. Both are open source and can run entirely on your own hardware. Budgie is also completely free, with no paid tier. If privacy isn’t your primary concern and you just want free, there are many options, but most involve trading your data for access."
+msgstr "For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with strong privacy. Both are open source and can run entirely on your own hardware. Budgie is also completely free, with no paid tier. If privacy isn’t your primary concern and you just want free, there are many options, but most involve trading your data for access."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "For privacy-conscious users, the idea of a third party having access to their complete financial picture is deeply uncomfortable—regardless of how trustworthy that company might be."
@@ -8251,8 +8255,8 @@ msgid "Four slots, nothing typed"
 msgstr "Four slots, nothing typed"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Free core, optional one-time unlock"
-msgstr "Free core, optional one-time unlock"
+msgid "Free"
+msgstr "Free"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Free use, copying, modification, and sharing for personal and business purposes"
@@ -9373,6 +9377,10 @@ msgstr "Is “subscription-free” really durable?"
 msgid "Is an adjustment just another transaction?"
 msgstr "Is an adjustment just another transaction?"
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Is anything in Budgie paid?"
+msgstr "Is anything in Budgie paid?"
+
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Is biometric the same as PIN security?"
 msgstr "Is biometric the same as PIN security?"
@@ -10011,8 +10019,8 @@ msgid "Manual entries don't have MCC; some bank-sync flows drop it. AI category 
 msgstr "Manual entries don't have MCC; some bank-sync flows drop it. AI category suggestions handle those — see On-Device AI Auto-Categorization."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations."
-msgstr "Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations."
+msgid "Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free."
+msgstr "Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free."
 
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Manual fee editing uses a compact bottom sheet for category and amount"
@@ -11109,6 +11117,10 @@ msgstr "No. Because Budgie stores all data locally and has no backend that recei
 msgid "No. Budgie bank sync connects directly from your device to supported bank APIs without routing through a financial aggregator. For banks not yet supported by direct sync, CSV and PDF import provides full compatibility without any third-party credential handling."
 msgstr "No. Budgie bank sync connects directly from your device to supported bank APIs without routing through a financial aggregator. For banks not yet supported by direct sync, CSV and PDF import provides full compatibility without any third-party credential handling."
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "No. Budgie is completely free, with no paywall and no paid tier. The expense tracker, bank sync, and on-device AI never expire and never charge you."
+msgstr "No. Budgie is completely free, with no paywall and no paid tier. The expense tracker, bank sync, and on-device AI never expire and never charge you."
+
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the current balance and days remaining. It does not automatically create interest transactions."
 msgstr "No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the current balance and days remaining. It does not automatically create interest transactions."
@@ -11144,6 +11156,10 @@ msgstr "No. Exports are manual only — Budgie never writes a backup file on its
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "No. Live sync uses a personal API key you generate yourself, scoped to reading your data, never your account password. Statement imports need no credentials at all — you just pick the exported file."
 msgstr "No. Live sync uses a personal API key you generate yourself, scoped to reading your data, never your account password. Statement imports need no credentials at all — you just pick the exported file."
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "No. Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free."
+msgstr "No. Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "No. PDF parsing happens entirely on-device — your statement never leaves your phone."
@@ -11185,10 +11201,6 @@ msgstr "No. The Categorize inbox works with On-device AI switched off and needs 
 msgid "No. The count and the drill-down list both run entirely on-device, without a cloud analytics service."
 msgstr "No. The count and the drill-down list both run entirely on-device, without a cloud analytics service."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "No. The expense tracker itself never expires and has no paywall. Bank sync and on-device AI are an optional one-time unlock, not a recurring charge."
-msgstr "No. The expense tracker itself never expires and has no paywall. Bank sync and on-device AI are an optional one-time unlock, not a recurring charge."
-
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "No. The microphone feeds transcription directly on the device, and the audio is discarded once it has become text. Nothing is saved, sent, or logged."
 msgstr "No. The microphone feeds transcription directly on the device, and the audio is discarded once it has become text. Nothing is saved, sent, or logged."
@@ -11212,6 +11224,10 @@ msgstr "No. The switch changes what Budgie renders while it isn't active; it doe
 #: src/app/[lang]/features/bank-integration-management/page.tsx
 msgid "No. The token lives on the connection, so updating it from any account's sync settings restores every account sharing that connection at once."
 msgstr "No. The token lives on the connection, so updating it from any account's sync settings restores every account sharing that connection at once."
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "No. There is no paid tier and no ads — every feature ships free in the app you install."
+msgstr "No. There is no paid tier and no ads — every feature ships free in the app you install."
 
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "No. There is no ticker connection and no account; the backfill uses CoinGecko's public endpoints and writes the results into your local database."
@@ -11303,8 +11319,8 @@ msgid "Nothing"
 msgstr "Nothing"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Nothing — there's nothing to stop. The unlock is one-time, not a subscription."
-msgstr "Nothing — there's nothing to stop. The unlock is one-time, not a subscription."
+msgid "Nothing — there's nothing to stop. Nothing was ever paid for."
+msgstr "Nothing — there's nothing to stop. Nothing was ever paid for."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Nothing changes. Once the one-time download is done, every AI feature works identically with or without a connection — in airplane mode, on a plane, or with no signal at all. That is the whole point of doing it on the phone."
@@ -12350,10 +12366,6 @@ msgstr "Paste one personal token"
 msgid "Pause this one, keep the rest"
 msgstr "Pause this one, keep the rest"
 
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
-msgstr "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
-
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 msgid "pdf"
 msgstr "pdf"
@@ -13063,8 +13075,8 @@ msgid "Read-only Binance sync brings crypto balances into the same view — no t
 msgstr "Read-only Binance sync brings crypto balances into the same view — no trading, no withdrawals"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Read-only or nothing"
-msgstr "Read-only or nothing"
+msgid "Read-only or nothing if you stop paying"
+msgstr "Read-only or nothing if you stop paying"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Reading only, never trading"
@@ -13185,8 +13197,8 @@ msgstr "Recurring entries show in your home currency on the calendar; tap any en
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
 #: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own."
-msgstr "Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own."
+msgid "Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no tier."
+msgstr "Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no tier."
 
 #: src/app/[lang]/page.tsx
 msgid "Recurring payments calendar"
@@ -14407,8 +14419,8 @@ msgid "Still to receive"
 msgstr "Still to receive"
 
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
-msgid "Stop paying monthly to track your money. Budgie's core features are free; the optional one-time unlock is yours forever. Offline-first and private."
-msgstr "Stop paying monthly to track your money. Budgie's core features are free; the optional one-time unlock is yours forever. Offline-first and private."
+msgid "Stop paying monthly to track your money. Budgie is completely free, with no unlock and no paid tier. Offline-first and private."
+msgstr "Stop paying monthly to track your money. Budgie is completely free, with no unlock and no paid tier. Offline-first and private."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Store data locally or on infrastructure you control"
@@ -14481,8 +14493,8 @@ msgstr "Subscription-Free Budget App"
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
 #: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Subscription-Free Budget App — Pay Once or Free"
-msgstr "Subscription-Free Budget App — Pay Once or Free"
+msgid "Subscription-Free Budget App — Completely Free"
+msgstr "Subscription-Free Budget App — Completely Free"
 
 #: src/app/[lang]/features/recurring-payments-calendar/opengraph-image.tsx
 msgid "subscriptions"
@@ -15751,8 +15763,8 @@ msgid "There is no server to phone home to"
 msgstr "There is no server to phone home to"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
-msgstr "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
+msgid "There is no subscription paywall in the tracker; every feature is free."
+msgstr "There is no subscription paywall in the tracker; every feature is free."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
@@ -17012,10 +17024,6 @@ msgstr "What happens if I close one of the accounts?"
 msgid "What happens if I lose my phone?"
 msgstr "What happens if I lose my phone?"
 
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "What happens if I stop paying?"
-msgstr "What happens if I stop paying?"
-
 #: src/app/[lang]/security/page.tsx
 msgid "What happens if someone picks up my unlocked phone?"
 msgstr "What happens if someone picks up my unlocked phone?"
@@ -17298,8 +17306,8 @@ msgid "What You Give Up"
 msgstr "What You Give Up"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "What you keep when you stop paying"
-msgstr "What you keep when you stop paying"
+msgid "What you keep"
+msgstr "What you keep"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "What you lent adds back"
@@ -17324,10 +17332,6 @@ msgstr "What's an MCC?"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "What’s currently being worked on"
 msgstr "What’s currently being worked on"
-
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "What's free vs. paid in Budgie?"
-msgstr "What's free vs. paid in Budgie?"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/metadata.ts
 #: src/app/[lang]/blog/whats-new-august-september-2026/opengraph-image.tsx

@@ -71,12 +71,12 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
             />
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Subscription-Free Budget App — Pay Once or Free</Trans>}
+                heading={<Trans>Subscription-Free Budget App — Completely Free</Trans>}
                 locale={lang}
                 tagline={
                     <Trans>
-                        Recurring monthly fees turn budgeting into another bill. Budgie&apos;s core is free; advanced features unlock with a
-                        one-time purchase you actually own.
+                        Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no
+                        tier.
                     </Trans>
                 }
             />
@@ -107,10 +107,10 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 </FeatureStory.Shot>
 
                 <FeatureStory.Point index={1}>
-                    <Trans>There is no subscription paywall in the tracker; optional features use a one-time unlock instead.</Trans>
+                    <Trans>There is no subscription paywall in the tracker; every feature is free.</Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
-                    <Trans>Pay once for bank sync and on-device AI if you want them. The tracker itself never expires.</Trans>
+                    <Trans>Bank sync and on-device AI are free too. The tracker itself never expires.</Trans>
                 </FeatureStory.Point>
             </FeatureStory>
 
@@ -120,8 +120,8 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 </FeaturePageHeading>
                 <FeaturePageProse>
                     <Trans>
-                        Recurring monthly fees turn budgeting into another bill. Budgie&apos;s core is free; advanced features unlock with a
-                        one-time purchase you actually own.
+                        Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no
+                        tier.
                     </Trans>
                 </FeaturePageProse>
             </FeaturePageSection>
@@ -133,12 +133,12 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 <FeaturePageBenefitGrid>
                     <FeaturePageBenefitGridItem index={0}>
                         <Trans>
-                            Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional
-                            unlock covers AI features and direct bank-sync integrations.
+                            Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct
+                            bank-sync integrations are all free.
                         </Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Nothing — there&apos;s nothing to stop. The unlock is one-time, not a subscription.</Trans>
+                        <Trans>Nothing — there&apos;s nothing to stop. Nothing was ever paid for.</Trans>
                     </FeaturePageBenefitGridItem>
                     <FeaturePageBenefitGridItem index={2}>
                         <Trans>
@@ -161,19 +161,19 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
                 </FeaturePageHeading>
                 <FeaturePageCategoryComparison categoryLabel={<Trans>Subscription budget apps</Trans>}>
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Free core, optional one-time unlock</Trans>}
+                        budgieValue={<Trans>Free</Trans>}
                         competitorValue={<Trans>Monthly recurring</Trans>}
                         label={<Trans>Pricing</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Everything — full access</Trans>}
-                        competitorValue={<Trans>Read-only or nothing</Trans>}
-                        label={<Trans>What you keep when you stop paying</Trans>}
+                        budgieValue={<Trans>Everything — always</Trans>}
+                        competitorValue={<Trans>Read-only or nothing if you stop paying</Trans>}
+                        label={<Trans>What you keep</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>&lt; $30 one-time</Trans>}
+                        budgieValue={<Trans>$0</Trans>}
                         competitorValue={<Trans>$300+ recurring</Trans>}
-                        label={<Trans>Annual cost over 5 years</Trans>}
+                        label={<Trans>Cost over 5 years</Trans>}
                     />
                     <FeaturePageCategoryComparison.Row
                         budgieValue={<Trans>Direct API or PDF/CSV</Trans>}
@@ -195,17 +195,17 @@ export default async function SubscriptionFreeBudgetAppPage(props: PageLangParam
 
             <FeaturePageFaqSection locale={lang}>
                 <FeaturePageFaqItem
-                    question={<Trans>What&apos;s free vs. paid in Budgie?</Trans>}
+                    question={<Trans>Is anything in Budgie paid?</Trans>}
                     answer={
                         <Trans>
-                            Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional
-                            unlock covers AI features and direct bank-sync integrations.
+                            No. Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and
+                            direct bank-sync integrations are all free.
                         </Trans>
                     }
                 />
                 <FeaturePageFaqItem
-                    question={<Trans>What happens if I stop paying?</Trans>}
-                    answer={<Trans>Nothing — there&apos;s nothing to stop. The unlock is one-time, not a subscription.</Trans>}
+                    question={<Trans>Does Budgie have ads or a paid tier?</Trans>}
+                    answer={<Trans>No. There is no paid tier and no ads — every feature ships free in the app you install.</Trans>}
                 />
                 <FeaturePageFaqItem
                     question={<Trans>Is &ldquo;subscription-free&rdquo; really durable?</Trans>}
