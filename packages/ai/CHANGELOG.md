@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.84.3](https://github.com/budgie-at/budgie/compare/v6.84.2...v6.84.3) (2026-09-27)
+
+
+### Bug Fixes
+
+* **app:** do not persist a translation from an interrupted completion ([4196f8a](https://github.com/budgie-at/budgie/commit/4196f8a9f0ab3dff20cf6ab8f6c0e5b4b0a4ed43))
+
+
+
+
+
 # [6.79.0](https://github.com/budgie-at/budgie/compare/v6.78.2...v6.79.0) (2026-09-26)
 
 **Note:** Version bump only for package @budgie/ai
