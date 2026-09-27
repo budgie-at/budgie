@@ -18,7 +18,7 @@ export const useCategorizeInboxTopSuggestion = (cluster: CategorizeInboxClusterI
     const category = isDefined(topCandidate) ? (categoriesById.get(topCandidate.categoryId) ?? null) : null;
     const hasIncludedRows = cluster.rows.some(row => !excludedTransactionIds.has(row.transactionId));
 
-    if (!cluster.hasEvidence || isDefined(cluster.transferKind) || !isDefined(category) || !hasIncludedRows) {
+    if (!cluster.hasEvidence || !isDefined(category) || !hasIncludedRows) {
         return null;
     }
 

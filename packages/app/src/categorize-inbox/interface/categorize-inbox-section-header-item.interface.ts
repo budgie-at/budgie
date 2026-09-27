@@ -6,4 +6,5 @@ export interface CategorizeInboxSectionHeaderItemInterface {
     readonly key: string;
     readonly section: CategorizeInboxSectionEnum;
     readonly count: number;
+    readonly totalBaseAmount: number | null;
 }

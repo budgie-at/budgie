@@ -1,5 +1,3 @@
-import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
@@ -15,24 +13,19 @@ import type { CategorizeInboxClusterInterface } from '../../interface/categorize
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
+    readonly isExpanded: boolean;
 }
 
-export const CategorizeInboxClusterCard = ({ cluster }: Props) => {
-    const { t } = useLingui();
+export const CategorizeInboxClusterCard = ({ cluster, isExpanded }: Props) => (
+    <CategorizeInboxSwipeToAccept cluster={cluster}>
+        <Card size="sm" className="gap-y-lg" {...testID(CategorizeInboxClusterCardSelector.Card, cluster.key)}>
+            <CategorizeInboxClusterSummary cluster={cluster} isExpanded={isExpanded} />
 
-    const countText = t({ message: plural(cluster.rows.length, { one: '# transaction', other: '# transactions' }) });
+            <View className="flex-row items-center gap-x-sm">
+                <CategorizeInboxSuggestionChips cluster={cluster} />
+            </View>
 
-    return (
-        <CategorizeInboxSwipeToAccept key={cluster.key} cluster={cluster}>
-            <Card size="sm" className="gap-y-lg" {...testID(CategorizeInboxClusterCardSelector.Card, cluster.key)}>
-                <CategorizeInboxClusterSummary cluster={cluster} countText={countText} />
-
-                <View className="flex-row items-center gap-x-sm">
-                    <CategorizeInboxSuggestionChips cluster={cluster} />
-                </View>
-
-                <CategorizeInboxClusterRows cluster={cluster} />
-            </Card>
-        </CategorizeInboxSwipeToAccept>
-    );
-};
+            {isExpanded ? <CategorizeInboxClusterRows cluster={cluster} /> : null}
+        </Card>
+    </CategorizeInboxSwipeToAccept>
+);

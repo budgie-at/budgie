@@ -1,16 +1,15 @@
-import { RuleConditionFieldEnum, RuleConditionOperatorEnum, UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { useRuleFormModal } from '../../../rule/context/rule-form-modal.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { CategorizeInboxRuleButton } from '../categorize-inbox-rule-button/categorize-inbox-rule-button';
 
 import { CategorizeInboxUndoBarSelector } from './categorize-inbox-undo-bar.selector';
 
@@ -18,49 +17,34 @@ import type { CategorizeInboxAssignmentInterface } from '../../interface/categor
 
 interface Props {
     readonly assignments: CategorizeInboxAssignmentInterface[];
+    readonly onUndo: () => void;
 }
 
-export const CategorizeInboxUndoBar = ({ assignments }: Props) => {
+export const CategorizeInboxUndoBar = ({ assignments, onUndo }: Props) => {
     const { t } = useLingui();
-    const { openRuleForm } = useRuleFormModal();
-    const { categoriesById, undo } = useCategorizeInboxContext();
+    const { categoriesById } = useCategorizeInboxContext();
 
     const [firstAssignment] = assignments;
-    const categoryIds = new Set(assignments.map(assignment => assignment.categoryId));
-    const [singleCategoryId] = categoryIds;
-    const category = categoryIds.size === 1 && isDefined(singleCategoryId) ? (categoriesById.get(singleCategoryId) ?? null) : null;
-    const ruleAssignment = assignments.length === 1 && isNotEmptyString(firstAssignment.ruleConditionValue) ? firstAssignment : null;
-
-    const handleRulePress = (): void => {
-        if (isDefined(ruleAssignment)) {
-            void openRuleForm({
-                prefillData: {
-                    conditions: [
-                        {
-                            field: RuleConditionFieldEnum.TITLE,
-                            operator: RuleConditionOperatorEnum.CONTAINS,
-                            value: ruleAssignment.ruleConditionValue
-                        }
-                    ],
-                    categoryId: ruleAssignment.categoryId,
-                    tagIds: []
-                }
-            });
-        }
-    };
+    const groupCount = assignments.length;
+    const isSingleAssignment = groupCount === 1;
+    const category = isSingleAssignment ? (categoriesById.get(firstAssignment.categoryId) ?? null) : null;
+    const ruleAssignment = isSingleAssignment && isNotEmptyString(firstAssignment.ruleConditionValue) ? firstAssignment : null;
 
     const rowCount = assignments.reduce((total, assignment) => total + assignment.transactionIds.length, 0);
-    const title = category?.title ?? t({ message: plural(rowCount, { one: '# categorized', other: '# categorized' }) });
+    const { displayTitle } = firstAssignment;
+    const categoryTitle = category?.title ?? '';
+    const title = isDefined(category)
+        ? t`Categorized ${displayTitle} → ${categoryTitle}`
+        : t({ message: plural(rowCount, { one: 'Categorized # transaction', other: 'Categorized # transactions' }) });
     const description = isDefined(category)
         ? t({ message: plural(rowCount, { one: '# transaction', other: '# transactions' }) })
-        : t({ message: plural(categoryIds.size, { one: '# category', other: '# categories' }) });
+        : t({ message: plural(groupCount, { one: '# group', other: '# groups' }) });
     const icon = category?.icon ?? UserIconNameEnum.CheckCheck;
 
     return (
         <Animated.View
-            entering={FadeInDown.duration(200)}
-            exiting={FadeOutDown.duration(150)}
-            className="flex-row items-center gap-x-lg rounded-5xl border border-secondary-corner bg-primary-reverse p-lg"
+            entering={FadeIn.duration(150)}
+            className="h-14 flex-row items-center gap-x-lg rounded-5xl border border-secondary-corner bg-primary-reverse pl-md"
             accessibilityLiveRegion="polite"
             testID={CategorizeInboxUndoBarSelector.Bar}
         >
@@ -75,21 +59,11 @@ export const CategorizeInboxUndoBar = ({ assignments }: Props) => {
                 </Text>
             </View>
 
-            {isDefined(ruleAssignment) ? (
-                <HapticPressable
-                    onPress={handleRulePress}
-                    className="h-10 w-10 items-center justify-center"
-                    accessibilityRole="button"
-                    accessibilityLabel={t`Create a rule`}
-                    testID={CategorizeInboxUndoBarSelector.RuleButton}
-                >
-                    <Icon icon={UserIconNameEnum.Zap} size={18} className="text-secondary-foreground" />
-                </HapticPressable>
-            ) : null}
+            {isDefined(ruleAssignment) ? <CategorizeInboxRuleButton assignment={ruleAssignment} /> : null}
 
             <HapticPressable
-                onPress={undo}
-                className="h-10 justify-center px-md"
+                onPress={onUndo}
+                className="h-11 justify-center pr-xl pl-md"
                 accessibilityRole="button"
                 testID={CategorizeInboxUndoBarSelector.UndoButton}
             >

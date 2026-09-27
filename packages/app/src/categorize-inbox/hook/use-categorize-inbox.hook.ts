@@ -6,10 +6,10 @@ import { useSettingsContext } from '../../settings/context/settings.context';
 import { buildTransactionFilterKey } from '../../transaction/utils/build-transaction-filter-key.util';
 import { categorizeInboxEngineService } from '../service/categorize-inbox-engine.service';
 
-import type { UseCategorizeInboxReturnInterface } from '../interface/use-categorize-inbox-return.interface';
+import type { CategorizeInboxDataInterface } from '../interface/categorize-inbox-data.interface';
 import type { TransactionFilterInterface } from '@budgie/contracts';
 
-export const useCategorizeInbox = (filters: TransactionFilterInterface): UseCategorizeInboxReturnInterface => {
+export const useCategorizeInbox = (filters: TransactionFilterInterface): CategorizeInboxDataInterface => {
     const { defaultInstrument } = useSettingsContext();
 
     const { data: rows, updatedAt: rowsUpdatedAt } = useDatabaseLiveQuery(
@@ -21,7 +21,8 @@ export const useCategorizeInbox = (filters: TransactionFilterInterface): UseCate
     );
 
     return {
-        inbox: categorizeInboxEngineService.buildInbox(rows, evidence, defaultInstrument.id),
+        rows,
+        context: categorizeInboxEngineService.buildContext(evidence, defaultInstrument.id),
         isLoading: !isDefined(rowsUpdatedAt) || !isDefined(evidenceUpdatedAt)
     };
 };
