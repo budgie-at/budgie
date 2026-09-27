@@ -30,8 +30,7 @@ export const runCompletion = async (
     });
 
     if (result.interrupted && options?.throwOnInterrupt === true) {
-        // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error message, not user-facing
-        throw new Error('Completion interrupted');
+        throw new Error('completionInterrupted');
     }
 
     return stripThinkingTags(result.text.trim());
