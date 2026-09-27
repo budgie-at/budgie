@@ -1,5 +1,4 @@
 import { categoryRepository } from '@app/@generic/drizzle/db/db';
-import { InterruptedCompletionError } from '@app/ai/error/interrupted-completion.error';
 import { chatService } from '@app/ai/service/chat.service';
 import { translationDrainerService } from '@app/ai/service/translation-drainer.service';
 import { LanguageEnum, UserIconNameEnum } from '@budgie/contracts';
@@ -22,9 +21,9 @@ describe('category/translation-drainer-interrupted-completion', () => {
 
     it('leaves titleEn NULL and keeps the row pending when the completion is interrupted mid-generation', async () => {
         const row = await createCategoryRow();
-        spyOnGenerate().mockRejectedValue(new InterruptedCompletionError());
+        spyOnGenerate().mockRejectedValue(new Error('Completion interrupted'));
 
-        await expect(translationDrainerService['processRow'](row)).rejects.toThrow(InterruptedCompletionError);
+        await expect(translationDrainerService['processRow'](row)).rejects.toThrow('Completion interrupted');
 
         const [persisted] = await categoryRepository.findById(row.id, LanguageEnum.EN);
         expect(persisted.titleEn).toBeNull();
