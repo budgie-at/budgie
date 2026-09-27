@@ -2,6 +2,8 @@ import { GenerateOptionsInterface, stripThinkingTags } from '@budgie/ai';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { InterruptedCompletionError } from '../error/interrupted-completion.error';
+
 import { DEFAULT_MAX_TOKENS, GENERATION_CONFIG, STOP_TOKENS } from './ai-constants.util';
 
 import type { LlamaContext } from 'llama.rn';
@@ -28,6 +30,10 @@ export const runCompletion = async (
         }),
         ...(isDefined(options?.temperature) ? { temperature: options.temperature } : {})
     });
+
+    if (result.interrupted && options?.throwOnInterrupt === true) {
+        throw new InterruptedCompletionError();
+    }
 
     return stripThinkingTags(result.text.trim());
 };
