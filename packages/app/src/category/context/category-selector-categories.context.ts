@@ -1,5 +1,10 @@
 import { createContext } from 'react';
 
-import type { CategoryEntityInterface } from '@budgie/contracts';
+import { emptyFn } from '@rnw-community/shared';
 
-export const CategorySelectorCategoriesContext = createContext<CategoryEntityInterface[] | null>(null);
+import type { CategorySelectorCategoriesInterface } from '../interface/category-selector-categories.interface';
+
+export const CategorySelectorCategoriesContext = createContext<CategorySelectorCategoriesInterface>({
+    categories: null,
+    markSelectorOpened: emptyFn
+});

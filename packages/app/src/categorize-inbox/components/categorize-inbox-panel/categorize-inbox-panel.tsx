@@ -13,19 +13,20 @@ import { CategorizeInboxUndoBar } from '../categorize-inbox-undo-bar/categorize-
 import { CategorizeInboxPanelSelector } from './categorize-inbox-panel.selector';
 
 import type { CategorizeInboxAssignmentInterface } from '../../interface/categorize-inbox-assignment.interface';
+import type { CategorizeInboxLastWriteInterface } from '../../interface/categorize-inbox-last-write.interface';
 
 interface Props {
     readonly remainingCount: number;
     readonly categorizedCount: number;
     readonly acceptableAssignments: CategorizeInboxAssignmentInterface[];
-    readonly undoAssignments: CategorizeInboxAssignmentInterface[] | null;
+    readonly lastWrite: CategorizeInboxLastWriteInterface | null;
     readonly onUndo: () => void;
 }
 
-export const CategorizeInboxPanel = ({ remainingCount, categorizedCount, acceptableAssignments, undoAssignments, onUndo }: Props) => {
-    const slot = useCategorizeInboxPanelSlot(undoAssignments, isNotEmptyArray(acceptableAssignments));
+export const CategorizeInboxPanel = ({ remainingCount, categorizedCount, acceptableAssignments, lastWrite, onUndo }: Props) => {
+    const slot = useCategorizeInboxPanelSlot(lastWrite, isNotEmptyArray(acceptableAssignments));
 
-    const isLastAction = slot === CategorizeInboxPanelSlotEnum.LAST_ACTION && isDefined(undoAssignments);
+    const isLastAction = slot === CategorizeInboxPanelSlotEnum.LAST_ACTION && isDefined(lastWrite);
 
     return (
         <Footer>
@@ -34,7 +35,7 @@ export const CategorizeInboxPanel = ({ remainingCount, categorizedCount, accepta
 
                 <View className="h-14 justify-center">
                     {isLastAction ? (
-                        <CategorizeInboxUndoBar key={undoAssignments[0].clusterKey} assignments={undoAssignments} onUndo={onUndo} />
+                        <CategorizeInboxUndoBar key={lastWrite.sequence} assignments={lastWrite.assignments} onUndo={onUndo} />
                     ) : null}
                     {slot === CategorizeInboxPanelSlotEnum.ACCEPT_ALL ? (
                         <CategorizeInboxAcceptAllButton assignments={acceptableAssignments} />

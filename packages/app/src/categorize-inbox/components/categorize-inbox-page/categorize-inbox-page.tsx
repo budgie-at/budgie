@@ -35,7 +35,7 @@ export const CategorizeInboxPage = ({ params }: Props) => {
 
     const filters = buildUncategorizedFilters(params);
     const inbox = useCategorizeInbox(filters);
-    const { contextValue, items, expandedClusterKey, acceptableAssignments, undoAssignments, undo, remainingCount, categorizedCount } =
+    const { contextValue, items, expandedClusterKey, acceptableAssignments, lastWrite, undo, remainingCount, categorizedCount } =
         useCategorizeInboxActions(inbox);
 
     const handleGoBack = (): void => void router.back();
@@ -43,13 +43,13 @@ export const CategorizeInboxPage = ({ params }: Props) => {
 
     const remainingText = t({ message: plural(remainingCount, { one: '# left', other: '# left' }) });
     const emptyDescription = isPositiveNumber(categorizedCount) ? copy.doneThisSession(categorizedCount) : copy.emptyDescription;
-    const hasPanel = !inbox.isLoading && (isNotEmptyArray(items) || isDefined(undoAssignments));
+    const hasPanel = !inbox.isLoading && (isNotEmptyArray(items) || isDefined(lastWrite));
     const panel = hasPanel ? (
         <CategorizeInboxPanel
             remainingCount={remainingCount}
             categorizedCount={categorizedCount}
             acceptableAssignments={acceptableAssignments}
-            undoAssignments={undoAssignments}
+            lastWrite={lastWrite}
             onUndo={undo}
         />
     ) : null;

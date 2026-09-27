@@ -4,6 +4,7 @@ import { and, desc, eq, inArray, isNotNull, isNull, ne, notExists, sql } from 'd
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
@@ -13,6 +14,7 @@ import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transacti
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
+import { insertTransactionTag } from '../../transaction-tags/util/insert-transaction-tag.util';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
@@ -23,6 +25,7 @@ import type { SQL } from 'drizzle-orm';
 
 export class TransactionCategorizeInboxRepository extends BaseTransactionFilterRepository {
     private static readonly WRITE_CHUNK_SIZE = 500;
+    private static readonly INBOX_TYPES = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];
 
     @Log(
         (transactionIds, categoryId, categorySource, tx) =>
@@ -80,11 +83,15 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
         const runner = tx ?? this.db;
 
         return this.writeInChunks(transactionIds, chunk =>
-            runner
-                .insert(TransactionTagsEntityTable)
-                .values(chunk.map(transactionId => ({ transactionId, tagId, isPrimary: false })))
-                .onConflictDoNothing()
-                .returning({ transactionId: TransactionTagsEntityTable.transactionId })
+            insertTransactionTag(
+                runner,
+                tagId,
+                and(
+                    inArray(TransactionEntityTable.id, chunk),
+                    this.buildVisibleTransactionCondition(),
+                    inArray(TransactionEntityTable.type, TransactionCategorizeInboxRepository.INBOX_TYPES)
+                )
+            )
         );
     }
 
@@ -124,6 +131,7 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
                         .from(TransactionTagsEntityTable)
                         .where(eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
                 ),
+                ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
                 ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : [])
             ])
         );
@@ -242,7 +250,7 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
     }
 
     private buildInboxRowsWhere(filters: TransactionFilterInterface, labelConditions: (SQL | undefined)[]) {
-        const inboxTypes = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE].filter(
+        const inboxTypes = TransactionCategorizeInboxRepository.INBOX_TYPES.filter(
             type => !isNotEmptyArray(filters.types) || filters.types.includes(type)
         );
         const conditions = [
@@ -263,7 +271,7 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
             ...labelConditions,
             ...this.buildAssignableEntryConditions(),
             this.buildVisibleTransactionCondition(),
-            inArray(TransactionEntityTable.type, [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME])
+            inArray(TransactionEntityTable.type, TransactionCategorizeInboxRepository.INBOX_TYPES)
         );
     }
 }

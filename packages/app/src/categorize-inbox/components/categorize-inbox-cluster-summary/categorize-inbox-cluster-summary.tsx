@@ -16,16 +16,16 @@ import type { CategorizeInboxClusterInterface } from '../../interface/categorize
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
-    readonly isExpanded: boolean;
 }
 
-export const CategorizeInboxClusterSummary = ({ cluster, isExpanded }: Props) => {
+export const CategorizeInboxClusterSummary = ({ cluster }: Props) => {
     const { t } = useLingui();
-    const { excludedTransactionIds, formatBaseMicroAmount, toggleExpanded } = useCategorizeInboxContext();
+    const { expandedClusterKey, excludedTransactionIds, formatBaseMicroAmount, toggleExpanded } = useCategorizeInboxContext();
     const topSuggestion = useCategorizeInboxTopSuggestion(cluster);
 
     const handleTogglePress = (): void => void toggleExpanded(cluster.key);
 
+    const isExpanded = expandedClusterKey === cluster.key;
     const countText = t({ message: plural(cluster.rows.length, { one: '# transaction', other: '# transactions' }) });
     const skippedCount = cluster.rows.filter(row => excludedTransactionIds.has(row.transactionId)).length;
     const skippedText = isPositiveNumber(skippedCount)

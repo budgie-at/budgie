@@ -26,7 +26,7 @@ export const CategorizeInboxList = ({ items, expandedClusterKey }: Props) => {
             case CategorizeInboxListItemKindEnum.ONE_OFF:
                 return <CategorizeInboxOneOffRow cluster={item.cluster} />;
             default:
-                return <CategorizeInboxClusterCard cluster={item.cluster} isExpanded={item.key === expandedClusterKey} />;
+                return <CategorizeInboxClusterCard cluster={item.cluster} />;
         }
     };
 

@@ -1307,7 +1307,7 @@ msgstr "Не вдалося вибрати резервну копію бази 
 msgid "Could not set up sync"
 msgstr "Не вдалося налаштувати синхронізацію"
 
-#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-follow-up.hook.ts
 #: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
 msgid "Could not tag transactions"
 msgstr "Не вдалося додати теги до транзакцій"

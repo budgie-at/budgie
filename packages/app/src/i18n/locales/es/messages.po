@@ -1307,7 +1307,7 @@ msgstr "No se pudo seleccionar la copia de seguridad de la base de datos"
 msgid "Could not set up sync"
 msgstr "No se pudo configurar la sincronización"
 
-#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-follow-up.hook.ts
 #: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
 msgid "Could not tag transactions"
 msgstr "No se pudieron etiquetar las transacciones"

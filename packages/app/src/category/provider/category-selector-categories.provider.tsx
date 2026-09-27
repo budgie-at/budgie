@@ -1,10 +1,22 @@
-import { type PropsWithChildren } from 'react';
+import { type PropsWithChildren, useState } from 'react';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { useDatabaseTableLiveQuery } from '../../@generic/hook/use-database-table-live-query.hook';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { CategorySelectorCategoriesContext } from '../context/category-selector-categories.context';
-import { useSearchCategoriesQuery } from '../query/use-search-categories.query';
 
 export const CategorySelectorCategoriesProvider = ({ children }: PropsWithChildren) => {
-    const { categories } = useSearchCategoriesQuery('', true);
+    const language = useSetting('language');
+    const [selectorOpenedAt, setSelectorOpenedAt] = useState(0);
 
-    return <CategorySelectorCategoriesContext value={categories}>{children}</CategorySelectorCategoriesContext>;
+    const { data, updatedAt } = useDatabaseTableLiveQuery(categoryRepository.findBySearchQuery('', true, language), [
+        language,
+        selectorOpenedAt
+    ]);
+
+    const value = { categories: isDefined(updatedAt) ? data : null, markSelectorOpened: setSelectorOpenedAt };
+
+    return <CategorySelectorCategoriesContext value={value}>{children}</CategorySelectorCategoriesContext>;
 };

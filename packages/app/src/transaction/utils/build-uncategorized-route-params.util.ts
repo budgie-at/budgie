@@ -11,7 +11,7 @@ const buildNullableArrayParam = (values: readonly (number | string)[] | null): s
     return null;
 };
 
-export const buildUncategorizedRouteParams = (filters: TransactionFilterInterface, mode: AnalyticsTransactionsModeEnum) => {
+export const buildUncategorizedRouteParams = (filters: TransactionFilterInterface, mode: AnalyticsTransactionsModeEnum | null) => {
     const types = buildNullableArrayParam(filters.types);
     const accountIds = buildNullableArrayParam(filters.accountIds);
     const categoryIds = buildNullableArrayParam(filters.categoryIds);
@@ -22,7 +22,7 @@ export const buildUncategorizedRouteParams = (filters: TransactionFilterInterfac
     const amountTo = filters.amount?.to?.toString() ?? null;
 
     return {
-        mode,
+        ...(isDefined(mode) && { mode }),
         ...(isDefined(types) && { types }),
         ...(isDefined(accountIds) && { accountIds }),
         ...(isDefined(categoryIds) && { categoryIds }),
