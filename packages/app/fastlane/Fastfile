@@ -220,7 +220,9 @@ def ensure_app_store_review_detail
 
   begin
     version.fetch_app_store_review_detail
-  rescue StandardError
+  rescue RuntimeError => e
+    raise unless e.message == "No data"
+
     version.create_app_store_review_detail(attributes: {})
   end
 end
