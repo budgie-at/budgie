@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.84.1](https://github.com/budgie-at/budgie/compare/v6.84.0...v6.84.1) (2026-09-27)
+
+
+### Bug Fixes
+
+* **app:** only create the review detail when it is missing ([8c6e503](https://github.com/budgie-at/budgie/commit/8c6e50352d9c74691814714206d991cd2d32d85d))
+
+
+
+
+
 # [6.84.0](https://github.com/budgie-at/budgie/compare/v6.83.2...v6.84.0) (2026-09-27)
 
 
