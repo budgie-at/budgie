@@ -11,7 +11,6 @@ import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.t
 import type { DB } from '../../@generic/type/db.type';
 import type { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity.interface';
 import type { TransactionEntryEntityInterface } from '../entity/transaction-entry-entity.interface';
-import type { CategorySourceEnum } from '../enum/category-source.enum';
 import type { TransactionEntryUpdateInputInterface } from '../input/transaction-entry-update-input.interface';
 import type { BaseValuationBucketUpdateInterface } from '../interface/base-valuation-bucket-update.interface';
 import type { PendingBaseValuationBucketInterface } from '../interface/pending-base-valuation-bucket.interface';
@@ -227,18 +226,6 @@ export class TransactionEntryRepository {
             .returning();
 
         return transactionEntry;
-    }
-
-    async updateCategoryByTransactionIds(
-        transactionIds: number[],
-        categoryId: number,
-        categorySource: CategorySourceEnum,
-        tx?: DB
-    ): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntryEntityTable)
-            .set({ categoryId, categorySource })
-            .where(and(inArray(TransactionEntryEntityTable.transactionId, transactionIds), isNull(TransactionEntryEntityTable.deletedAt)));
     }
 
     async deleteByTransactionId(transactionId: number, tx?: DB): Promise<void> {

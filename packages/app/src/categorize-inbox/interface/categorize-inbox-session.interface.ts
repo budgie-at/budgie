@@ -5,4 +5,5 @@ import { CategorizeInboxClusterInterface } from './categorize-inbox-cluster.inte
 export interface CategorizeInboxSessionInterface {
     readonly placements: ReadonlyMap<string, CategorizeInboxSectionEnum>;
     readonly clustersByKey: ReadonlyMap<string, CategorizeInboxClusterInterface>;
+    readonly peakRowCount: number;
 }

@@ -15,6 +15,7 @@ import { CategoryEntityTable } from '../table/category-entity.table';
 
 import type * as schema from '../../schema';
 import type { CategoryEntityInterface } from '../entity/category-entity.interface';
+import type { SQL } from 'drizzle-orm';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class CategoryRepository extends TranslatableRepositoryBase {
@@ -35,38 +36,16 @@ export class CategoryRepository extends TranslatableRepositoryBase {
 
     findBySearchQuery(search: string, includeDefault: boolean, language: LanguageEnum) {
         const trimmed = search.trim();
-        const selectableFilter = or(
-            eq(CategoryEntityTable.isSystemCategory, false),
-            inArray(CategoryEntityTable.id, [LENDING_CATEGORY_ID, BORROWING_CATEGORY_ID])
-        );
-        const baseFilter = includeDefault ? selectableFilter : and(eq(CategoryEntityTable.isDefault, false), selectableFilter);
-        const sortedByUsage = this.buildLocalizedCategoryBaseQuery(language).leftJoin(
-            TransactionEntryEntityTable,
-            eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId)
-        );
 
-        if (!isNotEmptyString(trimmed)) {
-            return sortedByUsage
-                .where(baseFilter)
-                .groupBy(CategoryEntityTable.id)
-                .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
-        }
+        return this.buildUsageSortedQuery(includeDefault, language, isNotEmptyString(trimmed) ? [this.buildSearchCondition(trimmed)] : []);
+    }
 
-        const pattern = `%${trimmed.toLowerCase()}%`;
-        const localizedTitleSearchExpressions = this.buildSearchPatterns(trimmed).map(searchPattern =>
-            like(DefaultCategoryTranslationEntityTable.title, searchPattern)
-        );
-        const searchExpr = or(
-            like(CategoryEntityTable.titleSearch, pattern),
-            like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleEn}, ''))`, pattern),
-            like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleTags}, ''))`, pattern),
-            ...localizedTitleSearchExpressions
-        );
+    findBySearchQueryOrNone(search: string, includeDefault: boolean, language: LanguageEnum) {
+        const trimmed = search.trim();
 
-        return sortedByUsage
-            .where(and(searchExpr, baseFilter))
-            .groupBy(CategoryEntityTable.id)
-            .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
+        return this.buildUsageSortedQuery(includeDefault, language, [
+            isNotEmptyString(trimmed) ? this.buildSearchCondition(trimmed) : sql<boolean>`0`
+        ]);
     }
 
     count(includeDefault: boolean) {
@@ -199,5 +178,33 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         const capitalizedSearch = `${lowerSearch.charAt(0).toUpperCase()}${lowerSearch.slice(1)}`;
 
         return [...new Set([search, lowerSearch, upperSearch, capitalizedSearch].map(value => `%${value}%`))];
+    }
+
+    private buildUsageSortedQuery(includeDefault: boolean, language: LanguageEnum, searchConditions: (SQL | undefined)[]) {
+        const selectableFilter = or(
+            eq(CategoryEntityTable.isSystemCategory, false),
+            inArray(CategoryEntityTable.id, [LENDING_CATEGORY_ID, BORROWING_CATEGORY_ID])
+        );
+        const baseFilter = includeDefault ? selectableFilter : and(eq(CategoryEntityTable.isDefault, false), selectableFilter);
+
+        return this.buildLocalizedCategoryBaseQuery(language)
+            .leftJoin(TransactionEntryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+            .where(and(...searchConditions, baseFilter))
+            .groupBy(CategoryEntityTable.id)
+            .orderBy(sql`COUNT(${TransactionEntryEntityTable.id}) DESC`);
+    }
+
+    private buildSearchCondition(trimmed: string) {
+        const pattern = `%${trimmed.toLowerCase()}%`;
+        const localizedTitleSearchExpressions = this.buildSearchPatterns(trimmed).map(searchPattern =>
+            like(DefaultCategoryTranslationEntityTable.title, searchPattern)
+        );
+
+        return or(
+            like(CategoryEntityTable.titleSearch, pattern),
+            like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleEn}, ''))`, pattern),
+            like(sql<string>`LOWER(COALESCE(${CategoryEntityTable.titleTags}, ''))`, pattern),
+            ...localizedTitleSearchExpressions
+        );
     }
 }

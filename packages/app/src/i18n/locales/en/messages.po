@@ -1308,7 +1308,7 @@ msgstr "Could not select database backup"
 msgid "Could not set up sync"
 msgstr "Could not set up sync"
 
-#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-follow-up.hook.ts
 #: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
 msgid "Could not tag transactions"
 msgstr "Could not tag transactions"

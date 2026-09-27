@@ -21,6 +21,7 @@ import {
     ruleRepository,
     transactionEntryRepository,
     transactionRepository,
+    transactionRuleRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
@@ -248,20 +249,22 @@ class RuleEngineService {
             ...new Set(actions.filter(action => action.type === RuleActionTypeEnum.ADD_TAG).map(action => action.tagId))
         ].filter(isDefined);
 
-        if (isDefined(categoryAction?.categoryId)) {
-            await transactionEntryRepository.updateCategoryByTransactionIds(
-                batchIds,
-                categoryAction.categoryId,
-                CategorySourceEnum.RULE,
-                transaction
-            );
-        }
+        const categorizedIds = isDefined(categoryAction?.categoryId)
+            ? await transactionRuleRepository.setCategoryByTransactionIds(batchIds, categoryAction.categoryId, transaction)
+            : [];
+        const taggedIds = await tagIds.reduce<Promise<number[]>>(
+            async (previousTaggedIdsPromise, tagId) => [
+                ...(await previousTaggedIdsPromise),
+                ...(await transactionTagsRepository.addTagByTransactionIds(batchIds, tagId, transaction))
+            ],
+            Promise.resolve([])
+        );
 
-        await transactionTagsRepository.bulkCreateMissing(
-            batchIds.flatMap(transactionId => tagIds.map(tagId => ({ transactionId, tagId, isPrimary: false }))),
+        await transactionRepository.touchUpdatedByIds(
+            [...new Set([...categorizedIds, ...taggedIds])],
+            TransactionUpdatedByEnum.RULE,
             transaction
         );
-        await transactionRepository.touchUpdatedByIds(batchIds, TransactionUpdatedByEnum.RULE, transaction);
         await this.convertTransactionBatchToTransfer(batchIds, actions, transaction);
     }
 
@@ -491,13 +494,11 @@ class RuleEngineService {
         }
 
         appliedExclusiveActions.add(RuleActionTypeEnum.SET_CATEGORY);
-        await transactionEntryRepository.updateCategoryByTransactionIds(
-            [transactionId],
-            action.categoryId,
-            CategorySourceEnum.RULE,
-            transaction
-        );
-        await transactionRepository.touchUpdatedAt(transactionId, transaction);
+        const categorizedIds = await transactionRuleRepository.setCategoryByTransactionIds([transactionId], action.categoryId, transaction);
+
+        if (isNotEmptyArray(categorizedIds)) {
+            await transactionRepository.touchUpdatedAt(transactionId, transaction);
+        }
     }
 
     private async applyAddTagAction(transactionId: number, action: RuleActionEntityInterface, transaction: DB): Promise<void> {
@@ -505,15 +506,11 @@ class RuleEngineService {
             return;
         }
 
-        const existingTags = await transactionTagsRepository.findByTransactionId(transactionId, transaction);
-        const hasTag = existingTags.some(tag => tag.tagId === action.tagId);
+        const taggedIds = await transactionTagsRepository.addTagByTransactionIds([transactionId], action.tagId, transaction);
 
-        if (hasTag) {
-            return;
+        if (isNotEmptyArray(taggedIds)) {
+            await transactionRepository.touchUpdatedAt(transactionId, transaction);
         }
-
-        await transactionTagsRepository.bulkCreate([{ transactionId, tagId: action.tagId, isPrimary: false }], transaction);
-        await transactionRepository.touchUpdatedAt(transactionId, transaction);
     }
 
     private async convertTransactionToTransfer(transactionId: number, targetAccountId: number, dbTransaction: DB): Promise<boolean> {

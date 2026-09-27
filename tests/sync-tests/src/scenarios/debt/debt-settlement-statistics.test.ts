@@ -117,7 +117,9 @@ describe('debt settlement statistics', () => {
                 date: null,
                 categoryIds: null,
                 excludedCategoryIds: null,
-                tagIds: null
+                tagIds: null,
+                accountIds: null,
+                amount: null
             },
             10,
             LanguageEnum.EN

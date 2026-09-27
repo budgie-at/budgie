@@ -1,6 +1,7 @@
-import { SQL, and, eq, isNull, sql } from 'drizzle-orm';
+import { SQL, and, eq, inArray, isNull, sql } from 'drizzle-orm';
 
 import { DB } from '../../@generic/type/db.type';
+import { CategorySourceEnum } from '../../transaction-entry/enum/category-source.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
@@ -25,5 +26,21 @@ export class TransactionRuleRepository {
             .where(and(isNull(TransactionEntityTable.deletedAt), where));
 
         return result.map(row => row.id);
+    }
+
+    async setCategoryByTransactionIds(transactionIds: number[], categoryId: number, tx?: DB): Promise<number[]> {
+        const changedEntries = await (tx ?? this.db)
+            .update(TransactionEntryEntityTable)
+            .set({ categoryId, categorySource: CategorySourceEnum.RULE })
+            .where(
+                and(
+                    inArray(TransactionEntryEntityTable.transactionId, transactionIds),
+                    isNull(TransactionEntryEntityTable.deletedAt),
+                    sql`${TransactionEntryEntityTable.categoryId} IS NOT ${categoryId}`
+                )
+            )
+            .returning({ transactionId: TransactionEntryEntityTable.transactionId });
+
+        return [...new Set(changedEntries.map(entry => entry.transactionId))];
     }
 }

@@ -1,9 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
-
 import { transactionCategorizeInboxRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { useTagsSelectorModal } from '../../tag/context/tags-selector-modal.context';
 import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
@@ -18,29 +15,24 @@ export const useCategorizeInboxTagFollowUp = (): CategorizeInboxFollowUpInterfac
     const { defaultInstrument } = useSettingsContext();
     const [openTagsSelector] = useTagsSelectorModal();
 
-    const { data: tagEvidence } = useDatabaseLiveQuery(transactionCategorizeInboxRepository.findTagEvidence());
-
-    const tagContext = categorizeInboxEngineService.buildContext(tagEvidence, defaultInstrument.id);
-
-    const handleApply = async (assignment: CategorizeInboxAssignmentInterface): Promise<boolean> => {
-        const tagIds = await openTagsSelector({ initialTagIds: assignment.followUpLabelIds, description: assignment.displayTitle });
-
-        if (!isNotEmptyArray(tagIds)) {
-            return false;
-        }
-
-        await categorizeInboxService.assign(
-            CategorizeInboxLabelKindEnum.TAG,
-            tagIds.map(tagId => ({ ...assignment, labelId: tagId }))
+    const handlePickLabelIds = async (assignment: CategorizeInboxAssignmentInterface): Promise<number[] | null> => {
+        const tagContext = categorizeInboxEngineService.buildContext(
+            await transactionCategorizeInboxRepository.findTagEvidence(),
+            defaultInstrument.id
         );
 
-        return true;
+        return openTagsSelector({
+            initialTagIds: categorizeInboxEngineService.suggestLabelIds(assignment.rows, tagContext),
+            description: assignment.displayTitle
+        });
     };
 
     return {
         title: t`+ Tags`,
         accessibilityLabel: t`Add tags to these transactions`,
-        suggestLabelIds: rows => categorizeInboxEngineService.suggestLabelIds(rows, tagContext),
-        apply: handleApply
+        writeFailed: t`Could not tag transactions`,
+        pickLabelIds: handlePickLabelIds,
+        assignMany: assignments => categorizeInboxService.assign(CategorizeInboxLabelKindEnum.TAG, assignments),
+        undo: assignments => categorizeInboxService.undo(CategorizeInboxLabelKindEnum.TAG, assignments)
     };
 };

@@ -1,37 +1,29 @@
 import { useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { categorizeInboxEngineService } from '../service/categorize-inbox-engine.service';
 
 import type { CategorizeInboxDataInterface } from '../interface/categorize-inbox-data.interface';
-import type { CategorizeInboxSessionInterface } from '../interface/categorize-inbox-session.interface';
-import type { CategorizeInboxViewInterface } from '../interface/categorize-inbox-view.interface';
-
-const LOADING_SESSION: CategorizeInboxSessionInterface = { placements: new Map(), clustersByKey: new Map() };
+import type { CategorizeInboxSessionViewInterface } from '../interface/categorize-inbox-session-view.interface';
 
 export const useCategorizeInboxSession = (
     { rows, context, isLoading }: CategorizeInboxDataInterface,
     hiddenTransactionIds: ReadonlySet<number>
-): CategorizeInboxViewInterface => {
-    const [session, setSession] = useState<CategorizeInboxSessionInterface | null>(null);
+): CategorizeInboxSessionViewInterface => {
+    const [session, setSession] = useState(() => categorizeInboxEngineService.startSession());
 
-    const clusters = categorizeInboxEngineService.buildClusters(rows, context);
-
-    if (!isDefined(session) && !isLoading) {
-        setSession(categorizeInboxEngineService.startSession(clusters));
-    }
-
-    const view = categorizeInboxEngineService.placeClusters(
-        clusters,
-        session ?? LOADING_SESSION,
+    const { items, remainingCount, placements, clustersByKey } = categorizeInboxEngineService.placeClusters(
+        categorizeInboxEngineService.buildClusters(rows, context),
+        session,
         hiddenTransactionIds,
         context.defaultInstrumentId
     );
+    const peakRowCount = Math.max(session.peakRowCount, new Set(rows.map(row => row.transactionId)).size);
+    const hasSessionChanged =
+        placements !== session.placements || clustersByKey !== session.clustersByKey || peakRowCount !== session.peakRowCount;
 
-    if (isDefined(session) && view.clustersByKey !== session.clustersByKey) {
-        setSession({ ...session, clustersByKey: view.clustersByKey });
+    if (!isLoading && hasSessionChanged) {
+        setSession({ placements, clustersByKey, peakRowCount });
     }
 
-    return view;
+    return { items, remainingCount, categorizedCount: Math.max(0, peakRowCount - remainingCount) };
 };

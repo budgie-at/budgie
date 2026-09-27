@@ -2,12 +2,11 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { tagRepository, transactionCategorizeInboxRepository } from '../../@generic/drizzle/db/db';
 import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { useTagsSelectorModal } from '../../tag/context/tags-selector-modal.context';
 import { UNTAGGED_TAG_ID_PARAM } from '../../transaction/constant/untagged-tag-id-param.constant';
+import { buildUncategorizedRouteParams } from '../../transaction/utils/build-uncategorized-route-params.util';
 import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
 import { categorizeInboxService } from '../service/categorize-inbox.service';
 
@@ -31,11 +30,10 @@ export const useCategorizeInboxTagStrategy = (): CategorizeInboxStrategyInterfac
         undo: assignments => categorizeInboxService.undo(CategorizeInboxLabelKindEnum.TAG, assignments),
         pickLabels: (description, suggestedLabelIds) => openTagsSelector({ description, initialTagIds: suggestedLabelIds }),
         buildRuleActions: tagIds => ({ categoryId: null, tagIds }),
-        buildListRouteParams: ({ types, date }) => ({
+        buildListRouteParams: filters => ({
+            ...buildUncategorizedRouteParams(filters, null),
             tagId: UNTAGGED_TAG_ID_PARAM,
-            ...(types?.length === 1 && { type: types[0] }),
-            ...(isDefined(date?.from) && { startDate: date.from.toISOString() }),
-            ...(isDefined(date?.to) && { endDate: date.to.toISOString() })
+            ...(filters.types?.length === 1 && { type: filters.types[0] })
         }),
         copy: {
             pageTitle: t`Add tags`,

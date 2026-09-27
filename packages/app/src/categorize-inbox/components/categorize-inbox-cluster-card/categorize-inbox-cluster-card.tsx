@@ -13,19 +13,18 @@ import type { CategorizeInboxClusterInterface } from '../../interface/categorize
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
-    readonly isExpanded: boolean;
 }
 
-export const CategorizeInboxClusterCard = ({ cluster, isExpanded }: Props) => (
+export const CategorizeInboxClusterCard = ({ cluster }: Props) => (
     <CategorizeInboxSwipeToAccept cluster={cluster}>
         <Card size="sm" className="gap-y-lg" {...testID(CategorizeInboxClusterCardSelector.Card, cluster.key)}>
-            <CategorizeInboxClusterSummary cluster={cluster} isExpanded={isExpanded} />
+            <CategorizeInboxClusterSummary cluster={cluster} />
 
             <View className="flex-row items-center gap-x-sm">
                 <CategorizeInboxSuggestionChips cluster={cluster} />
             </View>
 
-            {isExpanded ? <CategorizeInboxClusterRows cluster={cluster} /> : null}
+            <CategorizeInboxClusterRows cluster={cluster} />
         </Card>
     </CategorizeInboxSwipeToAccept>
 );

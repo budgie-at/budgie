@@ -1,12 +1,12 @@
 import { LanguageEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { CategorizeInboxListItemKindEnum } from '../enum/categorize-inbox-list-item-kind.enum';
 import { CategorizeInboxSectionEnum } from '../enum/categorize-inbox-section.enum';
 
+import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
 import type { CategorizeInboxBuildContextInterface } from '../interface/categorize-inbox-build-context.interface';
 import type { CategorizeInboxClusterInterface } from '../interface/categorize-inbox-cluster.interface';
 import type { CategorizeInboxScoreInterface } from '../interface/categorize-inbox-score.interface';
@@ -56,13 +56,6 @@ class CategorizeInboxEngineService {
     private static readonly RULE_WORD_PATTERN = /\p{L}{2,}/gu;
     private static readonly SECTION_ORDER = Object.values(CategorizeInboxSectionEnum);
 
-    @Log(
-        (evidence, defaultInstrumentId) => `enter evidenceCount=${evidence.length} defaultInstrumentId=${defaultInstrumentId}`,
-        (result, evidence, defaultInstrumentId) =>
-            `done evidenceCount=${evidence.length} defaultInstrumentId=${defaultInstrumentId} merchantKeyCount=${result.merchant.size}`,
-        (error, evidence, defaultInstrumentId) =>
-            `throw evidenceCount=${evidence.length} defaultInstrumentId=${defaultInstrumentId} error=${getErrorMessage(error)}`
-    )
     buildContext(evidence: LabelEvidenceRowInterface[], defaultInstrumentId: number): CategorizeInboxBuildContextInterface {
         const titledEvidence = evidence.filter(row => isNotEmptyString(row.title.trim()));
         const brandEvidence = titledEvidence.filter(row => isDefined(this.brandKey(row.title)));
@@ -77,13 +70,6 @@ class CategorizeInboxEngineService {
         };
     }
 
-    @Log(
-        (rows, context) => `enter rowCount=${rows.length} defaultInstrumentId=${context.defaultInstrumentId}`,
-        (result, rows, context) =>
-            `done rowCount=${rows.length} defaultInstrumentId=${context.defaultInstrumentId} clusterCount=${result.length}`,
-        (error, rows, context) =>
-            `throw rowCount=${rows.length} defaultInstrumentId=${context.defaultInstrumentId} error=${getErrorMessage(error)}`
-    )
     buildClusters(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxClusterInterface[] {
         const uniqueRows = [...new Map(rows.map(row => [row.transactionId, row])).values()];
         const merchantGroups = this.groupBy(uniqueRows, row => `${row.type}|${this.merchantKey(row.title)}`);
@@ -93,45 +79,55 @@ class CategorizeInboxEngineService {
             .sort((left, right) => this.compareClusters(left, right));
     }
 
-    @Log(
-        (clusters, session, hiddenTransactionIds, defaultInstrumentId) =>
-            `enter clusterCount=${clusters.length} placementCount=${session.placements.size} hiddenCount=${hiddenTransactionIds.size} defaultInstrumentId=${defaultInstrumentId}`,
-        (result, ...[clusters, session, hiddenTransactionIds, defaultInstrumentId]) =>
-            `done clusterCount=${clusters.length} placementCount=${session.placements.size} hiddenCount=${hiddenTransactionIds.size} defaultInstrumentId=${defaultInstrumentId} itemCount=${result.items.length} remainingCount=${result.remainingCount}`,
-        (error, ...[clusters, session, hiddenTransactionIds, defaultInstrumentId]) =>
-            `throw clusterCount=${clusters.length} placementCount=${session.placements.size} hiddenCount=${hiddenTransactionIds.size} defaultInstrumentId=${defaultInstrumentId} error=${getErrorMessage(error)}`
-    )
     placeClusters(
         clusters: readonly CategorizeInboxClusterInterface[],
         session: CategorizeInboxSessionInterface,
         hiddenTransactionIds: ReadonlySet<number>,
         defaultInstrumentId: number
     ): CategorizeInboxViewInterface {
-        const { placements, clustersByKey } = session;
-        const placementOrder = new Map([...placements.keys()].map((key, index) => [key, index]));
-        const placedClusters = clusters
+        const { clustersByKey } = session;
+        const visibleClusters = clusters
             .map(cluster => this.hideRows(cluster, hiddenTransactionIds, defaultInstrumentId))
-            .filter(isDefined)
+            .filter(isDefined);
+        const placements = this.placeNewClusters(visibleClusters, session.placements);
+        const placementOrder = new Map([...placements.keys()].map((key, index) => [key, index]));
+        const placedClusters = visibleClusters
             .map(cluster => this.reusePrevious(this.pinSection(cluster, placements), clustersByKey.get(cluster.key)))
-            .map((cluster, index) => ({ cluster, order: placementOrder.get(cluster.key) ?? placements.size + index }))
-            .sort((left, right) => left.order - right.order)
-            .map(({ cluster }) => cluster);
+            .sort((left, right) => (placementOrder.get(left.key) ?? 0) - (placementOrder.get(right.key) ?? 0));
         const isUnchanged =
             placedClusters.length === clustersByKey.size && placedClusters.every(cluster => clustersByKey.get(cluster.key) === cluster);
 
         return {
             items: this.buildListItems(placedClusters),
+            placements,
             clustersByKey: isUnchanged ? clustersByKey : new Map(placedClusters.map(cluster => [cluster.key, cluster])),
             remainingCount: this.sumValues(placedClusters.map(cluster => cluster.rows.length))
         };
+    }
+
+    buildAssignment(
+        source: Pick<CategorizeInboxClusterInterface, 'key' | 'displayTitle' | 'ruleConditionValue'>,
+        rows: CategorizeInboxRowInterface[],
+        labelId: number
+    ): CategorizeInboxAssignmentInterface | null {
+        return isNotEmptyArray(rows)
+            ? {
+                  clusterKey: source.key,
+                  displayTitle: source.displayTitle,
+                  labelId,
+                  transactionIds: rows.map(row => row.transactionId),
+                  rows,
+                  ruleConditionValue: source.ruleConditionValue
+              }
+            : null;
     }
 
     suggestLabelIds(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): number[] {
         return isNotEmptyArray(rows) ? this.scoreRows(rows, context).candidates.map(candidate => candidate.labelId) : [];
     }
 
-    startSession(clusters: readonly CategorizeInboxClusterInterface[]): CategorizeInboxSessionInterface {
-        return { placements: new Map(clusters.map(cluster => [cluster.key, cluster.section])), clustersByKey: new Map() };
+    startSession(): CategorizeInboxSessionInterface {
+        return { placements: new Map(), clustersByKey: new Map(), peakRowCount: 0 };
     }
 
     private buildCluster(
@@ -193,9 +189,23 @@ class CategorizeInboxEngineService {
         cluster: CategorizeInboxClusterInterface,
         placements: ReadonlyMap<string, CategorizeInboxSectionEnum>
     ): CategorizeInboxClusterInterface {
-        const section = placements.get(cluster.key) ?? this.resolveSection(false, cluster.rows.length);
+        const section = placements.get(cluster.key) ?? cluster.section;
 
         return { ...cluster, section, isConfident: section === CategorizeInboxSectionEnum.CONFIDENT };
+    }
+
+    private placeNewClusters(
+        clusters: readonly CategorizeInboxClusterInterface[],
+        placements: ReadonlyMap<string, CategorizeInboxSectionEnum>
+    ): ReadonlyMap<string, CategorizeInboxSectionEnum> {
+        const newClusters = clusters.filter(cluster => !placements.has(cluster.key));
+
+        return isNotEmptyArray(newClusters)
+            ? new Map([
+                  ...placements,
+                  ...newClusters.map((cluster): [string, CategorizeInboxSectionEnum] => [cluster.key, cluster.section])
+              ])
+            : placements;
     }
 
     private reusePrevious(
