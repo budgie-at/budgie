@@ -4,11 +4,12 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { useCategorizeInboxStrategy } from '../../context/categorize-inbox-strategy.context';
+import { CategorizeInboxFollowUpButton } from '../categorize-inbox-follow-up-button/categorize-inbox-follow-up-button';
 import { CategorizeInboxRuleButton } from '../categorize-inbox-rule-button/categorize-inbox-rule-button';
 
 import { CategorizeInboxUndoBarSelector } from './categorize-inbox-undo-bar.selector';
@@ -22,24 +23,24 @@ interface Props {
 
 export const CategorizeInboxUndoBar = ({ assignments, onUndo }: Props) => {
     const { t } = useLingui();
-    const { categoriesById } = useCategorizeInboxContext();
+    const { labelsById, copy } = useCategorizeInboxStrategy();
 
     const [firstAssignment] = assignments;
-    const groupCount = assignments.length;
-    const isSingleAssignment = groupCount === 1;
-    const category = isSingleAssignment ? (categoriesById.get(firstAssignment.categoryId) ?? null) : null;
-    const ruleAssignment = isSingleAssignment && isNotEmptyString(firstAssignment.ruleConditionValue) ? firstAssignment : null;
+    const groupCount = new Set(assignments.map(assignment => assignment.clusterKey)).size;
+    const isSingleGroup = groupCount === 1;
+    const labelIds = isSingleGroup ? [...new Set(assignments.map(assignment => assignment.labelId))] : [];
+    const labels = labelIds.map(labelId => labelsById.get(labelId)).filter(isDefined);
+    const firstLabel = labels.at(0);
+    const hasRule = isNotEmptyArray(labels) && isNotEmptyString(firstAssignment.ruleConditionValue);
 
-    const rowCount = assignments.reduce((total, assignment) => total + assignment.transactionIds.length, 0);
-    const { displayTitle } = firstAssignment;
-    const categoryTitle = category?.title ?? '';
-    const title = isDefined(category)
-        ? t`Categorized ${displayTitle} → ${categoryTitle}`
-        : t({ message: plural(rowCount, { one: 'Categorized # transaction', other: 'Categorized # transactions' }) });
-    const description = isDefined(category)
+    const rowCount = new Set(assignments.flatMap(assignment => assignment.transactionIds)).size;
+    const title = isDefined(firstLabel)
+        ? copy.assignedTo(firstAssignment.displayTitle, labels.map(label => label.title).join(', '))
+        : copy.assignedCount(rowCount);
+    const description = isDefined(firstLabel)
         ? t({ message: plural(rowCount, { one: '# transaction', other: '# transactions' }) })
         : t({ message: plural(groupCount, { one: '# group', other: '# groups' }) });
-    const icon = category?.icon ?? UserIconNameEnum.CheckCheck;
+    const icon = firstLabel?.icon ?? UserIconNameEnum.CheckCheck;
 
     return (
         <Animated.View
@@ -59,7 +60,9 @@ export const CategorizeInboxUndoBar = ({ assignments, onUndo }: Props) => {
                 </Text>
             </View>
 
-            {isDefined(ruleAssignment) ? <CategorizeInboxRuleButton assignment={ruleAssignment} /> : null}
+            {isSingleGroup ? <CategorizeInboxFollowUpButton assignment={firstAssignment} /> : null}
+
+            {hasRule ? <CategorizeInboxRuleButton ruleConditionValue={firstAssignment.ruleConditionValue} labelIds={labelIds} /> : null}
 
             <HapticPressable
                 onPress={onUndo}

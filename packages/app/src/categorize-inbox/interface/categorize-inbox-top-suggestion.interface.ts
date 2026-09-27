@@ -1,8 +1,8 @@
-import type { CategoryEntityInterface } from '@budgie/contracts';
+import type { CategorizeInboxLabelInterface } from './categorize-inbox-label.interface';
 import type { ViewProps } from 'react-native';
 
 export interface CategorizeInboxTopSuggestionInterface {
-    readonly category: Pick<CategoryEntityInterface, 'id' | 'title' | 'icon'>;
+    readonly label: CategorizeInboxLabelInterface;
     readonly accept: () => void;
     readonly accessibilityProps: Pick<ViewProps, 'accessibilityActions' | 'onAccessibilityAction'>;
 }

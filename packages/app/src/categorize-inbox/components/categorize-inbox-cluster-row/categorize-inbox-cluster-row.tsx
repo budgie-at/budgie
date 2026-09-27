@@ -8,6 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { useCategorizeInboxStrategy } from '../../context/categorize-inbox-strategy.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 
 import { CategorizeInboxClusterRowSelector } from './categorize-inbox-cluster-row.selector';
@@ -25,10 +26,11 @@ const rowVariants = cva('flex-row items-center gap-x-xs', {
 
 export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
     const { t } = useLingui();
-    const { excludedTransactionIds, formatDate, formatMicroAmount, toggleExcluded, pickRowCategory } = useCategorizeInboxContext();
+    const { copy } = useCategorizeInboxStrategy();
+    const { excludedTransactionIds, formatDate, formatMicroAmount, toggleExcluded, pickRowLabels } = useCategorizeInboxContext();
 
     const handleTogglePress = (): void => void toggleExcluded(row.transactionId);
-    const handlePickCategoryPress = (): void => void pickRowCategory(row);
+    const handlePickLabelsPress = (): void => void pickRowLabels(row);
 
     const isIncluded = !excludedTransactionIds.has(row.transactionId);
     const checkboxIcon = isIncluded ? UserIconNameEnum.SquareCheck : UserIconNameEnum.Square;
@@ -60,10 +62,10 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
             <Text className="text-primary text-sm font-medium">{formatMicroAmount(row.amount, row.instrumentSymbol)}</Text>
 
             <HapticPressable
-                onPress={handlePickCategoryPress}
+                onPress={handlePickLabelsPress}
                 className="h-11 w-11 items-center justify-center"
                 accessibilityRole="button"
-                accessibilityLabel={t`Pick a category for this transaction`}
+                accessibilityLabel={copy.pickRowLabel}
                 {...testID(CategorizeInboxClusterRowSelector.PickCategory, row.transactionId)}
             >
                 <Icon icon={UserIconNameEnum.EllipsisVertical} size={16} className="text-secondary-foreground" />

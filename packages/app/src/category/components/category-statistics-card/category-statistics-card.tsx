@@ -1,8 +1,10 @@
 /* jscpd:ignore-start */
-import { CategoryEntityInterface, TransactionFilterInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, TransactionFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
+
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -12,6 +14,8 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
+import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
 
 import { CategoryStatisticsCardSelector } from './category-statistics-card.selector';
 
@@ -37,15 +41,17 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
 
     /* jscpd:ignore-start */
     const handlePress = () => {
-        router.push({
-            pathname: '/analytics/transactions',
-            params: {
-                type: isIncome ? 'INCOME' : 'EXPENSE',
-                ...(category.id && { categoryId: String(category.id) }),
-                ...(filters.date?.from && { startDate: filters.date.from.toISOString() }),
-                ...(filters.date?.to && { endDate: filters.date.to.toISOString() })
-            }
-        });
+        const type = isIncome ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
+        const params = isPositiveNumber(category.id)
+            ? {
+                  type,
+                  categoryId: String(category.id),
+                  ...(filters.date?.from && { startDate: filters.date.from.toISOString() }),
+                  ...(filters.date?.to && { endDate: filters.date.to.toISOString() })
+              }
+            : buildUncategorizedRouteParams({ ...filters, types: [type] }, AnalyticsTransactionsModeEnum.CATEGORIZE);
+
+        router.push({ pathname: '/analytics/transactions', params });
     };
 
     return (

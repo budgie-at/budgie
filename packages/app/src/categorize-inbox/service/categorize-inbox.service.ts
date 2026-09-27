@@ -1,83 +1,66 @@
-import { CategorySourceEnum, transactionAsync } from '@budgie/contracts';
+import { CategorySourceEnum, TransactionUpdatedByEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { db, transactionCategorizeInboxRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
 
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
 import type { DB } from '@budgie/contracts';
 
 class CategorizeInboxService {
     @Log(
-        (transactionIds, categoryId) => `enter transactionCount=${transactionIds.length} categoryId=${categoryId}`,
-        (result, transactionIds, categoryId) =>
-            `done assignedCount=${result.length} transactionCount=${transactionIds.length} categoryId=${categoryId}`,
-        (error, transactionIds, categoryId) =>
-            `throw transactionCount=${transactionIds.length} categoryId=${categoryId} error=${getErrorMessage(error)}`
+        (labelKind, assignments) => `enter labelKind=${labelKind} assignmentCount=${assignments.length}`,
+        (result, labelKind, assignments) =>
+            `done labelKind=${labelKind} appliedCount=${result.length} assignmentCount=${assignments.length}`,
+        (error, labelKind, assignments) =>
+            `throw labelKind=${labelKind} assignmentCount=${assignments.length} error=${getErrorMessage(error)}`
     )
     @InvalidateDatabaseLiveQuery()
-    async assign(transactionIds: number[], categoryId: number): Promise<number[]> {
-        return transactionAsync(db, tx => this.applyChunk(transactionIds, categoryId, tx));
-    }
-
-    @Log(
-        assignments => `enter assignmentCount=${assignments.length}`,
-        (result, assignments) => `done appliedCount=${result.length} assignmentCount=${assignments.length}`,
-        (error, assignments) => `throw assignmentCount=${assignments.length} error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async assignMany(assignments: CategorizeInboxAssignmentInterface[]): Promise<CategorizeInboxAssignmentInterface[]> {
-        const groupedByCategoryId = this.groupAssignmentsByCategoryId(assignments);
-
+    async assign(
+        labelKind: CategorizeInboxLabelKindEnum,
+        assignments: CategorizeInboxAssignmentInterface[]
+    ): Promise<CategorizeInboxAssignmentInterface[]> {
         return transactionAsync(db, tx =>
-            [...groupedByCategoryId].reduce<Promise<CategorizeInboxAssignmentInterface[]>>(
-                async (previousAppliedPromise, [categoryId, categoryAssignments]) => {
-                    const previousApplied = await previousAppliedPromise;
-                    const transactionIds = categoryAssignments.flatMap(assignment => assignment.transactionIds);
-                    const updatedTransactionIds = await this.applyChunk(transactionIds, categoryId, tx);
-
-                    return [...previousApplied, ...this.narrowToUpdated(categoryAssignments, new Set(updatedTransactionIds))];
-                },
-                Promise.resolve([])
-            )
+            this.applyByLabel(assignments, (transactionIds, labelId) => this.applyLabel(labelKind, transactionIds, labelId, tx))
         );
     }
 
     @Log(
-        assignments => `enter assignmentCount=${assignments.length}`,
-        (...[, assignments]) => `done assignmentCount=${assignments.length}`,
-        (error, assignments) => `throw assignmentCount=${assignments.length} error=${getErrorMessage(error)}`
+        (labelKind, assignments) => `enter labelKind=${labelKind} assignmentCount=${assignments.length}`,
+        (...[, labelKind, assignments]) => `done labelKind=${labelKind} assignmentCount=${assignments.length}`,
+        (error, labelKind, assignments) =>
+            `throw labelKind=${labelKind} assignmentCount=${assignments.length} error=${getErrorMessage(error)}`
     )
     @InvalidateDatabaseLiveQuery()
-    async undo(assignments: CategorizeInboxAssignmentInterface[]): Promise<void> {
-        const groupedByCategoryId = this.groupAssignmentsByCategoryId(assignments);
-
-        await transactionAsync(db, async tx => {
-            await [...groupedByCategoryId].reduce<Promise<void>>(async (previousCategoryPromise, [categoryId, categoryAssignments]) => {
-                await previousCategoryPromise;
-                await transactionCategorizeInboxRepository.clearCategoryByTransactionIds(
-                    categoryAssignments.flatMap(assignment => assignment.transactionIds),
-                    categoryId,
-                    tx
-                );
-            }, Promise.resolve());
-        });
+    async undo(labelKind: CategorizeInboxLabelKindEnum, assignments: CategorizeInboxAssignmentInterface[]): Promise<void> {
+        await transactionAsync(db, tx =>
+            this.applyByLabel(assignments, (transactionIds, labelId) => this.revertLabel(labelKind, transactionIds, labelId, tx))
+        );
     }
 
     @Log(
-        (transactionIds, categoryId, tx) =>
-            `enter transactionCount=${transactionIds.length} categoryId=${categoryId} inTx=${String(isDefined(tx))}`,
-        (result, transactionIds, categoryId, tx) =>
-            `done updatedCount=${result.length} transactionCount=${transactionIds.length} categoryId=${categoryId} inTx=${String(isDefined(tx))}`,
-        (error, transactionIds, categoryId, tx) =>
-            `throw transactionCount=${transactionIds.length} categoryId=${categoryId} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+        (labelKind, transactionIds, labelId) => `enter labelKind=${labelKind} transactionCount=${transactionIds.length} labelId=${labelId}`,
+        (result, ...[labelKind, transactionIds, labelId]) =>
+            `done labelKind=${labelKind} appliedCount=${result.length} transactionCount=${transactionIds.length} labelId=${labelId}`,
+        (error, ...[labelKind, transactionIds, labelId]) =>
+            `throw labelKind=${labelKind} transactionCount=${transactionIds.length} labelId=${labelId} error=${getErrorMessage(error)}`
     )
-    private async applyChunk(transactionIds: number[], categoryId: number, tx: DB): Promise<number[]> {
+    private async applyLabel(
+        labelKind: CategorizeInboxLabelKindEnum,
+        transactionIds: number[],
+        labelId: number,
+        tx: DB
+    ): Promise<number[]> {
+        if (labelKind === CategorizeInboxLabelKindEnum.TAG) {
+            return this.touchUpdated(await transactionCategorizeInboxRepository.addTagByTransactionIds(transactionIds, labelId, tx), tx);
+        }
+
         const updatedTransactionIds = await transactionCategorizeInboxRepository.updateUncategorizedCategoryByTransactionIds(
             transactionIds,
-            categoryId,
+            labelId,
             CategorySourceEnum.USER,
             tx
         );
@@ -87,30 +70,65 @@ class CategorizeInboxService {
         return updatedTransactionIds;
     }
 
-    private narrowToUpdated(
+    private async revertLabel(
+        labelKind: CategorizeInboxLabelKindEnum,
+        transactionIds: number[],
+        labelId: number,
+        tx: DB
+    ): Promise<number[]> {
+        return labelKind === CategorizeInboxLabelKindEnum.TAG
+            ? this.touchUpdated(await transactionCategorizeInboxRepository.removeTagByTransactionIds(transactionIds, labelId, tx), tx)
+            : transactionCategorizeInboxRepository.clearCategoryByTransactionIds(transactionIds, labelId, tx);
+    }
+
+    private async touchUpdated(transactionIds: number[], tx: DB): Promise<number[]> {
+        await transactionRepository.touchUpdatedByIds(transactionIds, TransactionUpdatedByEnum.USER, tx);
+
+        return transactionIds;
+    }
+
+    private async applyByLabel(
         assignments: CategorizeInboxAssignmentInterface[],
-        updatedTransactionIds: ReadonlySet<number>
+        applyLabel: (transactionIds: number[], labelId: number) => Promise<number[]>
+    ): Promise<CategorizeInboxAssignmentInterface[]> {
+        return [...this.groupAssignmentsByLabelId(assignments)].reduce<Promise<CategorizeInboxAssignmentInterface[]>>(
+            async (previousAppliedPromise, [labelId, labelAssignments]) => {
+                const previousApplied = await previousAppliedPromise;
+                const appliedTransactionIds = await applyLabel(
+                    labelAssignments.flatMap(assignment => assignment.transactionIds),
+                    labelId
+                );
+
+                return [...previousApplied, ...this.narrowToApplied(labelAssignments, new Set(appliedTransactionIds))];
+            },
+            Promise.resolve([])
+        );
+    }
+
+    private narrowToApplied(
+        assignments: CategorizeInboxAssignmentInterface[],
+        appliedTransactionIds: ReadonlySet<number>
     ): CategorizeInboxAssignmentInterface[] {
         return assignments
             .map(assignment => ({
                 ...assignment,
-                transactionIds: assignment.transactionIds.filter(transactionId => updatedTransactionIds.has(transactionId))
+                transactionIds: assignment.transactionIds.filter(transactionId => appliedTransactionIds.has(transactionId))
             }))
             .filter(assignment => isNotEmptyArray(assignment.transactionIds));
     }
 
-    private groupAssignmentsByCategoryId(
+    private groupAssignmentsByLabelId(
         assignments: CategorizeInboxAssignmentInterface[]
     ): Map<number, CategorizeInboxAssignmentInterface[]> {
-        const groupedByCategoryId = new Map<number, CategorizeInboxAssignmentInterface[]>();
+        const groupedByLabelId = new Map<number, CategorizeInboxAssignmentInterface[]>();
 
         for (const assignment of assignments) {
-            const categoryAssignments = groupedByCategoryId.get(assignment.categoryId) ?? [];
-            categoryAssignments.push(assignment);
-            groupedByCategoryId.set(assignment.categoryId, categoryAssignments);
+            const labelAssignments = groupedByLabelId.get(assignment.labelId) ?? [];
+            labelAssignments.push(assignment);
+            groupedByLabelId.set(assignment.labelId, labelAssignments);
         }
 
-        return groupedByCategoryId;
+        return groupedByLabelId;
     }
 }
 

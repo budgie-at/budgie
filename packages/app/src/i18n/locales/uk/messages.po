@@ -69,7 +69,7 @@ msgstr "{availableCount, plural, one {# стовпець доступний} few
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# категорія} few {# категорії} many {# категорій} other {# категорії}}"
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
 msgstr "{categorizedCount, plural, one {# категоризовано за цей сеанс} few {# категоризовано за цей сеанс} many {# категоризовано за цей сеанс} other {# категоризовано за цей сеанс}}"
 
@@ -185,9 +185,13 @@ msgstr "{rowCount, plural, one {# транзакція} few {# транзакц�
 msgid "{rowCount, plural, one {Accept # suggestion} other {Accept # suggestions}}"
 msgstr "{rowCount, plural, one {Прийняти # пропозицію} few {Прийняти # пропозиції} many {Прийняти # пропозицій} other {Прийняти # пропозиції}}"
 
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "{rowCount, plural, one {Categorized # transaction} other {Categorized # transactions}}"
 msgstr "{rowCount, plural, one {Категоризовано # транзакцію} few {Категоризовано # транзакції} many {Категоризовано # транзакцій} other {Категоризовано # транзакції}}"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
+msgstr "{rowCount, plural, one {Тег додано до # транзакції} few {Тег додано до # транзакцій} many {Тег додано до # транзакцій} other {Тег додано до # транзакції}}"
 
 #: src/app/transaction-account-filter.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
@@ -225,9 +229,17 @@ msgstr "{spikeLabel}: разова витрата {spikeAmount}. Для оцін
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}}"
 
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
+msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
+
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-follow-up.hook.ts
+msgid "+ Tags"
+msgstr "+ Теги"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot.service.ts
@@ -439,6 +451,14 @@ msgstr "Додати мою першу витрату"
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Add Tag"
 msgstr "Додати тег"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Add tags"
+msgstr "Додати теги"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-follow-up.hook.ts
+msgid "Add tags to these transactions"
+msgstr "Додати теги до цих транзакцій"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -858,15 +878,15 @@ msgstr "Автоматична категоризація імпортів"
 msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
 msgstr "Категоризує транзакції, пропонує теги та розшифровує голосові нотатки просто на цьому пристрої. Один раз завантажує близько 2,5 ГБ моделей — краще через Wi-Fi."
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Categorize"
 msgstr "Категоризувати"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chip/categorize-inbox-suggestion-chip.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Categorize as {categoryTitle}"
 msgstr "Категоризувати як {categoryTitle}"
 
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Categorized {displayTitle} → {categoryTitle}"
 msgstr "Категоризовано: {displayTitle} → {categoryTitle}"
 
@@ -1112,7 +1132,7 @@ msgstr "Не вдалося архівувати рахунок"
 msgid "Could not attach debt"
 msgstr "Не вдалося прив’язати борг"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-writes.hook.ts
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Could not categorize transactions"
 msgstr "Не вдалося категоризувати транзакції"
 
@@ -1286,6 +1306,11 @@ msgstr "Не вдалося вибрати резервну копію бази 
 #: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not set up sync"
 msgstr "Не вдалося налаштувати синхронізацію"
+
+#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Could not tag transactions"
+msgstr "Не вдалося додати теги до транзакцій"
 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Could not unconsolidate transaction."
@@ -1860,9 +1885,13 @@ msgstr "Erste Bank"
 msgid "Every account from this bank is already linked."
 msgstr "Усі рахунки цього банку вже прив'язано."
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Every transaction has a category."
 msgstr "Кожна транзакція має категорію."
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Every transaction has a tag."
+msgstr "Кожна транзакція має тег."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
@@ -2586,9 +2615,13 @@ msgstr "Місячний підсумок"
 msgid "months left"
 msgstr "місяців залишилось"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "More categories"
 msgstr "Інші категорії"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "More tags"
+msgstr "Інші теги"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Most likely balance"
@@ -3050,7 +3083,7 @@ msgstr "на місяць"
 msgid "Permission to access contacts was denied."
 msgstr "Відмовлено в доступі до контактів."
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-row/categorize-inbox-cluster-row.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Pick a category for this transaction"
 msgstr "Вибрати категорію для цієї транзакції"
 
@@ -3065,6 +3098,10 @@ msgstr "Виберіть період. Наявні дані зберігают�
 #: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Pick any. We'll create the accounts for you — rename or remove them later."
 msgstr "Виберіть будь-які. Ми створимо рахунки за вас — перейменуйте або видаліть їх пізніше."
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Pick tags for this transaction"
+msgstr "Вибрати теги для цієї транзакції"
 
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -3536,7 +3573,7 @@ msgstr "Вибрати всі"
 msgid "Select all categories"
 msgstr "Оберіть усі категорії"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 #: src/transaction/components/split-entry-row/split-entry-row.tsx
 msgid "Select category"
 msgstr "Обрати категорію"
@@ -3580,6 +3617,10 @@ msgstr "Вибрати джерело"
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
 msgid "Select Tag"
 msgstr "Вибрати тег"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Select tags"
+msgstr "Вибрати теги"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Select the downloaded PDF file"
@@ -3893,9 +3934,17 @@ msgstr "Тег → {tagTitle}"
 msgid "Tag a transaction"
 msgstr "Позначити транзакцію"
 
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Tag as {tagTitle}"
+msgstr "Додати тег {tagTitle}"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Tag Name"
 msgstr "Назва тегу"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Tagged {displayTitle} → {tagTitle}"
+msgstr "Тег додано: {displayTitle} → {tagTitle}"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx

@@ -13,7 +13,7 @@ import type { CategorizeInboxScoreInterface } from '../interface/categorize-inbo
 import type { CategorizeInboxSessionInterface } from '../interface/categorize-inbox-session.interface';
 import type { CategorizeInboxViewInterface } from '../interface/categorize-inbox-view.interface';
 import type { CategorizeInboxListItemType } from '../type/categorize-inbox-list-item.type';
-import type { CategoryEvidenceRowInterface, CategorizeInboxRowInterface } from '@budgie/contracts';
+import type { LabelEvidenceRowInterface, CategorizeInboxRowInterface } from '@budgie/contracts';
 
 class CategorizeInboxEngineService {
     private static readonly LIMITS = { chipCount: 2, confidentShare: 0.85, confidentCount: 2, merchantTokenCount: 3 } as const;
@@ -63,7 +63,7 @@ class CategorizeInboxEngineService {
         (error, evidence, defaultInstrumentId) =>
             `throw evidenceCount=${evidence.length} defaultInstrumentId=${defaultInstrumentId} error=${getErrorMessage(error)}`
     )
-    buildContext(evidence: CategoryEvidenceRowInterface[], defaultInstrumentId: number): CategorizeInboxBuildContextInterface {
+    buildContext(evidence: LabelEvidenceRowInterface[], defaultInstrumentId: number): CategorizeInboxBuildContextInterface {
         const titledEvidence = evidence.filter(row => isNotEmptyString(row.title.trim()));
         const brandEvidence = titledEvidence.filter(row => isDefined(this.brandKey(row.title)));
         const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId));
@@ -124,6 +124,10 @@ class CategorizeInboxEngineService {
             clustersByKey: isUnchanged ? clustersByKey : new Map(placedClusters.map(cluster => [cluster.key, cluster])),
             remainingCount: this.sumValues(placedClusters.map(cluster => cluster.rows.length))
         };
+    }
+
+    suggestLabelIds(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): number[] {
+        return isNotEmptyArray(rows) ? this.scoreRows(rows, context).candidates.map(candidate => candidate.labelId) : [];
     }
 
     startSession(clusters: readonly CategorizeInboxClusterInterface[]): CategorizeInboxSessionInterface {
@@ -208,8 +212,7 @@ class CategorizeInboxEngineService {
             previous.displayTitle === next.displayTitle &&
             previous.ruleConditionValue === next.ruleConditionValue &&
             previous.totalBaseAmount === next.totalBaseAmount &&
-            previous.candidates.map(candidate => candidate.categoryId).join() ===
-                next.candidates.map(candidate => candidate.categoryId).join() &&
+            previous.candidates.map(candidate => candidate.labelId).join() === next.candidates.map(candidate => candidate.labelId).join() &&
             previous.rows.length === next.rows.length &&
             previous.rows.every((row, index) => this.isSameRow(row, next.rows[index]))
         );
@@ -256,25 +259,25 @@ class CategorizeInboxEngineService {
     private scoreRows(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxScoreInterface {
         const { LIMITS } = CategorizeInboxEngineService;
         const [{ type }] = rows;
-        const exactCounts = this.countCategories(context.exact, new Set(rows.map(row => `${type}|${row.title.toLowerCase()}`)));
-        const merchantCounts = this.countCategories(context.merchant, new Set(rows.map(row => `${type}|${this.merchantKey(row.title)}`)));
+        const exactCounts = this.countLabels(context.exact, new Set(rows.map(row => `${type}|${row.title.toLowerCase()}`)));
+        const merchantCounts = this.countLabels(context.merchant, new Set(rows.map(row => `${type}|${this.merchantKey(row.title)}`)));
         const brandKeys = new Set(rows.map(row => `${type}|${this.brandKey(row.title) ?? ''}`).filter(key => !key.endsWith('|')));
-        const brandCounts = this.countCategories(context.brand, brandKeys);
+        const brandCounts = this.countLabels(context.brand, brandKeys);
         const historyCounts = [exactCounts, merchantCounts].find(counts => isPositiveNumber(counts.size));
         const counts =
             historyCounts ??
             (isPositiveNumber(brandCounts.size)
                 ? brandCounts
-                : this.countCategories(
+                : this.countLabels(
                       context.mcc,
                       rows.map(row => `${type}|${row.mccCategoryId}`)
                   ));
         const total = this.sumValues(counts.values());
         const topCount = Math.max(0, ...counts.values());
         const candidates = isPositiveNumber(counts.size)
-            ? this.rankCategoryIds(counts)
+            ? this.rankLabelIds(counts)
                   .slice(0, LIMITS.chipCount)
-                  .map(categoryId => ({ categoryId, probability: (counts.get(categoryId) ?? 0) / (total + 1) }))
+                  .map(labelId => ({ labelId, probability: (counts.get(labelId) ?? 0) / (total + 1) }))
             : [];
 
         return {
@@ -284,12 +287,10 @@ class CategorizeInboxEngineService {
         };
     }
 
-    private countCategories(level: ReadonlyMap<string, CategoryEvidenceRowInterface[]>, keys: Iterable<string>): Map<number, number> {
+    private countLabels(level: ReadonlyMap<string, LabelEvidenceRowInterface[]>, keys: Iterable<string>): Map<number, number> {
         const counts = new Map<number, number>();
 
-        [...keys]
-            .flatMap(key => level.get(key) ?? [])
-            .forEach(row => counts.set(row.categoryId, (counts.get(row.categoryId) ?? 0) + row.count));
+        [...keys].flatMap(key => level.get(key) ?? []).forEach(row => counts.set(row.labelId, (counts.get(row.labelId) ?? 0) + row.count));
 
         return counts;
     }
@@ -384,8 +385,8 @@ class CategorizeInboxEngineService {
         return groups;
     }
 
-    private rankCategoryIds(counts: ReadonlyMap<number, number>): number[] {
-        return [...counts].sort(([leftId, left], [rightId, right]) => right - left || leftId - rightId).map(([categoryId]) => categoryId);
+    private rankLabelIds(counts: ReadonlyMap<number, number>): number[] {
+        return [...counts].sort(([leftId, left], [rightId, right]) => right - left || leftId - rightId).map(([labelId]) => labelId);
     }
 
     private mostFrequent(values: readonly string[]): string {

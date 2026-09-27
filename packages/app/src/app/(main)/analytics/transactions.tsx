@@ -64,6 +64,10 @@ const getAnalyticsMode = (value: string | null): AnalyticsTransactionsModeEnum |
         return AnalyticsTransactionsModeEnum.CATEGORIZE;
     }
 
+    if (value === AnalyticsTransactionsModeEnum.TAG_INBOX) {
+        return AnalyticsTransactionsModeEnum.TAG_INBOX;
+    }
+
     return null;
 };
 
@@ -77,6 +81,7 @@ export default function AnalyticsTransactionsPage() {
         readonly type?: string | string[];
         readonly types?: string | string[];
         readonly accountIds?: string | string[];
+        readonly categoryIds?: string | string[];
         readonly excludedCategoryIds?: string | string[];
         readonly tagIds?: string | string[];
         readonly amountFrom?: string | string[];
@@ -89,9 +94,12 @@ export default function AnalyticsTransactionsPage() {
     const tagId = getRouteParam(searchParams.tagId);
     const type = getTransactionType(getRouteParam(searchParams.type));
     const types = getTransactionTypes(searchParams.types);
-    const accountIds = getNumberParams(searchParams.accountIds);
-    const excludedCategoryIds = getNumberParams(searchParams.excludedCategoryIds);
-    const tagIds = getNumberParams(searchParams.tagIds);
+    const [accountIds, categoryIds, excludedCategoryIds, tagIds] = [
+        searchParams.accountIds,
+        searchParams.categoryIds,
+        searchParams.excludedCategoryIds,
+        searchParams.tagIds
+    ].map(getNumberParams);
     const amountFrom = getNumberParam(searchParams.amountFrom);
     const amountTo = getNumberParam(searchParams.amountTo);
     const params: AnalyticsTransactionsRouteParamsInterface = {
@@ -103,6 +111,7 @@ export default function AnalyticsTransactionsPage() {
         ...(isDefined(type) && { type }),
         ...(isNotEmptyArray(types) && { types }),
         ...(isNotEmptyArray(accountIds) && { accountIds }),
+        ...(isNotEmptyArray(categoryIds) && { categoryIds }),
         ...(isNotEmptyArray(excludedCategoryIds) && { excludedCategoryIds }),
         ...(isNotEmptyArray(tagIds) && { tagIds }),
         ...(isDefined(amountFrom) && { amountFrom }),

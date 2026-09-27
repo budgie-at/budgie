@@ -14,6 +14,7 @@ const buildNullableArrayParam = (values: readonly (number | string)[] | null): s
 export const buildUncategorizedRouteParams = (filters: TransactionFilterInterface, mode: AnalyticsTransactionsModeEnum) => {
     const types = buildNullableArrayParam(filters.types);
     const accountIds = buildNullableArrayParam(filters.accountIds);
+    const categoryIds = buildNullableArrayParam(filters.categoryIds);
     const tagIds = buildNullableArrayParam(filters.tagIds);
     const startDate = filters.date?.from?.toISOString() ?? null;
     const endDate = filters.date?.to?.toISOString() ?? null;
@@ -24,6 +25,7 @@ export const buildUncategorizedRouteParams = (filters: TransactionFilterInterfac
         mode,
         ...(isDefined(types) && { types }),
         ...(isDefined(accountIds) && { accountIds }),
+        ...(isDefined(categoryIds) && { categoryIds }),
         ...(isDefined(tagIds) && { tagIds }),
         ...(isDefined(startDate) && { startDate }),
         ...(isDefined(endDate) && { endDate }),

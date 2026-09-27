@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { and, desc, eq, inArray, isNotNull, isNull, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNotNull, isNull, ne, notExists, sql } from 'drizzle-orm';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -12,14 +12,17 @@ import { CategorySourceEnum } from '../../transaction-entry/enum/category-source
 import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transaction-entry-kind.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 import type { DB } from '../../@generic/type/db.type';
+import type { TransactionTagsEntityInterface } from '../../transaction-tags/entity/transaction-tags-entity.interface';
 import type { TransactionFilterInterface } from '../interface/transaction-filter.interface';
+import type { SQL } from 'drizzle-orm';
 
 export class TransactionCategorizeInboxRepository extends BaseTransactionFilterRepository {
-    private static readonly UPDATE_CHUNK_SIZE = 500;
+    private static readonly WRITE_CHUNK_SIZE = 500;
 
     @Log(
         (transactionIds, categoryId, categorySource, tx) =>
@@ -35,57 +38,123 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
         categorySource: CategorySourceEnum,
         tx?: DB
     ): Promise<number[]> {
-        if (isEmptyArray(transactionIds)) {
-            return [];
-        }
-
         const runner = tx ?? this.db;
-        const chunks = this.chunkTransactionIds(transactionIds);
 
-        const updatedTransactionIds = await chunks.reduce<Promise<Set<number>>>(async (previousUpdatedIdsPromise, chunk) => {
-            const previousUpdatedIds = await previousUpdatedIdsPromise;
-            const rows = await runner
+        return this.writeInChunks(transactionIds, chunk =>
+            runner
                 .update(TransactionEntryEntityTable)
                 .set({ categoryId, categorySource })
                 .where(and(this.buildAssignableEntryCondition(chunk), isNull(TransactionEntryEntityTable.categoryId)))
-                .returning({ transactionId: TransactionEntryEntityTable.transactionId });
-
-            for (const row of rows) {
-                previousUpdatedIds.add(row.transactionId);
-            }
-
-            return previousUpdatedIds;
-        }, Promise.resolve(new Set<number>()));
-
-        return [...updatedTransactionIds];
+                .returning({ transactionId: TransactionEntryEntityTable.transactionId })
+        );
     }
 
     @Log(
         (transactionIds, categoryId, tx) =>
             `enter transactionCount=${transactionIds.length} categoryId=${categoryId} inTx=${String(isDefined(tx))}`,
-        (...[, transactionIds, categoryId, tx]) =>
-            `done transactionCount=${transactionIds.length} categoryId=${categoryId} inTx=${String(isDefined(tx))}`,
+        (result, transactionIds, categoryId, tx) =>
+            `done clearedCount=${result.length} transactionCount=${transactionIds.length} categoryId=${categoryId} inTx=${String(isDefined(tx))}`,
         (error, transactionIds, categoryId, tx) =>
             `throw transactionCount=${transactionIds.length} categoryId=${categoryId} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
-    async clearCategoryByTransactionIds(transactionIds: number[], categoryId: number, tx?: DB): Promise<void> {
-        if (isEmptyArray(transactionIds)) {
-            return;
-        }
-
+    async clearCategoryByTransactionIds(transactionIds: number[], categoryId: number, tx?: DB): Promise<number[]> {
         const runner = tx ?? this.db;
-        const chunks = this.chunkTransactionIds(transactionIds);
 
-        await chunks.reduce<Promise<void>>(async (previousChunkPromise, chunk) => {
-            await previousChunkPromise;
-            await runner
+        return this.writeInChunks(transactionIds, chunk =>
+            runner
                 .update(TransactionEntryEntityTable)
                 .set({ categoryId: null, categorySource: CategorySourceEnum.USER })
-                .where(and(this.buildAssignableEntryCondition(chunk), eq(TransactionEntryEntityTable.categoryId, categoryId)));
-        }, Promise.resolve());
+                .where(and(this.buildAssignableEntryCondition(chunk), eq(TransactionEntryEntityTable.categoryId, categoryId)))
+                .returning({ transactionId: TransactionEntryEntityTable.transactionId })
+        );
+    }
+
+    @Log(
+        (transactionIds, tagId, tx) => `enter transactionCount=${transactionIds.length} tagId=${tagId} inTx=${String(isDefined(tx))}`,
+        (result, transactionIds, tagId, tx) =>
+            `done insertedCount=${result.length} transactionCount=${transactionIds.length} tagId=${tagId} inTx=${String(isDefined(tx))}`,
+        (error, transactionIds, tagId, tx) =>
+            `throw transactionCount=${transactionIds.length} tagId=${tagId} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async addTagByTransactionIds(transactionIds: number[], tagId: number, tx?: DB): Promise<number[]> {
+        const runner = tx ?? this.db;
+
+        return this.writeInChunks(transactionIds, chunk =>
+            runner
+                .insert(TransactionTagsEntityTable)
+                .values(chunk.map(transactionId => ({ transactionId, tagId, isPrimary: false })))
+                .onConflictDoNothing()
+                .returning({ transactionId: TransactionTagsEntityTable.transactionId })
+        );
+    }
+
+    @Log(
+        (transactionIds, tagId, tx) => `enter transactionCount=${transactionIds.length} tagId=${tagId} inTx=${String(isDefined(tx))}`,
+        (result, transactionIds, tagId, tx) =>
+            `done removedCount=${result.length} transactionCount=${transactionIds.length} tagId=${tagId} inTx=${String(isDefined(tx))}`,
+        (error, transactionIds, tagId, tx) =>
+            `throw transactionCount=${transactionIds.length} tagId=${tagId} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async removeTagByTransactionIds(transactionIds: number[], tagId: number, tx?: DB): Promise<number[]> {
+        const runner = tx ?? this.db;
+
+        return this.writeInChunks(transactionIds, chunk =>
+            runner
+                .delete(TransactionTagsEntityTable)
+                .where(and(eq(TransactionTagsEntityTable.tagId, tagId), inArray(TransactionTagsEntityTable.transactionId, chunk)))
+                .returning({ transactionId: TransactionTagsEntityTable.transactionId })
+        );
     }
 
     findUncategorizedRows(filters: TransactionFilterInterface) {
+        return this.selectInboxRows(
+            this.buildInboxRowsWhere(filters, [
+                isNull(TransactionEntryEntityTable.categoryId),
+                ...(isDefined(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
+            ])
+        );
+    }
+
+    findUntaggedRows(filters: TransactionFilterInterface) {
+        return this.selectInboxRows(
+            this.buildInboxRowsWhere(filters, [
+                notExists(
+                    this.db
+                        .select({ transactionId: TransactionTagsEntityTable.transactionId })
+                        .from(TransactionTagsEntityTable)
+                        .where(eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
+                ),
+                ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : [])
+            ])
+        );
+    }
+
+    findCategoryEvidence() {
+        return this.selectEvidence(sql<number>`${TransactionEntryEntityTable.categoryId}`.mapWith(Number))
+            .innerJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
+            .where(
+                this.buildEvidenceWhere([
+                    isNotNull(TransactionEntryEntityTable.categoryId),
+                    ne(TransactionEntryEntityTable.categorySource, CategorySourceEnum.MCC_DEFAULT),
+                    eq(CategoryEntityTable.isSystemCategory, false),
+                    isNull(CategoryEntityTable.deletedAt)
+                ])
+            )
+            .groupBy(...this.buildEvidenceGroupBy(), TransactionEntryEntityTable.categoryId);
+    }
+
+    findTagEvidence() {
+        return this.selectEvidence(sql<number>`${TransactionTagsEntityTable.tagId}`.mapWith(Number))
+            .innerJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
+            .where(this.buildEvidenceWhere([]))
+            .groupBy(...this.buildEvidenceGroupBy(), TransactionTagsEntityTable.tagId);
+    }
+
+    protected override buildAccountCondition(accountIds: number[] | null) {
+        return this.buildEntryAccountCondition(accountIds);
+    }
+
+    private selectInboxRows(where: SQL | undefined) {
         return this.db
             .select({
                 transactionId: TransactionEntityTable.id,
@@ -109,44 +178,54 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
             .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, TransactionEntryEntityTable.accountId))
             .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))
             .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
-            .where(this.buildUncategorizedRowsWhere(filters))
+            .where(where)
             .orderBy(desc(TransactionEntityTable.operatedAt));
     }
 
-    findLabeledEvidence() {
+    private selectEvidence(labelId: SQL<number>) {
         return this.db
             .select({
                 title: TransactionEntityTable.title,
                 type: TransactionEntityTable.type,
                 mccCategoryId: TransactionEntryEntityTable.mccCategoryId,
-                categoryId: sql<number>`${TransactionEntryEntityTable.categoryId}`.mapWith(Number),
+                labelId,
                 count: sql<number>`COUNT(*)`
             })
             .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
-            .innerJoin(CategoryEntityTable, eq(CategoryEntityTable.id, TransactionEntryEntityTable.categoryId))
-            .where(this.buildLabeledEvidenceWhere())
-            .groupBy(
-                TransactionEntityTable.title,
-                TransactionEntityTable.type,
-                TransactionEntryEntityTable.mccCategoryId,
-                TransactionEntryEntityTable.categoryId
-            );
+            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId));
     }
 
-    protected override buildAccountCondition(accountIds: number[] | null) {
-        return this.buildEntryAccountCondition(accountIds);
+    private buildEvidenceGroupBy() {
+        return [TransactionEntityTable.title, TransactionEntityTable.type, TransactionEntryEntityTable.mccCategoryId];
     }
 
-    private chunkTransactionIds(transactionIds: number[]): number[][] {
-        const { UPDATE_CHUNK_SIZE } = TransactionCategorizeInboxRepository;
-        const chunks: number[][] = [];
-
-        for (let start = 0; start < transactionIds.length; start += UPDATE_CHUNK_SIZE) {
-            chunks.push(transactionIds.slice(start, start + UPDATE_CHUNK_SIZE));
+    private async writeInChunks(
+        transactionIds: number[],
+        writeChunk: (chunk: number[]) => Promise<Pick<TransactionTagsEntityInterface, 'transactionId'>[]>
+    ): Promise<number[]> {
+        if (isEmptyArray(transactionIds)) {
+            return [];
         }
 
-        return chunks;
+        const { WRITE_CHUNK_SIZE } = TransactionCategorizeInboxRepository;
+        const chunks: number[][] = [];
+
+        for (let start = 0; start < transactionIds.length; start += WRITE_CHUNK_SIZE) {
+            chunks.push(transactionIds.slice(start, start + WRITE_CHUNK_SIZE));
+        }
+
+        const writtenTransactionIds = await chunks.reduce<Promise<Set<number>>>(async (previousWrittenIdsPromise, chunk) => {
+            const previousWrittenIds = await previousWrittenIdsPromise;
+            const rows = await writeChunk(chunk);
+
+            for (const row of rows) {
+                previousWrittenIds.add(row.transactionId);
+            }
+
+            return previousWrittenIds;
+        }, Promise.resolve(new Set<number>()));
+
+        return [...writtenTransactionIds];
     }
 
     private buildAssignableEntryCondition(transactionIds: number[]) {
@@ -162,17 +241,16 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
         ];
     }
 
-    private buildUncategorizedRowsWhere(filters: TransactionFilterInterface) {
-        const uncategorizedTypes = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE].filter(
+    private buildInboxRowsWhere(filters: TransactionFilterInterface, labelConditions: (SQL | undefined)[]) {
+        const inboxTypes = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE].filter(
             type => !isNotEmptyArray(filters.types) || filters.types.includes(type)
         );
         const conditions = [
-            isNull(TransactionEntryEntityTable.categoryId),
+            ...labelConditions,
             ...this.buildAssignableEntryConditions(),
-            inArray(TransactionEntityTable.type, uncategorizedTypes),
+            inArray(TransactionEntityTable.type, inboxTypes),
             this.buildVisibleTransactionCondition(),
             ...this.buildAccountCondition(filters.accountIds),
-            ...(isDefined(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : []),
             ...(isDefined(filters.date) ? [this.buildDateCondition(filters.date)] : []),
             ...(isDefined(filters.amount) ? [this.buildAmountCondition(filters.amount)] : [])
         ].filter(isDefined);
@@ -180,15 +258,12 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
         return and(...conditions);
     }
 
-    private buildLabeledEvidenceWhere() {
+    private buildEvidenceWhere(labelConditions: SQL[]) {
         return and(
-            isNotNull(TransactionEntryEntityTable.categoryId),
+            ...labelConditions,
             ...this.buildAssignableEntryConditions(),
-            ne(TransactionEntryEntityTable.categorySource, CategorySourceEnum.MCC_DEFAULT),
             this.buildVisibleTransactionCondition(),
-            inArray(TransactionEntityTable.type, [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME]),
-            eq(CategoryEntityTable.isSystemCategory, false),
-            isNull(CategoryEntityTable.deletedAt)
+            inArray(TransactionEntityTable.type, [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME])
         );
     }
 }

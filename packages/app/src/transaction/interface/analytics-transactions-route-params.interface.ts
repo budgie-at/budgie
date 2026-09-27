@@ -10,6 +10,7 @@ export interface AnalyticsTransactionsRouteParamsInterface {
     readonly type?: TransactionTypeEnum;
     readonly types?: TransactionTypeEnum[];
     readonly accountIds?: number[];
+    readonly categoryIds?: number[];
     readonly excludedCategoryIds?: number[];
     readonly tagIds?: number[];
     readonly amountFrom?: number;

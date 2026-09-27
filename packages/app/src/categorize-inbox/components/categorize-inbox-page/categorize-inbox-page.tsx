@@ -12,9 +12,8 @@ import { EmptyState } from '../../../@generic/component/empty-state/empty-state'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { Page } from '../../../@generic/component/page/page';
-import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 import { buildUncategorizedFilters } from '../../../transaction/utils/build-uncategorized-filters.util';
-import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
+import { useCategorizeInboxStrategy } from '../../context/categorize-inbox-strategy.context';
 import { CategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxActions } from '../../hook/use-categorize-inbox-actions.hook';
 import { useCategorizeInbox } from '../../hook/use-categorize-inbox.hook';
@@ -32,6 +31,7 @@ interface Props {
 export const CategorizeInboxPage = ({ params }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
+    const { copy, buildListRouteParams } = useCategorizeInboxStrategy();
 
     const filters = buildUncategorizedFilters(params);
     const inbox = useCategorizeInbox(filters);
@@ -39,16 +39,10 @@ export const CategorizeInboxPage = ({ params }: Props) => {
         useCategorizeInboxActions(inbox);
 
     const handleGoBack = (): void => void router.back();
-    const handleShowList = (): void =>
-        void router.push({
-            pathname: '/analytics/transactions',
-            params: buildUncategorizedRouteParams(filters, AnalyticsTransactionsModeEnum.UNCATEGORIZED)
-        });
+    const handleShowList = (): void => void router.push({ pathname: '/analytics/transactions', params: buildListRouteParams(filters) });
 
     const remainingText = t({ message: plural(remainingCount, { one: '# left', other: '# left' }) });
-    const emptyDescription = isPositiveNumber(categorizedCount)
-        ? t({ message: plural(categorizedCount, { one: '# categorized this session', other: '# categorized this session' }) })
-        : t`Every transaction has a category.`;
+    const emptyDescription = isPositiveNumber(categorizedCount) ? copy.doneThisSession(categorizedCount) : copy.emptyDescription;
     const hasPanel = !inbox.isLoading && (isNotEmptyArray(items) || isDefined(undoAssignments));
     const panel = hasPanel ? (
         <CategorizeInboxPanel
@@ -76,7 +70,7 @@ export const CategorizeInboxPage = ({ params }: Props) => {
                 header={
                     <PageHeader
                         size="md"
-                        title={t`Categorize`}
+                        title={copy.pageTitle}
                         description={remainingText}
                         onGoBack={handleGoBack}
                         right={

@@ -10,7 +10,6 @@ import { CategorizeInboxListItemKindEnum } from '../enum/categorize-inbox-list-i
 import { CategorizeInboxSectionEnum } from '../enum/categorize-inbox-section.enum';
 
 import { useCategorizeInboxAssign } from './use-categorize-inbox-assign.hook';
-import { useCategorizeInboxCategories } from './use-categorize-inbox-categories.hook';
 import { useCategorizeInboxSession } from './use-categorize-inbox-session.hook';
 import { useCategorizeInboxVisibility } from './use-categorize-inbox-visibility.hook';
 import { useCategorizeInboxWrites } from './use-categorize-inbox-writes.hook';
@@ -19,7 +18,6 @@ import type { CategorizeInboxActionsInterface } from '../interface/categorize-in
 import type { CategorizeInboxDataInterface } from '../interface/categorize-inbox-data.interface';
 
 export const useCategorizeInboxActions = (inbox: CategorizeInboxDataInterface): CategorizeInboxActionsInterface => {
-    const categoriesById = useCategorizeInboxCategories();
     const protectAmount = useProtectedAmountLabel();
     const { formatDayAndMonthAndYear } = useFormatDate();
     const { defaultInstrument } = useSettingsContext();
@@ -29,7 +27,7 @@ export const useCategorizeInboxActions = (inbox: CategorizeInboxDataInterface): 
     const visibility = useCategorizeInboxVisibility(inbox.rows);
     const { items, remainingCount } = useCategorizeInboxSession(inbox, visibility.hiddenTransactionIds);
     const { undoAssignments, assign, undo } = useCategorizeInboxWrites(visibility);
-    const { toClusterAssignment, assignCluster, assignRow, pickClusterCategory, pickRowCategory } = useCategorizeInboxAssign(
+    const { toClusterAssignment, assignCluster, assignRow, pickClusterLabels, pickRowLabels } = useCategorizeInboxAssign(
         assign,
         visibility.excludedTransactionIds
     );
@@ -44,7 +42,7 @@ export const useCategorizeInboxActions = (inbox: CategorizeInboxDataInterface): 
                 item.kind === CategorizeInboxListItemKindEnum.CLUSTER && item.cluster.section === CategorizeInboxSectionEnum.CONFIDENT;
             const topCandidate = isConfidentCluster ? item.cluster.candidates.at(0) : null;
 
-            return isConfidentCluster && isDefined(topCandidate) ? toClusterAssignment(item.cluster, topCandidate.categoryId) : null;
+            return isConfidentCluster && isDefined(topCandidate) ? toClusterAssignment(item.cluster, topCandidate.labelId) : null;
         })
         .filter(isDefined);
 
@@ -57,7 +55,6 @@ export const useCategorizeInboxActions = (inbox: CategorizeInboxDataInterface): 
         remainingCount,
         categorizedCount: Math.max(0, initialRowCount - remainingCount),
         contextValue: {
-            categoriesById,
             excludedTransactionIds: visibility.excludedTransactionIds,
             formatMicroAmount: (microAmount, instrumentSymbol) => protectAmount(convertFromMicroUnits(microAmount), instrumentSymbol),
             formatBaseMicroAmount: microAmount => protectAmount(convertFromMicroUnits(microAmount), defaultInstrument.symbol),
@@ -67,8 +64,8 @@ export const useCategorizeInboxActions = (inbox: CategorizeInboxDataInterface): 
             assign,
             assignCluster,
             assignRow,
-            pickClusterCategory,
-            pickRowCategory
+            pickClusterLabels,
+            pickRowLabels
         }
     };
 };

@@ -4,30 +4,26 @@ import { useLingui } from '@lingui/react/macro';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useRuleFormModal } from '../../../rule/context/rule-form-modal.context';
+import { useCategorizeInboxStrategy } from '../../context/categorize-inbox-strategy.context';
 import { CategorizeInboxUndoBarSelector } from '../categorize-inbox-undo-bar/categorize-inbox-undo-bar.selector';
 
-import type { CategorizeInboxAssignmentInterface } from '../../interface/categorize-inbox-assignment.interface';
-
 interface Props {
-    readonly assignment: Pick<CategorizeInboxAssignmentInterface, 'categoryId' | 'ruleConditionValue'>;
+    readonly ruleConditionValue: string;
+    readonly labelIds: number[];
 }
 
-export const CategorizeInboxRuleButton = ({ assignment }: Props) => {
+export const CategorizeInboxRuleButton = ({ ruleConditionValue, labelIds }: Props) => {
     const { t } = useLingui();
     const { openRuleForm } = useRuleFormModal();
+    const { buildRuleActions } = useCategorizeInboxStrategy();
 
     const handlePress = (): void =>
         void openRuleForm({
             prefillData: {
                 conditions: [
-                    {
-                        field: RuleConditionFieldEnum.TITLE,
-                        operator: RuleConditionOperatorEnum.CONTAINS,
-                        value: assignment.ruleConditionValue
-                    }
+                    { field: RuleConditionFieldEnum.TITLE, operator: RuleConditionOperatorEnum.CONTAINS, value: ruleConditionValue }
                 ],
-                categoryId: assignment.categoryId,
-                tagIds: []
+                ...buildRuleActions(labelIds)
             }
         });
 

@@ -4,10 +4,7 @@ import type { CategorizeInboxContextValueInterface } from './categorize-inbox-co
 
 export interface CategorizeInboxAssignInterface extends Pick<
     CategorizeInboxContextValueInterface,
-    'assignCluster' | 'assignRow' | 'pickClusterCategory' | 'pickRowCategory'
+    'assignCluster' | 'assignRow' | 'pickClusterLabels' | 'pickRowLabels'
 > {
-    readonly toClusterAssignment: (
-        cluster: CategorizeInboxClusterInterface,
-        categoryId: number
-    ) => CategorizeInboxAssignmentInterface | null;
+    readonly toClusterAssignment: (cluster: CategorizeInboxClusterInterface, labelId: number) => CategorizeInboxAssignmentInterface | null;
 }
