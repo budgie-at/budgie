@@ -1,13 +1,14 @@
-import { View } from 'react-native';
+import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { Button } from '../../../@generic/component/button/button';
 import { Footer } from '../../../@generic/component/footer/footer';
-import { CategorizeInboxPanelSlotEnum } from '../../enum/categorize-inbox-panel-slot.enum';
-import { useCategorizeInboxPanelSlot } from '../../hook/use-categorize-inbox-panel-slot.hook';
-import { CategorizeInboxAcceptAllButton } from '../categorize-inbox-accept-all-button/categorize-inbox-accept-all-button';
-import { CategorizeInboxPanelHint } from '../categorize-inbox-panel-hint/categorize-inbox-panel-hint';
-import { CategorizeInboxProgress } from '../categorize-inbox-progress/categorize-inbox-progress';
+import { AiProgressBar } from '../../../settings/components/ai-progress-bar/ai-progress-bar';
+import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxUndoBar } from '../categorize-inbox-undo-bar/categorize-inbox-undo-bar';
 
 import { CategorizeInboxPanelSelector } from './categorize-inbox-panel.selector';
@@ -20,27 +21,62 @@ interface Props {
     readonly categorizedCount: number;
     readonly acceptableAssignments: CategorizeInboxAssignmentInterface[];
     readonly lastWrite: CategorizeInboxLastWriteInterface | null;
-    readonly onUndo: () => void;
+    readonly onUndo: (lastWrite: CategorizeInboxLastWriteInterface) => void;
+    readonly onFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => Promise<void>;
 }
 
-export const CategorizeInboxPanel = ({ remainingCount, categorizedCount, acceptableAssignments, lastWrite, onUndo }: Props) => {
-    const slot = useCategorizeInboxPanelSlot(lastWrite, isNotEmptyArray(acceptableAssignments));
+export const CategorizeInboxPanel = ({ remainingCount, categorizedCount, acceptableAssignments, lastWrite, onUndo, onFollowUp }: Props) => {
+    const { t } = useLingui();
+    const { assign } = useCategorizeInboxContext();
 
-    const isLastAction = slot === CategorizeInboxPanelSlotEnum.LAST_ACTION && isDefined(lastWrite);
+    const handleAcceptAllPress = (): void => void assign(acceptableAssignments);
+
+    const totalCount = remainingCount + categorizedCount;
+    const progress = isPositiveNumber(totalCount) ? (categorizedCount / totalCount) * 100 : 0;
+    const progressText = [
+        t({ message: plural(remainingCount, { one: '# left', other: '# left' }) }),
+        t({ message: plural(categorizedCount, { one: '# done', other: '# done' }) })
+    ].join(' · ');
+    const accessibilityValue = { min: 0, max: totalCount, now: categorizedCount, text: progressText };
+    const rowCount = acceptableAssignments.reduce((total, assignment) => total + assignment.rows.length, 0);
+    const acceptAllText = t({ message: plural(rowCount, { one: 'Accept # suggestion', other: 'Accept # suggestions' }) });
+    const acceptAll = isNotEmptyArray(acceptableAssignments) ? (
+        <Button
+            variant="cta"
+            size="md"
+            leftIcon={UserIconNameEnum.CheckCheck}
+            content={acceptAllText}
+            onPress={handleAcceptAllPress}
+            testID={CategorizeInboxPanelSelector.AcceptAllButton}
+        />
+    ) : (
+        <Text className="text-center text-sm font-medium text-secondary-foreground" numberOfLines={1}>
+            <Trans>Tap a suggestion to accept it</Trans>
+        </Text>
+    );
 
     return (
         <Footer>
             <View className="gap-y-lg pb-md" testID={CategorizeInboxPanelSelector.Panel}>
-                <CategorizeInboxProgress remainingCount={remainingCount} categorizedCount={categorizedCount} />
+                <View
+                    className="gap-y-md"
+                    accessible
+                    accessibilityRole="progressbar"
+                    accessibilityValue={accessibilityValue}
+                    testID={CategorizeInboxPanelSelector.Progress}
+                >
+                    <Text className="text-xs font-medium text-secondary-foreground" numberOfLines={1}>
+                        {progressText}
+                    </Text>
+                    <AiProgressBar progress={progress} />
+                </View>
 
                 <View className="h-14 justify-center">
-                    {isLastAction ? (
-                        <CategorizeInboxUndoBar key={lastWrite.sequence} assignments={lastWrite.assignments} onUndo={onUndo} />
-                    ) : null}
-                    {slot === CategorizeInboxPanelSlotEnum.ACCEPT_ALL ? (
-                        <CategorizeInboxAcceptAllButton assignments={acceptableAssignments} />
-                    ) : null}
-                    {slot === CategorizeInboxPanelSlotEnum.HINT ? <CategorizeInboxPanelHint /> : null}
+                    {isDefined(lastWrite) ? (
+                        <CategorizeInboxUndoBar lastWrite={lastWrite} onUndo={onUndo} onFollowUp={onFollowUp} />
+                    ) : (
+                        acceptAll
+                    )}
                 </View>
             </View>
         </Footer>

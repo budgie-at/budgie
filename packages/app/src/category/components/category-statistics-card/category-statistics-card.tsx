@@ -35,7 +35,9 @@ export const CategoryStatisticsCard = ({ category, amount, percentage, variant, 
     const router = useRouter();
 
     const microAmount = convertFromMicroUnits(amount);
-    const cardTestID = CategoryStatisticsCardSelector.Card(category.title);
+    const cardTestID = isPositiveNumber(category.id)
+        ? CategoryStatisticsCardSelector.Card(category.title)
+        : CategoryStatisticsCardSelector.Uncategorized;
     const amountTestID = CategoryStatisticsCardSelector.Amount(category.title, amount);
     /* jscpd:ignore-end */
 
