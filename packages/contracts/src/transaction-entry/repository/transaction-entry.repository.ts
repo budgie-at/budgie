@@ -229,8 +229,8 @@ export class TransactionEntryRepository {
         return transactionEntry;
     }
 
-    async updateCategoryByTransactionId(
-        transactionId: number,
+    async updateCategoryByTransactionIds(
+        transactionIds: number[],
         categoryId: number,
         categorySource: CategorySourceEnum,
         tx?: DB
@@ -238,7 +238,7 @@ export class TransactionEntryRepository {
         await (tx ?? this.db)
             .update(TransactionEntryEntityTable)
             .set({ categoryId, categorySource })
-            .where(and(eq(TransactionEntryEntityTable.transactionId, transactionId), isNull(TransactionEntryEntityTable.deletedAt)));
+            .where(and(inArray(TransactionEntryEntityTable.transactionId, transactionIds), isNull(TransactionEntryEntityTable.deletedAt)));
     }
 
     async deleteByTransactionId(transactionId: number, tx?: DB): Promise<void> {

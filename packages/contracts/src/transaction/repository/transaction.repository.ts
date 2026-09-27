@@ -29,6 +29,7 @@ import type { TransactionCreateEntityInterface } from '../entity/transaction-cre
 import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
 import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
 import type { TransactionWithEntriesMccCategoryEntityInterface } from '../entity/transaction-with-entries-mcc-category-entity.interface';
+import type { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
 import type { ConsolidationSourceRowInterface } from '../interface/consolidation-source-row.interface';
 import type { SimilarTransactionMonthRowInterface } from '../interface/similar-transaction-month-row.interface';
@@ -437,6 +438,17 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 })
                 .where(inArray(TransactionEntityTable.id, chunk));
         }, Promise.resolve());
+    }
+
+    async touchUpdatedByIds(ids: number[], updatedBy: TransactionUpdatedByEnum, tx?: DB): Promise<void> {
+        if (!isNotEmptyArray(ids)) {
+            return;
+        }
+
+        await (tx ?? this.db)
+            .update(TransactionEntityTable)
+            .set({ updatedAt: new Date(), updatedBy })
+            .where(inArray(TransactionEntityTable.id, ids));
     }
 
     async touchUpdatedAt(id: number, tx?: DB): Promise<void> {
