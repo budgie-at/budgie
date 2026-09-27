@@ -1,7 +1,7 @@
 /* jscpd:ignore-start - Selector modal imports pattern */
 import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { use, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -13,6 +13,7 @@ import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
 import { useCategoryFormModal } from '../category/context/category-form-modal.context';
+import { CategorySelectorCategoriesContext } from '../category/context/category-selector-categories.context';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
 
@@ -36,7 +37,11 @@ export default function CategorySelectorModal() {
     const [, resolveCategorySelector, currentParams] = useCategorySelectorModal();
     const { backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
-    const { categories } = useSearchCategoriesQuery(search, true);
+    const warmCategories = use(CategorySelectorCategoriesContext);
+    const { categories: searchedCategories } = useSearchCategoriesQuery(search, true);
+
+    const categories = isNotEmptyString(search) ? searchedCategories : warmCategories;
+    const isLoading = !isDefined(categories);
 
     const { variant = 'primary', initialCategoryId = null, description, excludeCategoryIds = [] } = currentParams ?? {};
     const data = prepareCategoryData(categories, excludeCategoryIds, initialCategoryId);
@@ -72,6 +77,7 @@ export default function CategorySelectorModal() {
                 data={data}
                 variant={variant}
                 initialCategoryId={initialCategoryId}
+                isLoading={isLoading}
                 onSelect={resolveCategorySelector}
                 cardTestID={CategorySelectorModalSelector.Card}
             />
