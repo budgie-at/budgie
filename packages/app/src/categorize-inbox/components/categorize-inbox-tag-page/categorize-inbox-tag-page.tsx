@@ -29,7 +29,7 @@ export const CategorizeInboxTagPage = ({ params }: Props) => {
         labelsById,
         findRows: filters => transactionCategorizeInboxRepository.findUntaggedRows(filters),
         findEvidence: () => transactionCategorizeInboxRepository.findTagEvidence(),
-        pickLabels: (description, suggestedLabelIds) => openTagsSelector({ description, initialTagIds: suggestedLabelIds }),
+        pickLabels: (description, suggestedLabelIds) => openTagsSelector({ description, suggestedTagIds: suggestedLabelIds }),
         pickFollowUpTagIds: null,
         buildRuleActions: tagIds => ({ categoryId: null, tagIds }),
         buildListRouteParams: filters => ({

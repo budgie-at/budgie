@@ -44,7 +44,7 @@ export const CategorizeInboxCategoryPage = ({ params }: Props) => {
         );
 
         return openTagsSelector({
-            initialTagIds: categorizeInboxEngineService.suggestLabelIds(assignment.rows, tagContext),
+            suggestedTagIds: categorizeInboxEngineService.suggestLabelIds(assignment.rows, tagContext),
             description: assignment.displayTitle
         });
     };
