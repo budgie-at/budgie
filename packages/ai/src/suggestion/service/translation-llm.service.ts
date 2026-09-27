@@ -28,7 +28,10 @@ export class TranslationLlmService {
         (error, titleEn) => `throw titleEn="${titleEn}" error=${getErrorMessage(error)}`
     )
     private async generateTags(titleEn: string): Promise<string> {
-        const tags = await this.chat.generate(TAG_GENERATION_SYSTEM_PROMPT, titleEn, { temperature: TRANSLATION_TEMPERATURE });
+        const tags = await this.chat.generate(TAG_GENERATION_SYSTEM_PROMPT, titleEn, {
+            temperature: TRANSLATION_TEMPERATURE,
+            throwOnInterrupt: true
+        });
 
         return this.normalizeTags(tags);
     }
@@ -43,7 +46,10 @@ export class TranslationLlmService {
             return title.trim().toLowerCase();
         }
 
-        const titleEn = await this.chat.generate(TRANSLATION_SYSTEM_PROMPT, title, { temperature: TRANSLATION_TEMPERATURE });
+        const titleEn = await this.chat.generate(TRANSLATION_SYSTEM_PROMPT, title, {
+            temperature: TRANSLATION_TEMPERATURE,
+            throwOnInterrupt: true
+        });
 
         return titleEn.trim().toLowerCase();
     }
