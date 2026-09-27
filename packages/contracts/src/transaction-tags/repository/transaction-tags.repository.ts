@@ -37,6 +37,12 @@ export class TransactionTagsRepository {
         return [];
     }
 
+    async bulkCreateMissing(inputs: TransactionTagsCreateEntityInterface[], tx?: DB): Promise<void> {
+        if (isNotEmptyArray(inputs)) {
+            await (tx ?? this.db).insert(TransactionTagsEntityTable).values(inputs).onConflictDoNothing();
+        }
+    }
+
     async deleteByTransactionId(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db).delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, id));
     }
