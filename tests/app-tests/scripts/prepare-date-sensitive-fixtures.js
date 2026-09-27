@@ -774,10 +774,11 @@ const generateConsolidationFixture = () => {
         DELETE FROM transaction_entries;
         DELETE FROM transactions;
         DELETE FROM transaction_tags;
+        DELETE FROM tags;
         DELETE FROM account_balances;
         DELETE FROM accounts;
         DELETE FROM sqlite_sequence
-        WHERE name IN ('transactions', 'transaction_entries', 'accounts', 'account_balances', 'transaction_tags');
+        WHERE name IN ('transactions', 'transaction_entries', 'accounts', 'account_balances', 'transaction_tags', 'tags');
 
         INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, type, nature, instrument_id, external_source, iban, is_active, include_in_net_worth)
         VALUES
@@ -1098,7 +1099,13 @@ const generateDebtSettlementFixture = () => {
         { id: 11, type: 'EXPENSE', comment: 'E2E Borrowed Debt Attach Expense', accountId: transactionAccountId, amount: 2_000_000_000 },
         { id: 12, type: 'INCOME', comment: 'E2E Borrowed Debt Attach Income', accountId: transactionAccountId, amount: 109_000_000 },
         { id: 13, type: 'INCOME', comment: 'E2E Completed Debt Attach Income', accountId: transactionAccountId, amount: 300_000_000 },
-        { id: feeTransactionId, type: 'EXPENSE', comment: 'E2E Fee Debt Attach Expense', accountId: transactionAccountId, amount: 100_000_000 },
+        {
+            id: feeTransactionId,
+            type: 'EXPENSE',
+            comment: 'E2E Fee Debt Attach Expense',
+            accountId: transactionAccountId,
+            amount: 100_000_000
+        },
         { id: 15, type: 'EXPENSE', comment: 'E2E Cross Currency Debt Attach', accountId: transactionAccountId, amount: 100_000_000 }
     ];
     const getOperatedAt = transactionId => now - (transactionId - 7) * 60;
@@ -1213,19 +1220,30 @@ const generateCategorizeInboxFixture = () => {
     const now = Math.floor(Date.now() / 1000);
     const day = 24 * 60 * 60;
     const usdId = 1;
+    const groceriesCategoryId = 11;
     const restaurantsCategoryId = 12;
+    const coffeeTagId = 1;
+    const grocerTagId = 2;
 
     const historicalCoffeeAmountOne = 5_000_000;
     const historicalCoffeeAmountTwo = 6_000_000;
     const uncategorizedCoffeeAmountOne = 7_000_000;
     const uncategorizedCoffeeAmountTwo = 8_000_000;
     const uncategorizedFillerAmount = 9_000_000;
+    const taggedGrocerAmountOne = 3_000_000;
+    const taggedGrocerAmountTwo = 4_000_000;
+    const untaggedGrocerAmountOne = 2_000_000;
+    const untaggedGrocerAmountTwo = 1_000_000;
     const accountBalance = -(
         historicalCoffeeAmountOne +
         historicalCoffeeAmountTwo +
         uncategorizedCoffeeAmountOne +
         uncategorizedCoffeeAmountTwo +
-        uncategorizedFillerAmount
+        uncategorizedFillerAmount +
+        taggedGrocerAmountOne +
+        taggedGrocerAmountTwo +
+        untaggedGrocerAmountOne +
+        untaggedGrocerAmountTwo
     );
 
     copyFixture(sourcePath, targetPath);
@@ -1251,7 +1269,11 @@ const generateCategorizeInboxFixture = () => {
             (2, ${now - 15 * day}, ${now - 15 * day}, 'EXPENSE', 'E2E Confident Coffee', '', ${now - 15 * day}, 1.0, NULL),
             (3, ${now - 2 * day},  ${now - 2 * day},  'EXPENSE', 'E2E Confident Coffee', '', ${now - 2 * day},  1.0, NULL),
             (4, ${now - 1 * day},  ${now - 1 * day},  'EXPENSE', 'E2E Confident Coffee', '', ${now - 1 * day},  1.0, NULL),
-            (5, ${now - 3 * day},  ${now - 3 * day},  'EXPENSE', 'E2E Categorize Filler', '', ${now - 3 * day}, 1.0, NULL);
+            (5, ${now - 3 * day},  ${now - 3 * day},  'EXPENSE', 'E2E Categorize Filler', '', ${now - 3 * day}, 1.0, NULL),
+            (6, ${now - 25 * day}, ${now - 25 * day}, 'EXPENSE', 'E2E Tagged Grocer', '', ${now - 25 * day}, 1.0, NULL),
+            (7, ${now - 22 * day}, ${now - 22 * day}, 'EXPENSE', 'E2E Tagged Grocer', '', ${now - 22 * day}, 1.0, NULL),
+            (8, ${now - 5 * day},  ${now - 5 * day},  'EXPENSE', 'E2E Tagged Grocer', '', ${now - 5 * day},  1.0, NULL),
+            (9, ${now - 4 * day},  ${now - 4 * day},  'EXPENSE', 'E2E Tagged Grocer', '', ${now - 4 * day},  1.0, NULL);
 
         INSERT INTO transaction_entries (transaction_id, account_id, type, category_id, amount)
         VALUES
@@ -1259,7 +1281,23 @@ const generateCategorizeInboxFixture = () => {
             (2, 1, 'CREDIT', ${restaurantsCategoryId}, ${historicalCoffeeAmountTwo}),
             (3, 1, 'CREDIT', NULL, ${uncategorizedCoffeeAmountOne}),
             (4, 1, 'CREDIT', NULL, ${uncategorizedCoffeeAmountTwo}),
-            (5, 1, 'CREDIT', NULL, ${uncategorizedFillerAmount});
+            (5, 1, 'CREDIT', NULL, ${uncategorizedFillerAmount}),
+            (6, 1, 'CREDIT', ${groceriesCategoryId}, ${taggedGrocerAmountOne}),
+            (7, 1, 'CREDIT', ${groceriesCategoryId}, ${taggedGrocerAmountTwo}),
+            (8, 1, 'CREDIT', ${groceriesCategoryId}, ${untaggedGrocerAmountOne}),
+            (9, 1, 'CREDIT', ${groceriesCategoryId}, ${untaggedGrocerAmountTwo});
+
+        INSERT INTO tags (id, created_at, updated_at, title, title_search)
+        VALUES
+            (${coffeeTagId}, ${now}, ${now}, 'E2E Coffee Tag', 'e2e coffee tag'),
+            (${grocerTagId}, ${now}, ${now}, 'E2E Grocer Tag', 'e2e grocer tag');
+
+        INSERT INTO transaction_tags (transaction_id, tag_id)
+        VALUES
+            (1, ${coffeeTagId}),
+            (2, ${coffeeTagId}),
+            (6, ${grocerTagId}),
+            (7, ${grocerTagId});
 
         INSERT INTO account_balances (account_id, amount, created_at, updated_at)
         VALUES (1, ${accountBalance}, ${now}, ${now});

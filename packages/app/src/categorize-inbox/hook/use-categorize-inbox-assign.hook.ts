@@ -1,6 +1,6 @@
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { useCategorySelectorModal } from '../../category/context/category-selector-modal.context';
+import { useCategorizeInboxStrategy } from '../context/categorize-inbox-strategy.context';
 
 import type { CategorizeInboxAssignInterface } from '../interface/categorize-inbox-assign.interface';
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
@@ -11,59 +11,64 @@ export const useCategorizeInboxAssign = (
     assign: (assignments: CategorizeInboxAssignmentInterface[]) => void,
     excludedTransactionIds: ReadonlySet<number>
 ): CategorizeInboxAssignInterface => {
-    const [openCategorySelector] = useCategorySelectorModal();
+    const { pickLabels, followUp } = useCategorizeInboxStrategy();
 
-    const toClusterAssignment = (
-        cluster: CategorizeInboxClusterInterface,
-        categoryId: number
-    ): CategorizeInboxAssignmentInterface | null => {
-        const transactionIds = cluster.rows
-            .map(row => row.transactionId)
-            .filter(transactionId => !excludedTransactionIds.has(transactionId));
-
-        return isNotEmptyArray(transactionIds)
+    const toAssignment = (
+        source: Pick<CategorizeInboxClusterInterface, 'key' | 'displayTitle' | 'ruleConditionValue'>,
+        rows: CategorizeInboxRowInterface[],
+        labelId: number
+    ): CategorizeInboxAssignmentInterface | null =>
+        isNotEmptyArray(rows)
             ? {
-                  clusterKey: cluster.key,
-                  displayTitle: cluster.displayTitle,
-                  categoryId,
-                  transactionIds,
-                  ruleConditionValue: cluster.ruleConditionValue
+                  clusterKey: source.key,
+                  displayTitle: source.displayTitle,
+                  labelId,
+                  transactionIds: rows.map(row => row.transactionId),
+                  ruleConditionValue: source.ruleConditionValue,
+                  followUpLabelIds: followUp?.suggestLabelIds(rows) ?? []
               }
             : null;
-    };
 
-    const handleAssignCluster = (cluster: CategorizeInboxClusterInterface, categoryId: number): void => {
-        const assignment = toClusterAssignment(cluster, categoryId);
+    const toClusterAssignment = (cluster: CategorizeInboxClusterInterface, labelId: number): CategorizeInboxAssignmentInterface | null =>
+        toAssignment(
+            cluster,
+            cluster.rows.filter(row => !excludedTransactionIds.has(row.transactionId)),
+            labelId
+        );
 
-        if (isDefined(assignment)) {
-            assign([assignment]);
+    const toRowAssignment = (row: CategorizeInboxRowInterface, labelId: number): CategorizeInboxAssignmentInterface | null =>
+        toAssignment({ key: String(row.transactionId), displayTitle: row.title, ruleConditionValue: '' }, [row], labelId);
+
+    const assignLabels = (labelIds: number[], toLabelAssignment: (labelId: number) => CategorizeInboxAssignmentInterface | null): void => {
+        const assignments = labelIds.map(toLabelAssignment).filter(isDefined);
+
+        if (isNotEmptyArray(assignments)) {
+            assign(assignments);
         }
     };
 
-    const handleAssignRow = (row: CategorizeInboxRowInterface, categoryId: number): void =>
-        void assign([
-            {
-                clusterKey: String(row.transactionId),
-                displayTitle: row.title,
-                categoryId,
-                transactionIds: [row.transactionId],
-                ruleConditionValue: ''
-            }
-        ]);
+    const handleAssignCluster = (cluster: CategorizeInboxClusterInterface, labelId: number): void =>
+        void assignLabels([labelId], clusterLabelId => toClusterAssignment(cluster, clusterLabelId));
 
-    const handlePickClusterCategory = async (cluster: CategorizeInboxClusterInterface): Promise<void> => {
-        const categoryId = await openCategorySelector({ description: cluster.displayTitle });
+    const handleAssignRow = (row: CategorizeInboxRowInterface, labelId: number): void =>
+        void assignLabels([labelId], rowLabelId => toRowAssignment(row, rowLabelId));
 
-        if (isDefined(categoryId)) {
-            handleAssignCluster(cluster, categoryId);
+    const handlePickClusterLabels = async (cluster: CategorizeInboxClusterInterface): Promise<void> => {
+        const labelIds = await pickLabels(
+            cluster.displayTitle,
+            cluster.candidates.map(candidate => candidate.labelId)
+        );
+
+        if (isDefined(labelIds)) {
+            assignLabels(labelIds, labelId => toClusterAssignment(cluster, labelId));
         }
     };
 
-    const handlePickRowCategory = async (row: CategorizeInboxRowInterface): Promise<void> => {
-        const categoryId = await openCategorySelector({ description: row.title });
+    const handlePickRowLabels = async (row: CategorizeInboxRowInterface): Promise<void> => {
+        const labelIds = await pickLabels(row.title, []);
 
-        if (isDefined(categoryId)) {
-            handleAssignRow(row, categoryId);
+        if (isDefined(labelIds)) {
+            assignLabels(labelIds, labelId => toRowAssignment(row, labelId));
         }
     };
 
@@ -71,7 +76,7 @@ export const useCategorizeInboxAssign = (
         toClusterAssignment,
         assignCluster: handleAssignCluster,
         assignRow: handleAssignRow,
-        pickClusterCategory: handlePickClusterCategory,
-        pickRowCategory: handlePickRowCategory
+        pickClusterLabels: handlePickClusterLabels,
+        pickRowLabels: handlePickRowLabels
     };
 };

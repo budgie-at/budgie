@@ -1,5 +1,5 @@
 /* jscpd:ignore-start */
-import { TagEntityInterface, TransactionFilterInterface } from '@budgie/contracts';
+import { TagEntityInterface, TransactionFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -13,6 +13,8 @@ import { ColorPaletteVariant } from '../../../@generic/type/color-palette-varian
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
+import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
+import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
 
 import { TagStatisticsCardSelector } from './tag-statistics-card.selector';
 
@@ -38,16 +40,17 @@ export const TagStatisticsCard = ({ tag, amount, percentage, variant, filters, i
 
     /* jscpd:ignore-start */
     const handlePress = () => {
-        const tagIdParam = isDefined(tag.id) ? String(tag.id) : 'untagged';
-        router.push({
-            pathname: '/analytics/transactions',
-            params: {
-                type: isIncome ? 'INCOME' : 'EXPENSE',
-                tagId: tagIdParam,
-                ...(filters.date?.from && { startDate: filters.date.from.toISOString() }),
-                ...(filters.date?.to && { endDate: filters.date.to.toISOString() })
-            }
-        });
+        const type = isIncome ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
+        const params = isDefined(tag.id)
+            ? {
+                  type,
+                  tagId: String(tag.id),
+                  ...(filters.date?.from && { startDate: filters.date.from.toISOString() }),
+                  ...(filters.date?.to && { endDate: filters.date.to.toISOString() })
+              }
+            : buildUncategorizedRouteParams({ ...filters, types: [type] }, AnalyticsTransactionsModeEnum.TAG_INBOX);
+
+        router.push({ pathname: '/analytics/transactions', params });
     };
 
     return (

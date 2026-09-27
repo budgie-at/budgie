@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { cn } from 'cn';
 
 import { isDefined } from '@rnw-community/shared';
@@ -10,6 +9,7 @@ import { testID } from '../../../@generic/utils/test-id.util';
 import { SuggestionPillContent } from '../../../transaction/components/suggestion-pill-content/suggestion-pill-content';
 import { categorizeInboxChipVariants } from '../../constant/categorize-inbox-chip-variants.constant';
 import { CATEGORIZE_INBOX_RAIL_HIT_SLOP } from '../../constant/categorize-inbox-rail-hit-slop.constant';
+import { useCategorizeInboxStrategy } from '../../context/categorize-inbox-strategy.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 
 import { CategorizeInboxSuggestionChipSelector } from './categorize-inbox-suggestion-chip.selector';
@@ -25,22 +25,20 @@ interface Props {
 }
 
 export const CategorizeInboxSuggestionChip = ({ cluster, candidate, index }: Props) => {
-    const { t } = useLingui();
-    const { categoriesById, assignCluster } = useCategorizeInboxContext();
+    const { labelsById, copy } = useCategorizeInboxStrategy();
+    const { assignCluster } = useCategorizeInboxContext();
 
-    const handlePress = (): void => void assignCluster(cluster, candidate.categoryId);
+    const handlePress = (): void => void assignCluster(cluster, candidate.labelId);
 
-    const category = categoriesById.get(candidate.categoryId);
+    const label = labelsById.get(candidate.labelId);
     const isTopCandidate = index === 0;
     const isConfident = cluster.isConfident && isTopCandidate;
     const topVariant: ColorPaletteVariant = isConfident ? 'positive' : 'ghost';
     const variant: ColorPaletteVariant = isTopCandidate ? topVariant : 'primary';
 
-    if (!isDefined(category)) {
+    if (!isDefined(label)) {
         return null;
     }
-
-    const categoryTitle = category.title;
 
     return (
         <HapticPressable
@@ -48,10 +46,10 @@ export const CategorizeInboxSuggestionChip = ({ cluster, candidate, index }: Pro
             hitSlop={CATEGORIZE_INBOX_RAIL_HIT_SLOP}
             className={cn(categorizeInboxChipVariants({ variant }), 'shrink')}
             accessibilityRole="button"
-            accessibilityLabel={t`Categorize as ${categoryTitle}`}
+            accessibilityLabel={copy.assignAs(label.title)}
             {...testID(CategorizeInboxSuggestionChipSelector.Chip, cluster.key, index)}
         >
-            <SuggestionPillContent icon={category.icon} title={categoryTitle} />
+            <SuggestionPillContent icon={label.icon} title={label.title} />
             {isConfident ? <Icon icon={UserIconNameEnum.Check} size={14} className="text-positive-foreground" /> : null}
         </HapticPressable>
     );

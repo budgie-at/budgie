@@ -1,9 +1,9 @@
-import { CategoryEvidenceRowInterface } from '@budgie/contracts';
+import { LabelEvidenceRowInterface } from '@budgie/contracts';
 
 export interface CategorizeInboxBuildContextInterface {
-    readonly exact: ReadonlyMap<string, CategoryEvidenceRowInterface[]>;
-    readonly merchant: ReadonlyMap<string, CategoryEvidenceRowInterface[]>;
-    readonly brand: ReadonlyMap<string, CategoryEvidenceRowInterface[]>;
-    readonly mcc: ReadonlyMap<string, CategoryEvidenceRowInterface[]>;
+    readonly exact: ReadonlyMap<string, LabelEvidenceRowInterface[]>;
+    readonly merchant: ReadonlyMap<string, LabelEvidenceRowInterface[]>;
+    readonly brand: ReadonlyMap<string, LabelEvidenceRowInterface[]>;
+    readonly mcc: ReadonlyMap<string, LabelEvidenceRowInterface[]>;
     readonly defaultInstrumentId: number;
 }

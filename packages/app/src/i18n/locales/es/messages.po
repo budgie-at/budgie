@@ -69,7 +69,7 @@ msgstr "{availableCount, plural, one {# columna disponible} other {# columnas di
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# categoría} other {# categorías}}"
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
 msgstr "{categorizedCount, plural, one {# categorizada en esta sesión} other {# categorizadas en esta sesión}}"
 
@@ -185,9 +185,13 @@ msgstr "{rowCount, plural, one {# transacción} other {# transacciones}}"
 msgid "{rowCount, plural, one {Accept # suggestion} other {Accept # suggestions}}"
 msgstr "{rowCount, plural, one {Aceptar # sugerencia} other {Aceptar # sugerencias}}"
 
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "{rowCount, plural, one {Categorized # transaction} other {Categorized # transactions}}"
 msgstr "{rowCount, plural, one {# transacción categorizada} other {# transacciones categorizadas}}"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
+msgstr "{rowCount, plural, one {# transacción etiquetada} other {# transacciones etiquetadas}}"
 
 #: src/app/transaction-account-filter.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
@@ -225,9 +229,17 @@ msgstr "{spikeLabel} tuvo un gasto puntual de {spikeAmount}. La estimación usa 
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# elemento} other {# elementos}}"
 
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
+msgstr "{taggedCount, plural, one {# etiquetada en esta sesión} other {# etiquetadas en esta sesión}}"
+
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transacción} other {# transacciones}}"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-follow-up.hook.ts
+msgid "+ Tags"
+msgstr "+ Etiquetas"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot.service.ts
@@ -439,6 +451,14 @@ msgstr "Agregar mi primer gasto"
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Add Tag"
 msgstr "Añadir etiqueta"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Add tags"
+msgstr "Añadir etiquetas"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-follow-up.hook.ts
+msgid "Add tags to these transactions"
+msgstr "Añadir etiquetas a estas transacciones"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -858,15 +878,15 @@ msgstr "Categorizar importaciones automáticamente"
 msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
 msgstr "Categoriza transacciones, sugiere etiquetas y transcribe notas de voz en este dispositivo. Descarga unos 2,5 GB de modelos una sola vez: mejor con Wi-Fi."
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Categorize"
 msgstr "Categorizar"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chip/categorize-inbox-suggestion-chip.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Categorize as {categoryTitle}"
 msgstr "Categorizar como {categoryTitle}"
 
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Categorized {displayTitle} → {categoryTitle}"
 msgstr "Categorizado: {displayTitle} → {categoryTitle}"
 
@@ -1112,7 +1132,7 @@ msgstr "No se pudo archivar la cuenta"
 msgid "Could not attach debt"
 msgstr "No se pudo vincular la deuda"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-writes.hook.ts
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Could not categorize transactions"
 msgstr "No se pudieron categorizar las transacciones"
 
@@ -1286,6 +1306,11 @@ msgstr "No se pudo seleccionar la copia de seguridad de la base de datos"
 #: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not set up sync"
 msgstr "No se pudo configurar la sincronización"
+
+#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Could not tag transactions"
+msgstr "No se pudieron etiquetar las transacciones"
 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Could not unconsolidate transaction."
@@ -1860,9 +1885,13 @@ msgstr "Erste Bank"
 msgid "Every account from this bank is already linked."
 msgstr "Todas las cuentas de este banco ya están vinculadas."
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Every transaction has a category."
 msgstr "Cada transacción tiene una categoría."
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Every transaction has a tag."
+msgstr "Cada transacción tiene una etiqueta."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
@@ -2586,9 +2615,13 @@ msgstr "Total mensual"
 msgid "months left"
 msgstr "meses restantes"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "More categories"
 msgstr "Más categorías"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "More tags"
+msgstr "Más etiquetas"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Most likely balance"
@@ -3050,7 +3083,7 @@ msgstr "al mes"
 msgid "Permission to access contacts was denied."
 msgstr "Se denegó el permiso para acceder a los contactos."
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-row/categorize-inbox-cluster-row.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 msgid "Pick a category for this transaction"
 msgstr "Elegir una categoría para esta transacción"
 
@@ -3065,6 +3098,10 @@ msgstr "Elige un periodo. Los datos existentes se conservan."
 #: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Pick any. We'll create the accounts for you — rename or remove them later."
 msgstr "Elige los que quieras. Crearemos las cuentas por ti — podrás renombrarlas o eliminarlas después."
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Pick tags for this transaction"
+msgstr "Elegir etiquetas para esta transacción"
 
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -3536,7 +3573,7 @@ msgstr "Seleccionar todo"
 msgid "Select all categories"
 msgstr "Seleccionar todas las categorías"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-category-strategy.hook.ts
 #: src/transaction/components/split-entry-row/split-entry-row.tsx
 msgid "Select category"
 msgstr "Seleccionar categoría"
@@ -3580,6 +3617,10 @@ msgstr "Seleccionar fuente"
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
 msgid "Select Tag"
 msgstr "Seleccionar etiqueta"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Select tags"
+msgstr "Elegir etiquetas"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Select the downloaded PDF file"
@@ -3893,9 +3934,17 @@ msgstr "Etiqueta → {tagTitle}"
 msgid "Tag a transaction"
 msgstr "Etiquetar una transacción"
 
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Tag as {tagTitle}"
+msgstr "Etiquetar como {tagTitle}"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-tag-strategy.hook.ts
+msgid "Tagged {displayTitle} → {tagTitle}"
+msgstr "Etiquetado: {displayTitle} → {tagTitle}"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx

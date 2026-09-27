@@ -1,10 +1,9 @@
-import { CategoryEntityInterface, CategorizeInboxRowInterface } from '@budgie/contracts';
+import { CategorizeInboxRowInterface } from '@budgie/contracts';
 
 import { CategorizeInboxAssignmentInterface } from './categorize-inbox-assignment.interface';
 import { CategorizeInboxClusterInterface } from './categorize-inbox-cluster.interface';
 
 export interface CategorizeInboxContextValueInterface {
-    readonly categoriesById: ReadonlyMap<number, Pick<CategoryEntityInterface, 'id' | 'title' | 'icon'>>;
     readonly excludedTransactionIds: ReadonlySet<number>;
     readonly formatMicroAmount: (microAmount: number, instrumentSymbol: string) => string;
     readonly formatBaseMicroAmount: (microAmount: number) => string;
@@ -12,8 +11,8 @@ export interface CategorizeInboxContextValueInterface {
     readonly toggleExpanded: (clusterKey: string) => void;
     readonly toggleExcluded: (transactionId: number) => void;
     readonly assign: (assignments: CategorizeInboxAssignmentInterface[]) => void;
-    readonly assignCluster: (cluster: CategorizeInboxClusterInterface, categoryId: number) => void;
-    readonly assignRow: (row: CategorizeInboxRowInterface, categoryId: number) => void;
-    readonly pickClusterCategory: (cluster: CategorizeInboxClusterInterface) => Promise<void>;
-    readonly pickRowCategory: (row: CategorizeInboxRowInterface) => Promise<void>;
+    readonly assignCluster: (cluster: CategorizeInboxClusterInterface, labelId: number) => void;
+    readonly assignRow: (row: CategorizeInboxRowInterface, labelId: number) => void;
+    readonly pickClusterLabels: (cluster: CategorizeInboxClusterInterface) => Promise<void>;
+    readonly pickRowLabels: (row: CategorizeInboxRowInterface) => Promise<void>;
 }

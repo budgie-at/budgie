@@ -1,4 +1,4 @@
 export interface CategorizeInboxCandidateInterface {
-    readonly categoryId: number;
+    readonly labelId: number;
     readonly probability: number;
 }

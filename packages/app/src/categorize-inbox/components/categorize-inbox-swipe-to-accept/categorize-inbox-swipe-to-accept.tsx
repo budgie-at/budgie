@@ -72,7 +72,7 @@ export const CategorizeInboxSwipeToAccept = ({ cluster, children }: Props) => {
     const acceptAction =
         isSwiping && isDefined(topSuggestion) ? (
             <View className="absolute inset-0">
-                <CategorizeInboxSwipeAcceptAction clusterKey={cluster.key} translation={translation} category={topSuggestion.category} />
+                <CategorizeInboxSwipeAcceptAction clusterKey={cluster.key} translation={translation} label={topSuggestion.label} />
             </View>
         ) : null;
 

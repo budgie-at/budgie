@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
+import { UNTAGGED_TAG_ID_PARAM } from '../../constant/untagged-tag-id-param.constant';
 import { AnalyticsTransactionsModeEnum } from '../../enum/analytics-transactions-mode.enum';
 import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filter-page-header-mode.enum';
 import { useGetStatisticsTransactionsQuery } from '../../query/use-get-statistics-transactions.query';
@@ -12,9 +13,7 @@ import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../interface/analytics-transactions-route-params.interface';
 
-const UNTAGGED_PARAM = 'untagged';
-
-const isUntaggedNav = (params: AnalyticsTransactionsRouteParamsInterface): boolean => params.tagId === UNTAGGED_PARAM;
+const isUntaggedNav = (params: AnalyticsTransactionsRouteParamsInterface): boolean => params.tagId === UNTAGGED_TAG_ID_PARAM;
 
 const buildCategoryIds = (params: AnalyticsTransactionsRouteParamsInterface): number[] | null => {
     if (params.mode === AnalyticsTransactionsModeEnum.BUDGET_OTHER) {

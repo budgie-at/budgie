@@ -1,9 +1,9 @@
 import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
-export interface CategoryEvidenceRowInterface {
+export interface LabelEvidenceRowInterface {
     readonly title: string;
     readonly type: TransactionTypeEnum;
     readonly mccCategoryId: number | null;
-    readonly categoryId: number;
+    readonly labelId: number;
     readonly count: number;
 }

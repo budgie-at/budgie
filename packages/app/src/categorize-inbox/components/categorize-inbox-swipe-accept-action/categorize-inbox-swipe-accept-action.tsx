@@ -10,16 +10,16 @@ import { CATEGORIZE_INBOX_SWIPE_THRESHOLD } from '../../constant/categorize-inbo
 
 import { CategorizeInboxSwipeAcceptActionSelector } from './categorize-inbox-swipe-accept-action.selector';
 
-import type { CategoryEntityInterface } from '@budgie/contracts';
+import type { CategorizeInboxLabelInterface } from '../../interface/categorize-inbox-label.interface';
 import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
     readonly clusterKey: string;
     readonly translation: SharedValue<number>;
-    readonly category: Pick<CategoryEntityInterface, 'title' | 'icon'>;
+    readonly label: Pick<CategorizeInboxLabelInterface, 'title' | 'icon'>;
 }
 
-export const CategorizeInboxSwipeAcceptAction = ({ clusterKey, translation, category }: Props) => {
+export const CategorizeInboxSwipeAcceptAction = ({ clusterKey, translation, label }: Props) => {
     const [, hapticImpact] = useVibration();
 
     const handleThresholdReached = (): void => void hapticImpact(ImpactFeedbackStyle.Light);
@@ -43,9 +43,9 @@ export const CategorizeInboxSwipeAcceptAction = ({ clusterKey, translation, cate
             {...testID(CategorizeInboxSwipeAcceptActionSelector.Action, clusterKey)}
         >
             <Animated.View style={contentStyle} className="flex-row items-center gap-x-md">
-                <Icon icon={category.icon} size={20} className="text-positive-foreground" />
+                <Icon icon={label.icon} size={20} className="text-positive-foreground" />
                 <Text className="shrink text-sm font-semibold text-positive-foreground" numberOfLines={1}>
-                    {category.title}
+                    {label.title}
                 </Text>
             </Animated.View>
         </View>

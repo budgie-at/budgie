@@ -1,4 +1,5 @@
-import { CategorizeInboxPage } from '../../../categorize-inbox/components/categorize-inbox-page/categorize-inbox-page';
+import { CategorizeInboxCategoryPage } from '../../../categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page';
+import { CategorizeInboxTagPage } from '../../../categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page';
 import { AnalyticsTransactionsModeEnum } from '../../enum/analytics-transactions-mode.enum';
 import { StatisticsAnalyticsTransactionsPage } from '../statistics-analytics-transactions-page/statistics-analytics-transactions-page';
 import { UncategorizedAnalyticsTransactionsPage } from '../uncategorized-analytics-transactions-page/uncategorized-analytics-transactions-page';
@@ -15,7 +16,11 @@ export const AnalyticsTransactionsRoute = ({ params }: Props) => {
     }
 
     if (params.mode === AnalyticsTransactionsModeEnum.CATEGORIZE) {
-        return <CategorizeInboxPage params={params} />;
+        return <CategorizeInboxCategoryPage params={params} />;
+    }
+
+    if (params.mode === AnalyticsTransactionsModeEnum.TAG_INBOX) {
+        return <CategorizeInboxTagPage params={params} />;
     }
 
     return <StatisticsAnalyticsTransactionsPage {...params} />;

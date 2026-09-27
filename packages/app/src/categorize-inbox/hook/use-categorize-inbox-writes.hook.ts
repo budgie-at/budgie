@@ -1,4 +1,3 @@
-import { useLingui } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { useRef, useState } from 'react';
 
@@ -6,7 +5,7 @@ import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shar
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
-import { categorizeInboxService } from '../service/categorize-inbox.service';
+import { useCategorizeInboxStrategy } from '../context/categorize-inbox-strategy.context';
 
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
 import type { CategorizeInboxVisibilityInterface } from '../interface/categorize-inbox-visibility.interface';
@@ -16,8 +15,8 @@ export const useCategorizeInboxWrites = ({
     hideTransactions,
     showTransactions
 }: Pick<CategorizeInboxVisibilityInterface, 'hideTransactions' | 'showTransactions'>): CategorizeInboxWritesInterface => {
-    const { t } = useLingui();
     const [hapticNotification] = useVibration();
+    const { assignMany, undo, copy } = useCategorizeInboxStrategy();
 
     const [undoAssignments, setUndoAssignments] = useState<CategorizeInboxAssignmentInterface[] | null>(null);
     const writeQueueRef = useRef<Promise<void>>(Promise.resolve());
@@ -38,13 +37,13 @@ export const useCategorizeInboxWrites = ({
             .catch((error: unknown) => {
                 rollback();
                 hapticNotification(NotificationFeedbackType.Error);
-                showErrorToast(t`Could not categorize transactions`, getErrorMessage(error));
+                showErrorToast(copy.writeFailed, getErrorMessage(error));
             })
             .finally(handleWriteSettled);
     };
 
     const runAssignment = async (assignments: CategorizeInboxAssignmentInterface[]): Promise<void> => {
-        const applied = await categorizeInboxService.assignMany(assignments);
+        const applied = await assignMany(assignments);
 
         if (isNotEmptyArray(applied)) {
             setUndoAssignments(applied);
@@ -70,7 +69,7 @@ export const useCategorizeInboxWrites = ({
         setUndoAssignments(null);
         showTransactions(undoAssignments.flatMap(assignment => assignment.transactionIds));
         enqueueWrite(
-            () => categorizeInboxService.undo(undoAssignments),
+            () => undo(undoAssignments),
             () => void setUndoAssignments(previous => previous ?? undoAssignments)
         );
     };
