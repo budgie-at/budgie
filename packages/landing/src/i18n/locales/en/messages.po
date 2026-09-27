@@ -65,10 +65,6 @@ msgstr "#vacation, #shared, #reimbursable — quantified."
 msgid "© {year} Budgie. All rights reserved."
 msgstr "© {year} Budgie. All rights reserved."
 
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "< $30 one-time"
-msgstr "< $30 one-time"
-
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "<0/> left · <1/> done"
 msgstr "<0/> left · <1/> done"
@@ -1348,10 +1344,6 @@ msgid "<0>Price</0>: Free"
 msgstr "<0>Price</0>: Free"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "<0>Price</0>: Free (Premium TBD)"
-msgstr "<0>Price</0>: Free (Premium TBD)"
-
-#: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "<0>Price</0>: Free (self-hosted)"
 msgstr "<0>Price</0>: Free (self-hosted)"
 
@@ -1862,6 +1854,10 @@ msgstr "−€72.92"
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "−€8.47"
 msgstr "−€8.47"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "$0"
+msgstr "$0"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
 msgid "$300+ recurring"
@@ -2453,6 +2449,10 @@ msgstr "A screen chrome redesign: progressive blur behind the header, a collapsi
 msgid "A second, lighter path answers whenever the main model is still loading or busy"
 msgstr "A second, lighter path answers whenever the main model is still loading or busy"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "A short message instead of numbers, so an empty widget never looks like a zero balance."
+msgstr "A short message instead of numbers, so an empty widget never looks like a zero balance."
+
 #: src/app/[lang]/features/dark-mode/page.tsx
 msgid "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
 msgstr "A single Dark Mode toggle in Settings — defaults to your system theme, switch it manually anytime"
@@ -2715,9 +2715,17 @@ msgstr "Add another category row"
 msgid "Add it in three taps"
 msgstr "Add it in three taps"
 
+#: src/app/[lang]/features/home-screen-widgets/metadata.ts
+msgid "Add net worth, budget, and quick-add widgets to your iPhone Home Screen. Check your numbers at a glance, then tap straight into adding a transaction."
+msgstr "Add net worth, budget, and quick-add widgets to your iPhone Home Screen. Check your numbers at a glance, then tap straight into adding a transaction."
+
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Add tests for new functionality"
 msgstr "Add tests for new functionality"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Add them to your Home Screen and your numbers are already there before you unlock your phone."
+msgstr "Add them to your Home Screen and your numbers are already there before you unlock your phone."
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Added in a typical month"
@@ -3085,10 +3093,6 @@ msgstr "And the lock that enforces it"
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Animated example: six bank transactions are grouped by merchant, two confident groups are categorized with one tap, and the bottom panel moves from 6 left to 1 left and 5 done, with Undo."
 msgstr "Animated example: six bank transactions are grouped by merchant, two confident groups are categorized with one tap, and the bottom panel moves from 6 left to 1 left and 5 done, with Undo."
-
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Annual cost over 5 years"
-msgstr "Annual cost over 5 years"
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "Anonymous usage analytics (e.g., feature usage patterns, crash reports) - opt-in only"
@@ -3606,6 +3610,10 @@ msgstr "Bank Sync & Statement Import — Bring Your Bank Data In"
 msgid "Bank Sync & Statement Import — Budgie"
 msgstr "Bank Sync & Statement Import — Budgie"
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Bank sync and on-device AI are free too. The tracker itself never expires."
+msgstr "Bank sync and on-device AI are free too. The tracker itself never expires."
+
 #: src/generic/component/comparison-section/comparison-table-body.tsx
 msgid "Bank sync available"
 msgstr "Bank sync available"
@@ -4038,8 +4046,8 @@ msgid "budget app"
 msgstr "budget app"
 
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
-msgid "Budget App No Subscription — Free Core, One-Time Pro — Budgie"
-msgstr "Budget App No Subscription — Free Core, One-Time Pro — Budgie"
+msgid "Budget App No Subscription — 100% Free — Budgie"
+msgstr "Budget App No Subscription — 100% Free — Budgie"
 
 #: src/app/[lang]/privacy/metadata.ts
 msgid "budget app without bank login"
@@ -4164,6 +4172,10 @@ msgstr "Budgie Budget details screen with 95% of the monthly limit spent and the
 #: src/app/[lang]/page.tsx
 msgid "Budgie budget details screen with a monthly budget bar and per-category limits"
 msgstr "Budgie budget details screen with a monthly budget bar and per-category limits"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Budgie budget screen header showing spent, left and percentage that the budget widget mirrors"
+msgstr "Budgie budget screen header showing spent, left and percentage that the budget widget mirrors"
 
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password."
@@ -4370,6 +4382,10 @@ msgstr "Budgie home screen with accounts grouped into Bank and Cash sections, ea
 msgid "Budgie home screen with the total balance header above every account section"
 msgstr "Budgie home screen with the total balance header above every account section"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Budgie home screen with the total balance header that the net worth widget mirrors"
+msgstr "Budgie home screen with the total balance header that the net worth widget mirrors"
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups"
 msgstr "Budgie home screen with the total balance split into a cash chip and a crypto chip above the bank, cash and crypto account groups"
@@ -4446,6 +4462,10 @@ msgstr "Budgie is built on the principle that you shouldn’t have to trust us. 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Budgie is committed to transparency, security, and community collaboration. We believe that open source software is essential for building trust, especially when it comes to financial applications that handle sensitive personal data. By making our source code publicly available, we enable security audits, community contributions, and user verification of our privacy claims."
 msgstr "Budgie is committed to transparency, security, and community collaboration. We believe that open source software is essential for building trust, especially when it comes to financial applications that handle sensitive personal data. By making our source code publicly available, we enable security audits, community contributions, and user verification of our privacy claims."
+
+#: src/generic/component/waitlist-form/waitlist-success.tsx
+msgid "Budgie is completely free — nothing to unlock later"
+msgstr "Budgie is completely free — nothing to unlock later"
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Budgie is designed as a mobile-first, offline application. There’s no server component to self-host because your data never leaves your device. This is intentional: it eliminates the complexity and security responsibility of running your own server while providing even stronger privacy guarantees."
@@ -4574,6 +4594,10 @@ msgstr "Budgie new deposit account form with currency, interest rate and maturit
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
 msgstr "Budgie new expense form with the tag sheet open on a searchable grid of tag chips"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Budgie new expense screen that a tap on the quick add expense tile opens directly"
+msgstr "Budgie new expense screen that a tap on the quick add expense tile opens directly"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Budgie New Expense screen with the amount keypad open and Main Checking preselected as the account"
@@ -5104,6 +5128,10 @@ msgstr "Can a transaction have no primary tag?"
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Can AI categorize the missing transactions?"
 msgstr "Can AI categorize the missing transactions?"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Can anyone read my amounts by looking at my Home Screen?"
+msgstr "Can anyone read my amounts by looking at my Home Screen?"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Can be entirely self-hosted"
@@ -6167,6 +6195,10 @@ msgstr "Correction loop — every accepted or edited suggestion counts immediate
 msgid "Cost of budgeting"
 msgstr "Cost of budgeting"
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Cost over 5 years"
+msgstr "Cost over 5 years"
+
 #: src/app/[lang]/features/bank-fee-tracking/page.tsx
 msgid "Counted as spending"
 msgstr "Counted as spending"
@@ -6922,6 +6954,10 @@ msgstr "Do I need to do anything to get these changes?"
 msgid "Do I need to give Budgie my bank login?"
 msgstr "Do I need to give Budgie my bank login?"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Do I need to keep Budgie open for the numbers to stay right?"
+msgstr "Do I need to keep Budgie open for the numbers to stay right?"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Do I need to turn on On-device AI?"
 msgstr "Do I need to turn on On-device AI?"
@@ -6958,6 +6994,10 @@ msgstr "Do the alerts need an internet connection?"
 msgid "Do the charts work offline?"
 msgstr "Do the charts work offline?"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Do the widgets update on their own?"
+msgstr "Do the widgets update on their own?"
+
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Do transfer fees show up as expenses?"
 msgstr "Do transfer fees show up as expenses?"
@@ -6989,6 +7029,10 @@ msgstr "Does Budgie change my original imported amounts?"
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Does Budgie distinguish transfers from expenses?"
 msgstr "Does Budgie distinguish transfers from expenses?"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Does Budgie have ads or a paid tier?"
+msgstr "Does Budgie have ads or a paid tier?"
 
 #: src/app/[lang]/security/page.tsx
 msgid "Does Budgie have any server-side security risks?"
@@ -7240,10 +7284,6 @@ msgstr "Each split, its own category"
 #: src/app/[lang]/features/account-management/page.tsx
 msgid "Each type brings its own form"
 msgstr "Each type brings its own form"
-
-#: src/generic/component/waitlist-form/waitlist-success.tsx
-msgid "Early access members get 50% off lifetime"
-msgstr "Early access members get 50% off lifetime"
 
 #: src/app/[lang]/features/runway/page.tsx
 msgid "Earn more than you spend and Runway shows what you add each month and how many months of spending you have."
@@ -7597,8 +7637,8 @@ msgid "Every well-maintained open-source project has an issue tracker where bugs
 msgstr "Every well-maintained open-source project has an issue tracker where bugs, feature requests, and concerns are discussed. This is a goldmine of information about how the project operates:"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Everything — full access"
-msgstr "Everything — full access"
+msgid "Everything — always"
+msgstr "Everything — always"
 
 #: src/generic/component/home-tour-section/home-tour-section.tsx
 msgid "Everything above runs from a database on the device. Aeroplane mode changes nothing about what you can see or do."
@@ -7868,6 +7908,7 @@ msgstr "features"
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/expense-tracking/page.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -7918,6 +7959,7 @@ msgstr "Fees work on expenses, income, and transfers — not only card purchases
 msgid "Fetch Accounts, then choose"
 msgstr "Fetch Accounts, then choose"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Fiat and crypto, split out"
 msgstr "Fiat and crypto, split out"
@@ -8194,8 +8236,8 @@ msgid "For Other Apps"
 msgstr "For Other Apps"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-msgid "For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with strong privacy. Both are open source and can run entirely on your own hardware. Budgie also offers a free tier with core budgeting functionality. If privacy isn’t your primary concern and you just want free, there are many options, but most involve trading your data for access."
-msgstr "For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with strong privacy. Both are open source and can run entirely on your own hardware. Budgie also offers a free tier with core budgeting functionality. If privacy isn’t your primary concern and you just want free, there are many options, but most involve trading your data for access."
+msgid "For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with strong privacy. Both are open source and can run entirely on your own hardware. Budgie is also completely free, with no paid tier. If privacy isn’t your primary concern and you just want free, there are many options, but most involve trading your data for access."
+msgstr "For privacy-conscious users, Actual Budget (self-hosted) and Firefly III are the best free options with strong privacy. Both are open source and can run entirely on your own hardware. Budgie is also completely free, with no paid tier. If privacy isn’t your primary concern and you just want free, there are many options, but most involve trading your data for access."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "For privacy-conscious users, the idea of a third party having access to their complete financial picture is deeply uncomfortable—regardless of how trustworthy that company might be."
@@ -8270,8 +8312,8 @@ msgid "Four slots, nothing typed"
 msgstr "Four slots, nothing typed"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Free core, optional one-time unlock"
-msgstr "Free core, optional one-time unlock"
+msgid "Free"
+msgstr "Free"
 
 #: src/app/[lang]/legal/license/page.tsx
 msgid "Free use, copying, modification, and sharing for personal and business purposes"
@@ -8633,6 +8675,7 @@ msgstr "Holdings roll up into net worth alongside fiat accounts"
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 #: src/app/[lang]/features/expense-tracking/page.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 #: src/app/[lang]/features/monobank-sync/page.tsx
 #: src/app/[lang]/features/multi-currency/page.tsx
@@ -8676,6 +8719,20 @@ msgstr "Home groups debts by direction: You owe and Owed to you, each with its o
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
 msgstr "Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again."
+
+#: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
+msgid "home screen"
+msgstr "home screen"
+
+#: src/app/[lang]/features/home-screen-widgets/metadata.ts
+#: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Home Screen Widgets"
+msgstr "Home Screen Widgets"
+
+#: src/app/[lang]/features/home-screen-widgets/metadata.ts
+msgid "Home Screen Widgets — Budgie"
+msgstr "Home Screen Widgets — Budgie"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Home-screen widget with the period dates, an overall progress bar, and your closest-to-the-limit categories"
@@ -8943,6 +9000,10 @@ msgstr "How many tags can I add to a transaction?"
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "How much do you value privacy?"
 msgstr "How much do you value privacy?"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "How much of the month is left"
+msgstr "How much of the month is left"
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "How much storage do the AI models use?"
@@ -9391,6 +9452,10 @@ msgstr "Is “subscription-free” really durable?"
 #: src/app/[lang]/features/balance-adjustment/page.tsx
 msgid "Is an adjustment just another transaction?"
 msgstr "Is an adjustment just another transaction?"
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "Is anything in Budgie paid?"
+msgstr "Is anything in Budgie paid?"
 
 #: src/app/[lang]/features/pin-app-lock/page.tsx
 msgid "Is biometric the same as PIN security?"
@@ -9886,6 +9951,10 @@ msgstr "Local-first systems choose availability. You can always work, even offli
 msgid "local-llm"
 msgstr "local-llm"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Locked when you are, current when it matters"
+msgstr "Locked when you are, current when it matters"
+
 #: src/app/[lang]/features/expense-tracking/page.tsx
 msgid "Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use."
 msgstr "Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use."
@@ -10034,8 +10103,8 @@ msgid "Manual entries don't have MCC; some bank-sync flows drop it. AI category 
 msgstr "Manual entries don't have MCC; some bank-sync flows drop it. AI category suggestions handle those — see On-Device AI Auto-Categorization."
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations."
-msgstr "Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, and analytics are free. The optional unlock covers AI features and direct bank-sync integrations."
+msgid "Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free."
+msgstr "Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free."
 
 #: src/app/[lang]/features/bank-fee-tracking/bank-fee-tracking-benefits-section/bank-fee-tracking-benefits-section.tsx
 msgid "Manual fee editing uses a compact bottom sheet for category and amount"
@@ -10786,6 +10855,10 @@ msgstr "Net Worth"
 msgid "Net worth and account balances answer a different question from spending analytics. Net worth asks, “What are my holdings worth now?” Spending analytics asks, “What did this cost me then?” Those questions should not share the same conversion rule."
 msgstr "Net worth and account balances answer a different question from spending analytics. Net worth asks, “What are my holdings worth now?” Spending analytics asks, “What did this cost me then?” Those questions should not share the same conversion rule."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Net worth and budget come in a small size for just the headline number, or a larger size that adds the detail underneath. Quick add is one size, sized for its three tiles."
+msgstr "Net worth and budget come in a small size for just the headline number, or a larger size that adds the detail underneath. Quick add is one size, sized for its three tiles."
+
 #: src/app/[lang]/features/debt-tracking/page.tsx
 msgid "Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the debt account itself. Lending money books an expense; a repayment books an income — both on the account the money actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against repaid, until you archive it."
 msgstr "Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the debt account itself. Lending money books an expense; a repayment books an income — both on the account the money actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against repaid, until you archive it."
@@ -10814,6 +10887,18 @@ msgstr "Net Worth Tracker for Mobile — Budgie"
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Net worth trendline alongside"
 msgstr "Net worth trendline alongside"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Net worth, budget, and a quick way to add a transaction, right on your iPhone Home Screen. No need to open Budgie to check where you stand."
+msgstr "Net worth, budget, and a quick way to add a transaction, right on your iPhone Home Screen. No need to open Budgie to check where you stand."
+
+#: src/app/[lang]/features/home-screen-widgets/metadata.ts
+msgid "Net worth, budget, and quick add — right on your iPhone Home Screen, no need to open the app."
+msgstr "Net worth, budget, and quick add — right on your iPhone Home Screen, no need to open the app."
+
+#: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
+msgid "Net worth, budget, and quick add on your iPhone Home Screen."
+msgstr "Net worth, budget, and quick add on your iPhone Home Screen."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Never lock you into a proprietary format"
@@ -11132,6 +11217,10 @@ msgstr "No. Because Budgie stores all data locally and has no backend that recei
 msgid "No. Budgie bank sync connects directly from your device to supported bank APIs without routing through a financial aggregator. For banks not yet supported by direct sync, CSV and PDF import provides full compatibility without any third-party credential handling."
 msgstr "No. Budgie bank sync connects directly from your device to supported bank APIs without routing through a financial aggregator. For banks not yet supported by direct sync, CSV and PDF import provides full compatibility without any third-party credential handling."
 
+#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
+msgid "No. Budgie is completely free, with no paywall and no paid tier. The expense tracker, bank sync, and on-device AI never expire and never charge you."
+msgstr "No. Budgie is completely free, with no paywall and no paid tier. The expense tracker, bank sync, and on-device AI never expire and never charge you."
+
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the current balance and days remaining. It does not automatically create interest transactions."
 msgstr "No. Budgie stores the interest rate and maturity date, then calculates an expected payout estimate from the current balance and days remaining. It does not automatically create interest transactions."
@@ -11167,6 +11256,10 @@ msgstr "No. Exports are manual only — Budgie never writes a backup file on its
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "No. Live sync uses a personal API key you generate yourself, scoped to reading your data, never your account password. Statement imports need no credentials at all — you just pick the exported file."
 msgstr "No. Live sync uses a personal API key you generate yourself, scoped to reading your data, never your account password. Statement imports need no credentials at all — you just pick the exported file."
+
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "No. Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free."
+msgstr "No. Manual expense entry, bank PDF/CSV imports, multi-currency, debt tracking, analytics, AI features, and direct bank-sync integrations are all free."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "No. PDF parsing happens entirely on-device — your statement never leaves your phone."
@@ -11208,10 +11301,6 @@ msgstr "No. The Categorize inbox works with On-device AI switched off and needs 
 msgid "No. The count and the drill-down list both run entirely on-device, without a cloud analytics service."
 msgstr "No. The count and the drill-down list both run entirely on-device, without a cloud analytics service."
 
-#: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
-msgid "No. The expense tracker itself never expires and has no paywall. Bank sync and on-device AI are an optional one-time unlock, not a recurring charge."
-msgstr "No. The expense tracker itself never expires and has no paywall. Bank sync and on-device AI are an optional one-time unlock, not a recurring charge."
-
 #: src/app/[lang]/features/voice-transaction-entry/page.tsx
 msgid "No. The microphone feeds transcription directly on the device, and the audio is discarded once it has become text. Nothing is saved, sent, or logged."
 msgstr "No. The microphone feeds transcription directly on the device, and the audio is discarded once it has become text. Nothing is saved, sent, or logged."
@@ -11236,6 +11325,10 @@ msgstr "No. The switch changes what Budgie renders while it isn't active; it doe
 msgid "No. The token lives on the connection, so updating it from any account's sync settings restores every account sharing that connection at once."
 msgstr "No. The token lives on the connection, so updating it from any account's sync settings restores every account sharing that connection at once."
 
+#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
+msgid "No. There is no paid tier and no ads — every feature ships free in the app you install."
+msgstr "No. There is no paid tier and no ads — every feature ships free in the app you install."
+
 #: src/app/[lang]/features/crypto-investment-tracking/page.tsx
 msgid "No. There is no ticker connection and no account; the backfill uses CoinGecko's public endpoints and writes the results into your local database."
 msgstr "No. There is no ticker connection and no account; the backfill uses CoinGecko's public endpoints and writes the results into your local database."
@@ -11259,6 +11352,10 @@ msgstr "No. Voice entry transcribes the audio directly on your device. Your voic
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "No. While anyone can propose changes to the code, you control which version you run. Updates only install when you choose to update the app. If you’re concerned about a particular version, you can review the changes before updating or even build your own version from source. The open nature of the code means changes are visible and reviewable, actually giving you more control rather than less."
 msgstr "No. While anyone can propose changes to the code, you control which version you run. Updates only install when you choose to update the app. If you’re concerned about a particular version, you can review the changes before updating or even build your own version from source. The open nature of the code means changes are visible and reviewable, actually giving you more control rather than less."
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "No. Widgets are built to be read closed. They pick up every change you make inside the app and keep themselves current on a schedule in the background."
+msgstr "No. Widgets are built to be read closed. They pick up every change you make inside the app and keep themselves current on a schedule in the background."
 
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "No. You open the screen, review the counts, and confirm on the repair card. Nothing changes before that."
@@ -11305,6 +11402,10 @@ msgstr "Not every bank offers an API program, and not every bank is supported by
 msgid "Not for this job. Sorting your own expenses is a narrow task: the vocabulary is small, and your own history is a far stronger signal than anything a general model could add. A cloud service would be guessing from other people's data; Budgie is matching against yours."
 msgstr "Not for this job. Sorting your own expenses is a narrow task: the vocabulary is small, and your own history is a far stronger signal than anything a general model could add. A cloud service would be guessing from other people's data; Budgie is matching against yours."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Not if you have a PIN set. Every amount on every widget is replaced with dots the moment a PIN is on, with no separate switch to remember."
+msgstr "Not if you have a PIN set. Every amount on every widget is replaced with dots the moment a PIN is on, with no separate switch to remember."
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Not pursuing legal action against good-faith security research"
 msgstr "Not pursuing legal action against good-faith security research"
@@ -11326,8 +11427,8 @@ msgid "Nothing"
 msgstr "Nothing"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Nothing — there's nothing to stop. The unlock is one-time, not a subscription."
-msgstr "Nothing — there's nothing to stop. The unlock is one-time, not a subscription."
+msgid "Nothing — there's nothing to stop. Nothing was ever paid for."
+msgstr "Nothing — there's nothing to stop. Nothing was ever paid for."
 
 #: src/app/[lang]/blog/on-device-ai-budget-app-explainer/page.tsx
 msgid "Nothing changes. Once the one-time download is done, every AI feature works identically with or without a connection — in airplane mode, on a plane, or with no signal at all. That is the whole point of doing it on the phone."
@@ -12369,10 +12470,6 @@ msgstr "Paste one personal token"
 msgid "Pause this one, keep the rest"
 msgstr "Pause this one, keep the rest"
 
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
-msgstr "Pay once for bank sync and on-device AI if you want them. The tracker itself never expires."
-
 #: src/app/[lang]/features/erste-bank-pdf-import/opengraph-image.tsx
 msgid "pdf"
 msgstr "pdf"
@@ -12404,6 +12501,10 @@ msgstr "Per-MCC overrides for personal preferences — set once, applies forever
 #: src/app/[lang]/features/mcc-auto-category/page.tsx
 msgid "Per-MCC overrides let you bend the default mapping — point all 4111 (transit) into your \"Commute\" category instead of \"Travel\" once and never touch it again."
 msgstr "Per-MCC overrides let you bend the default mapping — point all 4111 (transit) into your \"Commute\" category instead of \"Travel\" once and never touch it again."
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Percentage of the limit used"
+msgstr "Percentage of the limit used"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 msgid "performance"
@@ -12980,6 +13081,10 @@ msgstr "Public source thrives on community participation. If you want to contrib
 msgid "Published audit reports from recognized security firms"
 msgstr "Published audit reports from recognized security firms"
 
+#: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
+msgid "quick add"
+msgstr "quick add"
+
 #: src/app/[lang]/features/transaction-long-press-menu/metadata.ts
 msgid "Quick Edit Transaction App — Long-Press Menu — Budgie"
 msgstr "Quick Edit Transaction App — Long-Press Menu — Budgie"
@@ -13086,8 +13191,8 @@ msgid "Read-only Binance sync brings crypto balances into the same view — no t
 msgstr "Read-only Binance sync brings crypto balances into the same view — no trading, no withdrawals"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Read-only or nothing"
-msgstr "Read-only or nothing"
+msgid "Read-only or nothing if you stop paying"
+msgstr "Read-only or nothing if you stop paying"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
 msgid "Reading only, never trading"
@@ -13208,8 +13313,8 @@ msgstr "Recurring entries show in your home currency on the calendar; tap any en
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
 #: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own."
-msgstr "Recurring monthly fees turn budgeting into another bill. Budgie's core is free; advanced features unlock with a one-time purchase you actually own."
+msgid "Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no tier."
+msgstr "Recurring monthly fees turn budgeting into another bill. Budgie is completely free — every feature, no unlock, no tier."
 
 #: src/app/[lang]/page.tsx
 msgid "Recurring payments calendar"
@@ -13893,6 +13998,10 @@ msgstr "Set a PIN and Budgie encrypts the database with that PIN as the key. The
 msgid "Set a PIN and Budgie encrypts your data on the device, with that PIN as the key itself. The PIN is the only key and it never leaves your device. Remove the PIN and the file is rewritten unencrypted — private to the app sandbox, but no longer protected."
 msgstr "Set a PIN and Budgie encrypts your data on the device, with that PIN as the key itself. The PIN is the only key and it never leaves your device. Remove the PIN and the file is rewritten unencrypted — private to the app sandbox, but no longer protected."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Set a PIN and every amount on every widget turns into dots. The layout stays, so you still see that a budget is running low or that net worth moved, just not the figures themselves."
+msgstr "Set a PIN and every amount on every widget turns into dots. The layout stays, so you still see that a budget is running low or that net worth moved, just not the figures themselves."
+
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "Set a PIN and the file is encrypted with it — no vendor format, no conversion step"
 msgstr "Set a PIN and the file is encrypted with it — no vendor format, no conversion step"
@@ -14337,6 +14446,10 @@ msgstr "Spreadsheets: The Ultimate Control Option"
 msgid "SQLite database you own and control"
 msgstr "SQLite database you own and control"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Start a transaction from your Home Screen"
+msgstr "Start a transaction from your Home Screen"
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Start from a built-in preset"
 msgstr "Start from a built-in preset"
@@ -14438,8 +14551,8 @@ msgid "Still to receive"
 msgstr "Still to receive"
 
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
-msgid "Stop paying monthly to track your money. Budgie's core features are free; the optional one-time unlock is yours forever. Offline-first and private."
-msgstr "Stop paying monthly to track your money. Budgie's core features are free; the optional one-time unlock is yours forever. Offline-first and private."
+msgid "Stop paying monthly to track your money. Budgie is completely free, with no unlock and no paid tier. Offline-first and private."
+msgstr "Stop paying monthly to track your money. Budgie is completely free, with no unlock and no paid tier. Offline-first and private."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Store data locally or on infrastructure you control"
@@ -14512,8 +14625,8 @@ msgstr "Subscription-Free Budget App"
 #: src/app/[lang]/features/subscription-free-budget-app/metadata.ts
 #: src/app/[lang]/features/subscription-free-budget-app/opengraph-image.tsx
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "Subscription-Free Budget App — Pay Once or Free"
-msgstr "Subscription-Free Budget App — Pay Once or Free"
+msgid "Subscription-Free Budget App — Completely Free"
+msgstr "Subscription-Free Budget App — Completely Free"
 
 #: src/app/[lang]/features/recurring-payments-calendar/opengraph-image.tsx
 msgid "subscriptions"
@@ -14964,6 +15077,10 @@ msgstr "The Bottom Line"
 msgid "The budget itself is kept in your default currency, and spending recorded on accounts in other currencies is converted into it using the exchange rates stored on your device."
 msgstr "The budget itself is kept in your default currency, and spending recorded on accounts in other currencies is converted into it using the exchange rates stored on your device."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "The budget widget carries the same spent, left and percentage as the budget screen, and the larger size adds your top categories. Tap it and Budgie opens the budget screen for the active period."
+msgstr "The budget widget carries the same spent, left and percentage as the budget screen, and the larger size adds your top categories. Tap it and Budgie opens the budget screen for the active period."
+
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The Budgie Difference: Privacy-First Financial Management"
 msgstr "The Budgie Difference: Privacy-First Financial Management"
@@ -15310,6 +15427,14 @@ msgstr "The most private way to get bank data into Budgie is manual import. Most
 msgid "The native splash screen reads the OS theme directly so the transition into the app stays in dark mode without an intermediate light state."
 msgstr "The native splash screen reads the OS theme directly so the transition into the app stays in dark mode without an intermediate light state."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "The net worth widget mirrors the total at the top of Home, and the larger size adds how much it moved this month and whether you are growing or burning. Tap it and Budgie opens straight to Home."
+msgstr "The net worth widget mirrors the total at the top of Home, and the larger size adds how much it moved this month and whether you are growing or burning. Tap it and Budgie opens straight to Home."
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "The net worth widget opens Home, the budget widget opens the budget screen, and each quick add tile opens the new-transaction screen already set to expense, income or transfer."
+msgstr "The net worth widget opens Home, the budget widget opens the budget screen, and each quick add tile opens the new-transaction screen already set to expense, income or transfer."
+
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "The newest rate for every currency pair is stored on your device"
 msgstr "The newest rate for every currency pair is stored on your device"
@@ -15463,6 +15588,10 @@ msgstr "The question a category cannot answer"
 #: src/app/[lang]/blog/offline-first-privacy-financial-app/page.tsx
 msgid "The question isn’t whether you should use an offline-first financial app. The question is: why would you trust your financial privacy to anything else?"
 msgstr "The question isn’t whether you should use an offline-first financial app. The question is: why would you trust your financial privacy to anything else?"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "The quick add widget carries three taps: expense, income and transfer. Each one jumps straight into the same new-transaction screen you would reach from inside Budgie, already set to that type."
+msgstr "The quick add widget carries three taps: expense, income and transfer. Each one jumps straight into the same new-transaction screen you would reach from inside Budgie, already set to that type."
 
 #: src/app/[lang]/features/categorization-rules/page.tsx
 msgid "The Quick rule pill writes it for you"
@@ -15758,6 +15887,7 @@ msgid "Then Runway says Growing and shows how much you add in a typical month, p
 msgstr "Then Runway says Growing and shows how much you add in a typical month, plus how many months of expenses your balance already covers. There is no run-out month, because at that pace the money does not run out."
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Then tap save"
 msgstr "Then tap save"
 
@@ -15790,8 +15920,8 @@ msgid "There is no server to phone home to"
 msgstr "There is no server to phone home to"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
-msgstr "There is no subscription paywall in the tracker; optional features use a one-time unlock instead."
+msgid "There is no subscription paywall in the tracker; every feature is free."
+msgstr "There is no subscription paywall in the tracker; every feature is free."
 
 #: src/app/[lang]/legal/privacy-policy/page.tsx
 msgid "These services have their own privacy policies, and we carefully select partners who meet our high privacy standards."
@@ -16069,6 +16199,14 @@ msgstr "Three screens: the Rules list, the Quick rule pill on a transaction you 
 msgid "Three screens: the transfer form that names both accounts, the cross-currency pair with the rate it converted at, and the analytics that counted neither side."
 msgstr "Three screens: the transfer form that names both accounts, the cross-currency pair with the rate it converted at, and the analytics that counted neither side."
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Three widgets, one glance"
+msgstr "Three widgets, one glance"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Three: net worth, budget, and quick add. Net worth and budget come in a small and a larger size, and quick add comes in one size with three tiles for expense, income and transfer."
+msgstr "Three: net worth, budget, and quick add. Net worth and budget come in a small and a larger size, and quick add comes in one size with three tiles for expense, income and transfer."
+
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Time series"
 msgstr "Time series"
@@ -16141,6 +16279,11 @@ msgstr "Total — no provider exists"
 msgid "Total balance up top"
 msgstr "Total balance up top"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Total balance, before you unlock"
+msgstr "Total balance, before you unlock"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "Total in your base currency"
 msgstr "Total in your base currency"
@@ -16448,6 +16591,7 @@ msgid "Two-tap entry: smart defaults for account, category, and date pick the ri
 msgstr "Two-tap entry: smart defaults for account, category, and date pick the right values out of the box"
 
 #: src/app/[lang]/features/expense-tracking/page.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Type the amount"
 msgstr "Type the amount"
 
@@ -16995,6 +17139,10 @@ msgstr "What does Recalculate Balances do?"
 msgid "What does Screenshot Protection actually hide?"
 msgstr "What does Screenshot Protection actually hide?"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "What does the budget widget show if I have no active budget?"
+msgstr "What does the budget widget show if I have no active budget?"
+
 #: src/app/[lang]/features/sync-data-repairs/page.tsx
 msgid "What does the own-card transfer fix actually change?"
 msgstr "What does the own-card transfer fix actually change?"
@@ -17046,10 +17194,6 @@ msgstr "What happens if I close one of the accounts?"
 #: src/app/[lang]/offline-first/page.tsx
 msgid "What happens if I lose my phone?"
 msgstr "What happens if I lose my phone?"
-
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "What happens if I stop paying?"
-msgstr "What happens if I stop paying?"
 
 #: src/app/[lang]/security/page.tsx
 msgid "What happens if someone picks up my unlocked phone?"
@@ -17200,6 +17344,7 @@ msgid "What Is On-Device AI?"
 msgstr "What Is On-Device AI?"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "What is still left"
 msgstr "What is still left"
 
@@ -17329,8 +17474,8 @@ msgid "What You Give Up"
 msgstr "What You Give Up"
 
 #: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "What you keep when you stop paying"
-msgstr "What you keep when you stop paying"
+msgid "What you keep"
+msgstr "What you keep"
 
 #: src/app/[lang]/features/net-worth-tracker/page.tsx
 msgid "What you lent adds back"
@@ -17355,10 +17500,6 @@ msgstr "What's an MCC?"
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "What’s currently being worked on"
 msgstr "What’s currently being worked on"
-
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-msgid "What's free vs. paid in Budgie?"
-msgstr "What's free vs. paid in Budgie?"
 
 #: src/app/[lang]/blog/whats-new-august-september-2026/metadata.ts
 #: src/app/[lang]/blog/whats-new-august-september-2026/opengraph-image.tsx
@@ -17610,6 +17751,10 @@ msgstr "Where does Budgie's AI run?"
 msgid "Where does my Monobank token live?"
 msgstr "Where does my Monobank token live?"
 
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Where does tapping a widget take me?"
+msgstr "Where does tapping a widget take me?"
+
 #: src/generic/component/faq-section-accordion/faq-section-accordion.tsx
 msgid "Where is my financial data stored?"
 msgstr "Where is my financial data stored?"
@@ -17701,6 +17846,10 @@ msgstr "Which scripts are supported?"
 #: src/app/[lang]/features/primary-tag/page.tsx
 msgid "Which tag chip the list shows"
 msgstr "Which tag chip the list shows"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Which widgets does Budgie offer?"
+msgstr "Which widgets does Budgie offer?"
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Which YNAB alternative has the best mobile app?"
@@ -18030,6 +18179,14 @@ msgstr "Why We Chose Privacy Over Convenience"
 #: src/app/[lang]/features/transaction-long-press-menu/page.tsx
 msgid "Why would I convert income to a refund?"
 msgstr "Why would I convert income to a refund?"
+
+#: src/app/[lang]/features/home-screen-widgets/opengraph-image.tsx
+msgid "widgets"
+msgstr "widgets"
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
+msgstr "Widgets pick up an add, edit or sync as soon as iOS lets them refresh, and keep refreshing in the background so the numbers stay close to current even while Budgie stays closed."
 
 #: src/app/[lang]/blog/mint-alternatives-developers/page.tsx
 msgid "Will Budgie ever charge for features?"
@@ -18578,6 +18735,10 @@ msgstr "Yes. The stored base fields are nullable derived data. Budgie can clear 
 #: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
 msgid "Yes. The suggestion engine runs on every form variant — expense, income, and transfer."
 msgstr "Yes. The suggestion engine runs on every form variant — expense, income, and transfer."
+
+#: src/app/[lang]/features/home-screen-widgets/page.tsx
+msgid "Yes. They refresh right after a transaction changes inside Budgie, and again periodically in the background, so you do not need to open the app to see a current number."
+msgstr "Yes. They refresh right after a transaction changes inside Budgie, and again periodically in the background, so you do not need to open the app to see a current number."
 
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Yes. Transactions deduplicate by their booking reference, so re-importing skips known rows and inserts only new ones."

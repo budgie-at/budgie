@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.84.0](https://github.com/budgie-at/budgie/compare/v6.83.2...v6.84.0) (2026-09-27)
+
+
+### Bug Fixes
+
+* **landing:** correct home-screen-widgets copy inaccuracies from review ([1368962](https://github.com/budgie-at/budgie/commit/1368962470a01ff4cc910563305f6a127c654561))
+
+
+### Features
+
+* **landing:** add the home-screen widgets feature page ([03e0546](https://github.com/budgie-at/budgie/commit/03e054637cff8bd0ac11f9f455c17ea22cf7b7e7)), closes [#1167](https://github.com/budgie-at/budgie/issues/1167) [#1227](https://github.com/budgie-at/budgie/issues/1227) [#1216](https://github.com/budgie-at/budgie/issues/1216) [#1212](https://github.com/budgie-at/budgie/issues/1212)
+
+
+
+
+
+## [6.83.2](https://github.com/budgie-at/budgie/compare/v6.83.1...v6.83.2) (2026-09-27)
+
+
+### Bug Fixes
+
+* **landing:** say budgie is free instead of promising a one-time purchase ([39b72b0](https://github.com/budgie-at/budgie/commit/39b72b05abd5df61c7a28e761d52f85da6a8471e))
+
+
+
+
+
+## [6.83.1](https://github.com/budgie-at/budgie/compare/v6.83.0...v6.83.1) (2026-09-27)
+
+
+### Bug Fixes
+
+* **app:** create the missing app review detail before uploading store metadata ([25a5ae1](https://github.com/budgie-at/budgie/commit/25a5ae121a82999248d954287192e4a82af91d71))
+
+
+
+
+
 # [6.83.0](https://github.com/budgie-at/budgie/compare/v6.82.2...v6.83.0) (2026-09-26)
 
 
