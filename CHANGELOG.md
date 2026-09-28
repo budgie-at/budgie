@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.3](https://github.com/budgie-at/budgie/compare/v6.85.2...v6.85.3) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** stop categorizing transfer legs and fix debt leg categories ([0d48f2e](https://github.com/budgie-at/budgie/commit/0d48f2e8c63296e8f98984467960b2b7023b7213)), closes [#1244](https://github.com/budgie-at/budgie/issues/1244)
+
+
+
+
+
 ## [6.85.2](https://github.com/budgie-at/budgie/compare/v6.85.1...v6.85.2) (2026-09-28)
 
 
