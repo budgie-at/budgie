@@ -207,10 +207,10 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     scene="bulk-categorize-transactions-1"
                     slug="bulk-categorize-transactions"
                 >
-                    <FeatureStory.Callout y={0.226}>
+                    <FeatureStory.Callout y={0.214}>
                         <Trans>One card per merchant</Trans>
                     </FeatureStory.Callout>
-                    <FeatureStory.Callout y={0.278}>
+                    <FeatureStory.Callout y={0.265}>
                         <Trans>Learned from your past choices</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
@@ -228,11 +228,26 @@ export default async function BulkCategorizeTransactionsFeaturePage(props: PageL
                     scene="bulk-categorize-transactions-1"
                     slug="bulk-categorize-transactions"
                 >
-                    <FeatureStory.Callout y={0.177}>
+                    <FeatureStory.Callout y={0.167}>
                         <Trans>Pinned count and total</Trans>
                     </FeatureStory.Callout>
-                    <FeatureStory.Callout y={0.885}>
+                    <FeatureStory.Callout y={0.886}>
                         <Trans>Accept all, then Undo</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Step index={3} title={<Trans>Tags get the same inbox</Trans>}>
+                    <Trans>Open Tags in Analytics and tap Untagged. Transactions group by merchant, each with a suggested tag.</Trans>
+                </FeatureStory.Step>
+                <FeatureStory.Shot
+                    alt={t(i18n)`Budgie tag inbox screen listing merchant groups, each with a suggested tag chip`}
+                    index={3}
+                    locale={lang}
+                    scene="bulk-categorize-transactions-2"
+                    slug="bulk-categorize-transactions"
+                >
+                    <FeatureStory.Callout y={0.265}>
+                        <Trans>Tags suggested from your history</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
             </FeatureStory>
