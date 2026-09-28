@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.85.0](https://github.com/budgie-at/budgie/compare/v6.84.3...v6.85.0) (2026-09-28)
+
+
+### Features
+
+* **landing:** describe bulk tagging and drop transfer detection claims ([6516a5a](https://github.com/budgie-at/budgie/commit/6516a5a404b6f9d9aec357b91a294c0a5577dec8))
+* **landing:** show the shipped inbox and tag inbox in the bulk categorize story ([07900dc](https://github.com/budgie-at/budgie/commit/07900dc1b6f3594e3c4262de40d7fee2edb4adba))
+
+
+
+
+
 # [6.84.0](https://github.com/budgie-at/budgie/compare/v6.83.2...v6.84.0) (2026-09-27)
 
 

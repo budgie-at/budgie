@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.85.0](https://github.com/budgie-at/budgie/compare/v6.84.3...v6.85.0) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** apply rules with set-based chunked writes ([149b47f](https://github.com/budgie-at/budgie/commit/149b47f7410c1516045c3c94786142581c192af0))
+* **app:** harden inbox v2 counts, undo and background cost ([d9d57f8](https://github.com/budgie-at/budgie/commit/d9d57f822e670870e68f442c6ac2eeee36eca4c0))
+
+
+### Features
+
+* **app:** add a tag inbox and open both inboxes from statistics ([904d1d2](https://github.com/budgie-at/budgie/commit/904d1d2c357b4768d5956d77e8ff1f2e850b6ded))
+
+
+
+
+
 # [6.79.0](https://github.com/budgie-at/budgie/compare/v6.78.2...v6.79.0) (2026-09-26)
 
 
