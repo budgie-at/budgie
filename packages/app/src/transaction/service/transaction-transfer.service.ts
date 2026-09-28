@@ -1,4 +1,5 @@
 import {
+    CategorySourceEnum,
     TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryKindEnum,
@@ -17,7 +18,6 @@ import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/in
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
-import { SystemCategoryIdEnum } from '../../category/enum/system-category-id.enum';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { TRANSFER_CONVERSION_ERROR_MESSAGE } from '../constant/transfer-conversion-error-message.constant';
@@ -131,16 +131,14 @@ class TransactionTransferService {
                         accountId: conversion.creditAccountId,
                         type: TransactionEntryTypeEnum.CREDIT,
                         amount: conversion.creditAmount,
-                        valuation: creditValuation,
-                        sourceEntry: conversion.sourceEntry
+                        valuation: creditValuation
                     }),
                     this.buildTransferEntryCreateEntity({
                         transactionId: params.id,
                         accountId: conversion.debitAccountId,
                         type: TransactionEntryTypeEnum.DEBIT,
                         amount: conversion.debitAmount,
-                        valuation: debitValuation,
-                        sourceEntry: conversion.sourceEntry
+                        valuation: debitValuation
                     }),
                     ...conversion.feeEntries.map((entry, index) => this.buildFeeEntryCreateEntity(params.id, entry, feeValuations[index]))
                 ],
@@ -195,8 +193,7 @@ class TransactionTransferService {
             operatedAt: transaction.operatedAt,
             toAccountId,
             transactionType: TransactionTypeEnum.TRANSFER,
-            feeEntries: getTransactionFeeEntries(transaction.entries),
-            sourceEntry: transactionEntry
+            feeEntries: getTransactionFeeEntries(transaction.entries)
         };
     }
 
@@ -249,8 +246,7 @@ class TransactionTransferService {
         accountId,
         type,
         amount,
-        valuation,
-        sourceEntry
+        valuation
     }: BuildTransferEntryCreateEntityInputInterface): TransactionEntryCreateEntityInterface {
         return {
             transactionId,
@@ -258,8 +254,8 @@ class TransactionTransferService {
             type,
             kind: TransactionEntryKindEnum.PRIMARY,
             amount,
-            categoryId: sourceEntry.categoryId ?? SystemCategoryIdEnum.CURRENCY_TRANSFER,
-            categorySource: sourceEntry.categorySource,
+            categoryId: null,
+            categorySource: CategorySourceEnum.USER,
             mccCategoryId: null,
             externalId: null,
             exchangeRate: 1,
@@ -307,8 +303,7 @@ class TransactionTransferService {
             entries: buildTransferEntries({
                 fromAccountId: depositAccountId,
                 toAccountId: destinationAccountId,
-                amount,
-                categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER
+                amount
             })
         });
     }

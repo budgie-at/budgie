@@ -7,7 +7,6 @@ import { View } from 'react-native';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useTransactionFeeModal } from '../../context/transaction-fee-modal.context';
 import { useCurrencyConversion } from '../../hook/use-currency-conversion.hook';
@@ -221,8 +220,7 @@ export const TransferQuickForm = (props: Props) => {
         const transferEntries = buildTransferEntries({
             fromAccountId: from,
             toAccountId: to,
-            amount,
-            categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER
+            amount
         });
         const feeEntries = getTransactionFeeEntries(getValues('entries')).map(entry => ({
             ...entry,
