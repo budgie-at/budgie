@@ -7,6 +7,7 @@ import { db, transactionEntryRepository, transactionRepository } from '../../@ge
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 
 import type { DB, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
@@ -63,7 +64,7 @@ class ImportedTransactionEntryUpdateService {
         const existingEntry = await transactionEntryRepository.findByExternalIdAndAccountId(entry.externalId, entry.accountId, tx);
 
         if (!isDefined(existingEntry)) {
-            return;
+            return this.createMissingEntry(entry, input, tx);
         }
 
         const nextAmount = convertToMicroUnits(entry.amount);
@@ -74,9 +75,11 @@ class ImportedTransactionEntryUpdateService {
             externalSource: input.externalSource,
             tx
         });
+        const nextMccCategoryId = entry.mccCategoryId ?? existingEntry.mccCategoryId;
 
         if (
             existingEntry.amount === nextAmount &&
+            existingEntry.mccCategoryId === nextMccCategoryId &&
             existingEntry.exchangeRate === entry.exchangeRate &&
             existingEntry.baseInstrumentId === nextBaseValuation.baseInstrumentId &&
             existingEntry.baseExchangeRate === nextBaseValuation.baseExchangeRate &&
@@ -93,19 +96,44 @@ class ImportedTransactionEntryUpdateService {
                 amount: nextAmount,
                 exchangeRate: entry.exchangeRate,
                 ...nextBaseValuation,
-                toIban: entry.toIban
+                toIban: entry.toIban,
+                mccCategoryId: nextMccCategoryId
             },
             tx
         );
 
-        const metadataTransactionId = existingEntry.originalTransactionId ?? existingEntry.transactionId;
-
         await transactionRepository.updateById(
-            metadataTransactionId,
+            existingEntry.originalTransactionId ?? existingEntry.transactionId,
             {
                 title: input.title,
                 comment: input.comment,
                 operatedAt: input.operatedAt
+            },
+            tx
+        );
+    }
+
+    private async createMissingEntry(
+        entry: TransactionEntryCreateInputInterface,
+        input: TransactionCreateInputInterface,
+        tx: DB
+    ): Promise<void> {
+        if (!isDefined(input.externalId)) {
+            return;
+        }
+
+        const primaryEntry = await transactionEntryRepository.findByExternalIdAndAccountId(input.externalId, entry.accountId, tx);
+
+        if (!isDefined(primaryEntry)) {
+            return;
+        }
+
+        const valuations = await entryBaseValuationService.valueEntries([entry], input.operatedAt, input.externalSource, tx);
+
+        await transactionEntryRepository.create(
+            {
+                ...transactionMapEntryInputToCreateEntity(entry, primaryEntry.transactionId, valuations.get(entry)),
+                originalTransactionId: primaryEntry.originalTransactionId
             },
             tx
         );
