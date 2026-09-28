@@ -17,7 +17,10 @@ import { SearchableFilterEmptyResult } from '../transaction/components/searchabl
 import { TransactionFilterSelectorFooter } from '../transaction/components/transaction-filter-selector-footer/transaction-filter-selector-footer';
 import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
-import { useTransactionAccountFilterModal } from '../transaction/context/transaction-account-filter-modal.context';
+import {
+    useTransactionAccountFilterModal,
+    useTransactionAccountFilterModalParams
+} from '../transaction/context/transaction-account-filter-modal.context';
 import { toggleFilterSelection } from '../transaction/utils/toggle-filter-selection.util';
 
 const LIST_TOP_SPACE = 88;
@@ -35,7 +38,8 @@ const ANALYTICS_ACCOUNT_FILTER_TYPES = [
 export default function TransactionAccountFilterModal() {
     const { t } = useLingui();
     const router = useRouter();
-    const [, resolveTransactionAccountFilter, currentParams] = useTransactionAccountFilterModal();
+    const [, resolveTransactionAccountFilter] = useTransactionAccountFilterModal();
+    const currentParams = useTransactionAccountFilterModalParams();
 
     const state = useSearchableFilterState(currentParams?.value ?? null);
     const { localValue, setLocalValue, localValueRef, search, setSearch, selectedCount, handleDeselectAll } = state;

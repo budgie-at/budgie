@@ -4,13 +4,14 @@ import { View } from 'react-native';
 
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { ConvertToRefundContent } from '../transaction/components/convert-to-refund-content/convert-to-refund-content';
-import { useConvertToRefundModal } from '../transaction/context/convert-to-refund-modal.context';
+import { useConvertToRefundModal, useConvertToRefundModalParams } from '../transaction/context/convert-to-refund-modal.context';
 
 import { ConvertToRefundModalSelector } from './convert-to-refund-modal.selector';
 
 export default function ConvertToRefundModal() {
     const router = useRouter();
-    const [, resolveConvertToRefund, currentParams] = useConvertToRefundModal();
+    const [, resolveConvertToRefund] = useConvertToRefundModal();
+    const currentParams = useConvertToRefundModalParams();
     const resolveConvertToRefundRef = useRef(resolveConvertToRefund);
     const hadParamsRef = useRef(false);
     const { backgroundColor } = useFormsheetListStyles();

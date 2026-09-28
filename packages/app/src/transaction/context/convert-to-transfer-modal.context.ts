@@ -13,4 +13,7 @@ export interface ConvertToTransferModalParams {
     readonly startDeposit?: boolean;
 }
 
-export const [ConvertToTransferModalContext, useConvertToTransferModal] = createModalContext<ConvertToTransferModalParams, boolean>(false);
+export const [ConvertToTransferModalContext, useConvertToTransferModal, useConvertToTransferModalParams] = createModalContext<
+    ConvertToTransferModalParams,
+    boolean
+>(false);
