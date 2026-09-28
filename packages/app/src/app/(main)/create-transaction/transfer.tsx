@@ -11,7 +11,6 @@ import { FullPage } from '../../../@generic/component/page/full-page';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
-import { SystemCategoryIdEnum } from '../../../category/enum/system-category-id.enum';
 import { TransferQuickForm } from '../../../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 import { transactionService } from '../../../transaction/service/transaction.service';
@@ -37,7 +36,6 @@ export default function CreateTransferTransactionPage() {
 
             return result;
         },
-        categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER,
         schema: TransferTransactionCreateInputSchema,
         type: TransactionTypeEnum.TRANSFER,
         fromAccountId: parsedAccountId ?? 0,
