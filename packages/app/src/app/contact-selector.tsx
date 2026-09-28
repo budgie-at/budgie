@@ -9,7 +9,7 @@ import { ContactSelectorCard } from '../@generic/component/contact-selector-card
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-import { useContactSelectorModal } from '../@generic/context/contact-selector-modal.context';
+import { useContactSelectorModal, useContactSelectorModalParams } from '../@generic/context/contact-selector-modal.context';
 import { Contact, useContacts } from '../@generic/hook/use-contacts.hook';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 
@@ -26,12 +26,12 @@ const filterContacts = (contacts: Contact[], search: string): Contact[] =>
 
 export default function ContactSelectorModal() {
     const { t } = useLingui();
-    const [, resolveContactSelector, currentParams] = useContactSelectorModal();
+    const [, resolveContactSelector] = useContactSelectorModal();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
     const { contacts } = useContacts();
 
-    const selectedContactId = currentParams?.selectedContactId;
+    const selectedContactId = useContactSelectorModalParams()?.selectedContactId;
     const data = filterContacts(contacts, search);
     const containerStyle = { flex: 1, backgroundColor };
     const isSearching = isNotEmptyString(search);

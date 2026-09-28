@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { applyMigration, seed, testDb } from '../../harness';
 
-const MIGRATION_FILE_NAME = '0065_fix_transfer_and_debt_leg_categories.sql';
+const MIGRATION_FILE_NAME = '0066_fix_transfer_and_debt_leg_categories.sql';
 const SEEDED_AT = 1_700_000_000;
 const CURRENCY_TRANSFER_CATEGORY_ID = 7;
 const DEBT_PAYMENTS_CATEGORY_ID = 17;

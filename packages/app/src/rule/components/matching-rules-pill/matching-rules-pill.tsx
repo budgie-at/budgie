@@ -21,7 +21,7 @@ interface Props {
 export const MatchingRulesPill = ({ matchingRulesCount, matchingRuleIds }: Props) => {
     const router = useRouter();
     const { t } = useLingui();
-    const { openRuleForm } = useRuleFormModal();
+    const [openRuleForm] = useRuleFormModal();
 
     const handlePress = () => {
         const [matchingRuleId] = matchingRuleIds;

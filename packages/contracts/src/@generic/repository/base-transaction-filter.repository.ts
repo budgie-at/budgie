@@ -1,12 +1,15 @@
-import { SQL, and, eq, gte, inArray, isNotNull, isNull, lte, notInArray, or } from 'drizzle-orm';
+import { SQL, and, eq, gte, inArray, isNotNull, isNull, lte, ne, notInArray, or } from 'drizzle-orm';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
+import { AccountTypeEnum } from '../../account/enum/account-type.enum';
+import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transaction-entry-kind.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
+import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
 import { TransactionFilterInterface } from '../../transaction/interface/transaction-filter.interface';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { PRECISION } from '../constant/precision.constant';
@@ -15,10 +18,18 @@ import { DateRangeInterface } from '../interface/date-range.interface';
 import { DB } from '../type/db.type';
 
 export abstract class BaseTransactionFilterRepository {
+    private static readonly CATEGORIZABLE_TYPES = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];
+
     constructor(protected db: DB) {}
 
     /* jscpd:ignore-start */
-    protected buildFilterWhere({ tagIds, categoryIds, accountIds, date, amount }: TransactionFilterInterface) {
+    protected buildFilterWhere({
+        tagIds,
+        categoryIds,
+        accountIds,
+        date,
+        amount
+    }: Pick<TransactionFilterInterface, 'tagIds' | 'categoryIds' | 'accountIds' | 'date' | 'amount'>) {
         const conditions: SQL[] = [
             this.buildVisibleTransactionCondition(),
             ...this.buildAccountCondition(accountIds),
@@ -50,14 +61,6 @@ export abstract class BaseTransactionFilterRepository {
     }
 
     protected buildAccountCondition(accountIds: number[] | null): SQL[] {
-        if (isNotEmptyArray(accountIds)) {
-            return [inArray(TransactionEntityTable.fromAccountId, accountIds)];
-        }
-
-        return [];
-    }
-
-    protected buildEntryAccountCondition(accountIds: number[] | null): SQL[] {
         if (isNotEmptyArray(accountIds)) {
             const condition = or(
                 inArray(TransactionEntityTable.fromAccountId, accountIds),
@@ -105,8 +108,7 @@ export abstract class BaseTransactionFilterRepository {
                 .from(TransactionEntryEntityTable)
                 .where(
                     and(
-                        this.buildLedgerEntryCondition(),
-                        eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY),
+                        this.buildPrimaryLedgerEntryCondition(),
                         inArray(TransactionEntryEntityTable.type, [TransactionEntryTypeEnum.CREDIT, TransactionEntryTypeEnum.DEBIT]),
                         ...amountParts
                     )
@@ -120,6 +122,40 @@ export abstract class BaseTransactionFilterRepository {
 
     protected buildLedgerEntryCondition() {
         return and(isNull(TransactionEntryEntityTable.originalTransactionId), isNull(TransactionEntryEntityTable.deletedAt));
+    }
+
+    protected buildPrimaryLedgerEntryCondition() {
+        return and(this.buildLedgerEntryCondition(), eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY));
+    }
+
+    protected buildCategorizableEntryCondition() {
+        return and(this.buildPrimaryLedgerEntryCondition(), ne(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE));
+    }
+
+    protected buildNonDebtAccountCondition() {
+        return ne(AccountEntityTable.type, AccountTypeEnum.DEBT);
+    }
+
+    protected buildUncategorizedEntryCondition() {
+        return and(
+            isNull(TransactionEntryEntityTable.categoryId),
+            this.buildCategorizableEntryCondition(),
+            this.buildNonDebtAccountCondition()
+        );
+    }
+
+    protected buildCategorizableTypeCondition(types: TransactionTypeEnum[] | null) {
+        return inArray(
+            TransactionEntityTable.type,
+            BaseTransactionFilterRepository.CATEGORIZABLE_TYPES.filter(type => !isNotEmptyArray(types) || types.includes(type))
+        );
+    }
+
+    protected buildUntaggedCondition() {
+        return notInArray(
+            TransactionEntityTable.id,
+            this.db.select({ transactionId: TransactionTagsEntityTable.transactionId }).from(TransactionTagsEntityTable)
+        );
     }
 
     protected buildTransactionIdsByEntryAccountIdsQuery(accountIds: number[]) {
@@ -143,18 +179,16 @@ export abstract class BaseTransactionFilterRepository {
     }
 
     private buildUncategorizedCondition() {
-        return inArray(
-            TransactionEntityTable.id,
-            this.db
-                .select({ transactionId: TransactionEntryEntityTable.transactionId })
-                .from(TransactionEntryEntityTable)
-                .where(
-                    and(
-                        isNull(TransactionEntryEntityTable.categoryId),
-                        this.buildLedgerEntryCondition(),
-                        eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY)
-                    )
-                )
+        return and(
+            this.buildCategorizableTypeCondition(null),
+            inArray(
+                TransactionEntityTable.id,
+                this.db
+                    .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                    .from(TransactionEntryEntityTable)
+                    .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, TransactionEntryEntityTable.accountId))
+                    .where(this.buildUncategorizedEntryCondition())
+            )
         );
     }
 
@@ -164,20 +198,7 @@ export abstract class BaseTransactionFilterRepository {
             this.db
                 .select({ transactionId: TransactionEntryEntityTable.transactionId })
                 .from(TransactionEntryEntityTable)
-                .where(
-                    and(
-                        inArray(TransactionEntryEntityTable.categoryId, categoryIds),
-                        this.buildLedgerEntryCondition(),
-                        eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY)
-                    )
-                )
-        );
-    }
-
-    private buildUntaggedCondition() {
-        return notInArray(
-            TransactionEntityTable.id,
-            this.db.select({ transactionId: TransactionTagsEntityTable.transactionId }).from(TransactionTagsEntityTable)
+                .where(and(inArray(TransactionEntryEntityTable.categoryId, categoryIds), this.buildPrimaryLedgerEntryCondition()))
         );
     }
 

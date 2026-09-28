@@ -1,21 +1,17 @@
 import { Log } from '@budgie/logger';
-import { and, desc, eq, inArray, isNotNull, isNull, ne, notExists, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNotNull, isNull, ne, sql } from 'drizzle-orm';
 
-import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
-import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
 import { CategorySourceEnum } from '../../transaction-entry/enum/category-source.enum';
-import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transaction-entry-kind.enum';
-import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { insertTransactionTag } from '../../transaction-tags/util/insert-transaction-tag.util';
-import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 import type { DB } from '../../@generic/type/db.type';
@@ -25,7 +21,6 @@ import type { SQL } from 'drizzle-orm';
 
 export class TransactionCategorizeInboxRepository extends BaseTransactionFilterRepository {
     private static readonly WRITE_CHUNK_SIZE = 500;
-    private static readonly INBOX_TYPES = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];
 
     @Log(
         (transactionIds, categoryId, categorySource, tx) =>
@@ -89,7 +84,7 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
                 and(
                     inArray(TransactionEntityTable.id, chunk),
                     this.buildVisibleTransactionCondition(),
-                    inArray(TransactionEntityTable.type, TransactionCategorizeInboxRepository.INBOX_TYPES)
+                    this.buildCategorizableTypeCondition(null)
                 )
             )
         );
@@ -114,26 +109,15 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
     }
 
     findUncategorizedRows(filters: TransactionFilterInterface) {
-        return this.selectInboxRows(
-            this.buildInboxRowsWhere(filters, [
-                isNull(TransactionEntryEntityTable.categoryId),
-                ...(isDefined(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
-            ])
-        );
+        return this.selectInboxRows(this.buildInboxRowsWhere({ ...filters, categoryIds: null }, this.buildUncategorizedEntryCondition()));
     }
 
     findUntaggedRows(filters: TransactionFilterInterface) {
         return this.selectInboxRows(
-            this.buildInboxRowsWhere(filters, [
-                notExists(
-                    this.db
-                        .select({ transactionId: TransactionTagsEntityTable.transactionId })
-                        .from(TransactionTagsEntityTable)
-                        .where(eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-                ),
-                ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
-                ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : [])
-            ])
+            this.buildInboxRowsWhere(
+                { ...filters, tagIds: [] },
+                and(this.buildCategorizableEntryCondition(), this.buildNonDebtAccountCondition())
+            )
         );
     }
 
@@ -156,10 +140,6 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
             .innerJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
             .where(this.buildEvidenceWhere([]))
             .groupBy(...this.buildEvidenceGroupBy(), TransactionTagsEntityTable.tagId);
-    }
-
-    protected override buildAccountCondition(accountIds: number[] | null) {
-        return this.buildEntryAccountCondition(accountIds);
     }
 
     private selectInboxRows(where: SQL | undefined) {
@@ -237,41 +217,19 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
     }
 
     private buildAssignableEntryCondition(transactionIds: number[]) {
-        return and(inArray(TransactionEntryEntityTable.transactionId, transactionIds), ...this.buildAssignableEntryConditions());
+        return and(inArray(TransactionEntryEntityTable.transactionId, transactionIds), this.buildCategorizableEntryCondition());
     }
 
-    private buildAssignableEntryConditions() {
-        return [
-            isNull(TransactionEntryEntityTable.deletedAt),
-            isNull(TransactionEntryEntityTable.originalTransactionId),
-            eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY),
-            ne(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE)
-        ];
-    }
-
-    private buildInboxRowsWhere(filters: TransactionFilterInterface, labelConditions: (SQL | undefined)[]) {
-        const inboxTypes = TransactionCategorizeInboxRepository.INBOX_TYPES.filter(
-            type => !isNotEmptyArray(filters.types) || filters.types.includes(type)
-        );
-        const conditions = [
-            ...labelConditions,
-            ...this.buildAssignableEntryConditions(),
-            inArray(TransactionEntityTable.type, inboxTypes),
-            this.buildVisibleTransactionCondition(),
-            ...this.buildAccountCondition(filters.accountIds),
-            ...(isDefined(filters.date) ? [this.buildDateCondition(filters.date)] : []),
-            ...(isDefined(filters.amount) ? [this.buildAmountCondition(filters.amount)] : [])
-        ].filter(isDefined);
-
-        return and(...conditions);
+    private buildInboxRowsWhere(filters: TransactionFilterInterface, entryCondition: SQL | undefined) {
+        return and(this.buildFilterWhere(filters), this.buildCategorizableTypeCondition(filters.types), entryCondition);
     }
 
     private buildEvidenceWhere(labelConditions: SQL[]) {
         return and(
             ...labelConditions,
-            ...this.buildAssignableEntryConditions(),
+            this.buildCategorizableEntryCondition(),
             this.buildVisibleTransactionCondition(),
-            inArray(TransactionEntityTable.type, TransactionCategorizeInboxRepository.INBOX_TYPES)
+            this.buildCategorizableTypeCondition(null)
         );
     }
 }

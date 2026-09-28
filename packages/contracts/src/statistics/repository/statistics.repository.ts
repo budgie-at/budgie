@@ -13,7 +13,6 @@ import {
     getInverseHistoricalExchangeRateSql
 } from '../../@generic/util/get-exchange-rate-sql.util';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
-import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -22,7 +21,6 @@ import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.t
 import { RunwayDriverDimensionEnum } from '../../runway/enum/runway-driver-dimension.enum';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
-import { TransactionEntryKindEnum } from '../../transaction-entry/enum/transaction-entry-kind.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
@@ -44,7 +42,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             /* jscpd:ignore-start */
             with: {
                 [TransactionAssociationEnum.ENTRIES]: {
-                    where: and(isNull(TransactionEntryEntityTable.deletedAt), isNull(TransactionEntryEntityTable.originalTransactionId)),
+                    where: this.buildLedgerEntryCondition(),
                     with: {
                         [TransactionEntryAssociationEnum.ACCOUNT]: {
                             with: {
@@ -151,9 +149,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .where(
                 and(
                     baseWhere,
-                    this.buildLedgerEntryCondition(),
-                    this.buildPrimaryEntryCondition(),
-                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
+                    this.buildPrimaryLedgerEntryCondition(),
+                    this.buildNonDebtAccountCondition(),
                     eq(TransactionEntityTable.type, type)
                 )
             );
@@ -168,35 +165,15 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntityTable)
             .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(
-                and(
-                    baseWhere,
-                    this.buildLedgerEntryCondition(),
-                    this.buildPrimaryEntryCondition(),
-                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
-                    ...typeConditions
-                )
-            );
+            .where(and(baseWhere, this.buildPrimaryLedgerEntryCondition(), this.buildNonDebtAccountCondition(), ...typeConditions));
     }
     /* jscpd:ignore-end */
 
     private buildStatisticsFilterWhere(filters: StatisticsFilterInterface) {
-        const dateCondition =
-            isDefined(filters.date) && (isDefined(filters.date.from) || isDefined(filters.date.to))
-                ? this.buildDateCondition(filters.date)
-                : null;
-        const conditions = [
-            this.buildVisibleTransactionCondition(),
-            ...(isDefined(dateCondition) ? [dateCondition] : []),
-            ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : []),
-            ...(isNotEmptyArray(filters.excludedCategoryIds) ? [this.buildExcludedCategoryCondition(filters.excludedCategoryIds)] : []),
-            ...(isDefined(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : []),
-            ...this.buildEntryAccountCondition(filters.accountIds),
-            ...(isDefined(filters.amount) ? [this.buildAmountCondition(filters.amount)] : [])
-        ].filter(isDefined);
-
-        // eslint-disable-next-line no-undefined
-        return isNotEmptyArray(conditions) ? and(...conditions) : undefined;
+        return and(
+            this.buildFilterWhere(filters),
+            ...(isNotEmptyArray(filters.excludedCategoryIds) ? [this.buildExcludedCategoryCondition(filters.excludedCategoryIds)] : [])
+        );
     }
 
     private buildExcludedCategoryCondition(categoryIds: number[]) {
@@ -251,9 +228,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .where(
                 and(
                     inArray(TransactionEntityTable.id, transactionIdsSubquery),
-                    this.buildLedgerEntryCondition(),
-                    this.buildPrimaryEntryCondition(),
-                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
+                    this.buildPrimaryLedgerEntryCondition(),
+                    this.buildNonDebtAccountCondition()
                 )
             )
             .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
@@ -276,9 +252,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .where(
                 and(
                     inArray(TransactionEntityTable.id, transactionIdsSubquery),
-                    this.buildLedgerEntryCondition(),
-                    this.buildPrimaryEntryCondition(),
-                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
+                    this.buildPrimaryLedgerEntryCondition(),
+                    this.buildNonDebtAccountCondition()
                 )
             )
             .groupBy(TagEntityTable.id)
@@ -309,9 +284,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 and(
                     this.buildStatisticsWhere(filters),
                     this.buildExpenseAnalyticsEntryCondition(),
-                    this.buildLedgerEntryCondition(),
-                    this.buildPrimaryEntryCondition(),
-                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
+                    this.buildPrimaryLedgerEntryCondition(),
+                    this.buildNonDebtAccountCondition()
                 )
             )
             .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
@@ -335,9 +309,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                 and(
                     this.buildStatisticsWhere(filters),
                     this.buildExpenseAnalyticsEntryCondition(),
-                    this.buildLedgerEntryCondition(),
-                    this.buildPrimaryEntryCondition(),
-                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
+                    this.buildPrimaryLedgerEntryCondition(),
+                    this.buildNonDebtAccountCondition(),
                     or(ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), isNotNull(TransactionTagsEntityTable.tagId))
                 )
             )
@@ -361,12 +334,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             ${TransactionEntryEntityTable.type} = ${type}
             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.DEBT}
-            AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+            AND ${this.buildNonDebtAccountCondition()}
         `;
-    }
-
-    private buildPrimaryEntryCondition() {
-        return eq(TransactionEntryEntityTable.kind, TransactionEntryKindEnum.PRIMARY);
     }
 
     private buildIncomeEntryValueSql(defaultInstrumentId: number) {
@@ -384,10 +353,10 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
         return sql<number>`CASE
             WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
                  AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                 AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                 AND ${this.buildNonDebtAccountCondition()}
             THEN ${this.buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}
             WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
-                 AND ${AccountEntityTable.type} != ${AccountTypeEnum.DEBT}
+                 AND ${this.buildNonDebtAccountCondition()}
             THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
             WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.CREDIT)}
             THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
@@ -422,7 +391,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     }
 
     private buildStatisticsLedgerWhere(filters: TransactionFilterInterface, extraCondition?: SQL) {
-        return and(this.buildStatisticsWhere(filters), this.buildLedgerEntryCondition(), this.buildPrimaryEntryCondition(), extraCondition);
+        return and(this.buildStatisticsWhere(filters), this.buildPrimaryLedgerEntryCondition(), extraCondition);
     }
 
     private buildRunwayMonthSql() {

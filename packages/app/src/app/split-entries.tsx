@@ -3,10 +3,11 @@ import { View } from 'react-native';
 
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
 import { SplitEntriesModalContent } from '../transaction/components/split-entries-modal-content/split-entries-modal-content';
-import { useSplitEntriesModal } from '../transaction/context/split-entries-modal.context';
+import { useSplitEntriesModal, useSplitEntriesModalParams } from '../transaction/context/split-entries-modal.context';
 
 export default function SplitEntriesModal() {
-    const [, resolveSplitEntries, currentParams] = useSplitEntriesModal();
+    const [, resolveSplitEntries] = useSplitEntriesModal();
+    const currentParams = useSplitEntriesModalParams();
     const { backgroundColor, screenOptions } = useModalRouteState(currentParams, resolveSplitEntries, null);
 
     const containerStyle = { flex: 1, backgroundColor };

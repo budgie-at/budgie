@@ -11,4 +11,7 @@ export interface TagsSelectorModalParams {
 
 export type TagsSelectorResult = number[] | null;
 
-export const [TagsSelectorModalContext, useTagsSelectorModal] = createModalContext<TagsSelectorModalParams, TagsSelectorResult>(null);
+export const [TagsSelectorModalContext, useTagsSelectorModal, useTagsSelectorModalParams] = createModalContext<
+    TagsSelectorModalParams,
+    TagsSelectorResult
+>(null);

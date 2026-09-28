@@ -12,7 +12,7 @@ import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useGetAllMccCategoriesQuery } from '../mcc-category/query/use-get-all-mcc-categories.query';
 import { formatMccDisplay } from '../mcc-category/utils/format-mcc-display.util';
-import { useRuleMccSelectorModal } from '../rule/context/rule-mcc-selector-modal.context';
+import { useRuleMccSelectorModal, useRuleMccSelectorModalParams } from '../rule/context/rule-mcc-selector-modal.context';
 
 import { RuleMccSelectorModalSelector } from './rule-mcc-selector-modal.selector';
 
@@ -37,7 +37,8 @@ const getEmptyIcon = (search: string) => (isNotEmptyString(search) ? UserIconNam
 
 export default function RuleMccSelectorModal() {
     const { t } = useLingui();
-    const [, resolveRuleMccSelector, currentParams] = useRuleMccSelectorModal();
+    const [, resolveRuleMccSelector] = useRuleMccSelectorModal();
+    const currentParams = useRuleMccSelectorModalParams();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
     const { mccCategories } = useGetAllMccCategoriesQuery();

@@ -10,7 +10,7 @@ import { HorizontalCell } from '../@generic/component/horizontal-cell/horizontal
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { RESYNC_WINDOW_OPTIONS } from '../sync/constant/resync-window-options.constant';
-import { useResyncWindowPickerModal } from '../sync/context/resync-window-picker-modal.context';
+import { useResyncWindowPickerModal, useResyncWindowPickerModalParams } from '../sync/context/resync-window-picker-modal.context';
 import { resyncService } from '../sync/service/resync.service';
 
 import { ResyncWindowPickerSelector } from './resync-window-picker.selector';
@@ -24,10 +24,10 @@ const NINETY_DAYS = 90;
 // eslint-disable-next-line max-lines-per-function -- Form orchestration component with multiple handlers, label/message lookup tables, and FlatList-style row rendering
 export default function ResyncWindowPickerModal() {
     const { t } = useLingui();
-    const [, resolveResyncWindowPicker, currentParams] = useResyncWindowPickerModal();
+    const [, resolveResyncWindowPicker] = useResyncWindowPickerModal();
     const { backgroundColor } = useFormsheetListStyles();
 
-    const accountId = currentParams?.accountId ?? 0;
+    const accountId = useResyncWindowPickerModalParams()?.accountId ?? 0;
     const containerStyle = { flex: 1, backgroundColor };
 
     const labelByDays: Record<number, string> = {

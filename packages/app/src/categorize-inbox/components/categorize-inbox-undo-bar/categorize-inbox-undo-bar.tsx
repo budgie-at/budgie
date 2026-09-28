@@ -42,7 +42,7 @@ const resolveUndoBarTitle = (
 export const CategorizeInboxUndoBar = ({ lastWrite, onUndo, onFollowUp }: Props) => {
     const { t } = useLingui();
     const { strategy } = useCategorizeInboxContext();
-    const { openRuleForm } = useRuleFormModal();
+    const [openRuleForm] = useRuleFormModal();
 
     const { assignments } = lastWrite;
     const [{ ruleConditionValue }] = assignments;
