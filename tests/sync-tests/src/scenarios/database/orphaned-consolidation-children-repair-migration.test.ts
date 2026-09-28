@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { applyMigration, seed, testDb } from '../../harness';
 
-const MIGRATION_FILE_NAME = '0066_repair_orphaned_consolidation_children.sql';
+const MIGRATION_FILE_NAME = '0069_repair_orphaned_consolidation_children.sql';
 const DELETED_AT = 1_780_342_675;
 
 const fetchSnapshot = async () => ({
