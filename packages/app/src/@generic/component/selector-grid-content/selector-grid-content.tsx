@@ -18,6 +18,7 @@ interface Props<Item> {
 
 const NUM_COLUMNS = 3;
 const ROW_GAP = 8;
+const WINDOW_SIZE = 5;
 
 export const SelectorGridContent = <Item,>(props: Props<Item>) => {
     const {
@@ -56,6 +57,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             numColumns={NUM_COLUMNS}
+            windowSize={WINDOW_SIZE}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             columnWrapperClassName="gap-x-lg"

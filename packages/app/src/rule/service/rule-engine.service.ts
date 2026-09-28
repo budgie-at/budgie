@@ -21,13 +21,16 @@ import {
     ruleRepository,
     transactionEntryRepository,
     transactionRepository,
+    transactionRuleRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
+import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { getTransactionDisplayTitle } from '../../transaction/utils/get-transaction-display-title.util';
-import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
+import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE, RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { extractRuleActionOutcomes } from '../util/extract-rule-action-outcomes.util';
 
 import { ruleMatcherService } from './rule-matcher.service';
@@ -69,7 +72,7 @@ class RuleEngineService {
         const mccCodeMap = await this.buildMccCodeMapIfNeeded(rules, transactionInputs);
         const evaluationInputs = transactionInputs.map(input => this.toRuleEvaluationInput(input, mccCodeMap));
 
-        await this.getBatchStarts(transactionIds.length).reduce(
+        await this.getBatchStarts(transactionIds.length, RULE_BATCH_SIZE).reduce(
             (previousBatch, batchStart) =>
                 previousBatch.then(() => this.applyRulesToTransactionsBatch(batchStart, transactionIds, evaluationInputs, rules)),
             Promise.resolve()
@@ -120,6 +123,7 @@ class RuleEngineService {
             `done ruleId=${ruleId} hasProgress=${isDefined(onProgress)} applied=${result.applied} failed=${result.failed} total=${result.total}`,
         (error, ruleId, onProgress) => `throw ruleId=${ruleId} hasProgress=${isDefined(onProgress)} error=${getErrorMessage(error)}`
     )
+    @InvalidateDatabaseLiveQuery()
     async applyRuleToMatchingTransactions(
         ruleId: number,
         onProgress: ((processed: number, total: number) => void) | null
@@ -155,11 +159,12 @@ class RuleEngineService {
     }
 
     @Log(
-        (batchIds, actions) => `enter transactionIds=${batchIds.join(',')} actionTypes=${actions.map(action => action.type).join(',')}`,
+        (batchIds, actions) =>
+            `enter firstTransactionId=${batchIds[0]} transactionCount=${batchIds.length} actionTypes=${actions.map(action => action.type).join(',')}`,
         (_result, batchIds, actions) =>
-            `done transactionIds=${batchIds.join(',')} actionTypes=${actions.map(action => action.type).join(',')}`,
+            `done firstTransactionId=${batchIds[0]} transactionCount=${batchIds.length} actionTypes=${actions.map(action => action.type).join(',')}`,
         (error, batchIds, actions) =>
-            `throw transactionIds=${batchIds.join(',')} actionTypes=${actions.map(action => action.type).join(',')} error=${getErrorMessage(error)}`
+            `throw firstTransactionId=${batchIds[0]} transactionCount=${batchIds.length} actionTypes=${actions.map(action => action.type).join(',')} error=${getErrorMessage(error)}`
     )
     private async applyRuleActionsToTransactionBatchTransaction(batchIds: number[], actions: RuleActionEntityInterface[]): Promise<void> {
         await transactionAsync(db, async transaction => this.applyRuleActionsToTransactionBatch(batchIds, actions, transaction));
@@ -205,11 +210,12 @@ class RuleEngineService {
         let processed = 0;
         let failed = 0;
         const total = matchingIds.length;
+        const batchSize = this.hasConvertToTransferAction(actions) ? RULE_BATCH_SIZE : RULE_SET_BATCH_SIZE;
 
-        await this.getBatchStarts(total).reduce(
+        await this.getBatchStarts(total, batchSize).reduce(
             (previousBatch, batchStart) =>
                 previousBatch.then(async () => {
-                    const batchIds = matchingIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
+                    const batchIds = matchingIds.slice(batchStart, batchStart + batchSize);
                     const batchFailed = await this.applyRuleToMatchingTransactionBatch(batchIds, actions);
 
                     failed += batchFailed;
@@ -225,7 +231,7 @@ class RuleEngineService {
     }
 
     private async applyRuleToMatchingTransactionBatch(batchIds: number[], actions: RuleActionEntityInterface[]): Promise<number> {
-        await this.waitForNextBatch();
+        await microPause();
 
         return this.applyRuleActionsToTransactionBatchTransaction(batchIds, actions).then(
             () => 0,
@@ -238,12 +244,57 @@ class RuleEngineService {
         actions: RuleActionEntityInterface[],
         transaction: DB
     ): Promise<void> {
-        await this.applyRuleItemsInBatch(
-            batchIds,
-            transaction,
-            transactionId => transactionId,
-            transactionId => this.applyRuleActions(transactionId, actions, transaction, new Set<RuleActionTypeEnum>())
+        const categoryAction = actions.find(action => action.type === RuleActionTypeEnum.SET_CATEGORY && isDefined(action.categoryId));
+        const tagIds = [
+            ...new Set(actions.filter(action => action.type === RuleActionTypeEnum.ADD_TAG).map(action => action.tagId))
+        ].filter(isDefined);
+
+        const categorizedIds = isDefined(categoryAction?.categoryId)
+            ? await transactionRuleRepository.setCategoryByTransactionIds(batchIds, categoryAction.categoryId, transaction)
+            : [];
+        const taggedIds = await tagIds.reduce<Promise<number[]>>(
+            async (previousTaggedIdsPromise, tagId) => [
+                ...(await previousTaggedIdsPromise),
+                ...(await transactionTagsRepository.addTagByTransactionIds(batchIds, tagId, transaction))
+            ],
+            Promise.resolve([])
         );
+
+        await transactionRepository.touchUpdatedByIds(
+            [...new Set([...categorizedIds, ...taggedIds])],
+            TransactionUpdatedByEnum.RULE,
+            transaction
+        );
+        await this.convertTransactionBatchToTransfer(batchIds, actions, transaction);
+    }
+
+    private async convertTransactionBatchToTransfer(
+        batchIds: number[],
+        actions: RuleActionEntityInterface[],
+        transaction: DB
+    ): Promise<void> {
+        const transferAction = actions.find(
+            action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER && isDefined(action.accountId)
+        );
+
+        if (!isDefined(transferAction?.accountId)) {
+            return;
+        }
+
+        const { accountId } = transferAction;
+        const convertedAny = await batchIds.reduce(
+            (previousItem, transactionId) =>
+                previousItem.then(async previousConverted => {
+                    const converted = await this.convertTransactionToTransfer(transactionId, accountId, transaction);
+
+                    return previousConverted || converted;
+                }),
+            Promise.resolve(false)
+        );
+
+        if (convertedAny) {
+            await accountBalanceIncrementalService.updateAllBalances(true, transaction);
+        }
     }
 
     private async applyRuleItemsInBatch<Item>(
@@ -287,8 +338,8 @@ class RuleEngineService {
         return convertedToTransfer;
     }
 
-    private getBatchStarts(total: number): number[] {
-        return Array.from({ length: Math.ceil(total / RULE_BATCH_SIZE) }, (_value, index) => index * RULE_BATCH_SIZE);
+    private getBatchStarts(total: number, batchSize: number): number[] {
+        return Array.from({ length: Math.ceil(total / batchSize) }, (_value, index) => index * batchSize);
     }
 
     private async waitForNextBatch(): Promise<void> {
@@ -328,7 +379,11 @@ class RuleEngineService {
     }
 
     private hasPostCreateRuleAction(matchingRules: RuleWithRelationsEntityInterface[]): boolean {
-        return matchingRules.some(rule => rule.actions.some(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER));
+        return matchingRules.some(rule => this.hasConvertToTransferAction(rule.actions));
+    }
+
+    private hasConvertToTransferAction(actions: RuleActionEntityInterface[]): boolean {
+        return actions.some(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER);
     }
 
     private toRuleEvaluationInput(input: TransactionCreateInputInterface, mccCodeMap: Map<number, string>): RuleEvaluationInputInterface {
@@ -439,13 +494,11 @@ class RuleEngineService {
         }
 
         appliedExclusiveActions.add(RuleActionTypeEnum.SET_CATEGORY);
-        await transactionEntryRepository.updateCategoryByTransactionId(
-            transactionId,
-            action.categoryId,
-            CategorySourceEnum.RULE,
-            transaction
-        );
-        await transactionRepository.touchUpdatedAt(transactionId, transaction);
+        const categorizedIds = await transactionRuleRepository.setCategoryByTransactionIds([transactionId], action.categoryId, transaction);
+
+        if (isNotEmptyArray(categorizedIds)) {
+            await transactionRepository.touchUpdatedAt(transactionId, transaction);
+        }
     }
 
     private async applyAddTagAction(transactionId: number, action: RuleActionEntityInterface, transaction: DB): Promise<void> {
@@ -453,15 +506,11 @@ class RuleEngineService {
             return;
         }
 
-        const existingTags = await transactionTagsRepository.findByTransactionId(transactionId, transaction);
-        const hasTag = existingTags.some(tag => tag.tagId === action.tagId);
+        const taggedIds = await transactionTagsRepository.addTagByTransactionIds([transactionId], action.tagId, transaction);
 
-        if (hasTag) {
-            return;
+        if (isNotEmptyArray(taggedIds)) {
+            await transactionRepository.touchUpdatedAt(transactionId, transaction);
         }
-
-        await transactionTagsRepository.bulkCreate([{ transactionId, tagId: action.tagId, isPrimary: false }], transaction);
-        await transactionRepository.touchUpdatedAt(transactionId, transaction);
     }
 
     private async convertTransactionToTransfer(transactionId: number, targetAccountId: number, dbTransaction: DB): Promise<boolean> {

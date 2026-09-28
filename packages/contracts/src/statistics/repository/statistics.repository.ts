@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
-import { SQL, and, desc, eq, getTableColumns, inArray, isNull, ne, notInArray, or, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, getTableColumns, inArray, isNotNull, isNull, ne, notInArray, or, sql } from 'drizzle-orm';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -190,7 +190,9 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             ...(isDefined(dateCondition) ? [dateCondition] : []),
             ...(isDefined(filters.categoryIds) ? [this.buildCategoryCondition(filters.categoryIds)] : []),
             ...(isNotEmptyArray(filters.excludedCategoryIds) ? [this.buildExcludedCategoryCondition(filters.excludedCategoryIds)] : []),
-            ...(isDefined(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : [])
+            ...(isDefined(filters.tagIds) ? [this.buildTagCondition(filters.tagIds)] : []),
+            ...this.buildEntryAccountCondition(filters.accountIds),
+            ...(isDefined(filters.amount) ? [this.buildAmountCondition(filters.amount)] : [])
         ].filter(isDefined);
 
         // eslint-disable-next-line no-undefined
@@ -335,7 +337,8 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                     this.buildExpenseAnalyticsEntryCondition(),
                     this.buildLedgerEntryCondition(),
                     this.buildPrimaryEntryCondition(),
-                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT)
+                    ne(AccountEntityTable.type, AccountTypeEnum.DEBT),
+                    or(ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), isNotNull(TransactionTagsEntityTable.tagId))
                 )
             )
             .groupBy(TagEntityTable.id)

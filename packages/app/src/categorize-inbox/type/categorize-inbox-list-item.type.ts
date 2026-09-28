@@ -1,4 +1,4 @@
-import { CategorizeInboxClusterItemInterface } from '../interface/categorize-inbox-cluster-item.interface';
+import { CategorizeInboxClusterInterface } from '../interface/categorize-inbox-cluster.interface';
 import { CategorizeInboxSectionHeaderItemInterface } from '../interface/categorize-inbox-section-header-item.interface';
 
-export type CategorizeInboxListItemType = CategorizeInboxSectionHeaderItemInterface | CategorizeInboxClusterItemInterface;
+export type CategorizeInboxListItemType = CategorizeInboxSectionHeaderItemInterface | CategorizeInboxClusterInterface;

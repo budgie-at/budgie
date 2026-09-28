@@ -1,6 +1,9 @@
+import type { CategorizeInboxRowInterface } from '@budgie/contracts';
+
 export interface CategorizeInboxAssignmentInterface {
-    readonly clusterKey: string;
-    readonly categoryId: number;
-    readonly transactionIds: number[];
+    readonly key: string;
+    readonly displayTitle: string;
+    readonly labelId: number;
+    readonly rows: CategorizeInboxRowInterface[];
     readonly ruleConditionValue: string;
 }

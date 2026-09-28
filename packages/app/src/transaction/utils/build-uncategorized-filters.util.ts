@@ -41,6 +41,7 @@ export const buildUncategorizedFilters = (params: AnalyticsTransactionsRoutePara
         to: isDefined(params.endDate) ? new Date(params.endDate) : null
     },
     accountIds: buildFilterIds(params.accountIds),
+    categoryIds: buildFilterIds(params.categoryIds),
     tagIds: buildFilterIds(params.tagIds),
     amount: buildAmountRange(params)
 });

@@ -5,16 +5,16 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
+import { UNTAGGED_TAG_ID_PARAM } from '../../constant/untagged-tag-id-param.constant';
 import { AnalyticsTransactionsModeEnum } from '../../enum/analytics-transactions-mode.enum';
 import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filter-page-header-mode.enum';
 import { useGetStatisticsTransactionsQuery } from '../../query/use-get-statistics-transactions.query';
+import { buildUncategorizedFilters } from '../../utils/build-uncategorized-filters.util';
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../interface/analytics-transactions-route-params.interface';
 
-const UNTAGGED_PARAM = 'untagged';
-
-const isUntaggedNav = (params: AnalyticsTransactionsRouteParamsInterface): boolean => params.tagId === UNTAGGED_PARAM;
+const isUntaggedNav = (params: AnalyticsTransactionsRouteParamsInterface): boolean => params.tagId === UNTAGGED_TAG_ID_PARAM;
 
 const buildCategoryIds = (params: AnalyticsTransactionsRouteParamsInterface): number[] | null => {
     if (params.mode === AnalyticsTransactionsModeEnum.BUDGET_OTHER) {
@@ -26,7 +26,7 @@ const buildCategoryIds = (params: AnalyticsTransactionsRouteParamsInterface): nu
     }
 
     if (isUntaggedNav(params)) {
-        return null;
+        return params.categoryIds ?? null;
     }
 
     if (isDefined(params.type) && !isDefined(params.tagId)) {
@@ -48,16 +48,22 @@ const buildTagIds = (params: AnalyticsTransactionsRouteParamsInterface): number[
     return null;
 };
 
-const buildFilters = (params: AnalyticsTransactionsRouteParamsInterface): StatisticsFilterInterface => ({
-    type: params.type === TransactionTypeEnum.INCOME || params.type === TransactionTypeEnum.EXPENSE ? params.type : null,
-    date: {
-        from: isDefined(params.startDate) ? new Date(params.startDate) : null,
-        to: isDefined(params.endDate) ? new Date(params.endDate) : null
-    },
-    categoryIds: buildCategoryIds(params),
-    excludedCategoryIds: params.excludedCategoryIds ?? null,
-    tagIds: buildTagIds(params)
-});
+const buildFilters = (params: AnalyticsTransactionsRouteParamsInterface): StatisticsFilterInterface => {
+    const { accountIds, amount } = buildUncategorizedFilters(params);
+
+    return {
+        type: params.type === TransactionTypeEnum.INCOME || params.type === TransactionTypeEnum.EXPENSE ? params.type : null,
+        date: {
+            from: isDefined(params.startDate) ? new Date(params.startDate) : null,
+            to: isDefined(params.endDate) ? new Date(params.endDate) : null
+        },
+        categoryIds: buildCategoryIds(params),
+        excludedCategoryIds: params.excludedCategoryIds ?? null,
+        tagIds: buildTagIds(params),
+        accountIds,
+        amount
+    };
+};
 
 const getHeaderMode = (params: AnalyticsTransactionsRouteParamsInterface): TransactionFilterPageHeaderModeEnum | null => {
     if (params.mode === AnalyticsTransactionsModeEnum.BUDGET_OTHER) {

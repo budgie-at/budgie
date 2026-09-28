@@ -1365,7 +1365,7 @@ section[data-density='COMPACT'] .story-intro {
 .cdemo {
     position: relative;
     width: min(100%, 21rem);
-    height: 30rem;
+    height: 31rem;
     overflow: hidden;
     border: 1px solid hsl(var(--border));
     border-radius: 2rem;
@@ -1394,7 +1394,7 @@ section[data-density='COMPACT'] .story-intro {
 }
 
 .cdemo-progress {
-    margin-top: 0.625rem;
+    margin-block: 0.5rem 0.625rem;
     height: 3px;
     overflow: hidden;
     border-radius: 9999px;
@@ -1465,11 +1465,11 @@ section[data-density='COMPACT'] .story-intro {
 }
 
 .cdemo-label[data-slot='0'] {
-    top: 5rem;
+    top: 3.5rem;
 }
 
 .cdemo-label[data-slot='2'] {
-    top: 18rem;
+    top: 16.5rem;
 }
 
 .cdemo-card {
@@ -1492,17 +1492,17 @@ section[data-density='COMPACT'] .story-intro {
 }
 
 .cdemo-card[data-slot='0'] {
-    top: 6.5rem;
+    top: 5rem;
     transition-delay: 300ms;
 }
 
 .cdemo-card[data-slot='1'] {
-    top: 12.25rem;
+    top: 10.75rem;
     transition-delay: 360ms;
 }
 
 .cdemo-card[data-slot='2'] {
-    top: 19.5rem;
+    top: 18rem;
     transition-delay: 420ms;
 }
 
@@ -1510,16 +1510,6 @@ section[data-density='COMPACT'] .story-intro {
     display: flex;
     align-items: flex-start;
     gap: 0.625rem;
-}
-
-.cdemo-card-icon {
-    display: grid;
-    flex: none;
-    width: 1.75rem;
-    height: 1.75rem;
-    place-items: center;
-    border-radius: 9999px;
-    background: hsl(var(--muted));
 }
 
 .cdemo-card-heading {
@@ -1585,22 +1575,54 @@ section[data-density='COMPACT'] .story-intro {
     transition: transform 320ms var(--ease-out);
 }
 
-.cdemo-accept {
+.cdemo-panel {
     position: absolute;
-    right: 1rem;
-    bottom: 1rem;
-    left: 1rem;
+    inset: auto 0 0;
+    padding: 0.75rem 1rem 1rem;
+    border-top: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+}
+
+.cdemo-slot {
+    position: relative;
+    height: 2.5rem;
+}
+
+.cdemo-accept,
+.cdemo-undo {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    height: 2.5rem;
     border-radius: 0.875rem;
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
     font-size: 0.8125rem;
     font-weight: 600;
     opacity: 0;
+}
+
+.cdemo-undo {
+    gap: 0.5rem;
+    padding-inline: 0.75rem;
+    border: 1px solid hsl(var(--border));
+    transform: translateY(8px);
+    transition:
+        opacity 280ms var(--ease-out),
+        transform 280ms var(--ease-out);
+}
+
+.cdemo-undo-title {
+    flex: 1;
+    overflow: hidden;
+    font-size: 0.6875rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cdemo-accept {
+    justify-content: center;
+    gap: 0.5rem;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
     transform: translateY(120%);
     transition:
         opacity 360ms var(--ease-out) 350ms,
@@ -1693,6 +1715,12 @@ section[data-density='COMPACT'] .story-intro {
     transition-delay: 0ms;
 }
 
+.cdemo[data-accepted] .cdemo-undo {
+    opacity: 1;
+    transform: none;
+    transition-delay: 160ms;
+}
+
 .cdemo[data-accepted] .cdemo-card[data-count],
 .cdemo[data-accepted] .cdemo-label[data-slot='0'] {
     opacity: 0;
@@ -1722,7 +1750,8 @@ section[data-density='COMPACT'] .story-intro {
     transition: opacity 200ms var(--ease-out);
 }
 
-.cdemo[data-rewinding] .cdemo-accept {
+.cdemo[data-rewinding] .cdemo-accept,
+.cdemo[data-rewinding] .cdemo-undo {
     opacity: 0;
     transform: translateY(120%);
 }

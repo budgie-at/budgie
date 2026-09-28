@@ -18,8 +18,9 @@ import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@
 
 import { transactionRepository, transactionRuleRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { microPause } from '../../@generic/utils/micro-pause.util';
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
-import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE } from '../constant/batch-processing.constant';
+import { RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
 
 import type { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
@@ -143,6 +144,10 @@ class RuleMatcherService {
         (error, rule, input) => `throw ruleId=${rule.id} title="${input.title}" error=${getErrorMessage(error)}`
     )
     evaluateRule(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
+        return this.isRuleMatch(rule, input);
+    }
+
+    private isRuleMatch(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
         if (input.type === TransactionTypeEnum.ADJUSTMENT) {
             return false;
         }
@@ -306,8 +311,8 @@ class RuleMatcherService {
 
         let count = 0;
 
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
+        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
+            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
             // eslint-disable-next-line no-await-in-loop
             const transactions = await transactionRepository.findByIdsWithEntries(batchIds);
 
@@ -334,8 +339,8 @@ class RuleMatcherService {
 
         const matchingIds: number[] = [];
 
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_BATCH_SIZE);
+        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
+            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
             // eslint-disable-next-line no-await-in-loop
             const transactions = await transactionRepository.findByIdsWithEntries(batchIds);
 
@@ -407,7 +412,7 @@ class RuleMatcherService {
             for (const transaction of transactions) {
                 const input = this.convertTransactionForRuleEvaluation(transaction);
 
-                if (this.evaluateRule(rule, input)) {
+                if (this.isRuleMatch(rule, input)) {
                     matchingIds.push(transaction.id);
                 }
             }
@@ -424,12 +429,10 @@ class RuleMatcherService {
 
         while (hasMore) {
             // eslint-disable-next-line no-await-in-loop
-            await new Promise<void>(resolve => {
-                setTimeout(resolve, RULE_BATCH_DELAY_MS);
-            });
+            await microPause();
 
             // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.findAllWithMccCategoryOffset(RULE_BATCH_SIZE, offset);
+            const transactions = await transactionRepository.findAllWithMccCategoryOffset(RULE_SET_BATCH_SIZE, offset);
 
             if (!isNotEmptyArray(transactions)) {
                 break;
@@ -437,8 +440,8 @@ class RuleMatcherService {
 
             callback(transactions);
 
-            hasMore = transactions.length >= RULE_BATCH_SIZE;
-            offset += RULE_BATCH_SIZE;
+            hasMore = transactions.length >= RULE_SET_BATCH_SIZE;
+            offset += RULE_SET_BATCH_SIZE;
         }
     }
 

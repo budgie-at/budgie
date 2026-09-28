@@ -1,8 +1,8 @@
-import { CategorizeDemoAccept } from '../categorize-demo-accept/categorize-demo-accept';
 import { CategorizeDemoCard } from '../categorize-demo-card/categorize-demo-card';
 import { CategorizeDemoChip } from '../categorize-demo-chip/categorize-demo-chip';
 import { CategorizeDemoCount } from '../categorize-demo-count/categorize-demo-count';
 import { CategorizeDemoHeader } from '../categorize-demo-header/categorize-demo-header';
+import { CategorizeDemoPanel } from '../categorize-demo-panel/categorize-demo-panel';
 import { CategorizeDemoPlayer } from '../categorize-demo-player/categorize-demo-player';
 import { CategorizeDemoRawRow } from '../categorize-demo-raw-row/categorize-demo-raw-row';
 import { CategorizeDemoSectionLabel } from '../categorize-demo-section-label/categorize-demo-section-label';
@@ -24,11 +24,11 @@ const CategorizeDemoRoot = ({ caption, replay, children }: Props) => (
 );
 
 export const CategorizeDemo = Object.assign(CategorizeDemoRoot, {
-    Accept: CategorizeDemoAccept,
     Card: CategorizeDemoCard,
     Chip: CategorizeDemoChip,
     Count: CategorizeDemoCount,
     Header: CategorizeDemoHeader,
+    Panel: CategorizeDemoPanel,
     RawRow: CategorizeDemoRawRow,
     SectionLabel: CategorizeDemoSectionLabel,
     Suggestion: CategorizeDemoSuggestion

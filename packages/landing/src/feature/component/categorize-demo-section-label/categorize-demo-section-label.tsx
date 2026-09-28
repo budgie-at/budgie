@@ -2,13 +2,13 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly slot: number;
-    readonly count: number;
+    readonly summary: string;
     readonly children: ReactNode;
 }
 
-export const CategorizeDemoSectionLabel = ({ slot, count, children }: Props) => (
+export const CategorizeDemoSectionLabel = ({ slot, summary, children }: Props) => (
     <p className="cdemo-label" data-slot={slot}>
         <span>{children}</span>
-        <span>{count}</span>
+        <span>{summary}</span>
     </p>
 );

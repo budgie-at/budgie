@@ -31,30 +31,15 @@ msgstr " • {embeddingPending} Tx ausstehend"
 msgid "{0, plural, one {# account created} other {# accounts created}}"
 msgstr "{0, plural, one {# Konto erstellt} other {# Konten erstellt}}"
 
-#. placeholder {0}: cluster.rows.length
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
-msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
-msgstr "{0, plural, one {# Geldautomaten-Abhebung} other {# Geldautomaten-Abhebungen}}"
-
-#. placeholder {0}: cluster.rows.length
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
-msgid "{0, plural, one {# card transfer} other {# card transfers}}"
-msgstr "{0, plural, one {# Kartenüberweisung} other {# Kartenüberweisungen}}"
-
-#. placeholder {0}: categoryIds.size
+#. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
-msgid "{0, plural, one {# category} other {# categories}}"
-msgstr "{0, plural, one {# Kategorie} other {# Kategorien}}"
+msgid "{0, plural, one {# tag} other {# tags}}"
+msgstr "{0, plural, one {# Tag} other {# Tags}}"
 
-#. placeholder {0}: cluster.rows.length
+#. placeholder {0}: rows.length
 #: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# Transaktion} other {# Transaktionen}}"
-
-#. placeholder {0}: transactionIds.length
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
-msgid "{0, plural, one {Move # transaction to this account?} other {Move # transactions to this account?}}"
-msgstr "{0, plural, one {# Transaktion auf dieses Konto verschieben?} other {# Transaktionen auf dieses Konto verschieben?}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
@@ -89,11 +74,11 @@ msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verf
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# Kategorie} other {# Kategorien}}"
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
 msgstr "{categorizedCount, plural, one {# in dieser Sitzung kategorisiert} other {# in dieser Sitzung kategorisiert}}"
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{categorizedCount, plural, one {# done} other {# done}}"
 msgstr "{categorizedCount, plural, one {# erledigt} other {# erledigt}}"
 
@@ -188,21 +173,25 @@ msgstr "{percentage}% der Ausgaben"
 msgid "{percentage}% of income"
 msgstr "{percentage}% der Einnahmen"
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{remainingCount, plural, one {# left} other {# left}}"
 msgstr "{remainingCount, plural, one {# übrig} other {# übrig}}"
-
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
-msgid "{rowCount, plural, one {# categorized} other {# categorized}}"
-msgstr "{rowCount, plural, one {# kategorisiert} other {# kategorisiert}}"
 
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{rowCount, plural, one {# Transaktion} other {# Transaktionen}}"
 
-#: src/categorize-inbox/components/categorize-inbox-accept-all-button/categorize-inbox-accept-all-button.tsx
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{rowCount, plural, one {Accept # suggestion} other {Accept # suggestions}}"
 msgstr "{rowCount, plural, one {# Vorschlag akzeptieren} other {# Vorschläge akzeptieren}}"
+
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+msgid "{rowCount, plural, one {Categorized # transaction} other {Categorized # transactions}}"
+msgstr "{rowCount, plural, one {# Transaktion kategorisiert} other {# Transaktionen kategorisiert}}"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
+msgstr "{rowCount, plural, one {# Transaktion getaggt} other {# Transaktionen getaggt}}"
 
 #: src/app/transaction-account-filter.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
@@ -220,7 +209,7 @@ msgstr "{selectedCount, plural, =0 {Alle Tags anzeigen} one {# Tag anzeigen} oth
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# ähnliche Transaktion} other {# ähnliche Transaktionen}}"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{skippedCount, plural, one {# übersprungen} other {# übersprungen}}"
 
@@ -239,6 +228,10 @@ msgstr "{spikeLabel} hatte eine Einmalausgabe von {spikeAmount}. Die Schätzung 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# Element} other {# Elemente}}"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
+msgstr "{taggedCount, plural, one {# in dieser Sitzung getaggt} other {# in dieser Sitzung getaggt}}"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
@@ -317,10 +310,6 @@ msgstr "Etwa 6 Minuten"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About a minute"
 msgstr "Etwa eine Minute"
-
-#: src/categorize-inbox/hook/use-categorize-inbox-top-suggestion.hook.ts
-msgid "Accept suggestion"
-msgstr "Vorschlag übernehmen"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -454,6 +443,14 @@ msgstr "Meine erste Ausgabe hinzufügen"
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Add Tag"
 msgstr "Tag hinzufügen"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "Add tags"
+msgstr "Tags hinzufügen"
+
+#: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
+msgid "Add tags to these transactions"
+msgstr "Tags zu diesen Transaktionen hinzufügen"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -824,7 +821,6 @@ msgstr "Kann Stunden dauern"
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
 #: src/import/components/import-database/import-database.tsx
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
@@ -874,11 +870,11 @@ msgstr "Importe automatisch kategorisieren"
 msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
 msgstr "Kategorisiert Transaktionen, schlägt Tags vor und transkribiert Sprachnotizen direkt auf diesem Gerät. Lädt einmalig etwa 2,5 GB an Modellen herunter – am besten über WLAN."
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize"
 msgstr "Kategorisieren"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chip/categorize-inbox-suggestion-chip.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize as {categoryTitle}"
 msgstr "Als {categoryTitle} kategorisieren"
 
@@ -1124,7 +1120,7 @@ msgstr "Konto konnte nicht archiviert werden"
 msgid "Could not attach debt"
 msgstr "Schuld konnte nicht verknüpft werden"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Could not categorize transactions"
 msgstr "Transaktionen konnten nicht kategorisiert werden"
 
@@ -1299,6 +1295,11 @@ msgstr "Datenbanksicherung konnte nicht ausgewählt werden"
 msgid "Could not set up sync"
 msgstr "Synchronisation konnte nicht eingerichtet werden"
 
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+msgid "Could not tag transactions"
+msgstr "Tags konnten nicht hinzugefügt werden"
+
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Could not unconsolidate transaction."
 msgstr "Transaktion konnte nicht entkonsolidiert werden."
@@ -1358,10 +1359,6 @@ msgstr "Gedeckt durch dein liquides Guthaben"
 #: src/export/components/export-database/export-database.tsx
 msgid "Create a backup of all your data"
 msgstr "Erstellen Sie eine Sicherung aller Ihrer Daten"
-
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
-msgid "Create a cash account to track ATM withdrawals"
-msgstr "Bargeldkonto erstellen, um Abhebungen am Geldautomaten zu erfassen"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
@@ -1876,9 +1873,13 @@ msgstr "Erste Bank"
 msgid "Every account from this bank is already linked."
 msgstr "Jedes Konto dieser Bank ist bereits verknüpft."
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Every transaction has a category."
 msgstr "Jede Transaktion hat eine Kategorie."
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "Every transaction has a tag."
+msgstr "Jede Transaktion hat einen Tag."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
@@ -2115,7 +2116,7 @@ msgstr "Auf der Startseite ausgeblendet"
 msgid "Hide account balances and net worth when taking screenshots"
 msgstr "Kontostände und Gesamtvermögen bei Screenshots ausblenden"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "Hide transactions for {displayTitle}"
 msgstr "Transaktionen für {displayTitle} ausblenden"
 
@@ -2602,21 +2603,17 @@ msgstr "Monatssumme"
 msgid "months left"
 msgstr "Monate übrig"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "More categories"
 msgstr "Weitere Kategorien"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "More tags"
+msgstr "Weitere Tags"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Most likely balance"
 msgstr "Wahrscheinlichster Kontostand"
-
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
-msgid "Move"
-msgstr "Verschieben"
-
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
-msgid "Move to account…"
-msgstr "Auf Konto verschieben…"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -3074,7 +3071,7 @@ msgstr "pro Monat"
 msgid "Permission to access contacts was denied."
 msgstr "Die Berechtigung zum Zugriff auf Kontakte wurde verweigert."
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-row/categorize-inbox-cluster-row.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Pick a category for this transaction"
 msgstr "Kategorie für diese Transaktion wählen"
 
@@ -3089,6 +3086,10 @@ msgstr "Zeitraum wählen. Bestehende Daten bleiben erhalten."
 #: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Pick any. We'll create the accounts for you — rename or remove them later."
 msgstr "Wählen Sie beliebig viele aus. Wir legen die Konten für Sie an — Sie können sie später umbenennen oder entfernen."
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "Pick tags for this transaction"
+msgstr "Tags für diese Transaktion wählen"
 
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PIN must be {PIN_LENGTH} digits"
@@ -3118,7 +3119,6 @@ msgstr "Bitte versuchen Sie es erneut"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/tags.tsx
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
 #: src/category/components/category-form/category-form.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Please try again later"
@@ -3561,7 +3561,7 @@ msgstr "Alle auswählen"
 msgid "Select all categories"
 msgstr "Alle Kategorien auswählen"
 
-#: src/categorize-inbox/components/categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 #: src/transaction/components/split-entry-row/split-entry-row.tsx
 msgid "Select category"
 msgstr "Kategorie auswählen"
@@ -3605,6 +3605,10 @@ msgstr "Quelle auswählen"
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
 msgid "Select Tag"
 msgstr "Tag auswählen"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "Select tags"
+msgstr "Tags wählen"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Select the downloaded PDF file"
@@ -3724,7 +3728,7 @@ msgstr "Ausgewählten Bereich anzeigen"
 msgid "Show this account on the main page"
 msgstr "Dieses Konto auf der Hauptseite anzeigen"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-summary/categorize-inbox-cluster-summary.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "Show transactions for {displayTitle}"
 msgstr "Transaktionen für {displayTitle} anzeigen"
 
@@ -3744,10 +3748,6 @@ msgstr "Überspringen"
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Smarter, without the cloud"
 msgstr "Schlauer, ganz ohne Cloud"
-
-#: src/categorize-inbox/components/categorize-inbox-transfer-card/categorize-inbox-transfer-card.tsx
-msgid "Some transactions could not be converted"
-msgstr "Einige Transaktionen konnten nicht umgewandelt werden"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
@@ -3922,6 +3922,10 @@ msgstr "Tag → {tagTitle}"
 msgid "Tag a transaction"
 msgstr "Transaktion taggen"
 
+#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+msgid "Tag as {tagTitle}"
+msgstr "Mit {tagTitle} taggen"
+
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Tag Name"
 msgstr "Tag-Name"
@@ -3951,6 +3955,10 @@ msgstr "Tippen Sie oben auf \"API-Schlüssel abrufen\" und melden Sie sich bei B
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above and log in to Monobank"
 msgstr "Tippen Sie oben auf \"API-Token abrufen\" und melden Sie sich bei Monobank an"
+
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+msgid "Tap a suggestion to accept it"
+msgstr "Tippe auf einen Vorschlag, um ihn zu übernehmen"
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"
@@ -4191,10 +4199,6 @@ msgstr "Vom Konto übertragen"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer To Account"
 msgstr "Auf Konto übertragen"
-
-#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
-msgid "Transfers"
-msgstr "Überweisungen"
 
 #: src/ai/service/ai-system-status.service.ts
 msgid "Translating {translationPending} of {total}{trailer}"

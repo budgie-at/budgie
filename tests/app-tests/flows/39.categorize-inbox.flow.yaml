@@ -22,6 +22,8 @@ appId: ${APP_ID}
 
 - assertVisible: '3 left.*'
 - assertVisible:
+      id: 'CategorizeInboxPanel.Progress'
+- assertVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
 - assertVisible:
       id: 'CategorizeInboxAcceptAllButton.Button'
@@ -33,6 +35,7 @@ appId: ${APP_ID}
           id: 'CategorizeInboxUndoBar'
       timeout: 5000
 - assertVisible: '1 left.*'
+- assertVisible: '1 left · 2 done'
 - assertNotVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
 
@@ -41,12 +44,27 @@ appId: ${APP_ID}
 - assertVisible: '3 left.*'
 - assertVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
+- assertVisible:
+      id: 'CategorizeInboxAcceptAllButton.Button'
 
 - tapOn:
       id: 'CategorizeInboxSuggestionChip.EXPENSE\|confident coffee.0'
 - assertVisible: '1 left.*'
 - assertNotVisible:
       id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
+
+- tapOn:
+      id: 'CategorizeInboxUndoBar.FollowUpButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TagPickerBottomSheet.Card.E2E Coffee Tag'
+      timeout: 5000
+- tapOn:
+      id: 'tags-selector-modal-done-button'
+- extendedWaitUntil:
+      notVisible:
+          id: 'TagPickerBottomSheet.Card.E2E Coffee Tag'
+      timeout: 5000
 
 - tapOn:
       id: 'CategorizeInboxPage.ShowListButton'
@@ -65,3 +83,72 @@ appId: ${APP_ID}
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
 - assertVisible: '1 left.*'
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+- tapOn:
+      id: 'TabBar.Analytics'
+- extendedWaitUntil:
+      visible:
+          id: 'AnalyticsPage.Container'
+      timeout: 5000
+- tapOn:
+      id: 'TransactionFilters.DateChipActive'
+- tapOn:
+      id: 'TransactionFilters.DatePeriod.ALL_TIME'
+- tapOn:
+      id: 'TransactionFilters.DateApplyButton'
+
+- tapOn:
+      id: 'CategoryStatisticsCard.Uncategorized'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+      timeout: 5000
+- assertVisible: '1 left.*'
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'AnalyticsPage.Container'
+      timeout: 5000
+
+- tapOn:
+      id: 'AnalyticsPage.Tab.Tags'
+- tapOn:
+      id: 'TagStatisticsCard.Untagged'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxPage.ShowListButton'
+      timeout: 5000
+- assertVisible: '3 left.*'
+- assertVisible:
+      id: 'CategorizeInboxClusterCard.EXPENSE\|tagged grocer'
+- assertNotVisible:
+      id: 'CategorizeInboxClusterCard.EXPENSE\|confident coffee'
+
+- tapOn:
+      id: 'CategorizeInboxAcceptAllButton.Button'
+- extendedWaitUntil:
+      visible:
+          id: 'CategorizeInboxUndoBar'
+      timeout: 5000
+- assertVisible: '1 left · 2 done'
+- assertNotVisible:
+      id: 'CategorizeInboxClusterCard.EXPENSE\|tagged grocer'
+
+- tapOn:
+      id: 'CategorizeInboxUndoBar.UndoButton'
+- assertVisible: '3 left.*'
+- tapOn:
+      id: 'CategorizeInboxSuggestionChip.EXPENSE\|tagged grocer.0'
+- assertVisible: '1 left.*'
+
+- tapOn:
+      id: 'CategorizeInboxPage.ShowListButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.Label.E2E_Categorize_Filler'
+      timeout: 5000
+- assertNotVisible:
+      id: 'TransactionCard.Label.E2E_Tagged_Grocer'

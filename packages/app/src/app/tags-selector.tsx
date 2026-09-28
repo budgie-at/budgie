@@ -53,15 +53,17 @@ export default function TagsSelectorModal() {
 
     const {
         initialTagIds = [],
+        suggestedTagIds = [],
         excludeTagIds = [],
         description,
         singleSelect = false,
         enablePrimarySelection = false
     } = currentParams ?? {};
     const initialPrimaryTagId = enablePrimarySelection ? (initialTagIds[0] ?? null) : null;
+    const initialSelectedTagIds = [...initialTagIds, ...suggestedTagIds.filter(tagId => !initialTagIds.includes(tagId))];
 
     const [search, setSearch] = useState('');
-    const [selected, setSelected] = useState<number[]>(initialTagIds);
+    const [selected, setSelected] = useState<number[]>(initialSelectedTagIds);
     const [primaryTagId, setPrimaryTagId] = useState<number | null>(initialPrimaryTagId);
     const { tags } = useSearchTagsQuery(search);
 

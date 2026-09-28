@@ -312,7 +312,7 @@ export type { AmountPatternQueryInterface } from './transaction/interface/amount
 export type { RecurringChargeCandidateInterface } from './transaction/interface/recurring-charge-candidate.interface';
 export type { RecurringChargeCandidateQueryInterface } from './transaction/interface/recurring-charge-candidate-query.interface';
 export type { CategorizeInboxRowInterface } from './transaction/interface/categorize-inbox-row.interface';
-export type { CategoryEvidenceRowInterface } from './transaction/interface/category-evidence-row.interface';
+export type { LabelEvidenceRowInterface } from './transaction/interface/label-evidence-row.interface';
 export type { RepeatedTransactionPatternInterface } from './transaction/interface/repeated-transaction-pattern.interface';
 
 export { TransactionPatternRepository } from './transaction/repository/transaction-pattern.repository';
