@@ -465,6 +465,76 @@ export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [
         theme: MediaThemeEnum.LIGHT,
         kind: MediaKindEnum.STILL
     },
+    {
+        slug: 'bulk-categorize-transactions',
+        locale: 'de',
+        scene: 'bulk-categorize-transactions-2',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'bulk-categorize-transactions',
+        locale: 'de',
+        scene: 'bulk-categorize-transactions-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'bulk-categorize-transactions',
+        locale: 'en',
+        scene: 'bulk-categorize-transactions-2',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'bulk-categorize-transactions',
+        locale: 'en',
+        scene: 'bulk-categorize-transactions-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'bulk-categorize-transactions',
+        locale: 'es',
+        scene: 'bulk-categorize-transactions-2',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'bulk-categorize-transactions',
+        locale: 'es',
+        scene: 'bulk-categorize-transactions-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'bulk-categorize-transactions',
+        locale: 'fr',
+        scene: 'bulk-categorize-transactions-2',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'bulk-categorize-transactions',
+        locale: 'fr',
+        scene: 'bulk-categorize-transactions-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'bulk-categorize-transactions',
+        locale: 'uk',
+        scene: 'bulk-categorize-transactions-2',
+        theme: MediaThemeEnum.DARK,
+        kind: MediaKindEnum.STILL
+    },
+    {
+        slug: 'bulk-categorize-transactions',
+        locale: 'uk',
+        scene: 'bulk-categorize-transactions-2',
+        theme: MediaThemeEnum.LIGHT,
+        kind: MediaKindEnum.STILL
+    },
     { slug: 'categorization-rules', locale: 'de', scene: 'categorization-rules-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },
     { slug: 'categorization-rules', locale: 'de', scene: 'categorization-rules-1', theme: MediaThemeEnum.LIGHT, kind: MediaKindEnum.STILL },
     { slug: 'categorization-rules', locale: 'en', scene: 'categorization-rules-1', theme: MediaThemeEnum.DARK, kind: MediaKindEnum.STILL },

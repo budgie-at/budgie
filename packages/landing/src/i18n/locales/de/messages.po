@@ -4801,6 +4801,10 @@ msgstr "Budgie unterstützt den Export Ihrer vollständigen Finanzhistorie in St
 msgid "Budgie surfaces missing categories directly inside your filtered transaction list, then opens a focused cleanup view with the same account, date, tag, and type filters."
 msgstr "Budgie zeigt fehlende Kategorien direkt in Ihrer gefilterten Transaktionsliste an und öffnet dann eine fokussierte Bereinigungsansicht mit denselben Konto-, Datums-, Tag- und Typfiltern."
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Budgie tag inbox screen listing merchant groups, each with a suggested tag chip"
+msgstr "Budgie-Bildschirm für den Tag-Eingang mit Händlergruppen, jeweils mit einem vorgeschlagenen Tag"
+
 #: src/app/[lang]/blog/budgie-offline-financial-data/page.tsx
 msgid "Budgie takes a different approach to bank data import."
 msgstr "Budgie verfolgt beim Bankdatenimport einen anderen Ansatz."
@@ -12229,6 +12233,10 @@ msgstr "Überprüfung durch Open Source"
 msgid "Open Source: Verify Our Claims Yourself"
 msgstr "Open Source: Überprüfen Sie unsere Aussagen selbst"
 
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Open Tags in Analytics and tap Untagged. Transactions group by merchant, each with a suggested tag."
+msgstr "Öffne Tags in Analytics und tippe auf Ohne Tag. Transaktionen werden nach Händler gruppiert, jede mit einem vorgeschlagenen Tag."
+
 #: src/app/[lang]/features/deposit-tracking/page.tsx
 msgid "Open the account menu and choose Close Deposit. Budgie moves the remaining balance to the destination you pick and archives the deposit."
 msgstr "Öffnen Sie das Kontomenü und wählen Sie „Festanlage schließen“. Budgie überträgt den verbleibenden Saldo auf das gewählte Zielkonto und archiviert die Festanlage."
@@ -14789,12 +14797,20 @@ msgid "Tags are the second dimension"
 msgstr "Tags sind die zweite Dimension"
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Tags get the same inbox"
+msgstr "Tags landen im selben Eingang"
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tags get the same inbox. In Analytics, open the <0>Tags tab</0> and tap Untagged: every transaction without a tag in that period is grouped by merchant, and each group gets tags suggested from how you tagged that merchant before."
 msgstr "Tags bekommen denselben Bildschirm. Öffnen Sie in der Analyse den <0>Tab „Tags“</0> und tippen Sie auf „Ohne Tag“: Alle Umsätze ohne Tag in diesem Zeitraum werden nach Händler gruppiert, und jede Gruppe erhält Tag-Vorschläge danach, wie Sie diesen Händler bisher getaggt haben."
 
 #: src/app/[lang]/features/transaction-tags/page.tsx
 msgid "Tags sit next to Category"
 msgstr "Tags stehen neben Kategorie"
+
+#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
+msgid "Tags suggested from your history"
+msgstr "Vorschläge aus deinem Verlauf"
 
 #: src/app/[lang]/features/spending-analytics/page.tsx
 msgid "Tags tab: per-tag income and expense, plus an “Untagged” bucket for the gaps"
