@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.2](https://github.com/budgie-at/budgie/compare/v6.85.1...v6.85.2) (2026-09-28)
+
+
+### Bug Fixes
+
+* **consolidation:** pair synced expenses duplicating legacy transfer legs ([e88e626](https://github.com/budgie-at/budgie/commit/e88e626f40ed18fbe209756e749e11782bc0d73d))
+
+
+
+
+
 ## [6.85.1](https://github.com/budgie-at/budgie/compare/v6.85.0...v6.85.1) (2026-09-28)
 
 **Note:** Version bump only for package @budgie/contracts
