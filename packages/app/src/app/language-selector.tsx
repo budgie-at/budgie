@@ -10,7 +10,7 @@ import { SelectorCard } from '../@generic/component/selector-card/selector-card'
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { LANGUAGES } from '../i18n/constant/languages.constant';
-import { useLanguageSelectorModal } from '../i18n/context/language-selector-modal.context';
+import { useLanguageSelectorModal, useLanguageSelectorModalParams } from '../i18n/context/language-selector-modal.context';
 import { LanguageInterface } from '../i18n/interface/language.interface';
 
 import { LanguageSelectorModalSelector } from './language-selector-modal.selector';
@@ -29,7 +29,8 @@ const filterLanguages = (
 
 export default function LanguageSelectorModal() {
     const { t } = useLingui();
-    const [, resolveLanguageSelector, currentParams] = useLanguageSelectorModal();
+    const [, resolveLanguageSelector] = useLanguageSelectorModal();
+    const currentParams = useLanguageSelectorModalParams();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
 
