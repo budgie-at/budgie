@@ -10,4 +10,6 @@ export interface TagFormModalParams {
 
 export type TagFormModalResult = TagFormResult | null;
 
-export const [TagFormModalContext, useTagFormModal] = createModalContext<TagFormModalParams, TagFormModalResult>(null);
+export const [TagFormModalContext, useTagFormModal, useTagFormModalParams] = createModalContext<TagFormModalParams, TagFormModalResult>(
+    null
+);

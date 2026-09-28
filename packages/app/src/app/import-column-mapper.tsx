@@ -10,7 +10,7 @@ import { Footer } from '../@generic/component/footer/footer';
 import { Icon } from '../@generic/component/icon/icon';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { ImportColumnMapperOption } from '../import/components/import-column-mapper-option/import-column-mapper-option';
-import { useImportColumnMapperModal } from '../import/context/import-column-mapper-modal.context';
+import { useImportColumnMapperModal, useImportColumnMapperModalParams } from '../import/context/import-column-mapper-modal.context';
 
 import { ImportColumnMapperModalSelector } from './import-column-mapper.selector';
 
@@ -19,7 +19,8 @@ const sortHeaders = (first: string, second: string): number => first.localeCompa
 // eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ImportColumnMapperModal() {
     const { t } = useLingui();
-    const [, resolveImportColumnMapper, currentParams] = useImportColumnMapperModal();
+    const [, resolveImportColumnMapper] = useImportColumnMapperModal();
+    const currentParams = useImportColumnMapperModalParams();
     const { backgroundColor } = useFormsheetListStyles();
 
     const headers = currentParams?.headers ?? [];

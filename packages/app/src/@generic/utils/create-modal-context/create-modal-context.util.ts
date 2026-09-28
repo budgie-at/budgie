@@ -4,16 +4,15 @@ import { emptyFn } from '@rnw-community/shared';
 
 export type ModalContextTuple<TParams, TResult> = readonly [
     open: (params?: TParams) => Promise<TResult>,
-    resolve: (result: TResult, options?: { readonly skipBack?: boolean }) => void,
-    currentParams: TParams | null
+    resolve: (result: TResult, options?: { readonly skipBack?: boolean }) => void
 ];
 
-export const createModalContext = <TParams, TResult>(
-    defaultResult: TResult
-): readonly [ModalContext: React.Context<ModalContextTuple<TParams, TResult>>, useModal: () => ModalContextTuple<TParams, TResult>] => {
-    const ModalContext = createContext<ModalContextTuple<TParams, TResult>>([() => Promise.resolve(defaultResult), emptyFn, null]);
+export const createModalContext = <TParams, TResult>(defaultResult: TResult) => {
+    const ModalContext = createContext<ModalContextTuple<TParams, TResult>>([() => Promise.resolve(defaultResult), emptyFn]);
+    const ModalParamsContext = createContext<TParams | null>(null);
 
     const useModal = (): ModalContextTuple<TParams, TResult> => use(ModalContext);
+    const useModalParams = (): TParams | null => use(ModalParamsContext);
 
-    return [ModalContext, useModal] as const;
+    return [[ModalContext, ModalParamsContext], useModal, useModalParams] as const;
 };

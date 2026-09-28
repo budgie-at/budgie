@@ -13,4 +13,7 @@ export interface SplitEntriesModalParams {
 
 export type SplitEntriesModalResult = TransactionEntryCreateInputInterface[] | null;
 
-export const [SplitEntriesModalContext, useSplitEntriesModal] = createModalContext<SplitEntriesModalParams, SplitEntriesModalResult>(null);
+export const [SplitEntriesModalContext, useSplitEntriesModal, useSplitEntriesModalParams] = createModalContext<
+    SplitEntriesModalParams,
+    SplitEntriesModalResult
+>(null);

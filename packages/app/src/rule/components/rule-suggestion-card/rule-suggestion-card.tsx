@@ -99,7 +99,7 @@ const createRule = async (ruleInput: RuleCreateInputInterface): Promise<void> =>
 
 export const RuleSuggestionCard = (props: Props) => {
     const { suggestRuleData, onRuleCreated, onDismiss, onCreatingChange } = props;
-    const { openRuleForm } = useRuleFormModal();
+    const [openRuleForm] = useRuleFormModal();
 
     const handleDuplicateRule = (
         duplicateRule: Pick<RuleWithRelationsEntityInterface, 'id'>,

@@ -17,7 +17,7 @@ export const useRulesListPageActions = () => {
     const [rulesRefreshKey, setRulesRefreshKey] = useState(0);
     const focusKey = useFocusKey();
     const { rules } = useGetAllRulesQuery(rulesRefreshKey + focusKey);
-    const { openRuleForm } = useRuleFormModal();
+    const [openRuleForm] = useRuleFormModal();
 
     const refreshRules = () => {
         setRulesRefreshKey(value => value + 1);
