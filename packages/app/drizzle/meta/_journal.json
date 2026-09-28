@@ -446,8 +446,15 @@
         {
             "idx": 66,
             "version": "6",
-            "when": 1790600033938,
-            "tag": "0066_replace_needs_embedding_index",
+            "when": 1790593805642,
+            "tag": "0066_fix_transfer_and_debt_leg_categories",
+            "breakpoints": true
+        },
+        {
+            "idx": 67,
+            "version": "6",
+            "when": 1790613875345,
+            "tag": "0067_replace_needs_embedding_index",
             "breakpoints": true
         }
     ]
