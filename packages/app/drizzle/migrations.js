@@ -63,6 +63,7 @@ import m0062 from './0062_add_monobank_setup_balance.sql';
 import m0063 from './0063_round_debt_event_micro_units.sql';
 import m0064 from './0064_round_transfer_micro_units.sql';
 import m0065 from './0065_backfill_monobank_atm_mcc.sql';
+import m0066 from './0066_fix_transfer_and_debt_leg_categories.sql';
 import journal from './meta/_journal.json';
 
 export default {
@@ -130,6 +131,7 @@ export default {
         m0062,
         m0063,
         m0064,
-        m0065
+        m0065,
+        m0066
     }
 };
