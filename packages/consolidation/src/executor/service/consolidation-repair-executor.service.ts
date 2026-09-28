@@ -1,7 +1,7 @@
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { buildIbanBridgeChainCanonicalInput } from '../utils/build-iban-bridge-chain-canonical-input.util';
@@ -136,11 +136,11 @@ export class ConsolidationRepairExecutorService {
 
     @Log(
         candidate =>
-            `enter existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff}`,
+            `enter existingTransferId=${candidate.existingTransferId} duplicateTransactionId=${candidate.duplicateTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff}`,
         (result, candidate) =>
-            `done result=${String(result)} existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff}`,
+            `done result=${String(result)} existingTransferId=${candidate.existingTransferId} duplicateTransactionId=${candidate.duplicateTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff}`,
         (error, candidate) =>
-            `throw existingTransferId=${candidate.existingTransferId} incomeTransactionId=${candidate.incomeTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
+            `throw existingTransferId=${candidate.existingTransferId} duplicateTransactionId=${candidate.duplicateTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
     )
     async consolidateExistingTransferIncomeDuplicate(candidate: ExistingTransferIncomeDuplicateCandidateInterface): Promise<boolean> {
         return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
@@ -329,7 +329,11 @@ export class ConsolidationRepairExecutorService {
         candidate: ExistingTransferIncomeDuplicateCandidateInterface,
         tx: DB
     ): Promise<boolean> {
-        const existingTransfer = await this.findEligibleExistingTransfer([candidate.incomeTransactionId], candidate.existingTransferId, tx);
+        const existingTransfer = await this.findEligibleExistingTransfer(
+            [candidate.duplicateTransactionId],
+            candidate.existingTransferId,
+            tx
+        );
 
         if (!isDefined(existingTransfer)) {
             return false;
@@ -341,7 +345,7 @@ export class ConsolidationRepairExecutorService {
         );
 
         await this.consolidationMutationService.moveSourcesToCanonical(
-            [candidate.existingTransferId, candidate.incomeTransactionId],
+            [candidate.existingTransferId, candidate.duplicateTransactionId],
             canonicalTransaction.id,
             tx
         );
@@ -354,7 +358,7 @@ export class ConsolidationRepairExecutorService {
         existingTransfer: TransactionWithEntriesEntityInterface
     ): CanonicalTransferInputInterface {
         return {
-            title: existingTransfer.title,
+            title: isNotEmptyString(existingTransfer.title) ? existingTransfer.title : (candidate.duplicateTransactionTitle ?? ''),
             operatedAt: Math.floor(existingTransfer.operatedAt.getTime() / ConsolidationRepairExecutorService.MILLISECONDS_IN_SECOND),
             fromAccountId: candidate.sourceAccountId,
             toAccountId: candidate.targetAccountId,
