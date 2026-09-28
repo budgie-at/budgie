@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.8](https://github.com/budgie-at/budgie/compare/v6.85.7...v6.85.8) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** stop remounting the home budget widget on every focus ([d103358](https://github.com/budgie-at/budgie/commit/d103358979d3b54226831160e698e0b7db7c52ba)), closes [#426](https://github.com/budgie-at/budgie/issues/426)
+
+
+
+
+
 ## [6.85.7](https://github.com/budgie-at/budgie/compare/v6.85.6...v6.85.7) (2026-09-28)
 
 
