@@ -13,7 +13,6 @@ import { PageHeader } from '../@generic/component/page-header/page-header';
 import { ModalPage } from '../@generic/component/page/modal-page';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { useDepositCreateAction } from '../account/hooks/use-deposit-create-action.hook';
-import { SystemCategoryIdEnum } from '../category/enum/system-category-id.enum';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal } from '../transaction/context/convert-to-transfer-modal.context';
 import { TransferToAccountCreateActionContext } from '../transaction/context/transfer-to-account-create-action.context';
@@ -63,8 +62,7 @@ export default function ConvertToTransferModal() {
             entries: buildTransferEntries({
                 fromAccountId,
                 toAccountId,
-                amount: sourceAmount,
-                categoryId: SystemCategoryIdEnum.CURRENCY_TRANSFER
+                amount: sourceAmount
             })
         })
     });
