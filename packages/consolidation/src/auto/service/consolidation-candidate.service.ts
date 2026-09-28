@@ -36,7 +36,7 @@ export class ConsolidationCandidateService {
         const existingTransferIncomeDuplicateCandidates = rawExistingTransferIncomeDuplicateCandidates.filter(
             candidate =>
                 !blockedSourceTransactionIds.has(candidate.existingTransferId) &&
-                !blockedSourceTransactionIds.has(candidate.incomeTransactionId)
+                !blockedSourceTransactionIds.has(candidate.duplicateTransactionId)
         );
         await this.yieldControl();
 
