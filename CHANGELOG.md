@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.5](https://github.com/budgie-at/budgie/compare/v6.85.4...v6.85.5) (2026-09-28)
+
+
+### Performance Improvements
+
+* **app:** cache recurring series detection across renders ([98e66ae](https://github.com/budgie-at/budgie/commit/98e66ae89480b3ec1139d4150c1ea0a4e1bba207))
+
+
+
+
+
 ## [6.85.4](https://github.com/budgie-at/budgie/compare/v6.85.3...v6.85.4) (2026-09-28)
 
 
