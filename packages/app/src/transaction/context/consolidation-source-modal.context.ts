@@ -3,7 +3,7 @@ import { createModalContext } from '../../@generic/utils/create-modal-context/cr
 import type { ConsolidationSourceModalParamsInterface } from '../interface/consolidation-source-modal-params.interface';
 import type { ConsolidationSourceModalResultType } from '../interface/consolidation-source-modal-result.type';
 
-export const [ConsolidationSourceModalContext, useConsolidationSourceModal] = createModalContext<
+export const [ConsolidationSourceModalContext, useConsolidationSourceModal, useConsolidationSourceModalParams] = createModalContext<
     ConsolidationSourceModalParamsInterface,
     ConsolidationSourceModalResultType
 >(null);

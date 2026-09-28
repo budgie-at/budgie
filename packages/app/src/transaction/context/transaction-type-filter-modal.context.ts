@@ -8,7 +8,7 @@ export interface TransactionTypeFilterModalParams {
 
 export type TransactionTypeFilterResult = { readonly value: TransactionTypeEnum[] | null };
 
-export const [TransactionTypeFilterModalContext, useTransactionTypeFilterModal] = createModalContext<
+export const [TransactionTypeFilterModalContext, useTransactionTypeFilterModal, useTransactionTypeFilterModalParams] = createModalContext<
     TransactionTypeFilterModalParams,
     TransactionTypeFilterResult | null
 >(null);

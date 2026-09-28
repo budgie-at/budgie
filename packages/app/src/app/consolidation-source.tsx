@@ -4,12 +4,13 @@ import { View } from 'react-native';
 
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { ConsolidationSourceModalContent } from '../transaction/components/consolidation-source-modal-content/consolidation-source-modal-content';
-import { useConsolidationSourceModal } from '../transaction/context/consolidation-source-modal.context';
+import { useConsolidationSourceModal, useConsolidationSourceModalParams } from '../transaction/context/consolidation-source-modal.context';
 
 /* jscpd:ignore-start */
 export default function ConsolidationSourceModal() {
     const router = useRouter();
-    const [, resolveConsolidationSource, currentParams] = useConsolidationSourceModal();
+    const [, resolveConsolidationSource] = useConsolidationSourceModal();
+    const currentParams = useConsolidationSourceModalParams();
     const hadParamsRef = useRef(false);
     const { backgroundColor } = useFormsheetListStyles();
 

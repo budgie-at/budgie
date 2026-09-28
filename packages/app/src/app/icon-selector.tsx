@@ -9,7 +9,7 @@ import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { USER_ICONS_LIST, UserIcon } from '../@generic/constant/user-icons.constant';
-import { useIconSelectorModal } from '../@generic/context/icon-selector-modal.context';
+import { useIconSelectorModal, useIconSelectorModalParams } from '../@generic/context/icon-selector-modal.context';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { FlatListDataItem, padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 
@@ -60,7 +60,8 @@ const filterIcons = (search: string, keywords: string[]): FlatListDataItem<UserI
 
 export default function IconSelectorModal() {
     const { t } = useLingui();
-    const [, resolveIconSelector, currentParams] = useIconSelectorModal();
+    const [, resolveIconSelector] = useIconSelectorModal();
+    const currentParams = useIconSelectorModalParams();
     const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
 

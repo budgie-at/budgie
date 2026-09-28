@@ -11,4 +11,7 @@ export interface IconSelectorModalParams {
 
 export type IconSelectorResult = UserIconNameEnum | null;
 
-export const [IconSelectorModalContext, useIconSelectorModal] = createModalContext<IconSelectorModalParams, IconSelectorResult>(null);
+export const [IconSelectorModalContext, useIconSelectorModal, useIconSelectorModalParams] = createModalContext<
+    IconSelectorModalParams,
+    IconSelectorResult
+>(null);

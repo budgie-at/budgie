@@ -14,7 +14,7 @@ import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { TagsSelectorDoneButton } from '../tag/components/tags-selector-done-button/tags-selector-done-button';
 import { useTagFormModal } from '../tag/context/tag-form-modal.context';
-import { useTagsSelectorModal } from '../tag/context/tags-selector-modal.context';
+import { useTagsSelectorModal, useTagsSelectorModalParams } from '../tag/context/tags-selector-modal.context';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
 import { reorderTagIdsByPrimary } from '../tag/utils/reorder-tag-ids-by-primary.util';
 
@@ -48,7 +48,8 @@ const resolvePrimaryTagId = (selectedTagIds: number[], primaryTagId: number | nu
 export default function TagsSelectorModal() {
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
-    const [, resolveTagsSelector, currentParams] = useTagsSelectorModal();
+    const [, resolveTagsSelector] = useTagsSelectorModal();
+    const currentParams = useTagsSelectorModalParams();
     const { backgroundColor } = useFormsheetListStyles();
 
     const {

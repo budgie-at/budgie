@@ -1,7 +1,4 @@
-import { createContext, use } from 'react';
-
-import { emptyFn } from '@rnw-community/shared';
-
+import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 
 export interface RuleFormModalParams {
@@ -11,16 +8,6 @@ export interface RuleFormModalParams {
 
 export type RuleFormResultType = 'created' | 'updated' | 'deleted' | null;
 
-interface RuleFormModalContextInterface {
-    openRuleForm: (params?: RuleFormModalParams) => Promise<RuleFormResultType>;
-    resolveRuleForm: (result: RuleFormResultType) => void;
-    currentParams: RuleFormModalParams | null;
-}
-
-export const RuleFormModalContext = createContext<RuleFormModalContextInterface>({
-    openRuleForm: () => Promise.resolve(null),
-    resolveRuleForm: emptyFn,
-    currentParams: null
-});
-
-export const useRuleFormModal = () => use(RuleFormModalContext);
+export const [RuleFormModalContext, useRuleFormModal, useRuleFormModalParams] = createModalContext<RuleFormModalParams, RuleFormResultType>(
+    null
+);

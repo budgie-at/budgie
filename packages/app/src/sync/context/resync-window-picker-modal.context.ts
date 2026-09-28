@@ -4,4 +4,7 @@ export interface ResyncWindowPickerModalParams {
     readonly accountId: number;
 }
 
-export const [ResyncWindowPickerModalContext, useResyncWindowPickerModal] = createModalContext<ResyncWindowPickerModalParams, null>(null);
+export const [ResyncWindowPickerModalContext, useResyncWindowPickerModal, useResyncWindowPickerModalParams] = createModalContext<
+    ResyncWindowPickerModalParams,
+    null
+>(null);
