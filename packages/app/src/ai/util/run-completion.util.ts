@@ -29,5 +29,9 @@ export const runCompletion = async (
         ...(isDefined(options?.temperature) ? { temperature: options.temperature } : {})
     });
 
+    if (result.interrupted && options?.throwOnInterrupt === true) {
+        throw new Error('completionInterrupted');
+    }
+
     return stripThinkingTags(result.text.trim());
 };

@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.84.3](https://github.com/budgie-at/budgie/compare/v6.84.2...v6.84.3) (2026-09-27)
+
+
+### Bug Fixes
+
+* **app:** do not persist a translation from an interrupted completion ([4196f8a](https://github.com/budgie-at/budgie/commit/4196f8a9f0ab3dff20cf6ab8f6c0e5b4b0a4ed43))
+
+
+
+
+
+## [6.84.2](https://github.com/budgie-at/budgie/compare/v6.84.1...v6.84.2) (2026-09-27)
+
+
+### Bug Fixes
+
+* **app:** round fractional micro-units left by cross-currency transfers ([86d8e97](https://github.com/budgie-at/budgie/commit/86d8e97cacc08a2dc04f8921ff13870ee08b1892)), closes [#1198](https://github.com/budgie-at/budgie/issues/1198)
+
+
+
+
+
+## [6.84.1](https://github.com/budgie-at/budgie/compare/v6.84.0...v6.84.1) (2026-09-27)
+
+
+### Bug Fixes
+
+* **app:** only create the review detail when it is missing ([8c6e503](https://github.com/budgie-at/budgie/commit/8c6e50352d9c74691814714206d991cd2d32d85d))
+
+
+
+
+
 ## [6.83.1](https://github.com/budgie-at/budgie/compare/v6.83.0...v6.83.1) (2026-09-27)
 
 
