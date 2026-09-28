@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.6](https://github.com/budgie-at/budgie/compare/v6.85.5...v6.85.6) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** exclude adjustment transactions from SQL rule matching ([6f862a0](https://github.com/budgie-at/budgie/commit/6f862a0c4462f3b8d85ba22a96bbfe3f9e30a755))
+
+
+
+
+
 ## [6.85.2](https://github.com/budgie-at/budgie/compare/v6.85.1...v6.85.2) (2026-09-28)
 
 
