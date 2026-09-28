@@ -32,6 +32,7 @@ export const createTestRepositories = (db: DB) => ({
     transactionEntryRepository: new contracts.TransactionEntryRepository(db),
     transactionPatternRepository: new contracts.TransactionPatternRepository(db),
     transactionRepository: new contracts.TransactionRepository(db),
+    transactionCategorizeInboxRepository: new contracts.TransactionCategorizeInboxRepository(db),
     transactionRuleRepository: new contracts.TransactionRuleRepository(db),
     transactionTagsRepository: new contracts.TransactionTagsRepository(db),
     merchantEmbeddingRepository: new contracts.MerchantEmbeddingRepository(db),
