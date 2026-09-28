@@ -120,4 +120,41 @@ describe('account/archive-account-preserves-deleted-at', () => {
             ).deletedAt
         ).toStrictEqual(PRE_ARCHIVED_AT);
     });
+
+    it('keeps a transfer live while one side is active and retires it once both sides are archived', async () => {
+        seed.instrument({});
+        const fromAccount = seed.account({ title: 'Transfer source', type: AccountTypeEnum.BANK, instrumentId: 1 });
+        const toAccount = seed.account({ title: 'Transfer target', type: AccountTypeEnum.BANK, instrumentId: 1 });
+        const transfer = insertOne(TransactionEntityTable, {
+            type: TransactionTypeEnum.TRANSFER,
+            title: 'Own transfer',
+            comment: '',
+            fromAccountId: fromAccount.id,
+            toAccountId: toAccount.id,
+            exchangeRate: 1
+        });
+
+        insertOne(TransactionEntryEntityTable, {
+            transactionId: transfer.id,
+            accountId: fromAccount.id,
+            type: TransactionEntryTypeEnum.CREDIT,
+            amount: 1_000_000,
+            exchangeRate: 1
+        });
+        insertOne(TransactionEntryEntityTable, {
+            transactionId: transfer.id,
+            accountId: toAccount.id,
+            type: TransactionEntryTypeEnum.DEBIT,
+            amount: 1_000_000,
+            exchangeRate: 1
+        });
+        const getTransferDeletedAt = () =>
+            requireRow(testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, transfer.id)).get()).deletedAt;
+
+        await accountService.archiveById(fromAccount.id);
+        expect(getTransferDeletedAt()).toBeNull();
+
+        await accountService.archiveById(toAccount.id);
+        expect(getTransferDeletedAt()).not.toBeNull();
+    });
 });

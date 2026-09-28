@@ -27,7 +27,7 @@ class SyncDuplicateSoftDeleteService {
             return this.buildEmptyResult();
         }
 
-        await this.softDeleteEntries(tx, updatedTransactionIds);
+        await this.softDeleteDependents(tx, updatedTransactionIds);
 
         return { updatedTransactionIds };
     }
@@ -58,10 +58,11 @@ class SyncDuplicateSoftDeleteService {
         (error, tx, updatedTransactionIds) =>
             `throw tx=${String(isDefined(tx))} updatedTransactionIds=${updatedTransactionIds.join(',')} error=${getErrorMessage(error)}`
     )
-    private async softDeleteEntryChunk(tx: DB, updatedTransactionIds: readonly number[]): Promise<void> {
+    private async softDeleteDependentChunk(tx: DB, updatedTransactionIds: readonly number[]): Promise<void> {
         const bindTransactionIds = [...updatedTransactionIds];
 
         await tx.$client.runAsync(this.buildTransactionEntryDeleteSql(bindTransactionIds), bindTransactionIds);
+        await tx.$client.runAsync(this.buildConsolidationChildDeleteSql(bindTransactionIds), bindTransactionIds);
     }
 
     private buildEmptyResult(): SyncDuplicateSoftDeleteResultInterface {
@@ -85,16 +86,16 @@ class SyncDuplicateSoftDeleteService {
         }, Promise.resolve([]));
     }
 
-    private async softDeleteEntries(tx: DB, updatedTransactionIds: readonly number[]): Promise<void> {
+    private async softDeleteDependents(tx: DB, updatedTransactionIds: readonly number[]): Promise<void> {
         const chunks = this.chunkIds(updatedTransactionIds);
 
-        await this.softDeleteEntryChunks(tx, chunks);
+        await this.softDeleteDependentChunks(tx, chunks);
     }
 
-    private async softDeleteEntryChunks(tx: DB, chunks: readonly number[][]): Promise<void> {
+    private async softDeleteDependentChunks(tx: DB, chunks: readonly number[][]): Promise<void> {
         await chunks.reduce<Promise<void>>(async (previousChunkPromise, chunk) => {
             await previousChunkPromise;
-            await this.softDeleteEntryChunk(tx, chunk);
+            await this.softDeleteDependentChunk(tx, chunk);
         }, Promise.resolve());
     }
 
@@ -118,6 +119,12 @@ class SyncDuplicateSoftDeleteService {
         const placeholders = duplicateTransactionIds.map(() => '?').join(',');
 
         return String.raw`UPDATE transaction_entries SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND transaction_id IN (${placeholders})`;
+    }
+
+    private buildConsolidationChildDeleteSql(duplicateTransactionIds: readonly number[]): string {
+        const placeholders = duplicateTransactionIds.map(() => '?').join(',');
+
+        return String.raw`UPDATE transactions SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IN (${placeholders})`;
     }
 }
 
