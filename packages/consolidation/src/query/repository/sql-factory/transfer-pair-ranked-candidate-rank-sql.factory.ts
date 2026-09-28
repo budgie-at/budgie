@@ -72,7 +72,6 @@ export const TRANSFER_PAIR_RANKED_CANDIDATE_RANK_SQL = `            scored_pairs
                             AND timeDiff <= ${TRANSFER_PAIR_FAST_TIME_WINDOW_SECONDS}
                         THEN 'AUTO_CROSS_CURRENCY_IMPLIED_RATE'
                         WHEN sameBank = 1
-                            AND ibanMatch = 0
                             AND sameCurrency = 0
                             AND expenseEntryAmount > 0
                             AND incomeEntryAmount > 0
