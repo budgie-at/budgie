@@ -8,6 +8,10 @@ const VIRTUAL_SHIMS: Record<string, string> = {
     'expo-secure-store': `export const getItem = () => null;`,
     expo: `export const requireNativeModule = () => ({});`,
     'expo-file-system': `export const File = class { constructor() {} };`,
+    'expo-file-system/legacy': `export const createDownloadResumable = () => ({});`,
+    'expo-constants': `export default { expoConfig: { extra: { aiEnabled: true } } };`,
+    'llama.rn': `export const initLlama = async () => ({});`,
+    'whisper.rn': `export const initWhisper = async () => ({});`,
     'expo-sqlite': `
         export class SQLiteDatabase {}
         export class SQLiteStatement {}
