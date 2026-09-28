@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.1](https://github.com/budgie-at/budgie/compare/v6.85.0...v6.85.1) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** backfill MCC for Monobank rows imported before the MCC seed ([90e75c1](https://github.com/budgie-at/budgie/commit/90e75c1e233793f48e55314793627bb35080a675)), closes [#1243](https://github.com/budgie-at/budgie/issues/1243)
+
+
+### Performance Improvements
+
+* **app:** keep modal open actions stable across open and close ([befc3a8](https://github.com/budgie-at/budgie/commit/befc3a817155a4e114fc02eae39168df27f9af6c))
+* finalize SQLite statements after each query ([c339df0](https://github.com/budgie-at/budgie/commit/c339df024784d3c0e84e9ab41f5828679713a13c))
+
+
+
+
+
 # [6.85.0](https://github.com/budgie-at/budgie/compare/v6.84.3...v6.85.0) (2026-09-28)
 
 
