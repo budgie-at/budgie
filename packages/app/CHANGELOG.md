@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.85.0](https://github.com/budgie-at/budgie/compare/v6.84.3...v6.85.0) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** apply rules with set-based chunked writes ([149b47f](https://github.com/budgie-at/budgie/commit/149b47f7410c1516045c3c94786142581c192af0))
+* **app:** harden inbox v2 counts, undo and background cost ([d9d57f8](https://github.com/budgie-at/budgie/commit/d9d57f822e670870e68f442c6ac2eeee36eca4c0))
+* **app:** let the tag picker confirm preselected suggestions ([d12bfa9](https://github.com/budgie-at/budgie/commit/d12bfa96e007d45eddabf959111e0108d9ec3f53))
+* **app:** name the applied label in the inbox undo bar ([6f71aca](https://github.com/budgie-at/budgie/commit/6f71acae833896741d129f4437b05c6e52d7cc70))
+
+
+### Features
+
+* **app:** add a tag inbox and open both inboxes from statistics ([904d1d2](https://github.com/budgie-at/budgie/commit/904d1d2c357b4768d5956d77e8ff1f2e850b6ded))
+* **app:** stabilise the categorize inbox for long triage sessions ([151d982](https://github.com/budgie-at/budgie/commit/151d982b8c75b6728c2cc5cef408b4b470f35812))
+
+
+### Performance Improvements
+
+* **app:** show categories on the first frame of the category selector ([758ac73](https://github.com/budgie-at/budgie/commit/758ac739127a5e1d70b0e710815a4b25d1e1fc6f))
+
+
+
+
+
 ## [6.84.3](https://github.com/budgie-at/budgie/compare/v6.84.2...v6.84.3) (2026-09-27)
 
 
