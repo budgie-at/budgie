@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.7](https://github.com/budgie-at/budgie/compare/v6.85.6...v6.85.7) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** restore MCC and fee entries when resyncing existing Monobank rows ([92d979e](https://github.com/budgie-at/budgie/commit/92d979e50bc8189e821cc1849eecf0ea534c2c8a))
+
+
+
+
+
 ## [6.85.6](https://github.com/budgie-at/budgie/compare/v6.85.5...v6.85.6) (2026-09-28)
 
 **Note:** Version bump only for package @budgie-at/app
