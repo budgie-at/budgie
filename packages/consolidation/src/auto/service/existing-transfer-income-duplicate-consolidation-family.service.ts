@@ -29,6 +29,6 @@ export class ExistingTransferIncomeDuplicateConsolidationFamilyService extends C
     }
 
     protected getSourceTransactionIds(candidate: ExistingTransferIncomeDuplicateCandidateInterface): number[] {
-        return [candidate.existingTransferId, candidate.incomeTransactionId];
+        return [candidate.existingTransferId, candidate.duplicateTransactionId];
     }
 }
