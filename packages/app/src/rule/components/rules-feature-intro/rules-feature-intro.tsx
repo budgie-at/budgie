@@ -12,7 +12,7 @@ import { RulesPageSelector } from '../../selector/rules-page.selector';
 export const RulesFeatureIntro = () => {
     const { t } = useLingui();
     const bankIntegrationCount = useGetBankIntegrationCountQuery();
-    const { openRuleForm } = useRuleFormModal();
+    const [openRuleForm] = useRuleFormModal();
 
     const handleCreateRule = () => void openRuleForm();
     const handleConnectBank = () => void router.push('/create-account');

@@ -7,6 +7,7 @@ export interface ContactSelectorModalParams {
 
 export type ContactSelectorResult = Contact | null;
 
-export const [ContactSelectorModalContext, useContactSelectorModal] = createModalContext<ContactSelectorModalParams, ContactSelectorResult>(
-    null
-);
+export const [ContactSelectorModalContext, useContactSelectorModal, useContactSelectorModalParams] = createModalContext<
+    ContactSelectorModalParams,
+    ContactSelectorResult
+>(null);

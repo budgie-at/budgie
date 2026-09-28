@@ -13,7 +13,7 @@ import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
 import { useCategoryFormModal } from '../category/context/category-form-modal.context';
-import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
+import { useCategorySelectorModal, useCategorySelectorModalParams } from '../category/context/category-selector-modal.context';
 import { useSearchCategoriesQuery } from '../category/query/use-search-categories.query';
 
 import { CategorySelectorModalSelector } from './category-selector-modal.selector';
@@ -33,7 +33,8 @@ const prepareCategoryData = (
 export default function CategorySelectorModal() {
     const { t } = useLingui();
     const [openCategoryForm] = useCategoryFormModal();
-    const [, resolveCategorySelector, currentParams] = useCategorySelectorModal();
+    const [, resolveCategorySelector] = useCategorySelectorModal();
+    const currentParams = useCategorySelectorModalParams();
     const { backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
     const { categories, isLoading } = useSearchCategoriesQuery(search, true);

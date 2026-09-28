@@ -14,7 +14,10 @@ import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styl
 import { useStateRef } from '../@generic/hook/use-state-ref/use-state-ref.hook';
 import { TransactionFilterSelectorHeader } from '../transaction/components/transaction-filter-selector-header/transaction-filter-selector-header';
 import { TransactionFiltersSelector } from '../transaction/components/transaction-filters/transaction-filters.selector';
-import { useTransactionAmountFilterModal } from '../transaction/context/transaction-amount-filter-modal.context';
+import {
+    useTransactionAmountFilterModal,
+    useTransactionAmountFilterModalParams
+} from '../transaction/context/transaction-amount-filter-modal.context';
 
 const CONTENT_TOP_SPACE = 96;
 const MIN_BOTTOM_SPACING = 16;
@@ -24,7 +27,8 @@ export default function TransactionAmountFilterModal() {
     const { t } = useLingui();
     const { bottom } = useSafeAreaInsets();
     const { backgroundColor } = useFormsheetListStyles();
-    const [, resolveTransactionAmountFilter, currentParams] = useTransactionAmountFilterModal();
+    const [, resolveTransactionAmountFilter] = useTransactionAmountFilterModal();
+    const currentParams = useTransactionAmountFilterModalParams();
 
     const [fromValue, setFromValue, fromValueRef] = useStateRef<number>(() => currentParams?.value?.from ?? 0);
     const [toValue, setToValue, toValueRef] = useStateRef<number>(() => currentParams?.value?.to ?? 0);

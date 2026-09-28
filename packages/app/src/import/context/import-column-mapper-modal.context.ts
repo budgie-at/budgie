@@ -9,7 +9,7 @@ export interface ImportColumnMapperModalParams {
 
 export type ImportColumnMapperResult = { readonly type: 'select'; readonly header: string } | { readonly type: 'clear' } | null;
 
-export const [ImportColumnMapperModalContext, useImportColumnMapperModal] = createModalContext<
+export const [ImportColumnMapperModalContext, useImportColumnMapperModal, useImportColumnMapperModalParams] = createModalContext<
     ImportColumnMapperModalParams,
     ImportColumnMapperResult
 >(null);

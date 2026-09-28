@@ -9,12 +9,13 @@ import { LoadingOverlay } from '../@generic/component/loading-overlay/loading-ov
 import { FullPage } from '../@generic/component/page/full-page';
 import { PinForm } from '../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../auth/constant/pin-length.constant';
-import { useImportBackupPinModal } from '../import/context/import-backup-pin-modal.context';
+import { useImportBackupPinModal, useImportBackupPinModalParams } from '../import/context/import-backup-pin-modal.context';
 import { databaseImportService } from '../import/service/database-import.service';
 
 export default function ImportBackupPinModal() {
     const { t } = useLingui();
-    const [, resolveImportBackupPin, sourceUri] = useImportBackupPinModal();
+    const [, resolveImportBackupPin] = useImportBackupPinModal();
+    const sourceUri = useImportBackupPinModalParams();
 
     const [input, setInput] = useState('');
     const [error, setError] = useState<string | null>(null);

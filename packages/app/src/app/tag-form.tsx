@@ -1,8 +1,9 @@
 import { TagForm, TagFormResult } from '../tag/components/tag-form/tag-form';
-import { useTagFormModal } from '../tag/context/tag-form-modal.context';
+import { useTagFormModal, useTagFormModalParams } from '../tag/context/tag-form-modal.context';
 
 export default function TagFormModal() {
-    const [, resolveTagForm, currentParams] = useTagFormModal();
+    const [, resolveTagForm] = useTagFormModal();
+    const currentParams = useTagFormModalParams();
 
     const handleSuccess = (result: TagFormResult) => {
         resolveTagForm(result);

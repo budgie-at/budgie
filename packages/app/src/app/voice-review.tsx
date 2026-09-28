@@ -8,7 +8,7 @@ import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rn
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
-import { useVoiceReviewModal } from '../ai/context/voice-review-modal.context';
+import { useVoiceReviewModal, useVoiceReviewModalParams } from '../ai/context/voice-review-modal.context';
 import { useVoiceReview } from '../ai/hook/use-voice-review.hook';
 import { VoiceReviewRowInterface } from '../ai/interface/voice-review-row.interface';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
@@ -48,7 +48,8 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 export default function VoiceReviewModal() {
     const { t } = useLingui();
     const { defaultAccount } = useSettingsContext();
-    const [, resolveVoiceReview, currentParams] = useVoiceReviewModal();
+    const [, resolveVoiceReview] = useVoiceReviewModal();
+    const currentParams = useVoiceReviewModalParams();
     const [openCategorySelector] = useCategorySelectorModal();
     const { backgroundColor } = useFormsheetListStyles();
 

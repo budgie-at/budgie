@@ -12,6 +12,9 @@ export type VoiceReviewModalResult =
     | { readonly kind: 're-record' }
     | { readonly kind: 'cancelled' };
 
-export const [VoiceReviewModalContext, useVoiceReviewModal] = createModalContext<VoiceReviewModalParams, VoiceReviewModalResult>({
+export const [VoiceReviewModalContext, useVoiceReviewModal, useVoiceReviewModalParams] = createModalContext<
+    VoiceReviewModalParams,
+    VoiceReviewModalResult
+>({
     kind: 'cancelled'
 });

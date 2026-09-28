@@ -2,10 +2,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { RuleFormCreate } from '../rule/components/rule-form-create/rule-form-create';
 import { RuleFormEdit } from '../rule/components/rule-form-edit/rule-form-edit';
-import { useRuleFormModal } from '../rule/context/rule-form-modal.context';
+import { useRuleFormModal, useRuleFormModalParams } from '../rule/context/rule-form-modal.context';
 
 export default function RuleFormModal() {
-    const { currentParams, resolveRuleForm } = useRuleFormModal();
+    const [, resolveRuleForm] = useRuleFormModal();
+    const currentParams = useRuleFormModalParams();
 
     const handleCancel = () => {
         resolveRuleForm(null);
