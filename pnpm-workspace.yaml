@@ -44,6 +44,7 @@ allowBuilds:
 patchedDependencies:
   expo-modules-jsi@57.0.6: patches/expo-modules-jsi@57.0.6.patch
   expo-pdf-text-extract@1.1.0: patches/expo-pdf-text-extract@1.1.0.patch
+  react-native-css@3.0.7: patches/react-native-css@3.0.7.patch
 
 minimumReleaseAgeExclude:
   - '@liaugust/monobank-sdk@0.7.0'

@@ -1,12 +1,9 @@
-import type { CategorizeInboxListItemType } from '../type/categorize-inbox-list-item.type';
-import type { CategorizeInboxAssignmentInterface } from './categorize-inbox-assignment.interface';
 import type { CategorizeInboxContextValueInterface } from './categorize-inbox-context-value.interface';
+import type { CategorizeInboxLastWriteInterface } from './categorize-inbox-last-write.interface';
 
 export interface CategorizeInboxActionsInterface {
     readonly contextValue: CategorizeInboxContextValueInterface;
-    readonly items: CategorizeInboxListItemType[];
-    readonly acceptableAssignments: CategorizeInboxAssignmentInterface[];
-    readonly remainingCount: number;
-    readonly categorizedCount: number;
-    readonly progress: number;
+    readonly lastWrite: CategorizeInboxLastWriteInterface | null;
+    readonly undo: (lastWrite: CategorizeInboxLastWriteInterface) => void;
+    readonly applyFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => Promise<void>;
 }

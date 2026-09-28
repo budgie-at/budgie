@@ -9,10 +9,10 @@ import { useGetTransactionSectionsQuery } from './use-get-transaction-sections.q
 import type { StatisticsFilterInterface, TransactionFilterInterface } from '@budgie/contracts';
 
 const buildTransactionFilter = (filters: StatisticsFilterInterface): TransactionFilterInterface => ({
-    accountIds: null,
+    accountIds: filters.accountIds,
     categoryIds: filters.categoryIds,
     date: filters.date,
-    amount: null,
+    amount: filters.amount,
     tagIds: filters.tagIds,
     types: isDefined(filters.type) ? [filters.type] : null
 });

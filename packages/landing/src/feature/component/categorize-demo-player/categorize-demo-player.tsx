@@ -4,7 +4,7 @@
 import { RotateCcw } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import type { ReactNode } from 'react';
 
@@ -38,18 +38,18 @@ interface Props {
     readonly children: ReactNode;
 }
 
-const readTotal = (panel: HTMLElement) => Number(panel.querySelector<HTMLElement>('[data-cdemo-count]')?.dataset.total ?? 0);
-
 const writeCount = (panel: HTMLElement, done: number) => {
-    const count = panel.querySelector<HTMLElement>('[data-cdemo-count]');
+    const counts = Array.from(panel.querySelectorAll<HTMLElement>('[data-cdemo-count]'));
     const bar = panel.querySelector<HTMLElement>('[data-cdemo-progress]');
-    const total = readTotal(panel);
+    const total = Math.max(0, ...counts.map(count => Number(count.dataset.from)));
 
-    if (isDefined(count)) {
-        count.textContent = String(total - done);
-    }
+    counts.forEach(count => {
+        const from = Number(count.dataset.from);
 
-    if (isDefined(bar) && total > 0) {
+        count.textContent = String(from < Number(count.dataset.to) ? from + done : from - done);
+    });
+
+    if (isDefined(bar) && isPositiveNumber(total)) {
         bar.style.transform = `scaleX(${done / total})`;
     }
 };

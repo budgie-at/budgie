@@ -11,9 +11,10 @@ const buildNullableArrayParam = (values: readonly (number | string)[] | null): s
     return null;
 };
 
-export const buildUncategorizedRouteParams = (filters: TransactionFilterInterface, mode: AnalyticsTransactionsModeEnum) => {
+export const buildUncategorizedRouteParams = (filters: TransactionFilterInterface, mode: AnalyticsTransactionsModeEnum | null) => {
     const types = buildNullableArrayParam(filters.types);
     const accountIds = buildNullableArrayParam(filters.accountIds);
+    const categoryIds = buildNullableArrayParam(filters.categoryIds);
     const tagIds = buildNullableArrayParam(filters.tagIds);
     const startDate = filters.date?.from?.toISOString() ?? null;
     const endDate = filters.date?.to?.toISOString() ?? null;
@@ -21,9 +22,10 @@ export const buildUncategorizedRouteParams = (filters: TransactionFilterInterfac
     const amountTo = filters.amount?.to?.toString() ?? null;
 
     return {
-        mode,
+        ...(isDefined(mode) && { mode }),
         ...(isDefined(types) && { types }),
         ...(isDefined(accountIds) && { accountIds }),
+        ...(isDefined(categoryIds) && { categoryIds }),
         ...(isDefined(tagIds) && { tagIds }),
         ...(isDefined(startDate) && { startDate }),
         ...(isDefined(endDate) && { endDate }),

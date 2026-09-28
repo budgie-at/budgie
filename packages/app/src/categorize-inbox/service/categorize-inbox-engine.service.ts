@@ -1,18 +1,17 @@
 import { LanguageEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { CategorizeInboxListItemKindEnum } from '../enum/categorize-inbox-list-item-kind.enum';
 import { CategorizeInboxSectionEnum } from '../enum/categorize-inbox-section.enum';
-import { CategorizeInboxTransferKindEnum } from '../enum/categorize-inbox-transfer-kind.enum';
 
 import type { CategorizeInboxBuildContextInterface } from '../interface/categorize-inbox-build-context.interface';
 import type { CategorizeInboxClusterInterface } from '../interface/categorize-inbox-cluster.interface';
 import type { CategorizeInboxScoreInterface } from '../interface/categorize-inbox-score.interface';
+import type { CategorizeInboxSessionInterface } from '../interface/categorize-inbox-session.interface';
+import type { CategorizeInboxViewInterface } from '../interface/categorize-inbox-view.interface';
 import type { CategorizeInboxListItemType } from '../type/categorize-inbox-list-item.type';
-import type { CategoryEvidenceRowInterface, CategorizeInboxRowInterface } from '@budgie/contracts';
+import type { LabelEvidenceRowInterface, CategorizeInboxRowInterface } from '@budgie/contracts';
 
 class CategorizeInboxEngineService {
     private static readonly LIMITS = { chipCount: 2, confidentShare: 0.85, confidentCount: 2, merchantTokenCount: 3 } as const;
@@ -32,33 +31,13 @@ class CategorizeInboxEngineService {
         [LanguageEnum.ES]: ['pago\\s+con\\s+tarjeta', 'transferencia', 'compra']
     };
 
-    private static readonly ATM_KEYWORDS: Record<LanguageEnum, readonly string[]> = {
-        [LanguageEnum.EN]: ['atm', 'cash\\s+withdrawal'],
-        [LanguageEnum.UK]: ['банкомат', 'зняття\\s+готівки'],
-        [LanguageEnum.DE]: ['bankomat', 'geldautomat', 'bargeld'],
-        [LanguageEnum.FR]: ['distributeur', 'retrait'],
-        [LanguageEnum.ES]: ['cajero', 'retiro']
-    };
-
-    private static readonly CARD_KEYWORDS: Record<LanguageEnum, readonly string[]> = {
-        [LanguageEnum.EN]: ['card\\s+transfer', 'transfer\\s+to\\s+card'],
-        [LanguageEnum.UK]: ['переказ\\s+на\\s+картку', 'переказ\\s+з\\s+картки', 'з\\s+картки'],
-        [LanguageEnum.DE]: ['umbuchung', 'überweisung\\s+an'],
-        [LanguageEnum.FR]: ['virement\\s+carte'],
-        [LanguageEnum.ES]: ['transferencia\\s+a\\s+tarjeta']
-    };
-
     private static readonly LEGAL_FORMS = new Set(Object.values(CategorizeInboxEngineService.LEGAL_FORM_TOKENS).flat());
-    private static readonly ATM_PATTERN = CategorizeInboxEngineService.buildKeywordPattern(CategorizeInboxEngineService.ATM_KEYWORDS);
-    private static readonly CARD_PATTERN = CategorizeInboxEngineService.buildKeywordPattern(CategorizeInboxEngineService.CARD_KEYWORDS);
-    private static readonly PAYMENT_TYPE_PREFIX_PATTERN = CategorizeInboxEngineService.buildKeywordPattern(
-        CategorizeInboxEngineService.PAYMENT_TYPE_PREFIX_KEYWORDS,
-        true
+    private static readonly PAYMENT_TYPE_PREFIX_PATTERN = new RegExp(
+        `^(?:${Object.values(CategorizeInboxEngineService.PAYMENT_TYPE_PREFIX_KEYWORDS).flat().join('|')})(?!\\p{L})`,
+        'iu'
     );
 
     private static readonly MASKED_PAN_PATTERN = /\d{4,6}\*+\d{2,4}/u;
-    private static readonly ATM_MCC_CODES: ReadonlySet<string | null> = new Set(['6010', '6011']);
-    private static readonly CARD_TRANSFER_MCC_CODES: ReadonlySet<string | null> = new Set(['4829']);
     private static readonly NOISE_PATTERN = /(?<![\p{L}\p{N}])\p{L}{2,8}:\S+|https?:\/\/\S+|\bwww\.|\d{4,6}\*+\d{2,4}|\+?\d[\d\s-]{6,}\d/gu;
     private static readonly REFERENCE_NOISE_PATTERN = new RegExp(
         `(?<![\\p{L}\\p{N}])\\p{L}{2,8}:\\S+|${CategorizeInboxEngineService.MASKED_PAN_PATTERN.source}|\\+?\\d[\\d\\s-]{6,}\\d|\\b\\d{1,2}[./]\\d{1,2}(?:[./]\\d{2,4})?\\b|\\b\\d{1,2}:\\d{2}\\b`,
@@ -76,34 +55,7 @@ class CategorizeInboxEngineService {
     private static readonly RULE_WORD_PATTERN = /\p{L}{2,}/gu;
     private static readonly SECTION_ORDER = Object.values(CategorizeInboxSectionEnum);
 
-    @Log(
-        (rows, evidence, defaultInstrumentId) =>
-            `enter rowCount=${rows.length} evidenceCount=${evidence.length} defaultInstrumentId=${defaultInstrumentId}`,
-        (result, rows, evidence, defaultInstrumentId) =>
-            `done rowCount=${rows.length} evidenceCount=${evidence.length} defaultInstrumentId=${defaultInstrumentId} itemCount=${result.items.length} confidentRowCount=${result.confidentRowCount}`,
-        (error, rows, evidence, defaultInstrumentId) =>
-            `throw rowCount=${rows.length} evidenceCount=${evidence.length} defaultInstrumentId=${defaultInstrumentId} error=${getErrorMessage(error)}`
-    )
-    buildInbox(rows: CategorizeInboxRowInterface[], evidence: CategoryEvidenceRowInterface[], defaultInstrumentId: number) {
-        const uniqueRows = [...new Map(rows.map(row => [row.transactionId, row])).values()];
-        const clusters = this.buildClusters(uniqueRows, this.buildContext(evidence, defaultInstrumentId));
-        const confidentClusters = clusters.filter(cluster => cluster.isConfident);
-
-        return {
-            items: this.buildListItems(clusters),
-            totalRowCount: uniqueRows.length,
-            confidentRowCount: this.sumValues(confidentClusters.map(cluster => cluster.rows.length)),
-            confidentClusterCount: confidentClusters.length,
-            confidentAssignments: confidentClusters.map(cluster => ({
-                clusterKey: cluster.key,
-                categoryId: cluster.candidates[0].categoryId,
-                transactionIds: cluster.rows.map(row => row.transactionId),
-                ruleConditionValue: cluster.ruleConditionValue
-            }))
-        };
-    }
-
-    private buildContext(evidence: CategoryEvidenceRowInterface[], defaultInstrumentId: number): CategorizeInboxBuildContextInterface {
+    buildContext(evidence: LabelEvidenceRowInterface[], defaultInstrumentId: number): CategorizeInboxBuildContextInterface {
         const titledEvidence = evidence.filter(row => isNotEmptyString(row.title.trim()));
         const brandEvidence = titledEvidence.filter(row => isDefined(this.brandKey(row.title)));
         const mccEvidence = evidence.filter(row => isDefined(row.mccCategoryId));
@@ -117,77 +69,139 @@ class CategorizeInboxEngineService {
         };
     }
 
-    private buildClusters(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface) {
-        const transferKinds = new Map(rows.map(row => [row, this.detectTransferKind(row)]));
-        const isTransfer = (row: CategorizeInboxRowInterface): boolean => isDefined(transferKinds.get(row));
-        const transferRows: CategorizeInboxRowInterface[] = [];
-        const merchantGroups = this.groupBy(rows, row => `${row.type}|${this.merchantKey(row.title)}`);
-        const categoryClusters = [...merchantGroups].flatMap(([key, groupRows]) => {
-            if (!groupRows.some(isTransfer) || this.scoreRows(groupRows, context).isConfident) {
-                return [this.buildCluster(key, groupRows, null, context)];
-            }
+    buildClusters(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxClusterInterface[] {
+        const uniqueRows = [...new Map(rows.map(row => [row.transactionId, row])).values()];
+        const merchantGroups = this.groupBy(uniqueRows, row => `${row.type}|${this.merchantKey(row.title)}`);
 
-            const categoryRows = groupRows.filter(row => !isTransfer(row));
-
-            transferRows.push(...groupRows.filter(isTransfer));
-
-            return isNotEmptyArray(categoryRows) ? [this.buildCluster(key, categoryRows, null, context)] : [];
-        });
-        const transferGroups = this.groupBy(transferRows, row => `${row.type}|TRANSFER|${transferKinds.get(row)}|${row.accountId}`);
-
-        const transferClusters = [...transferGroups].map(([key, groupRows]) =>
-            this.buildCluster(key, groupRows, transferKinds.get(groupRows[0]) ?? null, context)
-        );
-
-        return [...categoryClusters, ...transferClusters];
+        return [...merchantGroups]
+            .map(([key, groupRows]) => this.buildCluster(key, groupRows, context))
+            .sort((left, right) => this.compareClusters(left, right));
     }
 
-    private detectTransferKind(row: CategorizeInboxRowInterface): CategorizeInboxTransferKindEnum | null {
-        const { ATM_PATTERN, CARD_PATTERN, MASKED_PAN_PATTERN, ATM_MCC_CODES, CARD_TRANSFER_MCC_CODES } = CategorizeInboxEngineService;
-        const title = row.title.normalize('NFC').toLowerCase();
+    placeClusters(
+        clusters: readonly CategorizeInboxClusterInterface[],
+        session: CategorizeInboxSessionInterface,
+        hiddenTransactionIds: ReadonlySet<number>,
+        defaultInstrumentId: number
+    ): CategorizeInboxViewInterface {
+        const { clustersByKey } = session;
+        const visibleClusters = clusters
+            .map(cluster => this.hideRows(cluster, hiddenTransactionIds, defaultInstrumentId))
+            .filter(isDefined);
+        const placements = this.placeNewClusters(visibleClusters, session.placements);
+        const placementOrder = new Map([...placements.keys()].map((key, index) => [key, index]));
+        const placedClusters = visibleClusters
+            .map(cluster => this.reusePrevious({ ...cluster, section: placements.get(cluster.key) ?? cluster.section }, clustersByKey))
+            .sort((left, right) => (placementOrder.get(left.key) ?? 0) - (placementOrder.get(right.key) ?? 0));
+        const isUnchanged =
+            placedClusters.length === clustersByKey.size && placedClusters.every(cluster => clustersByKey.get(cluster.key) === cluster);
 
-        if (ATM_MCC_CODES.has(row.mccCode) || ATM_PATTERN.test(title)) {
-            return CategorizeInboxTransferKindEnum.ATM_WITHDRAWAL;
-        }
+        return {
+            items: this.buildListItems(placedClusters),
+            placements,
+            clustersByKey: isUnchanged ? clustersByKey : new Map(placedClusters.map(cluster => [cluster.key, cluster])),
+            remainingCount: this.sumValues(placedClusters.map(cluster => cluster.rows.length))
+        };
+    }
 
-        if (CARD_TRANSFER_MCC_CODES.has(row.mccCode) || MASKED_PAN_PATTERN.test(row.title) || CARD_PATTERN.test(title)) {
-            return CategorizeInboxTransferKindEnum.CARD_TRANSFER;
-        }
-
-        return null;
+    suggestLabelIds(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): number[] {
+        return isNotEmptyArray(rows) ? this.scoreRows(rows, context).candidateLabelIds : [];
     }
 
     private buildCluster(
         key: string,
         rows: CategorizeInboxRowInterface[],
-        transferKind: CategorizeInboxTransferKindEnum | null,
         context: CategorizeInboxBuildContextInterface
     ): CategorizeInboxClusterInterface {
-        const { candidates, isConfident, hasEvidence } = this.scoreRows(rows, context);
-        const isClusterConfident = isConfident && !isDefined(transferKind);
+        const { candidateLabelIds, isConfident } = this.scoreRows(rows, context);
         const titles = rows.map(row => row.title);
         const mostFrequentTitle = this.mostFrequent(titles);
         const ruleConditionValue = this.buildRuleConditionValue(titles, mostFrequentTitle);
-        const variantCount = new Set(titles).size;
-        const baseAmounts = rows
-            .map(row => (row.baseInstrumentId === context.defaultInstrumentId ? row.baseAmount : null))
-            .filter(isDefined);
 
         return {
             key,
-            type: rows[0].type,
-            displayTitle: this.resolveDisplayTitle(variantCount, ruleConditionValue, mostFrequentTitle),
-            variantCount,
+            displayTitle: this.resolveDisplayTitle(new Set(titles).size, ruleConditionValue, mostFrequentTitle),
             rows,
-            totalBaseAmount: isNotEmptyArray(baseAmounts) ? this.sumValues(baseAmounts) : null,
-            sourceAccountId: rows[0].accountId,
-            candidates,
-            isConfident: isClusterConfident,
-            hasEvidence,
-            transferKind,
+            totalBaseAmount: this.sumBaseAmounts(rows, context.defaultInstrumentId),
+            candidateLabelIds,
             ruleConditionValue,
-            section: this.resolveSection(isClusterConfident, isDefined(transferKind), rows.length)
+            section: this.resolveSection(isConfident, rows.length)
         };
+    }
+
+    private sumBaseAmounts(rows: readonly CategorizeInboxRowInterface[], defaultInstrumentId: number): number | null {
+        const baseAmounts = rows.map(row => (row.baseInstrumentId === defaultInstrumentId ? row.baseAmount : null)).filter(isDefined);
+
+        return isNotEmptyArray(baseAmounts) ? this.sumValues(baseAmounts) : null;
+    }
+
+    private hideRows(
+        cluster: CategorizeInboxClusterInterface,
+        hiddenTransactionIds: ReadonlySet<number>,
+        defaultInstrumentId: number
+    ): CategorizeInboxClusterInterface | null {
+        const rows = cluster.rows.filter(row => !hiddenTransactionIds.has(row.transactionId));
+
+        if (rows.length === cluster.rows.length) {
+            return cluster;
+        }
+
+        return isNotEmptyArray(rows) ? { ...cluster, rows, totalBaseAmount: this.sumBaseAmounts(rows, defaultInstrumentId) } : null;
+    }
+
+    private compareClusters(left: CategorizeInboxClusterInterface, right: CategorizeInboxClusterInterface): number {
+        const { SECTION_ORDER } = CategorizeInboxEngineService;
+
+        return (
+            SECTION_ORDER.indexOf(left.section) - SECTION_ORDER.indexOf(right.section) ||
+            this.computeSortScore(right) - this.computeSortScore(left) ||
+            left.key.localeCompare(right.key)
+        );
+    }
+
+    private placeNewClusters(
+        clusters: readonly CategorizeInboxClusterInterface[],
+        placements: ReadonlyMap<string, CategorizeInboxSectionEnum>
+    ): ReadonlyMap<string, CategorizeInboxSectionEnum> {
+        const newClusters = clusters.filter(cluster => !placements.has(cluster.key));
+
+        return isNotEmptyArray(newClusters)
+            ? new Map([
+                  ...placements,
+                  ...newClusters.map((cluster): [string, CategorizeInboxSectionEnum] => [cluster.key, cluster.section])
+              ])
+            : placements;
+    }
+
+    private reusePrevious(
+        cluster: CategorizeInboxClusterInterface,
+        clustersByKey: ReadonlyMap<string, CategorizeInboxClusterInterface>
+    ): CategorizeInboxClusterInterface {
+        const previous = clustersByKey.get(cluster.key);
+
+        return isDefined(previous) && this.isSameCluster(previous, cluster) ? previous : cluster;
+    }
+
+    private isSameCluster(previous: CategorizeInboxClusterInterface, next: CategorizeInboxClusterInterface): boolean {
+        return (
+            previous.section === next.section &&
+            previous.displayTitle === next.displayTitle &&
+            previous.ruleConditionValue === next.ruleConditionValue &&
+            previous.totalBaseAmount === next.totalBaseAmount &&
+            previous.candidateLabelIds.join() === next.candidateLabelIds.join() &&
+            previous.rows.length === next.rows.length &&
+            previous.rows.every((row, index) => this.isSameRow(row, next.rows[index]))
+        );
+    }
+
+    private isSameRow(previous: CategorizeInboxRowInterface, next: CategorizeInboxRowInterface): boolean {
+        return (
+            previous.transactionId === next.transactionId &&
+            previous.title === next.title &&
+            previous.amount === next.amount &&
+            previous.instrumentSymbol === next.instrumentSymbol &&
+            previous.operatedAt.getTime() === next.operatedAt.getTime()
+        );
     }
 
     private resolveDisplayTitle(variantCount: number, ruleConditionValue: string, mostFrequentTitle: string): string {
@@ -221,40 +235,32 @@ class CategorizeInboxEngineService {
     private scoreRows(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxScoreInterface {
         const { LIMITS } = CategorizeInboxEngineService;
         const [{ type }] = rows;
-        const exactCounts = this.countCategories(context.exact, new Set(rows.map(row => `${type}|${row.title.toLowerCase()}`)));
-        const merchantCounts = this.countCategories(context.merchant, new Set(rows.map(row => `${type}|${this.merchantKey(row.title)}`)));
+        const exactCounts = this.countLabels(context.exact, new Set(rows.map(row => `${type}|${row.title.toLowerCase()}`)));
+        const merchantCounts = this.countLabels(context.merchant, new Set(rows.map(row => `${type}|${this.merchantKey(row.title)}`)));
         const brandKeys = new Set(rows.map(row => `${type}|${this.brandKey(row.title) ?? ''}`).filter(key => !key.endsWith('|')));
-        const brandCounts = this.countCategories(context.brand, brandKeys);
+        const brandCounts = this.countLabels(context.brand, brandKeys);
         const historyCounts = [exactCounts, merchantCounts].find(counts => isPositiveNumber(counts.size));
         const counts =
             historyCounts ??
             (isPositiveNumber(brandCounts.size)
                 ? brandCounts
-                : this.countCategories(
+                : this.countLabels(
                       context.mcc,
                       rows.map(row => `${type}|${row.mccCategoryId}`)
                   ));
         const total = this.sumValues(counts.values());
         const topCount = Math.max(0, ...counts.values());
-        const candidates = isPositiveNumber(counts.size)
-            ? this.rankCategoryIds(counts)
-                  .slice(0, LIMITS.chipCount)
-                  .map(categoryId => ({ categoryId, probability: (counts.get(categoryId) ?? 0) / (total + 1) }))
-            : [];
 
         return {
-            candidates,
-            isConfident: isDefined(historyCounts) && topCount >= LIMITS.confidentCount && topCount / total >= LIMITS.confidentShare,
-            hasEvidence: isPositiveNumber(counts.size)
+            candidateLabelIds: this.rankLabelIds(counts).slice(0, LIMITS.chipCount),
+            isConfident: isDefined(historyCounts) && topCount >= LIMITS.confidentCount && topCount / total >= LIMITS.confidentShare
         };
     }
 
-    private countCategories(level: ReadonlyMap<string, CategoryEvidenceRowInterface[]>, keys: Iterable<string>): Map<number, number> {
+    private countLabels(level: ReadonlyMap<string, LabelEvidenceRowInterface[]>, keys: Iterable<string>): Map<number, number> {
         const counts = new Map<number, number>();
 
-        [...keys]
-            .flatMap(key => level.get(key) ?? [])
-            .forEach(row => counts.set(row.categoryId, (counts.get(row.categoryId) ?? 0) + row.count));
+        [...keys].flatMap(key => level.get(key) ?? []).forEach(row => counts.set(row.labelId, (counts.get(row.labelId) ?? 0) + row.count));
 
         return counts;
     }
@@ -289,13 +295,9 @@ class CategorizeInboxEngineService {
         return sequences.find(sequence => sequence.length >= 3 && loweredTitles.every(title => title.includes(sequence))) ?? displayTitle;
     }
 
-    private resolveSection(isConfident: boolean, isTransfer: boolean, rowCount: number): CategorizeInboxSectionEnum {
+    private resolveSection(isConfident: boolean, rowCount: number): CategorizeInboxSectionEnum {
         if (isConfident) {
             return CategorizeInboxSectionEnum.CONFIDENT;
-        }
-
-        if (isTransfer) {
-            return CategorizeInboxSectionEnum.TRANSFERS;
         }
 
         return rowCount > 1 ? CategorizeInboxSectionEnum.REVIEW : CategorizeInboxSectionEnum.ONE_OFFS;
@@ -303,22 +305,16 @@ class CategorizeInboxEngineService {
 
     private buildListItems(clusters: readonly CategorizeInboxClusterInterface[]): CategorizeInboxListItemType[] {
         return CategorizeInboxEngineService.SECTION_ORDER.flatMap((section): CategorizeInboxListItemType[] => {
-            const sectionClusters = clusters
-                .filter(cluster => cluster.section === section)
-                .sort((left, right) => this.computeSortScore(right) - this.computeSortScore(left) || left.key.localeCompare(right.key));
-            const clusterItems = sectionClusters.map((cluster): CategorizeInboxListItemType => ({
-                kind: CategorizeInboxListItemKindEnum.CLUSTER,
-                key: cluster.key,
-                cluster
-            }));
-            const header: CategorizeInboxListItemType = {
-                kind: CategorizeInboxListItemKindEnum.SECTION_HEADER,
+            const sectionClusters = clusters.filter(cluster => cluster.section === section);
+            const baseAmounts = sectionClusters.map(cluster => cluster.totalBaseAmount).filter(isDefined);
+            const header = {
                 key: `section-${section}`,
                 section,
-                count: this.sumValues(sectionClusters.map(cluster => cluster.rows.length))
+                count: this.sumValues(sectionClusters.map(cluster => cluster.rows.length)),
+                totalBaseAmount: isNotEmptyArray(baseAmounts) ? this.sumValues(baseAmounts) : null
             };
 
-            return isNotEmptyArray(clusterItems) ? [header, ...clusterItems] : [];
+            return isNotEmptyArray(sectionClusters) ? [header, ...sectionClusters] : [];
         });
     }
 
@@ -349,8 +345,8 @@ class CategorizeInboxEngineService {
         return groups;
     }
 
-    private rankCategoryIds(counts: ReadonlyMap<number, number>): number[] {
-        return [...counts].sort(([leftId, left], [rightId, right]) => right - left || leftId - rightId).map(([categoryId]) => categoryId);
+    private rankLabelIds(counts: ReadonlyMap<number, number>): number[] {
+        return [...counts].sort(([leftId, left], [rightId, right]) => right - left || leftId - rightId).map(([labelId]) => labelId);
     }
 
     private mostFrequent(values: readonly string[]): string {
@@ -363,12 +359,6 @@ class CategorizeInboxEngineService {
 
     private sumValues(values: Iterable<number>): number {
         return [...values].reduce((total, value) => total + value, 0);
-    }
-
-    private static buildKeywordPattern(keywords: Record<LanguageEnum, readonly string[]>, anchored = false): RegExp {
-        const alternation = `(?:${Object.values(keywords).flat().join('|')})(?!\\p{L})`;
-
-        return anchored ? new RegExp(`^${alternation}`, 'iu') : new RegExp(`(?<!\\p{L})${alternation}`, 'u');
     }
 }
 

@@ -2,9 +2,11 @@ import { eq, inArray } from 'drizzle-orm';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionTagsCreateEntityInterface } from '../entity/transaction-tags-create-entity.interface';
 import { TransactionTagsEntityInterface } from '../entity/transaction-tags-entity.interface';
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
+import { insertTransactionTag } from '../util/insert-transaction-tag.util';
 
 import type { DB } from '../../@generic/type/db.type';
 
@@ -35,6 +37,16 @@ export class TransactionTagsRepository {
         }
 
         return [];
+    }
+
+    async addTagByTransactionIds(transactionIds: number[], tagId: number, tx?: DB): Promise<number[]> {
+        if (!isNotEmptyArray(transactionIds)) {
+            return [];
+        }
+
+        const rows = await insertTransactionTag(tx ?? this.db, tagId, inArray(TransactionEntityTable.id, transactionIds));
+
+        return rows.map(row => row.transactionId);
     }
 
     async deleteByTransactionId(id: number, tx?: DB): Promise<void> {

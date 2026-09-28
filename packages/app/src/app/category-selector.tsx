@@ -36,7 +36,7 @@ export default function CategorySelectorModal() {
     const [, resolveCategorySelector, currentParams] = useCategorySelectorModal();
     const { backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
-    const { categories } = useSearchCategoriesQuery(search, true);
+    const { categories, isLoading } = useSearchCategoriesQuery(search, true);
 
     const { variant = 'primary', initialCategoryId = null, description, excludeCategoryIds = [] } = currentParams ?? {};
     const data = prepareCategoryData(categories, excludeCategoryIds, initialCategoryId);
@@ -72,6 +72,7 @@ export default function CategorySelectorModal() {
                 data={data}
                 variant={variant}
                 initialCategoryId={initialCategoryId}
+                isLoading={isLoading}
                 onSelect={resolveCategorySelector}
                 cardTestID={CategorySelectorModalSelector.Card}
             />

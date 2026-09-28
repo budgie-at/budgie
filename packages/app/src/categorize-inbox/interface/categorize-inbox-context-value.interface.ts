@@ -1,19 +1,14 @@
-import { CategoryEntityInterface, CategorizeInboxRowInterface } from '@budgie/contracts';
+import { CategorizeInboxRowInterface } from '@budgie/contracts';
 
 import { CategorizeInboxAssignmentInterface } from './categorize-inbox-assignment.interface';
 import { CategorizeInboxClusterInterface } from './categorize-inbox-cluster.interface';
+import { CategorizeInboxStrategyInterface } from './categorize-inbox-strategy.interface';
+import { CategorizeInboxVisibilityInterface } from './categorize-inbox-visibility.interface';
 
-export interface CategorizeInboxContextValueInterface {
-    readonly categoriesById: ReadonlyMap<number, Pick<CategoryEntityInterface, 'id' | 'title' | 'icon'>>;
-    readonly excludedTransactionIds: ReadonlySet<number>;
-    readonly expandedClusterKey: string | null;
-    readonly undoAssignments: CategorizeInboxAssignmentInterface[] | null;
-    readonly toggleExpanded: (clusterKey: string) => void;
-    readonly toggleExcluded: (transactionId: number) => void;
-    readonly hideTransactions: (transactionIds: readonly number[]) => void;
-    readonly showTransactions: (transactionIds: readonly number[]) => void;
+export interface CategorizeInboxContextValueInterface extends CategorizeInboxVisibilityInterface {
+    readonly strategy: CategorizeInboxStrategyInterface;
     readonly assign: (assignments: CategorizeInboxAssignmentInterface[]) => void;
-    readonly assignCluster: (cluster: CategorizeInboxClusterInterface, categoryId: number) => void;
-    readonly assignRow: (row: CategorizeInboxRowInterface, categoryId: number) => void;
-    readonly undo: () => void;
+    readonly assignCluster: (cluster: CategorizeInboxClusterInterface, labelId: number) => void;
+    readonly pickClusterLabels: (cluster: CategorizeInboxClusterInterface) => Promise<void>;
+    readonly pickRowLabels: (row: CategorizeInboxRowInterface) => Promise<void>;
 }
