@@ -1,4 +1,4 @@
-import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountTypeEnum, CurrencyEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
 import { format } from 'date-fns/format';
@@ -14,9 +14,15 @@ import {
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
+import type { EntryBaseValuationContextInterface } from '../interface/entry-base-valuation-context.interface';
 import type { EntryBaseValuationInputInterface } from '../interface/entry-base-valuation-input.interface';
 import type { EntryBaseValuationInterface } from '../interface/entry-base-valuation.interface';
-import type { DB, HistoricalExchangeRateEntityInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
+import type {
+    DB,
+    HistoricalExchangeRateEntityInterface,
+    TransactionCreateInputInterface,
+    TransactionEntryCreateInputInterface
+} from '@budgie/contracts';
 
 class EntryBaseValuationService {
     private static readonly RATE_DATE_FORMAT = 'yyyy-MM-dd';
@@ -34,43 +40,7 @@ class EntryBaseValuationService {
         operatedAt,
         tx
     }: EntryBaseValuationInputInterface): Promise<EntryBaseValuationInterface> {
-        const [account, baseInstrument] = await Promise.all([
-            accountRepository.findByIdIncludingArchived(accountId, tx),
-            exchangeRatesService.getBaseInstrument()
-        ]);
-
-        if (!isDefined(account)) {
-            throw new Error(t`Account ${accountId} not found`);
-        }
-
-        if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
-            throw new Error(t`Base instrument not found`);
-        }
-
-        if (account.instrumentId === baseInstrument.id) {
-            return {
-                baseInstrumentId: baseInstrument.id,
-                baseExchangeRate: 1,
-                baseAmount: Math.round(amount)
-            };
-        }
-
-        const baseExchangeRate = await this.resolveHistoricalBaseExchangeRateOrNull(
-            account.instrumentId,
-            baseInstrument.id,
-            operatedAt,
-            tx
-        );
-
-        if (!isDefined(baseExchangeRate)) {
-            return this.resolveMissingBaseValuation(account.type, account.instrumentId, baseInstrument.id);
-        }
-
-        return {
-            baseInstrumentId: baseInstrument.id,
-            baseExchangeRate,
-            baseAmount: Math.round(amount * baseExchangeRate)
-        };
+        return await this.valueAccountAmount(accountId, amount, operatedAt, await this.createContext(tx));
     }
 
     @Log(
@@ -127,34 +97,122 @@ class EntryBaseValuationService {
     }
 
     @Log(
-        (entries, operatedAt, externalSource, tx) =>
-            `enter accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} externalSource=${externalSource ?? ''} hasTx=${String(isDefined(tx))}`,
-        (result, ...inputs) => {
-            const [entries, operatedAt, externalSource, tx] = inputs;
-
-            return `done accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} externalSource=${externalSource ?? ''} hasTx=${String(isDefined(tx))} count=${result.size}`;
-        },
-        (error, ...inputs) => {
-            const [entries, operatedAt, externalSource, tx] = inputs;
-
-            return `throw accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} externalSource=${externalSource ?? ''} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`;
-        }
+        (entries, operatedAt, tx) =>
+            `enter accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))}`,
+        (result, entries, operatedAt, tx) =>
+            `done accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} count=${result.size}`,
+        (error, entries, operatedAt, tx) =>
+            `throw accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async valueEntries(
         entries: TransactionEntryCreateInputInterface[],
         operatedAt: Date,
-        externalSource: ExternalSourceEnum | null,
         tx?: DB
+    ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>> {
+        return await this.valueEntriesInContext(entries, operatedAt, await this.createContext(tx));
+    }
+
+    @Log(
+        (transactions, tx) => `enter transactionCount=${transactions.length} hasTx=${String(isDefined(tx))}`,
+        (result, transactions, tx) =>
+            `done transactionCount=${transactions.length} hasTx=${String(isDefined(tx))} valuedTransactionCount=${result.length}`,
+        (error, transactions, tx) =>
+            `throw transactionCount=${transactions.length} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
+    )
+    async valueTransactionsEntries(
+        transactions: readonly Pick<TransactionCreateInputInterface, 'entries' | 'operatedAt'>[],
+        tx: DB
+    ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>[]> {
+        const context = await this.createContext(tx);
+
+        return await Promise.all(
+            transactions.map(transaction => this.valueEntriesInContext(transaction.entries, transaction.operatedAt, context))
+        );
+    }
+
+    private async createContext(tx?: DB): Promise<EntryBaseValuationContextInterface> {
+        return {
+            baseInstrument: await exchangeRatesService.getBaseInstrument(),
+            accounts: new Map(),
+            rates: new Map(),
+            tx
+        };
+    }
+
+    private async valueEntriesInContext(
+        entries: TransactionEntryCreateInputInterface[],
+        operatedAt: Date,
+        context: EntryBaseValuationContextInterface
     ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>> {
         const valuations = new Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>();
 
         await Promise.all(
             entries.map(async entry => {
-                valuations.set(entry, await this.resolveEntryValuation(entry, operatedAt, externalSource, tx));
+                valuations.set(entry, await this.resolveEntryValuation(entry, operatedAt, context));
             })
         );
 
         return valuations;
+    }
+
+    private async valueAccountAmount(
+        accountId: number,
+        amount: number,
+        operatedAt: Date,
+        context: EntryBaseValuationContextInterface
+    ): Promise<EntryBaseValuationInterface> {
+        const { baseInstrument, tx } = context;
+        const account = await this.memoize(
+            context.accounts,
+            accountId,
+            async () => await accountRepository.findByIdIncludingArchived(accountId, tx)
+        );
+
+        if (!isDefined(account)) {
+            throw new Error(t`Account ${accountId} not found`);
+        }
+
+        if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
+            throw new Error(t`Base instrument not found`);
+        }
+
+        if (account.instrumentId === baseInstrument.id) {
+            return {
+                baseInstrumentId: baseInstrument.id,
+                baseExchangeRate: 1,
+                baseAmount: Math.round(amount)
+            };
+        }
+
+        const baseExchangeRate = await this.memoize(
+            context.rates,
+            `${account.instrumentId}:${baseInstrument.id}:${format(operatedAt, EntryBaseValuationService.RATE_DATE_FORMAT)}`,
+            () => this.resolveHistoricalBaseExchangeRateOrNull(account.instrumentId, baseInstrument.id, operatedAt, tx)
+        );
+
+        if (!isDefined(baseExchangeRate)) {
+            return this.resolveMissingBaseValuation(account.type, account.instrumentId, baseInstrument.id);
+        }
+
+        return {
+            baseInstrumentId: baseInstrument.id,
+            baseExchangeRate,
+            baseAmount: Math.round(amount * baseExchangeRate)
+        };
+    }
+
+    private memoize<TKey, TValue>(cache: Map<TKey, Promise<TValue>>, key: TKey, resolve: () => Promise<TValue>): Promise<TValue> {
+        const cached = cache.get(key);
+
+        if (isDefined(cached)) {
+            return cached;
+        }
+
+        const resolved = resolve();
+
+        cache.set(key, resolved);
+
+        return resolved;
     }
 
     private resolveMissingBaseValuation(
@@ -212,14 +270,11 @@ class EntryBaseValuationService {
     private async resolveEntryValuation(
         entry: TransactionEntryCreateInputInterface,
         operatedAt: Date,
-        externalSource: ExternalSourceEnum | null,
-        tx?: DB
+        context: EntryBaseValuationContextInterface
     ): Promise<EntryBaseValuationInterface> {
-        const baseInstrument = await exchangeRatesService.getBaseInstrument();
-
         if (
-            isDefined(baseInstrument) &&
-            entry.baseInstrumentId === baseInstrument.id &&
+            isDefined(context.baseInstrument) &&
+            entry.baseInstrumentId === context.baseInstrument.id &&
             isDefined(entry.baseExchangeRate) &&
             isDefined(entry.baseAmount)
         ) {
@@ -230,13 +285,7 @@ class EntryBaseValuationService {
             };
         }
 
-        return await this.valueMicroUnitEntry({
-            accountId: entry.accountId,
-            amount: convertToMicroUnits(entry.amount),
-            operatedAt,
-            externalSource,
-            tx
-        });
+        return await this.valueAccountAmount(entry.accountId, convertToMicroUnits(entry.amount), operatedAt, context);
     }
 
     private async resolveHistoricalEuroRate(
