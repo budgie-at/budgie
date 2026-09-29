@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.14](https://github.com/budgie-at/budgie/compare/v6.85.13...v6.85.14) (2026-09-29)
+
+
+### Bug Fixes
+
+* **app:** rebuild stored balances before startup and foreground syncs ([5f8c07e](https://github.com/budgie-at/budgie/commit/5f8c07eb21a3ba95af2e175479d64b5586e9866c))
+
+
+
+
+
 ## [6.85.13](https://github.com/budgie-at/budgie/compare/v6.85.12...v6.85.13) (2026-09-29)
 
 
