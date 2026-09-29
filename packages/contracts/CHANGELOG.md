@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.10](https://github.com/budgie-at/budgie/compare/v6.85.9...v6.85.10) (2026-09-29)
+
+
+### Performance Improvements
+
+* **app:** trim the categorize-inbox row query to its rendered columns ([36e608b](https://github.com/budgie-at/budgie/commit/36e608b47a4f4d08bd4f69490f7c0e9095e222a3)), closes [#1258](https://github.com/budgie-at/budgie/issues/1258) [#1241](https://github.com/budgie-at/budgie/issues/1241) [#1258](https://github.com/budgie-at/budgie/issues/1258)
+
+
+
+
+
 ## [6.85.6](https://github.com/budgie-at/budgie/compare/v6.85.5...v6.85.6) (2026-09-28)
 
 
