@@ -12,14 +12,14 @@ describe('account/balance-after-consolidation', () => {
     it('keeps stored balances equal to the ledger when consolidation replaces already counted entries', async () => {
         const bankAccount = seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
         const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
-        seedBankPair.expense(
-            { externalId: 'tx-atm', operatedAt: new Date(2026, 0, 15, 12, 0, 0) },
+        const atmExpense = seedBankPair.expense(
+            { externalId: 'tx-atm', operatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
             { accountId: bankAccount.id, amount: AMOUNT, mccCategoryId: findMccByCode('6011').id }
         );
 
         await accountBalanceIncrementalService.updateAllBalances(false);
         await testDb.$client.execAsync('UPDATE account_balances SET updated_at = updated_at - 60');
-        await consolidationCoordinatorService.consolidate(null);
+        await consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([atmExpense.id]);
         await accountBalanceIncrementalService.updateAllBalances(false);
 
         expect(accountBalanceRepository.getByAccountId(bankAccount.id).get()?.balance).toBe(-AMOUNT);

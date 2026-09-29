@@ -748,6 +748,9 @@ importers:
       '@budgie-at/test-kit':
         specifier: workspace:*
         version: link:../test-kit
+      '@budgie/budget':
+        specifier: workspace:*
+        version: link:../../packages/budget
       '@budgie/consolidation':
         specifier: workspace:*
         version: link:../../packages/consolidation

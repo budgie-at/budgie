@@ -179,6 +179,7 @@ export { BANK_FEE_CATEGORY_ID } from './category/constant/bank-fee-category-id.c
 export { DEBT_PAYMENT_CATEGORY_ID } from './category/constant/debt-payment-category-id.constant';
 export { LENDING_CATEGORY_ID } from './category/constant/lending-category-id.constant';
 export { BORROWING_CATEGORY_ID } from './category/constant/borrowing-category-id.constant';
+export { CASH_WITHDRAWAL_TRACKED_CATEGORY_ID } from './category/constant/cash-withdrawal-tracked-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
 export { CATEGORY_TITLE_MIN_LENGTH } from './category/constant/category-title-min-length.constant';
 
@@ -220,6 +221,7 @@ export { MccGroupCreateEntitySchema } from './mcc-group/schema/mcc-group-create-
 
 export { MccGroupRepository } from './mcc-group/repository/mcc-group.repository';
 
+export { ATM_CASH_WITHDRAWAL_MCC } from './mcc-category/constant/atm-cash-withdrawal-mcc.constant';
 export { MCC_CODE_LENGTH } from './mcc-category/constant/mcc-code-length.constant';
 export { MCC_DESCRIPTION_MAX_LENGTH } from './mcc-category/constant/mcc-description-max-length.constant';
 export { MCC_DEFAULT_CATEGORY_SEED } from './mcc-category/constant/mcc-default-category-seed.constant';
@@ -326,7 +328,6 @@ export { TransferPairAutoConfidenceBucketEnum } from './transaction/enum/transfe
 export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
 export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
-export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
 export type { ExistingTransferBridgeCandidateInterface } from './transaction/interface/existing-transfer-bridge-candidate.interface';
 export type { ExistingTransferChainReclaimCandidateInterface } from './transaction/interface/existing-transfer-chain-reclaim-candidate.interface';
 export type { BridgeClaimRepairCandidateInterface } from './transaction/interface/bridge-claim-repair-candidate.interface';
@@ -355,6 +356,7 @@ export { isPositiveAdjustmentTransaction } from './transaction/type-guard/is-pos
 export { CategorySourceEnum } from './transaction-entry/enum/category-source.enum';
 export { TransactionEntryKindEnum } from './transaction-entry/enum/transaction-entry-kind.enum';
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
+export { buildSpendingEntryCondition } from './transaction-entry/util/build-spending-entry-condition.util';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 
 export { TransactionEntryEntityTable } from './transaction-entry/table/transaction-entry-entity.table';

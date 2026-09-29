@@ -43,6 +43,28 @@ export class ConsolidationCoordinatorService {
         return this.consolidationCandidateService.countManualReviewCandidates();
     }
 
+    @Log(
+        transactionIds => `enter transactionCount=${transactionIds.length}`,
+        (result, transactionIds) => `done candidateCount=${result.length} transactionCount=${transactionIds.length}`,
+        (error, transactionIds) => `throw transactionCount=${transactionIds.length} error=${getErrorMessage(error)}`
+    )
+    async findAtmCashWithdrawalTransactionIds(transactionIds: readonly number[]): Promise<number[]> {
+        const candidates = await this.consolidationCandidateService.findAtmCashWithdrawalCandidates(transactionIds);
+
+        return candidates.map(candidate => candidate.transactionId);
+    }
+
+    @Log(
+        transactionIds => `enter transactionCount=${transactionIds.length}`,
+        (result, transactionIds) => `done consolidated=${result} transactionCount=${transactionIds.length}`,
+        (error, transactionIds) => `throw transactionCount=${transactionIds.length} error=${getErrorMessage(error)}`
+    )
+    async moveAtmCashWithdrawalsToCash(transactionIds: readonly number[]): Promise<number> {
+        const candidates = await this.consolidationCandidateService.findAtmCashWithdrawalCandidates(transactionIds);
+
+        return this.consolidationAutoCandidateService.processAtmCashWithdrawalCandidates(candidates);
+    }
+
     @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
     async countExistingTransferIncomeDuplicateRepairCandidates(): Promise<number> {
         return (await this.consolidationCandidateService.findExistingTransferIncomeDuplicateRepairCandidates()).length;

@@ -1,3 +1,4 @@
+import { categorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { expect } from 'vitest';
@@ -10,9 +11,10 @@ export const expectAtmCashWithdrawalConsolidation = async (
     cashAccountId: number,
     sourceTransactionId: number
 ): Promise<void> => {
-    const result = await transferConsolidationService.consolidate();
+    await transferConsolidationService.consolidate();
 
-    expect(result.consolidated).toBe(1);
+    expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+    expect(await categorizeInboxService.moveToCash([sourceTransactionId])).toEqual([sourceTransactionId]);
 
     const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
     expect(canonicals).toHaveLength(1);

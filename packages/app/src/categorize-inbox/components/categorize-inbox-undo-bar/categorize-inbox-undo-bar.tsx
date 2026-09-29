@@ -1,16 +1,15 @@
 import { RuleConditionFieldEnum, RuleConditionOperatorEnum, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useRuleFormModal } from '../../../rule/context/rule-form-modal.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxFollowUpButton } from '../categorize-inbox-follow-up-button/categorize-inbox-follow-up-button';
+import { CategorizeInboxUndoLayout } from '../categorize-inbox-undo-layout/categorize-inbox-undo-layout';
 
 import { CategorizeInboxUndoBarSelector } from './categorize-inbox-undo-bar.selector';
 
@@ -71,22 +70,7 @@ export const CategorizeInboxUndoBar = ({ lastWrite, onUndo, onFollowUp }: Props)
         });
 
     return (
-        <View
-            className="h-14 flex-row items-center gap-x-lg rounded-5xl border border-secondary-corner bg-primary-reverse pl-md"
-            accessibilityLiveRegion="polite"
-            testID={CategorizeInboxUndoBarSelector.Bar}
-        >
-            <CircleIcon icon={icon} variant="ghost" size={36} iconSize={20} border={false} />
-
-            <View className="flex-1" accessible>
-                <Text className="text-sm font-semibold text-primary" numberOfLines={1}>
-                    {title}
-                </Text>
-                <Text className="mt-xxs text-xs font-medium text-secondary-foreground" numberOfLines={1}>
-                    {description}
-                </Text>
-            </View>
-
+        <CategorizeInboxUndoLayout icon={icon} title={title} description={description} onUndo={handleUndoPress}>
             {groupCount === 1 ? <CategorizeInboxFollowUpButton lastWrite={lastWrite} onFollowUp={onFollowUp} /> : null}
 
             {isDefined(firstLabel) && isNotEmptyString(ruleConditionValue) ? (
@@ -100,17 +84,6 @@ export const CategorizeInboxUndoBar = ({ lastWrite, onUndo, onFollowUp }: Props)
                     <Icon icon={UserIconNameEnum.Zap} size={18} className="text-secondary-foreground" />
                 </HapticPressable>
             ) : null}
-
-            <HapticPressable
-                onPress={handleUndoPress}
-                className="h-11 justify-center pr-xl pl-md"
-                accessibilityRole="button"
-                testID={CategorizeInboxUndoBarSelector.UndoButton}
-            >
-                <Text className="text-sm font-semibold text-primary">
-                    <Trans>Undo</Trans>
-                </Text>
-            </HapticPressable>
-        </View>
+        </CategorizeInboxUndoLayout>
     );
 };
