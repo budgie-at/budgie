@@ -463,6 +463,13 @@
       "when": 1790686049987,
       "tag": "0068_replace_needs_embedding_index",
       "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "6",
+      "when": 1790686109987,
+      "tag": "0069_live_account_created_index",
+      "breakpoints": true
     }
   ]
 }
