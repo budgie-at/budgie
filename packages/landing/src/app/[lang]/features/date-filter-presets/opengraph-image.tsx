@@ -1,24 +1,14 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
 import { t } from '@lingui/core/macro';
 
-import { createFeatureOgImage } from '../../../../feature/component/feature-og-image/feature-og-image';
-import { resolveOgPlate } from '../../../../generic/util/resolve-og-plate.util';
-import { getI18nInstance } from '../../../../i18n/app-router-i18n';
+import { createFeatureOgRoute } from '../../../../feature/util/create-feature-og-route.util';
 
 export const alt = 'Date Filter Presets — Budgie';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-const OgImage = async ({ params }: { params: Promise<{ lang: string }> }) => {
-    const { lang } = await params;
-    const i18n = getI18nInstance(lang);
-
-    return createFeatureOgImage(
-        t(i18n)`Date Filter Presets`,
-        t(i18n)`Seven presets. Monday-to-Sunday weeks.`,
-        [t(i18n)`filters`, t(i18n)`dates`, t(i18n)`presets`],
-        resolveOgPlate('date-filter-presets', lang)
-    );
-};
-
-export default OgImage;
+export default createFeatureOgRoute('date-filter-presets', i18n => ({
+    title: t(i18n)`Date Filter Presets`,
+    tagline: t(i18n)`Seven presets. Monday-to-Sunday weeks.`,
+    tags: [t(i18n)`filters`, t(i18n)`dates`, t(i18n)`presets`]
+}));
