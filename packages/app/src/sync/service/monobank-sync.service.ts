@@ -17,7 +17,6 @@ import { transactionService } from '../../transaction/service/transaction.servic
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';
-import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 import { getSyncModule, loadSyncModule } from '../util/load-sync-module.util';
@@ -209,7 +208,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         try {
             await transferConsolidationService.consolidate(consolidationScope);
         } finally {
-            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
+            transferConsolidationDrainerService.enqueue(consolidationScope);
         }
     }
 

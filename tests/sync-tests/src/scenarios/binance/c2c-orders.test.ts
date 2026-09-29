@@ -1,4 +1,3 @@
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import {
@@ -93,7 +92,7 @@ describe('binance/c2c-orders reconciliation', () => {
                 quotedUnitPrice: PRECISION
             })
         ]);
-        expect(enqueueSpy.mock.calls).toContainEqual([TransferConsolidationDrainReasonEnum.BINANCE_SYNC]);
+        expect(enqueueSpy.mock.calls).toContainEqual([]);
     });
 
     it('moves only the Binance entry when another provider uses the same external id', async () => {
@@ -135,9 +134,7 @@ describe('binance/c2c-orders reconciliation', () => {
         await binanceSyncService.sync();
 
         expect(enqueueSpy.mock.calls).toEqual(
-            expect.arrayContaining([
-                [TransferConsolidationDrainReasonEnum.BINANCE_SYNC, expect.objectContaining({ transactionIds: [existingTransaction.id] })]
-            ])
+            expect.arrayContaining([[expect.objectContaining({ transactionIds: [existingTransaction.id] })]])
         );
         expect(fetchBinanceTransactions().map(transaction => transaction.id)).toContain(historicalTransaction.id);
     });
