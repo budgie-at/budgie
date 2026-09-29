@@ -11,5 +11,4 @@ export interface TransferConversionResultInterface {
     readonly toAccountId: number;
     readonly transactionType: TransactionTypeEnum;
     readonly feeEntries: TransactionEntryEntityInterface[];
-    readonly sourceEntry: TransactionEntryEntityInterface;
 }

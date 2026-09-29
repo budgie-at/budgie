@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.9](https://github.com/budgie-at/budgie/compare/v6.85.8...v6.85.9) (2026-09-28)
+
+
+### Performance Improvements
+
+* **consolidation:** materialize refund detector entry CTEs ([b3067ff](https://github.com/budgie-at/budgie/commit/b3067ff707bdd6166c4e83c23ea00c9a5b0379dd))
+
+
+
+
+
+## [6.85.6](https://github.com/budgie-at/budgie/compare/v6.85.5...v6.85.6) (2026-09-28)
+
+**Note:** Version bump only for package @budgie/consolidation
+
+
+
+
+
 ## [6.85.2](https://github.com/budgie-at/budgie/compare/v6.85.1...v6.85.2) (2026-09-28)
 
 
