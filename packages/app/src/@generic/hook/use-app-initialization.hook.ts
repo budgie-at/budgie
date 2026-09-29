@@ -9,6 +9,7 @@ import { budgetAlertMonitorService } from '../../budget/service/budget-alert-mon
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { historicalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
 import { onboardingService } from '../../onboarding/service/onboarding.service';
+import { appDataSyncService } from '../../sync/service/app-data-sync.service';
 import { binanceSyncService } from '../../sync/service/binance-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../../sync/service/sync-workload.service';
@@ -29,7 +30,7 @@ const initializeAppServices = async (): Promise<void> => {
     await budgetAlertMonitorService.registerBackgroundTask().catch(emptyFn);
     await widgetSnapshotService.registerBackgroundTask().catch(emptyFn);
     widgetSnapshotService.start();
-    await syncWorkloadService.run('startup', () => syncWorkloadService.syncAppData());
+    await syncWorkloadService.run('startup', () => appDataSyncService.sync());
     await onboardingService.initializeLocale().catch(emptyFn);
     void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
 };
