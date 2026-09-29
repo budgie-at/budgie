@@ -1,0 +1,2162 @@
+{
+    "Activity": [
+        "pulse",
+        "health",
+        "fitness",
+        "heart",
+        "monitor",
+        "medical"
+    ],
+    "Airplay": [
+        "stream",
+        "cast",
+        "screen",
+        "mirror"
+    ],
+    "AlarmClock": [
+        "time",
+        "wake",
+        "morning",
+        "reminder"
+    ],
+    "Archive": [
+        "storage",
+        "box",
+        "save",
+        "backup"
+    ],
+    "ArrowDownUp": [
+        "sort",
+        "swap",
+        "exchange"
+    ],
+    "ArrowLeftRight": [
+        "swap",
+        "exchange",
+        "transfer"
+    ],
+    "ArrowRightLeft": [
+        "swap",
+        "exchange",
+        "transfer"
+    ],
+    "ArrowUpDown": [
+        "sort",
+        "swap",
+        "exchange"
+    ],
+    "Baby": [
+        "child",
+        "infant",
+        "kid",
+        "family",
+        "newborn",
+        "parenting"
+    ],
+    "Backpack": [
+        "bag",
+        "school",
+        "travel",
+        "hiking",
+        "student"
+    ],
+    "Banknote": [
+        "money",
+        "cash",
+        "bill",
+        "currency",
+        "payment",
+        "salary",
+        "income"
+    ],
+    "Bath": [
+        "bathroom",
+        "shower",
+        "wash",
+        "hygiene",
+        "home"
+    ],
+    "BatteryCharging": [
+        "power",
+        "energy",
+        "charge",
+        "electric"
+    ],
+    "Bed": [
+        "sleep",
+        "bedroom",
+        "rest",
+        "hotel",
+        "accommodation",
+        "furniture"
+    ],
+    "Beer": [
+        "drink",
+        "alcohol",
+        "bar",
+        "pub",
+        "beverage",
+        "party"
+    ],
+    "Bike": [
+        "bicycle",
+        "cycling",
+        "transport",
+        "exercise",
+        "sport"
+    ],
+    "Bitcoin": [
+        "crypto",
+        "cryptocurrency",
+        "digital",
+        "blockchain",
+        "btc"
+    ],
+    "Blinds": [
+        "window",
+        "curtain",
+        "home",
+        "interior"
+    ],
+    "Book": [
+        "reading",
+        "education",
+        "library",
+        "study",
+        "literature"
+    ],
+    "BookOpen": [
+        "reading",
+        "education",
+        "library",
+        "study",
+        "literature"
+    ],
+    "Briefcase": [
+        "work",
+        "job",
+        "business",
+        "career",
+        "office",
+        "professional"
+    ],
+    "Building": [
+        "office",
+        "company",
+        "corporate",
+        "business",
+        "apartment"
+    ],
+    "Building2": [
+        "office",
+        "company",
+        "corporate",
+        "business",
+        "apartment",
+        "bank"
+    ],
+    "Bus": [
+        "transport",
+        "public",
+        "travel",
+        "commute",
+        "transit"
+    ],
+    "Cable": [
+        "wire",
+        "connection",
+        "internet",
+        "tech"
+    ],
+    "Cake": [
+        "birthday",
+        "celebration",
+        "party",
+        "dessert",
+        "bakery"
+    ],
+    "Calculator": [
+        "math",
+        "finance",
+        "accounting",
+        "numbers"
+    ],
+    "Calendar": [
+        "date",
+        "schedule",
+        "event",
+        "appointment",
+        "planner"
+    ],
+    "Calendar1": [
+        "date",
+        "schedule",
+        "event",
+        "appointment",
+        "planner"
+    ],
+    "CalendarDays": [
+        "date",
+        "schedule",
+        "event",
+        "appointment",
+        "planner"
+    ],
+    "Camera": [
+        "photo",
+        "photography",
+        "picture",
+        "image",
+        "snapshot"
+    ],
+    "Car": [
+        "vehicle",
+        "auto",
+        "automobile",
+        "transport",
+        "drive",
+        "gas",
+        "fuel",
+        "parking"
+    ],
+    "CarFront": [
+        "vehicle",
+        "auto",
+        "automobile",
+        "transport",
+        "drive"
+    ],
+    "ChartNoAxesColumn": [
+        "analytics",
+        "statistics",
+        "graph",
+        "data",
+        "report"
+    ],
+    "Check": [
+        "done",
+        "complete",
+        "success",
+        "confirm",
+        "approve"
+    ],
+    "ChevronDown": [
+        "arrow",
+        "expand",
+        "dropdown"
+    ],
+    "ChevronLeft": [
+        "arrow",
+        "back",
+        "previous"
+    ],
+    "ChevronRight": [
+        "arrow",
+        "forward",
+        "next"
+    ],
+    "ChevronUp": [
+        "arrow",
+        "collapse"
+    ],
+    "ChevronsDown": [
+        "arrow",
+        "expand"
+    ],
+    "ChevronsRight": [
+        "arrow",
+        "forward"
+    ],
+    "Church": [
+        "religion",
+        "worship",
+        "faith",
+        "spiritual",
+        "donation"
+    ],
+    "Cigarette": [
+        "smoking",
+        "tobacco",
+        "habit"
+    ],
+    "Circle": [
+        "shape",
+        "dot",
+        "bullet"
+    ],
+    "CircleDot": [
+        "target",
+        "focus",
+        "center"
+    ],
+    "Clapperboard": [
+        "movie",
+        "film",
+        "cinema",
+        "entertainment",
+        "video"
+    ],
+    "Clock": [
+        "time",
+        "hour",
+        "watch",
+        "schedule"
+    ],
+    "Cloud": [
+        "weather",
+        "storage",
+        "sky",
+        "upload"
+    ],
+    "CloudRain": [
+        "weather",
+        "rain",
+        "umbrella"
+    ],
+    "CloudSun": [
+        "weather",
+        "sunny",
+        "partly"
+    ],
+    "Code": [
+        "programming",
+        "developer",
+        "software",
+        "tech"
+    ],
+    "Coffee": [
+        "drink",
+        "cafe",
+        "beverage",
+        "morning",
+        "caffeine",
+        "breakfast"
+    ],
+    "Coins": [
+        "money",
+        "currency",
+        "cash",
+        "payment",
+        "savings"
+    ],
+    "Compass": [
+        "navigation",
+        "direction",
+        "travel",
+        "explore"
+    ],
+    "Construction": [
+        "building",
+        "work",
+        "renovation",
+        "repair"
+    ],
+    "Cookie": [
+        "snack",
+        "food",
+        "dessert",
+        "sweet"
+    ],
+    "CookingPot": [
+        "kitchen",
+        "cook",
+        "food",
+        "meal",
+        "dinner"
+    ],
+    "CreditCard": [
+        "payment",
+        "card",
+        "bank",
+        "finance",
+        "purchase",
+        "shopping"
+    ],
+    "Croissant": [
+        "food",
+        "breakfast",
+        "bakery",
+        "pastry",
+        "french"
+    ],
+    "Crown": [
+        "king",
+        "queen",
+        "royal",
+        "premium",
+        "vip"
+    ],
+    "Database": [
+        "storage",
+        "data",
+        "server",
+        "backup"
+    ],
+    "Delete": [
+        "remove",
+        "trash",
+        "erase",
+        "backspace"
+    ],
+    "Diamond": [
+        "luxury",
+        "gem",
+        "jewelry",
+        "precious",
+        "expensive"
+    ],
+    "Dice1": [
+        "game",
+        "gambling",
+        "casino",
+        "luck",
+        "random"
+    ],
+    "Dice2": [
+        "game",
+        "gambling",
+        "casino",
+        "luck",
+        "random"
+    ],
+    "Dice3": [
+        "game",
+        "gambling",
+        "casino",
+        "luck",
+        "random"
+    ],
+    "Dice4": [
+        "game",
+        "gambling",
+        "casino",
+        "luck",
+        "random"
+    ],
+    "Dice5": [
+        "game",
+        "gambling",
+        "casino",
+        "luck",
+        "random"
+    ],
+    "Dice6": [
+        "game",
+        "gambling",
+        "casino",
+        "luck",
+        "random"
+    ],
+    "DollarSign": [
+        "money",
+        "currency",
+        "usd",
+        "dollar",
+        "finance",
+        "price"
+    ],
+    "Dot": [
+        "point",
+        "bullet",
+        "circle"
+    ],
+    "Download": [
+        "save",
+        "get",
+        "receive"
+    ],
+    "Drama": [
+        "theater",
+        "acting",
+        "performance",
+        "entertainment"
+    ],
+    "Dribbble": [
+        "design",
+        "creative",
+        "portfolio"
+    ],
+    "Droplet": [
+        "water",
+        "liquid",
+        "rain",
+        "drink"
+    ],
+    "Dumbbell": [
+        "gym",
+        "fitness",
+        "exercise",
+        "workout",
+        "sport",
+        "health",
+        "muscle"
+    ],
+    "Ear": [
+        "hearing",
+        "listen",
+        "sound",
+        "audio"
+    ],
+    "Egg": [
+        "food",
+        "breakfast",
+        "cooking",
+        "protein"
+    ],
+    "Euro": [
+        "money",
+        "currency",
+        "eur",
+        "europe",
+        "finance"
+    ],
+    "Eye": [
+        "view",
+        "see",
+        "watch",
+        "visible",
+        "show"
+    ],
+    "EyeOff": [
+        "hide",
+        "invisible",
+        "hidden",
+        "private"
+    ],
+    "Facebook": [
+        "social",
+        "media",
+        "network"
+    ],
+    "Factory": [
+        "industry",
+        "manufacturing",
+        "production",
+        "business"
+    ],
+    "Fan": [
+        "cooling",
+        "air",
+        "ventilation",
+        "appliance"
+    ],
+    "FileText": [
+        "document",
+        "file",
+        "paper",
+        "text",
+        "note"
+    ],
+    "Film": [
+        "movie",
+        "cinema",
+        "video",
+        "entertainment"
+    ],
+    "Fingerprint": [
+        "security",
+        "identity",
+        "biometric",
+        "auth"
+    ],
+    "Flag": [
+        "country",
+        "nation",
+        "mark",
+        "report"
+    ],
+    "Flame": [
+        "fire",
+        "hot",
+        "trending",
+        "popular"
+    ],
+    "Flashlight": [
+        "light",
+        "torch",
+        "emergency"
+    ],
+    "FlaskConical": [
+        "science",
+        "chemistry",
+        "lab",
+        "experiment"
+    ],
+    "Flower": [
+        "plant",
+        "garden",
+        "nature",
+        "bloom",
+        "gift"
+    ],
+    "Flower2": [
+        "plant",
+        "garden",
+        "nature",
+        "bloom",
+        "gift"
+    ],
+    "Folder": [
+        "file",
+        "directory",
+        "organize",
+        "category"
+    ],
+    "FolderX": [
+        "file",
+        "directory",
+        "delete",
+        "remove"
+    ],
+    "Footprints": [
+        "walk",
+        "travel",
+        "track",
+        "hike"
+    ],
+    "Fuel": [
+        "gas",
+        "petrol",
+        "car",
+        "vehicle",
+        "energy"
+    ],
+    "Gamepad": [
+        "game",
+        "gaming",
+        "play",
+        "controller",
+        "entertainment",
+        "console"
+    ],
+    "Gamepad2": [
+        "game",
+        "gaming",
+        "play",
+        "controller",
+        "entertainment",
+        "console"
+    ],
+    "Gauge": [
+        "speed",
+        "performance",
+        "meter",
+        "dashboard"
+    ],
+    "Gem": [
+        "diamond",
+        "jewelry",
+        "precious",
+        "luxury"
+    ],
+    "Ghost": [
+        "halloween",
+        "spooky",
+        "spirit"
+    ],
+    "Gift": [
+        "present",
+        "birthday",
+        "celebration",
+        "surprise",
+        "holiday"
+    ],
+    "GlassWater": [
+        "drink",
+        "water",
+        "beverage",
+        "hydrate"
+    ],
+    "Glasses": [
+        "eyewear",
+        "vision",
+        "reading",
+        "optical"
+    ],
+    "Globe": [
+        "world",
+        "earth",
+        "international",
+        "global",
+        "internet"
+    ],
+    "GraduationCap": [
+        "education",
+        "school",
+        "university",
+        "college",
+        "degree",
+        "student",
+        "tuition"
+    ],
+    "Grape": [
+        "fruit",
+        "wine",
+        "food",
+        "vineyard"
+    ],
+    "Grip": [
+        "handle",
+        "drag",
+        "move"
+    ],
+    "Guitar": [
+        "music",
+        "instrument",
+        "band",
+        "rock"
+    ],
+    "Hammer": [
+        "tool",
+        "construction",
+        "repair",
+        "build"
+    ],
+    "HandCoins": [
+        "money",
+        "payment",
+        "give",
+        "donate",
+        "tip",
+        "loan",
+        "debt"
+    ],
+    "HandHeart": [
+        "charity",
+        "donate",
+        "give",
+        "love",
+        "care"
+    ],
+    "HandHelping": [
+        "help",
+        "support",
+        "assist",
+        "charity"
+    ],
+    "Handshake": [
+        "deal",
+        "agreement",
+        "partnership",
+        "business"
+    ],
+    "HardDrive": [
+        "storage",
+        "computer",
+        "data",
+        "disk"
+    ],
+    "HardHat": [
+        "construction",
+        "safety",
+        "worker",
+        "building"
+    ],
+    "Hash": [
+        "number",
+        "tag",
+        "hashtag",
+        "social"
+    ],
+    "Headphones": [
+        "music",
+        "audio",
+        "listen",
+        "sound",
+        "podcast"
+    ],
+    "Headset": [
+        "music",
+        "audio",
+        "gaming",
+        "support",
+        "call"
+    ],
+    "Heart": [
+        "love",
+        "like",
+        "favorite",
+        "health",
+        "romance"
+    ],
+    "HeartHandshake": [
+        "partnership",
+        "love",
+        "agreement",
+        "charity"
+    ],
+    "HeartPulse": [
+        "health",
+        "medical",
+        "heartbeat",
+        "fitness",
+        "hospital"
+    ],
+    "Heater": [
+        "warm",
+        "heating",
+        "home",
+        "appliance"
+    ],
+    "Highlighter": [
+        "marker",
+        "pen",
+        "office",
+        "school"
+    ],
+    "History": [
+        "time",
+        "past",
+        "record",
+        "log"
+    ],
+    "Home": [
+        "house",
+        "residence",
+        "property",
+        "mortgage",
+        "rent",
+        "living"
+    ],
+    "Hospital": [
+        "health",
+        "medical",
+        "emergency",
+        "doctor",
+        "clinic"
+    ],
+    "Hotel": [
+        "accommodation",
+        "travel",
+        "room",
+        "stay",
+        "vacation"
+    ],
+    "Hourglass": [
+        "time",
+        "wait",
+        "loading",
+        "timer"
+    ],
+    "IceCreamBowl": [
+        "dessert",
+        "sweet",
+        "food",
+        "treat",
+        "summer"
+    ],
+    "IceCreamCone": [
+        "dessert",
+        "sweet",
+        "food",
+        "treat",
+        "summer"
+    ],
+    "Image": [
+        "photo",
+        "picture",
+        "gallery",
+        "media"
+    ],
+    "Images": [
+        "photo",
+        "picture",
+        "gallery",
+        "media",
+        "album"
+    ],
+    "Import": [
+        "upload",
+        "bring",
+        "add",
+        "data"
+    ],
+    "Inbox": [
+        "mail",
+        "email",
+        "message",
+        "receive"
+    ],
+    "IndianRupee": [
+        "money",
+        "currency",
+        "inr",
+        "india",
+        "rupee",
+        "finance"
+    ],
+    "Info": [
+        "information",
+        "help",
+        "about",
+        "details"
+    ],
+    "Instagram": [
+        "social",
+        "media",
+        "photo",
+        "network"
+    ],
+    "JapaneseYen": [
+        "money",
+        "currency",
+        "jpy",
+        "japan",
+        "yen",
+        "finance"
+    ],
+    "Joystick": [
+        "game",
+        "gaming",
+        "play",
+        "controller"
+    ],
+    "Key": [
+        "security",
+        "lock",
+        "access",
+        "password"
+    ],
+    "KeyRound": [
+        "security",
+        "lock",
+        "access",
+        "password"
+    ],
+    "Keyboard": [
+        "type",
+        "input",
+        "computer",
+        "tech"
+    ],
+    "Lamp": [
+        "light",
+        "home",
+        "interior",
+        "desk"
+    ],
+    "LampDesk": [
+        "light",
+        "home",
+        "interior",
+        "desk",
+        "office"
+    ],
+    "Landmark": [
+        "bank",
+        "government",
+        "building",
+        "institution",
+        "finance"
+    ],
+    "Languages": [
+        "translate",
+        "international",
+        "global",
+        "speech"
+    ],
+    "Laptop": [
+        "computer",
+        "tech",
+        "work",
+        "device"
+    ],
+    "Layers": [
+        "stack",
+        "organize",
+        "design"
+    ],
+    "Leaf": [
+        "nature",
+        "plant",
+        "eco",
+        "green",
+        "environment"
+    ],
+    "Library": [
+        "books",
+        "reading",
+        "education",
+        "study"
+    ],
+    "Lightbulb": [
+        "idea",
+        "electricity",
+        "creative",
+        "innovation",
+        "utility"
+    ],
+    "Link": [
+        "url",
+        "connection",
+        "web",
+        "chain"
+    ],
+    "Linkedin": [
+        "social",
+        "professional",
+        "network",
+        "job"
+    ],
+    "List": [
+        "menu",
+        "items",
+        "todo",
+        "organize"
+    ],
+    "ListTodo": [
+        "task",
+        "checklist",
+        "organize",
+        "todo"
+    ],
+    "Loader": [
+        "loading",
+        "wait",
+        "progress"
+    ],
+    "Lock": [
+        "security",
+        "password",
+        "protect",
+        "private"
+    ],
+    "LockKeyhole": [
+        "security",
+        "password",
+        "protect",
+        "private"
+    ],
+    "LogIn": [
+        "enter",
+        "sign",
+        "access"
+    ],
+    "LogOut": [
+        "exit",
+        "sign",
+        "leave"
+    ],
+    "Luggage": [
+        "travel",
+        "suitcase",
+        "trip",
+        "vacation",
+        "bag"
+    ],
+    "Mail": [
+        "email",
+        "message",
+        "letter",
+        "communication"
+    ],
+    "Mailbox": [
+        "mail",
+        "post",
+        "letter",
+        "receive"
+    ],
+    "Map": [
+        "navigation",
+        "location",
+        "direction",
+        "travel"
+    ],
+    "MapPin": [
+        "location",
+        "place",
+        "marker",
+        "address"
+    ],
+    "Martini": [
+        "drink",
+        "alcohol",
+        "cocktail",
+        "bar",
+        "party"
+    ],
+    "Medal": [
+        "award",
+        "achievement",
+        "prize",
+        "winner"
+    ],
+    "Megaphone": [
+        "announcement",
+        "marketing",
+        "advertising",
+        "promotion"
+    ],
+    "MessageCircle": [
+        "chat",
+        "message",
+        "communication",
+        "talk"
+    ],
+    "MessageSquare": [
+        "chat",
+        "message",
+        "communication",
+        "talk"
+    ],
+    "Mic": [
+        "microphone",
+        "audio",
+        "record",
+        "voice",
+        "podcast"
+    ],
+    "Milestone": [
+        "goal",
+        "achievement",
+        "progress",
+        "road"
+    ],
+    "Milk": [
+        "drink",
+        "dairy",
+        "breakfast",
+        "beverage"
+    ],
+    "Moon": [
+        "night",
+        "dark",
+        "sleep",
+        "theme"
+    ],
+    "Mountain": [
+        "nature",
+        "hiking",
+        "outdoor",
+        "adventure",
+        "travel"
+    ],
+    "MountainSnow": [
+        "nature",
+        "winter",
+        "skiing",
+        "adventure"
+    ],
+    "Mouse": [
+        "computer",
+        "click",
+        "device",
+        "tech"
+    ],
+    "Music": [
+        "audio",
+        "song",
+        "sound",
+        "entertainment",
+        "spotify"
+    ],
+    "Music2": [
+        "audio",
+        "song",
+        "sound",
+        "entertainment"
+    ],
+    "Navigation": [
+        "direction",
+        "gps",
+        "location",
+        "travel"
+    ],
+    "Network": [
+        "connection",
+        "internet",
+        "social",
+        "web"
+    ],
+    "Newspaper": [
+        "news",
+        "article",
+        "media",
+        "reading",
+        "subscription"
+    ],
+    "Notebook": [
+        "note",
+        "writing",
+        "journal",
+        "study"
+    ],
+    "NotebookPen": [
+        "note",
+        "writing",
+        "journal",
+        "study"
+    ],
+    "Nut": [
+        "food",
+        "snack",
+        "protein",
+        "allergy"
+    ],
+    "OctagonAlert": [
+        "warning",
+        "danger",
+        "stop",
+        "alert"
+    ],
+    "Package": [
+        "box",
+        "delivery",
+        "shipping",
+        "parcel",
+        "ecommerce"
+    ],
+    "Paintbrush": [
+        "art",
+        "design",
+        "creative",
+        "paint"
+    ],
+    "Palette": [
+        "art",
+        "design",
+        "color",
+        "creative"
+    ],
+    "Paperclip": [
+        "attachment",
+        "file",
+        "document",
+        "clip"
+    ],
+    "PartyPopper": [
+        "celebration",
+        "party",
+        "birthday",
+        "event",
+        "fun"
+    ],
+    "PawPrint": [
+        "pet",
+        "animal",
+        "dog",
+        "cat",
+        "veterinary"
+    ],
+    "Pen": [
+        "write",
+        "edit",
+        "note",
+        "sign"
+    ],
+    "Pencil": [
+        "write",
+        "edit",
+        "draw",
+        "note"
+    ],
+    "PencilRuler": [
+        "design",
+        "draw",
+        "measure",
+        "architect"
+    ],
+    "Percent": [
+        "discount",
+        "sale",
+        "percentage",
+        "math"
+    ],
+    "PersonStanding": [
+        "human",
+        "people",
+        "walk",
+        "standing"
+    ],
+    "Phone": [
+        "call",
+        "mobile",
+        "telephone",
+        "contact",
+        "communication"
+    ],
+    "PhoneCall": [
+        "call",
+        "mobile",
+        "telephone",
+        "communication"
+    ],
+    "Piano": [
+        "music",
+        "instrument",
+        "keyboard",
+        "classical"
+    ],
+    "Pickaxe": [
+        "mining",
+        "tool",
+        "dig",
+        "work"
+    ],
+    "PiggyBank": [
+        "savings",
+        "money",
+        "bank",
+        "save",
+        "investment"
+    ],
+    "Pill": [
+        "medicine",
+        "pharmacy",
+        "health",
+        "drug",
+        "medical"
+    ],
+    "Pin": [
+        "location",
+        "mark",
+        "attach",
+        "note"
+    ],
+    "Pizza": [
+        "food",
+        "restaurant",
+        "meal",
+        "delivery",
+        "italian"
+    ],
+    "Plane": [
+        "travel",
+        "flight",
+        "airplane",
+        "airport",
+        "vacation",
+        "trip"
+    ],
+    "PlaneTakeoff": [
+        "travel",
+        "flight",
+        "airplane",
+        "departure"
+    ],
+    "PlaneLanding": [
+        "travel",
+        "flight",
+        "airplane",
+        "arrival"
+    ],
+    "Play": [
+        "video",
+        "music",
+        "start",
+        "media"
+    ],
+    "Plug": [
+        "electricity",
+        "power",
+        "connect",
+        "utility"
+    ],
+    "Plus": [
+        "add",
+        "new",
+        "create",
+        "increase"
+    ],
+    "Podcast": [
+        "audio",
+        "show",
+        "listen",
+        "radio"
+    ],
+    "Popcorn": [
+        "movie",
+        "cinema",
+        "snack",
+        "entertainment",
+        "theater"
+    ],
+    "PoundSterling": [
+        "money",
+        "currency",
+        "gbp",
+        "uk",
+        "british",
+        "finance"
+    ],
+    "Power": [
+        "on",
+        "off",
+        "switch",
+        "electricity"
+    ],
+    "Printer": [
+        "print",
+        "document",
+        "office",
+        "paper"
+    ],
+    "Projector": [
+        "presentation",
+        "movie",
+        "display",
+        "meeting"
+    ],
+    "Puzzle": [
+        "game",
+        "piece",
+        "solve",
+        "hobby"
+    ],
+    "QrCode": [
+        "scan",
+        "code",
+        "payment",
+        "link"
+    ],
+    "Quote": [
+        "text",
+        "citation",
+        "saying"
+    ],
+    "Radio": [
+        "music",
+        "broadcast",
+        "audio",
+        "listen"
+    ],
+    "Receipt": [
+        "bill",
+        "invoice",
+        "payment",
+        "transaction",
+        "purchase",
+        "expense"
+    ],
+    "RefreshCcw": [
+        "reload",
+        "sync",
+        "update",
+        "refresh"
+    ],
+    "RefreshCw": [
+        "reload",
+        "sync",
+        "update",
+        "refresh"
+    ],
+    "Refrigerator": [
+        "kitchen",
+        "food",
+        "appliance",
+        "cold",
+        "home"
+    ],
+    "Repeat": [
+        "loop",
+        "recurring",
+        "repeat",
+        "subscription"
+    ],
+    "Reply": [
+        "respond",
+        "answer",
+        "message"
+    ],
+    "Ribbon": [
+        "award",
+        "prize",
+        "decoration",
+        "gift"
+    ],
+    "Rocket": [
+        "launch",
+        "startup",
+        "space",
+        "fast"
+    ],
+    "RockingChair": [
+        "furniture",
+        "relax",
+        "home",
+        "comfort"
+    ],
+    "RollerCoaster": [
+        "fun",
+        "amusement",
+        "park",
+        "entertainment",
+        "thrill"
+    ],
+    "RotateCcw": [
+        "rotate",
+        "undo",
+        "turn",
+        "left"
+    ],
+    "Router": [
+        "wifi",
+        "internet",
+        "network",
+        "connection"
+    ],
+    "Rss": [
+        "feed",
+        "blog",
+        "news",
+        "subscribe"
+    ],
+    "RussianRuble": [
+        "money",
+        "currency",
+        "rub",
+        "russia",
+        "ruble",
+        "finance"
+    ],
+    "Sailboat": [
+        "boat",
+        "water",
+        "sailing",
+        "travel",
+        "vacation"
+    ],
+    "Salad": [
+        "food",
+        "healthy",
+        "vegetable",
+        "meal",
+        "diet"
+    ],
+    "Sandwich": [
+        "food",
+        "lunch",
+        "meal",
+        "snack"
+    ],
+    "Save": [
+        "disk",
+        "store",
+        "keep",
+        "backup"
+    ],
+    "Scale": [
+        "weight",
+        "balance",
+        "measure",
+        "justice"
+    ],
+    "ScanFace": [
+        "face",
+        "biometric",
+        "security",
+        "identity"
+    ],
+    "School": [
+        "education",
+        "learning",
+        "student",
+        "building"
+    ],
+    "Scissors": [
+        "cut",
+        "tool",
+        "craft",
+        "edit"
+    ],
+    "Search": [
+        "find",
+        "look",
+        "query",
+        "magnify"
+    ],
+    "SearchX": [
+        "find",
+        "not found",
+        "no results"
+    ],
+    "Send": [
+        "message",
+        "share",
+        "email",
+        "submit"
+    ],
+    "Settings": [
+        "gear",
+        "preferences",
+        "options",
+        "config"
+    ],
+    "Share": [
+        "social",
+        "send",
+        "distribute"
+    ],
+    "Shield": [
+        "security",
+        "protect",
+        "safe",
+        "insurance"
+    ],
+    "ShieldCheck": [
+        "security",
+        "verified",
+        "protect",
+        "safe",
+        "insurance"
+    ],
+    "Ship": [
+        "boat",
+        "cruise",
+        "travel",
+        "water",
+        "shipping"
+    ],
+    "Shirt": [
+        "clothing",
+        "fashion",
+        "apparel",
+        "wear",
+        "shopping"
+    ],
+    "ShoppingBag": [
+        "shop",
+        "purchase",
+        "retail",
+        "store",
+        "ecommerce"
+    ],
+    "ShoppingBasket": [
+        "grocery",
+        "shop",
+        "purchase",
+        "store",
+        "supermarket"
+    ],
+    "ShoppingCart": [
+        "shop",
+        "purchase",
+        "cart",
+        "ecommerce",
+        "buy"
+    ],
+    "Shovel": [
+        "garden",
+        "dig",
+        "tool",
+        "work"
+    ],
+    "Signpost": [
+        "direction",
+        "sign",
+        "navigation",
+        "road"
+    ],
+    "Smartphone": [
+        "phone",
+        "mobile",
+        "device",
+        "tech",
+        "cell"
+    ],
+    "Smile": [
+        "happy",
+        "emoji",
+        "face",
+        "emotion"
+    ],
+    "Snail": [
+        "slow",
+        "animal",
+        "nature"
+    ],
+    "Snowflake": [
+        "winter",
+        "cold",
+        "snow",
+        "ice"
+    ],
+    "Sofa": [
+        "furniture",
+        "living",
+        "home",
+        "couch",
+        "relax"
+    ],
+    "Soup": [
+        "food",
+        "meal",
+        "hot",
+        "bowl",
+        "lunch"
+    ],
+    "Sparkles": [
+        "magic",
+        "new",
+        "shine",
+        "ai",
+        "special"
+    ],
+    "Speaker": [
+        "audio",
+        "sound",
+        "music",
+        "volume"
+    ],
+    "Sprout": [
+        "plant",
+        "grow",
+        "nature",
+        "eco"
+    ],
+    "Square": [
+        "shape",
+        "box",
+        "stop"
+    ],
+    "Stamp": [
+        "mail",
+        "post",
+        "approve",
+        "official"
+    ],
+    "Star": [
+        "favorite",
+        "rating",
+        "bookmark",
+        "important"
+    ],
+    "Stethoscope": [
+        "medical",
+        "doctor",
+        "health",
+        "hospital"
+    ],
+    "Store": [
+        "shop",
+        "retail",
+        "business",
+        "market",
+        "ecommerce"
+    ],
+    "Sticker": [
+        "label",
+        "tag",
+        "emoji"
+    ],
+    "Sun": [
+        "weather",
+        "day",
+        "light",
+        "bright",
+        "summer"
+    ],
+    "Sunrise": [
+        "morning",
+        "dawn",
+        "weather",
+        "day"
+    ],
+    "Sunset": [
+        "evening",
+        "dusk",
+        "weather",
+        "day"
+    ],
+    "SwissFranc": [
+        "money",
+        "currency",
+        "chf",
+        "switzerland",
+        "franc",
+        "finance"
+    ],
+    "Sword": [
+        "weapon",
+        "game",
+        "fight",
+        "battle"
+    ],
+    "Swords": [
+        "weapon",
+        "game",
+        "fight",
+        "battle"
+    ],
+    "Syringe": [
+        "medical",
+        "injection",
+        "vaccine",
+        "health"
+    ],
+    "Table": [
+        "furniture",
+        "data",
+        "spreadsheet"
+    ],
+    "Tablet": [
+        "device",
+        "ipad",
+        "tech",
+        "screen"
+    ],
+    "Tag": [
+        "label",
+        "price",
+        "category",
+        "mark"
+    ],
+    "Target": [
+        "goal",
+        "aim",
+        "focus",
+        "objective"
+    ],
+    "Tent": [
+        "camping",
+        "outdoor",
+        "travel",
+        "adventure"
+    ],
+    "Terminal": [
+        "code",
+        "command",
+        "developer",
+        "tech"
+    ],
+    "Thermometer": [
+        "temperature",
+        "weather",
+        "health",
+        "fever"
+    ],
+    "ThumbsDown": [
+        "dislike",
+        "bad",
+        "negative"
+    ],
+    "ThumbsUp": [
+        "like",
+        "good",
+        "positive",
+        "approve"
+    ],
+    "Ticket": [
+        "event",
+        "movie",
+        "concert",
+        "pass",
+        "entertainment"
+    ],
+    "Timer": [
+        "time",
+        "countdown",
+        "clock",
+        "stopwatch"
+    ],
+    "ToggleLeft": [
+        "switch",
+        "off",
+        "option"
+    ],
+    "ToggleRight": [
+        "switch",
+        "on",
+        "option"
+    ],
+    "Tornado": [
+        "weather",
+        "storm",
+        "disaster"
+    ],
+    "Tractor": [
+        "farm",
+        "agriculture",
+        "vehicle"
+    ],
+    "TrafficCone": [
+        "road",
+        "construction",
+        "warning"
+    ],
+    "TrainFront": [
+        "transport",
+        "railway",
+        "travel",
+        "commute"
+    ],
+    "Trash": [
+        "delete",
+        "remove",
+        "bin",
+        "garbage"
+    ],
+    "Trash2": [
+        "delete",
+        "remove",
+        "bin",
+        "garbage"
+    ],
+    "TreePalm": [
+        "tropical",
+        "beach",
+        "vacation",
+        "nature"
+    ],
+    "TreePine": [
+        "forest",
+        "nature",
+        "christmas",
+        "outdoor"
+    ],
+    "Trees": [
+        "forest",
+        "nature",
+        "park",
+        "outdoor"
+    ],
+    "TrendingDown": [
+        "decrease",
+        "loss",
+        "expense",
+        "negative",
+        "stock"
+    ],
+    "TrendingUp": [
+        "increase",
+        "profit",
+        "income",
+        "positive",
+        "stock",
+        "growth"
+    ],
+    "Trophy": [
+        "award",
+        "winner",
+        "achievement",
+        "prize",
+        "competition"
+    ],
+    "Truck": [
+        "delivery",
+        "shipping",
+        "transport",
+        "vehicle",
+        "logistics"
+    ],
+    "Tv": [
+        "television",
+        "screen",
+        "entertainment",
+        "watch",
+        "media"
+    ],
+    "Twitch": [
+        "streaming",
+        "gaming",
+        "social",
+        "live"
+    ],
+    "Twitter": [
+        "social",
+        "media",
+        "network",
+        "tweet"
+    ],
+    "Umbrella": [
+        "rain",
+        "weather",
+        "protection"
+    ],
+    "University": [
+        "education",
+        "college",
+        "school",
+        "degree",
+        "academic"
+    ],
+    "Upload": [
+        "share",
+        "send",
+        "cloud",
+        "file"
+    ],
+    "Usb": [
+        "device",
+        "connection",
+        "tech",
+        "storage"
+    ],
+    "User": [
+        "person",
+        "account",
+        "profile",
+        "contact"
+    ],
+    "Users": [
+        "people",
+        "group",
+        "team",
+        "community"
+    ],
+    "Utensils": [
+        "food",
+        "restaurant",
+        "eating",
+        "dining",
+        "meal",
+        "fork",
+        "knife",
+        "cutlery",
+        "dinner",
+        "lunch",
+        "breakfast"
+    ],
+    "UtensilsCrossed": [
+        "food",
+        "restaurant",
+        "eating",
+        "dining",
+        "meal",
+        "closed"
+    ],
+    "Vault": [
+        "safe",
+        "security",
+        "bank",
+        "storage",
+        "money"
+    ],
+    "Vegan": [
+        "food",
+        "plant",
+        "diet",
+        "healthy"
+    ],
+    "Video": [
+        "camera",
+        "record",
+        "film",
+        "media"
+    ],
+    "Volleyball": [
+        "sport",
+        "game",
+        "ball",
+        "beach"
+    ],
+    "Volume": [
+        "sound",
+        "audio",
+        "speaker"
+    ],
+    "Volume2": [
+        "sound",
+        "audio",
+        "speaker"
+    ],
+    "Wallet": [
+        "money",
+        "payment",
+        "finance",
+        "cash",
+        "purse"
+    ],
+    "Wand": [
+        "magic",
+        "edit",
+        "tool"
+    ],
+    "Warehouse": [
+        "storage",
+        "inventory",
+        "logistics",
+        "building"
+    ],
+    "WashingMachine": [
+        "laundry",
+        "clothes",
+        "clean",
+        "appliance",
+        "home"
+    ],
+    "Watch": [
+        "time",
+        "wrist",
+        "clock",
+        "accessory"
+    ],
+    "Waves": [
+        "water",
+        "ocean",
+        "sea",
+        "beach"
+    ],
+    "Webcam": [
+        "camera",
+        "video",
+        "call",
+        "meeting"
+    ],
+    "Weight": [
+        "scale",
+        "fitness",
+        "gym",
+        "measure"
+    ],
+    "Wheat": [
+        "grain",
+        "food",
+        "farm",
+        "bread"
+    ],
+    "Wifi": [
+        "internet",
+        "wireless",
+        "connection",
+        "network"
+    ],
+    "Wind": [
+        "weather",
+        "air",
+        "blow"
+    ],
+    "Wine": [
+        "drink",
+        "alcohol",
+        "bar",
+        "restaurant",
+        "beverage"
+    ],
+    "Wrench": [
+        "tool",
+        "repair",
+        "fix",
+        "maintenance",
+        "settings"
+    ],
+    "X": [
+        "close",
+        "cancel",
+        "delete",
+        "remove"
+    ],
+    "Youtube": [
+        "video",
+        "social",
+        "media",
+        "streaming"
+    ],
+    "Zap": [
+        "electricity",
+        "power",
+        "energy",
+        "lightning",
+        "fast"
+    ],
+    "ZoomIn": [
+        "magnify",
+        "enlarge",
+        "plus"
+    ],
+    "ZoomOut": [
+        "magnify",
+        "shrink",
+        "minus"
+    ]
+}
