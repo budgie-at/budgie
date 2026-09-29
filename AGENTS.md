@@ -143,7 +143,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 
 ## Architecture Layers
 
-1. **API** - External service calls (fetch, ky)
+1. **API** - External service calls (Effect `HttpClient`)
 2. **Repository** - Database operations (Drizzle ORM)
 3. **Service** - Business logic orchestration
 4. **Task** - Background jobs (`.task.ts` suffix)
@@ -181,7 +181,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `pnpm cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
 31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
-32. **Tracing uses `Effect.fn`.** Every effectful public function or method is `Effect.fn('Owner.method')(function* (...) {...})`, named after its owner and method; internal hot-loop helpers use `Effect.fnUntraced`. Add context with `Effect.annotateCurrentSpan` or `Effect.logDebug` only when it names a real debugging handle. No `@Log`, no `getLogger`, never `console.*`.
+32. **Tracing uses `Effect.fn`.** Every effectful public function or method is `Effect.fn('Owner.method')(function* (...) {...})`, named after its owner and method; internal hot-loop helpers use `Effect.fnUntraced`. Add context with `Effect.annotateCurrentSpan` or `Effect.logDebug` only when it names a real debugging handle. Never `console.*`.
 33. **Do not reshape public method arguments to satisfy lint.** Never convert existing positional arguments into an object, array, tuple/rest tuple, or new interface unless explicitly requested. Prefer splitting implementation into smaller private methods when it improves design; otherwise use a narrow `@typescript-eslint/max-params` lint disable with justification.
 34. **No log-only abstractions.** Do not add helpers, wrappers or constants whose only purpose is logging.
 35. **Errors travel in the typed channel.** No `throw`, `try`, `new Promise`, or `.catch(emptyFn)` in `src/`. Expected failures are `Schema.TaggedError` classes in the module `/error` folder (`*.error.ts`), created only when a caller branches on them; everything else is a defect. Wrap foreign Promise/SDK/native calls with `Effect.tryPromise`/`Effect.try` at that boundary only. Recover only at edges (React, background task, boot) with `Effect.catchTag`/`catchTags`/`catch`.
@@ -218,7 +218,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 55. **Snapshot Typed Array buffers from native callbacks.** When a native API hands you a `Float32Array`/`Int16Array`/etc. view (`AudioBuffer.getChannelData(0)`, JNI callbacks, FFI), the underlying memory is typically reused on the next callback. Always copy via `new Float32Array(samples)` before storing — otherwise all stored chunks alias the latest buffer.
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
 57. **Concurrency, time and resources use Effect primitives.** `Schedule` + `Effect.retry`/`repeat`, `Effect.timeout`, `Effect.sleep`, `Semaphore`, `Latch`, `FiberMap`, `Cache`, fiber interruption and `Effect.acquireRelease`. Never `setTimeout` loops, generation counters, promise-chain mutexes, `Promise.race`, or boolean cancel flags.
-58. **Query-builder factory methods stay plain.** A repository method that returns a Drizzle builder for `useDatabaseLiveQuery` stays a plain method on the repository's `db`; executed reads and writes go through `Db.query(db => ...)` and `Db.transaction(effect)` from `@budgie/contracts`, never `transactionAsync` or `tx?` parameters.
+58. **Query-builder factory methods stay plain.** A repository method that returns a Drizzle builder for `useDatabaseLiveQuery` stays a plain method on the repository's `db`; executed reads and writes go through `Db.query(db => ...)` and `Db.transaction(effect)` from `@budgie/contracts`, never a transaction argument threaded through method signatures.
 59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Maestro flow, fixture, or test harness.
 60. **Database live-query boundaries are explicit.** React reads that render app database state use `useDatabaseLiveQuery`, not raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. Top-level app database writes pass `invalidateDatabaseLiveQuery` as an `Effect.fn` combinator (`Effect.fn('X.save')(function* () {...}, invalidateDatabaseLiveQuery)`) so subscribers refresh after success. Do not add event names or groups until profiling proves broad invalidation is a real rerender problem.
 61. **Component prop budget: more than 8 props is a lint error.** Enforced repo-wide by the local `budgie/max-component-props` rule loaded through Oxlint's JavaScript-plugin bridge (`eslint-rules/max-component-props.mjs`). The `allow` list in `.oxlintrc.json` is a grandfather register that may only shrink — never add a file to it. Prop-relay components, `isVisible` props, and boolean mode props (`isRefund`) are prohibited; use children composition, compound components sharing a context, and explicit variant components instead. Full guide with the reference implementation: [docs/component-composition.md](docs/component-composition.md).
@@ -297,7 +297,7 @@ numbers.filter(isDefined); // Unnecessary, array can't have nulls
 ```typescript
 // Good - Effect Schema
 const ItemSchema = Schema.Struct({ id: Schema.Number, name: Schema.String });
-const item = yield* Schema.decodeUnknownEffect(ItemSchema)(data);
+const item = yield * Schema.decodeUnknownEffect(ItemSchema)(data);
 
 // Bad - manual type guard
 const isItem = (x: unknown): x is Item => typeof x === 'object' && x !== null && 'id' in x && typeof x.id === 'number';
@@ -486,6 +486,7 @@ class RefundService {
 export const refundService = new RefundService();
 ```
 
+- **Lint guards.** `zod`, `ky` and `drizzle-zod` imports are banned repo-wide. In effectful non-UI code (contracts, sync, consolidation, budget, ai, and app `service`, `repository`, `api` and `.task.ts` files) `try`, `throw` and `new Promise` are lint errors: use Effect.
 - **Import by subpath.** `import * as Effect from 'effect/Effect'`, never the `effect` barrel (lint-enforced). Metro does not tree-shake, and the barrel adds about 1.1 MB of Hermes bytecode.
 - **Keep the code minimal.** Pure code stays plain. Do not wrap a pure function in `Effect.sync`, add a Layer to a stateless class, or add a service interface file; the `Context.Service` shape is the contract.
 - **Database.** `Db.query(db => builder)` for executed queries, `Db.transaction(effect)` for atomic work. Nested `Db.transaction` calls reuse the outer transaction.
@@ -497,13 +498,14 @@ export const refundService = new RefundService();
 
 ## Tech Stack
 
-| Package       | Stack                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **app**       | Expo 57, React 19 + Compiler, Expo Router 57, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                                             |
-| **ai**        | Pure TypeScript, Effect                                                                                                                                                          |
-| **contracts** | Drizzle ORM, Effect                                                                                                                                                       |
-| **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                                                |
-| **sync** | @liaugust/monobank-sdk, date-fns                                                                                                                                                |
+| Package       | Stack                                                                                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **app**       | Expo 57, React 19 + Compiler, Expo Router 57, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                      |
+| **ai**        | Pure TypeScript, Effect                                                                                                                                  |
+| **contracts** | Drizzle ORM, Effect                                                                                                                                      |
+| **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                         |
+| **sync**      | @liaugust/monobank-sdk, date-fns, Effect                                                                                                                 |
+| **logger**    | Effect `Logger` layer (`makeLoggerLayer`)                                                                                                                |
 | **Build**     | pnpm 12.1.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.12, native TypeScript 7 + TypeScript 6 API, Oxlint 1.80 JS bridge + 13-rule ESLint 10 fallback |
 
 ## Workflow
@@ -630,7 +632,7 @@ Add `eslint-disable-next-line` with justification for these specific cases:
 | `max-statements`                | Form orchestration components with multiple hooks/handlers                                                                                                | `-- Form orchestration component with multiple hooks and handlers`           |
 | `max-lines-per-function`        | Layout files, complex form components                                                                                                                     | `-- Layout/form component requires many lines`                               |
 | `max-lines`                     | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together` |
-| `@typescript-eslint/max-params` | Existing public APIs must preserve positional argument shape.                    | `-- Existing public API intentionally keeps positional arguments`            |
+| `@typescript-eslint/max-params` | Existing public APIs must preserve positional argument shape.                                                                                             | `-- Existing public API intentionally keeps positional arguments`            |
 | `func-style`                    | Next.js `generateMetadata` requires `export async function`, not `const`                                                                                  | `-- Next.js generateMetadata must be a function declaration`                 |
 
 Example:

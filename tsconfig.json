@@ -26,8 +26,6 @@
         "noUnusedParameters": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
         "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "exactOptionalPropertyTypes": false,
