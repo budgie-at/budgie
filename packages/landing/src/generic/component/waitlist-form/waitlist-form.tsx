@@ -3,6 +3,8 @@
 import { msg, plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
+import * as Effect from 'effect/Effect';
+import * as Option from 'effect/Option';
 import { ArrowRight, Loader2, Users } from 'lucide-react';
 import { useState } from 'react';
 
@@ -89,28 +91,23 @@ export const WaitlistForm = ({ variant = 'hero', showCount = true, initialCount 
         setError('');
         setIsLoading(true);
 
-        let confirmationDeadlineTimer: number | undefined;
+        const outcome = await Effect.runPromise(
+            Effect.tryPromise(async () => await joinWaitlist(email)).pipe(Effect.timeout(WAITLIST_CONFIRMATION_DEADLINE_MS), Effect.option)
+        );
 
-        try {
-            const confirmationDeadline = new Promise<never>((_resolve, reject) => {
-                confirmationDeadlineTimer = window.setTimeout(() => void reject(new Error()), WAITLIST_CONFIRMATION_DEADLINE_MS);
-            });
-            const result = await Promise.race([joinWaitlist(email), confirmationDeadline]);
-
-            if (
-                (result.messageKey === WaitlistMessageKeyEnum.SUCCESS || result.messageKey === WaitlistMessageKeyEnum.ALREADY_REGISTERED) &&
-                isPositiveNumber(result.position)
-            ) {
-                setPosition(result.position);
-            } else {
-                setError(i18n._(WAITLIST_ERROR_MESSAGES[result.messageKey] ?? WAITLIST_CONFIRMATION_ERROR_MESSAGE));
-            }
-        } catch {
+        if (Option.isNone(outcome)) {
             setError(i18n._(WAITLIST_CONFIRMATION_ERROR_MESSAGE));
-        } finally {
-            window.clearTimeout(confirmationDeadlineTimer);
-            setIsLoading(false);
+        } else if (
+            (outcome.value.messageKey === WaitlistMessageKeyEnum.SUCCESS ||
+                outcome.value.messageKey === WaitlistMessageKeyEnum.ALREADY_REGISTERED) &&
+            isPositiveNumber(outcome.value.position)
+        ) {
+            setPosition(outcome.value.position);
+        } else {
+            setError(i18n._(WAITLIST_ERROR_MESSAGES[outcome.value.messageKey] ?? WAITLIST_CONFIRMATION_ERROR_MESSAGE));
         }
+
+        setIsLoading(false);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -13,7 +13,7 @@ const NO_STORE_CACHE_CONTROL_HEADER = 'no-store';
 const REDIRECT_STATUS = 302;
 const NOT_FOUND_STATUS = 404;
 
-const resolveIpaDownloadUrl = Effect.fnUntraced(function* () {
+const resolveIpaDownloadUrl = Effect.fn('resolveIpaDownloadUrl')(function* () {
     const release = yield* iosDevReleaseFetchApi({ cache: 'no-store' });
 
     if (!isDefined(release)) {

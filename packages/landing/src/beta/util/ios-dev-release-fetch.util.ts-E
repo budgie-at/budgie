@@ -24,7 +24,7 @@ const tagNameToRunNumber = (tagName: string): number => {
     return DEV_TAG_RUN_NUMBER_REGEX.test(runNumberPart) ? Number.parseInt(runNumberPart, 10) : NaN;
 };
 
-const latestDevTagNameFetchApi = Effect.fnUntraced(function* (requestInit: RequestInit) {
+const latestDevTagNameFetchApi = Effect.fn('latestDevTagNameFetchApi')(function* (requestInit: RequestInit) {
     const gitRefs = yield* githubJsonFetch(MATCHING_DEV_TAG_REFS_URL, GitRefsSchema, requestInit);
 
     if (!isDefined(gitRefs)) {
@@ -40,7 +40,7 @@ const latestDevTagNameFetchApi = Effect.fnUntraced(function* (requestInit: Reque
     return isNotEmptyArray(runNumberTagNameEntries) ? runNumberTagNameEntries[0].tagName : null;
 });
 
-export const iosDevReleaseFetchApi = Effect.fnUntraced(function* (requestInit: RequestInit) {
+export const iosDevReleaseFetchApi = Effect.fn('iosDevReleaseFetchApi')(function* (requestInit: RequestInit) {
     const tagName = yield* latestDevTagNameFetchApi(requestInit);
 
     if (!isDefined(tagName)) {
