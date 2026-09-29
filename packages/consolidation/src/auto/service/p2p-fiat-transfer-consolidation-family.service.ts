@@ -38,10 +38,12 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
     override async process(context: ConsolidationFamilyRunContextInterface): Promise<ConsolidationFamilyRunResultInterface> {
         const repairCandidates = await this.transferPairRepository.findP2pFiatAuthoritativeRepairCandidates(context.scope);
 
-        await Promise.all(
-            repairCandidates.map(candidate =>
-                this.consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId)
-            )
+        await repairCandidates.reduce(
+            (previousRepair, candidate) =>
+                previousRepair
+                    .then(() => this.consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId))
+                    .then(() => this.yieldControl()),
+            Promise.resolve()
         );
 
         return super.process(context);

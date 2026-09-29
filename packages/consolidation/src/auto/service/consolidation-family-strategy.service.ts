@@ -12,7 +12,7 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
 
     abstract readonly key: ConsolidationFamilyKeyEnum;
 
-    constructor(private readonly yieldControl: () => Promise<void>) {}
+    constructor(protected readonly yieldControl: () => Promise<void>) {}
 
     async preview(context: ConsolidationFamilyRunContextInterface): Promise<ConsolidationFamilyPreviewInterface> {
         const candidates = await this.buildRunnableCandidates(context);
