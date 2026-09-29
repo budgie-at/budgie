@@ -55,23 +55,23 @@ account/
 
 ## Entities
 
-| Entity | Table | Purpose |
-|--------|-------|---------|
-| Account | `accounts` | Financial accounts (bank, cash, crypto, etc.) |
-| AccountBalance | `account_balances` | Cached balance snapshots |
-| Transaction | `transactions` | Financial transactions |
-| TransactionEntry | `transaction_entries` | Double-entry bookkeeping lines |
-| TransactionTags | `transaction_tags` | Many-to-many transaction-tag links |
-| Category | `categories` | Transaction categorization |
-| Tag | `tags` | User-defined labels |
-| Instrument | `instruments` | Currencies and assets |
-| ExchangeRate | `exchange_rates` | Currency conversion rates |
-| Settings | `settings` | User preferences |
-| BankSync | `bank_syncs` | Bank integration configuration |
-| MccGroup | `mcc_groups` | Merchant category groups |
-| MccCategory | `mcc_categories` | Merchant category codes |
-| MerchantEmbedding | `title_embeddings_merchant` | Vector embeddings for merchant titles |
-| CommentEmbedding | `title_embeddings_comment` | Vector embeddings for transaction comments |
+| Entity            | Table                       | Purpose                                       |
+| ----------------- | --------------------------- | --------------------------------------------- |
+| Account           | `accounts`                  | Financial accounts (bank, cash, crypto, etc.) |
+| AccountBalance    | `account_balances`          | Cached balance snapshots                      |
+| Transaction       | `transactions`              | Financial transactions                        |
+| TransactionEntry  | `transaction_entries`       | Double-entry bookkeeping lines                |
+| TransactionTags   | `transaction_tags`          | Many-to-many transaction-tag links            |
+| Category          | `categories`                | Transaction categorization                    |
+| Tag               | `tags`                      | User-defined labels                           |
+| Instrument        | `instruments`               | Currencies and assets                         |
+| ExchangeRate      | `exchange_rates`            | Currency conversion rates                     |
+| Settings          | `settings`                  | User preferences                              |
+| BankSync          | `bank_syncs`                | Bank integration configuration                |
+| MccGroup          | `mcc_groups`                | Merchant category groups                      |
+| MccCategory       | `mcc_categories`            | Merchant category codes                       |
+| MerchantEmbedding | `title_embeddings_merchant` | Vector embeddings for merchant titles         |
+| CommentEmbedding  | `title_embeddings_comment`  | Vector embeddings for transaction comments    |
 
 ## Drizzle Table Definitions
 
@@ -83,13 +83,14 @@ All tables use `withBaseEntityTableColumns()` for standard columns:
 import { withBaseEntityTableColumns } from '../@generic/util/with-base-entity-table-columns.util';
 
 export const AccountEntityTable = sqliteTable('accounts', {
-    ...withBaseEntityTableColumns(),  // id, createdAt, updatedAt, deletedAt
-    title: text('title').notNull(),
+    ...withBaseEntityTableColumns(), // id, createdAt, updatedAt, deletedAt
+    title: text('title').notNull()
     // ... other columns
 });
 ```
 
 **Standard columns:**
+
 - `id` - Auto-incrementing primary key
 - `createdAt` - Timestamp (default: current)
 - `updatedAt` - Timestamp (default: current)
@@ -110,7 +111,7 @@ export const TransactionEntityTable = sqliteTable('transactions', {
     title: text('title').notNull().default(''),
     operatedAt: integer('operated_at', { mode: 'timestamp' }).notNull(),
     fromAccountId: integer('from_account_id').references(() => AccountEntityTable.id),
-    toAccountId: integer('to_account_id').references(() => AccountEntityTable.id),
+    toAccountId: integer('to_account_id').references(() => AccountEntityTable.id)
 });
 ```
 
@@ -135,97 +136,64 @@ export const TransactionEntityRelations = relations(TransactionEntityTable, ({ o
 
 ### Class Structure
 
-Repositories are framework-agnostic classes with constructor injection:
+Repositories are classes. Methods that execute a query are `Effect.fn` fields and run every query through `Db.query`, so they join the active `Db.transaction` automatically. No method takes a `tx` parameter.
 
 ```typescript
 export class AccountRepository {
+    readonly create = Effect.fn('AccountRepository.create')(function* (input: AccountCreateEntityInterface) {
+        const [account] = yield* Db.query(db => db.insert(AccountEntityTable).values(input).returning());
+
+        return account;
+    });
+
+    readonly createWithBalance = Effect.fn('AccountRepository.createWithBalance')(function* (
+        this: AccountRepository,
+        input: AccountCreateEntityInterface
+    ) {
+        return yield* this.create(input);
+    });
+
     constructor(private db: DB) {}
 
-    // Methods accept optional transaction parameter
-    async create(input: AccountCreateInputInterface, tx?: TX): Promise<void> {
-        await (tx ?? this.db).insert(AccountEntityTable).values(input);
-    }
-
-    // Query methods return Drizzle query objects
     findById(id: number) {
-        return this.db.query.AccountEntityTable.findFirst({
-            where: eq(AccountEntityTable.id, id),
-            with: { instrument: true }
-        });
+        return this.db.query.AccountEntityTable.findFirst({ where: eq(AccountEntityTable.id, id) });
     }
 }
 ```
+
+- Use the `db` handed to the `Db.query` callback, never `this.db`, inside Effect methods.
+- Annotate `this: ClassName` when the generator uses `this`, and always call the field as `repository.method(...)`.
+- Member order (lint): Effect fields, then the constructor, then plain methods.
+- Drop the constructor when no builder method remains.
 
 ### Transaction Support
 
-All write methods and read methods used within transactions accept optional `tx?: TX` parameter:
+Atomic work is `Db.transaction(Effect.gen(function* () { ... }))`. Repository methods never open or accept transactions. `Db.transaction` reuses the active transaction when nested, so expo-sqlite's lack of nested transactions is handled in one place.
 
 ```typescript
-async updateById(id: number, input: Partial<AccountInterface>, tx?: TX): Promise<void> {
-    await (tx ?? this.db)
-        .update(AccountEntityTable)
-        .set(input)
-        .where(eq(AccountEntityTable.id, id));
-}
-
-async getByAccountId(accountId: number, tx?: TX): Promise<EntityInterface | undefined> {
-    return await (tx ?? this.db).query.EntityTable.findFirst({
-        where: eq(EntityTable.accountId, accountId)
-    });
-}
-```
-
-**When to add `tx?: TX`:**
-- All write methods (create, update, delete) — always
-- Read methods used inside transactions (e.g., check-before-create patterns) — add `tx` so reads see uncommitted writes within the same transaction
-
-**expo-sqlite does NOT support nested transactions.** Services that wrap operations in `db.transaction` must also accept `tx` and skip `db.transaction` when `tx` is provided:
-
-```typescript
-// In the app package (services):
-async bulkCreate(inputs: InputInterface[], batchSize = 100, tx?: Transaction) {
-    const batchProcessor = isDefined(tx)
-        ? (batch: InputInterface[]) => this.processBatchInner(batch, tx)
-        : this.processBatch.bind(this);
-
-    return processInputWithBatches(inputs, batchSize, batchProcessor);
-}
-
-private processBatch(batch: InputInterface[]) {
-    return db.transaction(async tx => this.processBatchInner(batch, tx));
-}
-
-private async processBatchInner(batch: InputInterface[], tx: Transaction) {
-    // All DB operations use tx
-}
+yield *
+    Db.transaction(
+        Effect.gen(function* () {
+            yield* accountRepository.archiveById(id);
+            yield* debtEventRepository.archiveByAccountIds([id]);
+        })
+    );
 ```
 
 ### Query API Preference
 
-### Red Flag: Do Not Decorate Query Builders
+### Red Flag: Do Not Wrap Query Builders
 
-Repository methods that return Drizzle query builders must not use `@Log`. Drizzle query builders are thenable, so log decorators can mistake them for promises and wrap them. `useLiveQuery` expects the original query object so it can read table metadata; a wrapped builder can crash at runtime with `Cannot read property 'table' of undefined`.
-
-Keep `@Log` on methods that execute work themselves, especially `async` methods that `await` the database call. Leave builder-returning methods undecorated:
+Methods that return a Drizzle query builder stay plain methods on `this.db`: no `Effect.fn`, no decorators. Builders are thenable and `useDatabaseLiveQuery` needs the original query object to read table metadata. Convert a builder method to an `Effect.fn` field only when no caller passes it to a live query. If a builder is also executed by non-React callers, keep the builder and execute it with `Db.query(() => repository.method(...))`; that runs on the root connection, so do not do it inside a transaction.
 
 ```typescript
-// Good
 findRecent(accountId: number) {
-    return this.db.query.AccountEntityTable.findMany({
-        where: eq(AccountEntityTable.id, accountId)
-    });
-}
-
-// Bad
-@Log(...)
-findRecent(accountId: number) {
-    return this.db.query.AccountEntityTable.findMany({
-        where: eq(AccountEntityTable.id, accountId)
-    });
+    return this.db.query.AccountEntityTable.findMany({ where: eq(AccountEntityTable.id, accountId) });
 }
 ```
 
 **Prefer:**
+
 ```typescript
 this.db.query.AccountEntityTable.findMany({
     where: eq(AccountEntityTable.isActive, true),
@@ -234,6 +202,7 @@ this.db.query.AccountEntityTable.findMany({
 ```
 
 **Use `db.select()` only for complex queries:**
+
 ```typescript
 this.db
     .select({ total: sql<number>`SUM(amount)` })
@@ -269,7 +238,10 @@ Entity, create and update types are plain Drizzle types; there is no schema laye
 export type AccountEntityInterface = typeof AccountEntityTable.$inferSelect;
 
 // entity/account-create-entity.interface.ts
-export type AccountCreateEntityInterface = PartialByKeysType<Omit<AccountEntityInterface, BaseEntityKeyType | 'titleSearch'>, 'iban' | 'debtType'>;
+export type AccountCreateEntityInterface = PartialByKeysType<
+    Omit<AccountEntityInterface, BaseEntityKeyType | 'titleSearch'>,
+    'iban' | 'debtType'
+>;
 
 // entity/account-update-entity.interface.ts
 export type AccountUpdateEntityInterface = Partial<AccountCreateEntityInterface>;
@@ -364,14 +336,14 @@ export const ACCOUNT_TITLE_MAX_LENGTH = 50;
 
 ### Common Enums
 
-| Enum | Values |
-|------|--------|
-| `AccountTypeEnum` | DEBT, CASH, BANK, CRYPTO, STOCKS, SAVINGS, BANK_SYNC |
-| `AccountNatureEnum` | ASSET, LIABILITY |
-| `TransactionTypeEnum` | DEBT, INCOME, EXPENSE, TRANSFER, ADJUSTMENT |
-| `TransactionEntryTypeEnum` | DEBIT, CREDIT |
-| `LanguageEnum` | EN, FR, UK, DE, ES |
-| `ThemeEnum` | LIGHT, DARK, SYSTEM |
+| Enum                       | Values                                               |
+| -------------------------- | ---------------------------------------------------- |
+| `AccountTypeEnum`          | DEBT, CASH, BANK, CRYPTO, STOCKS, SAVINGS, BANK_SYNC |
+| `AccountNatureEnum`        | ASSET, LIABILITY                                     |
+| `TransactionTypeEnum`      | DEBT, INCOME, EXPENSE, TRANSFER, ADJUSTMENT          |
+| `TransactionEntryTypeEnum` | DEBIT, CREDIT                                        |
+| `LanguageEnum`             | EN, FR, UK, DE, ES                                   |
+| `ThemeEnum`                | LIGHT, DARK, SYSTEM                                  |
 
 ### UserIconNameEnum
 
@@ -383,9 +355,7 @@ Create type guards for entity narrowing:
 
 ```typescript
 // transaction/type-guard/is-expense-transaction.type-guard.ts
-export const isExpenseTransaction = (
-    transaction: TransactionInterface
-): transaction is ExpenseTransactionInterface =>
+export const isExpenseTransaction = (transaction: TransactionInterface): transaction is ExpenseTransactionInterface =>
     transaction.type === TransactionTypeEnum.EXPENSE;
 ```
 
@@ -394,23 +364,14 @@ export const isExpenseTransaction = (
 All entities support soft delete via `deletedAt`:
 
 ```typescript
-// Archive (soft delete)
-async archiveById(id: number, tx?: TX): Promise<void> {
-    await (tx ?? this.db)
-        .update(AccountEntityTable)
-        .set({ deletedAt: new Date() })
-        .where(eq(AccountEntityTable.id, id));
-}
+readonly archiveById = Effect.fn('AccountRepository.archiveById')(function* (id: number) {
+    yield* Db.query(db => db.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id)));
+});
 
-// Restore
-async restoreById(id: number, tx?: TX): Promise<void> {
-    await (tx ?? this.db)
-        .update(AccountEntityTable)
-        .set({ deletedAt: null })
-        .where(eq(AccountEntityTable.id, id));
-}
+readonly restoreById = Effect.fn('AccountRepository.restoreById')(function* (id: number) {
+    yield* Db.query(db => db.update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id)));
+});
 
-// Filter active records
 where: isNull(AccountEntityTable.deletedAt)
 ```
 
@@ -423,6 +384,7 @@ Production packages host no unit tests. Cover schemas through the integration su
 ### Public API (index.ts)
 
 Export everything consumers need:
+
 - Entity types
 - Input interfaces
 - Schemas

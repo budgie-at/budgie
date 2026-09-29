@@ -1,8 +1,10 @@
 import { subDays } from 'date-fns/subDays';
 import { and, count, desc, eq, gte, inArray, isNotNull, isNull, like, ne, notInArray, sql } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { Db } from '../../@generic/service/db.service';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
@@ -16,53 +18,187 @@ import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
 
 import type { DB } from '../../@generic/type/db.type';
-import type { AccountEntityInterface } from '../entity/account-entity.interface';
 import type { SQL } from 'drizzle-orm';
 
 export class AccountRepository {
-    constructor(private db: DB) {}
-
-    async create(input: AccountCreateEntityInterface, tx?: DB): Promise<AccountEntityInterface> {
-        const [account] = await this.bulkCreate([input], tx);
+    readonly create = Effect.fn('AccountRepository.create')(function* (this: AccountRepository, input: AccountCreateEntityInterface) {
+        const [account] = yield* this.bulkCreate([input]);
 
         return account;
-    }
+    });
+
+    readonly updateById = Effect.fn('AccountRepository.updateById')(function* (id: number, input: AccountUpdateEntityInterface) {
+        const [account] = yield* Db.query(db =>
+            db
+                .update(AccountEntityTable)
+                .set({ ...input, ...(isDefined(input.title) && { titleSearch: input.title.toLowerCase() }) })
+                .where(eq(AccountEntityTable.id, id))
+                .returning()
+        );
+
+        return account;
+    });
+
+    readonly archiveById = Effect.fn('AccountRepository.archiveById')(function* (id: number) {
+        yield* Db.query(db => db.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id)));
+    });
+
+    readonly restoreById = Effect.fn('AccountRepository.restoreById')(function* (id: number) {
+        yield* Db.query(db => db.update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id)));
+    });
+
+    readonly deleteById = Effect.fn('AccountRepository.deleteById')(function* (id: number) {
+        yield* Db.query(db => db.delete(AccountEntityTable).where(eq(AccountEntityTable.id, id)));
+    });
+
+    readonly getAllActiveAccounts = Effect.fn('AccountRepository.getAllActiveAccounts')(function* () {
+        return yield* Db.query(db => db.select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt)));
+    });
+
+    readonly getAllActiveAccountsExceptBankAuthoritative = Effect.fn('AccountRepository.getAllActiveAccountsExceptBankAuthoritative')(
+        function* () {
+            return yield* Db.query(db =>
+                db
+                    .select()
+                    .from(AccountEntityTable)
+                    .where(and(isNull(AccountEntityTable.deletedAt), notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES)))
+            );
+        }
+    );
+
+    readonly getAll = Effect.fn('AccountRepository.getAll')(function* () {
+        return yield* Db.query(db =>
+            db.query.AccountEntityTable.findMany({
+                where: and(isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt)),
+                with: { [AccountAssociationEnum.INSTRUMENT]: true }
+            })
+        );
+    });
+
+    readonly findByIdIncludingArchived = Effect.fn('AccountRepository.findByIdIncludingArchived')(function* (id: number) {
+        return yield* Db.query(db =>
+            db.query.AccountEntityTable.findFirst({
+                where: eq(AccountEntityTable.id, id),
+                with: { [AccountAssociationEnum.INSTRUMENT]: true }
+            })
+        );
+    });
+
+    readonly findByIds = Effect.fn('AccountRepository.findByIds')(function* (this: AccountRepository, ids: number[]) {
+        return yield* this.findActiveByIds(ids);
+    });
+
+    readonly findByIdsExceptBankAuthoritative = Effect.fn('AccountRepository.findByIdsExceptBankAuthoritative')(function* (
+        this: AccountRepository,
+        ids: number[]
+    ) {
+        return yield* this.findActiveByIds(ids, notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES));
+    });
+
+    readonly findByExternalIds = Effect.fn('AccountRepository.findByExternalIds')(function* (externalIds: string[]) {
+        if (!isNotEmptyArray(externalIds)) {
+            return [];
+        }
+
+        return yield* Db.query(db =>
+            db.query.AccountEntityTable.findMany({
+                where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
+            })
+        );
+    });
+
+    readonly findByExternalSource = Effect.fn('AccountRepository.findByExternalSource')(function* (externalSource: ExternalSourceEnum) {
+        return yield* Db.query(db =>
+            db.query.AccountEntityTable.findMany({
+                where: and(eq(AccountEntityTable.externalSource, externalSource), isNull(AccountEntityTable.deletedAt))
+            })
+        );
+    });
+
+    readonly findByIbans = Effect.fn('AccountRepository.findByIbans')(function* (ibans: string[]) {
+        if (!isNotEmptyArray(ibans)) {
+            return [];
+        }
+
+        return yield* Db.query(db =>
+            db.query.AccountEntityTable.findMany({
+                where: and(inArray(AccountEntityTable.iban, ibans), isNull(AccountEntityTable.deletedAt))
+            })
+        );
+    });
+
+    readonly bulkCreate = Effect.fn('AccountRepository.bulkCreate')(function* (inputs: AccountCreateEntityInterface[]) {
+        return yield* Db.query(db =>
+            db
+                .insert(AccountEntityTable)
+                .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
+                .returning()
+        );
+    });
+
+    readonly touchUpdatedAt = Effect.fn('AccountRepository.touchUpdatedAt')(function* (accountIds: number[]) {
+        yield* Db.query(db =>
+            db.update(AccountEntityTable).set({ updatedAt: new Date() }).where(inArray(AccountEntityTable.id, accountIds))
+        );
+    });
+
+    readonly truncate = Effect.fn('AccountRepository.truncate')(function* () {
+        yield* Db.query(db => db.delete(AccountEntityTable));
+    });
+
+    readonly findMostActiveByInstrumentAndType = Effect.fn('AccountRepository.findMostActiveByInstrumentAndType')(function* (
+        instrumentId: number,
+        transactionType: TransactionTypeEnum,
+        days: number = 30
+    ) {
+        const cutoffDate = subDays(new Date(), days);
+        const entryType =
+            transactionType === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+
+        const result = yield* Db.query(db =>
+            db
+                .select({
+                    account: AccountEntityTable,
+                    transactionCount: count(TransactionEntryEntityTable.id)
+                })
+                .from(AccountEntityTable)
+                .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+                .where(
+                    and(
+                        eq(AccountEntityTable.isActive, true),
+                        isNull(AccountEntityTable.deletedAt),
+                        eq(AccountEntityTable.instrumentId, instrumentId),
+                        eq(TransactionEntityTable.type, transactionType),
+                        isNull(TransactionEntityTable.deletedAt),
+                        eq(TransactionEntryEntityTable.type, entryType),
+                        gte(TransactionEntityTable.operatedAt, cutoffDate)
+                    )
+                )
+                .groupBy(AccountEntityTable.id)
+                .orderBy(desc(count(TransactionEntryEntityTable.id)))
+                .limit(1)
+        );
+
+        return result[0]?.account;
+    });
+
+    private readonly findActiveByIds = Effect.fnUntraced(function* (ids: number[], typeCondition?: SQL) {
+        if (!isNotEmptyArray(ids)) {
+            return [];
+        }
+
+        return yield* Db.query(db =>
+            db.query.AccountEntityTable.findMany({
+                where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt), typeCondition)
+            })
+        );
+    });
+
+    constructor(private db: DB) {}
 
     count() {
         return this.db.select({ count: count() }).from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
-    }
-
-    async updateById(id: number, input: AccountUpdateEntityInterface, tx?: DB): Promise<AccountEntityInterface> {
-        const [account] = await (tx ?? this.db)
-            .update(AccountEntityTable)
-            .set({ ...input, ...(isDefined(input.title) && { titleSearch: input.title.toLowerCase() }) })
-            .where(eq(AccountEntityTable.id, id))
-            .returning();
-
-        return account;
-    }
-
-    async archiveById(id: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id));
-    }
-
-    async restoreById(id: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db).update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id));
-    }
-
-    async deleteById(id: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(AccountEntityTable).where(eq(AccountEntityTable.id, id));
-    }
-
-    async getAllActiveAccounts(tx?: DB): Promise<AccountEntityInterface[]> {
-        return await (tx ?? this.db).select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt));
-    }
-
-    async getAllActiveAccountsExceptBankAuthoritative(tx?: DB): Promise<AccountEntityInterface[]> {
-        return await (tx ?? this.db)
-            .select()
-            .from(AccountEntityTable)
-            .where(and(isNull(AccountEntityTable.deletedAt), notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES)));
     }
 
     findBySearchQuery(search: string, filter: AccountFilterInterface = {}) {
@@ -83,13 +219,6 @@ export class AccountRepository {
         });
     }
 
-    getAll() {
-        return this.db.query.AccountEntityTable.findMany({
-            where: and(isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt)),
-            with: { [AccountAssociationEnum.INSTRUMENT]: true }
-        });
-    }
-
     getAllInactive() {
         return this.db.query.AccountEntityTable.findMany({
             where: and(isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt), eq(AccountEntityTable.isActive, false)),
@@ -104,124 +233,23 @@ export class AccountRepository {
         });
     }
 
-    findById(id: number, tx?: DB) {
-        return (tx ?? this.db).query.AccountEntityTable.findFirst({
+    findById(id: number, db: DB = this.db) {
+        return db.query.AccountEntityTable.findFirst({
             where: and(eq(AccountEntityTable.id, id), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
         });
     }
 
-    findByIdIncludingArchived(id: number, tx?: DB) {
-        return (tx ?? this.db).query.AccountEntityTable.findFirst({
-            where: eq(AccountEntityTable.id, id),
-            with: { [AccountAssociationEnum.INSTRUMENT]: true }
-        });
-    }
-
-    findByIntegrationId(integrationId: number, tx?: DB) {
-        return (tx ?? this.db).query.AccountEntityTable.findMany({
+    findByIntegrationId(integrationId: number) {
+        return this.db.query.AccountEntityTable.findMany({
             where: and(eq(AccountEntityTable.integrationId, integrationId), isNull(AccountEntityTable.deletedAt)),
             with: { [AccountAssociationEnum.INSTRUMENT]: true }
-        });
-    }
-
-    async findByIds(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
-        return await this.findActiveByIds(ids, tx);
-    }
-
-    async findByIdsExceptBankAuthoritative(ids: number[], tx?: DB): Promise<AccountEntityInterface[]> {
-        return await this.findActiveByIds(ids, tx, notInArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES));
-    }
-
-    async findByExternalIds(externalIds: string[]): Promise<AccountEntityInterface[]> {
-        if (!isNotEmptyArray(externalIds)) {
-            return [];
-        }
-
-        return await this.db.query.AccountEntityTable.findMany({
-            where: and(inArray(AccountEntityTable.externalId, externalIds), isNull(AccountEntityTable.deletedAt))
-        });
-    }
-
-    async findByExternalSource(externalSource: ExternalSourceEnum, tx?: DB): Promise<AccountEntityInterface[]> {
-        return await (tx ?? this.db).query.AccountEntityTable.findMany({
-            where: and(eq(AccountEntityTable.externalSource, externalSource), isNull(AccountEntityTable.deletedAt))
         });
     }
 
     findByIban(iban: string) {
         return this.db.query.AccountEntityTable.findFirst({
             where: and(eq(AccountEntityTable.iban, iban), isNull(AccountEntityTable.deletedAt))
-        });
-    }
-
-    async findByIbans(ibans: string[]): Promise<AccountEntityInterface[]> {
-        if (!isNotEmptyArray(ibans)) {
-            return [];
-        }
-
-        return await this.db.query.AccountEntityTable.findMany({
-            where: and(inArray(AccountEntityTable.iban, ibans), isNull(AccountEntityTable.deletedAt))
-        });
-    }
-
-    async bulkCreate(inputs: AccountCreateEntityInterface[], tx?: DB): Promise<AccountEntityInterface[]> {
-        return await (tx ?? this.db)
-            .insert(AccountEntityTable)
-            .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
-            .returning();
-    }
-
-    async touchUpdatedAt(accountIds: number[], tx?: DB): Promise<void> {
-        await (tx ?? this.db).update(AccountEntityTable).set({ updatedAt: new Date() }).where(inArray(AccountEntityTable.id, accountIds));
-    }
-
-    async truncate(tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(AccountEntityTable);
-    }
-
-    async findMostActiveByInstrumentAndType(
-        instrumentId: number,
-        transactionType: TransactionTypeEnum,
-        days = 30
-    ): Promise<AccountEntityInterface | undefined> {
-        const cutoffDate = subDays(new Date(), days);
-        const entryType =
-            transactionType === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
-
-        const result = await this.db
-            .select({
-                account: AccountEntityTable,
-                transactionCount: count(TransactionEntryEntityTable.id)
-            })
-            .from(AccountEntityTable)
-            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
-            .where(
-                and(
-                    eq(AccountEntityTable.isActive, true),
-                    isNull(AccountEntityTable.deletedAt),
-                    eq(AccountEntityTable.instrumentId, instrumentId),
-                    eq(TransactionEntityTable.type, transactionType),
-                    isNull(TransactionEntityTable.deletedAt),
-                    eq(TransactionEntryEntityTable.type, entryType),
-                    gte(TransactionEntityTable.operatedAt, cutoffDate)
-                )
-            )
-            .groupBy(AccountEntityTable.id)
-            .orderBy(desc(count(TransactionEntryEntityTable.id)))
-            .limit(1);
-
-        return result[0]?.account;
-    }
-
-    private async findActiveByIds(ids: number[], tx?: DB, typeCondition?: SQL): Promise<AccountEntityInterface[]> {
-        if (!isNotEmptyArray(ids)) {
-            return [];
-        }
-
-        return await (tx ?? this.db).query.AccountEntityTable.findMany({
-            where: and(inArray(AccountEntityTable.id, ids), isNull(AccountEntityTable.deletedAt), typeCondition)
         });
     }
 

@@ -1,16 +1,13 @@
-import { Log } from '@budgie/logger';
-
-import { getErrorMessage } from '@rnw-community/shared';
+import * as Effect from 'effect/Effect';
 
 import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
-import { DB } from '../../@generic/type/db.type';
+import { Db } from '../../@generic/service/db.service';
 import { convertEmbeddingToJson } from '../../@generic/util/convert-embedding-to-json.util';
 import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
 import { MerchantEmbeddingEntityTable } from '../table/merchant-embedding-entity.table';
 import { MerchantEmbeddingTagEntityTable } from '../table/merchant-embedding-tag-entity.table';
 
 import type { CommentDistanceResultInterface } from '../interface/comment-distance-result.interface';
-import type { MerchantPendingContextInterface } from '../interface/merchant-pending-context.interface';
 import type { SimilarCommentsParamsInterface } from '../interface/similar-comments-params.interface';
 import type { UpsertMerchantEmbeddingParamsInterface } from '../interface/upsert-merchant-embedding-params.interface';
 
@@ -94,95 +91,90 @@ const PENDING_MERCHANT_CONTEXTS_QUERY = `
 `;
 
 export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
-    constructor(db: DB) {
-        super(db, {
-            similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
-            similarTagsQuery: SIMILAR_TAGS_QUERY,
-            vecTableName: 'merchant_embedding_vec',
-            sourceTableName: 'merchant_embeddings'
-        });
-    }
-
-    @Log(
-        (queryEmbedding, params) =>
-            `enter queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit}`,
-        (result, queryEmbedding, params) =>
-            `done queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit} count=${result.length}`,
-        (error, queryEmbedding, params) =>
-            `throw queryEmbeddingLen=${queryEmbedding.length} vecLimit=${params.vecLimit} distanceThreshold=${params.distanceThreshold} categoryId=${params.categoryId} commentLimit=${params.commentLimit} error=${getErrorMessage(error)}`
-    )
-    async findSimilarComments(
+    readonly findSimilarComments = Effect.fn('MerchantEmbeddingRepository.findSimilarComments')(function* (
         queryEmbedding: Uint8Array,
         params: SimilarCommentsParamsInterface
-    ): Promise<CommentDistanceResultInterface[]> {
+    ) {
         const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
 
-        return await this.db.$client.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
-            convertEmbeddingToJson(queryEmbedding),
-            vecLimit,
-            distanceThreshold,
-            categoryId,
-            commentLimit
-        ]);
-    }
+        return yield* Db.query(db =>
+            db.$client.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
+                convertEmbeddingToJson(queryEmbedding),
+                vecLimit,
+                distanceThreshold,
+                categoryId,
+                commentLimit
+            ])
+        );
+    });
 
-    async upsert(params: UpsertMerchantEmbeddingParamsInterface): Promise<number | null> {
+    readonly upsert = Effect.fn('MerchantEmbeddingRepository.upsert')(function* (
+        this: MerchantEmbeddingRepository,
+        params: UpsertMerchantEmbeddingParamsInterface
+    ) {
         const { title, mccDescription, categoryId, comment, embedding, dimensions } = params;
 
         if (!this.isValidDimensions(dimensions)) {
             return null;
         }
 
-        const [row] = await this.db
-            .insert(MerchantEmbeddingEntityTable)
-            .values({ title, mccDescription, categoryId, comment, embedding, dimensions })
-            .onConflictDoUpdate({
-                target: [
-                    MerchantEmbeddingEntityTable.title,
-                    MerchantEmbeddingEntityTable.mccDescription,
-                    MerchantEmbeddingEntityTable.categoryId
-                ],
-                set: { comment, embedding, dimensions, updatedAt: new Date() }
-            })
-            .returning({ id: MerchantEmbeddingEntityTable.id });
+        const [row] = yield* Db.query(db =>
+            db
+                .insert(MerchantEmbeddingEntityTable)
+                .values({ title, mccDescription, categoryId, comment, embedding, dimensions })
+                .onConflictDoUpdate({
+                    target: [
+                        MerchantEmbeddingEntityTable.title,
+                        MerchantEmbeddingEntityTable.mccDescription,
+                        MerchantEmbeddingEntityTable.categoryId
+                    ],
+                    set: { comment, embedding, dimensions, updatedAt: new Date() }
+                })
+                .returning({ id: MerchantEmbeddingEntityTable.id })
+        );
 
-        await this.db.$client.runAsync('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]);
-        await this.db.$client.runAsync(
-            'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
-            [row.id]
+        yield* Db.query(db => db.$client.runAsync('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]));
+        yield* Db.query(db =>
+            db.$client.runAsync(
+                'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
+                [row.id]
+            )
         );
 
         return row.id;
-    }
+    });
 
-    async replaceTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void> {
-        return this.replaceEmbeddingTags(
-            {
-                tagTable: MerchantEmbeddingTagEntityTable,
-                foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
-                embeddingId,
-                tagIds,
-                createTagRow: tagId => ({ merchantEmbeddingId: embeddingId, tagId })
-            },
-            tx
+    readonly replaceTags = Effect.fn('MerchantEmbeddingRepository.replaceTags')(function* (
+        this: MerchantEmbeddingRepository,
+        embeddingId: number,
+        tagIds: number[]
+    ) {
+        yield* this.replaceEmbeddingTags({
+            tagTable: MerchantEmbeddingTagEntityTable,
+            foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
+            embeddingId,
+            tagIds,
+            createTagRow: tagId => ({ merchantEmbeddingId: embeddingId, tagId })
+        });
+    });
+
+    readonly countAll = Effect.fn('MerchantEmbeddingRepository.countAll')(function* (this: MerchantEmbeddingRepository) {
+        return yield* this.countRows(MerchantEmbeddingEntityTable, MerchantEmbeddingEntityTable.deletedAt);
+    });
+
+    readonly findPendingMerchantContexts = Effect.fn('MerchantEmbeddingRepository.findPendingMerchantContexts')(function* (limit: number) {
+        const rows = yield* Db.query(db =>
+            db.$client.getAllAsync<{
+                title: string;
+                mccDescription: string;
+                categoryId: number;
+                categoryTitleEn: string | null;
+                comment: string | null;
+                transactionIdsCsv: string;
+                tagIdsCsv: string | null;
+                existingEmbeddingId: number | null;
+            }>(PENDING_MERCHANT_CONTEXTS_QUERY, [limit])
         );
-    }
-
-    async countAll(): Promise<number> {
-        return this.countRows(MerchantEmbeddingEntityTable, MerchantEmbeddingEntityTable.deletedAt);
-    }
-
-    async findPendingMerchantContexts(limit: number): Promise<MerchantPendingContextInterface[]> {
-        const rows = await this.db.$client.getAllAsync<{
-            title: string;
-            mccDescription: string;
-            categoryId: number;
-            categoryTitleEn: string | null;
-            comment: string | null;
-            transactionIdsCsv: string;
-            tagIdsCsv: string | null;
-            existingEmbeddingId: number | null;
-        }>(PENDING_MERCHANT_CONTEXTS_QUERY, [limit]);
 
         return rows.map(row => ({
             title: row.title,
@@ -190,22 +182,30 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             comment: row.comment ?? '',
             ...parsePendingContextBaseFields(row)
         }));
-    }
+    });
 
-    async countPendingMerchantContexts(): Promise<number> {
-        const [row] = await this.db.$client.getAllAsync<{ count: number }>(
-            `SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`,
-            []
+    readonly countPendingMerchantContexts = Effect.fn('MerchantEmbeddingRepository.countPendingMerchantContexts')(function* () {
+        const [row] = yield* Db.query(db =>
+            db.$client.getAllAsync<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, [])
         );
 
         return row.count;
-    }
+    });
 
-    async rebuildVecIndex(): Promise<void> {
-        return this.rebuildVec();
-    }
+    readonly rebuildVecIndex = Effect.fn('MerchantEmbeddingRepository.rebuildVecIndex')(function* (this: MerchantEmbeddingRepository) {
+        yield* this.rebuildVec();
+    });
 
-    async truncate(): Promise<void> {
-        return this.truncateWithTags(MerchantEmbeddingTagEntityTable, MerchantEmbeddingEntityTable);
+    readonly truncate = Effect.fn('MerchantEmbeddingRepository.truncate')(function* (this: MerchantEmbeddingRepository) {
+        yield* this.truncateWithTags(MerchantEmbeddingTagEntityTable, MerchantEmbeddingEntityTable);
+    });
+
+    constructor() {
+        super({
+            similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
+            similarTagsQuery: SIMILAR_TAGS_QUERY,
+            vecTableName: 'merchant_embedding_vec',
+            sourceTableName: 'merchant_embeddings'
+        });
     }
 }

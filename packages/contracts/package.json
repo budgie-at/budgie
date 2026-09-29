@@ -36,7 +36,6 @@
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
-        "@budgie/logger": "workspace:*",
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",
         "drizzle-orm": "^0.45.2",

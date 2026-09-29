@@ -1,12 +1,13 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
-import { Log } from '@budgie/logger';
 import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { Db } from '../../@generic/service/db.service';
 import { buildTranslatedCategoryRelation } from '../../@generic/util/build-translated-category-relation.util';
 import { AccountAssociationEnum } from '../../account/enum/account-association.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
@@ -24,17 +25,12 @@ import { TransactionFilterInterface } from '../interface/transaction-filter.inte
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 import { deriveEmbeddingFlag } from '../util/derive-embedding-flag.util';
 
-import type { DB } from '../../@generic/type/db.type';
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
-import type { TransactionEntityInterface } from '../entity/transaction-entity.interface';
-import type { TransactionWithEntriesEntityInterface } from '../entity/transaction-with-entries-entity.interface';
-import type { TransactionWithEntriesMccCategoryEntityInterface } from '../entity/transaction-with-entries-mcc-category-entity.interface';
 import type { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
 import type { ConsolidationSourceRowInterface } from '../interface/consolidation-source-row.interface';
 import type { SimilarTransactionMonthRowInterface } from '../interface/similar-transaction-month-row.interface';
 import type { SimilarTransactionStatsQueryInterface } from '../interface/similar-transaction-stats-query.interface';
-import type { SimilarTransactionStatsInterface } from '../interface/similar-transaction-stats.interface';
 
 export class TransactionRepository extends BaseTransactionFilterRepository {
     private static readonly TOUCH_CHUNK_SIZE = 500;
@@ -56,41 +52,18 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         }
     } as const;
 
-    @Log(
-        (inputs, tx) =>
-            `enter hasTx=${String(isDefined(tx))} count=${inputs.length} externalIds=${inputs
-                .slice(0, 5)
-                .map(input => input.externalId)
-                .join(',')}`,
-        (result, inputs, tx) =>
-            `done hasTx=${String(isDefined(tx))} count=${inputs.length} externalIds=${inputs
-                .slice(0, 5)
-                .map(input => input.externalId)
-                .join(',')} insertedIds=${result
-                .slice(0, 5)
-                .map(row => row.id)
-                .join(',')}`,
-        (error, inputs, tx) =>
-            `throw hasTx=${String(isDefined(tx))} count=${inputs.length} externalIds=${inputs
-                .slice(0, 5)
-                .map(input => input.externalId)
-                .join(',')} error=${getErrorMessage(error)}`
-    )
-    async bulkCreate(inputs: TransactionCreateEntityInterface[], tx?: DB): Promise<TransactionEntityInterface[]> {
+    readonly bulkCreate = Effect.fn('TransactionRepository.bulkCreate')(function* (inputs: TransactionCreateEntityInterface[]) {
         if (isNotEmptyArray(inputs)) {
-            return await (tx ?? this.db).insert(TransactionEntityTable).values(inputs).returning();
+            return yield* Db.query(db => db.insert(TransactionEntityTable).values(inputs).returning());
         }
 
         return [];
-    }
+    });
 
-    @Log(
-        tx => `enter hasTx=${String(isDefined(tx))}`,
-        'done',
-        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async clearAlreadyIndexedMerchantFlags(tx?: DB): Promise<void> {
-        (tx ?? this.db).run(sql`
+    readonly clearAlreadyIndexedMerchantFlags = Effect.fn('TransactionRepository.clearAlreadyIndexedMerchantFlags')(function* () {
+        yield* Db.query(db =>
+            Promise.resolve(
+                db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
@@ -107,16 +80,15 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                   AND te.deleted_at IS NULL
                   AND te.category_id IS NOT NULL
               )
-        `);
-    }
+        `)
+            )
+        );
+    });
 
-    @Log(
-        tx => `enter hasTx=${String(isDefined(tx))}`,
-        'done',
-        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async clearAlreadyIndexedCommentFlags(tx?: DB): Promise<void> {
-        (tx ?? this.db).run(sql`
+    readonly clearAlreadyIndexedCommentFlags = Effect.fn('TransactionRepository.clearAlreadyIndexedCommentFlags')(function* () {
+        yield* Db.query(db =>
+            Promise.resolve(
+                db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
@@ -132,18 +104,18 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                   AND te.deleted_at IS NULL
                   AND te.category_id IS NOT NULL
               )
-        `);
-    }
+        `)
+            )
+        );
+    });
 
-    @Log(
-        (mccCategoryId, limit) => `enter mccCategoryId=${mccCategoryId} limit=${limit}`,
-        (result, mccCategoryId, limit) =>
-            `done mccCategoryId=${mccCategoryId} limit=${limit} categoryIds=${result.map(row => row.categoryId).join(',')}`,
-        (error, mccCategoryId, limit) => `throw mccCategoryId=${mccCategoryId} limit=${limit} error=${getErrorMessage(error)}`
-    )
-    async findMccCategorySuggestions(mccCategoryId: number, limit: number): Promise<{ categoryId: number; count: number }[]> {
-        return await this.db.$client.getAllAsync<{ categoryId: number; count: number }>(
-            `WITH signals AS (
+    readonly findMccCategorySuggestions = Effect.fn('TransactionRepository.findMccCategorySuggestions')(function* (
+        mccCategoryId: number,
+        limit: number
+    ) {
+        return yield* Db.query(db =>
+            db.$client.getAllAsync<{ categoryId: number; count: number }>(
+                `WITH signals AS (
                 SELECT me.category_id AS category_id
                 FROM merchant_embeddings me
                 INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
@@ -163,26 +135,24 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             GROUP BY category_id
             ORDER BY COUNT(*) DESC
             LIMIT ?`,
-            [mccCategoryId, mccCategoryId, limit]
+                [mccCategoryId, mccCategoryId, limit]
+            )
         );
-    }
+    });
 
-    @Log(
-        query =>
-            `enter transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months}`,
-        (result, query) =>
-            `done transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months} count=${isDefined(result) ? result.count : 0}`,
-        (error, query) =>
-            `throw transactionId=${query.transactionId} type=${query.type} operatedAt=${query.operatedAt.toISOString()} title="${query.title}" comment="${query.comment}" accountId=${query.accountId} categoryId=${isDefined(query.categoryId) ? query.categoryId : 0} months=${query.months} error=${getErrorMessage(error)}`
-    )
-    async findSimilarStats(query: SimilarTransactionStatsQueryInterface): Promise<SimilarTransactionStatsInterface | null> {
+    readonly findSimilarStats = Effect.fn('TransactionRepository.findSimilarStats')(function* (
+        this: TransactionRepository,
+        query: SimilarTransactionStatsQueryInterface
+    ) {
         if (!isPositiveNumber(query.accountId) || !isPositiveNumber(query.months)) {
             return null;
         }
 
-        const rows = await this.db.$client.getAllAsync<SimilarTransactionMonthRowInterface>(
-            this.buildSimilarStatsSql(query),
-            this.buildSimilarStatsParams(query)
+        const rows = yield* Db.query(db =>
+            db.$client.getAllAsync<SimilarTransactionMonthRowInterface>(
+                this.buildSimilarStatsSql(query),
+                this.buildSimilarStatsParams(query)
+            )
         );
 
         if (isEmptyArray(rows)) {
@@ -201,39 +171,34 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             currencySymbol,
             months: rows
         };
-    }
+    });
 
-    @Log(
-        externalSource => `enter externalSource=${externalSource}`,
-        (result, externalSource) =>
-            `done externalSource=${externalSource} count=${result.length} externalIds=${result.slice(0, 5).join(',')}`,
-        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
-    )
-    async findExternalIdsByExternalSource(externalSource: ExternalSourceEnum): Promise<string[]> {
-        const results = await this.db
-            .select({ externalId: TransactionEntityTable.externalId })
-            .from(TransactionEntityTable)
-            .where(
-                and(
-                    eq(TransactionEntityTable.externalSource, externalSource),
-                    isNotNull(TransactionEntityTable.externalId),
-                    isNull(TransactionEntityTable.deletedAt)
+    readonly findExternalIdsByExternalSource = Effect.fn('TransactionRepository.findExternalIdsByExternalSource')(function* (
+        externalSource: ExternalSourceEnum
+    ) {
+        const results = yield* Db.query(db =>
+            db
+                .select({ externalId: TransactionEntityTable.externalId })
+                .from(TransactionEntityTable)
+                .where(
+                    and(
+                        eq(TransactionEntityTable.externalSource, externalSource),
+                        isNotNull(TransactionEntityTable.externalId),
+                        isNull(TransactionEntityTable.deletedAt)
+                    )
                 )
-            );
+        );
 
         return results.map(row => row.externalId).filter(isDefined);
-    }
+    });
 
-    @Log(
-        (canonicalTransactionId, language) => `enter canonicalTransactionId=${canonicalTransactionId} language=${language}`,
-        (result, canonicalTransactionId, language) =>
-            `done canonicalTransactionId=${canonicalTransactionId} language=${language} sourceTransactionIds=${result.map(row => row.sourceTransactionId).join(',')}`,
-        (error, canonicalTransactionId, language) =>
-            `throw canonicalTransactionId=${canonicalTransactionId} language=${language} error=${getErrorMessage(error)}`
-    )
-    async findConsolidationSources(canonicalTransactionId: number, language: LanguageEnum): Promise<ConsolidationSourceRowInterface[]> {
-        return await this.db.$client.getAllAsync<ConsolidationSourceRowInterface>(
-            `SELECT
+    readonly findConsolidationSources = Effect.fn('TransactionRepository.findConsolidationSources')(function* (
+        canonicalTransactionId: number,
+        language: LanguageEnum
+    ) {
+        return yield* Db.query(db =>
+            db.$client.getAllAsync<ConsolidationSourceRowInterface>(
+                `SELECT
                 moved.transaction_id AS canonicalTransactionId,
                 moved.original_transaction_id AS sourceTransactionId,
                 source.type AS sourceType,
@@ -286,23 +251,20 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
               AND moved.original_transaction_id IS NOT NULL
               AND moved.deleted_at IS NULL
             ORDER BY source.operated_at ASC, source.id ASC, moved.id ASC`,
-            [language, canonicalTransactionId]
+                [language, canonicalTransactionId]
+            )
         );
-    }
+    });
 
-    @Log(
-        (accountIds, tx) => `enter accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))}`,
-        (result, accountIds, tx) =>
-            `done accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))} canonicalIds=${result.map(row => row.id).join(',')}`,
-        (error, accountIds, tx) => `throw accountIds=${accountIds.join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async findActiveAutoConsolidatedByAccountIds(accountIds: number[], tx?: DB): Promise<{ id: number }[]> {
+    readonly findActiveAutoConsolidatedByAccountIds = Effect.fn('TransactionRepository.findActiveAutoConsolidatedByAccountIds')(function* (
+        this: TransactionRepository,
+        accountIds: number[]
+    ) {
         if (isEmptyArray(accountIds)) {
             return [];
         }
 
-        const runner = tx ?? this.db;
-        const movedSourceCanonicalIds = runner
+        const movedSourceCanonicalIds = this.db
             .select({ transactionId: TransactionEntryEntityTable.transactionId })
             .from(TransactionEntryEntityTable)
             .where(
@@ -313,166 +275,537 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 )
             );
 
-        return await runner
-            .select({ id: TransactionEntityTable.id })
-            .from(TransactionEntityTable)
-            .where(
-                and(
-                    isNotNull(TransactionEntityTable.consolidationType),
-                    isNull(TransactionEntityTable.deletedAt),
-                    or(
-                        inArray(TransactionEntityTable.fromAccountId, accountIds),
-                        inArray(TransactionEntityTable.toAccountId, accountIds),
-                        inArray(TransactionEntityTable.id, movedSourceCanonicalIds)
+        return yield* Db.query(db =>
+            db
+                .select({ id: TransactionEntityTable.id })
+                .from(TransactionEntityTable)
+                .where(
+                    and(
+                        isNotNull(TransactionEntityTable.consolidationType),
+                        isNull(TransactionEntityTable.deletedAt),
+                        or(
+                            inArray(TransactionEntityTable.fromAccountId, accountIds),
+                            inArray(TransactionEntityTable.toAccountId, accountIds),
+                            inArray(TransactionEntityTable.id, movedSourceCanonicalIds)
+                        )
                     )
                 )
-            );
-    }
+        );
+    });
 
-    @Log(
-        (accountIds, since, tx) => `enter accountIds=${accountIds.join(',')} since=${since.toISOString()} hasTx=${String(isDefined(tx))}`,
-        (result, accountIds, since, tx) =>
-            `done accountIds=${accountIds.join(',')} since=${since.toISOString()} hasTx=${String(isDefined(tx))} canonicalIds=${result.map(row => row.id).join(',')}`,
-        (error, accountIds, since, tx) =>
-            `throw accountIds=${accountIds.join(',')} since=${since.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async findActiveAutoConsolidatedByAccountIdsSince(accountIds: number[], since: Date, tx?: DB): Promise<{ id: number }[]> {
-        if (isEmptyArray(accountIds)) {
-            return [];
+    readonly findActiveAutoConsolidatedByAccountIdsSince = Effect.fn('TransactionRepository.findActiveAutoConsolidatedByAccountIdsSince')(
+        function* (accountIds: number[], since: Date) {
+            if (isEmptyArray(accountIds)) {
+                return [];
+            }
+            const sourceTransaction = alias(TransactionEntityTable, 'source_tx');
+
+            return yield* Db.query(db =>
+                db
+                    .selectDistinct({ id: TransactionEntityTable.id })
+                    .from(TransactionEntityTable)
+                    .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                    .innerJoin(sourceTransaction, eq(sourceTransaction.id, TransactionEntryEntityTable.originalTransactionId))
+                    .where(
+                        and(
+                            isNotNull(TransactionEntityTable.consolidationType),
+                            isNull(TransactionEntityTable.deletedAt),
+                            inArray(TransactionEntryEntityTable.accountId, accountIds),
+                            isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                            isNull(TransactionEntryEntityTable.deletedAt),
+                            gte(sourceTransaction.operatedAt, since)
+                        )
+                    )
+            );
         }
-        const runner = tx ?? this.db;
-        const sourceTransaction = alias(TransactionEntityTable, 'source_tx');
+    );
 
-        return await runner
-            .selectDistinct({ id: TransactionEntityTable.id })
-            .from(TransactionEntityTable)
-            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(sourceTransaction, eq(sourceTransaction.id, TransactionEntryEntityTable.originalTransactionId))
-            .where(
-                and(
-                    isNotNull(TransactionEntityTable.consolidationType),
-                    isNull(TransactionEntityTable.deletedAt),
-                    inArray(TransactionEntryEntityTable.accountId, accountIds),
-                    isNotNull(TransactionEntryEntityTable.originalTransactionId),
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    gte(sourceTransaction.operatedAt, since)
-                )
-            );
-    }
-
-    @Log(
-        (sourceTransactionIds, canonicalTransactionId, tx) =>
-            `enter sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
-        'done',
-        (error, sourceTransactionIds, canonicalTransactionId, tx) =>
-            `throw sourceTransactionIds=${sourceTransactionIds.join(',')} canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async setConsolidationParent(sourceTransactionIds: number[], canonicalTransactionId: number, tx?: DB): Promise<void> {
+    readonly setConsolidationParent = Effect.fn('TransactionRepository.setConsolidationParent')(function* (
+        this: TransactionRepository,
+        sourceTransactionIds: number[],
+        canonicalTransactionId: number
+    ) {
         if (isEmptyArray(sourceTransactionIds)) {
             return;
         }
 
-        await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set({ consolidationParentTransactionId: canonicalTransactionId })
-            .where(and(inArray(TransactionEntityTable.id, sourceTransactionIds), this.buildVisibleTransactionCondition()));
-    }
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ consolidationParentTransactionId: canonicalTransactionId })
+                .where(and(inArray(TransactionEntityTable.id, sourceTransactionIds), this.buildVisibleTransactionCondition()))
+        );
+    });
 
-    @Log(
-        (transactionId, type, tx) => `enter transactionId=${transactionId} type=${type ?? 'null'} hasTx=${String(isDefined(tx))}`,
-        'done',
-        (error, transactionId, type, tx) =>
-            `throw transactionId=${transactionId} type=${type ?? 'null'} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async setConsolidationType(transactionId: number, type: TransactionConsolidationTypeEnum | null, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set({ consolidationType: type })
-            .where(and(eq(TransactionEntityTable.id, transactionId), isNull(TransactionEntityTable.consolidationParentTransactionId)));
-    }
+    readonly setConsolidationType = Effect.fn('TransactionRepository.setConsolidationType')(function* (
+        transactionId: number,
+        type: TransactionConsolidationTypeEnum | null
+    ) {
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ consolidationType: type })
+                .where(and(eq(TransactionEntityTable.id, transactionId), isNull(TransactionEntityTable.consolidationParentTransactionId)))
+        );
+    });
 
-    @Log(
-        (canonicalTransactionId, tx) => `enter canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))}`,
-        'done',
-        (error, canonicalTransactionId, tx) =>
-            `throw canonicalTransactionId=${canonicalTransactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async clearConsolidationParent(canonicalTransactionId: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set({ consolidationParentTransactionId: null })
-            .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId));
-    }
+    readonly clearConsolidationParent = Effect.fn('TransactionRepository.clearConsolidationParent')(function* (
+        canonicalTransactionId: number
+    ) {
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ consolidationParentTransactionId: null })
+                .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId))
+        );
+    });
 
-    @Log(
-        (ids, tx) => `enter transactionCount=${ids.length} inTx=${String(isDefined(tx))}`,
-        (...[, ids, tx]) => `done transactionCount=${ids.length} inTx=${String(isDefined(tx))}`,
-        (error, ids, tx) => `throw transactionCount=${ids.length} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async touchAndMarkForEmbeddingByIds(ids: number[], tx?: DB): Promise<void> {
+    readonly touchAndMarkForEmbeddingByIds = Effect.fn('TransactionRepository.touchAndMarkForEmbeddingByIds')(function* (ids: number[]) {
         if (isEmptyArray(ids)) {
             return;
         }
 
-        const runner = tx ?? this.db;
         const { TOUCH_CHUNK_SIZE } = TransactionRepository;
-        const chunks: number[][] = [];
 
         for (let start = 0; start < ids.length; start += TOUCH_CHUNK_SIZE) {
-            chunks.push(ids.slice(start, start + TOUCH_CHUNK_SIZE));
+            const chunk = ids.slice(start, start + TOUCH_CHUNK_SIZE);
+
+            yield* Db.query(db =>
+                db
+                    .update(TransactionEntityTable)
+                    .set({
+                        updatedAt: new Date(),
+                        needsEmbedding: sql`CASE WHEN ${isNull(TransactionEntityTable.deletedAt)} AND ${notInArray(TransactionEntityTable.type, TransactionRepository.NON_INDEXABLE_EMBEDDING_TYPES)} THEN 1 ELSE ${TransactionEntityTable.needsEmbedding} END`
+                    })
+                    .where(inArray(TransactionEntityTable.id, chunk))
+            );
         }
+    });
 
-        await chunks.reduce<Promise<void>>(async (previousChunkPromise, chunk) => {
-            await previousChunkPromise;
-            await runner
-                .update(TransactionEntityTable)
-                .set({
-                    updatedAt: new Date(),
-                    needsEmbedding: sql`CASE WHEN ${isNull(TransactionEntityTable.deletedAt)} AND ${notInArray(TransactionEntityTable.type, TransactionRepository.NON_INDEXABLE_EMBEDDING_TYPES)} THEN 1 ELSE ${TransactionEntityTable.needsEmbedding} END`
-                })
-                .where(inArray(TransactionEntityTable.id, chunk));
-        }, Promise.resolve());
-    }
-
-    async touchUpdatedByIds(ids: number[], updatedBy: TransactionUpdatedByEnum, tx?: DB): Promise<void> {
+    readonly touchUpdatedByIds = Effect.fn('TransactionRepository.touchUpdatedByIds')(function* (
+        ids: number[],
+        updatedBy: TransactionUpdatedByEnum
+    ) {
         if (!isNotEmptyArray(ids)) {
             return;
         }
 
-        await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set({ updatedAt: new Date(), updatedBy })
-            .where(inArray(TransactionEntityTable.id, ids));
-    }
+        yield* Db.query(db =>
+            db.update(TransactionEntityTable).set({ updatedAt: new Date(), updatedBy }).where(inArray(TransactionEntityTable.id, ids))
+        );
+    });
 
-    async touchUpdatedAt(id: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db).update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id));
-    }
+    readonly touchUpdatedAt = Effect.fn('TransactionRepository.touchUpdatedAt')(function* (id: number) {
+        yield* Db.query(db => db.update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id)));
+    });
 
-    async create(input: TransactionCreateEntityInterface, tx?: DB): Promise<TransactionEntityInterface> {
-        const [transaction] = await this.bulkCreate([input], tx);
+    readonly create = Effect.fn('TransactionRepository.create')(function* (
+        this: TransactionRepository,
+        input: TransactionCreateEntityInterface
+    ) {
+        const [transaction] = yield* this.bulkCreate([input]);
 
         return transaction;
-    }
+    });
 
-    async deleteById(id: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id));
-    }
+    readonly deleteById = Effect.fn('TransactionRepository.deleteById')(function* (id: number) {
+        yield* Db.query(db => db.delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)));
+    });
 
-    async updateById(id: number, input: TransactionUpdateInputInterface, tx?: DB): Promise<TransactionEntityInterface> {
+    readonly updateById = Effect.fn('TransactionRepository.updateById')(function* (id: number, input: TransactionUpdateInputInterface) {
         const finalInput = { ...input, ...deriveEmbeddingFlag(input) };
-        const [transaction] = await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set(finalInput)
-            .where(eq(TransactionEntityTable.id, id))
-            .returning();
+        const [transaction] = yield* Db.query(db =>
+            db.update(TransactionEntityTable).set(finalInput).where(eq(TransactionEntityTable.id, id)).returning()
+        );
 
         if (!isDefined(transaction)) {
-            throw new Error(`Transaction ${id} not found`);
+            return yield* Effect.die(new Error(`Transaction ${id} not found`));
         }
 
         return transaction;
-    }
+    });
+
+    readonly findByIdsWithEntries = Effect.fn('TransactionRepository.findByIdsWithEntries')(function* (ids: number[]) {
+        if (!isNotEmptyArray(ids)) {
+            return [];
+        }
+
+        return yield* Db.query(db =>
+            db.query.TransactionEntityTable.findMany({
+                where: inArray(TransactionEntityTable.id, ids),
+                with: TransactionRepository.ENTRIES_WITH_MCC_CATEGORY_RELATIONS
+            })
+        );
+    });
+
+    readonly getAllAfter = Effect.fn('TransactionRepository.getAllAfter')(function* (
+        this: TransactionRepository,
+        cursorId: number | null,
+        limit: number
+    ) {
+        const baseFilter = this.buildVisibleTransactionCondition();
+        const where = isDefined(cursorId) ? and(baseFilter, lt(TransactionEntityTable.id, cursorId)) : baseFilter;
+
+        return yield* Db.query(db =>
+            db.query.TransactionEntityTable.findMany({
+                with: {
+                    [TransactionAssociationEnum.ENTRIES]: {
+                        where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
+                    }
+                },
+                orderBy: (transaction, { desc }) => [desc(transaction.id)],
+                limit,
+                where
+            })
+        );
+    });
+
+    readonly findAllWithMccCategoryOffset = Effect.fn('TransactionRepository.findAllWithMccCategoryOffset')(function* (
+        limit: number,
+        offset: number
+    ) {
+        return yield* Db.query(db =>
+            db.query.TransactionEntityTable.findMany({
+                with: TransactionRepository.ENTRIES_WITH_MCC_CATEGORY_RELATIONS,
+                orderBy: (transaction, { desc }) => [desc(transaction.id)],
+                limit,
+                offset,
+                where: isNull(TransactionEntityTable.deletedAt)
+            })
+        );
+    });
+
+    readonly getByIdRaw = Effect.fn('TransactionRepository.getByIdRaw')(function* (id: number) {
+        return yield* Db.query(db => db.query.TransactionEntityTable.findFirst({ where: eq(TransactionEntityTable.id, id) }));
+    });
+
+    readonly getByIdWithEntries = Effect.fn('TransactionRepository.getByIdWithEntries')(function* (id: number) {
+        return yield* Db.query(db =>
+            db.query.TransactionEntityTable.findFirst({
+                where: eq(TransactionEntityTable.id, id),
+                with: {
+                    [TransactionAssociationEnum.ENTRIES]: {
+                        where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
+                    }
+                }
+            })
+        );
+    });
+
+    readonly findByIds = Effect.fn('TransactionRepository.findByIds')(function* (this: TransactionRepository, ids: number[]) {
+        return yield* this.findByIdsWithEntriesWhere(ids, TransactionRepository.LIVE_ENTRY_RELATION_WHERE);
+    });
+
+    readonly findByIdsWithRefundConsolidationHistory = Effect.fn('TransactionRepository.findByIdsWithRefundConsolidationHistory')(
+        function* (this: TransactionRepository, ids: number[]) {
+            return yield* this.findByIdsWithEntriesWhere(ids, isNull(TransactionEntryEntityTable.deletedAt));
+        }
+    );
+
+    readonly truncate = Effect.fn('TransactionRepository.truncate')(function* () {
+        yield* Db.query(db => db.delete(TransactionEntityTable));
+    });
+
+    readonly markAllForEmbedding = Effect.fn('TransactionRepository.markAllForEmbedding')(function* () {
+        yield* Db.query(db =>
+            db.update(TransactionEntityTable).set({ needsEmbedding: true }).where(isNull(TransactionEntityTable.deletedAt))
+        );
+    });
+
+    readonly markForEmbeddingByIds = Effect.fn('TransactionRepository.markForEmbeddingByIds')(function* (ids: number[]) {
+        if (isEmptyArray(ids)) {
+            return;
+        }
+
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ needsEmbedding: true })
+                .where(
+                    and(
+                        inArray(TransactionEntityTable.id, ids),
+                        eq(TransactionEntityTable.needsEmbedding, false),
+                        isNull(TransactionEntityTable.deletedAt),
+                        notInArray(TransactionEntityTable.type, TransactionRepository.NON_INDEXABLE_EMBEDDING_TYPES)
+                    )
+                )
+        );
+    });
+
+    readonly clearNeedsEmbedding = Effect.fn('TransactionRepository.clearNeedsEmbedding')(function* (ids: number[]) {
+        if (isEmptyArray(ids)) {
+            return;
+        }
+        const CHUNK = 500;
+
+        for (let start = 0; start < ids.length; start += CHUNK) {
+            const chunk = ids.slice(start, start + CHUNK);
+
+            yield* Db.query(db =>
+                db
+                    .update(TransactionEntityTable)
+                    .set({ needsEmbedding: false })
+                    .where(and(eq(TransactionEntityTable.needsEmbedding, true), inArray(TransactionEntityTable.id, chunk)))
+            );
+        }
+    });
+
+    readonly clearNonIndexableFlags = Effect.fn('TransactionRepository.clearNonIndexableFlags')(function* () {
+        yield* Db.query(db =>
+            Promise.resolve(
+                db.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title = ''
+              AND comment = ''
+        `)
+            )
+        );
+
+        yield* Db.query(db =>
+            Promise.resolve(
+                db.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NULL
+              )
+        `)
+            )
+        );
+
+        yield* Db.query(db =>
+            Promise.resolve(
+                db.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                INNER JOIN accounts acc ON acc.id = te.account_id
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND acc.type = ${AccountTypeEnum.DEBT}
+              )
+        `)
+            )
+        );
+
+        yield* Db.query(db =>
+            Promise.resolve(
+                db.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
+        `)
+            )
+        );
+    });
+
+    readonly findIdMapByExternalSource = Effect.fn('TransactionRepository.findIdMapByExternalSource')(function* (
+        externalSource: ExternalSourceEnum
+    ) {
+        const results = yield* Db.query(db =>
+            db
+                .select({ id: TransactionEntityTable.id, externalId: TransactionEntityTable.externalId })
+                .from(TransactionEntityTable)
+                .where(
+                    and(
+                        eq(TransactionEntityTable.externalSource, externalSource),
+                        isNotNull(TransactionEntityTable.externalId),
+                        isNull(TransactionEntityTable.deletedAt)
+                    )
+                )
+        );
+
+        return new Map(
+            results.flatMap(({ id, externalId }) => {
+                if (!isDefined(externalId)) {
+                    return [];
+                }
+
+                return [[externalId, id] as const];
+            })
+        );
+    });
+
+    readonly findByAccountId = Effect.fn('TransactionRepository.findByAccountId')(function* (
+        this: TransactionRepository,
+        accountId: number
+    ) {
+        return yield* Db.query(db =>
+            db.query.TransactionEntityTable.findMany({
+                where: this.buildSingleAccountCondition(accountId),
+                orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
+            })
+        );
+    });
+
+    readonly getTransactionTimeByAccountId = Effect.fn('TransactionRepository.getTransactionTimeByAccountId')(function* (
+        this: TransactionRepository,
+        accountId: number,
+        mode: 'latest' | 'earliest'
+    ) {
+        const aggregateSql =
+            mode === 'latest'
+                ? sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`
+                : sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`;
+
+        return yield* this.selectOperatedAtTime(aggregateSql, this.buildSingleAccountCondition(accountId));
+    });
+
+    readonly getEarliestTransactionTimeByExternalSource = Effect.fn('TransactionRepository.getEarliestTransactionTimeByExternalSource')(
+        function* (this: TransactionRepository, externalSource: ExternalSourceEnum) {
+            return yield* this.selectOperatedAtTime(
+                sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`,
+                eq(TransactionEntityTable.externalSource, externalSource)
+            );
+        }
+    );
+
+    readonly archiveByAccountIds = Effect.fn('TransactionRepository.archiveByAccountIds')(function* (accountIds: number[]) {
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ deletedAt: new Date() })
+                .where(
+                    and(
+                        or(
+                            inArray(TransactionEntityTable.toAccountId, accountIds),
+                            inArray(TransactionEntityTable.fromAccountId, accountIds)
+                        ),
+                        ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                        isNull(TransactionEntityTable.deletedAt)
+                    )
+                )
+        );
+    });
+
+    readonly restoreByAccountIds = Effect.fn('TransactionRepository.restoreByAccountIds')(function* (accountIds: number[]) {
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ deletedAt: null })
+                .where(
+                    or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds))
+                )
+        );
+    });
+
+    readonly findTransfersByAccountId = Effect.fn('TransactionRepository.findTransfersByAccountId')(function* (
+        this: TransactionRepository,
+        accountId: number,
+        language: LanguageEnum
+    ) {
+        return yield* Db.query(db =>
+            db.query.TransactionEntityTable.findMany({
+                where: this.buildTransfersByAccountIdWhere(accountId),
+                with: this.buildFullRelations(language)
+            })
+        );
+    });
+
+    readonly findTransfersForConversion = Effect.fn('TransactionRepository.findTransfersForConversion')(function* (
+        this: TransactionRepository,
+        accountId: number
+    ) {
+        return yield* Db.query(db =>
+            db.query.TransactionEntityTable.findMany({
+                where: this.buildTransfersByAccountIdWhere(accountId),
+                with: {
+                    [TransactionAssociationEnum.ENTRIES]: {
+                        where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
+                    }
+                }
+            })
+        );
+    });
+
+    readonly deleteByAccountId = Effect.fn('TransactionRepository.deleteByAccountId')(function* (accountId: number) {
+        yield* Db.query(db =>
+            db
+                .delete(TransactionEntityTable)
+                .where(
+                    and(
+                        or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
+                        ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
+                    )
+                )
+        );
+    });
+
+    readonly convertTransfersFromAccountToIncome = Effect.fn('TransactionRepository.convertTransfersFromAccountToIncome')(function* (
+        accountId: number
+    ) {
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ type: TransactionTypeEnum.INCOME, fromAccountId: sql`NULL`, exchangeRate: 1 })
+                .where(
+                    and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.fromAccountId, accountId))
+                )
+        );
+    });
+
+    readonly convertTransfersToAccountToExpense = Effect.fn('TransactionRepository.convertTransfersToAccountToExpense')(function* (
+        accountId: number
+    ) {
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
+                .where(
+                    and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId))
+                )
+        );
+    });
+
+    readonly countAllActive = Effect.fn('TransactionRepository.countAllActive')(function* () {
+        const [row] = yield* Db.query(db =>
+            db.select({ value: count() }).from(TransactionEntityTable).where(isNull(TransactionEntityTable.deletedAt))
+        );
+
+        return row.value;
+    });
+
+    private readonly selectOperatedAtTime = Effect.fnUntraced(function* (aggregateSql: SQL<number | null>, condition: SQL | undefined) {
+        const result = yield* Db.query(db =>
+            db
+                .select({ operatedAt: aggregateSql })
+                .from(TransactionEntityTable)
+                .where(and(condition, ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)))
+        );
+
+        const time = result[0]?.operatedAt;
+        if (isPositiveNumber(time)) {
+            return new Date(time * 1000);
+        }
+
+        return null;
+    });
+
+    private readonly findByIdsWithEntriesWhere = Effect.fnUntraced(function* (ids: number[], entriesWhere: SQL | undefined) {
+        if (isNotEmptyArray(ids)) {
+            return yield* Db.query(db =>
+                db.query.TransactionEntityTable.findMany({
+                    where: inArray(TransactionEntityTable.id, ids),
+                    with: {
+                        [TransactionAssociationEnum.ENTRIES]: {
+                            where: entriesWhere
+                        }
+                    }
+                })
+            );
+        }
+
+        return [];
+    });
 
     getAll(limit: number, filters: TransactionFilterInterface, language: LanguageEnum) {
         return this.listOrderedByOperatedAt(limit, language, this.buildWhere(filters));
@@ -501,315 +834,11 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return this.listOrderedByOperatedAt(limit, language, this.buildUncategorizedWhere(filters));
     }
 
-    async findByIdsWithEntries(ids: number[]): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
-        if (!isNotEmptyArray(ids)) {
-            return [];
-        }
-
-        return await this.db.query.TransactionEntityTable.findMany({
-            where: inArray(TransactionEntityTable.id, ids),
-            with: TransactionRepository.ENTRIES_WITH_MCC_CATEGORY_RELATIONS
-        });
-    }
-
-    getAllAfter(cursorId: number | null, limit: number) {
-        const baseFilter = this.buildVisibleTransactionCondition();
-        const where = isDefined(cursorId) ? and(baseFilter, lt(TransactionEntityTable.id, cursorId)) : baseFilter;
-
-        return this.db.query.TransactionEntityTable.findMany({
-            with: {
-                [TransactionAssociationEnum.ENTRIES]: {
-                    where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
-                }
-            },
-            orderBy: (transaction, { desc }) => [desc(transaction.id)],
-            limit,
-            where
-        });
-    }
-
-    async findAllWithMccCategoryOffset(limit: number, offset: number): Promise<TransactionWithEntriesMccCategoryEntityInterface[]> {
-        return await this.db.query.TransactionEntityTable.findMany({
-            with: TransactionRepository.ENTRIES_WITH_MCC_CATEGORY_RELATIONS,
-            orderBy: (transaction, { desc }) => [desc(transaction.id)],
-            limit,
-            offset,
-            where: isNull(TransactionEntityTable.deletedAt)
-        });
-    }
-
-    getById(id: number, language: LanguageEnum, tx?: DB) {
-        return (tx ?? this.db).query.TransactionEntityTable.findFirst({
+    getById(id: number, language: LanguageEnum) {
+        return this.db.query.TransactionEntityTable.findFirst({
             where: eq(TransactionEntityTable.id, id),
             with: this.buildFullRelations(language)
         });
-    }
-
-    getByIdRaw(id: number, tx?: DB) {
-        return (tx ?? this.db).query.TransactionEntityTable.findFirst({
-            where: eq(TransactionEntityTable.id, id)
-        });
-    }
-
-    async getByIdWithEntries(id: number, tx?: DB): Promise<TransactionWithEntriesEntityInterface | undefined> {
-        return await (tx ?? this.db).query.TransactionEntityTable.findFirst({
-            where: eq(TransactionEntityTable.id, id),
-            with: {
-                [TransactionAssociationEnum.ENTRIES]: {
-                    where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
-                }
-            }
-        });
-    }
-
-    async findByIds(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
-        return await this.findByIdsWithEntriesWhere(ids, TransactionRepository.LIVE_ENTRY_RELATION_WHERE, tx);
-    }
-
-    async findByIdsWithRefundConsolidationHistory(ids: number[], tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
-        return await this.findByIdsWithEntriesWhere(ids, isNull(TransactionEntryEntityTable.deletedAt), tx);
-    }
-
-    async truncate(tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(TransactionEntityTable);
-    }
-
-    async markAllForEmbedding(tx?: DB): Promise<void> {
-        await (tx ?? this.db).update(TransactionEntityTable).set({ needsEmbedding: true }).where(isNull(TransactionEntityTable.deletedAt));
-    }
-
-    async markForEmbeddingByIds(ids: number[], tx?: DB): Promise<void> {
-        if (isEmptyArray(ids)) {
-            return;
-        }
-
-        await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set({ needsEmbedding: true })
-            .where(
-                and(
-                    inArray(TransactionEntityTable.id, ids),
-                    eq(TransactionEntityTable.needsEmbedding, false),
-                    isNull(TransactionEntityTable.deletedAt),
-                    notInArray(TransactionEntityTable.type, TransactionRepository.NON_INDEXABLE_EMBEDDING_TYPES)
-                )
-            );
-    }
-
-    async clearNeedsEmbedding(ids: number[], tx?: DB): Promise<void> {
-        if (isEmptyArray(ids)) {
-            return;
-        }
-        const CHUNK = 500;
-        const runner = tx ?? this.db;
-        for (let start = 0; start < ids.length; start += CHUNK) {
-            const chunk = ids.slice(start, start + CHUNK);
-            // eslint-disable-next-line no-await-in-loop -- sequential chunking to stay under SQLITE_MAX_VARIABLE_NUMBER
-            await runner
-                .update(TransactionEntityTable)
-                .set({ needsEmbedding: false })
-                .where(and(eq(TransactionEntityTable.needsEmbedding, true), inArray(TransactionEntityTable.id, chunk)));
-        }
-    }
-
-    async clearNonIndexableFlags(tx?: DB): Promise<void> {
-        const runner = tx ?? this.db;
-
-        runner.run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND title = ''
-              AND comment = ''
-        `);
-
-        runner.run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND te.category_id IS NULL
-              )
-        `);
-
-        runner.run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                INNER JOIN accounts acc ON acc.id = te.account_id
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND acc.type = ${AccountTypeEnum.DEBT}
-              )
-        `);
-
-        runner.run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
-        `);
-    }
-
-    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
-        const results = await this.db
-            .select({ id: TransactionEntityTable.id, externalId: TransactionEntityTable.externalId })
-            .from(TransactionEntityTable)
-            .where(
-                and(
-                    eq(TransactionEntityTable.externalSource, externalSource),
-                    isNotNull(TransactionEntityTable.externalId),
-                    isNull(TransactionEntityTable.deletedAt)
-                )
-            );
-
-        return new Map(
-            results.flatMap(({ id, externalId }) => {
-                if (!isDefined(externalId)) {
-                    return [];
-                }
-
-                return [[externalId, id] as const];
-            })
-        );
-    }
-
-    async findByAccountId(accountId: number): Promise<TransactionEntityInterface[]> {
-        return await this.db.query.TransactionEntityTable.findMany({
-            where: this.buildSingleAccountCondition(accountId),
-            orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
-        });
-    }
-
-    async getTransactionTimeByAccountId(accountId: number, mode: 'latest' | 'earliest'): Promise<Date | null> {
-        const aggregateSql =
-            mode === 'latest'
-                ? sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`
-                : sql<number | null>`MIN(${TransactionEntityTable.operatedAt})`;
-
-        const result = await this.db
-            .select({ operatedAt: aggregateSql })
-            .from(TransactionEntityTable)
-            .where(and(this.buildSingleAccountCondition(accountId), ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)));
-
-        const time = result[0]?.operatedAt;
-        if (isPositiveNumber(time)) {
-            return new Date(time * 1000);
-        }
-
-        return null;
-    }
-
-    async getEarliestTransactionTimeByExternalSource(externalSource: ExternalSourceEnum): Promise<Date | null> {
-        const result = await this.db
-            .select({ operatedAt: sql<number | null>`MIN(${TransactionEntityTable.operatedAt})` })
-            .from(TransactionEntityTable)
-            .where(
-                and(
-                    eq(TransactionEntityTable.externalSource, externalSource),
-                    ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT)
-                )
-            );
-
-        const time = result[0]?.operatedAt;
-        if (isPositiveNumber(time)) {
-            return new Date(time * 1000);
-        }
-
-        return null;
-    }
-
-    async archiveByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set({ deletedAt: new Date() })
-            .where(
-                and(
-                    or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)),
-                    ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
-                    isNull(TransactionEntityTable.deletedAt)
-                )
-            );
-    }
-
-    async restoreByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set({ deletedAt: null })
-            .where(or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)));
-    }
-
-    async findTransfersByAccountId(accountId: number, language: LanguageEnum, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
-        return await (tx ?? this.db).query.TransactionEntityTable.findMany({
-            where: this.buildTransfersByAccountIdWhere(accountId),
-            with: this.buildFullRelations(language)
-        });
-    }
-
-    async findTransfersForConversion(accountId: number, tx?: DB): Promise<TransactionWithEntriesEntityInterface[]> {
-        return await (tx ?? this.db).query.TransactionEntityTable.findMany({
-            where: this.buildTransfersByAccountIdWhere(accountId),
-            with: {
-                [TransactionAssociationEnum.ENTRIES]: {
-                    where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
-                }
-            }
-        });
-    }
-
-    async deleteByAccountId(accountId: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .delete(TransactionEntityTable)
-            .where(
-                and(
-                    or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
-                    ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
-                )
-            );
-    }
-
-    async convertTransfersFromAccountToIncome(accountId: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set({ type: TransactionTypeEnum.INCOME, fromAccountId: sql`NULL`, exchangeRate: 1 })
-            .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.fromAccountId, accountId)));
-    }
-
-    async convertTransfersToAccountToExpense(accountId: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntityTable)
-            .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
-            .where(and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId)));
-    }
-
-    async countAllActive(): Promise<number> {
-        const [row] = await this.db.select({ value: count() }).from(TransactionEntityTable).where(isNull(TransactionEntityTable.deletedAt));
-
-        return row.value;
-    }
-
-    private async findByIdsWithEntriesWhere(
-        ids: number[],
-        entriesWhere: SQL | undefined,
-        tx?: DB
-    ): Promise<TransactionWithEntriesEntityInterface[]> {
-        if (isNotEmptyArray(ids)) {
-            return await (isDefined(tx) ? tx : this.db).query.TransactionEntityTable.findMany({
-                where: inArray(TransactionEntityTable.id, ids),
-                with: {
-                    [TransactionAssociationEnum.ENTRIES]: {
-                        where: entriesWhere
-                    }
-                }
-            });
-        }
-
-        return [];
     }
 
     private buildSingleAccountCondition(accountId: number) {

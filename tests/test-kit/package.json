@@ -27,7 +27,6 @@
         "expo-sqlite": "~57.0.2"
     },
     "devDependencies": {
-        "@effect/vitest": "4.0.0-rc.118",
         "@types/better-sqlite3": "^7.6.13",
         "@types/node": "22.20.1",
         "effect": "4.0.0-rc.118",

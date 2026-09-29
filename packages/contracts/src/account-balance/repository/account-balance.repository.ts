@@ -1,10 +1,9 @@
 /* eslint-disable max-lines -- File owns the account-balance ledger and valuation SQL pipeline that must stay together */
-import { Log } from '@budgie/logger';
 import { type SQL, type SQLWrapper, and, eq, inArray, isNull, lte, notInArray, sql } from 'drizzle-orm';
-
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import * as Effect from 'effect/Effect';
 
 import { CURRENT_TIMESTAMP } from '../../@generic/constant/current-timestamp.constant';
+import { Db } from '../../@generic/service/db.service';
 import { getExchangeRateWithHistoricalFallbackSql } from '../../@generic/util/get-exchange-rate-sql.util';
 import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../../account/constant/bank-authoritative-account-types.constant';
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
@@ -28,78 +27,123 @@ import { accountBalanceLedgerSqlBuilder } from './account-balance-ledger-sql.bui
 
 import type { DB } from '../../@generic/type/db.type';
 import type { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
-import type { AccountBalanceEntityInterface } from '../entity/account-balance-entity.interface';
-import type { DebtLedgerAmountsInterface } from '../interface/debt-ledger-amounts.interface';
 
 export class AccountBalanceRepository {
     private static readonly CRYPTO_ACCOUNT_TYPES = [AccountTypeEnum.CRYPTO, AccountTypeEnum.CRYPTO_SYNC];
     private static readonly LIQUID_ACCOUNT_TYPES = [AccountTypeEnum.CASH, AccountTypeEnum.BANK, AccountTypeEnum.BANK_SYNC];
-    constructor(private db: DB) {}
-    @Log(
-        accountIds => `enter accountCount=${accountIds.length}`,
-        (result, accountIds) => `done accountCount=${accountIds.length} balanceCount=${result.size}`,
-        (error, accountIds) => `throw accountCount=${accountIds.length} error=${getErrorMessage(error)}`
-    )
-    async getLedgerBalances(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
-        const results = await (tx ?? this.db)
-            .select({ accountId: TransactionEntryEntityTable.accountId, balance: this.getTransactionsSumSql().mapWith(Number) })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .where(
-                and(
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
-                    accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql(),
-                    inArray(TransactionEntryEntityTable.accountId, accountIds)
+
+    readonly getDebtLedgerAmounts = Effect.fn('AccountBalanceRepository.getDebtLedgerAmounts')(function* (
+        this: AccountBalanceRepository,
+        accountIds: number[]
+    ) {
+        return yield* Db.query(db =>
+            db
+                .select({
+                    accountId: DebtEventEntityTable.debtAccountId,
+                    openedAmount: this.getDebtEventDirectionSumSql(DebtEventDirectionEnum.OPEN),
+                    closedAmount: this.getDebtEventDirectionSumSql(DebtEventDirectionEnum.CLOSE)
+                })
+                .from(DebtEventEntityTable)
+                .where(and(inArray(DebtEventEntityTable.debtAccountId, accountIds), isNull(DebtEventEntityTable.deletedAt)))
+                .groupBy(DebtEventEntityTable.debtAccountId)
+        );
+    });
+
+    readonly getLedgerBalanceUntil = Effect.fn('AccountBalanceRepository.getLedgerBalanceUntil')(function* (
+        this: AccountBalanceRepository,
+        accountId: number,
+        operatedUntil: Date
+    ) {
+        const [row] = yield* Db.query(db =>
+            db
+                .select({ balance: sql<number>`COALESCE(${this.getTransactionsSumSql()}, 0)`.mapWith(Number) })
+                .from(TransactionEntryEntityTable)
+                .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.accountId, accountId),
+                        isNull(TransactionEntryEntityTable.deletedAt),
+                        lte(TransactionEntityTable.operatedAt, operatedUntil),
+                        accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
+                        accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()
+                    )
                 )
-            )
-            .groupBy(TransactionEntryEntityTable.accountId);
-
-        return new Map(results.map(({ accountId, balance }) => [accountId, balance]));
-    }
-
-    @Log(
-        accountIds => `enter accountIds=${accountIds.join(',')}`,
-        result => `done debtAccountCount=${result.length}`,
-        (error, accountIds) => `throw accountIds=${accountIds.join(',')} error=${getErrorMessage(error)}`
-    )
-    async getDebtLedgerAmounts(accountIds: number[], tx?: DB): Promise<DebtLedgerAmountsInterface[]> {
-        return await (tx ?? this.db)
-            .select({
-                accountId: DebtEventEntityTable.debtAccountId,
-                openedAmount: this.getDebtEventDirectionSumSql(DebtEventDirectionEnum.OPEN),
-                closedAmount: this.getDebtEventDirectionSumSql(DebtEventDirectionEnum.CLOSE)
-            })
-            .from(DebtEventEntityTable)
-            .where(and(inArray(DebtEventEntityTable.debtAccountId, accountIds), isNull(DebtEventEntityTable.deletedAt)))
-            .groupBy(DebtEventEntityTable.debtAccountId);
-    }
-
-    @Log(
-        (accountId, operatedUntil, tx) =>
-            `enter accountId=${accountId} operatedUntil=${operatedUntil.toISOString()} hasTx=${String(isDefined(tx))}`,
-        (result, accountId, operatedUntil, tx) =>
-            `done accountId=${accountId} operatedUntil=${operatedUntil.toISOString()} hasTx=${String(isDefined(tx))} balance=${result}`,
-        (error, accountId, operatedUntil, tx) =>
-            `throw accountId=${accountId} operatedUntil=${operatedUntil.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async getLedgerBalanceUntil(accountId: number, operatedUntil: Date, tx?: DB): Promise<number> {
-        const [row] = await (tx ?? this.db)
-            .select({ balance: sql<number>`COALESCE(${this.getTransactionsSumSql()}, 0)`.mapWith(Number) })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
-            .where(
-                and(
-                    eq(TransactionEntryEntityTable.accountId, accountId),
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    lte(TransactionEntityTable.operatedAt, operatedUntil),
-                    accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
-                    accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql()
-                )
-            );
+        );
 
         return row.balance;
-    }
+    });
+
+    readonly upsert = Effect.fn('AccountBalanceRepository.upsert')(function* (
+        input: Pick<AccountBalanceCreateEntityInterface, 'accountId' | 'amount'>
+    ) {
+        const [accountBalance] = yield* Db.query(db =>
+            db
+                .insert(AccountBalanceEntityTable)
+                .values([{ accountId: input.accountId, amount: input.amount }])
+                .onConflictDoUpdate({
+                    target: AccountBalanceEntityTable.accountId,
+                    set: { amount: input.amount, updatedAt: CURRENT_TIMESTAMP }
+                })
+                .returning()
+        );
+
+        return accountBalance;
+    });
+
+    readonly getByAccountIds = Effect.fn('AccountBalanceRepository.getByAccountIds')(function* (accountIds: number[]) {
+        return yield* Db.query(db =>
+            db.select().from(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds))
+        );
+    });
+
+    readonly deleteByAccountIds = Effect.fn('AccountBalanceRepository.deleteByAccountIds')(function* (accountIds: number[]) {
+        yield* Db.query(db => db.delete(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds)));
+    });
+
+    readonly truncate = Effect.fn('AccountBalanceRepository.truncate')(function* () {
+        yield* Db.query(db => db.delete(AccountBalanceEntityTable));
+    });
+
+    readonly truncateExceptBankAuthoritative = Effect.fn('AccountBalanceRepository.truncateExceptBankAuthoritative')(function* () {
+        yield* Db.query(db =>
+            db
+                .delete(AccountBalanceEntityTable)
+                .where(
+                    notInArray(
+                        AccountBalanceEntityTable.accountId,
+                        db
+                            .select({ id: AccountEntityTable.id })
+                            .from(AccountEntityTable)
+                            .where(inArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES))
+                    )
+                )
+        );
+    });
+
+    readonly getLedgerBalances = Effect.fn('AccountBalanceRepository.getLedgerBalances')(function* (
+        this: AccountBalanceRepository,
+        accountIds: number[]
+    ) {
+        const results = yield* Db.query(db =>
+            db
+                .select({ accountId: TransactionEntryEntityTable.accountId, balance: this.getTransactionsSumSql().mapWith(Number) })
+                .from(TransactionEntryEntityTable)
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .where(
+                    and(
+                        isNull(TransactionEntryEntityTable.deletedAt),
+                        accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
+                        accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql(),
+                        inArray(TransactionEntryEntityTable.accountId, accountIds)
+                    )
+                )
+                .groupBy(TransactionEntryEntityTable.accountId)
+        );
+
+        return new Map(results.map(({ accountId, balance }) => [accountId, balance]));
+    });
+
+    constructor(private db: DB) {}
 
     getAssetClassTotals(defaultInstrumentId: number) {
         const fiatExchangeRateSql = this.buildFiatExchangeRateConversionSql(defaultInstrumentId);
@@ -127,33 +171,6 @@ export class AccountBalanceRepository {
                     eq(AccountEntityTable.instrumentId, instrumentId)
                 )
             );
-    }
-
-    async upsert(
-        input: Pick<AccountBalanceCreateEntityInterface, 'accountId' | 'amount'>,
-        tx?: DB
-    ): Promise<AccountBalanceEntityInterface> {
-        const [accountBalance] = await (tx ?? this.db)
-            .insert(AccountBalanceEntityTable)
-            .values([{ accountId: input.accountId, amount: input.amount }])
-            .onConflictDoUpdate({
-                target: AccountBalanceEntityTable.accountId,
-                set: { amount: input.amount, updatedAt: CURRENT_TIMESTAMP }
-            })
-            .returning();
-
-        return accountBalance;
-    }
-
-    async getByAccountIds(accountIds: number[], tx?: DB): Promise<AccountBalanceEntityInterface[]> {
-        return await (tx ?? this.db)
-            .select()
-            .from(AccountBalanceEntityTable)
-            .where(inArray(AccountBalanceEntityTable.accountId, accountIds));
-    }
-
-    async deleteByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(AccountBalanceEntityTable).where(inArray(AccountBalanceEntityTable.accountId, accountIds));
     }
 
     getHomeAccountRows(defaultInstrumentId: number) {
@@ -207,8 +224,8 @@ export class AccountBalanceRepository {
             .where(isNull(AccountBalanceEntityTable.deletedAt));
     }
 
-    getByAccountId(accountId: number, tx?: DB) {
-        return (tx ?? this.db)
+    getByAccountId(accountId: number, db: DB = this.db) {
+        return db
             .select({ balance: this.getAccountBalanceWithTransactionsSql(sql`${accountId}`) })
             .from(AccountEntityTable)
             .where(eq(AccountEntityTable.id, accountId))
@@ -298,22 +315,6 @@ export class AccountBalanceRepository {
             .from(AccountEntityTable)
             .innerJoin(SyncEntityTable, eq(SyncEntityTable.accountId, AccountEntityTable.id))
             .where(this.getActiveAccountWhereSql(eq(SyncEntityTable.provider, provider), isNull(SyncEntityTable.deletedAt)));
-    }
-
-    async truncate(tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(AccountBalanceEntityTable);
-    }
-
-    async truncateExceptBankAuthoritative(tx?: DB): Promise<void> {
-        const database = tx ?? this.db;
-        const bankAuthoritativeAccountIdsSql = database
-            .select({ id: AccountEntityTable.id })
-            .from(AccountEntityTable)
-            .where(inArray(AccountEntityTable.type, BANK_AUTHORITATIVE_ACCOUNT_TYPES));
-
-        await database
-            .delete(AccountBalanceEntityTable)
-            .where(notInArray(AccountBalanceEntityTable.accountId, bankAuthoritativeAccountIdsSql));
     }
 
     private getDebtEventDirectionSumSql(direction: DebtEventDirectionEnum) {
