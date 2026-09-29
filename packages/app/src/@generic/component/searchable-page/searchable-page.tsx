@@ -10,7 +10,6 @@ import { IdInterface } from '../../interface/id.interface';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
 import { CollapsibleHeaderBackdrop } from '../collapsible-header-backdrop/collapsible-header-backdrop';
-import { CollapsibleHeaderLargeTitle } from '../collapsible-header-large-title/collapsible-header-large-title';
 import { EdgeFade } from '../edge-fade/edge-fade';
 import { GoBackButton } from '../go-back-button/go-back-button';
 import { KeyboardStickySearchInput } from '../keyboard-sticky-search-input/keyboard-sticky-search-input';
@@ -63,11 +62,9 @@ export const SearchablePage = <T extends IdInterface>({
     const searchBlurStyle = { bottom: searchInputBottom - SEARCH_BLUR_OFFSET, zIndex: SEARCH_BLUR_Z_INDEX };
 
     const largeTitleLayer = (
-        <CollapsibleHeaderLargeTitle hasLeadingSlot>
-            <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
-                {title}
-            </Text>
-        </CollapsibleHeaderLargeTitle>
+        <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
+            {title}
+        </Text>
     );
     const smallTitleLayer = (
         <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>

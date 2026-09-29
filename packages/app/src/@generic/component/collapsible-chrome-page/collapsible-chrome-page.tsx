@@ -11,7 +11,6 @@ import { testID as testIDProps } from '../../utils/test-id.util';
 import { ChromeKeyboardScrollView } from '../chrome-keyboard-scroll-view/chrome-keyboard-scroll-view';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
 import { CollapsibleHeaderBackdrop } from '../collapsible-header-backdrop/collapsible-header-backdrop';
-import { CollapsibleHeaderLargeTitle } from '../collapsible-header-large-title/collapsible-header-large-title';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
 import type { ComponentProps, ReactNode } from 'react';
@@ -77,14 +76,8 @@ export const CollapsibleChromePage = ({
         </View>
     );
 
-    const largeTitleLayer = (
-        <CollapsibleHeaderLargeTitle hasLeadingSlot={isDefined(leading)} hasTrailingSlot={isDefined(trailing)}>
-            {resolvedLargeTitle}
-        </CollapsibleHeaderLargeTitle>
-    );
-
     return (
-        <ScreenChromeThemeProvider>
+        <ScreenChromeThemeProvider syncNativeScrollOffset>
             <ScreenChromeFrame>
                 <ChromeKeyboardScrollView
                     {...restScrollViewProps}
@@ -103,7 +96,7 @@ export const CollapsibleChromePage = ({
                     {...testIDProps(testID, TestIDPartEnum.HEADER)}
                     leading={leading}
                     trailing={trailing}
-                    expandedTitle={largeTitleLayer}
+                    expandedTitle={resolvedLargeTitle}
                     collapsedTitle={resolvedSmallTitle}
                 />
 
