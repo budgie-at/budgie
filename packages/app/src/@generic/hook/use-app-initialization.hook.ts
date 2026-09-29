@@ -20,6 +20,8 @@ const SPLASH_HIDE_DELAY_MS = 200;
 const STARTUP_SERVICE_DELAY_MS = 1_000;
 
 const syncAppData = async (): Promise<void> => {
+    await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
+
     await exchangeRatesSyncService.sync().catch(emptyFn);
     if (syncWorkloadService.hasQueuedUserWork()) {
         return;
@@ -31,11 +33,6 @@ const syncAppData = async (): Promise<void> => {
     }
 
     await binanceSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
-        return;
-    }
-
-    await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
 };
 
 const initializeAppServices = async (): Promise<void> => {
