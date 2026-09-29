@@ -8,7 +8,7 @@ import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
 import { generateStableExternalIdHash } from '../../core/util/generate-stable-external-id-hash.util';
-import { ERSTE_CURRENCY_CODE_EUR, ERSTE_EXTERNAL_ID_LENGTH } from '../constant/erste.constant';
+import { ERSTE_ATM_WITHDRAWAL_MCC, ERSTE_CURRENCY_CODE_EUR, ERSTE_EXTERNAL_ID_LENGTH } from '../constant/erste.constant';
 
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
@@ -16,6 +16,8 @@ import type { ErsteAccountInfoInterface } from '../interface/erste-account-info.
 import type { ErsteRowInterface } from '../interface/erste-row.interface';
 
 class ErsteMapper {
+    private static readonly ATM_WITHDRAWAL_DESCRIPTION_REGEX = /^AUTOMAT\s+\d+\s+K\d+\s/u;
+
     @Log(
         account => `enter iban=${account.iban} newBalance=${account.newBalance}`,
         (result, account) => `done iban=${account.iban} accountId=${result.id}`,
@@ -53,7 +55,7 @@ class ErsteMapper {
             time: getUnixTime(row.date),
             description: row.description,
             comment: this.buildComment(row),
-            mcc: 0,
+            mcc: this.resolveMcc(row),
             originalMcc: 0,
             amount: Math.abs(row.amount),
             operationAmount: Math.abs(row.amount),
@@ -65,6 +67,10 @@ class ErsteMapper {
             category: '',
             feeAmount: 0
         };
+    }
+
+    private resolveMcc(row: ErsteRowInterface): number {
+        return !row.isCredit && ErsteMapper.ATM_WITHDRAWAL_DESCRIPTION_REGEX.test(row.description) ? ERSTE_ATM_WITHDRAWAL_MCC : 0;
     }
 
     private buildComment(row: ErsteRowInterface): string {

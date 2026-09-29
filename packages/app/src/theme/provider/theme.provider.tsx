@@ -1,6 +1,6 @@
 import { ThemeEnum } from '@budgie/contracts';
-import { VariableContextProvider, useColorScheme } from 'nativewind';
-import { Appearance, Platform, StatusBar, View } from 'react-native';
+import { VariableContextProvider } from 'nativewind';
+import { Appearance, StatusBar, View } from 'react-native';
 
 import { useSystemTheme } from '../../@generic/hook/use-system-theme.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
@@ -102,7 +102,6 @@ interface Props {
 
 export const ThemeProvider = ({ children }: Props) => {
     const theme = useSetting('theme');
-    const handler = useColorScheme();
     const systemScheme = useSystemTheme();
 
     const isSystemDark = systemScheme === 'dark';
@@ -124,15 +123,8 @@ export const ThemeProvider = ({ children }: Props) => {
 
     const toggleColorSchema = async () => {
         const nextTheme = getNextTheme();
-        handler.toggleColorScheme();
+        Appearance.setColorScheme(nextTheme === ThemeEnum.DARK ? 'dark' : 'light');
         await updateSettingsMutation({ theme: nextTheme });
-
-        if (nextTheme === ThemeEnum.SYSTEM || Platform.OS === 'web') {
-            return;
-        }
-
-        const nativeScheme = nextTheme === ThemeEnum.DARK ? 'dark' : 'light';
-        Appearance.setColorScheme(nativeScheme);
     };
 
     const contextValue = {
