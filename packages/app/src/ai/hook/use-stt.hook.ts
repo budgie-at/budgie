@@ -1,6 +1,6 @@
 import { filterTranscriptionTokens } from '@budgie/ai';
 import { useLingui } from '@lingui/react/macro';
-import { useRef, useState } from 'react';
+import { useRef, useState, useSyncExternalStore } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
@@ -10,7 +10,6 @@ import { sttService } from '../service/stt.service';
 import { isSpeechToTextLanguage } from '../type-guard/is-speech-to-text-language.type-guard';
 
 import { useSttResidency } from './use-stt-residency.hook';
-import { useSttSnapshot } from './use-stt-snapshot.hook';
 
 type SttStatus = 'idle' | 'streaming' | 'processing';
 
@@ -30,7 +29,7 @@ export const useStt = (): UseSttReturn => {
     const { t } = useLingui();
     const locale = useLocaleInfo();
 
-    const sttSnapshot = useSttSnapshot();
+    const sttSnapshot = useSyncExternalStore(sttService.subscribe, sttService.getSnapshot);
 
     const [status, setStatus] = useState<SttStatus>('idle');
     const [baseTranscription, setBaseTranscription] = useState('');
