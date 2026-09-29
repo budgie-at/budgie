@@ -43,10 +43,6 @@
         "test": {
             "dependsOn": ["^build"]
         },
-        "test:coverage": {
-            "dependsOn": ["^build"],
-            "outputs": ["coverage/**"]
-        },
         "//#cpd": {
             "outputs": ["report/jscpd/**"]
         },

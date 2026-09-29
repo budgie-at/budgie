@@ -28,9 +28,6 @@ report
 # TypeScript
 *.tsbuildinfo
 
-# Jest
-coverage/
-
 # Expo prebuild
 packages/app/android
 packages/app/ios
