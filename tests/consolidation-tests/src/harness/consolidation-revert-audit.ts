@@ -109,7 +109,7 @@ export const revertSingleCanonical = async (consolidationType: TransactionConsol
 };
 
 export const fetchLedgerBalances = async (accountIds: number[]): Promise<number[][]> => {
-    const balances = await accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds);
+    const balances = await accountBalanceRepository.getLedgerBalances(accountIds);
 
     return accountIds.map(accountId => [accountId, balances.get(accountId) ?? 0]);
 };
