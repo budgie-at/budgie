@@ -21,6 +21,8 @@ export type { DB, TX } from './@generic/type/db.type';
 
 export { convertAmountToBase } from './@generic/util/convert-amount-to-base.util';
 export { convertEmbeddingToJson } from './@generic/util/convert-embedding-to-json.util';
+export { Db } from './@generic/service/db.service';
+export { DbError } from './@generic/error/db.error';
 export { transactionAsync } from './@generic/util/transaction-async.util';
 
 export { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from './account/constant/bank-authoritative-account-types.constant';

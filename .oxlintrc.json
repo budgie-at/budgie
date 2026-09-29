@@ -94,7 +94,7 @@
         "eqeqeq": "error",
         "for-direction": "error",
         "func-name-matching": "error",
-        "func-names": "error",
+        "func-names": ["error", "always", { "generators": "never" }],
         "func-style": "error",
         "getter-return": "error",
         "grouped-accessor-pairs": "error",
@@ -381,7 +381,7 @@
           {}
         ],
         "no-restricted-globals": "error",
-        "no-restricted-imports": "error",
+        "no-restricted-imports": ["error", { "paths": [{ "name": "effect", "message": "Metro does not tree-shake: import Effect modules by subpath, e.g. import * as Effect from 'effect/Effect'" }] }],
         "no-restricted-properties": "error",
         "no-return-assign": "error",
         "no-script-url": "error",
