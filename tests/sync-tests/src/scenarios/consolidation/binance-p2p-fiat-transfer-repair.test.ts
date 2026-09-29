@@ -1,3 +1,4 @@
+import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     AccountEntityTable,
@@ -215,6 +216,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped source scope', () => {
             { externalId: 'mono-uah-repair-grouped-source-unrelated-replacement', operatedAt: P2P_OPERATED_AT },
             { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
         );
+        await accountBalanceIncrementalService.updateBalancesByAccountIds([bankAccount.id]);
 
         expect(await consolidateP2pRepairWithScope([scopedReplacementLikeExpense.id])).toEqual({ found: 0, consolidated: 0 });
         expectRepairCanonicalPreserved(historicalCanonicalId, [

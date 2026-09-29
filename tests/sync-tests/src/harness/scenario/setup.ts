@@ -1,8 +1,8 @@
-import { buildTestDb, createTestRepositories, resetTestDb } from '@budgie-at/test-kit';
+import { assertStoredBalancesMatchLedger, buildTestDb, createTestRepositories, resetTestDb } from '@budgie-at/test-kit';
 import { sql } from 'drizzle-orm';
 import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import type { DB } from '@budgie/contracts';
 
@@ -40,7 +40,9 @@ vi.mock('@lingui/core', () => ({
     }
 }));
 
-export const testDb = buildTestDb();
+export const backupDatabasePath = isNotEmptyString(process.env['BUDGIE_BACKUP_DB']) ? process.env['BUDGIE_BACKUP_DB'] : null;
+
+export const testDb = buildTestDb(backupDatabasePath);
 
 let transactionDepth = 0;
 let transactionSequence = 0;
@@ -104,13 +106,16 @@ beforeEach(async () => {
     transactionDepth = 0;
     transactionSequence = 0;
     exclusiveTransactionQueue = Promise.resolve();
-    resetTestDb(testDb);
+    if (!isDefined(backupDatabasePath)) {
+        resetTestDb(testDb);
+    }
     const { resetSingletons } = await import('./reset-singletons');
     resetSingletons();
 });
 
-afterEach(() => {
+afterEach(async () => {
     mockServer.resetHandlers();
+    await assertStoredBalancesMatchLedger(testDb);
 });
 
 afterAll(() => {
