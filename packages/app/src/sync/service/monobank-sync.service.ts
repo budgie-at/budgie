@@ -334,12 +334,16 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             return 0;
         }
 
-        for (const bankTransaction of existingTransactions) {
-            await transactionService.update(await this.mapBankTransaction(bankTransaction, accountId));
-            await microPause();
+        const inputs = await Promise.all(
+            existingTransactions.map(async bankTransaction => this.mapBankTransaction(bankTransaction, accountId))
+        );
+        if (!this.isRunCurrent(runGeneration)) {
+            return 0;
         }
 
-        return existingTransactions.length;
+        await transactionService.bulkUpdateImported(inputs);
+
+        return inputs.length;
     }
 
     @Log(

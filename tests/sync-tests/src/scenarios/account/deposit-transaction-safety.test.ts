@@ -186,7 +186,9 @@ describe('account/deposit-transaction-safety', () => {
         seedExpenseLedgerTransaction(depositAccount.id, IMPORTED_INITIAL_AMOUNT, IMPORTED_EXTERNAL_ID, ExternalSourceEnum.MONOBANK);
         seedBalance(depositAccount.id, 100 * PRECISION);
 
-        await expect(transactionService.update(buildImportedExpenseInput(depositAccount.id))).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
+        await expect(transactionService.bulkUpdateImported([buildImportedExpenseInput(depositAccount.id)])).rejects.toThrow(
+            DEPOSIT_EXPENSE_ERROR
+        );
 
         const importedTransaction = testDb
             .select()

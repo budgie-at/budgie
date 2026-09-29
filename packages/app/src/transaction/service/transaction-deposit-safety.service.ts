@@ -2,7 +2,6 @@ import {
     AccountTypeEnum,
     type DB,
     type TransactionCreateInputInterface,
-    type TransactionEntryCreateInputInterface,
     type TransactionEntryEntityInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -13,7 +12,7 @@ import { i18n } from '@lingui/core';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { accountRepository, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 
 class TransactionDepositSafetyService {
     @Log(
@@ -51,17 +50,11 @@ class TransactionDepositSafetyService {
     }
 
     @Log(
-        input => `enter externalId=${input.externalId ?? ''} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
-        (_, input) =>
-            `done externalId=${input.externalId ?? ''} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
-        (error, input) =>
-            `throw externalId=${input.externalId ?? ''} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')} error=${getErrorMessage(error)}`
+        existingEntries => `enter entryCount=${existingEntries.length}`,
+        (_, existingEntries) => `done entryCount=${existingEntries.length}`,
+        (error, existingEntries) => `throw entryCount=${existingEntries.length} error=${getErrorMessage(error)}`
     )
-    async assertNoDepositExpenseImportedUpdate(input: TransactionCreateInputInterface, tx: DB): Promise<void> {
-        const existingEntries = (await Promise.all(input.entries.map(entry => this.findExistingImportedUpdateEntry(entry, tx)))).filter(
-            isDefined
-        );
-
+    async assertNoDepositExpenseImportedEntries(existingEntries: readonly TransactionEntryEntityInterface[], tx: DB): Promise<void> {
         if (!isNotEmptyArray(existingEntries)) {
             return;
         }
@@ -76,17 +69,6 @@ class TransactionDepositSafetyService {
     )
     async assertNoDepositExpenseTransactions(transactions: readonly TransactionWithEntriesEntityInterface[], tx: DB): Promise<void> {
         await this.assertNoDepositExpenseInputs(transactions, tx);
-    }
-
-    private async findExistingImportedUpdateEntry(
-        entry: Pick<TransactionEntryCreateInputInterface, 'accountId' | 'externalId'>,
-        tx: DB
-    ): Promise<TransactionEntryEntityInterface | null> {
-        if (!isDefined(entry.externalId)) {
-            return null;
-        }
-
-        return (await transactionEntryRepository.findByExternalIdAndAccountId(entry.externalId, entry.accountId, tx)) ?? null;
     }
 
     private async findTransactionsByEntries(
