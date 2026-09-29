@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.11](https://github.com/budgie-at/budgie/compare/v6.85.10...v6.85.11) (2026-09-29)
+
+
+### Bug Fixes
+
+* **app:** drop removed externalSource argument from resync valuation call ([c96b028](https://github.com/budgie-at/budgie/commit/c96b02894d76aa79f09521cccf6afc917c5a780e)), closes [#1276](https://github.com/budgie-at/budgie/issues/1276) [#1268](https://github.com/budgie-at/budgie/issues/1268)
+
+
+
+
+
 ## [6.85.10](https://github.com/budgie-at/budgie/compare/v6.85.9...v6.85.10) (2026-09-29)
 
 
