@@ -22,10 +22,6 @@ msgstr "P2P-купівля {assetCode} на Binance"
 msgid "Binance P2P sell {assetCode}"
 msgstr "P2P-продаж {assetCode} на Binance"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid " • {embeddingPending} tx queued"
-msgstr " • {embeddingPending} транзакц. у черзі"
-
 #. placeholder {0}: accounts.length
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "{0, plural, one {# account created} other {# accounts created}}"
@@ -227,10 +223,6 @@ msgstr "{skippedCount, plural, one {# пропущено} few {# пропуще�
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "{source} error · {message}"
 msgstr "Помилка {source} · {message}"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "{source} failed: {message}"
-msgstr "Не вдалося виконати {source}: {message}"
 
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
@@ -479,10 +471,6 @@ msgstr "Коригування"
 msgid "AI"
 msgstr "ШІ"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "AI disabled"
-msgstr "ШІ вимкнено"
-
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "AI off"
 msgstr "ШІ вимкнено"
@@ -518,10 +506,6 @@ msgstr "Усі стовпці було призначено"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "All Recurring"
 msgstr "Усі регулярні"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "All set"
-msgstr "Усе готово"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "All Time"
@@ -1680,10 +1664,6 @@ msgstr "Завантажте виписку у форматі PDF"
 msgid "Downloading AI models…"
 msgstr "Завантаження моделей ШІ…"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Downloading models"
-msgstr "Завантаження моделей"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Downloads about 2.5 GB of models once"
 msgstr "Одноразово завантажує близько 2.5 GB моделей"
@@ -2004,10 +1984,6 @@ msgstr "Не вдалося завантажити контакти."
 msgid "Failed to save PIN. Please try again."
 msgstr "Не вдалося зберегти PIN-код. Спробуйте ще раз."
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Fast-indexing {done} of {total} • tap to pause"
-msgstr "Швидке індексування {done} з {total} • торкніться, щоб призупинити"
-
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Комісія"
@@ -2314,10 +2290,6 @@ msgstr "Доходи за тегами"
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Indexing {done} of {total}"
-msgstr "Індексування {done} з {total}"
-
 #: src/market-data/service/historical-market-data-loader.service.ts
 msgid "Instrument not found"
 msgstr "Інструмент не знайдено"
@@ -2455,10 +2427,6 @@ msgstr "Завантаження прогресу боргу"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Завантаження історії ринку"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "Loading models"
-msgstr "Завантаження моделей"
 
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx
 msgid "Loading..."
@@ -3392,10 +3360,6 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Resuming AI…"
-msgstr "Відновлення ШІ…"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
 msgstr "Поверніться до Budgie і виберіть нижче збережений файл XLSX"
@@ -4256,10 +4220,6 @@ msgstr "Переказ з рахунку"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer To Account"
 msgstr "Переказ на рахунок"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "Translating {translationPending} of {total}{trailer}"
-msgstr "Переклад {translationPending} з {total}{trailer}"
 
 #: src/ai/service/ai-translation-status.service.ts
 msgid "Translating categories and tags"

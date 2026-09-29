@@ -22,10 +22,6 @@ msgstr "Binance P2P-Kauf von {assetCode}"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Binance P2P-Verkauf von {assetCode}"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid " • {embeddingPending} tx queued"
-msgstr " • {embeddingPending} Tx ausstehend"
-
 #. placeholder {0}: accounts.length
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "{0, plural, one {# account created} other {# accounts created}}"
@@ -227,10 +223,6 @@ msgstr "{skippedCount, plural, one {# übersprungen} other {# übersprungen}}"
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "{source} error · {message}"
 msgstr "{source}-Fehler · {message}"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "{source} failed: {message}"
-msgstr "{source} fehlgeschlagen: {message}"
 
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
@@ -479,10 +471,6 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr "KI"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "AI disabled"
-msgstr "KI deaktiviert"
-
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "AI off"
 msgstr "KI aus"
@@ -518,10 +506,6 @@ msgstr "Alle Spalten wurden zugewiesen"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "All Recurring"
 msgstr "Alle wiederkehrenden"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "All set"
-msgstr "Alles erledigt"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "All Time"
@@ -1680,10 +1664,6 @@ msgstr "Kontoauszug als PDF herunterladen"
 msgid "Downloading AI models…"
 msgstr "KI-Modelle werden heruntergeladen…"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Downloading models"
-msgstr "Modelle werden heruntergeladen"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Downloads about 2.5 GB of models once"
 msgstr "Lädt einmalig rund 2.5 GB an Modellen herunter"
@@ -2004,10 +1984,6 @@ msgstr "Kontakte konnten nicht geladen werden."
 msgid "Failed to save PIN. Please try again."
 msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Fast-indexing {done} of {total} • tap to pause"
-msgstr "Schnellindexierung {done} von {total} • zum Pausieren tippen"
-
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Gebühr"
@@ -2314,10 +2290,6 @@ msgstr "Einnahmen nach Tag"
 msgid "Incorrect PIN"
 msgstr "Falsche PIN"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Indexing {done} of {total}"
-msgstr "Indexierung {done} von {total}"
-
 #: src/market-data/service/historical-market-data-loader.service.ts
 msgid "Instrument not found"
 msgstr "Instrument nicht gefunden"
@@ -2455,10 +2427,6 @@ msgstr "Schuldenfortschritt wird geladen"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Marktverlauf wird geladen"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "Loading models"
-msgstr "Modelle werden geladen"
 
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx
 msgid "Loading..."
@@ -3392,10 +3360,6 @@ msgstr "Konto wiederherstellen?"
 msgid "Restore from a backup file"
 msgstr "Aus einer Sicherungsdatei wiederherstellen"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Resuming AI…"
-msgstr "KI wird fortgesetzt…"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
 msgstr "Kehren Sie zu Budgie zurück und wählen Sie unten die gespeicherte XLSX-Datei aus"
@@ -4256,10 +4220,6 @@ msgstr "Vom Konto übertragen"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer To Account"
 msgstr "Auf Konto übertragen"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "Translating {translationPending} of {total}{trailer}"
-msgstr "Übersetzung {translationPending} von {total}{trailer}"
 
 #: src/ai/service/ai-translation-status.service.ts
 msgid "Translating categories and tags"

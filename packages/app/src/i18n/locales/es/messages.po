@@ -22,10 +22,6 @@ msgstr "Compra P2P de {assetCode} en Binance"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Venta P2P de {assetCode} en Binance"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid " • {embeddingPending} tx queued"
-msgstr " • {embeddingPending} transacciones en cola"
-
 #. placeholder {0}: accounts.length
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "{0, plural, one {# account created} other {# accounts created}}"
@@ -227,10 +223,6 @@ msgstr "{skippedCount, plural, one {# omitida} other {# omitidas}}"
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "{source} error · {message}"
 msgstr "Error de {source} · {message}"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "{source} failed: {message}"
-msgstr "{source} falló: {message}"
 
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
@@ -479,10 +471,6 @@ msgstr "Ajuste"
 msgid "AI"
 msgstr "IA"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "AI disabled"
-msgstr "IA desactivada"
-
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "AI off"
 msgstr "IA desactivada"
@@ -518,10 +506,6 @@ msgstr "Todas las columnas han sido asignadas"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "All Recurring"
 msgstr "Todos los recurrentes"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "All set"
-msgstr "Todo listo"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "All Time"
@@ -1680,10 +1664,6 @@ msgstr "Descarga tu extracto en PDF"
 msgid "Downloading AI models…"
 msgstr "Descargando modelos de IA…"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Downloading models"
-msgstr "Descargando modelos"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Downloads about 2.5 GB of models once"
 msgstr "Descarga unos 2.5 GB de modelos, una sola vez"
@@ -2004,10 +1984,6 @@ msgstr "Error al cargar los contactos."
 msgid "Failed to save PIN. Please try again."
 msgstr "Error al guardar el PIN. Inténtalo de nuevo."
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Fast-indexing {done} of {total} • tap to pause"
-msgstr "Indexación rápida {done} de {total} • toca para pausar"
-
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Comisión"
@@ -2314,10 +2290,6 @@ msgstr "Ingresos por etiqueta"
 msgid "Incorrect PIN"
 msgstr "PIN incorrecto"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Indexing {done} of {total}"
-msgstr "Indexando {done} de {total}"
-
 #: src/market-data/service/historical-market-data-loader.service.ts
 msgid "Instrument not found"
 msgstr "Instrumento no encontrado"
@@ -2455,10 +2427,6 @@ msgstr "Cargando progreso de la deuda"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Cargando historial del mercado"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "Loading models"
-msgstr "Cargando modelos"
 
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx
 msgid "Loading..."
@@ -3392,10 +3360,6 @@ msgstr "¿Restaurar cuenta?"
 msgid "Restore from a backup file"
 msgstr "Restaurar desde un archivo de copia de seguridad"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Resuming AI…"
-msgstr "Reanudando IA…"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
 msgstr "Vuelve a Budgie y selecciona abajo el archivo XLSX guardado"
@@ -4256,10 +4220,6 @@ msgstr "Transferencia desde cuenta"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer To Account"
 msgstr "Transferencia a cuenta"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "Translating {translationPending} of {total}{trailer}"
-msgstr "Traduciendo {translationPending} de {total}{trailer}"
 
 #: src/ai/service/ai-translation-status.service.ts
 msgid "Translating categories and tags"
