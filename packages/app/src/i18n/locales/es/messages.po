@@ -3115,10 +3115,6 @@ msgid "Pick tags for this transaction"
 msgstr "Elegir etiquetas para esta transacción"
 
 #: src/auth/hook/use-pin-setup.hook.tsx
-msgid "PIN must be {PIN_LENGTH} digits"
-msgstr "El PIN debe tener {PIN_LENGTH} dígitos"
-
-#: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PINs do not match"
 msgstr "Los PIN no coinciden"
 

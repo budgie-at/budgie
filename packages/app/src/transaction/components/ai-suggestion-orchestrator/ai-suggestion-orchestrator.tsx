@@ -3,9 +3,7 @@ import { getLogger } from '@budgie/logger';
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 const logger = getLogger('AiSuggestionOrchestrator');
-import { useAiSuggestionOrchestrator } from '../../hook/use-ai-suggestion-orchestrator.hook';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
-import { SuggestionOrchestratorStepEnum } from '../../type/suggestion-orchestrator-step.enum';
 import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
 import { CommentSuggestionRow } from '../comment-suggestion-row/comment-suggestion-row';
 import { SuggestionRowSpacer } from '../suggestion-row-spacer/suggestion-row-spacer';
@@ -34,13 +32,7 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
     const hasCategorySelected = isPositiveNumber(safeCategoryId) && isCategoryUserConfirmed;
     const hasComment = isNotEmptyString(comment);
 
-    const step = useAiSuggestionOrchestrator({
-        isSplitActive,
-        hasEmbeddingContext: hasContext,
-        hasCategorySelected,
-        hasTagsSelected,
-        hasComment
-    });
+    const isStageActive = !isSplitActive && hasContext;
     logger.log('hook:suggestion:orchestrator:state', {
         isSplitActive,
         transactionTitle,
@@ -51,11 +43,10 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
         hasContext,
         hasCategorySelected,
         hasTagsSelected,
-        hasComment,
-        step
+        hasComment
     });
 
-    if (step === SuggestionOrchestratorStepEnum.CATEGORY) {
+    if (isStageActive && !hasCategorySelected) {
         return (
             <CategorySuggestionRow
                 transactionTitle={transactionTitle}
@@ -68,7 +59,7 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
         );
     }
 
-    if (step === SuggestionOrchestratorStepEnum.TAG) {
+    if (isStageActive && !hasTagsSelected) {
         return (
             <TagSuggestionRow
                 transactionTitle={transactionTitle}
@@ -82,7 +73,7 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
         );
     }
 
-    if (step === SuggestionOrchestratorStepEnum.COMMENT) {
+    if (isStageActive && !hasComment) {
         return (
             <CommentSuggestionRow
                 transactionTitle={transactionTitle}
