@@ -776,14 +776,7 @@
         "node/no-exports-assign": "error",
         "n/hashbang": "error",
         "n/no-deprecated-api": "error",
-        "n/no-extraneous-import": [
-          "error",
-          {
-            "allowModules": [
-              "@jest/globals"
-            ]
-          }
-        ],
+        "n/no-extraneous-import": "error",
         "n/no-extraneous-require": "error",
         "n/no-missing-require": "error",
         "n/no-process-exit": "error",
@@ -979,51 +972,6 @@
       "plugins": [
         "react"
       ]
-    },
-    {
-      "files": [
-        "**/*.spec.ts"
-      ],
-      "rules": {
-        "jest/expect-expect": "off",
-        "jest/no-alias-methods": "error",
-        "jest/no-commented-out-tests": "warn",
-        "jest/no-conditional-expect": "error",
-        "jest/no-deprecated-functions": "error",
-        "jest/no-disabled-tests": "warn",
-        "jest/no-done-callback": "off",
-        "jest/no-export": "error",
-        "jest/no-focused-tests": "error",
-        "jest/no-identical-title": "error",
-        "jest/no-interpolation-in-snapshots": "error",
-        "jest/no-jasmine-globals": "error",
-        "jest/no-mocks-import": "error",
-        "jest/no-standalone-expect": "error",
-        "jest/no-test-prefixes": "error",
-        "jest/valid-describe-callback": "error",
-        "jest/valid-expect": "error",
-        "jest/valid-expect-in-promise": "error",
-        "jest/valid-title": "error",
-        "no-await-in-loop": "off",
-        "jest/require-hook": "off",
-        "jest/max-expects": "off",
-        "no-undefined": "off",
-        "max-classes-per-file": "off",
-        "max-lines-per-function": "off",
-        "max-lines": "off",
-        "max-statements": "off",
-        "func-names": "off",
-        "promise/no-nesting": "off",
-        "no-magic-numbers": "warn"
-      },
-      "plugins": [
-        "jest",
-        "promise",
-        "typescript"
-      ],
-      "env": {
-        "jest": true
-      }
     }
   ]
 }
