@@ -159,7 +159,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 7. **No IIFEs** - Use `.catch(handleError)` or `.then(onSuccess, onError)` instead of `void (async () => {})()`
 8. **Use `getErrorMessage`** - Use `getErrorMessage(e)` from `@rnw-community/shared` instead of `e instanceof Error ? e.message : String(e)`
 9. **One component per file/folder** - Each top-level component lives in its own file inside its own folder. Lazy wrappers (`const Foo = lazy(() => import('...'))`) count as components — extract them to their own file so the dynamic-import boundary is a real code-split point and the file has exactly one default-shaped export.
-10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components. This includes Zod schemas and their inferred types used by forms.
+10. **Constants in `/constant` folder** - Constant files go in the module's `constant/` folder, not alongside components. This includes Effect Schemas and their `Type` aliases used by forms.
 11. **Use `t` macro for string props** - Use `t\`text\``from`@lingui/react/macro`for string props (like`content={t\`Cancel\`}`), `<Trans>` only for direct JSX text children
 12. **No abbreviated variable names** - Use full descriptive names (`category` not `cat`, `transaction` not `tx`, `account` not `acc`)
 13. **No complex logic in JSX props** - Extract ternaries/logical operators to variables before JSX
@@ -171,7 +171,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 19. **Interfaces and types in separate files** - Never define interfaces or type aliases inline above classes, hooks, components, services, or repositories. Put them in the module's `/interface` folder with the proper `.interface.ts` or `.type.ts` suffix. **Exception — React component props:** a component's props type is named exactly `Props` (no `*Interface` suffix) and declared inline in the component file. A named `*PropsInterface` in `/interface` is allowed **only** when the same props shape is consumed by 2+ components (single-consumer = inline, per rule 51). A `*PropsInterface` imported by exactly one component is prohibited — inline it as `interface Props`.
 20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
 21. **Group useWatch calls together** - In React components, keep all `useWatch` calls together near other hooks, not scattered throughout the component
-22. **Services use classes, not utility functions** - Service files (`.service.ts`) should export a class instance, not standalone functions
+22. **Effectful code is Effect.** Anything with IO, state, concurrency, time or failure returns an `Effect`. Service classes keep their shape; their methods become `Effect.fn` fields. `Context.Service` + `static readonly layer` only for swappable dependencies (`Db`, `HttpClient`, native invokers, SecureStore) or owned state (caches, queues, throttles, model lifecycles) - nothing else gets a service or a Layer. Pure code (math, parsers, mappers, SQL/predicate builders) stays plain TypeScript.
 23. **One utility per file** - Each utility function should be in its own file with `.util.ts` suffix, don't combine multiple utilities
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
@@ -181,18 +181,18 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `pnpm cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
 31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
-32. **Class-method lifecycle logs use `@Log` decorator from `@budgie/logger`.** Service, repository, parser, mapper, and other class-owned files must not use module-scope `getLogger`; split the real work into granular public/private class methods and decorate those methods with `@Log`. Free-function, component, and hook files use `getLogger(context)`. Never use `console.*` in service code.
+32. **Tracing uses `Effect.fn`.** Every effectful public function or method is `Effect.fn('Owner.method')(function* (...) {...})`, named after its owner and method; internal hot-loop helpers use `Effect.fnUntraced`. Add context with `Effect.annotateCurrentSpan` or `Effect.logDebug` only when it names a real debugging handle. No `@Log`, no `getLogger`, never `console.*`.
 33. **Do not reshape public method arguments to satisfy lint.** Never convert existing positional arguments into an object, array, tuple/rest tuple, or new interface unless explicitly requested. Prefer splitting implementation into smaller private methods when it improves design; otherwise use a narrow `@typescript-eslint/max-params` lint disable with justification.
-34. **No log-only abstractions.** Do not add helpers, wrapper decorators, shared constants, or one-line wrappers whose only purpose is logging. Put `@Log` on the method that owns the batch, transaction, or error boundary.
-35. **No internal catch-and-log inside `@Log` class methods.** If a decorated class method can fail, let `@Log` record the throw and handle intentional suppression at the call site with `.catch(...)`.
+34. **No log-only abstractions.** Do not add helpers, wrappers or constants whose only purpose is logging.
+35. **Errors travel in the typed channel.** No `throw`, `try`, `new Promise`, or `.catch(emptyFn)` in `src/`. Expected failures are `Schema.TaggedError` classes in the module `/error` folder (`*.error.ts`), created only when a caller branches on them; everything else is a defect. Wrap foreign Promise/SDK/native calls with `Effect.tryPromise`/`Effect.try` at that boundary only. Recover only at edges (React, background task, boot) with `Effect.catchTag`/`catchTags`/`catch`.
 36. **Update inputs derive from entity types.** Use `Partial<Pick<*CreateEntityInterface, 'fieldA' | 'fieldB'>>` — never hand-write update field shapes. Pick from `*CreateEntityInterface` (already filtered to user-settable columns), not from `*EntityInterface` (which includes auto-managed fields like id/createdAt/deletedAt).
 37. **Service signatures encode invariants — no silent field-dropping.** If a method ignores or strips fields from its input before calling deeper, narrow the parameter type so dropped fields are unrepresentable. Never accept a wide input "for convenience" and quietly filter.
 38. **Class boundaries: cohesion over ceremony.** One-method classes are functions in disguise — keep them as free functions. Single-consumer free functions are methods in disguise — inline as private methods of the consumer class (see rule 51 — same logic applies to constants, reducers, and type aliases). Use a class when state is held, OR multiple cohesive methods share private helpers, OR two or more consumers share the same logic. When inlining produces a long file, prefer `// eslint-disable max-lines -- approved by <human>` with rationale over premature decomposition. Lint-disable additions of this kind require explicit human approval (see rule 4).
 39. **Class-owned constants are `private static readonly` fields**, not module-level. Module-level `const` is reserved for values shared by multiple classes/functions in the same file.
 40. **Domain-specific shapes carry the domain prefix.** Parser state, layout types, row interfaces specific to one bank/source/feature: `Erste*`, `Monobank*`. Bank-agnostic shapes (raw native-module output, generic transaction interfaces) stay neutral. Drop legacy qualifiers (`Modern`, `Classic`) once only one variant remains.
-41. **Don't double-log a flow.** If a service method already carries `@Log` (enter/done/throw), don't add `getLogger` calls in the hook/component that triggers it. Service-level decorators record the lifecycle; hook-level logs of the same flow are noise duplication.
+41. **Log failures once, at the edge.** The runtime edge (`runtime.runPromise` in hooks, atoms, tasks and boot) logs the cause; services do not log their own failures.
 42. **Do not create single-use utilities to appease lint.** PR review fixes should address the root design issue, not move code into one-off `.util.ts` files, one-off interfaces, or wrappers used by a single service. Keep service orchestration private, dedupe repeated batch/reducer/update flows inside the owning class, and reserve `/utils` for genuinely shared pure helpers.
-43. **No module-level helpers for class-internal use.** If a free function/const/logger is consumed only by one class in the same file, it belongs inside the class — pure helpers as `private` (or `private static`) methods, value constants as `private static readonly` fields, and logs as `@Log` decorators on granular methods. Module-level scope in class-owned files is reserved for imports, type-only imports, exported singleton instances, and shapes shared by 2+ top-level declarations in the file.
+43. **No module-level helpers for class-internal use.** If a free function/const is consumed only by one class in the same file, it belongs inside the class — pure helpers as `private` (or `private static`) methods, value constants as `private static readonly` fields. Module-level scope in class-owned files is reserved for imports, type-only imports, exported singleton instances, and shapes shared by 2+ top-level declarations in the file.
 44. **No single-field interfaces.** If an interface or type alias has exactly one field, pass that field's value directly. `interface Options { language?: string }` → `language: string | null` parameter. Wrappers cost one indirection per consumer for no payoff and rot when fields are added.
 45. **Bank-specific business logic lives behind bank-owned strategies/services.** Orchestrators compose bank services; they must not inline per-bank SQL, parsing, matching, or branch-heavy bank behavior.
 46. **Magic strings that name a thing become an enum.** Subsystem names, error sources, telemetry channels, storage keys, **hook return states (`'idle' | 'recording' | ...`), and reducer action types** that are referenced by ≥2 sites — define an enum (rule 28) and use it everywhere. `'chat' | 'embedding' | 'stt'` literal unions, hook state-machine unions, and string returns from `getSomeKind()` are red flags.
@@ -217,10 +217,10 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 54. **After `await` inside `useEffect`, downstream reads come from the awaited result, not the captured closure.** Hook destructured state (`const { data } = useFoo()`) is captured at render time. By the time `await something()` resolves, `data` is stale. Thread fresh values through the resolved value, the callback parameter, or a fresh ref read — never `data.foo` from the original closure.
 55. **Snapshot Typed Array buffers from native callbacks.** When a native API hands you a `Float32Array`/`Int16Array`/etc. view (`AudioBuffer.getChannelData(0)`, JNI callbacks, FFI), the underlying memory is typically reused on the next callback. Always copy via `new Float32Array(samples)` before storing — otherwise all stored chunks alias the latest buffer.
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
-57. **For `@Log` callbacks, preserve APIs and destructure callback rest args.** If logging callbacks trip `max-params`, use `(result, ...[argA, argB]) => ...`; never reshape the method signature or add a lint disable just for the decorator.
-58. **Do not decorate query-builder factory methods with `@Log`.** If a repository method returns a Drizzle builder for callers to finish with `.get()` / `.all()` / `.execute()`, keep it plain and log the executed service or repository boundary instead.
+57. **Concurrency, time and resources use Effect primitives.** `Schedule` + `Effect.retry`/`repeat`, `Effect.timeout`, `Effect.sleep`, `Semaphore`, `Latch`, `FiberMap`, `Cache`, fiber interruption and `Effect.acquireRelease`. Never `setTimeout` loops, generation counters, promise-chain mutexes, `Promise.race`, or boolean cancel flags.
+58. **Query-builder factory methods stay plain.** A repository method that returns a Drizzle builder for `useDatabaseLiveQuery` stays a plain method on the repository's `db`; executed reads and writes go through `Db.query(db => ...)` and `Db.transaction(effect)` from `@budgie/contracts`, never `transactionAsync` or `tx?` parameters.
 59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Maestro flow, fixture, or test harness.
-60. **Database live-query boundaries are explicit.** React reads that render app database state use `useDatabaseLiveQuery`, not raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. Class service methods that perform top-level app database writes use `@InvalidateDatabaseLiveQuery()` so subscribers refresh after successful writes without manual invalidation inside business logic. Use the predicate form only to preserve real transaction ownership, such as nested writes that receive an existing `tx`. Do not add event names, groups, or metadata until profiling proves broad invalidation is a real rerender problem. Free-function mutations may invalidate directly only when converting to a service would create a one-method class.
+60. **Database live-query boundaries are explicit.** React reads that render app database state use `useDatabaseLiveQuery`, not raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. Top-level app database writes pass `invalidateDatabaseLiveQuery` as an `Effect.fn` combinator (`Effect.fn('X.save')(function* () {...}, invalidateDatabaseLiveQuery)`) so subscribers refresh after success. Do not add event names or groups until profiling proves broad invalidation is a real rerender problem.
 61. **Component prop budget: more than 8 props is a lint error.** Enforced repo-wide by the local `budgie/max-component-props` rule loaded through Oxlint's JavaScript-plugin bridge (`eslint-rules/max-component-props.mjs`). The `allow` list in `.oxlintrc.json` is a grandfather register that may only shrink — never add a file to it. Prop-relay components, `isVisible` props, and boolean mode props (`isRefund`) are prohibited; use children composition, compound components sharing a context, and explicit variant components instead. Full guide with the reference implementation: [docs/component-composition.md](docs/component-composition.md).
 62. **No delegate-only hooks, no logic above components.** A hook whose body is one call to another hook plus constants (strings, an enum literal, a settings key) gets inlined into its consumers and deleted. Every layer of a hook chain must add real composition (state, refs, effects, 2+ composed sources with branching); single-consumer wrapper hooks are inlined into their component unless that forces a new lint disable. Component files contain imports, the inline `Props`, and the component — free functions with branching, hooks, and inline anonymous object types above a component belong in their proper module folders or in the child component that consumes them. See [docs/component-composition.md](docs/component-composition.md).
 63. **Never force-add ignored files.** If a path matches `.gitignore`, do not use `git add -f` or any equivalent override to commit it. Keep the file untracked unless the ignore rule itself is intentionally changed through normal review.
@@ -292,15 +292,12 @@ const numbers: number[] = [1, 2, 3];
 numbers.filter(isDefined); // Unnecessary, array can't have nulls
 ```
 
-**Use Zod for complex external data validation.** Validate unknown external input at the boundary, then pass typed values inward. This includes API request bodies, webhook payloads, bank/provider responses, AI service responses, persisted JSON migrations, and other untrusted object payloads. Prefer an existing shared/domain schema before creating a new one.
+**Use Effect Schema for complex external data validation.** Validate unknown external input at the boundary, then pass typed values inward. This includes API request bodies, webhook payloads, bank/provider responses, AI service responses, persisted JSON migrations, and other untrusted object payloads. Prefer an existing shared/domain schema before creating a new one.
 
 ```typescript
-// Good - Zod schema
-const ItemSchema = z.object({ id: z.number(), name: z.string() });
-const result = ItemSchema.safeParse(data);
-if (result.success) {
-    /* use result.data */
-}
+// Good - Effect Schema
+const ItemSchema = Schema.Struct({ id: Schema.Number, name: Schema.String });
+const item = yield* Schema.decodeUnknownEffect(ItemSchema)(data);
 
 // Bad - manual type guard
 const isItem = (x: unknown): x is Item => typeof x === 'object' && x !== null && 'id' in x && typeof x.id === 'number';
@@ -311,17 +308,17 @@ const isItem = (x: unknown): x is Item => typeof x === 'object' && x !== null &&
 ```typescript
 // Good - schema in constant file
 // src/transaction/constant/convert-to-transfer-schema.constant.ts
-export const ConvertToTransferSchema = z.object({
-    accountId: z.number().positive()
+export const ConvertToTransferSchema = Schema.Struct({
+    accountId: Schema.Number.check(Schema.isGreaterThan(0))
 });
-export type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
+export type ConvertToTransferFormValues = typeof ConvertToTransferSchema.Type;
 
 // Then import in component
 import { ConvertToTransferFormValues, ConvertToTransferSchema } from '../../constant/convert-to-transfer-schema.constant';
 
 // Bad - schema defined inline in component
-const ConvertToTransferSchema = z.object({ accountId: z.number().positive() });
-type ConvertToTransferFormValues = z.infer<typeof ConvertToTransferSchema>;
+const ConvertToTransferSchema = Schema.Struct({ accountId: Schema.Number });
+type ConvertToTransferFormValues = typeof ConvertToTransferSchema.Type;
 ```
 
 For simple null/undefined checks on functions, prefer optional chaining: `callback?.(value)`
@@ -461,101 +458,50 @@ After modifying user-facing text, run `pnpm i18n:sync` and commit both file type
 4. Run `pnpm i18n:sync` again to compile the `.ts` files
 5. Commit both `.po` and `.ts` files
 
-## Logging
+## Effect
 
-The transport auto-prefixes every line with `[ClassName::methodName]` (for `@Log`-decorated methods) or `[context]` (for `getLogger(context)`). Tags must not repeat that information.
-
-### `@Log` decorator (class methods)
-
-Three lifecycle hooks: `pre` (entry), `post` (success), `error` (catch). **Each hook accepts either a string OR a function. Use a string when the message is fully static; use a function only when the message needs values from method args / result / error.** When a function is used, the library **auto-infers parameter types** from the decorated method's signature — never annotate them.
+All effectful logic runs on **Effect v4** (`effect`, pinned exactly). Reference: `https://github.com/Effect-TS/effect/blob/main/LLMS.md` and the installed `node_modules/effect/dist/*.d.ts`, which are authoritative for API names. Rules 22, 32, 35, 41, 57, 58 and 60 are the binding summary.
 
 ```ts
-import { Log } from '@budgie/logger';
-import { getErrorMessage } from '@rnw-community/shared';
+import { Db } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 
-class TransactionRepository {
-    @Log(
-        inputs => `enter externalIds=${inputs.map(input => input.externalId).join(',')}`,
-        result => `done insertedIds=${result.map(row => row.id).join(',')}`,
-        (error, inputs) => `throw externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
-    )
-    async bulkCreate(inputs: TransactionCreateEntityInterface[]): Promise<TransactionEntityInterface[]> {
-        /* ... */
-    }
+export class RefundExceedsExpenseError extends Schema.TaggedError<RefundExceedsExpenseError>()('RefundExceedsExpenseError', {
+    transactionId: Schema.Number
+}) {}
+
+class RefundService {
+    readonly apply = Effect.fn('RefundService.apply')(function* (transactionId: number, amount: number) {
+        const expense = yield* transactionRepository.findById(transactionId);
+
+        if (amount > expense.amount) {
+            return yield* new RefundExceedsExpenseError({ transactionId });
+        }
+
+        return yield* Db.transaction(transactionRepository.createRefund(transactionId, amount));
+    }, invalidateDatabaseLiveQuery);
 }
+
+export const refundService = new RefundService();
 ```
 
-Output:
-
-```
-[TransactionRepository::bulkCreate] enter externalIds=tx_abc,tx_def
-[TransactionRepository::bulkCreate] done insertedIds=42,43
-```
-
-**Static-tag shortcut.** When `enter` and/or `done` carry no dynamic data (no inputs, no result), pass strings directly — don't wrap in `() =>`:
-
-```ts
-// Good — static strings
-@Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-async start(): Promise<void> { /* ... */ }
-
-// Bad — needless arrow wrapping a static value
-@Log(() => 'enter', () => 'done', error => `throw error=${getErrorMessage(error)}`)
-async start(): Promise<void> { /* ... */ }
-```
-
-Mix freely: any of the three hooks can independently be a string or a function.
-
-### Hook formatting rules
-
-1. **Tag prefix:** `enter` | `done` | `throw` only. No method name. The transport already shows `[Class::method]`.
-2. **String when static, function when dynamic.** Don't wrap a constant in `() =>`.
-3. **Function-hook param types are auto-inferred.** Never write `(error: unknown, x: string) => ...`. Just `(error, x) => ...`.
-4. **Every method argument must appear in every hook.** Don't underscore-prefix args. If the data is too large to log directly (LLM prompts, embeddings), use `.length` or another scalar derived from the arg — but the arg is still present in the message.
-5. **Strings (short or business-identifying)** → output quoted values: `title="${transactionTitle}"`. Do not log `titleLen=${title.length}` because length is not useful for debugging identifiers.
-6. **Strings (long, sensitive, or prompt-sized)** → use a quoted preview plus a scalar only when the full value would be noisy or unsafe: `promptPreview="${prompt.slice(0, 120)}" promptLen=${prompt.length}`.
-7. **Numbers / IDs** → output directly: `id=${row.id}`.
-8. **Arrays of entities** → default to counts, for example `transactionCount=${transactions.length}`. Include joined IDs only when the collection is small or the specific entries are the debugging handle.
-9. **Arrays of primitives** (`string[]`, `number[]`) → default to counts. Include `.join(',')` only when the values are small, non-sensitive, and identify the failure.
-10. **`Map<K, V>`** → default to `.size`. Include keys only when the key set is small and materially useful.
-11. **`Set<T>`** → default to `.size`. Include values only when the value set is small and materially useful.
-12. **Typed arrays** (`Uint8Array`, `Float32Array`, embedding buffers) → KEEP `.length` as `dimensions=${vec.length}`. Raw bytes are meaningless inline.
-13. **Objects** → destructure their identifying scalars; do not stringify the whole object.
-14. **Errors** → `getErrorMessage(error)` from `@rnw-community/shared`. Never `String(error)` or `error.message`.
-15. **`enter`, `done`, and `throw` each show every method arg.** `done` additionally surfaces result data. `throw` additionally surfaces `error=${getErrorMessage(error)}`. Don't drop arg context from `done` or `throw` to "minimize" — debugging needs the call identity.
-16. **Extract for logging only when it names a real boundary.** Good candidates: batch transaction handlers, retry/error boundaries, and public-to-private orchestration steps. Bad candidates: one-line wrappers whose only job is to satisfy `@Log`.
-
-### `getLogger(context)` (free-form / non-class)
-
-Do not use `getLogger` in service, repository, parser, mapper, or other class-owned files. Create a granular class method for the logged boundary and decorate it with `@Log`.
-
-```ts
-import { getLogger } from '@budgie/logger';
-import { getErrorMessage } from '@rnw-community/shared';
-
-const logger = getLogger('useCategorySuggestion');
-
-logger.log('fired', { transactionTitle });
-logger.error('failed', { errorMessage: getErrorMessage(error) });
-```
-
-Free-form `context: string`. Convention: hook/file/component name. Instantiate once at module top.
-
-### Build-time gate
-
-`EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output. Metro dev bundles still log through `__DEV__`; native development and profiling builds set logging at build time, so non-dev bundle changes require rebuilds. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
-
-### `sync` exception
-
-`packages/sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.
+- **Import by subpath.** `import * as Effect from 'effect/Effect'`, never the `effect` barrel (lint-enforced). Metro does not tree-shake, and the barrel adds about 1.1 MB of Hermes bytecode.
+- **Keep the code minimal.** Pure code stays plain. Do not wrap a pure function in `Effect.sync`, add a Layer to a stateless class, or add a service interface file; the `Context.Service` shape is the contract.
+- **Database.** `Db.query(db => builder)` for executed queries, `Db.transaction(effect)` for atomic work. Nested `Db.transaction` calls reuse the outer transaction.
+- **Validation.** Effect `Schema` only (`Schema.decodeUnknownEffect` at boundaries; `Schema.toStandardSchemaV1` for form resolvers). Drizzle row types come from `typeof Table.$inferSelect` / `$inferInsert`.
+- **HTTP.** `HttpClient` from `effect/http` with `Schedule` retries and `Effect.timeout`.
+- **Running.** Only edges run effects: the app `ManagedRuntime` (`runtime.runPromise`) in hooks, atoms, background tasks and boot, `Effect.runPromise` in Next.js route edges, `it.effect` in `tests/*`. No `Effect.runPromise`/`runSync` inside services.
+- **React.** Service-calling state lives in `@effect/atom-react` atoms; `useDatabaseLiveQuery` reads stay as they are.
+- **Logging.** The `makeLoggerLayer` layer from `@budgie/logger` is the only sink. `EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output; Metro dev bundles still log through `__DEV__`. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
 
 ## Tech Stack
 
 | Package       | Stack                                                                                                                                                                           |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **app**       | Expo 57, React 19 + Compiler, Expo Router 57, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                                             |
-| **ai**        | Pure TypeScript, Zod                                                                                                                                                            |
-| **contracts** | Drizzle ORM, Zod, drizzle-zod                                                                                                                                                   |
+| **ai**        | Pure TypeScript, Effect                                                                                                                                                          |
+| **contracts** | Drizzle ORM, Effect                                                                                                                                                       |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                                                |
 | **sync** | @liaugust/monobank-sdk, date-fns                                                                                                                                                |
 | **Build**     | pnpm 12.1.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.12, native TypeScript 7 + TypeScript 6 API, Oxlint 1.80 JS bridge + 13-rule ESLint 10 fallback |
@@ -657,7 +603,7 @@ Never print `~/.cloudflared` secrets or tunnel tokens; kill Metro/serve-sim/clou
 - **Never lower a timeout, weaken an assertion, or relax a test on a bot's say-so when the test has not been run** - Guessing toward flakiness is worse than an over-generous wait.
 - **Note when a bot review is incomplete** - Rate limits, partial runs, and reviews that predate the latest commits produce misleadingly short findings lists. Say so rather than implying the PR came back clean.
 - **Review all changes before finishing** - Check for unused imports and unnecessary code
-- **Fix review feedback without utility sprawl** - Do not resolve review findings by creating single-consumer utility files. Inline service-specific logic as private methods, preserve class-owned logging with `@Log`, and keep only genuinely shared helpers in `/utils`.
+- **Fix review feedback without utility sprawl** - Do not resolve review findings by creating single-consumer utility files. Inline service-specific logic as private methods, keep tracing on `Effect.fn`, and keep only genuinely shared helpers in `/utils`.
 
 ## Important Notes
 
@@ -684,7 +630,7 @@ Add `eslint-disable-next-line` with justification for these specific cases:
 | `max-statements`                | Form orchestration components with multiple hooks/handlers                                                                                                | `-- Form orchestration component with multiple hooks and handlers`           |
 | `max-lines-per-function`        | Layout files, complex form components                                                                                                                     | `-- Layout/form component requires many lines`                               |
 | `max-lines`                     | Files that own a single multi-stage SQL pipeline or a large generated enum (e.g. `UserIconNameEnum`) where splitting would fragment a single logical unit | `-- File owns a single multi-stage SQL/CTE pipeline that must stay together` |
-| `@typescript-eslint/max-params` | Existing public APIs must preserve positional argument shape. For `@Log` callbacks, prefer rest-arg destructuring from rule 57 instead                    | `-- Existing public API intentionally keeps positional arguments`            |
+| `@typescript-eslint/max-params` | Existing public APIs must preserve positional argument shape.                    | `-- Existing public API intentionally keeps positional arguments`            |
 | `func-style`                    | Next.js `generateMetadata` requires `export async function`, not `const`                                                                                  | `-- Next.js generateMetadata must be a function declaration`                 |
 
 Example:
