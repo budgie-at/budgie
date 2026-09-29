@@ -2,16 +2,10 @@ import { is } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { getTableConfig, getViewConfig, SQLiteTable, SQLiteView } from 'drizzle-orm/sqlite-core';
 import { SQLiteRelationalQuery } from 'drizzle-orm/sqlite-core/query-builders/query';
-import { addDatabaseChangeListener } from 'expo-sqlite';
-import { useEffect, useState } from 'react';
-
-import { isDefined } from '@rnw-community/shared';
 
 import { useDatabaseRefreshVersion } from './use-database-refresh-version.hook';
 
 import type { DatabaseLiveQueryType } from '../type/database-live-query.type';
-
-const DATABASE_CHANGE_COALESCE_MS = 50;
 
 const getLiveQueryEntity = (query: DatabaseLiveQueryType): unknown => {
     if (is(query, SQLiteRelationalQuery)) {
@@ -50,30 +44,5 @@ const withoutRowChangeListener = <Query extends DatabaseLiveQueryType>(query: Qu
         }
     });
 
-export const useDatabaseLiveQuery = <Query extends DatabaseLiveQueryType>(query: Query, dependencies: unknown[] = []) => {
-    const tableName = getLiveQueryTableName(query);
-    const [tableChangeVersion, setTableChangeVersion] = useState(0);
-
-    useEffect(() => {
-        let pendingChange: ReturnType<typeof setTimeout> | null = null;
-
-        const subscription = addDatabaseChangeListener(event => {
-            if (event.tableName === tableName && !isDefined(pendingChange)) {
-                pendingChange = setTimeout(() => {
-                    pendingChange = null;
-                    setTableChangeVersion(version => version + 1);
-                }, DATABASE_CHANGE_COALESCE_MS);
-            }
-        });
-
-        return () => {
-            subscription.remove();
-
-            if (isDefined(pendingChange)) {
-                clearTimeout(pendingChange);
-            }
-        };
-    }, [tableName]);
-
-    return useLiveQuery(withoutRowChangeListener(query), [...dependencies, useDatabaseRefreshVersion(), tableChangeVersion]);
-};
+export const useDatabaseLiveQuery = <Query extends DatabaseLiveQueryType>(query: Query, dependencies: unknown[] = []) =>
+    useLiveQuery(withoutRowChangeListener(query), [...dependencies, useDatabaseRefreshVersion(getLiveQueryTableName(query))]);
