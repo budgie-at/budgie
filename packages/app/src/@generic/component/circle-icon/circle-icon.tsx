@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconType } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { cn, type ClassValue } from 'cn';
 import { View, ViewStyle } from 'react-native';
@@ -10,7 +10,7 @@ import { Icon } from '../icon/icon';
 
 interface Props {
     readonly size?: number;
-    readonly icon: UserIconNameEnum;
+    readonly icon: UserIconType;
     readonly radius?: number;
     readonly border?: boolean;
     readonly iconSize?: number;

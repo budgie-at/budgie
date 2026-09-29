@@ -24,6 +24,7 @@ import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '
 
 import { instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
+import { DEFAULT_CATEGORY_ICON } from '../../category/constant/default-category-icon.constant';
 import { categoryService } from '../../category/service/category.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { loadMccCategoryLookupMap } from '../../sync/util/load-mcc-category-lookup-map.util';
@@ -96,7 +97,7 @@ export class ImporterService {
             }
 
             if (isNotEmptyString(normalizedRow.category)) {
-                categoryInputs.set(normalizedRow.category, { title: normalizedRow.category, icon: UserIconNameEnum.Home });
+                categoryInputs.set(normalizedRow.category, { title: normalizedRow.category, icon: DEFAULT_CATEGORY_ICON });
             }
         });
 

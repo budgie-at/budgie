@@ -49,7 +49,9 @@
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",
-        "rimraf"
+        "rimraf",
+        "lucide-static",
+        "emojibase-data"
     ],
     "ignoreBinaries": ["build"],
     "workspaces": {

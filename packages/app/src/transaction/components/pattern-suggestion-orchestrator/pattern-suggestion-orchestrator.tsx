@@ -1,5 +1,5 @@
 import { SuggestionStatus } from '@budgie/ai';
-import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TagEntityInterface, UserIconNameEnum, UserIconType } from '@budgie/contracts';
 
 import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
@@ -23,7 +23,7 @@ interface Props extends SuggestionOrchestratorSharedProps {
 }
 
 const getPatternCategoryKey = (category: PatternCategorySuggestion): number => category.categoryId;
-const getPatternCategoryIcon = (category: PatternCategorySuggestion): UserIconNameEnum => category.categoryIcon;
+const getPatternCategoryIcon = (category: PatternCategorySuggestion): UserIconType => category.categoryIcon;
 const getPatternCategoryTitle = (category: PatternCategorySuggestion): string => category.categoryTitle;
 
 const getPatternTagKey = (tag: TagEntityInterface): number => tag.id;

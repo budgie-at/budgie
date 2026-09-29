@@ -90,6 +90,10 @@ msgstr "{categoryName}: {threshold}% витрачено"
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: ліміт досягнуто"
 
+#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
+msgid "{count, plural, one {# category uses the default icon} other {# categories use the default icon}}"
+msgstr "{count, plural, one {# категорія має типову іконку} few {# категорії мають типову іконку} many {# категорій мають типову іконку} other {# категорії мають типову іконку}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# наявна транзакція відповідає цьому правилу.} few {# наявні транзакції відповідають цьому правилу.} many {# наявних транзакцій відповідають цьому правилу.} other {# наявної транзакції відповідають цьому правилу.}}"
@@ -492,6 +496,10 @@ msgstr "Усі"
 msgid "All accounts already added"
 msgstr "Усі рахунки вже додано"
 
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "All categories have icons"
+msgstr "Усі категорії мають іконки"
+
 #: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
 msgid "All caught up"
 msgstr "Усе оброблено"
@@ -891,6 +899,10 @@ msgstr "Категорія"
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Category → {categoryTitle}"
 msgstr "Категорія → {categoryTitle}"
+
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "Category Icons"
+msgstr "Іконки категорій"
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
@@ -1303,6 +1315,10 @@ msgstr "Не вдалося додати теги до транзакцій"
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Could not unconsolidate transaction."
 msgstr "Не вдалося розконсолідувати транзакцію."
+
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
+msgid "Could not update category icon"
+msgstr "Не вдалося оновити іконку категорії"
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
@@ -2873,6 +2889,10 @@ msgstr "Нотатка"
 msgid "Nothing from the past is imported"
 msgstr "Нічого з минулого не імпортується"
 
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "Nothing to fix here"
+msgstr "Тут нічого виправляти"
+
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 #: src/runway/component/runway-meter/runway-meter.tsx
 msgid "now"
@@ -3120,6 +3140,7 @@ msgstr "Будь ласка, спробуйте ще раз"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/category/components/category-form/category-form.tsx
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
@@ -3472,8 +3493,8 @@ msgid "Search expenses refunded by this income"
 msgstr "Пошук витрат для цього повернення"
 
 #: src/app/icon-selector.tsx
-msgid "Search icons (e.g., money, travel, food)..."
-msgstr "Пошук іконок (напр. гроші, подорожі, їжа)..."
+msgid "Search icons and emoji in any language..."
+msgstr "Шукайте іконки та емодзі будь-якою мовою..."
 
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Search inactive accounts..."
@@ -3851,6 +3872,7 @@ msgstr "Відправити"
 msgid "Subscriptions"
 msgstr "Підписки"
 
+#: src/app/icon-selector.tsx
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Suggested"
 msgstr "Запропонований"

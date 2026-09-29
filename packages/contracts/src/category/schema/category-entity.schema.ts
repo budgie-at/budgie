@@ -1,8 +1,7 @@
 import { createSelectSchema } from 'drizzle-zod';
-import { enum as zodEnum } from 'zod';
 
 import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
-import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
+import { UserIconSchema } from '../../@generic/constant/user-icon-schema.constant';
 import { CATEGORY_TITLE_MAX_LENGTH } from '../constant/category-title-max-length.constant';
 import { CATEGORY_TITLE_MIN_LENGTH } from '../constant/category-title-min-length.constant';
 import { CategoryEntityTable } from '../table/category-entity.table';
@@ -13,9 +12,7 @@ export const CategoryEntitySchema = createSelectSchema(CategoryEntityTable, {
     titleEn: schema => schema.nullable().describe('LLM-generated English translation of the title.'),
     titleTags: schema => schema.nullable().describe('LLM-generated English tags for categorization.'),
     tagsGeneratedAt: schema => schema.nullable().describe('Timestamp when tags were generated.'),
-    icon: zodEnum(UserIconNameEnum, {
-        message: 'Invalid icon selected'
-    }).describe('The category icon.'),
+    icon: UserIconSchema.describe('The category icon.'),
     parentId: schema => schema.positive().nullable().describe('The id of the parent category.'),
     isSystemCategory: schema => schema.describe('Indicates if the category is a system category.'),
     isDefault: schema => schema.describe('Indicates if the category is a default system category.')

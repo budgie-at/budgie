@@ -5,11 +5,11 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 
-import type { UserIconNameEnum } from '@budgie/contracts';
+import type { UserIconType } from '@budgie/contracts';
 
 interface Props {
     readonly direction: 'from' | 'to';
-    readonly icon: UserIconNameEnum;
+    readonly icon: UserIconType;
     readonly title: string;
     readonly testID?: string;
 }
