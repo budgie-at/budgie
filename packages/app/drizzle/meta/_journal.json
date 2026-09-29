@@ -484,6 +484,13 @@
       "when": 1790700000000,
       "tag": "0071_seed_tracked_cash_withdrawal_category",
       "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "6",
+      "when": 1790707597573,
+      "tag": "0072_monobank_entry_external_index",
+      "breakpoints": true
     }
   ]
 }

@@ -1,3 +1,5 @@
+// This file is required for Expo/React Native SQLite migrations - https://orm.drizzle.team/quick-sqlite/expo
+
 import journal from './meta/_journal.json';
 import m0000 from './0000_normal_dragon_man.sql';
 import m0001 from './0001_late_red_wolf.sql';
@@ -68,6 +70,7 @@ import m0068 from './0068_replace_needs_embedding_index.sql';
 import m0069 from './0069_live_account_created_index.sql';
 import m0070 from './0070_repair_orphaned_consolidation_children.sql';
 import m0071 from './0071_seed_tracked_cash_withdrawal_category.sql';
+import m0072 from './0072_monobank_entry_external_index.sql';
 
   export default {
     journal,
@@ -140,7 +143,8 @@ m0067,
 m0068,
 m0069,
 m0070,
-m0071
+m0071,
+m0072
     }
   }
   
