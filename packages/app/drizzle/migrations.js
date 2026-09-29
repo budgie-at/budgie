@@ -64,6 +64,7 @@ import m0064 from './0064_round_transfer_micro_units.sql';
 import m0065 from './0065_backfill_monobank_atm_mcc.sql';
 import m0066 from './0066_fix_transfer_and_debt_leg_categories.sql';
 import m0067 from './0067_revert_backfilled_atm_consolidations.sql';
+import m0068 from './0068_replace_needs_embedding_index.sql';
 
   export default {
     journal,
@@ -132,7 +133,8 @@ m0063,
 m0064,
 m0065,
 m0066,
-m0067
+m0067,
+m0068
     }
   }
   
