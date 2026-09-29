@@ -19,13 +19,13 @@ import { BudgetWidgetCategoryList } from '../budget-widget-category-list/budget-
 
 export const BudgetWidget = () => {
     const isEnabled = useSetting('isBudgetWidgetEnabled');
-    const { budget } = useGetActiveBudgetQuery();
+    const { budget, isLoading } = useGetActiveBudgetQuery();
     const { spent } = useGetBudgetSpentQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(isDefined(budget) ? budget.instrumentId : 0);
     const { categoryLimits } = useGetBudgetCategoryLimitsQuery(isDefined(budget) ? budget.id : null);
     const { formatMonthAndDay } = useFormatDate();
 
-    if (!isEnabled) {
+    if (!isEnabled || isLoading) {
         return null;
     }
 

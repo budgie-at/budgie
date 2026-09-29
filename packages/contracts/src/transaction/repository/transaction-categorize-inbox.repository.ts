@@ -7,7 +7,6 @@ import { BaseTransactionFilterRepository } from '../../@generic/repository/base-
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
-import { MccCategoryEntityTable } from '../../mcc-category/table/mcc-category-entity.table';
 import { CategorySourceEnum } from '../../transaction-entry/enum/category-source.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
@@ -148,24 +147,17 @@ export class TransactionCategorizeInboxRepository extends BaseTransactionFilterR
                 transactionId: TransactionEntityTable.id,
                 type: TransactionEntityTable.type,
                 title: TransactionEntityTable.title,
-                comment: TransactionEntityTable.comment,
                 operatedAt: TransactionEntityTable.operatedAt,
-                accountId: TransactionEntryEntityTable.accountId,
                 amount: TransactionEntryEntityTable.amount,
                 baseAmount: TransactionEntryEntityTable.baseAmount,
                 baseInstrumentId: TransactionEntryEntityTable.baseInstrumentId,
-                toIban: TransactionEntryEntityTable.toIban,
                 mccCategoryId: TransactionEntryEntityTable.mccCategoryId,
-                instrumentId: AccountEntityTable.instrumentId,
-                instrumentSymbol: InstrumentEntityTable.symbol,
-                mccCode: MccCategoryEntityTable.mcc,
-                mccDescription: MccCategoryEntityTable.fullDescription
+                instrumentSymbol: InstrumentEntityTable.symbol
             })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
             .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, TransactionEntryEntityTable.accountId))
             .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))
-            .leftJoin(MccCategoryEntityTable, eq(MccCategoryEntityTable.id, TransactionEntryEntityTable.mccCategoryId))
             .where(where)
             .orderBy(desc(TransactionEntityTable.operatedAt));
     }

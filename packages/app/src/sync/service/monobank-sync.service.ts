@@ -28,8 +28,13 @@ import { syncIntegrationTokenService } from './sync-integration-token.service';
 import { transferConsolidationDrainerService } from './transfer-consolidation-drainer.service';
 import { transferConsolidationService } from './transfer-consolidation.service';
 
-import type { MccCategoryLookupInterface, SyncEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
-import type { SyncAccountInterface, SyncBatchResultInterface } from '@budgie/sync';
+import type {
+    MccCategoryLookupInterface,
+    SyncEntityInterface,
+    TransactionCreateInputInterface,
+    TransactionEntityInterface
+} from '@budgie/contracts';
+import type { SyncAccountInterface, SyncBatchResultInterface, SyncTransactionInterface } from '@budgie/sync';
 
 class AppMonobankSyncService extends AbstractPollingSyncService {
     override readonly supportsAddAccounts: boolean = true;
@@ -295,13 +300,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             return [];
         }
 
-        const inputs = await Promise.all(
-            newTransactions.map(async bankTransaction => {
-                const lookup = this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null;
-
-                return mapBankTransactionToCreateInput(bankTransaction, accountId, lookup, this.provider);
-            })
-        );
+        const inputs = await Promise.all(newTransactions.map(async bankTransaction => this.mapBankTransaction(bankTransaction, accountId)));
         const prepared = await ruleEngineService.prepareCreateInputsForRules(inputs);
         if (!this.isRunCurrent(runGeneration)) {
             return [];
@@ -336,7 +335,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         }
 
         for (const bankTransaction of existingTransactions) {
-            await transactionService.update(await mapBankTransactionToCreateInput(bankTransaction, accountId, null, this.provider));
+            await transactionService.update(await this.mapBankTransaction(bankTransaction, accountId));
             await microPause();
         }
 
@@ -443,6 +442,18 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         await this.reconcileChangedTransactions(changedTransactions);
 
         await microPause();
+    }
+
+    private async mapBankTransaction(
+        bankTransaction: SyncTransactionInterface,
+        accountId: number
+    ): Promise<TransactionCreateInputInterface> {
+        return mapBankTransactionToCreateInput(
+            bankTransaction,
+            accountId,
+            this.mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null,
+            this.provider
+        );
     }
 
     private getOwnBalance(bankAccount: SyncAccountInterface): number {

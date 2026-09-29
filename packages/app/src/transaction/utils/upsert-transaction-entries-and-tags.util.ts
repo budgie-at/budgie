@@ -19,7 +19,7 @@ export const upsertTransactionEntriesAndTags = async (
         await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
     }
 
-    const valuations = await entryBaseValuationService.valueEntries(input.entries, operatedAt, null, tx);
+    const valuations = await entryBaseValuationService.valueEntries(input.entries, operatedAt, tx);
 
     await transactionEntryRepository.bulkCreate(
         input.entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transactionId, valuations.get(entry))),
