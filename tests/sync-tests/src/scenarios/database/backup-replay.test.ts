@@ -27,7 +27,7 @@ describe.skipIf(!isDefined(backupDatabasePath))('database/backup-replay', () => 
     });
 
     it(
-        'replays pending migrations and consolidation on a real backup without moving any ledger balance',
+        'replays consolidation and the balance rebuild on a migrated real backup without moving any ledger balance',
         async () => {
             const accounts = testDb
                 .select({ id: AccountEntityTable.id, title: AccountEntityTable.title, currency: InstrumentEntityTable.code })
