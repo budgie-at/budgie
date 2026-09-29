@@ -3,6 +3,78 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.10](https://github.com/budgie-at/budgie/compare/v6.85.9...v6.85.10) (2026-09-29)
+
+
+### Performance Improvements
+
+* **app:** keep settings and theme context values stable across writes ([c4955e7](https://github.com/budgie-at/budgie/commit/c4955e7ee0a8ea2260a444179486b073adda757e))
+* **app:** resolve entry valuation once per import batch ([c757001](https://github.com/budgie-at/budgie/commit/c757001a03b57b630d5ad178b2c2de75540f7bd0))
+
+
+
+
+
+## [6.85.9](https://github.com/budgie-at/budgie/compare/v6.85.8...v6.85.9) (2026-09-28)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.85.8](https://github.com/budgie-at/budgie/compare/v6.85.7...v6.85.8) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** stop remounting the home budget widget on every focus ([d103358](https://github.com/budgie-at/budgie/commit/d103358979d3b54226831160e698e0b7db7c52ba)), closes [#426](https://github.com/budgie-at/budgie/issues/426)
+
+
+
+
+
+## [6.85.7](https://github.com/budgie-at/budgie/compare/v6.85.6...v6.85.7) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** restore MCC and fee entries when resyncing existing Monobank rows ([92d979e](https://github.com/budgie-at/budgie/commit/92d979e50bc8189e821cc1849eecf0ea534c2c8a))
+
+
+
+
+
+## [6.85.6](https://github.com/budgie-at/budgie/compare/v6.85.5...v6.85.6) (2026-09-28)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.85.5](https://github.com/budgie-at/budgie/compare/v6.85.4...v6.85.5) (2026-09-28)
+
+
+### Performance Improvements
+
+* **app:** cache recurring series detection across renders ([98e66ae](https://github.com/budgie-at/budgie/commit/98e66ae89480b3ec1139d4150c1ea0a4e1bba207))
+
+
+
+
+
+## [6.85.4](https://github.com/budgie-at/budgie/compare/v6.85.3...v6.85.4) (2026-09-28)
+
+
+### Bug Fixes
+
+* **sync:** mark Erste ATM withdrawals with the ATM MCC at import ([dbb3aff](https://github.com/budgie-at/budgie/commit/dbb3aff91cf0647f876e84211e405d31db209e0e))
+
+
+
+
+
 ## [6.85.3](https://github.com/budgie-at/budgie/compare/v6.85.2...v6.85.3) (2026-09-28)
 
 
