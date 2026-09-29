@@ -1,31 +1,26 @@
-import { boolean, number } from 'zod';
+import * as Schema from 'effect/Schema';
 
-import { convertToCreateEntitySchema } from '../../@generic/util/convert-to-create-entity-schema.util';
+import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
+import { NonNegativeNumberSchema } from '../../@generic/schema/non-negative-number.schema';
+import { PositiveNumberSchema } from '../../@generic/schema/positive-number.schema';
+import { ACCOUNT_TITLE_MAX_LENGTH } from '../constant/account-title-max-length.constant';
+import { ACCOUNT_TITLE_MIN_LENGTH } from '../constant/account-title-min-length.constant';
+import { AccountDebtTypeEnum } from '../enum/account-debt-type.enum';
+import { AccountTypeEnum } from '../enum/account-type.enum';
 
-import { AccountEntitySchema } from './account-entity.schema';
+import { AccountIbanSchema } from './account-iban.schema';
 
-export const DebtAccountCreateInputSchema = convertToCreateEntitySchema(AccountEntitySchema)
-    .omit({
-        order: true,
-        nature: true,
-        parentId: true,
-        externalId: true,
-        targetBalance: true,
-        targetBaseInstrumentId: true,
-        targetBaseExchangeRate: true,
-        targetBaseAmount: true,
-        interestRate: true,
-        externalSource: true,
-        integrationId: true,
-        titleSearch: true
-    })
-    .required({
-        contactId: true,
-        deadline: true
-    })
-    .extend({
-        targetBalance: number().positive(),
-        currentBalance: number().nonnegative(),
-        includeInNetWorth: boolean().optional(),
-        isActive: boolean().optional()
-    });
+export const DebtAccountCreateInputSchema = Schema.Struct({
+    icon: Schema.Enum(UserIconNameEnum).annotate({ message: 'Invalid icon selected' }),
+    title: Schema.Trim.check(Schema.isMinLength(ACCOUNT_TITLE_MIN_LENGTH), Schema.isMaxLength(ACCOUNT_TITLE_MAX_LENGTH)),
+    type: Schema.Enum(AccountTypeEnum),
+    debtType: Schema.Enum(AccountDebtTypeEnum),
+    instrumentId: PositiveNumberSchema,
+    iban: Schema.NullOr(AccountIbanSchema),
+    contactId: Schema.NullOr(Schema.String),
+    deadline: Schema.NullOr(Schema.Date),
+    targetBalance: PositiveNumberSchema,
+    currentBalance: NonNegativeNumberSchema,
+    includeInNetWorth: Schema.optional(Schema.Boolean),
+    isActive: Schema.optional(Schema.Boolean)
+});

@@ -1,6 +1,7 @@
 import { AbstractSyncService } from '@app/sync/service/abstract-sync.service';
 import { AccountTypeEnum, ExternalSourceEnum, LiabilityAccountCreateInputSchema } from '@budgie/contracts';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum } from '@budgie/sync';
+import * as Schema from 'effect/Schema';
 import { describe, expect, it } from 'vitest';
 
 import type { LiabilityAccountCreateInputInterface } from '@budgie/contracts';
@@ -47,6 +48,6 @@ describe('account/account-update-validation', () => {
     it('produces input the liability update form schema accepts', () => {
         const input = testSyncService.mapAccount(buildSyncAccount(''));
 
-        expect(LiabilityAccountCreateInputSchema.safeParse(input).success).toBe(true);
+        expect(Schema.is(LiabilityAccountCreateInputSchema)(input)).toBe(true);
     });
 });

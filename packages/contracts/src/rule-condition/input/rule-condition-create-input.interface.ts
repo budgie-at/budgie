@@ -1,5 +1,4 @@
-import { RuleConditionCreateInputSchema } from '../schema/rule-condition-create-input.schema';
+import type { RuleConditionCreateInputSchema } from '../schema/rule-condition-create-input.schema';
+import type { Mutable } from 'effect/Types';
 
-import type { z } from 'zod';
-
-export type RuleConditionCreateInputInterface = z.infer<typeof RuleConditionCreateInputSchema>;
+export type RuleConditionCreateInputInterface = Mutable<typeof RuleConditionCreateInputSchema.Type>;

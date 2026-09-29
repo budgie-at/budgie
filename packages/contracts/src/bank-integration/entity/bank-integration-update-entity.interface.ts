@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { BankIntegrationCreateEntityInterface } from './bank-integration-create-entity.interface';
 
-import { BankIntegrationUpdateEntitySchema } from '../schema/bank-integration-update-entity.schema';
-
-export type BankIntegrationUpdateEntityInterface = z.infer<typeof BankIntegrationUpdateEntitySchema>;
+export type BankIntegrationUpdateEntityInterface = Partial<BankIntegrationCreateEntityInterface>;

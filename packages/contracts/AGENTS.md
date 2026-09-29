@@ -1,6 +1,6 @@
 # Contracts Package
 
-Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Zod schemas, repository classes, and TypeScript types used by `app`, `ai`, and `sync` packages.
+Shared domain model and type system for Budgie. Contains Drizzle ORM tables, Effect Schemas, repository classes, and TypeScript types used by `app`, `ai`, and `sync` packages.
 
 ## Commands
 
@@ -30,7 +30,7 @@ src/
 │   ├── interface/            # Filter interfaces
 │   ├── relations/            # Drizzle relations
 │   ├── repository/           # Repository class
-│   ├── schema/               # Zod schemas
+│   ├── schema/               # Effect Schemas (runtime-validated inputs only)
 │   └── table/                # Drizzle table definition
 ├── schema.ts                 # Aggregated schema exports
 └── index.ts                  # Public API exports
@@ -258,41 +258,46 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 }
 ```
 
-## Zod Schemas
+## Effect Schemas
 
-### Schema Pattern
+Entity, create and update types are plain Drizzle types; there is no schema layer for them. Only inputs validated at runtime (forms, IBAN check) get an Effect Schema in `schema/`.
 
-Use `drizzle-zod` for automatic schema generation:
+### Entity / Create / Update Interfaces
 
 ```typescript
-import { createSelectSchema } from 'drizzle-zod';
-import { zodEnum } from '../@generic/util/zod-enum.util';
+// entity/account-entity.interface.ts
+export type AccountEntityInterface = typeof AccountEntityTable.$inferSelect;
 
-export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
-    type: zodEnum(AccountTypeEnum),
-    nature: zodEnum(AccountNatureEnum),
-    icon: zodEnum(UserIconNameEnum),
+// entity/account-create-entity.interface.ts
+export type AccountCreateEntityInterface = PartialByKeysType<Omit<AccountEntityInterface, BaseEntityKeyType | 'titleSearch'>, 'iban' | 'debtType'>;
+
+// entity/account-update-entity.interface.ts
+export type AccountUpdateEntityInterface = Partial<AccountCreateEntityInterface>;
+```
+
+Narrow enum columns with `.$type<XEnum>()` on the table column (type-only, no migration).
+
+### Runtime Input Schemas
+
+```typescript
+import * as Schema from 'effect/Schema';
+
+export const TagCreateEntitySchema = Schema.Struct({
+    title: Schema.Trim.check(Schema.isMinLength(TAG_TITLE_MIN_LENGTH), Schema.isMaxLength(TAG_TITLE_MAX_LENGTH))
 });
 ```
 
-### Create/Update Schemas
-
-Use `convertToCreateEntitySchema` to omit base fields:
-
-```typescript
-import { convertToCreateEntitySchema } from '../@generic/util/convert-to-create-entity-schema.util';
-
-export const AccountCreateInputSchema = convertToCreateEntitySchema(AccountEntitySchema)
-    .omit({ titleSearch: true });  // Auto-generated fields
-```
+- Reuse `PositiveNumberSchema` / `NonNegativeNumberSchema` from `@generic/schema`.
+- Cross-field rules use `.check(Schema.makeFilter(value => ok || { path, issue }))`.
+- Validate synchronously with `Schema.is(X)(value)` or `Schema.decodeUnknownSync(X)(value)`.
 
 ### Input Interfaces
 
-Infer from schemas for type safety:
+Infer from schemas; `Mutable` keeps the type usable as React Hook Form values:
 
 ```typescript
 // input/account-create-input.interface.ts
-export type AccountCreateInputInterface = z.infer<typeof AccountCreateInputSchema>;
+export type AccountCreateInputInterface = Mutable<typeof AccountCreateInputSchema.Type>;
 ```
 
 ## Type System
@@ -411,27 +416,7 @@ where: isNull(AccountEntityTable.deletedAt)
 
 ## Testing
 
-### Test Location
-
-Tests are in the same directory as the source file:
-```
-schema/
-├── account-create-input.schema.ts
-└── account-create-input.schema.spec.ts
-```
-
-### Test Pattern
-
-Focus on schema validation with invalid inputs:
-
-```typescript
-describe('AccountCreateInputSchema', () => {
-    it('should reject empty title', () => {
-        const result = AccountCreateInputSchema.safeParse({ title: '' });
-        expect(result.success).toBe(false);
-    });
-});
-```
+Production packages host no unit tests. Cover schemas through the integration suites under `tests/` and `pnpm ts` / `pnpm lint`.
 
 ## Export Rules
 

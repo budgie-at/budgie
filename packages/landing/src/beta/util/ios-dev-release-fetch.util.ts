@@ -1,4 +1,5 @@
-import { z } from 'zod';
+import * as Option from 'effect/Option';
+import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -10,6 +11,7 @@ import type { IosDevRelease } from '../constant/ios-dev-release-schema.constant'
 const GITHUB_REPO_API_URL = 'https://api.github.com/repos/budgie-at/budgie';
 const MATCHING_DEV_TAG_REFS_URL = `${GITHUB_REPO_API_URL}/git/matching-refs/tags/${IOS_DEV_RELEASE_TAG_PREFIX}?per_page=100`;
 const TAG_REF_PREFIX = 'refs/tags/';
+const GitRefsSchema = Schema.Array(Schema.Struct({ ref: Schema.String }));
 const DEV_TAG_RUN_NUMBER_REGEX = /^\d+$/u;
 
 const hasBuildMetaAsset = (release: IosDevRelease): boolean => release.assets.some(asset => asset.name === IOS_DEV_BUILD_META_ASSET_NAME);
@@ -29,13 +31,13 @@ const latestDevTagNameFetchApi = async (requestInit: RequestInit): Promise<strin
         }
 
         const refsJson: unknown = await response.json();
-        const parseResult = z.array(z.object({ ref: z.string() })).safeParse(refsJson);
+        const gitRefs = Schema.decodeUnknownOption(GitRefsSchema)(refsJson);
 
-        if (!parseResult.success) {
+        if (Option.isNone(gitRefs)) {
             return null;
         }
 
-        const runNumberTagNameEntries = parseResult.data
+        const runNumberTagNameEntries = gitRefs.value
             .map(gitRef => gitRef.ref.slice(TAG_REF_PREFIX.length))
             .map(tagName => ({ runNumber: tagNameToRunNumber(tagName), tagName }))
             .filter(entry => isPositiveNumber(entry.runNumber))
@@ -62,9 +64,9 @@ export const iosDevReleaseFetchApi = async (requestInit: RequestInit): Promise<I
         }
 
         const releaseJson: unknown = await response.json();
-        const parseResult = IosDevReleaseSchema.safeParse(releaseJson);
+        const release = Schema.decodeUnknownOption(IosDevReleaseSchema)(releaseJson);
 
-        return parseResult.success && hasBuildMetaAsset(parseResult.data) ? parseResult.data : null;
+        return Option.isSome(release) && hasBuildMetaAsset(release.value) ? release.value : null;
     } catch {
         return null;
     }

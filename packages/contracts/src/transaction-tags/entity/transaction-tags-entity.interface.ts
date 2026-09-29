@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
 
-import type { TransactionTagsEntitySchema } from '../schema/transaction-tags-entity.schema';
-
-export type TransactionTagsEntityInterface = z.infer<typeof TransactionTagsEntitySchema>;
+export type TransactionTagsEntityInterface = typeof TransactionTagsEntityTable.$inferSelect;

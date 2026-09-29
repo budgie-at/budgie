@@ -1,4 +1,6 @@
-import type { BudgetCreateEntitySchema } from '../schema/budget-create-entity.schema';
-import type { z } from 'zod';
+import type { BudgetEntityInterface } from './budget-entity.interface';
 
-export type BudgetCreateEntityInterface = z.infer<typeof BudgetCreateEntitySchema>;
+export type BudgetCreateEntityInterface = Pick<
+    BudgetEntityInterface,
+    'name' | 'period' | 'periodStartDay' | 'useLastDayOfMonth' | 'overallLimit' | 'otherLimit' | 'instrumentId'
+>;

@@ -1,4 +1,5 @@
 import { t } from '@lingui/core/macro';
+import * as Schema from 'effect/Schema';
 import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
@@ -42,8 +43,13 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
     const { spent } = useGetBudgetSpentQuery(budget);
     const instrumentId = isPositiveNumber(watchedInstrumentId) ? watchedInstrumentId : defaultInstrumentId;
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
-    const isSaveDisabled = !BudgetFormSchema.safeParse({ ...form.getValues(), overallLimit, otherLimit, categoryLimits, instrumentId })
-        .success;
+    const isSaveDisabled = !Schema.is(BudgetFormSchema.from)({
+        ...form.getValues(),
+        overallLimit,
+        otherLimit,
+        categoryLimits,
+        instrumentId
+    });
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const headerTitle = isEditing ? t`Edit budget` : t`Create budget`;
     const handleCategoryAdded = () => scrollViewRef.current?.scrollToEnd({ animated: true });

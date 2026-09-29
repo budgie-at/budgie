@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { CategoryEntityTable } from '../table/category-entity.table';
 
-import type { CategoryEntitySchema } from '../schema/category-entity.schema';
-
-export type CategoryEntityInterface = z.infer<typeof CategoryEntitySchema>;
+export type CategoryEntityInterface = typeof CategoryEntityTable.$inferSelect;

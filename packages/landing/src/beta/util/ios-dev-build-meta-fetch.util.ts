@@ -1,3 +1,6 @@
+import * as Option from 'effect/Option';
+import * as Schema from 'effect/Schema';
+
 import { isDefined } from '@rnw-community/shared';
 
 import { IosDevBuildMetaSchema } from '../constant/ios-dev-build-meta-schema.constant';
@@ -23,9 +26,8 @@ export const iosDevBuildMetaFetchApi = async (release: IosDevRelease, requestIni
         }
 
         const buildMetaJson: unknown = await response.json();
-        const parseResult = IosDevBuildMetaSchema.safeParse(buildMetaJson);
 
-        return parseResult.success ? parseResult.data : null;
+        return Schema.decodeUnknownOption(IosDevBuildMetaSchema)(buildMetaJson).pipe(Option.getOrNull);
     } catch {
         return null;
     }
