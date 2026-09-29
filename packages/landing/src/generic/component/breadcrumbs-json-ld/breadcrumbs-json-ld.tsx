@@ -3,30 +3,27 @@ import { Children, isValidElement } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { JsonLd } from '../../../generic/component/json-ld/json-ld';
-import { BASE_URL } from '../../../generic/constant/seo.constant';
-import {
-    FeaturePageBreadcrumbsJsonLdItem,
-    type FeaturePageBreadcrumbsJsonLdItemProps
-} from '../feature-page-breadcrumbs-json-ld-item/feature-page-breadcrumbs-json-ld-item';
+import { BASE_URL } from '../../constant/seo.constant';
+import { BreadcrumbsJsonLdItem, type BreadcrumbsJsonLdItemProps } from '../breadcrumbs-json-ld-item/breadcrumbs-json-ld-item';
+import { JsonLd } from '../json-ld/json-ld';
 
 import type { ReactNode } from 'react';
 
 interface Props {
     readonly children: ReactNode;
     readonly locale: string;
-    readonly slug: string;
+    readonly path: string;
 }
 
-const FeaturePageBreadcrumbsJsonLdRoot = ({ children, locale, slug }: Props) => {
-    const url = `${BASE_URL}/${locale}/features/${slug}`;
+const BreadcrumbsJsonLdRoot = ({ children, locale, path }: Props) => {
+    const url = `${BASE_URL}/${locale}${path}`;
     const itemListElement = Children.toArray(children)
         .map(child => {
-            if (!isValidElement<FeaturePageBreadcrumbsJsonLdItemProps>(child)) {
+            if (!isValidElement<BreadcrumbsJsonLdItemProps>(child)) {
                 return null;
             }
 
-            if (child.type !== FeaturePageBreadcrumbsJsonLdItem) {
+            if (child.type !== BreadcrumbsJsonLdItem) {
                 return null;
             }
 
@@ -50,6 +47,6 @@ const FeaturePageBreadcrumbsJsonLdRoot = ({ children, locale, slug }: Props) => 
     return <JsonLd data={data} />;
 };
 
-export const FeaturePageBreadcrumbsJsonLd = Object.assign(FeaturePageBreadcrumbsJsonLdRoot, {
-    Item: FeaturePageBreadcrumbsJsonLdItem
+export const BreadcrumbsJsonLd = Object.assign(BreadcrumbsJsonLdRoot, {
+    Item: BreadcrumbsJsonLdItem
 });
