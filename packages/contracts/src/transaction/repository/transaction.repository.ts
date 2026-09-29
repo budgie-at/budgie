@@ -1,6 +1,6 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
 import { Log } from '@budgie/logger';
-import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, notInArray, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, notExists, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -725,13 +725,28 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
     }
 
     async archiveByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        await (tx ?? this.db)
+        const runner = tx ?? this.db;
+
+        await runner
             .update(TransactionEntityTable)
             .set({ deletedAt: new Date() })
             .where(
                 and(
                     or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds)),
-                    ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                    or(
+                        ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                        notExists(
+                            runner
+                                .select({ id: TransactionEntryEntityTable.id })
+                                .from(TransactionEntryEntityTable)
+                                .where(
+                                    and(
+                                        eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
+                                        this.buildLedgerEntryCondition()
+                                    )
+                                )
+                        )
+                    ),
                     isNull(TransactionEntityTable.deletedAt)
                 )
             );
