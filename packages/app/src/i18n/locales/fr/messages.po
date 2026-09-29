@@ -1525,7 +1525,7 @@ msgstr "Le compte de dette ne peut pas correspondre au compte de transaction"
 msgid "Debt account not found"
 msgstr "Compte de dette introuvable"
 
-#: src/transaction/utils/assert-transfer-accounts-are-not-debt.util.ts
+#: src/transaction/error/debt-transfer-not-allowed.error.ts
 msgid "Debt accounts cannot take part in transfers"
 msgstr "Les comptes de dette ne peuvent pas participer aux virements"
 
@@ -1590,7 +1590,7 @@ msgid "transaction.depositExpenseDisallowed"
 msgstr "Les comptes de dépôt ne peuvent pas financer des dépenses"
 
 #. js-lingui-explicit-id
-#: src/account/service/account-balance-incremental.service.ts
+#: src/account/error/deposit-negative-balance.error.ts
 msgid "account.depositNegativeBalanceDisallowed"
 msgstr "Le solde du dépôt ne peut pas devenir négatif"
 
