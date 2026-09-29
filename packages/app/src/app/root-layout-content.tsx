@@ -52,6 +52,7 @@ import { AuthProvider } from '../auth/provider/auth.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { historicalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
 import { SettingsProvider } from '../settings/provider/settings.provider';
+import { appDataSyncService } from '../sync/service/app-data-sync.service';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../sync/service/sync-workload.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
@@ -65,7 +66,7 @@ const drizzleStudioEnvironmentVariable = 'EXPO_PUBLIC_DRIZZLE_STUDIO_ENABLE';
 const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVariable] === 'true';
 
 const syncForegroundData = async (): Promise<void> => {
-    const isCompleted = await syncWorkloadService.syncAppData();
+    const isCompleted = await appDataSyncService.sync();
     if (isCompleted) {
         void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
     }

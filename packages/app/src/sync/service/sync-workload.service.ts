@@ -4,11 +4,6 @@ import { emptyFn, getErrorMessage, isDefined, isError } from '@rnw-community/sha
 
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { microPause } from '../../@generic/utils/micro-pause.util';
-import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
-
-import { binanceSyncService } from './binance-sync.service';
-import { monobankSyncService } from './monobank-sync.service';
 
 import type { SyncWorkloadQueuedTaskInterface } from '../interface/sync-workload-queued-task.interface';
 
@@ -79,25 +74,6 @@ class SyncWorkloadService {
         } finally {
             queuedUserWorkWaiter.unsubscribe();
         }
-    }
-
-    @Log('enter', result => `done isCompleted=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
-    async syncAppData(): Promise<boolean> {
-        await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
-
-        await exchangeRatesSyncService.sync().catch(emptyFn);
-        if (this.hasQueuedUserWork()) {
-            return false;
-        }
-
-        await monobankSyncService.sync().catch(emptyFn);
-        if (this.hasQueuedUserWork()) {
-            return false;
-        }
-
-        await binanceSyncService.sync().catch(emptyFn);
-
-        return true;
     }
 
     hasQueuedWork(): boolean {
