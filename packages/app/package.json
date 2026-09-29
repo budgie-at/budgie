@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "6.85.10",
+    "version": "6.85.13",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -42,8 +42,8 @@
         "@lingui/core": "6.6.0",
         "@lingui/react": "6.6.0",
         "@react-native-masked-view/masked-view": "^0.3.2",
-        "@rnw-community/react-native-collapsible-header": "^2.15.1",
-        "@rnw-community/react-native-screen-chrome": "^2.15.0",
+        "@rnw-community/react-native-collapsible-header": "^2.18.0",
+        "@rnw-community/react-native-screen-chrome": "^2.19.0",
         "@rnw-community/shared": "^2.2.0",
         "@vnaidin/react-native-cryptocurrency-icons": "0.0.36",
         "class-variance-authority": "^0.7.1",
