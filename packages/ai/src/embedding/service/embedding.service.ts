@@ -1,92 +1,50 @@
-import { Log } from '@budgie/logger';
+import * as Cache from 'effect/Cache';
+import * as Effect from 'effect/Effect';
+import * as Semaphore from 'effect/Semaphore';
 
-import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { EMBEDDING_BATCH_LIMIT } from '../../@generic/constant/embedding.constant';
+import { AiInvokeError } from '../../@generic/error/ai-invoke.error';
 import { EmbeddingInvokerInterface } from '../interface/embedding-invoker.interface';
 
 export class EmbeddingService {
-    private static inferenceQueue: Promise<void> = Promise.resolve();
-    private static readonly embeddingCache = new Map<string, Promise<Float32Array | null>>();
+    private static readonly inferenceSemaphore = Semaphore.makeUnsafe(1);
     private static readonly EMBEDDING_CACHE_LIMIT = 50;
+
+    readonly generateEmbedding = Effect.fn('EmbeddingService.generateEmbedding')(function* (this: EmbeddingService, text: string) {
+        return yield* Cache.get(this.embeddingCache, text).pipe(Effect.tapError(() => Cache.invalidate(this.embeddingCache, text)));
+    });
+
+    readonly generateEmbeddings = Effect.fn('EmbeddingService.generateEmbeddings')(function* (this: EmbeddingService, texts: string[]) {
+        const rawResults = yield* EmbeddingService.inferenceSemaphore.withPermits(1)(
+            Effect.tryPromise({
+                try: () => this.embedding.batchEmbed(texts.slice(0, EMBEDDING_BATCH_LIMIT)),
+                catch: cause => new AiInvokeError({ cause })
+            })
+        );
+
+        return new Map([...rawResults].map(([text, embedding]) => [text, new Float32Array(embedding)]));
+    });
+
+    private readonly embeddingCache = Effect.runSync(
+        Cache.make({
+            capacity: EmbeddingService.EMBEDDING_CACHE_LIMIT,
+            lookup: (text: string) => this.infer(text)
+        })
+    );
 
     constructor(private readonly embedding: EmbeddingInvokerInterface) {}
 
-    @Log(
-        text => `enter text="${text}"`,
-        result => `done dimensions=${isDefined(result) ? result.length : 0}`,
-        (error, text) => `throw text="${text}" error=${getErrorMessage(error)}`
-    )
-    async generateEmbedding(text: string): Promise<Float32Array | null> {
-        const cached = EmbeddingService.embeddingCache.get(text);
-        if (isDefined(cached)) {
-            return cached;
-        }
-
-        return this.enqueueEmbedding(text);
-    }
-
-    @Log(
-        texts => `enter count=${texts.length}`,
-        result => `done resolved=${result.size}`,
-        (error, texts) => `throw count=${texts.length} error=${getErrorMessage(error)}`
-    )
-    async generateEmbeddings(texts: string[]): Promise<Map<string, Float32Array>> {
-        return EmbeddingService.enqueueInference(() => this.executeBatchEmbedding(texts));
-    }
-
-    @Log('enter', result => `done available=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
     isAvailable(): boolean {
         return this.embedding.isReady;
     }
 
-    private async enqueueEmbedding(text: string): Promise<Float32Array | null> {
-        const promise = EmbeddingService.enqueueInference(() => this.executeEmbedding(text));
-        EmbeddingService.embeddingCache.set(text, promise);
-        EmbeddingService.evictOldestCacheEntry();
-
-        void promise.catch(() => EmbeddingService.embeddingCache.delete(text));
-
-        return promise;
-    }
-
-    private async executeEmbedding(text: string): Promise<Float32Array | null> {
-        const rawEmbedding = await this.embedding.embed(text);
-
-        if (!isNotEmptyArray(rawEmbedding)) {
-            return null;
-        }
-
-        return new Float32Array(rawEmbedding);
-    }
-
-    private async executeBatchEmbedding(texts: string[]): Promise<Map<string, Float32Array>> {
-        const batch = texts.slice(0, EMBEDDING_BATCH_LIMIT);
-        const rawResults = await this.embedding.batchEmbed(batch);
-
-        const results = new Map<string, Float32Array>();
-        for (const [text, embedding] of rawResults) {
-            results.set(text, new Float32Array(embedding));
-        }
-
-        return results;
-    }
-
-    private static evictOldestCacheEntry(): void {
-        if (EmbeddingService.embeddingCache.size <= EmbeddingService.EMBEDDING_CACHE_LIMIT) {
-            return;
-        }
-
-        const firstKey = EmbeddingService.embeddingCache.keys().next().value;
-        if (isDefined(firstKey)) {
-            EmbeddingService.embeddingCache.delete(firstKey);
-        }
-    }
-
-    private static enqueueInference<T>(fn: () => Promise<T>): Promise<T> {
-        const current = EmbeddingService.inferenceQueue.then(fn);
-        EmbeddingService.inferenceQueue = current.then(emptyFn, emptyFn);
-
-        return current;
+    private infer(text: string): Effect.Effect<Float32Array | null, AiInvokeError> {
+        return EmbeddingService.inferenceSemaphore.withPermits(1)(
+            Effect.tryPromise({ try: () => this.embedding.embed(text), catch: cause => new AiInvokeError({ cause }) }).pipe(
+                Effect.map(rawEmbedding => (isNotEmptyArray(rawEmbedding) ? new Float32Array(rawEmbedding) : null))
+            )
+        );
     }
 }

@@ -14,7 +14,8 @@ import {
     requireInstrument,
     seed,
     seedBankPair,
-    StubFileBankSyncService
+    StubFileBankSyncService,
+    run
 } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
@@ -146,7 +147,7 @@ const buildMccCategoryLookup = (): MccCategoryLookupInterface => {
 };
 
 const importAndRunQueuedScope = async (syncService: StubFileBankSyncService, accountExternalId: string) => {
-    await syncService.executeImportForSelectedAccounts(STATEMENT_FILE_URI, [accountExternalId]);
+    await run(syncService.executeImportForSelectedAccounts(STATEMENT_FILE_URI, [accountExternalId]));
 
     const scope = getQueuedConsolidationScope();
     expect(enqueueSpy).toHaveBeenCalledWith(TransferConsolidationDrainReasonEnum.FILE_IMPORT, scope);
@@ -155,7 +156,7 @@ const importAndRunQueuedScope = async (syncService: StubFileBankSyncService, acc
         return { consolidated: 0 };
     }
 
-    return transferConsolidationService.consolidate(scope);
+    return run(transferConsolidationService.consolidate(scope));
 };
 
 const INTERBANK_TRANSFER_CASES: readonly InterbankTransferCaseInterface[] = [

@@ -10,6 +10,7 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
+import { run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { seed } from '../../harness/seed/seed';
 
@@ -63,8 +64,8 @@ describe('rule/rule-matcher excludes adjustments', () => {
             conditionMatchType: RuleConditionMatchTypeEnum.ALL
         };
 
-        const count = await ruleMatcherService.countMatchingTransactions(params);
-        const { transactions } = await ruleMatcherService.findMatchingTransactions(params, 10);
+        const count = await run(ruleMatcherService.countMatchingTransactions(params));
+        const { transactions } = await run(ruleMatcherService.findMatchingTransactions(params, 10));
 
         expect(count).toBe(1);
         expect(transactions.map(transaction => transaction.id)).toEqual([expense.id]);

@@ -1,19 +1,20 @@
+import * as Effect from 'effect/Effect';
+
 import { isEmptyArray } from '@rnw-community/shared';
 
-import type { DB, TransactionTagsRepository } from '@budgie/contracts';
+import type { TransactionTagsRepository } from '@budgie/contracts';
 
-export const consolidationCopySourceTransactionTags = async (
-    transactionTagsRepository: Pick<TransactionTagsRepository, 'bulkCreate' | 'findByTransactionId' | 'findByTransactionIds'>,
+export const consolidationCopySourceTransactionTags = Effect.fn('consolidationCopySourceTransactionTags')(function* (
+    transactionTagsRepository: TransactionTagsRepository,
     sourceTransactionIds: number[],
-    canonicalTransactionId: number,
-    tx: DB
-): Promise<void> => {
+    canonicalTransactionId: number
+) {
     if (isEmptyArray(sourceTransactionIds)) {
         return;
     }
 
-    const sourceTags = await transactionTagsRepository.findByTransactionIds(sourceTransactionIds, tx);
-    const existingTags = await transactionTagsRepository.findByTransactionId(canonicalTransactionId, tx);
+    const sourceTags = yield* transactionTagsRepository.findByTransactionIds(sourceTransactionIds);
+    const existingTags = yield* transactionTagsRepository.findByTransactionId(canonicalTransactionId);
     const existingTagIds = new Set(existingTags.map(tag => tag.tagId));
     const uniqueTagIds = [...new Set(sourceTags.map(tag => tag.tagId))].filter(tagId => !existingTagIds.has(tagId));
 
@@ -21,12 +22,11 @@ export const consolidationCopySourceTransactionTags = async (
         return;
     }
 
-    await transactionTagsRepository.bulkCreate(
+    yield* transactionTagsRepository.bulkCreate(
         uniqueTagIds.map(tagId => ({
             transactionId: canonicalTransactionId,
             tagId,
             isPrimary: false
-        })),
-        tx
+        }))
     );
-};
+});

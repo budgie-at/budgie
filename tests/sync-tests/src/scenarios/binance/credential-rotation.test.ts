@@ -4,7 +4,7 @@ import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { fetchAccountIntegrationToken, fetchSyncById, seed, seedCryptoInstrument, testDb } from '../../harness';
+import { fetchAccountIntegrationToken, fetchSyncById, seed, seedCryptoInstrument, testDb, run } from '../../harness';
 
 import type { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
 
@@ -283,7 +283,7 @@ describe('Binance credential rotation', () => {
         const scenario = seedBinanceCredentialRotationScenario();
 
         markSyncDeleted(scenario.syncs.deletedSync.id);
-        await binanceSyncService.updateAccountToken(scenario.accounts.selectedAccount.id, NEW_TOKEN);
+        await run(binanceSyncService.updateAccountToken(scenario.accounts.selectedAccount.id, NEW_TOKEN));
         expectBinanceCredentialRotationScenario(scenario);
     });
 });

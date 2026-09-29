@@ -2,7 +2,7 @@ import { P2pFiatDirectionEnum } from '@budgie/consolidation';
 import { AccountTypeEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { consolidationExecutorService, testDb, testQueryService, testSeedService, unconsolidationService } from '../harness/test-context';
+import { consolidationExecutorService, runEffect, testQueryService, testSeedService, unconsolidateById } from '../harness/test-context';
 
 const OPERATED_AT = new Date('2026-01-15T12:00:00.000Z');
 const FIRST_EXPENSE_AMOUNT = Number('1534') * PRECISION;
@@ -57,12 +57,12 @@ describe('consolidation/unconsolidate-p2p-group-restores-sources', () => {
             maximumTimeDifference: 60
         };
 
-        expect(await consolidationExecutorService.consolidateP2pFiatTransfer(candidate)).toBe(true);
+        expect(await runEffect(consolidationExecutorService.consolidateP2pFiatTransfer(candidate))).toBe(true);
 
         const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
         expect(canonical).toBeDefined();
 
-        await unconsolidationService.unconsolidateById(canonical.id, testDb);
+        await unconsolidateById(canonical.id);
 
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
 
@@ -71,6 +71,6 @@ describe('consolidation/unconsolidate-p2p-group-restores-sources', () => {
             expect(testQueryService.fetchEntryByExternalId(sourceTransaction.externalId ?? '').transactionId).toBe(sourceTransaction.id);
         }
 
-        expect(await consolidationExecutorService.consolidateP2pFiatTransfer(candidate)).toBe(true);
+        expect(await runEffect(consolidationExecutorService.consolidateP2pFiatTransfer(candidate))).toBe(true);
     });
 });

@@ -1,4 +1,4 @@
-import { buildTestDb, createTestRepositories, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
+import { buildTestDb, createTestRepositories, runWithDb, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
 import {
     ConsolidationAutoCandidateService,
     ConsolidationCandidateService,
@@ -10,13 +10,13 @@ import {
     RefundConsolidationService,
     UnconsolidationService
 } from '@budgie/consolidation';
-
-import type { DB } from '@budgie/contracts';
+import { Db } from '@budgie/contracts';
 
 export const testDb = buildTestDb();
 
 const repositories = createTestRepositories(testDb);
-const runTestTransaction = <T>(database: DB, callback: (transactionDatabase: DB) => Promise<T>): Promise<T> => callback(database);
+export const runEffect = runWithDb(testDb);
+
 const yieldControl = (): Promise<void> => Promise.resolve();
 
 export const { accountBalanceRepository } = repositories;
@@ -29,10 +29,8 @@ export const { statisticsRepository } = repositories;
 export const { transferPairRepository } = repositories;
 
 const consolidationExecutorDependencies = {
-    database: testDb,
     resolveP2pTransferTitle: (direction: P2pFiatDirectionEnum, assetCode: string): string =>
         direction === P2pFiatDirectionEnum.BUY ? `Binance P2P buy ${assetCode}` : `Binance P2P sell ${assetCode}`,
-    runTransaction: runTestTransaction,
     transactionRepository: repositories.transactionRepository,
     transactionEntryRepository: repositories.transactionEntryRepository,
     transactionTagsRepository: repositories.transactionTagsRepository
@@ -72,21 +70,22 @@ export const consolidationCoordinatorService = new ConsolidationCoordinatorServi
     consolidationAutoCandidateService
 );
 
-export const unconsolidationService = new UnconsolidationService({
+const unconsolidationService = new UnconsolidationService({
     transactionRepository: repositories.transactionRepository,
     transactionEntryRepository: repositories.transactionEntryRepository,
     transactionTagsRepository: repositories.transactionTagsRepository
 });
 
 export const refundConsolidationService = new RefundConsolidationService({
-    database: testDb,
     refundPairRepository: repositories.refundPairRepository,
     transactionEntryRepository: repositories.transactionEntryRepository,
     transactionRepository: repositories.transactionRepository,
-    runTransaction: runTestTransaction,
     transactionTagsRepository: repositories.transactionTagsRepository
 });
 
 export const testQueryService = new TestQueryService(testDb);
 
 export const testSeedService = new TestSeedService(testDb);
+
+export const unconsolidateById = (transactionId: number) =>
+    runEffect(Db.transaction(unconsolidationService.unconsolidateById(transactionId)));

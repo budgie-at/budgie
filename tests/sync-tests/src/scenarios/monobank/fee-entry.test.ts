@@ -13,7 +13,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb, run } from '../../harness';
 
 describe('monobank/fee-entry', () => {
     it('finds the bank fee default category by lowercase localized search', () => {
@@ -28,7 +28,7 @@ describe('monobank/fee-entry', () => {
         const { account } = setupMonobankFixture();
         monobankStub.statement([buildMonobank.transaction({ id: 'tx-fee', amount: -6000, hold: false, commissionRate: -1000 })]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const [mainEntry] = testDb
             .select()
@@ -68,7 +68,7 @@ describe('monobank/fee-entry', () => {
         setupMonobankFixture();
         monobankStub.statement([buildMonobank.transaction({ id: 'tx-no-fee', amount: -6000, hold: false, commissionRate: 0 })]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const entries = testDb
             .select()

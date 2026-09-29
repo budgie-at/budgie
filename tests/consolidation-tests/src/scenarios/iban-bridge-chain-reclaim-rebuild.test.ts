@@ -22,7 +22,7 @@ import {
     IBAN_BRIDGE_UAH_TO_EUR_RATE
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testDb, testQueryService, unconsolidationService } from '../harness/test-context';
+import { testQueryService, unconsolidateById } from '../harness/test-context';
 
 const RATE_PRECISION_DIGITS = 10;
 const REBUILT_LEDGER_ENTRY_COUNT = 2;
@@ -69,7 +69,7 @@ describe('consolidation/iban-bridge-chain-reclaim-rebuild', () => {
         });
 
         await runConsolidation();
-        await unconsolidationService.unconsolidateById(fetchRebuiltCanonicalId(), testDb);
+        await unconsolidateById(fetchRebuiltCanonicalId());
 
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER)).toHaveLength(0);
         expect(testQueryService.fetchTransactionById(directTransfer.id).consolidationType).toBe(
@@ -86,7 +86,7 @@ describe('consolidation/iban-bridge-chain-reclaim-rebuild', () => {
         const balancesBeforeConsolidation = await fetchLedgerBalances(accountIds);
 
         await runConsolidation();
-        await unconsolidationService.unconsolidateById(directTransfer.id, testDb);
+        await unconsolidateById(directTransfer.id);
 
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER)).toHaveLength(0);
         expect(testQueryService.findTransactionById(directTransfer.id)).toBeUndefined();

@@ -7,6 +7,7 @@ import {
     SyncStatusEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { isDefined, isRecord } from '@rnw-community/shared';
@@ -168,15 +169,19 @@ describe('BankIntegrationAccountRow', () => {
             supportsDeposit: false
         };
         rowState.syncProvider = ExternalSourceEnum.BINANCE;
-        serviceSpies.getServiceForAccount.mockResolvedValue({
-            setAccountSyncEnabled: serviceSpies.binanceSetAccountSyncEnabled
-        });
+        serviceSpies.binanceSetAccountSyncEnabled.mockReturnValue(Effect.void);
+        serviceSpies.getServiceForAccount.mockReturnValue(
+            Effect.succeed({
+                setAccountSyncEnabled: serviceSpies.binanceSetAccountSyncEnabled
+            })
+        );
 
         captureToggle()(false);
-        await Promise.resolve();
 
+        await vi.waitFor(() => {
+            expect(serviceSpies.binanceSetAccountSyncEnabled).toHaveBeenCalledWith(ACCOUNT_ID, false);
+        });
         expect(serviceSpies.getServiceForAccount).toHaveBeenCalledWith(ACCOUNT_ID);
-        expect(serviceSpies.binanceSetAccountSyncEnabled).toHaveBeenCalledWith(ACCOUNT_ID, false);
         expect(serviceSpies.monobankSetAccountSyncEnabled).not.toHaveBeenCalled();
     });
 
@@ -188,15 +193,19 @@ describe('BankIntegrationAccountRow', () => {
             supportsDeposit: true
         };
         rowState.syncProvider = ExternalSourceEnum.PRIVATBANK;
-        serviceSpies.getServiceForAccount.mockResolvedValue({
-            setAccountSyncEnabled: serviceSpies.privatbankSetAccountSyncEnabled
-        });
+        serviceSpies.privatbankSetAccountSyncEnabled.mockReturnValue(Effect.void);
+        serviceSpies.getServiceForAccount.mockReturnValue(
+            Effect.succeed({
+                setAccountSyncEnabled: serviceSpies.privatbankSetAccountSyncEnabled
+            })
+        );
 
         captureToggle()(false);
-        await Promise.resolve();
 
+        await vi.waitFor(() => {
+            expect(serviceSpies.privatbankSetAccountSyncEnabled).toHaveBeenCalledWith(ACCOUNT_ID, false);
+        });
         expect(serviceSpies.getServiceForAccount).toHaveBeenCalledWith(ACCOUNT_ID);
-        expect(serviceSpies.privatbankSetAccountSyncEnabled).toHaveBeenCalledWith(ACCOUNT_ID, false);
         expect(serviceSpies.monobankSetAccountSyncEnabled).not.toHaveBeenCalled();
     });
 });

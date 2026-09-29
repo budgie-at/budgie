@@ -2,7 +2,7 @@ import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.
 import { LanguageEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { refundPairRepository, testSeedService } from '../harness/test-context';
+import { refundPairRepository, runEffect, testSeedService } from '../harness/test-context';
 
 const COMFY_REVIEW_AMOUNT_UAH = 120;
 const COMFY_REVIEW_AMOUNT = convertToMicroUnits(COMFY_REVIEW_AMOUNT_UAH);
@@ -18,9 +18,9 @@ describe('consolidation/refund-pair-review-null-mcc', () => {
             refundTitle: 'Повернення платежу COMFY, Київ'
         });
 
-        const autoCandidates = await refundPairRepository.findCandidates();
-        const reviewCandidates = await refundPairRepository.findReviewCandidates();
-        const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN);
+        const autoCandidates = await runEffect(refundPairRepository.findCandidates());
+        const reviewCandidates = await runEffect(refundPairRepository.findReviewCandidates());
+        const manualCandidates = await runEffect(refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN));
 
         expect(autoCandidates).toHaveLength(0);
         expect(reviewCandidates.length).toBeGreaterThanOrEqual(1);

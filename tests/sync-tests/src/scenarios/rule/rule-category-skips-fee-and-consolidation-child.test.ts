@@ -16,7 +16,7 @@ import {
 import { eq, inArray } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { seed, testDb } from '../../harness';
+import { seed, testDb, run } from '../../harness';
 
 const RULE_TITLE = 'Rule fee target';
 
@@ -69,8 +69,8 @@ describe('rule/rule-category-skips-fee-and-consolidation-child', () => {
             .run();
         const rule = seedCategoryRule(category.id);
 
-        const result = await ruleEngineService.applyRuleToMatchingTransactions(rule.id, null);
-        const directlyCategorizedIds = await transactionRuleRepository.setCategoryByTransactionIds([child.id], category.id);
+        const result = await run(ruleEngineService.applyRuleToMatchingTransactions(rule.id, null));
+        const directlyCategorizedIds = await run(transactionRuleRepository.setCategoryByTransactionIds([child.id], category.id));
         const entries = testDb
             .select()
             .from(TransactionEntryEntityTable)

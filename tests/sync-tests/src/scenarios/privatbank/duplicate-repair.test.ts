@@ -10,9 +10,10 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { sql } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { describe, expect, it, vi } from 'vitest';
 
-import { seed, testDb } from '../../harness';
+import { seed, testDb, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 import type { SyncDuplicateCandidateRowInterface } from '@app/sync/interface/sync-duplicate-candidate-row.interface';
@@ -410,10 +411,10 @@ describe('privatbank/duplicate-repair', () => {
         seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-kept' });
         seedPrivatbankIncome({ accountId: account.id, externalId: 'privatbank-income-duplicate' });
 
-        const updateAllBalancesSpy = vi.spyOn(accountBalanceIncrementalService, 'updateAllBalances').mockResolvedValue(undefined);
+        const updateAllBalancesSpy = vi.spyOn(accountBalanceIncrementalService, 'updateAllBalances').mockReturnValue(Effect.void);
 
         try {
-            const result = await syncRepairService.removeDuplicates();
+            const result = await run(syncRepairService.removeDuplicates());
 
             expect(result.repairedTransactionCount).toBe(1);
             expect(updateAllBalancesSpy).toHaveBeenCalledTimes(1);

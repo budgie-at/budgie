@@ -1,11 +1,13 @@
+import { Workload } from '@app/@generic/service/workload.service';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
+import * as Deferred from 'effect/Deferred';
+import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { buildMonobank, fetchPersistedMonobankTransactions } from '../../harness';
+import { buildMonobank, fetchPersistedMonobankTransactions, flushWorkload, run, runInWorkload } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -18,39 +20,30 @@ describe('monobank/suspended-run-lock', () => {
     it('keeps a sync request made during the active account run', async () => {
         const externalIds = ['mono-acc-1', 'mono-acc-2'];
         const requestedAccountIds: string[] = [];
-        let releaseBlocker = emptyFn;
-        let resolveBlockerStarted = emptyFn;
-        const blockerGate = new Promise<void>(resolve => {
-            releaseBlocker = resolve;
-        });
-        const blockerStarted = new Promise<void>(resolve => {
-            resolveBlockerStarted = resolve;
-        });
+        const blockerStarted = Deferred.makeUnsafe<void>();
+        const blockerGate = Deferred.makeUnsafe<void>();
 
         seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
-        const blockerWork = syncWorkloadService.run('blocker', async () => {
-            resolveBlockerStarted();
-            await blockerGate;
-        });
-        await blockerStarted;
-        const queuedWork = syncWorkloadService.run('queued-work', async () => Promise.resolve());
+        const blockerWork = runInWorkload(Effect.andThen(Deferred.succeed(blockerStarted, undefined), Deferred.await(blockerGate)));
+        await run(Deferred.await(blockerStarted));
+        const queuedWork = runInWorkload(Effect.void);
 
         mockServer.use(
             http.get(statementEndpoint, ({ params }) => {
                 requestedAccountIds.push(String(params[statementAccountParam]));
                 if (requestedAccountIds.length === 1) {
-                    void monobankSyncService.sync().catch(emptyFn);
+                    void runInWorkload(monobankSyncService.sync()).catch(emptyFn);
                 }
 
                 return HttpResponse.json([]);
             })
         );
 
-        await monobankSyncService.sync();
-        releaseBlocker();
+        await run(monobankSyncService.sync());
+        Deferred.doneUnsafe(blockerGate, Effect.void);
         await blockerWork;
         await queuedWork;
-        await syncWorkloadService.run('flush', async () => Promise.resolve());
+        await flushWorkload();
 
         expect(requestedAccountIds).toEqual(externalIds);
     });
@@ -81,11 +74,10 @@ describe('monobank/suspended-run-lock', () => {
             })
         );
 
-        const foregroundSync = syncWorkloadService.run('foreground', () => monobankSyncService.sync());
+        const foregroundSync = runInWorkload(monobankSyncService.sync()).then(emptyFn, emptyFn);
         await statementRequestStarted;
-        monobankSyncService.interruptActiveRun();
-        syncWorkloadService.interruptActiveWork();
-        const backgroundSync = syncWorkloadService.run('background-monobank', () => monobankSyncService.sync());
+        await run(Workload.use(workload => workload.interruptBackground));
+        const backgroundSync = runInWorkload(monobankSyncService.sync());
         await new Promise<void>(resolve => {
             setTimeout(resolve, nextTaskDelayMs);
         });

@@ -9,7 +9,8 @@ import {
     fetchBinanceTransactions,
     seedAmountTransferPair,
     seedCryptoInstrument,
-    setupUsdtSpotFixtureWithBalances
+    setupUsdtSpotFixtureWithBalances,
+    run
 } from '../../harness';
 
 const fetchBinanceTransfers = () => fetchBinanceTransactions().filter(transaction => transaction.type === TransactionTypeEnum.TRANSFER);
@@ -24,13 +25,13 @@ describe('binance/consolidation-exemption', () => {
             ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 90, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })]
         });
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const binanceTransfers = fetchBinanceTransfers();
         expect(binanceTransfers).toHaveLength(1);
         const transferTransactionId = binanceTransfers[0].id;
 
-        const candidates = await transferPairRepository.findCandidates();
+        const candidates = await run(transferPairRepository.findCandidates());
 
         expect(candidates.length).toBeGreaterThan(0);
         const referencesTransfer = candidates.some(

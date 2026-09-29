@@ -1,3 +1,4 @@
+import { consolidationCoordinatorService } from '@app/sync/service/consolidation-coordinator.service';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { privatbankCategoryMatcherService } from '@app/sync/service/privatbank-category-matcher.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
@@ -15,7 +16,8 @@ import {
     monobankStub,
     seed,
     setupMonobankFixture,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 
 const TRANSFER_AMOUNT = 250;
@@ -39,11 +41,11 @@ const setupMonobankTransfer = async (monobankAccountId: string): Promise<void> =
             originalMcc: Number(TRANSFER_MCC_CODE)
         })
     ]);
-    await monobankSyncService.sync();
+    await run(monobankSyncService.sync());
 };
 
 const importPrivatbankTransfer = async (privatbankAccountId: number, privatbankCardId: string) => {
-    const categoryMap = await privatbankCategoryMatcherService.match([PRIVATBANK_TRANSFER_CATEGORY]);
+    const categoryMap = await run(privatbankCategoryMatcherService.match([PRIVATBANK_TRANSFER_CATEGORY]));
     const privatbankTransaction = privatbankTransactionMapper({
         rawDate: '20.05.2026 15:00:00',
         date: new Date(OPERATED_AT.getTime() + SLOW_WINDOW_OFFSET_MS),
@@ -65,7 +67,7 @@ const importPrivatbankTransfer = async (privatbankAccountId: number, privatbankC
         ExternalSourceEnum.PRIVATBANK
     );
 
-    return transactionImportService.bulkUpsertImported([privatbankInput], new Map());
+    return run(transactionImportService.bulkUpsertImported([privatbankInput], new Map()));
 };
 
 const expectTransferPairParents = (privatbankTransactionIds: number[]): void => {
@@ -100,11 +102,10 @@ describe('consolidation/monobank-privatbank-transfer', () => {
         const importedPrivatbankTransactions = await importPrivatbankTransfer(privatbankAccount.id, privatbankCardId);
         expect(importedPrivatbankTransactions).toHaveLength(1);
 
-        const previewResult = await transferConsolidationService.preview();
-        expect(previewResult.autoCandidateCount).toBe(1);
-        expect(previewResult.manualReviewCandidateCount).toBe(0);
+        expect(await run(consolidationCoordinatorService.countAutoCandidates())).toBe(1);
+        expect(await run(consolidationCoordinatorService.countManualReviewCandidates())).toBe(0);
 
-        const consolidateResult = await transferConsolidationService.consolidate();
+        const consolidateResult = await run(transferConsolidationService.consolidate(null));
         expect(consolidateResult.consolidated).toBe(1);
 
         expectTransferPairParents(importedPrivatbankTransactions.map(transaction => transaction.id));

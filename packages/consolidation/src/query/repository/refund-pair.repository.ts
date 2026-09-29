@@ -1,3 +1,6 @@
+import { Db } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+
 import { REFUND_AUTO_CANDIDATES_SQL, REFUND_REVIEW_CANDIDATES_SQL } from './sql-factory/refund-ranked-candidate-sql.factory';
 import {
     REFUNDABLE_EXPENSE_CANDIDATES_SQL,
@@ -6,7 +9,6 @@ import {
 
 import type {
     ConsolidationScanScopeInterface,
-    DB,
     LanguageEnum,
     RefundCandidateBaseInterface,
     RefundCandidateBaseRowInterface,
@@ -19,41 +21,45 @@ import type {
 } from '@budgie/contracts';
 
 export class RefundPairRepository {
-    constructor(private db: DB) {}
+    readonly findCandidates = Effect.fn('RefundPairRepository.findCandidates')(function* (
+        this: RefundPairRepository,
+        scope: ConsolidationScanScopeInterface | null = null
+    ) {
+        const rows = yield* Db.query(db => db.$client.getAllAsync<RefundCandidateRowInterface>(REFUND_AUTO_CANDIDATES_SQL(scope)));
 
-    async findCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<RefundCandidateInterface[]> {
-        const rows = await this.db.$client.getAllAsync<RefundCandidateRowInterface>(REFUND_AUTO_CANDIDATES_SQL(scope));
-
-        return rows.map(row => ({
+        return rows.map((row): RefundCandidateInterface => ({
             ...this.mapCandidateBaseRow(row),
             confidenceBucket: row.confidenceBucket,
             matchType: row.matchType
         }));
-    }
+    });
 
-    async findReviewCandidates(): Promise<RefundReviewCandidateInterface[]> {
-        const rows = await this.db.$client.getAllAsync<RefundReviewCandidateRowInterface>(REFUND_REVIEW_CANDIDATES_SQL);
+    readonly findReviewCandidates = Effect.fn('RefundPairRepository.findReviewCandidates')(function* (this: RefundPairRepository) {
+        const rows = yield* Db.query(db => db.$client.getAllAsync<RefundReviewCandidateRowInterface>(REFUND_REVIEW_CANDIDATES_SQL));
 
-        return rows.map(row => ({
+        return rows.map((row): RefundReviewCandidateInterface => ({
             ...this.mapCandidateBaseRow(row),
             confidenceBucket: row.confidenceBucket,
             matchType: row.matchType
         }));
-    }
+    });
 
-    async findRefundableExpenseCandidates(
+    readonly findRefundableExpenseCandidates = Effect.fn('RefundPairRepository.findRefundableExpenseCandidates')(function* (
+        this: RefundPairRepository,
         refundIncomeTransactionId: number,
         search: string,
         language: LanguageEnum
-    ): Promise<RefundableExpenseCandidateInterface[]> {
+    ) {
         const searchPattern = `%${search.trim().toLowerCase()}%`;
-        const rows = await this.db.$client.getAllAsync<RefundableExpenseCandidateRowInterface>(
-            REFUNDABLE_EXPENSE_CANDIDATES_SQL,
-            buildRefundableExpenseCandidateParams(refundIncomeTransactionId, searchPattern, language)
+        const rows = yield* Db.query(db =>
+            db.$client.getAllAsync<RefundableExpenseCandidateRowInterface>(
+                REFUNDABLE_EXPENSE_CANDIDATES_SQL,
+                buildRefundableExpenseCandidateParams(refundIncomeTransactionId, searchPattern, language)
+            )
         );
 
         return rows.map(row => this.mapRefundableExpenseCandidateRow(row));
-    }
+    });
 
     private mapCandidateBaseRow(row: RefundCandidateBaseRowInterface): RefundCandidateBaseInterface {
         return {

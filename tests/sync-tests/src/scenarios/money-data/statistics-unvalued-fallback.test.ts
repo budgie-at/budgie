@@ -17,7 +17,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { requireInstrument } from '../../harness';
+import { requireInstrument, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -137,9 +137,9 @@ describe('statistics fallback for unvalued entries', () => {
     it('completes historical valuation while preserving unconvertible entries as unvalued', async () => {
         const { category, entry, euro } = await seedUnconvertibleExpense('Unconvertible upgrade expense');
 
-        await expect(transactionEntryRepository.countPendingBaseValuationEntries(euro.id)).resolves.toBe(1);
+        await expect(run(transactionEntryRepository.countPendingBaseValuationEntries(euro.id))).resolves.toBe(1);
 
-        await moneyDataUpgradeService.run();
+        await run(moneyDataUpgradeService.run());
 
         const [updatedEntry] = await testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.id, entry.id));
         const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id).get();
@@ -148,7 +148,7 @@ describe('statistics fallback for unvalued entries', () => {
         expect(updatedEntry.baseInstrumentId).toBe(euro.id);
         expect(updatedEntry.baseExchangeRate).toBeNull();
         expect(updatedEntry.baseAmount).toBeNull();
-        await expect(transactionEntryRepository.countPendingBaseValuationEntries(euro.id)).resolves.toBe(0);
+        await expect(run(transactionEntryRepository.countPendingBaseValuationEntries(euro.id))).resolves.toBe(0);
         expect(totals?.expense).toBe(0);
         expect(categoryAmount).toBe(0);
     });

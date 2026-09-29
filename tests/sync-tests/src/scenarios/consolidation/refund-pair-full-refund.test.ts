@@ -9,7 +9,7 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario } from '../../harness';
+import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario, run } from '../../harness';
 
 describe('consolidation/refund-pair-full-refund', () => {
     it('promotes the expense and reparents the matching-amount refund (full refund)', async () => {
@@ -36,7 +36,7 @@ describe('consolidation/refund-pair-full-refund', () => {
     it('removes full refunds from totals and expense category analytics', async () => {
         const { account, category } = seedRefundStatisticsScenario(120 * PRECISION);
 
-        await transferConsolidationService.consolidate();
+        await run(transferConsolidationService.consolidate(null));
 
         const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).get();
         const categoryRows = statisticsRepository

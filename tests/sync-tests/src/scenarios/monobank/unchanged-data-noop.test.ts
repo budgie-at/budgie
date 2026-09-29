@@ -3,7 +3,7 @@ import { SyncEntityTable, TransactionEntityTable, TransactionEntryEntityTable } 
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb, run } from '../../harness';
 
 describe('monobank/unchanged-data-noop', () => {
     it('re-sync of identical data does not touch updatedAt on transactions or entries', async () => {
@@ -11,7 +11,7 @@ describe('monobank/unchanged-data-noop', () => {
 
         const txPayload = buildMonobank.transaction({ id: 'tx-stable', amount: -2500, hold: false });
         monobankStub.statement([txPayload]);
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const txAfterFirst = testDb
             .select()
@@ -31,7 +31,7 @@ describe('monobank/unchanged-data-noop', () => {
             .run();
 
         monobankStub.statement([txPayload]);
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const txAfterSecond = testDb
             .select()

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { isDefined } from '@rnw-community/shared';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
+import { refundPairRepository, runEffect, testQueryService, testSeedService } from '../harness/test-context';
 
 const SEEZONA_EXPENSE_AMOUNT_UAH = 103.2;
 const SEEZONA_EXPENSE_AMOUNT = SEEZONA_EXPENSE_AMOUNT_UAH * PRECISION;
@@ -35,9 +35,9 @@ const seedSeezonaRefund = (accountId: number, refundAccountId?: number) => {
 };
 
 const expectManualSeezonaCandidate = async (refundId: number, accountTitle?: string) => {
-    const autoCandidates = await refundPairRepository.findCandidates();
-    const reviewCandidates = await refundPairRepository.findReviewCandidates();
-    const manualCandidates = await refundPairRepository.findRefundableExpenseCandidates(refundId, '', LanguageEnum.EN);
+    const autoCandidates = await runEffect(refundPairRepository.findCandidates());
+    const reviewCandidates = await runEffect(refundPairRepository.findReviewCandidates());
+    const manualCandidates = await runEffect(refundPairRepository.findRefundableExpenseCandidates(refundId, '', LanguageEnum.EN));
 
     expect(autoCandidates).toHaveLength(0);
     expect(reviewCandidates.length).toBeGreaterThanOrEqual(1);
@@ -64,8 +64,8 @@ describe('consolidation/refund-pair-manual-review', () => {
             refundMccCategoryId: mcc.id
         });
 
-        const autoCandidates = await refundPairRepository.findCandidates();
-        const reviewCandidates = await refundPairRepository.findReviewCandidates();
+        const autoCandidates = await runEffect(refundPairRepository.findCandidates());
+        const reviewCandidates = await runEffect(refundPairRepository.findReviewCandidates());
         expect(autoCandidates).toHaveLength(0);
         expect(reviewCandidates.length).toBeGreaterThanOrEqual(1);
 
@@ -104,7 +104,7 @@ describe('consolidation/refund-pair-manual-review', () => {
             refundMccCategoryId: mcc.id
         });
 
-        const reviewCandidates = await refundPairRepository.findReviewCandidates();
+        const reviewCandidates = await runEffect(refundPairRepository.findReviewCandidates());
 
         expect(reviewCandidates).toHaveLength(0);
     });
@@ -130,8 +130,8 @@ describe('consolidation/refund-pair-manual-review', () => {
             refundDelaySeconds: 24 * 60 * 60
         });
 
-        const autoCandidates = await refundPairRepository.findCandidates();
-        const reviewCandidates = await refundPairRepository.findReviewCandidates();
+        const autoCandidates = await runEffect(refundPairRepository.findCandidates());
+        const reviewCandidates = await runEffect(refundPairRepository.findReviewCandidates());
 
         expect(autoCandidates).toHaveLength(0);
         expect(reviewCandidates).toEqual([

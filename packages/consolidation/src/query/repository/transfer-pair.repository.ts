@@ -1,3 +1,6 @@
+import { Db } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+
 import { buildP2pFiatAtomicCandidateSql } from './sql-factory/p2p-fiat-atomic-candidate-sql.factory';
 import { buildP2pFiatAuthoritativeCandidateSql } from './sql-factory/p2p-fiat-authoritative-candidate-sql.factory';
 import { buildP2pFiatAuthoritativeRepairCandidateSql } from './sql-factory/p2p-fiat-authoritative-repair-candidate-sql.factory';
@@ -13,47 +16,50 @@ import type { P2pFiatAuthoritativeRepairCandidateInterface } from '../interface/
 import type {
     BridgeClaimRepairCandidateInterface,
     ConsolidationScanScopeInterface,
-    DB,
     TransferPairCandidateInterface,
     TransferPairReviewCandidateInterface
 } from '@budgie/contracts';
 
 export class TransferPairRepository {
-    constructor(private db: DB) {}
-
-    async findCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<TransferPairCandidateInterface[]> {
+    readonly findCandidates = Effect.fn('TransferPairRepository.findCandidates')(function* (
+        scope: ConsolidationScanScopeInterface | null = null
+    ) {
         const sql = buildTransferPairCandidatesSql(scope);
 
-        return this.db.$client.getAllAsync<TransferPairCandidateInterface>(sql);
-    }
+        return yield* Db.query(db => db.$client.getAllAsync<TransferPairCandidateInterface>(sql));
+    });
 
-    async findBridgeClaimedRepairCandidates(): Promise<BridgeClaimRepairCandidateInterface[]> {
-        return this.db.$client.getAllAsync<BridgeClaimRepairCandidateInterface>(BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL);
-    }
+    readonly findBridgeClaimedRepairCandidates = Effect.fn('TransferPairRepository.findBridgeClaimedRepairCandidates')(function* () {
+        return yield* Db.query(db => db.$client.getAllAsync<BridgeClaimRepairCandidateInterface>(BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL));
+    });
 
-    async findP2pFiatAtomicCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<P2pFiatAtomicCandidateInterface[]> {
+    readonly findP2pFiatAtomicCandidates = Effect.fn('TransferPairRepository.findP2pFiatAtomicCandidates')(function* (
+        scope: ConsolidationScanScopeInterface | null = null
+    ) {
         const sql = buildP2pFiatAtomicCandidateSql(scope);
 
-        return this.db.$client.getAllAsync<P2pFiatAtomicCandidateInterface>(sql);
-    }
+        return yield* Db.query(db => db.$client.getAllAsync<P2pFiatAtomicCandidateInterface>(sql));
+    });
 
-    async findP2pFiatAuthoritativeCandidates(
+    readonly findP2pFiatAuthoritativeCandidates = Effect.fn('TransferPairRepository.findP2pFiatAuthoritativeCandidates')(function* (
         scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<P2pFiatAuthoritativeCandidateInterface[]> {
-        return this.db.$client.getAllAsync<P2pFiatAuthoritativeCandidateInterface>(buildP2pFiatAuthoritativeCandidateSql(scope));
-    }
-
-    async findP2pFiatAuthoritativeRepairCandidates(
-        scope: ConsolidationScanScopeInterface | null = null
-    ): Promise<P2pFiatAuthoritativeRepairCandidateInterface[]> {
-        return this.db.$client.getAllAsync<P2pFiatAuthoritativeRepairCandidateInterface>(
-            buildP2pFiatAuthoritativeRepairCandidateSql(scope)
+    ) {
+        return yield* Db.query(db =>
+            db.$client.getAllAsync<P2pFiatAuthoritativeCandidateInterface>(buildP2pFiatAuthoritativeCandidateSql(scope))
         );
-    }
+    });
 
-    async findManualReviewCandidates(): Promise<TransferPairReviewCandidateInterface[]> {
+    readonly findP2pFiatAuthoritativeRepairCandidates = Effect.fn('TransferPairRepository.findP2pFiatAuthoritativeRepairCandidates')(
+        function* (scope: ConsolidationScanScopeInterface | null = null) {
+            return yield* Db.query(db =>
+                db.$client.getAllAsync<P2pFiatAuthoritativeRepairCandidateInterface>(buildP2pFiatAuthoritativeRepairCandidateSql(scope))
+            );
+        }
+    );
+
+    readonly findManualReviewCandidates = Effect.fn('TransferPairRepository.findManualReviewCandidates')(function* () {
         const sql = buildTransferPairManualReviewCandidatesSql();
 
-        return this.db.$client.getAllAsync<TransferPairReviewCandidateInterface>(sql);
-    }
+        return yield* Db.query(db => db.$client.getAllAsync<TransferPairReviewCandidateInterface>(sql));
+    });
 }

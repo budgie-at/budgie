@@ -1,9 +1,8 @@
-import { Log } from '@budgie/logger';
 import { getMonth } from 'date-fns/getMonth';
 import { getYear } from 'date-fns/getYear';
 import { subMonths } from 'date-fns/subMonths';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { budgetPeriodService } from '../../period/service/budget-period.service';
 import { budgetSpentService } from '../../spent/service/budget-spent.service';
@@ -30,14 +29,6 @@ class BudgetTemplateService {
     private static readonly MICRO_UNIT_PRECISION = BudgetTemplateService.THOUSAND_STEP * BudgetTemplateService.THOUSAND_STEP;
     private static readonly ZERO_DRAFT: BudgetTemplateDraftInterface = { overallLimit: 0, categoryLimits: [] };
 
-    @Log(
-        spentByCategory =>
-            `enter spentByCategory=${spentByCategory.map(entry => `${entry.categoryId}:${entry.monthlyAmounts.join('|')}`).join(',')}`,
-        (result, spentByCategory) =>
-            `done spentByCategory=${spentByCategory.map(entry => `${entry.categoryId}:${entry.monthlyAmounts.join('|')}`).join(',')} overallLimit=${result.overallLimit} categoryLimits=${result.categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')}`,
-        (error, spentByCategory) =>
-            `throw spentByCategory=${spentByCategory.map(entry => `${entry.categoryId}:${entry.monthlyAmounts.join('|')}`).join(',')} error=${getErrorMessage(error)}`
-    )
     buildSuggestedBudgetTemplate(spentByCategory: readonly BudgetCategoryMonthlySpentInterface[]): BudgetTemplateDraftInterface {
         const averaged = spentByCategory.map(entry => ({
             categoryId: entry.categoryId,
@@ -63,14 +54,6 @@ class BudgetTemplateService {
         return { overallLimit, categoryLimits };
     }
 
-    @Log(
-        (categories, currencyCode) =>
-            `enter categories=${categories.map(category => `${category.id}:${category.isDefault}`).join(',')} currencyCode="${currencyCode}"`,
-        (result, categories, currencyCode) =>
-            `done categories=${categories.map(category => `${category.id}:${category.isDefault}`).join(',')} currencyCode="${currencyCode}" overallLimit=${result.overallLimit} categoryLimits=${result.categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')}`,
-        (error, categories, currencyCode) =>
-            `throw categories=${categories.map(category => `${category.id}:${category.isDefault}`).join(',')} currencyCode="${currencyCode}" error=${getErrorMessage(error)}`
-    )
     resolveGenericBudgetTemplate(
         categories: readonly BudgetGenericCategoryRowInterface[],
         currencyCode: string
@@ -82,14 +65,6 @@ class BudgetTemplateService {
         return { overallLimit, categoryLimits };
     }
 
-    @Log(
-        (entries, now, baseInstrumentId, config) =>
-            `enter entries=${entries.map(entry => `${entry.amount}:${isDefined(entry.categoryId) ? entry.categoryId : ''}:${entry.instrumentId}:${isDefined(entry.rate) ? entry.rate : ''}:${entry.operatedAt.toISOString()}`).join(',')} now=${now.toISOString()} baseInstrumentId=${baseInstrumentId} minWindowMonths=${config.minWindowMonths} maxWindowMonths=${config.maxWindowMonths} minEntriesPerMonth=${config.minEntriesPerMonth} minDistinctCategories=${config.minDistinctCategories}`,
-        (result, ...[entries, now, baseInstrumentId, config]) =>
-            `done entries=${entries.map(entry => `${entry.amount}:${isDefined(entry.categoryId) ? entry.categoryId : ''}:${entry.instrumentId}:${isDefined(entry.rate) ? entry.rate : ''}:${entry.operatedAt.toISOString()}`).join(',')} now=${now.toISOString()} baseInstrumentId=${baseInstrumentId} minWindowMonths=${config.minWindowMonths} maxWindowMonths=${config.maxWindowMonths} minEntriesPerMonth=${config.minEntriesPerMonth} minDistinctCategories=${config.minDistinctCategories} overallLimit=${result.draft.overallLimit} categoryLimits=${result.draft.categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')} isReady=${result.isReady} isAvailable=${result.isAvailable}`,
-        (error, ...[entries, now, baseInstrumentId, config]) =>
-            `throw entries=${entries.map(entry => `${entry.amount}:${isDefined(entry.categoryId) ? entry.categoryId : ''}:${entry.instrumentId}:${isDefined(entry.rate) ? entry.rate : ''}:${entry.operatedAt.toISOString()}`).join(',')} now=${now.toISOString()} baseInstrumentId=${baseInstrumentId} minWindowMonths=${config.minWindowMonths} maxWindowMonths=${config.maxWindowMonths} minEntriesPerMonth=${config.minEntriesPerMonth} minDistinctCategories=${config.minDistinctCategories} error=${getErrorMessage(error)}`
-    )
     buildSuggestedBudgetTemplateResolution(
         entries: readonly BudgetSuggestedSpentEntryInterface[],
         now: Date,

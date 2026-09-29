@@ -1,7 +1,7 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { IBAN_BRIDGE_CHAIN_FX_TOLERANCE } from '../../shared/constant/iban-bridge-chain-fx-tolerance.constant';
 import { buildIbanBridgeChainCanonicalInput } from '../utils/build-iban-bridge-chain-canonical-input.util';
@@ -14,7 +14,6 @@ import type { CanonicalTransferInputInterface } from '../interface/canonical-tra
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
 import type {
     BridgeClaimRepairCandidateInterface,
-    DB,
     ExistingTransferChainReclaimCandidateInterface,
     ExistingTransferIncomeDuplicateCandidateInterface,
     IbanBridgeCanonicalDuplicateCandidateInterface,
@@ -26,26 +25,10 @@ import type {
 export class ConsolidationRepairExecutorService {
     private static readonly MILLISECONDS_IN_SECOND = 1000;
 
-    private readonly consolidationEligibilityService: ConsolidationEligibilityService;
+    readonly repairP2pFiatCanonical = Effect.fn('ConsolidationRepairExecutorService.repairP2pFiatCanonical')(
+        function* (this: ConsolidationRepairExecutorService, canonicalTransactionId: number) {
+            const canonical = yield* this.dependencies.transactionRepository.getByIdRaw(canonicalTransactionId);
 
-    private readonly consolidationMutationService: ConsolidationMutationService;
-
-    private readonly unconsolidationService: UnconsolidationService;
-
-    constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {
-        this.consolidationEligibilityService = new ConsolidationEligibilityService(dependencies);
-        this.consolidationMutationService = new ConsolidationMutationService(dependencies);
-        this.unconsolidationService = new UnconsolidationService(dependencies);
-    }
-
-    @Log(
-        canonicalTransactionId => `enter canonicalTransactionId=${canonicalTransactionId}`,
-        (result, canonicalTransactionId) => `done result=${String(result)} canonicalTransactionId=${canonicalTransactionId}`,
-        (error, canonicalTransactionId) => `throw canonicalTransactionId=${canonicalTransactionId} error=${getErrorMessage(error)}`
-    )
-    async repairP2pFiatCanonical(canonicalTransactionId: number): Promise<boolean> {
-        return this.dependencies.runTransaction(this.dependencies.database, async tx => {
-            const canonical = await this.dependencies.transactionRepository.getByIdRaw(canonicalTransactionId, tx);
             if (
                 !isDefined(canonical) ||
                 canonical.consolidationType !== TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER ||
@@ -54,25 +37,20 @@ export class ConsolidationRepairExecutorService {
                 return false;
             }
 
-            await this.unconsolidationService.unconsolidateById(canonicalTransactionId, tx);
+            yield* this.unconsolidationService.unconsolidateById(canonicalTransactionId);
 
             return true;
-        });
-    }
+        },
+        effect => Db.transaction(effect)
+    );
 
-    @Log(
-        candidate =>
-            `enter canonicalTransferId=${candidate.canonicalTransferId} claimedIncomeTransactionId=${candidate.claimedIncomeTransactionId}`,
-        (result, candidate) =>
-            `done result=${String(result)} canonicalTransferId=${candidate.canonicalTransferId} claimedIncomeTransactionId=${candidate.claimedIncomeTransactionId}`,
-        (error, candidate) =>
-            `throw canonicalTransferId=${candidate.canonicalTransferId} claimedIncomeTransactionId=${candidate.claimedIncomeTransactionId} error=${getErrorMessage(error)}`
-    )
-    async unconsolidateBridgeClaimedTransferPair(candidate: BridgeClaimRepairCandidateInterface): Promise<boolean> {
-        return this.dependencies.runTransaction(this.dependencies.database, async tx => {
-            const canonical = await this.dependencies.transactionRepository.getByIdRaw(candidate.canonicalTransferId, tx);
-            const claimedIncome = await this.dependencies.transactionRepository.getByIdRaw(candidate.claimedIncomeTransactionId, tx);
-            const interbankExpense = await this.dependencies.transactionRepository.getByIdRaw(candidate.interbankExpenseTransactionId, tx);
+    readonly unconsolidateBridgeClaimedTransferPair = Effect.fn(
+        'ConsolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair'
+    )(
+        function* (this: ConsolidationRepairExecutorService, candidate: BridgeClaimRepairCandidateInterface) {
+            const canonical = yield* this.dependencies.transactionRepository.getByIdRaw(candidate.canonicalTransferId);
+            const claimedIncome = yield* this.dependencies.transactionRepository.getByIdRaw(candidate.claimedIncomeTransactionId);
+            const interbankExpense = yield* this.dependencies.transactionRepository.getByIdRaw(candidate.interbankExpenseTransactionId);
 
             if (
                 !isDefined(canonical) ||
@@ -86,117 +64,181 @@ export class ConsolidationRepairExecutorService {
                 return false;
             }
 
-            await this.unconsolidationService.unconsolidateById(candidate.canonicalTransferId, tx);
+            yield* this.unconsolidationService.unconsolidateById(candidate.canonicalTransferId);
 
             return true;
-        });
-    }
+        },
+        effect => Db.transaction(effect)
+    );
 
-    @Log(
-        candidate =>
-            `enter expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} existingCanonicalTransferId=${candidate.existingCanonicalTransferId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} timeDiff=${candidate.timeDiff}`,
-        (result, candidate) =>
-            `done result=${String(result)} expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} existingCanonicalTransferId=${candidate.existingCanonicalTransferId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} timeDiff=${candidate.timeDiff}`,
-        (error, candidate) =>
-            `throw expenseTransactionId=${candidate.expenseTransactionId} incomeTransactionId=${candidate.incomeTransactionId} existingCanonicalTransferId=${candidate.existingCanonicalTransferId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
-    )
-    async consolidateIbanBridgeCanonicalDuplicate(candidate: IbanBridgeCanonicalDuplicateCandidateInterface): Promise<boolean> {
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.consolidateIbanBridgeCanonicalDuplicateInner(candidate, tx)
-        );
-    }
+    readonly consolidateIbanBridgeCanonicalDuplicate = Effect.fn(
+        'ConsolidationRepairExecutorService.consolidateIbanBridgeCanonicalDuplicate'
+    )(
+        function* (this: ConsolidationRepairExecutorService, candidate: IbanBridgeCanonicalDuplicateCandidateInterface) {
+            const sourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
 
-    @Log(
-        candidate =>
-            `enter supersededCanonicalTransactionId=${candidate.supersededCanonicalTransactionId} canonicalTransactionId=${candidate.canonicalTransactionId} bridgeOriginTransactionId=${candidate.bridgeOriginTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} timeDiff=${candidate.timeDiff}`,
-        (result, candidate) =>
-            `done result=${String(result)} supersededCanonicalTransactionId=${candidate.supersededCanonicalTransactionId} canonicalTransactionId=${candidate.canonicalTransactionId} bridgeOriginTransactionId=${candidate.bridgeOriginTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} timeDiff=${candidate.timeDiff}`,
-        (error, candidate) =>
-            `throw supersededCanonicalTransactionId=${candidate.supersededCanonicalTransactionId} canonicalTransactionId=${candidate.canonicalTransactionId} bridgeOriginTransactionId=${candidate.bridgeOriginTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
-    )
-    async consolidateIbanBridgeCanonicalSupersession(candidate: IbanBridgeCanonicalSupersessionCandidateInterface): Promise<boolean> {
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.consolidateIbanBridgeCanonicalSupersessionInner(candidate, tx)
-        );
-    }
+            if (!(yield* this.consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds))) {
+                return false;
+            }
 
-    @Log(
-        candidate =>
-            `enter existingTransferId=${candidate.existingTransferId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} bridgeAmount=${candidate.bridgeAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate}`,
-        (result, candidate) =>
-            `done result=${String(result)} existingTransferId=${candidate.existingTransferId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} bridgeAmount=${candidate.bridgeAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate}`,
-        (error, candidate) =>
-            `throw existingTransferId=${candidate.existingTransferId} bridgeIncomeTransactionId=${candidate.bridgeIncomeTransactionId} bridgeExpenseTransactionId=${candidate.bridgeExpenseTransactionId} sourceAccountId=${candidate.sourceAccountId} bridgeAccountId=${candidate.bridgeAccountId} targetAccountId=${candidate.targetAccountId} sourceAmount=${candidate.sourceAmount} bridgeAmount=${candidate.bridgeAmount} targetAmount=${candidate.targetAmount} exchangeRate=${candidate.exchangeRate} error=${getErrorMessage(error)}`
-    )
-    async consolidateExistingTransferChainReclaim(candidate: ExistingTransferChainReclaimCandidateInterface): Promise<boolean> {
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.consolidateExistingTransferChainReclaimInner(candidate, tx)
-        );
-    }
+            yield* this.consolidationMutationService.moveSourcesToCanonical(sourceTransactionIds, candidate.existingCanonicalTransferId);
 
-    @Log(
-        candidate =>
-            `enter existingTransferId=${candidate.existingTransferId} duplicateTransactionId=${candidate.duplicateTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff}`,
-        (result, candidate) =>
-            `done result=${String(result)} existingTransferId=${candidate.existingTransferId} duplicateTransactionId=${candidate.duplicateTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff}`,
-        (error, candidate) =>
-            `throw existingTransferId=${candidate.existingTransferId} duplicateTransactionId=${candidate.duplicateTransactionId} sourceAccountId=${candidate.sourceAccountId} targetAccountId=${candidate.targetAccountId} targetEntryId=${candidate.existingTransferTargetEntryId} sourceAmount=${candidate.sourceAmount} amount=${candidate.amount} exchangeRate=${candidate.exchangeRate} amountDelta=${candidate.amountDelta} timeDiff=${candidate.timeDiff} error=${getErrorMessage(error)}`
-    )
-    async consolidateExistingTransferIncomeDuplicate(candidate: ExistingTransferIncomeDuplicateCandidateInterface): Promise<boolean> {
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.consolidateExistingTransferIncomeDuplicateInner(candidate, tx)
-        );
-    }
+            return true;
+        },
+        effect => Db.transaction(effect)
+    );
 
-    @Log(
-        candidate =>
-            `enter expenseTransactionId=${candidate.expenseTransactionId} accountId=${candidate.accountId} refundIncomeTransactionIds=${candidate.refundIncomeTransactionIds.join(',')} refundsTotal=${candidate.refundsTotal} expenseEntryAmount=${candidate.expenseEntryAmount}`,
-        (result, candidate) =>
-            `done result=${String(result)} expenseTransactionId=${candidate.expenseTransactionId} refundIncomeTransactionIds=${candidate.refundIncomeTransactionIds.join(',')} refundsTotal=${candidate.refundsTotal}`,
-        (error, candidate) =>
-            `throw expenseTransactionId=${candidate.expenseTransactionId} refundIncomeTransactionIds=${candidate.refundIncomeTransactionIds.join(',')} refundsTotal=${candidate.refundsTotal} error=${getErrorMessage(error)}`
-    )
-    async consolidateRefund(candidate: RefundCandidateInterface): Promise<boolean> {
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx => this.consolidateRefundInner(candidate, tx));
-    }
+    readonly consolidateIbanBridgeCanonicalSupersession = Effect.fn(
+        'ConsolidationRepairExecutorService.consolidateIbanBridgeCanonicalSupersession'
+    )(
+        function* (this: ConsolidationRepairExecutorService, candidate: IbanBridgeCanonicalSupersessionCandidateInterface) {
+            const canonicalIdsOwningMovedEntries = [candidate.supersededCanonicalTransactionId, candidate.canonicalTransactionId];
+            const transactions = yield* this.consolidationEligibilityService.findEligibleSourceTransactions(
+                canonicalIdsOwningMovedEntries,
+                canonicalIdsOwningMovedEntries
+            );
 
-    private async consolidateIbanBridgeCanonicalDuplicateInner(
-        candidate: IbanBridgeCanonicalDuplicateCandidateInterface,
-        tx: DB
-    ): Promise<boolean> {
-        const sourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
+            if (!isDefined(transactions) || !transactions.every(transaction => this.isUntouchedIbanBridgeCanonical(transaction))) {
+                return false;
+            }
 
-        if (!(await this.consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, tx))) {
-            return false;
+            yield* this.consolidationMutationService.moveSourcesToCanonical(
+                [candidate.supersededCanonicalTransactionId],
+                candidate.canonicalTransactionId
+            );
+
+            return true;
+        },
+        effect => Db.transaction(effect)
+    );
+
+    readonly consolidateExistingTransferChainReclaim = Effect.fn(
+        'ConsolidationRepairExecutorService.consolidateExistingTransferChainReclaim'
+    )(
+        function* (this: ConsolidationRepairExecutorService, candidate: ExistingTransferChainReclaimCandidateInterface) {
+            const bridgeSourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
+            const existingTransfer = yield* this.findEligibleExistingTransfer(bridgeSourceTransactionIds, candidate.existingTransferId);
+
+            if (!isDefined(existingTransfer)) {
+                return false;
+            }
+
+            if (this.hasChainReclaimConsistentLedger(candidate, existingTransfer)) {
+                yield* this.dependencies.transactionRepository.setConsolidationType(
+                    candidate.existingTransferId,
+                    TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER
+                );
+                yield* this.consolidationMutationService.moveSourcesToCanonical(bridgeSourceTransactionIds, candidate.existingTransferId);
+
+                return true;
+            }
+
+            const canonicalTransaction = yield* this.consolidationMutationService.createCanonicalTransfer(
+                buildIbanBridgeChainCanonicalInput({
+                    title: existingTransfer.title,
+                    operatedAt: candidate.operatedAt,
+                    fromAccountId: candidate.sourceAccountId,
+                    toAccountId: candidate.targetAccountId,
+                    fromAmount: candidate.sourceAmount,
+                    toAmount: candidate.targetAmount,
+                    exchangeRate: candidate.exchangeRate,
+                    fromEntryToIban: candidate.targetAccountIban
+                })
+            );
+
+            yield* this.consolidationMutationService.moveSourcesToCanonical(
+                [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId, candidate.existingTransferId],
+                canonicalTransaction.id
+            );
+
+            return true;
+        },
+        effect => Db.transaction(effect)
+    );
+
+    readonly consolidateExistingTransferIncomeDuplicate = Effect.fn(
+        'ConsolidationRepairExecutorService.consolidateExistingTransferIncomeDuplicate'
+    )(
+        function* (this: ConsolidationRepairExecutorService, candidate: ExistingTransferIncomeDuplicateCandidateInterface) {
+            const existingTransfer = yield* this.findEligibleExistingTransfer(
+                [candidate.duplicateTransactionId],
+                candidate.existingTransferId
+            );
+
+            if (!isDefined(existingTransfer)) {
+                return false;
+            }
+
+            const canonicalTransaction = yield* this.consolidationMutationService.createCanonicalTransfer(
+                this.buildIncomeDuplicateCanonicalInput(candidate, existingTransfer)
+            );
+
+            yield* this.consolidationMutationService.moveSourcesToCanonical(
+                [candidate.existingTransferId, candidate.duplicateTransactionId],
+                canonicalTransaction.id
+            );
+
+            return true;
+        },
+        effect => Db.transaction(effect)
+    );
+
+    readonly consolidateRefund = Effect.fn('ConsolidationRepairExecutorService.consolidateRefund')(
+        function* (this: ConsolidationRepairExecutorService, candidate: RefundCandidateInterface) {
+            const sourceTransactionIds = [candidate.expenseTransactionId, ...candidate.refundIncomeTransactionIds];
+
+            if (
+                !(yield* this.consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, [
+                    candidate.expenseTransactionId
+                ]))
+            ) {
+                return false;
+            }
+
+            yield* this.dependencies.transactionRepository.setConsolidationType(
+                candidate.expenseTransactionId,
+                TransactionConsolidationTypeEnum.REFUND
+            );
+            yield* this.consolidationMutationService.copySourceTags(candidate.refundIncomeTransactionIds, candidate.expenseTransactionId);
+            yield* this.consolidationMutationService.moveSourcesToCanonical(
+                candidate.refundIncomeTransactionIds,
+                candidate.expenseTransactionId
+            );
+
+            return true;
+        },
+        effect => Db.transaction(effect)
+    );
+
+    private readonly consolidationEligibilityService: ConsolidationEligibilityService;
+
+    private readonly consolidationMutationService: ConsolidationMutationService;
+
+    private readonly unconsolidationService: UnconsolidationService;
+
+    private readonly findEligibleExistingTransfer = Effect.fnUntraced(function* (
+        this: ConsolidationRepairExecutorService,
+        sourceTransactionIds: number[],
+        existingTransferId: number
+    ) {
+        if (
+            !(yield* this.consolidationEligibilityService.isExistingTransferConsolidationStillEligible(
+                sourceTransactionIds,
+                existingTransferId
+            ))
+        ) {
+            return null;
         }
 
-        await this.consolidationMutationService.moveSourcesToCanonical(sourceTransactionIds, candidate.existingCanonicalTransferId, tx);
+        const existingTransfers = yield* this.dependencies.transactionRepository.findByIds([existingTransferId]);
 
-        return true;
-    }
+        return existingTransfers.at(0) ?? null;
+    });
 
-    private async consolidateIbanBridgeCanonicalSupersessionInner(
-        candidate: IbanBridgeCanonicalSupersessionCandidateInterface,
-        tx: DB
-    ): Promise<boolean> {
-        const canonicalIdsOwningMovedEntries = [candidate.supersededCanonicalTransactionId, candidate.canonicalTransactionId];
-        const transactions = await this.consolidationEligibilityService.findEligibleSourceTransactions(
-            canonicalIdsOwningMovedEntries,
-            tx,
-            canonicalIdsOwningMovedEntries
-        );
-
-        if (!isDefined(transactions) || !transactions.every(transaction => this.isUntouchedIbanBridgeCanonical(transaction))) {
-            return false;
-        }
-
-        await this.consolidationMutationService.moveSourcesToCanonical(
-            [candidate.supersededCanonicalTransactionId],
-            candidate.canonicalTransactionId,
-            tx
-        );
-
-        return true;
+    constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {
+        this.consolidationEligibilityService = new ConsolidationEligibilityService(dependencies);
+        this.consolidationMutationService = new ConsolidationMutationService(dependencies);
+        this.unconsolidationService = new UnconsolidationService(dependencies);
     }
 
     private isUntouchedIbanBridgeCanonical(transaction: TransactionWithEntriesEntityInterface): boolean {
@@ -205,87 +247,6 @@ export class ConsolidationRepairExecutorService {
             transaction.consolidationType === TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER;
 
         return transaction.type === TransactionTypeEnum.TRANSFER && !isDefined(transaction.updatedBy) && isIbanBridgeConsolidation;
-    }
-
-    private async findEligibleExistingTransfer(
-        sourceTransactionIds: number[],
-        existingTransferId: number,
-        tx: DB
-    ): Promise<TransactionWithEntriesEntityInterface | null> {
-        if (
-            !(await this.consolidationEligibilityService.isExistingTransferConsolidationStillEligible(
-                sourceTransactionIds,
-                existingTransferId,
-                tx
-            ))
-        ) {
-            return null;
-        }
-
-        const [existingTransfer] = await this.dependencies.transactionRepository.findByIds([existingTransferId], tx);
-
-        return existingTransfer;
-    }
-
-    private async consolidateExistingTransferChainReclaimInner(
-        candidate: ExistingTransferChainReclaimCandidateInterface,
-        tx: DB
-    ): Promise<boolean> {
-        const bridgeSourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
-        const existingTransfer = await this.findEligibleExistingTransfer(bridgeSourceTransactionIds, candidate.existingTransferId, tx);
-
-        if (!isDefined(existingTransfer)) {
-            return false;
-        }
-
-        if (this.hasChainReclaimConsistentLedger(candidate, existingTransfer)) {
-            return this.absorbChainReclaimBridgeLegs(candidate, bridgeSourceTransactionIds, tx);
-        }
-
-        return this.rebuildChainReclaimCanonical(candidate, existingTransfer.title, tx);
-    }
-
-    private async absorbChainReclaimBridgeLegs(
-        candidate: ExistingTransferChainReclaimCandidateInterface,
-        bridgeSourceTransactionIds: number[],
-        tx: DB
-    ): Promise<boolean> {
-        await this.dependencies.transactionRepository.setConsolidationType(
-            candidate.existingTransferId,
-            TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
-            tx
-        );
-        await this.consolidationMutationService.moveSourcesToCanonical(bridgeSourceTransactionIds, candidate.existingTransferId, tx);
-
-        return true;
-    }
-
-    private async rebuildChainReclaimCanonical(
-        candidate: ExistingTransferChainReclaimCandidateInterface,
-        existingTransferTitle: string,
-        tx: DB
-    ): Promise<boolean> {
-        const canonicalTransaction = await this.consolidationMutationService.createCanonicalTransfer(
-            buildIbanBridgeChainCanonicalInput({
-                title: existingTransferTitle,
-                operatedAt: candidate.operatedAt,
-                fromAccountId: candidate.sourceAccountId,
-                toAccountId: candidate.targetAccountId,
-                fromAmount: candidate.sourceAmount,
-                toAmount: candidate.targetAmount,
-                exchangeRate: candidate.exchangeRate,
-                fromEntryToIban: candidate.targetAccountIban
-            }),
-            tx
-        );
-
-        await this.consolidationMutationService.moveSourcesToCanonical(
-            [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId, candidate.existingTransferId],
-            canonicalTransaction.id,
-            tx
-        );
-
-        return true;
     }
 
     private hasChainReclaimConsistentLedger(
@@ -325,34 +286,6 @@ export class ConsolidationRepairExecutorService {
         return Math.abs(actualRate - expectedRate) / expectedRate <= IBAN_BRIDGE_CHAIN_FX_TOLERANCE;
     }
 
-    private async consolidateExistingTransferIncomeDuplicateInner(
-        candidate: ExistingTransferIncomeDuplicateCandidateInterface,
-        tx: DB
-    ): Promise<boolean> {
-        const existingTransfer = await this.findEligibleExistingTransfer(
-            [candidate.duplicateTransactionId],
-            candidate.existingTransferId,
-            tx
-        );
-
-        if (!isDefined(existingTransfer)) {
-            return false;
-        }
-
-        const canonicalTransaction = await this.consolidationMutationService.createCanonicalTransfer(
-            this.buildIncomeDuplicateCanonicalInput(candidate, existingTransfer),
-            tx
-        );
-
-        await this.consolidationMutationService.moveSourcesToCanonical(
-            [candidate.existingTransferId, candidate.duplicateTransactionId],
-            canonicalTransaction.id,
-            tx
-        );
-
-        return true;
-    }
-
     private buildIncomeDuplicateCanonicalInput(
         candidate: ExistingTransferIncomeDuplicateCandidateInterface,
         existingTransfer: TransactionWithEntriesEntityInterface
@@ -370,31 +303,5 @@ export class ConsolidationRepairExecutorService {
             toEntryExchangeRate: 1,
             fromEntryToIban: existingTransfer.entries.find(entry => entry.accountId === candidate.sourceAccountId)?.toIban ?? null
         };
-    }
-
-    private async consolidateRefundInner(candidate: RefundCandidateInterface, tx: DB): Promise<boolean> {
-        const sourceTransactionIds = [candidate.expenseTransactionId, ...candidate.refundIncomeTransactionIds];
-
-        if (
-            !(await this.consolidationEligibilityService.areCandidatesStillEligible(sourceTransactionIds, tx, [
-                candidate.expenseTransactionId
-            ]))
-        ) {
-            return false;
-        }
-
-        await this.dependencies.transactionRepository.setConsolidationType(
-            candidate.expenseTransactionId,
-            TransactionConsolidationTypeEnum.REFUND,
-            tx
-        );
-        await this.consolidationMutationService.copySourceTags(candidate.refundIncomeTransactionIds, candidate.expenseTransactionId, tx);
-        await this.consolidationMutationService.moveSourcesToCanonical(
-            candidate.refundIncomeTransactionIds,
-            candidate.expenseTransactionId,
-            tx
-        );
-
-        return true;
     }
 }

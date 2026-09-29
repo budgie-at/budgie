@@ -2,7 +2,7 @@ import { transferConsolidationService } from '@app/sync/service/transfer-consoli
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { fetchCanonicalsOfType, seed, seedBankPair } from '../../harness';
+import { fetchCanonicalsOfType, seed, seedBankPair, run } from '../../harness';
 
 const seedScopedTransferPair = (
     externalIdPrefix: string,
@@ -39,11 +39,13 @@ describe('consolidation/bounded-consolidation-scope', () => {
     it('limits a bank-sync triggered scan to candidates inside the provided operated-at scope', async () => {
         const { changedPair, newOperatedAt } = seedWindowTransferPairs();
 
-        const result = await transferConsolidationService.consolidate({
-            operatedAtFrom: new Date(newOperatedAt.getTime() - 60_000),
-            operatedAtTo: new Date(newOperatedAt.getTime() + 60_000),
-            transactionIds: [changedPair.expenseId, changedPair.incomeId]
-        });
+        const result = await run(
+            transferConsolidationService.consolidate({
+                operatedAtFrom: new Date(newOperatedAt.getTime() - 60_000),
+                operatedAtTo: new Date(newOperatedAt.getTime() + 60_000),
+                transactionIds: [changedPair.expenseId, changedPair.incomeId]
+            })
+        );
 
         expect(result).toEqual({ found: 1, consolidated: 1 });
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
@@ -52,7 +54,7 @@ describe('consolidation/bounded-consolidation-scope', () => {
     it('keeps settings-triggered consolidation global when no scope is provided', async () => {
         seedWindowTransferPairs();
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await run(transferConsolidationService.consolidate(null));
 
         expect(result).toEqual({ found: 2, consolidated: 2 });
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(2);

@@ -10,21 +10,18 @@ export class ExistingTransferIncomeDuplicateConsolidationFamilyService extends C
     readonly key = ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_INCOME_DUPLICATE;
 
     constructor(
-        private readonly existingTransferRepository: Pick<ExistingTransferRepository, 'findIncomeDuplicateCandidates'>,
-        private readonly consolidationRepairExecutorService: Pick<
-            ConsolidationRepairExecutorService,
-            'consolidateExistingTransferIncomeDuplicate'
-        >,
+        private readonly existingTransferRepository: ExistingTransferRepository,
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
+    protected findCandidates(scope: ConsolidationScanScopeInterface | null) {
         return this.existingTransferRepository.findIncomeDuplicateCandidates(scope);
     }
 
-    protected consolidateCandidate(candidate: ExistingTransferIncomeDuplicateCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: ExistingTransferIncomeDuplicateCandidateInterface) {
         return this.consolidationRepairExecutorService.consolidateExistingTransferIncomeDuplicate(candidate);
     }
 

@@ -17,7 +17,7 @@ import {
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testDb, unconsolidationService } from '../harness/test-context';
+import { unconsolidateById } from '../harness/test-context';
 
 const DUPLICATED_LEG_COUNT = 2;
 
@@ -75,7 +75,7 @@ describe('consolidation/iban-bridge-canonical-duplicate', () => {
 
         await runConsolidation();
         const balancesAfterAbsorb = await fetchLedgerBalances(accountIds);
-        await unconsolidationService.unconsolidateById(canonicalId, testDb);
+        await unconsolidateById(canonicalId);
 
         expectRevertRemovedCanonical(canonicalId, [bridgeIncome.id, bridgeExpense.id, sourceExpense.id, targetIncome.id]);
         expect(await fetchLedgerBalances(accountIds)).toEqual(balancesAfterAbsorb);

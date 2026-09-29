@@ -1,13 +1,11 @@
 import { buildTestDb, createTestRepositories, resetTestDb } from '@budgie-at/test-kit';
-import { sql } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
-
-import type { DB } from '@budgie/contracts';
+import { isDefined } from '@rnw-community/shared';
 
 vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
-    transferConsolidationDrainerService: { cancelPending: vi.fn(), enqueue: vi.fn() }
+    transferConsolidationDrainerService: { cancelPending: vi.fn(() => Effect.void), enqueue: vi.fn(() => Effect.void) }
 }));
 
 vi.mock('@app/@generic/utils/micro-pause.util', () => ({
@@ -42,10 +40,6 @@ vi.mock('@lingui/core', () => ({
 
 export const testDb = buildTestDb();
 
-let transactionDepth = 0;
-let transactionSequence = 0;
-let exclusiveTransactionQueue: Promise<unknown> = Promise.resolve();
-
 vi.mock('@app/@generic/drizzle/db/db', async () => ({
     db: testDb,
     ...createTestRepositories(testDb),
@@ -53,45 +47,10 @@ vi.mock('@app/@generic/drizzle/db/db', async () => ({
     __REMOVE_ME_RESET_DB: (): Promise<void> => Promise.resolve()
 }));
 
-vi.mock('@budgie/contracts', async importOriginal => {
-    const actual = await importOriginal<typeof import('@budgie/contracts')>();
+vi.mock('@app/@generic/runtime/app.runtime', async () => {
+    const { testRuntime } = await import('./test-runtime');
 
-    return {
-        ...actual,
-        transactionAsync: async <T>(_database: DB, cb: (tx: DB) => Promise<T>): Promise<T> => {
-            if (transactionDepth > 0) {
-                return cb(testDb);
-            }
-
-            const runExclusively = async (): Promise<T> => {
-                transactionSequence += 1;
-                const savepointName = `test_transaction_${transactionSequence}`;
-
-                transactionDepth += 1;
-                testDb.run(sql.raw(`SAVEPOINT ${savepointName}`));
-
-                try {
-                    const result = await cb(testDb);
-
-                    testDb.run(sql.raw(`RELEASE SAVEPOINT ${savepointName}`));
-
-                    return result;
-                } catch (error) {
-                    testDb.run(sql.raw(`ROLLBACK TO SAVEPOINT ${savepointName}`));
-                    testDb.run(sql.raw(`RELEASE SAVEPOINT ${savepointName}`));
-
-                    throw error;
-                } finally {
-                    transactionDepth -= 1;
-                }
-            };
-
-            const queuedTransaction = exclusiveTransactionQueue.then(runExclusively, runExclusively);
-            exclusiveTransactionQueue = queuedTransaction.catch(emptyFn);
-
-            return queuedTransaction;
-        }
-    };
+    return { appRuntime: testRuntime };
 });
 
 import { mockServer } from './mock-server';
@@ -101,10 +60,9 @@ beforeAll(() => {
 });
 
 beforeEach(async () => {
-    transactionDepth = 0;
-    transactionSequence = 0;
-    exclusiveTransactionQueue = Promise.resolve();
     resetTestDb(testDb);
+    const { resetTestRuntime } = await import('./test-runtime');
+    await resetTestRuntime();
     const { resetSingletons } = await import('./reset-singletons');
     resetSingletons();
 });

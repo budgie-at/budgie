@@ -4,13 +4,14 @@ import { expect } from 'vitest';
 
 import { fetchCanonicalsOfType } from '../db/fetch-canonicals-of-type';
 import { fetchTransactionById } from '../db/fetch-transaction-by-id';
+import { run } from '../scenario/test-runtime';
 
 export const expectAtmCashWithdrawalConsolidation = async (
     sourceAccountId: number,
     cashAccountId: number,
     sourceTransactionId: number
 ): Promise<void> => {
-    const result = await transferConsolidationService.consolidate();
+    const result = await run(transferConsolidationService.consolidate(null));
 
     expect(result.consolidated).toBe(1);
 

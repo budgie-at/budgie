@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { refundPairRepository, testDb, testSeedService } from '../harness/test-context';
+import { refundPairRepository, runEffect, testDb, testSeedService } from '../harness/test-context';
 
 const EXPENSE_AMOUNT = convertToMicroUnits(120);
 const GROCERIES_TITLE = 'Groceries';
@@ -37,8 +37,10 @@ describe('consolidation/refund-candidate-category-translation', () => {
             .where(eq(TransactionEntryEntityTable.transactionId, expense.id))
             .run();
 
-        const englishCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN);
-        const ukrainianCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.UK);
+        const englishCandidates = await runEffect(refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN));
+        const ukrainianCandidates = await runEffect(
+            refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.UK)
+        );
 
         expect(englishCandidates).toMatchObject([{ id: expense.id, categoryTitle: GROCERIES_TITLE }]);
         expect(ukrainianCandidates).toMatchObject([{ id: expense.id, categoryTitle: GROCERIES_UKRAINIAN_TITLE }]);

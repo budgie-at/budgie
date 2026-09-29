@@ -10,21 +10,18 @@ export class IbanBridgeCanonicalDuplicateConsolidationFamilyService extends Cons
     readonly key = ConsolidationFamilyKeyEnum.IBAN_BRIDGE_CANONICAL_DUPLICATE;
 
     constructor(
-        private readonly ibanBridgeTransferRepository: Pick<IbanBridgeTransferRepository, 'findCanonicalDuplicateCandidates'>,
-        private readonly consolidationRepairExecutorService: Pick<
-            ConsolidationRepairExecutorService,
-            'consolidateIbanBridgeCanonicalDuplicate'
-        >,
+        private readonly ibanBridgeTransferRepository: IbanBridgeTransferRepository,
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<IbanBridgeCanonicalDuplicateCandidateInterface[]> {
+    protected findCandidates(scope: ConsolidationScanScopeInterface | null) {
         return this.ibanBridgeTransferRepository.findCanonicalDuplicateCandidates(scope);
     }
 
-    protected consolidateCandidate(candidate: IbanBridgeCanonicalDuplicateCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: IbanBridgeCanonicalDuplicateCandidateInterface) {
         return this.consolidationRepairExecutorService.consolidateIbanBridgeCanonicalDuplicate(candidate);
     }
 

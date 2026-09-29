@@ -10,18 +10,18 @@ export class RefundPairConsolidationFamilyService extends ConsolidationFamilyStr
     readonly key = ConsolidationFamilyKeyEnum.REFUND;
 
     constructor(
-        private readonly refundPairRepository: Pick<RefundPairRepository, 'findCandidates'>,
-        private readonly consolidationRepairExecutorService: Pick<ConsolidationRepairExecutorService, 'consolidateRefund'>,
+        private readonly refundPairRepository: RefundPairRepository,
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<RefundCandidateInterface[]> {
+    protected findCandidates(scope: ConsolidationScanScopeInterface | null) {
         return this.refundPairRepository.findCandidates(scope);
     }
 
-    protected consolidateCandidate(candidate: RefundCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: RefundCandidateInterface) {
         return this.consolidationRepairExecutorService.consolidateRefund(candidate);
     }
 

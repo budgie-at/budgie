@@ -2,7 +2,7 @@ import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, fetchPersistedMonobankTransactions, fetchSyncById, monobankStub, setupMonobankFixture } from '../../harness';
+import { buildMonobank, fetchPersistedMonobankTransactions, fetchSyncById, monobankStub, setupMonobankFixture, run } from '../../harness';
 
 import type { StatementItem } from '@liaugust/monobank-sdk';
 
@@ -30,7 +30,7 @@ describe('monobank/pagination-cursor-advances', () => {
 
         monobankStub.statementBatches([buildBatch(0)]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         expect(fetchPersistedMonobankTransactions()).toHaveLength(PAGE_SIZE);
 

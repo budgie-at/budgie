@@ -13,7 +13,7 @@ import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it, vi } from 'vitest';
 
-import { binanceStub, buildBinance, resetBinanceSyncForResync, seed, setupBinanceFixture, testDb } from '../../harness';
+import { binanceStub, buildBinance, resetBinanceSyncForResync, seed, setupBinanceFixture, testDb, run } from '../../harness';
 
 const fetchAnchoredAmount = (accountId: number): number | undefined =>
     testDb.select().from(AccountBalanceEntityTable).where(eq(AccountBalanceEntityTable.accountId, accountId)).get()?.amount;
@@ -41,7 +41,7 @@ describe('binance/anchor-once-reset-ordering', () => {
 
         const upsertSpy = vi.spyOn(accountBalanceRepository, 'upsert');
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(upsertSpy).toHaveBeenCalledTimes(2);
 
@@ -53,7 +53,7 @@ describe('binance/anchor-once-reset-ordering', () => {
 
         binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(fetchAnchoredAmount(account.id)).toBe(PRECISION);
 
@@ -61,7 +61,7 @@ describe('binance/anchor-once-reset-ordering', () => {
         binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '5' })]);
 
         const upsertSpy = vi.spyOn(accountBalanceRepository, 'upsert');
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(upsertSpy).toHaveBeenCalled();
         expect(fetchAnchoredAmount(account.id)).toBe(5 * PRECISION);
@@ -71,20 +71,20 @@ describe('binance/anchor-once-reset-ordering', () => {
 
     it('anchors an existing account to zero when Binance omits the asset from balances', async () => {
         const { account } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-        await accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION });
+        await run(accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION }));
         binanceStub.spotBalances([buildBinance.balance({ asset: 'ETH', free: '2' })]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(fetchAnchoredAmount(account.id)).toBe(0);
     });
 
     it('does not anchor an existing account to zero when Binance reports an unrepresentable balance', async () => {
         const { account } = setupBinanceFixture({ asset: 'PEPE', mode: SyncModeEnum.BACKWARD });
-        await accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION });
+        await run(accountBalanceRepository.upsert({ accountId: account.id, amount: 7 * PRECISION }));
         binanceStub.spotBalances([buildBinance.balance({ asset: 'PEPE', free: '99999999999' })]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(fetchAnchoredAmount(account.id)).toBe(7 * PRECISION);
     });
@@ -93,7 +93,7 @@ describe('binance/anchor-once-reset-ordering', () => {
         const { sync } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
         const upsertSpy = vi.spyOn(accountBalanceRepository, 'upsert');
 
-        await binanceSyncService.sync(Date.now() - 1);
+        await run(binanceSyncService.sync(Date.now() - 1));
 
         expect(upsertSpy).not.toHaveBeenCalled();
         expect(fetchAnchoredAmount(sync.accountId)).toBeUndefined();

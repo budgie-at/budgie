@@ -20,7 +20,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { requireInstrument } from '../../harness';
+import { requireInstrument, run } from '../../harness';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
@@ -29,20 +29,22 @@ import type { AccountEntityInterface } from '@budgie/contracts';
 const OPENING_AMOUNT = 500;
 
 const openDebt = async (debtType: AccountDebtTypeEnum, fundingAccount: AccountEntityInterface, instrumentId?: number) =>
-    accountDebtOpeningService.openDebtWithFundingAccount(
-        {
-            title: debtType === AccountDebtTypeEnum.LENT ? 'Alex owes me' : 'I owe Alex',
-            iban: null,
-            icon: UserIconNameEnum.HandCoins,
-            instrumentId: instrumentId ?? fundingAccount.instrumentId,
-            type: AccountTypeEnum.DEBT,
-            debtType,
-            currentBalance: 0,
-            targetBalance: OPENING_AMOUNT,
-            contactId: null,
-            deadline: null
-        },
-        fundingAccount.id
+    run(
+        accountDebtOpeningService.openDebtWithFundingAccount(
+            {
+                title: debtType === AccountDebtTypeEnum.LENT ? 'Alex owes me' : 'I owe Alex',
+                iban: null,
+                icon: UserIconNameEnum.HandCoins,
+                instrumentId: instrumentId ?? fundingAccount.instrumentId,
+                type: AccountTypeEnum.DEBT,
+                debtType,
+                currentBalance: 0,
+                targetBalance: OPENING_AMOUNT,
+                contactId: null,
+                deadline: null
+            },
+            fundingAccount.id
+        )
     );
 
 const readEntries = (accountId: number) =>
@@ -84,7 +86,7 @@ describe('opening a debt from a funding account', () => {
     it('keeps the entered target in the debt instrument and converts only the funding entry', async () => {
         const usdInstrument = await requireInstrument(CurrencyEnum.USD);
         const eurInstrument = await requireInstrument(CurrencyEnum.EUR);
-        await exchangeRateRepository.upsert(eurInstrument.id, usdInstrument.id, 2, 'test');
+        await run(exchangeRateRepository.upsert(eurInstrument.id, usdInstrument.id, 2, 'test'));
 
         const fundingAccount = seed.account({ title: 'Euro account', type: AccountTypeEnum.BANK_SYNC, instrumentId: eurInstrument.id });
         const debtAccount = await openDebt(AccountDebtTypeEnum.LENT, fundingAccount, usdInstrument.id);
@@ -101,7 +103,7 @@ describe('opening a debt from a funding account', () => {
         const fundingAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
         const debtAccount = await openDebt(AccountDebtTypeEnum.BORROW, fundingAccount);
 
-        await accountBalanceIncrementalService.updateAllBalances(true);
+        await run(accountBalanceIncrementalService.updateAllBalances(true));
 
         expect(readBalance(debtAccount.id)).toBe(-OPENING_AMOUNT * PRECISION);
     });

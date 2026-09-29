@@ -12,9 +12,10 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { BetterSQLiteSession } from 'drizzle-orm/better-sqlite3/session';
+import * as Effect from 'effect/Effect';
 import { describe, expect, it, vi } from 'vitest';
 
-import { requireInstrument, seed, testDb } from '../../harness';
+import { requireInstrument, seed, testDb, run } from '../../harness';
 
 const TRANSACTION_COUNT = 200;
 const DISTINCT_DAY_COUNT = 20;
@@ -57,20 +58,22 @@ describe('batch entry valuation', () => {
 
         const prepareSpy = vi.spyOn(BetterSQLiteSession.prototype, 'prepareQuery');
 
-        await transactionService.bulkCreate(inputs);
+        await run(transactionService.bulkCreate(inputs));
 
         expect(prepareSpy.mock.calls.length).toBeLessThan(DISTINCT_DAY_COUNT + 20);
         prepareSpy.mockRestore();
 
         const entries = await testDb.select().from(TransactionEntryEntityTable);
-        const expected = await Promise.all(
-            inputs.map(input =>
-                entryBaseValuationService.valueMicroUnitEntry({
-                    accountId: account.id,
-                    amount: convertToMicroUnits(input.amount),
-                    operatedAt: input.operatedAt,
-                    externalSource: input.externalSource
-                })
+        const expected = await run(
+            Effect.all(
+                inputs.map(input =>
+                    entryBaseValuationService.valueMicroUnitEntry({
+                        accountId: account.id,
+                        amount: convertToMicroUnits(input.amount),
+                        operatedAt: input.operatedAt,
+                        externalSource: input.externalSource
+                    })
+                )
             )
         );
 

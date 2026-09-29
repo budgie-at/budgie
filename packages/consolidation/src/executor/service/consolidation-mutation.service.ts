@@ -1,7 +1,7 @@
 import { CategorySourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { P2pFiatDirectionEnum } from '../../auto/enum/p2p-fiat-direction.enum';
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
@@ -11,99 +11,82 @@ import type { CanonicalTransferInputInterface } from '../interface/canonical-tra
 import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
 import type {
     AtmCashWithdrawalCandidateInterface,
-    DB,
-    TransactionEntityInterface,
     TransactionEntryEntityInterface,
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
 export class ConsolidationMutationService {
-    constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {}
+    readonly createCanonicalTransfer = Effect.fn('ConsolidationMutationService.createCanonicalTransfer')(function* (
+        this: ConsolidationMutationService,
+        input: CanonicalTransferInputInterface
+    ) {
+        const canonicalTransaction = yield* this.dependencies.transactionRepository.create({
+            type: TransactionTypeEnum.TRANSFER,
+            title: input.title,
+            externalId: null,
+            operatedAt: new Date(input.operatedAt * 1000),
+            comment: '',
+            toAccountId: input.toAccountId,
+            fromAccountId: input.fromAccountId,
+            exchangeRate: input.exchangeRate,
+            externalSource: null,
+            needsEmbedding: false,
+            consolidationType: input.consolidationType,
+            consolidationParentTransactionId: null,
+            updatedBy: null
+        });
 
-    @Log(
-        (input, tx) =>
-            `enter title="${input.title}" fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))}`,
-        (result, input, tx) =>
-            `done title="${input.title}" fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))} canonicalTransactionId=${result.id}`,
-        (error, input, tx) =>
-            `throw title="${input.title}" fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} fromAmount=${input.fromAmount} toAmount=${input.toAmount} type=${input.consolidationType} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async createCanonicalTransfer(input: CanonicalTransferInputInterface, tx: DB): Promise<TransactionEntityInterface> {
-        const canonicalTransaction = await this.dependencies.transactionRepository.create(
+        yield* this.dependencies.transactionEntryRepository.bulkCreate([
             {
-                type: TransactionTypeEnum.TRANSFER,
-                title: input.title,
+                transactionId: canonicalTransaction.id,
+                accountId: input.fromAccountId,
+                categoryId: null,
+                mccCategoryId: null,
+                type: TransactionEntryTypeEnum.CREDIT,
+                amount: input.fromAmount,
                 externalId: null,
-                operatedAt: new Date(input.operatedAt * 1000),
-                comment: '',
-                toAccountId: input.toAccountId,
-                fromAccountId: input.fromAccountId,
-                exchangeRate: input.exchangeRate,
-                externalSource: null,
-                needsEmbedding: false,
-                consolidationType: input.consolidationType,
-                consolidationParentTransactionId: null,
-                updatedBy: null
+                exchangeRate: input.fromEntryExchangeRate,
+                toIban: input.fromEntryToIban,
+                originalTransactionId: null
             },
-            tx
-        );
-
-        await this.dependencies.transactionEntryRepository.bulkCreate(
-            [
-                {
-                    transactionId: canonicalTransaction.id,
-                    accountId: input.fromAccountId,
-                    categoryId: null,
-                    mccCategoryId: null,
-                    type: TransactionEntryTypeEnum.CREDIT,
-                    amount: input.fromAmount,
-                    externalId: null,
-                    exchangeRate: input.fromEntryExchangeRate,
-                    toIban: input.fromEntryToIban,
-                    originalTransactionId: null
-                },
-                {
-                    transactionId: canonicalTransaction.id,
-                    accountId: input.toAccountId,
-                    categoryId: null,
-                    mccCategoryId: null,
-                    type: TransactionEntryTypeEnum.DEBIT,
-                    amount: input.toAmount,
-                    externalId: null,
-                    exchangeRate: input.toEntryExchangeRate,
-                    toIban: null,
-                    originalTransactionId: null
-                }
-            ],
-            tx
-        );
+            {
+                transactionId: canonicalTransaction.id,
+                accountId: input.toAccountId,
+                categoryId: null,
+                mccCategoryId: null,
+                type: TransactionEntryTypeEnum.DEBIT,
+                amount: input.toAmount,
+                externalId: null,
+                exchangeRate: input.toEntryExchangeRate,
+                toIban: null,
+                originalTransactionId: null
+            }
+        ]);
 
         return canonicalTransaction;
-    }
+    });
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async createAtmCashWithdrawalFeeEntry(
+    readonly createAtmCashWithdrawalFeeEntry = Effect.fn('ConsolidationMutationService.createAtmCashWithdrawalFeeEntry')(function* (
+        this: ConsolidationMutationService,
         candidate: AtmCashWithdrawalCandidateInterface,
         sourceTransactions: TransactionWithEntriesEntityInterface[],
-        canonicalTransactionId: number,
-        tx: DB
-    ): Promise<void> {
+        canonicalTransactionId: number
+    ) {
         const feeEntry = this.findFeeEntries(candidate.sourceAccountId, sourceTransactions).at(0);
 
         if (!isDefined(feeEntry)) {
             return;
         }
 
-        await this.createCanonicalFeeEntries(candidate.sourceAccountId, [feeEntry], canonicalTransactionId, tx);
-    }
+        yield* this.createCanonicalFeeEntries(candidate.sourceAccountId, [feeEntry], canonicalTransactionId);
+    });
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async createP2pFiatTransferFeeEntries(
+    readonly createP2pFiatTransferFeeEntries = Effect.fn('ConsolidationMutationService.createP2pFiatTransferFeeEntries')(function* (
+        this: ConsolidationMutationService,
         candidate: P2pFiatTransferCandidateInterface,
         sourceTransactions: TransactionWithEntriesEntityInterface[],
-        canonicalTransactionId: number,
-        tx: DB
-    ): Promise<void> {
+        canonicalTransactionId: number
+    ) {
         const bankAccountId = candidate.direction === P2pFiatDirectionEnum.BUY ? candidate.fromAccountId : candidate.toAccountId;
         const feeEntries = this.findFeeEntries(bankAccountId, sourceTransactions).filter(entry =>
             candidate.bankTransactionIds.includes(entry.transactionId)
@@ -113,46 +96,37 @@ export class ConsolidationMutationService {
             return;
         }
 
-        await this.createCanonicalFeeEntries(bankAccountId, feeEntries, canonicalTransactionId, tx);
-    }
+        yield* this.createCanonicalFeeEntries(bankAccountId, feeEntries, canonicalTransactionId);
+    });
 
-    @Log(
-        (sourceTransactionIds, canonicalTransactionId, tx) =>
-            `enter moveSources ids=${sourceTransactionIds.join(',')} parent=${canonicalTransactionId} tx=${String(isDefined(tx))}`,
-        (result, sourceTransactionIds, canonicalTransactionId, tx) =>
-            `done moved=${String(result)} ids=${sourceTransactionIds.join(',')} parent=${canonicalTransactionId} tx=${String(isDefined(tx))}`,
-        (error, sourceTransactionIds, canonicalTransactionId, tx) =>
-            `throw moveSources ids=${sourceTransactionIds.join(',')} parent=${canonicalTransactionId} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async moveSourcesToCanonical(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
-        await this.dependencies.transactionEntryRepository.moveToConsolidatedTransaction(sourceTransactionIds, canonicalTransactionId, tx);
-        await this.dependencies.transactionRepository.setConsolidationParent(sourceTransactionIds, canonicalTransactionId, tx);
-    }
+    readonly moveSourcesToCanonical = Effect.fn('ConsolidationMutationService.moveSourcesToCanonical')(function* (
+        this: ConsolidationMutationService,
+        sourceTransactionIds: number[],
+        canonicalTransactionId: number
+    ) {
+        yield* this.dependencies.transactionEntryRepository.moveToConsolidatedTransaction(sourceTransactionIds, canonicalTransactionId);
+        yield* this.dependencies.transactionRepository.setConsolidationParent(sourceTransactionIds, canonicalTransactionId);
+    });
 
-    @Log(
-        (sourceTransactionIds, canonicalTransactionId, tx) =>
-            `enter copyTags from=${sourceTransactionIds.join(',')} to=${canonicalTransactionId} tx=${String(isDefined(tx))}`,
-        (result, sourceTransactionIds, canonicalTransactionId, tx) =>
-            `done tagsCopied=${String(result)} from=${sourceTransactionIds.join(',')} to=${canonicalTransactionId} tx=${String(isDefined(tx))}`,
-        (error, sourceTransactionIds, canonicalTransactionId, tx) =>
-            `throw copyTags from=${sourceTransactionIds.join(',')} to=${canonicalTransactionId} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async copySourceTags(sourceTransactionIds: number[], canonicalTransactionId: number, tx: DB): Promise<void> {
-        await consolidationCopySourceTransactionTags(
+    readonly copySourceTags = Effect.fn('ConsolidationMutationService.copySourceTags')(function* (
+        this: ConsolidationMutationService,
+        sourceTransactionIds: number[],
+        canonicalTransactionId: number
+    ) {
+        yield* consolidationCopySourceTransactionTags(
             this.dependencies.transactionTagsRepository,
             sourceTransactionIds,
-            canonicalTransactionId,
-            tx
+            canonicalTransactionId
         );
-    }
+    });
 
-    private async createCanonicalFeeEntries(
+    private readonly createCanonicalFeeEntries = Effect.fnUntraced(function* (
+        this: ConsolidationMutationService,
         accountId: number,
         feeEntries: TransactionEntryEntityInterface[],
-        canonicalTransactionId: number,
-        tx: DB
-    ): Promise<void> {
-        await this.dependencies.transactionEntryRepository.bulkCreate(
+        canonicalTransactionId: number
+    ) {
+        yield* this.dependencies.transactionEntryRepository.bulkCreate(
             feeEntries.map(feeEntry => ({
                 transactionId: canonicalTransactionId,
                 accountId,
@@ -168,10 +142,11 @@ export class ConsolidationMutationService {
                 baseAmount: feeEntry.baseAmount,
                 toIban: null,
                 originalTransactionId: null
-            })),
-            tx
+            }))
         );
-    }
+    });
+
+    constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {}
 
     private findFeeEntries(
         accountId: number,

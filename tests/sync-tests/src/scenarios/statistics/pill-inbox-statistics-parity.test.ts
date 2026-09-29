@@ -18,6 +18,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { seed } from '../../harness/seed/seed';
 
@@ -142,7 +143,7 @@ const seedParityLedger = async () => {
     });
     seed.feeEntry(transfer.id, null, { accountId: card.id, amount: PRECISION });
     seed.refundedExpense({ accountId: card.id, expenseAmount: nextAmount(), refundAmounts: [PRECISION * 3] });
-    await transferConsolidationService.consolidate();
+    await run(transferConsolidationService.consolidate(null));
 
     return { card, savings };
 };

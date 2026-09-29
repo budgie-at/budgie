@@ -3,7 +3,7 @@ import { MccCategoryEntityTable, TransactionEntryEntityTable } from '@budgie/con
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb, run } from '../../harness';
 
 describe('monobank/mcc-mapping', () => {
     it('resolves the MCC code to the matching mcc_categories row id on insert', async () => {
@@ -13,7 +13,7 @@ describe('monobank/mcc-mapping', () => {
         setupMonobankFixture();
         monobankStub.statement([buildMonobank.transaction({ id: 'tx-grocery', amount: -2500, hold: false, mcc: 5411, originalMcc: 5411 })]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const entry = testDb
             .select()
@@ -29,7 +29,7 @@ describe('monobank/mcc-mapping', () => {
             buildMonobank.transaction({ id: 'tx-unknown-mcc', amount: -2500, hold: false, mcc: 99999, originalMcc: 99999 })
         ]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const entry = testDb
             .select()

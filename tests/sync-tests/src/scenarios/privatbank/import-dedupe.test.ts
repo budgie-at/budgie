@@ -3,7 +3,7 @@ import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, pri
 import { and, eq, isNull } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { StubFileBankSyncService, seed, testDb } from '../../harness';
+import { StubFileBankSyncService, seed, testDb, run } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { PrivatbankRowInterface, SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
@@ -92,7 +92,7 @@ describe('privatbank/import-dedupe', () => {
 
         seedPrivatbankParsedDateTransaction(accountId);
 
-        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
+        await run(syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]));
 
         const transactions = fetchPrivatbankTransactions();
 
@@ -104,7 +104,7 @@ describe('privatbank/import-dedupe', () => {
         const client = new StubPrivatbankFileClient();
         const syncService = new StubFileBankSyncService(ExternalSourceEnum.PRIVATBANK, client);
 
-        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, ['4731 **** **** 0000']);
+        await run(syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, ['4731 **** **** 0000']));
 
         expect(fetchPrivatbankTransactions()).toHaveLength(0);
     });

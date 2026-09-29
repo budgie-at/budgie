@@ -11,7 +11,8 @@ import {
     seedCryptoInstrument,
     setupBinanceFixture,
     setupUsdtSpotFixtureWithBalances,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 
 import type { TimeWindow } from '../../harness';
@@ -64,7 +65,7 @@ describe('binance/convert-sync-progress', () => {
             true
         );
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const externalIds = fetchBinanceTransactions()
             .map(transaction => transaction.externalId)
@@ -79,7 +80,7 @@ describe('binance/convert-sync-progress', () => {
         binanceStub.spotBalances([buildBinance.balance({ asset: 'USDT', free: '100' }), buildBinance.balance({ asset: 'BTC', free: '1' })]);
         stubUsdtToBtcConvert(PROGRESS_CONVERT_ORDER_ID);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(fetchSyncById(sync.id).transactionCount).toBe(EXPECTED_CREATED_TRANSACTION_COUNT);
     });
@@ -92,7 +93,7 @@ describe('binance/convert-sync-progress', () => {
         binanceStub.deposits([], sourceWindows);
         binanceStub.convertTradeFlow([], transferWindows);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(Math.min(...sourceWindows.map(window => window.startMs))).toBe(EXPECTED_BACKFILL_START_MS);
         expect(Math.min(...transferWindows.map(window => window.startMs))).toBe(EXPECTED_BACKFILL_START_MS);

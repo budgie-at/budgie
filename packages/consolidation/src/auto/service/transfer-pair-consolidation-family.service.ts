@@ -13,18 +13,18 @@ export class TransferPairConsolidationFamilyService extends ConsolidationFamilyS
     readonly key = ConsolidationFamilyKeyEnum.TRANSFER_PAIR;
 
     constructor(
-        private readonly transferPairRepository: Pick<TransferPairRepository, 'findCandidates'>,
-        private readonly consolidationExecutorService: Pick<ConsolidationExecutorService, 'consolidatePair'>,
+        private readonly transferPairRepository: TransferPairRepository,
+        private readonly consolidationExecutorService: ConsolidationExecutorService,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<TransferPairCandidateInterface[]> {
+    protected findCandidates(scope: ConsolidationScanScopeInterface | null) {
         return this.transferPairRepository.findCandidates(scope);
     }
 
-    protected consolidateCandidate(candidate: TransferPairCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: TransferPairCandidateInterface) {
         return this.consolidationExecutorService.consolidatePair(candidate, this.buildConsolidationPlan(candidate));
     }
 

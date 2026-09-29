@@ -28,7 +28,8 @@ import {
     seed,
     setupBinanceFixture,
     stubEmptyBinanceBalances,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 
 const setupForwardUsdtScenario = () => {
@@ -65,12 +66,9 @@ describe('binance/c2c-orders reconciliation', () => {
         const { token } = setupBinanceFixture({ asset: 'USDT', wallet: BinanceWalletEnum.FUNDING, mode: SyncModeEnum.FORWARD });
         stubBuyC2cOrder('c2c-funding-buy');
 
-        const result = await new BinanceSignedClient(token).getC2cTransactions(0);
+        const transactions = await run(new BinanceSignedClient(token).getC2cTransactions(0));
 
-        expect(result.success).toBe(true);
-        expect(result.success ? result.data[0].accountId : null).toBe(
-            encodeBinanceAccountId({ wallet: BinanceWalletEnum.FUNDING, asset: 'USDT' })
-        );
+        expect(transactions[0].accountId).toBe(encodeBinanceAccountId({ wallet: BinanceWalletEnum.FUNDING, asset: 'USDT' }));
     });
 
     it('queues consolidation after moving an existing P2P entry from Spot to Funding', async () => {
@@ -81,7 +79,7 @@ describe('binance/c2c-orders reconciliation', () => {
         stubEmptyBinanceBalances();
         stubBuyC2cOrder('c2c-existing');
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const entries = fetchBinanceEntriesByExternalId(externalId);
         const uah = await requireInstrument(CurrencyEnum.UAH);
@@ -109,7 +107,7 @@ describe('binance/c2c-orders reconciliation', () => {
         stubEmptyBinanceBalances();
         stubBuyC2cOrder('c2c-shared-external-id');
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect((await fetchExpenseEntries(unrelatedTransaction.id))[0]?.accountId).toBe(unrelatedAccount.id);
         expect((await fetchExpenseEntries(existingTransaction.id))[0]?.accountId).toBe(fundingAccount.id);
@@ -132,7 +130,7 @@ describe('binance/c2c-orders reconciliation', () => {
         stubEmptyBinanceBalances();
         stubBuyC2cOrder('c2c-existing-funding');
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(enqueueSpy.mock.calls).toEqual(
             expect.arrayContaining([
@@ -160,7 +158,7 @@ describe('binance/c2c-orders mapping', () => {
             []
         );
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expectSingleBinanceTransaction(TransactionTypeEnum.INCOME, 'binance:c2c:c2c-buy-1');
         const uah = await requireInstrument(CurrencyEnum.UAH);
@@ -175,7 +173,7 @@ describe('binance/c2c-orders mapping', () => {
         setupForwardUsdtScenario();
         binanceStub.c2cOrders([], [buildBinance.c2cOrder({ orderNumber: 'c2c-sell-1', tradeType: 'SELL', asset: 'USDT', amount: '50' })]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expectSingleBinanceTransaction(TransactionTypeEnum.EXPENSE, 'binance:c2c:c2c-sell-1');
     });
@@ -187,7 +185,7 @@ describe('binance/c2c-orders mapping', () => {
             []
         );
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(fetchBinanceTransactions()).toHaveLength(0);
     });
@@ -196,12 +194,12 @@ describe('binance/c2c-orders mapping', () => {
         setupForwardUsdtScenario();
         stubBuyC2cOrder('c2c-dup');
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expect(fetchBinanceTransactions()).toHaveLength(1);
 
         resetBinanceSyncForResync();
         stubBuyC2cOrder('c2c-dup');
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(fetchBinanceTransactions()).toHaveLength(1);
     });
@@ -211,7 +209,7 @@ describe('binance/c2c-orders mapping', () => {
         binanceStub.c2cUnavailable();
         binanceStub.deposits([buildBinance.deposit({ id: 'dep-after-c2c-403', coin: 'USDT', amount: '5' })]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const transactions = fetchBinanceTransactions();
         expect(transactions).toHaveLength(1);
@@ -223,14 +221,14 @@ describe('binance/c2c-orders mapping', () => {
         const { sync } = setupForwardUsdtScenario();
         binanceStub.c2cUnavailable();
         binanceStub.deposits([]);
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expect(fetchSyncById(sync.id).lastWarning).toBe(SyncWarningEnum.C2C_UNAVAILABLE);
 
         resetBinanceSyncForResync();
         testDb.update(SyncEntityTable).set({ forwardSyncedAt: null }).where(eq(SyncEntityTable.id, sync.id)).run();
         stubBuyC2cOrder('c2c-recovered');
         binanceStub.deposits([]);
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(fetchSyncById(sync.id).lastWarning).toBeNull();
     });

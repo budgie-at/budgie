@@ -10,21 +10,18 @@ export class IbanBridgeCanonicalSupersessionConsolidationFamilyService extends C
     readonly key = ConsolidationFamilyKeyEnum.IBAN_BRIDGE_CANONICAL_SUPERSESSION;
 
     constructor(
-        private readonly ibanBridgeTransferRepository: Pick<IbanBridgeTransferRepository, 'findCanonicalSupersessionCandidates'>,
-        private readonly consolidationRepairExecutorService: Pick<
-            ConsolidationRepairExecutorService,
-            'consolidateIbanBridgeCanonicalSupersession'
-        >,
+        private readonly ibanBridgeTransferRepository: IbanBridgeTransferRepository,
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<IbanBridgeCanonicalSupersessionCandidateInterface[]> {
+    protected findCandidates(scope: ConsolidationScanScopeInterface | null) {
         return this.ibanBridgeTransferRepository.findCanonicalSupersessionCandidates(scope);
     }
 
-    protected consolidateCandidate(candidate: IbanBridgeCanonicalSupersessionCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: IbanBridgeCanonicalSupersessionCandidateInterface) {
         return this.consolidationRepairExecutorService.consolidateIbanBridgeCanonicalSupersession(candidate);
     }
 

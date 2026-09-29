@@ -39,7 +39,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { requireInstrument } from '../../harness';
+import { requireInstrument, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -166,9 +166,9 @@ describe('debt settlement statistics', () => {
         const { category, cashAccount, debtAccount } = createFundedLentDebtFixture(300 * PRECISION);
         const transaction = createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+        await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }));
 
-        const debtEvent = await debtEventRepository.findByTransactionId(transaction.id);
+        const debtEvent = await run(debtEventRepository.findByTransactionId(transaction.id));
         const storedDebtEvent = testDb
             .select()
             .from(DebtEventEntityTable)
@@ -190,7 +190,7 @@ describe('debt settlement statistics', () => {
     });
 
     it('creates lent debt accounts with the remaining amount as a positive ledger balance', async () => {
-        const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 2_000, 15_000, 1);
+        const account = await run(createDebtAccount(AccountDebtTypeEnum.LENT, 2_000, 15_000, 1));
         const balance = accountBalanceRepository.getByAccountId(account.id).get();
 
         expect(balance?.balance).toBe(13_000 * PRECISION);
@@ -208,9 +208,9 @@ describe('debt settlement statistics', () => {
     });
 
     it('settles an overpaid lent debt to a zero ledger balance across a target-only update', async () => {
-        const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 20_000, 15_000, 1);
+        const account = await run(createDebtAccount(AccountDebtTypeEnum.LENT, 20_000, 15_000, 1));
 
-        await accountService.updateDebtById(account.id, { debtType: AccountDebtTypeEnum.LENT, targetBalance: 15_000 });
+        await run(accountService.updateDebtById(account.id, { debtType: AccountDebtTypeEnum.LENT, targetBalance: 15_000 }));
 
         const balance = accountBalanceRepository.getByAccountId(account.id).get();
 
@@ -308,7 +308,7 @@ describe('debt settlement statistics', () => {
 
     it('stores historical base valuation on the debt account at creation without an adjustment entry', async () => {
         const { euroInstrument, usdInstrument } = await setupUsdDebtExchangeRateScenario();
-        const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 2_000, 15_000, usdInstrument.id);
+        const account = await run(createDebtAccount(AccountDebtTypeEnum.LENT, 2_000, 15_000, usdInstrument.id));
 
         expect(account.targetBaseInstrumentId).toBe(euroInstrument.id);
         expect(account.targetBaseExchangeRate).toBe(HISTORICAL_USD_TO_EUR_RATE);
@@ -318,7 +318,7 @@ describe('debt settlement statistics', () => {
 
     it('uses stored base valuation for converted home debt progress', async () => {
         const { euroInstrument, usdInstrument } = await setupUsdDebtExchangeRateScenario();
-        const account = await createDebtAccount(AccountDebtTypeEnum.LENT, 2_000, 15_000, usdInstrument.id);
+        const account = await run(createDebtAccount(AccountDebtTypeEnum.LENT, 2_000, 15_000, usdInstrument.id));
         const row = findHomeRow(account.id, euroInstrument.id);
 
         expect(row).toBeDefined();
@@ -387,7 +387,7 @@ describe('debt settlement statistics', () => {
     });
 
     it('creates borrowed debt accounts by treating current balance as an already returned amount', async () => {
-        const account = await createDebtAccount(AccountDebtTypeEnum.BORROW, 8_066, 45_000, 1);
+        const account = await run(createDebtAccount(AccountDebtTypeEnum.BORROW, 8_066, 45_000, 1));
         const balance = accountBalanceRepository.getByAccountId(account.id).get();
 
         expect(balance?.balance).toBe(-36_934 * PRECISION);
@@ -468,7 +468,7 @@ describe('debt settlement statistics', () => {
         createDebtTransferTransaction(debtAccount.id, cashAccount.id, 15_000 * PRECISION, 'Borrow money from Alex');
         createDebtTransferTransaction(cashAccount.id, debtAccount.id, 2_000 * PRECISION, 'Return money to Alex');
 
-        await transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id });
+        await run(transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id }));
 
         const summary = buildSummaryFromDebtAccount(debtAccount);
 
@@ -501,10 +501,10 @@ describe('debt settlement statistics', () => {
     it('summarizes fully returned lent debt as complete', async () => {
         const [category] = testDb.select().from(CategoryEntityTable).all();
         const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-        const debtAccount = await createDebtAccount(AccountDebtTypeEnum.LENT, 0, 300, cashAccount.instrumentId);
+        const debtAccount = await run(createDebtAccount(AccountDebtTypeEnum.LENT, 0, 300, cashAccount.instrumentId));
         const transaction = createIncomeTransaction(cashAccount.id, category.id, 300 * PRECISION);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+        await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }));
 
         const summary = buildSummaryFromDebtAccount(debtAccount);
 
@@ -532,11 +532,13 @@ describe('debt settlement statistics', () => {
             operatedAt: new Date()
         });
 
-        await accountService.updateDebtById(debtAccount.id, {
-            debtType: AccountDebtTypeEnum.LENT,
-            currentBalance: 750,
-            targetBalance: 500
-        });
+        await run(
+            accountService.updateDebtById(debtAccount.id, {
+                debtType: AccountDebtTypeEnum.LENT,
+                currentBalance: 750,
+                targetBalance: 500
+            })
+        );
 
         expectDebtProgressSummary(buildSummaryFromDebtAccount(debtAccount), 250 * PRECISION, 750 * PRECISION, 1_000 * PRECISION, 75);
     });
@@ -544,11 +546,13 @@ describe('debt settlement statistics', () => {
     it('keeps a funded lent debt total unchanged when its account settings are saved', async () => {
         const debtAccount = await createFundedLentDebt();
 
-        await accountService.updateDebtById(debtAccount.id, {
-            debtType: AccountDebtTypeEnum.LENT,
-            currentBalance: 0,
-            targetBalance: 500
-        });
+        await run(
+            accountService.updateDebtById(debtAccount.id, {
+                debtType: AccountDebtTypeEnum.LENT,
+                currentBalance: 0,
+                targetBalance: 500
+            })
+        );
 
         expectDebtProgressSummary(buildSummaryFromDebtAccount(debtAccount), 500 * PRECISION, 0, 500 * PRECISION, 0);
     });
@@ -557,24 +561,26 @@ describe('debt settlement statistics', () => {
         const [category] = testDb.select().from(CategoryEntityTable).all();
         const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
         const openingIncome = createIncomeTransaction(cashAccount.id, category.id, 500 * PRECISION);
-        const debtAccount = await accountDebtOpeningService.createBorrowedDebtFromIncome(
-            {
-                title: 'I owe Oleh',
-                iban: null,
-                icon: UserIconNameEnum.HandCoins,
-                instrumentId: cashAccount.instrumentId,
-                type: AccountTypeEnum.DEBT,
-                debtType: AccountDebtTypeEnum.BORROW,
-                currentBalance: 0,
-                targetBalance: 500,
-                contactId: null,
-                deadline: null
-            },
-            openingIncome.id
+        const debtAccount = await run(
+            accountDebtOpeningService.createBorrowedDebtFromIncome(
+                {
+                    title: 'I owe Oleh',
+                    iban: null,
+                    icon: UserIconNameEnum.HandCoins,
+                    instrumentId: cashAccount.instrumentId,
+                    type: AccountTypeEnum.DEBT,
+                    debtType: AccountDebtTypeEnum.BORROW,
+                    currentBalance: 0,
+                    targetBalance: 500,
+                    contactId: null,
+                    deadline: null
+                },
+                openingIncome.id
+            )
         );
         const additionalIncome = createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
 
-        await transactionDebtSettlementService.attach({ transactionId: additionalIncome.id, debtAccountId: debtAccount.id });
+        await run(transactionDebtSettlementService.attach({ transactionId: additionalIncome.id, debtAccountId: debtAccount.id }));
 
         const summary = buildSummaryFromDebtAccount(debtAccount);
         const adjustmentEntry = findAdjustmentEntry(debtAccount.id);
@@ -586,7 +592,7 @@ describe('debt settlement statistics', () => {
     it.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])(
         'keeps %s debt progress stable across five repeated account settings saves',
         async debtType => {
-            const account = await createDebtAccount(debtType, 0, 15_000, 1);
+            const account = await run(createDebtAccount(debtType, 0, 15_000, 1));
 
             insertOne(DebtEventEntityTable, {
                 debtAccountId: account.id,
@@ -600,11 +606,13 @@ describe('debt settlement statistics', () => {
                 const manualSettledAmount = debtEventRepository.getManualSettledAmountByAccountId(account.id).get();
 
                 // eslint-disable-next-line no-await-in-loop -- Repeated saves must run sequentially to reproduce the drift
-                await accountService.updateDebtById(account.id, {
-                    debtType,
-                    currentBalance: convertFromMicroUnits(manualSettledAmount?.amount ?? 0),
-                    targetBalance: 15_000
-                });
+                await run(
+                    accountService.updateDebtById(account.id, {
+                        debtType,
+                        currentBalance: convertFromMicroUnits(manualSettledAmount?.amount ?? 0),
+                        targetBalance: 15_000
+                    })
+                );
             }
 
             expectDebtProgressSummary(
@@ -621,7 +629,7 @@ describe('debt settlement statistics', () => {
         [AccountDebtTypeEnum.LENT, 13_000 * PRECISION],
         [AccountDebtTypeEnum.BORROW, -13_000 * PRECISION]
     ])('reports the %s ledger balance as the signed remaining amount for a manual debt', async (debtType, expectedBalance) => {
-        const account = await createDebtAccount(debtType, 2_000, 15_000, 1);
+        const account = await run(createDebtAccount(debtType, 2_000, 15_000, 1));
 
         expect(accountBalanceRepository.getByAccountId(account.id).get()?.balance).toBe(expectedBalance);
     });
@@ -644,20 +652,22 @@ const createDebtAccount = (debtType: AccountDebtTypeEnum, currentBalance: number
 const createFundedLentDebt = async () => {
     const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
 
-    return accountDebtOpeningService.openDebtWithFundingAccount(
-        {
-            title: 'Oleh owes me',
-            iban: null,
-            icon: UserIconNameEnum.HandCoins,
-            instrumentId: cashAccount.instrumentId,
-            type: AccountTypeEnum.DEBT,
-            debtType: AccountDebtTypeEnum.LENT,
-            currentBalance: 0,
-            targetBalance: 500,
-            contactId: null,
-            deadline: null
-        },
-        cashAccount.id
+    return run(
+        accountDebtOpeningService.openDebtWithFundingAccount(
+            {
+                title: 'Oleh owes me',
+                iban: null,
+                icon: UserIconNameEnum.HandCoins,
+                instrumentId: cashAccount.instrumentId,
+                type: AccountTypeEnum.DEBT,
+                debtType: AccountDebtTypeEnum.LENT,
+                currentBalance: 0,
+                targetBalance: 500,
+                contactId: null,
+                deadline: null
+            },
+            cashAccount.id
+        )
     );
 };
 
@@ -679,11 +689,11 @@ const attachTransactionToFundedLentDebt = async (debtTargetAmount: number) => {
 };
 
 const attachDebtSettlementAndReadState = async (transactionId: number, cashAccountId: number, debtAccountId: number) => {
-    await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+    await run(transactionDebtSettlementService.attach({ transactionId, debtAccountId }));
 
     const cashBalance = accountBalanceRepository.getByAccountId(cashAccountId).get();
     const debtBalance = accountBalanceRepository.getByAccountId(debtAccountId).get();
-    const debtEvent = await debtEventRepository.findByTransactionId(transactionId);
+    const debtEvent = await run(debtEventRepository.findByTransactionId(transactionId));
 
     return { cashBalance, debtBalance, debtEvent };
 };
@@ -748,13 +758,15 @@ const updateDebtCurrentBalanceAndReadState = async ({
     readonly updatedCurrentBalance: number;
     readonly targetBalance: number;
 }) => {
-    const account = await createDebtAccount(debtType, initialCurrentBalance, targetBalance, 1);
+    const account = await run(createDebtAccount(debtType, initialCurrentBalance, targetBalance, 1));
 
-    await accountService.updateDebtById(account.id, {
-        debtType,
-        currentBalance: updatedCurrentBalance,
-        targetBalance
-    });
+    await run(
+        accountService.updateDebtById(account.id, {
+            debtType,
+            currentBalance: updatedCurrentBalance,
+            targetBalance
+        })
+    );
 
     const balance = accountBalanceRepository.getByAccountId(account.id).get();
     const summary = buildSummaryFromDebtAccount(account);
@@ -771,19 +783,21 @@ const createLentDebtIncomeSettlementScenario = async ({
 }) => {
     const [category] = testDb.select().from(CategoryEntityTable).all();
     const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-    const debtAccount = await createDebtAccount(AccountDebtTypeEnum.LENT, initialCurrentBalance, 15_000, cashAccount.instrumentId);
+    const debtAccount = await run(createDebtAccount(AccountDebtTypeEnum.LENT, initialCurrentBalance, 15_000, cashAccount.instrumentId));
 
     if (isDefined(updatedCurrentBalance)) {
-        await accountService.updateDebtById(debtAccount.id, {
-            debtType: AccountDebtTypeEnum.LENT,
-            currentBalance: updatedCurrentBalance,
-            targetBalance: 15_000
-        });
+        await run(
+            accountService.updateDebtById(debtAccount.id, {
+                debtType: AccountDebtTypeEnum.LENT,
+                currentBalance: updatedCurrentBalance,
+                targetBalance: 15_000
+            })
+        );
     }
 
     const transaction = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
 
-    await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+    await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }));
 
     const row = findHomeRow(debtAccount.id, cashAccount.instrumentId);
     const summary = buildSummaryFromDebtAccount(debtAccount);
@@ -794,12 +808,12 @@ const createLentDebtIncomeSettlementScenario = async ({
 const createBorrowedDebtSettlementScenario = async () => {
     const [category] = testDb.select().from(CategoryEntityTable).all();
     const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-    const debtAccount = await createDebtAccount(AccountDebtTypeEnum.BORROW, 0, 15_000, cashAccount.instrumentId);
+    const debtAccount = await run(createDebtAccount(AccountDebtTypeEnum.BORROW, 0, 15_000, cashAccount.instrumentId));
 
     createDebtTransferTransaction(cashAccount.id, debtAccount.id, 2_000 * PRECISION, 'Return money to Alex');
     const additionalBorrowing = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
 
-    await transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id });
+    await run(transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id }));
 
     const remainingBorrowedDebt = accountBalanceRepository
         .getTotalRemainingDebtByType(cashAccount.instrumentId, AccountDebtTypeEnum.BORROW)
@@ -896,14 +910,16 @@ const setupUsdDebtExchangeRateScenario = async () => {
     const euroInstrument = await requireInstrument(CurrencyEnum.EUR);
     const usdInstrument = await requireInstrument(CurrencyEnum.USD);
 
-    await settingsRepository.update({ defaultInstrumentId: euroInstrument.id });
-    await exchangeRateRepository.upsert(usdInstrument.id, euroInstrument.id, CURRENT_USD_TO_EUR_RATE, 'test');
-    await historicalExchangeRateRepository.upsert({
-        sourceInstrumentId: usdInstrument.id,
-        targetInstrumentId: euroInstrument.id,
-        rate: HISTORICAL_USD_TO_EUR_RATE,
-        rateDate: HISTORICAL_USD_TO_EUR_RATE_DATE
-    });
+    await run(settingsRepository.update({ defaultInstrumentId: euroInstrument.id }));
+    await run(exchangeRateRepository.upsert(usdInstrument.id, euroInstrument.id, CURRENT_USD_TO_EUR_RATE, 'test'));
+    await run(
+        historicalExchangeRateRepository.upsert({
+            sourceInstrumentId: usdInstrument.id,
+            targetInstrumentId: euroInstrument.id,
+            rate: HISTORICAL_USD_TO_EUR_RATE,
+            rateDate: HISTORICAL_USD_TO_EUR_RATE_DATE
+        })
+    );
     vi.useFakeTimers({ now: new Date(`${HISTORICAL_USD_TO_EUR_RATE_DATE}T12:00:00.000Z`) });
 
     return { euroInstrument, usdInstrument };
@@ -974,7 +990,7 @@ const createDebtTransferTransaction = (fromAccountId: number, toAccountId: numbe
 const createDebtReturnIncome = async (cashAccountId: number, debtAccountId: number, categoryId: number, amount: number): Promise<void> => {
     const transaction = createIncomeTransaction(cashAccountId, categoryId, amount);
 
-    await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId });
+    await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId }));
 };
 
 const createDebtAdjustmentTransaction = (debtAccountId: number, amount: number): void => {
@@ -1154,20 +1170,22 @@ const openFundedDebt = async (
     targetAmount: number,
     instrumentId = fundingAccount.instrumentId
 ): Promise<AccountEntityInterface> =>
-    accountDebtOpeningService.openDebtWithFundingAccount(
-        {
-            title: debtType === AccountDebtTypeEnum.LENT ? 'Alex owes me' : 'I owe Alex',
-            iban: null,
-            icon: UserIconNameEnum.HandCoins,
-            instrumentId,
-            type: AccountTypeEnum.DEBT,
-            debtType,
-            currentBalance: 0,
-            targetBalance: convertFromMicroUnits(targetAmount),
-            contactId: null,
-            deadline: null
-        },
-        fundingAccount.id
+    run(
+        accountDebtOpeningService.openDebtWithFundingAccount(
+            {
+                title: debtType === AccountDebtTypeEnum.LENT ? 'Alex owes me' : 'I owe Alex',
+                iban: null,
+                icon: UserIconNameEnum.HandCoins,
+                instrumentId,
+                type: AccountTypeEnum.DEBT,
+                debtType,
+                currentBalance: 0,
+                targetBalance: convertFromMicroUnits(targetAmount),
+                contactId: null,
+                deadline: null
+            },
+            fundingAccount.id
+        )
     );
 
 const createFundingAccountTransaction = (
@@ -1262,7 +1280,7 @@ const attachMarchRepayment = async (
 ): Promise<TransactionEntityInterface> => {
     const repayment = createFundingAccountTransaction(type, fundingAccountId, operatedAt, amount);
 
-    await transactionDebtSettlementService.attach({ transactionId: repayment.id, debtAccountId });
+    await run(transactionDebtSettlementService.attach({ transactionId: repayment.id, debtAccountId }));
 
     return repayment;
 };
@@ -1364,18 +1382,20 @@ describe('debt v2 analytics — both ways', () => {
         'keeps a manual %s debt out of every month of analytics while the tile still tracks progress',
         async debtType => {
             const categoryId = DEBT_V2_CATEGORY_ID_BY_DEBT_TYPE[debtType];
-            const account = await accountService.createDebt({
-                title: debtType === AccountDebtTypeEnum.LENT ? 'Manual lend' : 'Manual borrow',
-                iban: null,
-                icon: UserIconNameEnum.HandCoins,
-                instrumentId: 1,
-                type: AccountTypeEnum.DEBT,
-                debtType,
-                currentBalance: 200,
-                targetBalance: 500,
-                contactId: null,
-                deadline: null
-            });
+            const account = await run(
+                accountService.createDebt({
+                    title: debtType === AccountDebtTypeEnum.LENT ? 'Manual lend' : 'Manual borrow',
+                    iban: null,
+                    icon: UserIconNameEnum.HandCoins,
+                    instrumentId: 1,
+                    type: AccountTypeEnum.DEBT,
+                    debtType,
+                    currentBalance: 200,
+                    targetBalance: 500,
+                    contactId: null,
+                    deadline: null
+                })
+            );
 
             expect(readCategoryAmount(TransactionTypeEnum.EXPENSE, categoryId, 1, null)).toBe(0);
             expect(readCategoryAmount(TransactionTypeEnum.INCOME, categoryId, 1, null)).toBe(0);
@@ -1398,7 +1418,7 @@ describe('debt v2 analytics — both ways', () => {
                 DEBT_V2_REPAYMENT_AMOUNT
             );
 
-            await transactionDebtSettlementService.detach(repayment.id);
+            await run(transactionDebtSettlementService.detach(repayment.id));
 
             expect(readCategoryAmount(repaymentType, categoryId, fundingAccount.instrumentId, DEBT_V2_MARCH_RANGE)).toBe(0);
             const uncategorizedRow = readCategoryRows(repaymentType, fundingAccount.instrumentId, DEBT_V2_MARCH_RANGE).find(

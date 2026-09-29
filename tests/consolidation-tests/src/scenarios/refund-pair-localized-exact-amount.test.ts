@@ -2,7 +2,7 @@ import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
+import { refundPairRepository, runEffect, testQueryService, testSeedService } from '../harness/test-context';
 
 const AMAZON_TITLE = 'Amazon';
 const AMAZON_REFUND_TITLE = 'Скасування. Amazon';
@@ -61,7 +61,7 @@ describe('consolidation/refund-pair-localized-exact-amount', () => {
             externalIdPrefix: 'amazon-exact'
         });
 
-        const autoCandidates = await refundPairRepository.findCandidates();
+        const autoCandidates = await runEffect(refundPairRepository.findCandidates());
         expect(autoCandidates).toEqual([
             expect.objectContaining({
                 confidenceBucket: 'AUTO_REFUND_LOCALIZED_REFUND_TITLE',
@@ -107,8 +107,8 @@ describe('consolidation/refund-pair-localized-exact-amount', () => {
             externalIdPrefix: 'twin-second'
         });
 
-        const autoCandidates = await refundPairRepository.findCandidates();
-        const reviewCandidates = await refundPairRepository.findReviewCandidates();
+        const autoCandidates = await runEffect(refundPairRepository.findCandidates());
+        const reviewCandidates = await runEffect(refundPairRepository.findReviewCandidates());
 
         expect(autoCandidates).toHaveLength(0);
         expect(reviewCandidates).toEqual([

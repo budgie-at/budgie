@@ -1,116 +1,90 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { consolidationCopySourceTransactionTags } from '../../shared/utils/consolidation-copy-source-transaction-tags.util';
+import { RefundAlreadyConsolidatedError } from '../error/refund-already-consolidated.error';
+import { RefundExceedsExpenseError } from '../error/refund-exceeds-expense.error';
+import { RefundNotFromIncomeError } from '../error/refund-not-from-income.error';
+import { RefundTransactionNotFoundError } from '../error/refund-transaction-not-found.error';
 
 import type { ConvertToRefundParamsInterface } from '../interface/convert-to-refund-params.interface';
 import type { RefundConsolidationDependenciesInterface } from '../interface/refund-consolidation-dependencies.interface';
-import type {
-    DB,
-    LanguageEnum,
-    RefundableExpenseCandidateInterface,
-    TransactionEntryEntityInterface,
-    TransactionWithEntriesEntityInterface
-} from '@budgie/contracts';
+import type { LanguageEnum, TransactionEntryEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
 export class RefundConsolidationService {
-    constructor(private readonly dependencies: RefundConsolidationDependenciesInterface) {}
-
-    @Log(
-        (refundIncomeTransactionId, search, language) =>
-            `enter refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" language=${language}`,
-        (result, refundIncomeTransactionId, search, language) =>
-            `done refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" language=${language} candidateIds=${result.map(candidate => candidate.id).join(',')}`,
-        (error, refundIncomeTransactionId, search, language) =>
-            `throw refundIncomeTransactionId=${refundIncomeTransactionId} search="${search}" language=${language} error=${getErrorMessage(error)}`
-    )
-    async findRefundableExpenses(
+    readonly findRefundableExpenses = Effect.fn('RefundConsolidationService.findRefundableExpenses')(function* (
+        this: RefundConsolidationService,
         refundIncomeTransactionId: number,
         search: string,
         language: LanguageEnum
-    ): Promise<RefundableExpenseCandidateInterface[]> {
-        return await this.dependencies.refundPairRepository.findRefundableExpenseCandidates(refundIncomeTransactionId, search, language);
-    }
+    ) {
+        return yield* this.dependencies.refundPairRepository.findRefundableExpenseCandidates(refundIncomeTransactionId, search, language);
+    });
 
-    @Log(
-        params => `enter refundIncomeTransactionId=${params.refundIncomeTransactionId} expenseTransactionId=${params.expenseTransactionId}`,
-        (result, params) =>
-            `done refundIncomeTransactionId=${params.refundIncomeTransactionId} expenseTransactionId=${params.expenseTransactionId} canonicalTransactionId=${result}`,
-        (error, params) =>
-            `throw refundIncomeTransactionId=${params.refundIncomeTransactionId} expenseTransactionId=${params.expenseTransactionId} error=${getErrorMessage(error)}`
-    )
-    async convertToRefund(params: ConvertToRefundParamsInterface): Promise<number> {
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx => this.convertToRefundInner(params, tx));
-    }
+    readonly convertToRefund = Effect.fn('RefundConsolidationService.convertToRefund')(
+        function* (this: RefundConsolidationService, params: ConvertToRefundParamsInterface) {
+            const transactions = yield* this.dependencies.transactionRepository.findByIdsWithRefundConsolidationHistory([
+                params.refundIncomeTransactionId,
+                params.expenseTransactionId
+            ]);
+            const refundIncomeTransaction = transactions.find(transaction => transaction.id === params.refundIncomeTransactionId);
+            const expenseTransaction = transactions.find(transaction => transaction.id === params.expenseTransactionId);
 
-    private async convertToRefundInner(params: ConvertToRefundParamsInterface, tx: DB): Promise<number> {
-        const transactions = await this.dependencies.transactionRepository.findByIdsWithRefundConsolidationHistory(
-            [params.refundIncomeTransactionId, params.expenseTransactionId],
-            tx
-        );
-        const refundIncomeTransaction = this.findTransactionOrThrow(transactions, params.refundIncomeTransactionId);
-        const expenseTransaction = this.findTransactionOrThrow(transactions, params.expenseTransactionId);
+            if (!isDefined(refundIncomeTransaction) || !isDefined(expenseTransaction)) {
+                return yield* new RefundTransactionNotFoundError();
+            }
 
-        this.validateRefundIncomePair(refundIncomeTransaction, expenseTransaction);
-        await this.dependencies.transactionRepository.setConsolidationType(
-            expenseTransaction.id,
-            TransactionConsolidationTypeEnum.REFUND,
-            tx
-        );
-        await consolidationCopySourceTransactionTags(
-            this.dependencies.transactionTagsRepository,
-            [refundIncomeTransaction.id],
-            expenseTransaction.id,
-            tx
-        );
-        await this.dependencies.transactionEntryRepository.moveToConsolidatedTransaction(
-            [refundIncomeTransaction.id],
-            expenseTransaction.id,
-            tx
-        );
-        await this.dependencies.transactionRepository.setConsolidationParent([refundIncomeTransaction.id], expenseTransaction.id, tx);
+            yield* this.validateRefundIncomePair(refundIncomeTransaction, expenseTransaction);
+            yield* this.dependencies.transactionRepository.setConsolidationType(
+                expenseTransaction.id,
+                TransactionConsolidationTypeEnum.REFUND
+            );
+            yield* consolidationCopySourceTransactionTags(
+                this.dependencies.transactionTagsRepository,
+                [refundIncomeTransaction.id],
+                expenseTransaction.id
+            );
+            yield* this.dependencies.transactionEntryRepository.moveToConsolidatedTransaction(
+                [refundIncomeTransaction.id],
+                expenseTransaction.id
+            );
+            yield* this.dependencies.transactionRepository.setConsolidationParent([refundIncomeTransaction.id], expenseTransaction.id);
 
-        return expenseTransaction.id;
-    }
+            return expenseTransaction.id;
+        },
+        effect => Db.transaction(effect)
+    );
 
-    private findTransactionOrThrow(
-        transactions: TransactionWithEntriesEntityInterface[],
-        id: number
-    ): TransactionWithEntriesEntityInterface {
-        const transaction = transactions.find(item => item.id === id);
-
-        if (isDefined(transaction)) {
-            return transaction;
-        }
-
-        throw new Error('Transaction not found');
-    }
-
-    private validateRefundIncomePair(
+    private readonly validateRefundIncomePair = Effect.fnUntraced(function* (
+        this: RefundConsolidationService,
         refundIncomeTransaction: TransactionWithEntriesEntityInterface,
         expenseTransaction: TransactionWithEntriesEntityInterface
-    ): void {
+    ) {
         const expenseEntry = this.findEntryByType(expenseTransaction.entries, TransactionEntryTypeEnum.CREDIT);
         const refundIncomeEntry = this.findEntryByType(refundIncomeTransaction.entries, TransactionEntryTypeEnum.DEBIT);
 
         if (refundIncomeTransaction.type !== TransactionTypeEnum.INCOME || expenseTransaction.type !== TransactionTypeEnum.EXPENSE) {
-            throw new Error('Refund conversion starts from an income');
+            return yield* new RefundNotFromIncomeError();
         }
 
         if (this.isAlreadyConsolidated(refundIncomeTransaction, expenseTransaction)) {
-            throw new Error('Selected transaction is already consolidated');
+            return yield* new RefundAlreadyConsolidatedError();
         }
 
         if (!isDefined(expenseEntry) || !isDefined(refundIncomeEntry)) {
-            throw new Error('Transaction not found');
+            return yield* new RefundTransactionNotFoundError();
         }
 
         if (refundIncomeEntry.amount + this.getExistingRefundAmount(expenseTransaction.entries) > expenseEntry.amount) {
-            throw new Error('Refund amount cannot exceed the expense');
+            return yield* new RefundExceedsExpenseError();
         }
-    }
+
+        return yield* Effect.void;
+    });
+
+    constructor(private readonly dependencies: RefundConsolidationDependenciesInterface) {}
 
     private isAlreadyConsolidated(
         refundIncomeTransaction: TransactionWithEntriesEntityInterface,

@@ -1,19 +1,19 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-const BinanceTradeApiSchema = z.object({
-    symbol: z.string(),
-    id: z.number(),
-    orderId: z.number(),
-    price: z.string(),
-    qty: z.string(),
-    quoteQty: z.string(),
-    commission: z.string(),
-    commissionAsset: z.string(),
-    time: z.number(),
-    isBuyer: z.boolean(),
-    isMaker: z.boolean()
+const BinanceTradeApiSchema = Schema.Struct({
+    symbol: Schema.String,
+    id: Schema.Number,
+    orderId: Schema.Number,
+    price: Schema.String,
+    qty: Schema.String,
+    quoteQty: Schema.String,
+    commission: Schema.String,
+    commissionAsset: Schema.String,
+    time: Schema.Number,
+    isBuyer: Schema.Boolean,
+    isMaker: Schema.Boolean
 });
 
-export const BinanceTradeListApiSchema = z.array(BinanceTradeApiSchema);
+export const BinanceTradeListApiSchema = Schema.Array(BinanceTradeApiSchema);
 
-export type BinanceTradeApiInterface = z.infer<typeof BinanceTradeApiSchema>;
+export type BinanceTradeApiInterface = typeof BinanceTradeApiSchema.Type;

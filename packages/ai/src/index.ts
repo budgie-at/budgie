@@ -13,6 +13,7 @@ export {
     EMBEDDING_VEC_SEARCH_LIMIT
 } from './@generic/constant/embedding.constant';
 
+export { AiInvokeError } from './@generic/error/ai-invoke.error';
 export { serializeEmbedding } from './@generic/util/serialize-embedding.util';
 export { stripThinkingTags } from './@generic/util/strip-thinking-tags.util';
 

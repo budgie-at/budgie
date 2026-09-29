@@ -12,7 +12,8 @@ import {
     WITHDRAW_URL,
     stubBinanceServerTime,
     stubEmptyC2cAndEarnRewards,
-    withCoolDownSpy
+    withCoolDownSpy,
+    run
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -33,9 +34,7 @@ describe('binance/fiat-rate-limit', () => {
 
         const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
         const coolDownDelays = await withCoolDownSpy(COOL_DOWN_WINDOW_MS, async () => {
-            const result = await client.getTransactions('SPOT:EUR', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
-
-            expect(result.success).toBe(true);
+            await run(client.getTransactions('SPOT:EUR', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
         });
 
         expect(coolDownDelays).toContain(COOL_DOWN_WINDOW_MS);

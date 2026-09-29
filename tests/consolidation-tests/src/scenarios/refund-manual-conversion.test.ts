@@ -2,7 +2,7 @@ import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.
 import { LanguageEnum, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { refundConsolidationService, testQueryService, testSeedService } from '../harness/test-context';
+import { refundConsolidationService, runEffect, testQueryService, testSeedService } from '../harness/test-context';
 
 describe('consolidation/refund-manual-conversion', () => {
     it('manually converts when the income and expense already share a tag', async () => {
@@ -16,10 +16,12 @@ describe('consolidation/refund-manual-conversion', () => {
         testSeedService.transactionTag(expense.id, tag.id);
         testSeedService.transactionTag(refunds[0].id, tag.id);
 
-        const canonicalTransactionId = await refundConsolidationService.convertToRefund({
-            refundIncomeTransactionId: refunds[0].id,
-            expenseTransactionId: expense.id
-        });
+        const canonicalTransactionId = await runEffect(
+            refundConsolidationService.convertToRefund({
+                refundIncomeTransactionId: refunds[0].id,
+                expenseTransactionId: expense.id
+            })
+        );
 
         expect(canonicalTransactionId).toBe(expense.id);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
@@ -36,8 +38,8 @@ describe('consolidation/refund-manual-conversion', () => {
             title: 'Apple Store'
         });
 
-        const incomeCandidates = await refundConsolidationService.findRefundableExpenses(refunds[0].id, '', LanguageEnum.EN);
-        const expenseCandidates = await refundConsolidationService.findRefundableExpenses(expense.id, '', LanguageEnum.EN);
+        const incomeCandidates = await runEffect(refundConsolidationService.findRefundableExpenses(refunds[0].id, '', LanguageEnum.EN));
+        const expenseCandidates = await runEffect(refundConsolidationService.findRefundableExpenses(expense.id, '', LanguageEnum.EN));
 
         expect(incomeCandidates).toMatchObject([{ id: expense.id }]);
         expect(expenseCandidates).toEqual([]);
@@ -50,17 +52,21 @@ describe('consolidation/refund-manual-conversion', () => {
             refundAmounts: [convertToMicroUnits(80), convertToMicroUnits(50)]
         });
 
-        await refundConsolidationService.convertToRefund({
-            refundIncomeTransactionId: refunds[0].id,
-            expenseTransactionId: expense.id
-        });
-
-        await expect(
+        await runEffect(
             refundConsolidationService.convertToRefund({
-                refundIncomeTransactionId: refunds[1].id,
+                refundIncomeTransactionId: refunds[0].id,
                 expenseTransactionId: expense.id
             })
-        ).rejects.toThrowError('Refund amount cannot exceed the expense');
+        );
+
+        await expect(
+            runEffect(
+                refundConsolidationService.convertToRefund({
+                    refundIncomeTransactionId: refunds[1].id,
+                    expenseTransactionId: expense.id
+                })
+            )
+        ).rejects.toMatchObject({ _tag: 'RefundExceedsExpenseError', message: 'Refund amount cannot exceed the expense' });
 
         expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
         expect(testQueryService.fetchTransactionById(refunds[1].id).consolidationParentTransactionId).toBeNull();

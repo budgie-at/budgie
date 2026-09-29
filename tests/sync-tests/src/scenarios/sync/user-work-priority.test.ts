@@ -1,7 +1,11 @@
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
+import { Workload } from '@app/@generic/service/workload.service';
+import * as Deferred from 'effect/Deferred';
+import * as Effect from 'effect/Effect';
 import { describe, expect, it } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
+
+import { run, runInWorkload } from '../../harness';
 
 const nextTaskDelayMs = 0;
 
@@ -10,12 +14,16 @@ describe('sync/user-work-priority', () => {
         const events: string[] = [];
 
         await Promise.all([
-            syncWorkloadService.run('background-one', async () => {
-                events.push('background-one');
-            }),
-            syncWorkloadService.run('background-two', async () => {
-                events.push('background-two');
-            })
+            runInWorkload(
+                Effect.sync(() => {
+                    events.push('background-one');
+                })
+            ),
+            runInWorkload(
+                Effect.sync(() => {
+                    events.push('background-two');
+                })
+            )
         ]);
 
         expect(events).toEqual(['background-one', 'background-two']);
@@ -24,58 +32,73 @@ describe('sync/user-work-priority', () => {
     it('runs queued user work before older pending background work', async () => {
         const events: string[] = [];
         const queuedWork: Array<Promise<void>> = [];
+        const currentStarted = Deferred.makeUnsafe<void>();
+        const currentGate = Deferred.makeUnsafe<void>();
 
-        await syncWorkloadService.run('current', async () => {
-            events.push('current');
-            queuedWork.push(
-                syncWorkloadService
-                    .run('background', async () => {
-                        events.push('background');
-                    })
-                    .then(emptyFn, () => {
-                        events.push('background:cancelled');
-                    })
-            );
-            queuedWork.push(
-                syncWorkloadService.runUser('file-import', async () => {
-                    events.push('file-import');
-                })
-            );
-            events.push(`hasQueuedUserWork:${String(syncWorkloadService.hasQueuedUserWork())}`);
+        const currentWork = runInWorkload(
+            Effect.gen(function* () {
+                events.push('current');
+                yield* Deferred.succeed(currentStarted, undefined);
+                yield* Deferred.await(currentGate);
+            })
+        ).then(emptyFn, () => {
+            events.push('current:interrupted');
         });
-        await Promise.all(queuedWork);
+        await run(Deferred.await(currentStarted));
+        queuedWork.push(
+            runInWorkload(
+                Effect.sync(() => {
+                    events.push('background');
+                })
+            ).then(emptyFn, () => {
+                events.push('background:cancelled');
+            })
+        );
+        events.push(`hasQueuedWork:${String(await run(Workload.use(workload => workload.hasQueuedWork)))}`);
+        queuedWork.push(
+            run(
+                Workload.use(workload =>
+                    workload.runUser(
+                        Effect.sync(() => {
+                            events.push('file-import');
+                        })
+                    )
+                )
+            )
+        );
+        await Promise.all([currentWork, ...queuedWork]);
 
         expect(events).toContain('background:cancelled');
         expect(events).toContain('file-import');
         expect(events).not.toContain('background');
         expect(events[0]).toBe('current');
-        expect(events).toContain('hasQueuedUserWork:true');
+        expect(events).toContain('hasQueuedWork:true');
     });
 
     it('rejects queued work immediately when pending work is cancelled', async () => {
         const events: string[] = [];
-        let releaseCurrentWork = emptyFn;
+        const currentStarted = Deferred.makeUnsafe<void>();
+        const currentGate = Deferred.makeUnsafe<void>();
 
-        const currentWork = new Promise<void>(resolve => {
-            releaseCurrentWork = resolve;
-        });
-        const runningWork = syncWorkloadService.run('current', async () => {
-            events.push('current');
-            await currentWork;
-        });
+        const runningWork = runInWorkload(
+            Effect.gen(function* () {
+                events.push('current');
+                yield* Deferred.succeed(currentStarted, undefined);
+                yield* Deferred.await(currentGate);
+            })
+        ).then(emptyFn, emptyFn);
+        await run(Deferred.await(currentStarted));
 
-        await Promise.resolve();
-
-        const queuedWorkRejected = syncWorkloadService
-            .run('background', async () => {
+        const queuedWorkRejected = runInWorkload(
+            Effect.sync(() => {
                 events.push('background');
             })
-            .then(
-                () => false,
-                () => true
-            );
+        ).then(
+            () => false,
+            () => true
+        );
 
-        syncWorkloadService.cancelPendingAndBlockNewWork();
+        await run(Workload.use(workload => workload.block));
 
         const isQueuedWorkRejected = await Promise.race([
             queuedWorkRejected,
@@ -87,7 +110,7 @@ describe('sync/user-work-priority', () => {
         ]);
         expect(isQueuedWorkRejected).toBe(true);
 
-        releaseCurrentWork();
+        Deferred.doneUnsafe(currentGate, Effect.void);
         await runningWork;
         expect(events).toEqual(['current']);
     });

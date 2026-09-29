@@ -15,7 +15,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { buildTransferInput, seed, testDb } from '../../harness';
+import { buildTransferInput, seed, testDb, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const OPERATED_AT_YEAR = 2026;
@@ -154,7 +154,9 @@ describe('account/deposit-transaction-safety', () => {
 
         seedBalance(depositAccount.id, 100 * PRECISION);
 
-        await expect(transactionService.createInternal(buildExpenseInput(depositAccount.id, 40))).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
+        await expect(run(transactionService.createInternal(buildExpenseInput(depositAccount.id, 40)))).rejects.toThrow(
+            DEPOSIT_EXPENSE_ERROR
+        );
 
         expect(fetchTransactionCount()).toBe(0);
         expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
@@ -164,15 +166,15 @@ describe('account/deposit-transaction-safety', () => {
     it('rejects updating an existing transaction into a deposit expense and preserves the original transaction', async () => {
         const bankAccount = seed.account({ type: AccountTypeEnum.BANK });
         const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
-        const transaction = await transactionService.createInternal(buildExpenseInput(bankAccount.id, 20));
+        const transaction = await run(transactionService.createInternal(buildExpenseInput(bankAccount.id, 20)));
 
         seedBalance(depositAccount.id, 100 * PRECISION);
 
-        await expect(transactionService.updateById(transaction.id, buildExpenseInput(depositAccount.id, 30))).rejects.toThrow(
+        await expect(run(transactionService.updateById(transaction.id, buildExpenseInput(depositAccount.id, 30)))).rejects.toThrow(
             DEPOSIT_EXPENSE_ERROR
         );
 
-        const preservedTransaction = await transactionRepository.getByIdWithEntries(transaction.id);
+        const preservedTransaction = await run(transactionRepository.getByIdWithEntries(transaction.id));
 
         expect(preservedTransaction?.type).toBe(TransactionTypeEnum.EXPENSE);
         expect(preservedTransaction?.fromAccountId).toBe(bankAccount.id);
@@ -186,7 +188,7 @@ describe('account/deposit-transaction-safety', () => {
         seedExpenseLedgerTransaction(depositAccount.id, IMPORTED_INITIAL_AMOUNT, IMPORTED_EXTERNAL_ID, ExternalSourceEnum.MONOBANK);
         seedBalance(depositAccount.id, 100 * PRECISION);
 
-        await expect(transactionService.update(buildImportedExpenseInput(depositAccount.id))).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
+        await expect(run(transactionService.update(buildImportedExpenseInput(depositAccount.id)))).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
 
         const importedTransaction = testDb
             .select()
@@ -212,7 +214,7 @@ describe('account/deposit-transaction-safety', () => {
         seedBalance(depositAccount.id, 50 * PRECISION);
 
         await expect(
-            transactionService.createInternalTransfer(buildTransferInput(depositAccount.id, bankAccount.id, 70, OPERATED_AT))
+            run(transactionService.createInternalTransfer(buildTransferInput(depositAccount.id, bankAccount.id, 70, OPERATED_AT)))
         ).rejects.toThrow(NEGATIVE_DEPOSIT_BALANCE_ERROR);
 
         expect(fetchTransactionCount()).toBe(0);
@@ -227,12 +229,12 @@ describe('account/deposit-transaction-safety', () => {
         seedExpenseLedgerTransaction(depositAccount.id, LEGACY_EXPENSE_AMOUNT);
         seedBalance(depositAccount.id, LEGACY_NEGATIVE_BALANCE);
 
-        await transactionService.createInternal(buildIncomeInput(depositAccount.id, 40));
+        await run(transactionService.createInternal(buildIncomeInput(depositAccount.id, 40)));
 
         expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(IMPROVED_LEGACY_NEGATIVE_BALANCE);
 
         await expect(
-            transactionService.createInternalTransfer(buildTransferInput(depositAccount.id, seed.account().id, 50, OPERATED_AT))
+            run(transactionService.createInternalTransfer(buildTransferInput(depositAccount.id, seed.account().id, 50, OPERATED_AT)))
         ).rejects.toThrow(NEGATIVE_DEPOSIT_BALANCE_ERROR);
 
         expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(IMPROVED_LEGACY_NEGATIVE_BALANCE);
@@ -244,7 +246,7 @@ describe('account/deposit-transaction-safety', () => {
         seedExpenseLedgerTransaction(depositAccount.id, LEGACY_EXPENSE_AMOUNT);
         seedBalance(depositAccount.id, LEGACY_NEGATIVE_BALANCE);
 
-        await accountBalanceIncrementalService.updateAllBalances(true);
+        await run(accountBalanceIncrementalService.updateAllBalances(true));
 
         expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(LEGACY_NEGATIVE_BALANCE);
     });

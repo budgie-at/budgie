@@ -10,7 +10,7 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario } from '../../harness';
+import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefundStatisticsScenario, run } from '../../harness';
 import { seed } from '../../harness/seed/seed';
 
 const REFUNDED_EXPENSE_AMOUNT = Number('120') * PRECISION;
@@ -45,7 +45,7 @@ describe('consolidation/refund-pair-partial', () => {
         const tag = seed.tag('Refunded');
         seed.transactionTag(expense.id, tag.id);
 
-        await transferConsolidationService.consolidate();
+        await run(transferConsolidationService.consolidate(null));
 
         const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId).get();
         expect(totals?.income).toBe(0);

@@ -10,7 +10,7 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { requireInstrument, seedBitcoinCryptoAccount } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -77,7 +77,7 @@ describe('net worth currency conversion', () => {
     it('does not value crypto totals or display amounts with fiat fallback when the live rate is missing', async () => {
         const { bitcoin, euro } = await seedBitcoinCryptoAccount(100 * PRECISION);
 
-        const conversion = await exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
+        const conversion = await run(exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION));
 
         expectCryptoTotals(euro.id, 0);
         expect(conversion).toBeNull();
@@ -86,7 +86,7 @@ describe('net worth currency conversion', () => {
     it('converts crypto display amounts with the live rate when present', async () => {
         const { bitcoin, euro } = await seedBitcoinCryptoWithLiveRate(100 * PRECISION);
 
-        const conversion = await exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION);
+        const conversion = await run(exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION));
 
         expectCryptoTotals(euro.id, LIVE_CRYPTO_TOTAL);
         expect(conversion?.amount).toBe(LIVE_CRYPTO_TOTAL);

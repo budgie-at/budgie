@@ -12,7 +12,8 @@ import {
     WITHDRAW_URL,
     buildBinance,
     stubBinanceServerTime,
-    stubEmptyC2cAndEarnRewards
+    stubEmptyC2cAndEarnRewards,
+    run
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -36,14 +37,10 @@ describe('binance/per-run-cache', () => {
         );
 
         const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
-        const btcResult = await client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
-        const ethResult = await client.getTransactions('SPOT:ETH', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+        const btcTransactions = await run(client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
+        const ethTransactions = await run(client.getTransactions('SPOT:ETH', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
 
-        expect(btcResult.success).toBe(true);
-        expect(ethResult.success).toBe(true);
-        if (btcResult.success && ethResult.success) {
-            expect(btcResult.data.map(transaction => transaction.id)).toEqual(['dep-btc']);
-            expect(ethResult.data.map(transaction => transaction.id)).toEqual(['dep-eth']);
-        }
+        expect(btcTransactions.map(transaction => transaction.id)).toEqual(['dep-btc']);
+        expect(ethTransactions.map(transaction => transaction.id)).toEqual(['dep-eth']);
     });
 });

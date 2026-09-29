@@ -2,7 +2,7 @@ import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
+import { refundPairRepository, runEffect, testQueryService, testSeedService } from '../harness/test-context';
 
 import type { RefundCandidateInterface, RefundReviewCandidateInterface, TransactionEntityInterface } from '@budgie/contracts';
 
@@ -74,7 +74,10 @@ const seedShadowedRefund = (input: {
 const fetchRankedCandidates = async (): Promise<{
     readonly auto: RefundCandidateInterface[];
     readonly review: RefundReviewCandidateInterface[];
-}> => ({ auto: await refundPairRepository.findCandidates(), review: await refundPairRepository.findReviewCandidates() });
+}> => ({
+    auto: await runEffect(refundPairRepository.findCandidates()),
+    review: await runEffect(refundPairRepository.findReviewCandidates())
+});
 
 describe('consolidation/refund-pair-cross-bucket-rank', () => {
     it('auto-consolidates the unique localized exact-amount match shadowed by an exact-title candidate of another expense', async () => {

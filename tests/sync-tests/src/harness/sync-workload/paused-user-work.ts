@@ -1,29 +1,38 @@
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
+import { Workload } from '@app/@generic/service/workload.service';
+import * as Deferred from 'effect/Deferred';
+import * as Effect from 'effect/Effect';
 
 import { emptyFn } from '@rnw-community/shared';
+
+import { run } from '../scenario/test-runtime';
 
 export class PausedUserWork {
     readonly started: Promise<void>;
     readonly work: Promise<void>;
 
-    private releaseWork = emptyFn;
-    private markStarted = emptyFn;
+    private readonly releaseSignal = Deferred.makeUnsafe<void>();
 
-    constructor(name: string, onStart: () => void = emptyFn) {
-        const releaseSignal = new Promise<void>(resolve => {
-            this.releaseWork = resolve;
-        });
-        this.started = new Promise<void>(resolve => {
-            this.markStarted = resolve;
-        });
-        this.work = syncWorkloadService.runUser(name, async () => {
-            onStart();
-            this.markStarted();
-            await releaseSignal;
-        });
+    constructor(onStart: () => void = emptyFn) {
+        const startedSignal = Deferred.makeUnsafe<void>();
+        const { releaseSignal } = this;
+
+        this.started = run(Deferred.await(startedSignal));
+        this.work = run(
+            Effect.gen(function* () {
+                const workload = yield* Workload;
+
+                yield* workload.runUser(
+                    Effect.gen(function* () {
+                        onStart();
+                        yield* Deferred.succeed(startedSignal, undefined);
+                        yield* Deferred.await(releaseSignal);
+                    })
+                );
+            })
+        );
     }
 
     release(): void {
-        this.releaseWork();
+        Deferred.doneUnsafe(this.releaseSignal, Effect.void);
     }
 }

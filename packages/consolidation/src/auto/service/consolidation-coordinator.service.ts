@@ -1,74 +1,66 @@
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
-
-import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { ConsolidationAutoCandidateService } from './consolidation-auto-candidate.service';
 import type { ConsolidationCandidateService } from './consolidation-candidate.service';
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export class ConsolidationCoordinatorService {
+    readonly consolidate = Effect.fn('ConsolidationCoordinatorService.consolidate')(function* (
+        this: ConsolidationCoordinatorService,
+        scope: ConsolidationScanScopeInterface | null = null,
+        onProgress?: (processedCandidateGroupCount: number) => void
+    ) {
+        return yield* this.consolidationAutoCandidateService.process(scope, onProgress);
+    });
+
+    readonly countAutoCandidates = Effect.fn('ConsolidationCoordinatorService.countAutoCandidates')(function* (
+        this: ConsolidationCoordinatorService,
+        scope: ConsolidationScanScopeInterface | null = null
+    ) {
+        return yield* this.consolidationAutoCandidateService.count(scope);
+    });
+
+    readonly countManualReviewCandidates = Effect.fn('ConsolidationCoordinatorService.countManualReviewCandidates')(
+        function* (this: ConsolidationCoordinatorService) {
+            return yield* this.consolidationCandidateService.countManualReviewCandidates();
+        }
+    );
+
+    readonly countExistingTransferIncomeDuplicateRepairCandidates = Effect.fn(
+        'ConsolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates'
+    )(function* (this: ConsolidationCoordinatorService) {
+        return (yield* this.consolidationCandidateService.findExistingTransferIncomeDuplicateRepairCandidates()).length;
+    });
+
+    readonly repairExistingTransferIncomeDuplicates = Effect.fn('ConsolidationCoordinatorService.repairExistingTransferIncomeDuplicates')(
+        function* (this: ConsolidationCoordinatorService) {
+            const candidates = yield* this.consolidationCandidateService.findExistingTransferIncomeDuplicateRepairCandidates();
+
+            return yield* this.consolidationAutoCandidateService.processExistingTransferIncomeDuplicateCandidates(candidates);
+        }
+    );
+
+    readonly countBridgeClaimRepairCandidates = Effect.fn('ConsolidationCoordinatorService.countBridgeClaimRepairCandidates')(
+        function* (this: ConsolidationCoordinatorService) {
+            return (yield* this.consolidationCandidateService.findBridgeClaimedRepairCandidates()).length;
+        }
+    );
+
+    readonly repairBridgeClaimedTransferPairs = Effect.fn('ConsolidationCoordinatorService.repairBridgeClaimedTransferPairs')(
+        function* (this: ConsolidationCoordinatorService) {
+            const candidates = yield* this.consolidationCandidateService.findBridgeClaimedRepairCandidates();
+            const repairedCount = yield* this.consolidationAutoCandidateService.processBridgeClaimRepairCandidates(candidates);
+
+            if (repairedCount > 0) {
+                yield* this.consolidationAutoCandidateService.process(null);
+            }
+
+            return repairedCount;
+        }
+    );
+
     constructor(
         private readonly consolidationCandidateService: ConsolidationCandidateService,
         private readonly consolidationAutoCandidateService: ConsolidationAutoCandidateService
     ) {}
-
-    @Log(
-        (scope, onProgress) =>
-            `enter hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, scope, onProgress) =>
-            `done hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
-        (error, scope, onProgress) =>
-            `throw hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
-    )
-    async consolidate(
-        scope: ConsolidationScanScopeInterface | null = null,
-        onProgress?: (processedCandidateGroupCount: number) => void
-    ): Promise<ConsolidationResultInterface> {
-        return this.consolidationAutoCandidateService.process(scope, onProgress);
-    }
-
-    @Log(
-        scope => `enter hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0}`,
-        (result, scope) => `done hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} count=${result}`,
-        (error, scope) =>
-            `throw hasScope=${String(isDefined(scope))} scopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
-    )
-    async countAutoCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<number> {
-        return this.consolidationAutoCandidateService.count(scope);
-    }
-
-    @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async countManualReviewCandidates(): Promise<number> {
-        return this.consolidationCandidateService.countManualReviewCandidates();
-    }
-
-    @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async countExistingTransferIncomeDuplicateRepairCandidates(): Promise<number> {
-        return (await this.consolidationCandidateService.findExistingTransferIncomeDuplicateRepairCandidates()).length;
-    }
-
-    @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async repairExistingTransferIncomeDuplicates(): Promise<number> {
-        const candidates = await this.consolidationCandidateService.findExistingTransferIncomeDuplicateRepairCandidates();
-
-        return this.consolidationAutoCandidateService.processExistingTransferIncomeDuplicateCandidates(candidates);
-    }
-
-    @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async countBridgeClaimRepairCandidates(): Promise<number> {
-        return (await this.consolidationCandidateService.findBridgeClaimedRepairCandidates()).length;
-    }
-
-    @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async repairBridgeClaimedTransferPairs(): Promise<number> {
-        const candidates = await this.consolidationCandidateService.findBridgeClaimedRepairCandidates();
-        const repairedCount = await this.consolidationAutoCandidateService.processBridgeClaimRepairCandidates(candidates);
-
-        if (repairedCount > 0) {
-            await this.consolidationAutoCandidateService.process(null);
-        }
-
-        return repairedCount;
-    }
 }

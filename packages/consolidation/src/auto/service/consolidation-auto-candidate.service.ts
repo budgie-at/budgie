@@ -1,6 +1,4 @@
-import { Log } from '@budgie/logger';
-
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import * as Effect from 'effect/Effect';
 
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { ConsolidationFamilyRegistryService } from './consolidation-family-registry.service';
@@ -11,105 +9,65 @@ import type {
 } from '@budgie/contracts';
 
 export class ConsolidationAutoCandidateService {
-    constructor(private readonly consolidationFamilyRegistryService: ConsolidationFamilyRegistryService) {}
-
-    @Log(
-        (scope, onProgress) => `enter scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, scope, onProgress) =>
-            `done scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} found=${result.found} consolidated=${result.consolidated}`,
-        (error, scope, onProgress) =>
-            `throw scopeIdCount=${scope?.transactionIds.length ?? 0} hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
-    )
-    async process(
+    readonly process = Effect.fn('ConsolidationAutoCandidateService.process')(function* (
+        this: ConsolidationAutoCandidateService,
         scope: ConsolidationScanScopeInterface | null = null,
         onProgress?: (processedCandidateGroupCount: number) => void
-    ): Promise<ConsolidationResultInterface> {
-        const families = this.consolidationFamilyRegistryService.buildFamilies();
-        let resultPromise = Promise.resolve({
-            blockedSourceTransactionIds: new Set<number>(),
-            consolidated: 0,
-            found: 0,
-            processedCandidateGroupCount: 0
-        });
+    ) {
+        const blockedSourceTransactionIds = new Set<number>();
+        let consolidated = 0;
+        let found = 0;
 
-        for (const family of families) {
-            resultPromise = resultPromise.then(async currentResult => {
-                const familyResult = await family.process({
-                    blockedSourceTransactionIds: currentResult.blockedSourceTransactionIds,
-                    onProgress: processedCount => {
-                        const processedCandidateGroupCount = currentResult.processedCandidateGroupCount + processedCount;
-                        onProgress?.(processedCandidateGroupCount);
-                    },
-                    scope
-                });
-                const blockedSourceTransactionIds = new Set(currentResult.blockedSourceTransactionIds);
-                this.addBlockedSourceTransactionIds(blockedSourceTransactionIds, familyResult.blockedSourceTransactionIds);
-
-                return {
-                    blockedSourceTransactionIds,
-                    consolidated: currentResult.consolidated + familyResult.consolidated,
-                    found: currentResult.found + familyResult.found,
-                    processedCandidateGroupCount: currentResult.processedCandidateGroupCount + familyResult.found
-                };
+        for (const family of this.consolidationFamilyRegistryService.buildFamilies()) {
+            const processedCandidateGroupCount = found;
+            const familyResult = yield* family.process({
+                blockedSourceTransactionIds: new Set(blockedSourceTransactionIds),
+                onProgress: processedCount => onProgress?.(processedCandidateGroupCount + processedCount),
+                scope
             });
+
+            for (const sourceTransactionId of familyResult.blockedSourceTransactionIds) {
+                blockedSourceTransactionIds.add(sourceTransactionId);
+            }
+
+            consolidated += familyResult.consolidated;
+            found += familyResult.found;
         }
-        const result = await resultPromise;
 
-        return { found: result.found, consolidated: result.consolidated };
-    }
+        return { found, consolidated } satisfies ConsolidationResultInterface;
+    });
 
-    @Log(
-        scope => `enter scopeIdCount=${scope?.transactionIds.length ?? 0}`,
-        (result, scope) => `done scopeIdCount=${scope?.transactionIds.length ?? 0} count=${result}`,
-        (error, scope) => `throw scopeIdCount=${scope?.transactionIds.length ?? 0} error=${getErrorMessage(error)}`
-    )
-    async count(scope: ConsolidationScanScopeInterface | null = null): Promise<number> {
-        const families = this.consolidationFamilyRegistryService.buildFamilies();
-        let resultPromise = Promise.resolve({ blockedSourceTransactionIds: new Set<number>(), found: 0 });
+    readonly count = Effect.fn('ConsolidationAutoCandidateService.count')(function* (
+        this: ConsolidationAutoCandidateService,
+        scope: ConsolidationScanScopeInterface | null = null
+    ) {
+        const blockedSourceTransactionIds = new Set<number>();
+        let found = 0;
 
-        for (const family of families) {
-            resultPromise = resultPromise.then(async currentResult => {
-                const preview = await family.preview({
-                    blockedSourceTransactionIds: currentResult.blockedSourceTransactionIds,
-                    scope
-                });
-                const blockedSourceTransactionIds = new Set(currentResult.blockedSourceTransactionIds);
-                this.addBlockedSourceTransactionIds(blockedSourceTransactionIds, preview.blockedSourceTransactionIds);
+        for (const family of this.consolidationFamilyRegistryService.buildFamilies()) {
+            const preview = yield* family.preview({ blockedSourceTransactionIds: new Set(blockedSourceTransactionIds), scope });
 
-                return {
-                    blockedSourceTransactionIds,
-                    found: currentResult.found + preview.found
-                };
-            });
+            for (const sourceTransactionId of preview.blockedSourceTransactionIds) {
+                blockedSourceTransactionIds.add(sourceTransactionId);
+            }
+
+            found += preview.found;
         }
-        const result = await resultPromise;
 
-        return result.found;
-    }
+        return found;
+    });
 
-    @Log(
-        candidates => `enter existingTransferIncomeDuplicateCount=${candidates.length}`,
-        (result, candidates) => `done existingTransferIncomeDuplicateCount=${candidates.length} consolidated=${result}`,
-        (error, candidates) => `throw existingTransferIncomeDuplicateCount=${candidates.length} error=${getErrorMessage(error)}`
-    )
-    async processExistingTransferIncomeDuplicateCandidates(
-        candidates: ExistingTransferIncomeDuplicateCandidateInterface[]
-    ): Promise<number> {
-        return this.consolidationFamilyRegistryService.buildExistingTransferIncomeDuplicateFamily().processCandidateList(candidates);
-    }
+    readonly processExistingTransferIncomeDuplicateCandidates = Effect.fn(
+        'ConsolidationAutoCandidateService.processExistingTransferIncomeDuplicateCandidates'
+    )(function* (this: ConsolidationAutoCandidateService, candidates: ExistingTransferIncomeDuplicateCandidateInterface[]) {
+        return yield* this.consolidationFamilyRegistryService.buildExistingTransferIncomeDuplicateFamily().processCandidateList(candidates);
+    });
 
-    @Log(
-        candidates => `enter bridgeClaimRepairCount=${candidates.length}`,
-        (result, candidates) => `done bridgeClaimRepairCount=${candidates.length} consolidated=${result}`,
-        (error, candidates) => `throw bridgeClaimRepairCount=${candidates.length} error=${getErrorMessage(error)}`
-    )
-    async processBridgeClaimRepairCandidates(candidates: BridgeClaimRepairCandidateInterface[]): Promise<number> {
-        return this.consolidationFamilyRegistryService.buildBridgeClaimRepairFamily().processCandidateList(candidates);
-    }
-
-    private addBlockedSourceTransactionIds(blockedSourceTransactionIds: Set<number>, sourceTransactionIds: number[]): void {
-        for (const sourceTransactionId of sourceTransactionIds) {
-            blockedSourceTransactionIds.add(sourceTransactionId);
+    readonly processBridgeClaimRepairCandidates = Effect.fn('ConsolidationAutoCandidateService.processBridgeClaimRepairCandidates')(
+        function* (this: ConsolidationAutoCandidateService, candidates: BridgeClaimRepairCandidateInterface[]) {
+            return yield* this.consolidationFamilyRegistryService.buildBridgeClaimRepairFamily().processCandidateList(candidates);
         }
-    }
+    );
+
+    constructor(private readonly consolidationFamilyRegistryService: ConsolidationFamilyRegistryService) {}
 }

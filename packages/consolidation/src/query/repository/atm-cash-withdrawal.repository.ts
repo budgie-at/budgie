@@ -1,3 +1,6 @@
+import { Db } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+
 import {
     buildAtmCashWithdrawalCandidatesSql,
     buildAtmCashWithdrawalReviewCandidatesSql
@@ -6,22 +9,21 @@ import {
 import type {
     AtmCashWithdrawalCandidateInterface,
     AtmCashWithdrawalReviewCandidateInterface,
-    ConsolidationScanScopeInterface,
-    DB
+    ConsolidationScanScopeInterface
 } from '@budgie/contracts';
 
 export class AtmCashWithdrawalRepository {
-    constructor(private db: DB) {}
-
-    async findCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<AtmCashWithdrawalCandidateInterface[]> {
+    readonly findCandidates = Effect.fn('AtmCashWithdrawalRepository.findCandidates')(function* (
+        scope: ConsolidationScanScopeInterface | null = null
+    ) {
         const sql = buildAtmCashWithdrawalCandidatesSql(scope);
 
-        return this.db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(sql);
-    }
+        return yield* Db.query(db => db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(sql));
+    });
 
-    async findReviewCandidates(): Promise<AtmCashWithdrawalReviewCandidateInterface[]> {
+    readonly findReviewCandidates = Effect.fn('AtmCashWithdrawalRepository.findReviewCandidates')(function* () {
         const sql = buildAtmCashWithdrawalReviewCandidatesSql();
 
-        return this.db.$client.getAllAsync<AtmCashWithdrawalReviewCandidateInterface>(sql);
-    }
+        return yield* Db.query(db => db.$client.getAllAsync<AtmCashWithdrawalReviewCandidateInterface>(sql));
+    });
 }

@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-export const BinanceServerTimeApiSchema = z.object({
-    serverTime: z.number()
+export const BinanceServerTimeApiSchema = Schema.Struct({
+    serverTime: Schema.Number
 });
 
-export type BinanceServerTimeApiInterface = z.infer<typeof BinanceServerTimeApiSchema>;
+export type BinanceServerTimeApiInterface = typeof BinanceServerTimeApiSchema.Type;

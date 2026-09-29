@@ -1,23 +1,18 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 
 export const resetSingletons = (): void => {
-    Object.assign(binanceSyncService, { fiatSyncedAtMs: null, isRunning: false, runGeneration: 0, runRequested: false });
+    Object.assign(binanceSyncService, {
+        failedSyncId: null,
+        fiatSyncedAtMs: null,
+        processedForwardSyncIds: new Set(),
+        runSignedClient: null,
+        runClientToken: null,
+        runExchangeAccounts: null
+    });
     Object.assign(monobankSyncService, {
-        isRunning: false,
+        failedSyncId: null,
         mccCategoryLookupMap: new Map(),
-        runGeneration: 0,
-        runRequested: false
+        processedForwardSyncIds: new Set()
     });
-    Object.assign(syncWorkloadService, {
-        backgroundQueue: [],
-        drainGeneration: 0,
-        isAcceptingWork: true,
-        isRunning: false,
-        queuedUserWorkListeners: new Set(),
-        userQueue: []
-    });
-    Object.assign(transferConsolidationService, { isRunning: false });
 };

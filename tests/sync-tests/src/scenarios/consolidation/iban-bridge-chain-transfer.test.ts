@@ -19,7 +19,8 @@ import {
     seed,
     seedBankPair,
     seedBankSyncAccount,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 
 const SOURCE_IBAN = 'UA-SOURCE-EUR';
@@ -215,7 +216,7 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
         );
         const scope = buildBridgeScope([bridgeIncome, bridgeExpense]);
 
-        const result = await transferConsolidationService.consolidate(scope);
+        const result = await run(transferConsolidationService.consolidate(scope));
 
         expect(result.found).toBe(1);
         expect(result.consolidated).toBe(1);
@@ -226,7 +227,7 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
         const { bridgeExpense, bridgeIncome, directTransfer } = seedBridgeReclaimFixture(null);
         const scope = buildBridgeScope([bridgeIncome, bridgeExpense]);
 
-        const result = await transferConsolidationService.consolidate(scope);
+        const result = await run(transferConsolidationService.consolidate(scope));
 
         expect(result.found).toBe(0);
         expect(result.consolidated).toBe(0);

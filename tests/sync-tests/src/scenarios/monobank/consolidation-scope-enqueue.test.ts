@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb, run } from '../../harness';
 
 describe('monobank/consolidation-scope-enqueue', () => {
     beforeEach(() => {
@@ -25,7 +25,7 @@ describe('monobank/consolidation-scope-enqueue', () => {
             })
         ]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const transaction = testDb
             .select()

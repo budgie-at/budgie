@@ -13,7 +13,7 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { buildTransferInput, seed, testDb } from '../../harness';
+import { buildTransferInput, seed, testDb, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 import type { AccountEntityInterface, TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
@@ -71,7 +71,13 @@ describe('transfers involving a debt account', () => {
         const transaction = createExpense(cashAccount.id);
 
         await expect(
-            transactionTransferService.convertExpenseToTransfer({ id: transaction.id, accountId: debtAccount.id, customExchangeRate: 0 })
+            run(
+                transactionTransferService.convertExpenseToTransfer({
+                    id: transaction.id,
+                    accountId: debtAccount.id,
+                    customExchangeRate: 0
+                })
+            )
         ).rejects.toThrow(DEBT_TRANSFER_ERROR);
 
         const stored = testDb
@@ -88,7 +94,7 @@ describe('transfers involving a debt account', () => {
         const debtAccount = createDebtAccount();
 
         await expect(
-            transactionService.createInternalTransfer(buildTransferInput(cashAccount.id, debtAccount.id, 250, OPERATED_AT))
+            run(transactionService.createInternalTransfer(buildTransferInput(cashAccount.id, debtAccount.id, 250, OPERATED_AT)))
         ).rejects.toThrow(DEBT_TRANSFER_ERROR);
 
         expect(testDb.select().from(TransactionEntityTable).all()).toHaveLength(0);

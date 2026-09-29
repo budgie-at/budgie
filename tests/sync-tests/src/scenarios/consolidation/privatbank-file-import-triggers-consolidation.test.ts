@@ -4,7 +4,7 @@ import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, pri
 import { eq } from 'drizzle-orm';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { expectFileImportConsolidationEnqueued, seed, StubFileBankSyncService, testDb } from '../../harness';
+import { expectFileImportConsolidationEnqueued, seed, StubFileBankSyncService, testDb, run } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
@@ -75,7 +75,7 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
         seedPrivatbankAccount();
         const syncService = buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
-        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
+        await run(syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]));
 
         const transaction = testDb
             .select()
@@ -90,10 +90,10 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
         seedPrivatbankAccount();
         const syncService = buildPrivatbankSyncService([buildPrivatbankTransaction()]);
 
-        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
+        await run(syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]));
         enqueueSpy.mockClear();
 
-        await syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]);
+        await run(syncService.executeImportForSelectedAccounts(PRIVATBANK_STATEMENT_URI, [PRIVATBANK_CARD_ID]));
 
         expect(enqueueSpy).not.toHaveBeenCalled();
     });

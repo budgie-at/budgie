@@ -3,7 +3,7 @@ import { TransactionEntryEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb, run } from '../../harness';
 
 describe('monobank/counter-iban-and-toiban', () => {
     it('persists counterIban from the API into transaction_entries.toIban', async () => {
@@ -12,7 +12,7 @@ describe('monobank/counter-iban-and-toiban', () => {
         setupMonobankFixture();
         monobankStub.statement([buildMonobank.transaction({ id: 'tx-with-iban', amount: -100000, hold: false, counterIban })]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const entry = testDb
             .select()
@@ -26,7 +26,7 @@ describe('monobank/counter-iban-and-toiban', () => {
         setupMonobankFixture();
         monobankStub.statement([buildMonobank.transaction({ id: 'tx-no-iban', amount: -100000, hold: false })]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const entry = testDb
             .select()

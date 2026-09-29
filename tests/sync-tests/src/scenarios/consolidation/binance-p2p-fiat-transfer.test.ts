@@ -9,8 +9,15 @@ import {
     fetchP2pCanonical,
     fetchCanonicalsOfType,
     seedP2pFiatTransferFixture,
-    seedP2pPair
+    seedP2pPair,
+    run
 } from '../../harness';
+
+const consolidateExpectingSingleResult = async (): Promise<void> => {
+    const result = await run(transferConsolidationService.consolidate(null));
+
+    expect(result).toEqual({ found: 1, consolidated: 1 });
+};
 
 describe('consolidation/binance-p2p-fiat-transfer basic directions', () => {
     it('auto-consolidates a bank UAH expense with a Binance USDT P2P top-up income via a triangulated rate', async () => {
@@ -20,9 +27,7 @@ describe('consolidation/binance-p2p-fiat-transfer basic directions', () => {
             { externalId: 'binance:c2c:buy-1', accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT }
         );
 
-        const result = await transferConsolidationService.consolidate();
-
-        expect(result).toEqual({ found: 1, consolidated: 1 });
+        await consolidateExpectingSingleResult();
         expectConsolidatedToP2pCanonical(expense, income, bankAccount.id, binanceAccount.id);
         expect(fetchP2pCanonical().title).toBe('Binance P2P buy USDT');
     });
@@ -34,9 +39,7 @@ describe('consolidation/binance-p2p-fiat-transfer basic directions', () => {
             { externalId: 'mono-uah-p2p-in', accountId: bankAccount.id, amount: P2P_UAH_TOTAL }
         );
 
-        const result = await transferConsolidationService.consolidate();
-
-        expect(result).toEqual({ found: 1, consolidated: 1 });
+        await consolidateExpectingSingleResult();
         expectConsolidatedToP2pCanonical(expense, income, binanceAccount.id, bankAccount.id);
         expect(fetchP2pCanonical().title).toBe('Binance P2P sell USDT');
     });
@@ -50,9 +53,7 @@ describe('consolidation/binance-p2p-fiat-transfer exchange support', () => {
             { externalId: 'okx:c2c:buy-1', accountId: exchangeAccount.id, amount: P2P_USDT_AMOUNT }
         );
 
-        const result = await transferConsolidationService.consolidate();
-
-        expect(result).toEqual({ found: 1, consolidated: 1 });
+        await consolidateExpectingSingleResult();
         expectConsolidatedToP2pCanonical(expense, income, bankAccount.id, exchangeAccount.id);
     });
 
@@ -64,7 +65,7 @@ describe('consolidation/binance-p2p-fiat-transfer exchange support', () => {
             { externalId: 'binance:c2c:buy-off-rate', accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT }
         );
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await run(transferConsolidationService.consolidate(null));
 
         expect(result.consolidated).toBe(0);
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);

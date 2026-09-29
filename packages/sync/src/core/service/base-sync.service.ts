@@ -1,44 +1,28 @@
-import { Log } from '@budgie/logger';
 import { addMonths } from 'date-fns/addMonths';
 import { addSeconds } from 'date-fns/addSeconds';
 import { fromUnixTime } from 'date-fns/fromUnixTime';
 import { getUnixTime } from 'date-fns/getUnixTime';
 import { max } from 'date-fns/max';
 import { min } from 'date-fns/min';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
-
-import { SyncErrorCodeEnum } from '../enum/sync-error-code.enum';
-import { SyncAccountInterface } from '../interface/sync-account.interface';
-import { SyncBatchResultInterface } from '../interface/sync-batch-result.interface';
-import { SyncTransactionInterface } from '../interface/sync-transaction.interface';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import type { SyncOptionsInterface } from '../interface/sync-options.interface';
 import type { SyncProviderClientInterface } from '../interface/sync-provider-client.interface';
+import type { SyncTransactionInterface } from '../interface/sync-transaction.interface';
 
 export class BaseSyncService {
     private static readonly MAX_TRANSACTIONS_PER_REQUEST = 500;
 
-    constructor(
-        protected readonly client: SyncProviderClientInterface,
-        protected readonly options: SyncOptionsInterface
-    ) {}
-
-    @Log('enter', accounts => `done count=${accounts.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async syncAccounts(): Promise<SyncAccountInterface[]> {
-        return this.fetchAccounts();
-    }
-
-    @Log(
-        (accountId, from) => `enter accountId=${accountId} from=${from.toISOString()}`,
-        result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, accountId, from) => `throw accountId=${accountId} from=${from.toISOString()} error=${getErrorMessage(error)}`
-    )
-    async syncTransactionsForward(accountId: string, from: Date): Promise<SyncBatchResultInterface> {
+    readonly syncTransactionsForward = Effect.fn('BaseSyncService.syncTransactionsForward')(function* (
+        this: BaseSyncService,
+        accountId: string,
+        from: Date
+    ) {
         const now = new Date();
         const to = min([now, addSeconds(from, this.options.maxPeriodSeconds)]);
-        const transactions = await this.fetchTransactions(accountId, from, to);
-
+        const transactions = yield* this.fetchTransactions(accountId, from, to);
         const oldestTransaction = transactions.at(-1);
 
         if (this.hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {
@@ -50,91 +34,53 @@ export class BaseSyncService {
             };
         }
 
-        const windowWasCapped = to < now;
+        return { nextFrom: to, nextTo: to, transactions, completed: to >= now };
+    });
 
-        return { nextFrom: to, nextTo: to, transactions, completed: !windowWasCapped };
-    }
+    constructor(
+        protected readonly client: SyncProviderClientInterface,
+        protected readonly options: SyncOptionsInterface
+    ) {}
 
-    @Log(
-        (accountId, to, firstEmptyFromInStreak, limitAt) =>
-            `enter accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'} limitAt=${limitAt?.toISOString() ?? 'null'}`,
-        result => `done count=${result.transactions.length} completed=${String(result.completed)}`,
-        (error, ...[accountId, to, firstEmptyFromInStreak, limitAt]) =>
-            `throw accountId=${accountId} to=${to.toISOString()} firstEmptyFromInStreak=${firstEmptyFromInStreak?.toISOString() ?? 'null'} limitAt=${limitAt?.toISOString() ?? 'null'} error=${getErrorMessage(error)}`
-    )
-    async syncTransactionsBackward(
-        accountId: string,
-        to: Date,
-        firstEmptyFromInStreak: Date | null,
-        limitAt: Date | null
-    ): Promise<SyncBatchResultInterface> {
-        if (isDefined(limitAt) && to <= limitAt) {
-            return { nextTo: to, nextFrom: to, transactions: [], completed: true };
-        }
+    syncTransactionsBackward(accountId: string, to: Date, firstEmptyFromInStreak: Date | null, limitAt: Date | null) {
+        return Effect.gen({ self: this }, function* (this: BaseSyncService) {
+            if (isDefined(limitAt) && to <= limitAt) {
+                return { nextTo: to, nextFrom: to, transactions: [], completed: true };
+            }
 
-        const windowFrom = addSeconds(to, -this.options.maxPeriodSeconds);
-        const from = isDefined(limitAt) ? max([windowFrom, limitAt]) : windowFrom;
-        const transactions = await this.fetchTransactions(accountId, from, to);
-        const oldestTransaction = transactions.at(-1);
+            const windowFrom = addSeconds(to, -this.options.maxPeriodSeconds);
+            const from = isDefined(limitAt) ? max([windowFrom, limitAt]) : windowFrom;
+            const transactions = yield* this.fetchTransactions(accountId, from, to);
+            const oldestTransaction = transactions.at(-1);
 
-        if (this.hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {
+            if (this.hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {
+                return {
+                    nextTo: this.getNextTimeFromTransaction(oldestTransaction),
+                    nextFrom: from,
+                    transactions,
+                    completed: false
+                };
+            }
+
+            const reachedHistoryLimit = isDefined(limitAt) && from <= limitAt;
+            const reachedDormancyBoundary =
+                isEmptyArray(transactions) &&
+                isDefined(firstEmptyFromInStreak) &&
+                from <= addMonths(firstEmptyFromInStreak, -this.options.dormancyMonths);
+
             return {
-                nextTo: this.getNextTimeFromTransaction(oldestTransaction),
-                nextFrom: from,
+                nextTo: from,
+                nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
                 transactions,
-                completed: false
+                completed: reachedHistoryLimit || reachedDormancyBoundary
             };
-        }
-
-        const reachedHistoryLimit = isDefined(limitAt) && from <= limitAt;
-        const reachedDormancyBoundary =
-            isEmptyArray(transactions) &&
-            isDefined(firstEmptyFromInStreak) &&
-            from <= addMonths(firstEmptyFromInStreak, -this.options.dormancyMonths);
-
-        return {
-            nextTo: from,
-            nextFrom: addSeconds(from, -this.options.maxPeriodSeconds),
-            transactions,
-            completed: reachedHistoryLimit || reachedDormancyBoundary
-        };
+        });
     }
 
-    @Log('enter', accounts => `done count=${accounts.length}`, error => `throw error=${getErrorMessage(error)}`)
-    private async fetchAccounts(): Promise<SyncAccountInterface[]> {
-        const result = await this.client.getAccounts();
-
-        if (result.success) {
-            return result.data;
-        }
-
-        throw new Error(`Failed to fetch accounts: ${result.error.code} ${result.error.message}`);
-    }
-
-    @Log(
-        (accountId, from, to) => `enter accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()}`,
-        result => `done count=${result.length}`,
-        (error, accountId, from, to) =>
-            `throw accountId=${accountId} from=${from.toISOString()} to=${to.toISOString()} error=${getErrorMessage(error)}`
-    )
-    private async fetchTransactions(accountId: string, from: Date, to: Date): Promise<SyncTransactionInterface[]> {
-        const fromTs = this.toSeconds(from);
-        const toTs = this.toSeconds(to);
-        const result = await this.client.getTransactions(accountId, fromTs, toTs);
-
-        if (result.success) {
-            return result.data;
-        }
-
-        if (result.error.code === SyncErrorCodeEnum.INVALID_RESPONSE) {
-            return [];
-        }
-
-        throw new Error(`Failed to fetch transactions ${getErrorMessage(result.error)}`);
-    }
-
-    protected toSeconds(date: Date): number {
-        return getUnixTime(date);
+    private fetchTransactions(accountId: string, from: Date, to: Date) {
+        return this.client
+            .getTransactions(accountId, getUnixTime(from), getUnixTime(to))
+            .pipe(Effect.catchTag('SyncInvalidResponseError', () => Effect.succeed<SyncTransactionInterface[]>([])));
     }
 
     private hasMoreTransactions(transactions: SyncTransactionInterface[]): boolean {

@@ -1,8 +1,10 @@
-import { microPause } from '@app/@generic/utils/micro-pause.util';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import * as Clock from 'effect/Clock';
+import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { run } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -20,11 +22,10 @@ enum SyncRunResultEnum {
 describe('monobank/forward-sync-run-boundary', () => {
     afterEach(() => {
         vi.useRealTimers();
-        vi.mocked(microPause).mockImplementation((): Promise<void> => Promise.resolve());
     });
 
     it('does not select the same forward sync again during one sync run', async () => {
-        vi.useFakeTimers();
+        vi.useFakeTimers({ toFake: ['Date'] });
         vi.setSystemTime(syncStartedAt);
 
         const externalIds = ['mono-acc-1', 'mono-acc-2', 'mono-acc-3'];
@@ -33,12 +34,14 @@ describe('monobank/forward-sync-run-boundary', () => {
 
         seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
 
-        vi.mocked(microPause).mockImplementation(async (): Promise<void> => {
+        const advanceClockOneMinute = Effect.suspend(() => {
             if (shouldStopSync) {
-                throw new Error('duplicate forward sync selected');
+                return Effect.die(new Error('duplicate forward sync selected'));
             }
 
-            vi.setSystemTime(new Date(Date.now() + oneMinuteMs));
+            return Effect.sync(() => {
+                vi.setSystemTime(new Date(Date.now() + oneMinuteMs));
+            });
         });
 
         mockServer.use(
@@ -52,7 +55,13 @@ describe('monobank/forward-sync-run-boundary', () => {
             })
         );
 
-        const syncRun = monobankSyncService.sync().then(
+        const syncRun = run(
+            Effect.clockWith(clock =>
+                monobankSyncService
+                    .sync()
+                    .pipe(Effect.provideService(Clock.Clock, Object.assign(Object.create(clock), { sleep: () => advanceClockOneMinute })))
+            )
+        ).then(
             () => SyncRunResultEnum.COMPLETED,
             () => SyncRunResultEnum.STOPPED
         );

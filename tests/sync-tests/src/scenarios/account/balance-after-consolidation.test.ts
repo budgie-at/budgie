@@ -4,7 +4,7 @@ import { consolidationCoordinatorService } from '@app/sync/service/consolidation
 import { AccountTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { findMccByCode, seed, seedBankPair, testDb } from '../../harness';
+import { findMccByCode, seed, seedBankPair, testDb, run } from '../../harness';
 
 const AMOUNT = 500_000_000;
 
@@ -17,10 +17,10 @@ describe('account/balance-after-consolidation', () => {
             { accountId: bankAccount.id, amount: AMOUNT, mccCategoryId: findMccByCode('6011').id }
         );
 
-        await accountBalanceIncrementalService.updateAllBalances(false);
+        await run(accountBalanceIncrementalService.updateAllBalances(false));
         await testDb.$client.execAsync('UPDATE account_balances SET updated_at = updated_at - 60');
-        await consolidationCoordinatorService.consolidate(null);
-        await accountBalanceIncrementalService.updateAllBalances(false);
+        await run(consolidationCoordinatorService.consolidate(null));
+        await run(accountBalanceIncrementalService.updateAllBalances(false));
 
         expect(accountBalanceRepository.getByAccountId(bankAccount.id).get()?.balance).toBe(-AMOUNT);
         expect(accountBalanceRepository.getByAccountId(cashAccount.id).get()?.balance).toBe(AMOUNT);

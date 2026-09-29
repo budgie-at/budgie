@@ -1,12 +1,9 @@
-import { Log } from '@budgie/logger';
 import { isValid } from 'date-fns/isValid';
 import { parse } from 'date-fns/parse';
+import * as Result from 'effect/Result';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { SyncErrorCodeEnum } from '../../core/enum/sync-error-code.enum';
-import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
-import { SyncError } from '../../core/error/sync.error';
 import { ERSTE_PAGE_NOISE_PATTERNS } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
 
@@ -29,43 +26,56 @@ class ErsteParser {
 
     private state: ErsteParserState = new ErsteParserState();
 
-    @Log(
-        items => `enter itemCount=${items.length}`,
-        (result, items) => `done itemCount=${items.length} iban=${result.account.iban} transactionCount=${result.transactions.length}`,
-        (error, items) => `throw itemCount=${items.length} error=${getErrorMessage(error)}`
-    )
-    parse(items: PdfTextItemInterface[]): ErsteParsedDataInterface {
+    parse(items: PdfTextItemInterface[]): Result.Result<ErsteParsedDataInterface, string> {
         const account = ersteAccountInfoExtractor.extract(items);
+
+        if (Result.isFailure(account)) {
+            return Result.fail(account.failure);
+        }
+
         const rows = ersteRowGrouper.group(items);
         this.state = new ErsteParserState();
 
         for (const row of rows) {
-            this.processRow(row);
+            const processed = this.processRow(row);
+
+            if (Result.isFailure(processed)) {
+                return Result.fail(processed.failure);
+            }
         }
         this.state.flush();
 
-        return { account, transactions: this.state.getTransactions() };
+        return Result.succeed({ account: account.success, transactions: this.state.getTransactions() });
     }
 
-    private processRow(row: ErstePageRowInterface): void {
+    private processRow(row: ErstePageRowInterface): Result.Result<void, string> {
         const leftText = this.joinTexts(row.leftItems);
         const rightText = this.joinTexts(row.rightItems);
 
         if (this.tryHandleSectionTransition(leftText, rightText)) {
-            return;
+            return Result.void;
         }
         if (!this.state.isInSection()) {
-            return;
+            return Result.void;
         }
         if (this.isPageNoise(leftText) || this.isPageNoise(rightText)) {
-            return;
+            return Result.void;
         }
-        if (this.tryHandleAnchor(leftText, rightText)) {
-            return;
+
+        return this.processContentRow(leftText, rightText);
+    }
+
+    private processContentRow(leftText: string, rightText: string): Result.Result<void, string> {
+        const anchored = this.tryHandleAnchor(leftText, rightText);
+
+        if (Result.isFailure(anchored)) {
+            return Result.fail(anchored.failure);
         }
-        if (this.state.hasCurrent() && isNotEmptyString(leftText)) {
+        if (!anchored.success && this.state.hasCurrent() && isNotEmptyString(leftText)) {
             this.state.addContinuationLine(leftText);
         }
+
+        return Result.void;
     }
 
     private tryHandleSectionTransition(leftText: string, rightText: string): boolean {
@@ -84,32 +94,40 @@ class ErsteParser {
         return false;
     }
 
-    private tryHandleAnchor(leftText: string, rightText: string): boolean {
+    private tryHandleAnchor(leftText: string, rightText: string): Result.Result<boolean, string> {
         const rightAnchor = this.parseRightDateAmount(rightText);
 
-        if (isDefined(rightAnchor)) {
-            this.state.startTransaction(rightAnchor, leftText);
-
-            return true;
+        if (!isDefined(rightAnchor)) {
+            return this.tryHandleInlineAnchor(leftText, rightText);
         }
 
-        return this.tryHandleInlineAnchor(leftText, rightText);
+        if (Result.isFailure(rightAnchor)) {
+            return Result.fail(rightAnchor.failure);
+        }
+
+        this.state.startTransaction(rightAnchor.success, leftText);
+
+        return Result.succeed(true);
     }
 
-    private tryHandleInlineAnchor(leftText: string, rightText: string): boolean {
+    private tryHandleInlineAnchor(leftText: string, rightText: string): Result.Result<boolean, string> {
         if (isNotEmptyString(rightText) || !isNotEmptyString(leftText)) {
-            return false;
+            return Result.succeed(false);
         }
 
         const inlineAnchor = this.parseInlineDateAmount(leftText);
 
         if (!isDefined(inlineAnchor)) {
-            return false;
+            return Result.succeed(false);
         }
 
-        this.state.startTransaction(inlineAnchor, inlineAnchor.prefix);
+        if (Result.isFailure(inlineAnchor)) {
+            return Result.fail(inlineAnchor.failure);
+        }
 
-        return true;
+        this.state.startTransaction(inlineAnchor.success, inlineAnchor.success.prefix);
+
+        return Result.succeed(true);
     }
 
     private joinTexts(items: PdfTextItemInterface[]): string {
@@ -132,7 +150,7 @@ class ErsteParser {
         return ERSTE_PAGE_NOISE_PATTERNS.some(pattern => pattern.test(text));
     }
 
-    private parseRightDateAmount(text: string): ErsteDateAmountInterface | null {
+    private parseRightDateAmount(text: string): Result.Result<ErsteDateAmountInterface, string> | null {
         const match = ErsteParser.DATE_AMOUNT_RIGHT_REGEX.exec(text);
 
         if (!match) {
@@ -144,7 +162,7 @@ class ErsteParser {
         return this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' });
     }
 
-    private parseInlineDateAmount(text: string): ErsteInlineDateAmountInterface | null {
+    private parseInlineDateAmount(text: string): Result.Result<ErsteInlineDateAmountInterface, string> | null {
         const match = ErsteParser.DATE_AMOUNT_TAIL_REGEX.exec(text);
 
         if (!match) {
@@ -152,29 +170,27 @@ class ErsteParser {
         }
 
         const [, prefix, day, month, year, amountStr, sign] = match;
-        const dateAmount = this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' });
 
-        return { ...dateAmount, prefix: prefix.trim() };
+        return Result.map(this.buildDateAmount({ day, month, year, amountStr, isDebit: sign === '-' }), dateAmount => ({
+            ...dateAmount,
+            prefix: prefix.trim()
+        }));
     }
 
-    private buildDateAmount(input: ErsteDateAmountInputInterface): ErsteDateAmountInterface {
+    private buildDateAmount(input: ErsteDateAmountInputInterface): Result.Result<ErsteDateAmountInterface, string> {
         const date = parse(`${input.day}.${input.month}.${input.year}`, 'dd.MM.yyyy', new Date());
 
         if (!isValid(date)) {
-            throw new SyncError(
-                SyncErrorCodeEnum.INVALID_RESPONSE,
-                `Invalid Erste transaction date: ${input.day}.${input.month}.${input.year}`,
-                SyncProviderEnum.ERSTE
-            );
+            return Result.fail(`Invalid Erste transaction date: ${input.day}.${input.month}.${input.year}`);
         }
 
         date.setHours(12, 0, 0, 0);
 
-        return {
+        return Result.succeed({
             date,
             amount: parseErsteAmount(input.amountStr, input.isDebit),
             isCredit: !input.isDebit
-        };
+        });
     }
 }
 

@@ -10,21 +10,18 @@ export class BridgeClaimRepairConsolidationFamilyService extends ConsolidationFa
     readonly key = ConsolidationFamilyKeyEnum.BRIDGE_CLAIM_REPAIR;
 
     constructor(
-        private readonly transferPairRepository: Pick<TransferPairRepository, 'findBridgeClaimedRepairCandidates'>,
-        private readonly consolidationRepairExecutorService: Pick<
-            ConsolidationRepairExecutorService,
-            'unconsolidateBridgeClaimedTransferPair'
-        >,
+        private readonly transferPairRepository: TransferPairRepository,
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
-    protected findCandidates(): Promise<BridgeClaimRepairCandidateInterface[]> {
+    protected findCandidates() {
         return this.transferPairRepository.findBridgeClaimedRepairCandidates();
     }
 
-    protected consolidateCandidate(candidate: BridgeClaimRepairCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: BridgeClaimRepairCandidateInterface) {
         return this.consolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair(candidate);
     }
 

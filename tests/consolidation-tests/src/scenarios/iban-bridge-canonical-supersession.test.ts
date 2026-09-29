@@ -20,7 +20,7 @@ import {
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testDb, testQueryService, testSeedService, unconsolidationService } from '../harness/test-context';
+import { testQueryService, testSeedService, unconsolidateById } from '../harness/test-context';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 
@@ -205,14 +205,14 @@ describe('consolidation/iban-bridge-canonical-supersession', () => {
         const { canonical, completeSourceTransactionIds, prefixCanonical, prefixSourceTransactionIds } =
             await seedIncrementalBridgeArrival();
 
-        await unconsolidationService.unconsolidateById(canonical.id, testDb);
+        await unconsolidateById(canonical.id);
 
         expect(testQueryService.fetchTransactionById(prefixCanonical.id).consolidationParentTransactionId).toBeNull();
         expect(fetchOwnLedgerEntries(prefixCanonical.id)).toHaveLength(2);
         expectSourcesRestored(completeSourceTransactionIds);
         prefixSourceTransactionIds.forEach(sourceTransactionId => expectConsolidationParent(sourceTransactionId, prefixCanonical.id));
 
-        await unconsolidationService.unconsolidateById(prefixCanonical.id, testDb);
+        await unconsolidateById(prefixCanonical.id);
 
         expectSourcesRestored(prefixSourceTransactionIds);
     });

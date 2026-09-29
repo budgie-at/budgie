@@ -2,7 +2,7 @@ import { entryBaseValuationService } from '@app/money-data/service/entry-base-va
 import { CurrencyEnum, PRECISION, SettingsEntityTable } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { requireInstrument } from '../../harness';
+import { requireInstrument, run } from '../../harness';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
@@ -14,12 +14,14 @@ describe('valuation oldest-rate fallback', () => {
 
         await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
 
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-            accountId: account.id,
-            amount: 50 * PRECISION,
-            operatedAt: new Date('2009-01-01T12:00:00.000Z'),
-            externalSource: null
-        });
+        const valuation = await run(
+            entryBaseValuationService.valueMicroUnitEntry({
+                accountId: account.id,
+                amount: 50 * PRECISION,
+                operatedAt: new Date('2009-01-01T12:00:00.000Z'),
+                externalSource: null
+            })
+        );
 
         expect(valuation).toStrictEqual({
             baseInstrumentId: euro.id,

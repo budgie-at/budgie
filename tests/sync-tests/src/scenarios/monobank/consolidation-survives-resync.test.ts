@@ -3,7 +3,7 @@ import { AccountTypeEnum, SyncModeEnum, TransactionEntityTable, TransactionEntry
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, monobankStub, seed, testDb } from '../../harness';
+import { buildMonobank, monobankStub, seed, testDb, run } from '../../harness';
 
 describe('monobank/consolidation-survives-resync', () => {
     it('re-importing a consolidated source transaction must not destroy the canonical TRANSFER (regression: bug 2)', async () => {
@@ -118,7 +118,7 @@ describe('monobank/consolidation-survives-resync', () => {
         monobankStub.clientInfo(buildMonobank.clientInfoWith(['mono-acc-1']));
         monobankStub.statement([buildMonobank.transaction({ id: 'tx-expense-1', amount: -25000, hold: false })]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const canonicalAfter = testDb
             .select()

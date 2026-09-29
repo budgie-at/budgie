@@ -1,14 +1,13 @@
 import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { describe, expect, it } from 'vitest';
 
-import { BINANCE_TEST_TOKEN, binanceStub, buildBinance } from '../../harness';
+import { BINANCE_TEST_TOKEN, binanceStub, buildBinance, run } from '../../harness';
 
-import type { SyncAccountInterface, SyncResultInterface } from '@budgie/sync';
+import type { SyncAccountInterface } from '@budgie/sync';
 
 const BNB_EARN_TOTAL_BALANCE = 0.788412;
 
-const fetchAccountsResult = (): Promise<SyncResultInterface<SyncAccountInterface[]>> =>
-    new BinanceSignedClient(BINANCE_TEST_TOKEN).getAccounts();
+const fetchAccounts = (): Promise<SyncAccountInterface[]> => run(new BinanceSignedClient(BINANCE_TEST_TOKEN).getAccounts());
 
 describe('binance/get-accounts', () => {
     it('enumerates Spot and Funding non-zero (wallet, asset) pairs', async () => {
@@ -18,16 +17,13 @@ describe('binance/get-accounts', () => {
         binanceStub.earnPositions([]);
         binanceStub.lockedEarnPositions([]);
 
-        const result = await fetchAccountsResult();
+        const accounts = await fetchAccounts();
 
-        expect(result.success).toBe(true);
-        if (result.success) {
-            const ids = result.data.map(account => account.id).sort();
-            expect(ids).toEqual([
-                encodeBinanceAccountId({ wallet: BinanceWalletEnum.FUNDING, asset: 'USDT' }),
-                encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'BTC' })
-            ]);
-        }
+        const ids = accounts.map(account => account.id).sort();
+        expect(ids).toEqual([
+            encodeBinanceAccountId({ wallet: BinanceWalletEnum.FUNDING, asset: 'USDT' }),
+            encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'BTC' })
+        ]);
     });
 
     it('folds flexible and locked Simple Earn principal into the spot asset balance', async () => {
@@ -37,13 +33,10 @@ describe('binance/get-accounts', () => {
         binanceStub.earnPositions([buildBinance.earnPosition({ asset: 'BNB', totalAmount: '0.00008945' })]);
         binanceStub.lockedEarnPositions([buildBinance.lockedEarnPosition({ asset: 'BNB', amount: '0.51033101' })]);
 
-        const result = await fetchAccountsResult();
+        const accounts = await fetchAccounts();
 
-        expect(result.success).toBe(true);
-        if (result.success) {
-            const bnbAccount = result.data.find(account => account.currencyCode === 'BNB');
-            expect(bnbAccount?.balance).toBeCloseTo(BNB_EARN_TOTAL_BALANCE, 5);
-        }
+        const bnbAccount = accounts.find(account => account.currencyCode === 'BNB');
+        expect(bnbAccount?.balance).toBeCloseTo(BNB_EARN_TOTAL_BALANCE, 5);
     });
 
     it('marks an asset whose microunit balance would exceed MAX_SAFE_INTEGER as balance-unrepresentable', async () => {
@@ -56,14 +49,11 @@ describe('binance/get-accounts', () => {
         binanceStub.earnPositions([]);
         binanceStub.lockedEarnPositions([]);
 
-        const result = await fetchAccountsResult();
+        const accounts = await fetchAccounts();
 
-        expect(result.success).toBe(true);
-        if (result.success) {
-            const btcAccount = result.data.find(account => account.currencyCode === 'BTC');
-            const pepeAccount = result.data.find(account => account.currencyCode === 'PEPE');
-            expect(btcAccount?.balanceState).toBe('REPRESENTABLE');
-            expect(pepeAccount?.balanceState).toBe('UNREPRESENTABLE');
-        }
+        const btcAccount = accounts.find(account => account.currencyCode === 'BTC');
+        const pepeAccount = accounts.find(account => account.currencyCode === 'PEPE');
+        expect(btcAccount?.balanceState).toBe('REPRESENTABLE');
+        expect(pepeAccount?.balanceState).toBe('UNREPRESENTABLE');
     });
 });

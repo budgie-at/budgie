@@ -3,7 +3,7 @@ import { TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/con
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb, run } from '../../harness';
 
 describe('monobank/cross-currency-exchange-rate', () => {
     it('computes exchangeRate as amount/operationAmount when currencies differ', async () => {
@@ -18,7 +18,7 @@ describe('monobank/cross-currency-exchange-rate', () => {
             })
         ]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const transaction = testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-fx')).all()[0];
         const entry = testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, 'tx-fx')).all()[0];
@@ -33,7 +33,7 @@ describe('monobank/cross-currency-exchange-rate', () => {
             buildMonobank.transaction({ id: 'tx-same-currency', amount: -10000, operationAmount: -10000, hold: false })
         ]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const transaction = testDb
             .select()

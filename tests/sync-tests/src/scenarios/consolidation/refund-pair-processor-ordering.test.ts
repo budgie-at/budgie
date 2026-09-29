@@ -2,13 +2,13 @@ import { transferConsolidationService } from '@app/sync/service/transfer-consoli
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { fetchCanonicalsOfType, fetchTransactionById, seedAmountTransferPair } from '../../harness';
+import { fetchCanonicalsOfType, fetchTransactionById, seedAmountTransferPair, run } from '../../harness';
 
 describe('consolidation/refund-pair-processor-ordering', () => {
     it('lets the transfer-pair processor reparent first when an income is also a transfer-pair partner', async () => {
         const { expense, income } = seedAmountTransferPair(250 * PRECISION);
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await run(transferConsolidationService.consolidate(null));
         expect(result.consolidated).toBe(1);
 
         const transferCanonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);

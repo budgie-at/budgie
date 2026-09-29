@@ -16,7 +16,16 @@ import {
 import { and, eq, isNull } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { fetchCanonicalsOfType, fetchTransactionById, findMccByCode, seed, seedBankPair, seedExchangeRate, testDb } from '../../harness';
+import {
+    fetchCanonicalsOfType,
+    fetchTransactionById,
+    findMccByCode,
+    seed,
+    seedBankPair,
+    seedExchangeRate,
+    testDb,
+    run
+} from '../../harness';
 
 const SOURCE_IBAN = 'UA-FOP-EUR';
 const BRIDGE_IBAN = 'UA-FOP-UAH';
@@ -330,7 +339,7 @@ const expectIncomeDuplicateConsolidated = async (
     existingTransfer: TransactionEntityInterface,
     duplicateIncome: TransactionEntityInterface
 ): Promise<number> => {
-    const result = await transferConsolidationService.consolidate();
+    const result = await run(transferConsolidationService.consolidate(null));
 
     expect(result).toEqual({ found: 1, consolidated: 1 });
 
@@ -349,7 +358,7 @@ const expectPrivatTargetRouted = (canonicalId: number, privatAccountId: number, 
 const expectExistingTransferBridgeConsolidated = async (
     candidate: ReturnType<typeof seedExistingTransferBridgeCandidate>
 ): Promise<number> => {
-    const result = await transferConsolidationService.consolidate();
+    const result = await run(transferConsolidationService.consolidate(null));
 
     expect(result).toEqual({ found: 1, consolidated: 1 });
 
@@ -390,7 +399,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
             { accountId: targetAccount.id, amount: SAME_BANK_CURRENCY_TARGET_AMOUNT }
         );
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await run(transferConsolidationService.consolidate(null));
 
         expect(result).toEqual({ found: 1, consolidated: 1 });
         const canonicalId = expectSingleTransferPairCanonical(sourceAccount.id, targetAccount.id);
@@ -428,7 +437,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
         );
         const movedSource = seedMovedSourceEntry(sourceExpense.id, sourceAccount.id);
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await run(transferConsolidationService.consolidate(null));
 
         expect(result).toEqual({ found: 1, consolidated: 0 });
         expect(fetchTransactionById(sourceExpense.id).consolidationParentTransactionId).toBeNull();
@@ -593,7 +602,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
             )
             .run();
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await run(transferConsolidationService.consolidate(null));
 
         expect(result).toEqual({ found: 0, consolidated: 0 });
         expect(fetchTransactionById(privatIncome.id).consolidationParentTransactionId).toBeNull();
@@ -602,7 +611,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
     it('includes inactive manual target consolidation repairs in bank sync repair action', async () => {
         const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedTargetDuplicate();
 
-        const preview = await syncRepairService.previewDuplicates();
+        const preview = await run(syncRepairService.previewDuplicates());
 
         expect(preview.duplicateTransactionCount).toBe(1);
         expect(preview.sources).toEqual([
@@ -612,7 +621,7 @@ describe('consolidation/historical-transfer-leftovers', () => {
             })
         ]);
 
-        const result = await syncRepairService.removeDuplicates();
+        const result = await run(syncRepairService.removeDuplicates());
 
         expect(result.repairedTransactionCount).toBe(1);
         expectPrivatTargetRouted(expectIncomeDuplicateNested(existingTransfer, privatIncome), privatAccount.id, UAH_AMOUNT);

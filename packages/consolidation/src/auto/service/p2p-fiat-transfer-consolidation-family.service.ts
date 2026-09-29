@@ -1,4 +1,5 @@
 import { AccountTypeEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -14,7 +15,6 @@ import type { P2pFiatAtomicCandidateInterface } from '../../query/interface/p2p-
 import type { P2pFiatAuthoritativeCandidateInterface } from '../../query/interface/p2p-fiat-authoritative-candidate.interface';
 import type { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
 import type { ConsolidationFamilyRunContextInterface } from '../interface/consolidation-family-run-context.interface';
-import type { ConsolidationFamilyRunResultInterface } from '../interface/consolidation-family-run-result.interface';
 import type { P2pFiatTransferCandidateInterface } from '../interface/p2p-fiat-transfer-candidate.interface';
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
@@ -23,48 +23,51 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
 
     readonly key = ConsolidationFamilyKeyEnum.P2P_FIAT_TRANSFER;
 
-    constructor(
-        private readonly transferPairRepository: Pick<
-            TransferPairRepository,
-            'findP2pFiatAtomicCandidates' | 'findP2pFiatAuthoritativeCandidates' | 'findP2pFiatAuthoritativeRepairCandidates'
-        >,
-        private readonly consolidationExecutorService: Pick<ConsolidationExecutorService, 'consolidateP2pFiatTransfer'>,
-        private readonly consolidationRepairExecutorService: Pick<ConsolidationRepairExecutorService, 'repairP2pFiatCanonical'>,
-        yieldControl: () => Promise<void>
+    protected override readonly prepareProcess = Effect.fn('P2pFiatTransferConsolidationFamilyService.prepareProcess')(function* (
+        this: P2pFiatTransferConsolidationFamilyService,
+        context: ConsolidationFamilyRunContextInterface
     ) {
-        super(yieldControl);
-    }
+        const repairCandidates = yield* this.transferPairRepository.findP2pFiatAuthoritativeRepairCandidates(context.scope);
 
-    override async process(context: ConsolidationFamilyRunContextInterface): Promise<ConsolidationFamilyRunResultInterface> {
-        const repairCandidates = await this.transferPairRepository.findP2pFiatAuthoritativeRepairCandidates(context.scope);
-
-        await Promise.all(
+        yield* Effect.all(
             repairCandidates.map(candidate =>
                 this.consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId)
-            )
+            ),
+            { concurrency: 'unbounded' }
         );
+    });
 
-        return super.process(context);
-    }
-
-    protected async findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<P2pFiatTransferCandidateInterface[]> {
-        const authoritativeRows = await this.transferPairRepository.findP2pFiatAuthoritativeCandidates(scope);
+    protected readonly findCandidates = Effect.fn('P2pFiatTransferConsolidationFamilyService.findCandidates')(function* (
+        this: P2pFiatTransferConsolidationFamilyService,
+        scope: ConsolidationScanScopeInterface | null
+    ) {
+        const authoritativeRows = yield* this.transferPairRepository.findP2pFiatAuthoritativeCandidates(scope);
         const authoritativeCandidates = this.selectCandidates(this.buildAuthoritativeCandidates(authoritativeRows));
+
         if (isNotEmptyArray(authoritativeCandidates)) {
             return authoritativeCandidates;
         }
 
         const reservedTransactionIds = new Set(authoritativeRows.flatMap(row => [row.expenseTransactionId, row.incomeTransactionId]));
-        const rows = await this.transferPairRepository.findP2pFiatAtomicCandidates(scope);
+        const rows = yield* this.transferPairRepository.findP2pFiatAtomicCandidates(scope);
         const unreservedRows = rows.filter(
             row => !reservedTransactionIds.has(row.expenseTransactionId) && !reservedTransactionIds.has(row.incomeTransactionId)
         );
         const candidates = [...this.buildBuyCandidates(unreservedRows), ...this.buildSellCandidates(unreservedRows)];
 
         return this.selectCandidates(candidates);
+    });
+
+    constructor(
+        private readonly transferPairRepository: TransferPairRepository,
+        private readonly consolidationExecutorService: ConsolidationExecutorService,
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
+        yieldControl: () => Promise<void>
+    ) {
+        super(yieldControl);
     }
 
-    protected consolidateCandidate(candidate: P2pFiatTransferCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: P2pFiatTransferCandidateInterface) {
         return this.consolidationExecutorService.consolidateP2pFiatTransfer(candidate);
     }
 

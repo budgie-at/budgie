@@ -1,12 +1,14 @@
-import { microPause } from '@app/@generic/utils/micro-pause.util';
+import { Workload } from '@app/@generic/service/workload.service';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
-import { MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
+import * as Clock from 'effect/Clock';
+import * as Deferred from 'effect/Deferred';
+import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { run, runInWorkload } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -14,44 +16,6 @@ const statementEndpoint = 'https://api.monobank.ua/personal/statement/:account/:
 const statementAccountParam = 'account';
 const staleForwardSyncFromAt = new Date('2026-01-01T00:00:00.000Z');
 const nextTaskDelayMs = 0;
-
-const setupRateLimitHarness = (events: string[]) => {
-    let resolveRateLimitReached: () => void = emptyFn;
-    let resolveRateLimitPause: () => void = emptyFn;
-    let resolveImportRan: () => void = emptyFn;
-    let queuedImport = Promise.resolve();
-    const rateLimitReached = new Promise<void>(resolve => {
-        resolveRateLimitReached = resolve;
-    });
-    const importRan = new Promise<void>(resolve => {
-        resolveImportRan = resolve;
-    });
-
-    vi.mocked(microPause).mockImplementation(delay => {
-        if (delay !== MONOBANK_RATE_LIMIT_MS) {
-            return Promise.resolve();
-        }
-
-        queuedImport = syncWorkloadService.runUser('file-import', async () => {
-            events.push('file-import');
-            resolveImportRan();
-        });
-        resolveRateLimitReached();
-
-        return new Promise<void>(resolve => {
-            resolveRateLimitPause = resolve;
-        });
-    });
-
-    return {
-        getQueuedImport: () => queuedImport,
-        importRan,
-        rateLimitReached,
-        releaseRateLimitPause: () => {
-            resolveRateLimitPause();
-        }
-    };
-};
 
 const mockStatementRequests = (events: string[]): void => {
     mockServer.use(
@@ -68,9 +32,9 @@ const setupForwardSyncScenario = (externalIds: string[], events: string[]): void
     mockStatementRequests(events);
 };
 
-const didImportRunBeforeNextTask = (importRan: Promise<void>): Promise<boolean> =>
+const didImportRunBeforeNextTask = (importRan: Deferred.Deferred<void>): Promise<boolean> =>
     Promise.race([
-        importRan.then(() => true),
+        run(Deferred.await(importRan)).then(() => true),
         new Promise<false>(resolve => {
             setTimeout(() => {
                 resolve(false);
@@ -79,10 +43,6 @@ const didImportRunBeforeNextTask = (importRan: Promise<void>): Promise<boolean> 
     ]);
 
 describe('monobank/queued-work-yield', () => {
-    afterEach(() => {
-        vi.mocked(microPause).mockImplementation((): Promise<void> => Promise.resolve());
-    });
-
     it('yields after the current forward sync when user work is queued', async () => {
         const externalIds = ['mono-acc-1', 'mono-acc-2', 'mono-acc-3'];
         const events: string[] = [];
@@ -97,16 +57,18 @@ describe('monobank/queued-work-yield', () => {
 
                 if (!hasQueuedImport) {
                     hasQueuedImport = true;
-                    queuedImport = syncWorkloadService.run('file-import', async () => {
-                        events.push('file-import');
-                    });
+                    queuedImport = runInWorkload(
+                        Effect.sync(() => {
+                            events.push('file-import');
+                        })
+                    );
                 }
 
                 return HttpResponse.json([]);
             })
         );
 
-        await syncWorkloadService.run('startup', () => monobankSyncService.sync());
+        await runInWorkload(monobankSyncService.sync());
         await queuedImport;
 
         expect(events).toEqual(['request:mono-acc-1', 'file-import']);
@@ -115,16 +77,37 @@ describe('monobank/queued-work-yield', () => {
     it('wakes the rate-limit wait when user work is queued', async () => {
         const externalIds = ['mono-acc-1', 'mono-acc-2'];
         const events: string[] = [];
-        const rateLimitHarness = setupRateLimitHarness(events);
+        const rateLimitReached = Deferred.makeUnsafe<void>();
+        const importRan = Deferred.makeUnsafe<void>();
 
         setupForwardSyncScenario(externalIds, events);
 
-        const startupSync = syncWorkloadService.run('startup', () => monobankSyncService.sync());
-        await rateLimitHarness.rateLimitReached;
-        const importRanBeforePauseReleased = await didImportRunBeforeNextTask(rateLimitHarness.importRan);
-        rateLimitHarness.releaseRateLimitPause();
+        const startupSync = run(
+            Effect.clockWith(clock =>
+                Workload.use(workload => workload.run(monobankSyncService.sync())).pipe(
+                    Effect.provideService(
+                        Clock.Clock,
+                        Object.assign(Object.create(clock), {
+                            sleep: () => Effect.andThen(Deferred.succeed(rateLimitReached, undefined), Effect.never)
+                        })
+                    )
+                )
+            )
+        ).then(emptyFn, emptyFn);
+        await run(Deferred.await(rateLimitReached));
+        const queuedImport = run(
+            Workload.use(workload =>
+                workload.runUser(
+                    Effect.gen(function* () {
+                        events.push('file-import');
+                        yield* Deferred.succeed(importRan, undefined);
+                    })
+                )
+            )
+        );
+        const importRanBeforePauseReleased = await didImportRunBeforeNextTask(importRan);
         await startupSync;
-        await rateLimitHarness.getQueuedImport();
+        await queuedImport;
 
         expect(importRanBeforePauseReleased).toBe(true);
         expect(events).toEqual(['request:mono-acc-1', 'file-import']);

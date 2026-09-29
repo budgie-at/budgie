@@ -16,7 +16,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb, run } from '../../harness';
 
 describe('monobank/rules-on-create', () => {
     it('persists matching rule category and tag when inserting new synced transactions', async () => {
@@ -71,7 +71,7 @@ describe('monobank/rules-on-create', () => {
             })
         ]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const [entry] = testDb
             .select()

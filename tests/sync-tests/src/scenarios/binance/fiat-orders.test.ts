@@ -8,7 +8,8 @@ import {
     expectSingleBinanceTransaction,
     fetchBinanceTransactions,
     setupBinanceFixture,
-    stubEmptyBinanceBalances
+    stubEmptyBinanceBalances,
+    run
 } from '../../harness';
 
 const setupFiatScenario = () => {
@@ -23,7 +24,7 @@ describe('binance/fiat-orders', () => {
         setupFiatScenario();
         binanceStub.fiatOrders([buildBinance.fiatOrder({ orderNo: 'fiat-dep-1', fiatCurrency: 'EUR', amount: '100' })], []);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expectSingleBinanceTransaction(TransactionTypeEnum.INCOME, 'fiat-dep-1');
     });
@@ -32,7 +33,7 @@ describe('binance/fiat-orders', () => {
         setupFiatScenario();
         binanceStub.fiatOrders([], [buildBinance.fiatOrder({ orderNo: 'fiat-wd-1', fiatCurrency: 'EUR', amount: '50' })]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expectSingleBinanceTransaction(TransactionTypeEnum.EXPENSE, 'fiat-wd-1');
     });
@@ -47,7 +48,7 @@ describe('binance/fiat-orders', () => {
             []
         );
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const transactions = fetchBinanceTransactions();
         expect(transactions).toHaveLength(1);

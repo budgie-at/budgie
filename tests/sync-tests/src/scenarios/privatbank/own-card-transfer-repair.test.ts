@@ -11,9 +11,10 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { and, eq, isNull } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { describe, expect, it, vi } from 'vitest';
 
-import { fetchTransactionById, seed, testDb } from '../../harness';
+import { fetchTransactionById, seed, testDb, run } from '../../harness';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
@@ -93,8 +94,8 @@ const seedArchivedCardWithMask = (externalId: string | null, iban: string): Acco
 };
 
 const expectRepairedFromCounterpart = async (archivedCard: AccountEntityInterface, income: TransactionEntityInterface): Promise<void> => {
-    expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
-    expect(await unpairedOwnCardTransferRepairService.repair()).toBe(1);
+    expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(1);
+    expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(1);
     expect(fetchTransactionById(income.id).fromAccountId).toBe(archivedCard.id);
 };
 
@@ -102,8 +103,8 @@ describe('privatbank/own-card-transfer-repair', () => {
     it('repairs an own-card income whose counterpart card account was archived', async () => {
         const { archivedCard, income, liveCard } = seedArchivedOwnCardScenario();
 
-        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
-        expect(await unpairedOwnCardTransferRepairService.repair()).toBe(1);
+        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(1);
+        expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(1);
 
         const repaired = fetchTransactionById(income.id);
 
@@ -115,10 +116,10 @@ describe('privatbank/own-card-transfer-repair', () => {
     it('leaves nothing to repair after a first repair pass', async () => {
         seedArchivedOwnCardScenario();
 
-        await unpairedOwnCardTransferRepairService.repair();
+        await run(unpairedOwnCardTransferRepairService.repair());
 
-        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
-        expect(await unpairedOwnCardTransferRepairService.repair()).toBe(0);
+        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(0);
+        expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(0);
     });
 
     it('counts an own-card income with a fee entry once', async () => {
@@ -129,8 +130,8 @@ describe('privatbank/own-card-transfer-repair', () => {
         seed.feeEntry(income.id, 'privatbank-own-card-income-fee', { accountId: liveCard.id, amount: OWN_CARD_FEE_AMOUNT });
         archiveAccount(archivedCard.id);
 
-        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
-        expect(await unpairedOwnCardTransferRepairService.repair()).toBe(1);
+        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(1);
+        expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(1);
     });
 
     it('ignores a maskless third-party card transfer', async () => {
@@ -144,7 +145,7 @@ describe('privatbank/own-card-transfer-repair', () => {
         seed.updateTransaction(expense.id, { externalSource: ExternalSourceEnum.PRIVATBANK, title: THIRD_PARTY_CARD_TITLE });
         archiveAccount(archivedCard.id);
 
-        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(0);
     });
 
     it('repairs an own-card income whose counterpart leg was archived together with the card', async () => {
@@ -155,8 +156,8 @@ describe('privatbank/own-card-transfer-repair', () => {
         softDeleteTransaction(seedOwnCardCounterpartExpense(archivedCard.id).id);
         archiveAccount(archivedCard.id);
 
-        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
-        expect(await unpairedOwnCardTransferRepairService.repair()).toBe(1);
+        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(1);
+        expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(1);
         expect(fetchTransactionById(income.id).fromAccountId).toBe(archivedCard.id);
     });
 
@@ -167,7 +168,7 @@ describe('privatbank/own-card-transfer-repair', () => {
         seedOwnCardIncome(liveCard.id, UNKNOWN_CARD_INCOME_TITLE);
         archiveAccount(archivedCard.id);
 
-        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(0);
     });
 
     it('rejects when a candidate conversion fails', async () => {
@@ -175,15 +176,15 @@ describe('privatbank/own-card-transfer-repair', () => {
 
         const convertSpy = vi
             .spyOn(transactionTransferService, 'convertIncomeToTransfer')
-            .mockRejectedValue(new Error(CONVERSION_FAILURE_MESSAGE));
+            .mockReturnValue(Effect.die(new Error(CONVERSION_FAILURE_MESSAGE)));
 
         try {
-            await expect(unpairedOwnCardTransferRepairService.repair()).rejects.toThrow(CONVERSION_FAILURE_MESSAGE);
+            await expect(run(unpairedOwnCardTransferRepairService.repair())).rejects.toThrow(CONVERSION_FAILURE_MESSAGE);
         } finally {
             convertSpy.mockRestore();
         }
 
-        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
+        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(1);
     });
 
     it('ignores an own-card income that still has a live counterpart leg', async () => {
@@ -194,7 +195,7 @@ describe('privatbank/own-card-transfer-repair', () => {
         seedOwnCardCounterpartExpense(archivedCard.id);
         archiveAccount(archivedCard.id);
 
-        expect(await unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(0);
     });
 
     it('matches the counterpart card by external_id when its IBAN suffix differs', async () => {
@@ -222,10 +223,10 @@ describe('privatbank/own-card-transfer-repair', () => {
         softDeleteTransaction(supersededExpense.id);
         archiveAccount(archivedCard.id);
 
-        expect(await unpairedOwnCardTransferRepairService.repair()).toBe(1);
+        expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(1);
         expect(fetchTransactionById(supersededExpense.id)).toBeUndefined();
 
-        await accountService.restoreById(archivedCard.id);
+        await run(accountService.restoreById(archivedCard.id));
 
         const liveExpensesOnArchivedCard = testDb
             .select()
@@ -246,7 +247,7 @@ describe('privatbank/own-card-transfer-repair', () => {
     it('keeps the archived counterpart balance at 0 after the repair leaves a live transfer leg on it', async () => {
         const { archivedCard } = seedArchivedOwnCardScenario();
 
-        await unpairedOwnCardTransferRepairService.repair();
+        await run(unpairedOwnCardTransferRepairService.repair());
 
         const archivedBalanceRow = accountBalanceRepository.getArchivedAccountBalance(archivedCard.id).get();
 

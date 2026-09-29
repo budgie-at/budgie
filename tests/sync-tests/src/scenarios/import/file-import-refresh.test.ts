@@ -3,7 +3,7 @@ import { ExternalSourceEnum } from '@budgie/contracts';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
 import { describe, expect, it } from 'vitest';
 
-import { StubFileBankSyncService, seed } from '../../harness';
+import { StubFileBankSyncService, seed, run } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
@@ -65,7 +65,7 @@ describe('import/file-import-refresh', () => {
             notificationCount += 1;
         });
 
-        await syncService.quickImport(STATEMENT_URI);
+        await run(syncService.quickImport(STATEMENT_URI));
         unsubscribe();
 
         expect(databaseRefreshService.getSnapshot()).toBe(initialVersion + 1);

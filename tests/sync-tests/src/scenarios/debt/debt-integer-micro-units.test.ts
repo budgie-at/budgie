@@ -4,7 +4,7 @@ import { transactionService } from '@app/transaction/service/transaction.service
 import { AccountDebtTypeEnum, AccountTypeEnum, CurrencyEnum, UserIconNameEnum } from '@budgie/contracts';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import { buildTransferInput, requireInstrument, seed, testDb } from '../../harness';
+import { buildTransferInput, requireInstrument, seed, testDb, run } from '../../harness';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 
@@ -29,26 +29,28 @@ describe('cross-instrument money legs at a non-terminating rate', () => {
         const usdInstrument = await requireInstrument(CurrencyEnum.USD);
         const eurInstrument = await requireInstrument(CurrencyEnum.EUR);
 
-        await exchangeRateRepository.upsert(eurInstrument.id, usdInstrument.id, NON_TERMINATING_RATE, 'test');
+        await run(exchangeRateRepository.upsert(eurInstrument.id, usdInstrument.id, NON_TERMINATING_RATE, 'test'));
         usdAccount = seed.account({ title: 'Dollar card', type: AccountTypeEnum.BANK_SYNC, instrumentId: usdInstrument.id });
         eurAccount = seed.account({ title: 'Euro card', type: AccountTypeEnum.BANK_SYNC, instrumentId: eurInstrument.id });
     });
 
     it('opens a debt funded from another instrument with integer micro-units', async () => {
-        await accountDebtOpeningService.openDebtWithFundingAccount(
-            {
-                title: 'Alex owes me',
-                iban: null,
-                icon: UserIconNameEnum.HandCoins,
-                instrumentId: usdAccount.instrumentId,
-                type: AccountTypeEnum.DEBT,
-                debtType: AccountDebtTypeEnum.LENT,
-                currentBalance: 0,
-                targetBalance: 100,
-                contactId: null,
-                deadline: null
-            },
-            eurAccount.id
+        await run(
+            accountDebtOpeningService.openDebtWithFundingAccount(
+                {
+                    title: 'Alex owes me',
+                    iban: null,
+                    icon: UserIconNameEnum.HandCoins,
+                    instrumentId: usdAccount.instrumentId,
+                    type: AccountTypeEnum.DEBT,
+                    debtType: AccountDebtTypeEnum.LENT,
+                    currentBalance: 0,
+                    targetBalance: 100,
+                    contactId: null,
+                    deadline: null
+                },
+                eurAccount.id
+            )
         );
 
         expect(await countFractionalMicroUnitRows()).toBe(0);
@@ -57,10 +59,12 @@ describe('cross-instrument money legs at a non-terminating rate', () => {
     it.each([1, NON_TERMINATING_RATE])(
         'transfers into another instrument with integer micro-units at exchange rate %s',
         async exchangeRate => {
-            await transactionService.createInternalTransfer({
-                ...buildTransferInput(usdAccount.id, eurAccount.id, 100, OPERATED_AT),
-                exchangeRate
-            });
+            await run(
+                transactionService.createInternalTransfer({
+                    ...buildTransferInput(usdAccount.id, eurAccount.id, 100, OPERATED_AT),
+                    exchangeRate
+                })
+            );
 
             expect(await countFractionalMicroUnitRows()).toBe(0);
         }
