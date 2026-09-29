@@ -1,7 +1,0 @@
-appId: ${APP_ID}
----
-- tapOn:
-      id: 'RuleForm.Condition.0.ValueInput'
-- inputText: ${VALUE}
-- tapOn: Done
-- waitForAnimationToEnd

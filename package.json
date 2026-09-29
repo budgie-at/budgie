@@ -26,10 +26,8 @@
         "media:compose": "bash packages/app/fastlane/screenshots/design/compose-web-media.sh && bash packages/app/fastlane/screenshots/design/compose-web-clips.sh",
         "media:manifest": "pnpm --filter @budgie-at/landing media:manifest",
         "release": "lerna publish --yes --conventional-commits --create-release=github -m \"chore: release %s [skip ci]\"",
-        "security": "rnsec scan",
         "test": "turbo run test",
         "ts": "turbo run ts",
-        "ts:force": "turbo run ts --force",
         "verify:backup": "sh -c 'set -e; test -f \"$1\"; mkdir -p \"$HOME/.cache\" && BUDGIE_BACKUP_DB=\"$(realpath \"$1\")\" TMPDIR=\"$HOME/.cache\" pnpm --filter @budgie-at/sync-tests exec vitest run src/scenarios/database/backup-replay.test.ts' verify-backup"
     },
     "devDependencies": {
@@ -63,7 +61,6 @@
         "oxlint": "1.80.0",
         "oxlint-tsgolint": "0.25.0",
         "rimraf": "6.1.3",
-        "rnsec": "1.3.0",
         "sort-package-json": "4.0.0",
         "turbo": "2.10.12",
         "typescript": "npm:@typescript/typescript6@6.0.2",
