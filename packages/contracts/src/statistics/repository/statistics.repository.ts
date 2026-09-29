@@ -23,6 +23,7 @@ import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
 import { TransactionEntryTypeEnum } from '../../transaction-entry/enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { buildSpendingEntryCondition } from '../../transaction-entry/util/build-spending-entry-condition.util';
 import { TransactionTagsAssociationEnum } from '../../transaction-tags/enum/transaction-tags-association.enum';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
 import { TransactionAssociationEnum } from '../../transaction/enum/transaction-association.enum';
@@ -151,6 +152,7 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
                     baseWhere,
                     this.buildPrimaryLedgerEntryCondition(),
                     this.buildNonDebtAccountCondition(),
+                    buildSpendingEntryCondition(),
                     eq(TransactionEntityTable.type, type)
                 )
             );
@@ -165,7 +167,15 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .from(TransactionEntityTable)
             .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(and(baseWhere, this.buildPrimaryLedgerEntryCondition(), this.buildNonDebtAccountCondition(), ...typeConditions));
+            .where(
+                and(
+                    baseWhere,
+                    this.buildPrimaryLedgerEntryCondition(),
+                    this.buildNonDebtAccountCondition(),
+                    buildSpendingEntryCondition(),
+                    ...typeConditions
+                )
+            );
     }
     /* jscpd:ignore-end */
 
@@ -318,16 +328,6 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
             .orderBy(desc(amountSql));
     }
     /* jscpd:ignore-end */
-
-    private buildExpenseAnalyticsEntryCondition() {
-        return or(
-            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE),
-            and(
-                eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
-                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
-            )
-        );
-    }
 
     private buildVisibleNonDebtEntryCondition(type: TransactionEntryTypeEnum) {
         return sql`
@@ -534,6 +534,6 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     private buildStatisticsWhere(filters: TransactionFilterInterface) {
         const baseWhere = this.buildFilterWhere(filters);
 
-        return and(baseWhere, ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT));
+        return and(baseWhere, ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT), buildSpendingEntryCondition());
     }
 }

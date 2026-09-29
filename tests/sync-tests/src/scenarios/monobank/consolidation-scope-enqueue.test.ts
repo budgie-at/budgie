@@ -1,4 +1,3 @@
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
@@ -39,7 +38,6 @@ describe('monobank/consolidation-scope-enqueue', () => {
         }
 
         expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(
-            TransferConsolidationDrainReasonEnum.MONOBANK_SYNC,
             expect.objectContaining({
                 transactionIds: [transaction.id]
             })

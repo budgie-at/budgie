@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum, UserIconType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -26,7 +26,7 @@ const getMccLabel = (transaction: TransactionWithRelationsEntityInterface): stri
     return `${mccCategory.mcc} · ${mccCategory.shortDescription}`;
 };
 
-const getCategoryIcon = (transaction: TransactionWithRelationsEntityInterface): UserIconNameEnum => {
+const getCategoryIcon = (transaction: TransactionWithRelationsEntityInterface): UserIconType => {
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
 
     if (categoryEntries.length > 1) {

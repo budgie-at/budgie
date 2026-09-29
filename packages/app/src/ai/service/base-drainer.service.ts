@@ -42,7 +42,7 @@ export abstract class BaseDrainerService<TRow> extends SnapshotStore<DrainerSnap
     private started = false;
 
     constructor() {
-        super({ state: DrainerStateEnum.IDLE, pending: 0, lastDurationMs: 0, errorMessage: null });
+        super({ state: DrainerStateEnum.IDLE, pending: 0, errorMessage: null });
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)

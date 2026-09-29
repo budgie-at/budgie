@@ -22,9 +22,7 @@ export class TransferPairRepository {
     constructor(private db: DB) {}
 
     async findCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<TransferPairCandidateInterface[]> {
-        const sql = buildTransferPairCandidatesSql(scope);
-
-        return this.db.$client.getAllAsync<TransferPairCandidateInterface>(sql);
+        return this.db.$client.getAllAsync<TransferPairCandidateInterface>(buildTransferPairCandidatesSql(scope));
     }
 
     async findBridgeClaimedRepairCandidates(): Promise<BridgeClaimRepairCandidateInterface[]> {
@@ -32,9 +30,7 @@ export class TransferPairRepository {
     }
 
     async findP2pFiatAtomicCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<P2pFiatAtomicCandidateInterface[]> {
-        const sql = buildP2pFiatAtomicCandidateSql(scope);
-
-        return this.db.$client.getAllAsync<P2pFiatAtomicCandidateInterface>(sql);
+        return this.db.$client.getAllAsync<P2pFiatAtomicCandidateInterface>(buildP2pFiatAtomicCandidateSql(scope));
     }
 
     async findP2pFiatAuthoritativeCandidates(
@@ -52,8 +48,6 @@ export class TransferPairRepository {
     }
 
     async findManualReviewCandidates(): Promise<TransferPairReviewCandidateInterface[]> {
-        const sql = buildTransferPairManualReviewCandidatesSql();
-
-        return this.db.$client.getAllAsync<TransferPairReviewCandidateInterface>(sql);
+        return this.db.$client.getAllAsync<TransferPairReviewCandidateInterface>(buildTransferPairManualReviewCandidatesSql());
     }
 }

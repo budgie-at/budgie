@@ -4,6 +4,7 @@ export { setupBackwardSweepFixture } from './monobank/setup-backward-sweep-fixtu
 export { seed } from './seed/seed';
 export { seedBankPair } from './seed/seed-bank-pair';
 export { seedBitcoinCryptoAccount } from './seed/seed-bitcoin-crypto-account';
+export { seedLedgerBalance } from './seed/seed-ledger-balance';
 export { seedRefundStatisticsScenario } from './seed/seed-refund-statistics-scenario';
 export { runRefundScenario } from './seed/run-refund-scenario';
 export { seedAmountTransferPair } from './seed/seed-amount-transfer-pair';

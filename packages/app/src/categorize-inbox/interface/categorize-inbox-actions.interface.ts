@@ -6,4 +6,6 @@ export interface CategorizeInboxActionsInterface {
     readonly lastWrite: CategorizeInboxLastWriteInterface | null;
     readonly undo: (lastWrite: CategorizeInboxLastWriteInterface) => void;
     readonly applyFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => Promise<void>;
+    readonly movedToCashTransactionIds: number[];
+    readonly undoMoveToCash: (transactionIds: number[]) => void;
 }

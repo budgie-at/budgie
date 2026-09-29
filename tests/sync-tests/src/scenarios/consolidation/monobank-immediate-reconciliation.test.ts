@@ -1,16 +1,16 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
-import { AccountTypeEnum, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it, vi } from 'vitest';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
 
-import { buildMonobank, fetchCanonicalsOfType, fetchExpenseEntries, monobankStub, seed, setupMonobankFixture } from '../../harness';
+import { buildMonobank, fetchCanonicalsOfType, monobankStub, seed, setupMonobankFixture } from '../../harness';
 
 describe('consolidation/monobank-immediate-reconciliation', () => {
-    it('reconciles an ATM withdrawal before entering its rate-limit wait', async () => {
+    it('keeps a synced ATM withdrawal as a bank expense through immediate reconciliation and after sync', async () => {
         const { account: bankAccount } = setupMonobankFixture();
-        const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
+        seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
         let releaseRateLimitWait: () => void = emptyFn;
         const waitForQueuedUserWorkSpy = vi.spyOn(syncWorkloadService, 'waitForQueuedUserWork');
         let syncPromise: Promise<unknown> = Promise.resolve();
@@ -36,7 +36,7 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                     hold: false,
                     mcc: 6011,
                     operationAmount: -40800,
-                    time: Math.floor(new Date('2026-01-15T12:00:00.000Z').getTime() / 1000)
+                    time: Math.floor(Date.now() / 1000) - 60 * 60
                 })
             ]);
 
@@ -48,19 +48,7 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                 })
             ]);
 
-            const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
-
-            expect(canonicals).toHaveLength(1);
-            const [canonical] = canonicals;
-            if (!isDefined(canonical)) {
-                return;
-            }
-
-            expect(canonical.fromAccountId).toBe(bankAccount.id);
-            expect(canonical.toAccountId).toBe(cashAccount.id);
-            expect((await fetchExpenseEntries(canonical.id)).find(entry => entry.type === TransactionEntryTypeEnum.FEE)?.amount).toBe(
-                8000000
-            );
+            expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
         } finally {
             releaseRateLimitWait();
             try {
@@ -69,5 +57,7 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                 waitForQueuedUserWorkSpy.mockRestore();
             }
         }
+
+        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
     });
 });

@@ -7,7 +7,6 @@ import {
     type TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     type TransactionEntryCreateInputInterface,
-    type TransactionEntryEntityInterface,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -88,18 +87,13 @@ class TransactionService {
     }
 
     @Log(
-        input => `enter externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
-        (result, input) =>
-            `done result=${String(result)} externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
-        (error, input) =>
-            `throw externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')} error=${getErrorMessage(error)}`
+        inputs => `enter transactionCount=${inputs.length}`,
+        (_result, inputs) => `done transactionCount=${inputs.length}`,
+        (error, inputs) => `throw transactionCount=${inputs.length} error=${getErrorMessage(error)}`
     )
     @InvalidateDatabaseLiveQuery()
-    async update(input: TransactionCreateInputInterface): Promise<void> {
-        await transactionAsync(db, async tx => {
-            await transactionDepositSafetyService.assertNoDepositExpenseImportedUpdate(input, tx);
-            await importedTransactionEntryUpdateService.update(input.entries, input, tx);
-        });
+    async bulkUpdateImported(inputs: TransactionCreateInputInterface[]): Promise<void> {
+        await transactionAsync(db, async tx => importedTransactionEntryUpdateService.bulkUpdate(inputs, tx));
     }
 
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
@@ -433,6 +427,7 @@ class TransactionService {
             categoryId: entry.categoryId,
             mccCategoryId: entry.mccCategoryId,
             type,
+            kind: TransactionEntryKindEnum.PRIMARY,
             amount,
             externalId: entry.externalId ?? null,
             exchangeRate: entry.exchangeRate ?? 1,
@@ -497,8 +492,8 @@ class TransactionService {
 
         const transaction = await transactionRepository.create({ ...input, exchangeRate, externalId: null, externalSource: null }, tx);
 
-        await this.createTransferEntries(transaction, input, { fromEntry, toEntry, fromAmountInMicroUnits, toAmount }, tx);
-        await this.finalizeInternalTransfer(input, transaction.id, tx);
+        await this.persistPrimaryTransfer(transaction, input, fromEntry, toEntry, fromAmountInMicroUnits, toAmount, tx);
+        await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs([input]), tx);
 
         return transaction;
     }
@@ -530,86 +525,6 @@ class TransactionService {
             amount: hasCustomExchangeRate ? Math.round(fromAmountInMicroUnits / input.exchangeRate) : amount,
             exchangeRate: hasCustomExchangeRate ? input.exchangeRate : exchangeRate
         };
-    }
-
-    private async createTransferEntries(
-        transaction: TransactionEntityInterface,
-        input: TransactionCreateInputInterface,
-        primaryEntryInput: {
-            readonly fromEntry: TransactionEntryCreateInputInterface;
-            readonly toEntry: TransactionEntryCreateInputInterface;
-            readonly fromAmountInMicroUnits: number;
-            readonly toAmount: number;
-        },
-        tx: DB
-    ): Promise<TransactionEntryEntityInterface[]> {
-        const additionalEntryValuations = await entryBaseValuationService.valueEntries(input.entries, input.operatedAt, tx);
-        const [fromValuation, toValuation] = await Promise.all([
-            entryBaseValuationService.valueMicroUnitEntry({
-                accountId: primaryEntryInput.fromEntry.accountId,
-                amount: primaryEntryInput.fromAmountInMicroUnits,
-                operatedAt: input.operatedAt,
-                externalSource: input.externalSource,
-                tx
-            }),
-            entryBaseValuationService.valueMicroUnitEntry({
-                accountId: primaryEntryInput.toEntry.accountId,
-                amount: primaryEntryInput.toAmount,
-                operatedAt: input.operatedAt,
-                externalSource: input.externalSource,
-                tx
-            })
-        ]);
-        const primaryEntries = [
-            {
-                entry: primaryEntryInput.fromEntry,
-                type: TransactionEntryTypeEnum.CREDIT,
-                amount: primaryEntryInput.fromAmountInMicroUnits,
-                valuation: fromValuation
-            },
-            {
-                entry: primaryEntryInput.toEntry,
-                type: TransactionEntryTypeEnum.DEBIT,
-                amount: primaryEntryInput.toAmount,
-                valuation: toValuation
-            }
-        ].map(({ entry, type, amount, valuation }) => ({
-            transactionId: transaction.id,
-            accountId: entry.accountId,
-            categoryId: entry.categoryId,
-            mccCategoryId: entry.mccCategoryId,
-            type,
-            kind: TransactionEntryKindEnum.PRIMARY,
-            amount,
-            externalId: entry.externalId ?? null,
-            exchangeRate: entry.exchangeRate ?? 1,
-            baseInstrumentId: valuation.baseInstrumentId,
-            baseExchangeRate: valuation.baseExchangeRate,
-            baseAmount: valuation.baseAmount,
-            toIban: entry.toIban ?? null
-        }));
-
-        return transactionEntryRepository.bulkCreate(
-            [
-                ...primaryEntries,
-                ...buildAdditionalTransferEntries({
-                    entries: input.entries,
-                    fromEntry: primaryEntryInput.fromEntry,
-                    toEntry: primaryEntryInput.toEntry,
-                    transactionId: transaction.id,
-                    valuations: additionalEntryValuations
-                })
-            ],
-            tx
-        );
-    }
-
-    private async finalizeInternalTransfer(input: TransactionCreateInputInterface, transactionId: number, tx: DB): Promise<void> {
-        if (isNotEmptyArray(input.tagIds)) {
-            await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId), tx);
-        }
-
-        await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs([input]), tx);
     }
 
     private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {

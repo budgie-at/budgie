@@ -1,4 +1,4 @@
-import { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryCreateEntityInterface, CategoryEntityInterface, UserIconType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
+import { IconSuggestions } from '../../../@generic/component/icon-suggestions/icon-suggestions';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
 import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
@@ -22,6 +23,7 @@ import { useCategorySelectorModal } from '../../context/category-selector-modal.
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
 import { categoryService } from '../../service/category.service';
+import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
 import { CategoryTitleInput } from '../category-title-input/category-title-input';
 
@@ -84,14 +86,15 @@ export const CategoryForm = (props: Props) => {
     };
     /* jscpd:ignore-end */
 
-    const handleIconPress = async () => {
-        const keywordSource = [titleEn, titleTags].filter(isNotEmptyString).join(' ');
-        const keywords = keywordSource.split(/[,\s]+/u).filter(isNotEmptyString);
+    const iconTerms = getCategoryIconTerms({ title, titleEn, titleTags });
 
-        const selectedIcon = await openIconSelector({ selectedIcon: icon, keywords });
+    const handleIconSelect = (selectedIcon: UserIconType) => void setValue('icon', selectedIcon);
+
+    const handleIconPress = async () => {
+        const selectedIcon = await openIconSelector({ selectedIcon: icon, keywords: iconTerms });
 
         if (isDefined(selectedIcon)) {
-            setValue('icon', selectedIcon);
+            handleIconSelect(selectedIcon);
         }
     };
 
@@ -183,6 +186,8 @@ export const CategoryForm = (props: Props) => {
                     triggerTestID={CategoryFormSelector.IconTrigger}
                     iconTestID={CategoryFormSelector.CurrentIcon(icon)}
                 />
+
+                <IconSuggestions terms={iconTerms} limit={6} onSelect={handleIconSelect} testID={CategoryFormSelector.IconSuggestions} />
 
                 <CategoryTitleInput
                     value={title}

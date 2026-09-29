@@ -1,28 +1,14 @@
-import { Log } from '@budgie/logger';
-import { t } from '@lingui/core/macro';
+import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
-
-import {
-    categoryRepository,
-    commentEmbeddingRepository,
-    merchantEmbeddingRepository,
-    tagRepository,
-    transactionRepository
-} from '../../@generic/drizzle/db/db';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
-import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-import { AiSystemActionEnum } from '../enum/ai-system-action.enum';
 import { AiSystemStateEnum } from '../enum/ai-system-state.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
-import { AiErrorSourceInterface } from '../interface/ai-error-source.interface';
 import { AiSystemSnapshotInterface } from '../interface/ai-system-snapshot.interface';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
 import { translationProgressStore } from '../store/translation-progress.store';
 
 import { aiCoordinatorService } from './ai-coordinator.service';
-import { aiModelResidencyService } from './ai-model-residency.service';
 import { ScheduledSnapshotStore } from './base-subsystem.service';
 import { chatService } from './chat.service';
 import { embeddingDrainerService } from './embedding-drainer.service';
@@ -32,83 +18,14 @@ import { translationDrainerService } from './translation-drainer.service';
 
 class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInterface> {
     private static readonly FULL_PERCENT = 100;
-    private static readonly TRUNCATE_LEN = 80;
     private static readonly SUBSYSTEM_COUNT = 3;
     private static readonly EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
         state: AiSystemStateEnum.DISABLED,
-        percent: 0,
-        statusText: '',
-        action: AiSystemActionEnum.NONE,
-        translationPending: 0,
-        embeddingPending: 0,
-        errorMessage: null
+        percent: 0
     };
-
-    private lastState: AiSystemStateEnum = AiSystemStateEnum.DISABLED;
 
     constructor() {
         super(AiSystemStatusService.EMPTY_SNAPSHOT);
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async boost(): Promise<void> {
-        if (isPositiveNumber(translationDrainerService.getSnapshot().pending)) {
-            await translationDrainerService.boost();
-
-            return;
-        }
-        await embeddingDrainerService.boost();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    cancelBoost(): void {
-        translationDrainerService.cancelBoost();
-        embeddingDrainerService.cancelBoost();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async retry(): Promise<void> {
-        const promises: Promise<void>[] = [];
-        if (isNotEmptyString(chatService.getSnapshot().errorMessage)) {
-            promises.push(aiModelResidencyService.retry(AiSubsystemNameEnum.CHAT));
-        }
-        if (isNotEmptyString(embeddingService.getSnapshot().errorMessage)) {
-            promises.push(aiModelResidencyService.retry(AiSubsystemNameEnum.EMBEDDING));
-        }
-        if (isNotEmptyString(sttService.getSnapshot().errorMessage)) {
-            promises.push(aiModelResidencyService.retry(AiSubsystemNameEnum.STT));
-        }
-        await Promise.allSettled(promises);
-        if (translationDrainerService.getSnapshot().state === DrainerStateEnum.ERROR) {
-            translationDrainerService.retry();
-        }
-        if (embeddingDrainerService.getSnapshot().state === DrainerStateEnum.ERROR) {
-            embeddingDrainerService.retry();
-        }
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    // eslint-disable-next-line max-statements -- 7 rebuild steps with pause/resume bookends
-    async freshRebuild(): Promise<void> {
-        try {
-            await this.pauseDrainers();
-            try {
-                await this.truncateEmbeddings();
-                await this.resetTranslations();
-                await this.markTransactionsForRebuild();
-            } finally {
-                translationDrainerService.resume();
-                embeddingDrainerService.resume();
-            }
-            void translationProgressStore.refresh();
-            void embeddingProgressStore.refresh();
-            await translationDrainerService.boost();
-            await embeddingDrainerService.boost();
-        } catch (error: unknown) {
-            translationDrainerService.resume();
-            embeddingDrainerService.resume();
-            throw error;
-        }
     }
 
     protected buildSubscriptions(): (() => void)[] {
@@ -130,210 +47,68 @@ class AiSystemStatusService extends ScheduledSnapshotStore<AiSystemSnapshotInter
 
     protected recompute(): void {
         const next = this.derive();
-        if (this.snapshotEquals(next, this.snapshot)) {
+        if (next.state === this.snapshot.state && next.percent === this.snapshot.percent) {
             return;
-        }
-        if (next.state !== this.lastState) {
-            this.lastState = next.state;
         }
         this.setSnapshot(next);
     }
 
-    private async pauseDrainers(): Promise<void> {
-        await Promise.all([translationDrainerService.pause(), embeddingDrainerService.pause()]);
-    }
-
-    private async truncateEmbeddings(): Promise<void> {
-        await merchantEmbeddingRepository.truncate();
-        await commentEmbeddingRepository.truncate();
-    }
-
-    private async resetTranslations(): Promise<void> {
-        await categoryRepository.resetAllTranslations();
-        await tagRepository.resetAllTranslations();
-    }
-
-    private async markTransactionsForRebuild(): Promise<void> {
-        await transactionRepository.markAllForEmbedding();
-        await transactionRepository.clearNonIndexableFlags();
-    }
-
-    // eslint-disable-next-line max-statements, max-lines-per-function -- Priority-ordered derivation table across subsystem, coordinator and drainer states
+    // eslint-disable-next-line max-statements -- Priority-ordered derivation table across subsystem, coordinator and drainer states
     private derive(): AiSystemSnapshotInterface {
-        const translationPending = translationDrainerService.getSnapshot().pending;
-        const embeddingPending = embeddingDrainerService.getSnapshot().pending;
-
         if (!isAiEnabled()) {
-            return { ...AiSystemStatusService.EMPTY_SNAPSHOT, statusText: t`AI disabled` };
-        }
-
-        const subsystemError = this.firstSubsystemError();
-        const drainerError = this.firstDrainerError();
-        if (isDefined(subsystemError) || isDefined(drainerError)) {
-            const source = subsystemError?.source ?? drainerError?.source ?? 'unknown';
-            const message = (subsystemError?.message ?? drainerError?.message ?? '').slice(0, AiSystemStatusService.TRUNCATE_LEN);
-
-            return {
-                state: AiSystemStateEnum.ERROR,
-                percent: 0,
-                action: AiSystemActionEnum.RETRY,
-                statusText: t`${source} failed: ${message}`,
-                translationPending,
-                embeddingPending,
-                errorMessage: message
-            };
+            return AiSystemStatusService.EMPTY_SNAPSHOT;
         }
 
         const chat = chatService.getSnapshot();
         const embedding = embeddingService.getSnapshot();
         const stt = sttService.getSnapshot();
-        const bootText = this.describeBoot(chat.status, embedding.status, stt.status);
-        if (isNotEmptyString(bootText)) {
+        const translationDrainer = translationDrainerService.getSnapshot();
+        const embeddingDrainer = embeddingDrainerService.getSnapshot();
+
+        const hasSubsystemError = [chat, embedding, stt].some(subsystem => isNotEmptyString(subsystem.errorMessage));
+        const hasDrainerError = [translationDrainer, embeddingDrainer].some(
+            drainer => drainer.state === DrainerStateEnum.ERROR && isNotEmptyString(drainer.errorMessage)
+        );
+        if (hasSubsystemError || hasDrainerError) {
+            return { state: AiSystemStateEnum.ERROR, percent: 0 };
+        }
+
+        if (this.isBooting([chat.status, embedding.status, stt.status])) {
             return {
                 state: AiSystemStateEnum.BOOTING,
                 percent: Math.round(
                     (chat.downloadProgress + embedding.downloadProgress + stt.downloadProgress) / AiSystemStatusService.SUBSYSTEM_COUNT
-                ),
-                action: AiSystemActionEnum.NONE,
-                statusText: bootText,
-                translationPending,
-                embeddingPending,
-                errorMessage: null
+                )
             };
         }
 
         if (aiCoordinatorService.getSnapshot().isSuspended) {
+            return { state: AiSystemStateEnum.SUSPENDED, percent: 0 };
+        }
+
+        const translationProgress = translationProgressStore.getSnapshot();
+        const embeddingProgress = embeddingProgressStore.getSnapshot();
+        const translationBoosting = translationDrainer.state === DrainerStateEnum.BOOSTING;
+        if (translationBoosting || embeddingDrainer.state === DrainerStateEnum.BOOSTING) {
             return {
-                state: AiSystemStateEnum.SUSPENDED,
-                percent: 0,
-                action: AiSystemActionEnum.NONE,
-                statusText: t`Resuming AI…`,
-                translationPending,
-                embeddingPending,
-                errorMessage: null
+                state: AiSystemStateEnum.BOOSTING,
+                percent: translationBoosting ? translationProgress.percent : embeddingProgress.percent
             };
         }
 
-        const translationBoosting = translationDrainerService.getSnapshot().state === DrainerStateEnum.BOOSTING;
-        const embeddingBoosting = embeddingDrainerService.getSnapshot().state === DrainerStateEnum.BOOSTING;
-        if (translationBoosting || embeddingBoosting) {
-            return this.deriveBoosting(translationBoosting, translationPending, embeddingPending);
+        if (isPositiveNumber(translationDrainer.pending)) {
+            return { state: AiSystemStateEnum.TRANSLATING, percent: translationProgress.percent };
         }
 
-        if (isPositiveNumber(translationPending)) {
-            const { total } = translationProgressStore.getSnapshot();
-            const trailer = isPositiveNumber(embeddingPending) ? t` • ${embeddingPending} tx queued` : '';
-
-            return {
-                state: AiSystemStateEnum.TRANSLATING,
-                percent: translationProgressStore.getSnapshot().percent,
-                action: AiSystemActionEnum.BOOST,
-                statusText: t`Translating ${translationPending} of ${total}${trailer}`,
-                translationPending,
-                embeddingPending,
-                errorMessage: null
-            };
+        if (isPositiveNumber(embeddingDrainer.pending)) {
+            return { state: AiSystemStateEnum.INDEXING, percent: embeddingProgress.percent };
         }
 
-        if (isPositiveNumber(embeddingPending)) {
-            const embeddingSnap = embeddingProgressStore.getSnapshot();
-            const done = embeddingSnap.total - embeddingPending;
-            const { total } = embeddingSnap;
-
-            return {
-                state: AiSystemStateEnum.INDEXING,
-                percent: embeddingSnap.percent,
-                action: AiSystemActionEnum.BOOST,
-                statusText: t`Indexing ${done} of ${total}`,
-                translationPending,
-                embeddingPending,
-                errorMessage: null
-            };
-        }
-
-        return {
-            state: AiSystemStateEnum.READY,
-            percent: AiSystemStatusService.FULL_PERCENT,
-            action: AiSystemActionEnum.NONE,
-            statusText: t`All set`,
-            translationPending,
-            embeddingPending,
-            errorMessage: null
-        };
+        return { state: AiSystemStateEnum.READY, percent: AiSystemStatusService.FULL_PERCENT };
     }
 
-    private deriveBoosting(translationBoosting: boolean, translationPending: number, embeddingPending: number): AiSystemSnapshotInterface {
-        const translationSnap = translationProgressStore.getSnapshot();
-        const embeddingSnap = embeddingProgressStore.getSnapshot();
-        const percent = translationBoosting ? translationSnap.percent : embeddingSnap.percent;
-        const total = translationBoosting ? translationSnap.total : embeddingSnap.total;
-        const done = translationBoosting ? total - translationPending : total - embeddingPending;
-
-        return {
-            state: AiSystemStateEnum.BOOSTING,
-            percent,
-            action: AiSystemActionEnum.CANCEL,
-            statusText: t`Fast-indexing ${done} of ${total} • tap to pause`,
-            translationPending,
-            embeddingPending,
-            errorMessage: null
-        };
-    }
-
-    private describeBoot(chat: AiSubsystemStatusEnum, embedding: AiSubsystemStatusEnum, stt: AiSubsystemStatusEnum): string | null {
-        const statuses = [chat, embedding, stt] as const;
-        const booting = statuses.some(
-            status => status === AiSubsystemStatusEnum.DOWNLOADING || status === AiSubsystemStatusEnum.INITIALIZING
-        );
-        if (!booting) {
-            return null;
-        }
-        const downloading = statuses.some(status => status === AiSubsystemStatusEnum.DOWNLOADING);
-
-        return downloading ? t`Downloading models` : t`Loading models`;
-    }
-
-    /* oxlint-disable lingui/no-unlocalized-strings -- Diagnostic source labels embedded in error statusText (the message itself is native) */
-    private firstSubsystemError(): AiErrorSourceInterface | null {
-        const chatError = chatService.getSnapshot().errorMessage;
-        if (isNotEmptyString(chatError)) {
-            return { source: 'chat', message: chatError };
-        }
-        const embeddingError = embeddingService.getSnapshot().errorMessage;
-        if (isNotEmptyString(embeddingError)) {
-            return { source: 'embedding', message: embeddingError };
-        }
-        const sttError = sttService.getSnapshot().errorMessage;
-        if (isNotEmptyString(sttError)) {
-            return { source: 'stt', message: sttError };
-        }
-
-        return null;
-    }
-
-    private firstDrainerError(): AiErrorSourceInterface | null {
-        const translation = translationDrainerService.getSnapshot();
-        if (translation.state === DrainerStateEnum.ERROR && isNotEmptyString(translation.errorMessage)) {
-            return { source: 'translation drainer', message: translation.errorMessage };
-        }
-        const embedding = embeddingDrainerService.getSnapshot();
-        if (embedding.state === DrainerStateEnum.ERROR && isNotEmptyString(embedding.errorMessage)) {
-            return { source: 'embedding drainer', message: embedding.errorMessage };
-        }
-
-        return null;
-    }
-
-    private snapshotEquals(current: AiSystemSnapshotInterface, next: AiSystemSnapshotInterface): boolean {
-        return (
-            current.state === next.state &&
-            current.percent === next.percent &&
-            current.action === next.action &&
-            current.statusText === next.statusText &&
-            current.translationPending === next.translationPending &&
-            current.embeddingPending === next.embeddingPending &&
-            current.errorMessage === next.errorMessage
-        );
+    private isBooting(statuses: readonly AiSubsystemStatusEnum[]): boolean {
+        return statuses.some(status => status === AiSubsystemStatusEnum.DOWNLOADING || status === AiSubsystemStatusEnum.INITIALIZING);
     }
 }
 

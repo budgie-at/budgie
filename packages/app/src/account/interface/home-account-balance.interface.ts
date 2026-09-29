@@ -8,8 +8,6 @@ export interface HomeAccountBalanceInterface {
     readonly balance: number;
     readonly bankProvider: ExternalSourceEnum | null;
     readonly convertedBalance: number;
-    readonly convertedCreditAmount: number;
-    readonly convertedDebitAmount: number;
     readonly convertedDebtProgressSummary: DebtAccountProgressSummaryInterface;
     readonly convertedTargetBalance: number;
     readonly debtProgressSummary: DebtAccountProgressSummaryInterface;

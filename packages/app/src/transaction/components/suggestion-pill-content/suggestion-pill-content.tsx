@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconType } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -6,7 +6,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { Icon } from '../../../@generic/component/icon/icon';
 
 interface Props {
-    readonly icon: UserIconNameEnum;
+    readonly icon: UserIconType;
     readonly title: string;
     readonly badge?: string;
 }

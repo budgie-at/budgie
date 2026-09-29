@@ -1,5 +1,6 @@
 import {
     AccountTypeEnum,
+    DEFAULT_TRANSACTION_FILTER,
     ExternalSourceEnum,
     PRECISION,
     TransactionConsolidationTypeEnum,
@@ -10,20 +11,26 @@ import { describe, expect, it } from 'vitest';
 
 import { expectConsolidationParent, fetchLedgerBalances } from '../harness/consolidation-revert-audit';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
-import { testDb, testQueryService, testSeedService } from '../harness/test-context';
+import { statisticsRepository, testDb, testQueryService, testSeedService } from '../harness/test-context';
 
 const LEGACY_AMOUNT = 5943 * PRECISION;
 const SYNCED_AMOUNT = Math.round(5870.2 * PRECISION);
+const ATM_AMOUNT = Math.round(LEGACY_AMOUNT * 1.02);
 const LEGACY_EUR_AMOUNT = 616 * PRECISION;
 const OPERATED_AT = new Date('2025-10-21T10:00:00');
 
-const seedLegacyCsvTransfer = (sourceInstrumentId: number, sourceAmount: number, isTargetActive: boolean) => {
+const seedLegacyCsvTransfer = (
+    sourceInstrumentId: number,
+    sourceAmount: number,
+    isTargetActive: boolean,
+    targetType = AccountTypeEnum.BANK
+) => {
     const legacySourceAccount = testSeedService.account({
         title: 'monobank',
         type: AccountTypeEnum.BANK,
         instrumentId: sourceInstrumentId
     });
-    const legacyTargetAccount = testSeedService.account({ title: 'приватбанк UAH', type: AccountTypeEnum.BANK, isActive: isTargetActive });
+    const legacyTargetAccount = testSeedService.account({ title: 'приватбанк UAH', type: targetType, isActive: isTargetActive });
     const syncedCardAccount = testSeedService.bankSyncAccount('Monobank Black •3126', ExternalSourceEnum.MONOBANK, null);
     const legacyTransfer = testSeedService.directTransfer({
         exchangeRate: sourceAmount / LEGACY_AMOUNT,
@@ -52,6 +59,9 @@ const seedLegacyCsvTransfer = (sourceInstrumentId: number, sourceAmount: number,
     return { legacySourceAccount, legacyTargetAccount, legacyTransfer, syncedCardAccount };
 };
 
+const fetchTotalExpense = (): number =>
+    statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, 1).all().at(0)?.expense ?? 0;
+
 const seedSyncedExpense = (accountId: number, amount: number, title: string, mcc = '4829') => {
     const expense = testSeedService.bankPairExpense(
         { externalId: `synced-${title}`, operatedAt: new Date(OPERATED_AT.getTime() + 14_000) },
@@ -79,6 +89,26 @@ describe('consolidation/existing-transfer-csv-expense-duplicate', () => {
             [syncedCardAccount.id, -SYNCED_AMOUNT],
             [legacyTargetAccount.id, LEGACY_AMOUNT]
         ]);
+        await expectSecondConsolidationRunStable();
+    });
+
+    it('merges a historical ATM withdrawal into the legacy cash transfer it duplicates without moving money', async () => {
+        const {
+            legacyTargetAccount: cashAccount,
+            legacyTransfer,
+            syncedCardAccount
+        } = seedLegacyCsvTransfer(1, LEGACY_AMOUNT, true, AccountTypeEnum.CASH);
+        const atmExpense = seedSyncedExpense(syncedCardAccount.id, ATM_AMOUNT, 'Банкомат MONO', '6011');
+        const ledgerBalances = await fetchLedgerBalances([syncedCardAccount.id, cashAccount.id]);
+        const totalExpense = fetchTotalExpense();
+
+        expect(await runConsolidation()).toEqual({ consolidated: 1, found: 1 });
+        const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+        expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+        expectConsolidationParent(legacyTransfer.id, canonical.id);
+        expectConsolidationParent(atmExpense.id, canonical.id);
+        expect(await fetchLedgerBalances([syncedCardAccount.id, cashAccount.id])).toEqual(ledgerBalances);
+        expect(totalExpense - fetchTotalExpense()).toBe(ATM_AMOUNT);
         await expectSecondConsolidationRunStable();
     });
 

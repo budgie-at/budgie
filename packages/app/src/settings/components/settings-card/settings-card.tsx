@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconType } from '@budgie/contracts';
 import { ComponentProps } from 'react';
 import { ActivityIndicator } from 'react-native';
 
@@ -9,7 +9,7 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 
 interface Props extends ComponentProps<typeof SimpleHorizontalCell> {
-    readonly icon?: UserIconNameEnum;
+    readonly icon?: UserIconType;
     readonly variant?: ColorPaletteVariant;
     readonly isLoading?: boolean;
 }

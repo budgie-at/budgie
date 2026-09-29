@@ -9,13 +9,12 @@ import {
     InstrumentEntityInterface,
     LiabilityAccountCreateInputInterface,
     MccCategoryLookupInterface,
-    TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import { Log } from '@budgie/logger';
 import { isValid } from 'date-fns/isValid';
 import { parse } from 'date-fns/parse';
 import Papa, { ParseStepResult } from 'papaparse';
@@ -24,6 +23,7 @@ import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '
 
 import { instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
+import { DEFAULT_CATEGORY_ICON } from '../../category/constant/default-category-icon.constant';
 import { categoryService } from '../../category/service/category.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { loadMccCategoryLookupMap } from '../../sync/util/load-mcc-category-lookup-map.util';
@@ -35,8 +35,7 @@ import type { ImportProgressInterface } from '../interface/import-progress.inter
 import type { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
 import type { ImporterRowInterface } from '../interface/importer-row.interface';
 import type { NormalizedRowType } from '../type/normalized-row.type';
-
-const logger = getLogger('ImporterService');
+import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 export class ImporterService {
     private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
@@ -46,6 +45,12 @@ export class ImporterService {
 
     constructor(private readonly columnMap: ImporterColumnMapInterface) {}
 
+    @Log(
+        (csvText, totalRows) => `enter csvLength=${csvText.length} totalRows=${totalRows}`,
+        (result, csvText, totalRows) =>
+            `done csvLength=${csvText.length} totalRows=${totalRows} processed=${result.processed} successful=${result.successful} errors=${result.errors}`,
+        (error, csvText, totalRows) => `throw csvLength=${csvText.length} totalRows=${totalRows} error=${getErrorMessage(error)}`
+    )
     async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
@@ -96,7 +101,7 @@ export class ImporterService {
             }
 
             if (isNotEmptyString(normalizedRow.category)) {
-                categoryInputs.set(normalizedRow.category, { title: normalizedRow.category, icon: UserIconNameEnum.Home });
+                categoryInputs.set(normalizedRow.category, { title: normalizedRow.category, icon: DEFAULT_CATEGORY_ICON });
             }
         });
 
@@ -118,15 +123,13 @@ export class ImporterService {
     private async processTransactions(csvText: string, progress: ImportProgressInterface): Promise<TransactionCreateInputInterface[]> {
         const transactions: TransactionCreateInputInterface[] = [];
 
-        await this.processRows(csvText, (normalizedRow, row) => {
+        await this.processRows(csvText, normalizedRow => {
             progress.processed += 1;
             try {
-                const transaction = this.createTransaction(normalizedRow);
-                transactions.push(transaction);
+                transactions.push(this.createTransaction(normalizedRow));
                 progress.successful += 1;
-            } catch (error) {
+            } catch {
                 progress.errors += 1;
-                logger.error('row:process-error', { errorMessage: getErrorMessage(error), rowColumns: Object.keys(row).join(',') });
             }
         });
 
@@ -211,22 +214,10 @@ export class ImporterService {
     }: CreateEntriesParamsInterface): TransactionEntryCreateInputInterface[] {
         const entryExternalId = externalId ?? null;
 
-        if (type === TransactionTypeEnum.INCOME) {
+        if (type === TransactionTypeEnum.INCOME || type === TransactionTypeEnum.EXPENSE) {
             return [
                 {
-                    type: TransactionEntryTypeEnum.DEBIT,
-                    amount: Math.abs(source.amount),
-                    accountId: source.account.id,
-                    categoryId,
-                    categorySource,
-                    mccCategoryId,
-                    externalId: entryExternalId
-                }
-            ];
-        } else if (type === TransactionTypeEnum.EXPENSE) {
-            return [
-                {
-                    type: TransactionEntryTypeEnum.CREDIT,
+                    type: type === TransactionTypeEnum.INCOME ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId,

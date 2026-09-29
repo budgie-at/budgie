@@ -4,8 +4,7 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-
-import { useConvertToRefundMutation } from './use-convert-to-refund.mutation';
+import { transactionRefundService } from '../service/transaction-refund.service';
 
 import type { ConvertToRefundModalResolveType } from '../interface/convert-to-refund-modal-resolve.type';
 import type { TransactionPickerItemInterface } from '../interface/transaction-picker-item.interface';
@@ -16,7 +15,6 @@ export const useConvertToRefundAction = (
     resolveConvertToRefund: ConvertToRefundModalResolveType
 ) => {
     const { t } = useLingui();
-    const convertToRefund = useConvertToRefundMutation();
 
     return async () => {
         if (!isDefined(selectedCandidate)) {
@@ -36,7 +34,7 @@ export const useConvertToRefundAction = (
         }
 
         try {
-            const canonicalId = await convertToRefund({
+            const canonicalId = await transactionRefundService.convertToRefund({
                 refundIncomeTransactionId,
                 expenseTransactionId: selectedCandidate.id
             });

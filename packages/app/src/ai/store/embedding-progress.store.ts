@@ -45,16 +45,14 @@ const runRefresh = async (): Promise<void> => {
 };
 
 export const embeddingProgressStore = {
-    subscribe(listener: () => void): () => void {
+    subscribe: (listener: () => void): (() => void) => {
         listeners.add(listener);
 
         return () => {
             listeners.delete(listener);
         };
     },
-    getSnapshot(): EmbeddingProgressSnapshotInterface {
-        return snapshot;
-    },
+    getSnapshot: (): EmbeddingProgressSnapshotInterface => snapshot,
     async refresh(force = false): Promise<void> {
         if (isDefined(pendingRefresh)) {
             await pendingRefresh;

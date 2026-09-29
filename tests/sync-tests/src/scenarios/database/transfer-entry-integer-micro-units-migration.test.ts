@@ -34,7 +34,7 @@ describe('debt/transfer-entry-integer-micro-units-migration', () => {
             VALUES (${SEEDED_AT}, ${SEEDED_AT}, 'CREDIT', ${account.id}, last_insert_rowid(), 33333333.4);
 
             INSERT INTO account_balances (created_at, updated_at, account_id, amount)
-            VALUES (${SEEDED_AT}, ${SEEDED_AT}, ${account.id}, 33333333.4);
+            VALUES (${SEEDED_AT}, ${SEEDED_AT}, ${account.id}, -33333333.4);
         `);
 
         await applyMigration(MIGRATION_FILE_NAME);
@@ -43,7 +43,7 @@ describe('debt/transfer-entry-integer-micro-units-migration', () => {
 
         expect(firstRun.fractionalCount).toBe(0);
         expect(firstRun.entries.map(({ amount }) => amount)).toEqual([33_333_333]);
-        expect(firstRun.balance).toMatchObject({ amount: 33_333_333, type: 'integer' });
+        expect(firstRun.balance).toMatchObject({ amount: -33_333_333, type: 'integer' });
         expect(await fetchSnapshot(account.id)).toEqual(firstRun);
     });
 });

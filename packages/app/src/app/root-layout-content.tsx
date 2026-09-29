@@ -45,16 +45,14 @@ import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
-import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
-import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { historicalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
 import { SettingsProvider } from '../settings/provider/settings.provider';
-import { binanceSyncService } from '../sync/service/binance-sync.service';
+import { appDataSyncService } from '../sync/service/app-data-sync.service';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../sync/service/sync-workload.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
@@ -68,20 +66,10 @@ const drizzleStudioEnvironmentVariable = 'EXPO_PUBLIC_DRIZZLE_STUDIO_ENABLE';
 const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVariable] === 'true';
 
 const syncForegroundData = async (): Promise<void> => {
-    await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
-
-    await exchangeRatesSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
-        return;
+    const isCompleted = await appDataSyncService.sync();
+    if (isCompleted) {
+        void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
     }
-
-    await monobankSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
-        return;
-    }
-
-    await binanceSyncService.sync().catch(emptyFn);
-    void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
 };
 
 const handleAppStateChange = (isActive: boolean): void => {

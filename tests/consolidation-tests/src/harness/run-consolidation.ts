@@ -1,6 +1,6 @@
 import { expect } from 'vitest';
 
-import { consolidationAutoCandidateService } from './test-context';
+import { consolidationCoordinatorService } from './test-context';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
@@ -10,7 +10,7 @@ export const runConsolidation = async (
     readonly consolidated: number;
     readonly found: number;
 }> => {
-    const result = await consolidationAutoCandidateService.process(scope);
+    const result = await consolidationCoordinatorService.consolidate(scope);
 
     return result;
 };

@@ -6,7 +6,6 @@ import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
-import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 
 import { syncWorkloadService } from './sync-workload.service';
 import { transferConsolidationService } from './transfer-consolidation.service';
@@ -17,14 +16,6 @@ class TransferConsolidationDrainerService {
     private static readonly FOREGROUND_BUSY_RESCHEDULE_MS = 1000;
     private static readonly DEFAULT_DRAIN_DELAY_MS = TransferConsolidationDrainerService.FOREGROUND_BUSY_RESCHEDULE_MS + 500;
 
-    private static readonly DRAIN_DELAY_MS_BY_REASON: Record<TransferConsolidationDrainReasonEnum, number> = {
-        [TransferConsolidationDrainReasonEnum.MONOBANK_SYNC]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS,
-        [TransferConsolidationDrainReasonEnum.BINANCE_SYNC]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS,
-        [TransferConsolidationDrainReasonEnum.FILE_IMPORT]: TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS
-    };
-
-    private static readonly FOLLOW_UP_DRAIN_DELAY_MS = TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS;
-
     private hasPendingRun = false;
     private pendingScope: ConsolidationScanScopeInterface | null = null;
     private isRunning = false;
@@ -33,14 +24,14 @@ class TransferConsolidationDrainerService {
     private cancelIdleCallback: (() => void) | null = null;
 
     @Log(
-        (reason, scope) =>
-            `enter reason=${reason} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (_result, reason, scope) =>
-            `done reason=${reason} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (error, reason, scope) =>
-            `throw reason=${reason} scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
+        scope =>
+            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (_result, scope) =>
+            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
+        (error, scope) =>
+            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
     )
-    enqueue(reason: TransferConsolidationDrainReasonEnum, scope: ConsolidationScanScopeInterface | null = null): void {
+    enqueue(scope: ConsolidationScanScopeInterface | null = null): void {
         this.addPendingScope(scope);
         this.hasPendingRun = true;
 
@@ -48,7 +39,7 @@ class TransferConsolidationDrainerService {
             return;
         }
 
-        const incomingFiresAt = Date.now() + TransferConsolidationDrainerService.DRAIN_DELAY_MS_BY_REASON[reason];
+        const incomingFiresAt = Date.now() + TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS;
 
         if (isDefined(this.cancelIdleCallback)) {
             return;
@@ -58,7 +49,7 @@ class TransferConsolidationDrainerService {
             return;
         }
 
-        this.scheduleAfter(TransferConsolidationDrainerService.DRAIN_DELAY_MS_BY_REASON[reason]);
+        this.scheduleAfter(TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS);
     }
 
     @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
@@ -128,7 +119,7 @@ class TransferConsolidationDrainerService {
             return;
         }
 
-        this.scheduleAfter(TransferConsolidationDrainerService.FOLLOW_UP_DRAIN_DELAY_MS);
+        this.scheduleAfter(TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS);
     }
 
     private scheduleAfter(delay: number): void {

@@ -12,7 +12,6 @@ import { accountBalanceIncrementalService } from '../../account/service/account-
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { transactionImportService } from '../../transaction/service/transaction-import.service';
 import { transactionService } from '../../transaction/service/transaction.service';
-import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { FileBankSyncAccountImportResultInterface } from '../interface/file-bank-sync-account-import-result.interface';
 import { FileBankSyncImportResultInterface } from '../interface/file-bank-sync-import-result.interface';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
@@ -154,7 +153,7 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
             const newlyImportedTransactions = accountImportResults.flatMap(result => result.newTransactions);
             const scope = consolidationScopeService.buildFromTransactions(newlyImportedTransactions);
             if (isDefined(scope)) {
-                transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, scope);
+                transferConsolidationDrainerService.enqueue(scope);
             }
 
             return this.buildImportResult(bankAccounts.length, accountImportResults);

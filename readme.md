@@ -80,7 +80,7 @@
 - *8Market Data**: On-demand price fetch & local cache for stocks/crypto; offline last-known prices
 - **AI**: On-device first (small LLM) with optional cloud inference; RAG over local data
 - **Observability**: Sentry (crash/perf), opt-in analytics (redacted events)
-- **Testing**: Vitest/Jest, React Native Testing Library, Maestro (E2E)
+- **Testing**: Vitest, React Native Testing Library, Maestro (E2E)
 - **CI/CD**: GitHub Actions → EAS build & submit; Maestro for E2E
 
 ---

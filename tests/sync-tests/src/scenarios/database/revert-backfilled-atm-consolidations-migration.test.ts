@@ -1,5 +1,6 @@
 import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
 import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
+import { categorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
@@ -16,7 +17,7 @@ import {
 } from '../../harness';
 
 const AMOUNT = 408_000_000;
-const OPERATED_AT = new Date(2025, 5, 1, 12, 0, 0);
+const OPERATED_AT = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
 describe('database/revert-backfilled-atm-consolidations-migration', () => {
     it('undoes cash transfers built from ATM rows imported before the MCC seed and keeps bank-coded ATM transfers', async () => {
@@ -38,7 +39,7 @@ describe('database/revert-backfilled-atm-consolidations-migration', () => {
         );
 
         await applyMigration('0065_backfill_monobank_atm_mcc.sql');
-        await transferConsolidationService.consolidate();
+        await categorizeInboxService.moveToCash([historicalAtm.id, bankCodedAtm.id]);
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(2);
 
         await applyMigration('0067_revert_backfilled_atm_consolidations.sql');

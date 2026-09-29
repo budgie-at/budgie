@@ -7,9 +7,10 @@ import { db } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { ERSTE_DUPLICATE_CANDIDATE_SQL } from '../constant/erste-duplicate-candidate-sql.constant';
+import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '../constant/privatbank-duplicate-candidate-sql.constant';
 
 import { consolidationCoordinatorService } from './consolidation-coordinator.service';
-import { ersteDuplicateRepairSourceService, privatbankDuplicateRepairSourceService } from './sync-duplicate-repair-source.service';
 import { syncDuplicateSoftDeleteService } from './sync-duplicate-soft-delete.service';
 import { unpairedOwnCardTransferRepairService } from './unpaired-own-card-transfer-repair.service';
 
@@ -17,14 +18,13 @@ import type { SyncDuplicateCandidateRowInterface } from '../interface/sync-dupli
 import type { SyncDuplicateRepairPreviewInterface } from '../interface/sync-duplicate-repair-preview.interface';
 import type { SyncDuplicateRepairResultInterface } from '../interface/sync-duplicate-repair-result.interface';
 import type { SyncDuplicateRepairSourcePreviewInterface } from '../interface/sync-duplicate-repair-source-preview.interface';
-import type { SyncDuplicateRepairSourceStrategyInterface } from '../interface/sync-duplicate-repair-source-strategy.interface';
 import type { DB } from '@budgie/contracts';
 
 class SyncRepairService {
-    private static readonly SOURCE_STRATEGIES: readonly SyncDuplicateRepairSourceStrategyInterface[] = [
-        privatbankDuplicateRepairSourceService,
-        ersteDuplicateRepairSourceService
-    ];
+    private static readonly SOURCES = [
+        { externalSource: ExternalSourceEnum.PRIVATBANK, candidateSql: PRIVATBANK_DUPLICATE_CANDIDATE_SQL },
+        { externalSource: ExternalSourceEnum.ERSTE, candidateSql: ERSTE_DUPLICATE_CANDIDATE_SQL }
+    ] as const;
 
     private activeOperation: Promise<unknown> | null = null;
 
@@ -55,7 +55,9 @@ class SyncRepairService {
     )
     private async findDuplicateCandidates(database: DB): Promise<SyncDuplicateCandidateRowInterface[]> {
         const candidateGroups = await Promise.all(
-            SyncRepairService.SOURCE_STRATEGIES.map(strategy => strategy.findDuplicateCandidates(database))
+            SyncRepairService.SOURCES.map(({ candidateSql }) =>
+                database.$client.getAllAsync<SyncDuplicateCandidateRowInterface>(candidateSql)
+            )
         );
 
         return candidateGroups.flat();
@@ -99,28 +101,20 @@ class SyncRepairService {
     private async buildPreview(): Promise<SyncDuplicateRepairPreviewInterface> {
         const candidates = await this.findDuplicateCandidates(db);
         const consolidationRepairCount =
-            (await this.countConsolidationRepairCandidates()) +
-            (await this.countBridgeClaimRepairCandidates()) +
+            (await consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates()) +
+            (await consolidationCoordinatorService.countBridgeClaimRepairCandidates()) +
             (await unpairedOwnCardTransferRepairService.countCandidates());
 
         return this.buildPreviewFromCandidates(candidates, consolidationRepairCount);
-    }
-
-    private async countConsolidationRepairCandidates(): Promise<number> {
-        return consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates();
-    }
-
-    private async countBridgeClaimRepairCandidates(): Promise<number> {
-        return consolidationCoordinatorService.countBridgeClaimRepairCandidates();
     }
 
     private buildPreviewFromCandidates(
         candidates: readonly SyncDuplicateCandidateRowInterface[],
         consolidationRepairCount = 0
     ): SyncDuplicateRepairPreviewInterface {
-        const duplicateSources = SyncRepairService.SOURCE_STRATEGIES.map(source => this.buildSourcePreview(source, candidates)).filter(
-            source => isPositiveNumber(source.duplicateTransactionCount)
-        );
+        const duplicateSources = SyncRepairService.SOURCES.map(({ externalSource }) =>
+            this.buildSourcePreview(externalSource, candidates)
+        ).filter(source => isPositiveNumber(source.duplicateTransactionCount));
         const sources = this.addConsolidationRepairPreview(duplicateSources, consolidationRepairCount);
         const duplicateTransactionCount = sources.reduce((total, source) => total + source.duplicateTransactionCount, 0);
 
@@ -160,14 +154,14 @@ class SyncRepairService {
     }
 
     private buildSourcePreview(
-        source: SyncDuplicateRepairSourceStrategyInterface,
+        externalSource: ExternalSourceEnum,
         candidates: readonly SyncDuplicateCandidateRowInterface[]
     ): SyncDuplicateRepairSourcePreviewInterface {
-        const sourceCandidates = candidates.filter(candidate => candidate.externalSource === source.externalSource);
+        const sourceCandidates = candidates.filter(candidate => candidate.externalSource === externalSource);
 
         return {
             duplicateTransactionCount: sourceCandidates.length,
-            externalSource: source.externalSource
+            externalSource
         };
     }
 

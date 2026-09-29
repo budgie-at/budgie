@@ -1,5 +1,4 @@
-import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
-
+import type { UserIconType } from '../../@generic/type/user-icon.type';
 import type { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 export interface RefundableExpenseCandidateInterface {
@@ -14,6 +13,6 @@ export interface RefundableExpenseCandidateInterface {
     readonly currencySymbol: string;
     readonly categoryTitle: string | null;
     readonly categoryTitleEn: string | null;
-    readonly categoryIcon: UserIconNameEnum | null;
+    readonly categoryIcon: UserIconType | null;
     readonly isRecommended: boolean;
 }

@@ -4,10 +4,11 @@ import { useDeferredValue, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
+import { accountRepository } from '../../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../../@generic/hook/use-database-live-query.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ArchivedAccountCard } from '../../../account/component/archived-account-card/archived-account-card';
 import { ArchivedAccountsEmptyState } from '../../../account/component/archived-accounts-empty-state/archived-accounts-empty-state';
-import { useGetArchivedAccountsQuery } from '../../../account/query/use-get-archived-accounts.query';
 import { accountService } from '../../../account/service/account.service';
 import { filterAccountsBySearchQuery } from '../../../account/utils/filter-accounts-by-search-query.util';
 
@@ -20,8 +21,8 @@ export default function Archived() {
     const [search, setSearch] = useState('');
     const deferredSearch = useDeferredValue(search);
 
-    const { accounts } = useGetArchivedAccountsQuery();
-    const filteredAccounts = filterAccountsBySearchQuery(accounts, deferredSearch);
+    const { data } = useDatabaseLiveQuery(accountRepository.getAllArchived());
+    const filteredAccounts = filterAccountsBySearchQuery(data, deferredSearch);
 
     const renderCard = (account: AccountWithInstrumentEntityInterface) => <ArchivedAccountCard account={account} />;
     const getDeleteConfirmation = (account: AccountWithInstrumentEntityInterface) => {

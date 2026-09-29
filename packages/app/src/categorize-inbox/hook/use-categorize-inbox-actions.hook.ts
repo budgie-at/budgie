@@ -1,13 +1,15 @@
 import { useLingui } from '@lingui/react/macro';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
-import { emptyFn, getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
-import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
 import { categorizeInboxService } from '../service/categorize-inbox.service';
+
+import { useCategorizeInboxMoveToCash } from './use-categorize-inbox-move-to-cash.hook';
+import { useCategorizeInboxWriteQueue } from './use-categorize-inbox-write-queue.hook';
 
 import type { CategorizeInboxActionsInterface } from '../interface/categorize-inbox-actions.interface';
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
@@ -25,15 +27,9 @@ export const useCategorizeInboxActions = (
     const { t } = useLingui();
     const [hapticNotification] = useVibration();
     const [lastWrite, setLastWrite] = useState<CategorizeInboxLastWriteInterface | null>(null);
-    const writeQueueRef = useRef(Promise.resolve());
+    const enqueueWrite = useCategorizeInboxWriteQueue();
 
-    const enqueueWrite = (write: () => Promise<void>, rollback: () => void, failedMessage: string): void => {
-        writeQueueRef.current = writeQueueRef.current.then(write).catch((error: unknown) => {
-            rollback();
-            hapticNotification(NotificationFeedbackType.Error);
-            showErrorToast(failedMessage, getErrorMessage(error));
-        });
-    };
+    const moveToCashActions = useCategorizeInboxMoveToCash(visibility, enqueueWrite, setLastWrite);
 
     const assign = (assignments: CategorizeInboxAssignmentInterface[]): void => {
         visibility.hideTransactions(toTransactionIds(assignments));
@@ -42,6 +38,7 @@ export const useCategorizeInboxActions = (
                 const applied = await categorizeInboxService.assign(strategy.labelKind, assignments);
 
                 if (isNotEmptyArray(applied)) {
+                    moveToCashActions.resetMovedToCash();
                     setLastWrite({ assignments: applied, followUpAssignments: [] });
                     hapticNotification(NotificationFeedbackType.Success);
                 }
@@ -100,6 +97,8 @@ export const useCategorizeInboxActions = (
         lastWrite,
         undo,
         applyFollowUp,
+        movedToCashTransactionIds: moveToCashActions.movedToCashTransactionIds,
+        undoMoveToCash: moveToCashActions.undoMoveToCash,
         contextValue: {
             strategy,
             ...visibility,
@@ -107,7 +106,8 @@ export const useCategorizeInboxActions = (
             assignCluster: (cluster, labelId) => void assignLabels({ ...cluster, rows: visibility.includedRows(cluster) }, [labelId]),
             pickClusterLabels: cluster => pickLabels({ ...cluster, rows: visibility.includedRows(cluster) }, cluster.candidateLabelIds),
             pickRowLabels: row =>
-                pickLabels({ key: String(row.transactionId), displayTitle: row.title, rows: [row], ruleConditionValue: '' }, [])
+                pickLabels({ key: String(row.transactionId), displayTitle: row.title, rows: [row], ruleConditionValue: '' }, []),
+            moveToCash: moveToCashActions.moveToCash
         }
     };
 };

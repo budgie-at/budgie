@@ -15,12 +15,12 @@ import type { SyncProviderClientInterface } from '../interface/sync-provider-cli
 import type { SyncResultInterface } from '../interface/sync-result.type';
 import type { SyncTransactionInterface } from '../interface/sync-transaction.interface';
 
-const HTTP_STATUS_BAD_REQUEST = 400;
+export const HTTP_STATUS_BAD_REQUEST = 400;
 
-const HTTP_STATUS_UNAUTHORIZED = 401;
+export const HTTP_STATUS_UNAUTHORIZED = 401;
 const HTTP_STATUS_FORBIDDEN = 403;
 const HTTP_STATUS_REQUEST_TIMEOUT = 408;
-const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
+export const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
 const HTTP_STATUS_INTERNAL_SERVER_ERROR = 500;
 const HTTP_STATUS_BAD_GATEWAY = 502;
 const HTTP_STATUS_SERVICE_UNAVAILABLE = 503;
@@ -36,7 +36,7 @@ export const DEFAULT_RETRY_STATUS_CODES = [
 
 const DEFAULT_RETRY_METHODS = ['get'];
 const DEFAULT_RETRY_LIMIT = 3;
-const DEFAULT_TIMEOUT_MS = 30000;
+export const DEFAULT_TIMEOUT_MS = 30000;
 
 const SyncProviderApiErrorSchema = z.object({
     code: z.union([z.string(), z.number()]).optional(),
