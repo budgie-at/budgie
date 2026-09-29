@@ -3,6 +3,96 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.10](https://github.com/budgie-at/budgie/compare/v6.85.9...v6.85.10) (2026-09-29)
+
+
+### Performance Improvements
+
+* **app:** keep settings and theme context values stable across writes ([c4955e7](https://github.com/budgie-at/budgie/commit/c4955e7ee0a8ea2260a444179486b073adda757e))
+* **app:** resolve entry valuation once per import batch ([c757001](https://github.com/budgie-at/budgie/commit/c757001a03b57b630d5ad178b2c2de75540f7bd0))
+* **app:** trim the categorize-inbox row query to its rendered columns ([36e608b](https://github.com/budgie-at/budgie/commit/36e608b47a4f4d08bd4f69490f7c0e9095e222a3)), closes [#1258](https://github.com/budgie-at/budgie/issues/1258) [#1241](https://github.com/budgie-at/budgie/issues/1241) [#1258](https://github.com/budgie-at/budgie/issues/1258)
+
+
+
+
+
+## [6.85.9](https://github.com/budgie-at/budgie/compare/v6.85.8...v6.85.9) (2026-09-28)
+
+
+### Performance Improvements
+
+* **consolidation:** materialize refund detector entry CTEs ([b3067ff](https://github.com/budgie-at/budgie/commit/b3067ff707bdd6166c4e83c23ea00c9a5b0379dd))
+
+
+
+
+
+## [6.85.8](https://github.com/budgie-at/budgie/compare/v6.85.7...v6.85.8) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** stop remounting the home budget widget on every focus ([d103358](https://github.com/budgie-at/budgie/commit/d103358979d3b54226831160e698e0b7db7c52ba)), closes [#426](https://github.com/budgie-at/budgie/issues/426)
+
+
+
+
+
+## [6.85.7](https://github.com/budgie-at/budgie/compare/v6.85.6...v6.85.7) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** restore MCC and fee entries when resyncing existing Monobank rows ([92d979e](https://github.com/budgie-at/budgie/commit/92d979e50bc8189e821cc1849eecf0ea534c2c8a))
+
+
+
+
+
+## [6.85.6](https://github.com/budgie-at/budgie/compare/v6.85.5...v6.85.6) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** exclude adjustment transactions from SQL rule matching ([6f862a0](https://github.com/budgie-at/budgie/commit/6f862a0c4462f3b8d85ba22a96bbfe3f9e30a755))
+
+
+
+
+
+## [6.85.5](https://github.com/budgie-at/budgie/compare/v6.85.4...v6.85.5) (2026-09-28)
+
+
+### Performance Improvements
+
+* **app:** cache recurring series detection across renders ([98e66ae](https://github.com/budgie-at/budgie/commit/98e66ae89480b3ec1139d4150c1ea0a4e1bba207))
+
+
+
+
+
+## [6.85.4](https://github.com/budgie-at/budgie/compare/v6.85.3...v6.85.4) (2026-09-28)
+
+
+### Bug Fixes
+
+* **sync:** mark Erste ATM withdrawals with the ATM MCC at import ([dbb3aff](https://github.com/budgie-at/budgie/commit/dbb3aff91cf0647f876e84211e405d31db209e0e))
+
+
+
+
+
+## [6.85.3](https://github.com/budgie-at/budgie/compare/v6.85.2...v6.85.3) (2026-09-28)
+
+
+### Bug Fixes
+
+* **app:** stop categorizing transfer legs and fix debt leg categories ([0d48f2e](https://github.com/budgie-at/budgie/commit/0d48f2e8c63296e8f98984467960b2b7023b7213)), closes [#1244](https://github.com/budgie-at/budgie/issues/1244)
+
+
+
+
+
 ## [6.85.2](https://github.com/budgie-at/budgie/compare/v6.85.1...v6.85.2) (2026-09-28)
 
 

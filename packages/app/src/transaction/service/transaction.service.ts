@@ -384,12 +384,7 @@ class TransactionService {
         toAmountInMicroUnits: number,
         tx: DB
     ): Promise<void> {
-        const additionalEntryValuations = await entryBaseValuationService.valueEntries(
-            input.entries,
-            input.operatedAt,
-            input.externalSource,
-            tx
-        );
+        const additionalEntryValuations = await entryBaseValuationService.valueEntries(input.entries, input.operatedAt, tx);
         const [fromValuation, toValuation] = await Promise.all([
             this.valueTransferLeg(fromEntry.accountId, fromAmountInMicroUnits, input, tx),
             this.valueTransferLeg(toEntry.accountId, toAmountInMicroUnits, input, tx)
@@ -548,12 +543,7 @@ class TransactionService {
         },
         tx: DB
     ): Promise<TransactionEntryEntityInterface[]> {
-        const additionalEntryValuations = await entryBaseValuationService.valueEntries(
-            input.entries,
-            input.operatedAt,
-            input.externalSource,
-            tx
-        );
+        const additionalEntryValuations = await entryBaseValuationService.valueEntries(input.entries, input.operatedAt, tx);
         const [fromValuation, toValuation] = await Promise.all([
             entryBaseValuationService.valueMicroUnitEntry({
                 accountId: primaryEntryInput.fromEntry.accountId,
