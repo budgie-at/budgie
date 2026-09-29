@@ -1,21 +1,18 @@
 import {
     AccountEntityTable,
+    BaseTransactionFilterRepository,
     BudgetEntityTable,
     ExchangeRateEntityTable,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum,
     buildSpendingEntryCondition
 } from '@budgie/contracts';
 import { and, between, desc, eq, isNull, sql } from 'drizzle-orm';
 
 import type { BudgetCreateEntityInterface, BudgetEntityInterface, BudgetUpdateEntityInterface, DB } from '@budgie/contracts';
 
-export class BudgetRepository {
-    constructor(private db: DB) {}
-
+export class BudgetRepository extends BaseTransactionFilterRepository {
     async create(input: BudgetCreateEntityInterface, tx?: DB): Promise<BudgetEntityInterface> {
         const [budget] = await (tx ?? this.db).insert(BudgetEntityTable).values([input]).returning();
 
@@ -93,10 +90,10 @@ export class BudgetRepository {
 
     private buildSpentWhere(periodStart: Date, nextPeriodStart: Date) {
         return and(
-            eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
-            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
-            isNull(TransactionEntityTable.deletedAt),
-            isNull(TransactionEntryEntityTable.deletedAt),
+            this.buildVisibleTransactionCondition(),
+            this.buildPrimaryLedgerEntryCondition(),
+            this.buildNonDebtAccountCondition(),
+            this.buildExpenseAnalyticsEntryCondition(),
             buildSpendingEntryCondition(),
             between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
         );

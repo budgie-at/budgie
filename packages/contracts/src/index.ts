@@ -20,6 +20,7 @@ export type { SimilarTagsParamsInterface } from './@generic/interface/similar-ta
 export type { TagScoreResultInterface } from './@generic/interface/tag-score-result.interface';
 
 export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.repository';
+export { BaseTransactionFilterRepository } from './@generic/repository/base-transaction-filter.repository';
 
 export type { DB, TX } from './@generic/type/db.type';
 
