@@ -282,7 +282,7 @@ class WidgetSnapshotService {
     }
 
     private async buildBudget(context: WidgetSnapshotContextInterface): Promise<readonly WidgetBudgetTimelineEntryInterface[] | null> {
-        const budget = await budgetRepository.getActive();
+        const budget = await budgetRepository.findActive();
 
         if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId) || !isPositiveNumber(budget.overallLimit)) {
             return null;
