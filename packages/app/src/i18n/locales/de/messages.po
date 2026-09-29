@@ -1525,7 +1525,7 @@ msgstr "Schuldenkonto darf nicht dem Transaktionskonto entsprechen"
 msgid "Debt account not found"
 msgstr "Schuldenkonto nicht gefunden"
 
-#: src/transaction/utils/assert-transfer-accounts-are-not-debt.util.ts
+#: src/transaction/error/debt-transfer-not-allowed.error.ts
 msgid "Debt accounts cannot take part in transfers"
 msgstr "Schuldenkonten können nicht an Überweisungen teilnehmen"
 
@@ -1590,7 +1590,7 @@ msgid "transaction.depositExpenseDisallowed"
 msgstr "Festgeldkonten können keine Ausgaben finanzieren"
 
 #. js-lingui-explicit-id
-#: src/account/service/account-balance-incremental.service.ts
+#: src/account/error/deposit-negative-balance.error.ts
 msgid "account.depositNegativeBalanceDisallowed"
 msgstr "Der Festgeldsaldo darf nicht negativ werden"
 
