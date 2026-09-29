@@ -1,14 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { useSyncExternalStore } from 'react';
 
-import { useAiEmbeddingStatus } from '../../hook/use-ai-embedding-status.hook';
 import { aiEmbeddingStatusService } from '../../service/ai-embedding-status.service';
 import { AiSubsystemCard } from '../ai-subsystem-card/ai-subsystem-card';
 
 const handleRebuild = () => aiEmbeddingStatusService.rebuild();
 
 export const AiEmbeddingStatusCard = () => {
-    const snapshot = useAiEmbeddingStatus();
+    const snapshot = useSyncExternalStore(aiEmbeddingStatusService.subscribe, aiEmbeddingStatusService.getSnapshot);
     const { t } = useLingui();
 
     return (

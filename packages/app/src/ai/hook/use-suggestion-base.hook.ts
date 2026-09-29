@@ -1,15 +1,14 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
 import { getLogger } from '@budgie/logger';
 import { useNavigation } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 
 import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-completeness-threshold.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { aiModelResidencyService } from '../service/ai-model-residency.service';
-
-import { useEmbeddingProgressSnapshot } from './use-embedding-progress-snapshot.hook';
+import { embeddingProgressStore } from '../store/embedding-progress.store';
 
 const logger = getLogger('useSuggestionBase');
 
@@ -45,7 +44,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const [refreshVersion, setRefreshVersion] = useState(0);
     const fetchSuggestionsRef = useRef(fetchSuggestions);
     const navigation = useNavigation();
-    const { percent: progress } = useEmbeddingProgressSnapshot();
+    const { percent: progress } = useSyncExternalStore(embeddingProgressStore.subscribe, embeddingProgressStore.getSnapshot);
     const isEmbeddingIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
 
     useEffect(() => {
