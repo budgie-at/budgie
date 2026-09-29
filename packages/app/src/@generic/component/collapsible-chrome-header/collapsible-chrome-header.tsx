@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CollapsibleHeader } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
+import { isDefined } from '@rnw-community/shared';
 
 import type { ReactNode } from 'react';
 
@@ -30,9 +31,6 @@ const collapsibleChromeHeaderStyles = StyleSheet.create({
         left: 0,
         zIndex: HEADER_Z_INDEX
     },
-    header: {
-        pointerEvents: 'box-none'
-    },
     persistentRow: {
         flex: 1,
         flexDirection: 'row',
@@ -55,6 +53,10 @@ const collapsibleChromeHeaderStyles = StyleSheet.create({
         alignSelf: 'stretch',
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    expandedTitleLayerContent: {
+        alignSelf: 'stretch',
+        justifyContent: 'center'
     }
 });
 
@@ -63,18 +65,23 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
     const insets = useSafeAreaInsets();
 
     const collapseDistance = config.collapseEnd - config.collapseStart;
-    const expandedOpacityEndProgress = (config.largeTitleEnd - config.collapseStart) / collapseDistance;
-    const collapsedOpacityStartProgress = (config.smallTitleStart - config.collapseStart) / collapseDistance;
-    const titleCrossFadeMidpointProgress = (collapsedOpacityStartProgress + expandedOpacityEndProgress) / 2;
     const motion = {
-        expandedOpacityEndProgress,
-        collapsedOpacityStartProgress,
+        expandedOpacityEndProgress: (config.largeTitleEnd - config.collapseStart) / collapseDistance,
+        collapsedOpacityStartProgress: (config.smallTitleStart - config.collapseStart) / collapseDistance,
         backgroundOpacityStartProgress: BACKGROUND_OPACITY_START_PROGRESS,
-        pointerEventsSwitchProgress: titleCrossFadeMidpointProgress,
         expandedTranslateY: FLAT_TRANSLATE_Y,
         expandedScale: NEUTRAL_SCALE,
         collapsedTranslateY: FLAT_TRANSLATE_Y
     };
+    const leadingSlotWidth = isDefined(leading) ? HEADER_SLOT_SIZE : 0;
+    const trailingSlotWidth = isDefined(trailing) ? HEADER_SLOT_SIZE : 0;
+    const expandedContentContainerStyle = [
+        collapsibleChromeHeaderStyles.titleLayer,
+        {
+            paddingLeft: HEADER_HORIZONTAL_PADDING + leadingSlotWidth,
+            paddingRight: HEADER_HORIZONTAL_PADDING + trailingSlotWidth
+        }
+    ];
     const containerStyle = [collapsibleChromeHeaderStyles.container, { paddingTop: insets.top }];
     const persistentContent = (
         <View style={collapsibleChromeHeaderStyles.persistentRow} pointerEvents="box-none">
@@ -87,7 +94,7 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
         </View>
     );
     const expandedContent = (
-        <View style={collapsibleChromeHeaderStyles.titleLayerContent} pointerEvents="none">
+        <View style={collapsibleChromeHeaderStyles.expandedTitleLayerContent} pointerEvents="none">
             {expandedTitle}
         </View>
     );
@@ -111,8 +118,7 @@ export const CollapsibleChromeHeader = ({ expandedTitle, collapsedTitle, leading
                 collapsedContent={collapsedContent}
                 persistentContent={persistentContent}
                 motion={motion}
-                headerStyle={collapsibleChromeHeaderStyles.header}
-                expandedContentContainerStyle={collapsibleChromeHeaderStyles.titleLayer}
+                expandedContentContainerStyle={expandedContentContainerStyle}
                 collapsedContentContainerStyle={collapsibleChromeHeaderStyles.titleLayer}
             />
         </View>
