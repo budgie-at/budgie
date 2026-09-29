@@ -128,7 +128,7 @@ class ImportedTransactionEntryUpdateService {
             return;
         }
 
-        const valuations = await entryBaseValuationService.valueEntries([entry], input.operatedAt, input.externalSource, tx);
+        const valuations = await entryBaseValuationService.valueEntries([entry], input.operatedAt, tx);
 
         await transactionEntryRepository.create(
             {
