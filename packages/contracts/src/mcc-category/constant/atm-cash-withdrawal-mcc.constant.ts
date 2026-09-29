@@ -1,0 +1,1 @@
+export const ATM_CASH_WITHDRAWAL_MCC = '6011';

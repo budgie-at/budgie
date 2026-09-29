@@ -10,6 +10,7 @@ import { Footer } from '../../../@generic/component/footer/footer';
 import { AiProgressBar } from '../../../settings/components/ai-progress-bar/ai-progress-bar';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxUndoBar } from '../categorize-inbox-undo-bar/categorize-inbox-undo-bar';
+import { CategorizeInboxUndoLayout } from '../categorize-inbox-undo-layout/categorize-inbox-undo-layout';
 
 import { CategorizeInboxPanelSelector } from './categorize-inbox-panel.selector';
 
@@ -23,13 +24,25 @@ interface Props {
     readonly lastWrite: CategorizeInboxLastWriteInterface | null;
     readonly onUndo: (lastWrite: CategorizeInboxLastWriteInterface) => void;
     readonly onFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => Promise<void>;
+    readonly movedToCashTransactionIds: number[];
+    readonly onUndoMoveToCash: (transactionIds: number[]) => void;
 }
 
-export const CategorizeInboxPanel = ({ remainingCount, categorizedCount, acceptableAssignments, lastWrite, onUndo, onFollowUp }: Props) => {
+export const CategorizeInboxPanel = ({
+    remainingCount,
+    categorizedCount,
+    acceptableAssignments,
+    lastWrite,
+    onUndo,
+    onFollowUp,
+    movedToCashTransactionIds,
+    onUndoMoveToCash
+}: Props) => {
     const { t } = useLingui();
     const { assign } = useCategorizeInboxContext();
 
     const handleAcceptAllPress = (): void => void assign(acceptableAssignments);
+    const handleUndoMoveToCashPress = (): void => void onUndoMoveToCash(movedToCashTransactionIds);
 
     const totalCount = remainingCount + categorizedCount;
     const progress = isPositiveNumber(totalCount) ? (categorizedCount / totalCount) * 100 : 0;
@@ -40,6 +53,20 @@ export const CategorizeInboxPanel = ({ remainingCount, categorizedCount, accepta
     const accessibilityValue = { min: 0, max: totalCount, now: categorizedCount, text: progressText };
     const rowCount = acceptableAssignments.reduce((total, assignment) => total + assignment.rows.length, 0);
     const acceptAllText = t({ message: plural(rowCount, { one: 'Accept # suggestion', other: 'Accept # suggestions' }) });
+    const movedToCashDescription = t({
+        message: plural(movedToCashTransactionIds.length, { one: '# transaction', other: '# transactions' })
+    });
+    const movedToCashUndo = isNotEmptyArray(movedToCashTransactionIds) ? (
+        <CategorizeInboxUndoLayout
+            icon={UserIconNameEnum.Banknote}
+            title={t`Moved to cash`}
+            description={movedToCashDescription}
+            onUndo={handleUndoMoveToCashPress}
+        />
+    ) : null;
+    const labelUndo = isDefined(lastWrite) ? (
+        <CategorizeInboxUndoBar lastWrite={lastWrite} onUndo={onUndo} onFollowUp={onFollowUp} />
+    ) : null;
     const acceptAll = isNotEmptyArray(acceptableAssignments) ? (
         <Button
             variant="cta"
@@ -71,13 +98,7 @@ export const CategorizeInboxPanel = ({ remainingCount, categorizedCount, accepta
                     <AiProgressBar progress={progress} />
                 </View>
 
-                <View className="h-14 justify-center">
-                    {isDefined(lastWrite) ? (
-                        <CategorizeInboxUndoBar lastWrite={lastWrite} onUndo={onUndo} onFollowUp={onFollowUp} />
-                    ) : (
-                        acceptAll
-                    )}
-                </View>
+                <View className="h-14 justify-center">{labelUndo ?? movedToCashUndo ?? acceptAll}</View>
             </View>
         </Footer>
     );

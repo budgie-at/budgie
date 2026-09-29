@@ -36,10 +36,17 @@ msgstr "{0, plural, one {# рахунок створено} few {# рахунк�
 msgid "{0, plural, one {# tag} other {# tags}}"
 msgstr "{0, plural, one {# тег} few {# теги} many {# тегів} other {# тегів}}"
 
+#. placeholder {0}: movedToCashTransactionIds.length
 #. placeholder {0}: rows.length
 #: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
+
+#. placeholder {0}: transactionIds.length
+#: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
+msgid "{0, plural, one {Move # withdrawal to cash} other {Move # withdrawals to cash}}"
+msgstr "{0, plural, one {Перенести # зняття в готівку} few {Перенести # зняття в готівку} many {Перенести # знять у готівку} other {Перенести # зняття в готівку}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
@@ -542,6 +549,10 @@ msgstr "Вже повернуто"
 msgid "Already syncing"
 msgstr "Вже синхронізується"
 
+#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+msgid "Already tracked"
+msgstr "Уже враховано"
+
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -852,6 +863,10 @@ msgstr "Скасувати"
 #: src/onboarding/component/onboarding-track/onboarding-track.tsx
 msgid "Cash"
 msgstr "Готівка"
+
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Cash withdrawals"
+msgstr "Зняття готівки"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/categories.tsx
@@ -1247,6 +1262,10 @@ msgstr "Не вдалося об'єднати категорію"
 msgid "Could not merge tag"
 msgstr "Не вдалося об'єднати тег"
 
+#: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
+msgid "Could not move withdrawals to cash"
+msgstr "Не вдалося перенести зняття в готівку"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Could not open GitHub"
 msgstr "Не вдалося відкрити GitHub"
@@ -1315,6 +1334,10 @@ msgstr "Не вдалося додати теги до транзакцій"
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Could not unconsolidate transaction."
 msgstr "Не вдалося розконсолідувати транзакцію."
+
+#: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
+msgid "Could not undo the move to cash"
+msgstr "Не вдалося скасувати перенесення в готівку"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Could not update category icon"
@@ -2323,6 +2346,10 @@ msgstr "Італійська (Італія)"
 msgid "Jars"
 msgstr "Банки"
 
+#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+msgid "Keep as already tracked cash, not spending"
+msgstr "Залишити як уже враховану готівку, не витрату"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Залиште увімкненим лише \"Дозволити читання\" — ніколи не дозволяйте торгівлю чи виведення"
@@ -2630,6 +2657,14 @@ msgstr "Інші теги"
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Most likely balance"
 msgstr "Найімовірніший баланс"
+
+#: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
+msgid "Move to cash"
+msgstr "У готівку"
+
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+msgid "Moved to cash"
+msgstr "Перенесено в готівку"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -4303,7 +4338,7 @@ msgstr "Розконсолідувати"
 msgid "Unconsolidate transaction?"
 msgstr "Розконсолідувати транзакцію?"
 
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+#: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
 msgid "Undo"
 msgstr "Скасувати"
 

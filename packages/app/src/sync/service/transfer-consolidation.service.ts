@@ -65,6 +65,21 @@ class TransferConsolidationService {
         return this.runExclusive(() => this.buildProgressSnapshot());
     }
 
+    @Log(
+        transactionIds => `enter appTransactionCount=${transactionIds.length}`,
+        (result, transactionIds) => `done appTransactionCount=${transactionIds.length} consolidated=${result}`,
+        (error, transactionIds) => `throw appTransactionCount=${transactionIds.length} error=${getErrorMessage(error)}`
+    )
+    async moveAtmCashWithdrawalsToCash(transactionIds: readonly number[]): Promise<number> {
+        return this.runExclusive(async () => {
+            const consolidated = await consolidationCoordinatorService.moveAtmCashWithdrawalsToCash(transactionIds);
+
+            await this.updateBalancesAfterConsolidation(consolidated);
+
+            return consolidated;
+        });
+    }
+
     private async runConsolidation(
         scope: ConsolidationScanScopeInterface | null,
         onProgress?: (processedCandidateGroupCount: number) => void

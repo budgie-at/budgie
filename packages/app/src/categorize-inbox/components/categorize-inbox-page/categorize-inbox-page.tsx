@@ -34,7 +34,10 @@ export const CategorizeInboxPage = ({ params, strategy }: Props) => {
 
     const filters = buildUncategorizedFilters(params);
     const inbox = useCategorizeInbox(filters, strategy);
-    const { contextValue, lastWrite, undo, applyFollowUp } = useCategorizeInboxActions(strategy, inbox.visibility);
+    const { contextValue, lastWrite, undo, applyFollowUp, movedToCashTransactionIds, undoMoveToCash } = useCategorizeInboxActions(
+        strategy,
+        inbox.visibility
+    );
     const { items, remainingCount, categorizedCount, acceptableAssignments } = inbox;
 
     const handleGoBack = (): void => void router.back();
@@ -42,7 +45,7 @@ export const CategorizeInboxPage = ({ params, strategy }: Props) => {
         void router.push({ pathname: '/analytics/transactions', params: strategy.buildListRouteParams(filters) });
 
     const emptyDescription = isPositiveNumber(categorizedCount) ? strategy.doneThisSession(categorizedCount) : strategy.emptyDescription;
-    const hasPanel = !inbox.isLoading && (isNotEmptyArray(items) || isDefined(lastWrite));
+    const hasPanel = !inbox.isLoading && (isNotEmptyArray(items) || isDefined(lastWrite) || isNotEmptyArray(movedToCashTransactionIds));
     const panel = hasPanel ? (
         <CategorizeInboxPanel
             remainingCount={remainingCount}
@@ -51,6 +54,8 @@ export const CategorizeInboxPage = ({ params, strategy }: Props) => {
             lastWrite={lastWrite}
             onUndo={undo}
             onFollowUp={applyFollowUp}
+            movedToCashTransactionIds={movedToCashTransactionIds}
+            onUndoMoveToCash={undoMoveToCash}
         />
     ) : null;
     const listContent = isEmptyArray(items) ? (

@@ -67,6 +67,7 @@ import m0067 from './0067_revert_backfilled_atm_consolidations.sql';
 import m0068 from './0068_replace_needs_embedding_index.sql';
 import m0069 from './0069_live_account_created_index.sql';
 import m0070 from './0070_repair_orphaned_consolidation_children.sql';
+import m0071 from './0071_seed_tracked_cash_withdrawal_category.sql';
 
   export default {
     journal,
@@ -138,7 +139,8 @@ m0066,
 m0067,
 m0068,
 m0069,
-m0070
+m0070,
+m0071
     }
   }
   
