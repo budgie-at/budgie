@@ -6,6 +6,7 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
+    TransactionEntryTypeEnum,
     buildSpendingEntryCondition
 } from '@budgie/contracts';
 import { and, between, desc, eq, isNull, sql } from 'drizzle-orm';
