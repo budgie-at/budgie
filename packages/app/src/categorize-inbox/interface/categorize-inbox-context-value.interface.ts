@@ -11,4 +11,5 @@ export interface CategorizeInboxContextValueInterface extends CategorizeInboxVis
     readonly assignCluster: (cluster: CategorizeInboxClusterInterface, labelId: number) => void;
     readonly pickClusterLabels: (cluster: CategorizeInboxClusterInterface) => Promise<void>;
     readonly pickRowLabels: (row: CategorizeInboxRowInterface) => Promise<void>;
+    readonly moveToCash: (transactionIds: number[]) => void;
 }

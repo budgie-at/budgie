@@ -1,5 +1,6 @@
 import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
 import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
+import { categorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
@@ -38,7 +39,7 @@ describe('database/revert-backfilled-atm-consolidations-migration', () => {
         );
 
         await applyMigration('0065_backfill_monobank_atm_mcc.sql');
-        await transferConsolidationService.consolidate();
+        await categorizeInboxService.moveToCash([historicalAtm.id, bankCodedAtm.id]);
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(2);
 
         await applyMigration('0067_revert_backfilled_atm_consolidations.sql');

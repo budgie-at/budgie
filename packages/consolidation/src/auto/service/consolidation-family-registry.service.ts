@@ -72,11 +72,6 @@ export class ConsolidationFamilyRegistryService {
                 this.consolidationExecutorService,
                 this.yieldControl
             ),
-            new AtmCashWithdrawalConsolidationFamilyService(
-                this.repositories.atmCashWithdrawalRepository,
-                this.consolidationExecutorService,
-                this.yieldControl
-            ),
             new RefundPairConsolidationFamilyService(
                 this.repositories.refundPairRepository,
                 this.consolidationRepairExecutorService,
@@ -89,6 +84,14 @@ export class ConsolidationFamilyRegistryService {
         return new ExistingTransferIncomeDuplicateConsolidationFamilyService(
             this.repositories.existingTransferRepository,
             this.consolidationRepairExecutorService,
+            this.yieldControl
+        );
+    }
+
+    buildAtmCashWithdrawalFamily(): AtmCashWithdrawalConsolidationFamilyService {
+        return new AtmCashWithdrawalConsolidationFamilyService(
+            this.repositories.atmCashWithdrawalRepository,
+            this.consolidationExecutorService,
             this.yieldControl
         );
     }

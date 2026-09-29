@@ -1,10 +1,13 @@
 import { CategorySourceEnum, TransactionUpdatedByEnum, transactionAsync } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 
-import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { db, transactionCategorizeInboxRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
+import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
 
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
@@ -39,6 +42,47 @@ class CategorizeInboxService {
         await transactionAsync(db, tx =>
             this.applyByLabel(assignments, (transactionIds, labelId) => this.revertLabel(labelKind, transactionIds, labelId, tx))
         );
+    }
+
+    @Log(
+        transactionIds => `enter transactionCount=${transactionIds.length}`,
+        (result, transactionIds) => `done movedCount=${result.length} transactionCount=${transactionIds.length}`,
+        (error, transactionIds) => `throw transactionCount=${transactionIds.length} error=${getErrorMessage(error)}`
+    )
+    @InvalidateDatabaseLiveQuery()
+    async moveToCash(transactionIds: number[]): Promise<number[]> {
+        const unconsolidatedTransactionIds = await this.filterByConsolidation(transactionIds, false);
+
+        await transferConsolidationService.moveAtmCashWithdrawalsToCash(unconsolidatedTransactionIds);
+
+        return this.filterByConsolidation(unconsolidatedTransactionIds, true);
+    }
+
+    @Log(
+        transactionIds => `enter transactionCount=${transactionIds.length}`,
+        (...[, transactionIds]) => `done transactionCount=${transactionIds.length}`,
+        (error, transactionIds) => `throw transactionCount=${transactionIds.length} error=${getErrorMessage(error)}`
+    )
+    @InvalidateDatabaseLiveQuery()
+    async undoMoveToCash(transactionIds: number[]): Promise<void> {
+        await transactionAsync(db, async tx => {
+            const transactions = await transactionRepository.findByIds(transactionIds, tx);
+            const transferIds = new Set(transactions.map(transaction => transaction.consolidationParentTransactionId).filter(isDefined));
+
+            await [...transferIds].reduce(async (previousPromise, transferId) => {
+                await previousPromise;
+                await unconsolidateByIdInTransaction(transferId, tx);
+            }, Promise.resolve());
+            await accountBalanceIncrementalService.updateAllBalances(true, tx);
+        });
+    }
+
+    private async filterByConsolidation(transactionIds: number[], isConsolidated: boolean): Promise<number[]> {
+        const transactions = await transactionRepository.findByIds(transactionIds);
+
+        return transactions
+            .filter(transaction => isDefined(transaction.consolidationParentTransactionId) === isConsolidated)
+            .map(transaction => transaction.id);
     }
 
     private async applyLabel(

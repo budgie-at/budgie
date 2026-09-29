@@ -13,7 +13,9 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { CategorizeInboxSectionEnum } from '../../enum/categorize-inbox-section.enum';
 import { CategorizeInboxClusterRow } from '../categorize-inbox-cluster-row/categorize-inbox-cluster-row';
+import { CategorizeInboxMoveToCashChip } from '../categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip';
 import { CategorizeInboxSuggestionChips } from '../categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips';
 
 import { CategorizeInboxClusterCardSelector } from './categorize-inbox-cluster-card.selector';
@@ -73,6 +75,9 @@ export const CategorizeInboxClusterCard = ({ cluster }: Props) => {
             </View>
 
             <View className="flex-row items-center gap-x-sm">
+                {cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS ? (
+                    <CategorizeInboxMoveToCashChip cluster={cluster} />
+                ) : null}
                 <CategorizeInboxSuggestionChips cluster={cluster} />
             </View>
 

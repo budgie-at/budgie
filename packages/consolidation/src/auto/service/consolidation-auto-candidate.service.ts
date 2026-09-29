@@ -5,6 +5,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type { ConsolidationFamilyRegistryService } from './consolidation-family-registry.service';
 import type {
+    AtmCashWithdrawalCandidateInterface,
     BridgeClaimRepairCandidateInterface,
     ConsolidationScanScopeInterface,
     ExistingTransferIncomeDuplicateCandidateInterface
@@ -105,6 +106,15 @@ export class ConsolidationAutoCandidateService {
     )
     async processBridgeClaimRepairCandidates(candidates: BridgeClaimRepairCandidateInterface[]): Promise<number> {
         return this.consolidationFamilyRegistryService.buildBridgeClaimRepairFamily().processCandidateList(candidates);
+    }
+
+    @Log(
+        candidates => `enter atmCashWithdrawalCount=${candidates.length}`,
+        (result, candidates) => `done atmCashWithdrawalCount=${candidates.length} consolidated=${result}`,
+        (error, candidates) => `throw atmCashWithdrawalCount=${candidates.length} error=${getErrorMessage(error)}`
+    )
+    async processAtmCashWithdrawalCandidates(candidates: AtmCashWithdrawalCandidateInterface[]): Promise<number> {
+        return this.consolidationFamilyRegistryService.buildAtmCashWithdrawalFamily().processCandidateList(candidates);
     }
 
     private addBlockedSourceTransactionIds(blockedSourceTransactionIds: Set<number>, sourceTransactionIds: number[]): void {
