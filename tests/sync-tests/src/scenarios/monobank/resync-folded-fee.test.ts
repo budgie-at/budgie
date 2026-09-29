@@ -52,7 +52,7 @@ describe('monobank/resync-folded-fee', () => {
         monobankStub.statement([atmWithdrawal]);
         await monobankSyncService.sync();
         const entriesBefore = fetchAtmEntries();
-        const updateSpy = vi.spyOn(transactionService, 'update');
+        const updateSpy = vi.spyOn(transactionService, 'bulkUpdateImported');
         await syncRepository.resetForWindowedResync(account.id, new Date(2026, 0, 1));
 
         monobankStub.statement([atmWithdrawal]);
