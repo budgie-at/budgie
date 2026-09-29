@@ -101,14 +101,10 @@ class AccountBalanceIncrementalService {
         await this.truncateBalances(truncate, tx);
 
         const accountIds = accounts.map(({ id }) => id);
-        const currentBalances = await accountBalanceRepository.getByAccountIds(accountIds, tx);
-        const deltaMap = await accountBalanceRepository.getNewTransactionEntriesDeltas(accountIds, tx);
-
+        const ledgerBalances = await accountBalanceRepository.getLedgerBalances(accountIds, tx);
         const debtLedgerBalances = await this.getDebtLedgerBalances(accounts, tx);
 
-        const balancesMap = this.buildBalancesMap(currentBalances);
-
-        const balancesToInsert = accounts.map(account => this.buildBalanceInput(account, balancesMap, deltaMap, debtLedgerBalances));
+        const balancesToInsert = accounts.map(account => this.buildBalanceInput(account, ledgerBalances, debtLedgerBalances));
 
         await this.upsertBalances(balancesToInsert, tx);
         this.assertDepositBalancesNotWorsened(balancesToInsert, previousDepositBalances);
@@ -124,14 +120,11 @@ class AccountBalanceIncrementalService {
 
     private buildBalanceInput(
         account: AccountEntityInterface,
-        balancesMap: Map<number, number>,
-        deltaMap: Map<number, number>,
+        ledgerBalances: Map<number, number>,
         debtLedgerBalances: Map<number, number>
     ): AccountBalanceCreateEntityInterface {
-        const debtLedgerBalance = debtLedgerBalances.get(account.id);
-
         return {
-            amount: debtLedgerBalance ?? (balancesMap.get(account.id) ?? 0) + (deltaMap.get(account.id) ?? 0),
+            amount: debtLedgerBalances.get(account.id) ?? ledgerBalances.get(account.id) ?? 0,
             accountId: account.id
         };
     }
