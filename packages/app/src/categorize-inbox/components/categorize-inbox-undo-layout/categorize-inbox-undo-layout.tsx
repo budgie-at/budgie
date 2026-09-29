@@ -5,11 +5,11 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { CategorizeInboxUndoBarSelector } from '../categorize-inbox-undo-bar/categorize-inbox-undo-bar.selector';
 
-import type { UserIconNameEnum } from '@budgie/contracts';
+import type { UserIconType } from '@budgie/contracts';
 import type { ReactNode } from 'react';
 
 interface Props {
-    readonly icon: UserIconNameEnum;
+    readonly icon: UserIconType;
     readonly title: string;
     readonly description: string;
     readonly onUndo: () => void;
