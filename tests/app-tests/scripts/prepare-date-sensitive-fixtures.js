@@ -17,8 +17,38 @@ const runSqlite = (databasePath, sql) => {
     execFileSync('sqlite3', [databasePath, sql], { stdio: 'inherit' });
 };
 
+const generatedFixturePaths = [];
+
 const copyFixture = (sourcePath, targetPath) => {
     copyFileSync(sourcePath, targetPath);
+    generatedFixturePaths.push(targetPath);
+};
+
+const findBalanceMismatches = databasePath => {
+    const query = sql => execFileSync('sqlite3', [databasePath, sql], { encoding: 'utf8' }).trim();
+    const hasConsolidation = query("SELECT COUNT(*) FROM pragma_table_info('transactions') WHERE name = 'consolidation_parent_transaction_id'") === '1';
+    const consolidationCondition = hasConsolidation
+        ? "AND t.consolidation_parent_transaction_id IS NULL AND (e.original_transaction_id IS NULL OR t.consolidation_type = 'REFUND')"
+        : '';
+    const ledgerSum = "COALESCE(SUM(CASE e.type WHEN 'DEBIT' THEN e.amount ELSE -e.amount END), 0)";
+    const mismatches = query(
+        `
+        SELECT a.id || ' stored=' || b.amount || ' ledger=' || ${ledgerSum}
+        FROM accounts a
+        JOIN account_balances b ON b.account_id = a.id AND b.deleted_at IS NULL
+        LEFT JOIN transaction_entries e ON e.account_id = a.id
+            AND e.deleted_at IS NULL
+            AND EXISTS (
+                SELECT 1 FROM transactions t
+                WHERE t.id = e.transaction_id AND t.deleted_at IS NULL ${consolidationCondition}
+            )
+        WHERE a.deleted_at IS NULL AND a.type NOT IN ('CRYPTO_SYNC', 'DEBT')
+        GROUP BY a.id, b.amount
+        HAVING b.amount != ${ledgerSum};
+        `
+    );
+
+    return mismatches === '' ? [] : mismatches.split('\n').map(mismatch => `${path.basename(databasePath)} account ${mismatch}`);
 };
 
 const shiftTransactionsFixtureToNow = () => {
@@ -502,6 +532,8 @@ const generateRunwayCryptoFixture = () => {
     const bitcoinToUsdRate = 2500.0;
     const ethereumToUsdRate = 1800.0;
     const runwayFiatBalance = 3_000_000_000;
+    const fixtureFiatBalance = 100_000_000;
+    const openingAdjustmentTransactionId = 2100;
     const monthlyExpenseAmount = 1_500_000_000;
     const monthlyIncomeAmount = 500_000_000;
     const housingCategoryId = 10;
@@ -510,8 +542,11 @@ const generateRunwayCryptoFixture = () => {
     const firstTransactionId = 2101;
     const monthlyExpenseBaseAmount = Math.round(monthlyExpenseAmount * eurToUsdRate);
     const monthlyIncomeBaseAmount = Math.round(monthlyIncomeAmount * eurToUsdRate);
+    const openingAdjustmentAmount = runwayFiatBalance - fixtureFiatBalance + 3 * (monthlyExpenseAmount - monthlyIncomeAmount);
+    const openingAdjustmentBaseAmount = Math.round(openingAdjustmentAmount * eurToUsdRate);
     const rateUpdatedAtSql = "unixepoch('now') - 900";
     const historyMonths = [-1, -2, -3].map(monthOffset => buildMonthlyTimestamp(monthOffset, historyDay));
+    const openingAdjustmentAt = Math.min(...historyMonths) - 86_400;
     const transactionValues = historyMonths
         .flatMap((operatedAt, monthIndex) => [
             `(${firstTransactionId + monthIndex * 2}, ${operatedAt}, ${operatedAt}, 'EXPENSE', 'E2E Runway History', ${operatedAt}, NULL, ${fiatAccountId}, 1.0)`,
@@ -550,6 +585,7 @@ const generateRunwayCryptoFixture = () => {
             exchange_rate
         )
         VALUES
+            (${openingAdjustmentTransactionId}, ${openingAdjustmentAt}, ${openingAdjustmentAt}, 'ADJUSTMENT', '', ${openingAdjustmentAt}, ${fiatAccountId}, NULL, ${eurToUsdRate}),
             ${transactionValues};
 
         INSERT INTO transaction_entries (
@@ -566,6 +602,7 @@ const generateRunwayCryptoFixture = () => {
             base_amount
         )
         VALUES
+            (${openingAdjustmentAt}, ${openingAdjustmentAt}, 'DEBIT', ${fiatAccountId}, NULL, ${openingAdjustmentTransactionId}, ${openingAdjustmentAmount}, ${eurToUsdRate}, ${defaultInstrumentId}, ${eurToUsdRate}, ${openingAdjustmentBaseAmount}),
             ${entryValues};
 
         DELETE FROM exchange_rates
@@ -603,6 +640,10 @@ const generateBudgetMultiCurrencyFixture = () => {
         SET created_at = ${transactionTimestamp},
             updated_at = ${transactionTimestamp}
         WHERE transaction_id IN (9, 10);
+
+        UPDATE account_balances
+        SET amount = -100000000
+        WHERE account_id = 3;
 
         UPDATE settings
         SET updated_at = CAST(strftime('%s', 'now') AS INTEGER);
@@ -703,7 +744,7 @@ const generateRecurringFixture = () => {
             amount
         )
         VALUES
-            (CAST(strftime('%s', 'now') AS INTEGER), CAST(strftime('%s', 'now') AS INTEGER), 1, ${totalRecurringAmount}),
+            (CAST(strftime('%s', 'now') AS INTEGER), CAST(strftime('%s', 'now') AS INTEGER), 1, -${totalRecurringAmount}),
             (CAST(strftime('%s', 'now') AS INTEGER), CAST(strftime('%s', 'now') AS INTEGER), 2, 0);
 
         COMMIT;
@@ -1324,3 +1365,9 @@ generateLongPressActionsFixture();
 generateMatchingRulesFixture();
 generateDebtSettlementFixture();
 generateCategorizeInboxFixture();
+
+const balanceMismatches = generatedFixturePaths.flatMap(findBalanceMismatches);
+
+if (balanceMismatches.length > 0) {
+    throw new Error(`Fixture balances do not match ledger:\n${balanceMismatches.join('\n')}`);
+}
