@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.13](https://github.com/budgie-at/budgie/compare/v6.85.12...v6.85.13) (2026-09-29)
+
+
+### Bug Fixes
+
+* **app:** compute stored balances from the full ledger and undo backfilled ATM transfers ([9922ce8](https://github.com/budgie-at/budgie/commit/9922ce824c7a4112ef1d0d518cecde5e403caa2b))
+
+
+
+
+
+## [6.85.12](https://github.com/budgie-at/budgie/compare/v6.85.11...v6.85.12) (2026-09-29)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
 ## [6.85.11](https://github.com/budgie-at/budgie/compare/v6.85.10...v6.85.11) (2026-09-29)
 
 
