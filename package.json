@@ -30,7 +30,8 @@
         "test": "turbo run test",
         "test:coverage": "turbo run test:coverage",
         "ts": "turbo run ts",
-        "ts:force": "turbo run ts --force"
+        "ts:force": "turbo run ts --force",
+        "verify:backup": "sh -c 'set -e; test -f \"$1\"; mkdir -p \"$HOME/.cache\" && BUDGIE_BACKUP_DB=\"$(realpath \"$1\")\" TMPDIR=\"$HOME/.cache\" pnpm --filter @budgie-at/sync-tests exec vitest run src/scenarios/database/backup-replay.test.ts' verify-backup"
     },
     "devDependencies": {
         "@commitlint/cli": "21.2.2",
