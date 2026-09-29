@@ -8,7 +8,6 @@ import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { FormFieldStatus } from '../../type/form-field-status.type';
 import { extractPartsFromNumeric } from '../../utils/extract-parts-from-numeric.util';
-import { normalizeDecimalSeparator } from '../../utils/normalize-decimal-separator.util';
 import { sanitizeAmountText } from '../../utils/sanitize-amount-text.util';
 import { Input } from '../input/input';
 
@@ -30,7 +29,7 @@ const parseAmountText = (text: string, decimalSeparator: string, digitGroupingSe
         return null;
     }
 
-    const normalizedNumeric = normalizeDecimalSeparator(cleaned, decimalSeparator);
+    const normalizedNumeric = cleaned.replace(decimalSeparator, '.');
     const { integerPart, decimalPart, hasDecimal } = extractPartsFromNumeric(normalizedNumeric, visibleDecimalPlaces);
     const displayValue = hasDecimal ? `${integerPart}${decimalSeparator}${decimalPart}` : integerPart;
     const parsedValue = parseFloat(normalizedNumeric) || 0;
