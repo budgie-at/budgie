@@ -61,9 +61,9 @@ const buildBudgetRepository = () => {
             const existingBudget = requireBudget(id);
             budget = { ...existingBudget, deletedAt: DELETED_AT };
         },
-        getActive: (): BudgetEntityInterface | null => {
+        findActive: (): BudgetEntityInterface | undefined => {
             if (!isDefined(budget) || isDefined(budget.deletedAt)) {
-                return null;
+                return undefined;
             }
 
             return budget;
@@ -157,7 +157,7 @@ describe('BudgetService', () => {
                 { categoryId: THIRD_CATEGORY_ID, limitAmount: THIRD_UPDATED_LIMIT }
             ]
         });
-        const activeBudget = budgetRepository.getActive();
+        const activeBudget = budgetRepository.findActive();
         const categoryLimits = await budgetCategoryLimitRepository.getByBudget(budget.id);
 
         expect(updatedBudget.name).toBe('Updated Budget');

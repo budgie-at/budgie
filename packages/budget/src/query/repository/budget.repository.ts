@@ -28,15 +28,6 @@ export class BudgetRepository {
         return budget;
     }
 
-    async getActive(tx?: DB): Promise<BudgetEntityInterface | null> {
-        const budget = await (tx ?? this.db).query.BudgetEntityTable.findFirst({
-            where: isNull(BudgetEntityTable.deletedAt),
-            orderBy: [desc(BudgetEntityTable.updatedAt)]
-        });
-
-        return budget ?? null;
-    }
-
     async delete(id: number, tx?: DB): Promise<void> {
         await (tx ?? this.db)
             .update(BudgetEntityTable)
@@ -44,8 +35,8 @@ export class BudgetRepository {
             .where(and(eq(BudgetEntityTable.id, id), isNull(BudgetEntityTable.deletedAt)));
     }
 
-    findActive() {
-        return this.db.query.BudgetEntityTable.findFirst({
+    findActive(tx?: DB) {
+        return (tx ?? this.db).query.BudgetEntityTable.findFirst({
             where: isNull(BudgetEntityTable.deletedAt),
             orderBy: [desc(BudgetEntityTable.updatedAt)]
         });
