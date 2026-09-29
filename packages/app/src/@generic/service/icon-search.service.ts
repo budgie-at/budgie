@@ -21,15 +21,21 @@ class IconSearchService {
     private loadingEntries: Promise<readonly IconSearchEntryInterface[]> | null = null;
 
     async load(): Promise<readonly IconSearchEntryInterface[]> {
-        this.loadingEntries ??= import('../constant/icon-search-index.json').then(({ default: index }) => {
-            const translations: Record<string, string> = index.translations;
+        this.loadingEntries ??= import('../constant/icon-search-index.json')
+            .then(({ default: index }) => {
+                const translations: Record<string, string> = index.translations;
 
-            this.entries = index.icons.flatMap(([icon, keywords]) =>
-                isUserIcon(icon) && isNotEmptyString(keywords) ? [this.createEntry(icon, keywords, translations)] : []
-            );
+                this.entries = index.icons.flatMap(([icon, keywords]) =>
+                    isUserIcon(icon) && isNotEmptyString(keywords) ? [this.createEntry(icon, keywords, translations)] : []
+                );
 
-            return this.entries;
-        });
+                return this.entries;
+            })
+            .catch((error: unknown) => {
+                this.loadingEntries = null;
+
+                throw error;
+            });
 
         return this.loadingEntries;
     }
