@@ -1,3 +1,4 @@
+import { consolidationCoordinatorService } from '@app/sync/service/consolidation-coordinator.service';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { privatbankCategoryMatcherService } from '@app/sync/service/privatbank-category-matcher.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
@@ -100,9 +101,8 @@ describe('consolidation/monobank-privatbank-transfer', () => {
         const importedPrivatbankTransactions = await importPrivatbankTransfer(privatbankAccount.id, privatbankCardId);
         expect(importedPrivatbankTransactions).toHaveLength(1);
 
-        const previewResult = await transferConsolidationService.preview();
-        expect(previewResult.autoCandidateCount).toBe(1);
-        expect(previewResult.manualReviewCandidateCount).toBe(0);
+        expect(await consolidationCoordinatorService.countAutoCandidates()).toBe(1);
+        expect(await consolidationCoordinatorService.countManualReviewCandidates()).toBe(0);
 
         const consolidateResult = await transferConsolidationService.consolidate();
         expect(consolidateResult.consolidated).toBe(1);

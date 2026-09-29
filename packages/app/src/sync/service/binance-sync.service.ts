@@ -16,7 +16,6 @@ import { importedTransactionEntryUpdateService } from '../../transaction/service
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BINANCE_SYNC_TASK } from '../constant/binance-sync-task.constant';
 import { BINANCE_TRANSFER_LOOKBACK_YEARS } from '../constant/binance-transfer-lookback-years.constant';
-import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { BinanceResolvableAccountInterface } from '../interface/binance-resolvable-account.interface';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { BinanceTransferInputMapper } from '../mapper/binance-transfer-input.mapper';
@@ -148,7 +147,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         );
         if (isPositiveNumber(changedCount)) {
             await transactionService.updateAllBalances();
-            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC);
+            transferConsolidationDrainerService.enqueue();
         }
 
         const progressDate = this.runDeferred ? (sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date()) : new Date();
@@ -351,7 +350,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         const transactions = await transactionRepository.findByIds(transactionIds);
         const consolidationScope = consolidationScopeService.buildFromTransactions(transactions);
         if (isDefined(consolidationScope)) {
-            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC, consolidationScope);
+            transferConsolidationDrainerService.enqueue(consolidationScope);
         }
     }
 

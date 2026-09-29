@@ -1,4 +1,3 @@
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -89,8 +88,8 @@ describe('consolidation/transfer-consolidation-drainer', () => {
         const firstScope = buildScope(1, new Date('2026-01-02T00:00:00.000Z'), new Date('2026-01-03T00:00:00.000Z'));
         const secondScope = buildScope(2, new Date('2026-01-01T00:00:00.000Z'), new Date('2026-01-04T00:00:00.000Z'));
 
-        transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, firstScope);
-        transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, secondScope);
+        transferConsolidationDrainerService.enqueue(firstScope);
+        transferConsolidationDrainerService.enqueue(secondScope);
 
         await vi.advanceTimersByTimeAsync(drainDelayMs - 1);
         expect(spyOnConsolidate()).not.toHaveBeenCalled();
@@ -112,11 +111,11 @@ describe('consolidation/transfer-consolidation-drainer', () => {
         const secondScope = buildScope(2, new Date('2026-01-03T00:00:00.000Z'), new Date('2026-01-04T00:00:00.000Z'));
         const resolveFirstDrain = mockPendingConsolidate();
 
-        transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, firstScope);
+        transferConsolidationDrainerService.enqueue(firstScope);
         await flushScheduledDrain(drainDelayMs);
         expect(spyOnConsolidate()).toHaveBeenCalledTimes(1);
 
-        transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, secondScope);
+        transferConsolidationDrainerService.enqueue(secondScope);
         await expectNoFollowUpBeforeActiveDrainFinishes(resolveFirstDrain);
         await expectFollowUpDrain(secondScope);
     });
