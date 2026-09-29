@@ -3,7 +3,7 @@ import { mapBankTransactionToCreateInput } from '@app/sync/util/map-bank-transac
 import { transactionImportService } from '@app/transaction/service/transaction-import.service';
 import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { privatbankTransactionMapper } from '@budgie/sync';
-import { describe, it } from 'vitest';
+import { afterEach, describe, it, vi } from 'vitest';
 
 import { expectAtmCashWithdrawalConsolidation, seed } from '../../harness';
 
@@ -35,7 +35,12 @@ const importPrivatbankCashWithdrawal = async (privatbankAccountId: number): Prom
 };
 
 describe('consolidation/privatbank-cash-withdrawal', () => {
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
     it('promotes an imported Privatbank cash withdrawal into a TRANSFER to the unique cash account', async () => {
+        vi.useFakeTimers({ now: WITHDRAWAL_OPERATED_AT, toFake: ['Date'] });
         const privatbankAccount = seed.account({
             title: 'Privatbank Card',
             externalId: PRIVATBANK_CARD_ID,

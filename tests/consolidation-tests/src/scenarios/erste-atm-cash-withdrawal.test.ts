@@ -7,7 +7,7 @@ import { testQueryService, testSeedService } from '../harness/test-context';
 
 import type { TransactionEntityInterface } from '@budgie/contracts';
 
-const ERSTE_OPERATED_AT = new Date('2023-11-26T14:51:00');
+const ERSTE_OPERATED_AT = new Date(Date.now() - 24 * 60 * 60 * 1000);
 const ATM_WITHDRAWAL_AMOUNT = 200 * PRECISION;
 
 describe('consolidation/erste-atm-cash-withdrawal', () => {

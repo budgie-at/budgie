@@ -16,7 +16,7 @@ import {
 } from '../../harness';
 
 const AMOUNT = 408_000_000;
-const OPERATED_AT = new Date(2025, 5, 1, 12, 0, 0);
+const OPERATED_AT = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
 describe('database/revert-backfilled-atm-consolidations-migration', () => {
     it('undoes cash transfers built from ATM rows imported before the MCC seed and keeps bank-coded ATM transfers', async () => {
