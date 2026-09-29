@@ -1,11 +1,11 @@
 import { t } from '@lingui/core/macro';
 
+import { BreadcrumbsJsonLd } from '../../../generic/component/breadcrumbs-json-ld/breadcrumbs-json-ld';
+import { WebPageJsonLd } from '../../../generic/component/web-page-json-ld/web-page-json-ld';
 import { getI18nInstance } from '../../../i18n/app-router-i18n';
-import { FeaturePageBreadcrumbsJsonLd } from '../feature-page-breadcrumbs-json-ld/feature-page-breadcrumbs-json-ld';
 import { FeaturePageCta } from '../feature-page-cta/feature-page-cta';
 import { FeaturePageRelatedArticles } from '../feature-page-related-articles/feature-page-related-articles';
 import { FeaturePageRelated } from '../feature-page-related/feature-page-related';
-import { FeaturePageWebPageJsonLd } from '../feature-page-web-page-json-ld/feature-page-web-page-json-ld';
 
 import type { FeatureRegistryEntryInterface } from '../../interface/feature-registry-entry.interface';
 import type { ReactNode } from 'react';
@@ -22,17 +22,17 @@ export const FeaturePageShell = ({ children, lang, meta }: Props) => {
 
     return (
         <main className="flex-1">
-            <FeaturePageBreadcrumbsJsonLd locale={lang} slug={meta.slug}>
-                <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={`/${lang}`} />
-                <FeaturePageBreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={`/${lang}/features`} />
-                <FeaturePageBreadcrumbsJsonLd.Item name={featureName} path={`/${lang}/features/${meta.slug}`} />
-            </FeaturePageBreadcrumbsJsonLd>
-            <FeaturePageWebPageJsonLd
+            <BreadcrumbsJsonLd locale={lang} path={`/features/${meta.slug}`}>
+                <BreadcrumbsJsonLd.Item name={t(i18n)`Home`} path={`/${lang}`} />
+                <BreadcrumbsJsonLd.Item name={t(i18n)`Features`} path={`/${lang}/features`} />
+                <BreadcrumbsJsonLd.Item name={featureName} path={`/${lang}/features/${meta.slug}`} />
+            </BreadcrumbsJsonLd>
+            <WebPageJsonLd
                 description={i18n._(meta.metaDescription)}
                 featureName={featureName}
                 locale={lang}
+                path={`/features/${meta.slug}`}
                 publishedAt={meta.publishedAt}
-                slug={meta.slug}
                 title={i18n._(meta.metaTitle)}
                 updatedAt={meta.updatedAt}
             />
