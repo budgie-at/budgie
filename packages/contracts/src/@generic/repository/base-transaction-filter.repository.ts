@@ -132,6 +132,16 @@ export abstract class BaseTransactionFilterRepository {
         return and(this.buildPrimaryLedgerEntryCondition(), ne(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE));
     }
 
+    protected buildExpenseAnalyticsEntryCondition() {
+        return or(
+            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE),
+            and(
+                eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
+                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
+            )
+        );
+    }
+
     protected buildNonDebtAccountCondition() {
         return ne(AccountEntityTable.type, AccountTypeEnum.DEBT);
     }

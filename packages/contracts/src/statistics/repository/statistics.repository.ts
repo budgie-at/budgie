@@ -329,16 +329,6 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
     }
     /* jscpd:ignore-end */
 
-    private buildExpenseAnalyticsEntryCondition() {
-        return or(
-            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.FEE),
-            and(
-                eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
-                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
-            )
-        );
-    }
-
     private buildVisibleNonDebtEntryCondition(type: TransactionEntryTypeEnum) {
         return sql`
             ${TransactionEntryEntityTable.type} = ${type}
