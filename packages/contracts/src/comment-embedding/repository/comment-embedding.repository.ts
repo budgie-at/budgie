@@ -1,7 +1,8 @@
+import * as Effect from 'effect/Effect';
+
 import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
-import { DB } from '../../@generic/type/db.type';
+import { Db } from '../../@generic/service/db.service';
 import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
-import { CommentPendingContextInterface } from '../interface/comment-pending-context.interface';
 import { UpsertCommentEmbeddingParamsInterface } from '../interface/upsert-comment-embedding-params.interface';
 import { CommentEmbeddingEntityTable } from '../table/comment-embedding-entity.table';
 import { CommentEmbeddingTagEntityTable } from '../table/comment-embedding-tag-entity.table';
@@ -69,87 +70,96 @@ const PENDING_COMMENT_CONTEXTS_QUERY = `
 `;
 
 export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
-    constructor(db: DB) {
-        super(db, {
-            similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
-            similarTagsQuery: SIMILAR_TAGS_QUERY,
-            vecTableName: 'comment_embedding_vec',
-            sourceTableName: 'comment_embeddings'
-        });
-    }
-
-    async upsert(params: UpsertCommentEmbeddingParamsInterface): Promise<number | null> {
+    readonly upsert = Effect.fn('CommentEmbeddingRepository.upsert')(function* (
+        this: CommentEmbeddingRepository,
+        params: UpsertCommentEmbeddingParamsInterface
+    ) {
         const { comment, categoryId, embedding, dimensions } = params;
 
         if (!this.isValidDimensions(dimensions)) {
             return null;
         }
 
-        const [row] = await this.db
-            .insert(CommentEmbeddingEntityTable)
-            .values({ comment, categoryId, embedding, dimensions })
-            .onConflictDoUpdate({
-                target: [CommentEmbeddingEntityTable.comment, CommentEmbeddingEntityTable.categoryId],
-                set: { embedding, dimensions, updatedAt: new Date() }
-            })
-            .returning({ id: CommentEmbeddingEntityTable.id });
+        const [row] = yield* Db.query(db =>
+            db
+                .insert(CommentEmbeddingEntityTable)
+                .values({ comment, categoryId, embedding, dimensions })
+                .onConflictDoUpdate({
+                    target: [CommentEmbeddingEntityTable.comment, CommentEmbeddingEntityTable.categoryId],
+                    set: { embedding, dimensions, updatedAt: new Date() }
+                })
+                .returning({ id: CommentEmbeddingEntityTable.id })
+        );
 
-        await this.db.$client.runAsync('DELETE FROM comment_embedding_vec WHERE rowid = ?', [row.id]);
-        await this.db.$client.runAsync(
-            'INSERT INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
-            [row.id]
+        yield* Db.query(db => db.$client.runAsync('DELETE FROM comment_embedding_vec WHERE rowid = ?', [row.id]));
+        yield* Db.query(db =>
+            db.$client.runAsync(
+                'INSERT INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
+                [row.id]
+            )
         );
 
         return row.id;
-    }
+    });
 
-    async replaceTags(embeddingId: number, tagIds: number[], tx?: DB): Promise<void> {
-        return this.replaceEmbeddingTags(
-            {
-                tagTable: CommentEmbeddingTagEntityTable,
-                foreignKeyColumn: CommentEmbeddingTagEntityTable.commentEmbeddingId,
-                embeddingId,
-                tagIds,
-                createTagRow: tagId => ({ commentEmbeddingId: embeddingId, tagId })
-            },
-            tx
+    readonly replaceTags = Effect.fn('CommentEmbeddingRepository.replaceTags')(function* (
+        this: CommentEmbeddingRepository,
+        embeddingId: number,
+        tagIds: number[]
+    ) {
+        yield* this.replaceEmbeddingTags({
+            tagTable: CommentEmbeddingTagEntityTable,
+            foreignKeyColumn: CommentEmbeddingTagEntityTable.commentEmbeddingId,
+            embeddingId,
+            tagIds,
+            createTagRow: tagId => ({ commentEmbeddingId: embeddingId, tagId })
+        });
+    });
+
+    readonly countAll = Effect.fn('CommentEmbeddingRepository.countAll')(function* (this: CommentEmbeddingRepository) {
+        return yield* this.countRows(CommentEmbeddingEntityTable, CommentEmbeddingEntityTable.deletedAt);
+    });
+
+    readonly findPendingCommentContexts = Effect.fn('CommentEmbeddingRepository.findPendingCommentContexts')(function* (limit: number) {
+        const rows = yield* Db.query(db =>
+            db.$client.getAllAsync<{
+                comment: string;
+                categoryId: number;
+                categoryTitleEn: string | null;
+                transactionIdsCsv: string;
+                tagIdsCsv: string | null;
+                existingEmbeddingId: number | null;
+            }>(PENDING_COMMENT_CONTEXTS_QUERY, [limit])
         );
-    }
-
-    async countAll(): Promise<number> {
-        return this.countRows(CommentEmbeddingEntityTable, CommentEmbeddingEntityTable.deletedAt);
-    }
-
-    async findPendingCommentContexts(limit: number): Promise<CommentPendingContextInterface[]> {
-        const rows = await this.db.$client.getAllAsync<{
-            comment: string;
-            categoryId: number;
-            categoryTitleEn: string | null;
-            transactionIdsCsv: string;
-            tagIdsCsv: string | null;
-            existingEmbeddingId: number | null;
-        }>(PENDING_COMMENT_CONTEXTS_QUERY, [limit]);
 
         return rows.map(row => ({
             comment: row.comment,
             ...parsePendingContextBaseFields(row)
         }));
-    }
+    });
 
-    async countPendingCommentContexts(): Promise<number> {
-        const [row] = await this.db.$client.getAllAsync<{ count: number }>(
-            `SELECT COUNT(*) AS count FROM (${PENDING_COMMENT_CONTEXTS_BASE})`,
-            []
+    readonly countPendingCommentContexts = Effect.fn('CommentEmbeddingRepository.countPendingCommentContexts')(function* () {
+        const [row] = yield* Db.query(db =>
+            db.$client.getAllAsync<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_COMMENT_CONTEXTS_BASE})`, [])
         );
 
         return row.count;
-    }
+    });
 
-    async rebuildVecIndex(): Promise<void> {
-        return this.rebuildVec();
-    }
+    readonly rebuildVecIndex = Effect.fn('CommentEmbeddingRepository.rebuildVecIndex')(function* (this: CommentEmbeddingRepository) {
+        yield* this.rebuildVec();
+    });
 
-    async truncate(): Promise<void> {
-        return this.truncateWithTags(CommentEmbeddingTagEntityTable, CommentEmbeddingEntityTable);
+    readonly truncate = Effect.fn('CommentEmbeddingRepository.truncate')(function* (this: CommentEmbeddingRepository) {
+        yield* this.truncateWithTags(CommentEmbeddingTagEntityTable, CommentEmbeddingEntityTable);
+    });
+
+    constructor() {
+        super({
+            similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
+            similarTagsQuery: SIMILAR_TAGS_QUERY,
+            vecTableName: 'comment_embedding_vec',
+            sourceTableName: 'comment_embeddings'
+        });
     }
 }

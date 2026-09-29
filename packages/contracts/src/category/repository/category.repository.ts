@@ -1,10 +1,11 @@
 import { and, count, eq, getTableColumns, inArray, isNull, like, or, sql } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { TranslatableRepositoryBase } from '../../@generic/repository/translatable-repository.base';
-import { DB } from '../../@generic/type/db.type';
+import { Db } from '../../@generic/service/db.service';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { BORROWING_CATEGORY_ID } from '../constant/borrowing-category-id.constant';
@@ -14,12 +15,108 @@ import { CategoryUpdateEntityInterface } from '../entity/category-update-entity.
 import { CategoryEntityTable } from '../table/category-entity.table';
 
 import type * as schema from '../../schema';
-import type { CategoryEntityInterface } from '../entity/category-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class CategoryRepository extends TranslatableRepositoryBase {
-    constructor(db: ExpoSQLiteDatabase<typeof schema>) {
-        super(db, CategoryEntityTable, {
+    readonly create = Effect.fn('CategoryRepository.create')(function* (this: CategoryRepository, input: CategoryCreateEntityInterface) {
+        const [category] = yield* this.bulkCreate([input]);
+
+        return category;
+    });
+
+    readonly bulkCreate = Effect.fn('CategoryRepository.bulkCreate')(function* (inputs: CategoryCreateEntityInterface[]) {
+        return yield* Db.query(db =>
+            db
+                .insert(CategoryEntityTable)
+                .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
+                .returning()
+        );
+    });
+
+    readonly updateById = Effect.fn('CategoryRepository.updateById')(function* (id: number, input: CategoryUpdateEntityInterface) {
+        const newTitle = input.title;
+        const titleChanged = isDefined(newTitle);
+
+        const [category] = yield* Db.query(db =>
+            db
+                .update(CategoryEntityTable)
+                .set({
+                    ...input,
+                    ...(titleChanged && { titleSearch: newTitle.toLowerCase() }),
+                    ...(titleChanged && { titleEn: null, titleTags: null, tagsGeneratedAt: null })
+                })
+                .where(eq(CategoryEntityTable.id, id))
+                .returning()
+        );
+
+        return category;
+    });
+
+    readonly findActiveById = Effect.fn('CategoryRepository.findActiveById')(function* (id: number) {
+        const categories = yield* Db.query(db =>
+            db
+                .select()
+                .from(CategoryEntityTable)
+                .where(and(eq(CategoryEntityTable.id, id), isNull(CategoryEntityTable.deletedAt)))
+                .limit(1)
+        );
+
+        return categories.at(0);
+    });
+
+    readonly deleteById = Effect.fn('CategoryRepository.deleteById')(function* (id: number) {
+        yield* Db.query(db => db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id)));
+    });
+
+    readonly countTransactionEntries = Effect.fn('CategoryRepository.countTransactionEntries')(function* (categoryId: number) {
+        const [result] = yield* Db.query(db =>
+            db.select({ count: count() }).from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.categoryId, categoryId))
+        );
+
+        return result.count;
+    });
+
+    readonly reassignTransactionEntries = Effect.fn('CategoryRepository.reassignTransactionEntries')(function* (
+        fromCategoryId: number,
+        toCategoryId: number
+    ) {
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntryEntityTable)
+                .set({ categoryId: toCategoryId })
+                .where(eq(TransactionEntryEntityTable.categoryId, fromCategoryId))
+        );
+    });
+
+    readonly truncate = Effect.fn('CategoryRepository.truncate')(function* (includeDefault: boolean) {
+        yield* Db.query(db =>
+            db
+                .delete(CategoryEntityTable)
+                .where(includeDefault ? eq(CategoryEntityTable.isSystemCategory, false) : eq(CategoryEntityTable.isDefault, false))
+        );
+    });
+
+    readonly updateTranslation = Effect.fn('CategoryRepository.updateTranslation')(function* (
+        id: number,
+        titleEn: string,
+        titleTags: string
+    ) {
+        yield* Db.query(db =>
+            db.update(CategoryEntityTable).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(CategoryEntityTable.id, id))
+        );
+    });
+
+    readonly clearTranslation = Effect.fn('CategoryRepository.clearTranslation')(function* (id: number) {
+        yield* Db.query(db =>
+            db
+                .update(CategoryEntityTable)
+                .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
+                .where(eq(CategoryEntityTable.id, id))
+        );
+    });
+
+    constructor(private readonly db: ExpoSQLiteDatabase<typeof schema>) {
+        super(CategoryEntityTable, {
             id: CategoryEntityTable.id,
             title: CategoryEntityTable.title,
             titleEn: CategoryEntityTable.titleEn,
@@ -77,74 +174,8 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         return this.db.select({ count: count() }).from(CategoryEntityTable).where(eq(CategoryEntityTable.isDefault, false));
     }
 
-    async create(input: CategoryCreateEntityInterface, tx?: DB): Promise<CategoryEntityInterface> {
-        const [category] = await this.bulkCreate([input], tx);
-
-        return category;
-    }
-
-    async bulkCreate(inputs: CategoryCreateEntityInterface[], tx?: DB): Promise<CategoryEntityInterface[]> {
-        return await (tx ?? this.db)
-            .insert(CategoryEntityTable)
-            .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
-            .returning();
-    }
-
-    async updateById(id: number, input: CategoryUpdateEntityInterface): Promise<CategoryEntityInterface> {
-        const newTitle = input.title;
-        const titleChanged = isDefined(newTitle);
-
-        const [category] = await this.db
-            .update(CategoryEntityTable)
-            .set({
-                ...input,
-                ...(titleChanged && { titleSearch: newTitle.toLowerCase() }),
-                ...(titleChanged && { titleEn: null, titleTags: null, tagsGeneratedAt: null })
-            })
-            .where(eq(CategoryEntityTable.id, id))
-            .returning();
-
-        return category;
-    }
-
     findById(id: number, language: LanguageEnum) {
         return this.buildLocalizedCategoryBaseQuery(language).where(eq(CategoryEntityTable.id, id)).limit(1);
-    }
-
-    async findActiveById(id: number, tx?: DB): Promise<CategoryEntityInterface | undefined> {
-        const [category] = await (tx ?? this.db)
-            .select()
-            .from(CategoryEntityTable)
-            .where(and(eq(CategoryEntityTable.id, id), isNull(CategoryEntityTable.deletedAt)))
-            .limit(1);
-
-        return category;
-    }
-
-    async deleteById(id: number): Promise<void> {
-        await this.db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id));
-    }
-
-    async countTransactionEntries(categoryId: number): Promise<number> {
-        const [result] = await this.db
-            .select({ count: count() })
-            .from(TransactionEntryEntityTable)
-            .where(eq(TransactionEntryEntityTable.categoryId, categoryId));
-
-        return result.count;
-    }
-
-    async reassignTransactionEntries(fromCategoryId: number, toCategoryId: number): Promise<void> {
-        await this.db
-            .update(TransactionEntryEntityTable)
-            .set({ categoryId: toCategoryId })
-            .where(eq(TransactionEntryEntityTable.categoryId, fromCategoryId));
-    }
-
-    async truncate(includeDefault: boolean, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .delete(CategoryEntityTable)
-            .where(includeDefault ? eq(CategoryEntityTable.isSystemCategory, false) : eq(CategoryEntityTable.isDefault, false));
     }
 
     findWithoutTags() {
@@ -157,20 +188,6 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         return this.db.query.CategoryEntityTable.findMany({
             where: eq(CategoryEntityTable.isSystemCategory, false)
         });
-    }
-
-    async updateTranslation(id: number, titleEn: string, titleTags: string): Promise<void> {
-        await this.db
-            .update(CategoryEntityTable)
-            .set({ titleEn, titleTags, tagsGeneratedAt: new Date() })
-            .where(eq(CategoryEntityTable.id, id));
-    }
-
-    async clearTranslation(id: number): Promise<void> {
-        await this.db
-            .update(CategoryEntityTable)
-            .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
-            .where(eq(CategoryEntityTable.id, id));
     }
 
     private selectWithLocalizedTitle() {

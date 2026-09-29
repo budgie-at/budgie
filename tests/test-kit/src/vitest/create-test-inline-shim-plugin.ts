@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 
 import type { TestInlineShimPluginInterface } from './interface/test-inline-shim-plugin.interface';
@@ -55,7 +56,7 @@ const VIRTUAL_SHIMS: Record<string, string> = {
 
 const DRIZZLE_EXPO_SQLITE_SHIM: Record<string, string> = {
     'drizzle-orm/expo-sqlite': `
-        import { drizzle as drizzleBetterSqlite } from 'drizzle-orm/better-sqlite3';
+        import { drizzle as drizzleBetterSqlite } from ${JSON.stringify(createRequire(import.meta.url).resolve('drizzle-orm/better-sqlite3'))};
 
         export const drizzle = (database, config) => {
             if (database?.$client) {

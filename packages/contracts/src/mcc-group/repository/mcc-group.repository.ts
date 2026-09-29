@@ -1,14 +1,49 @@
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 
-import { DB } from '../../@generic/type/db.type';
+import { Db } from '../../@generic/service/db.service';
 import { MccGroupCreateEntityInterface } from '../entity/mcc-group-create-entity.interface';
 import { MccGroupEntityTable } from '../table/mcc-group-entity.table';
 
 import type * as schema from '../../schema';
-import type { MccGroupEntityInterface } from '../entity/mcc-group-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class MccGroupRepository {
+    readonly create = Effect.fn('MccGroupRepository.create')(function* (this: MccGroupRepository, input: MccGroupCreateEntityInterface) {
+        const [mccGroup] = yield* this.bulkCreate([input]);
+
+        return mccGroup;
+    });
+
+    readonly bulkCreate = Effect.fn('MccGroupRepository.bulkCreate')(function* (inputs: MccGroupCreateEntityInterface[]) {
+        return yield* Db.query(db => db.insert(MccGroupEntityTable).values(inputs).returning());
+    });
+
+    readonly upsert = Effect.fn('MccGroupRepository.upsert')(function* (input: MccGroupCreateEntityInterface) {
+        const [mccGroup] = yield* Db.query(db =>
+            db
+                .insert(MccGroupEntityTable)
+                .values(input)
+                .onConflictDoUpdate({
+                    target: MccGroupEntityTable.type,
+                    set: {
+                        description: input.description
+                    }
+                })
+                .returning()
+        );
+
+        return mccGroup;
+    });
+
+    readonly deleteByType = Effect.fn('MccGroupRepository.deleteByType')(function* (type: string) {
+        yield* Db.query(db => db.delete(MccGroupEntityTable).where(eq(MccGroupEntityTable.type, type)));
+    });
+
+    readonly truncate = Effect.fn('MccGroupRepository.truncate')(function* () {
+        yield* Db.query(db => db.delete(MccGroupEntityTable));
+    });
+
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
     findAll() {
@@ -19,38 +54,5 @@ export class MccGroupRepository {
         return this.db.query.MccGroupEntityTable.findFirst({
             where: eq(MccGroupEntityTable.type, type)
         });
-    }
-
-    async create(input: MccGroupCreateEntityInterface, tx?: DB): Promise<MccGroupEntityInterface> {
-        const [mccGroup] = await this.bulkCreate([input], tx);
-
-        return mccGroup;
-    }
-
-    async bulkCreate(inputs: MccGroupCreateEntityInterface[], tx?: DB): Promise<MccGroupEntityInterface[]> {
-        return await (tx ?? this.db).insert(MccGroupEntityTable).values(inputs).returning();
-    }
-
-    async upsert(input: MccGroupCreateEntityInterface, tx?: DB): Promise<MccGroupEntityInterface> {
-        const [mccGroup] = await (tx ?? this.db)
-            .insert(MccGroupEntityTable)
-            .values(input)
-            .onConflictDoUpdate({
-                target: MccGroupEntityTable.type,
-                set: {
-                    description: input.description
-                }
-            })
-            .returning();
-
-        return mccGroup;
-    }
-
-    async deleteByType(type: string): Promise<void> {
-        await this.db.delete(MccGroupEntityTable).where(eq(MccGroupEntityTable.type, type));
-    }
-
-    async truncate(tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(MccGroupEntityTable);
     }
 }

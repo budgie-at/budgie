@@ -1,14 +1,31 @@
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 
-import { DB } from '../../@generic/type/db.type';
+import { Db } from '../../@generic/service/db.service';
 import { MccCategoryCreateEntityInterface } from '../entity/mcc-category-create-entity.interface';
 import { MccCategoryEntityTable } from '../table/mcc-category-entity.table';
 
 import type * as schema from '../../schema';
-import type { MccCategoryEntityInterface } from '../entity/mcc-category-entity.interface';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class MccCategoryRepository {
+    readonly create = Effect.fn('MccCategoryRepository.create')(function* (
+        this: MccCategoryRepository,
+        input: MccCategoryCreateEntityInterface
+    ) {
+        const [mccCategory] = yield* this.bulkCreate([input]);
+
+        return mccCategory;
+    });
+
+    readonly bulkCreate = Effect.fn('MccCategoryRepository.bulkCreate')(function* (inputs: MccCategoryCreateEntityInterface[]) {
+        return yield* Db.query(db => db.insert(MccCategoryEntityTable).values(inputs).returning());
+    });
+
+    readonly truncate = Effect.fn('MccCategoryRepository.truncate')(function* () {
+        yield* Db.query(db => db.delete(MccCategoryEntityTable));
+    });
+
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
     findAll() {
@@ -19,19 +36,5 @@ export class MccCategoryRepository {
         return this.db.query.MccCategoryEntityTable.findFirst({
             where: eq(MccCategoryEntityTable.id, id)
         });
-    }
-
-    async create(input: MccCategoryCreateEntityInterface, tx?: DB): Promise<MccCategoryEntityInterface> {
-        const [mccCategory] = await this.bulkCreate([input], tx);
-
-        return mccCategory;
-    }
-
-    async bulkCreate(inputs: MccCategoryCreateEntityInterface[], tx?: DB): Promise<MccCategoryEntityInterface[]> {
-        return await (tx ?? this.db).insert(MccCategoryEntityTable).values(inputs).returning();
-    }
-
-    async truncate(tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(MccCategoryEntityTable);
     }
 }

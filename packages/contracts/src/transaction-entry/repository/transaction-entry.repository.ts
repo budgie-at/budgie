@@ -1,274 +1,290 @@
-import { Log } from '@budgie/logger';
 import { and, count, eq, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { Db } from '../../@generic/service/db.service';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
-import type { DB } from '../../@generic/type/db.type';
 import type { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity.interface';
-import type { TransactionEntryEntityInterface } from '../entity/transaction-entry-entity.interface';
 import type { TransactionEntryUpdateInputInterface } from '../input/transaction-entry-update-input.interface';
 import type { BaseValuationBucketUpdateInterface } from '../interface/base-valuation-bucket-update.interface';
-import type { PendingBaseValuationBucketInterface } from '../interface/pending-base-valuation-bucket.interface';
 
 export class TransactionEntryRepository {
-    constructor(private db: DB) {}
-
-    @Log(
-        (sourceIds, canonicalId, tx) => `enter sourceIds=${sourceIds.join(',')} canonicalId=${canonicalId} inTx=${String(isDefined(tx))}`,
-        'done',
-        (error, sourceIds, canonicalId, tx) =>
-            `throw sourceIds=${sourceIds.join(',')} canonicalId=${canonicalId} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async moveToConsolidatedTransaction(sourceTransactionIds: number[], canonicalTransactionId: number, tx?: DB): Promise<void> {
+    readonly moveToConsolidatedTransaction = Effect.fn('TransactionEntryRepository.moveToConsolidatedTransaction')(function* (
+        sourceTransactionIds: number[],
+        canonicalTransactionId: number
+    ) {
         if (!isNotEmptyArray(sourceTransactionIds)) {
             return;
         }
 
-        await (tx ?? this.db)
-            .update(TransactionEntryEntityTable)
-            .set({
-                originalTransactionId: TransactionEntryEntityTable.transactionId,
-                transactionId: canonicalTransactionId
-            })
-            .where(
-                and(
-                    inArray(TransactionEntryEntityTable.transactionId, sourceTransactionIds),
-                    isNull(TransactionEntryEntityTable.originalTransactionId),
-                    isNull(TransactionEntryEntityTable.deletedAt)
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntryEntityTable)
+                .set({
+                    originalTransactionId: TransactionEntryEntityTable.transactionId,
+                    transactionId: canonicalTransactionId
+                })
+                .where(
+                    and(
+                        inArray(TransactionEntryEntityTable.transactionId, sourceTransactionIds),
+                        isNull(TransactionEntryEntityTable.originalTransactionId),
+                        isNull(TransactionEntryEntityTable.deletedAt)
+                    )
                 )
-            );
-    }
+        );
+    });
 
-    @Log(
-        (canonicalId, tx) => `enter canonicalId=${canonicalId} inTx=${String(isDefined(tx))}`,
-        'done',
-        (error, canonicalId, tx) => `throw canonicalId=${canonicalId} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async moveBackToOriginalTransactions(canonicalTransactionId: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntryEntityTable)
-            .set({
-                transactionId: TransactionEntryEntityTable.originalTransactionId,
-                originalTransactionId: null
-            })
-            .where(
-                and(
-                    eq(TransactionEntryEntityTable.transactionId, canonicalTransactionId),
-                    isNotNull(TransactionEntryEntityTable.originalTransactionId),
-                    isNull(TransactionEntryEntityTable.deletedAt)
+    readonly moveBackToOriginalTransactions = Effect.fn('TransactionEntryRepository.moveBackToOriginalTransactions')(function* (
+        canonicalTransactionId: number
+    ) {
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntryEntityTable)
+                .set({
+                    transactionId: TransactionEntryEntityTable.originalTransactionId,
+                    originalTransactionId: null
+                })
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.transactionId, canonicalTransactionId),
+                        isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                        isNull(TransactionEntryEntityTable.deletedAt)
+                    )
                 )
-            );
-    }
+        );
+    });
 
-    @Log(
-        (transactionIds, tx) => `enter transactionIds=${transactionIds.join(',')} inTx=${String(isDefined(tx))}`,
-        (result, transactionIds, tx) =>
-            `done result=${String(result)} transactionIds=${transactionIds.join(',')} inTx=${String(isDefined(tx))}`,
-        (error, transactionIds, tx) =>
-            `throw transactionIds=${transactionIds.join(',')} inTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async hasMovedSourceEntries(transactionIds: number[], tx?: DB): Promise<boolean> {
+    readonly hasMovedSourceEntries = Effect.fn('TransactionEntryRepository.hasMovedSourceEntries')(function* (transactionIds: number[]) {
         if (!isNotEmptyArray(transactionIds)) {
             return false;
         }
 
-        const [entry] = await (tx ?? this.db)
-            .select({ id: TransactionEntryEntityTable.id })
-            .from(TransactionEntryEntityTable)
-            .where(
-                and(
-                    inArray(TransactionEntryEntityTable.transactionId, transactionIds),
-                    isNotNull(TransactionEntryEntityTable.originalTransactionId),
-                    isNull(TransactionEntryEntityTable.deletedAt)
+        const [entry] = yield* Db.query(db =>
+            db
+                .select({ id: TransactionEntryEntityTable.id })
+                .from(TransactionEntryEntityTable)
+                .where(
+                    and(
+                        inArray(TransactionEntryEntityTable.transactionId, transactionIds),
+                        isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                        isNull(TransactionEntryEntityTable.deletedAt)
+                    )
                 )
-            )
-            .limit(1);
+                .limit(1)
+        );
 
         return isDefined(entry);
-    }
+    });
 
-    async bulkCreate(inputs: TransactionEntryCreateEntityInterface[], tx?: DB): Promise<TransactionEntryEntityInterface[]> {
-        if (isNotEmptyArray(inputs)) {
-            return await (tx ?? this.db).insert(TransactionEntryEntityTable).values(inputs).returning();
-        }
+    readonly bulkCreate = Effect.fn('TransactionEntryRepository.bulkCreate')(function* (inputs: TransactionEntryCreateEntityInterface[]) {
+        return isNotEmptyArray(inputs) ? yield* Db.query(db => db.insert(TransactionEntryEntityTable).values(inputs).returning()) : [];
+    });
 
-        return [];
-    }
-
-    async create(input: TransactionEntryCreateEntityInterface, tx?: DB): Promise<TransactionEntryEntityInterface> {
-        const [transactionEntry] = await (tx ?? this.db).insert(TransactionEntryEntityTable).values([input]).returning();
+    readonly create = Effect.fn('TransactionEntryRepository.create')(function* (input: TransactionEntryCreateEntityInterface) {
+        const [transactionEntry] = yield* Db.query(db => db.insert(TransactionEntryEntityTable).values([input]).returning());
 
         return transactionEntry;
-    }
+    });
 
-    async findPendingBaseValuationBuckets(baseInstrumentId: number, tx?: DB): Promise<PendingBaseValuationBucketInterface[]> {
+    readonly findPendingBaseValuationBuckets = Effect.fn('TransactionEntryRepository.findPendingBaseValuationBuckets')(function* (
+        this: TransactionEntryRepository,
+        baseInstrumentId: number
+    ) {
         const originalTransaction = alias(TransactionEntityTable, 'original_transaction');
         const rateDateSql = sql<string>`date(COALESCE(${originalTransaction.operatedAt}, ${TransactionEntityTable.operatedAt}), 'unixepoch')`;
 
-        return await (tx ?? this.db)
-            .select({
-                rateDate: rateDateSql,
-                sourceInstrumentId: AccountEntityTable.instrumentId,
-                entryCount: count(TransactionEntryEntityTable.id)
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .leftJoin(originalTransaction, eq(originalTransaction.id, TransactionEntryEntityTable.originalTransactionId))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(this.buildPendingBaseValuationWhere(baseInstrumentId))
-            .groupBy(rateDateSql, AccountEntityTable.instrumentId);
-    }
+        return yield* Db.query(db =>
+            db
+                .select({
+                    rateDate: rateDateSql,
+                    sourceInstrumentId: AccountEntityTable.instrumentId,
+                    entryCount: count(TransactionEntryEntityTable.id)
+                })
+                .from(TransactionEntryEntityTable)
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .leftJoin(originalTransaction, eq(originalTransaction.id, TransactionEntryEntityTable.originalTransactionId))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                .where(this.buildPendingBaseValuationWhere(baseInstrumentId))
+                .groupBy(rateDateSql, AccountEntityTable.instrumentId)
+        );
+    });
 
-    async countPendingBaseValuationEntries(baseInstrumentId: number, tx?: DB): Promise<number> {
-        const [row] = await (tx ?? this.db)
-            .select({ count: count(TransactionEntryEntityTable.id) })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(this.buildPendingBaseValuationWhere(baseInstrumentId));
+    readonly countPendingBaseValuationEntries = Effect.fn('TransactionEntryRepository.countPendingBaseValuationEntries')(function* (
+        this: TransactionEntryRepository,
+        baseInstrumentId: number
+    ) {
+        const [row] = yield* Db.query(db =>
+            db
+                .select({ count: count(TransactionEntryEntityTable.id) })
+                .from(TransactionEntryEntityTable)
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                .where(this.buildPendingBaseValuationWhere(baseInstrumentId))
+        );
 
         return row.count;
-    }
+    });
 
-    async updateBaseValuationBucket(input: BaseValuationBucketUpdateInterface, tx?: DB): Promise<void> {
-        (tx ?? this.db).run(sql`
-            UPDATE transaction_entries
-            SET base_instrument_id = ${input.baseInstrumentId},
-                base_exchange_rate = ${input.baseExchangeRate},
-                base_amount = ROUND(amount * ${input.baseExchangeRate})
-            WHERE id IN (
-                SELECT te.id
-                FROM transaction_entries te
-                INNER JOIN transactions t ON t.id = te.transaction_id
-                LEFT JOIN transactions original_t ON original_t.id = te.original_transaction_id
-                INNER JOIN accounts a ON a.id = te.account_id
-                WHERE date(COALESCE(original_t.operated_at, t.operated_at), 'unixepoch') = ${input.rateDate}
-                  AND a.instrument_id = ${input.sourceInstrumentId}
-                  AND te.deleted_at IS NULL
-                  AND t.deleted_at IS NULL
-                  AND a.deleted_at IS NULL
-                  AND (
-                    te.base_amount IS NULL
-                    OR te.base_exchange_rate IS NULL
-                    OR te.base_instrument_id IS NULL
-                    OR te.base_instrument_id != ${input.baseInstrumentId}
-                  )
+    readonly updateBaseValuationBucket = Effect.fn('TransactionEntryRepository.updateBaseValuationBucket')(function* (
+        input: BaseValuationBucketUpdateInterface
+    ) {
+        yield* Db.query(db =>
+            Promise.resolve(
+                db.run(sql`
+                    UPDATE transaction_entries
+                    SET base_instrument_id = ${input.baseInstrumentId},
+                        base_exchange_rate = ${input.baseExchangeRate},
+                        base_amount = ROUND(amount * ${input.baseExchangeRate})
+                    WHERE id IN (
+                        SELECT te.id
+                        FROM transaction_entries te
+                        INNER JOIN transactions t ON t.id = te.transaction_id
+                        LEFT JOIN transactions original_t ON original_t.id = te.original_transaction_id
+                        INNER JOIN accounts a ON a.id = te.account_id
+                        WHERE date(COALESCE(original_t.operated_at, t.operated_at), 'unixepoch') = ${input.rateDate}
+                          AND a.instrument_id = ${input.sourceInstrumentId}
+                          AND te.deleted_at IS NULL
+                          AND t.deleted_at IS NULL
+                          AND a.deleted_at IS NULL
+                          AND (
+                            te.base_amount IS NULL
+                            OR te.base_exchange_rate IS NULL
+                            OR te.base_instrument_id IS NULL
+                            OR te.base_instrument_id != ${input.baseInstrumentId}
+                          )
+                    )
+                `)
             )
-        `);
-    }
+        );
+    });
 
-    async updateById(id: number, input: TransactionEntryUpdateInputInterface, tx?: DB): Promise<TransactionEntryEntityInterface> {
-        const [transactionEntry] = await (tx ?? this.db)
-            .update(TransactionEntryEntityTable)
-            .set(input)
-            .where(eq(TransactionEntryEntityTable.id, id))
-            .returning();
+    readonly updateById = Effect.fn('TransactionEntryRepository.updateById')(function* (
+        id: number,
+        input: TransactionEntryUpdateInputInterface
+    ) {
+        const [transactionEntry] = yield* Db.query(db =>
+            db.update(TransactionEntryEntityTable).set(input).where(eq(TransactionEntryEntityTable.id, id)).returning()
+        );
 
         if (!isDefined(transactionEntry)) {
-            throw new Error(`Transaction entry ${id} not found`);
+            return yield* Effect.die(new Error(`Transaction entry ${id} not found`));
         }
 
         return transactionEntry;
-    }
+    });
 
-    async findByExternalIdAndAccountId(
+    readonly findByExternalIdAndAccountId = Effect.fn('TransactionEntryRepository.findByExternalIdAndAccountId')(function* (
         externalId: string,
-        accountId: number,
-        tx?: DB
-    ): Promise<TransactionEntryEntityInterface | undefined> {
-        return await (tx ?? this.db).query.TransactionEntryEntityTable.findFirst({
-            where: and(
-                eq(TransactionEntryEntityTable.externalId, externalId),
-                eq(TransactionEntryEntityTable.accountId, accountId),
-                isNull(TransactionEntryEntityTable.deletedAt)
-            )
-        });
-    }
-
-    async findByTransactionIdAndExternalId(
-        transactionId: number,
-        externalId: string,
-        tx?: DB
-    ): Promise<TransactionEntryEntityInterface | undefined> {
-        return await (tx ?? this.db).query.TransactionEntryEntityTable.findFirst({
-            where: and(
-                eq(TransactionEntryEntityTable.externalId, externalId),
-                or(
-                    eq(TransactionEntryEntityTable.transactionId, transactionId),
-                    eq(TransactionEntryEntityTable.originalTransactionId, transactionId)
-                ),
-                isNull(TransactionEntryEntityTable.deletedAt)
-            )
-        });
-    }
-
-    async updateByExternalIdAndAccountId(
-        externalId: string,
-        accountId: number,
-        input: TransactionEntryUpdateInputInterface,
-        tx?: DB
-    ): Promise<TransactionEntryEntityInterface | undefined> {
-        const [transactionEntry] = await (tx ?? this.db)
-            .update(TransactionEntryEntityTable)
-            .set(input)
-            .where(
-                and(
+        accountId: number
+    ) {
+        return yield* Db.query(db =>
+            db.query.TransactionEntryEntityTable.findFirst({
+                where: and(
                     eq(TransactionEntryEntityTable.externalId, externalId),
                     eq(TransactionEntryEntityTable.accountId, accountId),
                     isNull(TransactionEntryEntityTable.deletedAt)
                 )
-            )
-            .returning();
+            })
+        );
+    });
 
-        return transactionEntry;
-    }
+    readonly findByTransactionIdAndExternalId = Effect.fn('TransactionEntryRepository.findByTransactionIdAndExternalId')(function* (
+        transactionId: number,
+        externalId: string
+    ) {
+        return yield* Db.query(db =>
+            db.query.TransactionEntryEntityTable.findFirst({
+                where: and(
+                    eq(TransactionEntryEntityTable.externalId, externalId),
+                    or(
+                        eq(TransactionEntryEntityTable.transactionId, transactionId),
+                        eq(TransactionEntryEntityTable.originalTransactionId, transactionId)
+                    ),
+                    isNull(TransactionEntryEntityTable.deletedAt)
+                )
+            })
+        );
+    });
 
-    async deleteByTransactionId(transactionId: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId));
-    }
+    readonly updateByExternalIdAndAccountId = Effect.fn('TransactionEntryRepository.updateByExternalIdAndAccountId')(function* (
+        externalId: string,
+        accountId: number,
+        input: TransactionEntryUpdateInputInterface
+    ) {
+        const transactionEntries = yield* Db.query(db =>
+            db
+                .update(TransactionEntryEntityTable)
+                .set(input)
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.externalId, externalId),
+                        eq(TransactionEntryEntityTable.accountId, accountId),
+                        isNull(TransactionEntryEntityTable.deletedAt)
+                    )
+                )
+                .returning()
+        );
 
-    async deleteLedgerByTransactionId(transactionId: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .delete(TransactionEntryEntityTable)
-            .where(
-                and(eq(TransactionEntryEntityTable.transactionId, transactionId), isNull(TransactionEntryEntityTable.originalTransactionId))
-            );
-    }
+        return transactionEntries.at(0);
+    });
 
-    async deleteByTransactionIds(transactionIds: number[], tx?: DB): Promise<void> {
-        if (isNotEmptyArray(transactionIds)) {
-            await (tx ?? this.db)
+    readonly deleteByTransactionId = Effect.fn('TransactionEntryRepository.deleteByTransactionId')(function* (transactionId: number) {
+        yield* Db.query(db => db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId)));
+    });
+
+    readonly deleteLedgerByTransactionId = Effect.fn('TransactionEntryRepository.deleteLedgerByTransactionId')(function* (
+        transactionId: number
+    ) {
+        yield* Db.query(db =>
+            db
                 .delete(TransactionEntryEntityTable)
-                .where(inArray(TransactionEntryEntityTable.transactionId, transactionIds));
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.transactionId, transactionId),
+                        isNull(TransactionEntryEntityTable.originalTransactionId)
+                    )
+                )
+        );
+    });
+
+    readonly deleteByTransactionIds = Effect.fn('TransactionEntryRepository.deleteByTransactionIds')(function* (transactionIds: number[]) {
+        if (isNotEmptyArray(transactionIds)) {
+            yield* Db.query(db =>
+                db.delete(TransactionEntryEntityTable).where(inArray(TransactionEntryEntityTable.transactionId, transactionIds))
+            );
         }
-    }
+    });
 
-    async truncate(tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(TransactionEntryEntityTable);
-    }
+    readonly truncate = Effect.fn('TransactionEntryRepository.truncate')(function* () {
+        yield* Db.query(db => db.delete(TransactionEntryEntityTable));
+    });
 
-    async archiveByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntryEntityTable)
-            .set({ deletedAt: new Date() })
-            .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), isNull(TransactionEntryEntityTable.deletedAt)));
-    }
+    readonly archiveByAccountIds = Effect.fn('TransactionEntryRepository.archiveByAccountIds')(function* (accountIds: number[]) {
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntryEntityTable)
+                .set({ deletedAt: new Date() })
+                .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), isNull(TransactionEntryEntityTable.deletedAt)))
+        );
+    });
 
-    async restoreByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(TransactionEntryEntityTable)
-            .set({ deletedAt: null })
-            .where(inArray(TransactionEntryEntityTable.accountId, accountIds));
-    }
+    readonly restoreByAccountIds = Effect.fn('TransactionEntryRepository.restoreByAccountIds')(function* (accountIds: number[]) {
+        yield* Db.query(db =>
+            db
+                .update(TransactionEntryEntityTable)
+                .set({ deletedAt: null })
+                .where(inArray(TransactionEntryEntityTable.accountId, accountIds))
+        );
+    });
 
-    async deleteByAccountId(accountId: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId));
-    }
+    readonly deleteByAccountId = Effect.fn('TransactionEntryRepository.deleteByAccountId')(function* (accountId: number) {
+        yield* Db.query(db => db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId)));
+    });
 
     private buildPendingBaseValuationWhere(baseInstrumentId: number) {
         return and(
