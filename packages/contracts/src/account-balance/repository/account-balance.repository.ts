@@ -35,11 +35,14 @@ export class AccountBalanceRepository {
     private static readonly CRYPTO_ACCOUNT_TYPES = [AccountTypeEnum.CRYPTO, AccountTypeEnum.CRYPTO_SYNC];
     private static readonly LIQUID_ACCOUNT_TYPES = [AccountTypeEnum.CASH, AccountTypeEnum.BANK, AccountTypeEnum.BANK_SYNC];
     constructor(private db: DB) {}
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async getNewTransactionEntriesDeltas(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
-        const database = tx ?? this.db;
-        const results = await database
-            .select({ accountId: TransactionEntryEntityTable.accountId, delta: this.getTransactionsSumSql().mapWith(Number) })
+    @Log(
+        accountIds => `enter accountCount=${accountIds.length}`,
+        (result, accountIds) => `done accountCount=${accountIds.length} balanceCount=${result.size}`,
+        (error, accountIds) => `throw accountCount=${accountIds.length} error=${getErrorMessage(error)}`
+    )
+    async getLedgerBalances(accountIds: number[], tx?: DB): Promise<Map<number, number>> {
+        const results = await (tx ?? this.db)
+            .select({ accountId: TransactionEntryEntityTable.accountId, balance: this.getTransactionsSumSql().mapWith(Number) })
             .from(TransactionEntryEntityTable)
             .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
             .where(
@@ -47,16 +50,12 @@ export class AccountBalanceRepository {
                     isNull(TransactionEntryEntityTable.deletedAt),
                     accountBalanceLedgerSqlBuilder.getLiveTransactionConditionSql(),
                     accountBalanceLedgerSqlBuilder.getBalanceLedgerEntryConditionSql(),
-                    inArray(TransactionEntryEntityTable.accountId, accountIds),
-                    sql`(
-                        NOT EXISTS (SELECT 1 FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${TransactionEntryEntityTable.accountId})
-                        OR ${TransactionEntryEntityTable.createdAt} > (SELECT MAX(${AccountBalanceEntityTable.updatedAt}) FROM ${AccountBalanceEntityTable} WHERE ${AccountBalanceEntityTable.accountId} = ${TransactionEntryEntityTable.accountId})
-                    )`
+                    inArray(TransactionEntryEntityTable.accountId, accountIds)
                 )
             )
             .groupBy(TransactionEntryEntityTable.accountId);
 
-        return new Map(results.map(({ accountId, delta }) => [accountId, delta]));
+        return new Map(results.map(({ accountId, balance }) => [accountId, balance]));
     }
 
     @Log(
