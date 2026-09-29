@@ -1,9 +1,6 @@
 import {
-    ConsolidationAutoCandidateService,
-    ConsolidationCandidateService,
     ConsolidationCoordinatorService,
     ConsolidationExecutorService,
-    ConsolidationFamilyRegistryService,
     ConsolidationRepairExecutorService,
     P2pFiatDirectionEnum
 } from '@budgie/consolidation';
@@ -39,17 +36,7 @@ const consolidationExecutorService = new ConsolidationExecutorService(consolidat
 
 const consolidationRepairExecutorService = new ConsolidationRepairExecutorService(consolidationExecutorDependencies);
 
-const consolidationCandidateService = new ConsolidationCandidateService(
-    {
-        atmCashWithdrawalRepository,
-        existingTransferRepository,
-        refundPairRepository,
-        transferPairRepository
-    },
-    microPause
-);
-
-const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryService(
+export const consolidationCoordinatorService = new ConsolidationCoordinatorService(
     {
         atmCashWithdrawalRepository,
         existingTransferRepository,
@@ -60,11 +47,4 @@ const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryServic
     consolidationExecutorService,
     consolidationRepairExecutorService,
     microPause
-);
-
-const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationFamilyRegistryService);
-
-export const consolidationCoordinatorService = new ConsolidationCoordinatorService(
-    consolidationCandidateService,
-    consolidationAutoCandidateService
 );

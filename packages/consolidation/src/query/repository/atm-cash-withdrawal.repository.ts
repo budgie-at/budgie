@@ -6,8 +6,6 @@ export class AtmCashWithdrawalRepository {
     constructor(private db: DB) {}
 
     async findCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<AtmCashWithdrawalCandidateInterface[]> {
-        const sql = buildAtmCashWithdrawalCandidatesSql(scope);
-
-        return this.db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(sql);
+        return this.db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(buildAtmCashWithdrawalCandidatesSql(scope));
     }
 }
