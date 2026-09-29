@@ -456,6 +456,13 @@
       "when": 1790678796477,
       "tag": "0067_revert_backfilled_atm_consolidations",
       "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "6",
+      "when": 1790686049987,
+      "tag": "0068_replace_needs_embedding_index",
+      "breakpoints": true
     }
   ]
 }
