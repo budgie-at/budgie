@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.10](https://github.com/budgie-at/budgie/compare/v6.85.9...v6.85.10) (2026-09-29)
+
+
+### Performance Improvements
+
+* **app:** keep settings and theme context values stable across writes ([c4955e7](https://github.com/budgie-at/budgie/commit/c4955e7ee0a8ea2260a444179486b073adda757e))
+* **app:** resolve entry valuation once per import batch ([c757001](https://github.com/budgie-at/budgie/commit/c757001a03b57b630d5ad178b2c2de75540f7bd0))
+
+
+
+
+
 ## [6.85.9](https://github.com/budgie-at/budgie/compare/v6.85.8...v6.85.9) (2026-09-28)
 
 **Note:** Version bump only for package @budgie-at/app

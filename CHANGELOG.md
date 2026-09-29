@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.85.10](https://github.com/budgie-at/budgie/compare/v6.85.9...v6.85.10) (2026-09-29)
+
+
+### Performance Improvements
+
+* **app:** keep settings and theme context values stable across writes ([c4955e7](https://github.com/budgie-at/budgie/commit/c4955e7ee0a8ea2260a444179486b073adda757e))
+* **app:** resolve entry valuation once per import batch ([c757001](https://github.com/budgie-at/budgie/commit/c757001a03b57b630d5ad178b2c2de75540f7bd0))
+* **app:** trim the categorize-inbox row query to its rendered columns ([36e608b](https://github.com/budgie-at/budgie/commit/36e608b47a4f4d08bd4f69490f7c0e9095e222a3)), closes [#1258](https://github.com/budgie-at/budgie/issues/1258) [#1241](https://github.com/budgie-at/budgie/issues/1241) [#1258](https://github.com/budgie-at/budgie/issues/1258)
+
+
+
+
+
 ## [6.85.9](https://github.com/budgie-at/budgie/compare/v6.85.8...v6.85.9) (2026-09-28)
 
 
