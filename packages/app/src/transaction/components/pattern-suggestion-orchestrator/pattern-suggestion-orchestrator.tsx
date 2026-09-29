@@ -1,16 +1,14 @@
 import { SuggestionStatus } from '@budgie/ai';
-import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TagEntityInterface, UserIconNameEnum, UserIconType } from '@budgie/contracts';
 
 import { isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
-import { usePatternSuggestionOrchestrator } from '../../hook/use-pattern-suggestion-orchestrator.hook';
 import { useRepeatedTransactionSuggestion } from '../../hook/use-repeated-transaction-suggestion.hook';
 import { PatternCategorySuggestion } from '../../interface/pattern-category-suggestion.type';
 import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator-config.type';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
 import { repeatedTransactionService } from '../../service/repeated-transaction.service';
-import { SuggestionOrchestratorStepEnum } from '../../type/suggestion-orchestrator-step.enum';
 import { getPatternComments } from '../../utils/get-pattern-comments.util';
 import { getPatternTagIds } from '../../utils/get-pattern-tag-ids.util';
 import { mergePatternCategories } from '../../utils/merge-pattern-categories.util';
@@ -23,7 +21,7 @@ interface Props extends SuggestionOrchestratorSharedProps {
 }
 
 const getPatternCategoryKey = (category: PatternCategorySuggestion): number => category.categoryId;
-const getPatternCategoryIcon = (category: PatternCategorySuggestion): UserIconNameEnum => category.categoryIcon;
+const getPatternCategoryIcon = (category: PatternCategorySuggestion): UserIconType => category.categoryIcon;
 const getPatternCategoryTitle = (category: PatternCategorySuggestion): string => category.categoryTitle;
 
 const getPatternTagKey = (tag: TagEntityInterface): number => tag.id;
@@ -80,15 +78,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
     const hasPatternTags = isNotEmptyArray(patternTagIds);
     const hasPatternComments = isNotEmptyArray(patternComments);
 
-    const step = usePatternSuggestionOrchestrator(config, {
-        isSplitActive,
-        canUsePattern,
-        hasCategorySelected,
-        hasTagsSelected,
-        hasComment,
-        hasPatternTags,
-        hasPatternComments
-    });
+    const isStageActive = !isSplitActive && canUsePattern;
 
     const fillPatternAmount = (selectedCategoryId: number): void => {
         if (!config.autoFillAmountFromPattern) {
@@ -134,7 +124,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
         handleSelectPatternTag(tag.id);
     };
 
-    if (step === SuggestionOrchestratorStepEnum.CATEGORY) {
+    if (isStageActive && !hasCategorySelected && config.loadPatternBeforeCategorySelection) {
         return (
             <IconTitleSuggestionRow
                 suggestions={patternCategories}
@@ -149,7 +139,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
         );
     }
 
-    if (step === SuggestionOrchestratorStepEnum.TAG) {
+    if (isStageActive && hasCategorySelected && !hasTagsSelected && hasPatternTags) {
         return (
             <IconTitleSuggestionRow
                 suggestions={resolvedPatternTags}
@@ -164,7 +154,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
         );
     }
 
-    if (step === SuggestionOrchestratorStepEnum.COMMENT) {
+    if (isStageActive && hasCategorySelected && !hasComment && config.allowPatternComments && hasPatternComments) {
         return (
             <IconTitleSuggestionRow
                 suggestions={patternComments}

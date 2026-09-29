@@ -1,14 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { useSyncExternalStore } from 'react';
 
-import { useAiTranslationStatus } from '../../hook/use-ai-translation-status.hook';
 import { aiTranslationStatusService } from '../../service/ai-translation-status.service';
 import { AiSubsystemCard } from '../ai-subsystem-card/ai-subsystem-card';
 
 const handleRebuild = () => aiTranslationStatusService.rebuild();
 
 export const AiTranslationStatusCard = () => {
-    const snapshot = useAiTranslationStatus();
+    const snapshot = useSyncExternalStore(aiTranslationStatusService.subscribe, aiTranslationStatusService.getSnapshot);
     const { t } = useLingui();
 
     return (

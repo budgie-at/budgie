@@ -17,7 +17,6 @@ import { transactionService } from '../../transaction/service/transaction.servic
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';
-import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { SyncAccountPreviewInterface } from '../interface/sync-account-preview.interface';
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 import { getSyncModule, loadSyncModule } from '../util/load-sync-module.util';
@@ -209,7 +208,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         try {
             await transferConsolidationService.consolidate(consolidationScope);
         } finally {
-            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope);
+            transferConsolidationDrainerService.enqueue(consolidationScope);
         }
     }
 
@@ -334,12 +333,16 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
             return 0;
         }
 
-        for (const bankTransaction of existingTransactions) {
-            await transactionService.update(await this.mapBankTransaction(bankTransaction, accountId));
-            await microPause();
+        const inputs = await Promise.all(
+            existingTransactions.map(async bankTransaction => this.mapBankTransaction(bankTransaction, accountId))
+        );
+        if (!this.isRunCurrent(runGeneration)) {
+            return 0;
         }
 
-        return existingTransactions.length;
+        await transactionService.bulkUpdateImported(inputs);
+
+        return inputs.length;
     }
 
     @Log(

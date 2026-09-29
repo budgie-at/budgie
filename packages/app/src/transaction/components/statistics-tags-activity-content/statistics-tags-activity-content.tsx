@@ -1,6 +1,7 @@
+import { statisticsRepository } from '../../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../../@generic/hook/use-database-live-query.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { StatsByTagsPanel } from '../../../tag/components/stats-by-tags-panel/stats-by-tags-panel';
-import { useGetExpenseByTagQuery } from '../../query/use-get-expense-by-tag.query';
-import { useGetIncomeByTagQuery } from '../../query/use-get-income-by-tag.query';
 
 import type { TransactionFilterInterface } from '@budgie/contracts';
 
@@ -11,8 +12,15 @@ interface Props {
 }
 
 export const StatisticsTagsActivityContent = ({ filters, income, expense }: Props) => {
-    const { incomeByTag } = useGetIncomeByTagQuery(filters);
-    const { expenseByTag } = useGetExpenseByTagQuery(filters);
+    const { defaultInstrument } = useSettingsContext();
+    const { data: incomeByTag } = useDatabaseLiveQuery(statisticsRepository.getIncomeByTagQuery(filters, defaultInstrument.id), [
+        filters,
+        defaultInstrument.id
+    ]);
+    const { data: expenseByTag } = useDatabaseLiveQuery(statisticsRepository.getExpenseByTagQuery(filters, defaultInstrument.id), [
+        filters,
+        defaultInstrument.id
+    ]);
 
     return <StatsByTagsPanel filters={filters} income={income} expense={expense} incomeByTag={incomeByTag} expenseByTag={expenseByTag} />;
 };

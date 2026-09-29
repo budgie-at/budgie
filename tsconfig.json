@@ -9,8 +9,7 @@
             "DOM"
         ],
         "types": [
-            "node",
-            "jest"
+            "node"
         ],
         "jsx": "react-jsx",
         "skipLibCheck": true,

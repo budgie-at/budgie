@@ -3,10 +3,11 @@ import { useLingui } from '@lingui/react/macro';
 import { useDeferredValue, useState } from 'react';
 
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
+import { accountRepository } from '../../../@generic/drizzle/db/db';
+import { useDatabaseLiveQuery } from '../../../@generic/hook/use-database-live-query.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { InactiveAccountCard } from '../../../account/component/inactive-account-card/inactive-account-card';
 import { InactiveAccountsEmptyState } from '../../../account/component/inactive-accounts-empty-state/inactive-accounts-empty-state';
-import { useGetInactiveAccountsQuery } from '../../../account/query/use-get-inactive-accounts.query';
 import { filterAccountsBySearchQuery } from '../../../account/utils/filter-accounts-by-search-query.util';
 
 import { InactiveAccountsPageSelector } from './inactive-accounts-page.selector';
@@ -18,8 +19,8 @@ export default function Inactive() {
     const [search, setSearch] = useState('');
     const deferredSearch = useDeferredValue(search);
 
-    const { accounts } = useGetInactiveAccountsQuery();
-    const filteredAccounts = filterAccountsBySearchQuery(accounts, deferredSearch);
+    const { data } = useDatabaseLiveQuery(accountRepository.getAllInactive());
+    const filteredAccounts = filterAccountsBySearchQuery(data, deferredSearch);
 
     const renderCard = (account: AccountWithInstrumentEntityInterface) => <InactiveAccountCard account={account} />;
 

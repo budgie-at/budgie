@@ -38,11 +38,6 @@ type CountConditionsParamsType = {
     readonly conditionMatchType: RuleConditionMatchTypeEnum;
 };
 
-type FindMatchingTransactionsResultType = {
-    readonly transactions: TransactionWithEntriesMccCategoryEntityInterface[];
-    readonly count: number;
-};
-
 class RuleMatcherService {
     private static readonly UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN = /[\\^$.*+?()[\]{}|]/u;
 
@@ -65,52 +60,9 @@ class RuleMatcherService {
             return transactionRuleRepository.countByRuleConditions(sqlWhere);
         }
 
-        if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+        const matchingIds = await this.findMatchingIds(conditions, conditionMatchType);
 
-            return this.countWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
-        }
-
-        return this.countMatchingTransactionsLegacy(params);
-    }
-
-    @Log(
-        (params, limit) => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit}`,
-        result => `done count=${result.count} returned=${result.transactions.length}`,
-        (error, params, limit) =>
-            `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit} error=${getErrorMessage(error)}`
-    )
-    // eslint-disable-next-line max-statements -- Multiple branching paths with SQL and fallback logic
-    async findMatchingTransactions(params: CountConditionsParamsType, limit: number): Promise<FindMatchingTransactionsResultType> {
-        const { conditions, conditionMatchType } = params;
-        const emptyResult: FindMatchingTransactionsResultType = { transactions: [], count: 0 };
-
-        if (!isNotEmptyArray(conditions)) {
-            return emptyResult;
-        }
-
-        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(conditions, conditionMatchType);
-
-        if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            const allIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-            const count = allIds.length;
-            const slicedIds = allIds.slice(0, limit);
-            const transactions = isNotEmptyArray(slicedIds) ? await transactionRepository.findByIdsWithEntries(slicedIds) : [];
-
-            return { transactions, count };
-        }
-
-        if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-            const matchingIds = await this.filterWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
-            const count = matchingIds.length;
-            const slicedIds = matchingIds.slice(0, limit);
-            const transactions = isNotEmptyArray(slicedIds) ? await transactionRepository.findByIdsWithEntries(slicedIds) : [];
-
-            return { transactions, count };
-        }
-
-        return this.findMatchingTransactionsLegacy(params, limit);
+        return matchingIds.length;
     }
 
     @Log(
@@ -123,19 +75,7 @@ class RuleMatcherService {
             return [];
         }
 
-        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
-
-        if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            return transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-        }
-
-        if (isDefined(sqlWhere) && rule.conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-
-            return this.filterWithFallbackConditions(candidateIds, fallbackConditions, rule.conditionMatchType);
-        }
-
-        return this.collectMatchingTransactionIdsLegacy(rule);
+        return this.findMatchingIds(rule.conditions, rule.conditionMatchType);
     }
 
     @Log(
@@ -144,10 +84,6 @@ class RuleMatcherService {
         (error, rule, input) => `throw ruleId=${rule.id} title="${input.title}" error=${getErrorMessage(error)}`
     )
     evaluateRule(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
-        return this.isRuleMatch(rule, input);
-    }
-
-    private isRuleMatch(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
         if (input.type === TransactionTypeEnum.ADJUSTMENT) {
             return false;
         }
@@ -157,6 +93,25 @@ class RuleMatcherService {
         }
 
         return this.evaluateConditions(rule.conditions, rule.conditionMatchType, input);
+    }
+
+    private async findMatchingIds(
+        conditions: RuleConditionInputInterface[],
+        conditionMatchType: RuleConditionMatchTypeEnum
+    ): Promise<number[]> {
+        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(conditions, conditionMatchType);
+
+        if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
+            return transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+        }
+
+        if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
+            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+
+            return this.filterWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
+        }
+
+        return this.scanMatchingIds(conditions, conditionMatchType);
     }
 
     private buildRuleConditionsWhere(
@@ -300,34 +255,6 @@ class RuleMatcherService {
         };
     }
 
-    private async countWithFallbackConditions(
-        candidateIds: number[],
-        fallbackConditions: RuleConditionInputInterface[],
-        conditionMatchType: RuleConditionMatchTypeEnum
-    ): Promise<number> {
-        if (!isNotEmptyArray(candidateIds)) {
-            return 0;
-        }
-
-        let count = 0;
-
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.findByIdsWithEntries(batchIds);
-
-            const matchCount = transactions.filter(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                return this.evaluateConditions(fallbackConditions, conditionMatchType, input);
-            }).length;
-
-            count += matchCount;
-        }
-
-        return count;
-    }
-
     private async filterWithFallbackConditions(
         candidateIds: number[],
         fallbackConditions: RuleConditionInputInterface[],
@@ -356,63 +283,17 @@ class RuleMatcherService {
         return matchingIds;
     }
 
-    private async countMatchingTransactionsLegacy(params: CountConditionsParamsType): Promise<number> {
-        const { conditions, conditionMatchType } = params;
-
-        if (!isNotEmptyArray(conditions)) {
-            return 0;
-        }
-
-        let count = 0;
-
-        await this.forEachTransactionBatch(transactions => {
-            count += transactions.filter(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                return this.evaluateConditions(conditions, conditionMatchType, input);
-            }).length;
-        });
-
-        return count;
-    }
-
-    private async findMatchingTransactionsLegacy(
-        params: CountConditionsParamsType,
-        limit: number
-    ): Promise<FindMatchingTransactionsResultType> {
-        const { conditions, conditionMatchType } = params;
-
-        if (!isNotEmptyArray(conditions)) {
-            return { transactions: [], count: 0 };
-        }
-
+    private async scanMatchingIds(
+        conditions: RuleConditionInputInterface[],
+        conditionMatchType: RuleConditionMatchTypeEnum
+    ): Promise<number[]> {
         const matchingIds: number[] = [];
 
         await this.forEachTransactionBatch(transactions => {
             for (const transaction of transactions) {
                 const input = this.convertTransactionForRuleEvaluation(transaction);
 
-                if (this.evaluateConditions(conditions, conditionMatchType, input)) {
-                    matchingIds.push(transaction.id);
-                }
-            }
-        });
-
-        const count = matchingIds.length;
-        const slicedIds = matchingIds.slice(0, limit);
-        const resultTransactions = isNotEmptyArray(slicedIds) ? await transactionRepository.findByIdsWithEntries(slicedIds) : [];
-
-        return { transactions: resultTransactions, count };
-    }
-
-    private async collectMatchingTransactionIdsLegacy(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
-        const matchingIds: number[] = [];
-
-        await this.forEachTransactionBatch(transactions => {
-            for (const transaction of transactions) {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                if (this.isRuleMatch(rule, input)) {
+                if (input.type !== TransactionTypeEnum.ADJUSTMENT && this.evaluateConditions(conditions, conditionMatchType, input)) {
                     matchingIds.push(transaction.id);
                 }
             }

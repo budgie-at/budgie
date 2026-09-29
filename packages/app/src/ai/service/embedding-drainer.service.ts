@@ -15,7 +15,6 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
     private static readonly EMPTY_SNAPSHOT: DrainerSnapshotInterface = {
         state: DrainerStateEnum.IDLE,
         pending: 0,
-        lastDurationMs: 0,
         errorMessage: null
     };
 
@@ -127,7 +126,6 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         this.setSnapshot({
             state: EmbeddingDrainerService.deriveState(merchantSnap.state, commentSnap.state),
             pending: merchantSnap.pending + commentSnap.pending,
-            lastDurationMs: Math.max(merchantSnap.lastDurationMs, commentSnap.lastDurationMs),
             errorMessage: merchantSnap.errorMessage ?? commentSnap.errorMessage
         });
     }

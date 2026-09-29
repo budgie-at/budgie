@@ -9,6 +9,7 @@ import { budgetAlertMonitorService } from '../../budget/service/budget-alert-mon
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { historicalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
 import { onboardingService } from '../../onboarding/service/onboarding.service';
+import { appDataSyncService } from '../../sync/service/app-data-sync.service';
 import { binanceSyncService } from '../../sync/service/binance-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { syncWorkloadService } from '../../sync/service/sync-workload.service';
@@ -18,22 +19,6 @@ import { scheduleIdleCallback } from '../utils/schedule-idle-callback.util';
 
 const SPLASH_HIDE_DELAY_MS = 200;
 const STARTUP_SERVICE_DELAY_MS = 1_000;
-
-const syncAppData = async (): Promise<void> => {
-    await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
-
-    await exchangeRatesSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
-        return;
-    }
-
-    await monobankSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
-        return;
-    }
-
-    await binanceSyncService.sync().catch(emptyFn);
-};
 
 const initializeAppServices = async (): Promise<void> => {
     await authService.ensurePinBackgroundAccessibility().catch(emptyFn);
@@ -45,7 +30,7 @@ const initializeAppServices = async (): Promise<void> => {
     await budgetAlertMonitorService.registerBackgroundTask().catch(emptyFn);
     await widgetSnapshotService.registerBackgroundTask().catch(emptyFn);
     widgetSnapshotService.start();
-    await syncWorkloadService.run('startup', syncAppData);
+    await syncWorkloadService.run('startup', () => appDataSyncService.sync());
     await onboardingService.initializeLocale().catch(emptyFn);
     void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
 };

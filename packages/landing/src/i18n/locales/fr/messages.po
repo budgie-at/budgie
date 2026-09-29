@@ -3956,6 +3956,7 @@ msgstr "Block, la societe mere de Cash App, a revele qu'un ancien employe avait 
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
+#: src/blog/component/blog-article-page-shell/blog-article-page-shell.tsx
 #: src/generic/component/footer/footer.tsx
 #: src/generic/component/header/header.tsx
 #: src/generic/component/mobile-menu/mobile-menu.tsx
@@ -6870,10 +6871,6 @@ msgstr "API directe. Aucun agrégateur. Historique complet des transactions sur 
 msgid "Direct API. No aggregator. Yours forever."
 msgstr "API directe. Aucun agrégateur. Vôtre pour toujours."
 
-#: src/generic/component/banks-section/banks-section.tsx
-msgid "Direct Monobank API sync, plus PDF/Excel/CSV imports for any bank in the world"
-msgstr "Synchronisation directe via l'API Monobank, plus importations PDF/Excel/CSV pour toute banque dans le monde"
-
 #: src/app/[lang]/features/monobank-sync/page.tsx
 msgid "Direct Monobank Personal API — your token, your call"
 msgstr "API personnelle Monobank directe — votre jeton, votre choix"
@@ -7441,10 +7438,6 @@ msgstr "Envestnet Yodlee, un autre grand agregateur de donnees, a fait face a un
 msgid "erste"
 msgstr "erste"
 
-#: src/generic/component/banks-section/banks-section.tsx
-msgid "Erste Bank"
-msgstr "Erste Bank"
-
 #: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
 msgid "Erste Bank does not expose a public API for personal accounts. PDF statements are the only export. Budgie ships a parser tuned to the exact Erste statement layout — both the classic and the new 2026 modern format."
 msgstr "Erste Bank n'expose pas d'API publique pour les comptes personnels. Les relevés PDF sont le seul export. Budgie intègre un parseur adapté au format exact des relevés Erste Bank — à la fois le format classique et le nouveau format moderne 2026."
@@ -7887,57 +7880,9 @@ msgstr "Décisions fonctionnelles :"
 msgid "features"
 msgstr "fonctionnalités"
 
-#: src/app/[lang]/features/account-management/page.tsx
-#: src/app/[lang]/features/account-transfers/page.tsx
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
-#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
-#: src/app/[lang]/features/balance-adjustment/page.tsx
-#: src/app/[lang]/features/bank-fee-tracking/page.tsx
-#: src/app/[lang]/features/bank-integration-management/page.tsx
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-#: src/app/[lang]/features/binance-sync/page.tsx
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-#: src/app/[lang]/features/budget-planning/page.tsx
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-#: src/app/[lang]/features/categorization-rules/page.tsx
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-#: src/app/[lang]/features/csv-import/page.tsx
-#: src/app/[lang]/features/custom-categories/page.tsx
-#: src/app/[lang]/features/dark-mode/page.tsx
-#: src/app/[lang]/features/data-export/page.tsx
-#: src/app/[lang]/features/database-backup/page.tsx
-#: src/app/[lang]/features/date-filter-presets/page.tsx
-#: src/app/[lang]/features/debt-tracking/page.tsx
-#: src/app/[lang]/features/deposit-tracking/page.tsx
-#: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
-#: src/app/[lang]/features/expense-tracking/page.tsx
-#: src/app/[lang]/features/home-screen-widgets/page.tsx
-#: src/app/[lang]/features/mcc-auto-category/page.tsx
-#: src/app/[lang]/features/monobank-sync/page.tsx
-#: src/app/[lang]/features/multi-currency/page.tsx
-#: src/app/[lang]/features/multi-language-app/page.tsx
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
 #: src/app/[lang]/features/page.tsx
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-#: src/app/[lang]/features/primary-tag/page.tsx
-#: src/app/[lang]/features/privatbank-import/page.tsx
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-#: src/app/[lang]/features/runway/page.tsx
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-#: src/app/[lang]/features/spending-analytics/page.tsx
-#: src/app/[lang]/features/split-transactions/page.tsx
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-#: src/app/[lang]/features/sync-data-repairs/page.tsx
-#: src/app/[lang]/features/tag-analytics/page.tsx
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-#: src/app/[lang]/features/transaction-tags/page.tsx
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-#: src/app/[lang]/features/uncategorized-transactions/page.tsx
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
 #: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx
+#: src/feature/component/feature-page-shell/feature-page-shell.tsx
 #: src/generic/component/footer/footer.tsx
 #: src/generic/component/header/header.tsx
 #: src/generic/component/mobile-menu/mobile-menu.tsx
@@ -8654,61 +8599,14 @@ msgstr "Les positions se consolident dans le patrimoine net aux côtés des comp
 #: src/app/[lang]/blog/whats-new-august-september-2026/page.tsx
 #: src/app/[lang]/blog/whats-new-september-2026/page.tsx
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
-#: src/app/[lang]/features/account-management/page.tsx
-#: src/app/[lang]/features/account-transfers/page.tsx
-#: src/app/[lang]/features/ai-auto-categorization/page.tsx
-#: src/app/[lang]/features/ai-category-translation/page.tsx
-#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
-#: src/app/[lang]/features/ai-transaction-suggestions/page.tsx
-#: src/app/[lang]/features/balance-adjustment/page.tsx
-#: src/app/[lang]/features/bank-fee-tracking/page.tsx
-#: src/app/[lang]/features/bank-integration-management/page.tsx
-#: src/app/[lang]/features/bank-resync-window/page.tsx
-#: src/app/[lang]/features/binance-sync/page.tsx
-#: src/app/[lang]/features/biometric-authentication/page.tsx
-#: src/app/[lang]/features/budget-planning/page.tsx
-#: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
-#: src/app/[lang]/features/categorization-rules/page.tsx
-#: src/app/[lang]/features/crypto-investment-tracking/page.tsx
-#: src/app/[lang]/features/csv-import/page.tsx
-#: src/app/[lang]/features/custom-categories/page.tsx
-#: src/app/[lang]/features/dark-mode/page.tsx
-#: src/app/[lang]/features/data-export/page.tsx
-#: src/app/[lang]/features/database-backup/page.tsx
-#: src/app/[lang]/features/date-filter-presets/page.tsx
-#: src/app/[lang]/features/debt-tracking/page.tsx
-#: src/app/[lang]/features/deposit-tracking/page.tsx
-#: src/app/[lang]/features/erste-bank-pdf-import/page.tsx
-#: src/app/[lang]/features/expense-tracking/page.tsx
-#: src/app/[lang]/features/home-screen-widgets/page.tsx
-#: src/app/[lang]/features/mcc-auto-category/page.tsx
-#: src/app/[lang]/features/monobank-sync/page.tsx
-#: src/app/[lang]/features/multi-currency/page.tsx
-#: src/app/[lang]/features/multi-language-app/page.tsx
-#: src/app/[lang]/features/net-worth-tracker/page.tsx
 #: src/app/[lang]/features/page.tsx
-#: src/app/[lang]/features/pin-app-lock/page.tsx
-#: src/app/[lang]/features/primary-tag/page.tsx
-#: src/app/[lang]/features/privatbank-import/page.tsx
-#: src/app/[lang]/features/recurring-payments-calendar/page.tsx
-#: src/app/[lang]/features/runway/page.tsx
-#: src/app/[lang]/features/screenshot-protection/page.tsx
-#: src/app/[lang]/features/self-hosted-finance-app-mobile/page.tsx
-#: src/app/[lang]/features/spending-analytics/page.tsx
-#: src/app/[lang]/features/split-transactions/page.tsx
-#: src/app/[lang]/features/subscription-free-budget-app/page.tsx
-#: src/app/[lang]/features/sync-data-repairs/page.tsx
-#: src/app/[lang]/features/tag-analytics/page.tsx
-#: src/app/[lang]/features/transaction-long-press-menu/page.tsx
-#: src/app/[lang]/features/transaction-tags/page.tsx
-#: src/app/[lang]/features/transfer-pair-detection/page.tsx
-#: src/app/[lang]/features/uncategorized-transactions/page.tsx
-#: src/app/[lang]/features/voice-transaction-entry/page.tsx
 #: src/app/[lang]/offline-first/page.tsx
 #: src/app/[lang]/open-source/page.tsx
 #: src/app/[lang]/privacy/page.tsx
 #: src/app/[lang]/security/page.tsx
+#: src/blog/component/blog-article-page-shell/blog-article-page-shell.tsx
 #: src/feature/component/feature-breadcrumbs/feature-breadcrumbs.tsx
+#: src/feature/component/feature-page-shell/feature-page-shell.tsx
 #: src/feature/component/pillar-hub-breadcrumbs/pillar-hub-breadcrumbs.tsx
 msgid "Home"
 msgstr "Accueil"
@@ -10525,10 +10423,6 @@ msgstr "Argent que vous devez, argent qu'on vous doit"
 #: src/app/[lang]/features/monobank-sync/opengraph-image.tsx
 msgid "monobank"
 msgstr "monobank"
-
-#: src/generic/component/banks-section/banks-section.tsx
-msgid "Monobank"
-msgstr "Monobank"
 
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "Monobank and Binance connect with a personal API key for live, automatic sync. Erste and PrivatBank statements import directly from PDF or XLSX, and any other bank works through flexible CSV import with column mapping or a built-in preset."
@@ -12945,10 +12839,6 @@ msgstr "Confidentialité, Sécurité, Général et chaque groupe en dessous s’
 #: src/app/[lang]/features/privatbank-import/opengraph-image.tsx
 msgid "privatbank"
 msgstr "privatbank"
-
-#: src/generic/component/banks-section/banks-section.tsx
-msgid "PrivatBank"
-msgstr "PrivatBank"
 
 #: src/app/[lang]/features/privatbank-import/page.tsx
 msgid "PrivatBank exports XLSX with a fixed schema and proprietary MCC labels. Budgie parses both, mapping each PrivatBank category to the equivalent ISO MCC code so AI categorization downstream still works."

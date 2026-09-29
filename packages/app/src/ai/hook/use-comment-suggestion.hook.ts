@@ -1,11 +1,8 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
-import { getLogger } from '@budgie/logger';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
-
-const logger = getLogger('useCommentSuggestion');
 
 import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
@@ -28,26 +25,9 @@ export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSug
 
     const fetchSuggestions = async (): Promise<string[]> => {
         const mccDescription = mccCategory?.fullDescription ?? null;
-        logger.log('hook:suggestion:comment:fetch:start', {
-            transactionTitle,
-            categoryId,
-            mccCategoryId,
-            mccDescription,
-            comment,
-            aiContext
-        });
-        const results = await embeddingSuggestionService.suggestComments(categoryId, transactionTitle, mccDescription, comment, aiContext);
-        logger.log('hook:suggestion:comment:fetch:done', { count: results.length });
 
-        return results;
+        return embeddingSuggestionService.suggestComments(categoryId, transactionTitle, mccDescription, comment, aiContext);
     };
-
-    logger.log('hook:suggestion:comment:hook:state', {
-        enabled,
-        embeddingStatus,
-        embeddingReady,
-        isMccLoading
-    });
 
     const { status, suggestions } = useSuggestionBase({
         enabled,
