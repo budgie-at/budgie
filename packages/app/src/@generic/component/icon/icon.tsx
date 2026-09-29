@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { isEmojiIcon, UserIconNameEnum, UserIconType } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import ChartNoAxesColumn from 'lucide-react-native/icons/chart-no-axes-column';
 import CircleQuestionMark from 'lucide-react-native/icons/circle-question-mark';
@@ -7,8 +7,9 @@ import Receipt from 'lucide-react-native/icons/receipt';
 import Settings from 'lucide-react-native/icons/settings';
 import { styled } from 'nativewind';
 import { useEffect, useState } from 'react';
+import { Text } from 'react-native';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNumber } from '@rnw-community/shared';
 
 import { ICON_IMPORTS } from '../../constant/icons.constant';
 
@@ -17,7 +18,7 @@ import type { StyledLucideIconType } from '../../type/styled-lucide-icon.type';
 import type { LucideIcon, LucideProps } from 'lucide-react-native';
 
 interface IconProps extends LucideProps {
-    readonly icon: UserIconNameEnum;
+    readonly icon: UserIconType;
 }
 
 const createStyledIcon = (baseIcon: LucideIcon): StyledLucideIconType => styled(baseIcon, { className: { target: 'style' } });
@@ -60,6 +61,10 @@ export const Icon = ({ icon, ...rest }: IconProps) => {
     const [asyncResolvedIcon, setAsyncResolvedIcon] = useState<AsyncResolvedIconInterface | undefined>();
 
     useEffect(() => {
+        if (isEmojiIcon(icon) || isDefined(STYLED_ICON_CACHE.get(icon)) || !isDefined(ICON_IMPORTS[icon])) {
+            return emptyFn;
+        }
+
         let isSubscribed = true;
         const resolveIcon = async (): Promise<void> => {
             const styledIcon = await loadStyledIcon(icon);
@@ -68,14 +73,23 @@ export const Icon = ({ icon, ...rest }: IconProps) => {
             }
         };
 
-        if (!isDefined(STYLED_ICON_CACHE.get(icon)) && isDefined(ICON_IMPORTS[icon])) {
-            void resolveIcon().catch(emptyFn);
-        }
+        void resolveIcon().catch(emptyFn);
 
         return () => {
             isSubscribed = false;
         };
     }, [icon]);
+
+    if (isEmojiIcon(icon)) {
+        const emojiSize = isNumber(rest.size) ? rest.size : 24;
+        const emojiStyle = { fontSize: emojiSize * 0.8, lineHeight: emojiSize, textAlign: 'center' as const };
+
+        return (
+            <Text style={emojiStyle} allowFontScaling={false}>
+                {icon}
+            </Text>
+        );
+    }
 
     const cachedIcon = STYLED_ICON_CACHE.get(icon);
     const asyncIcon = asyncResolvedIcon?.icon === icon ? asyncResolvedIcon.styledIcon : STYLED_FALLBACK_ICON;

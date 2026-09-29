@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconType } from '@budgie/contracts';
 import { ReactNode } from 'react';
 import { Control } from 'react-hook-form';
 
@@ -13,7 +13,7 @@ import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in
 interface Props<
     T extends {
         title: string;
-        icon: UserIconNameEnum;
+        icon: UserIconType;
         instrumentId: number;
         currentBalance: number;
         includeInNetWorth?: boolean;
@@ -29,7 +29,7 @@ interface Props<
 export const CreateAccountCoreFields = <
     T extends {
         title: string;
-        icon: UserIconNameEnum;
+        icon: UserIconType;
         instrumentId: number;
         currentBalance: number;
         includeInNetWorth?: boolean;

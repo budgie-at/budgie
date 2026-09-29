@@ -2,7 +2,7 @@ import { createSelectSchema } from 'drizzle-zod';
 import { enum as zodEnum } from 'zod';
 
 import { BaseEntityFields } from '../../@generic/constant/base-entity-fields.constant';
-import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
+import { UserIconSchema } from '../../@generic/constant/user-icon-schema.constant';
 import { ACCOUNT_TITLE_MAX_LENGTH } from '../constant/account-title-max-length.constant';
 import { ACCOUNT_TITLE_MIN_LENGTH } from '../constant/account-title-min-length.constant';
 import { AccountDebtTypeEnum } from '../enum/account-debt-type.enum';
@@ -18,9 +18,7 @@ export const AccountEntitySchema = createSelectSchema(AccountEntityTable, {
     type: zodEnum(AccountTypeEnum).describe('The account type.'),
     debtType: zodEnum(AccountDebtTypeEnum).describe('The account debt type.'),
     order: schema => schema.nonnegative().default(0).describe('The account order.'),
-    icon: zodEnum(UserIconNameEnum, {
-        message: 'Invalid icon selected'
-    }).describe('The account icon.'),
+    icon: UserIconSchema.describe('The account icon.'),
     nature: zodEnum(AccountNatureEnum).describe('The account nature.'),
     externalId: schema => schema.nullable().default(null).describe('The external id of the account.'),
     externalSource: zodEnum(ExternalSourceEnum).nullable().default(null).describe('The external source of the account.'),

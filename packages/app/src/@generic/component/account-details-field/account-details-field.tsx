@@ -1,4 +1,4 @@
-import { ACCOUNT_TITLE_MAX_LENGTH, UserIconNameEnum } from '@budgie/contracts';
+import { ACCOUNT_TITLE_MAX_LENGTH, UserIconType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, FieldPath, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
@@ -10,14 +10,14 @@ import { FormItem } from '../form-item/form-item';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Input } from '../input/input';
 
-type AccountDetailsFieldsProps<T extends { title: string; icon: UserIconNameEnum }> = {
+type AccountDetailsFieldsProps<T extends { title: string; icon: UserIconType }> = {
     readonly control: Control<T>;
     readonly variant: ColorPaletteVariant;
     readonly nameInputTestID?: string;
     readonly selectNameOnFocus?: boolean;
 };
 
-export const AccountDetailsField = <T extends { title: string; icon: UserIconNameEnum }>({
+export const AccountDetailsField = <T extends { title: string; icon: UserIconType }>({
     control,
     variant,
     nameInputTestID,
@@ -28,7 +28,7 @@ export const AccountDetailsField = <T extends { title: string; icon: UserIconNam
 
     const renderIconField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => {
         const handlePress = async () => {
-            const selectedIcon = await openIconSelector({ selectedIcon: value as UserIconNameEnum, variant });
+            const selectedIcon = await openIconSelector({ selectedIcon: value as UserIconType, variant });
 
             if (selectedIcon) {
                 onChange(selectedIcon as Parameters<typeof onChange>[0]);
@@ -37,7 +37,7 @@ export const AccountDetailsField = <T extends { title: string; icon: UserIconNam
 
         return (
             <HapticPressable onPress={handlePress}>
-                <CircleIcon variant={variant} size={62} iconSize={28} icon={value as UserIconNameEnum} />
+                <CircleIcon variant={variant} size={62} iconSize={28} icon={value as UserIconType} />
             </HapticPressable>
         );
     };

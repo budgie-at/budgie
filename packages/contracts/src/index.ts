@@ -6,6 +6,10 @@ export { CurrencyEnum } from './@generic/enum/currency.enum';
 export { DatePeriodEnum } from './@generic/enum/date-period.enum';
 export { LanguageEnum } from './@generic/enum/language.enum';
 export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
+export { isEmojiIcon } from './@generic/type-guard/is-emoji-icon.type-guard';
+export { isUserIcon } from './@generic/type-guard/is-user-icon.type-guard';
+export type { EmojiIconType } from './@generic/type/emoji-icon.type';
+export type { UserIconType } from './@generic/type/user-icon.type';
 
 export type { AmountRangeInterface } from './@generic/interface/amount-range.interface';
 export type { CategoryScoreResultInterface } from './@generic/interface/category-score-result.interface';

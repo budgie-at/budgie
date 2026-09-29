@@ -90,6 +90,10 @@ msgstr "{categoryName}: {threshold}% ausgegeben"
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: Limit erreicht"
 
+#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
+msgid "{count, plural, one {# category uses the default icon} other {# categories use the default icon}}"
+msgstr "{count, plural, one {# Kategorie nutzt das Standardsymbol} other {# Kategorien nutzen das Standardsymbol}}"
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# vorhandene Transaktion passt zu dieser Regel.} other {# vorhandene Transaktionen passen zu dieser Regel.}}"
@@ -492,6 +496,10 @@ msgstr "Alle"
 msgid "All accounts already added"
 msgstr "Alle Konten wurden bereits hinzugefügt"
 
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "All categories have icons"
+msgstr "Alle Kategorien haben Symbole"
+
 #: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
 msgid "All caught up"
 msgstr "Alles erledigt"
@@ -891,6 +899,10 @@ msgstr "Kategorie"
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Category → {categoryTitle}"
 msgstr "Kategorie → {categoryTitle}"
+
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "Category Icons"
+msgstr "Kategoriesymbole"
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
@@ -1303,6 +1315,10 @@ msgstr "Tags konnten nicht hinzugefügt werden"
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Could not unconsolidate transaction."
 msgstr "Transaktion konnte nicht entkonsolidiert werden."
+
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
+msgid "Could not update category icon"
+msgstr "Kategoriesymbol konnte nicht aktualisiert werden"
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
@@ -2873,6 +2889,10 @@ msgstr "Notiz"
 msgid "Nothing from the past is imported"
 msgstr "Nichts aus der Vergangenheit wird importiert"
 
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "Nothing to fix here"
+msgstr "Hier gibt es nichts zu korrigieren"
+
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 #: src/runway/component/runway-meter/runway-meter.tsx
 msgid "now"
@@ -3120,6 +3140,7 @@ msgstr "Bitte versuchen Sie es erneut"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/category/components/category-form/category-form.tsx
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Please try again later"
 msgstr "Bitte versuchen Sie es später erneut"
@@ -3472,8 +3493,8 @@ msgid "Search expenses refunded by this income"
 msgstr "Ausgaben suchen, die diese Einnahme erstattet"
 
 #: src/app/icon-selector.tsx
-msgid "Search icons (e.g., money, travel, food)..."
-msgstr "Symbole durchsuchen (z. B. Geld, Reisen, Essen)..."
+msgid "Search icons and emoji in any language..."
+msgstr "Symbole und Emojis in jeder Sprache suchen..."
 
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Search inactive accounts..."
@@ -3851,6 +3872,7 @@ msgstr "Absenden"
 msgid "Subscriptions"
 msgstr "Abonnements"
 
+#: src/app/icon-selector.tsx
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Suggested"
 msgstr "Vorgeschlagen"
