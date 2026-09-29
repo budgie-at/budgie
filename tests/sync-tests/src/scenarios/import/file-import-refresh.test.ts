@@ -1,7 +1,7 @@
 import { databaseRefreshService } from '@app/@generic/service/database-refresh.service';
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { StubFileBankSyncService, seed } from '../../harness';
 
@@ -66,11 +66,9 @@ describe('import/file-import-refresh', () => {
         });
 
         await syncService.quickImport(STATEMENT_URI);
-        await vi.waitFor(() => {
-            expect(databaseRefreshService.getSnapshot(null)).toBe(initialVersion + 1);
-        });
         unsubscribe();
 
+        expect(databaseRefreshService.getSnapshot(null)).toBe(initialVersion + 1);
         expect(notificationCount).toBe(1);
     });
 });

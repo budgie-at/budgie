@@ -8,7 +8,6 @@ class DatabaseRefreshService {
     private static readonly COALESCE_MS = 50;
 
     private version = 0;
-    private isEverythingChanged = false;
     private pendingEmit: ReturnType<typeof setTimeout> | null = null;
     private tableChangeSubscription: ReturnType<typeof addDatabaseChangeListener> | null = null;
     private readonly tableVersions = new Map<string | null, number>();
@@ -31,8 +30,8 @@ class DatabaseRefreshService {
     }
 
     notifyChanged(): void {
-        this.isEverythingChanged = true;
-        this.scheduleEmit();
+        this.version += 1;
+        this.notifyListeners();
     }
 
     private readonly notifyTableChanged = (event: DatabaseChangeEvent): void => {
@@ -42,24 +41,20 @@ class DatabaseRefreshService {
 
     private scheduleEmit(): void {
         if (!isDefined(this.pendingEmit)) {
-            this.pendingEmit = setTimeout(this.emit, DatabaseRefreshService.COALESCE_MS);
+            this.pendingEmit = setTimeout(this.emitTableChanges, DatabaseRefreshService.COALESCE_MS);
         }
     }
 
-    private readonly emit = (): void => {
+    private readonly emitTableChanges = (): void => {
         this.pendingEmit = null;
-
-        if (this.isEverythingChanged) {
-            this.version += 1;
-        } else {
-            this.changedTableNames.forEach(tableName => {
-                this.tableVersions.set(tableName, (this.tableVersions.get(tableName) ?? 0) + 1);
-            });
-        }
-
-        this.isEverythingChanged = false;
+        this.changedTableNames.forEach(tableName => {
+            this.tableVersions.set(tableName, (this.tableVersions.get(tableName) ?? 0) + 1);
+        });
         this.changedTableNames.clear();
+        this.notifyListeners();
+    };
 
+    private notifyListeners(): void {
         this.listeners.forEach(listener => {
             try {
                 listener();
@@ -67,7 +62,7 @@ class DatabaseRefreshService {
                 emptyFn();
             }
         });
-    };
+    }
 }
 
 export const databaseRefreshService = new DatabaseRefreshService();
