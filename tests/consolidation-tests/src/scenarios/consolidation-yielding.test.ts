@@ -1,4 +1,4 @@
-import { ConsolidationAutoCandidateService, ConsolidationFamilyRegistryService } from '@budgie/consolidation';
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -20,7 +20,7 @@ describe('consolidation/yielding', () => {
         testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
         const yieldControl = vi.fn(async () => undefined);
-        const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryService(
+        const consolidationCoordinatorService = new ConsolidationCoordinatorService(
             {
                 atmCashWithdrawalRepository,
                 existingTransferRepository,
@@ -32,9 +32,8 @@ describe('consolidation/yielding', () => {
             consolidationRepairExecutorService,
             yieldControl
         );
-        const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationFamilyRegistryService);
 
-        const result = await consolidationAutoCandidateService.process();
+        const result = await consolidationCoordinatorService.consolidate();
 
         expect(result.consolidated).toBe(1);
         expect(yieldControl.mock.calls.length).toBeGreaterThan(1);

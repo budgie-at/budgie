@@ -1,10 +1,7 @@
 import { buildTestDb, createTestRepositories, TestQueryService, TestSeedService } from '@budgie-at/test-kit';
 import {
-    ConsolidationAutoCandidateService,
-    ConsolidationCandidateService,
     ConsolidationCoordinatorService,
     ConsolidationExecutorService,
-    ConsolidationFamilyRegistryService,
     ConsolidationRepairExecutorService,
     P2pFiatDirectionEnum,
     RefundConsolidationService,
@@ -42,7 +39,7 @@ export const consolidationExecutorService = new ConsolidationExecutorService(con
 
 export const consolidationRepairExecutorService = new ConsolidationRepairExecutorService(consolidationExecutorDependencies);
 
-const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryService(
+export const consolidationCoordinatorService = new ConsolidationCoordinatorService(
     {
         atmCashWithdrawalRepository: repositories.atmCashWithdrawalRepository,
         existingTransferRepository: repositories.existingTransferRepository,
@@ -53,23 +50,6 @@ const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryServic
     consolidationExecutorService,
     consolidationRepairExecutorService,
     yieldControl
-);
-
-export const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationFamilyRegistryService);
-
-const consolidationCandidateService = new ConsolidationCandidateService(
-    {
-        atmCashWithdrawalRepository: repositories.atmCashWithdrawalRepository,
-        existingTransferRepository: repositories.existingTransferRepository,
-        refundPairRepository: repositories.refundPairRepository,
-        transferPairRepository: repositories.transferPairRepository
-    },
-    yieldControl
-);
-
-export const consolidationCoordinatorService = new ConsolidationCoordinatorService(
-    consolidationCandidateService,
-    consolidationAutoCandidateService
 );
 
 export const unconsolidationService = new UnconsolidationService({

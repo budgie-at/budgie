@@ -1,4 +1,4 @@
-import { ConsolidationAutoCandidateService, ConsolidationFamilyRegistryService } from '@budgie/consolidation';
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -29,7 +29,7 @@ describe('consolidation/p2p canonical repair sequencing', () => {
         const yieldControl = async () => {
             events.push('yield');
         };
-        const consolidationFamilyRegistryService = new ConsolidationFamilyRegistryService(
+        const coordinator = new ConsolidationCoordinatorService(
             {
                 atmCashWithdrawalRepository,
                 existingTransferRepository,
@@ -42,7 +42,7 @@ describe('consolidation/p2p canonical repair sequencing', () => {
             yieldControl
         );
 
-        await new ConsolidationAutoCandidateService(consolidationFamilyRegistryService).process();
+        await coordinator.consolidate();
 
         expect(repairs).toStrictEqual([1, 2]);
         expect(events.slice(events.indexOf('start:1'), events.indexOf('end:2') + 1)).toStrictEqual([

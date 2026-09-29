@@ -1,7 +1,4 @@
-export { ConsolidationAutoCandidateService } from './auto/service/consolidation-auto-candidate.service';
-export { ConsolidationCandidateService } from './auto/service/consolidation-candidate.service';
 export { ConsolidationCoordinatorService } from './auto/service/consolidation-coordinator.service';
-export { ConsolidationFamilyRegistryService } from './auto/service/consolidation-family-registry.service';
 export { consolidationScopeService } from './auto/service/consolidation-scope.service';
 export { P2pFiatDirectionEnum } from './auto/enum/p2p-fiat-direction.enum';
 export { P2P_ORDER_EXTERNAL_ID_MARKER } from './shared/constant/transfer-pair-p2p-fiat.constant';
@@ -15,16 +12,7 @@ export { RefundConsolidationService } from './refund/service/refund-consolidatio
 export { TransferPairRepository } from './query/repository/transfer-pair.repository';
 export { UnconsolidationService } from './executor/service/unconsolidation.service';
 
-export type { ConsolidationFamilyPreviewInterface } from './auto/interface/consolidation-family-preview.interface';
-export type { ConsolidationFamilyRunContextInterface } from './auto/interface/consolidation-family-run-context.interface';
-export type { ConsolidationFamilyRunResultInterface } from './auto/interface/consolidation-family-run-result.interface';
-export type { ConsolidationFamilyStrategyInterface } from './auto/interface/consolidation-family-strategy.interface';
 export type { ConsolidationPreviewInterface } from './auto/interface/consolidation-preview.interface';
 export type { ConsolidationProgressSnapshotInterface } from './auto/interface/consolidation-progress-snapshot.interface';
 export type { ConsolidationResultInterface } from './auto/interface/consolidation-result.interface';
-export type { CanonicalTransferInputInterface } from './executor/interface/canonical-transfer-input.interface';
-export type { ConsolidationExecutorDependenciesInterface } from './executor/interface/consolidation-executor-dependencies.interface';
 export type { ConvertToRefundParamsInterface } from './refund/interface/convert-to-refund-params.interface';
-export type { RefundConsolidationDependenciesInterface } from './refund/interface/refund-consolidation-dependencies.interface';
-export type { UnconsolidationDependenciesInterface } from './executor/interface/unconsolidation-dependencies.interface';
-export type { TransactionRunnerType } from './wiring/type/transaction-runner.type';
