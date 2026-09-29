@@ -1,4 +1,3 @@
-/* jscpd:ignore-start */
 import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLingui } from '@lingui/react/macro';
@@ -23,7 +22,6 @@ import { createTransactionInput } from '../transaction/utils/create-transaction-
 import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.selector';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
-/* jscpd:ignore-end */
 
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form orchestration component with multiple hooks and handlers
 export default function ConvertToTransferModal() {
