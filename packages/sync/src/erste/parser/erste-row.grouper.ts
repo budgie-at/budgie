@@ -1,6 +1,4 @@
-import { Log } from '@budgie/logger';
-
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { ERSTE_LAYOUT_FOOTER_Y_THRESHOLD, ERSTE_LAYOUT_Y_ROW_TOLERANCE } from '../constant/erste.constant';
 
@@ -10,11 +8,6 @@ import type { ErstePageRowInterface } from '../interface/erste-page-row.interfac
 import type { PdfTextItemInterface } from '../interface/pdf-text-item.interface';
 
 class ErsteRowGrouper {
-    @Log(
-        items => `enter itemCount=${items.length}`,
-        (result, items) => `done itemCount=${items.length} rowCount=${result.length}`,
-        (error, items) => `throw itemCount=${items.length} error=${getErrorMessage(error)}`
-    )
     group(items: PdfTextItemInterface[]): ErstePageRowInterface[] {
         const sorted = items
             .filter(item => item.y >= ERSTE_LAYOUT_FOOTER_Y_THRESHOLD)

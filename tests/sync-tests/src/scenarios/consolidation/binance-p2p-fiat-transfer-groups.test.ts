@@ -10,7 +10,8 @@ import {
     seed,
     seedBankPair,
     seedP2pFiatTransferFixture,
-    seedP2pIncome
+    seedP2pIncome,
+    run
 } from '../../harness';
 
 const SPLIT_FIRST_AMOUNT = Number('1534') * PRECISION;
@@ -40,7 +41,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
             { accountId: binanceAccount.id, amount: SPLIT_USDT_AMOUNT }
         );
 
-        expect(await transferConsolidationService.consolidate()).toEqual({ found: 1, consolidated: 1 });
+        expect(await run(transferConsolidationService.consolidate(null))).toEqual({ found: 1, consolidated: 1 });
 
         const canonical = fetchP2pCanonical();
         expect(canonical.fromAccountId).toBe(bankAccount.id);
@@ -66,7 +67,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
         );
         const income = seedP2pIncome('binance:c2c:buy-three', binanceAccount.id);
 
-        expect(await transferConsolidationService.consolidate()).toEqual({ found: 1, consolidated: 1 });
+        expect(await run(transferConsolidationService.consolidate(null))).toEqual({ found: 1, consolidated: 1 });
 
         const canonicalId = fetchP2pCanonical().id;
         expect([...expenses, income].map(item => fetchTransactionById(item.id).consolidationParentTransactionId)).toEqual([
@@ -92,7 +93,7 @@ describe('consolidation/binance-p2p-fiat-transfer group limits', () => {
         );
         const income = seedP2pIncome('binance:c2c:buy-four', binanceAccount.id);
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(0);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(0);
         expectP2pUnconsolidated([...expenses, income]);
     });
 
@@ -114,7 +115,7 @@ describe('consolidation/binance-p2p-fiat-transfer group limits', () => {
         );
         const income = seedP2pIncome('binance:c2c:buy-mixed', binanceAccount.id);
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(0);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(0);
         expectP2pUnconsolidated([firstExpense, secondExpense, income]);
     });
 });

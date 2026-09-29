@@ -10,21 +10,18 @@ export class ExistingTransferChainReclaimConsolidationFamilyService extends Cons
     readonly key = ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_CHAIN_RECLAIM;
 
     constructor(
-        private readonly existingTransferRepository: Pick<ExistingTransferRepository, 'findChainReclaimCandidates'>,
-        private readonly consolidationRepairExecutorService: Pick<
-            ConsolidationRepairExecutorService,
-            'consolidateExistingTransferChainReclaim'
-        >,
+        private readonly existingTransferRepository: ExistingTransferRepository,
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<ExistingTransferChainReclaimCandidateInterface[]> {
+    protected findCandidates(scope: ConsolidationScanScopeInterface | null) {
         return this.existingTransferRepository.findChainReclaimCandidates(scope);
     }
 
-    protected consolidateCandidate(candidate: ExistingTransferChainReclaimCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: ExistingTransferChainReclaimCandidateInterface) {
         return this.consolidationRepairExecutorService.consolidateExistingTransferChainReclaim(candidate);
     }
 

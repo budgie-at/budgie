@@ -3,7 +3,7 @@ import { LanguageEnum, TransactionConsolidationTypeEnum } from '@budgie/contract
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
+import { refundPairRepository, runEffect, testQueryService, testSeedService } from '../harness/test-context';
 
 const LIME_AMOUNT_UAH = 898;
 const LIME_AMOUNT = convertToMicroUnits(LIME_AMOUNT_UAH);
@@ -33,7 +33,7 @@ const expectLocalizedAutoCandidate = async (input: {
         refundTitle: input.refundTitle
     });
 
-    const candidates = await refundPairRepository.findCandidates();
+    const candidates = await runEffect(refundPairRepository.findCandidates());
 
     expect(candidates).toEqual([
         {
@@ -68,7 +68,7 @@ describe('consolidation/refund-pair-by-title-candidates', () => {
             refundTitle: 'ПОВЕРНЕННЯ КОШТІВ, Послуги'
         });
 
-        const incomeCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN);
+        const incomeCandidates = await runEffect(refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN));
         expect(incomeCandidates).toMatchObject([{ id: expense.id, isRecommended: true }]);
     });
 

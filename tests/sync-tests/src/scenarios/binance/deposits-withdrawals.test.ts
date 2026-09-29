@@ -16,7 +16,8 @@ import {
     resetBinanceSyncForResync,
     setupBinanceFixture,
     stubEmptyBinanceBalances,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 
 import type { BinanceDepositApiInterface, BinanceWithdrawalApiInterface } from '@budgie/sync';
@@ -43,6 +44,10 @@ const expectFeeBearingWithdrawalEntries = (): void => {
     expect(mainEntry[0].exchangeRate).toBe(1);
     expect(feeEntry[0].type).toBe(TransactionEntryTypeEnum.FEE);
     expect(mainEntry[0].amount + feeEntry[0].amount).toBe(PRECISION);
+};
+
+const stubDuplicateDeposit = (): void => {
+    stubCapitalHistory([buildBinance.deposit({ id: 'dep-dup', coin: 'BTC', amount: '2' })], []);
 };
 
 describe('binance/deposits-withdrawals', () => {
@@ -75,13 +80,12 @@ describe('binance/deposits-withdrawals', () => {
         binanceStub.deposits(deposits);
         binanceStub.withdrawals(withdrawals);
 
-        const result = await new BinanceSignedClient(BINANCE_TEST_TOKEN).getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+        const transactions = await run(
+            new BinanceSignedClient(BINANCE_TEST_TOKEN).getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO)
+        );
 
-        expect(result.success).toBe(true);
-        if (result.success) {
-            expect(result.data).toHaveLength(PAGE_OVERFLOW_SIZE);
-            expect(result.data.map(transaction => transaction.id)).toContain(expectedExternalId);
-        }
+        expect(transactions).toHaveLength(PAGE_OVERFLOW_SIZE);
+        expect(transactions.map(transaction => transaction.id)).toContain(expectedExternalId);
     });
 
     it('maps a deposit to an INCOME transaction', async () => {
@@ -89,7 +93,7 @@ describe('binance/deposits-withdrawals', () => {
         stubEmptyBinanceBalances();
         stubCapitalHistory([buildBinance.deposit({ id: 'dep-1', coin: 'BTC', amount: '2' })], []);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expectSingleBinanceTransaction(TransactionTypeEnum.INCOME, 'dep-1');
     });
@@ -99,7 +103,7 @@ describe('binance/deposits-withdrawals', () => {
         stubEmptyBinanceBalances();
         stubCapitalHistory([], [buildBinance.withdrawal({ id: 'wd-1', coin: 'BTC', amount: '1', transactionFee: '0.1' })]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expectFeeBearingWithdrawalEntries();
     });
@@ -109,7 +113,7 @@ describe('binance/deposits-withdrawals', () => {
         stubEmptyBinanceBalances();
         stubCapitalHistory([], [buildBinance.withdrawal({ id: 'wd-degen', coin: 'BTC', amount: '1', transactionFee: '1' })]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const mainEntry = fetchBinanceEntriesByExternalId('wd-degen');
         const feeEntry = fetchBinanceEntriesByExternalId('wd-degen:fee');
@@ -122,15 +126,15 @@ describe('binance/deposits-withdrawals', () => {
         const staleForwardFrom = new Date(Date.now() - HOUR_MS);
         const { sync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD, forwardSyncFromAt: staleForwardFrom });
         stubEmptyBinanceBalances();
-        stubCapitalHistory([buildBinance.deposit({ id: 'dep-dup', coin: 'BTC', amount: '2' })], []);
+        stubDuplicateDeposit();
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expect(fetchBinanceTransactions()).toHaveLength(1);
 
         resetBinanceSyncForResync();
         await testDb.update(SyncEntityTable).set({ forwardSyncFromAt: staleForwardFrom }).where(eq(SyncEntityTable.id, sync.id));
-        stubCapitalHistory([buildBinance.deposit({ id: 'dep-dup', coin: 'BTC', amount: '2' })], []);
-        await binanceSyncService.sync();
+        stubDuplicateDeposit();
+        await run(binanceSyncService.sync());
 
         expect(fetchBinanceTransactions()).toHaveLength(1);
     });

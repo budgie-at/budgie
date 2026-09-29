@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-export const BinanceCredentialsSchema = z.object({
-    apiKey: z.string().min(1),
-    apiSecret: z.string().min(1)
+export const BinanceCredentialsSchema = Schema.Struct({
+    apiKey: Schema.NonEmptyString,
+    apiSecret: Schema.NonEmptyString
 });
 
-export type BinanceCredentialsInterface = z.infer<typeof BinanceCredentialsSchema>;
+export type BinanceCredentialsInterface = typeof BinanceCredentialsSchema.Type;

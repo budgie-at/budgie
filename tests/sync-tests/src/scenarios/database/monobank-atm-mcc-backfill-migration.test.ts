@@ -9,7 +9,8 @@ import {
     findMccByCode,
     seed,
     seedBankPair,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 
 const MIGRATION_FILE_NAME = '0065_backfill_monobank_atm_mcc.sql';
@@ -39,6 +40,6 @@ describe('database/monobank-atm-mcc-backfill-migration', () => {
         expect(shopEntry.mccCategoryId).toBeNull();
 
         await expectAtmCashWithdrawalConsolidation(bankAccount.id, cashAccount.id, atmExpense.id);
-        expect(await transferConsolidationService.consolidate()).toMatchObject({ consolidated: 0, found: 0 });
+        expect(await run(transferConsolidationService.consolidate(null))).toMatchObject({ consolidated: 0, found: 0 });
     });
 });

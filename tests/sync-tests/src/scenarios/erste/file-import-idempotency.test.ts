@@ -4,11 +4,12 @@ import { transactionImportService } from '@app/transaction/service/transaction-i
 import { AccountTypeEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, SyncTransactionTypeEnum, ersteMapper } from '@budgie/sync';
 import { and, eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { StubFileBankSyncService, expectFileImportConsolidationEnqueued, seed, testDb } from '../../harness';
+import { StubFileBankSyncService, expectFileImportConsolidationEnqueued, seed, testDb, run } from '../../harness';
 
 import type { FileBasedSyncClientInterface } from '@app/sync/interface/file-based-sync-client.interface';
 import type { ParsedFileResultInterface } from '@app/sync/interface/parsed-file-result.interface';
@@ -137,17 +138,11 @@ class BarrierErsteSyncService extends AbstractFileSyncService {
         super();
     }
 
-    protected override async parseFile(): Promise<ParsedFileResultInterface> {
-        await this.parseBarrier.wait();
+    protected override readonly parseFile = (): Effect.Effect<ParsedFileResultInterface> =>
+        Effect.promise(() => this.parseBarrier.wait()).pipe(Effect.as({ client: this.client, bankAccounts: this.client.getAccounts() }));
 
-        return { client: this.client, bankAccounts: this.client.getAccounts() };
-    }
-
-    protected override async resolveMccCategoryIdMap(): Promise<Map<string, MccCategoryLookupInterface | null>> {
-        await this.resolveBarrier.wait();
-
-        return new Map();
-    }
+    protected override readonly resolveMccCategoryIdMap = (): Effect.Effect<Map<string, MccCategoryLookupInterface | null>> =>
+        Effect.promise(() => this.resolveBarrier.wait()).pipe(Effect.as(new Map()));
 }
 
 const buildErsteSyncService = (client: FileBasedSyncClientInterface = buildStubErsteFileClient()): StubFileBankSyncService =>
@@ -181,7 +176,7 @@ describe('erste/file-import-idempotency', () => {
     it('enqueues consolidation after an Erste file import introduces new transactions', async () => {
         const syncService = buildErsteSyncService();
 
-        await syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
+        await run(syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]));
 
         const transaction = testDb
             .select()
@@ -204,8 +199,8 @@ describe('erste/file-import-idempotency', () => {
         const secondSyncService = buildBarrierErsteSyncService(parseBarrier, resolveBarrier);
 
         await Promise.all([
-            firstSyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]),
-            secondSyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID])
+            run(firstSyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID])),
+            run(secondSyncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]))
         ]);
 
         expect(fetchImportedErsteTransactionCount()).toBe(1);
@@ -214,8 +209,8 @@ describe('erste/file-import-idempotency', () => {
     it('keeps one transaction when the same statement is re-imported later', async () => {
         const syncService = buildErsteSyncService();
 
-        await syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
-        await syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
+        await run(syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]));
+        await run(syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]));
 
         expect(fetchImportedErsteTransactionCount()).toBe(1);
     });
@@ -223,16 +218,18 @@ describe('erste/file-import-idempotency', () => {
     it('updates an older Erste PDF transaction instead of creating a duplicate', async () => {
         const account = seed.account({ externalId: ERSTE_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
         const bankTransaction = buildMappedErsteTransaction();
-        const [legacyTransaction] = await transactionImportService.bulkUpsertImported(
-            [await buildLegacyErsteInput(bankTransaction, account.id, ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID)],
-            new Map()
+        const [legacyTransaction] = await run(
+            transactionImportService.bulkUpsertImported(
+                [await buildLegacyErsteInput(bankTransaction, account.id, ERSTE_INSTANT_REFERENCE_DETAILS_EXTERNAL_ID)],
+                new Map()
+            )
         );
         if (!isDefined(legacyTransaction)) {
             throw new Error('Expected legacy Erste transaction to be inserted');
         }
         const syncService = buildErsteSyncService(buildStubErsteFileClient([bankTransaction]));
 
-        await syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]);
+        await run(syncService.executeImportForSelectedAccounts(ERSTE_STATEMENT_URI, [ERSTE_ACCOUNT_ID]));
 
         const transactions = fetchImportedErsteTransactions();
 

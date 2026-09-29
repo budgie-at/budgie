@@ -11,7 +11,7 @@ import {
 } from '../harness/rejected-payment-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
 import { runRefundScenario } from '../harness/run-refund-scenario';
-import { testDb, testQueryService, testSeedService, unconsolidationService } from '../harness/test-context';
+import { testQueryService, testSeedService, unconsolidateById } from '../harness/test-context';
 
 const STANDALONE_REFUND_EXPENSE_AMOUNT_UAH = 120;
 
@@ -24,7 +24,7 @@ describe('consolidation/unconsolidate-refund-restores-sources', () => {
 
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
-        await unconsolidationService.unconsolidateById(expense.id, testDb);
+        await unconsolidateById(expense.id);
 
         const restoredExpense = testQueryService.fetchTransactionById(expense.id);
         expect(restoredExpense.consolidationType).toBeNull();
@@ -47,7 +47,7 @@ describe('consolidation/unconsolidate-refund-restores-sources', () => {
 
         expect(testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
 
-        await unconsolidationService.unconsolidateById(expense.id, testDb);
+        await unconsolidateById(expense.id);
 
         expectSourcesRestored([refunds[0].id]);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBeNull();
@@ -73,7 +73,7 @@ describe('consolidation/unconsolidate-refund-restores-sources', () => {
 
         expect(result.consolidated).toBe(2);
 
-        await unconsolidationService.unconsolidateById(expense.id, testDb);
+        await unconsolidateById(expense.id);
 
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBeNull();
         expect(refunds.map(refund => testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId)).toEqual([

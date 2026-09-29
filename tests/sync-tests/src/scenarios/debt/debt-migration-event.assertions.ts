@@ -4,6 +4,7 @@ import { expect } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
+import type { runWithDb } from '@budgie-at/test-kit';
 import type { DebtEventEntityInterface, DebtEventRepository } from '@budgie/contracts';
 
 export class DebtMigrationEventAssertions {
@@ -14,10 +15,13 @@ export class DebtMigrationEventAssertions {
     private static readonly EXPECTED_TRANSACTION_CLOSING_TOTAL = Number('3966');
     private static readonly EXPECTED_TRANSACTION_IDS = ['1001', '1002', '1003', '1004', '1005', '1006', '1007'].map(Number);
 
-    constructor(private readonly repository: DebtEventRepository) {}
+    constructor(
+        private readonly repository: DebtEventRepository,
+        private readonly runOnFixture: ReturnType<typeof runWithDb>
+    ) {}
 
     async assert(): Promise<void> {
-        const debtEvents = await this.repository.findByAccountId(DebtMigrationEventAssertions.DEBT_ACCOUNT_ID);
+        const debtEvents = await this.runOnFixture(this.repository.findByAccountId(DebtMigrationEventAssertions.DEBT_ACCOUNT_ID));
         const openingEvents = debtEvents.filter(debtEvent => debtEvent.direction === DebtEventDirectionEnum.OPEN);
         const closingEvents = debtEvents.filter(debtEvent => debtEvent.direction === DebtEventDirectionEnum.CLOSE);
         const manualClosingEvents = closingEvents.filter(debtEvent => debtEvent.source === DebtEventSourceEnum.MANUAL);

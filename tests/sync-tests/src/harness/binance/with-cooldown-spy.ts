@@ -4,6 +4,8 @@ import { vi } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { sleepMode } from '../scenario/sleep-mode';
+
 export const withCoolDownSpy = async (coolDownWindowMs: number, run: () => Promise<void>): Promise<number[]> => {
     const coolDownDelays: number[] = [];
     const realSetTimeout = setTimeout;
@@ -20,9 +22,12 @@ export const withCoolDownSpy = async (coolDownWindowMs: number, run: () => Promi
         return realSetTimeout(handler, delay, ...args);
     });
 
+    sleepMode.isRateLimitInstant = false;
+
     try {
         await run();
     } finally {
+        sleepMode.isRateLimitInstant = true;
         setTimeoutSpy.mockRestore();
     }
 

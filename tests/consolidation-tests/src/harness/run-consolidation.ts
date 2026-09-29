@@ -1,19 +1,15 @@
 import { expect } from 'vitest';
 
-import { consolidationAutoCandidateService } from './test-context';
+import { consolidationAutoCandidateService, runEffect } from './test-context';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
-export const runConsolidation = async (
+export const runConsolidation = (
     scope: ConsolidationScanScopeInterface | null = null
 ): Promise<{
     readonly consolidated: number;
     readonly found: number;
-}> => {
-    const result = await consolidationAutoCandidateService.process(scope);
-
-    return result;
-};
+}> => runEffect(consolidationAutoCandidateService.process(scope));
 
 export const expectSecondConsolidationRunStable = async (): Promise<void> => {
     const secondResult = await runConsolidation();

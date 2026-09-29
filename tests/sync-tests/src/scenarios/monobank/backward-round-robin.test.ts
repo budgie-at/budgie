@@ -3,7 +3,7 @@ import { SyncEntityTable, SyncModeEnum } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { monobankStub, seed, testDb } from '../../harness';
+import { monobankStub, seed, testDb, run } from '../../harness';
 
 const seedBackwardSyncs = (): number[] =>
     ['mono-a', 'mono-b', 'mono-c'].map(externalId => {
@@ -16,7 +16,7 @@ const recordFirstRequests = async (count: number): Promise<string[]> => {
     const requestedAccountIds: string[] = [];
     monobankStub.recordStatementAccountIds(requestedAccountIds);
 
-    await monobankSyncService.sync();
+    await run(monobankSyncService.sync());
 
     return requestedAccountIds.slice(0, count);
 };

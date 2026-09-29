@@ -4,9 +4,15 @@ import { ersteMapper } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it, vi } from 'vitest';
 
-import { emptyFn } from '@rnw-community/shared';
-
-import { expectAtmCashWithdrawalConsolidation, fetchExpenseEntries, findMccByCode, requireInstrument, seed, testDb } from '../../harness';
+import {
+    expectAtmCashWithdrawalConsolidation,
+    fetchExpenseEntries,
+    findMccByCode,
+    requireInstrument,
+    seed,
+    testDb,
+    run
+} from '../../harness';
 
 import type { ErsteRowInterface } from '@budgie/sync';
 
@@ -45,11 +51,12 @@ vi.mock('@app/sync/util/extract-pdf-text-items.util', () => ({
 
 vi.mock('@budgie/sync', async importOriginal => {
     const actual = await importOriginal<typeof import('@budgie/sync')>();
+    const { void: effectVoid } = await import('effect/Effect');
 
     return {
         ...actual,
         ErsteFileClient: class {
-            parse = emptyFn;
+            parse = () => effectVoid;
 
             getAccounts() {
                 return [actual.ersteMapper.mapAccount(erste.account)];
@@ -74,7 +81,7 @@ describe('erste/atm-withdrawal-mcc', () => {
         const euro = await requireInstrument(CurrencyEnum.EUR);
         const cashAccount = seed.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH, instrumentId: euro.id });
 
-        await ersteSyncService.executeImportForSelectedAccounts('erste-statement.pdf', [erste.account.iban]);
+        await run(ersteSyncService.executeImportForSelectedAccounts('erste-statement.pdf', [erste.account.iban]));
 
         const transactions = testDb
             .select()

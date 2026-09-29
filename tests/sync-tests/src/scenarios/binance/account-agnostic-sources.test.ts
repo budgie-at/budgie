@@ -23,7 +23,8 @@ import {
     seedCryptoInstrument,
     setupBinanceFixture,
     stubEmptyBinanceBalances,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -123,7 +124,7 @@ describe('binance/account-agnostic-sources', () => {
             })
         );
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const [seededAccount] = fetchAccountByExternalId(externalId);
         expect(integrationIdsAtProviderRequests[0]).toBe(seededAccount.integrationId);
@@ -135,7 +136,7 @@ describe('binance/account-agnostic-sources', () => {
         stubEmptyBinanceBalances();
         binanceStub.deposits([buildBinance.deposit({ id: 'eth-dep', coin: 'ETH', amount: '3' })]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const [seededAccount] = fetchAccountByExternalId(externalId);
         const [discoveredAccount] = fetchAccountByExternalId(encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'ETH' }));
@@ -154,7 +155,7 @@ describe('binance/account-agnostic-sources', () => {
         const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
         stubEmptyBinanceBalances();
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const [seededAccount] = fetchAccountByExternalId(externalId);
         const [repairedAccount] = fetchAccountByExternalId(orphanExternalId);
@@ -171,7 +172,7 @@ describe('binance/account-agnostic-sources', () => {
         const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
         stubEmptyBinanceBalances();
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const [syncedRegularCryptoAccount] = testDb
             .select()
@@ -187,7 +188,7 @@ describe('binance/account-agnostic-sources', () => {
         const { eurExternalId, usdtFundingAccount } = seedAccountAgnosticAccounts();
         const { previousMonth, currentMonth } = stubAccountAgnosticSourceResponses();
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expectAllSourceExternalIds(previousMonth, currentMonth);
         expectSourceAccounts(usdtFundingAccount.id, eurExternalId);
@@ -204,7 +205,7 @@ describe('binance/account-agnostic-sources', () => {
         binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: earnTime })]);
         binanceStub.fiatOrders([], []);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const externalIds = fetchBinanceTransactions()
             .map(transaction => transaction.externalId)

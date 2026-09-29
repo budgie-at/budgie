@@ -1,6 +1,7 @@
 import {
     AccountEntityTable,
     BudgetEntityTable,
+    Db,
     ExchangeRateEntityTable,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
@@ -9,39 +10,44 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { and, between, desc, eq, isNull, sql } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 
-import type { BudgetCreateEntityInterface, BudgetEntityInterface, BudgetUpdateEntityInterface, DB } from '@budgie/contracts';
+import type { BudgetCreateEntityInterface, BudgetUpdateEntityInterface, DB } from '@budgie/contracts';
 
 export class BudgetRepository {
-    constructor(private db: DB) {}
-
-    async create(input: BudgetCreateEntityInterface, tx?: DB): Promise<BudgetEntityInterface> {
-        const [budget] = await (tx ?? this.db).insert(BudgetEntityTable).values([input]).returning();
+    readonly create = Effect.fn('BudgetRepository.create')(function* (input: BudgetCreateEntityInterface) {
+        const [budget] = yield* Db.query(db => db.insert(BudgetEntityTable).values([input]).returning());
 
         return budget;
-    }
+    });
 
-    async update(id: number, input: BudgetUpdateEntityInterface, tx?: DB): Promise<BudgetEntityInterface> {
-        const [budget] = await (tx ?? this.db).update(BudgetEntityTable).set(input).where(eq(BudgetEntityTable.id, id)).returning();
+    readonly update = Effect.fn('BudgetRepository.update')(function* (id: number, input: BudgetUpdateEntityInterface) {
+        const [budget] = yield* Db.query(db => db.update(BudgetEntityTable).set(input).where(eq(BudgetEntityTable.id, id)).returning());
 
         return budget;
-    }
+    });
 
-    async getActive(tx?: DB): Promise<BudgetEntityInterface | null> {
-        const budget = await (tx ?? this.db).query.BudgetEntityTable.findFirst({
-            where: isNull(BudgetEntityTable.deletedAt),
-            orderBy: [desc(BudgetEntityTable.updatedAt)]
-        });
+    readonly getActive = Effect.fn('BudgetRepository.getActive')(function* () {
+        const budget = yield* Db.query(db =>
+            db.query.BudgetEntityTable.findFirst({
+                where: isNull(BudgetEntityTable.deletedAt),
+                orderBy: [desc(BudgetEntityTable.updatedAt)]
+            })
+        );
 
         return budget ?? null;
-    }
+    });
 
-    async delete(id: number, tx?: DB): Promise<void> {
-        await (tx ?? this.db)
-            .update(BudgetEntityTable)
-            .set({ deletedAt: new Date() })
-            .where(and(eq(BudgetEntityTable.id, id), isNull(BudgetEntityTable.deletedAt)));
-    }
+    readonly delete = Effect.fn('BudgetRepository.delete')(function* (id: number) {
+        yield* Db.query(db =>
+            db
+                .update(BudgetEntityTable)
+                .set({ deletedAt: new Date() })
+                .where(and(eq(BudgetEntityTable.id, id), isNull(BudgetEntityTable.deletedAt)))
+        );
+    });
+
+    constructor(private readonly db: DB) {}
 
     findActive() {
         return this.db.query.BudgetEntityTable.findFirst({

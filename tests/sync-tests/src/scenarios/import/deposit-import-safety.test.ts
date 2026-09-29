@@ -3,7 +3,7 @@ import * as Contracts from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { seed, testDb } from '../../harness';
+import { seed, testDb, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 import type { ImportedBatchPreparationInterface } from '@app/transaction/interface/imported-batch-preparation.interface';
@@ -102,7 +102,7 @@ describe('import/deposit-import-safety', () => {
 
         seedBalance(depositAccount.id);
 
-        await expect(transactionImportService.bulkUpsertPreparedImported(prepared)).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
+        await expect(run(transactionImportService.bulkUpsertPreparedImported(prepared))).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
 
         expect(testDb.select().from(Contracts.TransactionEntityTable).all()).toHaveLength(0);
         expect(testDb.select().from(Contracts.TransactionEntryEntityTable).all()).toHaveLength(0);
@@ -119,7 +119,7 @@ describe('import/deposit-import-safety', () => {
 
         seedBalance(depositAccount.id);
 
-        await expect(transactionImportService.bulkUpsertPreparedImported(prepared)).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
+        await expect(run(transactionImportService.bulkUpsertPreparedImported(prepared))).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
 
         const transaction = testDb
             .select()

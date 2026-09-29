@@ -1,58 +1,49 @@
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
+import { generateChatResponse } from '../../@generic/util/generate-chat-response.util';
 import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { containsNonLatin } from '../../embedding/util/contains-non-latin.util';
 import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
-import { TranslationResultInterface } from '../interface/translation-result.interface';
 
 export class TranslationLlmService {
-    constructor(private readonly chat: ChatInvokerInterface) {}
+    readonly translate = Effect.fn('TranslationLlmService.translate')(function* (this: TranslationLlmService, title: string) {
+        const titleEn = yield* this.translateToEnglish(title);
+        const titleTags = yield* this.generateTags(titleEn);
 
-    @Log(
-        title => `enter title="${title}"`,
-        result => `done titleEnLen=${result.titleEn.length} tagsLen=${result.titleTags.length}`,
-        (error, title) => `throw title="${title}" error=${getErrorMessage(error)}`
-    )
-    async translate(title: string): Promise<TranslationResultInterface> {
-        const trimmedTitleEn = await this.translateToEnglish(title);
-        const trimmedTags = await this.generateTags(trimmedTitleEn);
+        return { titleEn, titleTags };
+    });
 
-        return { titleEn: trimmedTitleEn, titleTags: trimmedTags };
-    }
-
-    @Log(
-        titleEn => `enter titleEn="${titleEn}"`,
-        result => `done tagsLen=${result.length}`,
-        (error, titleEn) => `throw titleEn="${titleEn}" error=${getErrorMessage(error)}`
-    )
-    private async generateTags(titleEn: string): Promise<string> {
-        const tags = await this.chat.generate(TAG_GENERATION_SYSTEM_PROMPT, titleEn, {
+    private readonly generateTags = Effect.fn('TranslationLlmService.generateTags')(function* (
+        this: TranslationLlmService,
+        titleEn: string
+    ) {
+        const tags = yield* generateChatResponse(this.chat, TAG_GENERATION_SYSTEM_PROMPT, titleEn, {
             temperature: TRANSLATION_TEMPERATURE,
             throwOnInterrupt: true
         });
 
         return this.normalizeTags(tags);
-    }
+    });
 
-    @Log(
-        title => `enter title="${title}"`,
-        result => `done resultLen=${result.length}`,
-        (error, title) => `throw title="${title}" error=${getErrorMessage(error)}`
-    )
-    private async translateToEnglish(title: string): Promise<string> {
+    private readonly translateToEnglish = Effect.fn('TranslationLlmService.translateToEnglish')(function* (
+        this: TranslationLlmService,
+        title: string
+    ) {
         if (!containsNonLatin(title)) {
             return title.trim().toLowerCase();
         }
 
-        const titleEn = await this.chat.generate(TRANSLATION_SYSTEM_PROMPT, title, {
+        const titleEn = yield* generateChatResponse(this.chat, TRANSLATION_SYSTEM_PROMPT, title, {
             temperature: TRANSLATION_TEMPERATURE,
             throwOnInterrupt: true
         });
 
         return titleEn.trim().toLowerCase();
-    }
+    });
+
+    constructor(private readonly chat: ChatInvokerInterface) {}
 
     private normalizeTags(tags: string): string {
         const normalizedTags = tags
@@ -60,8 +51,6 @@ export class TranslationLlmService {
             .map(tag => tag.trim().toLowerCase())
             .filter(isNotEmptyString);
 
-        const uniqueTags = [...new Set(normalizedTags)];
-
-        return uniqueTags.join(', ');
+        return [...new Set(normalizedTags)].join(', ');
     }
 }

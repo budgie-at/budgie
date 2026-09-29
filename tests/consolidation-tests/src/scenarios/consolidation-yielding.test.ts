@@ -9,6 +9,7 @@ import {
     existingTransferRepository,
     ibanBridgeTransferRepository,
     refundPairRepository,
+    runEffect,
     testQueryService,
     testSeedService,
     transferPairRepository
@@ -34,7 +35,7 @@ describe('consolidation/yielding', () => {
         );
         const consolidationAutoCandidateService = new ConsolidationAutoCandidateService(consolidationFamilyRegistryService);
 
-        const result = await consolidationAutoCandidateService.process();
+        const result = await runEffect(consolidationAutoCandidateService.process());
 
         expect(result.consolidated).toBe(1);
         expect(yieldControl.mock.calls.length).toBeGreaterThan(1);

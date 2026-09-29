@@ -70,3 +70,6 @@ export {
     seedP2pIncome,
     seedP2pPair
 } from './consolidation/seed-p2p-fiat-transfer-fixture';
+export { run } from './scenario/test-runtime';
+export { flushWorkload } from './sync-workload/flush-workload';
+export { runInWorkload } from './sync-workload/run-in-workload';

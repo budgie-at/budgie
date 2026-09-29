@@ -4,7 +4,7 @@ import { syncProviderRegistryService } from '@app/sync/service/sync-provider-reg
 import { ExternalSourceEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { seed } from '../../harness';
+import { seed, run } from '../../harness';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 
@@ -16,7 +16,7 @@ describe('SyncProviderRegistryService', () => {
             const account = seedAccount();
             seed.sync({ accountId: account.id, provider: ExternalSourceEnum.MONOBANK });
 
-            const service = await syncProviderRegistryService.getServiceForAccount(account.id);
+            const service = await run(syncProviderRegistryService.getServiceForAccount(account.id));
 
             expect(service).toBe(monobankSyncService);
         });
@@ -25,7 +25,7 @@ describe('SyncProviderRegistryService', () => {
             const account = seedAccount();
             seed.sync({ accountId: account.id, provider: ExternalSourceEnum.ERSTE });
 
-            const service = await syncProviderRegistryService.getServiceForAccount(account.id);
+            const service = await run(syncProviderRegistryService.getServiceForAccount(account.id));
 
             expect(service).toBe(ersteSyncService);
         });
@@ -33,7 +33,7 @@ describe('SyncProviderRegistryService', () => {
         it('returns null for account with no bank sync record', async () => {
             const account = seedAccount();
 
-            const service = await syncProviderRegistryService.getServiceForAccount(account.id);
+            const service = await run(syncProviderRegistryService.getServiceForAccount(account.id));
 
             expect(service).toBeNull();
         });

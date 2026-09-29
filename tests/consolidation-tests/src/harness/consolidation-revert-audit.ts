@@ -3,7 +3,7 @@ import { expect } from 'vitest';
 import { isDefined } from '@rnw-community/shared';
 
 import { runConsolidation } from './run-consolidation';
-import { accountBalanceRepository, testDb, testQueryService, unconsolidationService } from './test-context';
+import { accountBalanceRepository, runEffect, testQueryService, unconsolidateById } from './test-context';
 
 import type { SourceStateSnapshotInterface } from './interface/source-state-snapshot.interface';
 import type { TransactionConsolidationTypeEnum, TransactionEntryEntityInterface } from '@budgie/contracts';
@@ -103,13 +103,13 @@ export const fetchSingleCanonicalId = (consolidationType: TransactionConsolidati
 export const revertSingleCanonical = async (consolidationType: TransactionConsolidationTypeEnum): Promise<number> => {
     const canonicalId = fetchSingleCanonicalId(consolidationType);
 
-    await unconsolidationService.unconsolidateById(canonicalId, testDb);
+    await unconsolidateById(canonicalId);
 
     return canonicalId;
 };
 
 export const fetchLedgerBalances = async (accountIds: number[]): Promise<number[][]> => {
-    const balances = await accountBalanceRepository.getLedgerBalances(accountIds);
+    const balances = await runEffect(accountBalanceRepository.getLedgerBalances(accountIds));
 
     return accountIds.map(accountId => [accountId, balances.get(accountId) ?? 0]);
 };

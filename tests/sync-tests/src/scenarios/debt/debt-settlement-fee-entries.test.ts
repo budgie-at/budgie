@@ -24,9 +24,8 @@ import { describe, expect, it } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { run, seed, testDb } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
-import { testDb } from '../../harness/scenario/setup';
-import { seed } from '../../harness/seed/seed';
 
 import type {
     DebtEventEntityInterface,
@@ -182,7 +181,7 @@ describe('debt settlement fee entries', () => {
         const { creditEntry, feeEntry } = seedFeeBearingEntries(transaction.id, cashAccount.id);
 
         await expect(
-            transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id })
+            run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }))
         ).resolves.toBeDefined();
 
         const debtEvent = fetchLiveDebtEvent(transaction.id);
@@ -211,7 +210,7 @@ describe('debt settlement fee entries', () => {
         seedCreditEntry(transaction.id, cashAccount.id, FEE_ENTRY_AMOUNT, null);
 
         await expect(
-            transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id })
+            run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }))
         ).rejects.toThrow();
     });
 
@@ -221,8 +220,8 @@ describe('debt settlement fee entries', () => {
         const transaction = seedSyncedExpenseTransaction(cashAccount.id);
         const { creditEntry, feeEntry } = seedFeeBearingEntries(transaction.id, cashAccount.id);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
-        await transactionDebtSettlementService.detach(transaction.id);
+        await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }));
+        await run(transactionDebtSettlementService.detach(transaction.id));
 
         const revertedCreditEntry = fetchEntryById(creditEntry.id);
         const untouchedFeeEntry = fetchEntryById(feeEntry.id);
@@ -240,8 +239,8 @@ describe('debt settlement fee entries', () => {
         const transaction = seedSyncedExpenseTransaction(cashAccount.id);
         const originalEntry = seedCreditEntry(transaction.id, cashAccount.id, PRIMARY_ENTRY_AMOUNT, null);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
-        await transactionService.updateById(transaction.id, buildPlainExpenseUpdateInput(cashAccount.id, UPDATED_ENTRY_AMOUNT));
+        await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }));
+        await run(transactionService.updateById(transaction.id, buildPlainExpenseUpdateInput(cashAccount.id, UPDATED_ENTRY_AMOUNT)));
 
         const staleEntry = fetchEntryById(originalEntry.id);
         const [newPrimaryEntry] = fetchLivePrimaryEntries(transaction.id);

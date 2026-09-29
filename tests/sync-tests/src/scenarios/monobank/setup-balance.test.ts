@@ -3,7 +3,6 @@ import { accountBalanceIncrementalService } from '@app/account/service/account-b
 import { SyncHistoryDepthEnum } from '@app/sync/enum/sync-history-depth.enum';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { resyncService } from '@app/sync/service/resync.service';
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
 import {
     ExternalSourceEnum,
     SyncModeEnum,
@@ -13,11 +12,12 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { and, eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { buildMonobank, monobankStub, seed, testDb } from '../../harness';
+import { buildMonobank, flushWorkload, monobankStub, seed, testDb, run } from '../../harness';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 import type { Account } from '@liaugust/monobank-sdk';
@@ -28,16 +28,23 @@ const HISTORY_LEDGER = -200_000_000;
 
 const BACKGROUND_TASK_SUCCESS_RESULT = 1;
 
-const skipNextMonobankSync = (): void => {
-    vi.spyOn(monobankSyncService, 'sync').mockResolvedValueOnce(BACKGROUND_TASK_SUCCESS_RESULT);
+const skipRequestedMonobankSync = async (action: () => Promise<void>): Promise<void> => {
+    const syncSpy = vi.spyOn(monobankSyncService, 'sync').mockReturnValue(Effect.succeed(BACKGROUND_TASK_SUCCESS_RESULT));
+
+    await action();
+    await vi.waitFor(() => {
+        expect(syncSpy).toHaveBeenCalledTimes(1);
+    });
+    syncSpy.mockRestore();
 };
 
 const setupMonobankSync = async (bankAccount: Account): Promise<AccountEntityInterface> => {
     monobankStub.clientInfo(buildMonobank.clientInfo({ accounts: [bankAccount], jars: [] }));
-    vi.spyOn(monobankSyncService, 'registerBackgroundTask').mockResolvedValue();
-    skipNextMonobankSync();
-    await monobankSyncService.setupAccountSyncBatch('test-token', [bankAccount.id], SyncHistoryDepthEnum.MONTHS_3);
-    const [account] = await accountRepository.findByExternalIds([bankAccount.id]);
+    vi.spyOn(monobankSyncService, 'registerBackgroundTask').mockReturnValue(Effect.void);
+    await skipRequestedMonobankSync(() =>
+        run(monobankSyncService.setupAccountSyncBatch('test-token', [bankAccount.id], SyncHistoryDepthEnum.MONTHS_3)).then(emptyFn)
+    );
+    const [account] = await run(accountRepository.findByExternalIds([bankAccount.id]));
 
     return account;
 };
@@ -58,7 +65,7 @@ const readBalance = (accountId: number): number | undefined => accountBalanceRep
 
 const importHistory = async (onLaterRequest: () => Promise<void> | void = emptyFn): Promise<void> => {
     monobankStub.statementThen(HISTORY, onLaterRequest);
-    await monobankSyncService.sync();
+    await run(monobankSyncService.sync());
 };
 
 const expectReconciledTo = (accountId: number, setupBalance: number): void => {
@@ -111,14 +118,13 @@ describe('monobank/setup-balance', () => {
 
     it('keeps the setup balance while paused mid-import and reconciles only after resuming', async () => {
         const account = await setupMonobankSync(buildMonobank.account({ id: 'mono-pause', balance: 150_000 }));
-        await importHistory(async () => monobankSyncService.setAccountSyncEnabled(account.id, false));
+        await importHistory(async () => run(monobankSyncService.setAccountSyncEnabled(account.id, false)));
         const pausedBalance = readBalance(account.id);
         const pausedAdjustments = fetchBalanceAdjustments(account.id);
 
         monobankStub.statementThen([], emptyFn);
-        skipNextMonobankSync();
-        await monobankSyncService.setAccountSyncEnabled(account.id, true);
-        await monobankSyncService.sync();
+        await skipRequestedMonobankSync(() => run(monobankSyncService.setAccountSyncEnabled(account.id, true)).then(emptyFn));
+        await run(monobankSyncService.sync());
 
         expect(pausedBalance).toBe(1_500_000_000);
         expect(pausedAdjustments).toStrictEqual([]);
@@ -132,7 +138,9 @@ describe('monobank/setup-balance', () => {
         await importHistory(() => {
             adjustmentCountsBeforeCompletion.push(fetchBalanceAdjustments(account.id).length);
             if (!vi.isMockFunction(accountBalanceIncrementalService.updateBalancesByAccountIds)) {
-                vi.spyOn(accountBalanceIncrementalService, 'updateBalancesByAccountIds').mockRejectedValueOnce(new Error('app suspended'));
+                vi.spyOn(accountBalanceIncrementalService, 'updateBalancesByAccountIds').mockReturnValueOnce(
+                    Effect.die(new Error('app suspended'))
+                );
             }
         });
 
@@ -146,14 +154,14 @@ describe('monobank/setup-balance', () => {
         await importHistory();
 
         monobankStub.clientInfoFailure();
-        await expect(resyncService.resync({ accountId: account.id, sinceDays: null })).rejects.toThrow();
-        const failedResyncMode = (await syncRepository.getByAccountId(account.id))?.mode;
+        await expect(run(resyncService.resync({ accountId: account.id, sinceDays: null }))).rejects.toThrow();
+        const failedResyncMode = (await run(syncRepository.getByAccountId(account.id)))?.mode;
 
         monobankStub.clientInfo(buildMonobank.clientInfo({ accounts: [{ ...bankAccount, balance: 100_000 }], jars: [] }));
         monobankStub.statementThen(HISTORY, emptyFn);
-        await resyncService.resync({ accountId: account.id, sinceDays: null });
-        await syncWorkloadService.run('await-resync-sync', async () => Promise.resolve());
-        await monobankSyncService.sync();
+        await run(resyncService.resync({ accountId: account.id, sinceDays: null }));
+        await flushWorkload();
+        await run(monobankSyncService.sync());
 
         expect(failedResyncMode).toBe(SyncModeEnum.FORWARD);
         expectReconciledTo(account.id, 1_000_000_000);
@@ -164,9 +172,12 @@ describe('monobank/setup-balance', () => {
         seed.sync({ accountId: account.id, provider: ExternalSourceEnum.BINANCE });
         const fetchSetupBalanceSpy = vi.spyOn(monobankSyncService, 'fetchSetupBalance');
 
-        await resyncService.resync({ accountId: account.id, sinceDays: null });
+        await run(resyncService.resync({ accountId: account.id, sinceDays: null }));
 
         expect(fetchSetupBalanceSpy).not.toHaveBeenCalled();
-        await expect(syncRepository.getByAccountId(account.id)).resolves.toMatchObject({ mode: SyncModeEnum.BACKWARD, setupBalance: null });
+        await expect(run(syncRepository.getByAccountId(account.id))).resolves.toMatchObject({
+            mode: SyncModeEnum.BACKWARD,
+            setupBalance: null
+        });
     });
 });

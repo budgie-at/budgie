@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { buildTestDb, createTestRepositories } from '@budgie-at/test-kit';
+import { buildTestDb, createTestRepositories, runWithDb } from '@budgie-at/test-kit';
 import { DebtEventDirectionEnum, DebtEventSourceEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { expect } from 'vitest';
 
@@ -38,8 +38,9 @@ export class DebtMigrationRepairScenario {
             const firstExecutionSnapshot = await new DebtMigrationPersistenceAssertions(db).assert();
             await new DebtMigrationIdempotencyAssertions(db).assert(repairMigrationSql, firstExecutionSnapshot);
             const repositories = createTestRepositories(db);
-            await this.assertAmbiguousControl(repositories);
-            await new DebtMigrationEventAssertions(repositories.debtEventRepository).assert();
+            const runOnFixture = runWithDb(db);
+            await this.assertAmbiguousControl(repositories, runOnFixture);
+            await new DebtMigrationEventAssertions(repositories.debtEventRepository, runOnFixture).assert();
             await new DebtMigrationTransactionAssertions(repositories.transactionRepository).assert();
             new DebtMigrationBalanceAssertions(repositories.accountBalanceRepository).assert();
         } finally {
@@ -47,14 +48,19 @@ export class DebtMigrationRepairScenario {
         }
     }
 
-    private async assertAmbiguousControl(repositories: ReturnType<typeof createTestRepositories>): Promise<void> {
-        const [accountBalance] = await repositories.accountBalanceRepository.getByAccountIds([
-            DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID
-        ]);
-        const adjustmentTransaction = await repositories.transactionRepository.getByIdWithEntries(
-            DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID
+    private async assertAmbiguousControl(
+        repositories: ReturnType<typeof createTestRepositories>,
+        runOnFixture: ReturnType<typeof runWithDb>
+    ): Promise<void> {
+        const [accountBalance] = await runOnFixture(
+            repositories.accountBalanceRepository.getByAccountIds([DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID])
         );
-        const debtEvents = await repositories.debtEventRepository.findByAccountId(DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID);
+        const adjustmentTransaction = await runOnFixture(
+            repositories.transactionRepository.getByIdWithEntries(DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID)
+        );
+        const debtEvents = await runOnFixture(
+            repositories.debtEventRepository.findByAccountId(DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID)
+        );
 
         this.assertAmbiguousBalance(accountBalance);
         this.assertAmbiguousAdjustment(adjustmentTransaction);

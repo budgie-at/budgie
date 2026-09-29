@@ -1,7 +1,7 @@
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { ConsolidationEligibilityService } from './consolidation-eligibility.service';
 import { ConsolidationMutationService } from './consolidation-mutation.service';
@@ -12,7 +12,6 @@ import type { ConsolidationExecutorDependenciesInterface } from '../interface/co
 import type { ConsolidationPlanInterface } from '../interface/consolidation-plan.interface';
 import type {
     AtmCashWithdrawalCandidateInterface,
-    DB,
     ExistingTransferBridgeCandidateInterface,
     IbanBridgeChainTransferCandidateInterface,
     IbanBridgeTransferCandidateInterface,
@@ -20,130 +19,90 @@ import type {
 } from '@budgie/contracts';
 
 export class ConsolidationExecutorService {
-    private readonly consolidationEligibilityService: ConsolidationEligibilityService;
-
-    private readonly consolidationMutationService: ConsolidationMutationService;
-
-    constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {
-        this.consolidationEligibilityService = new ConsolidationEligibilityService(dependencies);
-        this.consolidationMutationService = new ConsolidationMutationService(dependencies);
-    }
-
-    @Log(
-        (candidate, consolidationPlan) =>
-            `enter pair=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} bucket=${candidate.confidenceBucket} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (result, candidate, consolidationPlan) =>
-            `done pairResult=${String(result)} pair=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (error, candidate, consolidationPlan) =>
-            `throw pair=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
-    )
-    async consolidatePair(candidate: TransferPairCandidateInterface, consolidationPlan: ConsolidationPlanInterface): Promise<boolean> {
-        return await this.consolidateTwoRequiredSources(candidate.expenseTransactionId, candidate.incomeTransactionId, consolidationPlan);
-    }
-
-    @Log(
-        (candidate, consolidationPlan) =>
-            `enter atm=${candidate.transactionId} cash=${candidate.sourceAccountId}->${candidate.targetCashAccountId} amount=${candidate.amount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (result, candidate, consolidationPlan) =>
-            `done atmResult=${String(result)} transaction=${candidate.transactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (error, candidate, consolidationPlan) =>
-            `throw atm=${candidate.transactionId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
-    )
-    async consolidateAtmCashWithdrawal(
-        candidate: AtmCashWithdrawalCandidateInterface,
+    readonly consolidatePair = Effect.fn('ConsolidationExecutorService.consolidatePair')(function* (
+        this: ConsolidationExecutorService,
+        candidate: TransferPairCandidateInterface,
         consolidationPlan: ConsolidationPlanInterface
-    ): Promise<boolean> {
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.consolidateAtmCashWithdrawalInner(candidate, consolidationPlan, tx)
-        );
-    }
+    ) {
+        return yield* this.consolidateRequiredSources([candidate.expenseTransactionId, candidate.incomeTransactionId], consolidationPlan);
+    });
 
-    @Log(
-        (candidate, consolidationPlan) =>
-            `enter ibanBridge=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} route=${candidate.sourceAccountId}->${candidate.bridgeAccountId}->${candidate.targetAccountId} rate=${candidate.exchangeRate} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (result, candidate, consolidationPlan) =>
-            `done ibanBridgeResult=${String(result)} bridgeAccountId=${candidate.bridgeAccountId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (error, candidate, consolidationPlan) =>
-            `throw ibanBridge=${candidate.expenseTransactionId}/${candidate.incomeTransactionId} amount=${candidate.bridgeAmount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
-    )
-    async consolidateIbanBridgeTransfer(
+    readonly consolidateAtmCashWithdrawal = Effect.fn('ConsolidationExecutorService.consolidateAtmCashWithdrawal')(
+        function* (
+            this: ConsolidationExecutorService,
+            candidate: AtmCashWithdrawalCandidateInterface,
+            consolidationPlan: ConsolidationPlanInterface
+        ) {
+            const sourceTransactions = yield* this.consolidationEligibilityService.findEligibleSourceTransactions(
+                consolidationPlan.sourceTransactionIds
+            );
+
+            if (!isDefined(sourceTransactions)) {
+                return false;
+            }
+
+            const canonicalTransaction = yield* this.consolidationMutationService.createCanonicalTransfer(consolidationPlan.canonicalInput);
+
+            yield* this.consolidationMutationService.createAtmCashWithdrawalFeeEntry(
+                candidate,
+                sourceTransactions,
+                canonicalTransaction.id
+            );
+            yield* this.consolidationMutationService.moveSourcesToCanonical(
+                consolidationPlan.sourceTransactionIds,
+                canonicalTransaction.id
+            );
+
+            return true;
+        },
+        effect => Db.transaction(effect)
+    );
+
+    readonly consolidateIbanBridgeTransfer = Effect.fn('ConsolidationExecutorService.consolidateIbanBridgeTransfer')(function* (
+        this: ConsolidationExecutorService,
         candidate: IbanBridgeTransferCandidateInterface,
         consolidationPlan: ConsolidationPlanInterface
-    ): Promise<boolean> {
-        return await this.consolidateTwoRequiredSources(candidate.expenseTransactionId, candidate.incomeTransactionId, consolidationPlan);
-    }
+    ) {
+        return yield* this.consolidateRequiredSources([candidate.expenseTransactionId, candidate.incomeTransactionId], consolidationPlan);
+    });
 
-    @Log(
-        (candidate, consolidationPlan) =>
-            `enter existingBridge=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.existingTransferId} route=${candidate.sourceAccountId}->${candidate.bridgeAccountId}->${candidate.targetAccountId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (result, candidate, consolidationPlan) =>
-            `done existingBridgeResult=${String(result)} amounts=${candidate.sourceAmount}/${candidate.targetAmount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (error, candidate, consolidationPlan) =>
-            `throw existingBridge=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.existingTransferId} rate=${candidate.exchangeRate} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
-    )
-    async consolidateExistingTransferBridge(
+    readonly consolidateExistingTransferBridge = Effect.fn('ConsolidationExecutorService.consolidateExistingTransferBridge')(function* (
+        this: ConsolidationExecutorService,
         candidate: ExistingTransferBridgeCandidateInterface,
         consolidationPlan: ConsolidationPlanInterface
-    ): Promise<boolean> {
-        const requiredSourceTransactionIds = [
-            candidate.sourceExpenseTransactionId,
-            candidate.bridgeIncomeTransactionId,
-            candidate.existingTransferId
-        ];
-
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
+    ) {
+        return yield* this.consolidateRequiredSources(
+            [candidate.sourceExpenseTransactionId, candidate.bridgeIncomeTransactionId, candidate.existingTransferId],
+            consolidationPlan
         );
-    }
+    });
 
-    @Log(
-        (candidate, consolidationPlan) =>
-            `enter bridgeChain=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.bridgeExpenseTransactionId}/${candidate.targetIncomeTransactionId} route=${candidate.sourceAccountId}->${candidate.bridgeAccountId}->${candidate.targetAccountId} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (result, candidate, consolidationPlan) =>
-            `done bridgeChainResult=${String(result)} amounts=${candidate.sourceAmount}/${candidate.targetAmount} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType}`,
-        (error, candidate, consolidationPlan) =>
-            `throw bridgeChain=${candidate.sourceExpenseTransactionId}/${candidate.bridgeIncomeTransactionId}/${candidate.bridgeExpenseTransactionId}/${candidate.targetIncomeTransactionId} rate=${candidate.exchangeRate} plan=${consolidationPlan.sourceTransactionIds.join(',')}/${consolidationPlan.canonicalInput.consolidationType} error=${getErrorMessage(error)}`
-    )
-    async consolidateIbanBridgeChainTransfer(
+    readonly consolidateIbanBridgeChainTransfer = Effect.fn('ConsolidationExecutorService.consolidateIbanBridgeChainTransfer')(function* (
+        this: ConsolidationExecutorService,
         candidate: IbanBridgeChainTransferCandidateInterface,
         consolidationPlan: ConsolidationPlanInterface
-    ): Promise<boolean> {
-        const requiredSourceTransactionIds = [
-            candidate.sourceExpenseTransactionId,
-            candidate.bridgeIncomeTransactionId,
-            candidate.bridgeExpenseTransactionId,
-            candidate.targetIncomeTransactionId
-        ];
-
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
+    ) {
+        return yield* this.consolidateRequiredSources(
+            [
+                candidate.sourceExpenseTransactionId,
+                candidate.bridgeIncomeTransactionId,
+                candidate.bridgeExpenseTransactionId,
+                candidate.targetIncomeTransactionId
+            ],
+            consolidationPlan
         );
-    }
+    });
 
-    @Log(
-        candidate =>
-            `enter p2p=${candidate.p2pTransactionId} bank=${candidate.bankTransactionIds.join(',')} direction=${candidate.direction}`,
-        (result, candidate) =>
-            `done p2pResult=${String(result)} p2p=${candidate.p2pTransactionId} bank=${candidate.bankTransactionIds.join(',')} direction=${candidate.direction}`,
-        (error, candidate) =>
-            `throw p2p=${candidate.p2pTransactionId} bank=${candidate.bankTransactionIds.join(',')} direction=${candidate.direction} error=${getErrorMessage(error)}`
-    )
-    async consolidateP2pFiatTransfer(candidate: P2pFiatTransferCandidateInterface): Promise<boolean> {
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.consolidateP2pFiatTransferInner(candidate, tx)
-        );
-    }
+    readonly consolidateP2pFiatTransfer = Effect.fn('ConsolidationExecutorService.consolidateP2pFiatTransfer')(
+        function* (this: ConsolidationExecutorService, candidate: P2pFiatTransferCandidateInterface) {
+            const sourceTransactionIds = [...candidate.sourceTransactionIds];
+            const sourceTransactions = yield* this.consolidationEligibilityService.findEligibleSourceTransactions(sourceTransactionIds);
 
-    private async consolidateP2pFiatTransferInner(candidate: P2pFiatTransferCandidateInterface, tx: DB): Promise<boolean> {
-        const sourceTransactionIds = [...candidate.sourceTransactionIds];
-        const sourceTransactions = await this.consolidationEligibilityService.findEligibleSourceTransactions(sourceTransactionIds, tx);
+            if (!isDefined(sourceTransactions)) {
+                return false;
+            }
 
-        if (!isDefined(sourceTransactions)) {
-            return false;
-        }
-
-        const canonicalTransaction = await this.consolidationMutationService.createCanonicalTransfer(
-            {
+            const canonicalTransaction = yield* this.consolidationMutationService.createCanonicalTransfer({
                 title: this.dependencies.resolveP2pTransferTitle(candidate.direction, candidate.assetCode),
                 operatedAt: candidate.operatedAt,
                 fromAccountId: candidate.fromAccountId,
@@ -155,88 +114,68 @@ export class ConsolidationExecutorService {
                 fromEntryExchangeRate: candidate.fromEntryExchangeRate,
                 toEntryExchangeRate: candidate.toEntryExchangeRate,
                 fromEntryToIban: candidate.fromEntryToIban
-            },
-            tx
-        );
+            });
 
-        await this.consolidationMutationService.createP2pFiatTransferFeeEntries(candidate, sourceTransactions, canonicalTransaction.id, tx);
-        await this.consolidationMutationService.moveSourcesToCanonical(sourceTransactionIds, canonicalTransaction.id, tx);
+            yield* this.consolidationMutationService.createP2pFiatTransferFeeEntries(
+                candidate,
+                sourceTransactions,
+                canonicalTransaction.id
+            );
+            yield* this.consolidationMutationService.moveSourcesToCanonical(sourceTransactionIds, canonicalTransaction.id);
 
-        return true;
-    }
+            return true;
+        },
+        effect => Db.transaction(effect)
+    );
 
-    private async consolidateAtmCashWithdrawalInner(
-        candidate: AtmCashWithdrawalCandidateInterface,
-        consolidationPlan: ConsolidationPlanInterface,
-        tx: DB
-    ): Promise<boolean> {
-        const sourceTransactions = await this.consolidationEligibilityService.findEligibleSourceTransactions(
-            consolidationPlan.sourceTransactionIds,
-            tx
-        );
+    private readonly consolidationEligibilityService: ConsolidationEligibilityService;
 
-        if (!isDefined(sourceTransactions)) {
-            return false;
-        }
+    private readonly consolidationMutationService: ConsolidationMutationService;
 
-        const canonicalTransaction = await this.consolidationMutationService.createCanonicalTransfer(consolidationPlan.canonicalInput, tx);
+    private readonly consolidateRequiredSources = Effect.fnUntraced(
+        function* (
+            this: ConsolidationExecutorService,
+            requiredSourceTransactionIds: number[],
+            consolidationPlan: ConsolidationPlanInterface
+        ) {
+            if (!this.hasRequiredSourceTransactionIds(consolidationPlan, requiredSourceTransactionIds)) {
+                return false;
+            }
 
-        await this.consolidationMutationService.createAtmCashWithdrawalFeeEntry(candidate, sourceTransactions, canonicalTransaction.id, tx);
-        await this.consolidationMutationService.moveSourcesToCanonical(consolidationPlan.sourceTransactionIds, canonicalTransaction.id, tx);
+            return yield* this.executeConsolidation(
+                consolidationPlan.sourceTransactionIds,
+                consolidationPlan.canonicalInput,
+                consolidationPlan.allowedMovedSourceTransactionIds
+            );
+        },
+        effect => Db.transaction(effect)
+    );
 
-        return true;
-    }
-
-    private async consolidateTwoRequiredSources(
-        expenseTransactionId: number,
-        incomeTransactionId: number,
-        consolidationPlan: ConsolidationPlanInterface
-    ): Promise<boolean> {
-        const requiredSourceTransactionIds = [expenseTransactionId, incomeTransactionId];
-
-        return await this.dependencies.runTransaction(this.dependencies.database, async tx =>
-            this.executeRequiredSourceConsolidationPlan(consolidationPlan, requiredSourceTransactionIds, tx)
-        );
-    }
-
-    private async executeRequiredSourceConsolidationPlan(
-        consolidationPlan: ConsolidationPlanInterface,
-        requiredSourceTransactionIds: number[],
-        tx: DB
-    ): Promise<boolean> {
-        if (!this.hasRequiredSourceTransactionIds(consolidationPlan, requiredSourceTransactionIds)) {
-            return false;
-        }
-
-        return this.executeConsolidation(
-            consolidationPlan.sourceTransactionIds,
-            consolidationPlan.canonicalInput,
-            tx,
-            consolidationPlan.allowedMovedSourceTransactionIds
-        );
-    }
-
-    private async executeConsolidation(
+    private readonly executeConsolidation = Effect.fnUntraced(function* (
+        this: ConsolidationExecutorService,
         sourceTransactionIds: number[],
         canonicalInput: CanonicalTransferInputInterface,
-        tx: DB,
-        allowedMovedSourceTransactionIds: number[] = []
-    ): Promise<boolean> {
+        allowedMovedSourceTransactionIds: number[]
+    ) {
         if (
-            !(await this.consolidationEligibilityService.areCandidatesStillEligible(
+            !(yield* this.consolidationEligibilityService.areCandidatesStillEligible(
                 sourceTransactionIds,
-                tx,
                 allowedMovedSourceTransactionIds
             ))
         ) {
             return false;
         }
 
-        const canonicalTransaction = await this.consolidationMutationService.createCanonicalTransfer(canonicalInput, tx);
+        const canonicalTransaction = yield* this.consolidationMutationService.createCanonicalTransfer(canonicalInput);
 
-        await this.consolidationMutationService.moveSourcesToCanonical(sourceTransactionIds, canonicalTransaction.id, tx);
+        yield* this.consolidationMutationService.moveSourcesToCanonical(sourceTransactionIds, canonicalTransaction.id);
 
         return true;
+    });
+
+    constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {
+        this.consolidationEligibilityService = new ConsolidationEligibilityService(dependencies);
+        this.consolidationMutationService = new ConsolidationMutationService(dependencies);
     }
 
     private hasRequiredSourceTransactionIds(

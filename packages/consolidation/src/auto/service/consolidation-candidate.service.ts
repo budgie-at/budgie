@@ -1,33 +1,19 @@
-import { Log } from '@budgie/logger';
-
-import { getErrorMessage } from '@rnw-community/shared';
+import * as Effect from 'effect/Effect';
 
 import type { ConsolidationRepositoriesInterface } from '../interface/consolidation-repositories.interface';
-import type {
-    BridgeClaimRepairCandidateInterface,
-    ExistingTransferBridgeCandidateInterface,
-    ExistingTransferChainReclaimCandidateInterface,
-    ExistingTransferIncomeDuplicateCandidateInterface
-} from '@budgie/contracts';
+import type { ExistingTransferBridgeCandidateInterface, ExistingTransferChainReclaimCandidateInterface } from '@budgie/contracts';
 
 export class ConsolidationCandidateService {
-    constructor(
-        private readonly repositories: Pick<
-            ConsolidationRepositoriesInterface,
-            'atmCashWithdrawalRepository' | 'existingTransferRepository' | 'refundPairRepository' | 'transferPairRepository'
-        >,
-        private readonly yieldControl: () => Promise<void>
-    ) {}
-
-    @Log('enter', result => `done existingTransferIncomeDuplicateCount=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findExistingTransferIncomeDuplicateRepairCandidates(): Promise<ExistingTransferIncomeDuplicateCandidateInterface[]> {
-        const existingTransferBridgeCandidates = await this.repositories.existingTransferRepository.findBridgeCandidates(null);
-        await this.yieldControl();
-        const existingTransferChainReclaimCandidates = await this.repositories.existingTransferRepository.findChainReclaimCandidates(null);
-        await this.yieldControl();
-        const rawExistingTransferIncomeDuplicateCandidates =
-            await this.repositories.existingTransferRepository.findIncomeDuplicateCandidates(null);
-        await this.yieldControl();
+    readonly findExistingTransferIncomeDuplicateRepairCandidates = Effect.fn(
+        'ConsolidationCandidateService.findExistingTransferIncomeDuplicateRepairCandidates'
+    )(function* (this: ConsolidationCandidateService) {
+        const { existingTransferRepository } = this.repositories;
+        const existingTransferBridgeCandidates = yield* existingTransferRepository.findBridgeCandidates(null);
+        yield* this.yieldNow();
+        const existingTransferChainReclaimCandidates = yield* existingTransferRepository.findChainReclaimCandidates(null);
+        yield* this.yieldNow();
+        const rawExistingTransferIncomeDuplicateCandidates = yield* existingTransferRepository.findIncomeDuplicateCandidates(null);
+        yield* this.yieldNow();
 
         const blockedSourceTransactionIds = this.buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
             existingTransferBridgeCandidates,
@@ -38,29 +24,46 @@ export class ConsolidationCandidateService {
                 !blockedSourceTransactionIds.has(candidate.existingTransferId) &&
                 !blockedSourceTransactionIds.has(candidate.duplicateTransactionId)
         );
-        await this.yieldControl();
+        yield* this.yieldNow();
 
         return existingTransferIncomeDuplicateCandidates;
-    }
+    });
 
-    @Log('enter', result => `done bridgeClaimRepairCount=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async findBridgeClaimedRepairCandidates(): Promise<BridgeClaimRepairCandidateInterface[]> {
-        const candidates = await this.repositories.transferPairRepository.findBridgeClaimedRepairCandidates();
-        await this.yieldControl();
+    readonly findBridgeClaimedRepairCandidates = Effect.fn('ConsolidationCandidateService.findBridgeClaimedRepairCandidates')(
+        function* (this: ConsolidationCandidateService) {
+            const candidates = yield* this.repositories.transferPairRepository.findBridgeClaimedRepairCandidates();
+            yield* this.yieldNow();
 
-        return candidates;
-    }
+            return candidates;
+        }
+    );
 
-    @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async countManualReviewCandidates(): Promise<number> {
-        const [manualReviewCandidates, atmCashWithdrawalReviewCandidates, refundReviewCandidates] = await Promise.all([
-            this.repositories.transferPairRepository.findManualReviewCandidates(),
-            this.repositories.atmCashWithdrawalRepository.findReviewCandidates(),
-            this.repositories.refundPairRepository.findReviewCandidates()
-        ]);
-        await this.yieldControl();
+    readonly countManualReviewCandidates = Effect.fn('ConsolidationCandidateService.countManualReviewCandidates')(
+        function* (this: ConsolidationCandidateService) {
+            const [manualReviewCandidates, atmCashWithdrawalReviewCandidates, refundReviewCandidates] = yield* Effect.all(
+                [
+                    this.repositories.transferPairRepository.findManualReviewCandidates(),
+                    this.repositories.atmCashWithdrawalRepository.findReviewCandidates(),
+                    this.repositories.refundPairRepository.findReviewCandidates()
+                ],
+                { concurrency: 'unbounded' }
+            );
+            yield* this.yieldNow();
 
-        return manualReviewCandidates.length + atmCashWithdrawalReviewCandidates.length + refundReviewCandidates.length;
+            return manualReviewCandidates.length + atmCashWithdrawalReviewCandidates.length + refundReviewCandidates.length;
+        }
+    );
+
+    constructor(
+        private readonly repositories: Pick<
+            ConsolidationRepositoriesInterface,
+            'atmCashWithdrawalRepository' | 'existingTransferRepository' | 'refundPairRepository' | 'transferPairRepository'
+        >,
+        private readonly yieldControl: () => Promise<void>
+    ) {}
+
+    private yieldNow(): Effect.Effect<void> {
+        return Effect.promise(() => this.yieldControl());
     }
 
     private buildExistingTransferDuplicateBlockedSourceTransactionIdSet(

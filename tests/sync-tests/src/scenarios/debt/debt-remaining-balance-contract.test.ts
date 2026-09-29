@@ -27,7 +27,7 @@ import { describe, expect, it } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { requireInstrument } from '../../harness';
+import { requireInstrument, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -137,20 +137,22 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
 
     it('reports the same partial-settlement contract when opened and repaid through the v2 funding-account flow', async () => {
         const fundingAccount = seed.account({ title: 'Funding account', type: AccountTypeEnum.BANK_SYNC });
-        const debtAccount = await accountDebtOpeningService.openDebtWithFundingAccount(
-            {
-                title: debtType === AccountDebtTypeEnum.LENT ? 'Alex owes me' : 'I owe Alex',
-                iban: null,
-                icon: UserIconNameEnum.HandCoins,
-                instrumentId: fundingAccount.instrumentId,
-                type: AccountTypeEnum.DEBT,
-                debtType,
-                currentBalance: 0,
-                targetBalance: 1_000,
-                contactId: null,
-                deadline: null
-            },
-            fundingAccount.id
+        const debtAccount = await run(
+            accountDebtOpeningService.openDebtWithFundingAccount(
+                {
+                    title: debtType === AccountDebtTypeEnum.LENT ? 'Alex owes me' : 'I owe Alex',
+                    iban: null,
+                    icon: UserIconNameEnum.HandCoins,
+                    instrumentId: fundingAccount.instrumentId,
+                    type: AccountTypeEnum.DEBT,
+                    debtType,
+                    currentBalance: 0,
+                    targetBalance: 1_000,
+                    contactId: null,
+                    deadline: null
+                },
+                fundingAccount.id
+            )
         );
         const repaymentType = debtType === AccountDebtTypeEnum.LENT ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
         const isRepaymentExpense = repaymentType === TransactionTypeEnum.EXPENSE;
@@ -184,7 +186,7 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
             originalTransactionId: null
         } satisfies TransactionEntryCreateEntityInterface);
 
-        await transactionDebtSettlementService.attach({ transactionId: repayment.id, debtAccountId: debtAccount.id });
+        await run(transactionDebtSettlementService.attach({ transactionId: repayment.id, debtAccountId: debtAccount.id }));
 
         expectDebtProgressContract(debtAccount.id, { outstandingAmount: 750, paidAmount: 250, totalAmount: 1_000, percentage: 25 });
     });
@@ -203,7 +205,7 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
         const usdInstrument = await requireInstrument(CurrencyEnum.USD);
         const eurInstrument = await requireInstrument(CurrencyEnum.EUR);
         const exchangeRate = 0.7;
-        await exchangeRateRepository.upsert(usdInstrument.id, eurInstrument.id, exchangeRate, 'test');
+        await run(exchangeRateRepository.upsert(usdInstrument.id, eurInstrument.id, exchangeRate, 'test'));
 
         const account = seedPartiallySettledDebt(debtType, usdInstrument.id);
         const row = readHomeRow(account.id, eurInstrument.id);

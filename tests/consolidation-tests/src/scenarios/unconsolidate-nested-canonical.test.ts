@@ -13,7 +13,7 @@ import {
 } from '../harness/consolidation-revert-audit';
 import { IBAN_BRIDGE_SOURCE_IBAN, IBAN_BRIDGE_UAH_TO_EUR_RATE } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testDb, testQueryService, unconsolidationService } from '../harness/test-context';
+import { testQueryService, unconsolidateById } from '../harness/test-context';
 
 const NESTED_PAIR_LEDGER_ENTRY_COUNT = 2;
 const STALE_DIRECT_TRANSFER = {
@@ -43,7 +43,7 @@ describe('consolidation/unconsolidate-nested-canonical', () => {
 
         await runConsolidation();
         const outerCanonicalId = fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
-        await unconsolidationService.unconsolidateById(outerCanonicalId, testDb);
+        await unconsolidateById(outerCanonicalId);
 
         expect(outerCanonicalId).not.toBe(directTransfer.id);
         expectCanonicalDeleted(outerCanonicalId);
@@ -58,13 +58,10 @@ describe('consolidation/unconsolidate-nested-canonical', () => {
         const balancesBeforeConsolidation = await fetchLedgerBalances(accountIds);
 
         await runConsolidation();
-        await unconsolidationService.unconsolidateById(
-            fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER),
-            testDb
-        );
+        await unconsolidateById(fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER));
         expect(await fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
 
-        await unconsolidationService.unconsolidateById(directTransfer.id, testDb);
+        await unconsolidateById(directTransfer.id);
 
         expectRevertRemovedCanonical(directTransfer.id, [sourceExpense.id, targetIncome.id]);
         expect(await fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);

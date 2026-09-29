@@ -1,35 +1,34 @@
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import type { UnconsolidationDependenciesInterface } from '../interface/unconsolidation-dependencies.interface';
-import type { DB, TransactionEntityInterface } from '@budgie/contracts';
+import type { TransactionEntityInterface } from '@budgie/contracts';
 
 export class UnconsolidationService {
-    constructor(private readonly dependencies: UnconsolidationDependenciesInterface) {}
+    readonly unconsolidateById = Effect.fn('UnconsolidationService.unconsolidateById')(function* (
+        this: UnconsolidationService,
+        transactionId: number
+    ) {
+        const { transactionEntryRepository, transactionRepository, transactionTagsRepository } = this.dependencies;
+        const canonical = yield* transactionRepository.getByIdRaw(transactionId);
 
-    @Log(
-        (transactionId, tx) => `enter transactionId=${transactionId} hasTx=${String(isDefined(tx))}`,
-        (result, transactionId, tx) => `done result=${String(result)} transactionId=${transactionId} hasTx=${String(isDefined(tx))}`,
-        (error, transactionId, tx) => `throw transactionId=${transactionId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async unconsolidateById(transactionId: number, tx: DB): Promise<void> {
-        const canonical = await this.dependencies.transactionRepository.getByIdRaw(transactionId, tx);
-
-        await this.dependencies.transactionEntryRepository.moveBackToOriginalTransactions(transactionId, tx);
-        await this.dependencies.transactionRepository.clearConsolidationParent(transactionId, tx);
+        yield* transactionEntryRepository.moveBackToOriginalTransactions(transactionId);
+        yield* transactionRepository.clearConsolidationParent(transactionId);
 
         if (this.isPreExistingCanonical(canonical)) {
-            await this.dependencies.transactionRepository.setConsolidationType(transactionId, null, tx);
+            yield* transactionRepository.setConsolidationType(transactionId, null);
 
             return;
         }
 
-        await this.dependencies.transactionTagsRepository.deleteByTransactionId(transactionId, tx);
-        await this.dependencies.transactionEntryRepository.deleteLedgerByTransactionId(transactionId, tx);
-        await this.dependencies.transactionRepository.deleteById(transactionId, tx);
-    }
+        yield* transactionTagsRepository.deleteByTransactionId(transactionId);
+        yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
+        yield* transactionRepository.deleteById(transactionId);
+    });
+
+    constructor(private readonly dependencies: UnconsolidationDependenciesInterface) {}
 
     private isPreExistingCanonical(transaction: TransactionEntityInterface | undefined): boolean {
         if (!isDefined(transaction)) {

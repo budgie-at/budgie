@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
 import { runRefundScenario } from '../harness/run-refund-scenario';
-import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
+import { refundPairRepository, runEffect, testQueryService, testSeedService } from '../harness/test-context';
 
 const APPLE_STORE_AMOUNT_UAH = 120;
 const APPLE_STORE_AMOUNT = convertToMicroUnits(APPLE_STORE_AMOUNT_UAH);
@@ -102,8 +102,8 @@ describe('consolidation/refund-pair-by-title', () => {
             refundTitle: 'Apple Store refund'
         });
 
-        const incomeCandidates = await refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN);
-        const expenseCandidates = await refundPairRepository.findRefundableExpenseCandidates(expense.id, '', LanguageEnum.EN);
+        const incomeCandidates = await runEffect(refundPairRepository.findRefundableExpenseCandidates(refunds[0].id, '', LanguageEnum.EN));
+        const expenseCandidates = await runEffect(refundPairRepository.findRefundableExpenseCandidates(expense.id, '', LanguageEnum.EN));
 
         expect(incomeCandidates).toMatchObject([{ id: expense.id, type: TransactionTypeEnum.EXPENSE }]);
         expect(expenseCandidates).toEqual([]);

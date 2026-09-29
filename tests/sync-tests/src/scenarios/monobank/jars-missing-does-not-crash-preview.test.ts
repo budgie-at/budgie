@@ -3,7 +3,7 @@ import { SyncAccountTypeEnum } from '@budgie/sync';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank } from '../../harness';
+import { buildMonobank, run } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 import type { ClientInfo } from '@liaugust/monobank-sdk';
@@ -19,7 +19,7 @@ describe('monobank/jars-missing-does-not-crash-preview', () => {
         };
         mockServer.use(http.get('https://api.monobank.ua/personal/client-info', () => HttpResponse.json(clientInfoWithoutJars)));
 
-        const previews = await monobankSyncService.fetchAccountsPreview('test-token');
+        const previews = await run(monobankSyncService.fetchAccountsPreview('test-token'));
 
         expect(previews).toHaveLength(1);
         expect(previews[0]?.externalId).toBe('mono-card');

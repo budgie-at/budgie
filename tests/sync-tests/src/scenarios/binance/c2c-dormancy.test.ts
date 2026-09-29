@@ -3,7 +3,7 @@ import { ExternalSourceEnum, SyncEntityTable, SyncModeEnum, SyncStatusEnum, Tran
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { binanceStub, buildBinance, resetBinanceSyncForResync, setupBinanceFixture, testDb } from '../../harness';
+import { binanceStub, buildBinance, resetBinanceSyncForResync, setupBinanceFixture, testDb, run } from '../../harness';
 
 import type { TimeWindow } from '../../harness';
 
@@ -40,7 +40,7 @@ describe('binance/source-window-walk', () => {
             requestedWindows
         );
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(fetchExternalIds()).toContain('binance:c2c:post-gap-p2p');
         expect(Math.min(...requestedWindows.map(window => window.startMs))).toBeGreaterThan(Date.now() - FIAT_DORMANCY_MAX_AGE_MS);
@@ -53,7 +53,7 @@ describe('binance/source-window-walk', () => {
         const requestedWindows: TimeWindow[] = [];
         binanceStub.fiatOrders([], [], requestedWindows);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(requestedWindows.length).toBeGreaterThan(0);
         const oldestRequestedStartMs = Math.min(...requestedWindows.map(window => window.startMs));
@@ -66,7 +66,7 @@ describe('binance/source-window-walk', () => {
         const requestedWindows: TimeWindow[] = [];
         binanceStub.fiatOrders([], [], requestedWindows);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         const firstRunRequestCount = requestedWindows.length;
 
         resetBinanceSyncForResync();
@@ -75,7 +75,7 @@ describe('binance/source-window-walk', () => {
             .set({ forwardSyncedAt: staleForwardSync, status: SyncStatusEnum.IDLE })
             .where(eq(SyncEntityTable.id, sync.id))
             .run();
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(firstRunRequestCount).toBeGreaterThan(0);
         expect(requestedWindows).toHaveLength(firstRunRequestCount);
@@ -91,7 +91,7 @@ describe('binance/source-window-walk', () => {
         binanceStub.convertTradeFlow([], [], false, requestOrder);
         binanceStub.fiatOrders([], [], [], requestOrder);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(requestOrder.indexOf('convert')).toBeLessThan(requestOrder.indexOf('fiat'));
     });

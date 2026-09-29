@@ -11,7 +11,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { seed, testDb } from '../../harness';
+import { seed, testDb, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const OLD_BALANCE_UPDATED_AT = new Date(2026, 0, 1);
@@ -67,7 +67,7 @@ describe('account/account-balance-scope', () => {
         });
         seedExpenseEntry(changedAccount.id, 12_000);
 
-        await accountBalanceIncrementalService.updateBalancesByAccountIds([changedAccount.id]);
+        await run(accountBalanceIncrementalService.updateBalancesByAccountIds([changedAccount.id]));
 
         const changedBalance = accountBalanceRepository.getByAccountId(changedAccount.id).get();
         const untouchedBalance = fetchBalanceRow(untouchedAccount.id);

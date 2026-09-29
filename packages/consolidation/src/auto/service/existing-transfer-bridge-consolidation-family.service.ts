@@ -13,18 +13,18 @@ export class ExistingTransferBridgeConsolidationFamilyService extends Consolidat
     readonly key = ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_BRIDGE;
 
     constructor(
-        private readonly existingTransferRepository: Pick<ExistingTransferRepository, 'findBridgeCandidates'>,
-        private readonly consolidationExecutorService: Pick<ConsolidationExecutorService, 'consolidateExistingTransferBridge'>,
+        private readonly existingTransferRepository: ExistingTransferRepository,
+        private readonly consolidationExecutorService: ConsolidationExecutorService,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<ExistingTransferBridgeCandidateInterface[]> {
+    protected findCandidates(scope: ConsolidationScanScopeInterface | null) {
         return this.existingTransferRepository.findBridgeCandidates(scope);
     }
 
-    protected consolidateCandidate(candidate: ExistingTransferBridgeCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: ExistingTransferBridgeCandidateInterface) {
         return this.consolidationExecutorService.consolidateExistingTransferBridge(candidate, this.buildConsolidationPlan(candidate));
     }
 

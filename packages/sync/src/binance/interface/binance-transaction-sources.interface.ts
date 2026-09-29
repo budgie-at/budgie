@@ -5,10 +5,10 @@ import type { BinanceFiatOrderApiInterface } from './binance-fiat-order-api.sche
 import type { BinanceWithdrawalApiInterface } from './binance-withdrawal-api.schema';
 
 export interface BinanceTransactionSourcesInterface {
-    readonly deposits: BinanceDepositApiInterface[];
-    readonly withdrawals: BinanceWithdrawalApiInterface[];
-    readonly fiatDeposits: BinanceFiatOrderApiInterface[];
-    readonly fiatWithdrawals: BinanceFiatOrderApiInterface[];
-    readonly c2cOrders: BinanceC2cOrderApiInterface[];
-    readonly earnRewards: BinanceEarnRewardApiInterface[];
+    readonly deposits: readonly BinanceDepositApiInterface[];
+    readonly withdrawals: readonly BinanceWithdrawalApiInterface[];
+    readonly fiatDeposits: readonly BinanceFiatOrderApiInterface[];
+    readonly fiatWithdrawals: readonly BinanceFiatOrderApiInterface[];
+    readonly c2cOrders: readonly BinanceC2cOrderApiInterface[];
+    readonly earnRewards: readonly BinanceEarnRewardApiInterface[];
 }

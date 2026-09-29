@@ -13,7 +13,7 @@ import { describe, expect, it } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { seed, testDb } from '../../harness';
+import { seed, testDb, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const ENTRY_AMOUNT = -1_000_000;
@@ -79,7 +79,7 @@ describe('account/archive-account-preserves-deleted-at', () => {
             .where(eq(TransactionEntryEntityTable.transactionId, preArchivedTransactionId))
             .run();
 
-        await accountService.archiveById(archivedAccount.id);
+        await run(accountService.archiveById(archivedAccount.id));
 
         expect(
             requireRow(testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.id, archivedAccount.id)).get()).deletedAt

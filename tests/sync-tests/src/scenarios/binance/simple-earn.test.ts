@@ -11,14 +11,15 @@ import {
     fetchBinanceTransactions,
     recentDayInMonthsAgo,
     resetBinanceSyncForResync,
-    setupBinanceFixture
+    setupBinanceFixture,
+    run
 } from '../../harness';
 
 import type { SyncAccountInterface, BinanceAssetBalanceApiInterface, BinanceEarnPositionApiInterface } from '@budgie/sync';
 
 const DAY_MS = 86_400_000;
 
-const fetchFoldedAccounts = async (
+const fetchFoldedAccounts = (
     spotBalances: BinanceAssetBalanceApiInterface[],
     earnPositions: BinanceEarnPositionApiInterface[]
 ): Promise<SyncAccountInterface[]> => {
@@ -28,11 +29,7 @@ const fetchFoldedAccounts = async (
     binanceStub.earnPositions(earnPositions);
     binanceStub.lockedEarnPositions([]);
 
-    const result = await new BinanceSignedClient(BINANCE_TEST_TOKEN).getAccounts();
-
-    expect(result.success).toBe(true);
-
-    return result.success ? result.data : [];
+    return run(new BinanceSignedClient(BINANCE_TEST_TOKEN).getAccounts());
 };
 
 describe('binance/simple-earn', () => {
@@ -83,7 +80,7 @@ describe('binance/simple-earn', () => {
             buildBinance.earnReward({ asset: 'USDT', rewards: '0.25', time: lastReward })
         ]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const externalIds = fetchBinanceTransactions()
             .map(transaction => transaction.externalId)
@@ -103,7 +100,7 @@ describe('binance/simple-earn', () => {
             buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: currentMonth })
         ]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const transactions = fetchBinanceTransactions();
         const externalIds = transactions.map(transaction => transaction.externalId).sort();
@@ -121,12 +118,12 @@ describe('binance/simple-earn', () => {
         setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
         binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: rewardTime })]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expect(fetchBinanceTransactions()).toHaveLength(1);
 
         resetBinanceSyncForResync();
         binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: rewardTime })]);
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(fetchBinanceTransactions()).toHaveLength(1);
     });

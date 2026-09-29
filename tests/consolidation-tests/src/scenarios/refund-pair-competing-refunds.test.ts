@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { REJECTED_PAYMENT_PRINCIPAL_TITLE } from '../harness/rejected-payment-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
-import { refundPairRepository, testQueryService, testSeedService } from '../harness/test-context';
+import { refundPairRepository, runEffect, testQueryService, testSeedService } from '../harness/test-context';
 
 import type { RefundCandidateBaseInterface, RefundCandidateInterface, TransactionEntityInterface } from '@budgie/contracts';
 
@@ -73,8 +73,8 @@ const seedExactTitleRefunds = async (input: {
     return {
         expense,
         refunds,
-        autoCandidates: await refundPairRepository.findCandidates(),
-        reviewCandidates: await refundPairRepository.findReviewCandidates()
+        autoCandidates: await runEffect(refundPairRepository.findCandidates()),
+        reviewCandidates: await runEffect(refundPairRepository.findReviewCandidates())
     };
 };
 
@@ -226,8 +226,8 @@ describe('consolidation/refund-pair-competing-refunds rejected best match', () =
             externalIdPrefix: 'netflix-target'
         });
 
-        const autoCandidates = await refundPairRepository.findCandidates();
-        const reviewCandidates = await refundPairRepository.findReviewCandidates();
+        const autoCandidates = await runEffect(refundPairRepository.findCandidates());
+        const reviewCandidates = await runEffect(refundPairRepository.findReviewCandidates());
 
         expect(autoCandidates).toHaveLength(0);
         expect(reviewCandidates).toEqual(

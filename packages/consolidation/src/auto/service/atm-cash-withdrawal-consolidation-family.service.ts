@@ -13,18 +13,18 @@ export class AtmCashWithdrawalConsolidationFamilyService extends ConsolidationFa
     readonly key = ConsolidationFamilyKeyEnum.ATM_CASH_WITHDRAWAL;
 
     constructor(
-        private readonly atmCashWithdrawalRepository: Pick<AtmCashWithdrawalRepository, 'findCandidates'>,
-        private readonly consolidationExecutorService: Pick<ConsolidationExecutorService, 'consolidateAtmCashWithdrawal'>,
+        private readonly atmCashWithdrawalRepository: AtmCashWithdrawalRepository,
+        private readonly consolidationExecutorService: ConsolidationExecutorService,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<AtmCashWithdrawalCandidateInterface[]> {
+    protected findCandidates(scope: ConsolidationScanScopeInterface | null) {
         return this.atmCashWithdrawalRepository.findCandidates(scope);
     }
 
-    protected consolidateCandidate(candidate: AtmCashWithdrawalCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: AtmCashWithdrawalCandidateInterface) {
         return this.consolidationExecutorService.consolidateAtmCashWithdrawal(candidate, this.buildConsolidationPlan(candidate));
     }
 

@@ -2,7 +2,7 @@ import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncModeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { fetchPersistedMonobankTransactions, fetchSyncById, seed, stubEmptyStatements, subtractMonths } from '../../harness';
+import { fetchPersistedMonobankTransactions, fetchSyncById, seed, stubEmptyStatements, subtractMonths, run } from '../../harness';
 
 const HISTORY_LIMIT_MONTHS = 1;
 const MS_PER_SECOND = 1_000;
@@ -27,7 +27,7 @@ describe('monobank/history-limit-stops-backward-sweep', () => {
             requestedFromValues.push(fromUnixSeconds);
         });
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         expect(requestedFromValues).toHaveLength(1);
         expect(requestedFromValues[0]).toBe(toUnixSeconds(backwardSyncLimitAt));

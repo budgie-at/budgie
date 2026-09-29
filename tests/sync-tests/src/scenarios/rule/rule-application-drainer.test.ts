@@ -1,9 +1,12 @@
 import { ruleApplicationDrainerService } from '@app/rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '@app/rule/service/rule-engine.service';
-import { CategorySourceEnum, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { CategorySourceEnum, DbError, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { run } from '../../harness';
 import { flushScheduledDrain } from '../../harness/scheduler/flush-scheduled-drain';
+import { useFakeDrainTimers } from '../../harness/scheduler/use-fake-drain-timers';
 import { PausedUserWork } from '../../harness/sync-workload/paused-user-work';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
@@ -39,55 +42,57 @@ const buildTransactionInput = (): TransactionCreateInputInterface => ({
 });
 
 const spyOnApplyRulesToTransactions = () => vi.spyOn(ruleEngineService, 'applyRulesToTransactions');
+const appliedRulesToTransactions = vi.fn();
 
 describe('rule/rule-application-drainer', () => {
     beforeEach(() => {
-        vi.useFakeTimers();
-        vi.stubGlobal('requestIdleCallback', null);
-        vi.stubGlobal('cancelIdleCallback', null);
+        useFakeDrainTimers();
         Object.assign(ruleApplicationDrainerService, {
-            cancelIdleCallback: null,
-            isRunning: false,
             pendingRuleApplications: [],
             pendingTransactionIds: [],
-            pendingTransactionInputs: [],
-            runPromise: null,
-            timer: null
+            pendingTransactionInputs: []
         });
-        spyOnApplyRulesToTransactions().mockResolvedValue();
+        appliedRulesToTransactions.mockClear();
+        spyOnApplyRulesToTransactions().mockImplementation((transactionIds, transactionInputs) =>
+            Effect.suspend(() => {
+                appliedRulesToTransactions(transactionIds, transactionInputs);
+
+                return Effect.void;
+            })
+        );
     });
 
-    afterEach(() => {
-        ruleApplicationDrainerService.cancelPending();
+    afterEach(async () => {
+        await run(ruleApplicationDrainerService.cancelPending());
         vi.useRealTimers();
         vi.unstubAllGlobals();
         vi.restoreAllMocks();
     });
 
     it('waits for active user import work before applying queued transaction rules', async () => {
-        const importWork = new PausedUserWork('file-import', () => {
-            ruleApplicationDrainerService.enqueueTransactions([42], [buildTransactionInput()]);
+        const importWork = new PausedUserWork(() => {
+            void run(ruleApplicationDrainerService.enqueueTransactions([42], [buildTransactionInput()]));
         });
 
         await importWork.started;
         await flushScheduledDrain(drainDelayMs);
-        expect(spyOnApplyRulesToTransactions()).not.toHaveBeenCalled();
+        expect(appliedRulesToTransactions).not.toHaveBeenCalled();
 
         importWork.release();
         await importWork.work;
         await flushScheduledDrain(drainDelayMs);
 
-        expect(spyOnApplyRulesToTransactions()).toHaveBeenCalledTimes(1);
-        expect(spyOnApplyRulesToTransactions()).toHaveBeenCalledWith([42], [buildTransactionInput()]);
+        expect(appliedRulesToTransactions).toHaveBeenCalledTimes(1);
+        expect(appliedRulesToTransactions).toHaveBeenCalledWith([42], [buildTransactionInput()]);
     });
 
     it('reports the applied result to the enqueueing caller', async () => {
         const applyRule = vi
             .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
-            .mockResolvedValue({ applied: 3, failed: 0, total: 3 });
+            .mockReturnValue(Effect.succeed({ applied: 3, failed: 0, total: 3 }));
         const onSettled = vi.fn();
 
-        ruleApplicationDrainerService.enqueueRuleApplication(7, onSettled);
+        await run(ruleApplicationDrainerService.enqueueRuleApplication(7, onSettled));
         await flushScheduledDrain(drainDelayMs);
 
         expect(applyRule).toHaveBeenCalledWith(7, null);
@@ -95,15 +100,15 @@ describe('rule/rule-application-drainer', () => {
     });
 
     it('reports failures to the enqueueing caller and keeps draining', async () => {
-        const error = new Error('boom');
+        const error = new DbError({ cause: new Error('boom') });
         const applyRule = vi
             .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
-            .mockRejectedValueOnce(error)
-            .mockResolvedValueOnce({ applied: 1, failed: 0, total: 1 });
+            .mockReturnValueOnce(Effect.fail(error))
+            .mockReturnValueOnce(Effect.succeed({ applied: 1, failed: 0, total: 1 }));
         const onSettled = vi.fn();
 
-        ruleApplicationDrainerService.enqueueRuleApplication(1, onSettled);
-        ruleApplicationDrainerService.enqueueRuleApplication(2, onSettled);
+        await run(ruleApplicationDrainerService.enqueueRuleApplication(1, onSettled));
+        await run(ruleApplicationDrainerService.enqueueRuleApplication(2, onSettled));
         await flushScheduledDrain(drainDelayMs);
 
         expect(applyRule).toHaveBeenCalledTimes(2);
@@ -114,11 +119,11 @@ describe('rule/rule-application-drainer', () => {
     it('does not enqueue the same rule twice', async () => {
         const applyRule = vi
             .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
-            .mockResolvedValue({ applied: 0, failed: 0, total: 0 });
+            .mockReturnValue(Effect.succeed({ applied: 0, failed: 0, total: 0 }));
         const onSettled = vi.fn();
 
-        ruleApplicationDrainerService.enqueueRuleApplication(5, onSettled);
-        ruleApplicationDrainerService.enqueueRuleApplication(5, onSettled);
+        await run(ruleApplicationDrainerService.enqueueRuleApplication(5, onSettled));
+        await run(ruleApplicationDrainerService.enqueueRuleApplication(5, onSettled));
         await flushScheduledDrain(drainDelayMs);
 
         expect(applyRule).toHaveBeenCalledTimes(1);

@@ -1,4 +1,5 @@
-import { SyncErrorCodeEnum, BinanceSignedClient } from '@budgie/sync';
+import { BinanceSignedClient } from '@budgie/sync';
+import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
@@ -13,7 +14,8 @@ import {
     buildBinance,
     stubBinanceServerTime,
     stubEmptyC2cAndEarnRewards,
-    withCoolDownSpy
+    withCoolDownSpy,
+    run
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -25,12 +27,9 @@ describe('binance/rate-limit', () => {
         stubBinanceServerTime();
 
         const client = new BinanceSignedClient(BINANCE_TEST_TOKEN, Date.now() - 1);
-        const result = await client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+        const error = await run(Effect.flip(client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO)));
 
-        expect(result.success).toBe(false);
-        if (!result.success) {
-            expect(result.error.code).toBe('DEFERRED');
-        }
+        expect(error._tag).toBe('SyncDeferredError');
     });
 
     it('maps a 429 deposit response to a rate-limited error', async () => {
@@ -41,12 +40,9 @@ describe('binance/rate-limit', () => {
         mockServer.use(http.get(WITHDRAW_URL, () => HttpResponse.json([])));
 
         const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
-        const result = await client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+        const error = await run(Effect.flip(client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO)));
 
-        expect(result.success).toBe(false);
-        if (!result.success) {
-            expect(result.error.code).toBe(SyncErrorCodeEnum.RATE_LIMITED);
-        }
+        expect(error._tag).toBe('SyncRateLimitedError');
     });
 
     it('schedules a cool-down before the next heavy call when used-weight crosses the ceiling threshold', async () => {
@@ -64,11 +60,9 @@ describe('binance/rate-limit', () => {
 
         const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
         const coolDownDelays = await withCoolDownSpy(COOL_DOWN_WINDOW_MS, async () => {
-            await client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+            await run(client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
 
-            const result = await client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO + 1);
-
-            expect(result.success).toBe(true);
+            await run(client.getTransactions('SPOT:BTC', BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO + 1));
         });
 
         expect(coolDownDelays).toContain(COOL_DOWN_WINDOW_MS);

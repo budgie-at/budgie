@@ -13,7 +13,7 @@ import {
 } from '../harness/consolidation-revert-audit';
 import { IBAN_BRIDGE_TRANSFER_MCC, parentConsolidationSource } from '../harness/iban-bridge-topology';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
-import { testDb, testQueryService, testSeedService, unconsolidationService } from '../harness/test-context';
+import { testQueryService, testSeedService, unconsolidateById } from '../harness/test-context';
 
 import type { TransactionEntityInterface } from '@budgie/contracts';
 
@@ -113,7 +113,7 @@ describe('consolidation/existing-transfer-income-duplicate', () => {
 
         await runConsolidation();
         const canonicalId = fetchIncomeDuplicateCanonicalId();
-        await unconsolidationService.unconsolidateById(canonicalId, testDb);
+        await unconsolidateById(canonicalId);
 
         expectRevertRemovedCanonical(canonicalId, [existingTransfer.id, duplicateIncome.id]);
         expectSourceStateRestored(stateBeforeConsolidation);
@@ -134,7 +134,7 @@ describe('consolidation/existing-transfer-income-duplicate', () => {
         const stateBeforeAbsorb = snapshotSourceState([duplicateIncome.id]);
         const balancesBeforeAbsorb = await fetchLedgerBalances(accountIds);
         await parentConsolidationSource(duplicateIncome.id, existingTransfer.id);
-        await unconsolidationService.unconsolidateById(existingTransfer.id, testDb);
+        await unconsolidateById(existingTransfer.id);
 
         expect(testQueryService.fetchTransactionById(existingTransfer.id).consolidationType).toBeNull();
         expectSourcesRestored([duplicateIncome.id]);

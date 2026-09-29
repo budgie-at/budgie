@@ -15,7 +15,7 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { requireInstrument, seedBitcoinCryptoAccount } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -35,12 +35,14 @@ const expectHistoricalUahValuation = async (externalSource: ExternalSourceEnum |
 
     await setDefaultInstrument(euro.id);
 
-    const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-        accountId: account.id,
-        amount: 50 * PRECISION,
-        operatedAt: new Date('2011-05-25T12:00:00.000Z'),
-        externalSource
-    });
+    const valuation = await run(
+        entryBaseValuationService.valueMicroUnitEntry({
+            accountId: account.id,
+            amount: 50 * PRECISION,
+            operatedAt: new Date('2011-05-25T12:00:00.000Z'),
+            externalSource
+        })
+    );
 
     expect(valuation).toStrictEqual({
         baseInstrumentId: euro.id,
@@ -64,12 +66,14 @@ const createHistoricalExpense = async (accountId: number, categoryId: number, op
         externalSource: ExternalSourceEnum.CSV,
         updatedBy: null
     } satisfies TransactionCreateEntityInterface);
-    const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-        accountId,
-        amount: 50 * PRECISION,
-        operatedAt,
-        externalSource: ExternalSourceEnum.CSV
-    });
+    const valuation = await run(
+        entryBaseValuationService.valueMicroUnitEntry({
+            accountId,
+            amount: 50 * PRECISION,
+            operatedAt,
+            externalSource: ExternalSourceEnum.CSV
+        })
+    );
 
     insertOne(TransactionEntryEntityTable, {
         transactionId: transaction.id,
@@ -99,12 +103,14 @@ describe('base valuation', () => {
     it('allows manual crypto entries to remain unvalued when no live crypto rate exists', async () => {
         const { account } = await seedBitcoinCryptoAccount();
 
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-            accountId: account.id,
-            amount: 100 * PRECISION,
-            operatedAt: new Date('2026-06-04T15:35:37.321Z'),
-            externalSource: null
-        });
+        const valuation = await run(
+            entryBaseValuationService.valueMicroUnitEntry({
+                accountId: account.id,
+                amount: 100 * PRECISION,
+                operatedAt: new Date('2026-06-04T15:35:37.321Z'),
+                externalSource: null
+            })
+        );
 
         expect(valuation).toStrictEqual({
             baseInstrumentId: null,

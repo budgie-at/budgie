@@ -1,14 +1,15 @@
 import { expoDb } from '@app/@generic/drizzle/db/db';
 import { DatabaseLifecycleOperationEnum } from '@app/@generic/drizzle/enum/database-lifecycle-operation.enum';
 import { databaseLifecycleService } from '@app/@generic/drizzle/service/database-lifecycle.service';
+import * as Effect from 'effect/Effect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { run } from '../../harness';
 
 const resetDatabaseLifecycleService = (): void => {
     Object.assign(databaseLifecycleService, {
-        closeOperation: null,
         inFlightOperations: new Map(),
-        isClosed: false,
-        pendingOperation: Promise.resolve()
+        isClosed: false
     });
 };
 
@@ -22,17 +23,27 @@ describe('database/database-lifecycle-serialization', () => {
         const events: string[] = [];
 
         await Promise.all([
-            databaseLifecycleService.run(DatabaseLifecycleOperationEnum.REKEY, async () => {
-                events.push('rekey:start');
-                await databaseLifecycleService.close();
-                await Promise.resolve();
-                events.push('rekey:end');
-            }),
-            databaseLifecycleService.run(DatabaseLifecycleOperationEnum.IMPORT, async () => {
-                events.push('import:start');
-                await databaseLifecycleService.close();
-                events.push('import:end');
-            })
+            run(
+                databaseLifecycleService.run(
+                    DatabaseLifecycleOperationEnum.REKEY,
+                    Effect.gen(function* () {
+                        events.push('rekey:start');
+                        yield* databaseLifecycleService.close();
+                        yield* Effect.promise(() => Promise.resolve());
+                        events.push('rekey:end');
+                    })
+                )
+            ),
+            run(
+                databaseLifecycleService.run(
+                    DatabaseLifecycleOperationEnum.IMPORT,
+                    Effect.gen(function* () {
+                        events.push('import:start');
+                        yield* databaseLifecycleService.close();
+                        events.push('import:end');
+                    })
+                )
+            )
         ]);
 
         expect(events).toEqual(['rekey:start', 'rekey:end', 'import:start', 'import:end']);
@@ -41,14 +52,14 @@ describe('database/database-lifecycle-serialization', () => {
 
     it('reuses the in-flight promise when the same operation is requested twice', async () => {
         const events: string[] = [];
-        const runReset = async (): Promise<void> => {
+        const runReset = Effect.gen(function* () {
             events.push('reset');
-            await Promise.resolve();
-        };
+            yield* Effect.promise(() => Promise.resolve());
+        });
 
         await Promise.all([
-            databaseLifecycleService.run(DatabaseLifecycleOperationEnum.RESET, runReset),
-            databaseLifecycleService.run(DatabaseLifecycleOperationEnum.RESET, runReset)
+            run(databaseLifecycleService.run(DatabaseLifecycleOperationEnum.RESET, runReset)),
+            run(databaseLifecycleService.run(DatabaseLifecycleOperationEnum.RESET, runReset))
         ]);
 
         expect(events).toEqual(['reset']);
@@ -57,21 +68,29 @@ describe('database/database-lifecycle-serialization', () => {
     it('keeps serializing after a failed operation', async () => {
         const events: string[] = [];
 
-        const failing = databaseLifecycleService
-            .run(DatabaseLifecycleOperationEnum.IMPORT, async () => {
-                events.push('import:start');
-                await Promise.resolve();
+        const failing = run(
+            databaseLifecycleService.run(
+                DatabaseLifecycleOperationEnum.IMPORT,
+                Effect.gen(function* () {
+                    events.push('import:start');
+                    yield* Effect.promise(() => Promise.resolve());
 
-                throw new Error('import failed');
-            })
-            .then(
-                () => false,
-                () => true
-            );
-        const following = databaseLifecycleService.run(DatabaseLifecycleOperationEnum.REKEY, async () => {
-            events.push('rekey:start');
-            await Promise.resolve();
-        });
+                    return yield* Effect.fail(new Error('import failed'));
+                })
+            )
+        ).then(
+            () => false,
+            () => true
+        );
+        const following = run(
+            databaseLifecycleService.run(
+                DatabaseLifecycleOperationEnum.REKEY,
+                Effect.gen(function* () {
+                    events.push('rekey:start');
+                    yield* Effect.promise(() => Promise.resolve());
+                })
+            )
+        );
 
         expect(await failing).toBe(true);
         await following;
@@ -82,14 +101,14 @@ describe('database/database-lifecycle-serialization', () => {
     it('retries the close when the native handle fails to close', async () => {
         vi.mocked(expoDb.closeAsync).mockRejectedValueOnce(new Error('unable to close due to unfinalized statements'));
 
-        await expect(databaseLifecycleService.close()).rejects.toThrow();
-        await databaseLifecycleService.close();
+        await expect(run(databaseLifecycleService.close())).rejects.toThrow();
+        await run(databaseLifecycleService.close());
 
         expect(vi.mocked(expoDb.closeAsync)).toHaveBeenCalledTimes(2);
     });
 
     it('closes the native handle once when two closers race', async () => {
-        await Promise.all([databaseLifecycleService.close(), databaseLifecycleService.close()]);
+        await Promise.all([run(databaseLifecycleService.close()), run(databaseLifecycleService.close())]);
 
         expect(vi.mocked(expoDb.closeAsync)).toHaveBeenCalledTimes(1);
     });

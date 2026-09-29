@@ -2,7 +2,7 @@ import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { http, HttpResponse } from 'msw';
 import { describe, it } from 'vitest';
 
-import { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases, setupMonobankFixture } from '../../harness';
+import { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases, setupMonobankFixture, run } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 describe('monobank/error-recovery', () => {
@@ -13,7 +13,7 @@ describe('monobank/error-recovery', () => {
                 http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => new HttpResponse(null, { status }))
             );
 
-            await monobankSyncService.sync();
+            await run(monobankSyncService.sync());
 
             expectSyncFailedAndDisabled(sync.id);
         });

@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-const BinanceEarnPositionApiSchema = z.object({
-    asset: z.string(),
-    totalAmount: z.string()
+const BinanceEarnPositionApiSchema = Schema.Struct({
+    asset: Schema.String,
+    totalAmount: Schema.String
 });
 
-export const BinanceEarnPositionListApiSchema = z.object({
-    rows: z.array(BinanceEarnPositionApiSchema),
-    total: z.number()
+export const BinanceEarnPositionListApiSchema = Schema.Struct({
+    rows: Schema.Array(BinanceEarnPositionApiSchema),
+    total: Schema.Number
 });
 
-export type BinanceEarnPositionApiInterface = z.infer<typeof BinanceEarnPositionApiSchema>;
+export type BinanceEarnPositionApiInterface = typeof BinanceEarnPositionApiSchema.Type;

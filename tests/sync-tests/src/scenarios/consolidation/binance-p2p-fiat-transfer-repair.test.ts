@@ -22,7 +22,8 @@ import {
     seedBankPair,
     seedP2pFiatTransferFixture,
     seedP2pIncome,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 
 const REPAIR_PRIMARY_AMOUNT = 3_500 * PRECISION;
@@ -57,7 +58,7 @@ const seedWrongP2pRepairScenario = (externalIdPrefix: string, bankAccountId: num
 };
 
 const consolidateWrongP2pRepairScenario = async (wrongExpenseId: number, incomeTransactionId: number): Promise<number> => {
-    expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
+    expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(1);
 
     const canonicalId = getDefined(fetchTransactionById(incomeTransactionId).consolidationParentTransactionId, () => {
         throw new Error('Expected heuristic P2P canonical id');
@@ -104,12 +105,12 @@ describe('consolidation/binance-p2p-fiat-transfer authoritative repair', () => {
         );
         const income = seedP2pIncome('binance:c2c:buy-repair', binanceAccount.id);
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(1);
         expect(fetchTransactionById(extraExpense.id).consolidationParentTransactionId).not.toBeNull();
 
         backfillP2pQuote(uah.id, income.id);
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(1);
         expect(fetchTransactionById(primaryExpense.id).consolidationParentTransactionId).toBe(
             fetchTransactionById(income.id).consolidationParentTransactionId
         );
@@ -125,7 +126,7 @@ describe('consolidation/binance-p2p-fiat-transfer authoritative repair', () => {
 
         backfillP2pQuote(uah.id, income.id);
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(1);
         expect(fetchTransactionById(correctExpense.id).consolidationParentTransactionId).toBe(
             fetchTransactionById(income.id).consolidationParentTransactionId
         );
@@ -144,7 +145,7 @@ describe('consolidation/binance-p2p-fiat-transfer authoritative repair', () => {
             .run();
         backfillP2pQuote(uah.id, income.id);
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(0);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(0);
         expectRepairCanonicalPreserved(canonicalId, [wrongExpense.id, income.id]);
         expect(fetchTransactionById(correctExpense.id).consolidationParentTransactionId).toBeNull();
     });
@@ -163,7 +164,7 @@ describe('consolidation/binance-p2p-fiat-transfer existing source scope', () => 
         );
         const historicalIncome = seedP2pIncome('binance:c2c:buy-repair-scoped', binanceAccount.id);
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(1);
         expect(fetchTransactionById(historicalExtraExpense.id).consolidationParentTransactionId).not.toBeNull();
 
         const historicalCanonicalId = getDefined(fetchTransactionById(historicalIncome.id).consolidationParentTransactionId, () => {
@@ -181,7 +182,7 @@ describe('consolidation/binance-p2p-fiat-transfer existing source scope', () => 
             { accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT }
         );
 
-        expect(await consolidateP2pRepairWithScope([scopedExpense.id, scopedIncome.id])).toEqual({ found: 1, consolidated: 1 });
+        expect(await run(consolidateP2pRepairWithScope([scopedExpense.id, scopedIncome.id]))).toEqual({ found: 1, consolidated: 1 });
         expectRepairCanonicalPreserved(historicalCanonicalId, [
             historicalPrimaryExpense.id,
             historicalExtraExpense.id,
@@ -203,7 +204,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped source scope', () => {
         );
         const historicalIncome = seedP2pIncome('binance:c2c:buy-repair-grouped-source', binanceAccount.id);
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(1);
 
         const historicalCanonicalId = getDefined(fetchTransactionById(historicalIncome.id).consolidationParentTransactionId, () => {
             throw new Error('Expected grouped repair canonical id');
@@ -216,7 +217,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped source scope', () => {
             { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
         );
 
-        expect(await consolidateP2pRepairWithScope([scopedReplacementLikeExpense.id])).toEqual({ found: 0, consolidated: 0 });
+        expect(await run(consolidateP2pRepairWithScope([scopedReplacementLikeExpense.id]))).toEqual({ found: 0, consolidated: 0 });
         expectRepairCanonicalPreserved(historicalCanonicalId, [
             historicalPrimaryExpense.id,
             historicalExtraExpense.id,
@@ -233,7 +234,7 @@ describe('consolidation/binance-p2p-fiat-transfer replacement source scope', () 
 
         await consolidateWrongP2pRepairScenario(wrongExpense.id, income.id);
 
-        expect(await backfillAndConsolidateScopedP2pRepair(uah.id, income.id, [correctExpense.id])).toEqual({
+        expect(await run(backfillAndConsolidateScopedP2pRepair(uah.id, income.id, [correctExpense.id]))).toEqual({
             found: 1,
             consolidated: 1
         });
@@ -265,7 +266,7 @@ describe('consolidation/binance-p2p-fiat-transfer replacement source scope', () 
 
         const canonicalId = await consolidateWrongP2pRepairScenario(wrongExpense.id, income.id);
 
-        expect(await backfillAndConsolidateScopedP2pRepair(uah.id, income.id, [income.id])).toEqual({
+        expect(await run(backfillAndConsolidateScopedP2pRepair(uah.id, income.id, [income.id]))).toEqual({
             found: 0,
             consolidated: 0
         });

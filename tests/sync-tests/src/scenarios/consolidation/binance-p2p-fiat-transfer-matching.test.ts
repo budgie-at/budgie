@@ -18,7 +18,8 @@ import {
     seedP2pFiatTransferFixture,
     seedP2pIncome,
     seedP2pPair,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 
 const ONE_SECOND_MS = 1_000;
@@ -42,7 +43,7 @@ describe('consolidation/binance-p2p-fiat-transfer time window', () => {
             P2P_ONE_HOUR_MS
         );
 
-        expect(await transferConsolidationService.consolidate()).toEqual({ found: 1, consolidated: 1 });
+        expect(await run(transferConsolidationService.consolidate(null))).toEqual({ found: 1, consolidated: 1 });
         expectConsolidatedToP2pCanonical(expense, income, bankAccount.id, binanceAccount.id);
     });
 
@@ -54,7 +55,7 @@ describe('consolidation/binance-p2p-fiat-transfer time window', () => {
             P2P_ONE_HOUR_MS + ONE_SECOND_MS
         );
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(0);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(0);
         expectP2pUnconsolidated([expense, income]);
     });
 
@@ -66,7 +67,7 @@ describe('consolidation/binance-p2p-fiat-transfer time window', () => {
             P2P_OUT_OF_WINDOW_OFFSET_MS
         );
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(0);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(0);
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
     });
 });
@@ -82,7 +83,7 @@ describe('consolidation/binance-p2p-fiat-transfer ambiguity', () => {
         );
         const income = seedP2pIncome('binance:c2c:buy-combination-tie', binanceAccount.id);
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(0);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(0);
         expectP2pUnconsolidated([...expenses, income]);
     });
 
@@ -102,7 +103,7 @@ describe('consolidation/binance-p2p-fiat-transfer ambiguity', () => {
             )
         );
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(0);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(0);
         expectP2pUnconsolidated([expense, ...incomes]);
     });
 });
@@ -140,7 +141,7 @@ describe('consolidation/binance-p2p-fiat-transfer ranked ownership', () => {
             .where(eq(TransactionEntryEntityTable.transactionId, smallIncome.id))
             .run();
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(2);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(2);
         expect(fetchTransactionById(largeExpense.id).consolidationParentTransactionId).toBe(
             fetchTransactionById(largeIncome.id).consolidationParentTransactionId
         );
@@ -175,7 +176,7 @@ describe('consolidation/binance-p2p-fiat-transfer ranked heuristic ownership', (
             { accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT }
         );
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(1);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(1);
 
         const canonicalId = fetchP2pCanonical().id;
         expect(fetchTransactionById(expense.id).consolidationParentTransactionId).toBe(canonicalId);
@@ -208,7 +209,7 @@ describe('consolidation/binance-p2p-fiat-transfer ranked heuristic ownership', (
             { accountId: bankAccount.id, amount: P2P_UAH_TOTAL }
         );
 
-        expect((await transferConsolidationService.consolidate()).consolidated).toBe(2);
+        expect((await run(transferConsolidationService.consolidate(null))).consolidated).toBe(2);
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(2);
         expect(fetchTransactionById(firstIncome.id).consolidationParentTransactionId).toBe(
             fetchTransactionById(secondExpense.id).consolidationParentTransactionId

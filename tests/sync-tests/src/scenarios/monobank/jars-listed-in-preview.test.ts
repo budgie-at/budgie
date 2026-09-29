@@ -2,7 +2,7 @@ import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { SyncAccountTypeEnum } from '@budgie/sync';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, monobankStub } from '../../harness';
+import { buildMonobank, monobankStub, run } from '../../harness';
 
 import type { ClientInfo } from '@liaugust/monobank-sdk';
 
@@ -14,7 +14,7 @@ describe('monobank/jars-listed-in-preview', () => {
         };
         monobankStub.clientInfo(clientInfo);
 
-        const previews = await monobankSyncService.fetchAccountsPreview('test-token');
+        const previews = await run(monobankSyncService.fetchAccountsPreview('test-token'));
 
         const jarPreview = previews.find(preview => preview.type === SyncAccountTypeEnum.JAR);
         const cardPreview = previews.find(preview => preview.type !== SyncAccountTypeEnum.JAR);

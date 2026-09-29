@@ -10,7 +10,8 @@ import {
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
     seedCryptoInstrument,
-    setupUsdtSpotFixtureWithBalances
+    setupUsdtSpotFixtureWithBalances,
+    run
 } from '../../harness';
 
 const CONVERT_MAPPING_ORDER_ID = 7001;
@@ -30,7 +31,7 @@ describe('binance/convert', () => {
         setupUsdtSpotFixtureWithBalances('BTC', '1');
         stubUsdtToBtcConvert(CONVERT_MAPPING_ORDER_ID);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expectSingleBinanceTransaction(TransactionTypeEnum.TRANSFER, 'binance:convert:7001');
         expect(fetchBinanceTransactions()[0].exchangeRate).toBe(1);
@@ -42,7 +43,7 @@ describe('binance/convert', () => {
         setupUsdtSpotFixtureWithBalances('BTC', '1');
         stubUsdtToBtcConvert(CONVERT_FEE_ORDER_ID);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expect(fetchBinanceEntriesByExternalId('binance:convert:7002:fee')).toHaveLength(0);
     });
@@ -62,7 +63,7 @@ describe('binance/convert', () => {
             })
         ]);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const externalIds = fetchBinanceTransactions().map(transaction => transaction.externalId);
         expect(externalIds).toEqual(['binance:convert:7101']);
@@ -85,7 +86,7 @@ describe('binance/convert', () => {
         });
         stubUsdtToBtcConvert(CONVERT_NAMESPACE_ORDER_ID);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         const externalIds = fetchBinanceTransactions()
             .map(transaction => transaction.externalId)
@@ -98,7 +99,7 @@ describe('binance/convert', () => {
         setupUsdtSpotFixtureWithBalances('BTC', '1');
         stubUsdtToBtcConvert(CONVERT_RESYNC_ORDER_ID);
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         await expectNoDuplicateAfterResync(() => {
             binanceStub.spotBalances([

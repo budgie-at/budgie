@@ -1,8 +1,8 @@
-import { MonobankSyncService } from '@budgie/sync';
+import { MonobankClient, MonobankSyncService } from '@budgie/sync';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank } from '../../harness';
+import { buildMonobank, run } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 const STATEMENT_ENDPOINT = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
@@ -24,7 +24,9 @@ describe('monobank/retry-policy', () => {
             })
         );
 
-        const result = await new MonobankSyncService('test-token').syncTransactionsForward('mono-card', new Date());
+        const result = await run(
+            new MonobankSyncService(new MonobankClient('test-token')).syncTransactionsForward('mono-card', new Date())
+        );
 
         expect(attempts).toBe(SUCCESS_ON_ATTEMPT);
         expect(result.transactions).toHaveLength(1);
@@ -40,7 +42,9 @@ describe('monobank/retry-policy', () => {
             })
         );
 
-        await expect(new MonobankSyncService('test-token').syncTransactionsForward('mono-card', new Date())).rejects.toThrow();
+        await expect(
+            run(new MonobankSyncService(new MonobankClient('test-token')).syncTransactionsForward('mono-card', new Date()))
+        ).rejects.toThrow();
         expect(attempts).toBe(1);
     });
 });

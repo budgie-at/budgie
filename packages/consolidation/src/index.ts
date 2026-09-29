@@ -11,6 +11,10 @@ export { AtmCashWithdrawalRepository } from './query/repository/atm-cash-withdra
 export { ExistingTransferRepository } from './query/repository/existing-transfer.repository';
 export { IbanBridgeTransferRepository } from './query/repository/iban-bridge-transfer.repository';
 export { RefundPairRepository } from './query/repository/refund-pair.repository';
+export { RefundAlreadyConsolidatedError } from './refund/error/refund-already-consolidated.error';
+export { RefundExceedsExpenseError } from './refund/error/refund-exceeds-expense.error';
+export { RefundNotFromIncomeError } from './refund/error/refund-not-from-income.error';
+export { RefundTransactionNotFoundError } from './refund/error/refund-transaction-not-found.error';
 export { RefundConsolidationService } from './refund/service/refund-consolidation.service';
 export { TransferPairRepository } from './query/repository/transfer-pair.repository';
 export { UnconsolidationService } from './executor/service/unconsolidation.service';
@@ -27,4 +31,3 @@ export type { ConsolidationExecutorDependenciesInterface } from './executor/inte
 export type { ConvertToRefundParamsInterface } from './refund/interface/convert-to-refund-params.interface';
 export type { RefundConsolidationDependenciesInterface } from './refund/interface/refund-consolidation-dependencies.interface';
 export type { UnconsolidationDependenciesInterface } from './executor/interface/unconsolidation-dependencies.interface';
-export type { TransactionRunnerType } from './wiring/type/transaction-runner.type';

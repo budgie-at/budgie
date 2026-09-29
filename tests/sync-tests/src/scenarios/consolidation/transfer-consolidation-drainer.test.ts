@@ -1,11 +1,13 @@
 import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import * as Deferred from 'effect/Deferred';
+import * as Effect from 'effect/Effect';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { emptyFn } from '@rnw-community/shared';
-
+import { run } from '../../harness';
 import { flushScheduledDrain } from '../../harness/scheduler/flush-scheduled-drain';
+import { useFakeDrainTimers } from '../../harness/scheduler/use-fake-drain-timers';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
@@ -29,21 +31,14 @@ const flushImmediateTimers = async (): Promise<void> => {
 const spyOnConsolidate = () => vi.spyOn(transferConsolidationService, 'consolidate');
 
 const mockPendingConsolidate = (): (() => void) => {
-    const resolveFirstDrainRef = { current: emptyFn };
+    const firstDrainGate = Deferred.makeUnsafe<void>();
 
     spyOnConsolidate()
-        .mockImplementationOnce(
-            () =>
-                new Promise(resolve => {
-                    resolveFirstDrainRef.current = () => {
-                        resolve(emptyConsolidationResult);
-                    };
-                })
-        )
-        .mockResolvedValue(emptyConsolidationResult);
+        .mockImplementationOnce(() => Effect.as(Deferred.await(firstDrainGate), emptyConsolidationResult))
+        .mockReturnValue(Effect.succeed(emptyConsolidationResult));
 
     return () => {
-        resolveFirstDrainRef.current();
+        Deferred.doneUnsafe(firstDrainGate, Effect.void);
     };
 };
 
@@ -64,22 +59,16 @@ const expectFollowUpDrain = async (scope: ConsolidationScanScopeInterface): Prom
 
 describe('consolidation/transfer-consolidation-drainer', () => {
     beforeEach(() => {
-        vi.useFakeTimers();
-        vi.stubGlobal('requestIdleCallback', null);
-        vi.stubGlobal('cancelIdleCallback', null);
+        useFakeDrainTimers();
         Object.assign(transferConsolidationDrainerService, {
-            cancelIdleCallback: null,
             hasPendingRun: false,
-            isRunning: false,
-            pendingScope: null,
-            timer: null,
-            timerFiresAt: null
+            pendingScope: null
         });
-        spyOnConsolidate().mockResolvedValue(emptyConsolidationResult);
+        spyOnConsolidate().mockReturnValue(Effect.succeed(emptyConsolidationResult));
     });
 
-    afterEach(() => {
-        transferConsolidationDrainerService.cancelPending();
+    afterEach(async () => {
+        await run(transferConsolidationDrainerService.cancelPending());
         vi.useRealTimers();
         vi.unstubAllGlobals();
         vi.restoreAllMocks();
@@ -89,8 +78,8 @@ describe('consolidation/transfer-consolidation-drainer', () => {
         const firstScope = buildScope(1, new Date('2026-01-02T00:00:00.000Z'), new Date('2026-01-03T00:00:00.000Z'));
         const secondScope = buildScope(2, new Date('2026-01-01T00:00:00.000Z'), new Date('2026-01-04T00:00:00.000Z'));
 
-        transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, firstScope);
-        transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, secondScope);
+        await run(transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, firstScope));
+        await run(transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, secondScope));
 
         await vi.advanceTimersByTimeAsync(drainDelayMs - 1);
         expect(spyOnConsolidate()).not.toHaveBeenCalled();
@@ -112,11 +101,11 @@ describe('consolidation/transfer-consolidation-drainer', () => {
         const secondScope = buildScope(2, new Date('2026-01-03T00:00:00.000Z'), new Date('2026-01-04T00:00:00.000Z'));
         const resolveFirstDrain = mockPendingConsolidate();
 
-        transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, firstScope);
+        await run(transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.FILE_IMPORT, firstScope));
         await flushScheduledDrain(drainDelayMs);
         expect(spyOnConsolidate()).toHaveBeenCalledTimes(1);
 
-        transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, secondScope);
+        await run(transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, secondScope));
         await expectNoFollowUpBeforeActiveDrainFinishes(resolveFirstDrain);
         await expectFollowUpDrain(secondScope);
     });

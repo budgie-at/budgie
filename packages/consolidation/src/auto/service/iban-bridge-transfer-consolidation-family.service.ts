@@ -13,18 +13,18 @@ export class IbanBridgeTransferConsolidationFamilyService extends ConsolidationF
     readonly key = ConsolidationFamilyKeyEnum.IBAN_BRIDGE_TRANSFER;
 
     constructor(
-        private readonly ibanBridgeTransferRepository: Pick<IbanBridgeTransferRepository, 'findTransferCandidates'>,
-        private readonly consolidationExecutorService: Pick<ConsolidationExecutorService, 'consolidateIbanBridgeTransfer'>,
+        private readonly ibanBridgeTransferRepository: IbanBridgeTransferRepository,
+        private readonly consolidationExecutorService: ConsolidationExecutorService,
         yieldControl: () => Promise<void>
     ) {
         super(yieldControl);
     }
 
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<IbanBridgeTransferCandidateInterface[]> {
+    protected findCandidates(scope: ConsolidationScanScopeInterface | null) {
         return this.ibanBridgeTransferRepository.findTransferCandidates(scope);
     }
 
-    protected consolidateCandidate(candidate: IbanBridgeTransferCandidateInterface): Promise<boolean> {
+    protected consolidateCandidate(candidate: IbanBridgeTransferCandidateInterface) {
         return this.consolidationExecutorService.consolidateIbanBridgeTransfer(candidate, this.buildConsolidationPlan(candidate));
     }
 

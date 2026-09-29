@@ -28,7 +28,8 @@ import {
     seed,
     seedBankPair,
     setupMonobankFixture,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
@@ -70,6 +71,19 @@ const expectAccountBalances = (bankAccountId: number, cashAccountId: number, exp
     expect(cashBalance?.balance).toBe(expectedCashBalance * PRECISION);
 };
 
+const stubAtmWithFeeStatement = (id: string): void => {
+    monobankStub.statement([
+        buildMonobank.transaction({
+            id,
+            amount: -40800,
+            commissionRate: -800,
+            hold: false,
+            mcc: 6011,
+            operationAmount: -40800
+        })
+    ]);
+};
+
 describe('consolidation/atm-cash-withdrawal', () => {
     it('promotes an MCC=6011 expense into a TRANSFER to the unique cash account in the same currency', async () => {
         const { bankAccount, cashAccount, expense } = seedAtmCashWithdrawalFixture();
@@ -91,8 +105,8 @@ describe('consolidation/atm-cash-withdrawal', () => {
             })
         ]);
 
-        await monobankSyncService.sync();
-        const result = await transferConsolidationService.consolidate();
+        await run(monobankSyncService.sync());
+        const result = await run(transferConsolidationService.consolidate(null));
 
         expect(result.consolidated).toBe(0);
 
@@ -121,13 +135,13 @@ describe('consolidation/atm-cash-withdrawal', () => {
         expectAccountBalances(bankAccount.id, cashAccount.id, -408, 400);
         expect(feeCategoryAmount).toBe(8 * PRECISION);
 
-        const secondResult = await transferConsolidationService.consolidate();
+        const secondResult = await run(transferConsolidationService.consolidate(null));
         expect(secondResult.consolidated).toBe(0);
 
         const secondFeeTransactions = fetchGeneratedAtmFeeTransactions(canonical.id);
         expect(secondFeeTransactions).toHaveLength(0);
 
-        await transactionService.unconsolidateById(canonical.id);
+        await run(transactionService.unconsolidateById(canonical.id));
 
         const leftoverFeeTransactions = fetchGeneratedAtmFeeTransactions(canonical.id);
         expect(leftoverFeeTransactions).toHaveLength(0);
@@ -174,26 +188,19 @@ describe('consolidation/atm-cash-withdrawal', () => {
         const staleForwardSyncDate = new Date(2026, 0, 1);
         const { sync } = setupMonobankFixture();
         seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
-        monobankStub.statement([
-            buildMonobank.transaction({
-                id: 'tx-historical-atm-with-fee',
-                amount: -40800,
-                commissionRate: -800,
-                hold: false,
-                mcc: 6011,
-                operationAmount: -40800
-            })
-        ]);
+        stubAtmWithFeeStatement('tx-historical-atm-with-fee');
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
         vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
-        await syncRepository.update(sync.id, {
-            forwardSyncedAt: staleForwardSyncDate,
-            forwardSyncFromAt: staleForwardSyncDate
-        });
+        await run(
+            syncRepository.update(sync.id, {
+                forwardSyncedAt: staleForwardSyncDate,
+                forwardSyncFromAt: staleForwardSyncDate
+            })
+        );
 
         monobankStub.statement([]);
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         expect(transferConsolidationDrainerService.enqueue).not.toHaveBeenCalled();
     });
@@ -201,22 +208,13 @@ describe('consolidation/atm-cash-withdrawal', () => {
     it('does not enqueue global consolidation when Monobank sync has no stale batch pending', async () => {
         setupMonobankFixture();
         seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
-        monobankStub.statement([
-            buildMonobank.transaction({
-                id: 'tx-fresh-atm-with-fee',
-                amount: -40800,
-                commissionRate: -800,
-                hold: false,
-                mcc: 6011,
-                operationAmount: -40800
-            })
-        ]);
+        stubAtmWithFeeStatement('tx-fresh-atm-with-fee');
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
         vi.mocked(transferConsolidationDrainerService.enqueue).mockClear();
 
         monobankStub.statement([]);
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         expect(transferConsolidationDrainerService.enqueue).not.toHaveBeenCalled();
     });
@@ -227,7 +225,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
         seed.account({ title: 'Cash 2', type: AccountTypeEnum.CASH, instrumentId: 1 });
         seedAtmExpense(bankAccount.id);
 
-        const result = await transferConsolidationService.consolidate();
+        const result = await run(transferConsolidationService.consolidate(null));
         expect(result.consolidated).toBe(0);
     });
 
@@ -236,12 +234,12 @@ describe('consolidation/atm-cash-withdrawal', () => {
         seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
         const expense = seedAtmExpense(bankAccount.id);
 
-        await transferConsolidationService.consolidate();
+        await run(transferConsolidationService.consolidate(null));
 
         const canonical = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)[0];
         expect(canonical).toBeDefined();
 
-        await transactionService.unconsolidateById(canonical.id);
+        await run(transactionService.unconsolidateById(canonical.id));
 
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(0);
         expect(fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();

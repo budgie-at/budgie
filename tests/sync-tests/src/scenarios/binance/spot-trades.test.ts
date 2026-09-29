@@ -1,7 +1,8 @@
 import { binanceSyncService } from '@app/sync/service/binance-sync.service';
 import { AccountEntityTable, SyncModeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { BinanceSignedClient, BinanceWalletEnum, SyncErrorCodeEnum, encodeBinanceAccountId } from '@budgie/sync';
+import { BinanceSignedClient, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -18,7 +19,8 @@ import {
     setupAdaUsdtFixture,
     setupBinanceFixture,
     setupUsdtSpotFixtureWithBalances,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 const RECURRING_SYNC_AGE_MS = 5 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -86,7 +88,7 @@ describe('binance/spot-trades', () => {
             new Set<string>(),
             requestedUrls
         );
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expect(requestedUrls.length).toBeGreaterThan(0);
         expect(requestedUrls[0].searchParams.has('fromId')).toBe(false);
         expect(Number(requestedUrls[0].searchParams.get('startTime'))).toBe(
@@ -99,7 +101,7 @@ describe('binance/spot-trades/mapping', () => {
         seedCryptoInstrument('ADA');
         setupUsdtSpotFixtureWithBalances('ADA', '200');
         stubAdaUsdtTrade(10, '200', '100', true);
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expectSingleBinanceTransaction(TransactionTypeEnum.TRANSFER, 'binance:trade:ADAUSDT:10');
         expect(fetchBinanceTransactions()[0].exchangeRate).toBe(1);
         const entries = fetchBinanceEntriesByExternalId('binance:trade:ADAUSDT:10');
@@ -113,7 +115,7 @@ describe('binance/spot-trades/mapping', () => {
         seedCryptoInstrument('ADA');
         setupUsdtSpotFixtureWithBalances('ADA', '50');
         stubAdaUsdtTrade(11, '150', '75', false);
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expectSingleBinanceTransaction(TransactionTypeEnum.TRANSFER, 'binance:trade:ADAUSDT:11');
     });
     it('adds a FEE entry on the BNB account when the commission asset is BNB', async () => {
@@ -121,7 +123,7 @@ describe('binance/spot-trades/mapping', () => {
         seedCryptoInstrument('BNB');
         setupUsdtAdaBnbFixture('1');
         stubAdaUsdtTradeWithCommissionAsset(12, 'BNB');
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         const entries = fetchBinanceEntriesByExternalId('binance:trade:ADAUSDT:12');
         const feeEntries = fetchBinanceEntriesByExternalId('binance:trade:ADAUSDT:12:fee');
         expect(entries).toHaveLength(2);
@@ -136,7 +138,7 @@ describe('binance/spot-trades/mapping', () => {
             buildBinance.balance({ asset: 'ADA', free: '200' })
         ]);
         stubAdaUsdtTradeWithCommissionAsset(24, 'NOPE');
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expect(fetchBinanceEntriesByExternalId('binance:trade:ADAUSDT:24')).toHaveLength(2);
         expect(fetchBinanceEntriesByExternalId('binance:trade:ADAUSDT:24:fee')).toHaveLength(0);
     });
@@ -146,7 +148,7 @@ describe('binance/spot-trades/mapping', () => {
         stubAdaUsdtTrade(13, '200', '100', true);
         const adaCodecId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'ADA' });
         expect(testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalId, adaCodecId)).all()).toHaveLength(0);
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         const transactions = fetchBinanceTransactions();
         expect(transactions).toHaveLength(1);
         expect(transactions[0].type).toBe(TransactionTypeEnum.TRANSFER);
@@ -158,7 +160,7 @@ describe('binance/spot-trades/mapping', () => {
         binanceStub.myTrades({
             NOPEUSDT: [buildBinance.trade({ symbol: 'NOPEUSDT', id: 14, qty: '5', quoteQty: '100', commission: '0', isBuyer: true })]
         });
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expect(fetchBinanceTransactions()).toHaveLength(0);
     });
 });
@@ -178,7 +180,7 @@ describe('binance/spot-trades/symbols', () => {
             },
             requestedSymbols
         );
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         const externalIds = fetchBinanceTransactions()
             .map(transaction => transaction.externalId)
             .sort();
@@ -193,7 +195,7 @@ describe('binance/spot-trades/symbols', () => {
             ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 20, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })],
             BNBUSDT: [buildBinance.trade({ symbol: 'BNBUSDT', id: 21, qty: '5', quoteQty: '50', commission: '0', isBuyer: true })]
         });
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         const transactions = fetchBinanceTransactions();
         const externalIds = transactions.map(transaction => transaction.externalId);
         expect(externalIds).toContain('binance:trade:ADAUSDT:20');
@@ -212,7 +214,7 @@ describe('binance/spot-trades/symbols', () => {
             { ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 22, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })] },
             requestedSymbols
         );
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expect([...requestedSymbols]).toEqual(['ADAUSDT']);
         expect(requestedSymbols.has('ADABTC')).toBe(false);
         expect(requestedSymbols.has('ADABNB')).toBe(false);
@@ -232,41 +234,35 @@ describe('binance/spot-trades/symbols', () => {
             { ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 23, qty: '200', quoteQty: '100', commission: '0', isBuyer: true })] },
             requestedSymbols
         );
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         expect(requestedSymbols.has('ADAUSDT')).toBe(true);
         expect(requestedSymbols.has('LDADAUSDT')).toBe(true);
         expect(requestedSymbols.has('LDADABTC')).toBe(true);
     });
 });
 describe('binance/spot-trades/errors', () => {
-    it.each([
-        {
-            title: 'swallows only Binance invalid-symbol myTrades errors',
-            apiError: { code: -1121, msg: 'Invalid symbol.' },
-            expectedSuccess: true,
-            expectedOriginalError: null
-        },
-        {
-            title: 'propagates other Binance myTrades 400 errors with the structured API code',
-            apiError: { code: -1100, msg: 'Illegal characters found in parameter.' },
-            expectedSuccess: false,
-            expectedOriginalError: { code: -1100, msg: 'Illegal characters found in parameter.' }
-        }
-    ])('$title', async ({ apiError, expectedSuccess, expectedOriginalError }) => {
-        stubSpotTransferErrorScenario(apiError);
-        const result = await new BinanceSignedClient(BINANCE_TEST_TOKEN).getTransfers(
+    const fetchSpotTransfers = () =>
+        new BinanceSignedClient(BINANCE_TEST_TOKEN).getTransfers(
             encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'USDT' }),
             BINANCE_WINDOW_FROM,
             BINANCE_WINDOW_TO
         );
-        expect(result.success).toBe(expectedSuccess);
-        if (expectedSuccess && result.success) {
-            expect(result.data).toHaveLength(0);
-        }
-        if (!expectedSuccess && !result.success) {
-            expect(result.error.code).toBe(SyncErrorCodeEnum.INVALID_RESPONSE);
-            expect(result.error.originalError).toEqual(expectedOriginalError);
-        }
+
+    it('swallows only Binance invalid-symbol myTrades errors', async () => {
+        stubSpotTransferErrorScenario({ code: -1121, msg: 'Invalid symbol.' });
+
+        const transfers = await run(fetchSpotTransfers());
+
+        expect(transfers).toHaveLength(0);
+    });
+
+    it('propagates other Binance myTrades 400 errors with the structured API code', async () => {
+        stubSpotTransferErrorScenario({ code: -1100, msg: 'Illegal characters found in parameter.' });
+
+        const error = await run(Effect.flip(fetchSpotTransfers()));
+
+        expect(error._tag).toBe('SyncInvalidResponseError');
+        expect(error._tag === 'SyncInvalidResponseError' ? error.apiCode : null).toBe(-1100);
     });
 });
 describe('binance/spot-trades/resync', () => {
@@ -274,7 +270,7 @@ describe('binance/spot-trades/resync', () => {
         seedCryptoInstrument('ADA');
         setupUsdtSpotFixtureWithBalances('ADA', '200');
         stubAdaUsdtTrade(15, '200', '100', true);
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
         await expectNoDuplicateAfterResync(() => {
             binanceStub.spotBalances([
                 buildBinance.balance({ asset: 'USDT', free: '100' }),

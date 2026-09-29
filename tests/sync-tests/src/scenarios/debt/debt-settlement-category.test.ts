@@ -25,9 +25,8 @@ import { describe, expect, it } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { run, seed, testDb } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
-import { testDb } from '../../harness/scenario/setup';
-import { seed } from '../../harness/seed/seed';
 
 import type {
     AccountEntityInterface,
@@ -149,7 +148,7 @@ const createUserCategorizedIncomeFixture = () => {
 };
 
 const attachAndReadEntry = async (transactionId: number, debtAccountId: number): Promise<TransactionEntryEntityInterface> => {
-    await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+    await run(transactionDebtSettlementService.attach({ transactionId, debtAccountId }));
 
     return fetchPrimaryEntry(transactionId);
 };
@@ -160,8 +159,8 @@ const expectUserCategoryPreserved = (entry: TransactionEntryEntityInterface, use
 };
 
 const attachDetachAndReadEntry = async (transactionId: number, debtAccountId: number): Promise<TransactionEntryEntityInterface> => {
-    await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
-    await transactionDebtSettlementService.detach(transactionId);
+    await run(transactionDebtSettlementService.attach({ transactionId, debtAccountId }));
+    await run(transactionDebtSettlementService.detach(transactionId));
 
     return fetchPrimaryEntry(transactionId);
 };
@@ -217,7 +216,7 @@ describe('debt settlement categorization', () => {
         const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
         const transaction = createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, null);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+        await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }));
 
         const settlementEntries = testDb
             .select()
@@ -235,7 +234,7 @@ describe('debt settlement categorization', () => {
         const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
         const expenseBefore = readExpenseTotal(cashAccount.instrumentId);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+        await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }));
 
         const categoryRows = statisticsRepository
             .getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, cashAccount.instrumentId, LanguageEnum.EN)
@@ -280,7 +279,7 @@ describe('debt settlement categorization', () => {
         const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
         const transaction = createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, null, OVERPAID_AMOUNT);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+        await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }));
 
         const progress = fetchDebtProgress(debtAccount.id);
 

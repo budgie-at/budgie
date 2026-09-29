@@ -3,7 +3,7 @@ import { SyncEntityTable, SyncModeEnum } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { binanceStub, seedCryptoInstrument, setupAdaUsdtFixture, testDb } from '../../harness';
+import { binanceStub, seedCryptoInstrument, setupAdaUsdtFixture, testDb, run } from '../../harness';
 
 const RECURRING_SYNC_AGE_MS = 5 * 60 * 1000;
 const RESUME_TRADE_ID = 42;
@@ -14,7 +14,7 @@ const runAdaUsdtSyncWithCursor = async (mode: SyncModeEnum): Promise<{ syncId: n
     const requestedUrls: URL[] = [];
 
     binanceStub.myTrades({}, new Set<string>(), requestedUrls);
-    await binanceSyncService.sync();
+    await run(binanceSyncService.sync());
 
     return { syncId: sync.id, requestedUrls };
 };

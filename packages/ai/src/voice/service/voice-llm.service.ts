@@ -1,21 +1,25 @@
 import { CurrencyEnum, LanguageEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
-import { z } from 'zod';
+import * as Effect from 'effect/Effect';
+import * as Option from 'effect/Option';
+import * as Schema from 'effect/Schema';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { generateChatResponse } from '../../@generic/util/generate-chat-response.util';
 import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { ITEM_EXTRACTION_PROMPT, VOICE_EXTRACTION_GENERATION_OPTIONS } from '../constant/voice-prompt.constant';
 import { ExtractedVoiceTransactionInterface } from '../interface/extracted-voice-transaction.interface';
 import { isCurrencyEnum } from '../type-guard/is-currency-enum.type-guard';
 
 export class VoiceLlmService {
-    private static readonly LOG_PREVIEW_LENGTH = 125;
-    private static readonly EXTRACTED_ITEM_SCHEMA = z.object({
-        description: z.string(),
-        amount: z.number(),
-        currency: z.string().nullable().optional()
+    private static readonly EXTRACTED_ITEM_SCHEMA = Schema.Struct({
+        description: Schema.String,
+        amount: Schema.Number,
+        currency: Schema.optional(Schema.NullOr(Schema.String))
     });
+
+    private static readonly decodeJson = Schema.decodeUnknownOption(Schema.fromJsonString(Schema.Unknown));
+    private static readonly decodeItem = Schema.decodeUnknownOption(VoiceLlmService.EXTRACTED_ITEM_SCHEMA);
 
     private static readonly SUPPORTED_VOICE_CURRENCIES = [CurrencyEnum.UAH, CurrencyEnum.USD, CurrencyEnum.EUR] as const;
     private static readonly CURRENCY_TERMS_BY_LANGUAGE: Record<
@@ -206,14 +210,7 @@ export class VoiceLlmService {
         'giu'
     );
 
-    constructor(private readonly chat: ChatInvokerInterface) {}
-
-    @Log(
-        text => `enter text="${text.slice(0, VoiceLlmService.LOG_PREVIEW_LENGTH)}"`,
-        result => `done count=${result.length}`,
-        (error, text) => `throw text="${text.slice(0, VoiceLlmService.LOG_PREVIEW_LENGTH)}" error=${getErrorMessage(error)}`
-    )
-    async extractTransactions(text: string): Promise<ExtractedVoiceTransactionInterface[]> {
+    readonly extractTransactions = Effect.fn('VoiceLlmService.extractTransactions')(function* (this: VoiceLlmService, text: string) {
         const simpleTransactions = this.parseSimpleVoiceTransactions(text);
 
         if (isNotEmptyArray(simpleTransactions)) {
@@ -224,20 +221,12 @@ export class VoiceLlmService {
             return [];
         }
 
-        const response = await this.generateExtractionResponse(text);
+        const response = yield* generateChatResponse(this.chat, ITEM_EXTRACTION_PROMPT, text, VOICE_EXTRACTION_GENERATION_OPTIONS);
 
         return this.parseExtractionResponse(response);
-    }
+    });
 
-    @Log(
-        text => `enter text="${text.slice(0, VoiceLlmService.LOG_PREVIEW_LENGTH)}"`,
-        (result, text) =>
-            `done text="${text.slice(0, VoiceLlmService.LOG_PREVIEW_LENGTH)}" response="${result.slice(0, VoiceLlmService.LOG_PREVIEW_LENGTH)}" responseLen=${result.length}`,
-        (error, text) => `throw text="${text.slice(0, VoiceLlmService.LOG_PREVIEW_LENGTH)}" error=${getErrorMessage(error)}`
-    )
-    private async generateExtractionResponse(text: string): Promise<string> {
-        return this.chat.generate(ITEM_EXTRACTION_PROMPT, text, VOICE_EXTRACTION_GENERATION_OPTIONS);
-    }
+    constructor(private readonly chat: ChatInvokerInterface) {}
 
     private parseSimpleVoiceTransactions(text: string): ExtractedVoiceTransactionInterface[] {
         return text
@@ -312,33 +301,21 @@ export class VoiceLlmService {
     }
 
     private parseExtractionResponse(response: string): ExtractedVoiceTransactionInterface[] {
-        const jsonStr = this.fixMalformedJson(response);
+        const parsed = VoiceLlmService.decodeJson(this.fixMalformedJson(response));
 
-        try {
-            const parsed: unknown = JSON.parse(jsonStr);
-
-            if (Array.isArray(parsed)) {
-                return parsed
-                    .map(item => {
-                        const result = VoiceLlmService.EXTRACTED_ITEM_SCHEMA.safeParse(item);
-
-                        return result.success ? this.mapToTransaction(result.data) : null;
-                    })
-                    .filter(isDefined);
-            }
-
-            const singleResult = VoiceLlmService.EXTRACTED_ITEM_SCHEMA.safeParse(parsed);
-            if (singleResult.success) {
-                return [this.mapToTransaction(singleResult.data)];
-            }
-        } catch {
+        if (Option.isNone(parsed)) {
             return [];
         }
 
-        return [];
+        const items = Array.isArray(parsed.value) ? parsed.value : [parsed.value];
+
+        return items
+            .map(item => VoiceLlmService.decodeItem(item))
+            .filter(Option.isSome)
+            .map(item => this.mapToTransaction(item.value));
     }
 
-    private mapToTransaction(item: z.infer<typeof VoiceLlmService.EXTRACTED_ITEM_SCHEMA>): ExtractedVoiceTransactionInterface {
+    private mapToTransaction(item: typeof VoiceLlmService.EXTRACTED_ITEM_SCHEMA.Type): ExtractedVoiceTransactionInterface {
         return {
             description: item.description,
             amount: item.amount,

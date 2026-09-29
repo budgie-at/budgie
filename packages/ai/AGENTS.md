@@ -5,14 +5,16 @@ Pure TypeScript AI package — no React dependencies. Provides embedding, sugges
 ## Architecture
 
 Dual model setup:
+
 - **Chat**: Qwen3 1.7B Q4_K_M — translation, extraction, categorization
 - **Embedding**: nomic-embed-text-v2-moe Q8_0 — 768-dimension multilingual embeddings
 
-`LlmInterface` defines the contract. App provides the implementation via `useLlamaLlm`.
+Invoker interfaces (`ChatInvokerInterface`, `EmbeddingInvokerInterface`, `SttInvokerInterface`) define the Promise-based native contracts. The app implements them. Services wrap invoker calls with `Effect.tryPromise` and fail with `AiInvokeError`; chat calls go through `generateChatResponse`, which calls `chat.interrupt()` on fiber interruption.
 
 ## Key Patterns
 
-- **Static inference queue**: `EmbeddingService` uses a promise-chain mutex to serialize embedding calls
+- **Effect services**: IO methods are `Effect.fn` fields yielding contracts repository Effects (`Db` required). No `throw`; validation is Effect Schema only
+- **Inference serialization**: `EmbeddingService` holds a static 1-permit `Semaphore` and a per-instance `effect/Cache` (capacity 50). Failed lookups are invalidated so they are never cached
 - **Sequential batch embedding**: llama.rn `context.parallel.embedding()` produces duplicate embeddings — always use sequential
 - **Vec search distance threshold**: 0.9 for text, 1.3 for voice context — prevents unrelated high-frequency merchants from drowning results
 - **Multilingual embedding model**: nomic-embed-text-v2-moe handles all languages natively — no translation needed before embedding

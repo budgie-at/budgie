@@ -12,7 +12,8 @@ import {
     findMccByCode,
     seed,
     seedBankPair,
-    testDb
+    testDb,
+    run
 } from '../../harness';
 
 const AMOUNT = 408_000_000;
@@ -38,7 +39,7 @@ describe('database/revert-backfilled-atm-consolidations-migration', () => {
         );
 
         await applyMigration('0065_backfill_monobank_atm_mcc.sql');
-        await transferConsolidationService.consolidate();
+        await run(transferConsolidationService.consolidate(null));
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(2);
 
         await applyMigration('0067_revert_backfilled_atm_consolidations.sql');
@@ -48,9 +49,9 @@ describe('database/revert-backfilled-atm-consolidations-migration', () => {
         expect((await fetchTransactionById(historicalAtm.id))?.consolidationParentTransactionId).toBeNull();
         expect(historicalEntry.originalTransactionId).toBeNull();
         expect(historicalEntry.mccCategoryId).toBeNull();
-        expect(await transferConsolidationService.consolidate()).toMatchObject({ consolidated: 0 });
+        expect(await run(transferConsolidationService.consolidate(null))).toMatchObject({ consolidated: 0 });
 
-        await accountBalanceIncrementalService.updateAllBalances(false);
+        await run(accountBalanceIncrementalService.updateAllBalances(false));
 
         expect(accountBalanceRepository.getByAccountId(bankAccount.id).get()?.balance).toBe(-2 * AMOUNT);
         expect(accountBalanceRepository.getByAccountId(cashAccount.id).get()?.balance).toBe(AMOUNT);

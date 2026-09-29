@@ -5,7 +5,7 @@ import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
 import { privatbankTransactionMapper } from '@budgie/sync';
 import { describe, it } from 'vitest';
 
-import { expectAtmCashWithdrawalConsolidation, seed } from '../../harness';
+import { expectAtmCashWithdrawalConsolidation, seed, run } from '../../harness';
 
 const PRIVATBANK_CARD_ID = 'privat-card';
 const PRIVATBANK_CASH_WITHDRAWAL_CATEGORY = 'Зняття готівки';
@@ -13,7 +13,7 @@ const WITHDRAWAL_AMOUNT = 500;
 const WITHDRAWAL_OPERATED_AT = new Date('2026-01-15T12:00:00.000Z');
 
 const importPrivatbankCashWithdrawal = async (privatbankAccountId: number): Promise<number> => {
-    const categoryMap = await privatbankCategoryMatcherService.match([PRIVATBANK_CASH_WITHDRAWAL_CATEGORY]);
+    const categoryMap = await run(privatbankCategoryMatcherService.match([PRIVATBANK_CASH_WITHDRAWAL_CATEGORY]));
     const transaction = privatbankTransactionMapper({
         rawDate: '15.01.2026 12:00:00',
         date: WITHDRAWAL_OPERATED_AT,
@@ -29,7 +29,7 @@ const importPrivatbankCashWithdrawal = async (privatbankAccountId: number): Prom
     });
     const mccCategoryLookup = categoryMap.get(PRIVATBANK_CASH_WITHDRAWAL_CATEGORY) ?? null;
     const input = await mapBankTransactionToCreateInput(transaction, privatbankAccountId, mccCategoryLookup, ExternalSourceEnum.PRIVATBANK);
-    const [imported] = await transactionImportService.bulkUpsertImported([input], new Map());
+    const [imported] = await run(transactionImportService.bulkUpsertImported([input], new Map()));
 
     return imported.id;
 };

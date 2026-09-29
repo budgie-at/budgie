@@ -2,9 +2,10 @@ import { SyncHistoryDepthEnum } from '@app/sync/enum/sync-history-depth.enum';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncEntityTable } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { describe, expect, it, vi } from 'vitest';
 
-import { buildMonobank, monobankStub, seed, subtractMonths, testDb } from '../../harness';
+import { buildMonobank, monobankStub, seed, subtractMonths, testDb, run } from '../../harness';
 
 import type { SyncEntityInterface } from '@budgie/contracts';
 
@@ -21,11 +22,14 @@ const fetchSyncByAccountId = (accountId: number): SyncEntityInterface => {
 const setupAccountSyncWithDepth = async (externalId: string, historyDepth: SyncHistoryDepthEnum): Promise<SyncEntityInterface> => {
     const account = seed.account({ externalId, type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
     monobankStub.clientInfo(buildMonobank.clientInfoWith([externalId]));
-    const registerBackgroundTaskSpy = vi.spyOn(monobankSyncService, 'registerBackgroundTask').mockResolvedValue();
-    const syncSpy = vi.spyOn(monobankSyncService, 'sync').mockResolvedValue(BACKGROUND_TASK_SUCCESS_RESULT);
+    const registerBackgroundTaskSpy = vi.spyOn(monobankSyncService, 'registerBackgroundTask').mockReturnValue(Effect.void);
+    const syncSpy = vi.spyOn(monobankSyncService, 'sync').mockReturnValue(Effect.succeed(BACKGROUND_TASK_SUCCESS_RESULT));
 
     try {
-        await monobankSyncService.setupAccountSyncBatch('test-token', [externalId], historyDepth);
+        await run(monobankSyncService.setupAccountSyncBatch('test-token', [externalId], historyDepth));
+        await vi.waitFor(() => {
+            expect(syncSpy).toHaveBeenCalledTimes(1);
+        });
 
         return fetchSyncByAccountId(account.id);
     } finally {

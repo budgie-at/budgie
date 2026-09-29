@@ -11,9 +11,9 @@ import {
 } from '../harness/bridge-theft-fixture';
 import { fetchLedgerBalances } from '../harness/consolidation-revert-audit';
 import { parentConsolidationSource } from '../harness/iban-bridge-topology';
-import { consolidationCoordinatorService, testQueryService, testSeedService } from '../harness/test-context';
+import { consolidationCoordinatorService, runEffect, testQueryService, testSeedService } from '../harness/test-context';
 
-const repair = async (): Promise<number> => consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
+const repair = async (): Promise<number> => runEffect(consolidationCoordinatorService.repairBridgeClaimedTransferPairs());
 
 const seedCanonicalPair = async (params: {
     readonly sourceAccountId: number;

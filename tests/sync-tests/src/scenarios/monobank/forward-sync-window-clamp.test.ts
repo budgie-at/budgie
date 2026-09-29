@@ -4,7 +4,7 @@ import { MONOBANK_MAX_PERIOD_SECONDS } from '@budgie/sync';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
-import { buildMonobank, fetchSyncById, fetchPersistedMonobankTransactions, seed } from '../../harness';
+import { buildMonobank, fetchSyncById, fetchPersistedMonobankTransactions, seed, run } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 const STATEMENT_ENDPOINT = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
@@ -71,7 +71,7 @@ describe('monobank/forward-sync-window-clamp', () => {
         });
         const requestedWindows = stubStatementCapturingWindows();
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         expect(requestedWindows).toHaveLength(EXPECTED_STALE_CHUNK_COUNT);
         expectWindowsAreBoundedAndContiguous(requestedWindows);
@@ -97,7 +97,7 @@ describe('monobank/forward-sync-window-clamp', () => {
             })
         );
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         expect(requestCount).toBe(1);
         expect(fetchPersistedMonobankTransactions()).toHaveLength(1);

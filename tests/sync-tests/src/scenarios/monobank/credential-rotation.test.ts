@@ -2,7 +2,7 @@ import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, ExternalSourceEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { fetchAccountIntegrationToken, fetchSyncById, seed } from '../../harness';
+import { fetchAccountIntegrationToken, fetchSyncById, seed, run } from '../../harness';
 
 import type { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
 
@@ -100,7 +100,7 @@ describe('Monobank credential rotation', () => {
     it('rotates the shared integration token for every account in the credential group', async () => {
         const scenario = seedMonobankCredentialRotationScenario();
 
-        await monobankSyncService.updateAccountToken(scenario.selectedAccount.id, MONOBANK_NEW_TOKEN);
+        await run(monobankSyncService.updateAccountToken(scenario.selectedAccount.id, MONOBANK_NEW_TOKEN));
 
         expect(fetchAccountIntegrationToken(scenario.selectedAccount.id)).toBe(MONOBANK_NEW_TOKEN);
         expect(fetchAccountIntegrationToken(scenario.sharedAccount.id)).toBe(MONOBANK_NEW_TOKEN);
@@ -110,7 +110,7 @@ describe('Monobank credential rotation', () => {
     it('clears sync error state across the credential group and leaves other integrations untouched', async () => {
         const scenario = seedMonobankCredentialRotationScenario();
 
-        await monobankSyncService.updateAccountToken(scenario.selectedAccount.id, MONOBANK_NEW_TOKEN);
+        await run(monobankSyncService.updateAccountToken(scenario.selectedAccount.id, MONOBANK_NEW_TOKEN));
 
         expectForwardSync(fetchSyncById(scenario.selectedSync.id), {
             errorCount: 0,

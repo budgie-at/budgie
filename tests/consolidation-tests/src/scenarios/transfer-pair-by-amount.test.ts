@@ -2,7 +2,7 @@ import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { accountBalanceRepository, accountRepository, testQueryService, testSeedService } from '../harness/test-context';
+import { accountBalanceRepository, accountRepository, runEffect, testQueryService, testSeedService } from '../harness/test-context';
 
 const SLOW_WINDOW_OFFSET_MS = 30 * 60 * 1000;
 
@@ -76,7 +76,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
         const transferMcc = testQueryService.findMccByCode('4829');
         const { fromAccount } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
-        await accountRepository.updateById(fromAccount.id, { isActive: false });
+        await runEffect(accountRepository.updateById(fromAccount.id, { isActive: false }));
 
         const result = await runConsolidation();
         expect(result.consolidated).toBe(0);
@@ -86,7 +86,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
         const transferMcc = testQueryService.findMccByCode('4829');
         const { toAccount } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
-        await accountRepository.updateById(toAccount.id, { isActive: false });
+        await runEffect(accountRepository.updateById(toAccount.id, { isActive: false }));
 
         const result = await runConsolidation();
         expect(result.consolidated).toBe(0);

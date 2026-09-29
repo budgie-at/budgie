@@ -3,7 +3,15 @@ import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { HttpResponse, http } from 'msw';
 import { describe, expect, it } from 'vitest';
 
-import { DEPOSIT_URL, binanceStub, buildBinance, expectSyncFailedAndDisabled, fetchSyncById, setupBinanceFixture } from '../../harness';
+import {
+    DEPOSIT_URL,
+    binanceStub,
+    buildBinance,
+    expectSyncFailedAndDisabled,
+    fetchSyncById,
+    setupBinanceFixture,
+    run
+} from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 const RETRY_EXHAUSTION_TIMEOUT_MS = 30000;
@@ -25,7 +33,7 @@ describe('binance/error-recovery', () => {
         const { sync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
         mockServer.use(http.get(DEPOSIT_URL, () => new HttpResponse(null, { status: 401 })));
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expectSyncFailedAndDisabled(sync.id, 0);
     });
@@ -35,7 +43,7 @@ describe('binance/error-recovery', () => {
         const ethFixture = setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
         mockServer.use(http.get(DEPOSIT_URL, () => new HttpResponse(null, { status: 401 })));
 
-        await binanceSyncService.sync();
+        await run(binanceSyncService.sync());
 
         expectSyncFailedAndDisabled(btcFixture.sync.id, 0);
         expectSyncFailedAndDisabled(ethFixture.sync.id, 0);
@@ -47,7 +55,7 @@ describe('binance/error-recovery', () => {
             const { sync } = setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
             mockServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json({ unexpected: true })));
 
-            await binanceSyncService.sync();
+            await run(binanceSyncService.sync());
 
             expectSyncFailedAndEnabled(sync.id);
             expect(fetchSyncById(sync.id).forwardSyncedAt).toBeNull();
@@ -62,7 +70,7 @@ describe('binance/error-recovery', () => {
             const ethFixture = setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
             mockServer.use(http.get(DEPOSIT_URL, () => HttpResponse.json({ unexpected: true })));
 
-            await binanceSyncService.sync();
+            await run(binanceSyncService.sync());
 
             expectSyncFailedAndEnabled(btcFixture.sync.id);
             expectSyncFailedAndEnabled(ethFixture.sync.id);
@@ -82,7 +90,7 @@ describe('binance/error-recovery', () => {
             binanceStub.exchangeInfo(['ADAUSDT']);
             binanceStub.myTradesFailure(HTTP_BAD_REQUEST_STATUS, ILLEGAL_PARAMETER_ERROR);
 
-            await binanceSyncService.sync();
+            await run(binanceSyncService.sync());
 
             expectSyncFailedAndDisabled(usdtFixture.sync.id, 0);
             expect(fetchSyncById(ethFixture.sync.id)).toMatchObject({

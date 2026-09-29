@@ -5,7 +5,7 @@ import { BANK_FEE_CATEGORY_ID, PRECISION, TransactionEntryEntityTable, Transacti
 import { like } from 'drizzle-orm';
 import { describe, expect, it, vi } from 'vitest';
 
-import { buildMonobank, findMccByCode, monobankStub, seed, setupMonobankFixture, testDb } from '../../harness';
+import { buildMonobank, findMccByCode, monobankStub, seed, setupMonobankFixture, testDb, run } from '../../harness';
 
 const atmWithdrawal = buildMonobank.transaction({
     id: 'tx-atm',
@@ -26,11 +26,11 @@ describe('monobank/resync-folded-fee', () => {
             { externalId: 'tx-atm', operatedAt: new Date(atmWithdrawal.time * 1000) },
             { accountId: account.id, amount: 408 * PRECISION }
         );
-        await transactionService.updateAllBalances();
+        await run(transactionService.updateAllBalances());
         const balanceBefore = accountBalanceRepository.getByAccountId(account.id).get()?.balance;
         monobankStub.statement([atmWithdrawal]);
 
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         const entries = fetchAtmEntries();
         const mainEntry = entries.find(entry => entry.externalId === 'tx-atm');
@@ -50,13 +50,13 @@ describe('monobank/resync-folded-fee', () => {
     it('leaves an already split ATM row untouched on resync', async () => {
         const { account } = setupMonobankFixture();
         monobankStub.statement([atmWithdrawal]);
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
         const entriesBefore = fetchAtmEntries();
         const updateSpy = vi.spyOn(transactionService, 'update');
-        await syncRepository.resetForWindowedResync(account.id, new Date(2026, 0, 1));
+        await run(syncRepository.resetForWindowedResync(account.id, new Date(2026, 0, 1)));
 
         monobankStub.statement([atmWithdrawal]);
-        await monobankSyncService.sync();
+        await run(monobankSyncService.sync());
 
         expect(updateSpy).toHaveBeenCalled();
         expect(entriesBefore).toHaveLength(2);
