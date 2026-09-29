@@ -25,11 +25,7 @@
         "packages/app/scripts/generate-social-posts.mjs",
         "packages/app/scripts/social-posts/**/*.mjs",
         "packages/app/scripts/generate-icons-constant.ts",
-        "packages/app/scripts/bench-budget-alerts.ts",
         "packages/app/scripts/bench-util.ts",
-        "packages/app/scripts/bench-queries.ts",
-        "packages/app/scripts/seed-bench-db.ts",
-        "packages/app/scripts/snapshot-monthly-patterns.ts",
         "tests/sync-tests/src/harness/shims/**"
     ],
     "ignoreDependencies": [
