@@ -542,6 +542,10 @@ msgstr "Already returned"
 msgid "Already syncing"
 msgstr "Already syncing"
 
+#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+msgid "Already tracked"
+msgstr "Already tracked"
+
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -2326,6 +2330,10 @@ msgstr "Italian (Italy)"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Jars"
+
+#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+msgid "Keep as already tracked cash, not spending"
+msgstr "Keep as already tracked cash, not spending"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
