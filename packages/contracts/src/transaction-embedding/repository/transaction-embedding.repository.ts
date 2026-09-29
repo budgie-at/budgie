@@ -1,4 +1,4 @@
-import { and, count, eq, isNull } from 'drizzle-orm';
+import { and, count, isNull, sql } from 'drizzle-orm';
 
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 
@@ -11,7 +11,7 @@ export class TransactionEmbeddingRepository {
         const [row] = await (tx ?? this.db)
             .select({ value: count() })
             .from(TransactionEntityTable)
-            .where(and(eq(TransactionEntityTable.needsEmbedding, true), isNull(TransactionEntityTable.deletedAt)));
+            .where(and(sql`${TransactionEntityTable.needsEmbedding} = 1`, isNull(TransactionEntityTable.deletedAt)));
 
         return row.value;
     }
