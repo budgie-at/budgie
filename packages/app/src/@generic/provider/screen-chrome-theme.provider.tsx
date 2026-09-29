@@ -7,15 +7,16 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly children: ReactNode;
+    readonly syncNativeScrollOffset?: boolean;
 }
 
-export const ScreenChromeThemeProvider = ({ children }: Props) => {
+export const ScreenChromeThemeProvider = ({ children, syncNativeScrollOffset }: Props) => {
     const { isDarkColorSchema } = useThemeContext();
 
     const colorScheme = isDarkColorSchema ? 'dark' : 'light';
 
     return (
-        <ScreenChromeProvider colorScheme={colorScheme} config={SCREEN_CHROME_CONFIG}>
+        <ScreenChromeProvider colorScheme={colorScheme} config={SCREEN_CHROME_CONFIG} syncNativeScrollOffset={syncNativeScrollOffset}>
             {children}
         </ScreenChromeProvider>
     );
