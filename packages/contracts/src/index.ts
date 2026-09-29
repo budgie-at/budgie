@@ -216,6 +216,7 @@ export { MccGroupCreateEntitySchema } from './mcc-group/schema/mcc-group-create-
 
 export { MccGroupRepository } from './mcc-group/repository/mcc-group.repository';
 
+export { ATM_CASH_WITHDRAWAL_MCC } from './mcc-category/constant/atm-cash-withdrawal-mcc.constant';
 export { MCC_CODE_LENGTH } from './mcc-category/constant/mcc-code-length.constant';
 export { MCC_DESCRIPTION_MAX_LENGTH } from './mcc-category/constant/mcc-description-max-length.constant';
 export { MCC_DEFAULT_CATEGORY_SEED } from './mcc-category/constant/mcc-default-category-seed.constant';
@@ -322,7 +323,6 @@ export { TransferPairAutoConfidenceBucketEnum } from './transaction/enum/transfe
 export type { TransferPairCandidateInterface } from './transaction/interface/transfer-pair-candidate.interface';
 export type { TransferPairReviewCandidateInterface } from './transaction/interface/transfer-pair-review-candidate.interface';
 export type { AtmCashWithdrawalCandidateInterface } from './transaction/interface/atm-cash-withdrawal-candidate.interface';
-export type { AtmCashWithdrawalReviewCandidateInterface } from './transaction/interface/atm-cash-withdrawal-review-candidate.interface';
 export type { ExistingTransferBridgeCandidateInterface } from './transaction/interface/existing-transfer-bridge-candidate.interface';
 export type { ExistingTransferChainReclaimCandidateInterface } from './transaction/interface/existing-transfer-chain-reclaim-candidate.interface';
 export type { BridgeClaimRepairCandidateInterface } from './transaction/interface/bridge-claim-repair-candidate.interface';

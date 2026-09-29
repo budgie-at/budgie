@@ -1,4 +1,4 @@
-import { LanguageEnum } from '@budgie/contracts';
+import { ATM_CASH_WITHDRAWAL_MCC, LanguageEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
@@ -71,9 +71,11 @@ class CategorizeInboxEngineService {
 
     buildClusters(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxClusterInterface[] {
         const uniqueRows = [...new Map(rows.map(row => [row.transactionId, row])).values()];
-        const merchantGroups = this.groupBy(uniqueRows, row => `${row.type}|${this.merchantKey(row.title)}`);
+        const clusterGroups = this.groupBy(uniqueRows, row =>
+            this.isCashWithdrawal(row) ? CategorizeInboxSectionEnum.CASH_WITHDRAWALS : `${row.type}|${this.merchantKey(row.title)}`
+        );
 
-        return [...merchantGroups]
+        return [...clusterGroups]
             .map(([key, groupRows]) => this.buildCluster(key, groupRows, context))
             .sort((left, right) => this.compareClusters(left, right));
     }
@@ -125,8 +127,12 @@ class CategorizeInboxEngineService {
             totalBaseAmount: this.sumBaseAmounts(rows, context.defaultInstrumentId),
             candidateLabelIds,
             ruleConditionValue,
-            section: this.resolveSection(isConfident, rows.length)
+            section: this.resolveSection(isConfident, rows)
         };
+    }
+
+    private isCashWithdrawal(row: Pick<CategorizeInboxRowInterface, 'type' | 'mcc'>): boolean {
+        return row.type === TransactionTypeEnum.EXPENSE && row.mcc === ATM_CASH_WITHDRAWAL_MCC;
     }
 
     private sumBaseAmounts(rows: readonly CategorizeInboxRowInterface[], defaultInstrumentId: number): number | null {
@@ -295,12 +301,16 @@ class CategorizeInboxEngineService {
         return sequences.find(sequence => sequence.length >= 3 && loweredTitles.every(title => title.includes(sequence))) ?? displayTitle;
     }
 
-    private resolveSection(isConfident: boolean, rowCount: number): CategorizeInboxSectionEnum {
+    private resolveSection(isConfident: boolean, rows: readonly CategorizeInboxRowInterface[]): CategorizeInboxSectionEnum {
+        if (this.isCashWithdrawal(rows[0])) {
+            return CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
+        }
+
         if (isConfident) {
             return CategorizeInboxSectionEnum.CONFIDENT;
         }
 
-        return rowCount > 1 ? CategorizeInboxSectionEnum.REVIEW : CategorizeInboxSectionEnum.ONE_OFFS;
+        return rows.length > 1 ? CategorizeInboxSectionEnum.REVIEW : CategorizeInboxSectionEnum.ONE_OFFS;
     }
 
     private buildListItems(clusters: readonly CategorizeInboxClusterInterface[]): CategorizeInboxListItemType[] {

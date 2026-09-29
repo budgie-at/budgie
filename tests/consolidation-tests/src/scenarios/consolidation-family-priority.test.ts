@@ -44,7 +44,6 @@ describe('consolidation/family-priority', () => {
             'EXISTING_TRANSFER_INCOME_DUPLICATE',
             'P2P_FIAT_TRANSFER',
             'TRANSFER_PAIR',
-            'ATM_CASH_WITHDRAWAL',
             'REFUND'
         ]);
         for (const family of families) {

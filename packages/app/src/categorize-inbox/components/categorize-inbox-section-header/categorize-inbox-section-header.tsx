@@ -23,6 +23,7 @@ export const CategorizeInboxSectionHeader = ({ section, rowCount, totalBaseAmoun
     const { defaultInstrument } = useSettingsContext();
 
     const sectionTitles: Record<CategorizeInboxSectionEnum, string> = {
+        [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: t`Cash withdrawals`,
         [CategorizeInboxSectionEnum.CONFIDENT]: t`Ready to accept`,
         [CategorizeInboxSectionEnum.REVIEW]: t`Needs review`,
         [CategorizeInboxSectionEnum.ONE_OFFS]: t`One-offs`
