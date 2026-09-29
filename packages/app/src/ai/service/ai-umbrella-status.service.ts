@@ -23,8 +23,6 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
         errorMessage: null
     };
 
-    private lastState: AiSystemUmbrellaStateEnum = AiSystemUmbrellaStateEnum.DISABLED;
-
     constructor() {
         super(AiUmbrellaStatusService.EMPTY_UMBRELLA_SNAPSHOT);
     }
@@ -45,9 +43,6 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
         const next = this.derive();
         if (this.snapshotEquals(next)) {
             return;
-        }
-        if (next.state !== this.lastState) {
-            this.lastState = next.state;
         }
         this.setSnapshot(next);
     }
