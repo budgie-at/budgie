@@ -230,7 +230,7 @@ Rule 3 ("No comments") applies to every language in this repo, not just TypeScri
 
 ### Money Safety
 
-- Any PR that adds a data migration or touches consolidation, balance, ledger, or import code must run `pnpm verify:backup <latest backup .db>` locally and paste its per-account stored/ledger table in the PR description. Never commit backup files or their output.
+- Any PR that adds a data migration or touches consolidation, balance, ledger, or import code must run `pnpm verify:backup <latest backup .db>` locally and report only redacted account ids and the pass/fail totals in the PR description. Never commit backup files or their output, and never paste account titles or balances.
 - Every data migration must pass `tests/sync-tests/src/scenarios/database/data-migration-money-impact.test.ts`; a migration that moves ledger money needs an explicit allowlist entry there with its reason, never a relaxed assertion.
 - `tests/sync-tests` and `tests/consolidation-tests` assert after every test that stored `account_balances` equal `getLedgerBalances`; fix the production path or the seed, never the check.
 

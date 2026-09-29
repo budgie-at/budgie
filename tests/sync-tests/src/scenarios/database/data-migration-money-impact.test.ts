@@ -13,7 +13,7 @@ import { isDefined } from '@rnw-community/shared';
 import { applyMigration, seed, seedBankPair, testDb } from '../../harness';
 
 const MIGRATIONS_FOLDER = resolve(process.cwd(), '../../packages/app/drizzle');
-const DATA_CHANGE_PATTERN = /\b(?:UPDATE\s+\S+\s+SET|INSERT\s+INTO|DELETE\s+FROM)\b/iu;
+const DATA_CHANGE_PATTERN = /\b(?:UPDATE\s+\S+\s+SET|INSERT(?:\s+OR\s+\w+)?\s+INTO|DELETE\s+FROM)\b/iu;
 const OPERATED_AT = new Date(2025, 5, 1, 12, 0, 0);
 const EXISTING_COLUMNS = 'adds columns the migrated test schema already has';
 const EXISTING_TABLES = 'creates tables or reference rows the migrated test schema already has';
@@ -26,6 +26,7 @@ const UNREPLAYABLE_MIGRATIONS = new Map([
     ['0018_add_transaction_tags_is_primary.sql', EXISTING_COLUMNS],
     ['0023_add_mcc_default_category.sql', EXISTING_COLUMNS],
     ['0024_default_category_translations.sql', EXISTING_TABLES],
+    ['0026_money_data_upgrade.sql', EXISTING_TABLES],
     ['0028_add_crypto_instruments.sql', EXISTING_COLUMNS],
     ['0033_add_transaction_entry_kind.sql', EXISTING_COLUMNS],
     ['0034_add_debt_target_base_valuation.sql', EXISTING_COLUMNS],
