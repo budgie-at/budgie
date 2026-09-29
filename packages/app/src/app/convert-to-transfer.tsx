@@ -16,8 +16,7 @@ import { useDepositCreateAction } from '../account/hooks/use-deposit-create-acti
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal, useConvertToTransferModalParams } from '../transaction/context/convert-to-transfer-modal.context';
 import { TransferToAccountCreateActionContext } from '../transaction/context/transfer-to-account-create-action.context';
-import { useConvertExpenseToTransferMutation } from '../transaction/hooks/use-convert-expense-to-transfer.mutation';
-import { useConvertIncomeToTransferMutation } from '../transaction/hooks/use-convert-income-to-transfer.mutation';
+import { transactionTransferService } from '../transaction/service/transaction-transfer.service';
 import { buildTransferEntries } from '../transaction/utils/build-transfer-entries.util';
 import { createTransactionInput } from '../transaction/utils/create-transaction-input.util';
 
@@ -31,9 +30,6 @@ export default function ConvertToTransferModal() {
     const { t } = useLingui();
     const [, resolveConvertToTransfer] = useConvertToTransferModal();
     const currentParams = useConvertToTransferModalParams();
-
-    const convertExpenseMutation = useConvertExpenseToTransferMutation();
-    const convertIncomeMutation = useConvertIncomeToTransferMutation();
 
     const transactionId = currentParams?.transactionId ?? 0;
     const transactionType = currentParams?.transactionType ?? TransactionTypeEnum.EXPENSE;
@@ -119,9 +115,9 @@ export default function ConvertToTransferModal() {
             const convertParams = { id: transactionId, accountId: selectedAccountId, customExchangeRate: customRate };
 
             if (isExpense) {
-                await convertExpenseMutation(convertParams);
+                await transactionTransferService.convertExpenseToTransfer(convertParams);
             } else {
-                await convertIncomeMutation(convertParams);
+                await transactionTransferService.convertIncomeToTransfer(convertParams);
             }
 
             if (skipPostConvertNavigation) {
