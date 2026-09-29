@@ -3,7 +3,7 @@ import * as Contracts from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { seed, testDb } from '../../harness';
+import { seed, seedLedgerBalance, testDb } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 import type { ImportedBatchPreparationInterface } from '@app/transaction/interface/imported-batch-preparation.interface';
@@ -47,14 +47,6 @@ const buildPrepared = (input: Contracts.TransactionCreateInputInterface, existin
     externalIdMap: existingTransactionIdMap,
     transactionInputs: [input]
 });
-
-const seedBalance = (accountId: number): void => {
-    insertOne(Contracts.AccountBalanceEntityTable, {
-        accountId,
-        amount: 100 * Contracts.PRECISION,
-        updatedAt: OPERATED_AT
-    });
-};
 
 const seedImportedExpense = (accountId: number): number => {
     const transaction = insertOne(Contracts.TransactionEntityTable, {
@@ -100,12 +92,12 @@ describe('import/deposit-import-safety', () => {
         const depositAccount = seed.account({ type: Contracts.AccountTypeEnum.DEPOSIT });
         const prepared = buildPrepared(buildImportInput(depositAccount.id));
 
-        seedBalance(depositAccount.id);
+        await seedLedgerBalance(depositAccount.id, 100 * Contracts.PRECISION);
 
         await expect(transactionImportService.bulkUpsertPreparedImported(prepared)).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
 
-        expect(testDb.select().from(Contracts.TransactionEntityTable).all()).toHaveLength(0);
-        expect(testDb.select().from(Contracts.TransactionEntryEntityTable).all()).toHaveLength(0);
+        expect(testDb.select().from(Contracts.TransactionEntityTable).all()).toHaveLength(1);
+        expect(testDb.select().from(Contracts.TransactionEntryEntityTable).all()).toHaveLength(1);
         expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * Contracts.PRECISION);
     });
 
@@ -117,7 +109,7 @@ describe('import/deposit-import-safety', () => {
             new Map([[IMPORT_EXTERNAL_ID, transactionId]])
         );
 
-        seedBalance(depositAccount.id);
+        await seedLedgerBalance(depositAccount.id, 100 * Contracts.PRECISION);
 
         await expect(transactionImportService.bulkUpsertPreparedImported(prepared)).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
 

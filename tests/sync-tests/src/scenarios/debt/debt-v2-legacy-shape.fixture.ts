@@ -60,7 +60,7 @@ export class DebtV2LegacyShapeFixture {
     static readonly PARKED_ADJUSTMENT_AMOUNT = 50_000_000;
     static readonly MANUAL_PRINCIPAL_AMOUNT = 300_000_000;
     static readonly MANUAL_REPAID_AMOUNT = 50_000_000;
-    static readonly USD_FUNDING_BALANCE_AMOUNT = 700_000_000;
+    static readonly USD_FUNDING_BALANCE_AMOUNT = 100_000_000;
     static readonly STALE_DEBT_BALANCE_AMOUNT = 12_345_000;
 
     private static readonly OPERATED_AT = 1_780_358_400;
