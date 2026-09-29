@@ -10,7 +10,7 @@ import { githubJsonFetch } from './github-json-fetch.util';
 
 import type { IosDevRelease } from '../constant/ios-dev-release-schema.constant';
 
-export const iosDevBuildMetaFetchApi = Effect.fnUntraced(function* (release: IosDevRelease, requestInit: RequestInit) {
+export const iosDevBuildMetaFetchApi = Effect.fn('iosDevBuildMetaFetchApi')(function* (release: IosDevRelease, requestInit: RequestInit) {
     const buildMetaUrl = findIosDevReleaseAssetUrl(release, IOS_DEV_BUILD_META_ASSET_NAME);
 
     return isDefined(buildMetaUrl) ? yield* githubJsonFetch(buildMetaUrl, IosDevBuildMetaSchema, requestInit) : null;
