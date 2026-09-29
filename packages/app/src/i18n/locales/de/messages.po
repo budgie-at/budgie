@@ -541,6 +541,10 @@ msgstr "Bereits erhalten"
 msgid "Already syncing"
 msgstr "Synchronisiert bereits"
 
+#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+msgid "Already tracked"
+msgstr "Bereits erfasst"
+
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -2325,6 +2329,10 @@ msgstr "Italienisch (Italien)"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Sparziele"
+
+#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+msgid "Keep as already tracked cash, not spending"
+msgstr "Als bereits erfasstes Bargeld behalten, keine Ausgabe"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"

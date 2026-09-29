@@ -49,6 +49,7 @@ let exclusiveTransactionQueue: Promise<unknown> = Promise.resolve();
 vi.mock('@app/@generic/drizzle/db/db', async () => ({
     db: testDb,
     ...createTestRepositories(testDb),
+    budgetRepository: new (await import('@budgie/budget/query/budget-repository')).BudgetRepository(testDb),
     expoDb: { closeAsync: vi.fn((): Promise<void> => Promise.resolve()) },
     __REMOVE_ME_RESET_DB: (): Promise<void> => Promise.resolve()
 }));

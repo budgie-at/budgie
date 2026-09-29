@@ -456,6 +456,13 @@
       "when": 1790678796477,
       "tag": "0067_revert_backfilled_atm_consolidations",
       "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "6",
+      "when": 1790700000000,
+      "tag": "0071_seed_tracked_cash_withdrawal_category",
+      "breakpoints": true
     }
   ]
 }

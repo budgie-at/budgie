@@ -6,7 +6,8 @@ import {
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    buildSpendingEntryCondition
 } from '@budgie/contracts';
 import { and, between, desc, eq, isNull, sql } from 'drizzle-orm';
 
@@ -105,6 +106,7 @@ export class BudgetRepository {
             eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
             isNull(TransactionEntityTable.deletedAt),
             isNull(TransactionEntryEntityTable.deletedAt),
+            buildSpendingEntryCondition(),
             between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
         );
     }
