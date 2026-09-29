@@ -1,5 +1,5 @@
 import { Log } from '@budgie/logger';
-import { and, count, eq, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
+import { and, asc, count, eq, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -176,18 +176,22 @@ export class TransactionEntryRepository {
         return transactionEntry;
     }
 
-    async findByExternalIdAndAccountId(
-        externalId: string,
-        accountId: number,
-        tx?: DB
-    ): Promise<TransactionEntryEntityInterface | undefined> {
-        return await (tx ?? this.db).query.TransactionEntryEntityTable.findFirst({
-            where: and(
-                eq(TransactionEntryEntityTable.externalId, externalId),
-                eq(TransactionEntryEntityTable.accountId, accountId),
-                isNull(TransactionEntryEntityTable.deletedAt)
+    async findByExternalIdsAndAccountId(externalIds: string[], accountId: number, tx?: DB): Promise<TransactionEntryEntityInterface[]> {
+        if (!isNotEmptyArray(externalIds)) {
+            return [];
+        }
+
+        return await (tx ?? this.db)
+            .select()
+            .from(TransactionEntryEntityTable)
+            .where(
+                and(
+                    inArray(TransactionEntryEntityTable.externalId, externalIds),
+                    eq(TransactionEntryEntityTable.accountId, accountId),
+                    isNull(TransactionEntryEntityTable.deletedAt)
+                )
             )
-        });
+            .orderBy(asc(TransactionEntryEntityTable.id));
     }
 
     async findByTransactionIdAndExternalId(

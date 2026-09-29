@@ -362,6 +362,7 @@ export { TransactionEntryCreateEntitySchema } from './transaction-entry/schema/t
 export { TransactionEntryCreateInputSchema } from './transaction-entry/schema/transaction-entry-create-input.schema';
 
 export type { TransactionEntryCreateInputInterface } from './transaction-entry/input/transaction-entry-create-input.interface';
+export type { TransactionEntryUpdateInputInterface } from './transaction-entry/input/transaction-entry-update-input.interface';
 
 export type { TransactionEntryEntityInterface } from './transaction-entry/entity/transaction-entry-entity.interface';
 export type { TransactionEntryWithRelationsEntityInterface } from './transaction-entry/entity/transaction-entry-with-relations-entity.interface';

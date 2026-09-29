@@ -88,18 +88,13 @@ class TransactionService {
     }
 
     @Log(
-        input => `enter externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
-        (result, input) =>
-            `done result=${String(result)} externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
-        (error, input) =>
-            `throw externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')} error=${getErrorMessage(error)}`
+        inputs => `enter transactionCount=${inputs.length}`,
+        (_result, inputs) => `done transactionCount=${inputs.length}`,
+        (error, inputs) => `throw transactionCount=${inputs.length} error=${getErrorMessage(error)}`
     )
     @InvalidateDatabaseLiveQuery()
-    async update(input: TransactionCreateInputInterface): Promise<void> {
-        await transactionAsync(db, async tx => {
-            await transactionDepositSafetyService.assertNoDepositExpenseImportedUpdate(input, tx);
-            await importedTransactionEntryUpdateService.update(input.entries, input, tx);
-        });
+    async bulkUpdateImported(inputs: TransactionCreateInputInterface[]): Promise<void> {
+        await transactionAsync(db, async tx => importedTransactionEntryUpdateService.bulkUpdate(inputs, tx));
     }
 
     @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)

@@ -55,6 +55,9 @@ export const TransactionEntryEntityTable = sqliteTable(
     table => [
         index('transaction_entries_transaction_idx').on(table.transactionId),
         index('transaction_entries_account_idx').on(table.accountId),
+        index('transaction_entries_account_external_idx')
+            .on(table.accountId, table.externalId)
+            .where(sql`${table.externalId} IS NOT NULL AND ${table.deletedAt} IS NULL`),
         index('transaction_entries_original_transaction_idx')
             .on(table.originalTransactionId)
             .where(sql`${table.originalTransactionId} IS NOT NULL`),
