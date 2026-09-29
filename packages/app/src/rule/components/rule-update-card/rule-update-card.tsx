@@ -5,6 +5,7 @@ import { Trans } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { ruleRepository } from '../../../@generic/drizzle/db/db';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
 import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
@@ -49,9 +50,9 @@ const updateRule = async (updateRuleData: UpdateRuleDataInterface, language: Lan
 
     const mergedActions = [...preservedActions, ...categoryAction, ...tagActions];
 
-    await ruleService.updateById(updateRuleData.ruleId, { actions: mergedActions });
+    await appRuntime.runPromise(ruleService.updateById(updateRuleData.ruleId, { actions: mergedActions }));
 
-    ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId, showRuleApplicationToast);
+    appRuntime.runFork(ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId, showRuleApplicationToast));
 };
 
 export const RuleUpdateCard = (props: Props) => {

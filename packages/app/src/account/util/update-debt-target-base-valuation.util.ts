@@ -1,28 +1,24 @@
+import * as Effect from 'effect/Effect';
+
 import { accountRepository } from '../../@generic/drizzle/db/db';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 
-import type { AccountEntityInterface, DB } from '@budgie/contracts';
+import type { AccountEntityInterface } from '@budgie/contracts';
 
-export const updateDebtTargetBaseValuation = async (
+export const updateDebtTargetBaseValuation = Effect.fn('updateDebtTargetBaseValuation')(function* (
     account: AccountEntityInterface,
-    operatedAt: Date,
-    tx: DB
-): Promise<AccountEntityInterface> => {
-    const valuation = await entryBaseValuationService.valueMicroUnitEntry({
+    operatedAt: Date
+) {
+    const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
         accountId: account.id,
         amount: account.targetBalance,
         operatedAt,
-        externalSource: null,
-        tx
+        externalSource: null
     });
 
-    return accountRepository.updateById(
-        account.id,
-        {
-            targetBaseInstrumentId: valuation.baseInstrumentId,
-            targetBaseExchangeRate: valuation.baseExchangeRate,
-            targetBaseAmount: valuation.baseAmount
-        },
-        tx
-    );
-};
+    return yield* accountRepository.updateById(account.id, {
+        targetBaseInstrumentId: valuation.baseInstrumentId,
+        targetBaseExchangeRate: valuation.baseExchangeRate,
+        targetBaseAmount: valuation.baseAmount
+    });
+});

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { authService } from '../service/auth.service';
 
 interface BiometricAvailability {
@@ -20,7 +21,7 @@ export const useBiometricAvailability = (): BiometricAvailability => {
     useEffect(() => {
         let isMounted = true;
 
-        void authService.getBiometricTypes().then(result => {
+        void appRuntime.runPromise(authService.getBiometricTypes()).then(result => {
             if (isMounted) {
                 setState(result);
             }

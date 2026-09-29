@@ -1,12 +1,12 @@
 import { SuggestionInternalStatus, SuggestionStatus } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-const logger = getLogger('useRepeatedTransactionSuggestion');
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
 import { repeatedTransactionService } from '../service/repeated-transaction.service';
@@ -81,13 +81,7 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
                     ...(isDefined(categoryIdOrNull) && { categoryId: categoryIdOrNull })
                 };
 
-                logger.log('hook:pattern:fetch:begin', queryParams);
-                const result = await repeatedTransactionService.getSuggestions(queryParams);
-                logger.log('hook:pattern:fetch:done', {
-                    durationMs: Date.now() - startedAt,
-                    time: result.timePatterns.length,
-                    amount: result.amountPatterns.length
-                });
+                const result = await appRuntime.runPromise(repeatedTransactionService.getSuggestions(queryParams));
 
                 if (!cancelled) {
                     setTimePatterns(result.timePatterns);
@@ -95,10 +89,12 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
                     setInternalStatus('success');
                 }
             } catch (error: unknown) {
-                logger.error('hook:pattern:fetch:throw', {
-                    durationMs: Date.now() - startedAt,
-                    errorMessage: getErrorMessage(error)
-                });
+                appRuntime.runFork(
+                    Effect.logError('hook:pattern:fetch:throw', {
+                        durationMs: Date.now() - startedAt,
+                        errorMessage: getErrorMessage(error)
+                    })
+                );
                 if (!cancelled) {
                     setInternalStatus('error');
                 }

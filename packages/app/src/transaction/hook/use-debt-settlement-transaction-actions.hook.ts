@@ -5,6 +5,7 @@ import Toast from 'react-native-toast-message';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useAccountSelectorModal } from '../../account/context/account-selector-modal.context';
 import { accountService } from '../../account/service/account.service';
 import { transactionDebtSettlementService } from '../service/transaction-debt-settlement.service';
@@ -28,9 +29,9 @@ export const useDebtSettlementTransactionActions = ({
     const debtSettlementAccountTitle = hasDebtSettlement ? localDebtSettlementAccountTitle : null;
 
     const attachDebtSettlement = async (debtAccountId: number) => {
-        const debtAccount = await accountService.findByIdOrFail(debtAccountId);
+        const debtAccount = await appRuntime.runPromise(accountService.findByIdOrFail(debtAccountId));
 
-        await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+        await appRuntime.runPromise(transactionDebtSettlementService.attach({ transactionId, debtAccountId }));
         setLocalDebtSettlementAccountTitle(debtAccount.title);
     };
 
@@ -59,8 +60,8 @@ export const useDebtSettlementTransactionActions = ({
     };
 
     const handleDetachDebtSettlement = () =>
-        void transactionDebtSettlementService
-            .detach(transactionId)
+        void appRuntime
+            .runPromise(transactionDebtSettlementService.detach(transactionId))
             .then(() => void setLocalDebtSettlementAccountTitle(null))
             .catch(() => void Toast.show({ type: 'error', text1: t`Could not update transaction.` }));
 

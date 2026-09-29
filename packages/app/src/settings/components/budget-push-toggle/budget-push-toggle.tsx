@@ -1,17 +1,16 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as Notifications from 'expo-notifications';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { BudgetSettingCard } from '../budget-setting-card/budget-setting-card';
-
-const logger = getLogger('BudgetPushToggle');
 
 export const BudgetPushToggle = () => {
     const { t } = useLingui();
@@ -19,9 +18,9 @@ export const BudgetPushToggle = () => {
 
     const persist = async (next: boolean): Promise<void> => {
         try {
-            await updateSettingsMutation({ isBudgetPushEnabled: next });
+            await appRuntime.runPromise(updateSettingsMutation({ isBudgetPushEnabled: next }));
         } catch (error: unknown) {
-            logger.error('failed', { errorMessage: getErrorMessage(error) });
+            appRuntime.runFork(Effect.logError('failed', { errorMessage: getErrorMessage(error) }));
             Toast.show({ type: 'error', text1: t`Could not update notifications`, text2: getErrorMessage(error) });
         }
     };

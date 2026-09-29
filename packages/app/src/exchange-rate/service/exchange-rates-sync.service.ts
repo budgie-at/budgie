@@ -1,23 +1,26 @@
-import { InstrumentPriceProviderEnum, InstrumentTypeEnum, transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, InstrumentPriceProviderEnum, InstrumentTypeEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+import * as HttpClient from 'effect/http/HttpClient';
+import * as HttpClientResponse from 'effect/http/HttpClientResponse';
+import * as Schedule from 'effect/Schedule';
 import * as BackgroundTask from 'expo-background-task';
 import Constants from 'expo-constants';
 import * as TaskManager from 'expo-task-manager';
-import ky from 'ky';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { db, exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
+import { exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
-import { ExchangeRateApiResponseInterface, emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
+import { emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
 import { CoinGeckoSimplePriceResponseSchema } from '../schema/coin-gecko-simple-price-response.schema';
 import { ExchangeRateApiResponseSchema } from '../schema/exchange-rate-api-response.schema';
 
 import { exchangeRatesService } from './exchange-rates.service';
 
 import type { ExchangeRateCreateEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
+import type * as Schema from 'effect/Schema';
 
 class ExchangeRatesSyncService {
     private static readonly APP_VARIANT_EXTRA_KEY = 'appVariant';
@@ -28,89 +31,80 @@ class ExchangeRatesSyncService {
     private static readonly CRYPTO_RATE_SYNC_BATCH_SIZE = 40;
     private static readonly FETCH_TIMEOUT_MS = 5000;
     private static readonly FETCH_RETRY_LIMIT = 1;
+    private static readonly FETCH_RETRY_DELAY_MS = 300;
     private static readonly SYNC_COOLDOWN_MS = 5 * 60 * 1000;
-    private static readonly HTTP_CLIENT = ky.create({
-        timeout: ExchangeRatesSyncService.FETCH_TIMEOUT_MS,
-        retry: {
-            limit: ExchangeRatesSyncService.FETCH_RETRY_LIMIT,
-            retryOnTimeout: true
+
+    readonly registerBackgroundTask = Effect.fn('ExchangeRatesSyncService.registerBackgroundTask')(
+        function* (this: ExchangeRatesSyncService) {
+            if (this.isE2EApp() || (yield* Effect.promise(() => TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK)))) {
+                return;
+            }
+
+            yield* Effect.promise(() =>
+                BackgroundTask.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
+                    minimumInterval: ExchangeRatesSyncService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
+                })
+            );
         }
-    });
+    );
 
-    private isSyncing = false;
-    private lastSyncedAtMs: number | null = null;
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async registerBackgroundTask(): Promise<void> {
-        if (this.isE2EApp()) {
-            return;
-        }
-
-        if (await TaskManager.isTaskRegisteredAsync(EXCHANGE_RATE_SYNC_TASK)) {
-            return;
-        }
-
-        await BackgroundTask.registerTaskAsync(EXCHANGE_RATE_SYNC_TASK, {
-            minimumInterval: ExchangeRatesSyncService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
-        });
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async sync(): Promise<void> {
-        if (this.isE2EApp()) {
-            return;
-        }
-
-        if (this.isSyncing) {
+    readonly sync = Effect.fn('ExchangeRatesSyncService.sync')(function* (this: ExchangeRatesSyncService) {
+        if (this.isE2EApp() || this.isSyncing) {
             return;
         }
 
         this.isSyncing = true;
 
-        try {
-            await this.syncInner();
-        } finally {
-            this.isSyncing = false;
-        }
-    }
+        yield* this.syncInner().pipe(
+            Effect.ensuring(
+                Effect.sync(() => {
+                    this.isSyncing = false;
+                })
+            )
+        );
+    });
 
-    private isE2EApp(): boolean {
-        return Constants.expoConfig?.extra?.[ExchangeRatesSyncService.APP_VARIANT_EXTRA_KEY] === ExchangeRatesSyncService.E2E_APP_VARIANT;
-    }
-
-    private async syncInner(): Promise<void> {
-        const now = Date.now();
-
-        if (isDefined(this.lastSyncedAtMs) && now - this.lastSyncedAtMs < ExchangeRatesSyncService.SYNC_COOLDOWN_MS) {
+    private readonly syncInner = Effect.fn('ExchangeRatesSyncService.syncInner')(function* (this: ExchangeRatesSyncService) {
+        if (isDefined(this.lastSyncedAtMs) && Date.now() - this.lastSyncedAtMs < ExchangeRatesSyncService.SYNC_COOLDOWN_MS) {
             return;
         }
 
-        const baseInstrument = await exchangeRatesService.getBaseInstrument();
+        const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
 
         if (!isDefined(baseInstrument)) {
             return;
         }
 
-        await this.syncFiatRates(baseInstrument);
-        await microPause();
-        await this.syncCryptoRates(baseInstrument);
+        yield* this.syncFiatRates(baseInstrument);
+        yield* Effect.promise(() => microPause());
+        yield* this.syncCryptoRates(baseInstrument);
         this.lastSyncedAtMs = Date.now();
-    }
+    });
 
-    private async syncFiatRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
-        const apiData = await this.fetch(baseInstrument.code);
-        const instruments = await instrumentRepository.findByType(InstrumentTypeEnum.FIAT);
+    private readonly syncFiatRates = Effect.fn('ExchangeRatesSyncService.syncFiatRates')(function* (
+        this: ExchangeRatesSyncService,
+        baseInstrument: InstrumentEntityInterface
+    ) {
+        const apiData = yield* this.fetchJson(
+            `${ExchangeRatesSyncService.EXCHANGE_RATE_API_URL}/${baseInstrument.code}`,
+            ExchangeRateApiResponseSchema,
+            emptyExchangeRateApiResponse
+        );
+        const instruments = yield* Db.query(() => instrumentRepository.findByType(InstrumentTypeEnum.FIAT));
         const inputs = instruments.flatMap(instrument =>
             instrument.code === baseInstrument.code
                 ? []
                 : this.buildInstrumentRateInputs(baseInstrument.id, instrument, apiData.rates, 'exchangerate-api.com')
         );
 
-        await transactionAsync(db, tx => exchangeRateRepository.bulkUpsert(inputs, tx));
-    }
+        yield* Db.transaction(exchangeRateRepository.bulkUpsert(inputs));
+    });
 
-    private async syncCryptoRates(baseInstrument: InstrumentEntityInterface): Promise<void> {
-        const instruments = await instrumentRepository.findByTypeAndPriceProviderWithProviderInstrumentId(
+    private readonly syncCryptoRates = Effect.fn('ExchangeRatesSyncService.syncCryptoRates')(function* (
+        this: ExchangeRatesSyncService,
+        baseInstrument: InstrumentEntityInterface
+    ) {
+        const instruments = yield* instrumentRepository.findByTypeAndPriceProviderWithProviderInstrumentId(
             InstrumentTypeEnum.CRYPTO,
             InstrumentPriceProviderEnum.COINGECKO
         );
@@ -119,22 +113,29 @@ class ExchangeRatesSyncService {
             return;
         }
 
-        await processInputWithBatches(instruments, ExchangeRatesSyncService.CRYPTO_RATE_SYNC_BATCH_SIZE, async batch => {
-            await this.syncCryptoRateBatch(baseInstrument, batch);
+        yield* processInputWithBatches(instruments, ExchangeRatesSyncService.CRYPTO_RATE_SYNC_BATCH_SIZE, batch =>
+            this.syncCryptoRateBatch(baseInstrument, batch).pipe(Effect.as(null))
+        );
+    });
 
-            return null;
-        });
-    }
-
-    private async syncCryptoRateBatch(baseInstrument: InstrumentEntityInterface, instruments: InstrumentEntityInterface[]): Promise<void> {
+    private readonly syncCryptoRateBatch = Effect.fn('ExchangeRatesSyncService.syncCryptoRateBatch')(function* (
+        this: ExchangeRatesSyncService,
+        baseInstrument: InstrumentEntityInterface,
+        instruments: InstrumentEntityInterface[]
+    ) {
         const providerInstrumentIds = [...new Set(instruments.map(instrument => instrument.providerInstrumentId).filter(isDefined))];
 
         if (!isNotEmptyArray(providerInstrumentIds)) {
             return;
         }
 
-        const prices = await this.fetchCryptoPrices(providerInstrumentIds, baseInstrument.code);
+        const ids = providerInstrumentIds.map(encodeURIComponent).join(',');
         const quoteCode = baseInstrument.code.toLowerCase();
+        const prices = yield* this.fetchJson(
+            `${ExchangeRatesSyncService.COINGECKO_SIMPLE_PRICE_API_URL}?ids=${ids}&vs_currencies=${encodeURIComponent(quoteCode)}`,
+            CoinGeckoSimplePriceResponseSchema,
+            {}
+        );
         const inputs = instruments.flatMap(instrument =>
             this.buildCryptoInstrumentRateInputs(
                 baseInstrument.id,
@@ -147,42 +148,35 @@ class ExchangeRatesSyncService {
             return;
         }
 
-        await transactionAsync(db, tx => exchangeRateRepository.bulkUpsert(inputs, tx));
-    }
+        yield* Db.transaction(exchangeRateRepository.bulkUpsert(inputs));
+    });
 
-    private async fetch(code: string): Promise<ExchangeRateApiResponseInterface> {
-        const payload = await this.fetchJson(`${ExchangeRatesSyncService.EXCHANGE_RATE_API_URL}/${code}`);
-        const result = ExchangeRateApiResponseSchema.safeParse(payload);
-
-        if (!result.success) {
-            return emptyExchangeRateApiResponse;
-        }
-
-        return result.data;
-    }
-
-    private async fetchCryptoPrices(
-        providerInstrumentIds: string[],
-        quoteCode: string
-    ): Promise<Partial<Record<string, Partial<Record<string, number>>>>> {
-        const ids = providerInstrumentIds.map(encodeURIComponent).join(',');
-        const quote = encodeURIComponent(quoteCode.toLowerCase());
-        const payload = await this.fetchJson(
-            `${ExchangeRatesSyncService.COINGECKO_SIMPLE_PRICE_API_URL}?ids=${ids}&vs_currencies=${quote}`
+    private readonly fetchJson = Effect.fn('ExchangeRatesSyncService.fetchJson')(function* <S extends Schema.ConstraintDecoder<unknown>>(
+        url: string,
+        schema: S,
+        fallback: S['Type']
+    ) {
+        const client = (yield* HttpClient.HttpClient).pipe(
+            HttpClient.filterStatusOk,
+            HttpClient.transformResponse(Effect.timeout(ExchangeRatesSyncService.FETCH_TIMEOUT_MS)),
+            HttpClient.retryTransient({
+                retryOn: 'errors-only',
+                times: ExchangeRatesSyncService.FETCH_RETRY_LIMIT,
+                schedule: Schedule.exponential(ExchangeRatesSyncService.FETCH_RETRY_DELAY_MS)
+            })
         );
-        const result = CoinGeckoSimplePriceResponseSchema.safeParse(payload);
 
-        if (!result.success) {
-            return {};
-        }
+        return yield* client.get(url).pipe(
+            Effect.flatMap(HttpClientResponse.schemaBodyJson(schema)),
+            Effect.orElseSucceed(() => fallback)
+        );
+    });
 
-        return result.data;
-    }
+    private isSyncing = false;
+    private lastSyncedAtMs: number | null = null;
 
-    private async fetchJson(url: string): Promise<unknown> {
-        return ExchangeRatesSyncService.HTTP_CLIENT.get(url)
-            .json()
-            .catch(() => null);
+    private isE2EApp(): boolean {
+        return Constants.expoConfig?.extra?.[ExchangeRatesSyncService.APP_VARIANT_EXTRA_KEY] === ExchangeRatesSyncService.E2E_APP_VARIANT;
     }
 
     private getCryptoPrice(

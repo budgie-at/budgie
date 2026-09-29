@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-max-depth */
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
+import * as Effect from 'effect/Effect';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -7,8 +8,6 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import Toast from 'react-native-toast-message';
-
-import { emptyFn } from '@rnw-community/shared';
 
 import migrations from '../../drizzle/migrations';
 import '../global.css';
@@ -45,6 +44,8 @@ import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
+import { appRuntime } from '../@generic/runtime/app.runtime';
+import { Workload } from '../@generic/service/workload.service';
 import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
@@ -56,7 +57,6 @@ import { historicalMarketDataLoaderService } from '../market-data/service/histor
 import { SettingsProvider } from '../settings/provider/settings.provider';
 import { binanceSyncService } from '../sync/service/binance-sync.service';
 import { monobankSyncService } from '../sync/service/monobank-sync.service';
-import { syncWorkloadService } from '../sync/service/sync-workload.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -67,32 +67,40 @@ void SplashScreen.preventAutoHideAsync();
 const drizzleStudioEnvironmentVariable = 'EXPO_PUBLIC_DRIZZLE_STUDIO_ENABLE';
 const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVariable] === 'true';
 
-const syncForegroundData = async (): Promise<void> => {
-    await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
+const logAndContinue = Effect.catchCause(Effect.logError);
 
-    await exchangeRatesSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
+const syncForegroundData = Effect.gen(function* () {
+    const workload = yield* Workload;
+
+    yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
+    yield* logAndContinue(exchangeRatesSyncService.sync());
+    if (yield* workload.hasQueuedWork) {
         return;
     }
 
-    await monobankSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
+    yield* logAndContinue(monobankSyncService.sync());
+    if (yield* workload.hasQueuedWork) {
         return;
     }
 
-    await binanceSyncService.sync().catch(emptyFn);
-    void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
-};
+    yield* logAndContinue(binanceSyncService.sync());
+    yield* Effect.forkDetach(logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts()));
+});
 
 const handleAppStateChange = (isActive: boolean): void => {
-    if (!isActive) {
-        monobankSyncService.interruptActiveRun();
-        syncWorkloadService.interruptActiveWork();
+    void appRuntime.runPromise(
+        Effect.gen(function* () {
+            const workload = yield* Workload;
 
-        return;
-    }
+            if (!isActive) {
+                yield* workload.interruptBackground;
 
-    void syncWorkloadService.run('foreground', syncForegroundData).catch(emptyFn);
+                return;
+            }
+
+            yield* logAndContinue(workload.run(syncForegroundData));
+        })
+    );
 };
 
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines

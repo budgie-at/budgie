@@ -14,6 +14,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
@@ -116,7 +117,9 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
 
         try {
             setIsSubmitting(true);
-            await transactionService.updateById(transactionId, buildAdjustmentUpdateInput(transaction, details, numericValue, isIncrease));
+            await appRuntime.runPromise(
+                transactionService.updateById(transactionId, buildAdjustmentUpdateInput(transaction, details, numericValue, isIncrease))
+            );
             void markForEmbedding(transactionId);
             goBackOrReplace('/');
         } catch (error: unknown) {

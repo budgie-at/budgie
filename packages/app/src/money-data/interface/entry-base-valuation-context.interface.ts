@@ -1,8 +1,8 @@
-import type { AccountEntityInterface, DB, InstrumentEntityInterface } from '@budgie/contracts';
+import type { AccountEntityInterface, Db, DbError, InstrumentEntityInterface } from '@budgie/contracts';
+import type * as Effect from 'effect/Effect';
 
 export interface EntryBaseValuationContextInterface {
     readonly baseInstrument: InstrumentEntityInterface | undefined;
-    readonly accounts: Map<number, Promise<Pick<AccountEntityInterface, 'instrumentId' | 'type'> | undefined>>;
-    readonly rates: Map<string, Promise<number | null>>;
-    readonly tx?: DB;
+    readonly accounts: Map<number, Effect.Effect<Pick<AccountEntityInterface, 'instrumentId' | 'type'> | undefined, DbError, Db>>;
+    readonly rates: Map<string, Effect.Effect<number | null, DbError, Db>>;
 }

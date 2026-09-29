@@ -1,13 +1,12 @@
-import { PRECISION, TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionTypeEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, PRECISION, TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionTypeEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { db, transactionRepository } from '../../@generic/drizzle/db/db';
+import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { transactionTransferService } from '../../transaction/service/transaction-transfer.service';
 
 import type { UnpairedOwnCardTransferCandidateInterface } from '../interface/unpaired-own-card-transfer-candidate.interface';
-import type { DB } from '@budgie/contracts';
 
 class UnpairedOwnCardTransferRepairService {
     private static readonly COUNTERPART_AMOUNT_TOLERANCE = 500 * PRECISION;
@@ -82,50 +81,41 @@ class UnpairedOwnCardTransferRepairService {
             )
     `;
 
-    @Log('enter', result => `done count=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async countCandidates(): Promise<number> {
-        return (await this.findCandidates(db)).length;
-    }
+    readonly countCandidates = Effect.fn('UnpairedOwnCardTransferRepairService.countCandidates')(
+        function* (this: UnpairedOwnCardTransferRepairService) {
+            return (yield* this.findCandidates()).length;
+        }
+    );
 
-    @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async repair(): Promise<number> {
-        const candidates = await this.findCandidates(db);
+    readonly repair = Effect.fn('UnpairedOwnCardTransferRepairService.repair')(function* (this: UnpairedOwnCardTransferRepairService) {
+        const candidates = yield* this.findCandidates();
 
-        await candidates.reduce((previous, candidate) => previous.then(() => this.convertCandidate(candidate)), Promise.resolve());
+        for (const candidate of candidates) {
+            yield* this.convertCandidate(candidate);
+        }
 
         return candidates.length;
-    }
+    });
 
-    @Log(
-        database => `enter database=${String(isDefined(database))}`,
-        (result, database) => `done database=${String(isDefined(database))} candidateCount=${result.length}`,
-        (error, database) => `throw database=${String(isDefined(database))} error=${getErrorMessage(error)}`
-    )
-    private async findCandidates(database: DB): Promise<UnpairedOwnCardTransferCandidateInterface[]> {
-        return database.$client.getAllAsync<UnpairedOwnCardTransferCandidateInterface>(UnpairedOwnCardTransferRepairService.CANDIDATES_SQL);
-    }
+    private readonly findCandidates = Effect.fnUntraced(function* () {
+        return yield* Db.query(db =>
+            db.$client.getAllAsync<UnpairedOwnCardTransferCandidateInterface>(UnpairedOwnCardTransferRepairService.CANDIDATES_SQL)
+        );
+    });
 
-    @Log(
-        candidate =>
-            `enter transactionId=${candidate.transactionId} counterpartAccountId=${candidate.counterpartAccountId} supersededTransactionId=${String(candidate.supersededTransactionId)}`,
-        (_result, candidate) =>
-            `done transactionId=${candidate.transactionId} counterpartAccountId=${candidate.counterpartAccountId} supersededTransactionId=${String(candidate.supersededTransactionId)}`,
-        (error, candidate) =>
-            `throw transactionId=${candidate.transactionId} counterpartAccountId=${candidate.counterpartAccountId} supersededTransactionId=${String(candidate.supersededTransactionId)} error=${getErrorMessage(error)}`
-    )
-    private async convertCandidate(candidate: UnpairedOwnCardTransferCandidateInterface): Promise<void> {
+    private readonly convertCandidate = Effect.fnUntraced(function* (candidate: UnpairedOwnCardTransferCandidateInterface) {
         const params = { id: candidate.transactionId, accountId: candidate.counterpartAccountId, customExchangeRate: 1 };
 
         if (candidate.transactionType === TransactionTypeEnum.INCOME) {
-            await transactionTransferService.convertIncomeToTransfer(params);
+            yield* transactionTransferService.convertIncomeToTransfer(params);
         } else {
-            await transactionTransferService.convertExpenseToTransfer(params);
+            yield* transactionTransferService.convertExpenseToTransfer(params);
         }
 
         if (isDefined(candidate.supersededTransactionId)) {
-            await transactionRepository.deleteById(candidate.supersededTransactionId);
+            yield* transactionRepository.deleteById(candidate.supersededTransactionId);
         }
-    }
+    });
 
     private static buildCardMaskPredicate(accountAlias: string): string {
         return String.raw`

@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -20,6 +21,7 @@ import {
     transactionRepository,
     transactionTagsRepository
 } from '../../../@generic/drizzle/db/db';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { microPause } from '../../../@generic/utils/micro-pause.util';
 import { readTextFileFromUri } from '../../../@generic/utils/read-text-file-from-uri.util';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
@@ -122,16 +124,23 @@ export default function ImportScreen() {
         const importer = new ImporterService(columnMap);
 
         try {
-            await accountRepository.truncate();
-            await categoryRepository.truncate(false);
-            await transactionTagsRepository.truncate();
-            await transactionEntryRepository.truncate();
-            await transactionRepository.truncate();
-            await accountBalanceRepository.truncate();
+            await appRuntime.runPromise(
+                Effect.all(
+                    [
+                        accountRepository.truncate(),
+                        categoryRepository.truncate(false),
+                        transactionTagsRepository.truncate(),
+                        transactionEntryRepository.truncate(),
+                        transactionRepository.truncate(),
+                        accountBalanceRepository.truncate()
+                    ],
+                    { discard: true }
+                )
+            );
 
-            await importer.process(csvText, rowCount);
+            await appRuntime.runPromise(importer.process(csvText, rowCount));
 
-            await accountBalanceIncrementalService.updateAllBalances(true);
+            await appRuntime.runPromise(accountBalanceIncrementalService.updateAllBalances(true));
 
             router.back();
         } catch (error) {

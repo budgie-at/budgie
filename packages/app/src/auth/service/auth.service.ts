@@ -1,9 +1,9 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 import * as LocalAuthentication from 'expo-local-authentication';
 import * as SecureStore from 'expo-secure-store';
 
-import { emptyFn, getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
 import { databaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
@@ -16,30 +16,36 @@ import { PIN_SECURE_STORE_OPTIONS } from '../constant/pin-secure-store-options.c
 import { BiometricTypesInterface } from '../interface/biometric-types.interface';
 
 class AuthService {
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async ensurePinBackgroundAccessibility(): Promise<void> {
-        const pin = await this.getPin();
+    private static readonly UNAVAILABLE_BIOMETRIC_TYPES: BiometricTypesInterface = {
+        isTouchIdAvailable: false,
+        isFaceIdAvailable: false,
+        isSomeAvailable: false,
+        isLoading: false
+    };
+
+    readonly ensurePinBackgroundAccessibility = Effect.fn('AuthService.ensurePinBackgroundAccessibility')(function* (this: AuthService) {
+        const pin = yield* this.getPin();
 
         if (isNotEmptyString(pin)) {
-            await this.persistPin(pin);
+            yield* this.persistPin(pin);
         }
-    }
+    });
 
-    async getBiometricTypes(): Promise<BiometricTypesInterface> {
-        try {
-            const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    readonly getBiometricTypes = Effect.fn('AuthService.getBiometricTypes')(
+        function* (this: AuthService) {
+            const hasHardware = yield* Effect.promise(() => LocalAuthentication.hasHardwareAsync());
 
             if (!hasHardware) {
-                return this.getUnavailableBiometricTypes();
+                return AuthService.UNAVAILABLE_BIOMETRIC_TYPES;
             }
 
-            const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+            const isEnrolled = yield* Effect.promise(() => LocalAuthentication.isEnrolledAsync());
 
             if (!isEnrolled) {
-                return this.getUnavailableBiometricTypes();
+                return AuthService.UNAVAILABLE_BIOMETRIC_TYPES;
             }
 
-            const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
+            const types = yield* Effect.promise(() => LocalAuthentication.supportedAuthenticationTypesAsync());
             const isFaceIdAvailable = types.some(type => type === LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION);
             const isTouchIdAvailable = types.some(type => type === LocalAuthentication.AuthenticationType.FINGERPRINT);
 
@@ -49,95 +55,86 @@ class AuthService {
                 isFaceIdAvailable,
                 isLoading: false
             };
-        } catch {
-            return this.getUnavailableBiometricTypes();
-        }
-    }
+        },
+        Effect.catchDefect(() => Effect.succeed(AuthService.UNAVAILABLE_BIOMETRIC_TYPES))
+    );
 
-    async authenticateWithBiometrics(): Promise<boolean> {
-        try {
-            const result = await LocalAuthentication.authenticateAsync({
-                promptMessage: 'Authenticate to access the app',
-                cancelLabel: 'Use PIN',
-                disableDeviceFallback: true
-            });
+    readonly authenticateWithBiometrics = Effect.fn('AuthService.authenticateWithBiometrics')(
+        function* () {
+            const result = yield* Effect.promise(() =>
+                LocalAuthentication.authenticateAsync({
+                    promptMessage: 'Authenticate to access the app',
+                    cancelLabel: 'Use PIN',
+                    disableDeviceFallback: true
+                })
+            );
 
             return result.success;
-        } catch {
-            return false;
-        }
-    }
+        },
+        Effect.catchDefect(() => Effect.succeed(false))
+    );
 
-    async createPin(pin: string, isBiometricEnabled: boolean): Promise<void> {
-        await widgetSnapshotService.mask().catch(emptyFn);
-        await this.rekeyDatabase({
+    readonly createPin = Effect.fn('AuthService.createPin')(function* (this: AuthService, pin: string, isBiometricEnabled: boolean) {
+        yield* widgetSnapshotService.mask().pipe(Effect.ignoreCause({ log: 'Error' }));
+        yield* this.rekeyDatabase({
             nextKey: pin,
             nextSettings: {
                 isBiometricEnabled,
                 isPinEnabled: true
             }
-        }).catch((error: unknown) => {
-            widgetSnapshotService.unlock();
-            throw error;
-        });
-    }
+        }).pipe(
+            Effect.onError(() =>
+                Effect.sync(() => {
+                    widgetSnapshotService.unlock();
+                })
+            )
+        );
+    });
 
-    async changePin(pin: string): Promise<void> {
-        await this.rekeyDatabase({ nextKey: pin });
-    }
+    readonly changePin = Effect.fn('AuthService.changePin')(function* (this: AuthService, pin: string) {
+        yield* this.rekeyDatabase({ nextKey: pin });
+    });
 
-    async verifyPin(pin: string): Promise<boolean> {
-        const savedPin = await SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
+    readonly verifyPin = Effect.fn('AuthService.verifyPin')(function* (this: AuthService, pin: string) {
+        const savedPin = yield* this.getPin();
 
         return savedPin === pin;
-    }
+    });
 
-    async deletePin(): Promise<void> {
-        await this.rekeyDatabase({
+    readonly deletePin = Effect.fn('AuthService.deletePin')(function* (this: AuthService) {
+        yield* this.rekeyDatabase({
             nextKey: null,
             nextSettings: {
                 isBiometricEnabled: false,
                 isPinEnabled: false
             }
         });
-    }
+    });
 
-    async getPin(): Promise<string | null> {
-        return SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
-    }
+    readonly getPin = Effect.fn('AuthService.getPin')(function* () {
+        return yield* Effect.promise(() => SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
+    });
 
-    async persistPin(pin: string | null): Promise<void> {
+    readonly persistPin = Effect.fn('AuthService.persistPin')(function* (pin: string | null) {
         if (isNotEmptyString(pin)) {
-            await SecureStore.setItemAsync(PIN_KEY, pin, PIN_SECURE_STORE_OPTIONS);
+            yield* Effect.promise(() => SecureStore.setItemAsync(PIN_KEY, pin, PIN_SECURE_STORE_OPTIONS));
         } else {
-            await SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
+            yield* Effect.promise(() => SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
         }
-    }
+    });
 
-    private async rekeyDatabase(params: RekeyParamsInterface): Promise<void> {
-        await databaseLifecycleService.run(DatabaseLifecycleOperationEnum.REKEY, () => this.runRekey(params));
-    }
+    private readonly rekeyDatabase = Effect.fn('AuthService.rekeyDatabase')(function* (this: AuthService, params: RekeyParamsInterface) {
+        yield* databaseLifecycleService.run(DatabaseLifecycleOperationEnum.REKEY, this.runRekey(params));
+    });
 
-    private async runRekey(params: RekeyParamsInterface): Promise<void> {
-        const previousPin = await this.getPin();
+    private readonly runRekey = Effect.fn('AuthService.runRekey')(function* (this: AuthService, params: RekeyParamsInterface) {
+        const previousPin = yield* this.getPin();
 
-        try {
-            await databaseRekeyService.rekey(params, () => this.persistPin(params.nextKey));
-            await reloadApp();
-        } catch (error) {
-            await this.persistPin(previousPin);
-            throw error;
-        }
-    }
-
-    private getUnavailableBiometricTypes(): BiometricTypesInterface {
-        return {
-            isTouchIdAvailable: false,
-            isFaceIdAvailable: false,
-            isSomeAvailable: false,
-            isLoading: false
-        };
-    }
+        yield* databaseRekeyService.rekey(params, this.persistPin(params.nextKey)).pipe(
+            Effect.andThen(Effect.promise(() => reloadApp())),
+            Effect.onError(() => this.persistPin(previousPin))
+        );
+    });
 }
 
 export const authService = new AuthService();

@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
@@ -58,7 +59,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
 
     const { control, handleSubmit, instrument, isSubmitting } = useDebtAccountForm(
         initialValues,
-        values => accountService.updateDebtById(account.id, values),
+        values => appRuntime.runPromise(accountService.updateDebtById(account.id, values)),
         true
     );
 

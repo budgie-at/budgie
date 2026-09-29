@@ -14,6 +14,7 @@ import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { categoryRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
@@ -116,7 +117,7 @@ export const CategoryForm = (props: Props) => {
 
         try {
             const [targetCategory] = await categoryRepository.findById(targetCategoryId, language);
-            await categoryService.mergeInto(category.id, targetCategoryId);
+            await appRuntime.runPromise(categoryService.mergeInto(category.id, targetCategoryId));
 
             if (isDefined(targetCategory)) {
                 onSuccess({ category: targetCategory, action: 'merged' });
@@ -130,14 +131,14 @@ export const CategoryForm = (props: Props) => {
         const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
 
         if (hasTranslationData) {
-            await categoryRepository.updateTranslation(categoryId, titleEn, titleTags);
+            await appRuntime.runPromise(categoryRepository.updateTranslation(categoryId, titleEn, titleTags));
         } else {
-            await categoryRepository.clearTranslation(categoryId);
+            await appRuntime.runPromise(categoryRepository.clearTranslation(categoryId));
         }
     };
 
     const handleEditSubmit = async (categoryId: number, values: CategoryCreateEntityInterface): Promise<void> => {
-        await categoryRepository.updateById(categoryId, values);
+        await appRuntime.runPromise(categoryRepository.updateById(categoryId, values));
         await saveCategoryTranslation(categoryId);
 
         const [savedCategory] = await categoryRepository.findById(categoryId, language);
@@ -146,11 +147,11 @@ export const CategoryForm = (props: Props) => {
     };
 
     const handleCreateSubmit = async (values: CategoryCreateEntityInterface): Promise<void> => {
-        const savedCategory = await categoryRepository.create(values);
+        const savedCategory = await appRuntime.runPromise(categoryRepository.create(values));
         const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
 
         if (hasTranslationData) {
-            await categoryRepository.updateTranslation(savedCategory.id, titleEn, titleTags);
+            await appRuntime.runPromise(categoryRepository.updateTranslation(savedCategory.id, titleEn, titleTags));
         }
 
         onSuccess({ category: savedCategory, action: 'created' });

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { MoneyDataUpgradeProgressStateEnum } from '../enum/money-data-upgrade-progress-state.enum';
@@ -47,8 +48,8 @@ export const useMoneyDataUpgradeStatus = () => {
     const [runtimeSnapshot, setRuntimeSnapshot] = useState<MoneyDataUpgradeRuntimeSnapshotInterface>(EMPTY_RUNTIME_SNAPSHOT);
 
     useEffect(() => {
-        void moneyDataUpgradeService
-            .getSnapshot()
+        void appRuntime
+            .runPromise(moneyDataUpgradeService.getSnapshot())
             .then(setRuntimeSnapshot)
             .catch((error: unknown) => {
                 showErrorToast(t`Historical valuation failed`, getErrorMessage(error));
@@ -75,7 +76,7 @@ export const useMoneyDataUpgradeStatus = () => {
         }
 
         try {
-            setRuntimeSnapshot(await moneyDataUpgradeService.run(setRuntimeSnapshot));
+            setRuntimeSnapshot(await appRuntime.runPromise(moneyDataUpgradeService.run(setRuntimeSnapshot)));
         } catch (error: unknown) {
             showErrorToast(t`Historical valuation failed`, getErrorMessage(error));
         }

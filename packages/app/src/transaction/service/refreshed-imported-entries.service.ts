@@ -1,15 +1,13 @@
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { ImportedEntryMatchInterface } from '../interface/imported-entry-match.interface';
-import { RefreshedImportedEntriesResultInterface } from '../interface/refreshed-imported-entries-result.interface';
 import { RefreshedImportedEntriesStatusEnum } from '../type/refreshed-imported-entries-status.enum';
 
 import type { BuildRefreshedImportedEntriesInputInterface } from '../interface/build-refreshed-imported-entries-input.interface';
 import type {
-    DB,
     TransactionCreateInputInterface,
     TransactionEntryCreateEntityInterface,
     TransactionEntryCreateInputInterface,
@@ -17,14 +15,10 @@ import type {
 } from '@budgie/contracts';
 
 class RefreshedImportedEntriesService {
-    @Log(
-        (input, tx) =>
-            `enter transactionId=${input.transactionId} existingCount=${input.existingEntries.length} inputCount=${input.inputEntries.length} hasTx=${String(isDefined(tx))}`,
-        (result, input, tx) =>
-            `done transactionId=${input.transactionId} status=${result.status} entries=${result.entries?.length ?? 0} hasTx=${String(isDefined(tx))}`,
-        (error, input) => `throw transactionId=${input.transactionId} error=${getErrorMessage(error)}`
-    )
-    async build(input: BuildRefreshedImportedEntriesInputInterface, tx: DB): Promise<RefreshedImportedEntriesResultInterface> {
+    readonly build = Effect.fn('RefreshedImportedEntriesService.build')(function* (
+        this: RefreshedImportedEntriesService,
+        input: BuildRefreshedImportedEntriesInputInterface
+    ) {
         if (input.existingEntries.length !== input.inputEntries.length) {
             return { status: RefreshedImportedEntriesStatusEnum.LENGTH_MISMATCH, entries: null };
         }
@@ -45,9 +39,25 @@ class RefreshedImportedEntriesService {
 
         return {
             status: RefreshedImportedEntriesStatusEnum.REFRESHED,
-            entries: await Promise.all(refreshedEntries.map(entry => this.addBaseValuation(entry, input.input, tx)))
+            entries: yield* Effect.forEach(refreshedEntries, entry => this.addBaseValuation(entry, input.input), {
+                concurrency: 'unbounded'
+            })
         };
-    }
+    });
+
+    private readonly addBaseValuation = Effect.fnUntraced(function* (
+        entry: TransactionEntryCreateEntityInterface,
+        input: TransactionCreateInputInterface
+    ) {
+        const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
+            accountId: entry.accountId,
+            amount: entry.amount,
+            operatedAt: input.operatedAt,
+            externalSource: input.externalSource
+        });
+
+        return { ...entry, ...valuation };
+    });
 
     private buildRefreshedImportedEntry(
         existingEntry: TransactionEntryEntityInterface,
@@ -67,22 +77,6 @@ class RefreshedImportedEntriesService {
             exchangeRate: matchingInput.exchangeRate ?? existingEntry.exchangeRate,
             toIban: matchingInput.toIban ?? existingEntry.toIban
         };
-    }
-
-    private async addBaseValuation(
-        entry: TransactionEntryCreateEntityInterface,
-        input: TransactionCreateInputInterface,
-        tx: DB
-    ): Promise<TransactionEntryCreateEntityInterface> {
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-            accountId: entry.accountId,
-            amount: entry.amount,
-            operatedAt: input.operatedAt,
-            externalSource: input.externalSource,
-            tx
-        });
-
-        return { ...entry, ...valuation };
     }
 
     private findImportedEntryMatch(

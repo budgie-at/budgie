@@ -1,4 +1,6 @@
 import { t } from '@lingui/core/macro';
+import * as Equal from 'effect/Equal';
+import * as Atom from 'effect/reactivity/Atom';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -8,59 +10,25 @@ import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSystemUmbrellaStateEnum } from '../enum/ai-system-umbrella-state.enum';
 import { AiSystemUmbrellaSnapshotInterface } from '../interface/ai-system-umbrella-snapshot.interface';
 
-import { ScheduledSnapshotStore } from './base-subsystem.service';
 import { chatService } from './chat.service';
 import { embeddingService } from './embedding.service';
 import { sttService } from './stt.service';
 
-class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSnapshotInterface> {
+class AiUmbrellaStatusService {
     private static readonly TRUNCATE_LEN = 80;
     private static readonly SUBSYSTEM_COUNT = 3;
-    private static readonly EMPTY_UMBRELLA_SNAPSHOT: AiSystemUmbrellaSnapshotInterface = {
-        state: AiSystemUmbrellaStateEnum.DISABLED,
-        statusText: '',
-        downloadPercent: 0,
-        errorMessage: null
-    };
 
-    private lastState: AiSystemUmbrellaStateEnum = AiSystemUmbrellaStateEnum.DISABLED;
-
-    constructor() {
-        super(AiUmbrellaStatusService.EMPTY_UMBRELLA_SNAPSHOT);
-    }
-
-    protected buildSubscriptions(): (() => void)[] {
-        return [
-            chatService.subscribe(this.scheduleRecompute),
-            embeddingService.subscribe(this.scheduleRecompute),
-            sttService.subscribe(this.scheduleRecompute)
-        ];
-    }
-
-    protected emptySnapshot(): AiSystemUmbrellaSnapshotInterface {
-        return { ...AiUmbrellaStatusService.EMPTY_UMBRELLA_SNAPSHOT };
-    }
-
-    protected recompute(): void {
-        const next = this.derive();
-        if (this.snapshotEquals(next)) {
-            return;
-        }
-        if (next.state !== this.lastState) {
-            this.lastState = next.state;
-        }
-        this.setSnapshot(next);
-    }
+    readonly snapshot = Atom.make(get => this.derive(get)).pipe(Atom.withEquality(Equal.equals));
 
     // eslint-disable-next-line max-statements -- Priority-ordered derivation table across all subsystem statuses
-    private derive(): AiSystemUmbrellaSnapshotInterface {
+    private derive(get: Atom.AtomContext): AiSystemUmbrellaSnapshotInterface {
         if (!isAiEnabled()) {
             return { state: AiSystemUmbrellaStateEnum.DISABLED, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };
         }
 
-        const chat = chatService.getSnapshot();
-        const embedding = embeddingService.getSnapshot();
-        const stt = sttService.getSnapshot();
+        const chat = get(chatService.model.snapshot);
+        const embedding = get(embeddingService.model.snapshot);
+        const stt = get(sttService.snapshot);
 
         const chatError = chat.errorMessage;
         const embeddingError = embedding.errorMessage;
@@ -107,15 +75,6 @@ class AiUmbrellaStatusService extends ScheduledSnapshotStore<AiSystemUmbrellaSna
         }
 
         return { state: AiSystemUmbrellaStateEnum.HEALTHY, statusText: '', downloadPercent: 0, errorMessage: null };
-    }
-
-    private snapshotEquals(next: AiSystemUmbrellaSnapshotInterface): boolean {
-        return (
-            this.snapshot.state === next.state &&
-            this.snapshot.statusText === next.statusText &&
-            this.snapshot.downloadPercent === next.downloadPercent &&
-            this.snapshot.errorMessage === next.errorMessage
-        );
     }
 
     private getErrorSource(chatError: string | null, embeddingError: string | null): AiSubsystemNameEnum {

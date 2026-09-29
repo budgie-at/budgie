@@ -1,23 +1,22 @@
-import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { QuickImportConfigInterface } from '../interface/quick-import-config.interface';
 
 import type { FileBankSyncImportResultInterface } from '../interface/file-bank-sync-import-result.interface';
-
-const logger = getLogger('useQuickImport');
 
 interface QuickImportResult {
     readonly isLoading: boolean;
     readonly handleQuickImport: () => void;
 }
 
-export const useQuickImport = (config: QuickImportConfigInterface | null, triggerAccountExternalId: string | null): QuickImportResult => {
+export const useQuickImport = (config: QuickImportConfigInterface | null): QuickImportResult => {
     const { t } = useLingui();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -47,34 +46,20 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, trigge
 
     const handleQuickImport = () => {
         if (!isDefined(config)) {
-            logger.log('skip:no-config');
-
             return;
         }
 
         if (isLoading) {
-            logger.log('skip:loading', { source: config.source, triggerAccountExternalId });
-
             return;
         }
 
         const execute = async (): Promise<void> => {
             setIsLoading(true);
-            logger.log('picker:open', { source: config.source, mimeType: config.mimeType, triggerAccountExternalId });
 
             const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
             const uri = result.assets?.at(0)?.uri;
-            logger.log('picker:result', {
-                source: config.source,
-                canceled: result.canceled,
-                assetCount: result.assets?.length ?? 0,
-                triggerAccountExternalId,
-                uri
-            });
 
             if (result.canceled || !isNotEmptyString(uri)) {
-                logger.log('skip:no-uri', { source: config.source, canceled: result.canceled, triggerAccountExternalId, uri });
-
                 return;
             }
 
@@ -86,7 +71,7 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, trigge
         void execute()
             .catch((importError: unknown) => {
                 const errorMessage = getErrorMessage(importError);
-                logger.error('import:throw', importError);
+                appRuntime.runFork(Effect.logError('import:throw', importError));
                 Toast.show({ type: 'error', text1: t`Import failed`, text2: errorMessage });
             })
             .finally(() => {

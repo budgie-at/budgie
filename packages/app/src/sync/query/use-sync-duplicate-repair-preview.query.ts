@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { syncRepairService } from '../service/sync-repair.service';
 
 import type { SyncDuplicateRepairPreviewInterface } from '../interface/sync-duplicate-repair-preview.interface';
@@ -56,7 +57,7 @@ export const useSyncDuplicateRepairPreviewQuery = () => {
         }
 
         try {
-            const nextPreview = await syncRepairService.previewDuplicates();
+            const nextPreview = await appRuntime.runPromise(syncRepairService.previewDuplicates());
             applyPreview(requestId, nextPreview);
         } catch (error) {
             applyError(requestId, error);

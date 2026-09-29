@@ -5,7 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import Anthropic from '@anthropic-ai/sdk';
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
 import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -76,11 +76,13 @@ const releaseNotesJsonSchema = {
     additionalProperties: false
 };
 
-const releaseNotesResponseSchema = z.object({
-    locales: z.record(z.enum(appLocales), z.object({ appStore: z.string().trim().min(1), play: z.string().trim().min(1) }))
+const nonEmptyTrimmedString = Schema.Trim.pipe(Schema.check(Schema.isNonEmpty()));
+
+const releaseNotesResponseSchema = Schema.Struct({
+    locales: Schema.Record(Schema.Literals(appLocales), Schema.Struct({ appStore: nonEmptyTrimmedString, play: nonEmptyTrimmedString }))
 });
 
-type LocaleReleaseNotes = z.infer<typeof releaseNotesResponseSchema>['locales'];
+type LocaleReleaseNotes = (typeof releaseNotesResponseSchema.Type)['locales'];
 
 const releaseNotesStateSchema = z.object({ generatedAtCommit: z.string(), generatedFor: z.string() });
 
@@ -185,7 +187,7 @@ async function generateLocalizedReleaseNotes(bullets: string[], version: string)
 
     const responseText = message.content.map(block => (block.type === 'text' ? block.text : '')).join('');
 
-    return releaseNotesResponseSchema.parse(JSON.parse(responseText)).locales;
+    return Schema.decodeUnknownSync(releaseNotesResponseSchema)(JSON.parse(responseText)).locales;
 }
 
 function writeFallbackEnglishReleaseNotes(bullets: string[]): void {

@@ -9,6 +9,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
 import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
@@ -37,7 +38,7 @@ export default function Categories() {
     });
 
     const handleDeleteCategory = async (id: number) => {
-        const count = await categoryService.countTransactionEntries(id);
+        const count = await appRuntime.runPromise(categoryService.countTransactionEntries(id));
         if (isPositiveNumber(count)) {
             const description = t({
                 message: plural(count, {
@@ -53,7 +54,7 @@ export default function Categories() {
 
             if (isDefined(targetCategoryId)) {
                 try {
-                    await categoryService.mergeInto(id, targetCategoryId);
+                    await appRuntime.runPromise(categoryService.mergeInto(id, targetCategoryId));
                 } catch {
                     Toast.show({
                         type: 'error',
@@ -67,7 +68,7 @@ export default function Categories() {
         }
 
         try {
-            await categoryService.deleteById(id);
+            await appRuntime.runPromise(categoryService.deleteById(id));
         } catch (error) {
             Toast.show({
                 type: 'error',

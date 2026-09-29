@@ -1,12 +1,13 @@
-import { getLogger } from '@budgie/logger';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useHomePageDataQuery } from '../../../account/query/use-home-page-data.query';
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -19,8 +20,6 @@ import { OnboardingSuccessRow } from '../onboarding-success-row/onboarding-succe
 
 import { OnboardingDoneSelector } from './onboarding-done.selector';
 
-const logger = getLogger('OnboardingDone');
-
 export const OnboardingDone = () => {
     const { t } = useLingui();
     const { accounts, balanceSummary } = useHomePageDataQuery();
@@ -31,11 +30,11 @@ export const OnboardingDone = () => {
     const { defaultInstrument } = useSettingsContext();
 
     const handlePrimary = () => {
-        void onboardingService
-            .complete()
+        void appRuntime
+            .runPromise(onboardingService.complete())
             .then(() => void router.replace('/'))
             .catch((error: unknown) => {
-                logger.error('finish onboarding failed', { errorMessage: getErrorMessage(error) });
+                appRuntime.runFork(Effect.logError('finish onboarding failed', { errorMessage: getErrorMessage(error) }));
             });
     };
 

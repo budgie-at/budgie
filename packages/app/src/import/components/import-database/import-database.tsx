@@ -6,6 +6,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
@@ -33,7 +34,7 @@ export const ImportDatabase = () => {
                 return;
             }
 
-            const isBackupUnencrypted = await databaseImportService.canOpenBackup(uri, null);
+            const isBackupUnencrypted = await appRuntime.runPromise(databaseImportService.canOpenBackup(uri, null));
 
             setIsLoading(false);
 
@@ -59,7 +60,7 @@ export const ImportDatabase = () => {
             }
 
             setIsLoading(true);
-            await databaseImportService.importFromUri(uri, backupPin);
+            await appRuntime.runPromise(databaseImportService.importFromUri(uri, backupPin));
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Could not select database backup`, text2: getErrorMessage(error) });
         } finally {

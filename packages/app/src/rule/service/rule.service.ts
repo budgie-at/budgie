@@ -1,141 +1,118 @@
-import { RuleActionTypeEnum, transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, RuleActionTypeEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { accountRepository, db, ruleActionRepository, ruleConditionRepository, ruleRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, ruleActionRepository, ruleConditionRepository, ruleRepository } from '../../@generic/drizzle/db/db';
 import { assertTransferAccountsAreNotDebt } from '../../transaction/utils/assert-transfer-accounts-are-not-debt.util';
 
-import type { DB, RuleCreateInputInterface, RuleEntityInterface, RuleUpdateInputInterface } from '@budgie/contracts';
+import type { RuleCreateInputInterface, RuleUpdateInputInterface } from '@budgie/contracts';
 
 class RuleService {
-    @Log(
-        (id, enabled) => `enter id=${id} enabled=${enabled}`,
-        (_result, id, enabled) => `done id=${id} enabled=${enabled}`,
-        (error, id, enabled) => `throw id=${id} enabled=${enabled} error=${getErrorMessage(error)}`
-    )
-    async toggleEnabled(id: number, enabled: boolean): Promise<void> {
-        await ruleRepository.updateById(id, { enabled });
-    }
+    readonly toggleEnabled = Effect.fn('RuleService.toggleEnabled')(function* (id: number, enabled: boolean) {
+        yield* ruleRepository.updateById(id, { enabled });
+    });
 
-    @Log(id => `enter id=${id}`, (_result, id) => `done id=${id}`, (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
-    async archiveById(id: number): Promise<void> {
-        await ruleRepository.archiveById(id);
-    }
+    readonly archiveById = Effect.fn('RuleService.archiveById')(function* (id: number) {
+        yield* ruleRepository.archiveById(id);
+    });
 
-    @Log(
-        input =>
-            `enter conditionMatchType=${input.conditionMatchType} conditions=${input.conditions.length} actions=${input.actions.length}`,
-        (result, input) =>
-            `done conditionMatchType=${input.conditionMatchType} conditions=${input.conditions.length} actions=${input.actions.length} id=${result.id}`,
-        (error, input) =>
-            `throw conditionMatchType=${input.conditionMatchType} conditions=${input.conditions.length} actions=${input.actions.length} error=${getErrorMessage(error)}`
-    )
-    async create(input: RuleCreateInputInterface): Promise<RuleEntityInterface> {
-        return transactionAsync(db, async tx => {
-            await this.assertTransferActionsAreNotDebt(input.actions, tx);
+    readonly create = Effect.fn('RuleService.create')(
+        function* (this: RuleService, input: RuleCreateInputInterface) {
+            yield* this.assertTransferActionsAreNotDebt(input.actions);
 
-            const createdRule = await ruleRepository.create(
-                {
-                    enabled: input.enabled,
-                    conditionMatchType: input.conditionMatchType
-                },
-                tx
-            );
+            const createdRule = yield* ruleRepository.create({
+                enabled: input.enabled,
+                conditionMatchType: input.conditionMatchType
+            });
 
             if (isNotEmptyArray(input.conditions)) {
-                await ruleConditionRepository.bulkCreate(
-                    input.conditions.map(condition => ({ ...condition, ruleId: createdRule.id })),
-                    tx
-                );
+                yield* ruleConditionRepository.bulkCreate(input.conditions.map(condition => ({ ...condition, ruleId: createdRule.id })));
             }
 
             if (isNotEmptyArray(input.actions)) {
-                await ruleActionRepository.bulkCreate(
-                    input.actions.map(action => ({ ...action, ruleId: createdRule.id })),
-                    tx
-                );
+                yield* ruleActionRepository.bulkCreate(input.actions.map(action => ({ ...action, ruleId: createdRule.id })));
             }
 
             return createdRule;
-        });
-    }
+        },
+        effect => Db.transaction(effect)
+    );
 
-    @Log(
-        (id, input) =>
-            `enter id=${id} conditions=${input.conditions?.length ?? 'unchanged'} actions=${input.actions?.length ?? 'unchanged'}`,
-        (result, id, input) =>
-            `done id=${id} conditions=${input.conditions?.length ?? 'unchanged'} actions=${input.actions?.length ?? 'unchanged'} updatedId=${result.id}`,
-        (error, id, input) =>
-            `throw id=${id} conditions=${input.conditions?.length ?? 'unchanged'} actions=${input.actions?.length ?? 'unchanged'} error=${getErrorMessage(error)}`
-    )
-    async updateById(id: number, input: RuleUpdateInputInterface): Promise<RuleEntityInterface> {
-        return transactionAsync(db, async tx => {
-            const updatedRule = await this.updateRuleFields(id, input, tx);
+    readonly updateById = Effect.fn('RuleService.updateById')(
+        function* (this: RuleService, id: number, input: RuleUpdateInputInterface) {
+            const updatedRule = yield* this.updateRuleFields(id, input);
 
-            await this.syncRuleConditions(id, input.conditions, tx);
-            await this.syncRuleActions(id, input.actions, tx);
+            yield* this.syncRuleConditions(id, input.conditions);
+            yield* this.syncRuleActions(id, input.actions);
 
             return updatedRule;
-        });
-    }
+        },
+        effect => Db.transaction(effect)
+    );
 
-    private async updateRuleFields(id: number, input: RuleUpdateInputInterface, tx: DB): Promise<RuleEntityInterface> {
+    private readonly updateRuleFields = Effect.fn('RuleService.updateRuleFields')(function* (id: number, input: RuleUpdateInputInterface) {
         const ruleFieldUpdate = {
             ...(isDefined(input.enabled) && { enabled: input.enabled }),
             ...(isDefined(input.conditionMatchType) && { conditionMatchType: input.conditionMatchType })
         };
 
         if (isNotEmptyArray(Object.keys(ruleFieldUpdate))) {
-            return ruleRepository.updateById(id, ruleFieldUpdate, tx);
+            return yield* ruleRepository.updateById(id, ruleFieldUpdate);
         }
 
-        const existingRule = await ruleRepository.findByIdWithRelations(id);
+        const existingRule = yield* Db.query(() => ruleRepository.findByIdWithRelations(id));
         if (!isDefined(existingRule)) {
             // oxlint-disable-next-line lingui/no-unlocalized-strings
-            throw new Error(`Rule ${id} not found`);
+            return yield* Effect.fail(new Error(`Rule ${id} not found`));
         }
 
         return existingRule;
-    }
+    });
 
-    private async syncRuleConditions(id: number, conditions: RuleUpdateInputInterface['conditions'], tx: DB): Promise<void> {
+    private readonly syncRuleConditions = Effect.fn('RuleService.syncRuleConditions')(function* (
+        id: number,
+        conditions: RuleUpdateInputInterface['conditions']
+    ) {
         if (!isDefined(conditions)) {
             return;
         }
-        await ruleConditionRepository.deleteByRuleId(id, tx);
+        yield* ruleConditionRepository.deleteByRuleId(id);
         if (isNotEmptyArray(conditions)) {
-            await ruleConditionRepository.bulkCreate(
-                conditions.map(condition => ({ ...condition, ruleId: id })),
-                tx
-            );
+            yield* ruleConditionRepository.bulkCreate(conditions.map(condition => ({ ...condition, ruleId: id })));
         }
-    }
+    });
 
-    private async assertTransferActionsAreNotDebt(actions: RuleCreateInputInterface['actions'], tx: DB): Promise<void> {
+    private readonly assertTransferActionsAreNotDebt = Effect.fn('RuleService.assertTransferActionsAreNotDebt')(function* (
+        actions: RuleCreateInputInterface['actions']
+    ) {
         const accountIds = actions
             .filter(action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER)
             .map(action => action.accountId)
             .filter(isDefined);
-        const accounts = await Promise.all(accountIds.map(async accountId => accountRepository.findById(accountId, tx)));
+        const accounts = yield* Effect.all(
+            accountIds.map(accountId => Db.query(db => accountRepository.findById(accountId, db))),
+            { concurrency: 'unbounded' }
+        );
 
-        assertTransferAccountsAreNotDebt(accounts.filter(isDefined));
-    }
+        yield* assertTransferAccountsAreNotDebt(accounts.filter(isDefined));
+    });
 
-    private async syncRuleActions(id: number, actions: RuleUpdateInputInterface['actions'], tx: DB): Promise<void> {
+    private readonly syncRuleActions = Effect.fn('RuleService.syncRuleActions')(function* (
+        this: RuleService,
+        id: number,
+        actions: RuleUpdateInputInterface['actions']
+    ) {
         if (!isDefined(actions)) {
             return;
         }
 
-        await this.assertTransferActionsAreNotDebt(actions, tx);
-        await ruleActionRepository.deleteByRuleId(id, tx);
+        yield* this.assertTransferActionsAreNotDebt(actions);
+        yield* ruleActionRepository.deleteByRuleId(id);
         if (isNotEmptyArray(actions)) {
-            await ruleActionRepository.bulkCreate(
-                actions.map(action => ({ ...action, ruleId: id })),
-                tx
-            );
+            yield* ruleActionRepository.bulkCreate(actions.map(action => ({ ...action, ruleId: id })));
         }
-    }
+    });
 }
 
 export const ruleService = new RuleService();

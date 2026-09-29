@@ -5,6 +5,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { appResetService } from '../../../@generic/service/app-reset.service';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
@@ -29,7 +30,7 @@ export const TruncateData = () => {
 
         setIsLoading(true);
         try {
-            await appResetService.clearAllDataAndRestart();
+            await appRuntime.runPromise(appResetService.clearAllDataAndRestart());
         } catch (error) {
             Toast.show({
                 type: 'error',

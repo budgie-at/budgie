@@ -1,186 +1,172 @@
-import { Log } from '@budgie/logger';
+import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
+import * as Atom from 'effect/reactivity/Atom';
+import * as Semaphore from 'effect/Semaphore';
 
-import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ManualAudioStreamAdapter } from '../adapter/manual-audio-stream.adapter';
+import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
 import { STT_BEAM_SIZE, STT_MAX_THREADS, STT_MAX_TRANSCRIPTION_LEN, STT_TEMPERATURE } from '../constant/stt-realtime-options.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiNotReadyError } from '../error/ai-not-ready.error';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { SttSnapshotInterface } from '../interface/stt-snapshot.interface';
+import { getRootErrorMessage } from '../utils/get-root-error-message.util';
+import { patchAtom } from '../utils/patch-atom.util';
 
-import { BaseSubsystemService } from './base-subsystem.service';
 import { whisperModelService } from './whisper-model.service';
 
-import type { TranscribeOptions, WhisperContext } from 'whisper.rn';
+import type { WhisperContext } from 'whisper.rn';
 
-class SttService extends BaseSubsystemService<SttSnapshotInterface> implements AiSubsystemServiceInterface<SttSnapshotInterface> {
-    private context: WhisperContext | null = null;
-    private audioStream: ManualAudioStreamAdapter | null = null;
-    private stopStreamPromise: Promise<string> | null = null;
-    private streamLanguage: string | null = null;
-    private whisperModulePromise: Promise<typeof import('whisper.rn')> | null = null;
-
-    constructor() {
-        super(AiSubsystemNameEnum.STT, {
+class SttService implements AiSubsystemServiceInterface {
+    readonly snapshot = Atom.keepAlive(
+        Atom.make<SttSnapshotInterface>({
             status: AiSubsystemStatusEnum.IDLE,
             downloadProgress: 0,
             errorMessage: null,
             committedTranscription: '',
             nonCommittedTranscription: ''
-        });
-    }
+        })
+    );
 
-    get committedTranscription(): string {
-        return this.snapshot.committedTranscription;
-    }
+    readonly start = Effect.fn('SttService.start')(
+        function* (this: SttService) {
+            if (this.isReady) {
+                return;
+            }
+            patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
+            const modelPath = yield* whisperModelService.download(downloadProgress => {
+                patchAtom(this.snapshot, { downloadProgress });
+            });
+            patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.INITIALIZING });
+            const whisper = yield* Effect.tryPromise(() => import('whisper.rn'));
+            this.whisper = whisper;
+            this.context = yield* Effect.tryPromise(() => whisper.initWhisper({ filePath: modelPath }));
+            patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.READY, errorMessage: null });
+        },
+        effect =>
+            Effect.catchCause(effect, cause =>
+                Effect.sync(() => {
+                    this.context = null;
+                    whisperModelService.delete();
+                    patchAtom(this.snapshot, {
+                        status: AiSubsystemStatusEnum.ERROR,
+                        errorMessage: getRootErrorMessage(Cause.squash(cause))
+                    });
+                })
+            )
+    );
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async streamStart(language: string | null = null): Promise<void> {
+    readonly stop = Effect.fn('SttService.stop')(function* (this: SttService) {
+        const { status } = aiAtomRegistry.get(this.snapshot);
+        if (status === AiSubsystemStatusEnum.SUSPENDED || status === AiSubsystemStatusEnum.DISABLED) {
+            return;
+        }
+        yield* Effect.ignore(this.stopStream(false));
+        this.context = null;
+        const { whisper } = this;
+        const exit = yield* Effect.exit(isDefined(whisper) ? Effect.tryPromise(() => whisper.releaseAllWhisper()) : Effect.void);
+        patchAtom(
+            this.snapshot,
+            Exit.isSuccess(exit)
+                ? {
+                      status: AiSubsystemStatusEnum.SUSPENDED,
+                      downloadProgress: 0,
+                      committedTranscription: '',
+                      nonCommittedTranscription: ''
+                  }
+                : { status: AiSubsystemStatusEnum.SUSPENDED }
+        );
+    });
+
+    readonly resetError = Effect.fn('SttService.resetError')(function* (this: SttService) {
+        yield* Effect.ignore(this.stopStream(false));
+        patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
+    });
+
+    readonly streamStart = Effect.fn('SttService.streamStart')(function* (this: SttService, language: string | null) {
         if (!this.isReady || !isDefined(this.context)) {
-            throw new AiNotReadyError(AiSubsystemNameEnum.STT);
+            yield* new AiNotReadyError({ subsystem: AiSubsystemNameEnum.STT });
         }
         if (isDefined(this.audioStream)) {
-            await this.stopActiveStream(false).catch(emptyFn);
+            yield* Effect.ignore(this.stopStream(false));
         }
 
-        this.setSnapshot({ errorMessage: null, committedTranscription: '', nonCommittedTranscription: '' });
+        patchAtom(this.snapshot, { errorMessage: null, committedTranscription: '', nonCommittedTranscription: '' });
         this.audioStream = new ManualAudioStreamAdapter();
         this.streamLanguage = language;
-    }
+    });
 
-    @Log('enter', result => `done committedLen=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
-    async streamStop(): Promise<string> {
-        return this.stopActiveStream(true);
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async streamCancel(): Promise<void> {
-        await this.stopActiveStream(false);
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    protected async runStart(): Promise<void> {
-        try {
-            this.setSnapshot({ status: AiSubsystemStatusEnum.DOWNLOADING, downloadProgress: 0 });
-            const modelPath = await whisperModelService.download(downloadProgress => {
-                this.setSnapshot({ downloadProgress });
-            });
-            this.setSnapshot({ status: AiSubsystemStatusEnum.INITIALIZING });
-            const { initWhisper } = await this.loadWhisperModule();
-            this.context = await initWhisper({ filePath: modelPath });
-            this.setSnapshot({ status: AiSubsystemStatusEnum.READY, errorMessage: null });
-        } catch (error: unknown) {
-            this.context = null;
-            whisperModelService.delete();
-            this.setSnapshot({ status: AiSubsystemStatusEnum.ERROR, errorMessage: getErrorMessage(error) });
-        }
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    protected async runStop(): Promise<void> {
-        try {
-            await this.stopActiveStream(false).catch(emptyFn);
-            this.context = null;
-            if (isDefined(this.whisperModulePromise)) {
-                const { releaseAllWhisper } = await this.loadWhisperModule();
-                await releaseAllWhisper();
+    readonly stopStream = Effect.fn('SttService.stopStream')(
+        function* (this: SttService, commitFinalText: boolean) {
+            const { audioStream } = this;
+            if (!isDefined(audioStream)) {
+                return commitFinalText ? this.committedTranscription : '';
             }
-            this.setSnapshot({
-                status: AiSubsystemStatusEnum.SUSPENDED,
-                downloadProgress: 0,
-                committedTranscription: '',
-                nonCommittedTranscription: ''
-            });
-        } catch {
-            this.context = null;
-            this.audioStream = null;
-            this.streamLanguage = null;
-            this.setSnapshot({ status: AiSubsystemStatusEnum.SUSPENDED });
-        }
-    }
-
-    streamInsert(waveform: Float32Array): void {
-        this.audioStream?.push(waveform);
-    }
-
-    protected override async beforeRetry(): Promise<void> {
-        await this.streamCancel().catch(emptyFn);
-    }
-
-    private loadWhisperModule(): Promise<typeof import('whisper.rn')> {
-        if (!isDefined(this.whisperModulePromise)) {
-            this.whisperModulePromise = import('whisper.rn');
-        }
-
-        return this.whisperModulePromise;
-    }
-
-    private stopActiveStream(commitFinalText: boolean): Promise<string> {
-        if (isDefined(this.stopStreamPromise)) {
-            return this.stopStreamPromise;
-        }
-
-        this.stopStreamPromise = this.executeStopActiveStream(commitFinalText).finally(() => {
-            this.stopStreamPromise = null;
-        });
-
-        return this.stopStreamPromise;
-    }
-
-    private async executeStopActiveStream(commitFinalText: boolean): Promise<string> {
-        const { audioStream } = this;
-
-        if (!isDefined(audioStream)) {
-            return commitFinalText ? this.snapshot.committedTranscription : '';
-        }
-
-        try {
-            const finalText = commitFinalText ? await this.transcribeCapturedAudio(audioStream) : '';
-            this.setSnapshot({ committedTranscription: finalText, nonCommittedTranscription: '' });
+            const finalText = commitFinalText ? yield* this.transcribe(audioStream) : '';
+            patchAtom(this.snapshot, { committedTranscription: finalText, nonCommittedTranscription: '' });
 
             return finalText;
-        } finally {
-            this.audioStream = null;
-            this.streamLanguage = null;
-        }
-    }
+        },
+        effect =>
+            this.streamLock.withPermit(
+                Effect.ensuring(
+                    effect,
+                    Effect.sync(() => {
+                        this.audioStream = null;
+                        this.streamLanguage = null;
+                    })
+                )
+            )
+    );
 
-    private async transcribeCapturedAudio(audioStream: ManualAudioStreamAdapter): Promise<string> {
+    private readonly transcribe = Effect.fnUntraced(function* (this: SttService, audioStream: ManualAudioStreamAdapter) {
         const audioData = audioStream.getCapturedAudio();
+        const { context } = this;
 
         if (!isPositiveNumber(audioData.byteLength)) {
             return '';
         }
+        if (!isDefined(context)) {
+            return yield* new AiNotReadyError({ subsystem: AiSubsystemNameEnum.STT });
+        }
         const audioBuffer = new ArrayBuffer(audioData.byteLength);
         new Uint8Array(audioBuffer).set(audioData);
-        const { promise } = this.getContext().transcribeData(audioBuffer, this.buildTranscribeOptions(this.streamLanguage));
-        const result = await promise;
+        const result = yield* Effect.tryPromise(
+            () =>
+                context.transcribeData(audioBuffer, {
+                    ...(isDefined(this.streamLanguage) && { language: this.streamLanguage }),
+                    translate: false,
+                    maxThreads: STT_MAX_THREADS,
+                    temperature: STT_TEMPERATURE,
+                    temperatureInc: STT_TEMPERATURE,
+                    maxLen: STT_MAX_TRANSCRIPTION_LEN,
+                    beamSize: STT_BEAM_SIZE
+                }).promise
+        );
 
         return result.result.trim();
+    });
+
+    private readonly streamLock = Semaphore.makeUnsafe(1);
+    private context: WhisperContext | null = null;
+    private whisper: typeof import('whisper.rn') | null = null;
+    private audioStream: ManualAudioStreamAdapter | null = null;
+    private streamLanguage: string | null = null;
+
+    get isReady(): boolean {
+        return aiAtomRegistry.get(this.snapshot).status === AiSubsystemStatusEnum.READY;
     }
 
-    private buildTranscribeOptions(language: string | null): TranscribeOptions {
-        return {
-            ...(isDefined(language) && { language }),
-            translate: false,
-            maxThreads: STT_MAX_THREADS,
-            temperature: STT_TEMPERATURE,
-            temperatureInc: STT_TEMPERATURE,
-            maxLen: STT_MAX_TRANSCRIPTION_LEN,
-            beamSize: STT_BEAM_SIZE
-        };
+    get committedTranscription(): string {
+        return aiAtomRegistry.get(this.snapshot).committedTranscription;
     }
 
-    private getContext(): WhisperContext {
-        const { context } = this;
-
-        if (!isDefined(context)) {
-            throw new AiNotReadyError(AiSubsystemNameEnum.STT);
-        }
-
-        return context;
+    streamInsert(waveform: Float32Array): void {
+        this.audioStream?.push(waveform);
     }
 }
 

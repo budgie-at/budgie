@@ -1,3 +1,5 @@
+import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
@@ -11,59 +13,58 @@ import { historicalMarketDataLoaderService } from '../../market-data/service/his
 import { onboardingService } from '../../onboarding/service/onboarding.service';
 import { binanceSyncService } from '../../sync/service/binance-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
-import { syncWorkloadService } from '../../sync/service/sync-workload.service';
 import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
 import { widgetSnapshotService } from '../../widget/service/widget-snapshot.service';
-import { scheduleIdleCallback } from '../utils/schedule-idle-callback.util';
+import { appRuntime } from '../runtime/app.runtime';
+import { Workload } from '../service/workload.service';
+import { waitForIdle } from '../utils/wait-for-idle.util';
 
 const SPLASH_HIDE_DELAY_MS = 200;
 const STARTUP_SERVICE_DELAY_MS = 1_000;
 
-const syncAppData = async (): Promise<void> => {
-    await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
+const logAndContinue = Effect.catchCause(Effect.logError);
 
-    await exchangeRatesSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
+const syncAppData = Effect.gen(function* () {
+    const workload = yield* Workload;
+
+    yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
+    yield* logAndContinue(exchangeRatesSyncService.sync());
+    if (yield* workload.hasQueuedWork) {
         return;
     }
 
-    await monobankSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
+    yield* logAndContinue(monobankSyncService.sync());
+    if (yield* workload.hasQueuedWork) {
         return;
     }
 
-    await binanceSyncService.sync().catch(emptyFn);
-};
+    yield* logAndContinue(binanceSyncService.sync());
+});
 
-const initializeAppServices = async (): Promise<void> => {
-    await authService.ensurePinBackgroundAccessibility().catch(emptyFn);
-    await exchangeRatesSyncService.registerBackgroundTask().catch(emptyFn);
-    await accountBalanceIncrementalService.registerBackgroundTask().catch(emptyFn);
-    await transferConsolidationService.registerBackgroundTask().catch(emptyFn);
-    await monobankSyncService.registerBackgroundTask().catch(emptyFn);
-    await binanceSyncService.registerBackgroundTask().catch(emptyFn);
-    await budgetAlertMonitorService.registerBackgroundTask().catch(emptyFn);
-    await widgetSnapshotService.registerBackgroundTask().catch(emptyFn);
+const initializeAppServices = Effect.gen(function* () {
+    yield* Effect.all(
+        [
+            authService.ensurePinBackgroundAccessibility(),
+            exchangeRatesSyncService.registerBackgroundTask(),
+            accountBalanceIncrementalService.registerBackgroundTask(),
+            transferConsolidationService.registerBackgroundTask(),
+            monobankSyncService.registerBackgroundTask(),
+            binanceSyncService.registerBackgroundTask(),
+            budgetAlertMonitorService.registerBackgroundTask(),
+            widgetSnapshotService.registerBackgroundTask()
+        ].map(logAndContinue),
+        { concurrency: 'unbounded', discard: true }
+    );
     widgetSnapshotService.start();
-    await syncWorkloadService.run('startup', syncAppData);
-    await onboardingService.initializeLocale().catch(emptyFn);
-    void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
-};
+    yield* Workload.use(workload => workload.run(syncAppData));
+    yield* logAndContinue(onboardingService.initializeLocale());
+    yield* logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts());
+});
 
-const scheduleAppServicesInitialization = (): (() => void) => {
-    let cancelIdleCallback: () => void = emptyFn;
-
-    const timer = setTimeout(() => {
-        cancelIdleCallback = scheduleIdleCallback(() => {
-            void initializeAppServices().catch(emptyFn);
-        });
-    }, STARTUP_SERVICE_DELAY_MS);
-
-    return () => {
-        clearTimeout(timer);
-        cancelIdleCallback();
-    };
-};
+const scheduleAppServicesInitialization = Effect.sleep(STARTUP_SERVICE_DELAY_MS).pipe(
+    Effect.andThen(waitForIdle),
+    Effect.andThen(Effect.forkDetach(logAndContinue(initializeAppServices)))
+);
 
 export const useAppInitialization = (success: boolean) => {
     useEffect(() => {
@@ -71,11 +72,11 @@ export const useAppInitialization = (success: boolean) => {
             return emptyFn;
         }
 
-        const cancelAppServicesInitialization = scheduleAppServicesInitialization();
+        const appServicesInitialization = appRuntime.runFork(scheduleAppServicesInitialization);
         const splashHideTimer = setTimeout(() => void SplashScreen.hideAsync(), SPLASH_HIDE_DELAY_MS);
 
         return () => {
-            cancelAppServicesInitialization();
+            appRuntime.runFork(Fiber.interrupt(appServicesInitialization));
             clearTimeout(splashHideTimer);
         };
     }, [success]);

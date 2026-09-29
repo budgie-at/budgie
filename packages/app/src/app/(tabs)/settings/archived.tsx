@@ -4,6 +4,7 @@ import { useDeferredValue, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ArchivedAccountCard } from '../../../account/component/archived-account-card/archived-account-card';
 import { ArchivedAccountsEmptyState } from '../../../account/component/archived-accounts-empty-state/archived-accounts-empty-state';
@@ -36,7 +37,7 @@ export default function Archived() {
 
     const handleDeleteAccount = async (id: number) => {
         try {
-            await accountService.deleteById(id);
+            await appRuntime.runPromise(accountService.deleteById(id));
         } catch (error) {
             Toast.show({
                 type: 'error',

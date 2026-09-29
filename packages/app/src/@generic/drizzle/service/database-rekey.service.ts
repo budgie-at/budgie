@@ -1,6 +1,7 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
-import { SettingsRepository } from '@budgie/contracts';
+import { Db, SettingsRepository } from '@budgie/contracts';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
+import * as Effect from 'effect/Effect';
 import { File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
@@ -15,77 +16,101 @@ import { RekeyParamsInterface } from './interface/rekey-params.interface';
 import { RekeyPathsInterface } from './interface/rekey-paths.interface';
 
 class DatabaseRekeyService {
-    async rekey(params: RekeyParamsInterface, onCommit: () => Promise<void>): Promise<void> {
+    readonly rekey = Effect.fn('DatabaseRekeyService.rekey')(function* (
+        this: DatabaseRekeyService,
+        params: RekeyParamsInterface,
+        onCommit: Effect.Effect<void>
+    ) {
         const paths = this.getPaths();
 
-        try {
-            await this.prepare(paths, params);
-            await this.commit(paths, onCommit);
-        } catch (error) {
-            await this.rollback(paths);
-            throw error;
-        } finally {
-            this.deleteDatabaseFiles(paths.tempDatabasePath);
-            this.deleteDatabaseFiles(paths.backupPath);
-        }
-    }
+        yield* this.prepare(paths, params).pipe(
+            Effect.andThen(this.commit(paths, onCommit)),
+            Effect.onError(() =>
+                Effect.sync(() => {
+                    this.deleteFileIfExists(paths.destinationPath);
+                    this.restoreBackupDatabase(paths.backupPath, paths.destinationPath);
+                })
+            ),
+            Effect.ensuring(
+                Effect.sync(() => {
+                    this.deleteDatabaseFiles(paths.tempDatabasePath);
+                    this.deleteDatabaseFiles(paths.backupPath);
+                })
+            )
+        );
+    });
 
-    private async prepare(paths: RekeyPathsInterface, params: RekeyParamsInterface): Promise<void> {
+    private readonly prepare = Effect.fn('DatabaseRekeyService.prepare')(function* (
+        this: DatabaseRekeyService,
+        paths: RekeyPathsInterface,
+        params: RekeyParamsInterface
+    ) {
         this.deleteDatabaseFiles(paths.tempDatabasePath);
         this.deleteDatabaseFiles(paths.backupPath);
-        await this.exportDatabase(paths.tempDatabasePath, params.nextKey);
+        yield* this.exportDatabase(paths.tempDatabasePath, params.nextKey);
 
         if (params.nextSettings) {
-            await this.updateMigratedDatabaseSettings(paths.tempDatabaseName, params.nextKey, params.nextSettings);
+            yield* this.updateMigratedDatabaseSettings(paths.tempDatabaseName, params.nextKey, params.nextSettings);
         }
-    }
+    });
 
-    private async commit(paths: RekeyPathsInterface, onCommit: () => Promise<void>): Promise<void> {
-        await databaseLifecycleService.close();
+    private readonly commit = Effect.fn('DatabaseRekeyService.commit')(function* (
+        this: DatabaseRekeyService,
+        paths: RekeyPathsInterface,
+        onCommit: Effect.Effect<void>
+    ) {
+        yield* databaseLifecycleService.close();
         this.deleteDestinationSidecars(paths.destinationPath);
         this.moveExistingDatabaseToBackup(paths.destinationPath, paths.backupPath);
         new File(paths.tempDatabasePath).move(new File(paths.destinationPath));
-        await onCommit();
+        yield* onCommit;
         this.deleteDatabaseFiles(paths.backupPath);
-    }
+    });
 
-    private async rollback(paths: RekeyPathsInterface): Promise<void> {
-        this.deleteFileIfExists(paths.destinationPath);
-        this.restoreBackupDatabase(paths.backupPath, paths.destinationPath);
-    }
-
-    private async exportDatabase(tempDatabasePath: string, nextKey: string | null): Promise<void> {
-        await expoDb.execAsync('PRAGMA wal_checkpoint(FULL)');
-        await expoDb.execAsync('PRAGMA journal_mode = DELETE');
-        await expoDb.execAsync(
-            `ATTACH DATABASE '${this.escapeSqlString(tempDatabasePath)}' AS migrated KEY '${this.escapeSqlString(nextKey ?? '')}';`
+    private readonly exportDatabase = Effect.fn('DatabaseRekeyService.exportDatabase')(function* (
+        this: DatabaseRekeyService,
+        tempDatabasePath: string,
+        nextKey: string | null
+    ) {
+        yield* Effect.promise(() => expoDb.execAsync('PRAGMA wal_checkpoint(FULL)'));
+        yield* Effect.promise(() => expoDb.execAsync('PRAGMA journal_mode = DELETE'));
+        yield* Effect.promise(() =>
+            expoDb.execAsync(
+                `ATTACH DATABASE '${this.escapeSqlString(tempDatabasePath)}' AS migrated KEY '${this.escapeSqlString(nextKey ?? '')}';`
+            )
         );
+        yield* Effect.promise(() => expoDb.execAsync(`SELECT sqlcipher_export('migrated');`)).pipe(
+            Effect.ensuring(Effect.promise(() => expoDb.execAsync('DETACH DATABASE migrated;')))
+        );
+    });
 
-        try {
-            await expoDb.execAsync(`SELECT sqlcipher_export('migrated');`);
-        } finally {
-            await expoDb.execAsync('DETACH DATABASE migrated;');
-        }
-    }
-
-    private async updateMigratedDatabaseSettings(
+    private readonly updateMigratedDatabaseSettings = Effect.fn('DatabaseRekeyService.updateMigratedDatabaseSettings')(function* (
+        this: DatabaseRekeyService,
         tempDatabaseName: string,
         nextKey: string | null,
         nextSettings: NonNullable<RekeyParamsInterface['nextSettings']>
-    ): Promise<void> {
-        const tempDatabase = await SQLite.openDatabaseAsync(tempDatabaseName, { enableChangeListener: true }, Paths.cache.uri);
+    ) {
+        yield* Effect.acquireUseRelease(
+            Effect.promise(() => SQLite.openDatabaseAsync(tempDatabaseName, { enableChangeListener: true }, Paths.cache.uri)),
+            tempDatabase => this.writeMigratedDatabaseSettings(tempDatabase, nextKey, nextSettings),
+            tempDatabase => Effect.promise(() => tempDatabase.closeAsync())
+        );
+    });
 
-        try {
-            if (isNotEmptyString(nextKey)) {
-                await tempDatabase.execAsync(`PRAGMA key = '${this.escapeSqlString(nextKey)}';`);
-            }
-
-            const tempSettingsRepository = new SettingsRepository(drizzle(tempDatabase, { schema }));
-            await tempSettingsRepository.update(nextSettings);
-        } finally {
-            await tempDatabase.closeAsync();
+    private readonly writeMigratedDatabaseSettings = Effect.fn('DatabaseRekeyService.writeMigratedDatabaseSettings')(function* (
+        this: DatabaseRekeyService,
+        tempDatabase: SQLite.SQLiteDatabase,
+        nextKey: string | null,
+        nextSettings: NonNullable<RekeyParamsInterface['nextSettings']>
+    ) {
+        if (isNotEmptyString(nextKey)) {
+            yield* Effect.promise(() => tempDatabase.execAsync(`PRAGMA key = '${this.escapeSqlString(nextKey)}';`));
         }
-    }
+
+        const tempDrizzleDatabase = drizzle(tempDatabase, { schema });
+
+        yield* new SettingsRepository(tempDrizzleDatabase).update(nextSettings).pipe(Effect.provideService(Db, tempDrizzleDatabase));
+    });
 
     private getPaths(): RekeyPathsInterface {
         const tempDatabaseName = 'auth-migration.db';

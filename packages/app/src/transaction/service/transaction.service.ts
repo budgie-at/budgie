@@ -1,34 +1,31 @@
 /* eslint-disable max-lines -- approved by liaugust: one transaction service; merging main's deposit-safety guards pushed it past 500 */
 import {
     type AccountEntityInterface,
-    type DB,
+    Db,
     ExternalSourceEnum,
     type TransactionCreateInputInterface,
     type TransactionEntityInterface,
     TransactionEntryCreateEntityInterface,
     type TransactionEntryCreateInputInterface,
-    type TransactionEntryEntityInterface,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
     type TransactionUpdateServiceInputInterface,
     TransactionUpdatedByEnum,
-    type TransactionWithEntriesEntityInterface,
-    transactionAsync
+    type TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     accountRepository,
-    db,
     transactionEntryRepository,
     transactionRepository,
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
-import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -50,345 +47,280 @@ import { transactionDepositSafetyService } from './transaction-deposit-safety.se
 import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
 
 class TransactionService {
-    @Log(
-        (inputs, tx, batchSize) =>
-            `enter count=${inputs.length} firstExternalId=${inputs[0]?.externalId ?? ''} hasTx=${String(isDefined(tx))} batchSize=${batchSize}`,
-        (result, inputs, tx, batchSize) =>
-            `done count=${inputs.length} firstExternalId=${inputs[0]?.externalId ?? ''} hasTx=${String(isDefined(tx))} batchSize=${batchSize} firstInsertedId=${result[0]?.id ?? ''}`,
-        (error, inputs, tx, batchSize) =>
-            `throw count=${inputs.length} firstExternalId=${inputs[0]?.externalId ?? ''} hasTx=${String(isDefined(tx))} batchSize=${batchSize} error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async bulkCreate(
-        inputs: TransactionCreateInputInterface[],
-        tx?: DB,
-        batchSize = TRANSACTION_BATCH_SIZE
-    ): Promise<TransactionEntityInterface[]> {
-        if (!isNotEmptyArray(inputs)) {
-            return [];
-        }
+    readonly bulkCreate = Effect.fn('TransactionService.bulkCreate')(
+        function* (this: TransactionService, inputs: TransactionCreateInputInterface[], batchSize: number = TRANSACTION_BATCH_SIZE) {
+            if (!isNotEmptyArray(inputs)) {
+                return [];
+            }
 
-        if (!isDefined(tx)) {
-            return transactionAsync(db, async innerTx => this.bulkCreate(inputs, innerTx, batchSize));
-        }
+            const stampedInputs = stampForDeferredEmbedding(inputs);
 
-        const { stampedInputs } = stampForDeferredEmbedding(inputs, 'bulkCreate');
+            yield* transactionDepositSafetyService.assertNoDepositExpenseInputs(stampedInputs);
 
-        await transactionDepositSafetyService.assertNoDepositExpenseInputs(stampedInputs, tx);
+            const transactions = yield* processInputWithBatches(stampedInputs, batchSize, batch =>
+                transactionBatchCreateService.create(batch)
+            );
 
-        const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
-            transactionBatchCreateService.create(batch, tx)
-        );
+            if (isNotEmptyArray(transactions)) {
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(inputs));
+            }
 
-        if (isNotEmptyArray(transactions)) {
-            await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(inputs), tx);
-        }
+            return transactions;
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-        return transactions;
-    }
+    readonly update = Effect.fn('TransactionService.update')(
+        function* (input: TransactionCreateInputInterface) {
+            yield* transactionDepositSafetyService.assertNoDepositExpenseImportedUpdate(input);
+            yield* importedTransactionEntryUpdateService.update(input.entries, input);
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @Log(
-        input => `enter externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
-        (result, input) =>
-            `done result=${String(result)} externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
-        (error, input) =>
-            `throw externalId=${input.externalId} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')} error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async update(input: TransactionCreateInputInterface): Promise<void> {
-        await transactionAsync(db, async tx => {
-            await transactionDepositSafetyService.assertNoDepositExpenseImportedUpdate(input, tx);
-            await importedTransactionEntryUpdateService.update(input.entries, input, tx);
-        });
-    }
-
-    @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
-    @InvalidateDatabaseLiveQuery()
-    async deleteById(id: number): Promise<void> {
-        await transactionAsync(db, async tx => {
-            const transaction = await transactionRepository.getByIdWithEntries(id, tx);
+    readonly deleteById = Effect.fn('TransactionService.deleteById')(
+        function* (this: TransactionService, id: number) {
+            const transaction = yield* transactionRepository.getByIdWithEntries(id);
             const accountIds = this.getAccountIdsFromTransactions(isDefined(transaction) ? [transaction] : []);
 
             if (isDefined(transaction?.consolidationType)) {
-                await unconsolidateByIdInTransaction(id, tx);
-                await accountBalanceIncrementalService.updateAllBalances(true, tx);
+                yield* unconsolidateByIdInTransaction(id);
+                yield* accountBalanceIncrementalService.updateAllBalances(true);
             } else {
-                await transactionRepository.deleteById(id, tx);
-                await transactionTagsRepository.deleteByTransactionId(id, tx);
-                await transactionEntryRepository.deleteByTransactionId(id, tx);
-                await accountBalanceIncrementalService.updateBalancesByAccountIds(accountIds, tx);
+                yield* transactionRepository.deleteById(id);
+                yield* transactionTagsRepository.deleteByTransactionId(id);
+                yield* transactionEntryRepository.deleteByTransactionId(id);
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds(accountIds);
             }
-        });
-    }
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @Log(id => `enter id=${id}`, 'done', (error, id) => `throw id=${id} error=${getErrorMessage(error)}`)
-    @InvalidateDatabaseLiveQuery()
-    async unconsolidateById(id: number): Promise<void> {
-        await transactionAsync(db, async tx => {
-            await unconsolidateByIdInTransaction(id, tx);
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
-        });
-    }
+    readonly unconsolidateById = Effect.fn('TransactionService.unconsolidateById')(
+        function* (id: number) {
+            yield* unconsolidateByIdInTransaction(id);
+            yield* accountBalanceIncrementalService.updateAllBalances(true);
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @Log(
-        inputs => `enter externalIds=${inputs.map(input => input.externalId).join(',')}`,
-        (result, inputs) =>
-            `done ids=${result.map(transaction => transaction.id).join(',')} externalIds=${inputs.map(input => input.externalId).join(',')}`,
-        (error, inputs) => `throw externalIds=${inputs.map(input => input.externalId).join(',')} error=${getErrorMessage(error)}`
-    )
-    async createSyncedTransfers(inputs: TransactionCreateInputInterface[]): Promise<TransactionEntityInterface[]> {
-        if (inputs.some(input => input.exchangeRate !== 1)) {
-            // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal invariant
-            throw new Error('Synced transfer exchange rate must be equal to 1');
-        }
+    readonly createSyncedTransfers = Effect.fn('TransactionService.createSyncedTransfers')(
+        function* (this: TransactionService, inputs: TransactionCreateInputInterface[]) {
+            if (inputs.some(input => input.exchangeRate !== 1)) {
+                // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal invariant
+                return yield* Effect.die(new Error('Synced transfer exchange rate must be equal to 1'));
+            }
 
-        return await transactionAsync(db, async tx => {
             const transactions: TransactionEntityInterface[] = [];
             for (const input of inputs) {
-                // eslint-disable-next-line no-await-in-loop -- Sequential persists share one chunk transaction
-                transactions.push(await this.persistSyncedTransfer(input, tx));
+                transactions.push(yield* this.persistSyncedTransfer(input));
             }
 
-            await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(inputs), tx);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(inputs));
 
             return transactions;
-        });
-    }
+        },
+        effect => Db.transaction(effect)
+    );
 
-    @Log(
-        externalSource => `enter externalSource=${externalSource}`,
-        (result, externalSource) => `done externalSource=${externalSource} externalIdCount=${result.size}`,
-        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
-    )
-    async findByExternalSource(externalSource: ExternalSourceEnum): Promise<Set<string>> {
-        return new Set([...(await transactionRepository.findExternalIdsByExternalSource(externalSource))]);
-    }
+    readonly findByExternalSource = Effect.fn('TransactionService.findByExternalSource')(function* (externalSource: ExternalSourceEnum) {
+        return new Set([...(yield* transactionRepository.findExternalIdsByExternalSource(externalSource))]);
+    });
 
-    @Log(
-        externalSource => `enter externalSource=${externalSource}`,
-        (result, externalSource) => `done externalSource=${externalSource} idMapSize=${result.size}`,
-        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
-    )
-    async findIdMapByExternalSource(externalSource: ExternalSourceEnum): Promise<Map<string, number>> {
-        return transactionRepository.findIdMapByExternalSource(externalSource);
-    }
+    readonly findIdMapByExternalSource = Effect.fn('TransactionService.findIdMapByExternalSource')(function* (
+        externalSource: ExternalSourceEnum
+    ) {
+        return yield* transactionRepository.findIdMapByExternalSource(externalSource);
+    });
 
-    @Log(
-        (accountId, delta, operatedAt, tx) =>
-            `enter accountId=${accountId} delta=${delta} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))}`,
-        (result, ...[accountId, delta, operatedAt, tx]) =>
-            `done accountId=${accountId} delta=${delta} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} transactionId=${result}`,
-        (error, ...[accountId, delta, operatedAt, tx]) =>
-            `throw accountId=${accountId} delta=${delta} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async createBalanceAdjustment(accountId: number, delta: number, operatedAt: Date, tx: DB): Promise<number> {
+    readonly createBalanceAdjustment = Effect.fn('TransactionService.createBalanceAdjustment')(function* (
+        accountId: number,
+        delta: number,
+        operatedAt: Date
+    ) {
         const isIncome = isPositiveNumber(delta);
         const amount = Math.abs(delta);
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({ accountId, amount, operatedAt, externalSource: null, tx });
+        const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({ accountId, amount, operatedAt, externalSource: null });
 
-        const transaction = await transactionRepository.create(
-            {
-                type: TransactionTypeEnum.ADJUSTMENT,
-                title: '',
-                comment: '',
-                externalId: null,
-                externalSource: null,
-                operatedAt,
-                exchangeRate: valuation.baseExchangeRate ?? 1,
-                fromAccountId: isIncome ? null : accountId,
-                toAccountId: isIncome ? accountId : null,
-                updatedBy: null
-            },
-            tx
-        );
+        const transaction = yield* transactionRepository.create({
+            type: TransactionTypeEnum.ADJUSTMENT,
+            title: '',
+            comment: '',
+            externalId: null,
+            externalSource: null,
+            operatedAt,
+            exchangeRate: valuation.baseExchangeRate ?? 1,
+            fromAccountId: isIncome ? null : accountId,
+            toAccountId: isIncome ? accountId : null,
+            updatedBy: null
+        });
 
-        await transactionEntryRepository.create(
-            {
-                accountId,
-                transactionId: transaction.id,
-                categoryId: null,
-                mccCategoryId: null,
-                amount,
-                type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
-                exchangeRate: valuation.baseExchangeRate ?? 1,
-                baseInstrumentId: valuation.baseInstrumentId,
-                baseExchangeRate: valuation.baseExchangeRate,
-                baseAmount: valuation.baseAmount
-            },
-            tx
-        );
+        yield* transactionEntryRepository.create({
+            accountId,
+            transactionId: transaction.id,
+            categoryId: null,
+            mccCategoryId: null,
+            amount,
+            type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
+            exchangeRate: valuation.baseExchangeRate ?? 1,
+            baseInstrumentId: valuation.baseInstrumentId,
+            baseExchangeRate: valuation.baseExchangeRate,
+            baseAmount: valuation.baseAmount
+        });
 
         return transaction.id;
-    }
+    });
 
-    @Log(
-        (transactionId, ...[externalId, accountId, isIncome]) =>
-            `enter transactionId=${transactionId} externalId=${externalId} accountId=${accountId} isIncome=${String(isIncome)}`,
-        (result, ...[transactionId, externalId, accountId, isIncome]) =>
-            `done result=${String(result)} transactionId=${transactionId} externalId=${externalId} accountId=${accountId} isIncome=${String(isIncome)}`,
-        (error, ...[transactionId, externalId, accountId, isIncome]) =>
-            `throw transactionId=${transactionId} externalId=${externalId} accountId=${accountId} isIncome=${String(isIncome)} error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async moveExternalEntryToAccount(transactionId: number, externalId: string, accountId: number, isIncome: boolean): Promise<boolean> {
-        return transactionAsync(db, async tx => {
-            const existingEntry = await transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId, tx);
+    readonly moveExternalEntryToAccount = Effect.fn('TransactionService.moveExternalEntryToAccount')(
+        function* (transactionId: number, externalId: string, accountId: number, isIncome: boolean) {
+            const existingEntry = yield* transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId);
             if (!isDefined(existingEntry) || existingEntry.accountId === accountId) {
                 return false;
             }
 
-            await transactionEntryRepository.updateById(existingEntry.id, { accountId }, tx);
-            await transactionRepository.updateById(
+            yield* transactionEntryRepository.updateById(existingEntry.id, { accountId });
+            yield* transactionRepository.updateById(
                 existingEntry.originalTransactionId ?? existingEntry.transactionId,
-                isIncome ? { toAccountId: accountId } : { fromAccountId: accountId },
-                tx
+                isIncome ? { toAccountId: accountId } : { fromAccountId: accountId }
             );
-            await accountBalanceIncrementalService.updateBalancesByAccountIds([existingEntry.accountId, accountId], tx);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds([existingEntry.accountId, accountId]);
 
             return true;
-        });
-    }
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @Log(
-        accountId => `enter accountId=${accountId}`,
-        (result, accountId) => `done accountId=${accountId} earliestAt=${result?.toISOString() ?? 'null'}`,
-        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
-    )
-    async getEarliestTransactionTimeByAccountId(accountId: number): Promise<Date | null> {
-        return transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
-    }
+    readonly getEarliestTransactionTimeByAccountId = Effect.fn('TransactionService.getEarliestTransactionTimeByAccountId')(function* (
+        accountId: number
+    ) {
+        return yield* transactionRepository.getTransactionTimeByAccountId(accountId, 'earliest');
+    });
 
-    @Log(
-        externalSource => `enter externalSource=${externalSource}`,
-        (result, externalSource) => `done externalSource=${externalSource} earliestAt=${result?.toISOString() ?? 'null'}`,
-        (error, externalSource) => `throw externalSource=${externalSource} error=${getErrorMessage(error)}`
-    )
-    async getEarliestTransactionTimeByExternalSource(externalSource: ExternalSourceEnum): Promise<Date | null> {
-        return transactionRepository.getEarliestTransactionTimeByExternalSource(externalSource);
-    }
+    readonly getEarliestTransactionTimeByExternalSource = Effect.fn('TransactionService.getEarliestTransactionTimeByExternalSource')(
+        function* (externalSource: ExternalSourceEnum) {
+            return yield* transactionRepository.getEarliestTransactionTimeByExternalSource(externalSource);
+        }
+    );
 
-    @Log(
-        tx => `enter hasTx=${String(isDefined(tx))}`,
-        (_result, tx) => `done hasTx=${String(isDefined(tx))}`,
-        (error, tx) => `throw hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async updateAllBalances(tx?: DB): Promise<void> {
-        await accountBalanceIncrementalService.updateAllBalances(true, tx);
-    }
+    readonly updateAllBalances = Effect.fn('TransactionService.updateAllBalances')(function* () {
+        yield* accountBalanceIncrementalService.updateAllBalances(true);
+    });
 
-    @Log(
-        input => `enter type=${input.type} title="${input.title}"`,
-        (result, input) => `done id=${result.id} type=${input.type} title="${input.title}"`,
-        (error, input) => `throw type=${input.type} title="${input.title}" error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async createInternal(input: TransactionCreateInputInterface): Promise<TransactionEntityInterface> {
-        return transactionAsync(db, async tx => {
-            const [transaction] = await this.bulkCreate([input], tx);
+    readonly createInternal = Effect.fn('TransactionService.createInternal')(
+        function* (this: TransactionService, input: TransactionCreateInputInterface) {
+            const [transaction] = yield* this.bulkCreate([input]);
 
             return transaction;
-        });
-    }
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @Log(
-        (input, tx) =>
-            `enter type=${input.type} fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} tx=${String(isDefined(tx))}`,
-        (result, input, tx) =>
-            `done id=${result.id} fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} tx=${String(isDefined(tx))}`,
-        (error, input, tx) =>
-            `throw fromAccountId=${input.fromAccountId} toAccountId=${input.toAccountId} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery((_input, tx) => !isDefined(tx))
-    async createInternalTransfer(input: TransactionCreateInputInterface, tx?: DB): Promise<TransactionEntityInterface> {
-        if (!isDefined(tx)) {
-            return transactionAsync(db, async innerTx => this.createInternalTransfer(input, innerTx));
-        }
-
-        return this.createInternalTransferInTransaction(input, tx);
-    }
-
-    @Log(
-        (id, input) => `enter id=${id} type=${input.type} title="${input.title}"`,
-        (_result, id, input) => `done id=${id} type=${input.type} title="${input.title}"`,
-        (error, id, input) => `throw id=${id} type=${input.type} title="${input.title}" error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async updateById(id: number, input: TransactionUpdateServiceInputInterface): Promise<TransactionEntityInterface> {
-        return await transactionAsync(db, async tx => {
-            const existingTransaction = await transactionRepository.getByIdWithEntries(id, tx);
-            await transactionDepositSafetyService.assertNoDepositExpenseInputs(
-                [
-                    {
-                        entries: input.entries,
-                        fromAccountId: input.fromAccountId ?? existingTransaction?.fromAccountId ?? null,
-                        type: input.type ?? existingTransaction?.type ?? TransactionTypeEnum.EXPENSE
-                    }
-                ],
-                tx
+    readonly createInternalTransfer = Effect.fn('TransactionService.createInternalTransfer')(
+        function* (this: TransactionService, input: TransactionCreateInputInterface) {
+            const { fromEntry, toEntry } = yield* this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
+            const [fromAccount, toAccount] = yield* Effect.all(
+                [this.findAccountByIdOrFail(fromEntry.accountId), this.findAccountByIdOrFail(toEntry.accountId)],
+                { concurrency: 'unbounded' }
             );
+            const fromAmountInMicroUnits = convertToMicroUnits(fromEntry.amount);
+            const { amount: toAmount, exchangeRate } = yield* this.getTransferAmountAndExchangeRate(
+                input,
+                fromAccount,
+                toAccount,
+                fromAmountInMicroUnits
+            );
+            yield* assertTransferAccountsAreNotDebt([fromAccount, toAccount]);
+
+            const transaction = yield* transactionRepository.create({ ...input, exchangeRate, externalId: null, externalSource: null });
+
+            yield* this.createTransferEntries(transaction, input, { fromEntry, toEntry, fromAmountInMicroUnits, toAmount });
+            yield* this.finalizeInternalTransfer(input, transaction.id);
+
+            return transaction;
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
+
+    readonly updateById = Effect.fn('TransactionService.updateById')(
+        function* (this: TransactionService, id: number, input: TransactionUpdateServiceInputInterface) {
+            const existingTransaction = yield* transactionRepository.getByIdWithEntries(id);
+            yield* transactionDepositSafetyService.assertNoDepositExpenseInputs([
+                {
+                    entries: input.entries,
+                    fromAccountId: input.fromAccountId ?? existingTransaction?.fromAccountId ?? null,
+                    type: input.type ?? existingTransaction?.type ?? TransactionTypeEnum.EXPENSE
+                }
+            ]);
 
             const isConsolidated = isDefined(existingTransaction?.consolidationType);
-            const transaction = await transactionRepository.updateById(
-                id,
-                {
-                    title: input.title,
-                    comment: input.comment,
-                    type: input.type,
-                    operatedAt: input.operatedAt,
-                    fromAccountId: input.fromAccountId,
-                    toAccountId: input.toAccountId,
-                    exchangeRate: input.exchangeRate,
-                    updatedBy: TransactionUpdatedByEnum.USER
-                },
-                tx
-            );
+            const transaction = yield* transactionRepository.updateById(id, {
+                title: input.title,
+                comment: input.comment,
+                type: input.type,
+                operatedAt: input.operatedAt,
+                fromAccountId: input.fromAccountId,
+                toAccountId: input.toAccountId,
+                exchangeRate: input.exchangeRate,
+                updatedBy: TransactionUpdatedByEnum.USER
+            });
 
-            await upsertTransactionEntriesAndTags({ transactionId: id, input, operatedAt: transaction.operatedAt, isConsolidated }, tx);
-            await transactionDebtSettlementService.resyncInTransaction(id, tx);
+            yield* upsertTransactionEntriesAndTags({ transactionId: id, input, operatedAt: transaction.operatedAt, isConsolidated });
+            yield* transactionDebtSettlementService.resyncInTransaction(id);
 
-            await accountBalanceIncrementalService.updateBalancesByAccountIds(
-                [
-                    ...this.getAccountIdsFromTransactions(isDefined(existingTransaction) ? [existingTransaction] : []),
-                    ...this.getAccountIdsFromInputs([input])
-                ],
-                tx
-            );
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds([
+                ...this.getAccountIdsFromTransactions(isDefined(existingTransaction) ? [existingTransaction] : []),
+                ...this.getAccountIdsFromInputs([input])
+            ]);
 
             return transaction;
-        });
-    }
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    private async persistSyncedTransfer(input: TransactionCreateInputInterface, tx: DB): Promise<TransactionEntityInterface> {
-        const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
-        const transaction = await transactionRepository.create({ ...input, exchangeRate: 1 }, tx);
-        await this.persistPrimaryTransfer(
+    private readonly persistSyncedTransfer = Effect.fnUntraced(function* (
+        this: TransactionService,
+        input: TransactionCreateInputInterface
+    ) {
+        const { fromEntry, toEntry } = yield* this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
+        const transaction = yield* transactionRepository.create({ ...input, exchangeRate: 1 });
+        yield* this.persistPrimaryTransfer(
             transaction,
             input,
             fromEntry,
             toEntry,
             convertToMicroUnits(fromEntry.amount),
-            convertToMicroUnits(toEntry.amount),
-            tx
+            convertToMicroUnits(toEntry.amount)
         );
 
         return transaction;
-    }
+    });
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Transfer persistence keeps positional arguments instead of a single-consumer param-bag interface
-    private async persistPrimaryTransfer(
+    private readonly persistPrimaryTransfer = Effect.fnUntraced(function* (
+        this: TransactionService,
         transaction: TransactionEntityInterface,
         input: TransactionCreateInputInterface,
         fromEntry: TransactionEntryCreateInputInterface,
         toEntry: TransactionEntryCreateInputInterface,
         fromAmountInMicroUnits: number,
-        toAmountInMicroUnits: number,
-        tx: DB
-    ): Promise<void> {
-        const additionalEntryValuations = await entryBaseValuationService.valueEntries(input.entries, input.operatedAt, tx);
-        const [fromValuation, toValuation] = await Promise.all([
-            this.valueTransferLeg(fromEntry.accountId, fromAmountInMicroUnits, input, tx),
-            this.valueTransferLeg(toEntry.accountId, toAmountInMicroUnits, input, tx)
-        ]);
+        toAmountInMicroUnits: number
+    ) {
+        const additionalEntryValuations = yield* entryBaseValuationService.valueEntries(input.entries, input.operatedAt);
+        const [fromValuation, toValuation] = yield* Effect.all(
+            [
+                this.valueTransferLeg(fromEntry.accountId, fromAmountInMicroUnits, input),
+                this.valueTransferLeg(toEntry.accountId, toAmountInMicroUnits, input)
+            ],
+            { concurrency: 'unbounded' }
+        );
 
         const primaryEntries = [
             this.buildPrimaryTransferEntry(
@@ -401,126 +333,65 @@ class TransactionService {
             this.buildPrimaryTransferEntry(transaction.id, toEntry, TransactionEntryTypeEnum.DEBIT, toAmountInMicroUnits, toValuation)
         ];
 
-        await this.persistTransfer(transaction, input, primaryEntries, fromEntry, toEntry, additionalEntryValuations, tx);
-    }
+        yield* this.persistTransfer(transaction, input, primaryEntries, fromEntry, toEntry, additionalEntryValuations);
+    });
 
-    private async valueTransferLeg(
+    private readonly valueTransferLeg = Effect.fnUntraced(function* (
         accountId: number,
         amount: number,
-        input: TransactionCreateInputInterface,
-        tx: DB
-    ): Promise<EntryBaseValuationInterface> {
-        return entryBaseValuationService.valueMicroUnitEntry({
+        input: TransactionCreateInputInterface
+    ) {
+        return yield* entryBaseValuationService.valueMicroUnitEntry({
             accountId,
             amount,
             operatedAt: input.operatedAt,
-            externalSource: input.externalSource,
-            tx
+            externalSource: input.externalSource
         });
-    }
-
-    // eslint-disable-next-line @typescript-eslint/max-params -- Entry construction keeps positional arguments instead of a single-consumer param-bag interface
-    private buildPrimaryTransferEntry(
-        transactionId: number,
-        entry: TransactionEntryCreateInputInterface,
-        type: TransactionEntryTypeEnum,
-        amount: number,
-        valuation: EntryBaseValuationInterface
-    ): TransactionEntryCreateEntityInterface {
-        return {
-            transactionId,
-            accountId: entry.accountId,
-            categoryId: entry.categoryId,
-            mccCategoryId: entry.mccCategoryId,
-            type,
-            amount,
-            externalId: entry.externalId ?? null,
-            exchangeRate: entry.exchangeRate ?? 1,
-            baseInstrumentId: valuation.baseInstrumentId,
-            baseExchangeRate: valuation.baseExchangeRate,
-            baseAmount: valuation.baseAmount,
-            toIban: entry.toIban ?? null
-        };
-    }
+    });
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Transfer persistence keeps positional arguments instead of a single-consumer param-bag interface
-    private async persistTransfer(
+    private readonly persistTransfer = Effect.fnUntraced(function* (
         transaction: TransactionEntityInterface,
         input: TransactionCreateInputInterface,
         primaryEntries: readonly TransactionEntryCreateEntityInterface[],
         fromEntry: TransactionEntryCreateInputInterface,
         toEntry: TransactionEntryCreateInputInterface,
-        additionalEntryValuations: Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>,
-        tx: DB
-    ): Promise<void> {
-        await transactionEntryRepository.bulkCreate(
-            [
-                ...primaryEntries,
-                ...buildAdditionalTransferEntries({
-                    entries: input.entries,
-                    fromEntry,
-                    toEntry,
-                    transactionId: transaction.id,
-                    valuations: additionalEntryValuations
-                })
-            ],
-            tx
-        );
+        additionalEntryValuations: Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>
+    ) {
+        yield* transactionEntryRepository.bulkCreate([
+            ...primaryEntries,
+            ...buildAdditionalTransferEntries({
+                entries: input.entries,
+                fromEntry,
+                toEntry,
+                transactionId: transaction.id,
+                valuations: additionalEntryValuations
+            })
+        ]);
 
         if (isNotEmptyArray(input.tagIds)) {
-            await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id), tx);
+            yield* transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transaction.id));
         }
-    }
+    });
 
-    private getAccountIdsFromInputs(inputs: readonly Pick<TransactionCreateInputInterface, 'entries'>[]): number[] {
-        return [...new Set(inputs.flatMap(input => input.entries.map(entry => entry.accountId)))];
-    }
-
-    private getAccountIdsFromTransactions(transactions: readonly TransactionWithEntriesEntityInterface[]): number[] {
-        return [...new Set(transactions.flatMap(transaction => transaction.entries.map(entry => entry.accountId)))];
-    }
-
-    private async createInternalTransferInTransaction(input: TransactionCreateInputInterface, tx: DB): Promise<TransactionEntityInterface> {
-        const { fromEntry, toEntry } = this.findPrimaryEntries(input.entries, input.fromAccountId, input.toAccountId);
-        const [fromAccount, toAccount] = await Promise.all([
-            this.findAccountByIdOrFail(fromEntry.accountId, tx),
-            this.findAccountByIdOrFail(toEntry.accountId, tx)
-        ]);
-        const fromAmountInMicroUnits = convertToMicroUnits(fromEntry.amount);
-        const { amount: toAmount, exchangeRate } = await this.getTransferAmountAndExchangeRate(
-            input,
-            fromAccount,
-            toAccount,
-            fromAmountInMicroUnits
-        );
-        assertTransferAccountsAreNotDebt([fromAccount, toAccount]);
-
-        const transaction = await transactionRepository.create({ ...input, exchangeRate, externalId: null, externalSource: null }, tx);
-
-        await this.createTransferEntries(transaction, input, { fromEntry, toEntry, fromAmountInMicroUnits, toAmount }, tx);
-        await this.finalizeInternalTransfer(input, transaction.id, tx);
-
-        return transaction;
-    }
-
-    private async findAccountByIdOrFail(id: number, tx: DB): Promise<AccountEntityInterface> {
-        const account = await accountRepository.findById(id, tx);
+    private readonly findAccountByIdOrFail = Effect.fnUntraced(function* (id: number) {
+        const account = yield* Db.query(db => accountRepository.findById(id, db));
 
         if (!isDefined(account)) {
-            throw new Error(i18n._({ id: 'transaction.accountNotFound', message: 'Account not found' }));
+            return yield* Effect.die(new Error(i18n._({ id: 'transaction.accountNotFound', message: 'Account not found' })));
         }
 
         return account;
-    }
+    });
 
-    private async getTransferAmountAndExchangeRate(
+    private readonly getTransferAmountAndExchangeRate = Effect.fnUntraced(function* (
         input: TransactionCreateInputInterface,
         fromAccount: AccountEntityInterface,
         toAccount: AccountEntityInterface,
         fromAmountInMicroUnits: number
     ) {
         const hasCustomExchangeRate = isPositiveNumber(input.exchangeRate) && input.exchangeRate !== 1;
-        const { amount, exchangeRate } = await exchangeRatesService.convert(
+        const { amount, exchangeRate } = yield* exchangeRatesService.convert(
             fromAccount.instrumentId,
             toAccount.instrumentId,
             fromAmountInMicroUnits
@@ -530,9 +401,9 @@ class TransactionService {
             amount: hasCustomExchangeRate ? Math.round(fromAmountInMicroUnits / input.exchangeRate) : amount,
             exchangeRate: hasCustomExchangeRate ? input.exchangeRate : exchangeRate
         };
-    }
+    });
 
-    private async createTransferEntries(
+    private readonly createTransferEntries = Effect.fnUntraced(function* (
         transaction: TransactionEntityInterface,
         input: TransactionCreateInputInterface,
         primaryEntryInput: {
@@ -540,26 +411,26 @@ class TransactionService {
             readonly toEntry: TransactionEntryCreateInputInterface;
             readonly fromAmountInMicroUnits: number;
             readonly toAmount: number;
-        },
-        tx: DB
-    ): Promise<TransactionEntryEntityInterface[]> {
-        const additionalEntryValuations = await entryBaseValuationService.valueEntries(input.entries, input.operatedAt, tx);
-        const [fromValuation, toValuation] = await Promise.all([
-            entryBaseValuationService.valueMicroUnitEntry({
-                accountId: primaryEntryInput.fromEntry.accountId,
-                amount: primaryEntryInput.fromAmountInMicroUnits,
-                operatedAt: input.operatedAt,
-                externalSource: input.externalSource,
-                tx
-            }),
-            entryBaseValuationService.valueMicroUnitEntry({
-                accountId: primaryEntryInput.toEntry.accountId,
-                amount: primaryEntryInput.toAmount,
-                operatedAt: input.operatedAt,
-                externalSource: input.externalSource,
-                tx
-            })
-        ]);
+        }
+    ) {
+        const additionalEntryValuations = yield* entryBaseValuationService.valueEntries(input.entries, input.operatedAt);
+        const [fromValuation, toValuation] = yield* Effect.all(
+            [
+                entryBaseValuationService.valueMicroUnitEntry({
+                    accountId: primaryEntryInput.fromEntry.accountId,
+                    amount: primaryEntryInput.fromAmountInMicroUnits,
+                    operatedAt: input.operatedAt,
+                    externalSource: input.externalSource
+                }),
+                entryBaseValuationService.valueMicroUnitEntry({
+                    accountId: primaryEntryInput.toEntry.accountId,
+                    amount: primaryEntryInput.toAmount,
+                    operatedAt: input.operatedAt,
+                    externalSource: input.externalSource
+                })
+            ],
+            { concurrency: 'unbounded' }
+        );
         const primaryEntries = [
             {
                 entry: primaryEntryInput.fromEntry,
@@ -589,30 +460,35 @@ class TransactionService {
             toIban: entry.toIban ?? null
         }));
 
-        return transactionEntryRepository.bulkCreate(
-            [
-                ...primaryEntries,
-                ...buildAdditionalTransferEntries({
-                    entries: input.entries,
-                    fromEntry: primaryEntryInput.fromEntry,
-                    toEntry: primaryEntryInput.toEntry,
-                    transactionId: transaction.id,
-                    valuations: additionalEntryValuations
-                })
-            ],
-            tx
-        );
-    }
+        return yield* transactionEntryRepository.bulkCreate([
+            ...primaryEntries,
+            ...buildAdditionalTransferEntries({
+                entries: input.entries,
+                fromEntry: primaryEntryInput.fromEntry,
+                toEntry: primaryEntryInput.toEntry,
+                transactionId: transaction.id,
+                valuations: additionalEntryValuations
+            })
+        ]);
+    });
 
-    private async finalizeInternalTransfer(input: TransactionCreateInputInterface, transactionId: number, tx: DB): Promise<void> {
+    private readonly finalizeInternalTransfer = Effect.fnUntraced(function* (
+        this: TransactionService,
+        input: TransactionCreateInputInterface,
+        transactionId: number
+    ) {
         if (isNotEmptyArray(input.tagIds)) {
-            await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId), tx);
+            yield* transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId));
         }
 
-        await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs([input]), tx);
-    }
+        yield* accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs([input]));
+    });
 
-    private findPrimaryEntries(entries: TransactionEntryCreateInputInterface[], fromAccountId: number | null, toAccountId: number | null) {
+    private readonly findPrimaryEntries = Effect.fnUntraced(function* (
+        entries: TransactionEntryCreateInputInterface[],
+        fromAccountId: number | null,
+        toAccountId: number | null
+    ) {
         const fromEntry = entries.find(
             ({ accountId, kind, type }) =>
                 accountId === fromAccountId && type === TransactionEntryTypeEnum.CREDIT && kind === TransactionEntryKindEnum.PRIMARY
@@ -624,10 +500,43 @@ class TransactionService {
 
         if (!isDefined(fromEntry) || !isDefined(toEntry)) {
             // eslint-disable-next-line lingui/no-unlocalized-strings -- Internal error
-            throw new Error('Transfer must have exactly two entries');
+            return yield* Effect.die(new Error('Transfer must have exactly two entries'));
         }
 
         return { fromEntry, toEntry };
+    });
+
+    // eslint-disable-next-line @typescript-eslint/max-params -- Entry construction keeps positional arguments instead of a single-consumer param-bag interface
+    private buildPrimaryTransferEntry(
+        transactionId: number,
+        entry: TransactionEntryCreateInputInterface,
+        type: TransactionEntryTypeEnum,
+        amount: number,
+        valuation: EntryBaseValuationInterface
+    ): TransactionEntryCreateEntityInterface {
+        return {
+            transactionId,
+            accountId: entry.accountId,
+            categoryId: entry.categoryId,
+            mccCategoryId: entry.mccCategoryId,
+            type,
+            amount,
+            externalId: entry.externalId ?? null,
+            exchangeRate: entry.exchangeRate ?? 1,
+            baseInstrumentId: valuation.baseInstrumentId,
+            baseExchangeRate: valuation.baseExchangeRate,
+            baseAmount: valuation.baseAmount,
+            toIban: entry.toIban ?? null
+        };
+    }
+
+    private getAccountIdsFromInputs(inputs: readonly Pick<TransactionCreateInputInterface, 'entries'>[]): number[] {
+        return [...new Set(inputs.flatMap(input => input.entries.map(entry => entry.accountId)))];
+    }
+
+    private getAccountIdsFromTransactions(transactions: readonly TransactionWithEntriesEntityInterface[]): number[] {
+        return [...new Set(transactions.flatMap(transaction => transaction.entries.map(entry => entry.accountId)))];
     }
 }
+
 export const transactionService = new TransactionService();

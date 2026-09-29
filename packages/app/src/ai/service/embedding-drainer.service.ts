@@ -1,134 +1,161 @@
-import { transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { AiInvokeError, buildCommentContext, buildMerchantContext, serializeEmbedding } from '@budgie/ai';
+import { Db } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+import * as Atom from 'effect/reactivity/Atom';
 
-import { emptyFn, getErrorMessage } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
-import { db, transactionRepository } from '../../@generic/drizzle/db/db';
+import { commentEmbeddingRepository, merchantEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
+import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
+import { EmbeddingDrainerSourceInterface } from '../interface/embedding-drainer-source.interface';
+import { embeddingProgressStore } from '../store/embedding-progress.store';
 
-import { SnapshotStore } from './base-subsystem.service';
-import { commentEmbeddingDrainerService } from './comment-embedding-drainer.service';
-import { merchantEmbeddingDrainerService } from './merchant-embedding-drainer.service';
+import { DrainerService } from './drainer.service';
+import { embeddingService } from './embedding.service';
 
-class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
-    private static readonly EMPTY_SNAPSHOT: DrainerSnapshotInterface = {
-        state: DrainerStateEnum.IDLE,
-        pending: 0,
-        lastDurationMs: 0,
-        errorMessage: null
-    };
+import type { DbError, EmbeddingPendingContextBaseInterface } from '@budgie/contracts';
 
-    private readonly merchant = merchantEmbeddingDrainerService;
-    private readonly comment = commentEmbeddingDrainerService;
-    private startedSubs = false;
-    private unsubscribeMerchant: (() => void) | null = null;
-    private unsubscribeComment: (() => void) | null = null;
-    private residueCleared = false;
+class EmbeddingDrainerService {
+    private static readonly RELAXED_INTERVAL_MS = 2500;
+    private static readonly RELAXED_BATCH_SIZE = 5;
+    private static readonly BOOST_BATCH_SIZE = 15;
+    private static readonly YIELD_EVERY_ROWS = 3;
 
-    constructor() {
-        super(EmbeddingDrainerService.EMPTY_SNAPSHOT);
-    }
+    readonly merchant = this.createDrainer({
+        fetchPending: limit => merchantEmbeddingRepository.findPendingMerchantContexts(limit),
+        countPending: merchantEmbeddingRepository.countPendingMerchantContexts(),
+        buildPrompt: context =>
+            buildMerchantContext({ title: context.title, mccDescription: context.mccDescription, categoryTitle: context.categoryTitleEn }),
+        upsert: (context, embedding, dimensions) =>
+            merchantEmbeddingRepository.upsert({
+                title: context.title,
+                mccDescription: context.mccDescription,
+                categoryId: context.categoryId,
+                comment: context.comment,
+                embedding,
+                dimensions
+            }),
+        replaceTags: (embeddingId, tagIds) => merchantEmbeddingRepository.replaceTags(embeddingId, tagIds)
+    });
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    start(): void {
-        if (this.startedSubs) {
-            return;
-        }
-        this.startedSubs = true;
-        this.unsubscribeMerchant = this.merchant.subscribe(() => {
-            this.recompute();
-        });
-        this.unsubscribeComment = this.comment.subscribe(() => {
-            this.recompute();
-        });
-        this.merchant.start();
-        this.comment.start();
-        void this.clearResidueOnce().catch(emptyFn);
-    }
+    readonly comment = this.createDrainer({
+        fetchPending: limit => commentEmbeddingRepository.findPendingCommentContexts(limit),
+        countPending: commentEmbeddingRepository.countPendingCommentContexts(),
+        buildPrompt: context => buildCommentContext({ comment: context.comment, categoryTitle: context.categoryTitleEn }),
+        upsert: (context, embedding, dimensions) =>
+            commentEmbeddingRepository.upsert({ comment: context.comment, categoryId: context.categoryId, embedding, dimensions }),
+        replaceTags: (embeddingId, tagIds) => commentEmbeddingRepository.replaceTags(embeddingId, tagIds)
+    });
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    stop(): void {
-        if (!this.startedSubs) {
-            return;
-        }
-        this.merchant.stop();
-        this.comment.stop();
-        this.unsubscribeMerchant?.();
-        this.unsubscribeComment?.();
-        this.unsubscribeMerchant = null;
-        this.unsubscribeComment = null;
-        this.startedSubs = false;
-    }
+    readonly drainers = [this.merchant, this.comment];
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async boost(): Promise<void> {
-        await this.boostMerchant();
-        if (this.comment.getSnapshot().state === DrainerStateEnum.PAUSED) {
-            return;
-        }
-        await this.boostComment();
-    }
+    readonly snapshot = Atom.make((get): DrainerSnapshotInterface => {
+        const merchant = get(this.merchant.snapshot);
+        const comment = get(this.comment.snapshot);
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    cancelBoost(): void {
-        this.merchant.cancelBoost();
-        this.comment.cancelBoost();
-    }
+        return {
+            state: EmbeddingDrainerService.deriveState(merchant.state, comment.state),
+            pending: merchant.pending + comment.pending,
+            errorMessage: merchant.errorMessage ?? comment.errorMessage
+        };
+    });
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async pause(): Promise<void> {
-        await Promise.all([this.merchant.pause(), this.comment.pause()]);
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async whenIdle(): Promise<void> {
-        await Promise.all([this.merchant.whenIdle(), this.comment.whenIdle()]);
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    resume(): void {
-        this.merchant.resume();
-        this.comment.resume();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    retry(): void {
-        this.merchant.retry();
-        this.comment.retry();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async boostMerchant(): Promise<void> {
-        await this.merchant.boost();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async boostComment(): Promise<void> {
-        await this.comment.boost();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async clearResidueOnce(): Promise<void> {
+    readonly start = Effect.fn('EmbeddingDrainerService.start')(function* (this: EmbeddingDrainerService) {
+        yield* this.merchant.start();
+        yield* this.comment.start();
         if (this.residueCleared) {
             return;
         }
         this.residueCleared = true;
-        await transactionAsync(db, async tx => {
-            await transactionRepository.clearNonIndexableFlags(tx);
-            await transactionRepository.clearAlreadyIndexedMerchantFlags(tx);
-            await transactionRepository.clearAlreadyIndexedCommentFlags(tx);
+        yield* Effect.forkDetach(
+            Effect.ignore(
+                Db.transaction(
+                    Effect.all([
+                        transactionRepository.clearNonIndexableFlags(),
+                        transactionRepository.clearAlreadyIndexedMerchantFlags(),
+                        transactionRepository.clearAlreadyIndexedCommentFlags()
+                    ])
+                )
+            )
+        );
+    });
+
+    readonly boost = Effect.fn('EmbeddingDrainerService.boost')(function* (this: EmbeddingDrainerService) {
+        yield* this.merchant.boost();
+        if (aiAtomRegistry.get(this.comment.snapshot).state !== DrainerStateEnum.PAUSED) {
+            yield* this.comment.boost();
+        }
+    });
+
+    readonly pause = Effect.fn('EmbeddingDrainerService.pause')(function* (this: EmbeddingDrainerService) {
+        yield* Effect.forEach(this.drainers, drainer => drainer.pause(), { concurrency: 'unbounded', discard: true });
+    });
+
+    readonly resume = Effect.fn('EmbeddingDrainerService.resume')(function* (this: EmbeddingDrainerService) {
+        yield* Effect.forEach(this.drainers, drainer => drainer.resume(), { discard: true });
+    });
+
+    readonly retry = Effect.fn('EmbeddingDrainerService.retry')(function* (this: EmbeddingDrainerService) {
+        yield* Effect.forEach(this.drainers, drainer => drainer.retry(), { discard: true });
+    });
+
+    private residueCleared = false;
+
+    cancelBoost(): void {
+        this.drainers.forEach(drainer => {
+            drainer.cancelBoost();
         });
     }
 
-    private recompute(): void {
-        const merchantSnap = this.merchant.getSnapshot();
-        const commentSnap = this.comment.getSnapshot();
-        this.setSnapshot({
-            state: EmbeddingDrainerService.deriveState(merchantSnap.state, commentSnap.state),
-            pending: merchantSnap.pending + commentSnap.pending,
-            lastDurationMs: Math.max(merchantSnap.lastDurationMs, commentSnap.lastDurationMs),
-            errorMessage: merchantSnap.errorMessage ?? commentSnap.errorMessage
+    private createDrainer<TContext extends EmbeddingPendingContextBaseInterface>(
+        source: EmbeddingDrainerSourceInterface<TContext>
+    ): DrainerService<DbError | AiInvokeError> {
+        const pendingPersists: (readonly [number, TContext])[] = [];
+        const embed = (context: TContext): Effect.Effect<void, DbError | AiInvokeError, Db> =>
+            Effect.gen(function* () {
+                const embeddingId = isDefined(context.existingEmbeddingId)
+                    ? context.existingEmbeddingId
+                    : yield* Effect.tryPromise({
+                          try: () => embeddingService.embed(source.buildPrompt(context)),
+                          catch: cause => new AiInvokeError({ cause })
+                      }).pipe(
+                          Effect.flatMap(rawEmbedding =>
+                              isNotEmptyArray(rawEmbedding)
+                                  ? source.upsert(context, serializeEmbedding(new Float32Array(rawEmbedding)), rawEmbedding.length)
+                                  : Effect.succeed(null)
+                          )
+                      );
+                if (isDefined(embeddingId)) {
+                    pendingPersists.push([embeddingId, context]);
+                }
+            });
+
+        return new DrainerService({
+            subsystem: AiSubsystemNameEnum.EMBEDDING,
+            relaxedIntervalMs: EmbeddingDrainerService.RELAXED_INTERVAL_MS,
+            relaxedBatchSize: EmbeddingDrainerService.RELAXED_BATCH_SIZE,
+            boostBatchSize: EmbeddingDrainerService.BOOST_BATCH_SIZE,
+            yieldEveryRows: EmbeddingDrainerService.YIELD_EVERY_ROWS,
+            fetchPending: limit => Effect.map(source.fetchPending(limit), contexts => contexts.map(embed)),
+            countPending: source.countPending,
+            afterBatch: Effect.suspend(() => {
+                const batch = pendingPersists.splice(0);
+
+                return isEmptyArray(batch)
+                    ? Effect.void
+                    : Db.transaction(
+                          Effect.forEach(batch, ([embeddingId, context]) => source.replaceTags(embeddingId, context.tagIds), {
+                              discard: true
+                          }).pipe(
+                              Effect.andThen(
+                                  transactionRepository.clearNeedsEmbedding(batch.flatMap(([, context]) => context.transactionIds))
+                              )
+                          )
+                      ).pipe(Effect.andThen(embeddingProgressStore.refresh()));
+            })
         });
     }
 
@@ -138,9 +165,6 @@ class EmbeddingDrainerService extends SnapshotStore<DrainerSnapshotInterface> {
         }
         if (merchantState === DrainerStateEnum.BOOSTING || commentState === DrainerStateEnum.BOOSTING) {
             return DrainerStateEnum.BOOSTING;
-        }
-        if (merchantState === DrainerStateEnum.DRAINING || commentState === DrainerStateEnum.DRAINING) {
-            return DrainerStateEnum.DRAINING;
         }
         if (merchantState === DrainerStateEnum.PAUSED && commentState === DrainerStateEnum.PAUSED) {
             return DrainerStateEnum.PAUSED;

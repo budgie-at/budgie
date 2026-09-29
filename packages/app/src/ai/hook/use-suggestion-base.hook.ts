@@ -1,23 +1,23 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
-import { getLogger } from '@budgie/logger';
+import { Db } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import * as Effect from 'effect/Effect';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
-import { emptyFn, getErrorMessage } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-completeness-threshold.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { aiModelResidencyService } from '../service/ai-model-residency.service';
-
-import { useEmbeddingProgressSnapshot } from './use-embedding-progress-snapshot.hook';
-
-const logger = getLogger('useSuggestionBase');
+import { embeddingProgressStore } from '../store/embedding-progress.store';
 
 interface UseSuggestionBaseParams<T> {
     readonly enabled: boolean;
     readonly readyChecks: readonly boolean[];
     readonly requestKeyParts: readonly unknown[];
-    readonly fetchSuggestions: () => Promise<T[]>;
+    readonly fetchSuggestions: () => Effect.Effect<T[], unknown, Db>;
 }
 
 interface UseSuggestionBaseReturn<T> extends UseSuggestionReturnInterface<T> {
@@ -35,7 +35,6 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const { enabled, readyChecks, requestKeyParts, fetchSuggestions } = params;
     const requestKey = JSON.stringify(requestKeyParts);
     const isReady = enabled && readyChecks.every(isCheckReady => isCheckReady);
-    const firstUnreadyCheckIndex = readyChecks.findIndex(isCheckReady => !isCheckReady);
 
     const [result, setResult] = useState<SuggestionResultInterface<T>>({
         key: null,
@@ -45,7 +44,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     const [refreshVersion, setRefreshVersion] = useState(0);
     const fetchSuggestionsRef = useRef(fetchSuggestions);
     const navigation = useNavigation();
-    const { percent: progress } = useEmbeddingProgressSnapshot();
+    const progress = useAtomValue(embeddingProgressStore.snapshot, snapshot => snapshot.percent);
     const isEmbeddingIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
 
     useEffect(() => {
@@ -57,10 +56,10 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
             return emptyFn;
         }
 
-        void aiModelResidencyService.acquire(AiSubsystemNameEnum.EMBEDDING).catch(emptyFn);
+        appRuntime.runFork(aiModelResidencyService.acquire(AiSubsystemNameEnum.EMBEDDING));
 
         return () => {
-            aiModelResidencyService.release(AiSubsystemNameEnum.EMBEDDING);
+            appRuntime.runFork(aiModelResidencyService.release(AiSubsystemNameEnum.EMBEDDING));
         };
     }, [enabled]);
 
@@ -73,46 +72,30 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     }, [navigation]);
 
     useEffect(() => {
-        logger.log('hook:suggestion:base:effect:fire', { isReady, isEmbeddingIncomplete, refreshVersion, requestKey });
         if (!isReady) {
-            logger.log('hook:suggestion:base:effect:skip:not-ready', {
-                firstUnreadyCheckIndex,
-                isEmbeddingIncomplete
-            });
-
             return emptyFn;
         }
 
-        let cancelled = false;
-
-        const suggest = async (): Promise<void> => {
-            logger.log('hook:suggestion:base:suggest:loading', { requestKey });
-            setResult({ key: requestKey, status: 'loading', suggestions: [] });
-
-            try {
-                const results = await fetchSuggestionsRef.current();
-
-                if (!cancelled) {
-                    logger.log('hook:suggestion:base:suggest:success', { requestKey, resultCount: results.length });
-                    setResult({ key: requestKey, status: 'success', suggestions: results });
-                }
-            } catch (error: unknown) {
-                if (!cancelled) {
-                    logger.error('hook:suggestion:base:suggest:error', {
-                        requestKey,
-                        message: getErrorMessage(error)
-                    });
-                    setResult({ key: requestKey, status: 'error', suggestions: [] });
-                }
-            }
-        };
-
-        void suggest();
+        const fiber = appRuntime.runFork(
+            Effect.sync(() => {
+                setResult({ key: requestKey, status: 'loading', suggestions: [] });
+            }).pipe(
+                Effect.andThen(fetchSuggestionsRef.current()),
+                Effect.match({
+                    onSuccess: suggestions => {
+                        setResult({ key: requestKey, status: 'success', suggestions });
+                    },
+                    onFailure: () => {
+                        setResult({ key: requestKey, status: 'error', suggestions: [] });
+                    }
+                })
+            )
+        );
 
         return () => {
-            cancelled = true;
+            fiber.interruptUnsafe();
         };
-    }, [firstUnreadyCheckIndex, isReady, requestKey, refreshVersion, isEmbeddingIncomplete]);
+    }, [isReady, requestKey, refreshVersion, isEmbeddingIncomplete]);
 
     const currentResult: SuggestionResultInterface<T> =
         result.key === requestKey ? result : { key: requestKey, status: 'idle', suggestions: [] };

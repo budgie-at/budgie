@@ -15,6 +15,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { ruleApplicationDrainerService } from '../service/rule-application-drainer.service';
@@ -114,10 +115,12 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
             return false;
         }
 
-        const count = await ruleMatcherService.countMatchingTransactions({
-            conditions: values.conditions,
-            conditionMatchType: values.conditionMatchType
-        });
+        const count = await appRuntime.runPromise(
+            ruleMatcherService.countMatchingTransactions({
+                conditions: values.conditions,
+                conditionMatchType: values.conditionMatchType
+            })
+        );
 
         if (!isPositiveNumber(count)) {
             return false;
@@ -141,7 +144,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
             return;
         }
 
-        ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId, showRuleApplicationToast);
+        appRuntime.runFork(ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId, showRuleApplicationToast));
     };
 
     const handleSubmit = async (values: RuleCreateInputInterface) => {
@@ -149,10 +152,10 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
             const shouldApply = await confirmApplyToExisting(values);
 
             if (isEditing && isDefined(ruleId)) {
-                await ruleService.updateById(ruleId, values);
+                await appRuntime.runPromise(ruleService.updateById(ruleId, values));
                 enqueueApplyToExisting(ruleId, shouldApply);
             } else {
-                const rule = await ruleService.create(values);
+                const rule = await appRuntime.runPromise(ruleService.create(values));
                 enqueueApplyToExisting(rule.id, shouldApply);
             }
             onSuccess?.(isEditing ? 'updated' : 'created');
@@ -171,7 +174,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
         }
 
         try {
-            await ruleService.archiveById(ruleId);
+            await appRuntime.runPromise(ruleService.archiveById(ruleId));
             onSuccess?.('deleted');
         } catch (error: unknown) {
             Toast.show({

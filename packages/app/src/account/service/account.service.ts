@@ -1,30 +1,31 @@
 import {
     AccountDebtTypeEnum,
     AccountNatureEnum,
+    Db,
     DebtEventDirectionEnum,
     DebtEventSourceEnum,
-    getDebtClosedAmount,
-    transactionAsync
+    getDebtClosedAmount
 } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     accountBalanceRepository,
     accountRepository,
-    db,
     debtEventRepository,
     settingsRepository,
     transactionEntryRepository,
     transactionRepository
 } from '../../@generic/drizzle/db/db';
-import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
-import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
+import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
+import { Workload } from '../../@generic/service/workload.service';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
+import { AccountNotFoundError } from '../error/account-not-found.error';
 import { updateDebtTargetBaseValuation } from '../util/update-debt-target-base-valuation.util';
 
 import { accountBalanceIncrementalService } from './account-balance-incremental.service';
@@ -32,7 +33,6 @@ import { accountTransferConversionService } from './account-transfer-conversion.
 
 import type {
     AccountEntityInterface,
-    DB,
     DebtAccountCreateInputInterface,
     DebtEventEntityInterface,
     DepositAccountCreateInputInterface,
@@ -42,191 +42,210 @@ import type {
 class AccountService {
     private static readonly UNCONSOLIDATION_BATCH_SIZE = 25;
 
-    @InvalidateDatabaseLiveQuery()
-    async create(input: LiabilityAccountCreateInputInterface): Promise<AccountEntityInterface> {
-        return transactionAsync(db, async tx => {
-            const [{ count }] = await accountRepository.count();
-            const createdAccount = await this.createAccountRecord({ ...input }, count, tx);
+    readonly create = Effect.fn('AccountService.create')(
+        function* (this: AccountService, input: LiabilityAccountCreateInputInterface) {
+            const [{ count }] = yield* Db.query(() => accountRepository.count());
+            const createdAccount = yield* this.createAccountRecord({ ...input }, count);
 
-            await this.adjustBalanceTo(createdAccount.id, input.currentBalance, tx);
+            yield* this.adjustBalanceTo(createdAccount.id, input.currentBalance);
 
             if (!isPositiveNumber(count)) {
-                await settingsRepository.update({ defaultAccountId: createdAccount.id }, tx);
+                yield* settingsRepository.update({ defaultAccountId: createdAccount.id });
             }
 
             return createdAccount;
-        });
-    }
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @InvalidateDatabaseLiveQuery()
-    async createDebt(input: DebtAccountCreateInputInterface): Promise<AccountEntityInterface> {
-        return transactionAsync(db, async tx => {
-            const [{ count }] = await accountRepository.count();
+    readonly createDebt = Effect.fn('AccountService.createDebt')(
+        function* (this: AccountService, input: DebtAccountCreateInputInterface) {
+            const [{ count }] = yield* Db.query(() => accountRepository.count());
             const operatedAt = new Date();
             const targetBalance = convertToMicroUnits(input.targetBalance);
-            const createdAccount = await this.createAccountRecord(
-                { ...input, targetBalance },
-                count,
-                tx,
-                this.getDebtNature(input.debtType)
-            );
-            const valuedAccount = await updateDebtTargetBaseValuation(createdAccount, operatedAt, tx);
+            const createdAccount = yield* this.createAccountRecord({ ...input, targetBalance }, count, this.getDebtNature(input.debtType));
+            const valuedAccount = yield* updateDebtTargetBaseValuation(createdAccount, operatedAt);
             const returnedAmount = convertToMicroUnits(input.currentBalance);
 
-            await this.syncManualDebtEvents(valuedAccount, returnedAmount, operatedAt, tx);
-            await accountBalanceIncrementalService.updateBalancesByAccountIds([valuedAccount.id], tx);
+            yield* this.syncManualDebtEvents(valuedAccount, returnedAmount, operatedAt);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds([valuedAccount.id]);
 
             return valuedAccount;
-        });
-    }
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @InvalidateDatabaseLiveQuery()
-    async createDeposit(input: DepositAccountCreateInputInterface): Promise<AccountEntityInterface> {
-        return transactionAsync(db, async tx => {
-            const [{ count }] = await accountRepository.count();
-            const createdAccount = await this.createAccountRecord(input, count, tx, AccountNatureEnum.ASSET);
+    readonly createDeposit = Effect.fn('AccountService.createDeposit')(
+        function* (this: AccountService, input: DepositAccountCreateInputInterface) {
+            const [{ count }] = yield* Db.query(() => accountRepository.count());
+            const createdAccount = yield* this.createAccountRecord(input, count, AccountNatureEnum.ASSET);
 
-            await this.adjustBalanceTo(createdAccount.id, input.currentBalance, tx);
+            yield* this.adjustBalanceTo(createdAccount.id, input.currentBalance);
 
             return createdAccount;
-        });
-    }
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @InvalidateDatabaseLiveQuery()
-    async updateById(id: number, input: Partial<Omit<LiabilityAccountCreateInputInterface, 'type'>>): Promise<AccountEntityInterface> {
-        return transactionAsync(db, async tx => {
-            const updatedAccount = await accountRepository.updateById(id, input, tx);
+    readonly updateById = Effect.fn('AccountService.updateById')(
+        function* (this: AccountService, id: number, input: Partial<Omit<LiabilityAccountCreateInputInterface, 'type'>>) {
+            const updatedAccount = yield* accountRepository.updateById(id, input);
 
             if (isNumber(input.currentBalance)) {
-                await this.adjustBalanceTo(updatedAccount.id, input.currentBalance, tx);
+                yield* this.adjustBalanceTo(updatedAccount.id, input.currentBalance);
             }
 
             return updatedAccount;
-        });
-    }
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @InvalidateDatabaseLiveQuery()
-    async updateDebtById(id: number, input: Partial<DebtAccountCreateInputInterface>): Promise<AccountEntityInterface> {
-        return transactionAsync(db, async tx => this.updateDebtByIdInTransaction(id, input, tx));
-    }
+    readonly updateDebtById = Effect.fn('AccountService.updateDebtById')(
+        function* (this: AccountService, id: number, input: Partial<DebtAccountCreateInputInterface>) {
+            const { currentBalance } = input;
+            const operatedAt = new Date();
+            const valuedAccount = yield* this.updateDebtAccountFields(id, input, operatedAt);
 
-    @InvalidateDatabaseLiveQuery()
-    async updateDepositById(
-        id: number,
-        input: Partial<
-            Pick<
-                DepositAccountCreateInputInterface,
-                'title' | 'icon' | 'currentBalance' | 'interestRate' | 'deadline' | 'includeInNetWorth' | 'isActive'
+            if (!this.shouldSyncManualDebtEvents(input)) {
+                return valuedAccount;
+            }
+
+            const returnedAmount = isNumber(currentBalance)
+                ? convertToMicroUnits(currentBalance)
+                : yield* this.getDebtReturnedAmount(valuedAccount);
+
+            yield* this.syncManualDebtEvents(valuedAccount, returnedAmount, operatedAt);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds([valuedAccount.id]);
+
+            return valuedAccount;
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
+
+    readonly updateDepositById = Effect.fn('AccountService.updateDepositById')(
+        function* (
+            this: AccountService,
+            id: number,
+            input: Partial<
+                Pick<
+                    DepositAccountCreateInputInterface,
+                    'title' | 'icon' | 'currentBalance' | 'interestRate' | 'deadline' | 'includeInNetWorth' | 'isActive'
+                >
             >
-        >
-    ): Promise<AccountEntityInterface> {
-        return transactionAsync(db, async tx => {
+        ) {
             const { currentBalance, ...accountInput } = input;
-            const updatedAccount = await accountRepository.updateById(id, accountInput, tx);
+            const updatedAccount = yield* accountRepository.updateById(id, accountInput);
 
             if (isNumber(currentBalance)) {
-                await this.adjustBalanceTo(updatedAccount.id, currentBalance, tx);
+                yield* this.adjustBalanceTo(updatedAccount.id, currentBalance);
             }
 
             return updatedAccount;
-        });
-    }
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @InvalidateDatabaseLiveQuery()
-    async archiveById(id: number): Promise<void> {
-        await microPause();
+    readonly archiveById = Effect.fn('AccountService.archiveById')(function* (this: AccountService, id: number) {
+        yield* Effect.promise(() => microPause());
 
-        await foregroundWorkloadService.run(() => transactionAsync(db, async tx => this.archiveByIdInTransaction(id, tx)));
-    }
+        const workload = yield* Workload;
+        yield* workload.runForeground(Db.transaction(this.archiveByIdInTransaction(id)));
+    }, invalidateDatabaseLiveQuery);
 
-    @InvalidateDatabaseLiveQuery()
-    async restoreById(id: number): Promise<void> {
-        await microPause();
+    readonly restoreById = Effect.fn('AccountService.restoreById')(function* (id: number) {
+        yield* Effect.promise(() => microPause());
 
-        await transactionAsync(db, async tx => {
-            await accountRepository.restoreById(id, tx);
-            await debtEventRepository.restoreByAccountIds([id], tx);
-            await transactionEntryRepository.restoreByAccountIds([id], tx);
-            await transactionRepository.restoreByAccountIds([id], tx);
-        });
-    }
+        yield* Db.transaction(
+            Effect.gen(function* () {
+                yield* accountRepository.restoreById(id);
+                yield* debtEventRepository.restoreByAccountIds([id]);
+                yield* transactionEntryRepository.restoreByAccountIds([id]);
+                yield* transactionRepository.restoreByAccountIds([id]);
+            })
+        );
+    }, invalidateDatabaseLiveQuery);
 
-    @InvalidateDatabaseLiveQuery()
-    async deleteById(id: number): Promise<void> {
-        await transactionAsync(db, async tx => {
-            await this.unconsolidateActiveAutoByAccountId(id, tx);
-            await accountTransferConversionService.convertAccountTransfers(id, tx);
-            await debtEventRepository.deleteByAccountId(id, tx);
-            await transactionEntryRepository.deleteByAccountId(id, tx);
-            await transactionRepository.deleteByAccountId(id, tx);
+    readonly deleteById = Effect.fn('AccountService.deleteById')(
+        function* (this: AccountService, id: number) {
+            yield* this.unconsolidateActiveAutoByAccountId(id);
+            yield* accountTransferConversionService.convertAccountTransfers(id);
+            yield* debtEventRepository.deleteByAccountId(id);
+            yield* transactionEntryRepository.deleteByAccountId(id);
+            yield* transactionRepository.deleteByAccountId(id);
 
-            const settings = await settingsRepository.getSettings();
+            const settings = yield* settingsRepository.getSettings();
             if (settings.defaultAccountId === id) {
-                await settingsRepository.update({ defaultAccountId: null }, tx);
+                yield* settingsRepository.update({ defaultAccountId: null });
             }
 
-            await accountRepository.deleteById(id, tx);
-            await accountBalanceIncrementalService.updateAllBalances(true, tx);
-        });
-    }
+            yield* accountRepository.deleteById(id);
+            yield* accountBalanceIncrementalService.updateAllBalances(true);
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @InvalidateDatabaseLiveQuery()
-    async activateById(id: number): Promise<void> {
-        await accountRepository.updateById(id, { isActive: true });
-    }
+    readonly activateById = Effect.fn('AccountService.activateById')(function* (id: number) {
+        yield* accountRepository.updateById(id, { isActive: true });
+    }, invalidateDatabaseLiveQuery);
 
-    @InvalidateDatabaseLiveQuery((_inputs, tx) => !isDefined(tx))
-    async bulkCreate(
+    readonly bulkCreate = Effect.fn('AccountService.bulkCreate')(function* (
+        this: AccountService,
         inputs: LiabilityAccountCreateInputInterface[],
-        tx?: DB,
-        batchSize = 100
-    ): Promise<Record<string, AccountEntityInterface>> {
-        const batchProcessor = isDefined(tx)
-            ? (batch: LiabilityAccountCreateInputInterface[]) => this.processBatchInner(batch, tx)
-            : this.processBatch.bind(this);
-        const result = await processInputWithBatches(inputs, batchSize, batchProcessor);
+        batchSize: number = 100
+    ) {
+        const result = yield* processInputWithBatches(inputs, batchSize, batch => this.processBatch(batch));
 
         return result.reduce<Record<string, AccountEntityInterface>>((acc, account) => ({ ...acc, [account.title]: account }), {});
-    }
+    }, invalidateDatabaseLiveQuery);
 
-    async findByIdOrFail(id: number): Promise<AccountEntityInterface> {
-        const account = await accountRepository.findById(id);
+    readonly findByIdOrFail = Effect.fn('AccountService.findByIdOrFail')(function* (id: number) {
+        const account = yield* Db.query(db => accountRepository.findById(id, db));
 
         if (!isDefined(account)) {
-            // oxlint-disable-next-line lingui/no-unlocalized-strings
-            throw new Error(`Account with id ${id} not found`);
+            return yield* new AccountNotFoundError({ id });
         }
 
         return account;
-    }
+    });
 
-    async findByIdIncludingArchivedOrFail(id: number): Promise<AccountEntityInterface> {
-        const account = await accountRepository.findByIdIncludingArchived(id);
+    readonly findByIdIncludingArchivedOrFail = Effect.fn('AccountService.findByIdIncludingArchivedOrFail')(function* (id: number) {
+        const account = yield* accountRepository.findByIdIncludingArchived(id);
 
         if (!isDefined(account)) {
-            // oxlint-disable-next-line lingui/no-unlocalized-strings
-            throw new Error(`Account with id ${id} not found`);
+            return yield* new AccountNotFoundError({ id });
         }
 
         return account;
-    }
+    });
 
-    async archiveByIdInTransaction(id: number, tx: DB): Promise<void> {
-        await this.unconsolidateActiveAutoByAccountId(id, tx);
+    readonly archiveByIdInTransaction = Effect.fn('AccountService.archiveByIdInTransaction')(function* (this: AccountService, id: number) {
+        yield* this.unconsolidateActiveAutoByAccountId(id);
 
-        await accountRepository.archiveById(id, tx);
-        await debtEventRepository.archiveByAccountIds([id], tx);
-        await transactionEntryRepository.archiveByAccountIds([id], tx);
-        await transactionRepository.archiveByAccountIds([id], tx);
+        yield* accountRepository.archiveById(id);
+        yield* debtEventRepository.archiveByAccountIds([id]);
+        yield* transactionEntryRepository.archiveByAccountIds([id]);
+        yield* transactionRepository.archiveByAccountIds([id]);
 
-        const settings = await settingsRepository.getSettings();
+        const settings = yield* settingsRepository.getSettings();
         if (settings.defaultAccountId === id) {
-            await settingsRepository.update({ defaultAccountId: null }, tx);
+            yield* settingsRepository.update({ defaultAccountId: null });
         }
-    }
+    });
 
-    async syncManualDebtEvents(account: AccountEntityInterface, returnedAmount: number, operatedAt: Date, tx: DB): Promise<void> {
-        const debtEvents = await debtEventRepository.findByAccountId(account.id, tx);
+    readonly syncManualDebtEvents = Effect.fn('AccountService.syncManualDebtEvents')(function* (
+        this: AccountService,
+        account: AccountEntityInterface,
+        returnedAmount: number,
+        operatedAt: Date
+    ) {
+        const debtEvents = yield* debtEventRepository.findByAccountId(account.id);
         const manualDebtEvents = debtEvents.filter(debtEvent => debtEvent.source === DebtEventSourceEnum.MANUAL);
         const openedAmount = isPositiveNumber(account.targetBalance) ? account.targetBalance : 0;
         const transactionOpenedAmount = debtEvents.reduce(
@@ -239,82 +258,50 @@ class AccountService {
 
         const manualOpenedAmount = Math.max(openedAmount - transactionOpenedAmount, 0);
 
-        await this.upsertManualDebtEvent(account, manualDebtEvents, DebtEventDirectionEnum.OPEN, manualOpenedAmount, operatedAt, tx);
-        await this.upsertManualDebtEvent(
+        yield* this.upsertManualDebtEvent(account, manualDebtEvents, DebtEventDirectionEnum.OPEN, manualOpenedAmount, operatedAt);
+        yield* this.upsertManualDebtEvent(
             account,
             manualDebtEvents,
             DebtEventDirectionEnum.CLOSE,
             getDebtClosedAmount(returnedAmount, transactionOpenedAmount + manualOpenedAmount),
-            operatedAt,
-            tx
+            operatedAt
         );
-    }
+    });
 
-    private async unconsolidateActiveAutoByAccountId(id: number, tx: DB): Promise<void> {
-        const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIds([id], tx);
+    private readonly unconsolidateActiveAutoByAccountId = Effect.fn('AccountService.unconsolidateActiveAutoByAccountId')(function* (
+        id: number
+    ) {
+        const canonicals = yield* transactionRepository.findActiveAutoConsolidatedByAccountIds([id]);
 
-        await processInputWithBatches(canonicals, AccountService.UNCONSOLIDATION_BATCH_SIZE, async batch => {
-            for (const canonical of batch) {
-                // eslint-disable-next-line no-await-in-loop -- Sequential unconsolidation must happen before account mutation
-                await unconsolidateByIdInTransaction(canonical.id, tx);
-            }
+        yield* processInputWithBatches(canonicals, AccountService.UNCONSOLIDATION_BATCH_SIZE, batch =>
+            Effect.forEach(batch, canonical => unconsolidateByIdInTransaction(canonical.id), { discard: true }).pipe(Effect.as(null))
+        );
+    });
 
-            return null;
-        });
-    }
-
-    private async updateDebtByIdInTransaction(
+    private readonly updateDebtAccountFields = Effect.fn('AccountService.updateDebtAccountFields')(function* (
         id: number,
         input: Partial<DebtAccountCreateInputInterface>,
-        tx: DB
-    ): Promise<AccountEntityInterface> {
-        const { currentBalance } = input;
-        const operatedAt = new Date();
-        const valuedAccount = await this.updateDebtAccountFields(id, input, operatedAt, tx);
-
-        if (!this.shouldSyncManualDebtEvents(input)) {
-            return valuedAccount;
-        }
-
-        const returnedAmount = isNumber(currentBalance)
-            ? convertToMicroUnits(currentBalance)
-            : await this.getDebtReturnedAmount(valuedAccount, tx);
-
-        await this.syncManualDebtEvents(valuedAccount, returnedAmount, operatedAt, tx);
-        await accountBalanceIncrementalService.updateBalancesByAccountIds([valuedAccount.id], tx);
-
-        return valuedAccount;
-    }
-
-    private async updateDebtAccountFields(
-        id: number,
-        input: Partial<DebtAccountCreateInputInterface>,
-        operatedAt: Date,
-        tx: DB
-    ): Promise<AccountEntityInterface> {
+        operatedAt: Date
+    ) {
         const { currentBalance: _currentBalance, targetBalance, ...accountInput } = input;
         const accountUpdateInput = isNumber(targetBalance)
             ? { ...accountInput, targetBalance: convertToMicroUnits(targetBalance) }
             : accountInput;
-        const updatedAccount = await accountRepository.updateById(id, accountUpdateInput, tx);
+        const updatedAccount = yield* accountRepository.updateById(id, accountUpdateInput);
 
         if (isNumber(targetBalance) || isNumber(accountInput.instrumentId)) {
-            return updateDebtTargetBaseValuation(updatedAccount, operatedAt, tx);
+            return yield* updateDebtTargetBaseValuation(updatedAccount, operatedAt);
         }
 
         return updatedAccount;
-    }
+    });
 
-    private getDebtNature(debtType: AccountDebtTypeEnum): AccountNatureEnum {
-        return debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
-    }
-
-    private shouldSyncManualDebtEvents(input: Partial<DebtAccountCreateInputInterface>): boolean {
-        return isNumber(input.currentBalance) || isNumber(input.targetBalance) || isNumber(input.instrumentId);
-    }
-
-    private async adjustBalanceTo(accountId: number, targetBalance: number, tx: DB, operatedAt = new Date()): Promise<void> {
-        const result = await accountBalanceRepository.getByAccountId(accountId, tx);
+    private readonly adjustBalanceTo = Effect.fn('AccountService.adjustBalanceTo')(function* (
+        accountId: number,
+        targetBalance: number,
+        operatedAt: Date = new Date()
+    ) {
+        const result = yield* Db.query(db => accountBalanceRepository.getByAccountId(accountId, db));
         const targetBalanceMicro = convertToMicroUnits(targetBalance);
         const delta = targetBalanceMicro - (result.at(0)?.balance ?? 0);
 
@@ -322,29 +309,26 @@ class AccountService {
             return;
         }
 
-        await transactionService.createBalanceAdjustment(accountId, delta, operatedAt, tx);
+        yield* transactionService.createBalanceAdjustment(accountId, delta, operatedAt);
 
-        await accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro }, tx);
-    }
+        yield* accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro });
+    });
 
     // eslint-disable-next-line @typescript-eslint/max-params -- Existing private orchestration keeps positional arguments
-    private async upsertManualDebtEvent(
+    private readonly upsertManualDebtEvent = Effect.fn('AccountService.upsertManualDebtEvent')(function* (
+        this: AccountService,
         account: AccountEntityInterface,
         manualDebtEvents: DebtEventEntityInterface[],
         direction: DebtEventDirectionEnum,
         amount: number,
-        operatedAt: Date,
-        tx: DB
-    ): Promise<void> {
+        operatedAt: Date
+    ) {
         const [currentDebtEvent, ...duplicateDebtEvents] = manualDebtEvents.filter(debtEvent => debtEvent.direction === direction);
 
-        await debtEventRepository.deleteByIds(
-            duplicateDebtEvents.map(debtEvent => debtEvent.id),
-            tx
-        );
+        yield* debtEventRepository.deleteByIds(duplicateDebtEvents.map(debtEvent => debtEvent.id));
 
         if (!isPositiveNumber(amount)) {
-            await debtEventRepository.deleteByIds(isDefined(currentDebtEvent) ? [currentDebtEvent.id] : [], tx);
+            yield* debtEventRepository.deleteByIds(isDefined(currentDebtEvent) ? [currentDebtEvent.id] : []);
 
             return;
         }
@@ -358,22 +342,61 @@ class AccountService {
         };
 
         if (isDefined(currentDebtEvent)) {
-            await debtEventRepository.updateById(currentDebtEvent.id, fields, tx);
+            yield* debtEventRepository.updateById(currentDebtEvent.id, fields);
 
             return;
         }
 
-        await debtEventRepository.create(
-            {
-                debtAccountId: account.id,
-                transactionId: null,
-                transactionEntryId: null,
-                direction,
-                source: DebtEventSourceEnum.MANUAL,
-                ...fields
-            },
-            tx
+        yield* debtEventRepository.create({
+            debtAccountId: account.id,
+            transactionId: null,
+            transactionEntryId: null,
+            direction,
+            source: DebtEventSourceEnum.MANUAL,
+            ...fields
+        });
+    });
+
+    private readonly getDebtReturnedAmount = Effect.fn('AccountService.getDebtReturnedAmount')(function* (account: AccountEntityInterface) {
+        const manualDebtEvents = yield* debtEventRepository.findByAccountIdAndSource(account.id, DebtEventSourceEnum.MANUAL);
+
+        return manualDebtEvents.reduce(
+            (sum, debtEvent) => (debtEvent.direction === DebtEventDirectionEnum.CLOSE ? sum + debtEvent.amount : sum),
+            0
         );
+    });
+
+    private readonly createAccountRecord = Effect.fn('AccountService.createAccountRecord')(function* (
+        input: Omit<LiabilityAccountCreateInputInterface, 'currentBalance'> & Record<string, unknown>,
+        count: number,
+        nature: AccountNatureEnum = AccountNatureEnum.LIABILITY
+    ) {
+        return yield* accountRepository.create({ ...input, order: count + 1, nature });
+    });
+
+    private readonly processBatch = Effect.fn('AccountService.processBatch')(
+        function* (this: AccountService, batch: LiabilityAccountCreateInputInterface[]) {
+            const [{ count }] = yield* Db.query(() => accountRepository.count());
+            const accounts = yield* accountRepository.bulkCreate(
+                batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY }))
+            );
+
+            yield* Effect.all(
+                accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance)),
+                { concurrency: 'unbounded' }
+            );
+
+            return accounts;
+        },
+        effect => Db.transaction(effect)
+    );
+
+    private getDebtNature(debtType: AccountDebtTypeEnum): AccountNatureEnum {
+        return debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
+    }
+
+    private shouldSyncManualDebtEvents(input: Partial<DebtAccountCreateInputInterface>): boolean {
+        return isNumber(input.currentBalance) || isNumber(input.targetBalance) || isNumber(input.instrumentId);
     }
 
     private getManualDebtBaseAmount(account: AccountEntityInterface, amount: number): number | null {
@@ -382,40 +405,6 @@ class AccountService {
         }
 
         return Math.round(amount * account.targetBaseExchangeRate);
-    }
-
-    private async getDebtReturnedAmount(account: AccountEntityInterface, tx: DB): Promise<number> {
-        const manualDebtEvents = await debtEventRepository.findByAccountIdAndSource(account.id, DebtEventSourceEnum.MANUAL, tx);
-
-        return manualDebtEvents.reduce(
-            (sum, debtEvent) => (debtEvent.direction === DebtEventDirectionEnum.CLOSE ? sum + debtEvent.amount : sum),
-            0
-        );
-    }
-
-    private async createAccountRecord(
-        input: Omit<LiabilityAccountCreateInputInterface, 'currentBalance'> & Record<string, unknown>,
-        count: number,
-        tx: DB,
-        nature: AccountNatureEnum = AccountNatureEnum.LIABILITY
-    ): Promise<AccountEntityInterface> {
-        return accountRepository.create({ ...input, order: count + 1, nature }, tx);
-    }
-
-    private async processBatch(batch: LiabilityAccountCreateInputInterface[]): Promise<AccountEntityInterface[]> {
-        return await transactionAsync(db, async tx => this.processBatchInner(batch, tx));
-    }
-
-    private async processBatchInner(batch: LiabilityAccountCreateInputInterface[], tx: DB): Promise<AccountEntityInterface[]> {
-        const [{ count }] = await accountRepository.count();
-        const accounts = await accountRepository.bulkCreate(
-            batch.map((input, index) => ({ ...input, order: count + index + 1, nature: AccountNatureEnum.LIABILITY })),
-            tx
-        );
-
-        await Promise.all(accounts.map((account, index) => this.adjustBalanceTo(account.id, batch[index].currentBalance, tx)));
-
-        return accounts;
     }
 }
 

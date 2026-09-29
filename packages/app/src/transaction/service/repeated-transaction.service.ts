@@ -1,7 +1,7 @@
 import { LanguageEnum, RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
@@ -12,7 +12,6 @@ import {
     REPEATED_TRANSACTION_DEFAULT_LIMIT,
     REPEATED_TRANSACTION_TIME_WINDOW_MINUTES
 } from '../constant/repeated-transaction.constant';
-import { SuggestionsResultInterface } from '../interface/suggestions-result.interface';
 
 import { patternCacheService } from './pattern-cache/pattern-cache.service';
 
@@ -43,15 +42,10 @@ const calculateTimeWindow = (currentTime: Date): TimeWindowInterface => {
 };
 
 class RepeatedTransactionService {
-    @Log(
-        params =>
-            `enter type=${params.type} accountId=${params.accountId ?? 0} amount=${params.amount ?? 0} categoryId=${params.categoryId ?? 0}`,
-        (result, params) =>
-            `done type=${params.type} accountId=${params.accountId ?? 0} timeCategoryIds=${result.timePatterns.map(pattern => pattern.categoryId).join(',')} amountCategoryIds=${result.amountPatterns.map(pattern => pattern.categoryId).join(',')}`,
-        (error, params) =>
-            `throw type=${params.type} accountId=${params.accountId ?? 0} amount=${params.amount ?? 0} error=${getErrorMessage(error)}`
-    )
-    async getSuggestions(params: GetSuggestionsParamsInterface): Promise<SuggestionsResultInterface> {
+    readonly getSuggestions = Effect.fn('RepeatedTransactionService.getSuggestions')(function* (
+        this: RepeatedTransactionService,
+        params: GetSuggestionsParamsInterface
+    ) {
         const { currentTime, type, language, accountId, amount, categoryId } = params;
         const timeWindow = calculateTimeWindow(currentTime);
 
@@ -63,16 +57,17 @@ class RepeatedTransactionService {
             limit: REPEATED_TRANSACTION_DEFAULT_LIMIT
         };
         const repeatedCacheKey = `repeated:${language}:${JSON.stringify(repeatedQuery)}`;
-        const timeQuery = patternCacheService.memoizeRepeated(repeatedCacheKey, () =>
+        const timeQuery = patternCacheService.memoizeRepeated(
+            repeatedCacheKey,
             transactionPatternRepository.findRepeatedPatterns(repeatedQuery, language)
         );
 
         const amountQuery = this.buildAmountQuery(type, language, amount, accountId, categoryId);
 
-        const [timePatterns, amountPatterns] = await Promise.all([timeQuery, amountQuery]);
+        const [timePatterns, amountPatterns] = yield* Effect.all([timeQuery, amountQuery], { concurrency: 'unbounded' });
 
         return { timePatterns, amountPatterns };
-    }
+    });
 
     getLatestAmount(patterns: RepeatedTransactionPatternInterface[], categoryId: number): number {
         let bestAmount = 0;
@@ -95,9 +90,9 @@ class RepeatedTransactionService {
         amount: number | undefined,
         accountId: number | undefined,
         categoryId: number | undefined
-    ): Promise<RepeatedTransactionPatternInterface[]> {
+    ) {
         if (!isPositiveNumber(amount)) {
-            return Promise.resolve([]);
+            return Effect.succeed<RepeatedTransactionPatternInterface[]>([]);
         }
 
         const amountMicroUnits = convertToMicroUnits(amount);
@@ -113,7 +108,8 @@ class RepeatedTransactionService {
         };
         const amountCacheKey = `amount:${language}:${JSON.stringify(amountQuery)}`;
 
-        return patternCacheService.memoizeAmount(amountCacheKey, () =>
+        return patternCacheService.memoizeAmount(
+            amountCacheKey,
             transactionPatternRepository.findAmountBasedPatterns(amountQuery, language)
         );
     }

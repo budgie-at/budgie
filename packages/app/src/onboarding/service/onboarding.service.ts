@@ -1,8 +1,8 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { AccountTypeEnum, Db, UserIconNameEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 import { getLocales } from 'expo-localization';
 
-import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { accountRepository, instrumentRepository, settingsRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
@@ -20,60 +20,51 @@ class OnboardingService {
         [AccountTypeEnum.DEBT]: UserIconNameEnum.HandCoins
     };
 
-    private initializationPromise: Promise<void> | null = null;
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async initializeLocale(): Promise<void> {
-        const { onboardingStep, isOnboardingCompleted } = await settingsRepository.getSettings();
-        const [{ count }] = await accountRepository.count();
+    readonly initializeLocale = Effect.fn('OnboardingService.initializeLocale')(function* (this: OnboardingService) {
+        const { onboardingStep, isOnboardingCompleted } = yield* settingsRepository.getSettings();
+        const [{ count }] = yield* Db.query(() => accountRepository.count());
 
         if (isOnboardingCompleted || isPositiveNumber(onboardingStep) || isPositiveNumber(count)) {
             return;
         }
 
-        this.initializationPromise ??= this.runInitializeLocale().finally(() => {
-            this.initializationPromise = null;
-        });
+        const language = i18nGetOSLocale();
+        const instrumentId = yield* this.resolveDeviceInstrumentId();
 
-        return this.initializationPromise;
-    }
+        yield* updateSettingsMutation({ defaultInstrumentId: instrumentId, language });
+    });
 
-    @Log(
-        accounts => `enter accountCount=${accounts.length}`,
-        (_result, accounts) => `done accountCount=${accounts.length}`,
-        (error, accounts) => `throw accountCount=${accounts.length} error=${getErrorMessage(error)}`
-    )
-    async provisionAccounts(accounts: OnboardingAccountInputInterface[]): Promise<void> {
-        const { defaultInstrumentId } = await settingsRepository.getSettings();
+    readonly provisionAccounts = Effect.fn('OnboardingService.provisionAccounts')(function* (
+        this: OnboardingService,
+        accounts: OnboardingAccountInputInterface[]
+    ) {
+        const { defaultInstrumentId } = yield* settingsRepository.getSettings();
         const instrumentId = defaultInstrumentId ?? DEFAULT_INSTRUMENT.id;
-        const existingAccounts = await accountRepository.getAllActiveAccounts();
+        const existingAccounts = yield* accountRepository.getAllActiveAccounts();
         const existingTypes = new Set(existingAccounts.map(existingAccount => existingAccount.type));
         const accountsToCreate = accounts.filter(account => !existingTypes.has(account.type));
 
-        await accountsToCreate.reduce(
-            (previousAccountPromise, account) => previousAccountPromise.then(() => this.createOnboardingAccount(account, instrumentId)),
-            Promise.resolve()
-        );
-    }
+        yield* Effect.forEach(accountsToCreate, account => this.createOnboardingAccount(account, instrumentId), { discard: true });
+    });
 
-    @Log(
-        (accountId, instrumentId) => `enter accountId=${accountId} instrumentId=${instrumentId}`,
-        (result, accountId, instrumentId) => `done accountId=${accountId} instrumentId=${instrumentId} updatedId=${result.id}`,
-        (error, accountId, instrumentId) => `throw accountId=${accountId} instrumentId=${instrumentId} error=${getErrorMessage(error)}`
-    )
-    async changeOnboardingCurrency(accountId: number, instrumentId: number) {
-        await updateSettingsMutation({ defaultInstrumentId: instrumentId });
+    readonly changeOnboardingCurrency = Effect.fn('OnboardingService.changeOnboardingCurrency')(function* (
+        accountId: number,
+        instrumentId: number
+    ) {
+        yield* updateSettingsMutation({ defaultInstrumentId: instrumentId });
 
-        return accountService.updateById(accountId, { instrumentId });
-    }
+        return yield* accountService.updateById(accountId, { instrumentId });
+    });
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async complete(): Promise<void> {
-        await updateSettingsMutation({ isOnboardingCompleted: true });
-    }
+    readonly complete = Effect.fn('OnboardingService.complete')(function* () {
+        yield* updateSettingsMutation({ isOnboardingCompleted: true });
+    });
 
-    private async createOnboardingAccount(account: OnboardingAccountInputInterface, instrumentId: number): Promise<void> {
-        await accountService.create({
+    private readonly createOnboardingAccount = Effect.fn('OnboardingService.createOnboardingAccount')(function* (
+        account: OnboardingAccountInputInterface,
+        instrumentId: number
+    ) {
+        yield* accountService.create({
             type: account.type,
             title: account.title,
             currentBalance: 0,
@@ -81,26 +72,21 @@ class OnboardingService {
             includeInNetWorth: true,
             instrumentId
         });
-    }
+    });
 
-    private async runInitializeLocale(): Promise<void> {
-        const language = i18nGetOSLocale();
-        const instrumentId = await this.resolveDeviceInstrumentId();
+    private readonly resolveDeviceInstrumentId = Effect.fn('OnboardingService.resolveDeviceInstrumentId')(
+        function* (this: OnboardingService) {
+            const code = this.detectDeviceInstrumentCode();
 
-        await updateSettingsMutation({ defaultInstrumentId: instrumentId, language });
-    }
+            if (!isDefined(code)) {
+                return DEFAULT_INSTRUMENT.id;
+            }
 
-    private async resolveDeviceInstrumentId(): Promise<number> {
-        const code = this.detectDeviceInstrumentCode();
+            const instrument = yield* instrumentRepository.findByCode(code);
 
-        if (!isDefined(code)) {
-            return DEFAULT_INSTRUMENT.id;
+            return instrument?.id ?? DEFAULT_INSTRUMENT.id;
         }
-
-        const instrument = await instrumentRepository.findByCode(code);
-
-        return instrument?.id ?? DEFAULT_INSTRUMENT.id;
-    }
+    );
 
     private detectDeviceInstrumentCode(): string | null {
         for (const locale of getLocales()) {

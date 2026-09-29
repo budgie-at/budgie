@@ -1,11 +1,12 @@
 import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
+import * as Effect from 'effect/Effect';
 import { useEffect, useState } from 'react';
 
 import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../../@generic/drizzle/db/db';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -22,8 +23,6 @@ interface Props {
     readonly testID?: string;
 }
 
-const logger = getLogger('RefundedPill');
-
 export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const language = useSetting('language');
@@ -35,7 +34,7 @@ export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
         let isActive = true;
 
         const fetchRefundsTotal = async (): Promise<void> => {
-            const sources = await transactionRepository.findConsolidationSources(transaction.id, language);
+            const sources = await appRuntime.runPromise(transactionRepository.findConsolidationSources(transaction.id, language));
             const total = sources
                 .filter(source => source.entryType === TransactionEntryTypeEnum.DEBIT)
                 .reduce((sum, source) => sum + source.amount, 0);
@@ -46,7 +45,7 @@ export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
         };
 
         const handleError = (error: unknown) => {
-            logger.error('failed', { transactionId: transaction.id, errorMessage: getErrorMessage(error) });
+            appRuntime.runFork(Effect.logError('failed', { transactionId: transaction.id, errorMessage: getErrorMessage(error) }));
             if (isActive) {
                 setRefundsTotal(null);
             }

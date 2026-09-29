@@ -1,12 +1,13 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
 import { Trans, useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { useCurrencySelectorModal } from '../../../@generic/context/currency-selector-modal.context';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -19,8 +20,6 @@ import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-
 import { OnboardingTrackOptionRow } from '../onboarding-track-option-row/onboarding-track-option-row';
 
 import { OnboardingTrackSelector } from './onboarding-track.selector';
-
-const logger = getLogger('OnboardingTrack');
 
 export const OnboardingTrack = () => {
     const { t } = useLingui();
@@ -47,7 +46,7 @@ export const OnboardingTrack = () => {
         const result = await openCurrencySelector({ selectedInstrumentId: defaultInstrument.id });
 
         if (isDefined(result)) {
-            await updateSettingsMutation({ defaultInstrumentId: result });
+            await appRuntime.runPromise(updateSettingsMutation({ defaultInstrumentId: result }));
         }
     };
 
@@ -56,13 +55,15 @@ export const OnboardingTrack = () => {
     const isPrimaryDisabled = trackOptions.every(option => !isTypeSelected(option.type)) && isEmptyArray(accounts);
 
     const handlePrimary = () => {
-        void onboardingService
-            .provisionAccounts(
-                trackOptions.filter(option => isTypeSelected(option.type)).map(option => ({ type: option.type, title: option.title }))
+        void appRuntime
+            .runPromise(
+                onboardingService.provisionAccounts(
+                    trackOptions.filter(option => isTypeSelected(option.type)).map(option => ({ type: option.type, title: option.title }))
+                )
             )
             .then(() => void goToNextStep(OnboardingStepEnum.TRACK))
             .catch((error: unknown) => {
-                logger.error('provision accounts failed', { errorMessage: getErrorMessage(error) });
+                appRuntime.runFork(Effect.logError('provision accounts failed', { errorMessage: getErrorMessage(error) }));
             });
     };
 

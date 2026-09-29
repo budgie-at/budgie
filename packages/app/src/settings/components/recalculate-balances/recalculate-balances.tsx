@@ -5,6 +5,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
@@ -29,7 +30,7 @@ export const RecalculateBalances = () => {
 
         setIsLoading(true);
         try {
-            await accountBalanceIncrementalService.updateAllBalances(true);
+            await appRuntime.runPromise(accountBalanceIncrementalService.updateAllBalances(true));
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Could not recalculate balances`, text2: getErrorMessage(error) });
         } finally {

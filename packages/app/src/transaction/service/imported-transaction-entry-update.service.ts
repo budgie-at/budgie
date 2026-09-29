@@ -1,31 +1,24 @@
-import { transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
-import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 
-import type { DB, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
+import type { TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 
 class ImportedTransactionEntryUpdateService {
-    @Log(
-        (transactionId, externalId) => `enter transactionId=${transactionId} externalId=${externalId}`,
-        (result, transactionId, externalId) => `done result=${String(result)} transactionId=${transactionId} externalId=${externalId}`,
-        (error, transactionId, externalId) =>
-            `throw transactionId=${transactionId} externalId=${externalId} error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async updateExternalEntryQuote(
-        transactionId: number,
-        externalId: string,
-        quote: Required<Pick<TransactionEntryCreateInputInterface, 'quotedInstrumentId' | 'quotedAmount' | 'quotedUnitPrice'>>
-    ): Promise<boolean> {
-        return transactionAsync(db, async tx => {
-            const existingEntry = await transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId, tx);
+    readonly updateExternalEntryQuote = Effect.fn('ImportedTransactionEntryUpdateService.updateExternalEntryQuote')(
+        function* (
+            transactionId: number,
+            externalId: string,
+            quote: Required<Pick<TransactionEntryCreateInputInterface, 'quotedInstrumentId' | 'quotedAmount' | 'quotedUnitPrice'>>
+        ) {
+            const existingEntry = yield* transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId);
             if (
                 !isDefined(existingEntry) ||
                 (existingEntry.quotedInstrumentId === quote.quotedInstrumentId &&
@@ -35,45 +28,47 @@ class ImportedTransactionEntryUpdateService {
                 return false;
             }
 
-            await transactionEntryRepository.updateById(existingEntry.id, quote, tx);
+            yield* transactionEntryRepository.updateById(existingEntry.id, quote);
 
             return true;
-        });
-    }
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @Log(
-        (entries, input, tx) =>
-            `enter externalId=${input.externalId} entryExternalIds=${entries.map(entry => entry.externalId).join(',')} hasTx=${String(isDefined(tx))}`,
-        (result, entries, input, tx) =>
-            `done result=${String(result)} externalId=${input.externalId} entryExternalIds=${entries.map(entry => entry.externalId).join(',')} hasTx=${String(isDefined(tx))}`,
-        (error, entries, input) =>
-            `throw externalId=${input.externalId} entryExternalIds=${entries.map(entry => entry.externalId).join(',')} error=${getErrorMessage(error)}`
-    )
-    async update(entries: readonly TransactionEntryCreateInputInterface[], input: TransactionCreateInputInterface, tx: DB): Promise<void> {
-        await entries.reduce(
-            (previousEntryPromise, entry) => previousEntryPromise.then(() => this.updateEntry(entry, input, tx)),
-            Promise.resolve()
-        );
-    }
+    readonly update = Effect.fn('ImportedTransactionEntryUpdateService.update')(function* (
+        this: ImportedTransactionEntryUpdateService,
+        entries: readonly TransactionEntryCreateInputInterface[],
+        input: TransactionCreateInputInterface
+    ) {
+        for (const entry of entries) {
+            yield* this.updateEntry(entry, input);
+        }
+    });
 
-    private async updateEntry(entry: TransactionEntryCreateInputInterface, input: TransactionCreateInputInterface, tx: DB): Promise<void> {
+    private readonly updateEntry = Effect.fnUntraced(function* (
+        this: ImportedTransactionEntryUpdateService,
+        entry: TransactionEntryCreateInputInterface,
+        input: TransactionCreateInputInterface
+    ) {
         if (!isDefined(entry.externalId)) {
             return;
         }
 
-        const existingEntry = await transactionEntryRepository.findByExternalIdAndAccountId(entry.externalId, entry.accountId, tx);
+        const existingEntry = yield* transactionEntryRepository.findByExternalIdAndAccountId(entry.externalId, entry.accountId);
 
         if (!isDefined(existingEntry)) {
-            return this.createMissingEntry(entry, input, tx);
+            yield* this.createMissingEntry(entry, input);
+
+            return;
         }
 
         const nextAmount = convertToMicroUnits(entry.amount);
-        const nextBaseValuation = await entryBaseValuationService.valueMicroUnitEntry({
+        const nextBaseValuation = yield* entryBaseValuationService.valueMicroUnitEntry({
             accountId: entry.accountId,
             amount: nextAmount,
             operatedAt: input.operatedAt,
-            externalSource: input.externalSource,
-            tx
+            externalSource: input.externalSource
         });
         const nextMccCategoryId = entry.mccCategoryId ?? existingEntry.mccCategoryId;
 
@@ -89,55 +84,43 @@ class ImportedTransactionEntryUpdateService {
             return;
         }
 
-        await transactionEntryRepository.updateByExternalIdAndAccountId(
-            entry.externalId,
-            entry.accountId,
-            {
+        yield* Effect.all([
+            transactionEntryRepository.updateByExternalIdAndAccountId(entry.externalId, entry.accountId, {
                 amount: nextAmount,
                 exchangeRate: entry.exchangeRate,
                 ...nextBaseValuation,
                 toIban: entry.toIban,
                 mccCategoryId: nextMccCategoryId
-            },
-            tx
-        );
-
-        await transactionRepository.updateById(
-            existingEntry.originalTransactionId ?? existingEntry.transactionId,
-            {
+            }),
+            transactionRepository.updateById(existingEntry.originalTransactionId ?? existingEntry.transactionId, {
                 title: input.title,
                 comment: input.comment,
                 operatedAt: input.operatedAt
-            },
-            tx
-        );
-    }
+            })
+        ]);
+    });
 
-    private async createMissingEntry(
+    private readonly createMissingEntry = Effect.fnUntraced(function* (
         entry: TransactionEntryCreateInputInterface,
-        input: TransactionCreateInputInterface,
-        tx: DB
-    ): Promise<void> {
+        input: TransactionCreateInputInterface
+    ) {
         if (!isDefined(input.externalId)) {
             return;
         }
 
-        const primaryEntry = await transactionEntryRepository.findByExternalIdAndAccountId(input.externalId, entry.accountId, tx);
+        const primaryEntry = yield* transactionEntryRepository.findByExternalIdAndAccountId(input.externalId, entry.accountId);
 
         if (!isDefined(primaryEntry)) {
             return;
         }
 
-        const valuations = await entryBaseValuationService.valueEntries([entry], input.operatedAt, tx);
+        const valuations = yield* entryBaseValuationService.valueEntries([entry], input.operatedAt);
 
-        await transactionEntryRepository.create(
-            {
-                ...transactionMapEntryInputToCreateEntity(entry, primaryEntry.transactionId, valuations.get(entry)),
-                originalTransactionId: primaryEntry.originalTransactionId
-            },
-            tx
-        );
-    }
+        yield* transactionEntryRepository.create({
+            ...transactionMapEntryInputToCreateEntity(entry, primaryEntry.transactionId, valuations.get(entry)),
+            originalTransactionId: primaryEntry.originalTransactionId
+        });
+    });
 }
 
 export const importedTransactionEntryUpdateService = new ImportedTransactionEntryUpdateService();

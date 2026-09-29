@@ -1,8 +1,8 @@
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 import { File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
-import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
@@ -14,106 +14,116 @@ import { authService } from '../../auth/service/auth.service';
 class DatabaseImportService {
     private static readonly PROBE_DATABASE_NAME = 'import-probe.db';
 
-    @Log(
-        (sourceUri, backupPin) => `enter sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
-        (result, ...[sourceUri, backupPin]) =>
-            `done result=${String(result)} sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
-        (error, sourceUri, backupPin) =>
-            `throw sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)} error=${getErrorMessage(error)}`
-    )
-    async importFromUri(sourceUri: string, backupPin: string | null): Promise<void> {
-        await databaseLifecycleService.run(DatabaseLifecycleOperationEnum.IMPORT, () => this.runImport(sourceUri, backupPin));
-    }
+    readonly importFromUri = Effect.fn('DatabaseImportService.importFromUri')(function* (
+        this: DatabaseImportService,
+        sourceUri: string,
+        backupPin: string | null
+    ) {
+        yield* databaseLifecycleService.run(DatabaseLifecycleOperationEnum.IMPORT, this.runImport(sourceUri, backupPin));
+    });
 
-    @Log(
-        (sourceUri, backupPin) => `enter sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
-        (result, ...[sourceUri, backupPin]) => `done result=${result} sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)}`,
-        (error, sourceUri, backupPin) =>
-            `throw sourceUri="${sourceUri}" hasBackupPin=${isNotEmptyString(backupPin)} error=${getErrorMessage(error)}`
-    )
-    async canOpenBackup(sourceUri: string, backupPin: string | null): Promise<boolean> {
+    readonly canOpenBackup = Effect.fn('DatabaseImportService.canOpenBackup')(function* (
+        this: DatabaseImportService,
+        sourceUri: string,
+        backupPin: string | null
+    ) {
         const probePath = `${Paths.cache.uri}/${DatabaseImportService.PROBE_DATABASE_NAME}`;
 
         this.deleteProbeFiles(probePath);
 
-        try {
-            await new File(sourceUri).copy(new File(probePath));
+        return yield* Effect.promise(() => new File(sourceUri).copy(new File(probePath))).pipe(
+            Effect.andThen(this.readProbeDatabase(backupPin)),
+            Effect.catchDefect(() => Effect.succeed(false)),
+            Effect.ensuring(
+                Effect.sync(() => {
+                    this.deleteProbeFiles(probePath);
+                })
+            )
+        );
+    });
 
-            return await this.readProbeDatabase(backupPin);
-        } catch {
-            return false;
-        } finally {
-            this.deleteProbeFiles(probePath);
-        }
-    }
-
-    async replaceFromUri(sourceUri: string): Promise<void> {
+    readonly replaceFromUri = Effect.fn('DatabaseImportService.replaceFromUri')(function* (this: DatabaseImportService, sourceUri: string) {
         const destinationPath = this.getDestinationPath();
         const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
-        await aiStorageReplacementService.pauseLongLivedRuntime();
-        await databaseLifecycleService.close();
+        yield* aiStorageReplacementService.pauseLongLivedRuntime();
+        yield* databaseLifecycleService.close();
         this.deleteDestinationFiles(destinationPath, tempPath);
-        await this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
-        await this.copyDatabaseSidecars(sourceUri, destinationPath);
-    }
+        yield* this.replaceDestinationFile(sourceUri, tempPath, destinationPath);
+        yield* this.copyDatabaseSidecars(sourceUri, destinationPath);
+    });
 
-    private async runImport(sourceUri: string, backupPin: string | null): Promise<void> {
-        const previousPin = await authService.getPin();
+    private readonly runImport = Effect.fn('DatabaseImportService.runImport')(function* (
+        this: DatabaseImportService,
+        sourceUri: string,
+        backupPin: string | null
+    ) {
+        const previousPin = yield* authService.getPin();
 
-        await authService.persistPin(backupPin);
+        yield* authService.persistPin(backupPin);
+        yield* this.replaceFromUri(sourceUri).pipe(Effect.onError(() => authService.persistPin(previousPin)));
+        yield* Effect.promise(() => reloadApp());
+    });
 
-        try {
-            await this.replaceFromUri(sourceUri);
-        } catch (error) {
-            await authService.persistPin(previousPin);
-            throw error;
-        }
+    private readonly readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
+        return yield* Effect.acquireUseRelease(
+            Effect.promise(() =>
+                SQLite.openDatabaseAsync(DatabaseImportService.PROBE_DATABASE_NAME, { useNewConnection: true }, Paths.cache.uri)
+            ),
+            probeDatabase =>
+                Effect.gen(function* () {
+                    if (isNotEmptyString(backupPin)) {
+                        yield* Effect.promise(() => probeDatabase.execAsync(`PRAGMA key = '${backupPin}';`)); // oxlint-disable-line lingui/no-unlocalized-strings
+                    }
 
-        await reloadApp();
-    }
+                    // oxlint-disable-next-line lingui/no-unlocalized-strings
+                    const tables = yield* Effect.promise(() => probeDatabase.getAllAsync<unknown>('SELECT name FROM sqlite_master;'));
 
-    private async readProbeDatabase(backupPin: string | null): Promise<boolean> {
-        const probeDatabase = await SQLite.openDatabaseAsync(
-            DatabaseImportService.PROBE_DATABASE_NAME,
-            { useNewConnection: true },
-            Paths.cache.uri
+                    return isNotEmptyArray(tables);
+                }),
+            probeDatabase => Effect.promise(() => probeDatabase.closeAsync())
         );
+    });
 
-        try {
-            if (isNotEmptyString(backupPin)) {
-                await probeDatabase.execAsync(`PRAGMA key = '${backupPin}';`); // oxlint-disable-line lingui/no-unlocalized-strings
-            }
+    private readonly replaceDestinationFile = Effect.fn('DatabaseImportService.replaceDestinationFile')(function* (
+        sourceUri: string,
+        tempPath: string,
+        destinationPath: string
+    ) {
+        const tempFile = new File(tempPath);
 
-            // oxlint-disable-next-line lingui/no-unlocalized-strings
-            const tables = await probeDatabase.getAllAsync<unknown>('SELECT name FROM sqlite_master;');
+        yield* Effect.promise(() => new File(sourceUri).copy(tempFile));
+        yield* Effect.promise(() => tempFile.move(new File(destinationPath)));
+    });
 
-            return isNotEmptyArray(tables);
-        } finally {
-            await probeDatabase.closeAsync();
+    private readonly copyDatabaseSidecars = Effect.fn('DatabaseImportService.copyDatabaseSidecars')(function* (
+        this: DatabaseImportService,
+        sourceUri: string,
+        destinationPath: string
+    ) {
+        yield* this.copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`).pipe(
+            Effect.andThen(this.copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`)),
+            Effect.catchDefect(() =>
+                Effect.sync(() => {
+                    this.deleteFileIfExists(`${destinationPath}-wal`);
+                    this.deleteFileIfExists(`${destinationPath}-shm`);
+                })
+            )
+        );
+    });
+
+    private readonly copyFileIfExists = Effect.fnUntraced(function* (sourcePath: string, destinationPath: string) {
+        const sourceFile = new File(sourcePath);
+
+        if (sourceFile.exists) {
+            yield* Effect.promise(() => sourceFile.copy(new File(destinationPath)));
         }
-    }
+    });
 
     private deleteProbeFiles(probePath: string): void {
         this.deleteFileIfExists(probePath);
         this.deleteFileIfExists(`${probePath}-wal`);
         this.deleteFileIfExists(`${probePath}-shm`);
-    }
-
-    private async replaceDestinationFile(sourceUri: string, tempPath: string, destinationPath: string): Promise<void> {
-        const tempFile = new File(tempPath);
-        await new File(sourceUri).copy(tempFile);
-        await tempFile.move(new File(destinationPath));
-    }
-
-    private async copyDatabaseSidecars(sourceUri: string, destinationPath: string): Promise<void> {
-        try {
-            await this.copyFileIfExists(`${sourceUri}-wal`, `${destinationPath}-wal`);
-            await this.copyFileIfExists(`${sourceUri}-shm`, `${destinationPath}-shm`);
-        } catch {
-            this.deleteFileIfExists(`${destinationPath}-wal`);
-            this.deleteFileIfExists(`${destinationPath}-shm`);
-        }
     }
 
     private deleteDestinationFiles(destinationPath: string, tempPath: string): void {
@@ -128,14 +138,6 @@ class DatabaseImportService {
 
         if (file.exists) {
             file.delete();
-        }
-    }
-
-    private async copyFileIfExists(sourcePath: string, destinationPath: string): Promise<void> {
-        const sourceFile = new File(sourcePath);
-
-        if (sourceFile.exists) {
-            await sourceFile.copy(new File(destinationPath));
         }
     }
 

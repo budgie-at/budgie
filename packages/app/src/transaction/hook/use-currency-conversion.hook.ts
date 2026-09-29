@@ -1,9 +1,10 @@
 import { PRECISION } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 import { useEffect, useRef, useState } from 'react';
 
 import { getErrorMessage, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
@@ -25,7 +26,6 @@ interface UseCurrencyConversionResult {
 
 const INITIAL_STATE: ConversionState = { destinationAmount: 0, exchangeRate: 1, isManualRate: false };
 const UNMOUNTED_REQUEST_ID = -1;
-const logger = getLogger('useCurrencyConversion');
 
 export const useCurrencyConversion = (): UseCurrencyConversionResult => {
     const [state, setState] = useState<ConversionState>(INITIAL_STATE);
@@ -59,20 +59,22 @@ export const useCurrencyConversion = (): UseCurrencyConversionResult => {
         const requestId = latestRequestId.current;
         const sourceAmountInMicroUnits = convertToMicroUnits(sourceAmount);
 
-        void exchangeRatesService.convert(sourceInstrumentId, destinationInstrumentId, sourceAmountInMicroUnits).then(
-            result => {
-                if (requestId !== latestRequestId.current || latestRequestId.current === UNMOUNTED_REQUEST_ID) {
+        void appRuntime
+            .runPromise(exchangeRatesService.convert(sourceInstrumentId, destinationInstrumentId, sourceAmountInMicroUnits))
+            .then(
+                result => {
+                    if (requestId !== latestRequestId.current || latestRequestId.current === UNMOUNTED_REQUEST_ID) {
+                        return result;
+                    }
+
+                    setState({ destinationAmount: result.amount / PRECISION, exchangeRate: result.exchangeRate, isManualRate: false });
+
                     return result;
+                },
+                (error: unknown) => {
+                    appRuntime.runFork(Effect.logError('convert:failed', { errorMessage: getErrorMessage(error) }));
                 }
-
-                setState({ destinationAmount: result.amount / PRECISION, exchangeRate: result.exchangeRate, isManualRate: false });
-
-                return result;
-            },
-            (error: unknown) => {
-                logger.error('convert:failed', { errorMessage: getErrorMessage(error) });
-            }
-        );
+            );
     };
 
     const setManualDestinationAmount = (sourceAmount: number, destinationAmount: number) => {

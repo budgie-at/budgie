@@ -9,6 +9,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
@@ -167,7 +168,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
             return;
         }
         try {
-            await budgetService.deleteBudget(budget.id);
+            await appRuntime.runPromise(budgetService.deleteBudget(budget.id));
             goBackOrReplace('/');
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not delete budget`, text2: getErrorMessage(error) });
@@ -204,9 +205,9 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
                 };
 
                 if (isPositiveNumber(editingId)) {
-                    await budgetService.updateBudget(editingId, basePayload);
+                    await appRuntime.runPromise(budgetService.updateBudget(editingId, basePayload));
                 } else {
-                    await budgetService.createBudget(basePayload);
+                    await appRuntime.runPromise(budgetService.createBudget(basePayload));
                 }
 
                 const fallbackRoute = isEditing ? EDITING_FALLBACK_ROUTE : DEFAULT_FALLBACK_ROUTE;

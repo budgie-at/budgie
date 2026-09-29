@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
@@ -30,7 +31,7 @@ export const useUpdateTransactionForm = ({ id, schema, transaction, onAfterSubmi
 
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {
-            await transactionService.updateById(id, data);
+            await appRuntime.runPromise(transactionService.updateById(id, data));
             onAfterSubmit?.(data);
             goBackOrReplace('/');
         } catch (error: unknown) {
@@ -56,7 +57,7 @@ export const useUpdateTransactionForm = ({ id, schema, transaction, onAfterSubmi
         }
 
         try {
-            await transactionService.deleteById(id);
+            await appRuntime.runPromise(transactionService.deleteById(id));
             dismissAllOrReplace('/');
         } catch (error: unknown) {
             Toast.show({

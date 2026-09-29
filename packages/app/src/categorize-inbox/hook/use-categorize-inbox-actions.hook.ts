@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { emptyFn, getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
 import { categorizeInboxService } from '../service/categorize-inbox.service';
@@ -39,7 +40,7 @@ export const useCategorizeInboxActions = (
         visibility.hideTransactions(toTransactionIds(assignments));
         enqueueWrite(
             async () => {
-                const applied = await categorizeInboxService.assign(strategy.labelKind, assignments);
+                const applied = await appRuntime.runPromise(categorizeInboxService.assign(strategy.labelKind, assignments));
 
                 if (isNotEmptyArray(applied)) {
                     setLastWrite({ assignments: applied, followUpAssignments: [] });
@@ -66,10 +67,10 @@ export const useCategorizeInboxActions = (
         enqueueWrite(
             async () => {
                 if (isNotEmptyArray(write.followUpAssignments)) {
-                    await categorizeInboxService.undo(CategorizeInboxLabelKindEnum.TAG, write.followUpAssignments);
+                    await appRuntime.runPromise(categorizeInboxService.undo(CategorizeInboxLabelKindEnum.TAG, write.followUpAssignments));
                 }
 
-                await categorizeInboxService.undo(strategy.labelKind, write.assignments);
+                await appRuntime.runPromise(categorizeInboxService.undo(strategy.labelKind, write.assignments));
             },
             () => void setLastWrite(previous => previous ?? write),
             strategy.writeFailed
@@ -82,9 +83,11 @@ export const useCategorizeInboxActions = (
         if (isNotEmptyArray(tagIds)) {
             enqueueWrite(
                 async () => {
-                    const followUpAssignments = await categorizeInboxService.assign(
-                        CategorizeInboxLabelKindEnum.TAG,
-                        tagIds.map(labelId => ({ ...write.assignments[0], labelId }))
+                    const followUpAssignments = await appRuntime.runPromise(
+                        categorizeInboxService.assign(
+                            CategorizeInboxLabelKindEnum.TAG,
+                            tagIds.map(labelId => ({ ...write.assignments[0], labelId }))
+                        )
                     );
 
                     setLastWrite(previous => (previous === write ? { ...write, followUpAssignments } : previous));

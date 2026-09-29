@@ -1,3 +1,5 @@
+import * as Effect from 'effect/Effect';
+
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionEntryRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
@@ -7,27 +9,27 @@ import { transactionMapEntryInputToCreateEntity } from './transaction-map-entry-
 import { transactionMapTagIdsToCreateEntities } from './transaction-map-tag-ids-to-create-entities.util';
 
 import type { UpsertTransactionEntriesAndTagsInputInterface } from '../interface/upsert-transaction-entries-and-tags-input.interface';
-import type { DB } from '@budgie/contracts';
 
-export const upsertTransactionEntriesAndTags = async (
-    { transactionId, input, operatedAt, isConsolidated }: UpsertTransactionEntriesAndTagsInputInterface,
-    tx: DB
-): Promise<void> => {
+export const upsertTransactionEntriesAndTags = Effect.fn('upsertTransactionEntriesAndTags')(function* ({
+    transactionId,
+    input,
+    operatedAt,
+    isConsolidated
+}: UpsertTransactionEntriesAndTagsInputInterface) {
     if (isConsolidated) {
-        await transactionEntryRepository.deleteLedgerByTransactionId(transactionId, tx);
+        yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
     } else {
-        await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
+        yield* transactionEntryRepository.deleteByTransactionId(transactionId);
     }
 
-    const valuations = await entryBaseValuationService.valueEntries(input.entries, operatedAt, tx);
+    const valuations = yield* entryBaseValuationService.valueEntries(input.entries, operatedAt);
 
-    await transactionEntryRepository.bulkCreate(
-        input.entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transactionId, valuations.get(entry))),
-        tx
+    yield* transactionEntryRepository.bulkCreate(
+        input.entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transactionId, valuations.get(entry)))
     );
 
-    await transactionTagsRepository.deleteByTransactionId(transactionId, tx);
+    yield* transactionTagsRepository.deleteByTransactionId(transactionId);
     if (isNotEmptyArray(input.tagIds)) {
-        await transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId), tx);
+        yield* transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId));
     }
-};
+});

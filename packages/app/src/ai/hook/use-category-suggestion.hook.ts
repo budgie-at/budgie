@@ -1,6 +1,6 @@
 import { UseSuggestionReturnInterface } from '@budgie/ai';
 import { CategoryEntityInterface } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -8,10 +8,8 @@ import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
+import { embeddingService } from '../service/embedding.service';
 
-const logger = getLogger('useCategorySuggestion');
-
-import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCategorySuggestionParams {
@@ -25,23 +23,16 @@ interface UseCategorySuggestionParams {
 export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseSuggestionReturnInterface<CategoryEntityInterface> => {
     const { transactionTitle, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { status: embeddingStatus } = useEmbedding();
+    const embeddingStatus = useAtomValue(embeddingService.model.snapshot, snapshot => snapshot.status);
     const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { categories, isLoading: isCategoriesLoading } = useNonSystemCategoriesQuery();
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
     const hasCategoriesLoaded = isNotEmptyArray(categories);
 
-    const fetchSuggestions = async (): Promise<CategoryEntityInterface[]> => {
+    const fetchSuggestions = () => {
         const mccDescription = mccCategory?.fullDescription ?? null;
-        logger.log('hook:suggestion:category:fetch:start', {
-            transactionTitle,
-            mccCategoryId,
-            mccDescription,
-            comment,
-            aiContext,
-            categoriesLength: categories.length
-        });
-        const results = await embeddingSuggestionService.suggestCategories(
+
+        return embeddingSuggestionService.suggestCategories(
             categories,
             transactionTitle,
             mccDescription,
@@ -49,20 +40,7 @@ export const useCategorySuggestion = (params: UseCategorySuggestionParams): UseS
             aiContext,
             mccCategoryId
         );
-        logger.log('hook:suggestion:category:fetch:done', { count: results.length, ids: results.map(category => category.id) });
-
-        return results;
     };
-
-    logger.log('hook:suggestion:category:hook:state', {
-        enabled,
-        embeddingStatus,
-        embeddingReady,
-        isMccLoading,
-        isCategoriesLoading,
-        hasCategoriesLoaded,
-        categoriesLength: categories.length
-    });
 
     const { status, suggestions } = useSuggestionBase({
         enabled,

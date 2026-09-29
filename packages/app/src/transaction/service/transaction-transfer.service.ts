@@ -1,20 +1,19 @@
 import {
     CategorySourceEnum,
-    TransactionEntityInterface,
+    Db,
     TransactionEntryCreateEntityInterface,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    transactionAsync
+    TransactionTypeEnum
 } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { t } from '@lingui/core/macro';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountBalanceRepository, db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
-import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { accountBalanceRepository, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
@@ -33,146 +32,136 @@ import { transactionService } from './transaction.service';
 
 import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
 import type { ConvertToTransferParamsInterface } from '../interface/convert-to-transfer-params.interface';
-import type { DB, TransactionCreateInputInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
+import type { TransactionEntryEntityInterface } from '@budgie/contracts';
 
 class TransactionTransferService {
-    @InvalidateDatabaseLiveQuery()
-    async convertExpenseToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
-        return this.convertToTransfer(params, 'expense');
-    }
+    readonly convertExpenseToTransfer = Effect.fn('TransactionTransferService.convertExpenseToTransfer')(function* (
+        this: TransactionTransferService,
+        params: ConvertToTransferParamsInterface
+    ) {
+        return yield* this.convertToTransfer(params, 'expense');
+    }, invalidateDatabaseLiveQuery);
 
-    @InvalidateDatabaseLiveQuery()
-    async convertIncomeToTransfer(params: ConvertToTransferParamsInterface): Promise<TransactionEntityInterface> {
-        return this.convertToTransfer(params, 'income');
-    }
+    readonly convertIncomeToTransfer = Effect.fn('TransactionTransferService.convertIncomeToTransfer')(function* (
+        this: TransactionTransferService,
+        params: ConvertToTransferParamsInterface
+    ) {
+        return yield* this.convertToTransfer(params, 'income');
+    }, invalidateDatabaseLiveQuery);
 
-    @Log(
-        (depositAccountId, destinationAccountId) =>
-            `enter depositAccountId=${depositAccountId} destinationAccountId=${destinationAccountId}`,
-        (_result, depositAccountId, destinationAccountId) =>
-            `done depositAccountId=${depositAccountId} destinationAccountId=${destinationAccountId}`,
-        (error, depositAccountId, destinationAccountId) =>
-            `throw depositAccountId=${depositAccountId} destinationAccountId=${destinationAccountId} error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async closeDepositTo(depositAccountId: number, destinationAccountId: number): Promise<void> {
-        await transactionAsync(db, async tx => {
-            const depositBalanceRows = await accountBalanceRepository.getByAccountId(depositAccountId, tx);
+    readonly closeDepositTo = Effect.fn('TransactionTransferService.closeDepositTo')(
+        function* (this: TransactionTransferService, depositAccountId: number, destinationAccountId: number) {
+            const depositBalanceRows = yield* Db.query(db => accountBalanceRepository.getByAccountId(depositAccountId, db));
             const depositBalanceMicroUnits = depositBalanceRows.at(0)?.balance ?? 0;
 
             if (depositBalanceMicroUnits < 0) {
                 // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, surfaced via caller's Toast
-                throw new Error('Cannot close a deposit with a negative balance');
+                yield* Effect.die(new Error('Cannot close a deposit with a negative balance'));
             }
 
             if (isPositiveNumber(depositBalanceMicroUnits)) {
-                const transferInput = await this.buildDepositCloseTransferInput(
+                const transferInput = yield* this.buildDepositCloseTransferInput(
                     depositAccountId,
                     destinationAccountId,
                     depositBalanceMicroUnits
                 );
-                await transactionService.createInternalTransfer(transferInput, tx);
+                yield* transactionService.createInternalTransfer(transferInput);
             }
 
-            await accountService.archiveByIdInTransaction(depositAccountId, tx);
-        });
-    }
+            yield* accountService.archiveByIdInTransaction(depositAccountId);
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    private async convertToTransfer(
-        params: ConvertToTransferParamsInterface,
-        direction: 'expense' | 'income'
-    ): Promise<TransactionEntityInterface> {
-        return transactionAsync(db, async tx => {
-            const conversion = await this.buildTransferConversion(direction, params, tx);
-            const updated = await transactionRepository.updateById(
-                params.id,
-                {
-                    type: conversion.transactionType,
-                    fromAccountId: conversion.fromAccountId,
-                    toAccountId: conversion.toAccountId,
-                    exchangeRate: conversion.exchangeRate
-                },
-                tx
+    private readonly convertToTransfer = Effect.fnUntraced(
+        function* (this: TransactionTransferService, params: ConvertToTransferParamsInterface, direction: 'expense' | 'income') {
+            const conversion = yield* this.buildTransferConversion(direction, params);
+            const updated = yield* transactionRepository.updateById(params.id, {
+                type: conversion.transactionType,
+                fromAccountId: conversion.fromAccountId,
+                toAccountId: conversion.toAccountId,
+                exchangeRate: conversion.exchangeRate
+            });
+
+            const [creditValuation, debitValuation] = yield* Effect.all(
+                [
+                    entryBaseValuationService.valueMicroUnitEntry({
+                        accountId: conversion.creditAccountId,
+                        amount: conversion.creditAmount,
+                        operatedAt: conversion.operatedAt,
+                        externalSource: null
+                    }),
+                    entryBaseValuationService.valueMicroUnitEntry({
+                        accountId: conversion.debitAccountId,
+                        amount: conversion.debitAmount,
+                        operatedAt: conversion.operatedAt,
+                        externalSource: null
+                    })
+                ],
+                { concurrency: 'unbounded' }
             );
-
-            const [creditValuation, debitValuation] = await Promise.all([
-                entryBaseValuationService.valueMicroUnitEntry({
-                    accountId: conversion.creditAccountId,
-                    amount: conversion.creditAmount,
-                    operatedAt: conversion.operatedAt,
-                    externalSource: null,
-                    tx
-                }),
-                entryBaseValuationService.valueMicroUnitEntry({
-                    accountId: conversion.debitAccountId,
-                    amount: conversion.debitAmount,
-                    operatedAt: conversion.operatedAt,
-                    externalSource: null,
-                    tx
-                })
-            ]);
-            const feeValuations = await Promise.all(
-                conversion.feeEntries.map(entry =>
+            const feeValuations = yield* Effect.forEach(
+                conversion.feeEntries,
+                entry =>
                     entryBaseValuationService.valueMicroUnitEntry({
                         accountId: entry.accountId,
                         amount: entry.amount,
                         operatedAt: conversion.operatedAt,
-                        externalSource: null,
-                        tx
-                    })
-                )
+                        externalSource: null
+                    }),
+                { concurrency: 'unbounded' }
             );
 
-            await transactionEntryRepository.deleteByTransactionId(params.id, tx);
-            await transactionEntryRepository.bulkCreate(
-                [
-                    this.buildTransferEntryCreateEntity({
-                        transactionId: params.id,
-                        accountId: conversion.creditAccountId,
-                        type: TransactionEntryTypeEnum.CREDIT,
-                        amount: conversion.creditAmount,
-                        valuation: creditValuation
-                    }),
-                    this.buildTransferEntryCreateEntity({
-                        transactionId: params.id,
-                        accountId: conversion.debitAccountId,
-                        type: TransactionEntryTypeEnum.DEBIT,
-                        amount: conversion.debitAmount,
-                        valuation: debitValuation
-                    }),
-                    ...conversion.feeEntries.map((entry, index) => this.buildFeeEntryCreateEntity(params.id, entry, feeValuations[index]))
-                ],
-                tx
-            );
+            yield* transactionEntryRepository.deleteByTransactionId(params.id);
+            yield* transactionEntryRepository.bulkCreate([
+                this.buildTransferEntryCreateEntity({
+                    transactionId: params.id,
+                    accountId: conversion.creditAccountId,
+                    type: TransactionEntryTypeEnum.CREDIT,
+                    amount: conversion.creditAmount,
+                    valuation: creditValuation
+                }),
+                this.buildTransferEntryCreateEntity({
+                    transactionId: params.id,
+                    accountId: conversion.debitAccountId,
+                    type: TransactionEntryTypeEnum.DEBIT,
+                    amount: conversion.debitAmount,
+                    valuation: debitValuation
+                }),
+                ...conversion.feeEntries.map((entry, index) => this.buildFeeEntryCreateEntity(params.id, entry, feeValuations[index]))
+            ]);
 
-            await accountBalanceIncrementalService.updateBalancesByAccountIds(
-                [conversion.creditAccountId, conversion.debitAccountId, ...conversion.feeEntries.map(entry => entry.accountId)],
-                tx
-            );
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds([
+                conversion.creditAccountId,
+                conversion.debitAccountId,
+                ...conversion.feeEntries.map(entry => entry.accountId)
+            ]);
 
             return updated;
-        });
-    }
+        },
+        effect => Db.transaction(effect)
+    );
 
-    private async buildTransferConversion(
+    private readonly buildTransferConversion = Effect.fnUntraced(function* (
+        this: TransactionTransferService,
         direction: 'expense' | 'income',
-        params: ConvertToTransferParamsInterface,
-        tx: DB
-    ): Promise<TransferConversionResultInterface> {
-        const transaction = await this.getTransferConversionTransaction(params.id, direction, tx);
+        params: ConvertToTransferParamsInterface
+    ) {
+        const transaction = yield* this.getTransferConversionTransaction(params.id, direction);
         const [transactionEntry] = getTransactionCategoryEntries(transaction.entries);
         const hasCustomRate = isPositiveNumber(params.customExchangeRate) && params.customExchangeRate !== 1;
         const isExpense = direction === 'expense';
-        const fromAccountId = isExpense ? this.requireTransferAccountId(transaction.fromAccountId, 'source') : params.accountId;
-        const toAccountId = isExpense ? params.accountId : this.requireTransferAccountId(transaction.toAccountId, 'destination');
-        const [fromAccount, toAccount] = await Promise.all([
-            accountService.findByIdIncludingArchivedOrFail(fromAccountId),
-            accountService.findByIdIncludingArchivedOrFail(toAccountId)
-        ]);
+        const fromAccountId = isExpense ? yield* this.requireTransferAccountId(transaction.fromAccountId, 'source') : params.accountId;
+        const toAccountId = isExpense ? params.accountId : yield* this.requireTransferAccountId(transaction.toAccountId, 'destination');
+        const [fromAccount, toAccount] = yield* Effect.all(
+            [accountService.findByIdIncludingArchivedOrFail(fromAccountId), accountService.findByIdIncludingArchivedOrFail(toAccountId)],
+            { concurrency: 'unbounded' }
+        );
 
-        assertTransferAccountsAreNotDebt([fromAccount, toAccount]);
+        yield* assertTransferAccountsAreNotDebt([fromAccount, toAccount]);
 
-        const conversion = await exchangeRatesService.convert(
+        const conversion = yield* exchangeRatesService.convert(
             isExpense ? fromAccount.instrumentId : toAccount.instrumentId,
             isExpense ? toAccount.instrumentId : fromAccount.instrumentId,
             transactionEntry.amount
@@ -194,29 +183,79 @@ class TransactionTransferService {
             toAccountId,
             transactionType: TransactionTypeEnum.TRANSFER,
             feeEntries: getTransactionFeeEntries(transaction.entries)
-        };
-    }
+        } satisfies TransferConversionResultInterface;
+    });
 
-    private async getTransferConversionTransaction(id: number, direction: 'expense' | 'income', tx: DB) {
-        const transaction = await transactionRepository.getByIdWithEntries(id, tx);
+    private readonly getTransferConversionTransaction = Effect.fnUntraced(function* (id: number, direction: 'expense' | 'income') {
+        const transaction = yield* transactionRepository.getByIdWithEntries(id);
 
         if (!isDefined(transaction)) {
-            throw new Error(t`Transaction not found`);
+            return yield* Effect.die(new Error(t`Transaction not found`));
         }
 
         const errorMessage = TRANSFER_CONVERSION_ERROR_MESSAGE[direction];
         const expectedType = direction === 'expense' ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
 
         if (transaction.type !== expectedType) {
-            throw new Error(i18n._(errorMessage.wrongType));
+            return yield* Effect.die(new Error(i18n._(errorMessage.wrongType)));
         }
 
         if (getTransactionCategoryEntries(transaction.entries).length !== 1) {
-            throw new Error(i18n._(errorMessage.multiEntry));
+            return yield* Effect.die(new Error(i18n._(errorMessage.multiEntry)));
         }
 
         return transaction;
-    }
+    });
+
+    private readonly buildDepositCloseTransferInput = Effect.fnUntraced(function* (
+        this: TransactionTransferService,
+        depositAccountId: number,
+        destinationAccountId: number,
+        amountInMicroUnits: number
+    ) {
+        const [depositAccount, destinationAccount] = yield* Effect.all(
+            [accountService.findByIdOrFail(depositAccountId), accountService.findByIdOrFail(destinationAccountId)],
+            { concurrency: 'unbounded' }
+        );
+        const exchangeRate = yield* this.resolveDepositCloseExchangeRate(
+            depositAccount.instrumentId,
+            destinationAccount.instrumentId,
+            amountInMicroUnits
+        );
+        const amount = convertFromMicroUnits(amountInMicroUnits);
+
+        return createTransactionInput({
+            type: TransactionTypeEnum.TRANSFER,
+            fromAccountId: depositAccountId,
+            toAccountId: destinationAccountId,
+            amount,
+            exchangeRate,
+            entries: buildTransferEntries({
+                fromAccountId: depositAccountId,
+                toAccountId: destinationAccountId,
+                amount
+            })
+        });
+    });
+
+    private readonly resolveDepositCloseExchangeRate = Effect.fnUntraced(function* (
+        fromInstrumentId: number,
+        toInstrumentId: number,
+        amountInMicroUnits: number
+    ) {
+        if (fromInstrumentId === toInstrumentId) {
+            return 1;
+        }
+
+        const conversion = yield* exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits);
+
+        if (!isDefined(conversion) || !isPositiveNumber(conversion.amount)) {
+            // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, surfaced via caller's Toast
+            return yield* Effect.die(new Error('No exchange rate available to close this deposit into the selected account'));
+        }
+
+        return amountInMicroUnits / conversion.amount;
+    });
 
     private buildFeeEntryCreateEntity(
         transactionId: number,
@@ -266,65 +305,14 @@ class TransactionTransferService {
         };
     }
 
-    private requireTransferAccountId(accountId: number | null, kind: 'source' | 'destination'): number {
+    private requireTransferAccountId(accountId: number | null, kind: 'source' | 'destination') {
         if (isDefined(accountId)) {
-            return accountId;
+            return Effect.succeed(accountId);
         }
 
-        if (kind === 'source') {
-            throw new Error(t`Transaction must have a source account`);
-        }
-
-        throw new Error(t`Transaction must have a destination account`);
-    }
-
-    private async buildDepositCloseTransferInput(
-        depositAccountId: number,
-        destinationAccountId: number,
-        amountInMicroUnits: number
-    ): Promise<TransactionCreateInputInterface> {
-        const [depositAccount, destinationAccount] = await Promise.all([
-            accountService.findByIdOrFail(depositAccountId),
-            accountService.findByIdOrFail(destinationAccountId)
-        ]);
-        const exchangeRate = await this.resolveDepositCloseExchangeRate(
-            depositAccount.instrumentId,
-            destinationAccount.instrumentId,
-            amountInMicroUnits
+        return Effect.die(
+            new Error(kind === 'source' ? t`Transaction must have a source account` : t`Transaction must have a destination account`)
         );
-        const amount = convertFromMicroUnits(amountInMicroUnits);
-
-        return createTransactionInput({
-            type: TransactionTypeEnum.TRANSFER,
-            fromAccountId: depositAccountId,
-            toAccountId: destinationAccountId,
-            amount,
-            exchangeRate,
-            entries: buildTransferEntries({
-                fromAccountId: depositAccountId,
-                toAccountId: destinationAccountId,
-                amount
-            })
-        });
-    }
-
-    private async resolveDepositCloseExchangeRate(
-        fromInstrumentId: number,
-        toInstrumentId: number,
-        amountInMicroUnits: number
-    ): Promise<number> {
-        if (fromInstrumentId === toInstrumentId) {
-            return 1;
-        }
-
-        const conversion = await exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits);
-
-        if (!isDefined(conversion) || !isPositiveNumber(conversion.amount)) {
-            // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, surfaced via caller's Toast
-            throw new Error('No exchange rate available to close this deposit into the selected account');
-        }
-
-        return amountInMicroUnits / conversion.amount;
     }
 }
 

@@ -4,6 +4,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDepositAccountForm } from '../../hooks/use-deposit-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
@@ -37,15 +38,17 @@ export const UpdateDepositAccount = ({ account }: Props) => {
     const { control, handleSubmit, instrument, isSubmitting } = useDepositAccountForm(
         initialValues,
         values =>
-            accountService.updateDepositById(account.id, {
-                title: values.title,
-                icon: values.icon,
-                currentBalance: values.currentBalance,
-                interestRate: values.interestRate,
-                deadline: values.deadline,
-                includeInNetWorth: values.includeInNetWorth,
-                isActive: values.isActive
-            }),
+            appRuntime.runPromise(
+                accountService.updateDepositById(account.id, {
+                    title: values.title,
+                    icon: values.icon,
+                    currentBalance: values.currentBalance,
+                    interestRate: values.interestRate,
+                    deadline: values.deadline,
+                    includeInNetWorth: values.includeInNetWorth,
+                    isActive: values.isActive
+                })
+            ),
         true
     );
 

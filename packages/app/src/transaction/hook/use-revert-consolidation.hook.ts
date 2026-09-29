@@ -3,6 +3,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { transactionService } from '../service/transaction.service';
 
@@ -25,7 +26,7 @@ export const useRevertConsolidation = (transactionId: number, onSuccess?: EmptyF
         }
 
         try {
-            await transactionService.unconsolidateById(transactionId);
+            await appRuntime.runPromise(transactionService.unconsolidateById(transactionId));
             onSuccess?.();
         } catch (error: unknown) {
             Toast.show({

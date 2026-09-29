@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
-
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { aiModelResidencyService } from '../service/ai-model-residency.service';
 import { sttService } from '../service/stt.service';
@@ -18,7 +17,7 @@ export const useSttResidency = (): UseSttResidencyReturn => {
     const acquireSttResidency = async (): Promise<boolean> => {
         if (!hasLeaseRef.current) {
             hasLeaseRef.current = true;
-            pendingAcquireRef.current = aiModelResidencyService.acquire(AiSubsystemNameEnum.STT).catch(emptyFn);
+            pendingAcquireRef.current = appRuntime.runPromise(aiModelResidencyService.acquire(AiSubsystemNameEnum.STT));
         }
 
         await pendingAcquireRef.current;
@@ -29,7 +28,7 @@ export const useSttResidency = (): UseSttResidencyReturn => {
     const releaseSttResidency = (): void => {
         if (hasLeaseRef.current) {
             hasLeaseRef.current = false;
-            aiModelResidencyService.releaseNow(AiSubsystemNameEnum.STT);
+            appRuntime.runFork(aiModelResidencyService.releaseNow(AiSubsystemNameEnum.STT));
         }
     };
 

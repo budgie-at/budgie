@@ -1,8 +1,9 @@
 import type { SyncDuplicateCandidateRowInterface } from './sync-duplicate-candidate-row.interface';
-import type { DB, ExternalSourceEnum } from '@budgie/contracts';
+import type { Db, DbError, ExternalSourceEnum } from '@budgie/contracts';
+import type * as Effect from 'effect/Effect';
 
 export interface SyncDuplicateRepairSourceStrategyInterface {
     readonly externalSource: ExternalSourceEnum;
 
-    findDuplicateCandidates(database: DB): Promise<SyncDuplicateCandidateRowInterface[]>;
+    readonly findDuplicateCandidates: () => Effect.Effect<SyncDuplicateCandidateRowInterface[], DbError, Db>;
 }

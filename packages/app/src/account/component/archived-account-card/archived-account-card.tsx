@@ -8,6 +8,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -35,7 +36,7 @@ export const ArchivedAccountCard = ({ account }: Props) => {
             {
                 text: t`Restore`,
                 onPress: () =>
-                    void accountService.restoreById(account.id).catch(() => {
+                    void appRuntime.runPromise(accountService.restoreById(account.id)).catch(() => {
                         Toast.show({
                             type: 'error',
                             text1: t`Could not restore account.`,

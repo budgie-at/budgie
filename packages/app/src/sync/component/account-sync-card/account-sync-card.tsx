@@ -1,12 +1,14 @@
 import { ExternalSourceEnum, SyncModeEnum, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
+import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
 import { syncProviderRegistryService } from '../../service/sync-provider-registry.service';
@@ -46,9 +48,11 @@ export const AccountSyncCard = ({ accountId }: Props) => {
     const statusLabel = buildSyncStatusLabel({ status: sync.status, isForwardMode, isSyncing });
 
     const handleToggle = (enabled: boolean) => {
-        void syncProviderRegistryService
-            .getServiceForAccount(accountId)
-            .then(service => service?.setAccountSyncEnabled(accountId, enabled));
+        void appRuntime.runPromise(
+            Effect.flatMap(syncProviderRegistryService.getServiceForAccount(accountId), service =>
+                isDefined(service) ? service.setAccountSyncEnabled(accountId, enabled) : Effect.void
+            )
+        );
     };
 
     const providerService = syncProviderRegistryService.getServiceForProvider(sync.provider);

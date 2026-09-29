@@ -1,18 +1,20 @@
+import * as Effect from 'effect/Effect';
+
 import { tagRepository } from '../../@generic/drizzle/db/db';
 
 class TagService {
-    async countTransactions(tagId: number): Promise<number> {
-        return tagRepository.countTransactions(tagId);
-    }
+    readonly countTransactions = Effect.fn('TagService.countTransactions')(function* (tagId: number) {
+        return yield* tagRepository.countTransactions(tagId);
+    });
 
-    async mergeInto(fromTagId: number, toTagId: number): Promise<void> {
-        await tagRepository.reassignTransactions(fromTagId, toTagId);
-        await tagRepository.deleteById(fromTagId);
-    }
+    readonly mergeInto = Effect.fn('TagService.mergeInto')(function* (fromTagId: number, toTagId: number) {
+        yield* tagRepository.reassignTransactions(fromTagId, toTagId);
+        yield* tagRepository.deleteById(fromTagId);
+    });
 
-    async deleteById(tagId: number): Promise<void> {
-        await tagRepository.deleteById(tagId);
-    }
+    readonly deleteById = Effect.fn('TagService.deleteById')(function* (tagId: number) {
+        yield* tagRepository.deleteById(tagId);
+    });
 }
 
 export const tagService = new TagService();

@@ -162,16 +162,14 @@ useLongPressHold({ onPress: handlePress, onLongPressComplete: handleLongPressCom
 ### Simplify return-from-transaction patterns
 
 ```typescript
-// Good - return directly
-async updateById(id: number, input: Input): Promise<Entity> {
-    return await db.transaction(async tx => { ... });
-}
+// Good - return the transaction effect directly
+readonly updateById = Effect.fn('X.updateById')(function* (id: number, input: Input) {
+    return yield* Db.transaction(Effect.gen(function* () { ... }));
+});
 
 // Bad - unnecessary intermediate variable
-async updateById(id: number, input: Input): Promise<Entity> {
-    const result = await db.transaction(async tx => { ... });
-    return result;
-}
+const result = yield* Db.transaction(Effect.gen(function* () { ... }));
+return result;
 ```
 
 ### Use shared utility functions for common operations
@@ -546,24 +544,31 @@ import { accountRepository, transactionRepository } from '../@generic/drizzle/db
 
 ### Live Queries
 
-Use `useLiveQuery` for reactive data:
+Use `useDatabaseLiveQuery` with a plain repository builder for reactive data:
 
 ```typescript
-const { data, error, updatedAt } = useLiveQuery(accountRepository.findById(id), [id]);
+const { data, error, updatedAt } = useDatabaseLiveQuery(accountRepository.findById(id), [id]);
 ```
 
-**`useLiveQuery` deps must be primitive-stable.** Passing an object literal (e.g. a `filters` prop reconstructed each render) makes the dep change every render, which re-runs the query and returns a new `data` array reference each render. Downstream consumers like `LegendList` see a new `sections` reference every render and their internal reconciliation (`state.props.data`, `totalSize`, `isEndReached`) silently breaks — pages "load" but the scroll boundary doesn't grow.
+**Deps must be primitive-stable.** Passing an object literal (e.g. a `filters` prop reconstructed each render) makes the dep change every render, which re-runs the query and returns a new `data` array reference each render. Downstream consumers like `LegendList` see a new `sections` reference every render and their internal reconciliation (`state.props.data`, `totalSize`, `isEndReached`) silently breaks — pages "load" but the scroll boundary doesn't grow.
 
 ```typescript
 // Bad — filters is a fresh object each render → query re-runs every render
-useLiveQuery(repo.find(filters, limit), [limit, filters]);
+useDatabaseLiveQuery(repo.find(filters, limit), [limit, filters]);
 
 // Good — derive a stable key (string or primitive) from filters
 const filterKey = JSON.stringify(filters); // or a dedicated buildXxxFilterKey util
-useLiveQuery(repo.find(filters, limit), [limit, filterKey]);
+useDatabaseLiveQuery(repo.find(filters, limit), [limit, filterKey]);
 ```
 
 If a filter shape exists in `@budgie/contracts` and is paginated, prefer adding a `buildXxxFilterKey` util alongside it (mirrors `buildTransactionFilterKey`) so callers can't forget.
+
+### Effects and transactions
+
+- Service IO methods are `Effect.fn('Owner.method')` fields. Run executed builders with `Db.query(() => repo.builder(args))` and atomic work with `Db.transaction(effect)`; nested transactions reuse the outer one, so there are no `tx` parameters.
+- Top-level writes pass `invalidateDatabaseLiveQuery` (`@generic/drizzle/utils`) as the last `Effect.fn` argument.
+- Resources that must close on failure (temp SQLite handles, attached databases) use `Effect.acquireUseRelease` / `Effect.ensuring`.
+- `appRuntime` (`@generic/runtime/app.runtime.ts`) provides `Db`, `HttpClient`, the logger layer and `Workload`. HTTP calls use `HttpClient` with `retryTransient` + `Schedule`, a per-attempt `Effect.timeout` and `HttpClientResponse.schemaBodyJson`.
 
 ### Drizzle ORM
 
@@ -572,6 +577,9 @@ If a filter shape exists in `@budgie/contracts` and is paginated, prefer adding 
 - **Upserts**: Use `.onConflictDoUpdate()`
 
 ## Error Handling
+
+- Services never `throw`/`try`. Expected failures are `Schema.TaggedError` classes in the module `/error` folder, only when a caller branches on them. Foreign Promise APIs (SecureStore, expo-file-system, expo-sqlite, native modules) are wrapped with `Effect.promise` (a failure is a defect that keeps the original message) or `Effect.tryPromise` when a caller needs the typed error.
+- Edges (hooks, components, routes, tasks, boot) run effects with `appRuntime.runPromise(effect)`; the rejection is the original error, so `getErrorMessage(error)` toasts keep working.
 
 Use Toast for user-facing errors:
 
@@ -655,39 +663,42 @@ export const AiTranslationFieldsHeaderRight = (props: Props) => {
 const getHeaderRight = (params: Params): ReactNode => { ... };
 ```
 
-### Async Functions in useEffect
+### Effects in useEffect
 
-Keep async functions defined inside `useEffect` (not extracted outside) to avoid `react-hooks/set-state-in-effect` lint errors:
+Run effects at the edge with `appRuntime.runPromise` / `appRuntime.runFork`, defined inside `useEffect`, and log failures with `Effect.tapCause(Effect.logError)`:
 
 ```typescript
-// Good - suggest defined inside useEffect
+// Good
 useEffect(() => {
     if (!isReady) return;
-    const suggest = async (): Promise<void> => {
-        setStatus('loading');
-        // ...
+    setStatus('loading');
+    const fiber = appRuntime.runFork(suggestService.suggest(id).pipe(Effect.tapCause(Effect.logError)));
+
+    return () => void appRuntime.runPromise(Fiber.interrupt(fiber));
+}, [isReady]);
+
+// Bad - async function with try/catch
+useEffect(() => {
+    const suggest = async () => {
+        try {
+            await suggestService.suggest(id);
+        } catch (e) {
+            logger.error(e);
+        }
     };
     void suggest();
 }, [isReady]);
-
-// Bad - suggest defined outside useEffect
-const suggest = async () => { setStatus('loading'); ... };
-useEffect(() => { void suggest(); }, [isReady]);
 ```
 
 ## Background Tasks
 
-Register tasks in `_layout.tsx` after migrations:
+`useAppInitialization` runs one startup Effect after the migrations: a 1s `Effect.sleep`, an idle wait (`waitForIdle`), then background-task registration and the startup sync. Each step is wrapped in `Effect.ignoreCause({ log: 'Error' })`, so a failure is logged once and never stops the next step.
 
-- Exchange rate sync (hourly)
-- Balance updates (weekly)
-- Monobank sync
-
-Task files use `.task.ts` suffix and are defined in `[module]/task/` folders.
+Task files use the `.task.ts` suffix, live in `[module]/task/`, and call `appRuntime.runPromise(...)` inside `TaskManager.defineTask`, mapping a rejection to `BackgroundTaskResult.Failed`.
 
 ### Long-running work must yield to the UI
 
-Any loop or multi-step process that can run long (valuing thousands of rows, bulk imports, batch consolidations) must yield to the JS event loop so the UI thread can paint — otherwise progress bars freeze at 0% and the app feels hung even when the work is succeeding. Process in batches, commit each batch in its own short transaction (never hold a write transaction open across a yield), publish progress, then `await microPause()` from `@generic/utils/micro-pause.util` before the next batch. Mirror the rule-engine batch pattern (`RULE_BATCH_SIZE` + per-batch transaction + yield).
+Any loop or multi-step process that can run long (valuing thousands of rows, bulk imports, batch consolidations) must yield to the JS event loop so the UI thread can paint — otherwise progress bars freeze at 0% and the app feels hung even when the work is succeeding. Process in batches (`processInputWithBatches` from `@generic/utils`), commit each batch in its own short `Db.transaction` (never hold a write transaction open across a yield), publish progress, then `yield* Effect.promise(() => microPause())` before the next batch.
 
 ### `emptySnapshot()` returns fresh objects
 
@@ -707,51 +718,7 @@ protected emptySnapshot(): AiSystemSnapshotInterface {
 
 ## Logging
 
-The library auto-derives `logContext = ClassName::methodName` for decorated methods, so there is no namespace argument. The transport prefixes every line as `[logContext]`.
-
-### Class methods — `@Log` decorator
-
-Every public service/repository method that warrants observability is decorated with the full lifecycle: `pre` (entry), `post` (success), `error` (catch). No inline `logger.log(...)` inside decorated method bodies.
-
-```ts
-import { Log } from '@budgie/logger';
-import { getErrorMessage } from '@rnw-community/shared';
-
-class SomeService {
-    @Log(
-        input => `enter input=${input}`,
-        (result, input) => `done input=${input} result=${result}`,
-        (error, input) => `throw input=${input} error=${getErrorMessage(error)}`
-    )
-    async doThing(input: string): Promise<number> {
-        // pure business logic
-    }
-}
-```
-
-Output:
-
-```
-[SomeService::doThing] enter input=hello
-[SomeService::doThing] done input=hello result=42
-```
-
-If a method has multiple log points today, extract each phase into a private method and decorate each. The outer method's `@Log` covers the outer lifecycle.
-
-### Free-function / hook / component — `getLogger`
-
-```ts
-import { getLogger } from '@budgie/logger';
-
-const logger = getLogger('useSomething');
-
-export const useSomething = () => {
-    logger.log('fired', { foo, bar });
-    logger.error('failed', { errorMessage });
-};
-```
-
-Free-form `context: string`. Convention: hook/file/component name. No enum.
+`Effect.fn('Owner.method')` spans are the service logging mechanism. Services do not log their own failures: the edge that runs the effect logs the cause once, and fire-and-forget effects end in `Effect.ignoreCause({ log: 'Error' })`. Use `Effect.logError` / `Effect.logDebug` only for a real debugging handle (for example the CSV importer's per-row parse errors). The `makeLoggerLayer` layer in `appRuntime` is the only sink.
 
 ### Build-time gate
 
@@ -764,7 +731,3 @@ APP_VARIANT=development EXPO_PUBLIC_AI_DISABLE=true pnpm start --port 8082
 ```
 
 Also verify the foreground bundle is the dev app (`com.vitalyiegorov.budgie.dev` on iOS), not the E2E app. The E2E build (`com.vitalyiegorov.budgie.e2e`) has `EXPO_PUBLIC_LOGGING_DISABLE=true` baked in, so Metro cannot re-enable service logs for that installed binary. If the wrong app is foreground, launch/reinstall the dev build or rebuild the target variant with logging enabled before debugging logs.
-
-### `packages/sync` exception
-
-`packages/sync` imports `Log` and `getLogger` through `@budgie/logger`. Its `syncLogger` helper in `packages/sync/src/core/util/sync-logger.util.ts` only binds the `SYNC` context.

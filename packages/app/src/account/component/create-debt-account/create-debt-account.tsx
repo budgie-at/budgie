@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
@@ -43,10 +44,10 @@ export const CreateDebtAccount = () => {
 
     const { control, handleSubmit, instrument, debtType, isSubmitting } = useDebtAccountForm(initialValues, async values => {
         if (isDefined(openingAccountId)) {
-            return accountDebtOpeningService.openDebtWithFundingAccount(values, openingAccountId);
+            return appRuntime.runPromise(accountDebtOpeningService.openDebtWithFundingAccount(values, openingAccountId));
         }
 
-        return accountService.createDebt(values);
+        return appRuntime.runPromise(accountService.createDebt(values));
     });
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
     const variant = ACCOUNT_COLOR.DEBT;

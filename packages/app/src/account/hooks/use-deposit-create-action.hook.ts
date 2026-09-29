@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useFormatDigits } from '../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { ACCOUNT_ICON } from '../constant/account-icon.constant';
@@ -26,18 +27,20 @@ export const useDepositCreateAction = (
             return null;
         }
 
-        const createdAccount = await accountService.createDeposit({
-            type: AccountTypeEnum.DEPOSIT,
-            title: t`Deposit`,
-            iban: null,
-            icon: ACCOUNT_ICON[AccountTypeEnum.DEPOSIT],
-            instrumentId: sourceAccount.instrumentId,
-            integrationId: sourceAccount.integrationId,
-            includeInNetWorth: true,
-            currentBalance: 0,
-            interestRate: null,
-            deadline: null
-        });
+        const createdAccount = await appRuntime.runPromise(
+            accountService.createDeposit({
+                type: AccountTypeEnum.DEPOSIT,
+                title: t`Deposit`,
+                iban: null,
+                icon: ACCOUNT_ICON[AccountTypeEnum.DEPOSIT],
+                instrumentId: sourceAccount.instrumentId,
+                integrationId: sourceAccount.integrationId,
+                includeInNetWorth: true,
+                currentBalance: 0,
+                interestRate: null,
+                deadline: null
+            })
+        );
 
         return createdAccount.id;
     };

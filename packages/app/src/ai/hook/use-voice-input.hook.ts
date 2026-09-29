@@ -1,10 +1,11 @@
 import { AITransactionInterface } from '@budgie/ai';
 import { useRef, useState } from 'react';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { VoiceInputStateEnum } from '../enum/voice-input-state.enum';
 import { UseVoiceInputReturnInterface } from '../interface/use-voice-input-return.interface';
+import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 
 import { useLlmCategorization } from './use-llm-categorization.hook';
 import { useRecording } from './use-recording.hook';
@@ -33,7 +34,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
     };
 
     const handleError = (e: unknown) => {
-        setError(getErrorMessage(e));
+        setError(getRootErrorMessage(e));
         setState(VoiceInputStateEnum.ERROR);
         settle([], '');
     };

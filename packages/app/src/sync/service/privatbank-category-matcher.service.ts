@@ -1,31 +1,25 @@
-import { Log } from '@budgie/logger';
 import { PRIVATBANK_CATEGORY_TO_MCC_CODE } from '@budgie/sync';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
 class PrivatbankCategoryMatcherService {
-    @Log(
-        categories => `enter categoryCount=${categories.length}`,
-        (result, categories) => {
-            const unmatchedCategories = categories.filter(category => !isDefined(result.get(category)));
-
-            return `done categoryCount=${categories.length} matchedCount=${[...result.values()].filter(isDefined).length} unmatchedCount=${unmatchedCategories.length} unmatchedCategories=${unmatchedCategories.join(',')}`;
-        },
-        (error, categories) => `throw categoryCount=${categories.length} error=${getErrorMessage(error)}`
-    )
-    async match(categories: string[]): Promise<Map<string, MccCategoryLookupInterface | null>> {
+    readonly match = Effect.fn('PrivatbankCategoryMatcherService.match')(function* (
+        this: PrivatbankCategoryMatcherService,
+        categories: string[]
+    ) {
         if (!isNotEmptyArray(categories)) {
-            return new Map();
+            return new Map<string, MccCategoryLookupInterface | null>();
         }
 
-        const mccCodeToLookupMap = await loadMccCategoryLookupMap();
+        const mccCodeToLookupMap = yield* loadMccCategoryLookupMap();
 
         return this.matchCategories(categories, mccCodeToLookupMap);
-    }
+    });
 
     private matchCategories(
         categories: string[],

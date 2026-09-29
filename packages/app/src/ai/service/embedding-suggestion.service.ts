@@ -7,5 +7,5 @@ import { embeddingService } from './embedding.service';
 export const embeddingSuggestionService = new EmbeddingSuggestionService(
     { merchant: merchantEmbeddingRepository, comment: commentEmbeddingRepository },
     embeddingService,
-    transactionRepository.findMccCategorySuggestions.bind(transactionRepository)
+    (mccCategoryId, limit) => transactionRepository.findMccCategorySuggestions(mccCategoryId, limit)
 );

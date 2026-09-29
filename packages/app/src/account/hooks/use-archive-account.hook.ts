@@ -4,6 +4,7 @@ import Toast from 'react-native-toast-message';
 
 import { EmptyFn, getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { accountService } from '../service/account.service';
 
@@ -26,7 +27,7 @@ export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
 
         setIsLoading(true);
         try {
-            await accountService.archiveById(accountId);
+            await appRuntime.runPromise(accountService.archiveById(accountId));
             onArchived();
         } catch (error) {
             Toast.show({

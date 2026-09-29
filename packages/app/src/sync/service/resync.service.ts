@@ -1,79 +1,57 @@
-import { ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, ExternalSourceEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { db, syncRepository, transactionRepository } from '../../@generic/drizzle/db/db';
-import { microPause } from '../../@generic/utils/micro-pause.util';
+import { syncRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { Workload } from '../../@generic/service/workload.service';
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 
 import { monobankSyncService } from './monobank-sync.service';
-import { syncWorkloadService } from './sync-workload.service';
 
 import type { ResyncInputInterface } from '../interface/resync-input.interface';
-import type { DB, TransactionEntityInterface } from '@budgie/contracts';
+import type { TransactionEntityInterface } from '@budgie/contracts';
 
 class ResyncService {
     private static readonly MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
     private static readonly YIELD_EVERY_ROWS = 5;
 
-    @Log(
-        input => `enter accountId=${input.accountId} sinceDays=${String(input.sinceDays)}`,
-        (_, input) => `done accountId=${input.accountId} sinceDays=${String(input.sinceDays)}`,
-        (error, input) => `throw accountId=${input.accountId} sinceDays=${String(input.sinceDays)} error=${getErrorMessage(error)}`
-    )
-    async resync(input: ResyncInputInterface): Promise<void> {
+    readonly resync = Effect.fn('ResyncService.resync')(function* (this: ResyncService, input: ResyncInputInterface) {
         const { accountId, sinceDays } = input;
         if (isDefined(sinceDays)) {
-            await transactionAsync(db, async tx => this.resyncWindowed(accountId, sinceDays, tx));
+            yield* Db.transaction(this.resyncWindowed(accountId, sinceDays));
         } else {
-            const sync = await syncRepository.getByAccountId(accountId);
+            const sync = yield* syncRepository.getByAccountId(accountId);
             const setupBalance =
-                sync?.provider === ExternalSourceEnum.MONOBANK ? await monobankSyncService.fetchSetupBalance(accountId) : null;
-            await transactionAsync(db, async tx => this.resyncFull(accountId, setupBalance, tx));
+                sync?.provider === ExternalSourceEnum.MONOBANK ? yield* monobankSyncService.fetchSetupBalance(accountId) : null;
+            yield* Db.transaction(this.resyncFull(accountId, setupBalance));
         }
 
-        syncWorkloadService.run('manual-monobank-resync', () => monobankSyncService.sync()).catch(emptyFn);
-    }
+        yield* Effect.forkDetach(Workload.use(workload => workload.run(monobankSyncService.sync())));
+    });
 
-    private async resyncFull(accountId: number, setupBalance: number | null, tx: DB): Promise<void> {
-        const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIds([accountId], tx);
-        await this.unconsolidateCanonicals(canonicals, tx);
-        await syncRepository.resetForResync(accountId, setupBalance, tx);
-    }
+    private readonly resyncFull = Effect.fnUntraced(function* (this: ResyncService, accountId: number, setupBalance: number | null) {
+        const canonicals = yield* transactionRepository.findActiveAutoConsolidatedByAccountIds([accountId]);
+        yield* this.unconsolidateCanonicals(canonicals);
+        yield* syncRepository.resetForResync(accountId, setupBalance);
+    });
 
-    private async resyncWindowed(accountId: number, sinceDays: number, tx: DB): Promise<void> {
+    private readonly resyncWindowed = Effect.fnUntraced(function* (this: ResyncService, accountId: number, sinceDays: number) {
         const since = new Date(Date.now() - sinceDays * ResyncService.MILLISECONDS_PER_DAY);
-        const canonicals = await transactionRepository.findActiveAutoConsolidatedByAccountIdsSince([accountId], since, tx);
-        await this.unconsolidateCanonicals(canonicals, tx);
-        await syncRepository.resetForWindowedResync(accountId, since, tx);
-    }
+        const canonicals = yield* transactionRepository.findActiveAutoConsolidatedByAccountIdsSince([accountId], since);
+        yield* this.unconsolidateCanonicals(canonicals);
+        yield* syncRepository.resetForWindowedResync(accountId, since);
+    });
 
-    private async unconsolidateCanonicals(canonicals: Array<Pick<TransactionEntityInterface, 'id'>>, tx: DB, index = 0): Promise<void> {
-        if (index >= canonicals.length) {
-            return;
+    private readonly unconsolidateCanonicals = Effect.fnUntraced(function* (canonicals: Array<Pick<TransactionEntityInterface, 'id'>>) {
+        for (const [index, canonical] of canonicals.entries()) {
+            yield* unconsolidateByIdInTransaction(canonical.id);
+
+            if ((index + 1) % ResyncService.YIELD_EVERY_ROWS === 0 && index + 1 < canonicals.length) {
+                yield* Effect.yieldNow;
+            }
         }
-
-        const batch = canonicals.slice(index, index + ResyncService.YIELD_EVERY_ROWS);
-        await this.unconsolidateCanonicalBatch(batch, tx);
-
-        if (index + ResyncService.YIELD_EVERY_ROWS < canonicals.length) {
-            await microPause();
-        }
-
-        await this.unconsolidateCanonicals(canonicals, tx, index + ResyncService.YIELD_EVERY_ROWS);
-    }
-
-    private async unconsolidateCanonicalBatch(canonicals: Array<Pick<TransactionEntityInterface, 'id'>>, tx: DB): Promise<void> {
-        const [canonical, ...remainingCanonicals] = canonicals;
-
-        if (!isDefined(canonical)) {
-            return;
-        }
-
-        await unconsolidateByIdInTransaction(canonical.id, tx);
-        await this.unconsolidateCanonicalBatch(remainingCanonicals, tx);
-    }
+    });
 }
 
 export const resyncService = new ResyncService();

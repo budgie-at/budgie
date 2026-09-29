@@ -9,6 +9,7 @@ import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-scre
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
 import { historicalMarketDataLoaderService } from '../../../market-data/service/historical-market-data-loader.service';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -54,9 +55,9 @@ export const CreateLiabilityAccount = ({
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useAccountForm(formValues, async values => {
-        const account = await accountService.create(values);
+        const account = await appRuntime.runPromise(accountService.create(values));
 
-        void historicalMarketDataLoaderService.enqueueAccounts([account]).catch(emptyFn);
+        void appRuntime.runPromise(historicalMarketDataLoaderService.enqueueAccounts([account])).catch(emptyFn);
 
         return account;
     });

@@ -6,6 +6,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
@@ -40,7 +41,7 @@ export const CreateDepositAccount = () => {
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useDepositAccountForm(initialValues, values =>
-        accountService.createDeposit(values)
+        appRuntime.runPromise(accountService.createDeposit(values))
     );
 
     const variant = ACCOUNT_COLOR[AccountTypeEnum.DEPOSIT];

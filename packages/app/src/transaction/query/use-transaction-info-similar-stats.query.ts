@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import type {
@@ -106,8 +107,8 @@ export const useTransactionInfoSimilarStatsQuery = (transaction: TransactionWith
         setIsLoading(true);
         setError(null);
 
-        transactionRepository
-            .findSimilarStats(query)
+        appRuntime
+            .runPromise(transactionRepository.findSimilarStats(query))
             .then(result => {
                 if (isActive) {
                     setStats(isDefined(result) ? fillSimilarStatsMonths(result, transaction.operatedAt) : null);

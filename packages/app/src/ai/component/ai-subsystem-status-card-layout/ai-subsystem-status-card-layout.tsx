@@ -1,5 +1,5 @@
-import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as Haptics from 'expo-haptics';
 import { ReactNode, useState } from 'react';
 import { Alert, Pressable, Text } from 'react-native';
@@ -8,13 +8,12 @@ import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated
 import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { AiProgressBar } from '../../../settings/components/ai-progress-bar/ai-progress-bar';
 import { AI_SUBSYSTEM_CARD_VISUALS } from '../../constant/ai-subsystem-card-visuals.constant';
 import { AiSubsystemCardStateEnum } from '../../enum/ai-subsystem-card-state.enum';
 import { useLongPressHold } from '../../hook/use-long-press-hold.hook';
 import { AiSubsystemStatusSnapshotInterface } from '../../interface/ai-subsystem-status-snapshot.interface';
-
-const logger = getLogger('AiSubsystemStatusCardLayout');
 
 interface Props {
     readonly snapshot: AiSubsystemStatusSnapshotInterface;
@@ -33,23 +32,21 @@ export const AiSubsystemStatusCardLayout = (props: Props) => {
 
     const isHidden = snapshot.state === AiSubsystemCardStateEnum.HIDDEN;
 
-    const handleRebuildConfirm = async (): Promise<void> => {
+    const handleRebuildConfirm = (): void => {
         setIsRebuilding(true);
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        try {
-            await onRebuild();
-        } catch (error: unknown) {
-            logger.error(rebuildLogKey, { errorMessage: getErrorMessage(error) });
-        } finally {
-            setIsRebuilding(false);
-        }
+        void onRebuild()
+            .catch((error: unknown) => appRuntime.runFork(Effect.logError(rebuildLogKey, { errorMessage: getErrorMessage(error) })))
+            .finally(() => {
+                setIsRebuilding(false);
+            });
     };
 
     const handleLongPressComplete = () => {
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         Alert.alert(rebuildAlertTitle, rebuildAlertMessage, [
             { text: t`Cancel`, style: 'cancel' },
-            { text: t`Rebuild`, style: 'destructive', onPress: () => void handleRebuildConfirm() }
+            { text: t`Rebuild`, style: 'destructive', onPress: handleRebuildConfirm }
         ]);
     };
 

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
 import { SyncAccountPreviewInterface } from '../../interface/sync-account-preview.interface';
@@ -39,7 +40,9 @@ export const CreateBinanceAccount = () => {
         handleGoBack,
         handleSetupSync,
         isStartSyncDisabled
-    } = useSyncAccountSetupFlow(selectedAccountIds => binanceSyncService.setupAccountSyncBatch(buildToken(), selectedAccountIds));
+    } = useSyncAccountSetupFlow(selectedAccountIds =>
+        appRuntime.runPromise(binanceSyncService.setupAccountSyncBatch(buildToken(), selectedAccountIds))
+    );
 
     const handleFetchAccounts = async () => {
         if (!isNotEmptyString(apiKey.trim()) || !isNotEmptyString(apiSecret.trim())) {
@@ -50,7 +53,7 @@ export const CreateBinanceAccount = () => {
 
         setIsLoading(true);
         try {
-            const previews = await binanceSyncService.fetchAccountsPreview(buildToken());
+            const previews = await appRuntime.runPromise(binanceSyncService.fetchAccountsPreview(buildToken()));
             setPreviews(previews.filter(preview => !preview.isParked));
             setParkedPreviews(previews.filter(preview => preview.isParked));
             setStep('accounts');

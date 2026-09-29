@@ -7,6 +7,7 @@ import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { useCreateAction } from '../../@generic/hook/use-create-action.hook';
 import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useRuleFormModal } from '../context/rule-form-modal.context';
 import { useGetAllRulesQuery } from '../query/use-get-all-rules.query';
 import { RulesPageSelector } from '../selector/rules-page.selector';
@@ -30,13 +31,13 @@ export const useRulesListPageActions = () => {
     };
 
     const handleDeleteRule = async (id: number) => {
-        await ruleService.archiveById(id);
+        await appRuntime.runPromise(ruleService.archiveById(id));
         refreshRules();
     };
 
     const handleToggleRule = async (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>, enabled: boolean) => {
         try {
-            await ruleService.toggleEnabled(rule.id, enabled);
+            await appRuntime.runPromise(ruleService.toggleEnabled(rule.id, enabled));
             refreshRules();
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not update rule`, text2: getErrorMessage(error) });
