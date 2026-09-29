@@ -6,7 +6,6 @@ export interface PatternRowInterface {
     readonly categoryIcon: UserIconNameEnum | null;
     readonly title: string;
     readonly comment: string | null;
-    readonly latestAmount: number;
     readonly occurrenceCount: number;
     readonly lastOccurrence: number;
     readonly accountId: number;

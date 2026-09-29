@@ -4,11 +4,13 @@ import { Log } from '@budgie/logger';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { extractPdfTextItems } from '../util/extract-pdf-text-items.util';
+import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 
 import { AbstractFileSyncService } from './abstract-file-sync.service';
 
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
+import type { SyncTransactionInterface } from '@budgie/sync';
 
 class ErsteSyncService extends AbstractFileSyncService {
     protected readonly provider = ExternalSourceEnum.ERSTE;
@@ -38,7 +40,11 @@ class ErsteSyncService extends AbstractFileSyncService {
     }
 
     protected async resolveMccCategoryIdMap(): Promise<Map<string, MccCategoryLookupInterface | null>> {
-        return new Map();
+        return loadMccCategoryLookupMap();
+    }
+
+    protected override resolveMccCategoryLookupKey(transaction: SyncTransactionInterface): string {
+        return String(transaction.mcc);
     }
 }
 

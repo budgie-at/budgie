@@ -1,8 +1,8 @@
 {
+  "id": "793bb225-036e-4e0c-9d5e-a65ba0772a96",
+  "prevId": "8769a3c0-8775-4def-b4b3-d7d49c5837e8",
   "version": "6",
   "dialect": "sqlite",
-  "id": "9aec5182-e97e-42c0-b81e-400c872280f3",
-  "prevId": "8769a3c0-8775-4def-b4b3-d7d49c5837e8",
   "tables": {
     "account_balances": {
       "name": "account_balances",
@@ -271,8 +271,8 @@
             "iban",
             "is_active"
           ],
-          "isUnique": false,
-          "where": "\"accounts\".\"deleted_at\" IS NULL AND \"accounts\".\"iban\" IS NOT NULL"
+          "where": "\"accounts\".\"deleted_at\" IS NULL AND \"accounts\".\"iban\" IS NOT NULL",
+          "isUnique": false
         },
         "accounts_active_type_instrument_idx": {
           "name": "accounts_active_type_instrument_idx",
@@ -281,49 +281,49 @@
             "type",
             "instrument_id"
           ],
-          "isUnique": false,
-          "where": "\"accounts\".\"deleted_at\" IS NULL"
+          "where": "\"accounts\".\"deleted_at\" IS NULL",
+          "isUnique": false
         }
       },
       "foreignKeys": {
         "accounts_instrument_id_instruments_id_fk": {
           "name": "accounts_instrument_id_instruments_id_fk",
           "tableFrom": "accounts",
-          "tableTo": "instruments",
           "columnsFrom": [
             "instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "accounts_target_base_instrument_id_instruments_id_fk": {
           "name": "accounts_target_base_instrument_id_instruments_id_fk",
           "tableFrom": "accounts",
-          "tableTo": "instruments",
           "columnsFrom": [
             "target_base_instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "accounts_integration_id_bank_integrations_id_fk": {
           "name": "accounts_integration_id_bank_integrations_id_fk",
           "tableFrom": "accounts",
-          "tableTo": "bank_integrations",
           "columnsFrom": [
             "integration_id"
           ],
+          "tableTo": "bank_integrations",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
@@ -385,16 +385,16 @@
             "provider",
             "token"
           ],
-          "isUnique": true,
-          "where": "\"bank_integrations\".\"deleted_at\" IS NULL"
+          "where": "\"bank_integrations\".\"deleted_at\" IS NULL",
+          "isUnique": true
         },
         "bank_integrations_provider_file_import_unq": {
           "name": "bank_integrations_provider_file_import_unq",
           "columns": [
             "provider"
           ],
-          "isUnique": true,
-          "where": "\"bank_integrations\".\"token\" = '' AND \"bank_integrations\".\"deleted_at\" IS NULL"
+          "where": "\"bank_integrations\".\"token\" = '' AND \"bank_integrations\".\"deleted_at\" IS NULL",
+          "isUnique": true
         }
       },
       "foreignKeys": {},
@@ -464,36 +464,36 @@
             "budget_id",
             "category_id"
           ],
-          "isUnique": true,
-          "where": "deleted_at IS NULL"
+          "where": "deleted_at IS NULL",
+          "isUnique": true
         }
       },
       "foreignKeys": {
         "budget_category_limits_budget_id_budgets_id_fk": {
           "name": "budget_category_limits_budget_id_budgets_id_fk",
           "tableFrom": "budget_category_limits",
-          "tableTo": "budgets",
           "columnsFrom": [
             "budget_id"
           ],
+          "tableTo": "budgets",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "budget_category_limits_category_id_categories_id_fk": {
           "name": "budget_category_limits_category_id_categories_id_fk",
           "tableFrom": "budget_category_limits",
-          "tableTo": "categories",
           "columnsFrom": [
             "category_id"
           ],
+          "tableTo": "categories",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -588,15 +588,15 @@
         "budgets_instrument_id_instruments_id_fk": {
           "name": "budgets_instrument_id_instruments_id_fk",
           "tableFrom": "budgets",
-          "tableTo": "instruments",
           "columnsFrom": [
             "instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -786,15 +786,15 @@
         "comment_embeddings_category_id_categories_id_fk": {
           "name": "comment_embeddings_category_id_categories_id_fk",
           "tableFrom": "comment_embeddings",
-          "tableTo": "categories",
           "columnsFrom": [
             "category_id"
           ],
+          "tableTo": "categories",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -824,28 +824,28 @@
         "comment_embedding_tags_comment_embedding_id_comment_embeddings_id_fk": {
           "name": "comment_embedding_tags_comment_embedding_id_comment_embeddings_id_fk",
           "tableFrom": "comment_embedding_tags",
-          "tableTo": "comment_embeddings",
           "columnsFrom": [
             "comment_embedding_id"
           ],
+          "tableTo": "comment_embeddings",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "comment_embedding_tags_tag_id_tags_id_fk": {
           "name": "comment_embedding_tags_tag_id_tags_id_fk",
           "tableFrom": "comment_embedding_tags",
-          "tableTo": "tags",
           "columnsFrom": [
             "tag_id"
           ],
+          "tableTo": "tags",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {
@@ -971,24 +971,24 @@
           "columns": [
             "transaction_id"
           ],
-          "isUnique": true,
-          "where": "\"debt_events\".\"transaction_id\" IS NOT NULL AND \"debt_events\".\"deleted_at\" IS NULL"
+          "where": "\"debt_events\".\"transaction_id\" IS NOT NULL AND \"debt_events\".\"deleted_at\" IS NULL",
+          "isUnique": true
         },
         "debt_events_transaction_idx": {
           "name": "debt_events_transaction_idx",
           "columns": [
             "transaction_id"
           ],
-          "isUnique": false,
-          "where": "\"debt_events\".\"transaction_id\" IS NOT NULL AND \"debt_events\".\"deleted_at\" IS NULL"
+          "where": "\"debt_events\".\"transaction_id\" IS NOT NULL AND \"debt_events\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "debt_events_transaction_entry_idx": {
           "name": "debt_events_transaction_entry_idx",
           "columns": [
             "transaction_entry_id"
           ],
-          "isUnique": false,
-          "where": "\"debt_events\".\"transaction_entry_id\" IS NOT NULL AND \"debt_events\".\"deleted_at\" IS NULL"
+          "where": "\"debt_events\".\"transaction_entry_id\" IS NOT NULL AND \"debt_events\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "debt_events_account_transaction_idx": {
           "name": "debt_events_account_transaction_idx",
@@ -996,8 +996,8 @@
             "debt_account_id",
             "transaction_id"
           ],
-          "isUnique": false,
-          "where": "\"debt_events\".\"deleted_at\" IS NULL"
+          "where": "\"debt_events\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "debt_events_account_operated_idx": {
           "name": "debt_events_account_operated_idx",
@@ -1005,62 +1005,62 @@
             "debt_account_id",
             "operated_at"
           ],
-          "isUnique": false,
-          "where": "\"debt_events\".\"deleted_at\" IS NULL"
+          "where": "\"debt_events\".\"deleted_at\" IS NULL",
+          "isUnique": false
         }
       },
       "foreignKeys": {
         "debt_events_debt_account_id_accounts_id_fk": {
           "name": "debt_events_debt_account_id_accounts_id_fk",
           "tableFrom": "debt_events",
-          "tableTo": "accounts",
           "columnsFrom": [
             "debt_account_id"
           ],
+          "tableTo": "accounts",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "debt_events_transaction_id_transactions_id_fk": {
           "name": "debt_events_transaction_id_transactions_id_fk",
           "tableFrom": "debt_events",
-          "tableTo": "transactions",
           "columnsFrom": [
             "transaction_id"
           ],
+          "tableTo": "transactions",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "debt_events_transaction_entry_id_transaction_entries_id_fk": {
           "name": "debt_events_transaction_entry_id_transaction_entries_id_fk",
           "tableFrom": "debt_events",
-          "tableTo": "transaction_entries",
           "columnsFrom": [
             "transaction_entry_id"
           ],
+          "tableTo": "transaction_entries",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "debt_events_base_instrument_id_instruments_id_fk": {
           "name": "debt_events_base_instrument_id_instruments_id_fk",
           "tableFrom": "debt_events",
-          "tableTo": "instruments",
           "columnsFrom": [
             "base_instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
@@ -1136,15 +1136,15 @@
         "default_category_translations_category_id_categories_id_fk": {
           "name": "default_category_translations_category_id_categories_id_fk",
           "tableFrom": "default_category_translations",
-          "tableTo": "categories",
           "columnsFrom": [
             "category_id"
           ],
+          "tableTo": "categories",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1221,8 +1221,8 @@
             "quote_instrument_id",
             "\"created_at\" DESC"
           ],
-          "isUnique": false,
-          "where": "\"exchange_rates\".\"deleted_at\" IS NULL"
+          "where": "\"exchange_rates\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "exchange_rates_base_instrument_id_quote_instrument_id_unique": {
           "name": "exchange_rates_base_instrument_id_quote_instrument_id_unique",
@@ -1308,8 +1308,8 @@
             "target_instrument_id",
             "\"rate_date\" DESC"
           ],
-          "isUnique": false,
-          "where": "\"historical_exchange_rates\".\"deleted_at\" IS NULL"
+          "where": "\"historical_exchange_rates\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "historical_exchange_rates_source_instrument_id_target_instrument_id_rate_date_unique": {
           "name": "historical_exchange_rates_source_instrument_id_target_instrument_id_rate_date_unique",
@@ -1325,28 +1325,28 @@
         "historical_exchange_rates_source_instrument_id_instruments_id_fk": {
           "name": "historical_exchange_rates_source_instrument_id_instruments_id_fk",
           "tableFrom": "historical_exchange_rates",
-          "tableTo": "instruments",
           "columnsFrom": [
             "source_instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "historical_exchange_rates_target_instrument_id_instruments_id_fk": {
           "name": "historical_exchange_rates_target_instrument_id_instruments_id_fk",
           "tableFrom": "historical_exchange_rates",
-          "tableTo": "instruments",
           "columnsFrom": [
             "target_instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -1444,8 +1444,8 @@
             "quote_instrument_id",
             "\"price_date\" DESC"
           ],
-          "isUnique": false,
-          "where": "\"instrument_daily_market_prices\".\"deleted_at\" IS NULL"
+          "where": "\"instrument_daily_market_prices\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "instrument_daily_market_prices_instrument_id_quote_instrument_id_price_date_unique": {
           "name": "instrument_daily_market_prices_instrument_id_quote_instrument_id_price_date_unique",
@@ -1461,28 +1461,28 @@
         "instrument_daily_market_prices_instrument_id_instruments_id_fk": {
           "name": "instrument_daily_market_prices_instrument_id_instruments_id_fk",
           "tableFrom": "instrument_daily_market_prices",
-          "tableTo": "instruments",
           "columnsFrom": [
             "instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "instrument_daily_market_prices_quote_instrument_id_instruments_id_fk": {
           "name": "instrument_daily_market_prices_quote_instrument_id_instruments_id_fk",
           "tableFrom": "instrument_daily_market_prices",
-          "tableTo": "instruments",
           "columnsFrom": [
             "quote_instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -1693,8 +1693,8 @@
             "\"priority\" DESC",
             "updated_at"
           ],
-          "isUnique": false,
-          "where": "\"instrument_market_data_jobs\".\"deleted_at\" IS NULL"
+          "where": "\"instrument_market_data_jobs\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "instrument_market_data_jobs_lookup_idx": {
           "name": "instrument_market_data_jobs_lookup_idx",
@@ -1703,8 +1703,8 @@
             "quote_instrument_id",
             "status"
           ],
-          "isUnique": false,
-          "where": "\"instrument_market_data_jobs\".\"deleted_at\" IS NULL"
+          "where": "\"instrument_market_data_jobs\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "instrument_market_data_jobs_instrument_id_quote_instrument_id_from_date_to_date_unique": {
           "name": "instrument_market_data_jobs_instrument_id_quote_instrument_id_from_date_to_date_unique",
@@ -1721,28 +1721,28 @@
         "instrument_market_data_jobs_instrument_id_instruments_id_fk": {
           "name": "instrument_market_data_jobs_instrument_id_instruments_id_fk",
           "tableFrom": "instrument_market_data_jobs",
-          "tableTo": "instruments",
           "columnsFrom": [
             "instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "instrument_market_data_jobs_quote_instrument_id_instruments_id_fk": {
           "name": "instrument_market_data_jobs_quote_instrument_id_instruments_id_fk",
           "tableFrom": "instrument_market_data_jobs",
-          "tableTo": "instruments",
           "columnsFrom": [
             "quote_instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -1831,28 +1831,28 @@
         "mcc_categories_mcc_group_id_mcc_groups_id_fk": {
           "name": "mcc_categories_mcc_group_id_mcc_groups_id_fk",
           "tableFrom": "mcc_categories",
-          "tableTo": "mcc_groups",
           "columnsFrom": [
             "mcc_group_id"
           ],
+          "tableTo": "mcc_groups",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "mcc_categories_default_category_id_categories_id_fk": {
           "name": "mcc_categories_default_category_id_categories_id_fk",
           "tableFrom": "mcc_categories",
-          "tableTo": "categories",
           "columnsFrom": [
             "default_category_id"
           ],
+          "tableTo": "categories",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
@@ -2014,15 +2014,15 @@
         "merchant_embeddings_category_id_categories_id_fk": {
           "name": "merchant_embeddings_category_id_categories_id_fk",
           "tableFrom": "merchant_embeddings",
-          "tableTo": "categories",
           "columnsFrom": [
             "category_id"
           ],
+          "tableTo": "categories",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2052,28 +2052,28 @@
         "merchant_embedding_tags_merchant_embedding_id_merchant_embeddings_id_fk": {
           "name": "merchant_embedding_tags_merchant_embedding_id_merchant_embeddings_id_fk",
           "tableFrom": "merchant_embedding_tags",
-          "tableTo": "merchant_embeddings",
           "columnsFrom": [
             "merchant_embedding_id"
           ],
+          "tableTo": "merchant_embeddings",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "merchant_embedding_tags_tag_id_tags_id_fk": {
           "name": "merchant_embedding_tags_tag_id_tags_id_fk",
           "tableFrom": "merchant_embedding_tags",
-          "tableTo": "tags",
           "columnsFrom": [
             "tag_id"
           ],
+          "tableTo": "tags",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {
@@ -2162,54 +2162,54 @@
         "rule_actions_rule_id_rules_id_fk": {
           "name": "rule_actions_rule_id_rules_id_fk",
           "tableFrom": "rule_actions",
-          "tableTo": "rules",
           "columnsFrom": [
             "rule_id"
           ],
+          "tableTo": "rules",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "rule_actions_category_id_categories_id_fk": {
           "name": "rule_actions_category_id_categories_id_fk",
           "tableFrom": "rule_actions",
-          "tableTo": "categories",
           "columnsFrom": [
             "category_id"
           ],
+          "tableTo": "categories",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "rule_actions_tag_id_tags_id_fk": {
           "name": "rule_actions_tag_id_tags_id_fk",
           "tableFrom": "rule_actions",
-          "tableTo": "tags",
           "columnsFrom": [
             "tag_id"
           ],
+          "tableTo": "tags",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "rule_actions_account_id_accounts_id_fk": {
           "name": "rule_actions_account_id_accounts_id_fk",
           "tableFrom": "rule_actions",
-          "tableTo": "accounts",
           "columnsFrom": [
             "account_id"
           ],
+          "tableTo": "accounts",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -2303,15 +2303,15 @@
         "rule_conditions_rule_id_rules_id_fk": {
           "name": "rule_conditions_rule_id_rules_id_fk",
           "tableFrom": "rule_conditions",
-          "tableTo": "rules",
           "columnsFrom": [
             "rule_id"
           ],
+          "tableTo": "rules",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -2552,28 +2552,28 @@
         "settings_default_account_id_accounts_id_fk": {
           "name": "settings_default_account_id_accounts_id_fk",
           "tableFrom": "settings",
-          "tableTo": "accounts",
           "columnsFrom": [
             "default_account_id"
           ],
+          "tableTo": "accounts",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         },
         "settings_default_instrument_id_instruments_id_fk": {
           "name": "settings_default_instrument_id_instruments_id_fk",
           "tableFrom": "settings",
-          "tableTo": "instruments",
           "columnsFrom": [
             "default_instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2672,13 +2672,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "backward_batch_at": {
-          "name": "backward_batch_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "forward_synced_at": {
           "name": "forward_synced_at",
           "type": "integer",
@@ -2688,20 +2681,6 @@
         },
         "forward_sync_from_at": {
           "name": "forward_sync_from_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "setup_balance": {
-          "name": "setup_balance",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "balance_adjustment_transaction_id": {
-          "name": "balance_adjustment_transaction_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false,
@@ -2743,6 +2722,27 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "backward_batch_at": {
+          "name": "backward_batch_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "balance_adjustment_transaction_id": {
+          "name": "balance_adjustment_transaction_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "setup_balance": {
+          "name": "setup_balance",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -2758,15 +2758,15 @@
         "bank_syncs_account_id_accounts_id_fk": {
           "name": "bank_syncs_account_id_accounts_id_fk",
           "tableFrom": "bank_syncs",
-          "tableTo": "accounts",
           "columnsFrom": [
             "account_id"
           ],
+          "tableTo": "accounts",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -2983,8 +2983,8 @@
           "notNull": true,
           "autoincrement": false,
           "generated": {
-            "as": "(CAST(strftime('%w', operated_at, 'unixepoch') AS INTEGER))",
-            "type": "virtual"
+            "type": "virtual",
+            "as": "(CAST(strftime('%w', operated_at, 'unixepoch') AS INTEGER))"
           }
         },
         "operated_minute_of_day": {
@@ -2994,8 +2994,8 @@
           "notNull": true,
           "autoincrement": false,
           "generated": {
-            "as": "(CAST(strftime('%H', operated_at, 'unixepoch') AS INTEGER) * 60 + CAST(strftime('%M', operated_at, 'unixepoch') AS INTEGER))",
-            "type": "virtual"
+            "type": "virtual",
+            "as": "(CAST(strftime('%H', operated_at, 'unixepoch') AS INTEGER) * 60 + CAST(strftime('%M', operated_at, 'unixepoch') AS INTEGER))"
           }
         }
       },
@@ -3013,24 +3013,24 @@
           "columns": [
             "operated_at"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"deleted_at\" IS NULL"
+          "where": "\"transactions\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "transactions_visible_operated_idx": {
           "name": "transactions_visible_operated_idx",
           "columns": [
             "operated_at"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL"
+          "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL",
+          "isUnique": false
         },
         "transactions_consolidation_parent_idx": {
           "name": "transactions_consolidation_parent_idx",
           "columns": [
             "consolidation_parent_transaction_id"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"consolidation_parent_transaction_id\" IS NOT NULL"
+          "where": "\"transactions\".\"consolidation_parent_transaction_id\" IS NOT NULL",
+          "isUnique": false
         },
         "transactions_visible_type_operated_idx": {
           "name": "transactions_visible_type_operated_idx",
@@ -3038,8 +3038,8 @@
             "type",
             "operated_at"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL"
+          "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL",
+          "isUnique": false
         },
         "transactions_visible_type_from_operated_idx": {
           "name": "transactions_visible_type_from_operated_idx",
@@ -3048,8 +3048,8 @@
             "from_account_id",
             "operated_at"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL AND \"transactions\".\"from_account_id\" IS NOT NULL"
+          "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL AND \"transactions\".\"from_account_id\" IS NOT NULL",
+          "isUnique": false
         },
         "transactions_visible_type_to_operated_idx": {
           "name": "transactions_visible_type_to_operated_idx",
@@ -3058,24 +3058,24 @@
             "to_account_id",
             "operated_at"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL AND \"transactions\".\"to_account_id\" IS NOT NULL"
+          "where": "\"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"consolidation_parent_transaction_id\" IS NULL AND \"transactions\".\"to_account_id\" IS NOT NULL",
+          "isUnique": false
         },
         "transactions_from_account_idx": {
           "name": "transactions_from_account_idx",
           "columns": [
             "from_account_id"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"from_account_id\" IS NOT NULL"
+          "where": "\"transactions\".\"from_account_id\" IS NOT NULL",
+          "isUnique": false
         },
         "transactions_to_account_idx": {
           "name": "transactions_to_account_idx",
           "columns": [
             "to_account_id"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"to_account_id\" IS NOT NULL"
+          "where": "\"transactions\".\"to_account_id\" IS NOT NULL",
+          "isUnique": false
         },
         "transactions_external_idx": {
           "name": "transactions_external_idx",
@@ -3083,8 +3083,8 @@
             "external_source",
             "external_id"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"external_id\" IS NOT NULL AND \"transactions\".\"deleted_at\" IS NULL"
+          "where": "\"transactions\".\"external_id\" IS NOT NULL AND \"transactions\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "transactions_weekday_type_idx": {
           "name": "transactions_weekday_type_idx",
@@ -3092,81 +3092,81 @@
             "operated_weekday",
             "type"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"deleted_at\" IS NULL"
+          "where": "\"transactions\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "transactions_minute_of_day_idx": {
           "name": "transactions_minute_of_day_idx",
           "columns": [
             "operated_minute_of_day"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"deleted_at\" IS NULL"
+          "where": "\"transactions\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "transactions_active_idx": {
           "name": "transactions_active_idx",
           "columns": [
             "id"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"deleted_at\" IS NULL"
+          "where": "\"transactions\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "transactions_pending_merchant_idx": {
           "name": "transactions_pending_merchant_idx",
           "columns": [
             "\"operated_at\" DESC"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"needs_embedding\" = 1 AND \"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"title\" != ''"
+          "where": "\"transactions\".\"needs_embedding\" = 1 AND \"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"title\" != ''",
+          "isUnique": false
         },
         "transactions_pending_comment_idx": {
           "name": "transactions_pending_comment_idx",
           "columns": [
             "\"operated_at\" DESC"
           ],
-          "isUnique": false,
-          "where": "\"transactions\".\"needs_embedding\" = 1 AND \"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"title\" = '' AND \"transactions\".\"comment\" != ''"
+          "where": "\"transactions\".\"needs_embedding\" = 1 AND \"transactions\".\"deleted_at\" IS NULL AND \"transactions\".\"title\" = '' AND \"transactions\".\"comment\" != ''",
+          "isUnique": false
         }
       },
       "foreignKeys": {
         "transactions_to_account_id_accounts_id_fk": {
           "name": "transactions_to_account_id_accounts_id_fk",
           "tableFrom": "transactions",
-          "tableTo": "accounts",
           "columnsFrom": [
             "to_account_id"
           ],
+          "tableTo": "accounts",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "transactions_from_account_id_accounts_id_fk": {
           "name": "transactions_from_account_id_accounts_id_fk",
           "tableFrom": "transactions",
-          "tableTo": "accounts",
           "columnsFrom": [
             "from_account_id"
           ],
+          "tableTo": "accounts",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "transactions_consolidation_parent_transaction_id_transactions_id_fk": {
           "name": "transactions_consolidation_parent_transaction_id_transactions_id_fk",
           "tableFrom": "transactions",
-          "tableTo": "transactions",
           "columnsFrom": [
             "consolidation_parent_transaction_id"
           ],
+          "tableTo": "transactions",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
@@ -3356,25 +3356,16 @@
           "columns": [
             "original_transaction_id"
           ],
-          "isUnique": false,
-          "where": "\"transaction_entries\".\"original_transaction_id\" IS NOT NULL"
+          "where": "\"transaction_entries\".\"original_transaction_id\" IS NOT NULL",
+          "isUnique": false
         },
         "transaction_entries_ledger_account_idx": {
           "name": "transaction_entries_ledger_account_idx",
           "columns": [
             "account_id"
           ],
-          "isUnique": false,
-          "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL"
-        },
-        "transaction_entries_live_account_created_idx": {
-          "name": "transaction_entries_live_account_created_idx",
-          "columns": [
-            "account_id",
-            "created_at"
-          ],
-          "isUnique": false,
-          "where": "\"transaction_entries\".\"deleted_at\" IS NULL"
+          "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL",
+          "isUnique": false
         },
         "transaction_entries_live_account_amount_transaction_idx": {
           "name": "transaction_entries_live_account_amount_transaction_idx",
@@ -3383,8 +3374,8 @@
             "amount",
             "transaction_id"
           ],
-          "isUnique": false,
-          "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL"
+          "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL",
+          "isUnique": false
         },
         "transaction_entries_live_transaction_account_amount_idx": {
           "name": "transaction_entries_live_transaction_account_amount_idx",
@@ -3393,24 +3384,24 @@
             "account_id",
             "amount"
           ],
-          "isUnique": false,
-          "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL"
+          "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL",
+          "isUnique": false
         },
         "transaction_entries_category_idx": {
           "name": "transaction_entries_category_idx",
           "columns": [
             "category_id"
           ],
-          "isUnique": false,
-          "where": "\"transaction_entries\".\"category_id\" IS NOT NULL"
+          "where": "\"transaction_entries\".\"category_id\" IS NOT NULL",
+          "isUnique": false
         },
         "transaction_entries_uncategorized_transaction_idx": {
           "name": "transaction_entries_uncategorized_transaction_idx",
           "columns": [
             "transaction_id"
           ],
-          "isUnique": false,
-          "where": "\"transaction_entries\".\"category_id\" IS NULL AND \"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL"
+          "where": "\"transaction_entries\".\"category_id\" IS NULL AND \"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"original_transaction_id\" IS NULL",
+          "isUnique": false
         },
         "transaction_entries_category_type_idx": {
           "name": "transaction_entries_category_type_idx",
@@ -3418,8 +3409,8 @@
             "category_id",
             "type"
           ],
-          "isUnique": false,
-          "where": "\"transaction_entries\".\"category_id\" IS NOT NULL"
+          "where": "\"transaction_entries\".\"category_id\" IS NOT NULL",
+          "isUnique": false
         },
         "transaction_entries_base_valuation_idx": {
           "name": "transaction_entries_base_valuation_idx",
@@ -3427,8 +3418,8 @@
             "base_instrument_id",
             "base_amount"
           ],
-          "isUnique": false,
-          "where": "\"transaction_entries\".\"deleted_at\" IS NULL"
+          "where": "\"transaction_entries\".\"deleted_at\" IS NULL",
+          "isUnique": false
         },
         "transaction_entries_quote_idx": {
           "name": "transaction_entries_quote_idx",
@@ -3436,101 +3427,101 @@
             "quoted_instrument_id",
             "quoted_amount"
           ],
-          "isUnique": false,
-          "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"quoted_instrument_id\" IS NOT NULL AND \"transaction_entries\".\"quoted_amount\" IS NOT NULL"
+          "where": "\"transaction_entries\".\"deleted_at\" IS NULL AND \"transaction_entries\".\"quoted_instrument_id\" IS NOT NULL AND \"transaction_entries\".\"quoted_amount\" IS NOT NULL",
+          "isUnique": false
         }
       },
       "foreignKeys": {
         "transaction_entries_account_id_accounts_id_fk": {
           "name": "transaction_entries_account_id_accounts_id_fk",
           "tableFrom": "transaction_entries",
-          "tableTo": "accounts",
           "columnsFrom": [
             "account_id"
           ],
+          "tableTo": "accounts",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "transaction_entries_category_id_categories_id_fk": {
           "name": "transaction_entries_category_id_categories_id_fk",
           "tableFrom": "transaction_entries",
-          "tableTo": "categories",
           "columnsFrom": [
             "category_id"
           ],
+          "tableTo": "categories",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "transaction_entries_mcc_category_id_mcc_categories_id_fk": {
           "name": "transaction_entries_mcc_category_id_mcc_categories_id_fk",
           "tableFrom": "transaction_entries",
-          "tableTo": "mcc_categories",
           "columnsFrom": [
             "mcc_category_id"
           ],
+          "tableTo": "mcc_categories",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "transaction_entries_transaction_id_transactions_id_fk": {
           "name": "transaction_entries_transaction_id_transactions_id_fk",
           "tableFrom": "transaction_entries",
-          "tableTo": "transactions",
           "columnsFrom": [
             "transaction_id"
           ],
+          "tableTo": "transactions",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "transaction_entries_base_instrument_id_instruments_id_fk": {
           "name": "transaction_entries_base_instrument_id_instruments_id_fk",
           "tableFrom": "transaction_entries",
-          "tableTo": "instruments",
           "columnsFrom": [
             "base_instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "transaction_entries_quoted_instrument_id_instruments_id_fk": {
           "name": "transaction_entries_quoted_instrument_id_instruments_id_fk",
           "tableFrom": "transaction_entries",
-          "tableTo": "instruments",
           "columnsFrom": [
             "quoted_instrument_id"
           ],
+          "tableTo": "instruments",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         },
         "transaction_entries_original_transaction_id_transactions_id_fk": {
           "name": "transaction_entries_original_transaction_id_transactions_id_fk",
           "tableFrom": "transaction_entries",
-          "tableTo": "transactions",
           "columnsFrom": [
             "original_transaction_id"
           ],
+          "tableTo": "transactions",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
@@ -3576,36 +3567,36 @@
           "columns": [
             "transaction_id"
           ],
-          "isUnique": true,
-          "where": "\"transaction_tags\".\"is_primary\" = 1"
+          "where": "\"transaction_tags\".\"is_primary\" = 1",
+          "isUnique": true
         }
       },
       "foreignKeys": {
         "transaction_tags_transaction_id_transactions_id_fk": {
           "name": "transaction_tags_transaction_id_transactions_id_fk",
           "tableFrom": "transaction_tags",
-          "tableTo": "transactions",
           "columnsFrom": [
             "transaction_id"
           ],
+          "tableTo": "transactions",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "transaction_tags_tag_id_tags_id_fk": {
           "name": "transaction_tags_tag_id_tags_id_fk",
           "tableFrom": "transaction_tags",
-          "tableTo": "tags",
           "columnsFrom": [
             "tag_id"
           ],
+          "tableTo": "tags",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {
@@ -3624,9 +3615,9 @@
   "views": {},
   "enums": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
+    "tables": {}
   },
   "internal": {
     "indexes": {
