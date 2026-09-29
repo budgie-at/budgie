@@ -10,35 +10,13 @@ class ExchangeRatesService {
         toInstrumentId: number,
         fromAmountInMicroUnits: number
     ): Promise<{ amount: number; exchangeRate: number }> {
-        if (fromInstrumentId === toInstrumentId) {
+        const exchangeRate = await this.findCurrentConversionRate(toInstrumentId, fromInstrumentId);
+
+        if (!isDefined(exchangeRate)) {
             return { amount: fromAmountInMicroUnits, exchangeRate: 1 };
         }
 
-        const exchangeRate = await exchangeRateRepository.findByBaseAndQuoteIds(toInstrumentId, fromInstrumentId);
-
-        if (isDefined(exchangeRate)) {
-            return { amount: Math.round(fromAmountInMicroUnits / exchangeRate.rate), exchangeRate: exchangeRate.rate };
-        }
-
-        const baseInstrument = await this.getBaseInstrument();
-
-        if (!isDefined(baseInstrument)) {
-            return { amount: fromAmountInMicroUnits, exchangeRate: 1 };
-        }
-
-        const [baseFromExchangeRate, baseToExchangeRate] = await Promise.all([
-            exchangeRateRepository.findByBaseAndQuoteIds(baseInstrument.id, fromInstrumentId),
-            exchangeRateRepository.findByBaseAndQuoteIds(toInstrumentId, baseInstrument.id)
-        ]);
-
-        if (!isDefined(baseFromExchangeRate) || !isDefined(baseToExchangeRate)) {
-            return { amount: fromAmountInMicroUnits, exchangeRate: 1 };
-        }
-
-        return {
-            amount: Math.round(fromAmountInMicroUnits / baseFromExchangeRate.rate / baseToExchangeRate.rate),
-            exchangeRate: baseToExchangeRate.rate
-        };
+        return { amount: Math.round(fromAmountInMicroUnits / exchangeRate), exchangeRate };
     }
 
     async convertStrict(
