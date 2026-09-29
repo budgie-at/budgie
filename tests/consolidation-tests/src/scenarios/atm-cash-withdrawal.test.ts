@@ -10,20 +10,22 @@ import {
     fetchSingleCanonicalId
 } from '../harness/consolidation-revert-audit';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { atmCashWithdrawalRepository, testQueryService, testSeedService } from '../harness/test-context';
 
 const ATM_WITHDRAWAL_AMOUNT = 500 * PRECISION;
 const ATM_WITHDRAWAL_FEE_AMOUNT = 5 * PRECISION;
 const ATM_CANONICAL_LEDGER_ENTRY_COUNT = 3;
 const ATM_EXPENSE_LEDGER_ENTRY_COUNT = 2;
 const ATM_MCC = '6011';
-const ATM_OPERATED_AT = new Date('2026-05-20T18:38:00');
+const DAY_MILLISECONDS = 24 * 60 * 60 * 1000;
+const ATM_OPERATED_AT = new Date(Date.now() - DAY_MILLISECONDS);
+const HISTORICAL_ATM_OPERATED_AT = new Date(Date.now() - 31 * DAY_MILLISECONDS);
 
-const seedAtmCashWithdrawalFixture = () => {
+const seedAtmCashWithdrawalFixture = (operatedAt = ATM_OPERATED_AT) => {
     const bankAccount = testSeedService.account({ title: 'Atm Bank', type: AccountTypeEnum.BANK_SYNC });
     const cashAccount = testSeedService.account({ title: 'Atm Cash', type: AccountTypeEnum.CASH });
     const expense = testSeedService.bankPairExpense(
-        { externalId: 'tx-atm', operatedAt: ATM_OPERATED_AT },
+        { externalId: 'tx-atm', operatedAt },
         { accountId: bankAccount.id, amount: ATM_WITHDRAWAL_AMOUNT, mccCategoryId: testQueryService.findMccByCode(ATM_MCC).id }
     );
 
@@ -35,7 +37,7 @@ const seedAtmCashWithdrawalFixture = () => {
 const fetchAtmCanonicalId = (): number => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
 
 describe('consolidation/atm-cash-withdrawal', () => {
-    it('promotes an ATM expense into a canonical transfer to cash and copies its fee entry', async () => {
+    it('promotes a recent ATM expense into a canonical transfer to cash and copies its fee entry', async () => {
         const { bankAccount, cashAccount, expense } = seedAtmCashWithdrawalFixture();
 
         const result = await runConsolidation();
@@ -49,6 +51,14 @@ describe('consolidation/atm-cash-withdrawal', () => {
             [bankAccount.id, -(ATM_WITHDRAWAL_AMOUNT + ATM_WITHDRAWAL_FEE_AMOUNT)],
             [cashAccount.id, ATM_WITHDRAWAL_AMOUNT]
         ]);
+    });
+
+    it('sends a historical ATM expense without a cash counterpart to review instead of moving it to cash', async () => {
+        const { expense } = seedAtmCashWithdrawalFixture(HISTORICAL_ATM_OPERATED_AT);
+
+        expect(await runConsolidation()).toEqual({ consolidated: 0, found: 0 });
+        expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
+        expect((await atmCashWithdrawalRepository.findReviewCandidates()).map(candidate => candidate.transactionId)).toEqual([expense.id]);
     });
 
     it('restores the ATM expense with its fee entry and clears the cash balance when reverted', async () => {

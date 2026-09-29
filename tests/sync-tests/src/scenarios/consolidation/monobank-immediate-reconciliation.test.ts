@@ -36,7 +36,7 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                     hold: false,
                     mcc: 6011,
                     operationAmount: -40800,
-                    time: Math.floor(new Date('2026-01-15T12:00:00.000Z').getTime() / 1000)
+                    time: Math.floor(Date.now() / 1000) - 60 * 60
                 })
             ]);
 

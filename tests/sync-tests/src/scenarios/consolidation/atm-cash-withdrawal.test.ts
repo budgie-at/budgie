@@ -38,7 +38,7 @@ const PRECISION = 1_000_000;
 
 const seedAtmExpense = (bankAccountId: number) =>
     seedBankPair.expense(
-        { externalId: 'tx-atm', operatedAt: new Date(2026, 0, 15, 12, 0, 0) },
+        { externalId: 'tx-atm', operatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
         { accountId: bankAccountId, amount: 500 * PRECISION, mccCategoryId: findMccByCode('6011').id }
     );
 

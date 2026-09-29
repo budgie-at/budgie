@@ -13,7 +13,7 @@ describe('account/balance-after-consolidation', () => {
         const bankAccount = seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
         const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
         seedBankPair.expense(
-            { externalId: 'tx-atm', operatedAt: new Date(2026, 0, 15, 12, 0, 0) },
+            { externalId: 'tx-atm', operatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
             { accountId: bankAccount.id, amount: AMOUNT, mccCategoryId: findMccByCode('6011').id }
         );
 
