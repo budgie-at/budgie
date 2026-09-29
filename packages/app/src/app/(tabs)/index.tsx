@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { useFocusKey } from '../../@generic/hook/use-focus-key.hook';
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
 import { NetWorthCollapsibleHeader } from '../../account/component/net-worth-collapsible-header/net-worth-collapsible-header';
 import { HomeSectionKindEnum } from '../../account/enum/home-section-kind.enum';
@@ -20,7 +19,6 @@ import { pairAccountsIntoRows } from '../../account/utils/pair-accounts-into-row
 import { resolveBankProviderGroup } from '../../account/utils/resolve-bank-provider-group.util';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
-import { useSetting } from '../../settings/hook/use-setting.hook';
 
 const appendAccount = <Key, Value>(groups: Map<Key, Value[]>, key: Key, value: Value): void => {
     const groupValues = groups.get(key);
@@ -142,9 +140,6 @@ export default function HomePage() {
     const { accounts, balanceSummary } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
     const scrollY = useSharedValue(0);
-    const language = useSetting('language');
-    const isBudgetWidgetEnabled = useSetting('isBudgetWidgetEnabled');
-    const focusKey = useFocusKey();
     const onboardingHref = useOnboardingRedirect();
 
     if (isDefined(onboardingHref)) {
@@ -156,7 +151,7 @@ export default function HomePage() {
     const sections = buildHomePageSections(activeAccounts, integrationProviders);
     const listHeaderComponent = (
         <View className="mb-3xl gap-y-3xl">
-            <BudgetWidget key={`${language}-${isBudgetWidgetEnabled ? 'enabled' : 'disabled'}-${focusKey}`} />
+            <BudgetWidget />
         </View>
     );
 

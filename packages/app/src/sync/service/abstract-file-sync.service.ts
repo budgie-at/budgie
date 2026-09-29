@@ -26,7 +26,7 @@ import type { FileBasedSyncClientInterface } from '../interface/file-based-sync-
 import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
 import type { AccountEntityInterface, DB, MccCategoryLookupInterface } from '@budgie/contracts';
-import type { SyncAccountInterface } from '@budgie/sync';
+import type { SyncAccountInterface, SyncTransactionInterface } from '@budgie/sync';
 
 export abstract class AbstractFileSyncService extends AbstractSyncService {
     override readonly supportsFileImport: boolean = true;
@@ -100,7 +100,7 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
         }
         const transactionInputs = await Promise.all(
             transactions.map(async transaction => {
-                const lookup = context.mccCategoryLookupMap.get(transaction.category ?? '') ?? null;
+                const lookup = context.mccCategoryLookupMap.get(this.resolveMccCategoryLookupKey(transaction)) ?? null;
 
                 return mapBankTransactionToCreateInput(transaction, account.id, lookup, this.provider);
             })
@@ -194,6 +194,10 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
         const integration = existingIntegration ?? (await bankIntegrationRepository.create({ provider: this.provider, token: '' }, tx));
 
         await accountRepository.updateById(account.id, { integrationId: integration.id }, tx);
+    }
+
+    protected resolveMccCategoryLookupKey(transaction: SyncTransactionInterface): string {
+        return transaction.category ?? '';
     }
 
     private async executeImportForSelectedAccountsInner(uri: string, selectedAccountIds: string[]): Promise<void> {

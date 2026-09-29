@@ -1,6 +1,10 @@
+import { isSameDay } from 'date-fns/isSameDay';
+import { useState } from 'react';
+
 import { isDefined } from '@rnw-community/shared';
 
 import { transactionPatternRepository } from '../../@generic/drizzle/db/db';
+import { useAppState } from '../../@generic/hook/use-app-state.hook';
 import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { useSetting } from '../../settings/hook/use-setting.hook';
@@ -17,7 +21,16 @@ interface UseRecurringCalendarReturnInterface {
 export const useRecurringCalendar = (displayYear: number, displayMonth: number): UseRecurringCalendarReturnInterface => {
     const { defaultInstrument } = useSettingsContext();
     const language = useSetting('language');
-    const now = new Date();
+    const [now, setNow] = useState(() => new Date());
+    useAppState(isActive => {
+        if (isActive) {
+            setNow(current => {
+                const next = new Date();
+
+                return isSameDay(current, next) ? current : next;
+            });
+        }
+    });
     const since = new Date(now.getFullYear(), now.getMonth() - RECURRING_WINDOW_MONTHS, now.getDate());
 
     const { data: candidates, updatedAt } = useDatabaseLiveQuery(
