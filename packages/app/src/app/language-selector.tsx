@@ -1,14 +1,12 @@
 import { LanguageEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { CountryFlag } from '../@generic/component/country-flag/country-flag';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
-import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
+import { SearchableSelectorList } from '../@generic/component/searchable-selector-list/searchable-selector-list';
 import { SelectorCard } from '../@generic/component/selector-card/selector-card';
-import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { LANGUAGES } from '../i18n/constant/languages.constant';
 import { useLanguageSelectorModal, useLanguageSelectorModalParams } from '../i18n/context/language-selector-modal.context';
 import { LanguageInterface } from '../i18n/interface/language.interface';
@@ -31,12 +29,10 @@ export default function LanguageSelectorModal() {
     const { t } = useLingui();
     const [, resolveLanguageSelector] = useLanguageSelectorModal();
     const currentParams = useLanguageSelectorModalParams();
-    const { flatListStyle, contentContainerStyle, backgroundColor } = useFormsheetListStyles();
     const [search, setSearch] = useState('');
 
     const selectedLanguage = currentParams?.selectedLanguage;
     const data = filterLanguages(LANGUAGES, search, t);
-    const containerStyle = { flex: 1, backgroundColor };
 
     const handleSelect = (language: LanguageEnum) => {
         resolveLanguageSelector(language);
@@ -58,34 +54,16 @@ export default function LanguageSelectorModal() {
         />
     );
 
-    /* jscpd:ignore-start */
-    const listEmptyComponent = (
-        <View className="flex-1 justify-center">
-            <EmptyState title={t`No languages found`} description={t`Try a different search term`} />
-        </View>
-    );
-
     return (
-        <View style={containerStyle}>
-            <SelectorModalSearchHeader
-                search={search}
-                onSearchChange={setSearch}
-                placeholder={t`Search languages...`}
-                testID={LanguageSelectorModalSelector.SearchInput}
-            />
-
-            <FlatList
-                style={flatListStyle}
-                data={data}
-                keyExtractor={keyExtractor}
-                renderItem={renderItem}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={contentContainerStyle}
-                ItemSeparatorComponent={ListItemSeparator}
-                ListEmptyComponent={listEmptyComponent}
-            />
-        </View>
+        <SearchableSelectorList
+            search={search}
+            onSearchChange={setSearch}
+            searchPlaceholder={t`Search languages...`}
+            searchTestID={LanguageSelectorModalSelector.SearchInput}
+            data={data}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            emptyState={<EmptyState title={t`No languages found`} description={t`Try a different search term`} />}
+        />
     );
-    /* jscpd:ignore-end */
 }

@@ -1,4 +1,3 @@
-/* jscpd:ignore-start - Selector modal imports pattern */
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
@@ -7,7 +6,6 @@ import { Text, View } from 'react-native';
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-/* jscpd:ignore-end */
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
 import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
@@ -136,7 +134,6 @@ export default function TagsSelectorModal() {
         [resolveTagsSelector]
     );
 
-    /* jscpd:ignore-start - FormSheet selector modal pattern */
     return (
         <View style={containerStyle} collapsable={false}>
             <SelectorModalSearchHeader
@@ -169,5 +166,4 @@ export default function TagsSelectorModal() {
             ) : null}
         </View>
     );
-    /* jscpd:ignore-end */
 }
