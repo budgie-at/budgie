@@ -19,22 +19,6 @@ import { scheduleIdleCallback } from '../utils/schedule-idle-callback.util';
 const SPLASH_HIDE_DELAY_MS = 200;
 const STARTUP_SERVICE_DELAY_MS = 1_000;
 
-const syncAppData = async (): Promise<void> => {
-    await accountBalanceIncrementalService.updateAllBalances(false).catch(emptyFn);
-
-    await exchangeRatesSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
-        return;
-    }
-
-    await monobankSyncService.sync().catch(emptyFn);
-    if (syncWorkloadService.hasQueuedUserWork()) {
-        return;
-    }
-
-    await binanceSyncService.sync().catch(emptyFn);
-};
-
 const initializeAppServices = async (): Promise<void> => {
     await authService.ensurePinBackgroundAccessibility().catch(emptyFn);
     await exchangeRatesSyncService.registerBackgroundTask().catch(emptyFn);
@@ -45,7 +29,7 @@ const initializeAppServices = async (): Promise<void> => {
     await budgetAlertMonitorService.registerBackgroundTask().catch(emptyFn);
     await widgetSnapshotService.registerBackgroundTask().catch(emptyFn);
     widgetSnapshotService.start();
-    await syncWorkloadService.run('startup', syncAppData);
+    await syncWorkloadService.run('startup', () => syncWorkloadService.syncAppData());
     await onboardingService.initializeLocale().catch(emptyFn);
     void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
 };
