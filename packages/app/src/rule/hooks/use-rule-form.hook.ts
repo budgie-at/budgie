@@ -6,9 +6,10 @@ import {
     RuleCreateInputInterface,
     RuleCreateInputSchema
 } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Schema from 'effect/Schema';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
@@ -102,7 +103,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     const isEditing = isDefined(ruleId);
 
     const form = useForm<RuleCreateInputInterface>({
-        resolver: zodResolver(RuleCreateInputSchema),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(RuleCreateInputSchema)),
         defaultValues,
         mode: 'onSubmit'
     });

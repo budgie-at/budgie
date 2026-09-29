@@ -2,8 +2,10 @@
 'use server';
 
 import { getLogger } from '@budgie/logger';
+import * as Option from 'effect/Option';
+import * as Schema from 'effect/Schema';
+import * as SchemaTransformation from 'effect/SchemaTransformation';
 import { createClient } from 'redis';
-import { z } from 'zod';
 
 import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -16,11 +18,17 @@ const WAITLIST_SOURCE = 'landing';
 const MAX_EMAIL_LENGTH = 254;
 const REDIS_CONNECTION_DEADLINE_MS = 4500;
 const REDIS_COMMAND_DEADLINE_MS = 2000;
-const WaitlistEmailSchema = z.string().trim().toLowerCase().max(MAX_EMAIL_LENGTH).email();
-const WaitlistRedisResultSchema = z.tuple([
-    z.enum([WaitlistMessageKeyEnum.SUCCESS, WaitlistMessageKeyEnum.ALREADY_REGISTERED]),
-    z.number().int().positive()
+const EMAIL_REGEX = /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9-]*\.)+[A-Za-z]{2,}$/u;
+const WaitlistEmailSchema = Schema.String.pipe(
+    Schema.decode(SchemaTransformation.trim()),
+    Schema.decode(SchemaTransformation.toLowerCase()),
+    Schema.check(Schema.isMaxLength(MAX_EMAIL_LENGTH), Schema.isPattern(EMAIL_REGEX))
+);
+const WaitlistRedisResultSchema = Schema.Tuple([
+    Schema.Literals([WaitlistMessageKeyEnum.SUCCESS, WaitlistMessageKeyEnum.ALREADY_REGISTERED]),
+    Schema.Number.check(Schema.isInt(), Schema.isGreaterThan(0))
 ]);
+const WaitlistCountSchema = Schema.NumberFromString.check(Schema.isInt(), Schema.isGreaterThanOrEqualTo(0));
 const WAITLIST_SCRIPT = `
 local emailsType = redis.call('TYPE', KEYS[1]).ok
 if emailsType ~= 'none' and emailsType ~= 'zset' then
@@ -184,9 +192,9 @@ const getRedisClient = async () => {
 };
 
 export const joinWaitlist = async (input: unknown) => {
-    const parsedEmail = WaitlistEmailSchema.safeParse(input);
+    const parsedEmail = Schema.decodeUnknownOption(WaitlistEmailSchema)(input);
 
-    if (!parsedEmail.success) {
+    if (Option.isNone(parsedEmail)) {
         return { success: false, messageKey: WaitlistMessageKeyEnum.INVALID_EMAIL } as const;
     }
 
@@ -198,22 +206,22 @@ export const joinWaitlist = async (input: unknown) => {
 
     return await executeWithDeadline(
         client.eval(WAITLIST_SCRIPT, {
-            keys: [WAITLIST_EMAILS_KEY, WAITLIST_TOTAL_KEY, `waitlist:user:${parsedEmail.data}`],
-            arguments: [parsedEmail.data, String(Date.now()), WAITLIST_SOURCE]
+            keys: [WAITLIST_EMAILS_KEY, WAITLIST_TOTAL_KEY, `waitlist:user:${parsedEmail.value}`],
+            arguments: [parsedEmail.value, String(Date.now()), WAITLIST_SOURCE]
         }),
         REDIS_COMMAND_DEADLINE_MS,
         () => void destroyRedisClient(client)
     ).then(
         result => {
-            const parsedResult = WaitlistRedisResultSchema.safeParse(result);
+            const parsedResult = Schema.decodeUnknownOption(WaitlistRedisResultSchema)(result);
 
-            if (!parsedResult.success) {
+            if (Option.isNone(parsedResult)) {
                 logger.error('invalid_response');
 
                 return { success: false, messageKey: WaitlistMessageKeyEnum.ERROR } as const;
             }
 
-            return { success: true, messageKey: parsedResult.data[0], position: parsedResult.data[1] } as const;
+            return { success: true, messageKey: parsedResult.value[0], position: parsedResult.value[1] } as const;
         },
         () => {
             destroyRedisClient(client);
@@ -232,11 +240,7 @@ export const getWaitlistCount = async (): Promise<number> => {
     }
 
     return await executeWithDeadline(client.get(WAITLIST_TOTAL_KEY), REDIS_COMMAND_DEADLINE_MS, () => void destroyRedisClient(client)).then(
-        count => {
-            const parsedCount = z.coerce.number().int().nonnegative().safeParse(count);
-
-            return parsedCount.success ? parsedCount.data : 0;
-        },
+        count => Schema.decodeUnknownOption(WaitlistCountSchema)(count).pipe(Option.getOrElse(() => 0)),
         () => {
             destroyRedisClient(client);
             logger.error('count_failed');

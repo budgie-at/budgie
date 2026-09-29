@@ -1,5 +1,4 @@
-import { RuleActionCreateInputSchema } from '../schema/rule-action-create-input.schema';
+import type { RuleActionCreateInputSchema } from '../schema/rule-action-create-input.schema';
+import type { Mutable } from 'effect/Types';
 
-import type { z } from 'zod';
-
-export type RuleActionCreateInputInterface = z.infer<typeof RuleActionCreateInputSchema>;
+export type RuleActionCreateInputInterface = Mutable<typeof RuleActionCreateInputSchema.Type>;

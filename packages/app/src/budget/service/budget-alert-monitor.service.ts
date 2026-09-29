@@ -3,10 +3,10 @@ import { LanguageEnum } from '@budgie/contracts';
 import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
+import * as Schema from 'effect/Schema';
 import * as BackgroundTask from 'expo-background-task';
 import Storage from 'expo-sqlite/kv-store';
 import * as TaskManager from 'expo-task-manager';
-import { z } from 'zod';
 
 import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -20,7 +20,7 @@ import type { BudgetEntityInterface } from '@budgie/contracts';
 class BudgetAlertMonitorService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 15;
     private static readonly STORAGE_KEY_PREFIX = '@budgie:budget-alerts-fired';
-    private static readonly FiredTriggersSchema = z.array(z.string());
+    private static readonly FiredTriggersSchema = Schema.Array(Schema.String);
 
     @Log('enter', result => `done newTriggers=${result.length}`, error => `throw error=${getErrorMessage(error)}`)
     async run(): Promise<BudgetAlertTriggerInterface[]> {
@@ -137,13 +137,7 @@ class BudgetAlertMonitorService {
 
     private parseDeliveredTriggerKeys(raw: string): Set<string> {
         try {
-            const parsed = BudgetAlertMonitorService.FiredTriggersSchema.safeParse(JSON.parse(raw));
-
-            if (!parsed.success) {
-                return new Set();
-            }
-
-            return new Set(parsed.data);
+            return new Set(Schema.decodeUnknownSync(BudgetAlertMonitorService.FiredTriggersSchema)(JSON.parse(raw)));
         } catch {
             return new Set();
         }

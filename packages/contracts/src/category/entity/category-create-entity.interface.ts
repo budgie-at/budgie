@@ -1,5 +1,11 @@
-import { z } from 'zod';
+import type { BaseEntityKeyType } from '../../@generic/type/base-entity-key.type';
+import type { PartialByKeysType } from '../../@generic/type/partial-by-keys.type';
+import type { CategoryEntityInterface } from './category-entity.interface';
 
-import type { CategoryCreateEntitySchema } from '../schema/category-create-entity.schema';
-
-export type CategoryCreateEntityInterface = z.infer<typeof CategoryCreateEntitySchema>;
+export type CategoryCreateEntityInterface = PartialByKeysType<
+    Omit<
+        CategoryEntityInterface,
+        BaseEntityKeyType | 'isDefault' | 'isSystemCategory' | 'titleSearch' | 'titleEn' | 'titleTags' | 'tagsGeneratedAt'
+    >,
+    'parentId'
+>;

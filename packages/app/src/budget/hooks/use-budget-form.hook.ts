@@ -1,7 +1,8 @@
 import { budgetComputeAllocation } from '@budgie/budget';
 import { BudgetPeriodEnum } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Schema from 'effect/Schema';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
@@ -140,7 +141,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
 
     const form = useForm<BudgetFormValues>({
         mode: 'onChange',
-        resolver: zodResolver(BudgetFormSchema),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(BudgetFormSchema)),
         defaultValues: defaultFormValues,
         values: formValues,
         resetOptions: {

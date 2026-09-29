@@ -1,29 +1,44 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
+import * as SchemaGetter from 'effect/SchemaGetter';
+
+import type { Mutable } from 'effect/Types';
 
 const MIN_PERIOD_START_DAY = 1;
 const MAX_PERIOD_START_DAY = 28;
 
-const BudgetCategoryLimitFormSchema = z.object({
-    categoryId: z.number().int().positive(),
-    limitAmount: z.number().positive()
+const BudgetCategoryLimitFormSchema = Schema.Struct({
+    categoryId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0)),
+    limitAmount: Schema.Finite.check(Schema.isGreaterThan(0))
 });
 
-export const BudgetFormSchema = z
-    .object({
-        name: z.string().trim().min(1),
-        periodStartDay: z.number().int().min(MIN_PERIOD_START_DAY).max(MAX_PERIOD_START_DAY),
-        useLastDayOfMonth: z.boolean(),
-        overallLimit: z.number().positive(),
-        otherLimit: z.number().min(0),
-        categoryLimits: z.array(BudgetCategoryLimitFormSchema),
-        instrumentId: z.number().int().positive()
-    })
-    .refine(values => values.categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, 0) + values.otherLimit <= values.overallLimit, {
-        path: ['otherLimit']
-    })
-    .transform(values => ({
-        ...values,
-        periodStartDay: values.useLastDayOfMonth ? MIN_PERIOD_START_DAY : values.periodStartDay
-    }));
+const budgetFormFields = {
+    name: Schema.Trim.check(Schema.isMinLength(1)),
+    periodStartDay: Schema.Finite.check(Schema.isInt(), Schema.isBetween({ minimum: MIN_PERIOD_START_DAY, maximum: MAX_PERIOD_START_DAY })),
+    useLastDayOfMonth: Schema.Boolean,
+    overallLimit: Schema.Finite.check(Schema.isGreaterThan(0)),
+    otherLimit: Schema.Finite.check(Schema.isGreaterThanOrEqualTo(0)),
+    categoryLimits: Schema.mutable(Schema.Array(BudgetCategoryLimitFormSchema)),
+    instrumentId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0))
+};
 
-export type BudgetFormValues = z.input<typeof BudgetFormSchema>;
+export const BudgetFormSchema = Schema.Struct(budgetFormFields)
+    .check(
+        Schema.makeFilter(
+            values =>
+                values.categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, 0) + values.otherLimit <= values.overallLimit || {
+                    path: ['otherLimit'],
+                    issue: ''
+                }
+        )
+    )
+    .pipe(
+        Schema.decodeTo(Schema.Struct(budgetFormFields), {
+            decode: SchemaGetter.transform(values => ({
+                ...values,
+                periodStartDay: values.useLastDayOfMonth ? MIN_PERIOD_START_DAY : values.periodStartDay
+            })),
+            encode: SchemaGetter.transform(values => values)
+        })
+    );
+
+export type BudgetFormValues = Mutable<typeof BudgetFormSchema.Encoded>;

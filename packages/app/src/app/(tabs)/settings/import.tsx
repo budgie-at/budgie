@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Schema from 'effect/Schema';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
@@ -47,14 +48,13 @@ export default function ImportScreen() {
 
     const headersSet = new Set(headers);
 
-    const schemaWithHeaders = ImportColumnMapSchema.refine(data => headersSet.has(data.toAccount), {
-        message: t`Select a valid column`,
-        path: ['toAccount']
-    })
-        .refine(data => headersSet.has(data.category), { message: t`Select a valid column`, path: ['category'] })
-        .refine(data => headersSet.has(data.operatedAt), { message: t`Select a valid column`, path: ['operatedAt'] })
-        .refine(data => headersSet.has(data.toAmount), { message: t`Select a valid column`, path: ['toAmount'] })
-        .refine(data => headersSet.has(data.toCurrency), { message: t`Select a valid column`, path: ['toCurrency'] });
+    const schemaWithHeaders = ImportColumnMapSchema.check(
+        Schema.makeFilter(data =>
+            (['toAccount', 'category', 'operatedAt', 'toAmount', 'toCurrency'] as const)
+                .filter(column => !headersSet.has(data[column]))
+                .map(column => ({ path: [column], issue: t`Select a valid column` }))
+        )
+    );
 
     const {
         control,
@@ -62,7 +62,7 @@ export default function ImportScreen() {
         reset,
         formState: { errors }
     } = useForm<ImportColumnMapFormValues>({
-        resolver: zodResolver(schemaWithHeaders),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(schemaWithHeaders)),
         defaultValues: {
             toAccount: '',
             category: '',

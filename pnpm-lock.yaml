@@ -554,18 +554,12 @@ importers:
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(patch_hash=c9bf0eed9322ceab91fa49c1a6f2dc23357ed54213b086860226d733c70f5f50)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(expo-sqlite@57.0.2(expo@57.0.18)(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3))
-      drizzle-zod:
-        specifier: ^0.8.3
-        version: 0.8.3(drizzle-orm@0.45.2(patch_hash=c9bf0eed9322ceab91fa49c1a6f2dc23357ed54213b086860226d733c70f5f50)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(expo-sqlite@57.0.2(expo@57.0.18)(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)))(zod@4.5.1)
       effect:
         specifier: 4.0.0-rc.118
         version: 4.0.0-rc.118
       expo-sqlite:
         specifier: ~57.0.2
         version: 57.0.2(expo@57.0.18)(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
-      zod:
-        specifier: 4.5.1
-        version: 4.5.1
 
   packages/landing:
     dependencies:
@@ -635,9 +629,6 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.3.3)
-      zod:
-        specifier: 4.5.1
-        version: 4.5.1
     devDependencies:
       '@lingui/format-po':
         specifier: 6.6.0
@@ -6590,12 +6581,6 @@ packages:
         optional: true
       sqlite3:
         optional: true
-
-  drizzle-zod@0.8.3:
-    resolution: {integrity: sha512-66yVOuvGhKJnTdiqj1/Xaaz9/qzOdRJADpDa68enqS6g3t0kpNkwNYjUuaeXgZfO/UWuIM9HIhSlJ6C5ZraMww==}
-    peerDependencies:
-      drizzle-orm: '>=0.36.0'
-      zod: ^3.25.0 || ^4.0.0
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -13298,7 +13283,7 @@ snapshots:
   '@jridgewell/trace-mapping@0.3.31':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
 
   '@legendapp/list@3.3.9(react-dom@19.2.3(react@19.2.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)':
     dependencies:
@@ -16619,11 +16604,6 @@ snapshots:
       '@types/better-sqlite3': 7.6.13
       better-sqlite3: 12.10.0
       expo-sqlite: 57.0.2(expo@57.0.18)(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
-
-  drizzle-zod@0.8.3(drizzle-orm@0.45.2(patch_hash=c9bf0eed9322ceab91fa49c1a6f2dc23357ed54213b086860226d733c70f5f50)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(expo-sqlite@57.0.2(expo@57.0.18)(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)))(zod@4.5.1):
-    dependencies:
-      drizzle-orm: 0.45.2(patch_hash=c9bf0eed9322ceab91fa49c1a6f2dc23357ed54213b086860226d733c70f5f50)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(expo-sqlite@57.0.2(expo@57.0.18)(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3))
-      zod: 4.5.1
 
   dunder-proto@1.0.1:
     dependencies:

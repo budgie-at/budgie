@@ -1,7 +1,8 @@
 /* jscpd:ignore-start */
 import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -53,7 +54,7 @@ export default function ConvertToTransferModal() {
 
     const form = useForm<TransactionCreateInputInterface>({
         mode: 'onSubmit',
-        resolver: zodResolver(TransferTransactionCreateInputSchema),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(TransferTransactionCreateInputSchema)),
         defaultValues: createTransactionInput({
             exchangeRate: 1,
             fromAccountId,

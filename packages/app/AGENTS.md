@@ -480,7 +480,16 @@ Wrap JSX only (not logic) in jscpd markers for similar form structures:
 {/* jscpd:ignore-end */}
 ```
 
-## Forms (React Hook Form + Zod)
+## Forms (React Hook Form + Effect Schema)
+
+Forms validate with an Effect Schema through the Standard Schema resolver. Form value types are `Mutable<typeof Schema.Type>` (or `Encoded` when the form holds encoded values).
+
+```typescript
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import * as Schema from 'effect/Schema';
+
+const form = useForm({ resolver: standardSchemaResolver(Schema.toStandardSchemaV1(TagCreateEntitySchema)), defaultValues });
+```
 
 ### Form Pattern
 

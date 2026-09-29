@@ -1,18 +1,22 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-export const ImportColumnMapSchema = z.object({
-    toAccount: z.string().min(1),
-    category: z.string().min(1),
-    operatedAt: z.string().min(1),
-    toAmount: z.string().min(1),
-    toCurrency: z.string().min(1),
-    externalId: z.string(),
-    fromAccount: z.string(),
-    fromCurrency: z.string(),
-    fromAmount: z.string(),
-    comment: z.string(),
-    isPlanned: z.string(),
-    mcc: z.string()
+import type { Mutable } from 'effect/Types';
+
+const RequiredColumnSchema = Schema.String.check(Schema.isMinLength(1));
+
+export const ImportColumnMapSchema = Schema.Struct({
+    toAccount: RequiredColumnSchema,
+    category: RequiredColumnSchema,
+    operatedAt: RequiredColumnSchema,
+    toAmount: RequiredColumnSchema,
+    toCurrency: RequiredColumnSchema,
+    externalId: Schema.String,
+    fromAccount: Schema.String,
+    fromCurrency: Schema.String,
+    fromAmount: Schema.String,
+    comment: Schema.String,
+    isPlanned: Schema.String,
+    mcc: Schema.String
 });
 
-export type ImportColumnMapFormValues = z.infer<typeof ImportColumnMapSchema>;
+export type ImportColumnMapFormValues = Mutable<typeof ImportColumnMapSchema.Type>;
