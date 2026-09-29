@@ -47,9 +47,7 @@ class TransactionBatchCreateService {
                 .join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
     )
     async create(batch: readonly TransactionCreateInputInterface[], tx: DB): Promise<TransactionEntityInterface[]> {
-        const valuations = await Promise.all(
-            batch.map(input => entryBaseValuationService.valueEntries(input.entries, input.operatedAt, input.externalSource, tx))
-        );
+        const valuations = await entryBaseValuationService.valueTransactionsEntries(batch, tx);
         const transactions = await transactionRepository.bulkCreate([...batch], tx);
         const batchEntries = transactions.flatMap((transaction, index) =>
             batch[index].entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transaction.id, valuations[index].get(entry)))

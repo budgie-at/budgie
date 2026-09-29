@@ -1,9 +1,10 @@
-import { SQL, and, eq, inArray, sql } from 'drizzle-orm';
+import { SQL, and, eq, inArray, ne, sql } from 'drizzle-orm';
 
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
 import { DB } from '../../@generic/type/db.type';
 import { CategorySourceEnum } from '../../transaction-entry/enum/category-source.enum';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 export class TransactionRuleRepository extends BaseTransactionFilterRepository {
@@ -50,6 +51,11 @@ export class TransactionRuleRepository extends BaseTransactionFilterRepository {
     }
 
     private buildRuleConditionsWhere(where: SQL): SQL | undefined {
-        return and(this.buildVisibleTransactionCondition(), this.buildLedgerEntryCondition(), where);
+        return and(
+            this.buildVisibleTransactionCondition(),
+            this.buildLedgerEntryCondition(),
+            ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT),
+            where
+        );
     }
 }
