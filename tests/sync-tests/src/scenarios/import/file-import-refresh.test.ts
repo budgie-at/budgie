@@ -59,7 +59,7 @@ describe('import/file-import-refresh', () => {
         const account = seed.account({ title: 'Refresh Bank', externalId: BANK_ACCOUNT_ID, externalSource: ExternalSourceEnum.ERSTE });
         seed.sync({ accountId: account.id, provider: ExternalSourceEnum.ERSTE });
         const syncService = new StubFileBankSyncService(ExternalSourceEnum.ERSTE, new RefreshFileClient());
-        const initialVersion = databaseRefreshService.getSnapshot();
+        const initialVersion = databaseRefreshService.getSnapshot(null);
         let notificationCount = 0;
         const unsubscribe = databaseRefreshService.subscribe(() => {
             notificationCount += 1;
@@ -68,7 +68,7 @@ describe('import/file-import-refresh', () => {
         await syncService.quickImport(STATEMENT_URI);
         unsubscribe();
 
-        expect(databaseRefreshService.getSnapshot()).toBe(initialVersion + 1);
+        expect(databaseRefreshService.getSnapshot(null)).toBe(initialVersion + 1);
         expect(notificationCount).toBe(1);
     });
 });
