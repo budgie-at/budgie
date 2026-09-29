@@ -5,6 +5,7 @@ import { AppState } from 'react-native';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
@@ -167,8 +168,8 @@ const useAutomaticBiometricAuthentication = (
 
         setHasAttemptedBiometric(true);
         setIsLoading(true);
-        void authService
-            .authenticateWithBiometrics()
+        void appRuntime
+            .runPromise(authService.authenticateWithBiometrics())
             .then(success => void handleAutomaticBiometricResult(authAttemptGeneration, success))
             .finally(() => void handleAutomaticBiometricSettlement(authAttemptGeneration));
     });
@@ -220,7 +221,7 @@ export const usePinAuthentication = () => {
         const authAttemptGeneration = authAttemptTracker.beginAuthAttempt(true);
 
         setIsLoading(true);
-        completeAuthAttempt(authAttemptGeneration, await authService.verifyPin(pin), true);
+        completeAuthAttempt(authAttemptGeneration, await appRuntime.runPromise(authService.verifyPin(pin)), true);
     };
     const addDigit = (digit: string) => {
         const nextInput = (input + digit).slice(0, PIN_LENGTH);
@@ -250,7 +251,7 @@ export const usePinAuthentication = () => {
         setIsLoading(true);
 
         try {
-            completeAuthAttempt(authAttemptGeneration, await authService.authenticateWithBiometrics(), false);
+            completeAuthAttempt(authAttemptGeneration, await appRuntime.runPromise(authService.authenticateWithBiometrics()), false);
         } finally {
             authAttemptTracker.releaseBiometricAuthAttempt(authAttemptGeneration);
         }

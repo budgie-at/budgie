@@ -1,15 +1,14 @@
-import { TransactionEntryTypeEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import { Db, TransactionEntryTypeEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 import { useEffect, useState } from 'react';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
 import type { ConsolidationSourceRowInterface, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-
-const logger = getLogger('useGetConsolidationSourcesQuery');
 
 const orderSourcesByTransferChain = (rows: ConsolidationSourceRowInterface[]): ConsolidationSourceRowInterface[] => {
     const sendingAccounts = new Set(rows.filter(row => row.entryType === TransactionEntryTypeEnum.CREDIT).map(row => row.accountId));
@@ -42,7 +41,7 @@ export const useGetConsolidationSourcesQuery = (transactionId: number) => {
         let isActive = true;
 
         const handleError = (caughtError: unknown) => {
-            logger.error('failed', { transactionId, errorMessage: getErrorMessage(caughtError) });
+            appRuntime.runFork(Effect.logError('failed', { transactionId, errorMessage: getErrorMessage(caughtError) }));
             if (isActive) {
                 setHasError(true);
                 setSources([]);
@@ -51,10 +50,15 @@ export const useGetConsolidationSourcesQuery = (transactionId: number) => {
         };
 
         const fetchData = async (): Promise<void> => {
-            const [rows, canonical] = await Promise.all([
-                transactionRepository.findConsolidationSources(transactionId, language),
-                transactionRepository.getById(transactionId, language)
-            ]);
+            const [rows, canonical] = await appRuntime.runPromise(
+                Effect.all(
+                    [
+                        transactionRepository.findConsolidationSources(transactionId, language),
+                        Db.query(() => transactionRepository.getById(transactionId, language))
+                    ],
+                    { concurrency: 'unbounded' }
+                )
+            );
             if (isActive) {
                 setSources(orderSourcesByTransferChain(rows));
                 setConsolidationType(isDefined(canonical) ? canonical.consolidationType : null);

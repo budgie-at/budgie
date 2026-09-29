@@ -1,14 +1,13 @@
-import { getLogger } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
 import { ONBOARDING_STEP_ORDER } from '../constant/onboarding-step-order.constant';
 import { OnboardingStepEnum } from '../enum/onboarding-step.enum';
-
-const logger = getLogger('useOnboardingNavigation');
 
 export const useOnboardingNavigation = () => {
     const router = useRouter();
@@ -18,8 +17,8 @@ export const useOnboardingNavigation = () => {
         const nextIndex = currentIndex + 1;
         const nextStep = ONBOARDING_STEP_ORDER[nextIndex];
 
-        void updateSettingsMutation({ onboardingStep: nextIndex }).catch((error: unknown) => {
-            logger.error('persist step failed', { errorMessage: getErrorMessage(error), step, nextIndex });
+        void appRuntime.runPromise(updateSettingsMutation({ onboardingStep: nextIndex })).catch((error: unknown) => {
+            appRuntime.runFork(Effect.logError('persist step failed', { errorMessage: getErrorMessage(error), step, nextIndex }));
         });
 
         router.push(nextIndex === 0 ? '/onboarding' : `/onboarding/${nextStep.toLowerCase()}`);
@@ -35,8 +34,8 @@ export const useOnboardingNavigation = () => {
         const previousIndex = currentIndex - 1;
         const previousStep = ONBOARDING_STEP_ORDER[previousIndex];
 
-        void updateSettingsMutation({ onboardingStep: previousIndex }).catch((error: unknown) => {
-            logger.error('persist step failed', { errorMessage: getErrorMessage(error), step, previousIndex });
+        void appRuntime.runPromise(updateSettingsMutation({ onboardingStep: previousIndex })).catch((error: unknown) => {
+            appRuntime.runFork(Effect.logError('persist step failed', { errorMessage: getErrorMessage(error), step, previousIndex }));
         });
 
         goBackOrReplace(previousIndex === 0 ? '/onboarding' : `/onboarding/${previousStep.toLowerCase()}`);

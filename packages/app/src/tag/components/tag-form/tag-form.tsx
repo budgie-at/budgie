@@ -16,6 +16,7 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useNoteInputModal } from '../../../transaction/context/note-input-modal.context';
@@ -103,7 +104,7 @@ export const TagForm = (props: Props) => {
 
         try {
             const [targetTag] = await tagRepository.findByIds([targetTagId]);
-            await tagService.mergeInto(tag.id, targetTagId);
+            await appRuntime.runPromise(tagService.mergeInto(tag.id, targetTagId));
 
             if (isDefined(targetTag)) {
                 onSuccess({ tag: targetTag, action: 'merged' });
@@ -117,14 +118,14 @@ export const TagForm = (props: Props) => {
         const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
 
         if (hasTranslationData) {
-            await tagRepository.updateTranslation(tagId, titleEn, titleTags);
+            await appRuntime.runPromise(tagRepository.updateTranslation(tagId, titleEn, titleTags));
         } else {
-            await tagRepository.clearTranslation(tagId);
+            await appRuntime.runPromise(tagRepository.clearTranslation(tagId));
         }
     };
 
     const handleEditSubmit = async (tagId: number, values: TagCreateEntityInterface): Promise<void> => {
-        const updatedTag = await tagRepository.updateById(tagId, values);
+        const updatedTag = await appRuntime.runPromise(tagRepository.updateById(tagId, values));
         await saveTagTranslation(tagId);
 
         const savedTags = await tagRepository.findByIds([tagId]);
@@ -134,11 +135,11 @@ export const TagForm = (props: Props) => {
     };
 
     const handleCreateSubmit = async (values: TagCreateEntityInterface): Promise<void> => {
-        const savedTag = await tagRepository.create(values);
+        const savedTag = await appRuntime.runPromise(tagRepository.create(values));
         const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
 
         if (hasTranslationData) {
-            await tagRepository.updateTranslation(savedTag.id, titleEn, titleTags);
+            await appRuntime.runPromise(tagRepository.updateTranslation(savedTag.id, titleEn, titleTags));
         }
 
         onSuccess({ tag: savedTag, action: 'created' });

@@ -1,6 +1,6 @@
 import { TranslationLlmService, TranslationResultInterface } from '@budgie/ai';
-import { getLogger } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
@@ -8,8 +8,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 import { AiSubsystemNameEnum } from '../../ai/enum/ai-subsystem-name.enum';
 import { aiModelResidencyService } from '../../ai/service/ai-model-residency.service';
 import { chatService } from '../../ai/service/chat.service';
-
-const logger = getLogger('useRegenerateTranslation');
+import { appRuntime } from '../runtime/app.runtime';
 
 type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Promise<void>;
 
@@ -25,33 +24,30 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
 
     // eslint-disable-next-line max-statements -- Lifecycle-guarded translate with structured logging and error capture
     const regenerate = async (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
-        logger.log('translation:regenerate:start', { entityId, titleLen: title.length });
         setIsRegenerating(true);
         setError(null);
 
-        const isChatReady = await aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT);
+        const isChatReady = await appRuntime.runPromise(aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT));
 
         try {
             if (!isChatReady) {
-                logger.log('translation:regenerate:skip:not-ready');
                 setError(t`LLM not ready`);
 
                 return null;
             }
 
             const service = new TranslationLlmService(chatService);
-            const result = await service.translate(title);
+            const result = await appRuntime.runPromise(service.translate(title));
             await updateTranslation(entityId, result.titleEn, result.titleTags);
-            logger.log('translation:regenerate:complete', { entityId, titleEnLen: result.titleEn.length });
 
             return result;
         } catch (regenerateError: unknown) {
-            logger.error('translation:regenerate:throw', { errorMessage: getErrorMessage(regenerateError) });
+            appRuntime.runFork(Effect.logError('translation:regenerate:throw', { errorMessage: getErrorMessage(regenerateError) }));
             setError(getErrorMessage(regenerateError));
 
             return null;
         } finally {
-            aiModelResidencyService.release(AiSubsystemNameEnum.CHAT);
+            void appRuntime.runPromise(aiModelResidencyService.release(AiSubsystemNameEnum.CHAT));
             setIsRegenerating(false);
         }
     };

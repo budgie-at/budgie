@@ -1,12 +1,16 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
@@ -27,9 +31,11 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
     const handleToggle = (enabled: boolean) =>
-        void syncProviderRegistryService
-            .getServiceForAccount(account.id)
-            .then(service => service?.setAccountSyncEnabled(account.id, enabled));
+        void appRuntime.runPromise(
+            Effect.flatMap(syncProviderRegistryService.getServiceForAccount(account.id), service =>
+                isDefined(service) ? service.setAccountSyncEnabled(account.id, enabled) : Effect.void
+            )
+        );
     const handlePress = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(account.id) } });
 
     const toggle = isToggleVisible ? (

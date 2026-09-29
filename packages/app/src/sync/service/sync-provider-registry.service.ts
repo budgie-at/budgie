@@ -1,7 +1,7 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { syncRepository } from '../../@generic/drizzle/db/db';
 import { BankIntegrationCapabilitiesInterface } from '../interface/bank-integration-capabilities.interface';
@@ -34,19 +34,17 @@ class SyncProviderRegistryService {
         [ExternalSourceEnum.COINBASE]: false
     };
 
-    @Log(
-        accountId => `enter accountId=${accountId}`,
-        (result, accountId) => `done accountId=${accountId} provider=${result?.constructor.name ?? 'null'}`,
-        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
-    )
-    async getServiceForAccount(accountId: number): Promise<AbstractSyncService | null> {
-        const sync = await syncRepository.getByAccountId(accountId);
+    readonly getServiceForAccount = Effect.fn('SyncProviderRegistryService.getServiceForAccount')(function* (
+        this: SyncProviderRegistryService,
+        accountId: number
+    ) {
+        const sync = yield* syncRepository.getByAccountId(accountId);
         if (!isDefined(sync)) {
             return null;
         }
 
         return this.getServiceForProvider(sync.provider);
-    }
+    });
 
     getServiceForProvider(provider: ExternalSourceEnum): AbstractSyncService | null {
         return SERVICE_MAP.get(provider) ?? null;

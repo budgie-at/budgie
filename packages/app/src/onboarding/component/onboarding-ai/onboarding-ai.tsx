@@ -1,11 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
@@ -14,8 +15,6 @@ import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-
 import { OnboardingSuccessRow } from '../onboarding-success-row/onboarding-success-row';
 
 import { OnboardingAiSelector } from './onboarding-ai.selector';
-
-const logger = getLogger('OnboardingAi');
 
 export const OnboardingAi = () => {
     const { t } = useLingui();
@@ -26,10 +25,11 @@ export const OnboardingAi = () => {
 
     const handlePrimary = () => void goToNextStep(OnboardingStepEnum.AI);
     const handleEnablePress = () => {
-        void updateSettingsMutation({ isAiEnabled: true })
+        void appRuntime
+            .runPromise(updateSettingsMutation({ isAiEnabled: true }))
             .then(() => void goToNextStep(OnboardingStepEnum.AI))
             .catch((error: unknown) => {
-                logger.error('enable failed', { errorMessage: getErrorMessage(error) });
+                appRuntime.runFork(Effect.logError('enable failed', { errorMessage: getErrorMessage(error) }));
             });
     };
 

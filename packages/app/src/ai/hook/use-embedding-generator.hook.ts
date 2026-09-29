@@ -1,11 +1,10 @@
-import { getLogger } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { embeddingProgressStore } from '../store/embedding-progress.store';
-
-const logger = getLogger('useEmbeddingGenerator');
 
 interface UseEmbeddingGeneratorReturnInterface {
     readonly markForEmbedding: (transactionId: number) => void;
@@ -13,14 +12,6 @@ interface UseEmbeddingGeneratorReturnInterface {
 }
 
 export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface => {
-    const markForEmbedding = (transactionId: number): void => {
-        logger.log('embed:defer:mark', { transactionId });
-        transactionRepository
-            .markForEmbeddingByIds([transactionId])
-            .then(() => embeddingProgressStore.refresh())
-            .catch(emptyFn);
-    };
-
     const markManyForEmbedding = (transactionIds: readonly number[]): void => {
         const ids = [...transactionIds];
 
@@ -28,12 +19,13 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface =>
             return;
         }
 
-        logger.log('embed:defer:markMany', { count: ids.length, transactionIds: ids });
+        appRuntime.runFork(
+            Effect.ignore(Effect.andThen(transactionRepository.markForEmbeddingByIds(ids), embeddingProgressStore.refresh()))
+        );
+    };
 
-        transactionRepository
-            .markForEmbeddingByIds(ids)
-            .then(() => embeddingProgressStore.refresh())
-            .catch(emptyFn);
+    const markForEmbedding = (transactionId: number): void => {
+        markManyForEmbedding([transactionId]);
     };
 
     return { markForEmbedding, markManyForEmbedding };

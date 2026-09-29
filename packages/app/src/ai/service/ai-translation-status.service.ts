@@ -1,60 +1,40 @@
-import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
-
-import { getErrorMessage } from '@rnw-community/shared';
+import * as Effect from 'effect/Effect';
+import * as Equal from 'effect/Equal';
+import * as Atom from 'effect/reactivity/Atom';
 
 import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
-import { AiSubsystemStatusSnapshotInterface } from '../interface/ai-subsystem-status-snapshot.interface';
+import { EMPTY_SUBSYSTEM_SNAPSHOT } from '../constant/empty-subsystem-snapshot.constant';
+import { AiSystemUmbrellaStateEnum } from '../enum/ai-system-umbrella-state.enum';
 import { translationProgressStore } from '../store/translation-progress.store';
 import { buildSubsystemSnapshot } from '../utils/build-subsystem-snapshot.util';
 
-import { BaseSubsystemStatusService, EMPTY_SUBSYSTEM_SNAPSHOT } from './base-subsystem-status.service';
+import { aiUmbrellaStatusService } from './ai-umbrella-status.service';
 import { translationDrainerService } from './translation-drainer.service';
 
-class AiTranslationStatusService extends BaseSubsystemStatusService {
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async rebuild(): Promise<void> {
-        try {
-            await this.pauseDrainer();
-            try {
-                await this.resetTranslations();
-            } finally {
-                translationDrainerService.resume();
-            }
-            void translationProgressStore.refresh();
-            await translationDrainerService.boost();
-        } catch (error: unknown) {
-            translationDrainerService.resume();
-            throw error;
-        }
-    }
+class AiTranslationStatusService {
+    readonly snapshot = Atom.make(get =>
+        get(aiUmbrellaStatusService.snapshot).state === AiSystemUmbrellaStateEnum.HEALTHY
+            ? buildSubsystemSnapshot(get(translationDrainerService.snapshot), get(translationProgressStore.snapshot), {
+                  boosting: t`Rebuilding translations`,
+                  working: t`Translating categories and tags`,
+                  ready: t`Translations ready`
+              })
+            : EMPTY_SUBSYSTEM_SNAPSHOT
+    ).pipe(Atom.withEquality(Equal.equals));
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async pauseDrainer(): Promise<void> {
-        await translationDrainerService.pause();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async resetTranslations(): Promise<void> {
-        await categoryRepository.resetAllTranslations();
-        await tagRepository.resetAllTranslations();
-    }
-
-    protected buildSubsystemSubscriptions(): (() => void)[] {
-        return [translationDrainerService.subscribe(this.scheduleRecompute), translationProgressStore.subscribe(this.scheduleRecompute)];
-    }
-
-    protected derive(): AiSubsystemStatusSnapshotInterface {
-        if (!this.isUmbrellaHealthy()) {
-            return EMPTY_SUBSYSTEM_SNAPSHOT;
-        }
-
-        return buildSubsystemSnapshot(translationDrainerService.getSnapshot(), translationProgressStore.getSnapshot(), {
-            boosting: t`Rebuilding translations`,
-            working: t`Translating categories and tags`,
-            ready: t`Translations ready`
-        });
-    }
+    readonly rebuild = Effect.fn('AiTranslationStatusService.rebuild')(
+        function* () {
+            yield* translationDrainerService.pause();
+            yield* Effect.ensuring(
+                Effect.all([categoryRepository.resetAllTranslations(), tagRepository.resetAllTranslations()]),
+                translationDrainerService.resume()
+            );
+            yield* translationProgressStore.refresh();
+            yield* translationDrainerService.boost();
+        },
+        effect => Effect.onError(effect, () => translationDrainerService.resume())
+    );
 }
 
 export const aiTranslationStatusService = new AiTranslationStatusService();

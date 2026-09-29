@@ -8,6 +8,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
@@ -31,7 +32,7 @@ export default function CreateTransferTransactionPage() {
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
-            const result = await transactionService.createInternalTransfer(data);
+            const result = await appRuntime.runPromise(transactionService.createInternalTransfer(data));
             markForEmbedding(result.id);
 
             return result;

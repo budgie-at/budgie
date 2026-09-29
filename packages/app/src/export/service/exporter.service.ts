@@ -1,6 +1,6 @@
-/* eslint-disable no-await-in-loop */
 import {
     AccountEntityInterface,
+    Db,
     CategoryEntityInterface,
     InstrumentEntityInterface,
     MccCategoryEntityInterface,
@@ -8,6 +8,7 @@ import {
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 import { format } from 'date-fns/format';
+import * as Effect from 'effect/Effect';
 import { File, Paths } from 'expo-file-system';
 import { isAvailableAsync, shareAsync } from 'expo-sharing';
 import Papa from 'papaparse';
@@ -31,8 +32,8 @@ type InstrumentsMap = Map<number, InstrumentEntityInterface>;
 type MccCategoriesMap = Map<number, MccCategoryEntityInterface>;
 
 class ExporterService {
-    private readonly BATCH_SIZE = 750;
-    private readonly CSV_COLUMNS = [
+    private static readonly BATCH_SIZE = 750;
+    private static readonly CSV_COLUMNS = [
         'title',
         'externalId',
         'toAccount',
@@ -47,74 +48,73 @@ class ExporterService {
         'mcc'
     ] as const;
 
-    private accountsMap: AccountsMap = new Map();
-    private deletedAccountsMap: AccountsMap = new Map();
-    private categoriesMap: CategoriesMap = new Map();
-    private instrumentsMap: InstrumentsMap = new Map();
-    private mccCategoriesMap: MccCategoriesMap = new Map();
+    readonly exportToCsv = Effect.fn('ExporterService.exportToCsv')(function* (this: ExporterService) {
+        const [accounts, deletedAccounts, categories, instruments, mccCategories] = yield* Effect.all(
+            [
+                accountRepository.getAll(),
+                Db.query(() => accountRepository.getAllArchived()),
+                Db.query(() => categoryRepository.findAllNonSystem()),
+                instrumentRepository.getAll(),
+                Db.query(() => mccCategoryRepository.findAll())
+            ],
+            { concurrency: 'unbounded' }
+        );
 
-    async exportToCsv(): Promise<string> {
-        const [accounts, deletedAccounts, categories, instruments, mccCategories] = await Promise.all([
-            accountRepository.getAll(),
-            accountRepository.getAllArchived(),
-            categoryRepository.findAllNonSystem(),
-            instrumentRepository.getAll(),
-            mccCategoryRepository.findAll()
-        ]);
-
-        this.accountsMap = new Map(accounts.map(acc => [acc.id, acc]));
-        this.deletedAccountsMap = new Map(deletedAccounts.map(acc => [acc.id, acc]));
-        this.categoriesMap = new Map(categories.map(cat => [cat.id, cat]));
-        this.instrumentsMap = new Map(instruments.map(inst => [inst.id, inst]));
+        this.accountsMap = new Map(accounts.map(account => [account.id, account]));
+        this.deletedAccountsMap = new Map(deletedAccounts.map(account => [account.id, account]));
+        this.categoriesMap = new Map(categories.map(category => [category.id, category]));
+        this.instrumentsMap = new Map(instruments.map(instrument => [instrument.id, instrument]));
         this.mccCategoriesMap = new Map(mccCategories.map(mccCategory => [mccCategory.id, mccCategory]));
 
-        const rows = await this.processTransactionsInBatches();
+        const rows = yield* this.processTransactionsInBatches();
 
-        return Papa.unparse(rows, { header: true, columns: [...this.CSV_COLUMNS] });
-    }
+        return Papa.unparse(rows, { header: true, columns: [...ExporterService.CSV_COLUMNS] });
+    });
 
-    async saveAndShare(): Promise<void> {
-        const csvContent = await this.exportToCsv();
+    readonly saveAndShare = Effect.fn('ExporterService.saveAndShare')(function* (this: ExporterService) {
+        const csvContent = yield* this.exportToCsv();
         const fileName = `budgie-export-${format(new Date(), 'yyyy-MM-dd-HHmmss')}.csv`;
 
         const file = new File(Paths.cache, fileName);
         file.create();
         file.write(csvContent);
 
-        const canShare = await isAvailableAsync();
+        const canShare = yield* Effect.promise(() => isAvailableAsync());
         if (canShare) {
-            await shareAsync(file.uri, { mimeType: 'text/csv', dialogTitle: fileName });
+            yield* Effect.promise(() => shareAsync(file.uri, { mimeType: 'text/csv', dialogTitle: fileName }));
         }
-    }
+    });
 
-    // eslint-disable-next-line max-statements
-    private async processTransactionsInBatches(): Promise<ExportRowInterface[]> {
-        const rows: ExportRowInterface[] = [];
-        let cursorId: number | null = null;
+    private readonly processTransactionsInBatches = Effect.fn('ExporterService.processTransactionsInBatches')(
+        function* (this: ExporterService) {
+            const rows: ExportRowInterface[] = [];
+            let transactions = yield* transactionRepository.getAllAfter(null, ExporterService.BATCH_SIZE);
 
-        do {
-            const transactions = await transactionRepository.getAllAfter(cursorId, this.BATCH_SIZE);
-
-            if (!isNotEmptyArray(transactions)) {
-                break;
-            }
-
-            for (const transaction of transactions) {
-                if (transaction.type === TransactionTypeEnum.TRANSFER) {
-                    rows.push(this.mapTransferTransaction(transaction));
-                } else if (isDefined(transaction.toAccountId)) {
-                    rows.push(...this.mapIncomeExpenseTransaction(transaction));
+            while (isNotEmptyArray(transactions)) {
+                for (const transaction of transactions) {
+                    if (transaction.type === TransactionTypeEnum.TRANSFER) {
+                        rows.push(this.mapTransferTransaction(transaction));
+                    } else if (isDefined(transaction.toAccountId)) {
+                        rows.push(...this.mapIncomeExpenseTransaction(transaction));
+                    }
                 }
+
+                yield* Effect.promise(() => microPause());
+                transactions = yield* transactionRepository.getAllAfter(
+                    transactions[transactions.length - 1].id,
+                    ExporterService.BATCH_SIZE
+                );
             }
 
-            cursorId = transactions[transactions.length - 1].id;
+            return rows;
+        }
+    );
 
-            await microPause();
-            // eslint-disable-next-line no-constant-condition,@typescript-eslint/no-unnecessary-condition
-        } while (true);
-
-        return rows;
-    }
+    private accountsMap: AccountsMap = new Map();
+    private deletedAccountsMap: AccountsMap = new Map();
+    private categoriesMap: CategoriesMap = new Map();
+    private instrumentsMap: InstrumentsMap = new Map();
+    private mccCategoriesMap: MccCategoriesMap = new Map();
 
     private getAccount(accountId: number | null | undefined): AccountEntityInterface | null {
         if (!isDefined(accountId)) {

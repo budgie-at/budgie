@@ -1,8 +1,7 @@
 import { UnconsolidationService } from '@budgie/consolidation';
+import { Db } from '@budgie/contracts';
 
 import { transactionEntryRepository, transactionRepository, transactionTagsRepository } from '../../@generic/drizzle/db/db';
-
-import type { DB } from '@budgie/contracts';
 
 const unconsolidationService = new UnconsolidationService({
     transactionEntryRepository,
@@ -10,6 +9,5 @@ const unconsolidationService = new UnconsolidationService({
     transactionTagsRepository
 });
 
-export const unconsolidateByIdInTransaction = async (transactionId: number, tx: DB): Promise<void> => {
-    await unconsolidationService.unconsolidateById(transactionId, tx);
-};
+export const unconsolidateByIdInTransaction = (transactionId: number) =>
+    Db.transaction(unconsolidationService.unconsolidateById(transactionId));

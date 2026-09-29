@@ -1,9 +1,9 @@
-import { transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { TRANSACTION_BATCH_SIZE } from '../constant/transaction-batch-size.constant';
@@ -19,77 +19,136 @@ import { transactionDepositSafetyService } from './transaction-deposit-safety.se
 
 import type { ImportedBatchPreparationInterface } from '../interface/imported-batch-preparation.interface';
 import type { TransactionImportOptionsInterface } from '../interface/transaction-import-options.interface';
-import type {
-    DB,
-    TransactionCreateInputInterface,
-    TransactionEntityInterface,
-    TransactionWithEntriesEntityInterface
-} from '@budgie/contracts';
+import type { TransactionCreateInputInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
 
 class TransactionImportService {
-    @Log(
-        (inputs, existingTransactionIdMap, tx, options) =>
-            `enter inputCount=${inputs.length} existingKeyCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
-        (result, ...[inputs, existingTransactionIdMap, tx, options]) =>
-            `done inputCount=${inputs.length} existingKeyCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upsertedCount=${result.length} upsertedIds=${result.map(row => row.id).join(',')}`,
-        (error, ...[inputs, existingTransactionIdMap, tx, options]) =>
-            `throw inputCount=${inputs.length} existingKeyCount=${existingTransactionIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
-    )
-    async bulkUpsertImported(
-        inputs: TransactionCreateInputInterface[],
-        existingTransactionIdMap: Map<string, number>,
-        tx?: DB,
-        options: TransactionImportOptionsInterface = {}
-    ): Promise<TransactionEntityInterface[]> {
-        if (!isNotEmptyArray(inputs)) {
-            return [];
-        }
+    readonly bulkUpsertImported = Effect.fn('TransactionImportService.bulkUpsertImported')(
+        function* (
+            this: TransactionImportService,
+            inputs: TransactionCreateInputInterface[],
+            existingTransactionIdMap: Map<string, number>,
+            options: TransactionImportOptionsInterface = {}
+        ) {
+            if (!isNotEmptyArray(inputs)) {
+                return [];
+            }
 
-        if (!isDefined(tx)) {
-            return transactionAsync(db, async innerTx => this.bulkUpsertImported(inputs, existingTransactionIdMap, innerTx, options));
-        }
+            const prepared = this.prepareImportedInputs(inputs, existingTransactionIdMap);
 
-        const prepared = this.prepareImportedInputs(inputs, existingTransactionIdMap);
+            return yield* this.bulkUpsertPreparedImported(prepared, options);
+        },
+        effect => Db.transaction(effect)
+    );
 
-        return this.bulkUpsertPreparedImported(prepared, tx, options);
-    }
+    readonly bulkUpsertPreparedImported = Effect.fn('TransactionImportService.bulkUpsertPreparedImported')(
+        function* (
+            this: TransactionImportService,
+            prepared: ImportedBatchPreparationInterface,
+            options: TransactionImportOptionsInterface = {}
+        ) {
+            const batchSize = options.batchSize ?? TRANSACTION_BATCH_SIZE;
+            const shouldUpdateBalances = options.shouldUpdateBalances ?? true;
 
-    @Log(
-        (prepared, tx, options) =>
-            `enter inputCount=${prepared.transactionInputs.length} existingKeyCount=${prepared.externalIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'}`,
-        (result, ...[prepared, tx, options]) =>
-            `done inputCount=${prepared.transactionInputs.length} existingKeyCount=${prepared.externalIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} upsertedCount=${result.length} upsertedIds=${result.map(row => row.id).join(',')}`,
-        (error, ...[prepared, tx, options]) =>
-            `throw inputCount=${prepared.transactionInputs.length} existingKeyCount=${prepared.externalIdMap.size} hasTx=${String(isDefined(tx))} batchSize=${options?.batchSize ?? 'default'} error=${getErrorMessage(error)}`
-    )
-    async bulkUpsertPreparedImported(
-        prepared: ImportedBatchPreparationInterface,
-        tx?: DB,
-        options: TransactionImportOptionsInterface = {}
-    ): Promise<TransactionEntityInterface[]> {
-        const batchSize = options.batchSize ?? TRANSACTION_BATCH_SIZE;
-        const shouldUpdateBalances = options.shouldUpdateBalances ?? true;
+            if (!isNotEmptyArray(prepared.transactionInputs)) {
+                return [];
+            }
 
-        if (!isNotEmptyArray(prepared.transactionInputs)) {
-            return [];
-        }
+            const stampedInputs = stampForDeferredEmbedding(prepared.transactionInputs);
 
-        if (!isDefined(tx)) {
-            return transactionAsync(db, async innerTx => this.bulkUpsertPreparedImported(prepared, innerTx, options));
-        }
+            const transactions = yield* processInputWithBatches(stampedInputs, batchSize, batch =>
+                this.processImportedBatchInner(batch, prepared.externalIdMap)
+            );
 
-        const { stampedInputs } = stampForDeferredEmbedding(prepared.transactionInputs, 'import');
+            if (shouldUpdateBalances && isNotEmptyArray(transactions)) {
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(stampedInputs));
+            }
 
-        const transactions = await processInputWithBatches(stampedInputs, batchSize, batch =>
-            this.processImportedBatchInner(batch, prepared.externalIdMap, tx)
+            return transactions;
+        },
+        effect => Db.transaction(effect)
+    );
+
+    private readonly processImportedBatchInner = Effect.fnUntraced(function* (
+        this: TransactionImportService,
+        batch: TransactionCreateInputInterface[],
+        existingTransactionIdMap: Map<string, number>
+    ) {
+        const partition = this.partitionImportedBatch(batch, existingTransactionIdMap);
+        const existingTransactionsMap = yield* this.getExistingTransactionsMap(partition.updateParams);
+
+        yield* transactionDepositSafetyService.assertNoDepositExpenseInputs(partition.newInputs);
+        yield* transactionDepositSafetyService.assertNoDepositExpenseTransactions([...existingTransactionsMap.values()]);
+
+        const createdTransactions = yield* transactionBatchCreateService.create(partition.newInputs);
+        const updatedTransactions = yield* Effect.forEach(
+            partition.updateParams,
+            params =>
+                this.updateImportedTransaction(
+                    params.transactionId,
+                    params.input,
+                    existingTransactionsMap.get(params.transactionId) ?? null
+                ),
+            { concurrency: 'unbounded' }
         );
 
-        if (shouldUpdateBalances && isNotEmptyArray(transactions)) {
-            await accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs(stampedInputs), tx);
+        return partition.resultsOrder.map(result =>
+            result.kind === 'create' ? createdTransactions[result.index] : updatedTransactions[result.index]
+        );
+    });
+
+    private readonly updateImportedTransaction = Effect.fnUntraced(function* (
+        this: TransactionImportService,
+        transactionId: number,
+        input: TransactionCreateInputInterface,
+        existingTransaction: TransactionWithEntriesEntityInterface | null
+    ) {
+        const comment =
+            isDefined(existingTransaction) && isNotEmptyString(existingTransaction.comment) ? existingTransaction.comment : input.comment;
+        const updated = yield* transactionRepository.updateById(transactionId, {
+            title: input.title,
+            comment,
+            operatedAt: input.operatedAt,
+            externalId: input.externalId,
+            externalSource: input.externalSource
+        });
+
+        yield* this.refreshImportedTransactionEntries(transactionId, input, existingTransaction);
+
+        return updated;
+    });
+
+    private readonly refreshImportedTransactionEntries = Effect.fnUntraced(function* (
+        transactionId: number,
+        input: TransactionCreateInputInterface,
+        existingTransaction: TransactionWithEntriesEntityInterface | null
+    ) {
+        if (!isDefined(existingTransaction)) {
+            return;
         }
 
-        return transactions;
-    }
+        const refreshedEntriesResult = yield* refreshedImportedEntriesService.build({
+            existingEntries: existingTransaction.entries,
+            inputEntries: input.entries,
+            transactionId,
+            input
+        });
+
+        if (refreshedEntriesResult.status !== RefreshedImportedEntriesStatusEnum.REFRESHED || !isDefined(refreshedEntriesResult.entries)) {
+            return;
+        }
+
+        yield* transactionEntryRepository.deleteByTransactionId(transactionId);
+        yield* transactionEntryRepository.bulkCreate([...refreshedEntriesResult.entries]);
+    });
+
+    private readonly getExistingTransactionsMap = Effect.fnUntraced(function* (updateParams: readonly ImportedUpdateParamInterface[]) {
+        const transactionIds = updateParams.map(({ transactionId }) => transactionId);
+        const existingTransactions = yield* transactionRepository.findByIds(transactionIds);
+
+        return new Map(
+            existingTransactions.map((transaction): [number, TransactionWithEntriesEntityInterface] => [transaction.id, transaction])
+        );
+    });
 
     prepareImportedInputs(
         inputs: TransactionCreateInputInterface[],
@@ -143,34 +202,6 @@ class TransactionImportService {
         }
     }
 
-    private async processImportedBatchInner(
-        batch: TransactionCreateInputInterface[],
-        existingTransactionIdMap: Map<string, number>,
-        tx: DB
-    ): Promise<TransactionEntityInterface[]> {
-        const partition = this.partitionImportedBatch(batch, existingTransactionIdMap);
-        const existingTransactionsMap = await this.getExistingTransactionsMap(partition.updateParams, tx);
-
-        await transactionDepositSafetyService.assertNoDepositExpenseInputs(partition.newInputs, tx);
-        await transactionDepositSafetyService.assertNoDepositExpenseTransactions([...existingTransactionsMap.values()], tx);
-
-        const createdTransactions = await transactionBatchCreateService.create(partition.newInputs, tx);
-        const updatedTransactions = await Promise.all(
-            partition.updateParams.map(params =>
-                this.updateImportedTransaction(
-                    params.transactionId,
-                    params.input,
-                    existingTransactionsMap.get(params.transactionId) ?? null,
-                    tx
-                )
-            )
-        );
-
-        return partition.resultsOrder.map(result =>
-            result.kind === 'create' ? createdTransactions[result.index] : updatedTransactions[result.index]
-        );
-    }
-
     private partitionImportedBatch(
         batch: TransactionCreateInputInterface[],
         existingTransactionIdMap: Map<string, number>
@@ -211,71 +242,6 @@ class TransactionImportService {
         }
 
         return { transactionId, input };
-    }
-
-    private async updateImportedTransaction(
-        transactionId: number,
-        input: TransactionCreateInputInterface,
-        existingTransaction: TransactionWithEntriesEntityInterface | null,
-        tx: DB
-    ): Promise<TransactionEntityInterface> {
-        const comment =
-            isDefined(existingTransaction) && isNotEmptyString(existingTransaction.comment) ? existingTransaction.comment : input.comment;
-        const updated = await transactionRepository.updateById(
-            transactionId,
-            {
-                title: input.title,
-                comment,
-                operatedAt: input.operatedAt,
-                externalId: input.externalId,
-                externalSource: input.externalSource
-            },
-            tx
-        );
-
-        await this.refreshImportedTransactionEntries(transactionId, input, existingTransaction, tx);
-
-        return updated;
-    }
-
-    private async refreshImportedTransactionEntries(
-        transactionId: number,
-        input: TransactionCreateInputInterface,
-        existingTransaction: TransactionWithEntriesEntityInterface | null,
-        tx: DB
-    ): Promise<void> {
-        if (!isDefined(existingTransaction)) {
-            return;
-        }
-
-        const refreshedEntriesResult = await refreshedImportedEntriesService.build(
-            {
-                existingEntries: existingTransaction.entries,
-                inputEntries: input.entries,
-                transactionId,
-                input
-            },
-            tx
-        );
-
-        if (refreshedEntriesResult.status !== RefreshedImportedEntriesStatusEnum.REFRESHED || !isDefined(refreshedEntriesResult.entries)) {
-            return;
-        }
-
-        await transactionEntryRepository.deleteByTransactionId(transactionId, tx);
-        await transactionEntryRepository.bulkCreate([...refreshedEntriesResult.entries], tx);
-    }
-
-    private async getExistingTransactionsMap(
-        updateParams: readonly ImportedUpdateParamInterface[],
-        tx: DB
-    ): Promise<Map<number, TransactionWithEntriesEntityInterface>> {
-        const transactionIds = updateParams.map(({ transactionId }) => transactionId);
-        const existingTransactions = await transactionRepository.findByIds(transactionIds, tx);
-
-        return new Map(
-            existingTransactions.map((transaction): [number, TransactionWithEntriesEntityInterface] => [transaction.id, transaction])
-        );
     }
 
     private getAccountIdsFromInputs(inputs: readonly TransactionCreateInputInterface[]): number[] {

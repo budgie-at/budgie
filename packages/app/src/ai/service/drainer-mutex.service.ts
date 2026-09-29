@@ -1,40 +1,13 @@
-import { Log } from '@budgie/logger';
+import * as Semaphore from 'effect/Semaphore';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
-
-import { DrainerKindEnum } from '../enum/drainer-kind.enum';
+import type * as Effect from 'effect/Effect';
+import type * as Option from 'effect/Option';
 
 class DrainerMutexService {
-    private heldBy: DrainerKindEnum | null = null;
+    private readonly semaphore = Semaphore.makeUnsafe(1);
 
-    get holder(): DrainerKindEnum | null {
-        return this.heldBy;
-    }
-
-    @Log(
-        kind => `enter kind=${kind}`,
-        (result, kind) => `done kind=${kind} acquired=${String(result)}`,
-        (error, kind) => `throw kind=${kind} error=${getErrorMessage(error)}`
-    )
-    acquire(kind: DrainerKindEnum): boolean {
-        if (!isDefined(this.heldBy)) {
-            this.heldBy = kind;
-
-            return true;
-        }
-
-        return this.heldBy === kind;
-    }
-
-    @Log(kind => `enter kind=${kind}`, 'done', (error, kind) => `throw kind=${kind} error=${getErrorMessage(error)}`)
-    release(kind: DrainerKindEnum): void {
-        if (this.heldBy === kind) {
-            this.heldBy = null;
-        }
-    }
-
-    isHeldBy(kind: DrainerKindEnum): boolean {
-        return this.heldBy === kind;
+    runExclusive<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<Option.Option<A>, E, R> {
+        return this.semaphore.withPermitsIfAvailable(1)(effect);
     }
 }
 

@@ -5,6 +5,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -19,7 +20,7 @@ export const useDepositCloseAction = (accountId: number, balance: number, instru
     const [isLoading, setIsLoading] = useState(false);
 
     const confirmDepositClose = async (destinationAccountId: number): Promise<boolean> => {
-        const destinationAccount = await accountService.findByIdOrFail(destinationAccountId);
+        const destinationAccount = await appRuntime.runPromise(accountService.findByIdOrFail(destinationAccountId));
         const formattedBalance = formatDigits(balance, instrumentSymbol);
         const destinationAccountTitle = destinationAccount.title;
 
@@ -55,7 +56,7 @@ export const useDepositCloseAction = (accountId: number, balance: number, instru
                 return;
             }
 
-            await transactionTransferService.closeDepositTo(accountId, destinationAccountId);
+            await appRuntime.runPromise(transactionTransferService.closeDepositTo(accountId, destinationAccountId));
             dismissAllOrReplace('/');
         } catch (error) {
             Toast.show({

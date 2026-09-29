@@ -1,32 +1,37 @@
-import { CategoryCreateEntityInterface, CategoryEntityInterface, transactionAsync } from '@budgie/contracts';
+import { Db } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { categoryRepository, db } from '../../@generic/drizzle/db/db';
+import { categoryRepository } from '../../@generic/drizzle/db/db';
+
+import type { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
 
 class CategoryService {
-    async bulkCreate(inputs: CategoryCreateEntityInterface[], batchSize = 100): Promise<Record<string, CategoryEntityInterface>> {
+    readonly bulkCreate = Effect.fn('CategoryService.bulkCreate')(function* (
+        inputs: CategoryCreateEntityInterface[],
+        batchSize: number = 100
+    ) {
         const results: CategoryEntityInterface[] = [];
         for (let i = 0; i < inputs.length; i += batchSize) {
             const batch = inputs.slice(i, i + batchSize);
 
-            // eslint-disable-next-line no-await-in-loop
-            results.push(...(await transactionAsync(db, async tx => categoryRepository.bulkCreate(batch, tx))));
+            results.push(...(yield* Db.transaction(categoryRepository.bulkCreate(batch))));
         }
 
         return results.reduce<Record<string, CategoryEntityInterface>>((acc, category) => ({ ...acc, [category.title]: category }), {});
-    }
+    });
 
-    async countTransactionEntries(categoryId: number): Promise<number> {
-        return categoryRepository.countTransactionEntries(categoryId);
-    }
+    readonly countTransactionEntries = Effect.fn('CategoryService.countTransactionEntries')(function* (categoryId: number) {
+        return yield* categoryRepository.countTransactionEntries(categoryId);
+    });
 
-    async mergeInto(fromCategoryId: number, toCategoryId: number): Promise<void> {
-        await categoryRepository.reassignTransactionEntries(fromCategoryId, toCategoryId);
-        await categoryRepository.deleteById(fromCategoryId);
-    }
+    readonly mergeInto = Effect.fn('CategoryService.mergeInto')(function* (fromCategoryId: number, toCategoryId: number) {
+        yield* categoryRepository.reassignTransactionEntries(fromCategoryId, toCategoryId);
+        yield* categoryRepository.deleteById(fromCategoryId);
+    });
 
-    async deleteById(categoryId: number): Promise<void> {
-        await categoryRepository.deleteById(categoryId);
-    }
+    readonly deleteById = Effect.fn('CategoryService.deleteById')(function* (categoryId: number) {
+        yield* categoryRepository.deleteById(categoryId);
+    });
 }
 
 export const categoryService = new CategoryService();

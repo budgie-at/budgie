@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { XLSX_MIME_TYPE } from '../../constant/xlsx-mime-type.constant';
 import { privatbankSyncService } from '../../service/privatbank-sync.service';
 import { CreateFileBankAccount } from '../create-file-bank-account/create-file-bank-account';
@@ -25,8 +26,9 @@ export const CreatePrivatbankAccount = () => {
         fileTypeLabel: t`XLSX export`,
         selectFileText: t`Select the exported XLSX file`,
         ctaLabel: t`Import`,
-        importPreview: privatbankSyncService.importPreview.bind(privatbankSyncService),
-        executeImportForSelectedAccounts: privatbankSyncService.executeImportForSelectedAccounts.bind(privatbankSyncService)
+        importPreview: uri => appRuntime.runPromise(privatbankSyncService.importPreview(uri)),
+        executeImportForSelectedAccounts: (uri, selectedAccountIds) =>
+            appRuntime.runPromise(privatbankSyncService.executeImportForSelectedAccounts(uri, selectedAccountIds))
     };
 
     return <CreateFileBankAccount config={config} />;

@@ -9,6 +9,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useAuthContext } from '../../../auth/context/auth.context';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
@@ -31,7 +32,7 @@ export const PinEnabledCard = () => {
     const disablePinHref = { pathname: '/settings/pin', params: { mode: PinSetupModeEnum.DISABLE } } as const;
 
     const handleToggleBiometric = async (value: boolean) => {
-        await updateSettingsMutation({ isBiometricEnabled: value });
+        await appRuntime.runPromise(updateSettingsMutation({ isBiometricEnabled: value }));
     };
 
     return (

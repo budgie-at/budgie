@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
@@ -21,13 +22,15 @@ export const useConvertedAmount = (
         let cancelled = false;
 
         if (!isSameCurrency) {
-            void exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits).then(result => {
-                if (!cancelled) {
-                    setConvertedAmount({ fromInstrumentId, toInstrumentId, amountInMicroUnits, result });
-                }
+            void appRuntime
+                .runPromise(exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits))
+                .then(result => {
+                    if (!cancelled) {
+                        setConvertedAmount({ fromInstrumentId, toInstrumentId, amountInMicroUnits, result });
+                    }
 
-                return result;
-            }, emptyFn);
+                    return result;
+                }, emptyFn);
         }
 
         return () => {

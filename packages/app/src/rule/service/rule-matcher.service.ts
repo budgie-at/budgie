@@ -11,10 +11,10 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
 import { SQL, and, or, sql } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { transactionRepository, transactionRuleRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
@@ -46,13 +46,10 @@ type FindMatchingTransactionsResultType = {
 class RuleMatcherService {
     private static readonly UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN = /[\\^$.*+?()[\]{}|]/u;
 
-    @Log(
-        params => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType}`,
-        result => `done count=${result}`,
-        (error, params) =>
-            `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} error=${getErrorMessage(error)}`
-    )
-    async countMatchingTransactions(params: CountConditionsParamsType): Promise<number> {
+    readonly countMatchingTransactions = Effect.fn('RuleMatcherService.countMatchingTransactions')(function* (
+        this: RuleMatcherService,
+        params: CountConditionsParamsType
+    ) {
         const { conditions, conditionMatchType } = params;
 
         if (!isNotEmptyArray(conditions)) {
@@ -62,26 +59,24 @@ class RuleMatcherService {
         const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(conditions, conditionMatchType);
 
         if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            return transactionRuleRepository.countByRuleConditions(sqlWhere);
+            return yield* transactionRuleRepository.countByRuleConditions(sqlWhere);
         }
 
         if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+            const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
 
-            return this.countWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
+            return yield* this.countWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
         }
 
-        return this.countMatchingTransactionsLegacy(params);
-    }
+        return yield* this.countMatchingTransactionsLegacy(params);
+    });
 
-    @Log(
-        (params, limit) => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit}`,
-        result => `done count=${result.count} returned=${result.transactions.length}`,
-        (error, params, limit) =>
-            `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} limit=${limit} error=${getErrorMessage(error)}`
-    )
     // eslint-disable-next-line max-statements -- Multiple branching paths with SQL and fallback logic
-    async findMatchingTransactions(params: CountConditionsParamsType, limit: number): Promise<FindMatchingTransactionsResultType> {
+    readonly findMatchingTransactions = Effect.fn('RuleMatcherService.findMatchingTransactions')(function* (
+        this: RuleMatcherService,
+        params: CountConditionsParamsType,
+        limit: number
+    ) {
         const { conditions, conditionMatchType } = params;
         const emptyResult: FindMatchingTransactionsResultType = { transactions: [], count: 0 };
 
@@ -92,33 +87,33 @@ class RuleMatcherService {
         const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(conditions, conditionMatchType);
 
         if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            const allIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+            const allIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
             const count = allIds.length;
             const slicedIds = allIds.slice(0, limit);
-            const transactions = isNotEmptyArray(slicedIds) ? await transactionRepository.findByIdsWithEntries(slicedIds) : [];
+            const transactions = isNotEmptyArray(slicedIds) ? yield* transactionRepository.findByIdsWithEntries(slicedIds) : [];
+            const result: FindMatchingTransactionsResultType = { transactions, count };
 
-            return { transactions, count };
+            return result;
         }
 
         if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-            const matchingIds = await this.filterWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
+            const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+            const matchingIds = yield* this.filterWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
             const count = matchingIds.length;
             const slicedIds = matchingIds.slice(0, limit);
-            const transactions = isNotEmptyArray(slicedIds) ? await transactionRepository.findByIdsWithEntries(slicedIds) : [];
+            const transactions = isNotEmptyArray(slicedIds) ? yield* transactionRepository.findByIdsWithEntries(slicedIds) : [];
+            const result: FindMatchingTransactionsResultType = { transactions, count };
 
-            return { transactions, count };
+            return result;
         }
 
-        return this.findMatchingTransactionsLegacy(params, limit);
-    }
+        return yield* this.findMatchingTransactionsLegacy(params, limit);
+    });
 
-    @Log(
-        rule => `enter ruleId=${rule.id} conditions=${rule.conditions.length} matchType=${rule.conditionMatchType}`,
-        (result, rule) => `done ruleId=${rule.id} matchedCount=${result.length}`,
-        (error, rule) => `throw ruleId=${rule.id} error=${getErrorMessage(error)}`
-    )
-    async collectMatchingTransactionIds(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
+    readonly collectMatchingTransactionIds = Effect.fn('RuleMatcherService.collectMatchingTransactionIds')(function* (
+        this: RuleMatcherService,
+        rule: RuleWithRelationsEntityInterface
+    ) {
         if (!isNotEmptyArray(rule.conditions)) {
             return [];
         }
@@ -126,23 +121,171 @@ class RuleMatcherService {
         const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
 
         if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            return transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+            return yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
         }
 
         if (isDefined(sqlWhere) && rule.conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+            const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
 
-            return this.filterWithFallbackConditions(candidateIds, fallbackConditions, rule.conditionMatchType);
+            return yield* this.filterWithFallbackConditions(candidateIds, fallbackConditions, rule.conditionMatchType);
         }
 
-        return this.collectMatchingTransactionIdsLegacy(rule);
-    }
+        return yield* this.collectMatchingTransactionIdsLegacy(rule);
+    });
 
-    @Log(
-        (rule, input) => `enter ruleId=${rule.id} matchType=${rule.conditionMatchType} title="${input.title}"`,
-        (result, rule, input) => `done ruleId=${rule.id} title="${input.title}" matched=${result}`,
-        (error, rule, input) => `throw ruleId=${rule.id} title="${input.title}" error=${getErrorMessage(error)}`
-    )
+    private readonly countWithFallbackConditions = Effect.fn('RuleMatcherService.countWithFallbackConditions')(function* (
+        this: RuleMatcherService,
+        candidateIds: number[],
+        fallbackConditions: RuleConditionInputInterface[],
+        conditionMatchType: RuleConditionMatchTypeEnum
+    ) {
+        if (!isNotEmptyArray(candidateIds)) {
+            return 0;
+        }
+
+        let count = 0;
+
+        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
+            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
+            const transactions = yield* transactionRepository.findByIdsWithEntries(batchIds);
+
+            const matchCount = transactions.filter(transaction => {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+
+                return this.evaluateConditions(fallbackConditions, conditionMatchType, input);
+            }).length;
+
+            count += matchCount;
+        }
+
+        return count;
+    });
+
+    private readonly filterWithFallbackConditions = Effect.fn('RuleMatcherService.filterWithFallbackConditions')(function* (
+        this: RuleMatcherService,
+        candidateIds: number[],
+        fallbackConditions: RuleConditionInputInterface[],
+        conditionMatchType: RuleConditionMatchTypeEnum
+    ) {
+        const matchingIds: number[] = [];
+
+        if (!isNotEmptyArray(candidateIds)) {
+            return matchingIds;
+        }
+
+        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
+            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
+            const transactions = yield* transactionRepository.findByIdsWithEntries(batchIds);
+
+            for (const transaction of transactions) {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+
+                if (this.evaluateConditions(fallbackConditions, conditionMatchType, input)) {
+                    matchingIds.push(transaction.id);
+                }
+            }
+        }
+
+        return matchingIds;
+    });
+
+    private readonly countMatchingTransactionsLegacy = Effect.fn('RuleMatcherService.countMatchingTransactionsLegacy')(function* (
+        this: RuleMatcherService,
+        params: CountConditionsParamsType
+    ) {
+        const { conditions, conditionMatchType } = params;
+
+        if (!isNotEmptyArray(conditions)) {
+            return 0;
+        }
+
+        let count = 0;
+
+        yield* this.forEachTransactionBatch(transactions => {
+            count += transactions.filter(transaction => {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+
+                return this.evaluateConditions(conditions, conditionMatchType, input);
+            }).length;
+        });
+
+        return count;
+    });
+
+    private readonly findMatchingTransactionsLegacy = Effect.fn('RuleMatcherService.findMatchingTransactionsLegacy')(function* (
+        this: RuleMatcherService,
+        params: CountConditionsParamsType,
+        limit: number
+    ) {
+        const { conditions, conditionMatchType } = params;
+
+        if (!isNotEmptyArray(conditions)) {
+            const emptyResult: FindMatchingTransactionsResultType = { transactions: [], count: 0 };
+
+            return emptyResult;
+        }
+
+        const matchingIds: number[] = [];
+
+        yield* this.forEachTransactionBatch(transactions => {
+            for (const transaction of transactions) {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+
+                if (this.evaluateConditions(conditions, conditionMatchType, input)) {
+                    matchingIds.push(transaction.id);
+                }
+            }
+        });
+
+        const count = matchingIds.length;
+        const slicedIds = matchingIds.slice(0, limit);
+        const resultTransactions = isNotEmptyArray(slicedIds) ? yield* transactionRepository.findByIdsWithEntries(slicedIds) : [];
+        const result: FindMatchingTransactionsResultType = { transactions: resultTransactions, count };
+
+        return result;
+    });
+
+    private readonly collectMatchingTransactionIdsLegacy = Effect.fn('RuleMatcherService.collectMatchingTransactionIdsLegacy')(function* (
+        this: RuleMatcherService,
+        rule: RuleWithRelationsEntityInterface
+    ) {
+        const matchingIds: number[] = [];
+
+        yield* this.forEachTransactionBatch(transactions => {
+            for (const transaction of transactions) {
+                const input = this.convertTransactionForRuleEvaluation(transaction);
+
+                if (this.isRuleMatch(rule, input)) {
+                    matchingIds.push(transaction.id);
+                }
+            }
+        });
+
+        return matchingIds;
+    });
+
+    private readonly forEachTransactionBatch = Effect.fn('RuleMatcherService.forEachTransactionBatch')(function* (
+        callback: (transactions: TransactionWithEntriesMccCategoryEntityInterface[]) => void
+    ) {
+        let offset = 0;
+        let hasMore = true;
+
+        while (hasMore) {
+            yield* Effect.promise(() => microPause());
+
+            const transactions = yield* transactionRepository.findAllWithMccCategoryOffset(RULE_SET_BATCH_SIZE, offset);
+
+            if (!isNotEmptyArray(transactions)) {
+                break;
+            }
+
+            callback(transactions);
+
+            hasMore = transactions.length >= RULE_SET_BATCH_SIZE;
+            offset += RULE_SET_BATCH_SIZE;
+        }
+    });
+
     evaluateRule(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
         return this.isRuleMatch(rule, input);
     }
@@ -298,151 +441,6 @@ class RuleMatcherService {
                 mccCode: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.mcc ?? null
             }))
         };
-    }
-
-    private async countWithFallbackConditions(
-        candidateIds: number[],
-        fallbackConditions: RuleConditionInputInterface[],
-        conditionMatchType: RuleConditionMatchTypeEnum
-    ): Promise<number> {
-        if (!isNotEmptyArray(candidateIds)) {
-            return 0;
-        }
-
-        let count = 0;
-
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.findByIdsWithEntries(batchIds);
-
-            const matchCount = transactions.filter(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                return this.evaluateConditions(fallbackConditions, conditionMatchType, input);
-            }).length;
-
-            count += matchCount;
-        }
-
-        return count;
-    }
-
-    private async filterWithFallbackConditions(
-        candidateIds: number[],
-        fallbackConditions: RuleConditionInputInterface[],
-        conditionMatchType: RuleConditionMatchTypeEnum
-    ): Promise<number[]> {
-        if (!isNotEmptyArray(candidateIds)) {
-            return [];
-        }
-
-        const matchingIds: number[] = [];
-
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.findByIdsWithEntries(batchIds);
-
-            for (const transaction of transactions) {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                if (this.evaluateConditions(fallbackConditions, conditionMatchType, input)) {
-                    matchingIds.push(transaction.id);
-                }
-            }
-        }
-
-        return matchingIds;
-    }
-
-    private async countMatchingTransactionsLegacy(params: CountConditionsParamsType): Promise<number> {
-        const { conditions, conditionMatchType } = params;
-
-        if (!isNotEmptyArray(conditions)) {
-            return 0;
-        }
-
-        let count = 0;
-
-        await this.forEachTransactionBatch(transactions => {
-            count += transactions.filter(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                return this.evaluateConditions(conditions, conditionMatchType, input);
-            }).length;
-        });
-
-        return count;
-    }
-
-    private async findMatchingTransactionsLegacy(
-        params: CountConditionsParamsType,
-        limit: number
-    ): Promise<FindMatchingTransactionsResultType> {
-        const { conditions, conditionMatchType } = params;
-
-        if (!isNotEmptyArray(conditions)) {
-            return { transactions: [], count: 0 };
-        }
-
-        const matchingIds: number[] = [];
-
-        await this.forEachTransactionBatch(transactions => {
-            for (const transaction of transactions) {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                if (this.evaluateConditions(conditions, conditionMatchType, input)) {
-                    matchingIds.push(transaction.id);
-                }
-            }
-        });
-
-        const count = matchingIds.length;
-        const slicedIds = matchingIds.slice(0, limit);
-        const resultTransactions = isNotEmptyArray(slicedIds) ? await transactionRepository.findByIdsWithEntries(slicedIds) : [];
-
-        return { transactions: resultTransactions, count };
-    }
-
-    private async collectMatchingTransactionIdsLegacy(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
-        const matchingIds: number[] = [];
-
-        await this.forEachTransactionBatch(transactions => {
-            for (const transaction of transactions) {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                if (this.isRuleMatch(rule, input)) {
-                    matchingIds.push(transaction.id);
-                }
-            }
-        });
-
-        return matchingIds;
-    }
-
-    private async forEachTransactionBatch(
-        callback: (transactions: TransactionWithEntriesMccCategoryEntityInterface[]) => void
-    ): Promise<void> {
-        let offset = 0;
-        let hasMore = true;
-
-        while (hasMore) {
-            // eslint-disable-next-line no-await-in-loop
-            await microPause();
-
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.findAllWithMccCategoryOffset(RULE_SET_BATCH_SIZE, offset);
-
-            if (!isNotEmptyArray(transactions)) {
-                break;
-            }
-
-            callback(transactions);
-
-            hasMore = transactions.length >= RULE_SET_BATCH_SIZE;
-            offset += RULE_SET_BATCH_SIZE;
-        }
     }
 
     private evaluateConditions(

@@ -1,5 +1,5 @@
-import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -7,14 +7,13 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { FullPage } from '../../../@generic/component/page/full-page';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
 import { onboardingService } from '../../service/onboarding.service';
 import { OnboardingChip } from '../onboarding-chip/onboarding-chip';
 
 import { OnboardingWelcomeSelector } from './onboarding-welcome.selector';
-
-const logger = getLogger('OnboardingWelcome');
 
 export const OnboardingWelcome = () => {
     const { t } = useLingui();
@@ -23,11 +22,11 @@ export const OnboardingWelcome = () => {
     const handlePrimary = () => void goToNextStep(OnboardingStepEnum.WELCOME);
 
     const handleBlankCanvasPress = () => {
-        void onboardingService
-            .complete()
+        void appRuntime
+            .runPromise(onboardingService.complete())
             .then(() => void router.replace('/'))
             .catch((error: unknown) => {
-                logger.error('blank canvas failed', { errorMessage: getErrorMessage(error) });
+                appRuntime.runFork(Effect.logError('blank canvas failed', { errorMessage: getErrorMessage(error) }));
             });
     };
 

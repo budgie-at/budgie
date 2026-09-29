@@ -1,14 +1,18 @@
 /* oxlint-disable lingui/no-unlocalized-strings -- Internal error message, not user-facing */
+import * as Effect from 'effect/Effect';
 import { File, Paths } from 'expo-file-system';
 import { createDownloadResumable } from 'expo-file-system/legacy';
 
 import { isDefined } from '@rnw-community/shared';
 
-export const downloadModel = async (url: string, filename: string, onProgress: (downloadProgress: number) => void): Promise<string> => {
+export const downloadModel = Effect.fn('downloadModel')(function* (
+    url: string,
+    filename: string,
+    onProgress: (downloadProgress: number) => void
+) {
     const destPath = `${Paths.document.uri}${filename}`;
-    const destFile = new File(destPath);
 
-    if (destFile.exists) {
+    if (new File(destPath).exists) {
         onProgress(1);
 
         return destPath;
@@ -18,10 +22,10 @@ export const downloadModel = async (url: string, filename: string, onProgress: (
         onProgress(progress.totalBytesWritten / progress.totalBytesExpectedToWrite);
     });
 
-    const result = await download.downloadAsync();
+    const result = yield* Effect.tryPromise(() => download.downloadAsync());
     if (!isDefined(result?.uri)) {
-        throw new Error('Model download failed');
+        return yield* Effect.fail(new Error('Model download failed'));
     }
 
     return result.uri;
-};
+});

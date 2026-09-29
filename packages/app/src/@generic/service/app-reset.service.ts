@@ -1,8 +1,9 @@
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import { Directory, File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { aiModelResidencyService } from '../../ai/service/ai-model-residency.service';
 import { aiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
@@ -14,80 +15,51 @@ import { databaseLifecycleService } from '../drizzle/service/database-lifecycle.
 import { reloadApp } from '../utils/reload-app.util';
 
 class AppResetService {
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async clearAllDataAndRestart(): Promise<void> {
-        await databaseLifecycleService.run(DatabaseLifecycleOperationEnum.RESET, () => this.clearAllAppOwnedStorage());
-        await reloadApp();
-    }
+    readonly clearAllDataAndRestart = Effect.fn('AppResetService.clearAllDataAndRestart')(function* (this: AppResetService) {
+        yield* databaseLifecycleService.run(
+            DatabaseLifecycleOperationEnum.RESET,
+            this.runAllAndFailWithFirstError([
+                this.runPrimaryResetSteps(),
+                this.deleteCacheContents(),
+                Effect.sync(() => {
+                    patternCacheService.invalidate();
+                }),
+                authService.persistPin(null)
+            ])
+        );
+        yield* Effect.promise(() => reloadApp());
+    });
 
-    private async clearAllAppOwnedStorage(): Promise<void> {
-        const errors: unknown[] = [];
+    private readonly runPrimaryResetSteps = Effect.fn('AppResetService.runPrimaryResetSteps')(function* (this: AppResetService) {
+        yield* aiStorageReplacementService.pauseLongLivedRuntime();
+        yield* aiModelResidencyService.suspend();
+        yield* databaseLifecycleService.close();
+        this.deleteDatabaseFiles(this.getDatabasePath());
+        this.deleteDatabaseFiles(`${this.getDatabasePath()}.bak`);
+    });
 
-        await this.runPrimaryResetSteps(errors);
-        await this.runCleanupResetSteps(errors);
-
-        if (isNotEmptyArray(errors)) {
-            throw errors[0];
-        }
-    }
-
-    private async runPrimaryResetSteps(errors: unknown[]): Promise<void> {
-        try {
-            await aiStorageReplacementService.pauseLongLivedRuntime();
-            await aiModelResidencyService.suspend();
-            await databaseLifecycleService.close();
-            this.deleteDatabaseFiles(this.getDatabasePath());
-            this.deleteDatabaseFiles(`${this.getDatabasePath()}.bak`);
-        } catch (error: unknown) {
-            errors.push(error);
-        }
-    }
-
-    private async runCleanupResetSteps(errors: unknown[]): Promise<void> {
-        this.captureSyncError(() => void this.deleteCacheContents(), errors);
-        this.captureSyncError(() => void patternCacheService.invalidate(), errors);
-        await this.captureAsyncError(() => authService.persistPin(null), errors);
-    }
-
-    private captureSyncError(operation: () => void, errors: unknown[]): void {
-        try {
-            operation();
-        } catch (error: unknown) {
-            errors.push(error);
-        }
-    }
-
-    private async captureAsyncError(operation: () => Promise<void>, errors: unknown[]): Promise<void> {
-        try {
-            await operation();
-        } catch (error: unknown) {
-            errors.push(error);
-        }
-    }
-
-    private deleteCacheContents(): void {
+    private readonly deleteCacheContents = Effect.fn('AppResetService.deleteCacheContents')(function* (this: AppResetService) {
         const cacheDirectory = new Directory(Paths.cache);
 
-        if (!cacheDirectory.exists) {
-            return;
+        if (cacheDirectory.exists) {
+            yield* this.runAllAndFailWithFirstError(
+                cacheDirectory.list().map(item =>
+                    Effect.sync(() => {
+                        item.delete();
+                    })
+                )
+            );
         }
+    });
 
-        let firstError: unknown = null;
+    private readonly runAllAndFailWithFirstError = Effect.fnUntraced(function* <E, R>(steps: Effect.Effect<void, E, R>[]) {
+        const exits = yield* Effect.forEach(steps, step => Effect.exit(step));
+        const failure = exits.find(Exit.isFailure);
 
-        cacheDirectory.list().forEach(item => {
-            try {
-                item.delete();
-            } catch (error: unknown) {
-                if (!isDefined(firstError)) {
-                    firstError = error;
-                }
-            }
-        });
-
-        if (isDefined(firstError)) {
-            throw firstError;
+        if (isDefined(failure)) {
+            yield* Effect.failCause(failure.cause);
         }
-    }
+    });
 
     private deleteDatabaseFiles(databasePath: string): void {
         this.deleteFileIfExists(new File(databasePath));

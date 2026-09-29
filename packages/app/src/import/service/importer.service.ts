@@ -15,12 +15,13 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
 import { isValid } from 'date-fns/isValid';
 import { parse } from 'date-fns/parse';
+import * as Effect from 'effect/Effect';
+import * as Result from 'effect/Result';
 import Papa, { ParseStepResult } from 'papaparse';
 
-import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
@@ -36,55 +37,43 @@ import type { ImporterColumnMapInterface } from '../interface/importer-column-ma
 import type { ImporterRowInterface } from '../interface/importer-row.interface';
 import type { NormalizedRowType } from '../type/normalized-row.type';
 
-const logger = getLogger('ImporterService');
-
 export class ImporterService {
-    private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
-    private accountsMap: Record<string, AccountEntityInterface> = {};
-    private categoriesMap: Record<string, CategoryEntityInterface | undefined> = {};
-    private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
-
-    constructor(private readonly columnMap: ImporterColumnMapInterface) {}
-
-    async process(csvText: string, totalRows: number): Promise<ImportProgressInterface> {
+    readonly process = Effect.fn('ImporterService.process')(function* (this: ImporterService, csvText: string, totalRows: number) {
         const progress: ImportProgressInterface = { total: totalRows, processed: 0, successful: 0, errors: 0 };
 
-        this.instrumentsMap = await this.initializeInstruments();
-        this.mccCategoryLookupMap = await loadMccCategoryLookupMap();
+        this.instrumentsMap = yield* this.initializeInstruments();
+        this.mccCategoryLookupMap = yield* loadMccCategoryLookupMap();
 
-        const { accountInputs, categoryInputs } = await this.collectEntities(csvText);
+        const { accountInputs, categoryInputs } = yield* this.collectEntities(csvText);
 
-        this.accountsMap = await accountService.bulkCreate([...accountInputs.values()]);
-        this.categoriesMap = await categoryService.bulkCreate([...categoryInputs.values()]);
+        this.accountsMap = yield* accountService.bulkCreate([...accountInputs.values()]);
+        this.categoriesMap = yield* categoryService.bulkCreate([...categoryInputs.values()]);
 
-        const transactions = await this.processTransactions(csvText, progress);
-        const createdTransactions = await transactionService.bulkCreate(transactions);
+        const transactions = yield* this.processTransactions(csvText, progress);
+        const createdTransactions = yield* transactionService.bulkCreate(transactions);
 
-        ruleApplicationDrainerService.enqueueTransactions(
+        yield* ruleApplicationDrainerService.enqueueTransactions(
             createdTransactions.map(transaction => transaction.id),
             transactions
         );
 
         return progress;
-    }
+    });
 
-    private async initializeInstruments(): Promise<Record<string, InstrumentEntityInterface>> {
-        const instruments = await instrumentRepository.getAll();
+    private readonly initializeInstruments = Effect.fn('ImporterService.initializeInstruments')(function* () {
+        const instruments = yield* instrumentRepository.getAll();
 
         return instruments.reduce<Record<string, InstrumentEntityInterface>>(
             (acc, instrument) => ({ ...acc, [instrument.code]: instrument }),
             {}
         );
-    }
+    });
 
-    private async collectEntities(csvText: string): Promise<{
-        accountInputs: Map<string, LiabilityAccountCreateInputInterface>;
-        categoryInputs: Map<string, CategoryCreateEntityInterface>;
-    }> {
+    private readonly collectEntities = Effect.fn('ImporterService.collectEntities')(function* (this: ImporterService, csvText: string) {
         const accountInputs = new Map<string, LiabilityAccountCreateInputInterface>();
         const categoryInputs = new Map<string, CategoryCreateEntityInterface>();
 
-        await this.processRows(csvText, normalizedRow => {
+        yield* this.processRows(csvText, normalizedRow => {
             const toAccountKey = this.getToAccountKey(normalizedRow);
             if (!accountInputs.has(toAccountKey) && isNotEmptyString(normalizedRow.toCurrency)) {
                 accountInputs.set(toAccountKey, this.createAccountInput(toAccountKey, normalizedRow.toCurrency));
@@ -101,7 +90,62 @@ export class ImporterService {
         });
 
         return { accountInputs, categoryInputs };
-    }
+    });
+
+    private readonly processTransactions = Effect.fn('ImporterService.processTransactions')(function* (
+        this: ImporterService,
+        csvText: string,
+        progress: ImportProgressInterface
+    ) {
+        const transactions: TransactionCreateInputInterface[] = [];
+        const rowErrors: Record<string, string>[] = [];
+
+        yield* this.processRows(csvText, (normalizedRow, row) => {
+            progress.processed += 1;
+
+            const transaction = this.createTransaction(normalizedRow);
+
+            if (Result.isSuccess(transaction)) {
+                transactions.push(transaction.success);
+                progress.successful += 1;
+            } else {
+                progress.errors += 1;
+                rowErrors.push({ errorMessage: transaction.failure, rowColumns: Object.keys(row).join(',') });
+            }
+        });
+        yield* Effect.forEach(rowErrors, rowError => Effect.logError('row:process-error', rowError), { discard: true });
+
+        return transactions;
+    });
+
+    private readonly processRows = Effect.fn('ImporterService.processRows')(function* (
+        this: ImporterService,
+        csvText: string,
+        onRow: (normalizeRow: NormalizedRowType, originalRow: Record<string, string>) => void
+    ) {
+        yield* Effect.callback<unknown, Error>(resume => {
+            Papa.parse<Record<string, string>>(csvText, {
+                header: true,
+                skipEmptyLines: true,
+                step: (row: ParseStepResult<Record<string, string>>) => {
+                    onRow(this.normalizeRow(row.data), row.data);
+                },
+                complete: () => {
+                    resume(Effect.void);
+                },
+                error: (error: Error) => {
+                    resume(Effect.fail(error));
+                }
+            });
+        });
+    });
+
+    private instrumentsMap: Record<string, InstrumentEntityInterface> = {};
+    private accountsMap: Record<string, AccountEntityInterface> = {};
+    private categoriesMap: Record<string, CategoryEntityInterface | undefined> = {};
+    private mccCategoryLookupMap = new Map<string, MccCategoryLookupInterface>();
+
+    constructor(private readonly columnMap: ImporterColumnMapInterface) {}
 
     private createAccountInput(title: string, currency: string): LiabilityAccountCreateInputInterface {
         return {
@@ -115,25 +159,11 @@ export class ImporterService {
         };
     }
 
-    private async processTransactions(csvText: string, progress: ImportProgressInterface): Promise<TransactionCreateInputInterface[]> {
-        const transactions: TransactionCreateInputInterface[] = [];
-
-        await this.processRows(csvText, (normalizedRow, row) => {
-            progress.processed += 1;
-            try {
-                const transaction = this.createTransaction(normalizedRow);
-                transactions.push(transaction);
-                progress.successful += 1;
-            } catch (error) {
-                progress.errors += 1;
-                logger.error('row:process-error', { errorMessage: getErrorMessage(error), rowColumns: Object.keys(row).join(',') });
-            }
-        });
-
-        return transactions;
+    private createTransaction(normalizedRow: NormalizedRowType): Result.Result<TransactionCreateInputInterface, string> {
+        return Result.map(this.parseRow(normalizedRow), parsedRow => this.buildTransaction(normalizedRow, parsedRow));
     }
 
-    private createTransaction(normalizedRow: NormalizedRowType): TransactionCreateInputInterface {
+    private buildTransaction(normalizedRow: NormalizedRowType, parsedRow: ImporterRowInterface): TransactionCreateInputInterface {
         const {
             toAccount,
             fromAccount,
@@ -145,7 +175,7 @@ export class ImporterService {
             fromInstrument,
             toInstrument,
             fromAmount
-        } = this.parseRow(normalizedRow);
+        } = parsedRow;
 
         const type = this.determineTransactionType(toAmount, fromInstrument);
 
@@ -281,7 +311,7 @@ export class ImporterService {
     }
 
     // eslint-disable-next-line max-statements
-    private parseRow(normalizedRow: NormalizedRowType): ImporterRowInterface {
+    private parseRow(normalizedRow: NormalizedRowType): Result.Result<ImporterRowInterface, string> {
         const toAccount = this.accountsMap[this.getToAccountKey(normalizedRow)];
         const toAmount = parseFloat(normalizedRow.toAmount);
         const toInstrument = this.instrumentsMap[normalizedRow.toCurrency];
@@ -293,19 +323,19 @@ export class ImporterService {
         const isPlanned = normalizedRow.isPlanned === '1';
 
         if (!isDefined(toAccount)) {
-            throw new Error(`To Account ${normalizedRow.toAccount} not found`);
+            return Result.fail(`To Account ${normalizedRow.toAccount} not found`);
         }
         if (!isDefined(operatedAt) || isNaN(operatedAt.getTime())) {
-            throw new Error(`Date "${normalizedRow.operatedAt}" is invalid`);
+            return Result.fail(`Date "${normalizedRow.operatedAt}" is invalid`);
         }
         if (!isDefined(toAmount) || isNaN(toAmount)) {
-            throw new Error(`To Amount "${normalizedRow.toAmount}" is invalid`);
+            return Result.fail(`To Amount "${normalizedRow.toAmount}" is invalid`);
         }
         if (!isDefined(toInstrument)) {
-            throw new Error(`Currency ${normalizedRow.toCurrency} not found`);
+            return Result.fail(`Currency ${normalizedRow.toCurrency} not found`);
         }
         if (isDefined(fromInstrument) && (!isDefined(fromAmount) || isNaN(fromAmount))) {
-            throw new Error(`From Amount "${normalizedRow.fromAmount}" is invalid`);
+            return Result.fail(`From Amount "${normalizedRow.fromAmount}" is invalid`);
         }
 
         const mccLookup = isNotEmptyString(normalizedRow.mcc) ? (this.mccCategoryLookupMap.get(normalizedRow.mcc) ?? null) : null;
@@ -314,7 +344,7 @@ export class ImporterService {
         const categoryId = useMccDefault ? mccLookup.defaultCategoryId : (explicitCategory?.id ?? null);
         const categorySource = useMccDefault ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER;
 
-        return {
+        return Result.succeed({
             toAccount,
             fromAccount,
             categoryId,
@@ -326,7 +356,7 @@ export class ImporterService {
             toInstrument,
             fromAmount,
             isPlanned
-        };
+        });
     }
 
     private getToAccountKey(normalizedRow: NormalizedRowType): string {
@@ -344,22 +374,5 @@ export class ImporterService {
         }
 
         return parse(dateString, 'yyyy-MM-dd', new Date());
-    }
-
-    private async processRows(
-        csvText: string,
-        onRow: (normalizeRow: NormalizedRowType, originalRow: Record<string, string>) => void
-    ): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            Papa.parse<Record<string, string>>(csvText, {
-                header: true,
-                skipEmptyLines: true,
-                step: (row: ParseStepResult<Record<string, string>>) => {
-                    onRow(this.normalizeRow(row.data), row.data);
-                },
-                complete: () => void resolve(),
-                error: (error: Error) => void reject(error)
-            });
-        });
     }
 }

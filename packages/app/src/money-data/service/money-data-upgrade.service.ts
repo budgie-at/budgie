@@ -1,10 +1,10 @@
-import { transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
+import * as Effect from 'effect/Effect';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository } from '../../@generic/drizzle/db/db';
+import { transactionEntryRepository } from '../../@generic/drizzle/db/db';
 import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
@@ -12,79 +12,74 @@ import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates
 import { entryBaseValuationService } from './entry-base-valuation.service';
 
 import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/money-data-upgrade-runtime-snapshot.interface';
-import type { DB, PendingBaseValuationBucketInterface } from '@budgie/contracts';
+import type { PendingBaseValuationBucketInterface } from '@budgie/contracts';
 
 class MoneyDataUpgradeService {
     private static readonly BUCKET_BATCH_SIZE = 25;
 
-    private snapshot: MoneyDataUpgradeRuntimeSnapshotInterface = this.createInitialSnapshot();
-
-    @Log(
-        'enter',
-        result =>
-            `done isRunning=${String(result.isRunning)} pendingEntryCount=${result.pendingEntryCount} lastError=${result.lastError ?? ''}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async getSnapshot(): Promise<MoneyDataUpgradeRuntimeSnapshotInterface> {
+    readonly getSnapshot = Effect.fn('MoneyDataUpgradeService.getSnapshot')(function* (this: MoneyDataUpgradeService) {
         if (this.snapshot.isRunning) {
             return this.snapshot;
         }
 
-        const baseInstrument = await exchangeRatesService.getBaseInstrument();
+        const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
         if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
-            return {
+            const missingBaseSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface = {
                 ...this.createInitialSnapshot(),
                 lastError: t`Base instrument not found`
             };
+
+            return missingBaseSnapshot;
         }
 
-        const pendingEntryCount = await transactionEntryRepository.countPendingBaseValuationEntries(baseInstrument.id);
-
-        return {
+        const pendingEntryCount = yield* transactionEntryRepository.countPendingBaseValuationEntries(baseInstrument.id);
+        const pendingSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface = {
             ...this.createInitialSnapshot(),
             pendingEntryCount,
             totalEntryCount: pendingEntryCount
         };
-    }
 
-    @Log(
-        onProgress => `enter hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, onProgress) =>
-            `done processedEntryCount=${result.processedEntryCount} totalEntryCount=${result.totalEntryCount} hasOnProgress=${String(isDefined(onProgress))}`,
-        (error, onProgress) => `throw hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
-    )
-    async run(
+        return pendingSnapshot;
+    });
+
+    readonly run = Effect.fn('MoneyDataUpgradeService.run')(function* (
+        this: MoneyDataUpgradeService,
         onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
-    ): Promise<MoneyDataUpgradeRuntimeSnapshotInterface> {
+    ) {
         if (this.snapshot.isRunning) {
             return this.snapshot;
         }
 
         this.publishSnapshot({ ...this.snapshot, isRunning: true, lastError: null }, onProgress);
 
-        try {
-            await this.valuePendingEntries(onProgress);
-            this.publishSnapshot({ ...this.snapshot, isRunning: false, isUpdatingBalances: false }, onProgress);
+        yield* this.valuePendingEntries(onProgress).pipe(
+            Effect.tapError(error =>
+                Effect.sync(() => {
+                    this.publishSnapshot(
+                        { ...this.snapshot, isRunning: false, isUpdatingBalances: false, lastError: getErrorMessage(error) },
+                        onProgress
+                    );
+                })
+            )
+        );
+        this.publishSnapshot({ ...this.snapshot, isRunning: false, isUpdatingBalances: false }, onProgress);
 
-            return this.snapshot;
-        } catch (error) {
-            this.publishSnapshot(
-                { ...this.snapshot, isRunning: false, isUpdatingBalances: false, lastError: getErrorMessage(error) },
-                onProgress
-            );
+        return this.snapshot;
+    });
 
-            throw error;
-        }
-    }
+    private snapshot: MoneyDataUpgradeRuntimeSnapshotInterface = this.createInitialSnapshot();
 
-    private async valuePendingEntries(onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void): Promise<void> {
-        const baseInstrument = await exchangeRatesService.getBaseInstrument();
+    private readonly valuePendingEntries = Effect.fn('MoneyDataUpgradeService.valuePendingEntries')(function* (
+        this: MoneyDataUpgradeService,
+        onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
+    ) {
+        const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
 
         if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
-            throw new Error(t`Base instrument not found`);
+            return yield* Effect.fail(new Error(t`Base instrument not found`));
         }
 
-        const buckets = await transactionEntryRepository.findPendingBaseValuationBuckets(baseInstrument.id);
+        const buckets = yield* transactionEntryRepository.findPendingBaseValuationBuckets(baseInstrument.id);
         const totalEntryCount = this.sumBucketEntries(buckets);
 
         this.publishSnapshot(
@@ -97,7 +92,9 @@ class MoneyDataUpgradeService {
             onProgress
         );
 
-        await this.valuePendingEntryBuckets(buckets, baseInstrument.id, onProgress);
+        yield* Effect.forEach(this.toBucketBatches(buckets), batch => this.valuePendingEntryBatch(batch, baseInstrument.id, onProgress), {
+            discard: true
+        });
 
         this.publishSnapshot(
             {
@@ -107,33 +104,16 @@ class MoneyDataUpgradeService {
             onProgress
         );
 
-        await accountBalanceIncrementalService.updateAllBalances(true);
-    }
+        return yield* accountBalanceIncrementalService.updateAllBalances(true);
+    });
 
-    private async valuePendingEntryBuckets(
-        buckets: PendingBaseValuationBucketInterface[],
-        baseInstrumentId: number,
-        onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
-    ): Promise<void> {
-        await this.toBucketBatches(buckets).reduce(
-            (previousBatchPromise, batch) =>
-                previousBatchPromise.then(() => this.valuePendingEntryBatch(batch, baseInstrumentId, onProgress)),
-            Promise.resolve()
-        );
-    }
-
-    private async valuePendingEntryBatch(
+    private readonly valuePendingEntryBatch = Effect.fn('MoneyDataUpgradeService.valuePendingEntryBatch')(function* (
+        this: MoneyDataUpgradeService,
         batch: PendingBaseValuationBucketInterface[],
         baseInstrumentId: number,
         onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
-    ): Promise<void> {
-        await transactionAsync(db, async tx => {
-            await batch.reduce(
-                (previousBucketPromise, bucket) =>
-                    previousBucketPromise.then(() => this.valuePendingEntryBucket(bucket, baseInstrumentId, tx)),
-                Promise.resolve()
-            );
-        });
+    ) {
+        yield* Db.transaction(Effect.forEach(batch, bucket => this.valuePendingEntryBucket(bucket, baseInstrumentId), { discard: true }));
 
         const batchEntryCount = this.sumBucketEntries(batch);
         this.publishSnapshot(
@@ -145,33 +125,32 @@ class MoneyDataUpgradeService {
             onProgress
         );
 
-        await microPause();
-    }
+        yield* Effect.promise(() => microPause());
+    });
 
-    private async valuePendingEntryBucket(bucket: PendingBaseValuationBucketInterface, baseInstrumentId: number, tx: DB): Promise<void> {
+    private readonly valuePendingEntryBucket = Effect.fn('MoneyDataUpgradeService.valuePendingEntryBucket')(function* (
+        bucket: PendingBaseValuationBucketInterface,
+        baseInstrumentId: number
+    ) {
         const operatedAt = new Date(bucket.rateDate);
         operatedAt.setHours(0, 0, 0, 0);
 
         const baseExchangeRate =
             bucket.sourceInstrumentId === baseInstrumentId
                 ? 1
-                : await entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
+                : yield* entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
                       bucket.sourceInstrumentId,
                       baseInstrumentId,
-                      operatedAt,
-                      tx
+                      operatedAt
                   );
 
-        await transactionEntryRepository.updateBaseValuationBucket(
-            {
-                rateDate: bucket.rateDate,
-                sourceInstrumentId: bucket.sourceInstrumentId,
-                baseInstrumentId,
-                baseExchangeRate
-            },
-            tx
-        );
-    }
+        yield* transactionEntryRepository.updateBaseValuationBucket({
+            rateDate: bucket.rateDate,
+            sourceInstrumentId: bucket.sourceInstrumentId,
+            baseInstrumentId,
+            baseExchangeRate
+        });
+    });
 
     private toBucketBatches(buckets: PendingBaseValuationBucketInterface[]): PendingBaseValuationBucketInterface[][] {
         const batches: PendingBaseValuationBucketInterface[][] = [];

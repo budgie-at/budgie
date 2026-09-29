@@ -1,11 +1,11 @@
-import { ExternalSourceEnum, transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, ExternalSourceEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+import * as Semaphore from 'effect/Semaphore';
 
-import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { db } from '../../@generic/drizzle/db/db';
-import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
-import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
+import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
+import { Workload } from '../../@generic/service/workload.service';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 
 import { consolidationCoordinatorService } from './consolidation-coordinator.service';
@@ -18,7 +18,6 @@ import type { SyncDuplicateRepairPreviewInterface } from '../interface/sync-dupl
 import type { SyncDuplicateRepairResultInterface } from '../interface/sync-duplicate-repair-result.interface';
 import type { SyncDuplicateRepairSourcePreviewInterface } from '../interface/sync-duplicate-repair-source-preview.interface';
 import type { SyncDuplicateRepairSourceStrategyInterface } from '../interface/sync-duplicate-repair-source-strategy.interface';
-import type { DB } from '@budgie/contracts';
 
 class SyncRepairService {
     private static readonly SOURCE_STRATEGIES: readonly SyncDuplicateRepairSourceStrategyInterface[] = [
@@ -26,93 +25,67 @@ class SyncRepairService {
         ersteDuplicateRepairSourceService
     ];
 
-    private activeOperation: Promise<unknown> | null = null;
+    readonly previewDuplicates = Effect.fn('SyncRepairService.previewDuplicates')(function* (this: SyncRepairService) {
+        return yield* this.exclusive.withPermit(this.buildPreview());
+    });
 
-    @Log(
-        'enter',
-        result => `done duplicateTransactionCount=${result.duplicateTransactionCount}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async previewDuplicates(): Promise<SyncDuplicateRepairPreviewInterface> {
-        return this.runExclusive(() => this.buildPreview());
-    }
+    readonly removeDuplicates = Effect.fn('SyncRepairService.removeDuplicates')(function* (this: SyncRepairService) {
+        return yield* this.exclusive.withPermit(Workload.use(workload => workload.runForeground(this.removeDuplicatesInner())));
+    }, invalidateDatabaseLiveQuery);
 
-    @InvalidateDatabaseLiveQuery()
-    @Log(
-        'enter',
-        result => `done repairedTransactionCount=${result.repairedTransactionCount}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async removeDuplicates(): Promise<SyncDuplicateRepairResultInterface> {
-        return this.runExclusive(() => foregroundWorkloadService.run(() => this.removeDuplicatesInner()));
-    }
-
-    @Log(
-        database => `enter sourceDatabase=${String(isDefined(database))}`,
-        (result, database) =>
-            `done sourceDatabase=${String(isDefined(database))} duplicateTransactionIds=${result.map(candidate => candidate.duplicateTransactionId).join(',')}`,
-        (error, database) => `throw sourceDatabase=${String(isDefined(database))} error=${getErrorMessage(error)}`
-    )
-    private async findDuplicateCandidates(database: DB): Promise<SyncDuplicateCandidateRowInterface[]> {
-        const candidateGroups = await Promise.all(
-            SyncRepairService.SOURCE_STRATEGIES.map(strategy => strategy.findDuplicateCandidates(database))
-        );
+    private readonly findDuplicateCandidates = Effect.fnUntraced(function* () {
+        const candidateGroups = yield* Effect.all(SyncRepairService.SOURCE_STRATEGIES.map(strategy => strategy.findDuplicateCandidates()));
 
         return candidateGroups.flat();
-    }
+    });
 
-    @Log('enter', result => `done repairedCount=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    private async repairConsolidationDuplicates(): Promise<number> {
-        const incomeDuplicateRepairCount = await consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
-        const bridgeClaimRepairCount = await consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
-        const ownCardTransferRepairCount = await unpairedOwnCardTransferRepairService.repair();
+    private readonly repairConsolidationDuplicates = Effect.fnUntraced(function* () {
+        const incomeDuplicateRepairCount = yield* consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
+        const bridgeClaimRepairCount = yield* consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
+        const ownCardTransferRepairCount = yield* unpairedOwnCardTransferRepairService.repair();
 
         return incomeDuplicateRepairCount + bridgeClaimRepairCount + ownCardTransferRepairCount;
-    }
+    });
 
-    @Log(
-        result => `enter repairedTransactionCount=${result.repairedTransactionCount}`,
-        (done, result) => `done repairedTransactionCount=${result.repairedTransactionCount} result=${String(done)}`,
-        (error, result) => `throw repairedTransactionCount=${result.repairedTransactionCount} error=${getErrorMessage(error)}`
-    )
-    private async rebuildBalancesWhenNeeded(result: SyncDuplicateRepairResultInterface): Promise<void> {
+    private readonly rebuildBalancesWhenNeeded = Effect.fnUntraced(function* (result: SyncDuplicateRepairResultInterface) {
         if (isPositiveNumber(result.repairedTransactionCount)) {
-            await accountBalanceIncrementalService.updateAllBalances(true);
+            yield* accountBalanceIncrementalService.updateAllBalances(true);
         }
-    }
+    });
 
-    @Log(
-        tx => `enter tx=${String(isDefined(tx))}`,
-        (result, tx) => `done tx=${String(isDefined(tx))} repairedTransactionCount=${result.repairedTransactionCount}`,
-        (error, tx) => `throw tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    private async removeDuplicatesInTransaction(tx: DB): Promise<SyncDuplicateRepairResultInterface> {
-        const candidates = await this.findDuplicateCandidates(tx);
+    private readonly removeDuplicatesInTransaction = Effect.fnUntraced(function* (this: SyncRepairService) {
+        const candidates = yield* this.findDuplicateCandidates();
         const duplicateTransactionIds = candidates.map(candidate => candidate.duplicateTransactionId);
-        const result = await syncDuplicateSoftDeleteService.remove(tx, duplicateTransactionIds);
+        const result = yield* syncDuplicateSoftDeleteService.remove(duplicateTransactionIds);
 
         return {
             repairedTransactionCount: result.updatedTransactionIds.length
-        };
-    }
+        } satisfies SyncDuplicateRepairResultInterface;
+    });
 
-    private async buildPreview(): Promise<SyncDuplicateRepairPreviewInterface> {
-        const candidates = await this.findDuplicateCandidates(db);
+    private readonly buildPreview = Effect.fnUntraced(function* (this: SyncRepairService) {
+        const candidates = yield* this.findDuplicateCandidates();
         const consolidationRepairCount =
-            (await this.countConsolidationRepairCandidates()) +
-            (await this.countBridgeClaimRepairCandidates()) +
-            (await unpairedOwnCardTransferRepairService.countCandidates());
+            (yield* consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates()) +
+            (yield* consolidationCoordinatorService.countBridgeClaimRepairCandidates()) +
+            (yield* unpairedOwnCardTransferRepairService.countCandidates());
 
         return this.buildPreviewFromCandidates(candidates, consolidationRepairCount);
-    }
+    });
 
-    private async countConsolidationRepairCandidates(): Promise<number> {
-        return consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates();
-    }
+    private readonly exclusive = Semaphore.makeUnsafe(1);
 
-    private async countBridgeClaimRepairCandidates(): Promise<number> {
-        return consolidationCoordinatorService.countBridgeClaimRepairCandidates();
-    }
+    private readonly removeDuplicatesInner = Effect.fnUntraced(function* (this: SyncRepairService) {
+        const duplicateResult = yield* Db.transaction(this.removeDuplicatesInTransaction());
+        const consolidationRepairCount = yield* this.repairConsolidationDuplicates().pipe(
+            Effect.tapError(() => Effect.ignore(this.rebuildBalancesWhenNeeded(duplicateResult)))
+        );
+        const result = this.mergeConsolidationRepairResult(duplicateResult, consolidationRepairCount);
+
+        yield* this.rebuildBalancesWhenNeeded(result);
+
+        return result;
+    });
 
     private buildPreviewFromCandidates(
         candidates: readonly SyncDuplicateCandidateRowInterface[],
@@ -169,41 +142,6 @@ class SyncRepairService {
             duplicateTransactionCount: sourceCandidates.length,
             externalSource: source.externalSource
         };
-    }
-
-    private async runExclusive<T>(work: () => Promise<T>): Promise<T> {
-        if (isDefined(this.activeOperation)) {
-            return this.activeOperation.catch(emptyFn).then(() => this.runExclusive(work));
-        }
-
-        return this.runActiveOperation(work);
-    }
-
-    private async runActiveOperation<T>(work: () => Promise<T>): Promise<T> {
-        const operation = work();
-        this.activeOperation = operation;
-
-        try {
-            return await operation;
-        } finally {
-            if (this.activeOperation === operation) {
-                this.activeOperation = null;
-            }
-        }
-    }
-
-    private async removeDuplicatesInner(): Promise<SyncDuplicateRepairResultInterface> {
-        const duplicateResult = await transactionAsync(db, tx => this.removeDuplicatesInTransaction(tx));
-        const consolidationRepairCount = await this.repairConsolidationDuplicates().catch(async (error: unknown) => {
-            await this.rebuildBalancesWhenNeeded(duplicateResult).catch(emptyFn);
-
-            throw error;
-        });
-        const result = this.mergeConsolidationRepairResult(duplicateResult, consolidationRepairCount);
-
-        await this.rebuildBalancesWhenNeeded(result);
-
-        return result;
     }
 
     private mergeConsolidationRepairResult(

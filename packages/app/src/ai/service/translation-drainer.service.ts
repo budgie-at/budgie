@@ -1,79 +1,43 @@
 import { TranslationLlmService } from '@budgie/ai';
-import { Log } from '@budgie/logger';
-
-import { getErrorMessage } from '@rnw-community/shared';
+import * as Effect from 'effect/Effect';
 
 import { categoryRepository, tagRepository } from '../../@generic/drizzle/db/db';
+import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
-import { DrainerKindEnum } from '../enum/drainer-kind.enum';
 import { translationProgressStore } from '../store/translation-progress.store';
 
-import { BaseDrainerService } from './base-drainer.service';
 import { chatService } from './chat.service';
+import { DrainerService } from './drainer.service';
 
-import type { CategoryOrTagRowInterface } from '../interface/category-or-tag-row.interface';
-import type { TranslationResultInterface } from '@budgie/ai';
+import type { AiInvokeError } from '@budgie/ai';
+import type { CategoryEntityInterface, Db, DbError } from '@budgie/contracts';
 
-class TranslationDrainerService extends BaseDrainerService<CategoryOrTagRowInterface> {
-    private static readonly RELAXED_INTERVAL_MS = 5000;
-    private static readonly RELAXED_BATCH_SIZE = 3;
-    private static readonly BOOST_BATCH_SIZE = 5;
-    private static readonly YIELD_EVERY_ROWS = 2;
+const translationLlmService = new TranslationLlmService(chatService);
 
-    protected readonly kind = DrainerKindEnum.TRANSLATION;
-    protected readonly subsystem = AiSubsystemNameEnum.CHAT;
-    protected readonly relaxedIntervalMs = TranslationDrainerService.RELAXED_INTERVAL_MS;
-    protected readonly relaxedBatchSize = TranslationDrainerService.RELAXED_BATCH_SIZE;
-    protected readonly boostBatchSize = TranslationDrainerService.BOOST_BATCH_SIZE;
-    protected readonly yieldEveryRows = TranslationDrainerService.YIELD_EVERY_ROWS;
+const translateRow = (
+    row: Pick<CategoryEntityInterface, 'id' | 'title'>,
+    updateTranslation: (id: number, titleEn: string, titleTags: string) => Effect.Effect<void, DbError, Db>
+): Effect.Effect<void, DbError | AiInvokeError, Db> =>
+    translationLlmService.translate(row.title).pipe(Effect.flatMap(result => updateTranslation(row.id, result.titleEn, result.titleTags)));
 
-    @Log(
-        row => `enter kind=${row.kind} id=${row.id} title="${row.title}"`,
-        (result, row) => `done id=${row.id} titleEn="${result.titleEn}"`,
-        (error, row) => `throw id=${row.id} error=${getErrorMessage(error)}`
-    )
-    private async translateRow(row: CategoryOrTagRowInterface): Promise<TranslationResultInterface> {
-        const service = new TranslationLlmService(chatService);
-
-        return service.translate(row.title);
-    }
-
-    @Log(
-        (row, translationResult) => `enter kind=${row.kind} id=${row.id} titleEn="${translationResult.titleEn}"`,
-        'done',
-        (error, row, translationResult) => `throw id=${row.id} titleEn="${translationResult.titleEn}" error=${getErrorMessage(error)}`
-    )
-    private async persistTranslation(row: CategoryOrTagRowInterface, result: TranslationResultInterface): Promise<void> {
-        if (row.kind === 'category') {
-            await categoryRepository.updateTranslation(row.id, result.titleEn, result.titleTags);
-        } else {
-            await tagRepository.updateTranslation(row.id, result.titleEn, result.titleTags);
-        }
-    }
-
-    protected async fetchPending(limit: number): Promise<CategoryOrTagRowInterface[]> {
-        const half = Math.ceil(limit / 2);
-        const [categories, tags] = await Promise.all([
-            categoryRepository.findUntranslated(half),
-            tagRepository.findUntranslated(limit - half)
-        ]);
-
-        return [
-            ...categories.map((row): CategoryOrTagRowInterface => ({ kind: 'category', id: row.id, title: row.title })),
-            ...tags.map((row): CategoryOrTagRowInterface => ({ kind: 'tag', id: row.id, title: row.title }))
-        ];
-    }
-
-    protected async countPending(): Promise<number> {
-        await translationProgressStore.refresh();
-
-        return translationProgressStore.getSnapshot().pending;
-    }
-
-    protected async processRow(row: CategoryOrTagRowInterface): Promise<void> {
-        const result = await this.translateRow(row);
-        await this.persistTranslation(row, result);
-    }
-}
-
-export const translationDrainerService = new TranslationDrainerService();
+export const translationDrainerService = new DrainerService<DbError | AiInvokeError>({
+    subsystem: AiSubsystemNameEnum.CHAT,
+    relaxedIntervalMs: 5000,
+    relaxedBatchSize: 3,
+    boostBatchSize: 5,
+    yieldEveryRows: 2,
+    fetchPending: limit =>
+        Effect.all(
+            [categoryRepository.findUntranslated(Math.ceil(limit / 2)), tagRepository.findUntranslated(limit - Math.ceil(limit / 2))],
+            {
+                concurrency: 'unbounded'
+            }
+        ).pipe(
+            Effect.map(([categories, tags]) => [
+                ...categories.map(row => translateRow(row, categoryRepository.updateTranslation)),
+                ...tags.map(row => translateRow(row, tagRepository.updateTranslation))
+            ])
+        ),
+    countPending: Effect.map(translationProgressStore.refresh(), () => aiAtomRegistry.get(translationProgressStore.snapshot).pending),
+    afterBatch: Effect.void
+});

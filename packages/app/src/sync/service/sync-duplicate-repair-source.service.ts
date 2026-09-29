@@ -1,30 +1,23 @@
-import { ExternalSourceEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
-
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { Db, ExternalSourceEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 import { ERSTE_DUPLICATE_CANDIDATE_SQL } from '../constant/erste-duplicate-candidate-sql.constant';
 import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '../constant/privatbank-duplicate-candidate-sql.constant';
 
 import type { SyncDuplicateCandidateRowInterface } from '../interface/sync-duplicate-candidate-row.interface';
 import type { SyncDuplicateRepairSourceStrategyInterface } from '../interface/sync-duplicate-repair-source-strategy.interface';
-import type { DB } from '@budgie/contracts';
 
 class SyncDuplicateRepairSourceService implements SyncDuplicateRepairSourceStrategyInterface {
+    readonly findDuplicateCandidates = Effect.fn('SyncDuplicateRepairSourceService.findDuplicateCandidates')(
+        function* (this: SyncDuplicateRepairSourceService) {
+            return yield* Db.query(db => db.$client.getAllAsync<SyncDuplicateCandidateRowInterface>(this.candidateSql));
+        }
+    );
+
     constructor(
         readonly externalSource: ExternalSourceEnum,
         private readonly candidateSql: string
     ) {}
-
-    @Log(
-        database => `enter database=${String(isDefined(database))}`,
-        (result, database) =>
-            `done database=${String(isDefined(database))} duplicateIds=${result.map(candidate => candidate.duplicateTransactionId).join(',')}`,
-        (error, database) => `throw database=${String(isDefined(database))} error=${getErrorMessage(error)}`
-    )
-    async findDuplicateCandidates(database: DB): Promise<SyncDuplicateCandidateRowInterface[]> {
-        return database.$client.getAllAsync<SyncDuplicateCandidateRowInterface>(this.candidateSql);
-    }
 }
 
 export const privatbankDuplicateRepairSourceService = new SyncDuplicateRepairSourceService(

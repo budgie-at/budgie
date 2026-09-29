@@ -1,17 +1,18 @@
 import { budgetPeriodService, budgetSpentService } from '@budgie/budget';
-import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, LanguageEnum, RUNWAY_WINDOW_MONTHS } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { AccountTypeEnum, DEFAULT_TRANSACTION_FILTER, Db, LanguageEnum, RUNWAY_WINDOW_MONTHS } from '@budgie/contracts';
 import { setupI18n } from '@lingui/core';
 import { msg, plural } from '@lingui/core/macro';
 import { addDays } from 'date-fns/addDays';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { startOfDay } from 'date-fns/startOfDay';
 import { startOfMonth } from 'date-fns/startOfMonth';
+import * as Effect from 'effect/Effect';
+import * as Semaphore from 'effect/Semaphore';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 import { Platform } from 'react-native';
 
-import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     accountBalanceRepository,
@@ -22,7 +23,9 @@ import {
     settingsRepository,
     statisticsRepository
 } from '../../@generic/drizzle/db/db';
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { databaseRefreshService } from '../../@generic/service/database-refresh.service';
+import { Workload } from '../../@generic/service/workload.service';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
@@ -39,7 +42,6 @@ import QuickAddWidget from '../widget/quick-add.widget';
 import type { WidgetAccountTypeTotalInterface } from '../interface/widget-account-type-total.interface';
 import type { WidgetBudgetCategoryInterface } from '../interface/widget-budget-category.interface';
 import type { WidgetBudgetSnapshotInterface } from '../interface/widget-budget-snapshot.interface';
-import type { WidgetBudgetTimelineEntryInterface } from '../interface/widget-budget-timeline-entry.interface';
 import type { WidgetLinksInterface } from '../interface/widget-links.interface';
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
 import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-snapshot.interface';
@@ -47,12 +49,13 @@ import type { WidgetSnapshotContextInterface } from '../interface/widget-snapsho
 import type { WidgetSnapshotStringsInterface } from '../interface/widget-snapshot-strings.interface';
 import type { WidgetSnapshotInterface } from '../interface/widget-snapshot.interface';
 import type { BudgetCategorySpentInterface } from '@budgie/budget';
-import type { InstrumentEntityInterface } from '@budgie/contracts';
+import type { BudgetCategoryLimitEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
 import type { I18n } from '@lingui/core';
 
 class WidgetSnapshotService {
     private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 60;
     private static readonly PUBLISH_DEBOUNCE_MS = 2_000;
+    private static readonly PUBLISH_KEY = 'widget-snapshot-publish';
     private static readonly BUDGET_URL = 'budgie://budget';
     private static readonly LINKS: WidgetLinksInterface = {
         expenseUrl: 'budgie://create-transaction/expense',
@@ -85,61 +88,53 @@ class WidgetSnapshotService {
     private static readonly TOP_ACCOUNT_TYPE_COUNT = 4;
     private static readonly MASKED_AMOUNT = '•••';
 
-    private pendingWrite: Promise<unknown> = Promise.resolve();
+    readonly registerBackgroundTask = Effect.fn('WidgetSnapshotService.registerBackgroundTask')(function* () {
+        if (Platform.OS !== 'ios' || (yield* Effect.promise(() => TaskManager.isTaskRegisteredAsync(WIDGET_SNAPSHOT_TASK)))) {
+            return;
+        }
+
+        yield* Effect.tryPromise(() =>
+            BackgroundTask.registerTaskAsync(WIDGET_SNAPSHOT_TASK, {
+                minimumInterval: WidgetSnapshotService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
+            })
+        );
+    });
+
+    readonly publish = Effect.fn('WidgetSnapshotService.publish')(function* (this: WidgetSnapshotService) {
+        return yield* this.writeSemaphore.withPermits(1)(this.writeIfUnlocked());
+    });
+
+    readonly mask = Effect.fn('WidgetSnapshotService.mask')(function* (this: WidgetSnapshotService) {
+        this.isLocked = true;
+        yield* this.cancelScheduledPublish();
+
+        return yield* this.writeSemaphore.withPermits(1)(this.write(true));
+    });
+
+    private readonly writeSemaphore = Semaphore.makeUnsafe(1);
     private isLocked = false;
     private publishedSnapshotKey = '';
-    private debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    start(): void {
-        if (Platform.OS !== 'ios') {
-            return;
-        }
+    private readonly cancelScheduledPublish = Effect.fn('WidgetSnapshotService.cancelScheduledPublish')(function* () {
+        const workload = yield* Workload;
+        yield* workload.cancelScheduled(WidgetSnapshotService.PUBLISH_KEY);
+    });
 
-        databaseRefreshService.subscribe(this.schedulePublish);
-        this.schedulePublish();
-    }
+    private readonly debouncePublish = Effect.fn('WidgetSnapshotService.debouncePublish')(function* (this: WidgetSnapshotService) {
+        const workload = yield* Workload;
+        yield* workload.cancelScheduled(WidgetSnapshotService.PUBLISH_KEY);
+        yield* workload.schedule(
+            WidgetSnapshotService.PUBLISH_KEY,
+            Effect.andThen(Effect.sleep(WidgetSnapshotService.PUBLISH_DEBOUNCE_MS), this.publish()).pipe(Effect.ignore)
+        );
+    });
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async registerBackgroundTask(): Promise<void> {
-        if (Platform.OS !== 'ios' || (await TaskManager.isTaskRegisteredAsync(WIDGET_SNAPSHOT_TASK))) {
-            return;
-        }
+    private readonly writeIfUnlocked = Effect.fn('WidgetSnapshotService.writeIfUnlocked')(function* (this: WidgetSnapshotService) {
+        return !this.isLocked && (yield* this.write(false));
+    });
 
-        await BackgroundTask.registerTaskAsync(WIDGET_SNAPSHOT_TASK, {
-            minimumInterval: WidgetSnapshotService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
-        });
-    }
-
-    @Log('enter', result => `done isPublished=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async publish(): Promise<boolean> {
-        return await this.enqueue(async () => !this.isLocked && (await this.write(false)));
-    }
-
-    @Log('enter', result => `done isMasked=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async mask(): Promise<boolean> {
-        this.isLocked = true;
-        this.cancelScheduledPublish();
-
-        return await this.enqueue(async () => await this.write(true));
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    unlock(): void {
-        this.isLocked = false;
-        this.schedulePublish();
-    }
-
-    private async enqueue(task: () => Promise<boolean>): Promise<boolean> {
-        const run = this.pendingWrite.then(task);
-
-        this.pendingWrite = run.catch(emptyFn);
-
-        return await run;
-    }
-
-    private async write(isMaskForced: boolean): Promise<boolean> {
-        const snapshot = await this.buildSnapshot(isMaskForced);
+    private readonly write = Effect.fn('WidgetSnapshotService.write')(function* (this: WidgetSnapshotService, isMaskForced: boolean) {
+        const snapshot = yield* this.buildSnapshot(isMaskForced);
         const snapshotKey = JSON.stringify(snapshot);
 
         if (snapshotKey === this.publishedSnapshotKey) {
@@ -150,7 +145,206 @@ class WidgetSnapshotService {
         this.publishedSnapshotKey = snapshotKey;
 
         return true;
+    });
+
+    private readonly buildSnapshot = Effect.fn('WidgetSnapshotService.buildSnapshot')(function* (
+        this: WidgetSnapshotService,
+        isMaskForced: boolean
+    ) {
+        const settings = yield* Db.query(() => settingsRepository.findSettings());
+        const instrument = settings?.defaultInstrument ?? DEFAULT_INSTRUMENT;
+        const language = settings?.language ?? LanguageEnum.EN;
+        const messages = yield* Effect.promise(() => i18nLoadLanguageMessages(language));
+        const context: WidgetSnapshotContextInterface = {
+            i18n: setupI18n({ locale: language, messages: { [language]: messages } }),
+            language,
+            locale: languageToLocale(language),
+            decimalPlaces: (settings?.showCents ?? true) ? DEFAULT_DECIMAL_PLACES : 0,
+            isMasked: isMaskForced || (settings?.isPinEnabled ?? false)
+        };
+        const netWorth = yield* this.buildNetWorth(instrument, settings?.isRunwayCryptoIncluded ?? false, context);
+        const budget = yield* this.buildBudget(context);
+        const snapshot: WidgetSnapshotInterface = { strings: this.buildStrings(context.i18n), netWorth, budget };
+
+        return snapshot;
+    });
+
+    private readonly buildNetWorth = Effect.fn('WidgetSnapshotService.buildNetWorth')(function* (
+        this: WidgetSnapshotService,
+        instrument: InstrumentEntityInterface,
+        isRunwayCryptoIncluded: boolean,
+        context: WidgetSnapshotContextInterface
+    ) {
+        const [netWorthRows, homeRows, monthRows] = yield* Effect.all(
+            [
+                Db.query(() => accountBalanceRepository.getNetWorth(instrument.id)),
+                Db.query(() => accountBalanceRepository.getHomeAccountRows(instrument.id)),
+                Db.query(() =>
+                    statisticsRepository.getTotalIncomeAndExpenseQuery(
+                        { ...DEFAULT_TRANSACTION_FILTER, date: { from: startOfMonth(new Date()), to: null } },
+                        instrument.id
+                    )
+                )
+            ],
+            { concurrency: 'unbounded' }
+        );
+
+        if (!isNotEmptyArray(homeRows)) {
+            return null;
+        }
+
+        const total = convertFromMicroUnits(netWorthRows.at(0)?.netWorth ?? 0);
+        const monthlyNet = convertFromMicroUnits((monthRows.at(0)?.income ?? 0) - (monthRows.at(0)?.expense ?? 0));
+        const runway = yield* this.buildRunway(instrument, isRunwayCryptoIncluded, context);
+        const netWorth: WidgetNetWorthSnapshotInterface = {
+            formattedTotal: this.formatWithSymbol(total, instrument.symbol, context),
+            formattedDelta: this.formatDelta(monthlyNet, instrument.symbol, context),
+            deltaColor: this.resolveDeltaColor(monthlyNet),
+            accountTypes: this.buildAccountTypeTotals(homeRows, instrument.symbol, context),
+            runway: runway ?? WidgetSnapshotService.EMPTY_NET_WORTH.runway
+        };
+
+        return netWorth;
+    });
+
+    private readonly buildBudget = Effect.fn('WidgetSnapshotService.buildBudget')(function* (
+        this: WidgetSnapshotService,
+        context: WidgetSnapshotContextInterface
+    ) {
+        const budget = yield* budgetRepository.getActive();
+
+        if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId) || !isPositiveNumber(budget.overallLimit)) {
+            return null;
+        }
+
+        const { periodStart, nextPeriodStart } = budgetPeriodService.computePeriodWindow(
+            budget.periodStartDay,
+            budget.useLastDayOfMonth,
+            new Date()
+        );
+        const [entries, limits, instrument] = yield* Effect.all(
+            [
+                Db.query(() => budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId)),
+                budgetCategoryLimitRepository.getByBudget(budget.id),
+                instrumentRepository.findByIdAsync(budget.instrumentId)
+            ],
+            { concurrency: 'unbounded' }
+        );
+        const spent = budgetSpentService.computeSpent(entries, budget.instrumentId);
+        const symbol = instrument?.symbol ?? DEFAULT_INSTRUMENT.symbol;
+        const spentAmount = convertFromMicroUnits(spent.spentOverall);
+        const limitAmount = convertFromMicroUnits(budget.overallLimit);
+        const periodEnd = budgetPeriodService.getInclusiveEnd(nextPeriodStart);
+        const categories = yield* this.buildBudgetCategories(limits, spent.spentByCategory, context);
+
+        return Array.from({ length: Math.max(differenceInCalendarDays(periodEnd, new Date()) + 1, 1) }, (_entry, index) => {
+            const daysRemaining = index + 1;
+
+            return {
+                date: startOfDay(addDays(periodEnd, -index)),
+                budget: {
+                    formattedSpent: this.formatWithSymbol(spentAmount, symbol, context),
+                    formattedLimit: this.formatWithSymbol(limitAmount, symbol, context),
+                    formattedRemaining: this.formatWithSymbol(Math.abs(limitAmount - spentAmount), symbol, context),
+                    progressRatio: spentAmount / limitAmount,
+                    formattedProgress: this.formatPercent(spentAmount / limitAmount, context),
+                    isOverLimit: spentAmount > limitAmount,
+                    formattedDaysLeft: context.i18n._(msg({ message: plural(daysRemaining, { one: '# day left', other: '# days left' }) })),
+                    formattedSafePerDay: this.formatWithSymbol(Math.max(limitAmount - spentAmount, 0) / daysRemaining, symbol, context),
+                    categories
+                }
+            };
+        }).reverse();
+    });
+
+    private readonly buildRunway = Effect.fn('WidgetSnapshotService.buildRunway')(function* (
+        this: WidgetSnapshotService,
+        instrument: InstrumentEntityInterface,
+        isCryptoIncluded: boolean,
+        context: WidgetSnapshotContextInterface
+    ) {
+        const [series, liquidRows] = yield* Effect.all(
+            [
+                Db.query(() => statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrument.id, RUNWAY_WINDOW_MONTHS)),
+                Db.query(() => accountBalanceRepository.getLiquidTotal(instrument.id, isCryptoIncluded))
+            ],
+            { concurrency: 'unbounded' }
+        );
+        const computation = computeRunway({
+            series,
+            liquid: liquidRows.at(0)?.total ?? 0,
+            irregularMonthlyAmount: 0,
+            referenceDate: new Date()
+        });
+
+        if (computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {
+            return null;
+        }
+
+        const runway: WidgetRunwaySnapshotInterface = {
+            isPositive: computation.isPositive,
+            label: this.buildRunwayLabel(computation, instrument.symbol, context)
+        };
+
+        return runway;
+    });
+
+    private readonly buildBudgetCategories = Effect.fn('WidgetSnapshotService.buildBudgetCategories')(function* (
+        this: WidgetSnapshotService,
+        limits: BudgetCategoryLimitEntityInterface[],
+        spentByCategory: readonly BudgetCategorySpentInterface[],
+        context: WidgetSnapshotContextInterface
+    ) {
+        const ranked = limits
+            .filter(limit => isPositiveNumber(limit.limitAmount))
+            .map(limit => ({
+                categoryId: limit.categoryId,
+                progressRatio:
+                    convertFromMicroUnits(spentByCategory.find(entry => entry.categoryId === limit.categoryId)?.spent ?? 0) /
+                    convertFromMicroUnits(limit.limitAmount)
+            }))
+            .sort((first, second) => second.progressRatio - first.progressRatio)
+            .slice(0, WidgetSnapshotService.TOP_CATEGORY_COUNT);
+
+        return yield* Effect.all(
+            ranked.map(entry => this.buildBudgetCategory(entry.categoryId, entry.progressRatio, context)),
+            { concurrency: 'unbounded' }
+        );
+    });
+
+    private readonly buildBudgetCategory = Effect.fn('WidgetSnapshotService.buildBudgetCategory')(function* (
+        this: WidgetSnapshotService,
+        categoryId: number,
+        progressRatio: number,
+        context: WidgetSnapshotContextInterface
+    ) {
+        const [category] = yield* Db.query(() => categoryRepository.findById(categoryId, context.language));
+        const budgetCategory: WidgetBudgetCategoryInterface = {
+            title: isDefined(category) ? category.title : context.i18n._(msg`Category`),
+            formattedProgress: this.formatPercent(progressRatio, context),
+            isOverLimit: progressRatio >= 1
+        };
+
+        return budgetCategory;
+    });
+
+    start(): void {
+        if (Platform.OS !== 'ios') {
+            return;
+        }
+
+        databaseRefreshService.subscribe(this.schedulePublish);
+        this.schedulePublish();
     }
+
+    unlock(): void {
+        this.isLocked = false;
+        this.schedulePublish();
+    }
+
+    private readonly schedulePublish = (): void => {
+        appRuntime.runFork(this.debouncePublish());
+    };
 
     private pushToWidgets(snapshot: WidgetSnapshotInterface): void {
         NetWorthWidget.updateSnapshot({
@@ -179,41 +373,6 @@ class WidgetSnapshotService {
         QuickAddWidget.updateSnapshot({ strings: snapshot.strings, links: WidgetSnapshotService.LINKS });
     }
 
-    private readonly schedulePublish = (): void => {
-        this.cancelScheduledPublish();
-
-        this.debounceTimer = setTimeout(() => {
-            this.debounceTimer = null;
-            void this.publish().catch(emptyFn);
-        }, WidgetSnapshotService.PUBLISH_DEBOUNCE_MS);
-    };
-
-    private cancelScheduledPublish(): void {
-        if (isDefined(this.debounceTimer)) {
-            clearTimeout(this.debounceTimer);
-            this.debounceTimer = null;
-        }
-    }
-
-    private async buildSnapshot(isMaskForced: boolean): Promise<WidgetSnapshotInterface> {
-        const settings = await settingsRepository.findSettings();
-        const instrument = settings?.defaultInstrument ?? DEFAULT_INSTRUMENT;
-        const language = settings?.language ?? LanguageEnum.EN;
-        const context: WidgetSnapshotContextInterface = {
-            i18n: setupI18n({ locale: language, messages: { [language]: await i18nLoadLanguageMessages(language) } }),
-            language,
-            locale: languageToLocale(language),
-            decimalPlaces: (settings?.showCents ?? true) ? DEFAULT_DECIMAL_PLACES : 0,
-            isMasked: isMaskForced || (settings?.isPinEnabled ?? false)
-        };
-
-        return {
-            strings: this.buildStrings(context.i18n),
-            netWorth: await this.buildNetWorth(instrument, settings?.isRunwayCryptoIncluded ?? false, context),
-            budget: await this.buildBudget(context)
-        };
-    }
-
     private buildStrings(i18n: I18n): WidgetSnapshotStringsInterface {
         return {
             netWorthTitle: i18n._(msg`Net worth`),
@@ -227,36 +386,6 @@ class WidgetSnapshotService {
             income: i18n._(msg`Income`),
             transfer: i18n._(msg`Transfer`),
             empty: i18n._(msg`Open Budgie to see your finances`)
-        };
-    }
-
-    private async buildNetWorth(
-        instrument: InstrumentEntityInterface,
-        isRunwayCryptoIncluded: boolean,
-        context: WidgetSnapshotContextInterface
-    ): Promise<WidgetNetWorthSnapshotInterface | null> {
-        const [netWorthRows, homeRows, monthRows] = await Promise.all([
-            accountBalanceRepository.getNetWorth(instrument.id),
-            accountBalanceRepository.getHomeAccountRows(instrument.id),
-            statisticsRepository.getTotalIncomeAndExpenseQuery(
-                { ...DEFAULT_TRANSACTION_FILTER, date: { from: startOfMonth(new Date()), to: null } },
-                instrument.id
-            )
-        ]);
-
-        if (!isNotEmptyArray(homeRows)) {
-            return null;
-        }
-
-        const total = convertFromMicroUnits(netWorthRows.at(0)?.netWorth ?? 0);
-        const monthlyNet = convertFromMicroUnits((monthRows.at(0)?.income ?? 0) - (monthRows.at(0)?.expense ?? 0));
-
-        return {
-            formattedTotal: this.formatWithSymbol(total, instrument.symbol, context),
-            formattedDelta: this.formatDelta(monthlyNet, instrument.symbol, context),
-            deltaColor: this.resolveDeltaColor(monthlyNet),
-            accountTypes: this.buildAccountTypeTotals(homeRows, instrument.symbol, context),
-            runway: (await this.buildRunway(instrument, isRunwayCryptoIncluded, context)) ?? WidgetSnapshotService.EMPTY_NET_WORTH.runway
         };
     }
 
@@ -281,73 +410,6 @@ class WidgetSnapshotService {
             }));
     }
 
-    private async buildBudget(context: WidgetSnapshotContextInterface): Promise<readonly WidgetBudgetTimelineEntryInterface[] | null> {
-        const budget = await budgetRepository.getActive();
-
-        if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId) || !isPositiveNumber(budget.overallLimit)) {
-            return null;
-        }
-
-        const { periodStart, nextPeriodStart } = budgetPeriodService.computePeriodWindow(
-            budget.periodStartDay,
-            budget.useLastDayOfMonth,
-            new Date()
-        );
-        const [entries, limits, instrument] = await Promise.all([
-            budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId),
-            budgetCategoryLimitRepository.getByBudget(budget.id),
-            instrumentRepository.findByIdAsync(budget.instrumentId)
-        ]);
-        const spent = budgetSpentService.computeSpent(entries, budget.instrumentId);
-        const symbol = instrument?.symbol ?? DEFAULT_INSTRUMENT.symbol;
-        const spentAmount = convertFromMicroUnits(spent.spentOverall);
-        const limitAmount = convertFromMicroUnits(budget.overallLimit);
-        const periodEnd = budgetPeriodService.getInclusiveEnd(nextPeriodStart);
-        const categories = await this.buildBudgetCategories(limits, spent.spentByCategory, context);
-
-        return Array.from({ length: Math.max(differenceInCalendarDays(periodEnd, new Date()) + 1, 1) }, (_entry, index) => {
-            const daysRemaining = index + 1;
-
-            return {
-                date: startOfDay(addDays(periodEnd, -index)),
-                budget: {
-                    formattedSpent: this.formatWithSymbol(spentAmount, symbol, context),
-                    formattedLimit: this.formatWithSymbol(limitAmount, symbol, context),
-                    formattedRemaining: this.formatWithSymbol(Math.abs(limitAmount - spentAmount), symbol, context),
-                    progressRatio: spentAmount / limitAmount,
-                    formattedProgress: this.formatPercent(spentAmount / limitAmount, context),
-                    isOverLimit: spentAmount > limitAmount,
-                    formattedDaysLeft: context.i18n._(msg({ message: plural(daysRemaining, { one: '# day left', other: '# days left' }) })),
-                    formattedSafePerDay: this.formatWithSymbol(Math.max(limitAmount - spentAmount, 0) / daysRemaining, symbol, context),
-                    categories
-                }
-            };
-        }).reverse();
-    }
-
-    private async buildRunway(
-        instrument: InstrumentEntityInterface,
-        isCryptoIncluded: boolean,
-        context: WidgetSnapshotContextInterface
-    ): Promise<WidgetRunwaySnapshotInterface | null> {
-        const [series, liquidRows] = await Promise.all([
-            statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrument.id, RUNWAY_WINDOW_MONTHS),
-            accountBalanceRepository.getLiquidTotal(instrument.id, isCryptoIncluded)
-        ]);
-        const computation = computeRunway({
-            series,
-            liquid: liquidRows.at(0)?.total ?? 0,
-            irregularMonthlyAmount: 0,
-            referenceDate: new Date()
-        });
-
-        if (computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {
-            return null;
-        }
-
-        return { isPositive: computation.isPositive, label: this.buildRunwayLabel(computation, instrument.symbol, context) };
-    }
-
     private buildRunwayLabel(
         computation: ReturnType<typeof computeRunway>,
         symbol: string,
@@ -366,39 +428,6 @@ class WidgetSnapshotService {
         const formattedMonths = new Intl.NumberFormat(context.locale).format(Math.round(computation.runwayMonths ?? 0));
 
         return context.i18n._(msg`≈ ${formattedMonths} mo`);
-    }
-
-    private async buildBudgetCategories(
-        limits: Awaited<ReturnType<typeof budgetCategoryLimitRepository.getByBudget>>,
-        spentByCategory: readonly BudgetCategorySpentInterface[],
-        context: WidgetSnapshotContextInterface
-    ): Promise<readonly WidgetBudgetCategoryInterface[]> {
-        const ranked = limits
-            .filter(limit => isPositiveNumber(limit.limitAmount))
-            .map(limit => ({
-                categoryId: limit.categoryId,
-                progressRatio:
-                    convertFromMicroUnits(spentByCategory.find(entry => entry.categoryId === limit.categoryId)?.spent ?? 0) /
-                    convertFromMicroUnits(limit.limitAmount)
-            }))
-            .sort((first, second) => second.progressRatio - first.progressRatio)
-            .slice(0, WidgetSnapshotService.TOP_CATEGORY_COUNT);
-
-        return await Promise.all(ranked.map(entry => this.buildBudgetCategory(entry.categoryId, entry.progressRatio, context)));
-    }
-
-    private async buildBudgetCategory(
-        categoryId: number,
-        progressRatio: number,
-        context: WidgetSnapshotContextInterface
-    ): Promise<WidgetBudgetCategoryInterface> {
-        const [category] = await categoryRepository.findById(categoryId, context.language);
-
-        return {
-            title: isDefined(category) ? category.title : context.i18n._(msg`Category`),
-            formattedProgress: this.formatPercent(progressRatio, context),
-            isOverLimit: progressRatio >= 1
-        };
     }
 
     private formatPercent(ratio: number, context: WidgetSnapshotContextInterface): string {

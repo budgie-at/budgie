@@ -1,102 +1,98 @@
-import { CategorySourceEnum, TransactionUpdatedByEnum, transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { CategorySourceEnum, Db, TransactionUpdatedByEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { db, transactionCategorizeInboxRepository, transactionRepository } from '../../@generic/drizzle/db/db';
-import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { transactionCategorizeInboxRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
 import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
 
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
-import type { DB } from '@budgie/contracts';
+import type { DbError } from '@budgie/contracts';
 
 class CategorizeInboxService {
-    @Log(
-        (labelKind, assignments) => `enter labelKind=${labelKind} assignmentCount=${assignments.length}`,
-        (result, labelKind, assignments) =>
-            `done labelKind=${labelKind} appliedCount=${result.length} assignmentCount=${assignments.length}`,
-        (error, labelKind, assignments) =>
-            `throw labelKind=${labelKind} assignmentCount=${assignments.length} error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async assign(
-        labelKind: CategorizeInboxLabelKindEnum,
-        assignments: CategorizeInboxAssignmentInterface[]
-    ): Promise<CategorizeInboxAssignmentInterface[]> {
-        return transactionAsync(db, tx =>
-            this.applyByLabel(assignments, (transactionIds, labelId) => this.applyLabel(labelKind, transactionIds, labelId, tx))
-        );
-    }
+    readonly assign = Effect.fn('CategorizeInboxService.assign')(
+        function* (
+            this: CategorizeInboxService,
+            labelKind: CategorizeInboxLabelKindEnum,
+            assignments: CategorizeInboxAssignmentInterface[]
+        ) {
+            return yield* this.applyByLabel(assignments, (transactionIds, labelId) => this.applyLabel(labelKind, transactionIds, labelId));
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    @Log(
-        (labelKind, assignments) => `enter labelKind=${labelKind} assignmentCount=${assignments.length}`,
-        (...[, labelKind, assignments]) => `done labelKind=${labelKind} assignmentCount=${assignments.length}`,
-        (error, labelKind, assignments) =>
-            `throw labelKind=${labelKind} assignmentCount=${assignments.length} error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async undo(labelKind: CategorizeInboxLabelKindEnum, assignments: CategorizeInboxAssignmentInterface[]): Promise<void> {
-        await transactionAsync(db, tx =>
-            this.applyByLabel(assignments, (transactionIds, labelId) => this.revertLabel(labelKind, transactionIds, labelId, tx))
-        );
-    }
+    readonly undo = Effect.fn('CategorizeInboxService.undo')(
+        function* (
+            this: CategorizeInboxService,
+            labelKind: CategorizeInboxLabelKindEnum,
+            assignments: CategorizeInboxAssignmentInterface[]
+        ) {
+            yield* this.applyByLabel(assignments, (transactionIds, labelId) => this.revertLabel(labelKind, transactionIds, labelId));
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
 
-    private async applyLabel(
+    private readonly applyLabel = Effect.fn('CategorizeInboxService.applyLabel')(function* (
+        this: CategorizeInboxService,
         labelKind: CategorizeInboxLabelKindEnum,
         transactionIds: number[],
-        labelId: number,
-        tx: DB
-    ): Promise<number[]> {
+        labelId: number
+    ) {
         if (labelKind === CategorizeInboxLabelKindEnum.TAG) {
-            return this.touchUpdated(await transactionCategorizeInboxRepository.addTagByTransactionIds(transactionIds, labelId, tx), tx);
+            return yield* this.touchUpdated(yield* transactionCategorizeInboxRepository.addTagByTransactionIds(transactionIds, labelId));
         }
 
-        const updatedTransactionIds = await transactionCategorizeInboxRepository.updateUncategorizedCategoryByTransactionIds(
+        const updatedTransactionIds = yield* transactionCategorizeInboxRepository.updateUncategorizedCategoryByTransactionIds(
             transactionIds,
             labelId,
-            CategorySourceEnum.USER,
-            tx
+            CategorySourceEnum.USER
         );
 
-        await transactionRepository.touchAndMarkForEmbeddingByIds(updatedTransactionIds, tx);
+        yield* transactionRepository.touchAndMarkForEmbeddingByIds(updatedTransactionIds);
 
         return updatedTransactionIds;
-    }
+    });
 
-    private async revertLabel(
+    private readonly revertLabel = Effect.fn('CategorizeInboxService.revertLabel')(function* (
+        this: CategorizeInboxService,
         labelKind: CategorizeInboxLabelKindEnum,
         transactionIds: number[],
-        labelId: number,
-        tx: DB
-    ): Promise<number[]> {
-        return labelKind === CategorizeInboxLabelKindEnum.TAG
-            ? this.touchUpdated(await transactionCategorizeInboxRepository.removeTagByTransactionIds(transactionIds, labelId, tx), tx)
-            : transactionCategorizeInboxRepository.clearCategoryByTransactionIds(transactionIds, labelId, tx);
-    }
+        labelId: number
+    ) {
+        if (labelKind === CategorizeInboxLabelKindEnum.TAG) {
+            return yield* this.touchUpdated(yield* transactionCategorizeInboxRepository.removeTagByTransactionIds(transactionIds, labelId));
+        }
 
-    private async touchUpdated(transactionIds: number[], tx: DB): Promise<number[]> {
-        await transactionRepository.touchUpdatedByIds(transactionIds, TransactionUpdatedByEnum.USER, tx);
+        return yield* transactionCategorizeInboxRepository.clearCategoryByTransactionIds(transactionIds, labelId);
+    });
+
+    private readonly touchUpdated = Effect.fn('CategorizeInboxService.touchUpdated')(function* (transactionIds: number[]) {
+        yield* transactionRepository.touchUpdatedByIds(transactionIds, TransactionUpdatedByEnum.USER);
 
         return transactionIds;
-    }
+    });
 
-    private async applyByLabel(
+    private readonly applyByLabel = Effect.fn('CategorizeInboxService.applyByLabel')(function* (
+        this: CategorizeInboxService,
         assignments: CategorizeInboxAssignmentInterface[],
-        applyLabel: (transactionIds: number[], labelId: number) => Promise<number[]>
-    ): Promise<CategorizeInboxAssignmentInterface[]> {
-        return [...this.groupAssignmentsByLabelId(assignments)].reduce<Promise<CategorizeInboxAssignmentInterface[]>>(
-            async (previousAppliedPromise, [labelId, labelAssignments]) => {
-                const previousApplied = await previousAppliedPromise;
-                const appliedTransactionIds = await applyLabel(
-                    labelAssignments.flatMap(assignment => assignment.rows.map(row => row.transactionId)),
-                    labelId
-                );
+        applyLabel: (transactionIds: number[], labelId: number) => Effect.Effect<number[], DbError, Db>
+    ) {
+        const applied: CategorizeInboxAssignmentInterface[] = [];
 
-                return [...previousApplied, ...this.narrowToApplied(labelAssignments, new Set(appliedTransactionIds))];
-            },
-            Promise.resolve([])
-        );
-    }
+        for (const [labelId, labelAssignments] of this.groupAssignmentsByLabelId(assignments)) {
+            const appliedTransactionIds = yield* applyLabel(
+                labelAssignments.flatMap(assignment => assignment.rows.map(row => row.transactionId)),
+                labelId
+            );
+
+            applied.push(...this.narrowToApplied(labelAssignments, new Set(appliedTransactionIds)));
+        }
+
+        return applied;
+    });
 
     private narrowToApplied(
         assignments: CategorizeInboxAssignmentInterface[],

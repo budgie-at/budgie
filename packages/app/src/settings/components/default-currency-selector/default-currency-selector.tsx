@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { useCurrencySelectorModal } from '../../../@generic/context/currency-selector-modal.context';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useSettingsContext } from '../../context/settings.context';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
@@ -17,7 +18,7 @@ export const DefaultCurrencySelector = () => {
     const handleOpen = async () => {
         const result = await openCurrencySelector({ selectedInstrumentId: defaultInstrument.id });
         if (isDefined(result)) {
-            await updateSettingsMutation({ defaultInstrumentId: result });
+            await appRuntime.runPromise(updateSettingsMutation({ defaultInstrumentId: result }));
         }
     };
 

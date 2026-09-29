@@ -1,35 +1,31 @@
+import * as Effect from 'effect/Effect';
+
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { microPause } from './micro-pause.util';
 
-export const processInputWithBatches = async <T, O>(
+export const processInputWithBatches = Effect.fnUntraced(function* <T, O, E, R>(
     inputs: T[],
     batchSize: number,
-    cb: (batch: T[]) => Promise<O[] | null>
-): Promise<O[]> => {
+    cb: (batch: T[]) => Effect.Effect<O[] | null, E, R>
+) {
     if (!Number.isInteger(batchSize) || !isPositiveNumber(batchSize)) {
-        throw new RangeError();
+        return yield* Effect.die(new RangeError());
     }
 
     const results: O[] = [];
 
     for (let index = 0; index < inputs.length; index += batchSize) {
-        const batch = inputs.slice(index, index + batchSize);
-        const hasMoreBatches = index + batchSize < inputs.length;
+        const batchResults = yield* cb(inputs.slice(index, index + batchSize));
 
-        // eslint-disable-next-line no-await-in-loop
-        await cb(batch).then(batchResults => {
-            if (isDefined(batchResults)) {
-                results.push(...batchResults);
-            }
+        if (isDefined(batchResults)) {
+            results.push(...batchResults);
+        }
 
-            if (hasMoreBatches) {
-                return microPause();
-            }
-
-            return null;
-        });
+        if (index + batchSize < inputs.length) {
+            yield* Effect.promise(() => microPause());
+        }
     }
 
     return results;
-};
+});

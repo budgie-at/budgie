@@ -8,6 +8,7 @@ import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
@@ -45,7 +46,7 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
     const handleConfirm = async (): Promise<void> => {
         setIsSubmitting(true);
         try {
-            await monobankSyncService.setupAccountSyncBatch(integration.token, [...selectedAccounts], historyDepth);
+            await appRuntime.runPromise(monobankSyncService.setupAccountSyncBatch(integration.token, [...selectedAccounts], historyDepth));
             goBackOrReplace(`/bank-integration/${integration.id}`);
         } catch (error) {
             showErrorToast(t`Could not add accounts`, getErrorMessage(error));
@@ -103,7 +104,7 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
             setIsLoading(true);
             setFetchErrorMessage(null);
             try {
-                const previews = await monobankSyncService.fetchAccountsPreview(integration.token);
+                const previews = await appRuntime.runPromise(monobankSyncService.fetchAccountsPreview(integration.token));
                 setPreviewsRef.current(previews.filter(preview => !isDefined(preview.existingAccountId)));
             } catch (error) {
                 setFetchErrorMessage(getErrorMessage(error));

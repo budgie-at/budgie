@@ -5,6 +5,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { SyncTransactionTypeEnum } from '@budgie/sync';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
@@ -16,13 +17,12 @@ const FEE_ENTRY_EXTERNAL_ID_SUFFIX = ':fee';
 const getExchangeRate = (mainAmount: number, operationAmount: number): number =>
     isPositiveNumber(operationAmount) && mainAmount !== operationAmount ? mainAmount / operationAmount : 1;
 
-export const mapBankTransactionToCreateInput = async (
+export const mapBankTransactionToCreateInput = (
     bankTransaction: SyncTransactionInterface,
     accountId: number,
     mccCategoryLookup: MccCategoryLookupInterface | null,
     provider: ExternalSourceEnum
-): Promise<TransactionCreateInputInterface> => {
-    const { SyncTransactionTypeEnum } = await import('@budgie/sync');
+): TransactionCreateInputInterface => {
     const isIncome = bankTransaction.type === SyncTransactionTypeEnum.INCOME;
     const amount = Math.abs(bankTransaction.amount);
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;

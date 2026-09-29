@@ -1,6 +1,5 @@
 import {
     AccountTypeEnum,
-    type DB,
     type TransactionCreateInputInterface,
     type TransactionEntryCreateInputInterface,
     type TransactionEntryEntityInterface,
@@ -8,23 +7,17 @@ import {
     TransactionTypeEnum,
     type TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { accountRepository, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 
 class TransactionDepositSafetyService {
-    @Log(
-        inputs => `enter count=${inputs.length}`,
-        (_, inputs) => `done count=${inputs.length}`,
-        (error, inputs) => `throw count=${inputs.length} error=${getErrorMessage(error)}`
-    )
-    async assertNoDepositExpenseInputs(
-        inputs: readonly Pick<TransactionCreateInputInterface, 'entries' | 'fromAccountId' | 'type'>[],
-        tx: DB
-    ): Promise<void> {
+    readonly assertNoDepositExpenseInputs = Effect.fn('TransactionDepositSafetyService.assertNoDepositExpenseInputs')(function* (
+        inputs: readonly Pick<TransactionCreateInputInterface, 'entries' | 'fromAccountId' | 'type'>[]
+    ) {
         const expenseSourceAccountIds = [
             ...new Set(
                 inputs.flatMap(input =>
@@ -42,61 +35,51 @@ class TransactionDepositSafetyService {
             return;
         }
 
-        const accounts = await accountRepository.findByIds(expenseSourceAccountIds, tx);
+        const accounts = yield* accountRepository.findByIds(expenseSourceAccountIds);
         const hasDepositAccount = accounts.some(account => account.type === AccountTypeEnum.DEPOSIT);
 
         if (hasDepositAccount) {
-            throw new Error(i18n._({ id: 'transaction.depositExpenseDisallowed', message: 'Deposit accounts cannot fund expenses' }));
+            yield* Effect.die(
+                new Error(i18n._({ id: 'transaction.depositExpenseDisallowed', message: 'Deposit accounts cannot fund expenses' }))
+            );
         }
-    }
+    });
 
-    @Log(
-        input => `enter externalId=${input.externalId ?? ''} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
-        (_, input) =>
-            `done externalId=${input.externalId ?? ''} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')}`,
-        (error, input) =>
-            `throw externalId=${input.externalId ?? ''} entryExternalIds=${input.entries.map(entry => entry.externalId).join(',')} error=${getErrorMessage(error)}`
-    )
-    async assertNoDepositExpenseImportedUpdate(input: TransactionCreateInputInterface, tx: DB): Promise<void> {
-        const existingEntries = (await Promise.all(input.entries.map(entry => this.findExistingImportedUpdateEntry(entry, tx)))).filter(
-            isDefined
-        );
+    readonly assertNoDepositExpenseImportedUpdate = Effect.fn('TransactionDepositSafetyService.assertNoDepositExpenseImportedUpdate')(
+        function* (this: TransactionDepositSafetyService, input: TransactionCreateInputInterface) {
+            const existingEntries = (yield* Effect.forEach(input.entries, entry => this.findExistingImportedUpdateEntry(entry), {
+                concurrency: 'unbounded'
+            })).filter(isDefined);
 
-        if (!isNotEmptyArray(existingEntries)) {
-            return;
+            if (!isNotEmptyArray(existingEntries)) {
+                return;
+            }
+
+            yield* this.assertNoDepositExpenseTransactions(yield* this.findTransactionsByEntries(existingEntries));
         }
+    );
 
-        await this.assertNoDepositExpenseTransactions(await this.findTransactionsByEntries(existingEntries, tx), tx);
-    }
+    readonly assertNoDepositExpenseTransactions = Effect.fn('TransactionDepositSafetyService.assertNoDepositExpenseTransactions')(
+        function* (this: TransactionDepositSafetyService, transactions: readonly TransactionWithEntriesEntityInterface[]) {
+            yield* this.assertNoDepositExpenseInputs(transactions);
+        }
+    );
 
-    @Log(
-        transactions => `enter count=${transactions.length}`,
-        (_, transactions) => `done count=${transactions.length}`,
-        (error, transactions) => `throw count=${transactions.length} error=${getErrorMessage(error)}`
-    )
-    async assertNoDepositExpenseTransactions(transactions: readonly TransactionWithEntriesEntityInterface[], tx: DB): Promise<void> {
-        await this.assertNoDepositExpenseInputs(transactions, tx);
-    }
-
-    private async findExistingImportedUpdateEntry(
-        entry: Pick<TransactionEntryCreateInputInterface, 'accountId' | 'externalId'>,
-        tx: DB
-    ): Promise<TransactionEntryEntityInterface | null> {
+    private readonly findExistingImportedUpdateEntry = Effect.fnUntraced(function* (
+        entry: Pick<TransactionEntryCreateInputInterface, 'accountId' | 'externalId'>
+    ) {
         if (!isDefined(entry.externalId)) {
             return null;
         }
 
-        return (await transactionEntryRepository.findByExternalIdAndAccountId(entry.externalId, entry.accountId, tx)) ?? null;
-    }
+        return (yield* transactionEntryRepository.findByExternalIdAndAccountId(entry.externalId, entry.accountId)) ?? null;
+    });
 
-    private async findTransactionsByEntries(
-        existingEntries: readonly TransactionEntryEntityInterface[],
-        tx: DB
-    ): Promise<TransactionWithEntriesEntityInterface[]> {
+    private readonly findTransactionsByEntries = Effect.fnUntraced(function* (existingEntries: readonly TransactionEntryEntityInterface[]) {
         const transactionIds = [...new Set(existingEntries.map(entry => entry.originalTransactionId ?? entry.transactionId))];
 
-        return transactionRepository.findByIds(transactionIds, tx);
-    }
+        return yield* transactionRepository.findByIds(transactionIds);
+    });
 }
 
 export const transactionDepositSafetyService = new TransactionDepositSafetyService();

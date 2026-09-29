@@ -1,35 +1,31 @@
 import {
+    Db,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    transactionAsync
+    TransactionTypeEnum
 } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { db } from '../../@generic/drizzle/db/db';
 import { transactionBatchCreateService } from '../../transaction/service/transaction-batch-create.service';
-import { VoiceReviewCreateResultInterface } from '../interface/voice-review-create-result.interface';
 import { VoiceReviewRowInterface } from '../interface/voice-review-row.interface';
 
 class VoiceReviewBatchCreateService {
-    @Log(
-        (rows, accountId) => `enter count=${rows.length} accountId=${accountId}`,
-        (result, rows, accountId) =>
-            `done count=${rows.length} accountId=${accountId} destinationAccountId=${result.destinationAccountId} insertedIds=${result.transactions.map(row => row.id).join(',')}`,
-        (error, rows, accountId) => `throw count=${rows.length} accountId=${accountId} error=${getErrorMessage(error)}`
-    )
-    async create(rows: VoiceReviewRowInterface[], accountId: number): Promise<VoiceReviewCreateResultInterface> {
+    readonly create = Effect.fn('VoiceReviewBatchCreateService.create')(function* (
+        this: VoiceReviewBatchCreateService,
+        rows: VoiceReviewRowInterface[],
+        accountId: number
+    ) {
         const inputs = rows.map(row => this.mapRowToCreateInput(row, new Date(), accountId));
-        const transactions = await transactionAsync(db, async txDb => transactionBatchCreateService.create(inputs, txDb));
+        const transactions = yield* Db.transaction(transactionBatchCreateService.create(inputs));
 
         return {
             transactions,
             destinationAccountId: this.getDestinationAccountId(rows, transactions, accountId)
         };
-    }
+    });
 
     private mapRowToCreateInput(
         row: VoiceReviewRowInterface,

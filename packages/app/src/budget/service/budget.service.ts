@@ -1,27 +1,19 @@
 import { BudgetService } from '@budgie/budget';
-import { transactionAsync } from '@budgie/contracts';
 
-import { budgetCategoryLimitRepository, budgetRepository, db } from '../../@generic/drizzle/db/db';
-import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
+import { budgetCategoryLimitRepository, budgetRepository } from '../../@generic/drizzle/db/db';
+import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
 
 import type { BudgetCreateInputInterface, BudgetUpdateInputInterface } from '@budgie/budget';
-import type { BudgetEntityInterface, DB } from '@budgie/contracts';
 
-class AppBudgetService extends BudgetService<DB, DB> {
-    @InvalidateDatabaseLiveQuery()
-    override async createBudget(input: BudgetCreateInputInterface): Promise<BudgetEntityInterface> {
-        return super.createBudget(input);
-    }
+const budgetDomainService = new BudgetService(budgetRepository, budgetCategoryLimitRepository);
 
-    @InvalidateDatabaseLiveQuery()
-    override async updateBudget(id: number, input: BudgetUpdateInputInterface): Promise<BudgetEntityInterface> {
-        return super.updateBudget(id, input);
-    }
+class AppBudgetService {
+    readonly createBudget = (input: BudgetCreateInputInterface) => invalidateDatabaseLiveQuery(budgetDomainService.createBudget(input));
 
-    @InvalidateDatabaseLiveQuery()
-    override async deleteBudget(id: number): Promise<void> {
-        return super.deleteBudget(id);
-    }
+    readonly updateBudget = (id: number, input: BudgetUpdateInputInterface) =>
+        invalidateDatabaseLiveQuery(budgetDomainService.updateBudget(id, input));
+
+    readonly deleteBudget = (id: number) => invalidateDatabaseLiveQuery(budgetDomainService.deleteBudget(id));
 }
 
-export const budgetService = new AppBudgetService(db, budgetRepository, budgetCategoryLimitRepository, transactionAsync);
+export const budgetService = new AppBudgetService();

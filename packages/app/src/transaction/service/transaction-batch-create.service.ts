@@ -3,14 +3,15 @@ import {
     AccountTypeEnum,
     DebtEventDirectionEnum,
     DebtEventSourceEnum,
+    Db,
     TransactionCreateInputInterface,
     TransactionEntityInterface,
     TransactionEntryKindEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import {
     accountRepository,
@@ -23,80 +24,59 @@ import { entryBaseValuationService } from '../../money-data/service/entry-base-v
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 import { transactionMapTagIdsToCreateEntities } from '../utils/transaction-map-tag-ids-to-create-entities.util';
 
-import type { AccountEntityInterface, DB, TransactionEntryEntityInterface } from '@budgie/contracts';
+import type { AccountEntityInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 
 class TransactionBatchCreateService {
-    @Log(
-        (batch, tx) =>
-            `enter count=${batch.length} externalIds=${batch
-                .slice(0, 5)
-                .map(input => input.externalId)
-                .join(',')} hasTx=${String(isDefined(tx))}`,
-        (result, batch, tx) =>
-            `done count=${batch.length} externalIds=${batch
-                .slice(0, 5)
-                .map(input => input.externalId)
-                .join(',')} hasTx=${String(isDefined(tx))} insertedIds=${result
-                .slice(0, 5)
-                .map(row => row.id)
-                .join(',')}`,
-        (error, batch, tx) =>
-            `throw count=${batch.length} externalIds=${batch
-                .slice(0, 5)
-                .map(input => input.externalId)
-                .join(',')} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async create(batch: readonly TransactionCreateInputInterface[], tx: DB): Promise<TransactionEntityInterface[]> {
-        const valuations = await entryBaseValuationService.valueTransactionsEntries(batch, tx);
-        const transactions = await transactionRepository.bulkCreate([...batch], tx);
+    readonly create = Effect.fn('TransactionBatchCreateService.create')(function* (
+        this: TransactionBatchCreateService,
+        batch: readonly TransactionCreateInputInterface[]
+    ) {
+        const valuations = yield* entryBaseValuationService.valueTransactionsEntries(batch);
+        const transactions = yield* transactionRepository.bulkCreate([...batch]);
         const batchEntries = transactions.flatMap((transaction, index) =>
             batch[index].entries.map(entry => transactionMapEntryInputToCreateEntity(entry, transaction.id, valuations[index].get(entry)))
         );
         const batchTags = transactions.flatMap((transaction, index) =>
             transactionMapTagIdsToCreateEntities(batch[index].tagIds, transaction.id)
         );
-        const createdEntries = await transactionEntryRepository.bulkCreate(batchEntries, tx);
+        const createdEntries = yield* transactionEntryRepository.bulkCreate(batchEntries);
 
-        await Promise.all([
-            this.createDebtEventsFromInputs(batch, transactions, createdEntries, tx),
-            transactionTagsRepository.bulkCreate(batchTags, tx)
-        ]);
+        yield* Effect.all(
+            [this.createDebtEventsFromInputs(batch, transactions, createdEntries), transactionTagsRepository.bulkCreate(batchTags)],
+            {
+                concurrency: 'unbounded'
+            }
+        );
 
         return transactions;
-    }
+    });
 
-    private async createDebtEventsFromInputs(
+    private readonly createDebtEventsFromInputs = Effect.fnUntraced(function* (
+        this: TransactionBatchCreateService,
         batch: readonly TransactionCreateInputInterface[],
         transactions: TransactionEntityInterface[],
-        createdEntries: TransactionEntryEntityInterface[],
-        tx: DB
-    ): Promise<void> {
+        createdEntries: TransactionEntryEntityInterface[]
+    ) {
         const createdEntriesByTransactionId = this.getCreatedEntriesByTransactionId(createdEntries);
 
-        await Promise.all(
+        yield* Effect.all(
             transactions.flatMap((transaction, index) =>
                 isDefined(batch[index].debtAccountId)
-                    ? [this.createDebtEvent(batch[index], transaction, createdEntriesByTransactionId, tx)]
+                    ? [this.createDebtEvent(batch[index], transaction, createdEntriesByTransactionId)]
                     : []
-            )
+            ),
+            { concurrency: 'unbounded' }
         );
-    }
+    });
 
-    private getCreatedEntriesByTransactionId(createdEntries: TransactionEntryEntityInterface[]) {
-        return createdEntries.reduce<Map<number, TransactionEntryEntityInterface[]>>((map, entry) => {
-            map.set(entry.transactionId, [...(map.get(entry.transactionId) ?? []), entry]);
-
-            return map;
-        }, new Map());
-    }
-
-    private async createDebtEvent(
+    private readonly createDebtEvent = Effect.fnUntraced(function* (
+        this: TransactionBatchCreateService,
         input: TransactionCreateInputInterface,
         transaction: TransactionEntityInterface,
-        createdEntriesByTransactionId: Map<number, TransactionEntryEntityInterface[]>,
-        tx: DB
-    ): Promise<void> {
-        const debtAccount = isDefined(input.debtAccountId) ? await accountRepository.findById(input.debtAccountId, tx) : null;
+        createdEntriesByTransactionId: Map<number, TransactionEntryEntityInterface[]>
+    ) {
+        const { debtAccountId } = input;
+        const debtAccount = isDefined(debtAccountId) ? yield* Db.query(db => accountRepository.findById(debtAccountId, db)) : null;
         const primaryEntries = (createdEntriesByTransactionId.get(transaction.id) ?? []).filter(
             entry => entry.kind === TransactionEntryKindEnum.PRIMARY
         );
@@ -111,29 +91,33 @@ class TransactionBatchCreateService {
         }
 
         const amount = primaryEntries.reduce((sum, entry) => sum + entry.amount, 0);
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
+        const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
             accountId: debtAccount.id,
             amount,
             operatedAt: input.operatedAt,
-            externalSource: input.externalSource,
-            tx
+            externalSource: input.externalSource
         });
 
-        await debtEventRepository.create(
-            {
-                debtAccountId: debtAccount.id,
-                transactionId: transaction.id,
-                direction: this.getIncomeDebtEventDirection(debtAccount),
-                source: DebtEventSourceEnum.INCOME_ATTACHMENT,
-                amount,
-                ...(isDefined(primaryEntries[0]) && primaryEntries.length === 1 && { transactionEntryId: primaryEntries[0].id }),
-                baseInstrumentId: valuation.baseInstrumentId,
-                baseExchangeRate: valuation.baseExchangeRate,
-                baseAmount: valuation.baseAmount,
-                operatedAt: input.operatedAt
-            },
-            tx
-        );
+        yield* debtEventRepository.create({
+            debtAccountId: debtAccount.id,
+            transactionId: transaction.id,
+            direction: this.getIncomeDebtEventDirection(debtAccount),
+            source: DebtEventSourceEnum.INCOME_ATTACHMENT,
+            amount,
+            ...(isDefined(primaryEntries[0]) && primaryEntries.length === 1 && { transactionEntryId: primaryEntries[0].id }),
+            baseInstrumentId: valuation.baseInstrumentId,
+            baseExchangeRate: valuation.baseExchangeRate,
+            baseAmount: valuation.baseAmount,
+            operatedAt: input.operatedAt
+        });
+    });
+
+    private getCreatedEntriesByTransactionId(createdEntries: TransactionEntryEntityInterface[]) {
+        return createdEntries.reduce<Map<number, TransactionEntryEntityInterface[]>>((map, entry) => {
+            map.set(entry.transactionId, [...(map.get(entry.transactionId) ?? []), entry]);
+
+            return map;
+        }, new Map());
     }
 
     private getIncomeDebtEventDirection(debtAccount: Pick<AccountEntityInterface, 'debtType'>): DebtEventDirectionEnum {

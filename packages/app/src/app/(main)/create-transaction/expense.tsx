@@ -8,6 +8,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -41,7 +42,7 @@ export default function CreateExpenseTransactionPage() {
     const parsedAmount = isDefined(normalizedAmount) && isPositiveNumber(Number(normalizedAmount)) ? Number(normalizedAmount) : void 0;
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: data => transactionService.createInternal(data),
+        onSubmit: data => appRuntime.runPromise(transactionService.createInternal(data)),
         schema: ExpenseTransactionCreateInputSchema,
         fromAccountId: parsedAccountId ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,

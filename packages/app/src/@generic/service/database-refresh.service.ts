@@ -1,4 +1,4 @@
-import { emptyFn } from '@rnw-community/shared';
+import * as Effect from 'effect/Effect';
 
 class DatabaseRefreshService {
     private version = 0;
@@ -23,11 +23,7 @@ class DatabaseRefreshService {
 
     private emit(): void {
         this.listeners.forEach(listener => {
-            try {
-                listener();
-            } catch {
-                emptyFn();
-            }
+            Effect.runSync(Effect.ignore(Effect.try(listener)));
         });
     }
 }

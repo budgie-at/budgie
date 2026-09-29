@@ -1,37 +1,33 @@
 import { TransactionEntryCreateEntityInterface, TransactionEntryTypeEnum, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 
-import type { DB } from '@budgie/contracts';
-
 class AccountTransferConversionService {
-    @Log(
-        (accountId, tx) => `enter accountId=${accountId} hasTx=${String(isDefined(tx))}`,
-        (result, accountId, tx) => `done accountId=${accountId} hasTx=${String(isDefined(tx))} hasResult=${String(isDefined(result))}`,
-        (error, accountId, tx) => `throw accountId=${accountId} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async convertAccountTransfers(accountId: number, tx: DB): Promise<void> {
-        const transfers = await transactionRepository.findTransfersForConversion(accountId, tx);
+    readonly convertAccountTransfers = Effect.fn('AccountTransferConversionService.convertAccountTransfers')(function* (
+        this: AccountTransferConversionService,
+        accountId: number
+    ) {
+        const transfers = yield* transactionRepository.findTransfersForConversion(accountId);
 
         if (!isNotEmptyArray(transfers)) {
             return;
         }
 
-        await transactionRepository.convertTransfersFromAccountToIncome(accountId, tx);
-        await transactionRepository.convertTransfersToAccountToExpense(accountId, tx);
+        yield* transactionRepository.convertTransfersFromAccountToIncome(accountId);
+        yield* transactionRepository.convertTransfersToAccountToExpense(accountId);
 
         const entriesToCreate = this.collectTransferEntries(transfers, accountId);
         const transactionIds = transfers.map(transaction => transaction.id);
 
-        await transactionEntryRepository.deleteByTransactionIds(transactionIds, tx);
+        yield* transactionEntryRepository.deleteByTransactionIds(transactionIds);
 
         if (isNotEmptyArray(entriesToCreate)) {
-            await transactionEntryRepository.bulkCreate(entriesToCreate, tx);
+            yield* transactionEntryRepository.bulkCreate(entriesToCreate);
         }
-    }
+    });
 
     private collectTransferEntries(transfers: TransactionWithEntriesEntityInterface[], accountId: number) {
         const entriesToCreate: TransactionEntryCreateEntityInterface[] = [];

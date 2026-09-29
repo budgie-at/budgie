@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { transactionRefundService } from '../service/transaction-refund.service';
 
@@ -17,8 +18,8 @@ export const useRefundableExpenseCandidatesQuery = (refundIncomeTransactionId: n
         let isMounted = true;
 
         setIsLoading(true);
-        void transactionRefundService
-            .findRefundableExpenses(refundIncomeTransactionId, search, language)
+        void appRuntime
+            .runPromise(transactionRefundService.findRefundableExpenses(refundIncomeTransactionId, search, language))
             .then(result => {
                 if (isMounted) {
                     setCandidates(result);

@@ -1,5 +1,6 @@
 import { msg } from '@lingui/core/macro';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
 import { PinSetupModeEnum } from '../enum/pin-setup-mode.enum';
@@ -31,7 +32,7 @@ export const usePinSetup = ({ mode }: Params) => {
     const deleteDigit = () => void dispatch({ type: PinSetupReducerActionEnum.DELETE_DIGIT });
 
     const verifyOldPin = async (): Promise<boolean> => {
-        const isCorrect = await authService.verifyPin(state.input);
+        const isCorrect = await appRuntime.runPromise(authService.verifyPin(state.input));
 
         if (!isCorrect) {
             dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`Incorrect PIN` });
@@ -51,7 +52,7 @@ export const usePinSetup = ({ mode }: Params) => {
         }
 
         if (mode === PinSetupModeEnum.DISABLE) {
-            await authService.deletePin();
+            await appRuntime.runPromise(authService.deletePin());
 
             return;
         }
@@ -66,7 +67,7 @@ export const usePinSetup = ({ mode }: Params) => {
 
         try {
             if (isBiometricEnabled && isSomeAvailable) {
-                const success = await authService.authenticateWithBiometrics();
+                const success = await appRuntime.runPromise(authService.authenticateWithBiometrics());
 
                 if (!success) {
                     throw new Error();
@@ -74,9 +75,9 @@ export const usePinSetup = ({ mode }: Params) => {
             }
 
             if (mode === PinSetupModeEnum.CHANGE) {
-                await authService.changePin(state.tempNewPin);
+                await appRuntime.runPromise(authService.changePin(state.tempNewPin));
             } else {
-                await authService.createPin(state.tempNewPin, isBiometricEnabled);
+                await appRuntime.runPromise(authService.createPin(state.tempNewPin, isBiometricEnabled));
             }
         } catch {
             dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`Failed to save PIN. Please try again.` });
@@ -138,6 +139,6 @@ export const usePinSetup = ({ mode }: Params) => {
         addDigit,
         deleteDigit,
         handleSubmit,
-        saveAndContinue: mode === PinSetupModeEnum.DISABLE ? () => authService.deletePin() : savePinAndContinue
+        saveAndContinue: mode === PinSetupModeEnum.DISABLE ? () => appRuntime.runPromise(authService.deletePin()) : savePinAndContinue
     };
 };

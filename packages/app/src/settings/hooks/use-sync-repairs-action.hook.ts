@@ -5,6 +5,7 @@ import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { syncRepairService } from '../../sync/service/sync-repair.service';
 
 const getRepairedTransactionText = (count: number, t: ReturnType<typeof useLingui>['t']) =>
@@ -16,7 +17,7 @@ const getRepairedTransactionText = (count: number, t: ReturnType<typeof useLingu
     });
 
 const removeDuplicatesAndRefresh = async (refresh: () => Promise<void>, t: ReturnType<typeof useLingui>['t']): Promise<void> => {
-    const result = await syncRepairService.removeDuplicates();
+    const result = await appRuntime.runPromise(syncRepairService.removeDuplicates());
     const repairedText = getRepairedTransactionText(result.repairedTransactionCount, t);
 
     Toast.show({ type: 'success', text1: t`Sync data repaired`, text2: repairedText });

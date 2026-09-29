@@ -1,102 +1,73 @@
-import { Log } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
+import * as Semaphore from 'effect/Semaphore';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { historicalMarketDataLoaderService } from '../../../market-data/service/historical-market-data-loader.service';
 import { ruleApplicationDrainerService } from '../../../rule/service/rule-application-drainer.service';
-import { syncWorkloadService } from '../../../sync/service/sync-workload.service';
 import { transferConsolidationDrainerService } from '../../../sync/service/transfer-consolidation-drainer.service';
-import { foregroundWorkloadService } from '../../service/foreground-workload.service';
+import { Workload } from '../../service/workload.service';
 import { expoDb } from '../db/db';
 
 import type { DatabaseLifecycleOperationEnum } from '../enum/database-lifecycle-operation.enum';
+import type { Db } from '@budgie/contracts';
 
 class DatabaseLifecycleService {
     private static readonly DRAIN_TIMEOUT_MS = 5000;
 
-    private readonly inFlightOperations = new Map<DatabaseLifecycleOperationEnum, Promise<void>>();
-    private closeOperation: Promise<void> | null = null;
-    private isClosed = false;
-    private pendingOperation: Promise<unknown> = Promise.resolve();
-
-    @Log(
-        (operation, work) => `enter operation=${operation} workName="${work.name}"`,
-        (result, operation, work) => `done operation=${operation} workName="${work.name}" result=${String(result)}`,
-        (error, operation, work) => `throw operation=${operation} workName="${work.name}" error=${getErrorMessage(error)}`
-    )
-    async run(operation: DatabaseLifecycleOperationEnum, work: () => Promise<void>): Promise<void> {
+    readonly run = Effect.fn('DatabaseLifecycleService.run')(function* (
+        this: DatabaseLifecycleService,
+        operation: DatabaseLifecycleOperationEnum,
+        work: Effect.Effect<void, unknown, Db>
+    ) {
         const inFlightOperation = this.inFlightOperations.get(operation);
 
         if (isDefined(inFlightOperation)) {
-            return inFlightOperation;
+            return yield* Fiber.join(inFlightOperation);
         }
 
-        const queuedOperation = this.pendingOperation.then(
-            () => this.runExclusively(work),
-            () => this.runExclusively(work)
-        );
+        const queuedOperation = yield* this.semaphore
+            .withPermit(this.runExclusively(work))
+            .pipe(Effect.ensuring(Effect.sync(() => this.inFlightOperations.delete(operation))), Effect.forkDetach);
 
         this.inFlightOperations.set(operation, queuedOperation);
-        this.pendingOperation = queuedOperation.then(
-            () => this.inFlightOperations.delete(operation),
-            () => this.inFlightOperations.delete(operation)
-        );
 
-        return queuedOperation;
-    }
+        return yield* Fiber.join(queuedOperation);
+    });
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async close(): Promise<void> {
+    readonly close = Effect.fn('DatabaseLifecycleService.close')(function* (this: DatabaseLifecycleService) {
+        yield* this.closeLock.withPermit(this.closeHandle());
+    });
+
+    private readonly closeHandle = Effect.fnUntraced(function* (this: DatabaseLifecycleService) {
         if (this.isClosed) {
             return;
         }
 
-        this.closeOperation ??= this.closeHandle().finally(() => {
-            this.closeOperation = null;
-        });
-
-        return await this.closeOperation;
-    }
-
-    private async closeHandle(): Promise<void> {
-        await expoDb.closeAsync();
+        yield* Effect.promise(() => expoDb.closeAsync());
         this.isClosed = true;
         this.clearDatabaseGlobals();
-    }
+    });
 
-    private async runExclusively(work: () => Promise<void>): Promise<void> {
-        this.cancelBackgroundWork();
-        await this.waitForForegroundIdle();
+    private readonly runExclusively = Effect.fn('DatabaseLifecycleService.runExclusively')(function* (
+        this: DatabaseLifecycleService,
+        work: Effect.Effect<void, unknown, Db>
+    ) {
+        const workload = yield* Workload;
 
-        try {
-            await foregroundWorkloadService.run(work);
-        } catch (error) {
-            this.resumeBackgroundWorkWhenDatabaseIsOpen();
-            throw error;
-        }
-    }
+        yield* workload.block;
+        yield* transferConsolidationDrainerService.cancelPending();
+        yield* ruleApplicationDrainerService.cancelPending();
+        yield* historicalMarketDataLoaderService.cancelScheduledDrain();
+        yield* workload.awaitForegroundIdle.pipe(Effect.timeoutOption(DatabaseLifecycleService.DRAIN_TIMEOUT_MS));
+        yield* workload.runForeground(work).pipe(Effect.onError(() => (this.isClosed ? Effect.void : workload.unblock)));
+    });
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private cancelBackgroundWork(): void {
-        syncWorkloadService.cancelPendingAndBlockNewWork();
-        transferConsolidationDrainerService.cancelPending();
-        ruleApplicationDrainerService.cancelPending();
-        historicalMarketDataLoaderService.cancelScheduledDrain();
-    }
-
-    @Log('enter', isIdle => `done isIdle=${String(isIdle)}`, error => `throw error=${getErrorMessage(error)}`)
-    private async waitForForegroundIdle(): Promise<boolean> {
-        return await foregroundWorkloadService.whenIdle(DatabaseLifecycleService.DRAIN_TIMEOUT_MS);
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private resumeBackgroundWorkWhenDatabaseIsOpen(): void {
-        if (this.isClosed) {
-            return;
-        }
-
-        syncWorkloadService.resumeAcceptingWork();
-    }
+    private readonly semaphore = Semaphore.makeUnsafe(1);
+    private readonly closeLock = Semaphore.makeUnsafe(1);
+    private readonly inFlightOperations = new Map<DatabaseLifecycleOperationEnum, Fiber.Fiber<void, unknown>>();
+    private isClosed = false;
 
     private clearDatabaseGlobals(): void {
         // eslint-disable-next-line no-underscore-dangle, no-undefined
