@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconType } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue, cn } from 'cn';
 import { ReactNode } from 'react';
@@ -13,7 +13,7 @@ import { GoBackButton } from '../go-back-button/go-back-button';
 
 interface Props {
     readonly title: string;
-    readonly icon?: UserIconNameEnum;
+    readonly icon?: UserIconType;
     readonly right?: ReactNode;
     readonly bottom?: ReactNode;
     readonly onGoBack?: EmptyFn;
