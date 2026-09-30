@@ -1,4 +1,4 @@
-import { AccountRepository, InstrumentRepository, SyncRepository } from '@budgie/contracts';
+import { AccountRepository, Db, InstrumentRepository, SyncRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -36,7 +36,7 @@ export const makeSyncService = Effect.fnUntraced(function* (definition: SyncServ
 
     return {
         setAccountSyncEnabled: Effect.fn('AbstractSyncService.setAccountSyncEnabled')(function* (accountId: number, enabled: boolean) {
-            yield* syncRepository.setEnabled(accountId, enabled);
+            yield* Db.transaction(syncRepository.setEnabled(accountId, enabled));
             yield* afterSyncEnabledChange(enabled);
         }),
         getOrCreateSyncAccount: Effect.fn('AbstractSyncService.getOrCreateSyncAccount')(function* (account: SyncAccountInterface) {

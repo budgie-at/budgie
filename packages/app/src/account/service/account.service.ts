@@ -122,9 +122,12 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/a
                 },
                 effect => Db.transaction(effect)
             ),
-            activateById: Effect.fn('AccountService.activateById')(function* (id: number) {
-                yield* accountRepository.updateById(id, { isActive: true });
-            }),
+            activateById: Effect.fn('AccountService.activateById')(
+                function* (id: number) {
+                    yield* accountRepository.updateById(id, { isActive: true });
+                },
+                effect => Db.transaction(effect)
+            ),
             bulkCreate: Effect.fn('AccountService.bulkCreate')(function* (
                 inputs: LiabilityAccountCreateInputInterface[],
                 batchSize: number = 100

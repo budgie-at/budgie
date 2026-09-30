@@ -35,21 +35,26 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
                     tx.type AS transactionType,
                     counterpart_account.id AS counterpartAccountId,
                     (
-                        SELECT superseded_tx.id FROM transactions superseded_tx
-                        INNER JOIN transaction_entries superseded_entry ON
-                            superseded_entry.transaction_id = superseded_tx.id
-                            AND superseded_entry.deleted_at IS NOT NULL
-                            AND superseded_entry.original_transaction_id IS NULL
-                            AND superseded_entry.kind = 'PRIMARY'
-                        WHERE superseded_tx.deleted_at IS NOT NULL
-                            AND superseded_tx.id != tx.id
-                            AND (
-                                (tx.type = 'INCOME' AND superseded_tx.type = 'EXPENSE' AND superseded_tx.from_account_id = counterpart_account.id)
-                                OR (tx.type = 'EXPENSE' AND superseded_tx.type = 'INCOME' AND superseded_tx.to_account_id = counterpart_account.id)
-                            )
-                            AND ABS(superseded_tx.operated_at - tx.operated_at) <= ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
-                            AND superseded_entry.amount >= entry.amount - ${counterpartAmountTolerance}
-                        ORDER BY ABS(superseded_tx.operated_at - tx.operated_at)
+                        SELECT superseded_candidate.id FROM (
+                            SELECT
+                                superseded_tx.id AS id,
+                                ABS(superseded_tx.operated_at - tx.operated_at) AS distance
+                            FROM transactions superseded_tx
+                            INNER JOIN transaction_entries superseded_entry ON
+                                superseded_entry.transaction_id = superseded_tx.id
+                                AND superseded_entry.deleted_at IS NOT NULL
+                                AND superseded_entry.original_transaction_id IS NULL
+                                AND superseded_entry.kind = 'PRIMARY'
+                            WHERE superseded_tx.deleted_at IS NOT NULL
+                                AND superseded_tx.id != tx.id
+                                AND (
+                                    (tx.type = 'INCOME' AND superseded_tx.type = 'EXPENSE' AND superseded_tx.from_account_id = counterpart_account.id)
+                                    OR (tx.type = 'EXPENSE' AND superseded_tx.type = 'INCOME' AND superseded_tx.to_account_id = counterpart_account.id)
+                                )
+                                AND ABS(superseded_tx.operated_at - tx.operated_at) <= ${TRANSFER_PAIR_TIME_WINDOW_SECONDS}
+                                AND superseded_entry.amount >= entry.amount - ${counterpartAmountTolerance}
+                        ) superseded_candidate
+                        ORDER BY superseded_candidate.distance
                         LIMIT 1
                     ) AS supersededTransactionId
                 FROM transactions tx

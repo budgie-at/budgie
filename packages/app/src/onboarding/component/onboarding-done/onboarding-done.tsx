@@ -1,7 +1,6 @@
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -31,13 +30,7 @@ export const OnboardingDone = () => {
     const { defaultInstrument } = useSettingsContext();
 
     const handlePrimary = () => {
-        appRuntime.runFork(
-            logAndContinue(
-                Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete()).pipe(
-                    Effect.map(() => void router.replace('/'))
-                )
-            )
-        );
+        appRuntime.runFork(logAndContinue(Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete())));
     };
 
     const checklistItems = [

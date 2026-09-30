@@ -2,6 +2,7 @@ import {
     AccountBalanceRepository,
     CategorySourceEnum,
     Db,
+    DebtEventRepository,
     TransactionEntryCreateEntityInterface,
     TransactionEntryKindEnum,
     TransactionEntryRepository,
@@ -42,6 +43,7 @@ import type { TransactionEntryEntityInterface } from '@budgie/contracts';
 export class TransactionTransferService extends Context.Service<TransactionTransferService>()('@budgie/app/TransactionTransferService', {
     make: Effect.gen(function* () {
         const accountBalanceRepository = yield* AccountBalanceRepository;
+        const debtEventRepository = yield* DebtEventRepository;
         const transactionEntryRepository = yield* TransactionEntryRepository;
         const transactionRepository = yield* TransactionRepository;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
@@ -175,6 +177,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
         const convertToTransfer = Effect.fnUntraced(
             function* (params: ConvertToTransferParamsInterface, direction: 'expense' | 'income') {
                 const conversion = yield* buildTransferConversion(direction, params);
+                const debtEvent = yield* debtEventRepository.findByTransactionId(params.id);
                 const updated = yield* transactionRepository.updateById(params.id, {
                     type: conversion.transactionType,
                     fromAccountId: conversion.fromAccountId,
@@ -211,6 +214,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                     { concurrency: 'unbounded' }
                 );
 
+                yield* debtEventRepository.deleteByTransactionId(params.id);
                 yield* transactionEntryRepository.deleteByTransactionId(params.id);
                 yield* transactionEntryRepository.bulkCreate([
                     buildTransferEntryCreateEntity({
@@ -233,7 +237,8 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                 yield* accountBalanceIncrementalService.updateBalancesByAccountIds([
                     conversion.creditAccountId,
                     conversion.debitAccountId,
-                    ...conversion.feeEntries.map(entry => entry.accountId)
+                    ...conversion.feeEntries.map(entry => entry.accountId),
+                    ...(isDefined(debtEvent) ? [debtEvent.debtAccountId] : [])
                 ]);
 
                 return updated;
@@ -329,6 +334,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
     static readonly layer = Layer.effect(TransactionTransferService, TransactionTransferService.make).pipe(
         Layer.provide([
             AccountBalanceRepository.layer,
+            DebtEventRepository.layer,
             TransactionEntryRepository.layer,
             TransactionRepository.layer,
             AccountBalanceIncrementalService.layer,

@@ -93,9 +93,7 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
                 },
                 effect => Db.transaction(effect)
             ),
-            deleteBudget: Effect.fn('BudgetService.deleteBudget')(function* (id: number) {
-                yield* budgetRepository.delete(id);
-            })
+            deleteBudget: (id: number) => Db.transaction(budgetRepository.delete(id))
         };
     })
 }) {
