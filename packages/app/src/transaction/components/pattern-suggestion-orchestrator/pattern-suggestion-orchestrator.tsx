@@ -8,7 +8,7 @@ import { useRepeatedTransactionSuggestion } from '../../hook/use-repeated-transa
 import { PatternCategorySuggestion } from '../../interface/pattern-category-suggestion.type';
 import { PatternSuggestionOrchestratorConfig } from '../../interface/pattern-suggestion-orchestrator-config.type';
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
-import { repeatedTransactionService } from '../../service/repeated-transaction.service';
+import { getLatestPatternAmount } from '../../utils/get-latest-pattern-amount.util';
 import { getPatternComments } from '../../utils/get-pattern-comments.util';
 import { getPatternTagIds } from '../../utils/get-pattern-tag-ids.util';
 import { mergePatternCategories } from '../../utils/merge-pattern-categories.util';
@@ -85,7 +85,7 @@ export const PatternSuggestionOrchestrator = (props: Props) => {
             return;
         }
 
-        onFillPatternAmount(repeatedTransactionService.getLatestAmount(allPatterns, selectedCategoryId));
+        onFillPatternAmount(getLatestPatternAmount(allPatterns, selectedCategoryId));
     };
 
     const handleSelectPatternCategory = (selectedCategoryId: number): void => {

@@ -1,5 +1,7 @@
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
-import * as SQLite from 'expo-sqlite';
+import * as Layer from 'effect/Layer';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -10,86 +12,69 @@ interface CacheEntryInterface<T> {
     readonly storedAt: number;
 }
 
-interface PatternCacheOptionsInterface {
-    readonly capacity?: number;
-    readonly ttlMs?: number;
-}
-
 type PatternComputeType = Effect.Effect<RepeatedTransactionPatternInterface[], DbError, Db>;
 
-const DEFAULT_CAPACITY = 20;
-const DEFAULT_TTL_MS = 30_000;
-const TRACKED_TABLES = new Set(['transactions', 'transaction_entries', 'transaction_tags']);
+export class PatternCacheService extends Context.Service<PatternCacheService>()('@budgie/app/PatternCacheService', {
+    make: Effect.gen(function* () {
+        const reactivity = yield* Reactivity.Reactivity;
+        const capacity = 20;
+        const ttlMs = 30_000;
+        const trackedTables = ['transactions', 'transaction_entries', 'transaction_tags'];
+        const repeatedEntries = new Map<string, CacheEntryInterface<RepeatedTransactionPatternInterface[]>>();
+        const amountEntries = new Map<string, CacheEntryInterface<RepeatedTransactionPatternInterface[]>>();
 
-class PatternCacheService {
-    readonly memoizeRepeated = Effect.fn('PatternCacheService.memoizeRepeated')(function* (
-        this: PatternCacheService,
-        key: string,
-        compute: PatternComputeType
-    ) {
-        return yield* this.recall(this.repeatedEntries, key, compute);
-    });
+        const invalidate = () => {
+            repeatedEntries.clear();
+            amountEntries.clear();
+        };
 
-    readonly memoizeAmount = Effect.fn('PatternCacheService.memoizeAmount')(function* (
-        this: PatternCacheService,
-        key: string,
-        compute: PatternComputeType
-    ) {
-        return yield* this.recall(this.amountEntries, key, compute);
-    });
+        const evictOldestIfOverCapacity = <T>(store: Map<string, CacheEntryInterface<T>>) => {
+            if (store.size > capacity) {
+                const oldest = store.keys().next().value;
 
-    private readonly recall = Effect.fnUntraced(function* (
-        this: PatternCacheService,
-        store: Map<string, CacheEntryInterface<RepeatedTransactionPatternInterface[]>>,
-        key: string,
-        compute: PatternComputeType
-    ) {
-        const existing = store.get(key);
-        const now = Date.now();
-        if (isDefined(existing) && now - existing.storedAt < this.ttlMs) {
-            store.delete(key);
-            store.set(key, existing);
-
-            return existing.value;
-        }
-
-        const value = yield* compute;
-        store.set(key, { value, storedAt: now });
-        this.evictOldestIfOverCapacity(store);
-
-        return value;
-    });
-
-    private readonly capacity: number;
-    private readonly ttlMs: number;
-
-    private readonly repeatedEntries = new Map<string, CacheEntryInterface<RepeatedTransactionPatternInterface[]>>();
-    private readonly amountEntries = new Map<string, CacheEntryInterface<RepeatedTransactionPatternInterface[]>>();
-
-    constructor(options: PatternCacheOptionsInterface = {}) {
-        this.capacity = options.capacity ?? DEFAULT_CAPACITY;
-        this.ttlMs = options.ttlMs ?? DEFAULT_TTL_MS;
-    }
-
-    invalidate(): void {
-        this.repeatedEntries.clear();
-        this.amountEntries.clear();
-    }
-
-    private evictOldestIfOverCapacity<T>(store: Map<string, CacheEntryInterface<T>>): void {
-        if (store.size > this.capacity) {
-            const oldest = store.keys().next().value;
-            if (isDefined(oldest)) {
-                store.delete(oldest);
+                if (isDefined(oldest)) {
+                    store.delete(oldest);
+                }
             }
-        }
-    }
+        };
+
+        const recall = Effect.fnUntraced(function* (
+            store: Map<string, CacheEntryInterface<RepeatedTransactionPatternInterface[]>>,
+            key: string,
+            compute: PatternComputeType
+        ) {
+            const existing = store.get(key);
+            const now = Date.now();
+
+            if (isDefined(existing) && now - existing.storedAt < ttlMs) {
+                store.delete(key);
+                store.set(key, existing);
+
+                return existing.value;
+            }
+
+            const value = yield* compute;
+            store.set(key, { value, storedAt: now });
+            evictOldestIfOverCapacity(store);
+
+            return value;
+        });
+
+        yield* Effect.acquireRelease(
+            Effect.sync(() => reactivity.registerUnsafe(trackedTables, invalidate)),
+            unregister => Effect.sync(unregister)
+        );
+
+        return {
+            invalidate,
+            memoizeRepeated: Effect.fn('PatternCacheService.memoizeRepeated')(function* (key: string, compute: PatternComputeType) {
+                return yield* recall(repeatedEntries, key, compute);
+            }),
+            memoizeAmount: Effect.fn('PatternCacheService.memoizeAmount')(function* (key: string, compute: PatternComputeType) {
+                return yield* recall(amountEntries, key, compute);
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(PatternCacheService, PatternCacheService.make);
 }
-
-export const patternCacheService = new PatternCacheService();
-
-SQLite.addDatabaseChangeListener(({ tableName }) => {
-    if (TRACKED_TABLES.has(tableName)) {
-        patternCacheService.invalidate();
-    }
-});

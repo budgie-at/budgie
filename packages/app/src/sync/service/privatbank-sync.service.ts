@@ -1,58 +1,68 @@
-import { AccountTypeEnum, ExternalSourceEnum } from '@budgie/contracts';
+import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { PrivatbankFileClient, parsePrivatbankXlsx } from '@budgie/sync';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { fileSyncDependenciesLayer } from '../layer/file-sync-dependencies.layer';
+import { generateDefaultSyncAccountTitle } from '../util/generate-default-sync-account-title.util';
+import { makeFileSyncService } from '../util/make-file-sync-service.util';
 import { readFileAsUint8Array } from '../util/read-file-as-uint8-array.util';
 
-import { AbstractFileSyncService } from './abstract-file-sync.service';
-import { privatbankCategoryMatcherService } from './privatbank-category-matcher.service';
+import { PrivatbankCategoryMatcherService } from './privatbank-category-matcher.service';
 
 import type { FileBasedSyncClientInterface } from '../interface/file-based-sync-client.interface';
 import type { SyncAccountInterface } from '@budgie/sync';
 
-class PrivatbankSyncService extends AbstractFileSyncService {
-    protected readonly provider = ExternalSourceEnum.PRIVATBANK;
-    // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
-    protected readonly providerTitle = 'Privatbank';
-    protected readonly accountType = AccountTypeEnum.BANK_SYNC;
+export class PrivatbankSyncService extends Context.Service<PrivatbankSyncService>()('@budgie/app/PrivatbankSyncService', {
+    make: Effect.gen(function* () {
+        const privatbankCategoryMatcherService = yield* PrivatbankCategoryMatcherService;
 
-    protected readonly resolveMccCategoryIdMap = Effect.fn('PrivatbankSyncService.resolveMccCategoryIdMap')(function* (
-        this: PrivatbankSyncService,
-        client: FileBasedSyncClientInterface,
-        bankAccounts: SyncAccountInterface[]
-    ) {
-        const accountIds = bankAccounts.map(account => account.id);
-        const uniqueCategories = this.collectUniqueCategories(client, accountIds);
+        const collectUniqueCategories = (client: FileBasedSyncClientInterface, accountIds: string[]): string[] => {
+            const categorySet = new Set<string>();
 
-        return yield* privatbankCategoryMatcherService.match(uniqueCategories);
-    });
-
-    protected readonly parseFile = Effect.fn('PrivatbankSyncService.parseFile')(function* (uri: string) {
-        const buffer = yield* Effect.promise(() => readFileAsUint8Array(uri));
-        const rows = yield* parsePrivatbankXlsx(buffer);
-        const client = new PrivatbankFileClient(rows);
-
-        return { client, bankAccounts: client.getAccounts() };
-    });
-
-    private collectUniqueCategories(client: FileBasedSyncClientInterface, accountIds: string[]): string[] {
-        const categorySet = new Set<string>();
-
-        for (const accountId of accountIds) {
-            const transactions = client.getTransactions(accountId);
-            for (const transaction of transactions) {
-                if (isDefined(transaction.category) && isNotEmptyString(transaction.category)) {
-                    categorySet.add(transaction.category);
+            for (const accountId of accountIds) {
+                const transactions = client.getTransactions(accountId);
+                for (const transaction of transactions) {
+                    if (isDefined(transaction.category) && isNotEmptyString(transaction.category)) {
+                        categorySet.add(transaction.category);
+                    }
                 }
             }
-        }
 
-        return [...categorySet];
-    }
+            return [...categorySet];
+        };
+
+        return yield* makeFileSyncService({
+            provider: ExternalSourceEnum.PRIVATBANK,
+            accountType: AccountTypeEnum.BANK_SYNC,
+            // eslint-disable-next-line lingui/no-unlocalized-strings -- brand name
+            generateAccountTitle: account => generateDefaultSyncAccountTitle('Privatbank', account),
+            accountIcon: () => UserIconNameEnum.Landmark,
+            resolveMccCategoryIdMap: Effect.fn('PrivatbankSyncService.resolveMccCategoryIdMap')(function* (
+                client: FileBasedSyncClientInterface,
+                bankAccounts: SyncAccountInterface[]
+            ) {
+                const uniqueCategories = collectUniqueCategories(
+                    client,
+                    bankAccounts.map(account => account.id)
+                );
+
+                return yield* privatbankCategoryMatcherService.match(uniqueCategories);
+            }),
+            parseFile: Effect.fn('PrivatbankSyncService.parseFile')(function* (uri: string) {
+                const buffer = yield* Effect.promise(() => readFileAsUint8Array(uri));
+                const rows = yield* parsePrivatbankXlsx(buffer);
+                const client = new PrivatbankFileClient(rows);
+
+                return { client, bankAccounts: client.getAccounts() };
+            })
+        });
+    })
+}) {
+    static readonly layer = Layer.effect(PrivatbankSyncService, PrivatbankSyncService.make).pipe(
+        Layer.provide([fileSyncDependenciesLayer, PrivatbankCategoryMatcherService.layer])
+    );
 }
-
-export const privatbankSyncService = new PrivatbankSyncService();
-
-export const privatbankSyncQuickImportFromUri = (uri: string) => privatbankSyncService.quickImport(uri);

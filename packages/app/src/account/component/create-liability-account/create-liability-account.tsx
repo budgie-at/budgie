@@ -1,5 +1,6 @@
 // jscpd:ignore-start
 import { AccountTypeEnum, InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
 
@@ -11,12 +12,12 @@ import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
-import { historicalMarketDataLoaderService } from '../../../market-data/service/historical-market-data-loader.service';
+import { HistoricalMarketDataLoaderService } from '../../../market-data/service/historical-market-data-loader.service';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
 import { useAccountForm } from '../../hooks/use-account-form.hook';
-import { accountService } from '../../service/account.service';
+import { AccountService } from '../../service/account.service';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
@@ -55,9 +56,15 @@ export const CreateLiabilityAccount = ({
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useAccountForm(formValues, async values => {
-        const account = await appRuntime.runPromise(accountService.create(values));
+        const account = await appRuntime.runPromise(Effect.flatMap(AccountService, accountService => accountService.create(values)));
 
-        void appRuntime.runPromise(historicalMarketDataLoaderService.enqueueAccounts([account])).catch(emptyFn);
+        void appRuntime
+            .runPromise(
+                Effect.flatMap(HistoricalMarketDataLoaderService, historicalMarketDataLoaderService =>
+                    historicalMarketDataLoaderService.enqueueAccounts([account])
+                )
+            )
+            .catch(emptyFn);
 
         return account;
     });

@@ -1,4 +1,4 @@
-import { AITransactionInterface, findAccountByCurrency } from '@budgie/ai';
+import { AITransactionInterface, EmbeddingSuggestionService, VoiceLlmService, findAccountByCurrency } from '@budgie/ai';
 import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
@@ -10,9 +10,7 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
-import { aiModelResidencyService } from '../service/ai-model-residency.service';
-import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
-import { voiceService } from '../service/voice.service';
+import { AiModelResidencyService } from '../service/ai-model-residency.service';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
@@ -29,9 +27,11 @@ interface UseLlmCategorizationReturnInterface {
 
 const suggestCategoryFor = (description: string, categories: CategoryEntityInterface[]) =>
     isNotEmptyArray(categories)
-        ? Effect.map(
-              embeddingSuggestionService.suggestCategories(categories, description, null, description, '', null),
-              suggestions => suggestions[0] ?? null
+        ? Effect.flatMap(EmbeddingSuggestionService, embeddingSuggestionService =>
+              Effect.map(
+                  embeddingSuggestionService.suggestCategories(categories, description, null, description, '', null),
+                  suggestions => suggestions[0] ?? null
+              )
           )
         : Effect.succeed(null);
 
@@ -40,7 +40,8 @@ const extractAndMapTransactions = Effect.fn('useLlmCategorization.extractAndMapT
     accounts: AccountWithInstrumentEntityInterface[],
     categories: CategoryEntityInterface[]
 ) {
-    const extracted = yield* voiceService.extractTransactions(text);
+    const voiceLlmService = yield* VoiceLlmService;
+    const extracted = yield* voiceLlmService.extractTransactions(text);
 
     if (!isNotEmptyArray(extracted)) {
         // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
@@ -75,10 +76,12 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
         setTransactions([]);
 
         return appRuntime.runPromise(
-            Effect.acquireUseRelease(
-                Effect.forEach(VOICE_SUBSYSTEMS, subsystem => aiModelResidencyService.acquire(subsystem), { concurrency: 'unbounded' }),
-                () => extractAndMapTransactions(text, accounts, categories),
-                () => Effect.forEach(VOICE_SUBSYSTEMS, subsystem => aiModelResidencyService.release(subsystem), { discard: true })
+            Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                Effect.acquireUseRelease(
+                    Effect.forEach(VOICE_SUBSYSTEMS, subsystem => aiModelResidencyService.acquire(subsystem), { concurrency: 'unbounded' }),
+                    () => extractAndMapTransactions(text, accounts, categories),
+                    () => Effect.forEach(VOICE_SUBSYSTEMS, subsystem => aiModelResidencyService.release(subsystem), { discard: true })
+                )
             ).pipe(
                 Effect.tap(results =>
                     Effect.sync(() => {

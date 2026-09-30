@@ -1,5 +1,6 @@
 import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
@@ -11,7 +12,7 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useRuleFormModal } from '../context/rule-form-modal.context';
 import { useGetAllRulesQuery } from '../query/use-get-all-rules.query';
 import { RulesPageSelector } from '../selector/rules-page.selector';
-import { ruleService } from '../service/rule.service';
+import { RuleService } from '../service/rule.service';
 
 export const useRulesListPageActions = () => {
     const { t } = useLingui();
@@ -31,13 +32,13 @@ export const useRulesListPageActions = () => {
     };
 
     const handleDeleteRule = async (id: number) => {
-        await appRuntime.runPromise(ruleService.archiveById(id));
+        await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.archiveById(id)));
         refreshRules();
     };
 
     const handleToggleRule = async (rule: Pick<RuleWithActionsRelationsEntityInterface, 'id'>, enabled: boolean) => {
         try {
-            await appRuntime.runPromise(ruleService.toggleEnabled(rule.id, enabled));
+            await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.toggleEnabled(rule.id, enabled)));
             refreshRules();
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not update rule`, text2: getErrorMessage(error) });

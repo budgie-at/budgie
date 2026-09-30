@@ -1,7 +1,11 @@
+import { BudgetCategoryLimitRepository } from '@budgie/budget';
+import { BudgetCategoryLimitEntityTable } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+
 import { isDefined } from '@rnw-community/shared';
 
-import { budgetCategoryLimitRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
 import type { BudgetCategoryLimitEntityInterface } from '@budgie/contracts';
 
@@ -12,13 +16,18 @@ interface UseGetBudgetCategoryLimitsResult {
 
 const EMPTY_LIMITS: readonly BudgetCategoryLimitEntityInterface[] = [];
 
-export const useGetBudgetCategoryLimitsQuery = (budgetId: number | null): UseGetBudgetCategoryLimitsResult => {
-    const lookupId = budgetId ?? 0;
-    const { data, updatedAt } = useDatabaseLiveQuery(budgetCategoryLimitRepository.findByBudget(lookupId), [lookupId]);
+const budgetCategoryLimitsAtom = databaseQueryFamily(
+    [BudgetCategoryLimitEntityTable],
+    BudgetCategoryLimitRepository,
+    (budgetCategoryLimitRepository, budgetId: number) => budgetCategoryLimitRepository.getByBudget(budgetId)
+);
 
-    if (!isDefined(budgetId) || !isDefined(updatedAt)) {
+export const useGetBudgetCategoryLimitsQuery = (budgetId: number | null): UseGetBudgetCategoryLimitsResult => {
+    const result = useLiveAtomValue(budgetCategoryLimitsAtom(budgetId ?? 0));
+
+    if (!isDefined(budgetId) || AsyncResult.isInitial(result)) {
         return { categoryLimits: EMPTY_LIMITS, isLoading: true };
     }
 
-    return { categoryLimits: data, isLoading: false };
+    return { categoryLimits: AsyncResult.getOrElse(result, () => EMPTY_LIMITS), isLoading: false };
 };

@@ -7,7 +7,7 @@ import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
-import { categorizeInboxService } from '../service/categorize-inbox.service';
+import { CategorizeInboxService } from '../service/categorize-inbox.service';
 
 import { useCategorizeInboxMoveToCash } from './use-categorize-inbox-move-to-cash.hook';
 import { useCategorizeInboxWriteQueue } from './use-categorize-inbox-write-queue.hook';
@@ -36,6 +36,7 @@ export const useCategorizeInboxActions = (
         visibility.hideTransactions(toTransactionIds(assignments));
         enqueueWrite(
             Effect.gen(function* () {
+                const categorizeInboxService = yield* CategorizeInboxService;
                 const applied = yield* categorizeInboxService.assign(strategy.labelKind, assignments);
 
                 if (isNotEmptyArray(applied)) {
@@ -63,6 +64,7 @@ export const useCategorizeInboxActions = (
         visibility.showTransactions(toTransactionIds(write.assignments));
         enqueueWrite(
             Effect.gen(function* () {
+                const categorizeInboxService = yield* CategorizeInboxService;
                 if (isNotEmptyArray(write.followUpAssignments)) {
                     yield* categorizeInboxService.undo(CategorizeInboxLabelKindEnum.TAG, write.followUpAssignments);
                 }
@@ -80,6 +82,7 @@ export const useCategorizeInboxActions = (
         if (isNotEmptyArray(tagIds)) {
             enqueueWrite(
                 Effect.gen(function* () {
+                    const categorizeInboxService = yield* CategorizeInboxService;
                     const followUpAssignments = yield* categorizeInboxService.assign(
                         CategorizeInboxLabelKindEnum.TAG,
                         tagIds.map(labelId => ({ ...write.assignments[0], labelId }))

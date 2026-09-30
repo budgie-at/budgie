@@ -1,90 +1,81 @@
-import { SQL, and, asc, desc, eq, isNull, lte, sql } from 'drizzle-orm';
+import { SQL, and, asc, desc, eq, isNull, lte } from 'drizzle-orm';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
-
-import { isNotEmptyArray } from '@rnw-community/shared';
+import * as Layer from 'effect/Layer';
 
 import { Db } from '../../@generic/service/db.service';
+import { bulkUpsert } from '../../@generic/util/bulk-upsert.util';
 import { HistoricalExchangeRateEntityTable } from '../table/historical-exchange-rate-entity.table';
 
 import type { HistoricalExchangeRateCreateEntityInterface } from '../entity/historical-exchange-rate-create-entity.interface';
 
-export class HistoricalExchangeRateRepository {
-    readonly bulkUpsert = Effect.fn('HistoricalExchangeRateRepository.bulkUpsert')(function* (
-        inputs: HistoricalExchangeRateCreateEntityInterface[]
-    ) {
-        if (!isNotEmptyArray(inputs)) {
-            return;
-        }
+export class HistoricalExchangeRateRepository extends Context.Service<HistoricalExchangeRateRepository>()(
+    '@budgie/contracts/HistoricalExchangeRateRepository',
+    {
+        make: Effect.sync(() => {
+            const buildPairCondition = (sourceInstrumentId: number, targetInstrumentId: number): SQL | undefined =>
+                and(
+                    eq(HistoricalExchangeRateEntityTable.sourceInstrumentId, sourceInstrumentId),
+                    eq(HistoricalExchangeRateEntityTable.targetInstrumentId, targetInstrumentId),
+                    isNull(HistoricalExchangeRateEntityTable.deletedAt)
+                );
 
-        yield* Db.query(db =>
-            db
-                .insert(HistoricalExchangeRateEntityTable)
-                .values(inputs)
-                .onConflictDoUpdate({
-                    target: [
-                        HistoricalExchangeRateEntityTable.sourceInstrumentId,
-                        HistoricalExchangeRateEntityTable.targetInstrumentId,
-                        HistoricalExchangeRateEntityTable.rateDate
-                    ],
-                    set: {
-                        rate: sql`excluded.rate`,
-                        updatedAt: new Date()
-                    }
-                })
-        );
-    });
+            const findFirstRate = (where: SQL | undefined, order: SQL) =>
+                Db.query(db => db.query.HistoricalExchangeRateEntityTable.findFirst({ where, orderBy: order }));
 
-    readonly findForDateOrBefore = Effect.fn('HistoricalExchangeRateRepository.findForDateOrBefore')(function* (
-        this: HistoricalExchangeRateRepository,
-        sourceInstrumentId: number,
-        targetInstrumentId: number,
-        rateDate: string
-    ) {
-        const where = and(
-            this.buildPairCondition(sourceInstrumentId, targetInstrumentId),
-            lte(HistoricalExchangeRateEntityTable.rateDate, rateDate)
-        );
+            return {
+                bulkUpsert: (inputs: HistoricalExchangeRateCreateEntityInterface[]) =>
+                    bulkUpsert(
+                        HistoricalExchangeRateEntityTable,
+                        [
+                            HistoricalExchangeRateEntityTable.sourceInstrumentId,
+                            HistoricalExchangeRateEntityTable.targetInstrumentId,
+                            HistoricalExchangeRateEntityTable.rateDate
+                        ],
+                        inputs,
+                        ['rate']
+                    ),
+                findForDateOrBefore: Effect.fn('HistoricalExchangeRateRepository.findForDateOrBefore')(function* (
+                    sourceInstrumentId: number,
+                    targetInstrumentId: number,
+                    rateDate: string
+                ) {
+                    const where = and(
+                        buildPairCondition(sourceInstrumentId, targetInstrumentId),
+                        lte(HistoricalExchangeRateEntityTable.rateDate, rateDate)
+                    );
 
-        return yield* this.findFirstRate(where, desc(HistoricalExchangeRateEntityTable.rateDate));
-    });
-
-    readonly findEarliest = Effect.fn('HistoricalExchangeRateRepository.findEarliest')(function* (
-        this: HistoricalExchangeRateRepository,
-        sourceInstrumentId: number,
-        targetInstrumentId: number
-    ) {
-        const where = this.buildPairCondition(sourceInstrumentId, targetInstrumentId);
-
-        return yield* this.findFirstRate(where, asc(HistoricalExchangeRateEntityTable.rateDate));
-    });
-
-    private readonly findFirstRate = Effect.fnUntraced(function* (where: SQL | undefined, order: SQL) {
-        return yield* Db.query(db => db.query.HistoricalExchangeRateEntityTable.findFirst({ where, orderBy: order }));
-    });
-
-    readonly upsert = (input: HistoricalExchangeRateCreateEntityInterface) =>
-        Db.query(db =>
-            db
-                .insert(HistoricalExchangeRateEntityTable)
-                .values(input)
-                .onConflictDoUpdate({
-                    target: [
-                        HistoricalExchangeRateEntityTable.sourceInstrumentId,
-                        HistoricalExchangeRateEntityTable.targetInstrumentId,
-                        HistoricalExchangeRateEntityTable.rateDate
-                    ],
-                    set: {
-                        rate: input.rate,
-                        updatedAt: new Date()
-                    }
-                })
-        );
-
-    private buildPairCondition(sourceInstrumentId: number, targetInstrumentId: number): SQL | undefined {
-        return and(
-            eq(HistoricalExchangeRateEntityTable.sourceInstrumentId, sourceInstrumentId),
-            eq(HistoricalExchangeRateEntityTable.targetInstrumentId, targetInstrumentId),
-            isNull(HistoricalExchangeRateEntityTable.deletedAt)
-        );
+                    return yield* findFirstRate(where, desc(HistoricalExchangeRateEntityTable.rateDate));
+                }),
+                findEarliest: Effect.fn('HistoricalExchangeRateRepository.findEarliest')(function* (
+                    sourceInstrumentId: number,
+                    targetInstrumentId: number
+                ) {
+                    return yield* findFirstRate(
+                        buildPairCondition(sourceInstrumentId, targetInstrumentId),
+                        asc(HistoricalExchangeRateEntityTable.rateDate)
+                    );
+                }),
+                upsert: (input: HistoricalExchangeRateCreateEntityInterface) =>
+                    Db.query(db =>
+                        db
+                            .insert(HistoricalExchangeRateEntityTable)
+                            .values(input)
+                            .onConflictDoUpdate({
+                                target: [
+                                    HistoricalExchangeRateEntityTable.sourceInstrumentId,
+                                    HistoricalExchangeRateEntityTable.targetInstrumentId,
+                                    HistoricalExchangeRateEntityTable.rateDate
+                                ],
+                                set: {
+                                    rate: input.rate,
+                                    updatedAt: new Date()
+                                }
+                            })
+                    )
+            };
+        })
     }
+) {
+    static readonly layer = Layer.effect(HistoricalExchangeRateRepository, HistoricalExchangeRateRepository.make);
 }

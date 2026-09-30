@@ -1,6 +1,7 @@
 /* jscpd:ignore-start */
 import { ExpenseTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 
@@ -14,7 +15,7 @@ import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-par
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
-import { transactionService } from '../../../transaction/service/transaction.service';
+import { TransactionService } from '../../../transaction/service/transaction.service';
 import { buildExpenseEntry } from '../../../transaction/utils/build-expense-entry.util';
 /* jscpd:ignore-end */
 
@@ -42,7 +43,8 @@ export default function CreateExpenseTransactionPage() {
     const parsedAmount = isDefined(normalizedAmount) && isPositiveNumber(Number(normalizedAmount)) ? Number(normalizedAmount) : void 0;
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: data => appRuntime.runPromise(transactionService.createInternal(data)),
+        onSubmit: data =>
+            appRuntime.runPromise(Effect.flatMap(TransactionService, transactionService => transactionService.createInternal(data))),
         schema: ExpenseTransactionCreateInputSchema,
         fromAccountId: parsedAccountId ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,

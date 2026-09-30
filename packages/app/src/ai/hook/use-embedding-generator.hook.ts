@@ -1,10 +1,10 @@
+import { TransactionEmbeddingRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { embeddingProgressStore } from '../store/embedding-progress.store';
+import { EmbeddingProgressStore } from '../store/embedding-progress.store';
 
 interface UseEmbeddingGeneratorReturnInterface {
     readonly markForEmbedding: (transactionId: number) => void;
@@ -20,7 +20,15 @@ export const useEmbeddingGenerator = (): UseEmbeddingGeneratorReturnInterface =>
         }
 
         appRuntime.runFork(
-            Effect.ignore(Effect.andThen(transactionRepository.markForEmbeddingByIds(ids), embeddingProgressStore.refresh()))
+            Effect.ignore(
+                Effect.gen(function* () {
+                    const transactionEmbeddingRepository = yield* TransactionEmbeddingRepository;
+                    const embeddingProgressStore = yield* EmbeddingProgressStore;
+
+                    yield* transactionEmbeddingRepository.markForEmbeddingByIds(ids);
+                    yield* embeddingProgressStore.refresh();
+                })
+            )
         );
     };
 

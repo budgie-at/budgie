@@ -1,17 +1,22 @@
-import { DEFAULT_TRANSACTION_FILTER } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, TransactionViewRepository } from '@budgie/contracts';
 
-import { transactionRepository } from '../../@generic/drizzle/db/db';
-import { useSetting } from '../../settings/hook/use-setting.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
 import { buildTransactionFilterKey } from '../utils/build-transaction-filter-key.util';
 
 import { useGetTransactionSectionsQuery } from './use-get-transaction-sections.query';
 
-import type { TransactionFilterInterface } from '@budgie/contracts';
+import type { LanguageEnum, TransactionFilterInterface } from '@budgie/contracts';
 
-export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) => {
-    const language = useSetting('language');
-    const filterKey = `${buildTransactionFilterKey(filters)}|${language}`;
-    const buildQuery = (limit: number) => transactionRepository.getAll(limit, filters ?? DEFAULT_TRANSACTION_FILTER, language);
+const transactionsAtom = databaseQueryFamily(
+    TRANSACTION_LIST_TABLES,
+    TransactionViewRepository,
+    (transactionViewRepository, [filters, language, limit]: readonly [TransactionFilterInterface, LanguageEnum, number]) =>
+        transactionViewRepository.getAll(limit, filters, language)
+);
 
-    return useGetTransactionSectionsQuery(buildQuery, filterKey);
-};
+export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) =>
+    useGetTransactionSectionsQuery(
+        (limit, language) => transactionsAtom([filters ?? DEFAULT_TRANSACTION_FILTER, language, limit]),
+        buildTransactionFilterKey(filters)
+    );

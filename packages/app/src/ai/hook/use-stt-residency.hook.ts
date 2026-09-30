@@ -5,9 +5,11 @@ import { useEffect, useRef } from 'react';
 import { isDefined } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
+import { sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
-import { aiModelResidencyService } from '../service/ai-model-residency.service';
-import { sttService } from '../service/stt.service';
+import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
+import { AiModelResidencyService } from '../service/ai-model-residency.service';
 
 interface UseSttResidencyReturn {
     readonly acquireSttResidency: () => Promise<boolean>;
@@ -18,15 +20,25 @@ export const useSttResidency = (): UseSttResidencyReturn => {
     const acquireFiberRef = useRef<Fiber.Fiber<boolean> | null>(null);
 
     const acquireSttResidency = (): Promise<boolean> => {
-        acquireFiberRef.current ??= appRuntime.runFork(aiModelResidencyService.acquire(AiSubsystemNameEnum.STT));
+        acquireFiberRef.current ??= appRuntime.runFork(
+            Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.acquire(AiSubsystemNameEnum.STT))
+        );
 
-        return appRuntime.runPromise(Fiber.join(acquireFiberRef.current).pipe(Effect.map(() => sttService.isReady)));
+        return appRuntime.runPromise(
+            Fiber.join(acquireFiberRef.current).pipe(
+                Effect.map(() => aiAtomRegistry.get(sttSnapshotAtom).status === AiSubsystemStatusEnum.READY)
+            )
+        );
     };
 
     const releaseSttResidency = (): void => {
         if (isDefined(acquireFiberRef.current)) {
             acquireFiberRef.current = null;
-            appRuntime.runFork(aiModelResidencyService.releaseNow(AiSubsystemNameEnum.STT));
+            appRuntime.runFork(
+                Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                    aiModelResidencyService.releaseNow(AiSubsystemNameEnum.STT)
+                )
+            );
         }
     };
 

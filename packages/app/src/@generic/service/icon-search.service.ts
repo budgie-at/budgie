@@ -1,7 +1,7 @@
 import { isEmojiIcon, isUserIcon } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { normalizeIconSearchText } from '../utils/normalize-icon-search-text.util';
 
@@ -17,21 +17,13 @@ class IconSearchService {
     private static readonly MIN_SUBSTRING_LENGTH = 3;
     private static readonly STEM_TRIM_DIVISOR = 3;
 
-    entries: readonly IconSearchEntryInterface[] = [];
-
     readonly load = Effect.fn('IconSearchService.load')(function* (this: IconSearchService) {
-        if (isNotEmptyArray(this.entries)) {
-            return this.entries;
-        }
-
         const { default: index } = yield* Effect.tryPromise(() => import('../constant/icon-search-index.json'));
         const translations: Record<string, string> = index.translations;
 
-        this.entries = index.icons.flatMap(([icon, keywords]) =>
+        return index.icons.flatMap(([icon, keywords]) =>
             isUserIcon(icon) && isNotEmptyString(keywords) ? [this.createEntry(icon, keywords, translations)] : []
         );
-
-        return this.entries;
     });
 
     rank(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): IconSearchEntryInterface[] {

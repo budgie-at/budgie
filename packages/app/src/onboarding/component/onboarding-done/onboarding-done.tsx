@@ -15,7 +15,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useGetBankIntegrationCountQuery } from '../../../sync/query/use-get-bank-integration-count.query';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
-import { onboardingService } from '../../service/onboarding.service';
+import { OnboardingService } from '../../service/onboarding.service';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 import { OnboardingSuccessRow } from '../onboarding-success-row/onboarding-success-row';
 
@@ -31,7 +31,13 @@ export const OnboardingDone = () => {
     const { defaultInstrument } = useSettingsContext();
 
     const handlePrimary = () => {
-        appRuntime.runFork(logAndContinue(onboardingService.complete().pipe(Effect.map(() => void router.replace('/')))));
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete()).pipe(
+                    Effect.map(() => void router.replace('/'))
+                )
+            )
+        );
     };
 
     const checklistItems = [

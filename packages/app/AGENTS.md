@@ -48,9 +48,9 @@ src/
 
 ## Code Quality Rules (from PR reviews)
 
-### Use `useDatabaseLiveQuery` for database-backed UI
+### Live database reads are atoms
 
-Import `useDatabaseLiveQuery` from `src/@generic/hook/use-database-live-query.hook` instead of importing Drizzle's `useLiveQuery` directly. The wrapper wires `databaseRefreshService.notifyChanged()` into every live query, so database imports refresh visible screens without duplicated hook dependencies.
+Database-backed UI reads use `databaseQueryAtom([Tables...], Effect.flatMap(Repo, repo => repo.x(args)))` (`src/@generic/utils/database-query-atom.util.ts`), or `databaseQueryFamily([Tables...], Repo, (repo, key) => repo.x(key))` (`database-query-family.util.ts`) when parametrised, and read with `useLiveAtomValue`. Never import Drizzle's `useLiveQuery`. List every table the SQL reads; the expo change listener invalidates them after each write.
 
 ### Use `isDefined` for null checks in context hooks
 
@@ -534,41 +534,32 @@ pnpm i18n:sync
 
 ## Data Layer
 
-### Repository Singletons
+### Services and repositories
 
-Import from `@generic/drizzle/db/db.ts`:
+Every repository and stateful or dependent service is a `Context.Service` with a `static readonly layer` (see `src/tag/**`). Dependencies are resolved once in `make` with `yield* X`; every layer is listed in `src/@generic/runtime/app-services.layer.ts`. Edges call them through the runtime:
 
 ```typescript
-import { accountRepository, transactionRepository } from '../@generic/drizzle/db/db';
+await appRuntime.runPromise(Effect.flatMap(TagService, tagService => tagService.mergeInto(id, targetTagId)));
 ```
 
 ### Live Queries
 
-Use `useDatabaseLiveQuery` with a plain repository builder for reactive data:
-
 ```typescript
-const { data, error, updatedAt } = useDatabaseLiveQuery(accountRepository.findById(id), [id]);
+const accountAtom = databaseQueryFamily([AccountEntityTable], AccountRepository, (accountRepository, id: number) =>
+    accountRepository.findById(id)
+);
+const result = useLiveAtomValue(accountAtom(id));
 ```
 
-**Deps must be primitive-stable.** Passing an object literal (e.g. a `filters` prop reconstructed each render) makes the dep change every render, which re-runs the query and returns a new `data` array reference each render. Downstream consumers like `LegendList` see a new `sections` reference every render and their internal reconciliation (`state.props.data`, `totalSize`, `isEndReached`) silently breaks — pages "load" but the scroll boundary doesn't grow.
-
-```typescript
-// Bad — filters is a fresh object each render → query re-runs every render
-useDatabaseLiveQuery(repo.find(filters, limit), [limit, filters]);
-
-// Good — derive a stable key (string or primitive) from filters
-const filterKey = JSON.stringify(filters); // or a dedicated buildXxxFilterKey util
-useDatabaseLiveQuery(repo.find(filters, limit), [limit, filterKey]);
-```
-
-If a filter shape exists in `@budgie/contracts` and is paginated, prefer adding a `buildXxxFilterKey` util alongside it (mirrors `buildTransactionFilterKey`) so callers can't forget.
+Family keys are structural, so pass filter objects directly.
 
 ### Effects and transactions
 
-- Service IO methods are `Effect.fn('Owner.method')` fields. Run executed builders with `Db.query(() => repo.builder(args))` and atomic work with `Db.transaction(effect)`; nested transactions reuse the outer one, so there are no `tx` parameters.
-- Top-level writes pass `invalidateDatabaseLiveQuery` (`@generic/drizzle/utils`) as the last `Effect.fn` argument.
+- Service IO methods are `Effect.fn('Owner.method')` fields in the object returned by `make`. Repository methods are Effects over `Db.query(db => builder)`; atomic work uses `Db.transaction(effect)`; nested transactions reuse the outer one, so there are no `tx` parameters.
+- Writes carry no reactivity keys: the expo change listener (`databaseChangeReactivityLayer`) invalidates the changed tables after each transaction. Only writes it cannot see (virtual tables, `WITHOUT ROWID`, truncate-optimised deletes) use `Reactivity.mutation([tableName], effect)`.
+- Long-lived fibers owned by a service are forked in `make` (`Effect.forkScoped`, `FiberSet`), never with `appRuntime.runFork` inside a service.
 - Resources that must close on failure (temp SQLite handles, attached databases) use `Effect.acquireUseRelease` / `Effect.ensuring`.
-- `appRuntime` (`@generic/runtime/app.runtime.ts`) provides `Db`, `HttpClient`, the logger layer and `Workload`. HTTP calls use `HttpClient` with `retryTransient` + `Schedule`, a per-attempt `Effect.timeout` and `HttpClientResponse.schemaBodyJson`.
+- `appRuntime` (`@generic/runtime/app.runtime.ts`) provides `Db`, `HttpClient`, the logger layer, `Reactivity` and every service layer. HTTP calls use `HttpClient` with `retryTransient` + `Schedule`, a per-attempt `Effect.timeout` and `HttpClientResponse.schemaBodyJson`.
 
 ### Drizzle ORM
 
@@ -672,7 +663,9 @@ Run effects at the edge with `appRuntime.runPromise` / `appRuntime.runFork`, def
 useEffect(() => {
     if (!isReady) return;
     setStatus('loading');
-    const fiber = appRuntime.runFork(suggestService.suggest(id).pipe(Effect.tapCause(Effect.logError)));
+    const fiber = appRuntime.runFork(
+        Effect.flatMap(SuggestService, suggestService => suggestService.suggest(id)).pipe(Effect.tapCause(Effect.logError))
+    );
 
     return () => void appRuntime.runPromise(Fiber.interrupt(fiber));
 }, [isReady]);

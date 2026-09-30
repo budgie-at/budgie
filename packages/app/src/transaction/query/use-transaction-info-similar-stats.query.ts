@@ -1,4 +1,4 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionViewRepository, TransactionTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -6,7 +6,6 @@ import * as Atom from 'effect/reactivity/Atom';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
@@ -91,9 +90,9 @@ const fillSimilarStatsMonths = (stats: SimilarTransactionStatsInterface, operate
 const similarStatsAtom = Atom.family((query: SimilarTransactionStatsQueryInterface | null) =>
     appAtomRuntime.atom(
         isDefined(query)
-            ? transactionRepository
-                  .findSimilarStats(query)
-                  .pipe(Effect.map(result => (isDefined(result) ? fillSimilarStatsMonths(result, query.operatedAt) : null)))
+            ? Effect.flatMap(TransactionViewRepository, transactionViewRepository =>
+                  transactionViewRepository.findSimilarStats(query)
+              ).pipe(Effect.map(result => (isDefined(result) ? fillSimilarStatsMonths(result, query.operatedAt) : null)))
             : Effect.succeed(null)
     )
 );

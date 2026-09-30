@@ -8,7 +8,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
-import { syncRepairService } from '../../sync/service/sync-repair.service';
+import { SyncRepairService } from '../../sync/service/sync-repair.service';
 
 export const useSyncRepairsAction = (refresh: () => void) => {
     const { t } = useLingui();
@@ -49,7 +49,7 @@ export const useSyncRepairsAction = (refresh: () => void) => {
         setIsRepairing(true);
 
         appRuntime.runFork(
-            syncRepairService.removeDuplicates().pipe(
+            Effect.flatMap(SyncRepairService, syncRepairService => syncRepairService.removeDuplicates()).pipe(
                 Effect.match({
                     onSuccess: result => void handleRepairSuccess(result.repairedTransactionCount),
                     onFailure: handleRepairError

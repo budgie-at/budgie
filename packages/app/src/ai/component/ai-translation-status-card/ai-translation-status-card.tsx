@@ -1,15 +1,18 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { aiTranslationStatusService } from '../../service/ai-translation-status.service';
+import { aiTranslationStatusAtom } from '../../constant/ai-translation-status-atom.constant';
+import { AiTranslationStatusService } from '../../service/ai-translation-status.service';
 import { AiSubsystemCard } from '../ai-subsystem-card/ai-subsystem-card';
 
-const handleRebuild = () => appRuntime.runPromise(aiTranslationStatusService.rebuild());
+const handleRebuild = () =>
+    appRuntime.runPromise(Effect.flatMap(AiTranslationStatusService, aiTranslationStatusService => aiTranslationStatusService.rebuild()));
 
 export const AiTranslationStatusCard = () => {
-    const snapshot = useAtomValue(aiTranslationStatusService.snapshot);
+    const snapshot = useAtomValue(aiTranslationStatusAtom);
     const { t } = useLingui();
 
     return (

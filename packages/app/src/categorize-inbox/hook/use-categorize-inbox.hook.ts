@@ -1,10 +1,10 @@
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
-import { buildTransactionFilterKey } from '../../transaction/utils/build-transaction-filter-key.util';
 import { CategorizeInboxSectionEnum } from '../enum/categorize-inbox-section.enum';
 import { categorizeInboxEngineService } from '../service/categorize-inbox-engine.service';
 
@@ -12,7 +12,9 @@ import type { CategorizeInboxDataInterface } from '../interface/categorize-inbox
 import type { CategorizeInboxSessionInterface } from '../interface/categorize-inbox-session.interface';
 import type { CategorizeInboxStrategyInterface } from '../interface/categorize-inbox-strategy.interface';
 import type { CategorizeInboxVisibilityInterface } from '../interface/categorize-inbox-visibility.interface';
-import type { CategorizeInboxRowInterface, TransactionFilterInterface } from '@budgie/contracts';
+import type { CategorizeInboxRowInterface, LabelEvidenceRowInterface, TransactionFilterInterface } from '@budgie/contracts';
+
+const EMPTY_INBOX: [CategorizeInboxRowInterface[], LabelEvidenceRowInterface[]] = [[], []];
 
 const keepPresentTransactionIds = (transactionIds: Set<number>, rows: CategorizeInboxRowInterface[]): Set<number> => {
     const presentTransactionIds = new Set(rows.map(row => row.transactionId));
@@ -23,11 +25,11 @@ const keepPresentTransactionIds = (transactionIds: Set<number>, rows: Categorize
 
 export const useCategorizeInbox = (
     filters: TransactionFilterInterface,
-    { findRows, findEvidence }: Pick<CategorizeInboxStrategyInterface, 'findRows' | 'findEvidence'>
+    { rowsAtom, evidenceAtom }: Pick<CategorizeInboxStrategyInterface, 'rowsAtom' | 'evidenceAtom'>
 ): CategorizeInboxDataInterface => {
     const { defaultInstrument } = useSettingsContext();
-    const { data: rows, updatedAt: rowsUpdatedAt } = useDatabaseLiveQuery(findRows(filters), [buildTransactionFilterKey(filters)]);
-    const { data: evidence, updatedAt: evidenceUpdatedAt } = useDatabaseLiveQuery(findEvidence());
+    const inboxResult = AsyncResult.all([useLiveAtomValue(rowsAtom(filters)), useLiveAtomValue(evidenceAtom)]);
+    const [rows, evidence] = AsyncResult.getOrElse(inboxResult, () => EMPTY_INBOX);
     const [session, setSession] = useState<CategorizeInboxSessionInterface>({
         placements: new Map(),
         clustersByKey: new Map(),
@@ -59,7 +61,7 @@ export const useCategorizeInbox = (
                 hidden: new Set([...previous.hidden].filter(transactionId => !transactionIds.includes(transactionId)))
             }))
     };
-    const isLoading = !isDefined(rowsUpdatedAt) || !isDefined(evidenceUpdatedAt);
+    const isLoading = AsyncResult.isInitial(inboxResult);
     const { items, remainingCount, placements, clustersByKey } = categorizeInboxEngineService.placeClusters(
         categorizeInboxEngineService.buildClusters(rows, categorizeInboxEngineService.buildContext(evidence, defaultInstrument.id)),
         session,

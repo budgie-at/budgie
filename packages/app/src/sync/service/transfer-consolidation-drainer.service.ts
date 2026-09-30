@@ -1,82 +1,78 @@
 import { consolidationScopeService } from '@budgie/consolidation';
+import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+import * as Ref from 'effect/Ref';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Workload } from '../../@generic/service/workload.service';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 
-import { transferConsolidationService } from './transfer-consolidation.service';
+import { TransferConsolidationService } from './transfer-consolidation.service';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
-class TransferConsolidationDrainerService {
-    private static readonly SCHEDULE_KEY = 'transfer-consolidation-drain';
-    private static readonly DRAIN_DELAY = Duration.seconds(1.5);
-
-    readonly enqueue = Effect.fn('TransferConsolidationDrainerService.enqueue')(function* (
-        this: TransferConsolidationDrainerService,
-        scope: ConsolidationScanScopeInterface | null = null
-    ) {
-        this.addPendingScope(scope);
-        this.hasPendingRun = true;
-        const workload = yield* Workload;
-        yield* workload.schedule(TransferConsolidationDrainerService.SCHEDULE_KEY, this.drain());
-    });
-
-    readonly cancelPending = Effect.fn('TransferConsolidationDrainerService.cancelPending')(
-        function* (this: TransferConsolidationDrainerService) {
-            this.takePendingScope();
+export class TransferConsolidationDrainerService extends Context.Service<TransferConsolidationDrainerService>()(
+    '@budgie/app/TransferConsolidationDrainerService',
+    {
+        make: Effect.gen(function* () {
             const workload = yield* Workload;
-            yield* workload.cancelScheduled(TransferConsolidationDrainerService.SCHEDULE_KEY);
-        }
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const scheduleKey = 'transfer-consolidation-drain';
+            const drainDelay = Duration.seconds(1.5);
+            const hasPendingRun = yield* Ref.make(false);
+            const pendingScope = yield* Ref.make<ConsolidationScanScopeInterface | null>(null);
+            const takePendingScope = Effect.andThen(Ref.set(hasPendingRun, false), Ref.getAndSet(pendingScope, null));
+
+            const addPendingScope = Effect.fnUntraced(function* (scope: ConsolidationScanScopeInterface | null) {
+                if (!(yield* Ref.get(hasPendingRun))) {
+                    yield* Ref.set(pendingScope, scope);
+
+                    return;
+                }
+
+                if (!isDefined(scope)) {
+                    yield* Ref.set(pendingScope, null);
+
+                    return;
+                }
+
+                yield* Ref.update(pendingScope, currentScope =>
+                    isDefined(currentScope) ? consolidationScopeService.merge(currentScope, scope) : currentScope
+                );
+            });
+
+            const drain = Effect.fn('TransferConsolidationDrainerService.drain')(function* () {
+                while (yield* Ref.get(hasPendingRun)) {
+                    yield* Effect.sleep(drainDelay);
+                    yield* workload.awaitForegroundIdle;
+                    yield* waitForIdle;
+                    const scope = yield* takePendingScope;
+                    yield* Effect.yieldNow;
+                    yield* Effect.exit(workload.run(transferConsolidationService.consolidate(scope)));
+                    yield* Effect.yieldNow;
+                }
+            });
+
+            return {
+                enqueue: Effect.fn('TransferConsolidationDrainerService.enqueue')(function* (
+                    scope: ConsolidationScanScopeInterface | null = null
+                ) {
+                    yield* addPendingScope(scope);
+                    yield* Ref.set(hasPendingRun, true);
+                    yield* workload.schedule(scheduleKey, drain());
+                }),
+                cancelPending: Effect.fn('TransferConsolidationDrainerService.cancelPending')(function* () {
+                    yield* takePendingScope;
+                    yield* workload.cancelScheduled(scheduleKey);
+                })
+            };
+        })
+    }
+) {
+    static readonly layer = Layer.effect(TransferConsolidationDrainerService, TransferConsolidationDrainerService.make).pipe(
+        Layer.provide([Workload.layer, TransferConsolidationService.layer])
     );
-
-    private readonly drain = Effect.fn('TransferConsolidationDrainerService.drain')(function* (this: TransferConsolidationDrainerService) {
-        const workload = yield* Workload;
-
-        while (this.hasPendingRun) {
-            yield* Effect.sleep(TransferConsolidationDrainerService.DRAIN_DELAY);
-            yield* workload.awaitForegroundIdle;
-            yield* waitForIdle;
-            const scope = this.takePendingScope();
-            yield* Effect.yieldNow;
-            yield* Effect.exit(workload.run(transferConsolidationService.consolidate(scope)));
-            yield* Effect.yieldNow;
-        }
-    });
-
-    private hasPendingRun = false;
-    private pendingScope: ConsolidationScanScopeInterface | null = null;
-
-    private takePendingScope(): ConsolidationScanScopeInterface | null {
-        const scope = this.pendingScope;
-        this.hasPendingRun = false;
-        this.pendingScope = null;
-
-        return scope;
-    }
-
-    private addPendingScope(scope: ConsolidationScanScopeInterface | null): void {
-        if (!this.hasPendingRun) {
-            this.pendingScope = scope;
-
-            return;
-        }
-
-        if (!isDefined(scope)) {
-            this.pendingScope = null;
-
-            return;
-        }
-
-        if (!isDefined(this.pendingScope)) {
-            return;
-        }
-
-        this.pendingScope = consolidationScopeService.merge(this.pendingScope, scope);
-    }
 }
-
-export const transferConsolidationDrainerService = new TransferConsolidationDrainerService();

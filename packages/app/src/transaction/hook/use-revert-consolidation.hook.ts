@@ -1,11 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
-import Toast from 'react-native-toast-message';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
-import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { transactionService } from '../service/transaction.service';
+import { runConfirmedTransactionAction } from '../utils/run-confirmed-transaction-action.util';
 
 import type { EmptyFn } from '@rnw-community/shared';
 
@@ -13,27 +8,20 @@ export const useRevertConsolidation = (transactionId: number, onSuccess?: EmptyF
     const { t } = useLingui();
 
     const revertConsolidationAsync = async () => {
-        const confirmed = await confirmAlert({
-            title: t`Revert consolidation?`,
-            message: t`This will restore the original transactions and remove the consolidated transaction.`,
-            confirmText: t`Revert`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
+        const isReverted = await runConfirmedTransactionAction(
+            {
+                title: t`Revert consolidation?`,
+                message: t`This will restore the original transactions and remove the consolidated transaction.`,
+                confirmText: t`Revert`,
+                cancelText: t`Cancel`,
+                isDestructive: true
+            },
+            t`Could not revert consolidation.`,
+            transactionService => transactionService.unconsolidateById(transactionId)
+        );
 
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            await appRuntime.runPromise(transactionService.unconsolidateById(transactionId));
+        if (isReverted) {
             onSuccess?.();
-        } catch (error: unknown) {
-            Toast.show({
-                type: 'error',
-                text1: t`Could not revert consolidation.`,
-                text2: getErrorMessage(error)
-            });
         }
     };
 

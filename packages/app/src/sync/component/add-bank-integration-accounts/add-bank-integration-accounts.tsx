@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 
@@ -13,7 +14,7 @@ import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
 import { useAccountSelection } from '../../hook/use-account-selection.hook';
-import { monobankSyncService } from '../../service/monobank-sync.service';
+import { MonobankSyncService } from '../../service/monobank-sync.service';
 import { AddBankIntegrationAccountsContent } from '../add-bank-integration-accounts-content/add-bank-integration-accounts-content';
 import { SyncHistoryDepthStep } from '../sync-history-depth-step/sync-history-depth-step';
 
@@ -46,7 +47,11 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
     const handleConfirm = async (): Promise<void> => {
         setIsSubmitting(true);
         try {
-            await appRuntime.runPromise(monobankSyncService.setupAccountSyncBatch(integration.token, [...selectedAccounts], historyDepth));
+            await appRuntime.runPromise(
+                Effect.flatMap(MonobankSyncService, monobankSyncService =>
+                    monobankSyncService.setupAccountSyncBatch(integration.token, [...selectedAccounts], historyDepth)
+                )
+            );
             goBackOrReplace(`/bank-integration/${integration.id}`);
         } catch (error) {
             showErrorToast(t`Could not add accounts`, getErrorMessage(error));
@@ -104,7 +109,9 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
             setIsLoading(true);
             setFetchErrorMessage(null);
             try {
-                const previews = await appRuntime.runPromise(monobankSyncService.fetchAccountsPreview(integration.token));
+                const previews = await appRuntime.runPromise(
+                    Effect.flatMap(MonobankSyncService, monobankSyncService => monobankSyncService.fetchAccountsPreview(integration.token))
+                );
                 setPreviewsRef.current(previews.filter(preview => !isDefined(preview.existingAccountId)));
             } catch (error) {
                 setFetchErrorMessage(getErrorMessage(error));

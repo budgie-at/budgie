@@ -1,4 +1,4 @@
-import { Db, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { TransactionConsolidationRepository, TransactionEntryTypeEnum, TransactionViewRepository } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -6,7 +6,6 @@ import * as Atom from 'effect/reactivity/Atom';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { transactionRepository } from '../../@generic/drizzle/db/db';
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
@@ -34,19 +33,22 @@ const orderSourcesByTransferChain = (rows: ConsolidationSourceRowInterface[]): C
 
 const consolidationSourcesAtom = Atom.family(([transactionId, language]: readonly [number, LanguageEnum]) =>
     appAtomRuntime.atom(
-        Effect.all(
-            [
-                transactionRepository.findConsolidationSources(transactionId, language),
-                Db.query(() => transactionRepository.getById(transactionId, language))
-            ],
-            { concurrency: 'unbounded' }
-        ).pipe(
-            Effect.map(([rows, canonical]) => ({
+        Effect.gen(function* () {
+            const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
+            const transactionViewRepository = yield* TransactionViewRepository;
+            const [rows, canonical] = yield* Effect.all(
+                [
+                    transactionConsolidationRepository.findConsolidationSources(transactionId, language),
+                    transactionViewRepository.getById(transactionId, language)
+                ],
+                { concurrency: 'unbounded' }
+            );
+
+            return {
                 sources: orderSourcesByTransferChain(rows),
                 consolidationType: canonical?.consolidationType ?? null
-            })),
-            Effect.tapCause(Effect.logError)
-        )
+            };
+        }).pipe(Effect.tapCause(Effect.logError))
     )
 );
 

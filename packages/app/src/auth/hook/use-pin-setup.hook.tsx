@@ -3,11 +3,12 @@ import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { authenticateWithBiometricsEffect } from '../constant/authenticate-with-biometrics-effect.constant';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
 import { PinSetupModeEnum } from '../enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../enum/pin-setup-step.enum';
-import { authService } from '../service/auth.service';
+import { AuthService } from '../service/auth.service';
 
 import type { MessageDescriptor } from '@lingui/core';
 
@@ -42,7 +43,7 @@ export const usePinSetup = ({ mode }: Params) => {
 
     const verifyOldPin = async (pin: string): Promise<boolean> => {
         const isCorrect = await appRuntime.runPromise(
-            authService.verifyPin(pin).pipe(
+            Effect.flatMap(AuthService, authService => authService.verifyPin(pin)).pipe(
                 Effect.tapError(Effect.logError),
                 Effect.orElseSucceed(() => false)
             )
@@ -66,7 +67,7 @@ export const usePinSetup = ({ mode }: Params) => {
         }
 
         if (mode === PinSetupModeEnum.DISABLE) {
-            await appRuntime.runPromise(authService.deletePin());
+            await appRuntime.runPromise(Effect.flatMap(AuthService, authService => authService.deletePin()));
 
             return;
         }
@@ -86,7 +87,7 @@ export const usePinSetup = ({ mode }: Params) => {
 
         try {
             if (isBiometricEnabled && isSomeAvailable) {
-                const success = await appRuntime.runPromise(authService.authenticateWithBiometrics());
+                const success = await appRuntime.runPromise(authenticateWithBiometricsEffect);
 
                 if (!success) {
                     throw new Error();
@@ -94,9 +95,11 @@ export const usePinSetup = ({ mode }: Params) => {
             }
 
             if (mode === PinSetupModeEnum.CHANGE) {
-                await appRuntime.runPromise(authService.changePin(tempNewPin));
+                await appRuntime.runPromise(Effect.flatMap(AuthService, authService => authService.changePin(tempNewPin)));
             } else {
-                await appRuntime.runPromise(authService.createPin(tempNewPin, isBiometricEnabled));
+                await appRuntime.runPromise(
+                    Effect.flatMap(AuthService, authService => authService.createPin(tempNewPin, isBiometricEnabled))
+                );
             }
         } catch {
             setError(msg`Failed to save PIN. Please try again.`);
@@ -160,6 +163,9 @@ export const usePinSetup = ({ mode }: Params) => {
         state: { mode, step, input, error, isLoading },
         addDigit,
         deleteDigit,
-        saveAndContinue: mode === PinSetupModeEnum.DISABLE ? () => appRuntime.runPromise(authService.deletePin()) : savePinAndContinue
+        saveAndContinue:
+            mode === PinSetupModeEnum.DISABLE
+                ? () => appRuntime.runPromise(Effect.flatMap(AuthService, authService => authService.deletePin()))
+                : savePinAndContinue
     };
 };

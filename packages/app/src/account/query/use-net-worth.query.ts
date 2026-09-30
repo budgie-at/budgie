@@ -1,19 +1,22 @@
-import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
-import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { AccountBalanceRepository } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+import { useSettingsContext } from '../../settings/context/settings.context';
+import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';
+
 import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
+
+const netWorthAtom = databaseQueryFamily(
+    ACCOUNT_CONVERTED_BALANCE_TABLES,
+    AccountBalanceRepository,
+    (accountBalanceRepository, defaultInstrumentId: number) => accountBalanceRepository.getNetWorth(defaultInstrumentId)
+);
 
 export const useNetWorthQuery = () => {
     const { defaultInstrument } = useSettingsContext();
-    const defaultInstrumentId = defaultInstrument.id;
-    const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
-    const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
-    const queryDependencies = [defaultInstrumentId, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
-    const query = accountBalanceRepository.getNetWorth(defaultInstrumentId);
-    const { data } = useDatabaseLiveQuery(query, queryDependencies);
+    const result = useLiveAtomValue(netWorthAtom(defaultInstrument.id));
 
-    return useCachedMicroUnitQuery(data.at(0)?.netWorth);
+    return useCachedMicroUnitQuery(AsyncResult.getOrElse(result, () => []).at(0)?.netWorth);
 };

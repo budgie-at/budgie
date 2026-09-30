@@ -1,14 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SyncHistoryDepthEnum } from '../../enum/sync-history-depth.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
-import { monobankSyncService } from '../../service/monobank-sync.service';
+import { MonobankSyncService } from '../../service/monobank-sync.service';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
 import { SyncHistoryDepthStep } from '../sync-history-depth-step/sync-history-depth-step';
@@ -36,12 +35,12 @@ export const CreateMonobankAccount = () => {
         selectAllAccounts,
         deselectAllAccounts,
         isLoading,
-        setIsLoading,
+        fetchAccountPreviews,
         handleGoBack,
         handleSetupSync,
         isStartSyncDisabled
-    } = useSyncAccountSetupFlow(selectedAccountIds =>
-        appRuntime.runPromise(monobankSyncService.setupAccountSyncBatch(token.trim(), selectedAccountIds, historyDepth))
+    } = useSyncAccountSetupFlow(MonobankSyncService, (monobankSyncService, selectedAccountIds) =>
+        monobankSyncService.setupAccountSyncBatch(token.trim(), selectedAccountIds, historyDepth)
     );
 
     const handleFetchAccounts = async () => {
@@ -53,16 +52,13 @@ export const CreateMonobankAccount = () => {
             return;
         }
 
-        setIsLoading(true);
-        try {
-            const previews = await appRuntime.runPromise(monobankSyncService.fetchAccountsPreview(trimmedToken));
-            setPreviews(previews);
-            setStep('accounts');
-        } catch (error) {
-            showErrorToast(t`Could not fetch accounts`, getErrorMessage(error));
-        } finally {
-            setIsLoading(false);
-        }
+        await fetchAccountPreviews(
+            monobankSyncService => monobankSyncService.fetchAccountsPreview(trimmedToken),
+            previews => {
+                setPreviews(previews);
+                setStep('accounts');
+            }
+        );
     };
 
     const handleContinueToHistory = () => {

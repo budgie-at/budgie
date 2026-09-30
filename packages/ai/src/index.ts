@@ -1,6 +1,8 @@
 export type { GenerateOptionsInterface } from './@generic/interface/generate-options.interface';
 export type { ChatInvokerInterface } from './chat/interface/chat-invoker.interface';
+export { ChatInvoker } from './chat/service/chat-invoker.service';
 export type { EmbeddingInvokerInterface } from './embedding/interface/embedding-invoker.interface';
+export { EmbeddingInvoker } from './embedding/service/embedding-invoker.service';
 
 export {
     EMBEDDING_CATEGORY_SUGGESTION_LIMIT,

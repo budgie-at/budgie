@@ -13,12 +13,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. js-lingui-explicit-id
-#: src/sync/service/consolidation-coordinator.service.ts
+#: src/sync/layer/consolidation-coordinator.layer.ts
 msgid "Binance P2P buy {assetCode}"
 msgstr "Binance P2P-Kauf von {assetCode}"
 
 #. js-lingui-explicit-id
-#: src/sync/service/consolidation-coordinator.service.ts
+#: src/sync/layer/consolidation-coordinator.layer.ts
 msgid "Binance P2P sell {assetCode}"
 msgstr "Binance P2P-Verkauf von {assetCode}"
 
@@ -117,7 +117,7 @@ msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Dieser Tag hat # Transaktion. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen wird.} other {Dieser Tag hat # Transaktionen. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen werden.}}"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {# Tag übrig} other {# Tage übrig}}"
 
@@ -220,7 +220,7 @@ msgstr "{similarCount, plural, one {# ähnliche Transaktion} other {# ähnliche 
 msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{skippedCount, plural, one {# übersprungen} other {# übersprungen}}"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "{source} error · {message}"
 msgstr "{source}-Fehler · {message}"
 
@@ -241,7 +241,7 @@ msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
 msgstr "+{formattedNet} / Mon."
 
@@ -258,7 +258,7 @@ msgid ">"
 msgstr ">"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} Mon."
 
@@ -340,7 +340,7 @@ msgid "Account Name & Icon"
 msgstr "Kontoname & Symbol"
 
 #. js-lingui-explicit-id
-#: src/transaction/service/transaction.service.ts
+#: src/transaction/service/transfer-creation.service.ts
 msgid "transaction.accountNotFound"
 msgstr "Konto nicht gefunden"
 
@@ -470,7 +470,7 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr "KI"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "KI aus"
 
@@ -743,7 +743,7 @@ msgid "Borrowed debt account expected"
 msgstr "Geliehenes Schuldkonto erwartet"
 
 #: src/app/(tabs)/settings/index.tsx
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Budget"
 msgstr "Budget"
 
@@ -890,7 +890,7 @@ msgstr "Als {categoryTitle} kategorisieren"
 #: src/category/components/category-form-selector/category-form-selector.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Category"
 msgstr "Kategorie"
 
@@ -1216,8 +1216,7 @@ msgstr "CSV konnte nicht exportiert werden"
 msgid "Could not export database"
 msgstr "Datenbank konnte nicht exportiert werden"
 
-#: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+#: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not fetch accounts"
 msgstr "Konten konnten nicht abgerufen werden"
 
@@ -1659,7 +1658,7 @@ msgstr "Fertig ({count})"
 msgid "Download your statement as PDF"
 msgstr "Kontoauszug als PDF herunterladen"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Downloading AI models…"
 msgstr "KI-Modelle werden heruntergeladen…"
 
@@ -1941,7 +1940,7 @@ msgstr "Erwartetes Rückgabedatum (Optional)"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Expense"
 msgstr "Ausgabe"
 
@@ -2267,7 +2266,7 @@ msgstr "Inklusive Krypto"
 #: src/transaction/components/statistics-content/statistics-content.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 #: src/transaction/constant/transaction-type.constant.ts
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Income"
 msgstr "Einnahmen"
 
@@ -2377,15 +2376,15 @@ msgstr "Letztes Jahr"
 msgid "Learning"
 msgstr "Lernen"
 
-#: src/ai/service/ai-embedding-status.service.ts
+#: src/ai/constant/ai-embedding-status-atom.constant.ts
 msgid "Learning transactions"
 msgstr "Transaktionen werden gelernt"
 
-#: src/ai/service/ai-embedding-status.service.ts
+#: src/ai/constant/ai-embedding-status-atom.constant.ts
 msgid "Learning up to date"
 msgstr "Lernen aktuell"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "left"
 msgstr "übrig"
 
@@ -2645,7 +2644,7 @@ msgstr "Zu prüfen"
 msgid "Net"
 msgstr "Netto"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Net worth"
 msgstr "Nettovermögen"
 
@@ -2695,7 +2694,7 @@ msgstr "Noch keine Konten"
 msgid "No Accounts Yet"
 msgstr "Noch keine Konten"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "No active budget"
 msgstr "Kein aktives Budget"
 
@@ -2951,7 +2950,7 @@ msgstr "Nur Einnahmen mit einem Eintrag können umgewandelt werden"
 msgid "Open Binance to get your API key"
 msgstr "Öffnen Sie Binance, um Ihren API-Schlüssel zu erhalten"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Open Budgie to see your finances"
 msgstr "Öffnen Sie Budgie, um Ihre Finanzen zu sehen"
 
@@ -3021,7 +3020,7 @@ msgstr "Sonstiges Budget: {threshold}% verbraucht"
 msgid "Other budget: limit reached"
 msgstr "Sonstiges Budget: Limit erreicht"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "over"
 msgstr "drüber"
 
@@ -3081,7 +3080,7 @@ msgstr "Fügen Sie Ihr Binance-API-Secret ein:"
 msgid "PDF statement"
 msgstr "PDF-Kontoauszug"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "per day"
 msgstr "pro Tag"
 
@@ -3244,11 +3243,11 @@ msgstr "Lernen neu aufbauen"
 msgid "Rebuild translations"
 msgstr "Übersetzungen neu aufbauen"
 
-#: src/ai/service/ai-embedding-status.service.ts
+#: src/ai/constant/ai-embedding-status-atom.constant.ts
 msgid "Rebuilding learning"
 msgstr "Lernen wird neu aufgebaut"
 
-#: src/ai/service/ai-translation-status.service.ts
+#: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Rebuilding translations"
 msgstr "Übersetzungen werden neu aufgebaut"
 
@@ -3850,7 +3849,7 @@ msgstr "Budgie jetzt nutzen"
 msgid "Start with a blank canvas"
 msgstr "Mit einem leeren Blatt beginnen"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "KI wird gestartet…"
 
@@ -4020,7 +4019,7 @@ msgstr "Diese Sicherung ist mit einer PIN geschützt. Beim Import werden alle ak
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Dieser konsolidierte Transfer hat keine verschobenen Quelleinträge."
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Diesen Monat"
 
@@ -4200,7 +4199,7 @@ msgstr "Transkription fehlgeschlagen"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Transfer"
 msgstr "Überweisung"
 
@@ -4220,7 +4219,7 @@ msgstr "Vom Konto übertragen"
 msgid "Transfer To Account"
 msgstr "Auf Konto übertragen"
 
-#: src/ai/service/ai-translation-status.service.ts
+#: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Translating categories and tags"
 msgstr "Kategorien und Tags werden übersetzt"
 
@@ -4228,7 +4227,7 @@ msgstr "Kategorien und Tags werden übersetzt"
 msgid "Translation"
 msgstr "Übersetzung"
 
-#: src/ai/service/ai-translation-status.service.ts
+#: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Translations ready"
 msgstr "Übersetzungen bereit"
 

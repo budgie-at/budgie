@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
@@ -6,7 +7,7 @@ import { EmptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { accountService } from '../service/account.service';
+import { AccountArchiveService } from '../service/account-archive.service';
 
 export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
     const { t } = useLingui();
@@ -27,7 +28,9 @@ export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
 
         setIsLoading(true);
         try {
-            await appRuntime.runPromise(accountService.archiveById(accountId));
+            await appRuntime.runPromise(
+                Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.archiveById(accountId))
+            );
             onArchived();
         } catch (error) {
             Toast.show({

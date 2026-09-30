@@ -1,13 +1,16 @@
 import { useAtomRefresh, useAtomValue } from '@effect/atom-react/Hooks';
 import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
-import { syncRepairService } from '../service/sync-repair.service';
+import { SyncRepairService } from '../service/sync-repair.service';
 
-const syncDuplicateRepairPreviewAtom = appAtomRuntime.atom(syncRepairService.previewDuplicates());
+const syncDuplicateRepairPreviewAtom = appAtomRuntime.atom(
+    Effect.flatMap(SyncRepairService, syncRepairService => syncRepairService.previewDuplicates())
+);
 
 export const useSyncDuplicateRepairPreviewQuery = () => {
     const result = useAtomValue(syncDuplicateRepairPreviewAtom);

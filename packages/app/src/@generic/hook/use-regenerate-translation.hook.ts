@@ -7,8 +7,7 @@ import { useState } from 'react';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { AiSubsystemNameEnum } from '../../ai/enum/ai-subsystem-name.enum';
-import { aiModelResidencyService } from '../../ai/service/ai-model-residency.service';
-import { chatService } from '../../ai/service/chat.service';
+import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
 import { appRuntime } from '../runtime/app.runtime';
 
 import type { AppServices } from '../runtime/app.runtime';
@@ -30,22 +29,25 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
         setError(null);
 
         return appRuntime.runPromise(
-            Effect.acquireUseRelease(
-                aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT),
-                isChatReady =>
-                    Effect.gen(function* () {
-                        if (!isChatReady) {
-                            setError(t`LLM not ready`);
+            Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                Effect.acquireUseRelease(
+                    aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT),
+                    isChatReady =>
+                        Effect.gen(function* () {
+                            if (!isChatReady) {
+                                setError(t`LLM not ready`);
 
-                            return null;
-                        }
+                                return null;
+                            }
 
-                        const result = yield* new TranslationLlmService(chatService).translate(title);
-                        yield* updateTranslation(entityId, result.titleEn, result.titleTags);
+                            const translationLlmService = yield* TranslationLlmService;
+                            const result = yield* translationLlmService.translate(title);
+                            yield* updateTranslation(entityId, result.titleEn, result.titleTags);
 
-                        return result;
-                    }),
-                () => aiModelResidencyService.release(AiSubsystemNameEnum.CHAT)
+                            return result;
+                        }),
+                    () => aiModelResidencyService.release(AiSubsystemNameEnum.CHAT)
+                )
             ).pipe(
                 Effect.tapCause(Effect.logError),
                 Effect.catchCause(cause =>

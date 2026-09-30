@@ -1,8 +1,14 @@
-import { bankIntegrationRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { BankIntegrationEntityTable, BankIntegrationRepository } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-export const useGetBankIntegrationCountQuery = (): number => {
-    const { data } = useDatabaseLiveQuery(bankIntegrationRepository.count(), []);
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
-    return data.at(0)?.count ?? 0;
-};
+const bankIntegrationCountAtom = databaseQueryAtom(
+    [BankIntegrationEntityTable],
+    Effect.flatMap(BankIntegrationRepository, bankIntegrationRepository => bankIntegrationRepository.count())
+);
+
+export const useGetBankIntegrationCountQuery = (): number =>
+    AsyncResult.getOrElse(useLiveAtomValue(bankIntegrationCountAtom), () => []).at(0)?.count ?? 0;

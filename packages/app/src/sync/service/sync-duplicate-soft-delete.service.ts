@@ -1,65 +1,64 @@
 import { Db } from '@budgie/contracts';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import type { SyncDuplicateCandidateRowInterface } from '../interface/sync-duplicate-candidate-row.interface';
 import type { SyncDuplicateSoftDeleteResultInterface } from '../interface/sync-duplicate-soft-delete-result.interface';
 
-class SyncDuplicateSoftDeleteService {
-    private static readonly SQLITE_BATCH_SIZE = 500;
+export class SyncDuplicateSoftDeleteService extends Context.Service<SyncDuplicateSoftDeleteService>()(
+    '@budgie/app/SyncDuplicateSoftDeleteService',
+    {
+        make: Effect.sync(() => {
+            const sqliteBatchSize = 500;
 
-    readonly remove = Effect.fn('SyncDuplicateSoftDeleteService.remove')(function* (
-        this: SyncDuplicateSoftDeleteService,
-        duplicateTransactionIds: readonly number[]
-    ) {
-        const updatedTransactionIds: number[] = [];
+            const buildPlaceholders = (duplicateTransactionIds: readonly number[]): string =>
+                duplicateTransactionIds.map(() => '?').join(',');
 
-        for (let index = 0; index < duplicateTransactionIds.length; index += SyncDuplicateSoftDeleteService.SQLITE_BATCH_SIZE) {
-            updatedTransactionIds.push(
-                ...(yield* this.softDeleteChunk(
-                    duplicateTransactionIds.slice(index, index + SyncDuplicateSoftDeleteService.SQLITE_BATCH_SIZE)
-                ))
-            );
-        }
+            const softDeleteChunk = Effect.fnUntraced(function* (chunk: readonly number[]) {
+                const rows = yield* Db.query(db =>
+                    db.$client.getAllAsync<Pick<SyncDuplicateCandidateRowInterface, 'duplicateTransactionId'>>(
+                        String.raw`UPDATE transactions SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IS NULL AND id IN (${buildPlaceholders(chunk)}) RETURNING id AS duplicateTransactionId`,
+                        [...chunk]
+                    )
+                );
+                const updatedIds = rows.map(row => row.duplicateTransactionId);
 
-        return { updatedTransactionIds } satisfies SyncDuplicateSoftDeleteResultInterface;
-    });
+                if (isNotEmptyArray(updatedIds)) {
+                    yield* Db.query(db =>
+                        db.$client.runAsync(
+                            String.raw`UPDATE transaction_entries SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND transaction_id IN (${buildPlaceholders(updatedIds)})`,
+                            updatedIds
+                        )
+                    );
+                    yield* Db.query(db =>
+                        db.$client.runAsync(
+                            String.raw`UPDATE transactions SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IN (${buildPlaceholders(updatedIds)})`,
+                            updatedIds
+                        )
+                    );
+                }
 
-    private readonly softDeleteChunk = Effect.fnUntraced(function* (this: SyncDuplicateSoftDeleteService, chunk: readonly number[]) {
-        const rows = yield* Db.query(db =>
-            db.$client.getAllAsync<Pick<SyncDuplicateCandidateRowInterface, 'duplicateTransactionId'>>(
-                this.buildTransactionDeleteSql(chunk),
-                [...chunk]
-            )
-        );
-        const updatedIds = rows.map(row => row.duplicateTransactionId);
+                return updatedIds;
+            });
 
-        if (isNotEmptyArray(updatedIds)) {
-            yield* Db.query(db => db.$client.runAsync(this.buildTransactionEntryDeleteSql(updatedIds), updatedIds));
-            yield* Db.query(db => db.$client.runAsync(this.buildConsolidationChildDeleteSql(updatedIds), updatedIds));
-        }
+            return {
+                remove: Effect.fn('SyncDuplicateSoftDeleteService.remove')(function* (duplicateTransactionIds: readonly number[]) {
+                    const updatedTransactionIds: number[] = [];
 
-        return updatedIds;
-    });
+                    for (let index = 0; index < duplicateTransactionIds.length; index += sqliteBatchSize) {
+                        updatedTransactionIds.push(
+                            ...(yield* softDeleteChunk(duplicateTransactionIds.slice(index, index + sqliteBatchSize)))
+                        );
+                    }
 
-    private buildTransactionDeleteSql(duplicateTransactionIds: readonly number[]): string {
-        const placeholders = duplicateTransactionIds.map(() => '?').join(',');
-
-        return String.raw`UPDATE transactions SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IS NULL AND id IN (${placeholders}) RETURNING id AS duplicateTransactionId`;
+                    return { updatedTransactionIds } satisfies SyncDuplicateSoftDeleteResultInterface;
+                })
+            };
+        })
     }
-
-    private buildTransactionEntryDeleteSql(duplicateTransactionIds: readonly number[]): string {
-        const placeholders = duplicateTransactionIds.map(() => '?').join(',');
-
-        return String.raw`UPDATE transaction_entries SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND transaction_id IN (${placeholders})`;
-    }
-
-    private buildConsolidationChildDeleteSql(duplicateTransactionIds: readonly number[]): string {
-        const placeholders = duplicateTransactionIds.map(() => '?').join(',');
-
-        return String.raw`UPDATE transactions SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IN (${placeholders})`;
-    }
+) {
+    static readonly layer = Layer.effect(SyncDuplicateSoftDeleteService, SyncDuplicateSoftDeleteService.make);
 }
-
-export const syncDuplicateSoftDeleteService = new SyncDuplicateSoftDeleteService();

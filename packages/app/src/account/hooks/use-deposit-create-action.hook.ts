@@ -1,5 +1,6 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -8,7 +9,7 @@ import { useFormatDigits } from '../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { ACCOUNT_ICON } from '../constant/account-icon.constant';
 import { useGetAccountByIdQuery } from '../query/use-get-account-by-id.query';
-import { accountService } from '../service/account.service';
+import { AccountService } from '../service/account.service';
 
 import type { AccountSelectorCreateActionInterface } from '../interface/account-selector-create-action.interface';
 
@@ -28,18 +29,20 @@ export const useDepositCreateAction = (
         }
 
         const createdAccount = await appRuntime.runPromise(
-            accountService.createDeposit({
-                type: AccountTypeEnum.DEPOSIT,
-                title: t`Deposit`,
-                iban: null,
-                icon: ACCOUNT_ICON[AccountTypeEnum.DEPOSIT],
-                instrumentId: sourceAccount.instrumentId,
-                integrationId: sourceAccount.integrationId,
-                includeInNetWorth: true,
-                currentBalance: 0,
-                interestRate: null,
-                deadline: null
-            })
+            Effect.flatMap(AccountService, accountService =>
+                accountService.createDeposit({
+                    type: AccountTypeEnum.DEPOSIT,
+                    title: t`Deposit`,
+                    iban: null,
+                    icon: ACCOUNT_ICON[AccountTypeEnum.DEPOSIT],
+                    instrumentId: sourceAccount.instrumentId,
+                    integrationId: sourceAccount.integrationId,
+                    includeInNetWorth: true,
+                    currentBalance: 0,
+                    interestRate: null,
+                    deadline: null
+                })
+            )
         );
 
         return createdAccount.id;

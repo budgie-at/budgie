@@ -1,4 +1,4 @@
-import { UseSuggestionReturnInterface } from '@budgie/ai';
+import { EmbeddingSuggestionService, UseSuggestionReturnInterface } from '@budgie/ai';
 import { TagEntityInterface } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
@@ -7,9 +7,8 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
 import { useSearchTagsQuery } from '../../tag/query/use-search-tags.query';
+import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
-import { embeddingService } from '../service/embedding.service';
 
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
@@ -25,7 +24,7 @@ interface UseTagSuggestionParams {
 export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionReturnInterface<TagEntityInterface> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const embeddingStatus = useAtomValue(embeddingService.model.snapshot, snapshot => snapshot.status);
+    const embeddingStatus = useAtomValue(embeddingModelSnapshotAtom, snapshot => snapshot.status);
     const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { tags: allTags, isLoading: isTagsLoading } = useSearchTagsQuery('');
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
@@ -39,7 +38,9 @@ export const useTagSuggestion = (params: UseTagSuggestionParams): UseSuggestionR
 
         const mccDescription = mccCategory?.fullDescription ?? null;
 
-        return embeddingSuggestionService.suggestTags(allTags, categoryId, transactionTitle, mccDescription, comment, aiContext);
+        return Effect.flatMap(EmbeddingSuggestionService, embeddingSuggestionService =>
+            embeddingSuggestionService.suggestTags(allTags, categoryId, transactionTitle, mccDescription, comment, aiContext)
+        );
     };
 
     const { status, suggestions } = useSuggestionBase({

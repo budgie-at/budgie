@@ -1,44 +1,63 @@
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import {
+    TransactionConsolidationTypeEnum,
+    TransactionEntryRepository,
+    TransactionRepository,
+    TransactionConsolidationRepository,
+    TransactionTagsRepository
+} from '@budgie/contracts';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import type { UnconsolidationDependenciesInterface } from '../interface/unconsolidation-dependencies.interface';
 import type { TransactionEntityInterface } from '@budgie/contracts';
 
-export class UnconsolidationService {
-    readonly unconsolidateById = Effect.fn('UnconsolidationService.unconsolidateById')(function* (
-        this: UnconsolidationService,
-        transactionId: number
-    ) {
-        const { transactionEntryRepository, transactionRepository, transactionTagsRepository } = this.dependencies;
-        const canonical = yield* transactionRepository.getByIdRaw(transactionId);
+export class UnconsolidationService extends Context.Service<UnconsolidationService>()('@budgie/consolidation/UnconsolidationService', {
+    make: Effect.gen(function* () {
+        const transactionEntryRepository = yield* TransactionEntryRepository;
+        const transactionRepository = yield* TransactionRepository;
+        const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
+        const transactionTagsRepository = yield* TransactionTagsRepository;
 
-        yield* transactionEntryRepository.moveBackToOriginalTransactions(transactionId);
-        yield* transactionRepository.clearConsolidationParent(transactionId);
+        const isPreExistingCanonical = (transaction: TransactionEntityInterface | undefined): boolean => {
+            if (!isDefined(transaction)) {
+                return false;
+            }
 
-        if (this.isPreExistingCanonical(canonical)) {
-            yield* transactionRepository.setConsolidationType(transactionId, null);
+            return (
+                transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
+                isDefined(transaction.externalId) ||
+                isDefined(transaction.externalSource)
+            );
+        };
 
-            return;
-        }
+        return {
+            unconsolidateById: Effect.fn('UnconsolidationService.unconsolidateById')(function* (transactionId: number) {
+                const canonical = yield* transactionRepository.getByIdRaw(transactionId);
 
-        yield* transactionTagsRepository.deleteByTransactionId(transactionId);
-        yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
-        yield* transactionRepository.deleteById(transactionId);
-    });
+                yield* transactionEntryRepository.moveBackToOriginalTransactions(transactionId);
+                yield* transactionConsolidationRepository.clearConsolidationParent(transactionId);
 
-    constructor(private readonly dependencies: UnconsolidationDependenciesInterface) {}
+                if (isPreExistingCanonical(canonical)) {
+                    yield* transactionConsolidationRepository.setConsolidationType(transactionId, null);
 
-    private isPreExistingCanonical(transaction: TransactionEntityInterface | undefined): boolean {
-        if (!isDefined(transaction)) {
-            return false;
-        }
+                    return;
+                }
 
-        return (
-            transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ||
-            isDefined(transaction.externalId) ||
-            isDefined(transaction.externalSource)
-        );
-    }
+                yield* transactionTagsRepository.deleteByTransactionId(transactionId);
+                yield* transactionEntryRepository.deleteLedgerByTransactionId(transactionId);
+                yield* transactionRepository.deleteById(transactionId);
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(UnconsolidationService, UnconsolidationService.make).pipe(
+        Layer.provide([
+            TransactionEntryRepository.layer,
+            TransactionRepository.layer,
+            TransactionConsolidationRepository.layer,
+            TransactionTagsRepository.layer
+        ])
+    );
 }

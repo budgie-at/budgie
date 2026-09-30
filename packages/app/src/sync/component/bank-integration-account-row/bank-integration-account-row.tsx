@@ -16,7 +16,7 @@ import { useAccountBalanceQuery } from '../../../account/query/use-account-balan
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useBankIntegrationAccountRowState } from '../../hook/use-bank-integration-account-row-state.hook';
-import { syncProviderRegistryService } from '../../service/sync-provider-registry.service';
+import { SyncProviderRegistryService } from '../../service/sync-provider-registry.service';
 import { BankIntegrationAccountMenu } from '../bank-integration-account-menu/bank-integration-account-menu';
 
 interface Props {
@@ -32,8 +32,10 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
     const handleToggle = (enabled: boolean) =>
         void appRuntime.runPromise(
-            Effect.flatMap(syncProviderRegistryService.getServiceForAccount(account.id), service =>
-                isDefined(service) ? service.setAccountSyncEnabled(account.id, enabled) : Effect.void
+            Effect.flatMap(SyncProviderRegistryService, syncProviderRegistryService =>
+                Effect.flatMap(syncProviderRegistryService.getServiceForAccount(account.id), service =>
+                    isDefined(service) ? service.setAccountSyncEnabled(account.id, enabled) : Effect.void
+                )
             )
         );
     const handlePress = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(account.id) } });

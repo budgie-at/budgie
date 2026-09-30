@@ -16,7 +16,7 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
 import { OnboardingTrackOptionInterface } from '../../interface/onboarding-track-option.interface';
-import { onboardingService } from '../../service/onboarding.service';
+import { OnboardingService } from '../../service/onboarding.service';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 import { OnboardingTrackOptionRow } from '../onboarding-track-option-row/onboarding-track-option-row';
 
@@ -58,13 +58,13 @@ export const OnboardingTrack = () => {
     const handlePrimary = () => {
         appRuntime.runFork(
             logAndContinue(
-                onboardingService
-                    .provisionAccounts(
+                Effect.flatMap(OnboardingService, onboardingService =>
+                    onboardingService.provisionAccounts(
                         trackOptions
                             .filter(option => isTypeSelected(option.type))
                             .map(option => ({ type: option.type, title: option.title }))
                     )
-                    .pipe(Effect.map(() => void goToNextStep(OnboardingStepEnum.TRACK)))
+                ).pipe(Effect.map(() => void goToNextStep(OnboardingStepEnum.TRACK)))
             )
         );
     };

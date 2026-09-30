@@ -9,7 +9,7 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
-import { onboardingService } from '../../service/onboarding.service';
+import { OnboardingService } from '../../service/onboarding.service';
 import { OnboardingChip } from '../onboarding-chip/onboarding-chip';
 
 import { OnboardingWelcomeSelector } from './onboarding-welcome.selector';
@@ -21,7 +21,13 @@ export const OnboardingWelcome = () => {
     const handlePrimary = () => void goToNextStep(OnboardingStepEnum.WELCOME);
 
     const handleBlankCanvasPress = () => {
-        appRuntime.runFork(logAndContinue(onboardingService.complete().pipe(Effect.map(() => void router.replace('/')))));
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete()).pipe(
+                    Effect.map(() => void router.replace('/'))
+                )
+            )
+        );
     };
 
     return (

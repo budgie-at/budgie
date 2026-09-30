@@ -1,5 +1,6 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -12,7 +13,7 @@ import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { useDepositAccountForm } from '../../hooks/use-deposit-account-form.hook';
-import { accountService } from '../../service/account.service';
+import { AccountService } from '../../service/account.service';
 import { CreateAccountCoreFields } from '../create-account-core-fields/create-account-core-fields';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
 import { DepositInterestRateField } from '../deposit-interest-rate-field/deposit-interest-rate-field';
@@ -41,7 +42,7 @@ export const CreateDepositAccount = () => {
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useDepositAccountForm(initialValues, values =>
-        appRuntime.runPromise(accountService.createDeposit(values))
+        appRuntime.runPromise(Effect.flatMap(AccountService, accountService => accountService.createDeposit(values)))
     );
 
     const variant = ACCOUNT_COLOR[AccountTypeEnum.DEPOSIT];

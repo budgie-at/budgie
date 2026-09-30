@@ -1,20 +1,23 @@
-import { isDefined } from '@rnw-community/shared';
+import { CategoryEntityTable, CategoryRepository, DefaultCategoryTranslationEntityTable } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { categoryRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
-import type { CategoryEntityInterface } from '@budgie/contracts';
+import type { CategoryEntityInterface, LanguageEnum } from '@budgie/contracts';
 
 const EMPTY_CATEGORIES: CategoryEntityInterface[] = [];
 
+const nonSystemCategoriesAtom = databaseQueryFamily(
+    [CategoryEntityTable, DefaultCategoryTranslationEntityTable],
+    CategoryRepository,
+    (categoryRepository, language: LanguageEnum) => categoryRepository.findAllNonSystemLocalized(language)
+);
+
 export const useNonSystemCategoriesQuery = () => {
     const language = useSetting('language');
-    const { data, error, updatedAt } = useDatabaseLiveQuery(categoryRepository.findAllNonSystemLocalized(language), [language]);
+    const result = useLiveAtomValue(nonSystemCategoriesAtom(language));
 
-    if (!isDefined(data)) {
-        return { isLoading: true, categories: EMPTY_CATEGORIES, updatedAt: null, error };
-    }
-
-    return { categories: data, isLoading: false, updatedAt, error };
+    return { categories: AsyncResult.getOrElse(result, () => EMPTY_CATEGORIES), isLoading: AsyncResult.isInitial(result) };
 };

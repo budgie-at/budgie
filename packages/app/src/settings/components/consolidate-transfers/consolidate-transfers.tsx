@@ -2,16 +2,11 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
-import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
-import { transferConsolidationService } from '../../../sync/service/transfer-consolidation.service';
+import { TransferConsolidationService } from '../../../sync/service/transfer-consolidation.service';
+import { useConfirmedSettingsAction } from '../../hook/use-confirmed-settings-action.hook';
 import { SettingsCard } from '../settings-card/settings-card';
 
 const showConsolidationSuccessToast = (consolidated: number, found: number, t: ReturnType<typeof useLingui>['t']): void => {
@@ -31,31 +26,22 @@ const showConsolidationSuccessToast = (consolidated: number, found: number, t: R
 
 export const ConsolidateTransfers = () => {
     const { t } = useLingui();
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleConsolidate = async () => {
-        const confirmed = await confirmAlert({
+    const { isLoading, run } = useConfirmedSettingsAction(
+        {
             title: t`Consolidate Matches`,
             message: t`Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged.`,
             confirmText: t`Consolidate`,
             cancelText: t`Cancel`
-        });
+        },
+        t`Could not consolidate matches`
+    );
 
-        if (!confirmed) {
-            return;
-        }
-
-        setIsLoading(true);
-
-        await appRuntime.runPromise(
-            transferConsolidationService.consolidate(null).pipe(
-                Effect.map(({ consolidated, found }) => void showConsolidationSuccessToast(consolidated, found, t)),
-                Effect.tapCause(Effect.logError),
-                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not consolidate matches`, getErrorMessage(error)))),
-                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
-            )
+    const handleConsolidate = () =>
+        run(
+            Effect.flatMap(TransferConsolidationService, transferConsolidationService =>
+                transferConsolidationService.consolidate(null)
+            ).pipe(Effect.map(({ consolidated, found }) => void showConsolidationSuccessToast(consolidated, found, t)))
         );
-    };
 
     return (
         <SettingsCard

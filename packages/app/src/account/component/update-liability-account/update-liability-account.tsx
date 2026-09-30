@@ -1,5 +1,6 @@
 import { AccountTypeEnum, AccountWithInstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -16,7 +17,7 @@ import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountForm } from '../../hooks/use-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
-import { accountService } from '../../service/account.service';
+import { AccountService } from '../../service/account.service';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
@@ -44,16 +45,18 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         formValues,
         async values =>
             await appRuntime.runPromise(
-                accountService.updateById(account.id, {
-                    externalId: values.externalId,
-                    iban: values.iban,
-                    icon: values.icon,
-                    title: values.title,
-                    currentBalance: values.currentBalance,
-                    instrumentId: values.instrumentId,
-                    includeInNetWorth: values.includeInNetWorth,
-                    isActive: values.isActive
-                })
+                Effect.flatMap(AccountService, accountService =>
+                    accountService.updateById(account.id, {
+                        externalId: values.externalId,
+                        iban: values.iban,
+                        icon: values.icon,
+                        title: values.title,
+                        currentBalance: values.currentBalance,
+                        instrumentId: values.instrumentId,
+                        includeInNetWorth: values.includeInNetWorth,
+                        isActive: values.isActive
+                    })
+                )
             )
     );
 
