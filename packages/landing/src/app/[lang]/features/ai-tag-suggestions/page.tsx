@@ -1,4 +1,5 @@
 /* eslint-disable max-lines-per-function */
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
@@ -11,6 +12,7 @@ import { FeaturePageHero } from '../../../../feature/component/feature-page-hero
 import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
 import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/util/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -37,6 +39,41 @@ export default async function AiTagSuggestionsFeaturePage(props: PageLangParam) 
                     </Trans>
                 }
             />
+
+            <FeatureStory>
+                <FeatureStory.Intro heading={<Trans>Tags suggested as you save</Trans>}>
+                    <Trans>Pick a category and Budgie proposes tags you already use, ready to tap.</Trans>
+                </FeatureStory.Intro>
+
+                <FeatureStory.Point index={0}>
+                    <Trans>Choose a category and up to three tag pills appear above the tag button.</Trans>
+                </FeatureStory.Point>
+
+                <FeatureStory.Shot
+                    alt={t(
+                        i18n
+                    )`Budgie new expense screen with the Groceries category selected and three suggested tag pills above the actions`}
+                    index={0}
+                    locale={lang}
+                    priority
+                    scene="ai-tag-suggestions-1"
+                    slug="ai-tag-suggestions"
+                >
+                    <FeatureStory.Callout index={0} y={0.447}>
+                        <Trans>Suggested tag pills</Trans>
+                    </FeatureStory.Callout>
+                    <FeatureStory.Callout index={1} x={0.66} y={0.507}>
+                        <Trans>Tags still open as usual</Trans>
+                    </FeatureStory.Callout>
+                </FeatureStory.Shot>
+
+                <FeatureStory.Point index={1}>
+                    <Trans>The on-device model answers first, and a lighter lookup covers it while it loads.</Trans>
+                </FeatureStory.Point>
+                <FeatureStory.Point index={2}>
+                    <Trans>Tap a pill to add the tag instead of typing it.</Trans>
+                </FeatureStory.Point>
+            </FeatureStory>
 
             <FeaturePageSection>
                 <FeaturePageHeading>
