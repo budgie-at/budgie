@@ -44,7 +44,7 @@ const extractAndMapTransactions = Effect.fn('useLlmCategorization.extractAndMapT
 
     if (!isNotEmptyArray(extracted)) {
         // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
-        return yield* Effect.fail(new Error('Failed to extract transactions from text'));
+        return yield* Effect.die(new Error('Failed to extract transactions from text'));
     }
 
     return yield* Effect.forEach(

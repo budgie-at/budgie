@@ -24,7 +24,7 @@ export const downloadModel = Effect.fn('downloadModel')(function* (
 
     const result = yield* Effect.tryPromise(() => download.downloadAsync());
     if (!isDefined(result?.uri)) {
-        return yield* Effect.fail(new Error('Model download failed'));
+        return yield* Effect.die(new Error('Model download failed'));
     }
 
     return result.uri;

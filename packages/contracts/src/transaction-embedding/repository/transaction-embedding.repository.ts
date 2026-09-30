@@ -5,14 +5,11 @@ import { Db } from '../../@generic/service/db.service';
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 
 export class TransactionEmbeddingRepository {
-    readonly countPending = Effect.fn('TransactionEmbeddingRepository.countPending')(function* () {
-        const [row] = yield* Db.query(db =>
+    readonly countPending = () =>
+        Db.query(db =>
             db
                 .select({ value: count() })
                 .from(TransactionEntityTable)
                 .where(and(sql`${TransactionEntityTable.needsEmbedding} = 1`, isNull(TransactionEntityTable.deletedAt)))
-        );
-
-        return row.value;
-    });
+        ).pipe(Effect.map(([row]) => row.value));
 }

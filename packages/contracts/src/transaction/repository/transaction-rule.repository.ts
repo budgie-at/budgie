@@ -9,42 +9,26 @@ import { TransactionTypeEnum } from '../enum/transaction-type.enum';
 import { TransactionEntityTable } from '../table/transaction-entity.table';
 
 export class TransactionRuleRepository extends BaseTransactionFilterRepository {
-    readonly countByRuleConditions = Effect.fn('TransactionRuleRepository.countByRuleConditions')(function* (
-        this: TransactionRuleRepository,
-        where: SQL
-    ) {
-        const result = yield* Db.query(db =>
+    readonly countByRuleConditions = (where: SQL) =>
+        Db.query(db =>
             db
                 .select({ count: sql<number>`COUNT(DISTINCT ${TransactionEntityTable.id})` })
                 .from(TransactionEntityTable)
                 .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                 .where(this.buildRuleConditionsWhere(where))
-        );
+        ).pipe(Effect.map(result => result[0]?.count ?? 0));
 
-        return result[0]?.count ?? 0;
-    });
-
-    readonly findIdsByRuleConditions = Effect.fn('TransactionRuleRepository.findIdsByRuleConditions')(function* (
-        this: TransactionRuleRepository,
-        where: SQL
-    ) {
-        const result = yield* Db.query(db =>
+    readonly findIdsByRuleConditions = (where: SQL) =>
+        Db.query(db =>
             db
                 .selectDistinct({ id: TransactionEntityTable.id })
                 .from(TransactionEntityTable)
                 .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                 .where(this.buildRuleConditionsWhere(where))
-        );
+        ).pipe(Effect.map(result => result.map(row => row.id)));
 
-        return result.map(row => row.id);
-    });
-
-    readonly setCategoryByTransactionIds = Effect.fn('TransactionRuleRepository.setCategoryByTransactionIds')(function* (
-        this: TransactionRuleRepository,
-        transactionIds: number[],
-        categoryId: number
-    ) {
-        const changedEntries = yield* Db.query(db =>
+    readonly setCategoryByTransactionIds = (transactionIds: number[], categoryId: number) =>
+        Db.query(db =>
             db
                 .update(TransactionEntryEntityTable)
                 .set({ categoryId, categorySource: CategorySourceEnum.RULE })
@@ -62,10 +46,7 @@ export class TransactionRuleRepository extends BaseTransactionFilterRepository {
                     )
                 )
                 .returning({ transactionId: TransactionEntryEntityTable.transactionId })
-        );
-
-        return [...new Set(changedEntries.map(entry => entry.transactionId))];
-    });
+        ).pipe(Effect.map(changedEntries => [...new Set(changedEntries.map(entry => entry.transactionId))]));
 
     private buildRuleConditionsWhere(where: SQL): SQL | undefined {
         return and(

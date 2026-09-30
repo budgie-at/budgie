@@ -18,15 +18,12 @@ export class MccCategoryRepository {
         return mccCategory;
     });
 
-    readonly bulkCreate = Effect.fn('MccCategoryRepository.bulkCreate')(function* (inputs: MccCategoryCreateEntityInterface[]) {
-        return yield* Db.query(db => db.insert(MccCategoryEntityTable).values(inputs).returning());
-    });
-
-    readonly truncate = Effect.fn('MccCategoryRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(MccCategoryEntityTable));
-    });
-
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+
+    readonly bulkCreate = (inputs: MccCategoryCreateEntityInterface[]) =>
+        Db.query(db => db.insert(MccCategoryEntityTable).values(inputs).returning());
+
+    readonly truncate = () => Db.query(db => db.delete(MccCategoryEntityTable));
 
     findAll() {
         return this.db.query.MccCategoryEntityTable.findMany();

@@ -3,16 +3,17 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
+import { File } from 'expo-file-system';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { ActivityIndicator, Text, View } from 'react-native';
-import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { YIELD_TO_UI } from '../../../@generic/constant/yield-to-ui.constant';
 import {
     accountBalanceRepository,
     accountRepository,
@@ -22,8 +23,7 @@ import {
     transactionTagsRepository
 } from '../../../@generic/drizzle/db/db';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { microPause } from '../../../@generic/utils/micro-pause.util';
-import { readTextFileFromUri } from '../../../@generic/utils/read-text-file-from-uri.util';
+import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
 import { ImportPresetPicker } from '../../../import/components/import-preset-picker/import-preset-picker';
@@ -91,41 +91,38 @@ export default function ImportScreen() {
     };
 
     useEffect(() => {
-        const loadFile = async () => {
-            if (!isNotEmptyString(fileUri)) {
-                return;
-            }
+        if (!isNotEmptyString(fileUri)) {
+            return;
+        }
 
-            setIsLoading(true);
-
-            try {
-                const text = await readTextFileFromUri(fileUri);
-                const [parsedHeaders, count] = await Promise.all([parseCsvHeaders(text), countCsvRows(text)]);
+        appRuntime.runFork(
+            Effect.gen(function* () {
+                setIsLoading(true);
+                const text = yield* Effect.tryPromise(() => new File(fileUri).text());
+                const [parsedHeaders, count] = yield* Effect.all([parseCsvHeaders(text), countCsvRows(text)]);
 
                 setCsvText(text);
                 setHeaders(parsedHeaders);
                 setRowCount(count);
-            } catch (error) {
-                Toast.show({ type: 'error', text1: t`Could not read CSV file`, text2: getErrorMessage(error) });
-                router.back();
-            }
-
-            setIsLoading(false);
-        };
-
-        void loadFile();
+            }).pipe(
+                Effect.catch(error =>
+                    Effect.sync(() => {
+                        showErrorToast(t`Could not read CSV file`, getErrorMessage(error));
+                        router.back();
+                    })
+                ),
+                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+            )
+        );
     }, [fileUri, t]);
 
-    const handleStartImport = async (columnMap: ImporterColumnMapInterface) => {
+    const handleStartImport = (columnMap: ImporterColumnMapInterface) => {
         setIsLoading(true);
 
-        await microPause();
-
-        const importer = new ImporterService(columnMap);
-
-        try {
-            await appRuntime.runPromise(
-                Effect.all(
+        return appRuntime.runPromise(
+            Effect.gen(function* () {
+                yield* YIELD_TO_UI;
+                yield* Effect.all(
                     [
                         accountRepository.truncate(),
                         categoryRepository.truncate(false),
@@ -135,19 +132,16 @@ export default function ImportScreen() {
                         accountBalanceRepository.truncate()
                     ],
                     { discard: true }
-                )
-            );
+                );
+                yield* new ImporterService(columnMap).process(csvText, rowCount);
+                yield* accountBalanceIncrementalService.updateAllBalances(true);
 
-            await appRuntime.runPromise(importer.process(csvText, rowCount));
-
-            await appRuntime.runPromise(accountBalanceIncrementalService.updateAllBalances(true));
-
-            router.back();
-        } catch (error) {
-            Toast.show({ type: 'error', text1: t`Could not import CSV file`, text2: getErrorMessage(error) });
-        }
-
-        setIsLoading(false);
+                router.back();
+            }).pipe(
+                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not import CSV file`, getErrorMessage(error)))),
+                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+            )
+        );
     };
     const handleCancel = () => void router.back();
 

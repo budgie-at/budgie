@@ -1,6 +1,8 @@
 import { AccountTypeEnum, CurrencyEnum, Db } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { format } from 'date-fns/format';
+import { startOfDay } from 'date-fns/startOfDay';
+import * as Cache from 'effect/Cache';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -12,11 +14,13 @@ import {
     instrumentRepository
 } from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
+import { AccountNotFoundError } from '../../account/error/account-not-found.error';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 import type { EntryBaseValuationContextInterface } from '../interface/entry-base-valuation-context.interface';
 import type { EntryBaseValuationInputInterface } from '../interface/entry-base-valuation-input.interface';
 import type { EntryBaseValuationInterface } from '../interface/entry-base-valuation.interface';
+import type { EntryBaseValuationRateKeyType } from '../type/entry-base-valuation-rate-key.type';
 import type {
     DbError,
     HistoricalExchangeRateEntityInterface,
@@ -87,11 +91,18 @@ class EntryBaseValuationService {
         );
     });
 
-    private readonly createContext = Effect.fn('EntryBaseValuationService.createContext')(function* () {
+    private readonly createContext = Effect.fn('EntryBaseValuationService.createContext')(function* (this: EntryBaseValuationService) {
         const context: EntryBaseValuationContextInterface = {
             baseInstrument: yield* exchangeRatesService.getBaseInstrument(),
-            accounts: new Map(),
-            rates: new Map()
+            accounts: yield* Cache.make({
+                capacity: Number.MAX_SAFE_INTEGER,
+                lookup: (accountId: number) => accountRepository.findByIdIncludingArchived(accountId)
+            }),
+            rates: yield* Cache.make({
+                capacity: Number.MAX_SAFE_INTEGER,
+                lookup: ([sourceInstrumentId, targetInstrumentId, rateDayStart]: EntryBaseValuationRateKeyType) =>
+                    this.resolveHistoricalBaseExchangeRateOrNull(sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
+            })
         };
 
         return context;
@@ -103,45 +114,40 @@ class EntryBaseValuationService {
         operatedAt: Date,
         context: EntryBaseValuationContextInterface
     ) {
-        const valuations = new Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>();
-
-        yield* Effect.all(
-            entries.map(entry =>
-                this.resolveEntryValuation(entry, operatedAt, context).pipe(
-                    Effect.tap(valuation => Effect.sync(() => valuations.set(entry, valuation)))
-                )
-            ),
-            { concurrency: 'unbounded', discard: true }
+        const entryValuations = yield* Effect.forEach(
+            entries,
+            entry => this.resolveEntryValuation(entry, operatedAt, context).pipe(Effect.map(valuation => [entry, valuation] as const)),
+            { concurrency: 'unbounded' }
         );
 
-        return valuations;
+        return new Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>(entryValuations);
     });
 
-    private readonly valueAccountAmount = Effect.fn('EntryBaseValuationService.valueAccountAmount')(function* (
+    private readonly valueAccountAmount = Effect.fnUntraced(function* (
         this: EntryBaseValuationService,
         { accountId, amount, operatedAt }: Pick<EntryBaseValuationInputInterface, 'accountId' | 'amount' | 'operatedAt'>,
         context: EntryBaseValuationContextInterface
     ) {
         const { baseInstrument } = context;
-        const account = yield* this.memoize(context.accounts, accountId, accountRepository.findByIdIncludingArchived(accountId));
+        const account = yield* Cache.get(context.accounts, accountId);
 
         if (!isDefined(account)) {
-            return yield* Effect.fail(new Error(t`Account ${accountId} not found`));
+            return yield* new AccountNotFoundError({ id: accountId });
         }
 
         if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
-            return yield* Effect.fail(new Error(t`Base instrument not found`));
+            return yield* Effect.die(new Error(t`Base instrument not found`));
         }
 
         if (account.instrumentId === baseInstrument.id) {
             return this.buildBaseValuation(baseInstrument.id, 1, amount);
         }
 
-        const baseExchangeRate = yield* this.memoize(
-            context.rates,
-            `${account.instrumentId}:${baseInstrument.id}:${format(operatedAt, EntryBaseValuationService.RATE_DATE_FORMAT)}`,
-            this.resolveHistoricalBaseExchangeRateOrNull(account.instrumentId, baseInstrument.id, operatedAt)
-        );
+        const baseExchangeRate = yield* Cache.get(context.rates, [
+            account.instrumentId,
+            baseInstrument.id,
+            startOfDay(operatedAt).getTime()
+        ]);
 
         if (!isDefined(baseExchangeRate)) {
             return yield* this.resolveMissingBaseValuation(account.type, account.instrumentId, baseInstrument.id);
@@ -150,25 +156,7 @@ class EntryBaseValuationService {
         return this.buildBaseValuation(baseInstrument.id, baseExchangeRate, amount);
     });
 
-    private readonly memoize = Effect.fn('EntryBaseValuationService.memoize')(function* <TKey, TValue>(
-        cache: Map<TKey, Effect.Effect<TValue, DbError, Db>>,
-        key: TKey,
-        resolve: Effect.Effect<TValue, DbError, Db>
-    ) {
-        const cached = cache.get(key);
-
-        if (isDefined(cached)) {
-            return yield* cached;
-        }
-
-        const memoized = yield* Effect.cached(resolve);
-
-        cache.set(key, memoized);
-
-        return yield* memoized;
-    });
-
-    private readonly resolveMissingBaseValuation = Effect.fn('EntryBaseValuationService.resolveMissingBaseValuation')(function* (
+    private readonly resolveMissingBaseValuation = Effect.fnUntraced(function* (
         accountType: AccountTypeEnum,
         sourceInstrumentId: number,
         targetInstrumentId: number
@@ -183,10 +171,10 @@ class EntryBaseValuationService {
             return missingValuation;
         }
 
-        return yield* Effect.fail(new Error(t`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`));
+        return yield* Effect.die(new Error(t`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`));
     });
 
-    private readonly resolveDirectOrInverseRate = Effect.fn('EntryBaseValuationService.resolveDirectOrInverseRate')(function* (
+    private readonly resolveDirectOrInverseRate = Effect.fnUntraced(function* (
         lookup: (
             sourceInstrumentId: number,
             targetInstrumentId: number
@@ -209,10 +197,7 @@ class EntryBaseValuationService {
         return null;
     });
 
-    private readonly resolveCurrentBaseExchangeRate = Effect.fn('EntryBaseValuationService.resolveCurrentBaseExchangeRate')(function* (
-        sourceInstrumentId: number,
-        targetInstrumentId: number
-    ) {
+    private readonly resolveCurrentBaseExchangeRate = Effect.fnUntraced(function* (sourceInstrumentId: number, targetInstrumentId: number) {
         const directExchangeRate = yield* Db.query(() =>
             exchangeRateRepository.findByBaseAndQuoteIds(sourceInstrumentId, targetInstrumentId)
         );
@@ -232,7 +217,7 @@ class EntryBaseValuationService {
         return null;
     });
 
-    private readonly resolveEntryValuation = Effect.fn('EntryBaseValuationService.resolveEntryValuation')(function* (
+    private readonly resolveEntryValuation = Effect.fnUntraced(function* (
         this: EntryBaseValuationService,
         entry: TransactionEntryCreateInputInterface,
         operatedAt: Date,
@@ -259,7 +244,7 @@ class EntryBaseValuationService {
         );
     });
 
-    private readonly resolveHistoricalEuroRate = Effect.fn('EntryBaseValuationService.resolveHistoricalEuroRate')(function* (
+    private readonly resolveHistoricalEuroRate = Effect.fnUntraced(function* (
         instrumentId: number,
         euroInstrumentId: number,
         rateDate: string
@@ -273,29 +258,32 @@ class EntryBaseValuationService {
         return isDefined(exchangeRate) ? exchangeRate.rate : null;
     });
 
-    private readonly resolveHistoricalBridgeExchangeRate = Effect.fn('EntryBaseValuationService.resolveHistoricalBridgeExchangeRate')(
-        function* (this: EntryBaseValuationService, sourceInstrumentId: number, targetInstrumentId: number, rateDate: string) {
-            const euroInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.EUR);
+    private readonly resolveHistoricalBridgeExchangeRate = Effect.fnUntraced(function* (
+        this: EntryBaseValuationService,
+        sourceInstrumentId: number,
+        targetInstrumentId: number,
+        rateDate: string
+    ) {
+        const euroInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.EUR);
 
-            if (!isDefined(euroInstrument)) {
-                return null;
-            }
-
-            const [sourceToEuroRate, targetToEuroRate] = yield* Effect.all(
-                [
-                    this.resolveHistoricalEuroRate(sourceInstrumentId, euroInstrument.id, rateDate),
-                    this.resolveHistoricalEuroRate(targetInstrumentId, euroInstrument.id, rateDate)
-                ],
-                { concurrency: 'unbounded' }
-            );
-
-            if (isDefined(sourceToEuroRate) && isDefined(targetToEuroRate)) {
-                return sourceToEuroRate / targetToEuroRate;
-            }
-
+        if (!isDefined(euroInstrument)) {
             return null;
         }
-    );
+
+        const [sourceToEuroRate, targetToEuroRate] = yield* Effect.all(
+            [
+                this.resolveHistoricalEuroRate(sourceInstrumentId, euroInstrument.id, rateDate),
+                this.resolveHistoricalEuroRate(targetInstrumentId, euroInstrument.id, rateDate)
+            ],
+            { concurrency: 'unbounded' }
+        );
+
+        if (isDefined(sourceToEuroRate) && isDefined(targetToEuroRate)) {
+            return sourceToEuroRate / targetToEuroRate;
+        }
+
+        return null;
+    });
 
     private buildBaseValuation(baseInstrumentId: number, baseExchangeRate: number, amount: number): EntryBaseValuationInterface {
         return { baseInstrumentId, baseExchangeRate, baseAmount: Math.round(amount * baseExchangeRate) };

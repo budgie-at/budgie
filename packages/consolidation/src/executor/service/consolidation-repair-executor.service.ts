@@ -25,7 +25,7 @@ import type {
 export class ConsolidationRepairExecutorService {
     private static readonly MILLISECONDS_IN_SECOND = 1000;
 
-    readonly repairP2pFiatCanonical = Effect.fn('ConsolidationRepairExecutorService.repairP2pFiatCanonical')(
+    readonly repairP2pFiatCanonical = Effect.fnUntraced(
         function* (this: ConsolidationRepairExecutorService, canonicalTransactionId: number) {
             const canonical = yield* this.dependencies.transactionRepository.getByIdRaw(canonicalTransactionId);
 
@@ -44,9 +44,7 @@ export class ConsolidationRepairExecutorService {
         effect => Db.transaction(effect)
     );
 
-    readonly unconsolidateBridgeClaimedTransferPair = Effect.fn(
-        'ConsolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair'
-    )(
+    readonly unconsolidateBridgeClaimedTransferPair = Effect.fnUntraced(
         function* (this: ConsolidationRepairExecutorService, candidate: BridgeClaimRepairCandidateInterface) {
             const canonical = yield* this.dependencies.transactionRepository.getByIdRaw(candidate.canonicalTransferId);
             const claimedIncome = yield* this.dependencies.transactionRepository.getByIdRaw(candidate.claimedIncomeTransactionId);
@@ -71,9 +69,7 @@ export class ConsolidationRepairExecutorService {
         effect => Db.transaction(effect)
     );
 
-    readonly consolidateIbanBridgeCanonicalDuplicate = Effect.fn(
-        'ConsolidationRepairExecutorService.consolidateIbanBridgeCanonicalDuplicate'
-    )(
+    readonly consolidateIbanBridgeCanonicalDuplicate = Effect.fnUntraced(
         function* (this: ConsolidationRepairExecutorService, candidate: IbanBridgeCanonicalDuplicateCandidateInterface) {
             const sourceTransactionIds = [candidate.expenseTransactionId, candidate.incomeTransactionId];
 
@@ -88,9 +84,7 @@ export class ConsolidationRepairExecutorService {
         effect => Db.transaction(effect)
     );
 
-    readonly consolidateIbanBridgeCanonicalSupersession = Effect.fn(
-        'ConsolidationRepairExecutorService.consolidateIbanBridgeCanonicalSupersession'
-    )(
+    readonly consolidateIbanBridgeCanonicalSupersession = Effect.fnUntraced(
         function* (this: ConsolidationRepairExecutorService, candidate: IbanBridgeCanonicalSupersessionCandidateInterface) {
             const canonicalIdsOwningMovedEntries = [candidate.supersededCanonicalTransactionId, candidate.canonicalTransactionId];
             const transactions = yield* this.consolidationEligibilityService.findEligibleSourceTransactions(
@@ -112,9 +106,7 @@ export class ConsolidationRepairExecutorService {
         effect => Db.transaction(effect)
     );
 
-    readonly consolidateExistingTransferChainReclaim = Effect.fn(
-        'ConsolidationRepairExecutorService.consolidateExistingTransferChainReclaim'
-    )(
+    readonly consolidateExistingTransferChainReclaim = Effect.fnUntraced(
         function* (this: ConsolidationRepairExecutorService, candidate: ExistingTransferChainReclaimCandidateInterface) {
             const bridgeSourceTransactionIds = [candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
             const existingTransfer = yield* this.findEligibleExistingTransfer(bridgeSourceTransactionIds, candidate.existingTransferId);
@@ -156,9 +148,7 @@ export class ConsolidationRepairExecutorService {
         effect => Db.transaction(effect)
     );
 
-    readonly consolidateExistingTransferIncomeDuplicate = Effect.fn(
-        'ConsolidationRepairExecutorService.consolidateExistingTransferIncomeDuplicate'
-    )(
+    readonly consolidateExistingTransferIncomeDuplicate = Effect.fnUntraced(
         function* (this: ConsolidationRepairExecutorService, candidate: ExistingTransferIncomeDuplicateCandidateInterface) {
             const existingTransfer = yield* this.findEligibleExistingTransfer(
                 [candidate.duplicateTransactionId],

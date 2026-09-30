@@ -46,15 +46,14 @@ export class BudgetCategoryLimitRepository {
         );
     });
 
-    readonly getByBudget = Effect.fn('BudgetCategoryLimitRepository.getByBudget')(function* (budgetId: number) {
-        return yield* Db.query(db =>
+    constructor(private readonly db: DB) {}
+
+    readonly getByBudget = (budgetId: number) =>
+        Db.query(db =>
             db.query.BudgetCategoryLimitEntityTable.findMany({
                 where: and(eq(BudgetCategoryLimitEntityTable.budgetId, budgetId), isNull(BudgetCategoryLimitEntityTable.deletedAt))
             })
         );
-    });
-
-    constructor(private readonly db: DB) {}
 
     findByBudget(budgetId: number) {
         return this.db.query.BudgetCategoryLimitEntityTable.findMany({

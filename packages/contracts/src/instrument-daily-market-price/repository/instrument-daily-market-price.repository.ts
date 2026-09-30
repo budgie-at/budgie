@@ -38,34 +38,23 @@ export class InstrumentDailyMarketPriceRepository {
         );
     });
 
-    readonly findLatest = Effect.fn('InstrumentDailyMarketPriceRepository.findLatest')(function* (
-        this: InstrumentDailyMarketPriceRepository,
-        instrumentId: number,
-        quoteInstrumentId: number
-    ) {
-        return yield* Db.query(db =>
+    constructor(private db: DB) {}
+
+    readonly findLatest = (instrumentId: number, quoteInstrumentId: number) =>
+        Db.query(db =>
             db.query.InstrumentDailyMarketPriceEntityTable.findFirst({
                 where: this.buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
                 orderBy: desc(InstrumentDailyMarketPriceEntityTable.priceDate)
             })
         );
-    });
 
-    readonly findForDateOrBefore = Effect.fn('InstrumentDailyMarketPriceRepository.findForDateOrBefore')(function* (
-        this: InstrumentDailyMarketPriceRepository,
-        instrumentId: number,
-        quoteInstrumentId: number,
-        priceDate: string
-    ) {
-        return yield* Db.query(db =>
+    readonly findForDateOrBefore = (instrumentId: number, quoteInstrumentId: number, priceDate: string) =>
+        Db.query(db =>
             db.query.InstrumentDailyMarketPriceEntityTable.findFirst({
                 where: this.buildInstrumentQuoteDateCondition(instrumentId, quoteInstrumentId, priceDate),
                 orderBy: desc(InstrumentDailyMarketPriceEntityTable.priceDate)
             })
         );
-    });
-
-    constructor(private db: DB) {}
 
     findRecent(instrumentId: number, quoteInstrumentId: number, limit: number) {
         return this.db.query.InstrumentDailyMarketPriceEntityTable.findMany({

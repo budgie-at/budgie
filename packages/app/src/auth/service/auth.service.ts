@@ -112,14 +112,14 @@ class AuthService {
     });
 
     readonly getPin = Effect.fn('AuthService.getPin')(function* () {
-        return yield* Effect.promise(() => SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
+        return yield* Effect.tryPromise(() => SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
     });
 
     readonly persistPin = Effect.fn('AuthService.persistPin')(function* (pin: string | null) {
         if (isNotEmptyString(pin)) {
-            yield* Effect.promise(() => SecureStore.setItemAsync(PIN_KEY, pin, PIN_SECURE_STORE_OPTIONS));
+            yield* Effect.tryPromise(() => SecureStore.setItemAsync(PIN_KEY, pin, PIN_SECURE_STORE_OPTIONS));
         } else {
-            yield* Effect.promise(() => SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
+            yield* Effect.tryPromise(() => SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
         }
     });
 
@@ -130,9 +130,9 @@ class AuthService {
     private readonly runRekey = Effect.fn('AuthService.runRekey')(function* (this: AuthService, params: RekeyParamsInterface) {
         const previousPin = yield* this.getPin();
 
-        yield* databaseRekeyService.rekey(params, this.persistPin(params.nextKey)).pipe(
+        yield* databaseRekeyService.rekey(params, this.persistPin(params.nextKey).pipe(Effect.orDie)).pipe(
             Effect.andThen(Effect.promise(() => reloadApp())),
-            Effect.onError(() => this.persistPin(previousPin))
+            Effect.onError(() => this.persistPin(previousPin).pipe(Effect.orDie))
         );
     });
 }

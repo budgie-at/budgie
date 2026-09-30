@@ -1,8 +1,7 @@
 import { LanguageEnum } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
+import * as Effect from 'effect/Effect';
 import { getLocales } from 'expo-localization';
-
-import { isDefined } from '@rnw-community/shared';
 
 import { isEnumValue } from '../../@generic/type-guard/is-enum-value.type-guard';
 import { messages as enMessages } from '../locales/en/messages';
@@ -17,39 +16,16 @@ const languageCatalogLoaders: Record<LanguageEnum, () => Promise<{ readonly mess
     [LanguageEnum.ES]: () => import('../locales/es/messages')
 };
 
-const languageMessagesPromises = new Map<LanguageEnum, Promise<Messages>>();
-
-let languageActivationRequestId = 0;
-
 i18n.load(LanguageEnum.EN, enMessages);
 i18n.activate(LanguageEnum.EN);
 
-export const i18nLoadLanguageMessages = (language: LanguageEnum): Promise<Messages> => {
-    const existingPromise = languageMessagesPromises.get(language);
+export const i18nLoadLanguageMessages = (language: LanguageEnum) =>
+    Effect.tryPromise(languageCatalogLoaders[language]).pipe(Effect.map(catalogModule => catalogModule.messages));
 
-    if (isDefined(existingPromise)) {
-        return existingPromise;
-    }
-
-    const messagesPromise = languageCatalogLoaders[language]().then(catalogModule => catalogModule.messages);
-
-    languageMessagesPromises.set(language, messagesPromise);
-
-    return messagesPromise;
-};
-
-export const i18nEnsureLanguageActivated = async (language: LanguageEnum): Promise<void> => {
-    languageActivationRequestId += 1;
-    const requestId = languageActivationRequestId;
-
-    const messages = await i18nLoadLanguageMessages(language);
-
-    i18n.load(language, messages);
-
-    if (requestId === languageActivationRequestId) {
-        i18n.activate(language);
-    }
-};
+export const i18nEnsureLanguageActivated = Effect.fn('i18n.ensureLanguageActivated')(function* (language: LanguageEnum) {
+    i18n.load(language, yield* i18nLoadLanguageMessages(language));
+    i18n.activate(language);
+});
 
 export const i18nActivateFallback = (): void => {
     i18n.activate(LanguageEnum.EN);

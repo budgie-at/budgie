@@ -162,9 +162,7 @@ export abstract class AbstractPollingSyncService extends AbstractSyncService {
             return true;
         }
 
-        yield* Effect.sleep(this.rateLimitMs);
-
-        return false;
+        return yield* Effect.raceFirst(Effect.as(Effect.sleep(this.rateLimitMs), false), Effect.as(workload.awaitQueuedUserWork, true));
     });
 
     private readonly handleError = Effect.fnUntraced(function* (this: AbstractPollingSyncService, error: unknown) {

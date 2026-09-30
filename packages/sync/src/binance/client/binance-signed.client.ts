@@ -10,11 +10,10 @@ import * as Schema from 'effect/Schema';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BaseSyncProviderClient } from '../../core/client/base-sync-provider.client';
-import { HTTP_STATUS_TOO_MANY_REQUESTS } from '../../core/constant/http-status.constant';
-import { SYNC_RETRY_STATUS_CODES } from '../../core/constant/sync-retry-status-codes.constant';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
+import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
 import { BINANCE_API_BASE_URL } from '../constant/binance-api-base-url.constant';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
 import { BINANCE_DORMANCY_PERIOD_MS } from '../constant/binance-dormancy-period-ms.constant';
@@ -99,7 +98,7 @@ const BINANCE_INVALID_SYMBOL_CODE = -1121;
 
 export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly C2C_HISTORY_MONTHS = 6;
-    private static readonly decodeCredentials = Schema.decodeUnknownSync(Schema.fromJsonString(BinanceCredentialsSchema));
+    private static readonly decodeCredentials = Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema));
 
     readonly getAccounts = Effect.fn('BinanceSignedClient.getAccounts')(function* (this: BinanceSignedClient) {
         const balanceByAsset = this.buildSpotBalanceMap(
@@ -224,9 +223,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     protected readonly provider = SyncProviderEnum.BINANCE;
     protected readonly baseUrl = BINANCE_API_BASE_URL;
     protected readonly headers: Record<string, string>;
-    protected override readonly retryStatusCodes: readonly number[] = [...SYNC_RETRY_STATUS_CODES, HTTP_STATUS_TOO_MANY_REQUESTS];
     protected override readonly retryMethods: readonly HttpMethod[] = ['GET', 'POST'];
-    private readonly credentials: BinanceCredentialsInterface;
+    private readonly credentials: Option.Option<BinanceCredentialsInterface>;
     private readonly throttle: BinanceWeightThrottle;
 
     private readonly depositSource: BinanceCapitalHistorySourceInterface<BinanceDepositApiInterface> = {
@@ -368,7 +366,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ) {
         super();
         this.credentials = BinanceSignedClient.decodeCredentials(token);
-        this.headers = { 'X-MBX-APIKEY': this.credentials.apiKey, 'Content-Type': 'application/json' };
+        this.headers = {
+            'X-MBX-APIKEY': Option.match(this.credentials, { onNone: () => '', onSome: ({ apiKey }) => apiKey }),
+            'Content-Type': 'application/json'
+        };
         this.throttle = new BinanceWeightThrottle(deadlineAtMs);
     }
 
@@ -423,6 +424,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         });
     }
 
+    private readonly recoverMissingPermission = (error: SyncUnauthorizedError) =>
+        Effect.as(Effect.logWarning(`Binance history skipped: ${error.message}`), []);
+
     private deriveTradeSymbols(
         startTimeMs: number,
         endTimeMs: number,
@@ -433,12 +437,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
             const baseAssets = this.collectBaseAssets(balances, convertTransfers);
             const deposits = yield* this.fetchCapitalHistory(this.depositSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
-                Effect.orElseSucceed(() => [])
+                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
             );
             const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
-                Effect.orElseSucceed(() => [])
+                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
             );
-            const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs).pipe(Effect.orElseSucceed(() => []));
+            const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs).pipe(
+                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
+            );
             [
                 ...deposits.map(deposit => deposit.coin),
                 ...withdrawals.map(withdrawal => withdrawal.coin),
@@ -495,12 +501,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 return yield* new SyncDeferredError({ provider: this.provider, message: 'Sync deadline reached' });
             }
 
+            const credentials = yield* Option.match(this.credentials, {
+                onNone: () => Effect.fail(new SyncUnauthorizedError({ provider: this.provider, message: 'Invalid Binance credentials' })),
+                onSome: Effect.succeed
+            });
+
             yield* this.throttle.waitIfNeeded();
             const query = Object.entries({ ...params, recvWindow: SIGNATURE_RECV_WINDOW_MS, timestamp: yield* this.resolveTimestamp() })
                 .map(([key, value]) => `${key}=${String(value)}`)
                 .join('&');
 
-            return yield* this.fetchJson(schema, `${endpoint}?${query}&signature=${this.sign(query)}`, method);
+            return yield* this.fetchJson(schema, `${endpoint}?${query}&signature=${this.sign(query, credentials.apiSecret)}`, method);
         });
     }
 
@@ -856,7 +867,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return binanceMapper.mapBalanceToAccount(balance.asset, wallet, totalBalance);
     }
 
-    private sign(query: string): string {
-        return bytesToHex(hmac(sha256, utf8ToBytes(this.credentials.apiSecret), utf8ToBytes(query)));
+    private sign(query: string, apiSecret: string): string {
+        return bytesToHex(hmac(sha256, utf8ToBytes(apiSecret), utf8ToBytes(query)));
     }
 }

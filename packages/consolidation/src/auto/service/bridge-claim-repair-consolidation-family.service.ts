@@ -11,10 +11,9 @@ export class BridgeClaimRepairConsolidationFamilyService extends ConsolidationFa
 
     constructor(
         private readonly transferPairRepository: TransferPairRepository,
-        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
-        yieldControl: () => Promise<void>
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService
     ) {
-        super(yieldControl);
+        super();
     }
 
     protected findCandidates() {

@@ -2,11 +2,11 @@ import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterfac
 import { Db } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
-import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { useFocusRefreshVersion } from '../../@generic/hook/use-focus-refresh-version.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-completeness-threshold.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
@@ -41,9 +41,8 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
         status: 'idle',
         suggestions: []
     });
-    const [refreshVersion, setRefreshVersion] = useState(0);
+    const { refresh, refreshVersion } = useFocusRefreshVersion();
     const fetchSuggestionsRef = useRef(fetchSuggestions);
-    const navigation = useNavigation();
     const progress = useAtomValue(embeddingProgressStore.snapshot, snapshot => snapshot.percent);
     const isEmbeddingIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
 
@@ -62,14 +61,6 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
             appRuntime.runFork(aiModelResidencyService.release(AiSubsystemNameEnum.EMBEDDING));
         };
     }, [enabled]);
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            setRefreshVersion(version => version + 1);
-        });
-
-        return unsubscribe;
-    }, [navigation]);
 
     useEffect(() => {
         if (!isReady) {
@@ -102,10 +93,6 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
 
     const isInitializing = enabled && !isReady && currentResult.status === 'idle';
     const status: SuggestionStatus = isInitializing ? 'initializing' : currentResult.status;
-
-    const refresh = (): void => {
-        setRefreshVersion(version => version + 1);
-    };
 
     return { status, suggestions: currentResult.suggestions, refresh };
 };

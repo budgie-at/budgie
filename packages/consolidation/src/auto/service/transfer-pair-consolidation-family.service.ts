@@ -14,10 +14,9 @@ export class TransferPairConsolidationFamilyService extends ConsolidationFamilyS
 
     constructor(
         private readonly transferPairRepository: TransferPairRepository,
-        private readonly consolidationExecutorService: ConsolidationExecutorService,
-        yieldControl: () => Promise<void>
+        private readonly consolidationExecutorService: ConsolidationExecutorService
     ) {
-        super(yieldControl);
+        super();
     }
 
     protected findCandidates(scope: ConsolidationScanScopeInterface | null) {

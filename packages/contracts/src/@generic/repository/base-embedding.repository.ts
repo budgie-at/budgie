@@ -15,20 +15,6 @@ import type { SimilarTagsParamsInterface } from '../interface/similar-tags-param
 import type { TagScoreResultInterface } from '../interface/tag-score-result.interface';
 
 export abstract class BaseEmbeddingRepository {
-    readonly findSimilarCategories = Effect.fn('BaseEmbeddingRepository.findSimilarCategories')(function* (
-        this: BaseEmbeddingRepository,
-        ...[queryEmbedding, vecLimit, distanceThreshold, categoryLimit]: [Uint8Array, number, number, number]
-    ) {
-        return yield* Db.query(db =>
-            db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
-                convertEmbeddingToJson(queryEmbedding),
-                vecLimit,
-                distanceThreshold,
-                categoryLimit
-            ])
-        );
-    });
-
     readonly findSimilarTags = Effect.fn('BaseEmbeddingRepository.findSimilarTags')(function* (
         this: BaseEmbeddingRepository,
         queryEmbedding: Uint8Array,
@@ -44,32 +30,6 @@ export abstract class BaseEmbeddingRepository {
                 categoryId,
                 tagLimit
             ])
-        );
-    });
-
-    protected readonly countRows = Effect.fn('BaseEmbeddingRepository.countRows')(function* (
-        table: SQLiteTable,
-        deletedAtColumn: SQLiteColumn
-    ) {
-        const [result] = yield* Db.query(db =>
-            db
-                .select({ count: sql<number>`COUNT(*)` })
-                .from(table)
-                .where(isNull(deletedAtColumn))
-        );
-
-        return result.count;
-    });
-
-    protected readonly rebuildVec = Effect.fn('BaseEmbeddingRepository.rebuildVec')(function* (this: BaseEmbeddingRepository) {
-        const { vecTableName, sourceTableName } = this.queryConfig;
-
-        yield* Db.query(db => db.$client.runAsync(`DELETE FROM ${vecTableName}`, []));
-        yield* Db.query(db =>
-            db.$client.runAsync(
-                `INSERT INTO ${vecTableName}(rowid, embedding) SELECT id, embedding FROM ${sourceTableName} WHERE deleted_at IS NULL`,
-                []
-            )
         );
     });
 
@@ -102,6 +62,24 @@ export abstract class BaseEmbeddingRepository {
     });
 
     constructor(private readonly queryConfig: EmbeddingQueryConfigInterface) {}
+
+    readonly findSimilarCategories = (queryEmbedding: Uint8Array, vecLimit: number, distanceThreshold: number, categoryLimit: number) =>
+        Db.query(db =>
+            db.$client.getAllAsync<CategoryScoreResultInterface>(this.queryConfig.similarCategoriesQuery, [
+                convertEmbeddingToJson(queryEmbedding),
+                vecLimit,
+                distanceThreshold,
+                categoryLimit
+            ])
+        );
+
+    protected readonly countRows = (table: SQLiteTable, deletedAtColumn: SQLiteColumn) =>
+        Db.query(db =>
+            db
+                .select({ count: sql<number>`COUNT(*)` })
+                .from(table)
+                .where(isNull(deletedAtColumn))
+        ).pipe(Effect.map(([result]) => result.count));
 
     protected isValidDimensions(dimensions: number): boolean {
         return dimensions === EMBEDDING_DIMENSIONS;

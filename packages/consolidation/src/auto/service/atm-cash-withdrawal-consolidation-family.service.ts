@@ -14,10 +14,9 @@ export class AtmCashWithdrawalConsolidationFamilyService extends ConsolidationFa
 
     constructor(
         private readonly atmCashWithdrawalRepository: AtmCashWithdrawalRepository,
-        private readonly consolidationExecutorService: ConsolidationExecutorService,
-        yieldControl: () => Promise<void>
+        private readonly consolidationExecutorService: ConsolidationExecutorService
     ) {
-        super(yieldControl);
+        super();
     }
 
     protected findCandidates(scope: ConsolidationScanScopeInterface | null) {

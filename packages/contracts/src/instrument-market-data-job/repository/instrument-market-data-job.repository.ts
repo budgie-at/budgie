@@ -63,22 +63,17 @@ export class InstrumentMarketDataJobRepository {
         return jobs.at(0);
     });
 
-    readonly hasOpen = Effect.fn('InstrumentMarketDataJobRepository.hasOpen')(function* (
-        this: InstrumentMarketDataJobRepository,
-        instrumentId: number,
-        quoteInstrumentId: number
-    ) {
-        const job = yield* Db.query(db =>
+    constructor(private db: DB) {}
+
+    readonly hasOpen = (instrumentId: number, quoteInstrumentId: number) =>
+        Db.query(db =>
             db.query.InstrumentMarketDataJobEntityTable.findFirst({
                 where: this.buildOpenInstrumentQuoteCondition(instrumentId, quoteInstrumentId)
             })
-        );
+        ).pipe(Effect.map(isDefined));
 
-        return isDefined(job);
-    });
-
-    readonly markCompleted = Effect.fn('InstrumentMarketDataJobRepository.markCompleted')(function* (jobId: number) {
-        yield* Db.query(db =>
+    readonly markCompleted = (jobId: number) =>
+        Db.query(db =>
             db
                 .update(InstrumentMarketDataJobEntityTable)
                 .set({
@@ -89,10 +84,9 @@ export class InstrumentMarketDataJobRepository {
                 })
                 .where(eq(InstrumentMarketDataJobEntityTable.id, jobId))
         );
-    });
 
-    readonly markFailed = Effect.fn('InstrumentMarketDataJobRepository.markFailed')(function* (jobId: number, errorMessage: string) {
-        yield* Db.query(db =>
+    readonly markFailed = (jobId: number, errorMessage: string) =>
+        Db.query(db =>
             db
                 .update(InstrumentMarketDataJobEntityTable)
                 .set({
@@ -102,10 +96,7 @@ export class InstrumentMarketDataJobRepository {
                     updatedAt: new Date()
                 })
                 .where(eq(InstrumentMarketDataJobEntityTable.id, jobId))
-        );
-    });
-
-    constructor(private db: DB) {}
+        ).pipe(Effect.asVoid);
 
     findLatestByInstrumentAndQuote(instrumentId: number, quoteInstrumentId: number) {
         return this.db.query.InstrumentMarketDataJobEntityTable.findFirst({

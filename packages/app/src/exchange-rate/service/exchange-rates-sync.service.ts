@@ -9,8 +9,8 @@ import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { exchangeRateRepository, instrumentRepository } from '../../@generic/drizzle/db/db';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { EXCHANGE_RATE_SYNC_TASK } from '../constant/exchange-rate-sync-task.constant';
 import { emptyExchangeRateApiResponse } from '../interface/exchange-rate-api-response.interface';
@@ -76,7 +76,7 @@ class ExchangeRatesSyncService {
         }
 
         yield* this.syncFiatRates(baseInstrument);
-        yield* Effect.promise(() => microPause());
+        yield* YIELD_TO_UI;
         yield* this.syncCryptoRates(baseInstrument);
         this.lastSyncedAtMs = Date.now();
     });

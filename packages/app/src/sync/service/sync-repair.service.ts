@@ -82,7 +82,7 @@ class SyncRepairService {
     private readonly removeDuplicatesInner = Effect.fnUntraced(function* (this: SyncRepairService) {
         const duplicateResult = yield* Db.transaction(this.removeDuplicatesInTransaction());
         const consolidationRepairCount = yield* this.repairConsolidationDuplicates().pipe(
-            Effect.tapError(() => Effect.ignore(this.rebuildBalancesWhenNeeded(duplicateResult)))
+            Effect.onError(() => Effect.ignoreCause(this.rebuildBalancesWhenNeeded(duplicateResult)))
         );
         const result = this.mergeConsolidationRepairResult(duplicateResult, consolidationRepairCount);
 

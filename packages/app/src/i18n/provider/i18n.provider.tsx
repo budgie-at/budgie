@@ -2,10 +2,12 @@ import { LanguageEnum } from '@budgie/contracts';
 import { createIntl, createIntlCache } from '@formatjs/intl';
 import { i18n } from '@lingui/core';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
+import * as Effect from 'effect/Effect';
 import { ReactNode, useEffect, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { I18nContext, I18nContextInterface } from '../context/i18n.context';
 import { i18nActivateFallback, i18nEnsureLanguageActivated, i18nGetOSLocale } from '../util/i18n.util';
@@ -24,29 +26,24 @@ export const I18nProvider = ({ children }: Props) => {
     const [isFallbackActivated, setIsFallbackActivated] = useState(false);
 
     useEffect(() => {
-        let isSubscribed = true;
         const targetLanguage = isSettingsLoading ? i18nGetOSLocale() : language;
+        const fiber = appRuntime.runFork(
+            i18nEnsureLanguageActivated(targetLanguage).pipe(
+                Effect.match({
+                    onSuccess: () => {
+                        setIsFallbackActivated(false);
+                        setActivatedLanguage(targetLanguage);
+                    },
+                    onFailure: () => {
+                        i18nActivateFallback();
+                        setIsFallbackActivated(true);
+                        setActivatedLanguage(LanguageEnum.EN);
+                    }
+                })
+            )
+        );
 
-        const handleActivationSuccess = () => {
-            if (isSubscribed) {
-                setIsFallbackActivated(false);
-                setActivatedLanguage(targetLanguage);
-            }
-        };
-
-        const handleActivationFailure = () => {
-            if (isSubscribed) {
-                i18nActivateFallback();
-                setIsFallbackActivated(true);
-                setActivatedLanguage(LanguageEnum.EN);
-            }
-        };
-
-        void i18nEnsureLanguageActivated(targetLanguage).then(handleActivationSuccess, handleActivationFailure);
-
-        return () => {
-            isSubscribed = false;
-        };
+        return () => void fiber.interruptUnsafe();
     }, [isSettingsLoading, language]);
 
     const locale = languageToLocale(isDefined(activatedLanguage) ? activatedLanguage : language);

@@ -1,4 +1,5 @@
 import { msg } from '@lingui/core/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
@@ -40,7 +41,12 @@ export const usePinSetup = ({ mode }: Params) => {
     };
 
     const verifyOldPin = async (pin: string): Promise<boolean> => {
-        const isCorrect = await appRuntime.runPromise(authService.verifyPin(pin));
+        const isCorrect = await appRuntime.runPromise(
+            authService.verifyPin(pin).pipe(
+                Effect.tapError(Effect.logError),
+                Effect.orElseSucceed(() => false)
+            )
+        );
 
         if (!isCorrect) {
             setError(msg`Incorrect PIN`);

@@ -36,23 +36,6 @@ export class TransactionEntryRepository {
         );
     });
 
-    readonly moveBackToOriginalTransactions = Effect.fn('TransactionEntryRepository.moveBackToOriginalTransactions')(function* (
-        canonicalTransactionId: number
-    ) {
-        yield* Db.query(db =>
-            db
-                .update(TransactionEntryEntityTable)
-                .set({ transactionId: TransactionEntryEntityTable.originalTransactionId, originalTransactionId: null })
-                .where(
-                    and(
-                        eq(TransactionEntryEntityTable.transactionId, canonicalTransactionId),
-                        isNotNull(TransactionEntryEntityTable.originalTransactionId),
-                        isNull(TransactionEntryEntityTable.deletedAt)
-                    )
-                )
-        );
-    });
-
     readonly hasMovedSourceEntries = Effect.fn('TransactionEntryRepository.hasMovedSourceEntries')(function* (transactionIds: number[]) {
         if (!isNotEmptyArray(transactionIds)) {
             return false;
@@ -79,12 +62,6 @@ export class TransactionEntryRepository {
         return isNotEmptyArray(inputs) ? yield* Db.query(db => db.insert(TransactionEntryEntityTable).values(inputs).returning()) : [];
     });
 
-    readonly create = Effect.fn('TransactionEntryRepository.create')(function* (input: TransactionEntryCreateEntityInterface) {
-        const [transactionEntry] = yield* Db.query(db => db.insert(TransactionEntryEntityTable).values([input]).returning());
-
-        return transactionEntry;
-    });
-
     readonly findPendingBaseValuationBuckets = Effect.fn('TransactionEntryRepository.findPendingBaseValuationBuckets')(function* (
         this: TransactionEntryRepository,
         baseInstrumentId: number
@@ -105,55 +82,6 @@ export class TransactionEntryRepository {
                 .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
                 .where(this.buildPendingBaseValuationWhere(baseInstrumentId))
                 .groupBy(rateDateSql, AccountEntityTable.instrumentId)
-        );
-    });
-
-    readonly countPendingBaseValuationEntries = Effect.fn('TransactionEntryRepository.countPendingBaseValuationEntries')(function* (
-        this: TransactionEntryRepository,
-        baseInstrumentId: number
-    ) {
-        const [row] = yield* Db.query(db =>
-            db
-                .select({ count: count(TransactionEntryEntityTable.id) })
-                .from(TransactionEntryEntityTable)
-                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                .where(this.buildPendingBaseValuationWhere(baseInstrumentId))
-        );
-
-        return row.count;
-    });
-
-    readonly updateBaseValuationBucket = Effect.fn('TransactionEntryRepository.updateBaseValuationBucket')(function* (
-        input: BaseValuationBucketUpdateInterface
-    ) {
-        yield* Db.query(db =>
-            Promise.resolve(
-                db.run(sql`
-                    UPDATE transaction_entries
-                    SET base_instrument_id = ${input.baseInstrumentId},
-                        base_exchange_rate = ${input.baseExchangeRate},
-                        base_amount = ROUND(amount * ${input.baseExchangeRate})
-                    WHERE id IN (
-                        SELECT te.id
-                        FROM transaction_entries te
-                        INNER JOIN transactions t ON t.id = te.transaction_id
-                        LEFT JOIN transactions original_t ON original_t.id = te.original_transaction_id
-                        INNER JOIN accounts a ON a.id = te.account_id
-                        WHERE date(COALESCE(original_t.operated_at, t.operated_at), 'unixepoch') = ${input.rateDate}
-                          AND a.instrument_id = ${input.sourceInstrumentId}
-                          AND te.deleted_at IS NULL
-                          AND t.deleted_at IS NULL
-                          AND a.deleted_at IS NULL
-                          AND (
-                            te.base_amount IS NULL
-                            OR te.base_exchange_rate IS NULL
-                            OR te.base_instrument_id IS NULL
-                            OR te.base_instrument_id != ${input.baseInstrumentId}
-                          )
-                    )
-                `)
-            )
         );
     });
 
@@ -193,11 +121,73 @@ export class TransactionEntryRepository {
             : [];
     });
 
-    readonly findByTransactionIdAndExternalId = Effect.fn('TransactionEntryRepository.findByTransactionIdAndExternalId')(function* (
-        transactionId: number,
-        externalId: string
-    ) {
-        return yield* Db.query(db =>
+    readonly deleteByTransactionIds = Effect.fn('TransactionEntryRepository.deleteByTransactionIds')(function* (transactionIds: number[]) {
+        if (isNotEmptyArray(transactionIds)) {
+            yield* Db.query(db =>
+                db.delete(TransactionEntryEntityTable).where(inArray(TransactionEntryEntityTable.transactionId, transactionIds))
+            );
+        }
+    });
+
+    readonly moveBackToOriginalTransactions = (canonicalTransactionId: number) =>
+        Db.query(db =>
+            db
+                .update(TransactionEntryEntityTable)
+                .set({ transactionId: TransactionEntryEntityTable.originalTransactionId, originalTransactionId: null })
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.transactionId, canonicalTransactionId),
+                        isNotNull(TransactionEntryEntityTable.originalTransactionId),
+                        isNull(TransactionEntryEntityTable.deletedAt)
+                    )
+                )
+        );
+
+    readonly create = (input: TransactionEntryCreateEntityInterface) =>
+        Db.query(db => db.insert(TransactionEntryEntityTable).values([input]).returning()).pipe(
+            Effect.map(([transactionEntry]) => transactionEntry)
+        );
+
+    readonly countPendingBaseValuationEntries = (baseInstrumentId: number) =>
+        Db.query(db =>
+            db
+                .select({ count: count(TransactionEntryEntityTable.id) })
+                .from(TransactionEntryEntityTable)
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                .where(this.buildPendingBaseValuationWhere(baseInstrumentId))
+        ).pipe(Effect.map(([row]) => row.count));
+
+    readonly updateBaseValuationBucket = (input: BaseValuationBucketUpdateInterface) =>
+        Db.query(db =>
+            db.run(sql`
+                    UPDATE transaction_entries
+                    SET base_instrument_id = ${input.baseInstrumentId},
+                        base_exchange_rate = ${input.baseExchangeRate},
+                        base_amount = ROUND(amount * ${input.baseExchangeRate})
+                    WHERE id IN (
+                        SELECT te.id
+                        FROM transaction_entries te
+                        INNER JOIN transactions t ON t.id = te.transaction_id
+                        LEFT JOIN transactions original_t ON original_t.id = te.original_transaction_id
+                        INNER JOIN accounts a ON a.id = te.account_id
+                        WHERE date(COALESCE(original_t.operated_at, t.operated_at), 'unixepoch') = ${input.rateDate}
+                          AND a.instrument_id = ${input.sourceInstrumentId}
+                          AND te.deleted_at IS NULL
+                          AND t.deleted_at IS NULL
+                          AND a.deleted_at IS NULL
+                          AND (
+                            te.base_amount IS NULL
+                            OR te.base_exchange_rate IS NULL
+                            OR te.base_instrument_id IS NULL
+                            OR te.base_instrument_id != ${input.baseInstrumentId}
+                          )
+                    )
+                `)
+        );
+
+    readonly findByTransactionIdAndExternalId = (transactionId: number, externalId: string) =>
+        Db.query(db =>
             db.query.TransactionEntryEntityTable.findFirst({
                 where: and(
                     eq(TransactionEntryEntityTable.externalId, externalId),
@@ -209,14 +199,9 @@ export class TransactionEntryRepository {
                 )
             })
         );
-    });
 
-    readonly updateByExternalIdAndAccountId = Effect.fn('TransactionEntryRepository.updateByExternalIdAndAccountId')(function* (
-        externalId: string,
-        accountId: number,
-        input: TransactionEntryUpdateInputInterface
-    ) {
-        const transactionEntries = yield* Db.query(db =>
+    readonly updateByExternalIdAndAccountId = (externalId: string, accountId: number, input: TransactionEntryUpdateInputInterface) =>
+        Db.query(db =>
             db
                 .update(TransactionEntryEntityTable)
                 .set(input)
@@ -228,19 +213,13 @@ export class TransactionEntryRepository {
                     )
                 )
                 .returning()
-        );
+        ).pipe(Effect.map(transactionEntries => transactionEntries.at(0)));
 
-        return transactionEntries.at(0);
-    });
+    readonly deleteByTransactionId = (transactionId: number) =>
+        Db.query(db => db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId)));
 
-    readonly deleteByTransactionId = Effect.fn('TransactionEntryRepository.deleteByTransactionId')(function* (transactionId: number) {
-        yield* Db.query(db => db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId)));
-    });
-
-    readonly deleteLedgerByTransactionId = Effect.fn('TransactionEntryRepository.deleteLedgerByTransactionId')(function* (
-        transactionId: number
-    ) {
-        yield* Db.query(db =>
+    readonly deleteLedgerByTransactionId = (transactionId: number) =>
+        Db.query(db =>
             db
                 .delete(TransactionEntryEntityTable)
                 .where(
@@ -250,41 +229,27 @@ export class TransactionEntryRepository {
                     )
                 )
         );
-    });
 
-    readonly deleteByTransactionIds = Effect.fn('TransactionEntryRepository.deleteByTransactionIds')(function* (transactionIds: number[]) {
-        if (isNotEmptyArray(transactionIds)) {
-            yield* Db.query(db =>
-                db.delete(TransactionEntryEntityTable).where(inArray(TransactionEntryEntityTable.transactionId, transactionIds))
-            );
-        }
-    });
+    readonly truncate = () => Db.query(db => db.delete(TransactionEntryEntityTable));
 
-    readonly truncate = Effect.fn('TransactionEntryRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(TransactionEntryEntityTable));
-    });
-
-    readonly archiveByAccountIds = Effect.fn('TransactionEntryRepository.archiveByAccountIds')(function* (accountIds: number[]) {
-        yield* Db.query(db =>
+    readonly archiveByAccountIds = (accountIds: number[]) =>
+        Db.query(db =>
             db
                 .update(TransactionEntryEntityTable)
                 .set({ deletedAt: new Date() })
                 .where(and(inArray(TransactionEntryEntityTable.accountId, accountIds), isNull(TransactionEntryEntityTable.deletedAt)))
         );
-    });
 
-    readonly restoreByAccountIds = Effect.fn('TransactionEntryRepository.restoreByAccountIds')(function* (accountIds: number[]) {
-        yield* Db.query(db =>
+    readonly restoreByAccountIds = (accountIds: number[]) =>
+        Db.query(db =>
             db
                 .update(TransactionEntryEntityTable)
                 .set({ deletedAt: null })
                 .where(inArray(TransactionEntryEntityTable.accountId, accountIds))
         );
-    });
 
-    readonly deleteByAccountId = Effect.fn('TransactionEntryRepository.deleteByAccountId')(function* (accountId: number) {
-        yield* Db.query(db => db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId)));
-    });
+    readonly deleteByAccountId = (accountId: number) =>
+        Db.query(db => db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId)));
 
     private buildPendingBaseValuationWhere(baseInstrumentId: number) {
         return and(

@@ -11,12 +11,6 @@ import type * as schema from '../../schema';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class RuleConditionRepository {
-    readonly create = Effect.fn('RuleConditionRepository.create')(function* (input: RuleConditionCreateEntityInterface) {
-        const [condition] = yield* Db.query(db => db.insert(RuleConditionEntityTable).values([input]).returning());
-
-        return condition;
-    });
-
     readonly bulkCreate = Effect.fn('RuleConditionRepository.bulkCreate')(function* (inputs: RuleConditionCreateEntityInterface[]) {
         if (isEmptyArray(inputs)) {
             return [];
@@ -25,15 +19,15 @@ export class RuleConditionRepository {
         return yield* Db.query(db => db.insert(RuleConditionEntityTable).values(inputs).returning());
     });
 
-    readonly deleteByRuleId = Effect.fn('RuleConditionRepository.deleteByRuleId')(function* (ruleId: number) {
-        yield* Db.query(db => db.delete(RuleConditionEntityTable).where(eq(RuleConditionEntityTable.ruleId, ruleId)));
-    });
-
-    readonly truncate = Effect.fn('RuleConditionRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(RuleConditionEntityTable));
-    });
-
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+
+    readonly create = (input: RuleConditionCreateEntityInterface) =>
+        Db.query(db => db.insert(RuleConditionEntityTable).values([input]).returning()).pipe(Effect.map(([condition]) => condition));
+
+    readonly deleteByRuleId = (ruleId: number) =>
+        Db.query(db => db.delete(RuleConditionEntityTable).where(eq(RuleConditionEntityTable.ruleId, ruleId)));
+
+    readonly truncate = () => Db.query(db => db.delete(RuleConditionEntityTable));
 
     findByRuleId(ruleId: number) {
         return this.db.query.RuleConditionEntityTable.findMany({

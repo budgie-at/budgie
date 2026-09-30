@@ -14,10 +14,9 @@ export class ExistingTransferBridgeConsolidationFamilyService extends Consolidat
 
     constructor(
         private readonly existingTransferRepository: ExistingTransferRepository,
-        private readonly consolidationExecutorService: ConsolidationExecutorService,
-        yieldControl: () => Promise<void>
+        private readonly consolidationExecutorService: ConsolidationExecutorService
     ) {
-        super(yieldControl);
+        super();
     }
 
     protected findCandidates(scope: ConsolidationScanScopeInterface | null) {

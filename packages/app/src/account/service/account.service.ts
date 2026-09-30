@@ -10,6 +10,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNumber, isPositiveNumber } from '@rnw-community/shared';
 
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import {
     accountBalanceRepository,
     accountRepository,
@@ -21,7 +22,6 @@ import {
 import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
 import { Workload } from '../../@generic/service/workload.service';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { transactionService } from '../../transaction/service/transaction.service';
 import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
@@ -152,14 +152,14 @@ class AccountService {
     );
 
     readonly archiveById = Effect.fn('AccountService.archiveById')(function* (this: AccountService, id: number) {
-        yield* Effect.promise(() => microPause());
+        yield* YIELD_TO_UI;
 
         const workload = yield* Workload;
         yield* workload.runForeground(Db.transaction(this.archiveByIdInTransaction(id)));
     }, invalidateDatabaseLiveQuery);
 
     readonly restoreById = Effect.fn('AccountService.restoreById')(function* (id: number) {
-        yield* Effect.promise(() => microPause());
+        yield* YIELD_TO_UI;
 
         yield* Db.transaction(
             Effect.gen(function* () {

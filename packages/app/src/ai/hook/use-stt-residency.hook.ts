@@ -1,4 +1,8 @@
+import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
 import { useEffect, useRef } from 'react';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
@@ -11,28 +15,22 @@ interface UseSttResidencyReturn {
 }
 
 export const useSttResidency = (): UseSttResidencyReturn => {
-    const hasLeaseRef = useRef(false);
-    const pendingAcquireRef = useRef<Promise<unknown>>(Promise.resolve());
+    const acquireFiberRef = useRef<Fiber.Fiber<boolean> | null>(null);
 
-    const acquireSttResidency = async (): Promise<boolean> => {
-        if (!hasLeaseRef.current) {
-            hasLeaseRef.current = true;
-            pendingAcquireRef.current = appRuntime.runPromise(aiModelResidencyService.acquire(AiSubsystemNameEnum.STT));
-        }
+    const acquireSttResidency = (): Promise<boolean> => {
+        acquireFiberRef.current ??= appRuntime.runFork(aiModelResidencyService.acquire(AiSubsystemNameEnum.STT));
 
-        await pendingAcquireRef.current;
-
-        return sttService.isReady;
+        return appRuntime.runPromise(Fiber.join(acquireFiberRef.current).pipe(Effect.map(() => sttService.isReady)));
     };
 
     const releaseSttResidency = (): void => {
-        if (hasLeaseRef.current) {
-            hasLeaseRef.current = false;
+        if (isDefined(acquireFiberRef.current)) {
+            acquireFiberRef.current = null;
             appRuntime.runFork(aiModelResidencyService.releaseNow(AiSubsystemNameEnum.STT));
         }
     };
 
-    // oxlint-disable-next-line react/exhaustive-deps -- Mount-scoped lease; both callbacks only read the stable hasLeaseRef
+    // oxlint-disable-next-line react/exhaustive-deps -- Mount-scoped lease; both callbacks only read the stable acquireFiberRef
     useEffect(() => {
         void acquireSttResidency();
 

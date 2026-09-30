@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message';
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
@@ -16,14 +17,14 @@ export const BudgetPushToggle = () => {
     const { t } = useLingui();
     const isBudgetPushEnabled = useSetting('isBudgetPushEnabled');
 
-    const persist = async (next: boolean): Promise<void> => {
-        try {
-            await appRuntime.runPromise(updateSettingsMutation({ isBudgetPushEnabled: next }));
-        } catch (error: unknown) {
-            appRuntime.runFork(Effect.logError('failed', { errorMessage: getErrorMessage(error) }));
-            Toast.show({ type: 'error', text1: t`Could not update notifications`, text2: getErrorMessage(error) });
-        }
-    };
+    const persist = (next: boolean): Promise<void> =>
+        appRuntime.runPromise(
+            updateSettingsMutation({ isBudgetPushEnabled: next }).pipe(
+                Effect.asVoid,
+                Effect.tapCause(Effect.logError),
+                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not update notifications`, getErrorMessage(error))))
+            )
+        );
 
     const handleChange = async (next: boolean) => {
         if (!next) {

@@ -1,11 +1,11 @@
 import { SuggestionInternalStatus, SuggestionStatus } from '@budgie/ai';
 import { RepeatedTransactionPatternInterface, TransactionTypeEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
-import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
-import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { useFocusRefreshVersion } from '../../@generic/hook/use-focus-refresh-version.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
@@ -29,33 +29,15 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
     const [internalStatus, setInternalStatus] = useState<SuggestionInternalStatus>('idle');
     const [timePatterns, setTimePatterns] = useState<RepeatedTransactionPatternInterface[]>([]);
     const [amountPatterns, setAmountPatterns] = useState<RepeatedTransactionPatternInterface[]>([]);
-    const [refreshVersion, setRefreshVersion] = useState(0);
+    const { refreshVersion } = useFocusRefreshVersion();
 
-    const navigation = useNavigation();
-    const currentTimeRef = useRef(new Date());
     const lastAmountRef = useRef<number | null>(null);
-    const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const isReady = enabled && isPositiveNumber(accountId);
     const amountOrNull = isPositiveNumber(amount) ? amount : null;
     const categoryIdOrNull = isPositiveNumber(categoryId) ? categoryId : null;
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            setRefreshVersion(version => version + 1);
-        });
-
-        return unsubscribe;
-    }, [navigation]);
-
-    useEffect(() => {
-        const clearDebounceTimer = (): void => {
-            if (isDefined(debounceTimerRef.current)) {
-                clearTimeout(debounceTimerRef.current);
-                debounceTimerRef.current = null;
-            }
-        };
-
         if (!isReady) {
             return emptyFn;
         }
@@ -63,54 +45,33 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
         const shouldDebounce = isDefined(lastAmountRef.current) && lastAmountRef.current !== amountOrNull;
         lastAmountRef.current = amountOrNull;
 
-        clearDebounceTimer();
+        const fiber = appRuntime.runFork(
+            Effect.gen(function* () {
+                if (shouldDebounce) {
+                    yield* Effect.sleep(DEBOUNCE_MS);
+                }
 
-        let cancelled = false;
-        const fetchSuggestions = async (): Promise<void> => {
-            setInternalStatus('loading');
-            currentTimeRef.current = new Date();
-            const startedAt = Date.now();
+                setInternalStatus('loading');
 
-            try {
-                const queryParams = {
-                    currentTime: currentTimeRef.current,
+                const result = yield* repeatedTransactionService.getSuggestions({
+                    currentTime: new Date(),
                     type,
                     language,
                     accountId,
                     ...(isDefined(amountOrNull) && { amount: amountOrNull }),
                     ...(isDefined(categoryIdOrNull) && { categoryId: categoryIdOrNull })
-                };
+                });
 
-                const result = await appRuntime.runPromise(repeatedTransactionService.getSuggestions(queryParams));
+                setTimePatterns(result.timePatterns);
+                setAmountPatterns(result.amountPatterns);
+                setInternalStatus('success');
+            }).pipe(
+                Effect.tapError(Effect.logError),
+                Effect.catch(() => Effect.sync(() => void setInternalStatus('error')))
+            )
+        );
 
-                if (!cancelled) {
-                    setTimePatterns(result.timePatterns);
-                    setAmountPatterns(result.amountPatterns);
-                    setInternalStatus('success');
-                }
-            } catch (error: unknown) {
-                appRuntime.runFork(
-                    Effect.logError('hook:pattern:fetch:throw', {
-                        durationMs: Date.now() - startedAt,
-                        errorMessage: getErrorMessage(error)
-                    })
-                );
-                if (!cancelled) {
-                    setInternalStatus('error');
-                }
-            }
-        };
-
-        if (shouldDebounce) {
-            debounceTimerRef.current = setTimeout(() => void fetchSuggestions(), DEBOUNCE_MS);
-        } else {
-            void fetchSuggestions();
-        }
-
-        return () => {
-            cancelled = true;
-            clearDebounceTimer();
-        };
+        return () => void fiber.interruptUnsafe();
     }, [isReady, type, accountId, amountOrNull, categoryIdOrNull, refreshVersion, language]);
 
     const isInitializing = enabled && !isReady && internalStatus === 'idle';

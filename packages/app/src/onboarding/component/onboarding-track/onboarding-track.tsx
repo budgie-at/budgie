@@ -4,10 +4,11 @@ import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { useCurrencySelectorModal } from '../../../@generic/context/currency-selector-modal.context';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -55,16 +56,17 @@ export const OnboardingTrack = () => {
     const isPrimaryDisabled = trackOptions.every(option => !isTypeSelected(option.type)) && isEmptyArray(accounts);
 
     const handlePrimary = () => {
-        void appRuntime
-            .runPromise(
-                onboardingService.provisionAccounts(
-                    trackOptions.filter(option => isTypeSelected(option.type)).map(option => ({ type: option.type, title: option.title }))
-                )
+        appRuntime.runFork(
+            logAndContinue(
+                onboardingService
+                    .provisionAccounts(
+                        trackOptions
+                            .filter(option => isTypeSelected(option.type))
+                            .map(option => ({ type: option.type, title: option.title }))
+                    )
+                    .pipe(Effect.map(() => void goToNextStep(OnboardingStepEnum.TRACK)))
             )
-            .then(() => void goToNextStep(OnboardingStepEnum.TRACK))
-            .catch((error: unknown) => {
-                appRuntime.runFork(Effect.logError('provision accounts failed', { errorMessage: getErrorMessage(error) }));
-            });
+        );
     };
 
     return (

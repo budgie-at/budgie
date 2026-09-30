@@ -11,12 +11,6 @@ import type * as schema from '../../schema';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class RuleActionRepository {
-    readonly create = Effect.fn('RuleActionRepository.create')(function* (input: RuleActionCreateEntityInterface) {
-        const [action] = yield* Db.query(db => db.insert(RuleActionEntityTable).values([input]).returning());
-
-        return action;
-    });
-
     readonly bulkCreate = Effect.fn('RuleActionRepository.bulkCreate')(function* (inputs: RuleActionCreateEntityInterface[]) {
         if (isEmptyArray(inputs)) {
             return [];
@@ -25,15 +19,15 @@ export class RuleActionRepository {
         return yield* Db.query(db => db.insert(RuleActionEntityTable).values(inputs).returning());
     });
 
-    readonly deleteByRuleId = Effect.fn('RuleActionRepository.deleteByRuleId')(function* (ruleId: number) {
-        yield* Db.query(db => db.delete(RuleActionEntityTable).where(eq(RuleActionEntityTable.ruleId, ruleId)));
-    });
-
-    readonly truncate = Effect.fn('RuleActionRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(RuleActionEntityTable));
-    });
-
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+
+    readonly create = (input: RuleActionCreateEntityInterface) =>
+        Db.query(db => db.insert(RuleActionEntityTable).values([input]).returning()).pipe(Effect.map(([action]) => action));
+
+    readonly deleteByRuleId = (ruleId: number) =>
+        Db.query(db => db.delete(RuleActionEntityTable).where(eq(RuleActionEntityTable.ruleId, ruleId)));
+
+    readonly truncate = () => Db.query(db => db.delete(RuleActionEntityTable));
 
     findByRuleId(ruleId: number) {
         return this.db.query.RuleActionEntityTable.findMany({

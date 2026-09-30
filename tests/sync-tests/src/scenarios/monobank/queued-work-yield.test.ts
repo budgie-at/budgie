@@ -84,12 +84,16 @@ describe('monobank/queued-work-yield', () => {
 
         const startupSync = run(
             Effect.clockWith(clock =>
-                Workload.use(workload => workload.run(monobankSyncService.sync())).pipe(
-                    Effect.provideService(
-                        Clock.Clock,
-                        Object.assign(Object.create(clock), {
-                            sleep: () => Effect.andThen(Deferred.succeed(rateLimitReached, undefined), Effect.never)
-                        })
+                Workload.use(workload =>
+                    workload.run(
+                        monobankSyncService.sync().pipe(
+                            Effect.provideService(
+                                Clock.Clock,
+                                Object.assign(Object.create(clock), {
+                                    sleep: () => Effect.andThen(Deferred.succeed(rateLimitReached, undefined), Effect.never)
+                                })
+                            )
+                        )
                     )
                 )
             )

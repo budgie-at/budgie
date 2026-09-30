@@ -1,16 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { emptyFn } from '@rnw-community/shared';
-
-import { appRuntime } from '../runtime/app.runtime';
+import { appAtomRuntime } from '../runtime/app.runtime';
 import { iconSearchService } from '../service/icon-search.service';
 
-export const useIconSearchEntries = () => {
-    const [entries, setEntries] = useState(iconSearchService.entries);
+const iconSearchEntriesAtom = appAtomRuntime.atom(iconSearchService.load().pipe(Effect.tapCause(Effect.logError)));
 
-    useEffect(() => {
-        appRuntime.runPromise(iconSearchService.load()).then(setEntries).catch(emptyFn);
-    }, []);
-
-    return entries;
-};
+export const useIconSearchEntries = () => AsyncResult.getOrElse(useAtomValue(iconSearchEntriesAtom), () => iconSearchService.entries);

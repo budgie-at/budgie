@@ -1,10 +1,8 @@
 export type { GenerateOptionsInterface } from './@generic/interface/generate-options.interface';
 export type { ChatInvokerInterface } from './chat/interface/chat-invoker.interface';
 export type { EmbeddingInvokerInterface } from './embedding/interface/embedding-invoker.interface';
-export type { SttInvokerInterface } from './voice/interface/stt-invoker.interface';
 
 export {
-    EMBEDDING_BATCH_LIMIT,
     EMBEDDING_CATEGORY_SUGGESTION_LIMIT,
     EMBEDDING_COMMENT_SUGGESTION_LIMIT,
     EMBEDDING_CONTEXT_MAX_LENGTH,

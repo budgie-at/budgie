@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -23,8 +24,9 @@ export const LanguageSelector = () => {
     const handleOpen = async () => {
         const result = await openLanguageSelector({ selectedLanguage: language });
         if (isDefined(result)) {
-            await appRuntime.runPromise(updateSettingsMutation({ language: result }));
-            await i18nEnsureLanguageActivated(result);
+            await appRuntime.runPromise(
+                updateSettingsMutation({ language: result }).pipe(Effect.andThen(i18nEnsureLanguageActivated(result)))
+            );
         }
     };
 

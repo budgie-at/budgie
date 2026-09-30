@@ -1,51 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
-import { emptyFn } from '@rnw-community/shared';
-
-import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
-import type { ConvertedAmountStateInterface } from '../interface/converted-amount-state.interface';
 import type { ConvertedAmountInterface } from '../interface/converted-amount.interface';
+
+const convertedAmountAtom = Atom.family(
+    ([fromInstrumentId, toInstrumentId, amountInMicroUnits]: readonly [number, number, number, Date | null | undefined]) =>
+        appAtomRuntime.atom(
+            fromInstrumentId === toInstrumentId
+                ? Effect.succeed(null)
+                : exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits)
+        )
+);
 
 export const useConvertedAmount = (
     fromInstrumentId: number,
     toInstrumentId: number,
     amountInMicroUnits: number
 ): ConvertedAmountInterface | null => {
-    const [convertedAmount, setConvertedAmount] = useState<ConvertedAmountStateInterface | null>(null);
-    const isSameCurrency = fromInstrumentId === toInstrumentId;
     const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
+    const result = useAtomValue(convertedAmountAtom([fromInstrumentId, toInstrumentId, amountInMicroUnits, exchangeRatesUpdatedAt]));
 
-    useEffect(() => {
-        let cancelled = false;
-
-        if (!isSameCurrency) {
-            void appRuntime
-                .runPromise(exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits))
-                .then(result => {
-                    if (!cancelled) {
-                        setConvertedAmount({ fromInstrumentId, toInstrumentId, amountInMicroUnits, result });
-                    }
-
-                    return result;
-                }, emptyFn);
-        }
-
-        return () => {
-            cancelled = true;
-        };
-    }, [isSameCurrency, fromInstrumentId, toInstrumentId, amountInMicroUnits, exchangeRatesUpdatedAt]);
-
-    if (isSameCurrency) {
-        return null;
-    }
-
-    const isCurrentConversion =
-        convertedAmount?.fromInstrumentId === fromInstrumentId &&
-        convertedAmount.toInstrumentId === toInstrumentId &&
-        convertedAmount.amountInMicroUnits === amountInMicroUnits;
-
-    return isCurrentConversion ? convertedAmount.result : null;
+    return AsyncResult.isSuccess(result) ? result.value : null;
 };

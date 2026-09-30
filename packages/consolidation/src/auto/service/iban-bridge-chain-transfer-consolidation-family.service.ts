@@ -13,10 +13,9 @@ export class IbanBridgeChainTransferConsolidationFamilyService extends Consolida
 
     constructor(
         private readonly ibanBridgeTransferRepository: IbanBridgeTransferRepository,
-        private readonly consolidationExecutorService: ConsolidationExecutorService,
-        yieldControl: () => Promise<void>
+        private readonly consolidationExecutorService: ConsolidationExecutorService
     ) {
-        super(yieldControl);
+        super();
     }
 
     protected findCandidates(scope: ConsolidationScanScopeInterface | null) {

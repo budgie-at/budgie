@@ -29,7 +29,9 @@ const instantRateLimitClock = Layer.effect(
 );
 
 const buildRuntime = () =>
-    ManagedRuntime.make(Layer.mergeAll(Layer.succeed(Db, testDb), FetchHttpClient.layer, Workload.layer, instantRateLimitClock));
+    ManagedRuntime.make(
+        Workload.layer.pipe(Layer.provideMerge(Layer.mergeAll(Layer.succeed(Db, testDb), FetchHttpClient.layer, instantRateLimitClock)))
+    );
 
 let runtime = buildRuntime();
 

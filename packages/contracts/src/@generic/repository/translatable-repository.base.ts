@@ -27,25 +27,18 @@ export abstract class TranslatableRepositoryBase {
         return row.value;
     });
 
-    readonly countAll = Effect.fn('TranslatableRepositoryBase.countAll')(function* (this: TranslatableRepositoryBase) {
-        const [row] = yield* Db.query(db => db.select({ value: count() }).from(this.table).where(activeWhere(this.columns.deletedAt)));
-
-        return row.value;
-    });
-
-    readonly resetAllTranslations = Effect.fn('TranslatableRepositoryBase.resetAllTranslations')(
-        function* (this: TranslatableRepositoryBase) {
-            yield* Db.query(db =>
-                db
-                    .update(this.table)
-                    .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
-                    .where(activeWhere(this.columns.deletedAt))
-            );
-        }
-    );
-
     constructor(
         protected readonly table: SQLiteTable,
         protected readonly columns: TranslatableColumnsInterface
     ) {}
+
+    readonly countAll = () =>
+        Db.query(db => db.select({ value: count() }).from(this.table).where(activeWhere(this.columns.deletedAt))).pipe(
+            Effect.map(([row]) => row.value)
+        );
+
+    readonly resetAllTranslations = () =>
+        Db.query(db =>
+            db.update(this.table).set({ titleEn: null, titleTags: null, tagsGeneratedAt: null }).where(activeWhere(this.columns.deletedAt))
+        );
 }

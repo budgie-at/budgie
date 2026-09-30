@@ -14,6 +14,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import {
     accountRepository,
     mccCategoryRepository,
@@ -24,7 +25,6 @@ import {
     transactionTagsRepository
 } from '../../@generic/drizzle/db/db';
 import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
@@ -195,10 +195,11 @@ class RuleEngineService {
         batchIds: number[],
         actions: RuleActionEntityInterface[]
     ) {
-        yield* Effect.promise(() => microPause());
+        yield* YIELD_TO_UI;
 
         return yield* this.applyRuleActionsToTransactionBatchTransaction(batchIds, actions).pipe(
             Effect.as(0),
+            Effect.tapCause(Effect.logError),
             Effect.catchCause(() => Effect.succeed(batchIds.length))
         );
     });
@@ -311,7 +312,7 @@ class RuleEngineService {
         return new Map(mccCategories.filter(category => mccCategoryIds.has(category.id)).map(category => [category.id, category.mcc]));
     });
 
-    private readonly applyRuleActions = Effect.fn('RuleEngineService.applyRuleActions')(function* (
+    private readonly applyRuleActions = Effect.fnUntraced(function* (
         this: RuleEngineService,
         transactionId: number,
         actions: RuleActionEntityInterface[],
@@ -339,7 +340,7 @@ class RuleEngineService {
         return convertedAny;
     });
 
-    private readonly applyRuleAction = Effect.fn('RuleEngineService.applyRuleAction')(function* (
+    private readonly applyRuleAction = Effect.fnUntraced(function* (
         this: RuleEngineService,
         transactionId: number,
         action: RuleActionEntityInterface,
@@ -406,7 +407,7 @@ class RuleEngineService {
         }
     });
 
-    private readonly convertTransactionToTransfer = Effect.fn('RuleEngineService.convertTransactionToTransfer')(function* (
+    private readonly convertTransactionToTransfer = Effect.fnUntraced(function* (
         this: RuleEngineService,
         transactionId: number,
         targetAccountId: number

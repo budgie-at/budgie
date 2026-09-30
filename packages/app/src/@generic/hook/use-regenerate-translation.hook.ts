@@ -1,5 +1,6 @@
 import { TranslationLlmService, TranslationResultInterface } from '@budgie/ai';
 import { t } from '@lingui/core/macro';
+import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
@@ -10,7 +11,9 @@ import { aiModelResidencyService } from '../../ai/service/ai-model-residency.ser
 import { chatService } from '../../ai/service/chat.service';
 import { appRuntime } from '../runtime/app.runtime';
 
-type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Promise<void>;
+import type { Db } from '@budgie/contracts';
+
+type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Effect.Effect<unknown, unknown, Db>;
 
 export interface UseRegenerateTranslationReturn {
     readonly regenerate: (entityId: number, title: string) => Promise<TranslationResultInterface | null>;
@@ -22,34 +25,39 @@ export const useRegenerateTranslation = (updateTranslation: UpdateTranslationFn)
     const [isRegenerating, setIsRegenerating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // eslint-disable-next-line max-statements -- Lifecycle-guarded translate with structured logging and error capture
-    const regenerate = async (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
+    const regenerate = (entityId: number, title: string): Promise<TranslationResultInterface | null> => {
         setIsRegenerating(true);
         setError(null);
 
-        const isChatReady = await appRuntime.runPromise(aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT));
+        return appRuntime.runPromise(
+            Effect.acquireUseRelease(
+                aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT),
+                isChatReady =>
+                    Effect.gen(function* () {
+                        if (!isChatReady) {
+                            setError(t`LLM not ready`);
 
-        try {
-            if (!isChatReady) {
-                setError(t`LLM not ready`);
+                            return null;
+                        }
 
-                return null;
-            }
+                        const result = yield* new TranslationLlmService(chatService).translate(title);
+                        yield* updateTranslation(entityId, result.titleEn, result.titleTags);
 
-            const service = new TranslationLlmService(chatService);
-            const result = await appRuntime.runPromise(service.translate(title));
-            await updateTranslation(entityId, result.titleEn, result.titleTags);
+                        return result;
+                    }),
+                () => aiModelResidencyService.release(AiSubsystemNameEnum.CHAT)
+            ).pipe(
+                Effect.tapCause(Effect.logError),
+                Effect.catchCause(cause =>
+                    Effect.sync(() => {
+                        setError(getErrorMessage(Cause.squash(cause)));
 
-            return result;
-        } catch (regenerateError: unknown) {
-            appRuntime.runFork(Effect.logError('translation:regenerate:throw', { errorMessage: getErrorMessage(regenerateError) }));
-            setError(getErrorMessage(regenerateError));
-
-            return null;
-        } finally {
-            void appRuntime.runPromise(aiModelResidencyService.release(AiSubsystemNameEnum.CHAT));
-            setIsRegenerating(false);
-        }
+                        return null;
+                    })
+                ),
+                Effect.ensuring(Effect.sync(() => void setIsRegenerating(false)))
+            )
+        );
     };
 
     return { regenerate, isRegenerating, error };

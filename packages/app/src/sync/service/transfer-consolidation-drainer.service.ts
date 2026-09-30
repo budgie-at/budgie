@@ -5,7 +5,7 @@ import * as Effect from 'effect/Effect';
 import { isDefined } from '@rnw-community/shared';
 
 import { Workload } from '../../@generic/service/workload.service';
-import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
+import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 
 import { transferConsolidationService } from './transfer-consolidation.service';
 
@@ -14,14 +14,6 @@ import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 class TransferConsolidationDrainerService {
     private static readonly SCHEDULE_KEY = 'transfer-consolidation-drain';
     private static readonly DRAIN_DELAY = Duration.seconds(1.5);
-
-    private static readonly awaitIdleCallback = Effect.callback(resume => {
-        const cancelIdleCallback = scheduleIdleCallback(() => {
-            resume(Effect.void);
-        });
-
-        return Effect.sync(cancelIdleCallback);
-    });
 
     readonly enqueue = Effect.fn('TransferConsolidationDrainerService.enqueue')(function* (
         this: TransferConsolidationDrainerService,
@@ -47,7 +39,7 @@ class TransferConsolidationDrainerService {
         while (this.hasPendingRun) {
             yield* Effect.sleep(TransferConsolidationDrainerService.DRAIN_DELAY);
             yield* workload.awaitForegroundIdle;
-            yield* TransferConsolidationDrainerService.awaitIdleCallback;
+            yield* waitForIdle;
             const scope = this.takePendingScope();
             yield* Effect.yieldNow;
             yield* Effect.exit(workload.run(transferConsolidationService.consolidate(scope)));

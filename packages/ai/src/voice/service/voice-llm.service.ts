@@ -5,7 +5,6 @@ import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { generateChatResponse } from '../../@generic/util/generate-chat-response.util';
 import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { ITEM_EXTRACTION_PROMPT, VOICE_EXTRACTION_GENERATION_OPTIONS } from '../constant/voice-prompt.constant';
 import { ExtractedVoiceTransactionInterface } from '../interface/extracted-voice-transaction.interface';
@@ -221,7 +220,7 @@ export class VoiceLlmService {
             return [];
         }
 
-        const response = yield* generateChatResponse(this.chat, ITEM_EXTRACTION_PROMPT, text, VOICE_EXTRACTION_GENERATION_OPTIONS);
+        const response = yield* this.chat.generate(ITEM_EXTRACTION_PROMPT, text, VOICE_EXTRACTION_GENERATION_OPTIONS);
 
         return this.parseExtractionResponse(response);
     });

@@ -1,30 +1,16 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useRef, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { syncRepairService } from '../../sync/service/sync-repair.service';
 
-const getRepairedTransactionText = (count: number, t: ReturnType<typeof useLingui>['t']) =>
-    t({
-        message: plural(count, {
-            one: '# sync item repaired',
-            other: '# sync items repaired'
-        })
-    });
-
-const removeDuplicatesAndRefresh = async (refresh: () => Promise<void>, t: ReturnType<typeof useLingui>['t']): Promise<void> => {
-    const result = await appRuntime.runPromise(syncRepairService.removeDuplicates());
-    const repairedText = getRepairedTransactionText(result.repairedTransactionCount, t);
-
-    Toast.show({ type: 'success', text1: t`Sync data repaired`, text2: repairedText });
-    await refresh();
-};
-
-export const useSyncRepairsAction = (refresh: () => Promise<void>) => {
+export const useSyncRepairsAction = (refresh: () => void) => {
     const { t } = useLingui();
     const [isRepairing, setIsRepairing] = useState(false);
     const [isConfirmingRepair, setIsConfirmingRepair] = useState(false);
@@ -40,23 +26,18 @@ export const useSyncRepairsAction = (refresh: () => Promise<void>) => {
         }
     };
 
-    const handleRepairSuccess = (): null => {
+    const handleRepairSuccess = (repairedTransactionCount: number) => {
+        const repairedText = t({
+            message: plural(repairedTransactionCount, { one: '# sync item repaired', other: '# sync items repaired' })
+        });
+
+        Toast.show({ type: 'success', text1: t`Sync data repaired`, text2: repairedText });
+        refresh();
         setIsConfirmingRepair(false);
-
-        return null;
     };
 
-    const handleRepairError = (error: unknown): null => {
-        Toast.show({ type: 'error', text1: t`Could not repair sync data`, text2: getErrorMessage(error) });
-
-        return null;
-    };
-
-    const handleRepairComplete = (): null => {
-        isRepairingRef.current = false;
-        setIsRepairing(false);
-
-        return null;
+    const handleRepairError = (error: unknown) => {
+        showErrorToast(t`Could not repair sync data`, getErrorMessage(error));
     };
 
     const handleConfirmRepair = () => {
@@ -67,7 +48,20 @@ export const useSyncRepairsAction = (refresh: () => Promise<void>) => {
         isRepairingRef.current = true;
         setIsRepairing(true);
 
-        void removeDuplicatesAndRefresh(refresh, t).then(handleRepairSuccess, handleRepairError).finally(handleRepairComplete);
+        appRuntime.runFork(
+            syncRepairService.removeDuplicates().pipe(
+                Effect.match({
+                    onSuccess: result => void handleRepairSuccess(result.repairedTransactionCount),
+                    onFailure: handleRepairError
+                }),
+                Effect.ensuring(
+                    Effect.sync(() => {
+                        isRepairingRef.current = false;
+                        setIsRepairing(false);
+                    })
+                )
+            )
+        );
     };
 
     return {

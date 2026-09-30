@@ -149,11 +149,11 @@ class AccountDebtOpeningService {
         const transaction = yield* transactionRepository.getByIdWithEntries(id);
 
         if (!isDefined(transaction)) {
-            return yield* Effect.fail(new Error(t`Transaction not found`));
+            return yield* Effect.die(new Error(t`Transaction not found`));
         }
 
         if (transaction.type !== TransactionTypeEnum.INCOME) {
-            return yield* Effect.fail(new Error(t`Only income transactions can be converted`));
+            return yield* Effect.die(new Error(t`Only income transactions can be converted`));
         }
 
         return transaction;
@@ -163,7 +163,7 @@ class AccountDebtOpeningService {
         const account = yield* Db.query(db => accountRepository.findById(id, db));
 
         if (!isDefined(account)) {
-            return yield* Effect.fail(new Error(t`Account ${id} not found`));
+            return yield* Effect.die(new Error(t`Account ${id} not found`));
         }
 
         return account;
@@ -183,7 +183,7 @@ class AccountDebtOpeningService {
         const openingAmount = convertToMicroUnits(amount);
 
         if (!isPositiveNumber(openingAmount)) {
-            return yield* Effect.fail(new Error(t`Enter all amounts`));
+            return yield* Effect.die(new Error(t`Enter all amounts`));
         }
 
         return openingAmount;
@@ -196,7 +196,7 @@ class AccountDebtOpeningService {
         const primaryEntry = categoryEntries.at(0);
 
         if (!isDefined(primaryEntry) || categoryEntries.length !== 1) {
-            return yield* Effect.fail(new Error(t`Only single-entry incomes can be converted`));
+            return yield* Effect.die(new Error(t`Only single-entry incomes can be converted`));
         }
 
         return primaryEntry;
@@ -206,7 +206,7 @@ class AccountDebtOpeningService {
         debtType: AccountDebtTypeEnum
     ) {
         if (debtType !== AccountDebtTypeEnum.BORROW) {
-            yield* Effect.fail(new Error(t`Borrowed debt account expected`));
+            yield* Effect.die(new Error(t`Borrowed debt account expected`));
         }
     });
 }

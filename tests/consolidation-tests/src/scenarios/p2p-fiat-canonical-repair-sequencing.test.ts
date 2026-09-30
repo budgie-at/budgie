@@ -1,4 +1,5 @@
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import { describe, expect, it } from 'vitest';
 
@@ -29,9 +30,6 @@ describe('consolidation/p2p canonical repair sequencing', () => {
                     events.push(`end:${canonicalTransactionId}`);
                 })
         });
-        const yieldControl = async () => {
-            events.push('yield');
-        };
         const coordinator = new ConsolidationCoordinatorService(
             {
                 atmCashWithdrawalRepository,
@@ -41,11 +39,25 @@ describe('consolidation/p2p canonical repair sequencing', () => {
                 transferPairRepository: transferPairRepositoryWithRepairs
             },
             consolidationExecutorService,
-            repairExecutor,
-            yieldControl
+            repairExecutor
         );
 
-        await runEffect(coordinator.consolidate());
+        await runEffect(
+            Clock.clockWith(clock =>
+                coordinator.consolidate().pipe(
+                    Effect.provideService(
+                        Clock.Clock,
+                        Object.assign(Object.create(clock), {
+                            sleep: () => {
+                                events.push('yield');
+
+                                return Effect.void;
+                            }
+                        })
+                    )
+                )
+            )
+        );
 
         expect(repairs).toStrictEqual([1, 2]);
         expect(events.slice(events.indexOf('start:1'), events.indexOf('end:2') + 1)).toStrictEqual([

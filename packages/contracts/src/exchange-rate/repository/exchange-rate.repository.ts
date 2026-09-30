@@ -31,13 +31,10 @@ export class ExchangeRateRepository {
         );
     });
 
-    readonly upsert = Effect.fn('ExchangeRateRepository.upsert')(function* (
-        baseInstrumentId: number,
-        quoteInstrumentId: number,
-        rate: number,
-        source: string
-    ) {
-        yield* Db.query(db =>
+    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+
+    readonly upsert = (baseInstrumentId: number, quoteInstrumentId: number, rate: number, source: string) =>
+        Db.query(db =>
             db
                 .insert(ExchangeRateEntityTable)
                 .values({ baseInstrumentId, quoteInstrumentId, rate, source })
@@ -46,9 +43,6 @@ export class ExchangeRateRepository {
                     set: { rate, source }
                 })
         );
-    });
-
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
     getLatestUpdatedAt() {
         return this.db

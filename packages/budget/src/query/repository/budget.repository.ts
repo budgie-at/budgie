@@ -16,26 +16,21 @@ import * as Effect from 'effect/Effect';
 import type { BudgetCreateEntityInterface, BudgetUpdateEntityInterface, DB } from '@budgie/contracts';
 
 export class BudgetRepository extends BaseTransactionFilterRepository {
-    readonly create = Effect.fn('BudgetRepository.create')(function* (input: BudgetCreateEntityInterface) {
-        const [budget] = yield* Db.query(db => db.insert(BudgetEntityTable).values([input]).returning());
+    readonly create = (input: BudgetCreateEntityInterface) =>
+        Db.query(db => db.insert(BudgetEntityTable).values([input]).returning()).pipe(Effect.map(([budget]) => budget));
 
-        return budget;
-    });
+    readonly update = (id: number, input: BudgetUpdateEntityInterface) =>
+        Db.query(db => db.update(BudgetEntityTable).set(input).where(eq(BudgetEntityTable.id, id)).returning()).pipe(
+            Effect.map(([budget]) => budget)
+        );
 
-    readonly update = Effect.fn('BudgetRepository.update')(function* (id: number, input: BudgetUpdateEntityInterface) {
-        const [budget] = yield* Db.query(db => db.update(BudgetEntityTable).set(input).where(eq(BudgetEntityTable.id, id)).returning());
-
-        return budget;
-    });
-
-    readonly delete = Effect.fn('BudgetRepository.delete')(function* (id: number) {
-        yield* Db.query(db =>
+    readonly delete = (id: number) =>
+        Db.query(db =>
             db
                 .update(BudgetEntityTable)
                 .set({ deletedAt: new Date() })
                 .where(and(eq(BudgetEntityTable.id, id), isNull(BudgetEntityTable.deletedAt)))
         );
-    });
 
     findActive(db: DB = this.db) {
         return db.query.BudgetEntityTable.findFirst({
