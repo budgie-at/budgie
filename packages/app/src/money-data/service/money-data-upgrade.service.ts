@@ -4,6 +4,7 @@ import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -22,6 +23,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
         const exchangeRatesService = yield* ExchangeRatesService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const entryBaseValuationService = yield* EntryBaseValuationService;
+        const reactivity = yield* Reactivity.Reactivity;
         const bucketBatchSize = 25;
 
         const createInitialSnapshot = (): MoneyDataUpgradeRuntimeSnapshotInterface => ({
@@ -56,9 +58,10 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
             return batches;
         };
 
-        const valuePendingEntryBucket = Effect.fn('MoneyDataUpgradeService.valuePendingEntryBucket')(function* (
+        const valuePendingEntryBucket = Effect.fnUntraced(function* (
             bucket: PendingBaseValuationBucketInterface,
-            baseInstrumentId: number
+            baseInstrumentId: number,
+            onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
         ) {
             const operatedAt = new Date(bucket.rateDate);
             operatedAt.setHours(0, 0, 0, 0);
@@ -78,6 +81,15 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
                 baseInstrumentId,
                 baseExchangeRate
             });
+
+            publishSnapshot(
+                {
+                    ...snapshot,
+                    pendingEntryCount: Math.max(snapshot.pendingEntryCount - bucket.entryCount, 0),
+                    processedEntryCount: snapshot.processedEntryCount + bucket.entryCount
+                },
+                onProgress
+            );
         });
 
         const valuePendingEntryBatch = Effect.fn('MoneyDataUpgradeService.valuePendingEntryBatch')(function* (
@@ -85,16 +97,8 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
             baseInstrumentId: number,
             onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
         ) {
-            yield* Db.transaction(Effect.forEach(batch, bucket => valuePendingEntryBucket(bucket, baseInstrumentId), { discard: true }));
-
-            const batchEntryCount = sumBucketEntries(batch);
-            publishSnapshot(
-                {
-                    ...snapshot,
-                    pendingEntryCount: Math.max(snapshot.pendingEntryCount - batchEntryCount, 0),
-                    processedEntryCount: snapshot.processedEntryCount + batchEntryCount
-                },
-                onProgress
+            yield* Db.transaction(
+                Effect.forEach(batch, bucket => valuePendingEntryBucket(bucket, baseInstrumentId, onProgress), { discard: true })
             );
 
             yield* YIELD_TO_UI;
@@ -166,7 +170,7 @@ export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeSer
 
                 publishSnapshot({ ...snapshot, isRunning: true, lastError: null }, onProgress);
 
-                yield* valuePendingEntries(onProgress).pipe(
+                yield* reactivity.withBatch(valuePendingEntries(onProgress)).pipe(
                     Effect.tapCause(cause =>
                         Effect.sync(() => {
                             publishSnapshot(

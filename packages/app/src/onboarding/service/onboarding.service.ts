@@ -1,4 +1,4 @@
-import { AccountRepository, AccountTypeEnum, InstrumentRepository, SettingsRepository, UserIconNameEnum } from '@budgie/contracts';
+import { AccountRepository, AccountTypeEnum, Db, InstrumentRepository, SettingsRepository, UserIconNameEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -85,9 +85,7 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
 
                 yield* Effect.forEach(accountsToCreate, account => createOnboardingAccount(account, instrumentId), { discard: true });
             }),
-            complete: Effect.fn('OnboardingService.complete')(function* () {
-                yield* settingsRepository.update({ isOnboardingCompleted: true });
-            })
+            complete: () => Db.transaction(settingsRepository.update({ isOnboardingCompleted: true }))
         };
     })
 }) {

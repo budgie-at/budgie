@@ -1,6 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
@@ -21,13 +20,7 @@ export const OnboardingWelcome = () => {
     const handlePrimary = () => void goToNextStep(OnboardingStepEnum.WELCOME);
 
     const handleBlankCanvasPress = () => {
-        appRuntime.runFork(
-            logAndContinue(
-                Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete()).pipe(
-                    Effect.map(() => void router.replace('/'))
-                )
-            )
-        );
+        appRuntime.runFork(logAndContinue(Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete())));
     };
 
     return (

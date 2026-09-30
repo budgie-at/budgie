@@ -279,6 +279,33 @@ describe('privatbank/own-card-transfer-repair', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('deletes only the nearest superseded counterpart leg when several qualify', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const liveCard = seedPrivatbankCard('1234');
+            const archivedCard = seedPrivatbankCard('4321');
+
+            seedOwnCardIncome(liveCard.id);
+
+            const farExpense = seed.updateTransaction(
+                seed.bankPairExpense(
+                    { externalId: 'privatbank-far-expense', operatedAt: new Date(OWN_CARD_OPERATED_AT.getTime() + 60_000) },
+                    { accountId: archivedCard.id, amount: OWN_CARD_AMOUNT }
+                ).id,
+                { externalSource: ExternalSourceEnum.PRIVATBANK, title: OWN_CARD_EXPENSE_TITLE }
+            );
+            const nearExpense = seedOwnCardCounterpartExpense(archivedCard.id);
+
+            softDeleteTransaction(farExpense.id);
+            softDeleteTransaction(nearExpense.id);
+            archiveAccount(archivedCard.id);
+
+            expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
+            expect(fetchTransactionById(nearExpense.id)).toBeUndefined();
+            expect(fetchTransactionById(farExpense.id)).toBeDefined();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('keeps the archived counterpart balance at 0 after the repair leaves a live transfer leg on it', () =>
         Effect.gen(function* () {
             const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
