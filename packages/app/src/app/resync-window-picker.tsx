@@ -1,4 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { ScrollView, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -8,10 +9,11 @@ import { CircleIcon } from '../@generic/component/circle-icon/circle-icon';
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { HorizontalCell } from '../@generic/component/horizontal-cell/horizontal-cell';
 import { useFormsheetListStyles } from '../@generic/hook/use-formsheet-list-styles/use-formsheet-list-styles.hook';
+import { appRuntime } from '../@generic/runtime/app.runtime';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { RESYNC_WINDOW_OPTIONS } from '../sync/constant/resync-window-options.constant';
 import { useResyncWindowPickerModal, useResyncWindowPickerModalParams } from '../sync/context/resync-window-picker-modal.context';
-import { resyncService } from '../sync/service/resync.service';
+import { ResyncService } from '../sync/service/resync.service';
 
 import { ResyncWindowPickerSelector } from './resync-window-picker.selector';
 
@@ -54,7 +56,9 @@ export default function ResyncWindowPickerModal() {
         resolveResyncWindowPicker(null);
 
         try {
-            await resyncService.resync({ accountId, sinceDays: option.sinceDays });
+            await appRuntime.runPromise(
+                Effect.flatMap(ResyncService, resyncService => resyncService.resync({ accountId, sinceDays: option.sinceDays }))
+            );
             Toast.show({ type: 'success', text1: t`Bank sync reset`, text2: resolveSuccessMessage(option) });
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not reset bank sync`, text2: getErrorMessage(error) });
@@ -76,7 +80,9 @@ export default function ResyncWindowPickerModal() {
         }
 
         try {
-            await resyncService.resync({ accountId, sinceDays: null });
+            await appRuntime.runPromise(
+                Effect.flatMap(ResyncService, resyncService => resyncService.resync({ accountId, sinceDays: null }))
+            );
             Toast.show({ type: 'success', text1: t`Bank sync reset`, text2: fullHistorySuccessMessage });
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not reset bank sync`, text2: getErrorMessage(error) });

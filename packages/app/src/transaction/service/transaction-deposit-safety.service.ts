@@ -1,84 +1,86 @@
 import {
+    AccountRepository,
     AccountTypeEnum,
-    type DB,
     type TransactionCreateInputInterface,
     type TransactionEntryEntityInterface,
     TransactionEntryTypeEnum,
+    TransactionRepository,
     TransactionTypeEnum,
     type TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
 import { i18n } from '@lingui/core';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { accountRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+export class TransactionDepositSafetyService extends Context.Service<TransactionDepositSafetyService>()(
+    '@budgie/app/TransactionDepositSafetyService',
+    {
+        make: Effect.gen(function* () {
+            const accountRepository = yield* AccountRepository;
+            const transactionRepository = yield* TransactionRepository;
 
-class TransactionDepositSafetyService {
-    @Log(
-        inputs => `enter count=${inputs.length}`,
-        (_, inputs) => `done count=${inputs.length}`,
-        (error, inputs) => `throw count=${inputs.length} error=${getErrorMessage(error)}`
-    )
-    async assertNoDepositExpenseInputs(
-        inputs: readonly Pick<TransactionCreateInputInterface, 'entries' | 'fromAccountId' | 'type'>[],
-        tx: DB
-    ): Promise<void> {
-        const expenseSourceAccountIds = [
-            ...new Set(
-                inputs.flatMap(input =>
-                    input.type === TransactionTypeEnum.EXPENSE
-                        ? [
-                              ...(isDefined(input.fromAccountId) ? [input.fromAccountId] : []),
-                              ...input.entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT).map(entry => entry.accountId)
-                          ]
-                        : []
+            const assertNoDepositExpenseInputs = Effect.fn('TransactionDepositSafetyService.assertNoDepositExpenseInputs')(function* (
+                inputs: readonly Pick<TransactionCreateInputInterface, 'entries' | 'fromAccountId' | 'type'>[]
+            ) {
+                const expenseSourceAccountIds = [
+                    ...new Set(
+                        inputs.flatMap(input =>
+                            input.type === TransactionTypeEnum.EXPENSE
+                                ? [
+                                      ...(isDefined(input.fromAccountId) ? [input.fromAccountId] : []),
+                                      ...input.entries
+                                          .filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT)
+                                          .map(entry => entry.accountId)
+                                  ]
+                                : []
+                        )
+                    )
+                ];
+
+                if (!isNotEmptyArray(expenseSourceAccountIds)) {
+                    return;
+                }
+
+                const accounts = yield* accountRepository.findByIds(expenseSourceAccountIds);
+                const hasDepositAccount = accounts.some(account => account.type === AccountTypeEnum.DEPOSIT);
+
+                if (hasDepositAccount) {
+                    return yield* Effect.die(
+                        new Error(i18n._({ id: 'transaction.depositExpenseDisallowed', message: 'Deposit accounts cannot fund expenses' }))
+                    );
+                }
+            });
+
+            const findTransactionsByEntries = Effect.fnUntraced(function* (existingEntries: readonly TransactionEntryEntityInterface[]) {
+                const transactionIds = [...new Set(existingEntries.map(entry => entry.originalTransactionId ?? entry.transactionId))];
+
+                return yield* transactionRepository.findByIds(transactionIds);
+            });
+
+            return {
+                assertNoDepositExpenseInputs,
+                assertNoDepositExpenseImportedEntries: Effect.fn('TransactionDepositSafetyService.assertNoDepositExpenseImportedEntries')(
+                    function* (existingEntries: readonly TransactionEntryEntityInterface[]) {
+                        if (!isNotEmptyArray(existingEntries)) {
+                            return;
+                        }
+
+                        yield* assertNoDepositExpenseInputs(yield* findTransactionsByEntries(existingEntries));
+                    }
+                ),
+                assertNoDepositExpenseTransactions: Effect.fn('TransactionDepositSafetyService.assertNoDepositExpenseTransactions')(
+                    function* (transactions: readonly TransactionWithEntriesEntityInterface[]) {
+                        yield* assertNoDepositExpenseInputs(transactions);
+                    }
                 )
-            )
-        ];
-
-        if (!isNotEmptyArray(expenseSourceAccountIds)) {
-            return;
-        }
-
-        const accounts = await accountRepository.findByIds(expenseSourceAccountIds, tx);
-        const hasDepositAccount = accounts.some(account => account.type === AccountTypeEnum.DEPOSIT);
-
-        if (hasDepositAccount) {
-            throw new Error(i18n._({ id: 'transaction.depositExpenseDisallowed', message: 'Deposit accounts cannot fund expenses' }));
-        }
+            };
+        })
     }
-
-    @Log(
-        existingEntries => `enter entryCount=${existingEntries.length}`,
-        (_, existingEntries) => `done entryCount=${existingEntries.length}`,
-        (error, existingEntries) => `throw entryCount=${existingEntries.length} error=${getErrorMessage(error)}`
-    )
-    async assertNoDepositExpenseImportedEntries(existingEntries: readonly TransactionEntryEntityInterface[], tx: DB): Promise<void> {
-        if (!isNotEmptyArray(existingEntries)) {
-            return;
-        }
-
-        await this.assertNoDepositExpenseTransactions(await this.findTransactionsByEntries(existingEntries, tx), tx);
-    }
-
-    @Log(
-        transactions => `enter count=${transactions.length}`,
-        (_, transactions) => `done count=${transactions.length}`,
-        (error, transactions) => `throw count=${transactions.length} error=${getErrorMessage(error)}`
-    )
-    async assertNoDepositExpenseTransactions(transactions: readonly TransactionWithEntriesEntityInterface[], tx: DB): Promise<void> {
-        await this.assertNoDepositExpenseInputs(transactions, tx);
-    }
-
-    private async findTransactionsByEntries(
-        existingEntries: readonly TransactionEntryEntityInterface[],
-        tx: DB
-    ): Promise<TransactionWithEntriesEntityInterface[]> {
-        const transactionIds = [...new Set(existingEntries.map(entry => entry.originalTransactionId ?? entry.transactionId))];
-
-        return transactionRepository.findByIds(transactionIds, tx);
-    }
+) {
+    static readonly layer = Layer.effect(TransactionDepositSafetyService, TransactionDepositSafetyService.make).pipe(
+        Layer.provide([AccountRepository.layer, TransactionRepository.layer])
+    );
 }
-
-export const transactionDepositSafetyService = new TransactionDepositSafetyService();

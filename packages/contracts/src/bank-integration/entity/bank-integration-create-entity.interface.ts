@@ -1,5 +1,4 @@
-import { z } from 'zod';
+import type { BaseEntityKeyType } from '../../@generic/type/base-entity-key.type';
+import type { BankIntegrationEntityInterface } from './bank-integration-entity.interface';
 
-import { BankIntegrationCreateEntitySchema } from '../schema/bank-integration-create-entity.schema';
-
-export type BankIntegrationCreateEntityInterface = z.infer<typeof BankIntegrationCreateEntitySchema>;
+export type BankIntegrationCreateEntityInterface = Omit<BankIntegrationEntityInterface, BaseEntityKeyType>;

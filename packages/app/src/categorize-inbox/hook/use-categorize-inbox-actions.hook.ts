@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { useState } from 'react';
 
@@ -6,7 +7,7 @@ import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
-import { categorizeInboxService } from '../service/categorize-inbox.service';
+import { CategorizeInboxService } from '../service/categorize-inbox.service';
 
 import { useCategorizeInboxMoveToCash } from './use-categorize-inbox-move-to-cash.hook';
 import { useCategorizeInboxWriteQueue } from './use-categorize-inbox-write-queue.hook';
@@ -34,15 +35,16 @@ export const useCategorizeInboxActions = (
     const assign = (assignments: CategorizeInboxAssignmentInterface[]): void => {
         visibility.hideTransactions(toTransactionIds(assignments));
         enqueueWrite(
-            async () => {
-                const applied = await categorizeInboxService.assign(strategy.labelKind, assignments);
+            Effect.gen(function* () {
+                const categorizeInboxService = yield* CategorizeInboxService;
+                const applied = yield* categorizeInboxService.assign(strategy.labelKind, assignments);
 
                 if (isNotEmptyArray(applied)) {
                     moveToCashActions.resetMovedToCash();
                     setLastWrite({ assignments: applied, followUpAssignments: [] });
                     hapticNotification(NotificationFeedbackType.Success);
                 }
-            },
+            }),
             () => void visibility.showTransactions(toTransactionIds(assignments)),
             strategy.writeFailed
         );
@@ -61,13 +63,14 @@ export const useCategorizeInboxActions = (
         setLastWrite(null);
         visibility.showTransactions(toTransactionIds(write.assignments));
         enqueueWrite(
-            async () => {
+            Effect.gen(function* () {
+                const categorizeInboxService = yield* CategorizeInboxService;
                 if (isNotEmptyArray(write.followUpAssignments)) {
-                    await categorizeInboxService.undo(CategorizeInboxLabelKindEnum.TAG, write.followUpAssignments);
+                    yield* categorizeInboxService.undo(CategorizeInboxLabelKindEnum.TAG, write.followUpAssignments);
                 }
 
-                await categorizeInboxService.undo(strategy.labelKind, write.assignments);
-            },
+                yield* categorizeInboxService.undo(strategy.labelKind, write.assignments);
+            }),
             () => void setLastWrite(previous => previous ?? write),
             strategy.writeFailed
         );
@@ -78,15 +81,16 @@ export const useCategorizeInboxActions = (
 
         if (isNotEmptyArray(tagIds)) {
             enqueueWrite(
-                async () => {
-                    const followUpAssignments = await categorizeInboxService.assign(
+                Effect.gen(function* () {
+                    const categorizeInboxService = yield* CategorizeInboxService;
+                    const followUpAssignments = yield* categorizeInboxService.assign(
                         CategorizeInboxLabelKindEnum.TAG,
                         tagIds.map(labelId => ({ ...write.assignments[0], labelId }))
                     );
 
                     setLastWrite(previous => (previous === write ? { ...write, followUpAssignments } : previous));
                     hapticNotification(NotificationFeedbackType.Success);
-                },
+                }),
                 emptyFn,
                 t`Could not tag transactions`
             );

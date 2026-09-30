@@ -1,5 +1,4 @@
-import { z } from 'zod';
+import type { DebtAccountCreateInputSchema } from '../schema/debt-account-create-input.schema';
+import type { Mutable } from 'effect/Types';
 
-import { DebtAccountCreateInputSchema } from '../schema/debt-account-create-input.schema';
-
-export type DebtAccountCreateInputInterface = z.infer<typeof DebtAccountCreateInputSchema>;
+export type DebtAccountCreateInputInterface = Mutable<typeof DebtAccountCreateInputSchema.Type>;

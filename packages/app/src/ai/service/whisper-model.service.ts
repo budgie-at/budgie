@@ -1,9 +1,11 @@
-import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 import { Directory, File, Paths } from 'expo-file-system';
 import { createDownloadResumable } from 'expo-file-system/legacy';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import {
     WHISPER_MODEL_DIRECTORY,
@@ -13,91 +15,81 @@ import {
     WHISPER_MODEL_URL
 } from '../constant/whisper-model.constant';
 
-class WhisperModelService {
-    @Log('enter', result => `done uri=${result}`, error => `throw error=${getErrorMessage(error)}`)
-    async download(onProgress: (downloadProgress: number) => void): Promise<string> {
-        const { modelDirectory, modelFile, tempFile } = this.resolvePaths();
+export class WhisperModelService extends Context.Service<WhisperModelService>()('@budgie/app/WhisperModelService', {
+    make: Effect.sync(() => {
+        const resolvePaths = () => {
+            const modelDirectory = new Directory(Paths.document, WHISPER_MODEL_DIRECTORY);
 
-        await this.prepareFiles(modelDirectory, modelFile, tempFile);
+            return {
+                modelDirectory,
+                modelFile: new File(modelDirectory, WHISPER_MODEL_FILENAME),
+                tempFile: new File(modelDirectory, WHISPER_MODEL_TEMP_FILENAME)
+            };
+        };
 
-        if (this.isExistingModelFile(modelFile)) {
-            onProgress(1);
+        const isExistingModelFile = (file: File): boolean => file.exists && isPositiveNumber(file.size);
 
-            return modelFile.uri;
-        }
+        const deleteFileIfExists = (file: File): void => {
+            if (file.exists) {
+                file.delete();
+            }
+        };
 
-        this.deleteFileIfExists(modelFile);
-        this.deleteFileIfExists(tempFile);
-        await this.downloadToTempFile(tempFile, onProgress);
-        await tempFile.move(modelFile);
-        onProgress(1);
+        const calculateProgress = (bytesWritten: number, expectedBytes: number): number => {
+            if (!isPositiveNumber(expectedBytes)) {
+                return 0;
+            }
 
-        return modelFile.uri;
-    }
+            return Math.min(WHISPER_MODEL_MAX_DOWNLOAD_PROGRESS, Math.max(0, bytesWritten / expectedBytes));
+        };
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    delete(): void {
-        const { modelFile } = this.resolvePaths();
-        this.deleteFileIfExists(modelFile);
-    }
+        const migrateLegacyModelFile = Effect.fnUntraced(function* (modelFile: File) {
+            const legacyFile = new File(Paths.document, WHISPER_MODEL_FILENAME);
 
-    private resolvePaths(): { readonly modelDirectory: Directory; readonly modelFile: File; readonly tempFile: File } {
-        const modelDirectory = new Directory(Paths.document, WHISPER_MODEL_DIRECTORY);
-        const modelFile = new File(modelDirectory, WHISPER_MODEL_FILENAME);
-        const tempFile = new File(modelDirectory, WHISPER_MODEL_TEMP_FILENAME);
-
-        return { modelDirectory, modelFile, tempFile };
-    }
-
-    private async prepareFiles(modelDirectory: Directory, modelFile: File, tempFile: File): Promise<void> {
-        if (!modelDirectory.exists) {
-            modelDirectory.create({ idempotent: true, intermediates: true });
-        }
-        await this.migrateLegacyModelFile(modelFile);
-        this.deleteFileIfExists(tempFile);
-    }
-
-    private async migrateLegacyModelFile(modelFile: File): Promise<void> {
-        const legacyFile = new File(Paths.document, WHISPER_MODEL_FILENAME);
-
-        if (!this.isExistingModelFile(legacyFile) || modelFile.exists) {
-            return;
-        }
-
-        await legacyFile.move(modelFile);
-    }
-
-    private isExistingModelFile(file: File): boolean {
-        return file.exists && isPositiveNumber(file.size);
-    }
-
-    private deleteFileIfExists(file: File): void {
-        if (file.exists) {
-            file.delete();
-        }
-    }
-
-    private async downloadToTempFile(tempFile: File, onProgress: (downloadProgress: number) => void): Promise<void> {
-        let expectedBytes = 0;
-        const download = createDownloadResumable(WHISPER_MODEL_URL, tempFile.uri, {}, progress => {
-            expectedBytes = progress.totalBytesExpectedToWrite;
-            onProgress(this.calculateProgress(progress.totalBytesWritten, expectedBytes));
+            if (isExistingModelFile(legacyFile) && !modelFile.exists) {
+                yield* Effect.promise(() => legacyFile.move(modelFile));
+            }
         });
-        const result = await download.downloadAsync();
 
-        if (!isDefined(result?.uri) || !tempFile.exists || !isPositiveNumber(tempFile.size) || tempFile.size !== expectedBytes) {
-            this.deleteFileIfExists(tempFile);
-            throw new Error(t`Whisper model download failed`);
-        }
-    }
+        const downloadToTempFile = Effect.fnUntraced(function* (tempFile: File, onProgress: (downloadProgress: number) => void) {
+            let expectedBytes = 0;
+            const download = createDownloadResumable(WHISPER_MODEL_URL, tempFile.uri, {}, progress => {
+                expectedBytes = progress.totalBytesExpectedToWrite;
+                onProgress(calculateProgress(progress.totalBytesWritten, expectedBytes));
+            });
+            const result = yield* Effect.promise(() => download.downloadAsync());
 
-    private calculateProgress(bytesWritten: number, expectedBytes: number): number {
-        if (!isPositiveNumber(expectedBytes)) {
-            return 0;
-        }
+            if (!isDefined(result?.uri) || !tempFile.exists || !isPositiveNumber(tempFile.size) || tempFile.size !== expectedBytes) {
+                deleteFileIfExists(tempFile);
 
-        return Math.min(WHISPER_MODEL_MAX_DOWNLOAD_PROGRESS, Math.max(0, bytesWritten / expectedBytes));
-    }
+                return yield* Effect.die(new Error(t`Whisper model download failed`));
+            }
+        });
+
+        return {
+            download: Effect.fn('WhisperModelService.download')(function* (onProgress: (downloadProgress: number) => void) {
+                const { modelDirectory, modelFile, tempFile } = resolvePaths();
+
+                if (!modelDirectory.exists) {
+                    modelDirectory.create({ idempotent: true, intermediates: true });
+                }
+                yield* migrateLegacyModelFile(modelFile);
+                deleteFileIfExists(tempFile);
+
+                if (!isExistingModelFile(modelFile)) {
+                    deleteFileIfExists(modelFile);
+                    yield* downloadToTempFile(tempFile, onProgress);
+                    yield* Effect.promise(() => tempFile.move(modelFile));
+                }
+                onProgress(1);
+
+                return modelFile.uri;
+            }),
+            delete: (): void => {
+                deleteFileIfExists(resolvePaths().modelFile);
+            }
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(WhisperModelService, WhisperModelService.make);
 }
-
-export const whisperModelService = new WhisperModelService();

@@ -1,15 +1,17 @@
-import { AITransactionInterface, findAccountByCurrency } from '@budgie/ai';
+import { AITransactionInterface, EmbeddingSuggestionService, VoiceLlmService, findAccountByCurrency } from '@budgie/ai';
 import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
+import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
-import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
-import { aiModelResidencyService } from '../service/ai-model-residency.service';
-import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
-import { voiceService } from '../service/voice.service';
+import { AiModelResidencyService } from '../service/ai-model-residency.service';
+import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
@@ -23,38 +25,43 @@ interface UseLlmCategorizationReturnInterface {
     readonly reset: () => void;
 }
 
-const suggestCategoryFor = async (description: string, categories: CategoryEntityInterface[]): Promise<CategoryEntityInterface | null> => {
-    if (!isNotEmptyArray(categories)) {
-        return null;
-    }
-    const suggestions = await embeddingSuggestionService.suggestCategories(categories, description, null, description, '', null);
+const suggestCategoryFor = (description: string, categories: CategoryEntityInterface[]) =>
+    isNotEmptyArray(categories)
+        ? Effect.flatMap(EmbeddingSuggestionService, embeddingSuggestionService =>
+              Effect.map(
+                  embeddingSuggestionService.suggestCategories(categories, description, null, description, '', null),
+                  suggestions => suggestions[0] ?? null
+              )
+          )
+        : Effect.succeed(null);
 
-    return suggestions[0] ?? null;
-};
-
-const extractAndMapTransactions = async (
+const extractAndMapTransactions = Effect.fn('useLlmCategorization.extractAndMapTransactions')(function* (
     text: string,
     accounts: AccountWithInstrumentEntityInterface[],
     categories: CategoryEntityInterface[]
-): Promise<AITransactionInterface[]> => {
-    const extracted = await voiceService.extractTransactions(text);
+) {
+    const voiceLlmService = yield* VoiceLlmService;
+    const extracted = yield* voiceLlmService.extractTransactions(text);
 
     if (!isNotEmptyArray(extracted)) {
         // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, not user-facing
-        throw new Error('Failed to extract transactions from text');
+        return yield* Effect.die(new Error('Failed to extract transactions from text'));
     }
 
-    return Promise.all(
-        extracted.map(async item => ({
-            category: await suggestCategoryFor(item.description, categories),
-            amount: item.amount,
-            currency: item.currency,
-            account: findAccountByCurrency(accounts, item.currency),
-            type: TransactionTypeEnum.EXPENSE,
-            comment: item.description
-        }))
+    return yield* Effect.forEach(
+        extracted,
+        item =>
+            Effect.map(suggestCategoryFor(item.description, categories), (category): AITransactionInterface => ({
+                category,
+                amount: item.amount,
+                currency: item.currency,
+                account: findAccountByCurrency(accounts, item.currency),
+                type: TransactionTypeEnum.EXPENSE,
+                comment: item.description
+            })),
+        { concurrency: 'unbounded' }
     );
-};
+});
 
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { accounts } = useSearchAccountsSortedQuery();
@@ -63,28 +70,33 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
     const [error, setError] = useState<string | null>(null);
 
-    const categorize = async (text: string): Promise<AITransactionInterface[]> => {
+    const categorize = (text: string): Promise<AITransactionInterface[]> => {
         setStatus('processing');
         setError(null);
         setTransactions([]);
 
-        await Promise.all(VOICE_SUBSYSTEMS.map(subsystem => aiModelResidencyService.acquire(subsystem)));
-
-        try {
-            const results = await extractAndMapTransactions(text, accounts, categories);
-            setTransactions(results);
-            setStatus('done');
-
-            return results;
-        } catch (err: unknown) {
-            setError(getErrorMessage(err));
-            setStatus('error');
-            throw err;
-        } finally {
-            VOICE_SUBSYSTEMS.forEach(subsystem => {
-                aiModelResidencyService.release(subsystem);
-            });
-        }
+        return appRuntime.runPromise(
+            Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                Effect.acquireUseRelease(
+                    Effect.forEach(VOICE_SUBSYSTEMS, subsystem => aiModelResidencyService.acquire(subsystem), { concurrency: 'unbounded' }),
+                    () => extractAndMapTransactions(text, accounts, categories),
+                    () => Effect.forEach(VOICE_SUBSYSTEMS, subsystem => aiModelResidencyService.release(subsystem), { discard: true })
+                )
+            ).pipe(
+                Effect.tap(results =>
+                    Effect.sync(() => {
+                        setTransactions(results);
+                        setStatus('done');
+                    })
+                ),
+                Effect.tapCause(cause =>
+                    Effect.sync(() => {
+                        setError(getRootErrorMessage(Cause.squash(cause)));
+                        setStatus('error');
+                    })
+                )
+            )
+        );
     };
 
     const reset = (): void => {

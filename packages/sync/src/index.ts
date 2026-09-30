@@ -1,18 +1,20 @@
-export { disableLogging, Log } from '@budgie/logger';
-
 export { SyncAccountTypeEnum } from './core/enum/sync-account-type.enum';
 export { SyncAccountBalanceStateEnum } from './core/enum/sync-account-balance-state.enum';
 export { SyncProviderEnum } from './core/enum/sync-provider.enum';
-export { SyncErrorCodeEnum } from './core/enum/sync-error-code.enum';
-export { SyncError } from './core/error/sync.error';
+export { SyncUnauthorizedError } from './core/error/sync-unauthorized.error';
+export { SyncRateLimitedError } from './core/error/sync-rate-limited.error';
+export { SyncDeferredError } from './core/error/sync-deferred.error';
+export { SyncNetworkError } from './core/error/sync-network.error';
+export { SyncInvalidResponseError } from './core/error/sync-invalid-response.error';
 export { SyncTransactionTypeEnum } from './core/enum/sync-transaction-type.enum';
 export { CashbackTypeEnum } from './core/enum/cashback-type.enum';
 
 export type { SyncAccountInterface } from './core/interface/sync-account.interface';
-export type { SyncResultInterface } from './core/interface/sync-result.type';
+export type { SyncError } from './core/interface/sync-error.type';
 export type { SyncTransactionInterface } from './core/interface/sync-transaction.interface';
 export type { SyncBatchResultInterface } from './core/interface/sync-batch-result.interface';
 
+export { MonobankClient } from './monobank/client/monobank.client';
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_MAX_PERIOD_SECONDS } from './monobank/constant/monobank-max-period-seconds.constant';
@@ -22,6 +24,7 @@ export { PRIVATBANK_CATEGORY_TO_MCC_CODE } from './privatbank/constant/privatban
 export { PrivatbankFileClient } from './privatbank/client/privatbank-file.client';
 export { privatbankAccountMapper } from './privatbank/mapper/privatbank-account.mapper';
 export { privatbankTransactionMapper } from './privatbank/mapper/privatbank-transaction.mapper';
+export { parsePrivatbankXlsx } from './privatbank/util/parse-privatbank-xlsx.util';
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
 export { BinanceSignedClient } from './binance/client/binance-signed.client';

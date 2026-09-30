@@ -1,210 +1,203 @@
-import { transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, TransactionEntryRepository } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
+import * as Cause from 'effect/Cause';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository } from '../../@generic/drizzle/db/db';
-import { microPause } from '../../@generic/utils/micro-pause.util';
-import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
-import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
+import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
-import { entryBaseValuationService } from './entry-base-valuation.service';
+import { EntryBaseValuationService } from './entry-base-valuation.service';
 
 import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '../interface/money-data-upgrade-runtime-snapshot.interface';
-import type { DB, PendingBaseValuationBucketInterface } from '@budgie/contracts';
+import type { PendingBaseValuationBucketInterface } from '@budgie/contracts';
 
-class MoneyDataUpgradeService {
-    private static readonly BUCKET_BATCH_SIZE = 25;
+export class MoneyDataUpgradeService extends Context.Service<MoneyDataUpgradeService>()('@budgie/app/MoneyDataUpgradeService', {
+    make: Effect.gen(function* () {
+        const transactionEntryRepository = yield* TransactionEntryRepository;
+        const exchangeRatesService = yield* ExchangeRatesService;
+        const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+        const entryBaseValuationService = yield* EntryBaseValuationService;
+        const reactivity = yield* Reactivity.Reactivity;
+        const bucketBatchSize = 25;
 
-    private snapshot: MoneyDataUpgradeRuntimeSnapshotInterface = this.createInitialSnapshot();
-
-    @Log(
-        'enter',
-        result =>
-            `done isRunning=${String(result.isRunning)} pendingEntryCount=${result.pendingEntryCount} lastError=${result.lastError ?? ''}`,
-        error => `throw error=${getErrorMessage(error)}`
-    )
-    async getSnapshot(): Promise<MoneyDataUpgradeRuntimeSnapshotInterface> {
-        if (this.snapshot.isRunning) {
-            return this.snapshot;
-        }
-
-        const baseInstrument = await exchangeRatesService.getBaseInstrument();
-        if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
-            return {
-                ...this.createInitialSnapshot(),
-                lastError: t`Base instrument not found`
-            };
-        }
-
-        const pendingEntryCount = await transactionEntryRepository.countPendingBaseValuationEntries(baseInstrument.id);
-
-        return {
-            ...this.createInitialSnapshot(),
-            pendingEntryCount,
-            totalEntryCount: pendingEntryCount
-        };
-    }
-
-    @Log(
-        onProgress => `enter hasOnProgress=${String(isDefined(onProgress))}`,
-        (result, onProgress) =>
-            `done processedEntryCount=${result.processedEntryCount} totalEntryCount=${result.totalEntryCount} hasOnProgress=${String(isDefined(onProgress))}`,
-        (error, onProgress) => `throw hasOnProgress=${String(isDefined(onProgress))} error=${getErrorMessage(error)}`
-    )
-    async run(
-        onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
-    ): Promise<MoneyDataUpgradeRuntimeSnapshotInterface> {
-        if (this.snapshot.isRunning) {
-            return this.snapshot;
-        }
-
-        this.publishSnapshot({ ...this.snapshot, isRunning: true, lastError: null }, onProgress);
-
-        try {
-            await this.valuePendingEntries(onProgress);
-            this.publishSnapshot({ ...this.snapshot, isRunning: false, isUpdatingBalances: false }, onProgress);
-
-            return this.snapshot;
-        } catch (error) {
-            this.publishSnapshot(
-                { ...this.snapshot, isRunning: false, isUpdatingBalances: false, lastError: getErrorMessage(error) },
-                onProgress
-            );
-
-            throw error;
-        }
-    }
-
-    private async valuePendingEntries(onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void): Promise<void> {
-        const baseInstrument = await exchangeRatesService.getBaseInstrument();
-
-        if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
-            throw new Error(t`Base instrument not found`);
-        }
-
-        const buckets = await transactionEntryRepository.findPendingBaseValuationBuckets(baseInstrument.id);
-        const totalEntryCount = this.sumBucketEntries(buckets);
-
-        this.publishSnapshot(
-            {
-                ...this.snapshot,
-                pendingEntryCount: totalEntryCount,
-                processedEntryCount: 0,
-                totalEntryCount
-            },
-            onProgress
-        );
-
-        await this.valuePendingEntryBuckets(buckets, baseInstrument.id, onProgress);
-
-        this.publishSnapshot(
-            {
-                ...this.snapshot,
-                isUpdatingBalances: true
-            },
-            onProgress
-        );
-
-        await accountBalanceIncrementalService.updateAllBalances(true);
-    }
-
-    private async valuePendingEntryBuckets(
-        buckets: PendingBaseValuationBucketInterface[],
-        baseInstrumentId: number,
-        onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
-    ): Promise<void> {
-        await this.toBucketBatches(buckets).reduce(
-            (previousBatchPromise, batch) =>
-                previousBatchPromise.then(() => this.valuePendingEntryBatch(batch, baseInstrumentId, onProgress)),
-            Promise.resolve()
-        );
-    }
-
-    private async valuePendingEntryBatch(
-        batch: PendingBaseValuationBucketInterface[],
-        baseInstrumentId: number,
-        onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
-    ): Promise<void> {
-        await transactionAsync(db, async tx => {
-            await batch.reduce(
-                (previousBucketPromise, bucket) =>
-                    previousBucketPromise.then(() => this.valuePendingEntryBucket(bucket, baseInstrumentId, tx)),
-                Promise.resolve()
-            );
-        });
-
-        const batchEntryCount = this.sumBucketEntries(batch);
-        this.publishSnapshot(
-            {
-                ...this.snapshot,
-                pendingEntryCount: Math.max(this.snapshot.pendingEntryCount - batchEntryCount, 0),
-                processedEntryCount: this.snapshot.processedEntryCount + batchEntryCount
-            },
-            onProgress
-        );
-
-        await microPause();
-    }
-
-    private async valuePendingEntryBucket(bucket: PendingBaseValuationBucketInterface, baseInstrumentId: number, tx: DB): Promise<void> {
-        const operatedAt = new Date(bucket.rateDate);
-        operatedAt.setHours(0, 0, 0, 0);
-
-        const baseExchangeRate =
-            bucket.sourceInstrumentId === baseInstrumentId
-                ? 1
-                : await entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
-                      bucket.sourceInstrumentId,
-                      baseInstrumentId,
-                      operatedAt,
-                      tx
-                  );
-
-        await transactionEntryRepository.updateBaseValuationBucket(
-            {
-                rateDate: bucket.rateDate,
-                sourceInstrumentId: bucket.sourceInstrumentId,
-                baseInstrumentId,
-                baseExchangeRate
-            },
-            tx
-        );
-    }
-
-    private toBucketBatches(buckets: PendingBaseValuationBucketInterface[]): PendingBaseValuationBucketInterface[][] {
-        const batches: PendingBaseValuationBucketInterface[][] = [];
-
-        for (let batchStart = 0; batchStart < buckets.length; batchStart += MoneyDataUpgradeService.BUCKET_BATCH_SIZE) {
-            batches.push(buckets.slice(batchStart, batchStart + MoneyDataUpgradeService.BUCKET_BATCH_SIZE));
-        }
-
-        return batches;
-    }
-
-    private sumBucketEntries(buckets: PendingBaseValuationBucketInterface[]): number {
-        return buckets.reduce((total, bucket) => total + bucket.entryCount, 0);
-    }
-
-    private createInitialSnapshot(): MoneyDataUpgradeRuntimeSnapshotInterface {
-        return {
+        const createInitialSnapshot = (): MoneyDataUpgradeRuntimeSnapshotInterface => ({
             isRunning: false,
             isUpdatingBalances: false,
             pendingEntryCount: 0,
             processedEntryCount: 0,
             totalEntryCount: 0,
             lastError: null
+        });
+
+        let snapshot = createInitialSnapshot();
+
+        const publishSnapshot = (
+            nextSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface,
+            onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
+        ): void => {
+            snapshot = nextSnapshot;
+            onProgress?.(nextSnapshot);
         };
-    }
 
-    private publishSnapshot(
-        snapshot: MoneyDataUpgradeRuntimeSnapshotInterface,
-        onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
-    ): void {
-        this.snapshot = snapshot;
-        onProgress?.(snapshot);
-    }
+        const sumBucketEntries = (buckets: PendingBaseValuationBucketInterface[]): number =>
+            buckets.reduce((total, bucket) => total + bucket.entryCount, 0);
+
+        const toBucketBatches = (buckets: PendingBaseValuationBucketInterface[]): PendingBaseValuationBucketInterface[][] => {
+            const batches: PendingBaseValuationBucketInterface[][] = [];
+
+            for (let batchStart = 0; batchStart < buckets.length; batchStart += bucketBatchSize) {
+                batches.push(buckets.slice(batchStart, batchStart + bucketBatchSize));
+            }
+
+            return batches;
+        };
+
+        const valuePendingEntryBucket = Effect.fnUntraced(function* (
+            bucket: PendingBaseValuationBucketInterface,
+            baseInstrumentId: number,
+            onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
+        ) {
+            const operatedAt = new Date(bucket.rateDate);
+            operatedAt.setHours(0, 0, 0, 0);
+
+            const baseExchangeRate =
+                bucket.sourceInstrumentId === baseInstrumentId
+                    ? 1
+                    : yield* entryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull(
+                          bucket.sourceInstrumentId,
+                          baseInstrumentId,
+                          operatedAt
+                      );
+
+            yield* transactionEntryRepository.updateBaseValuationBucket({
+                rateDate: bucket.rateDate,
+                sourceInstrumentId: bucket.sourceInstrumentId,
+                baseInstrumentId,
+                baseExchangeRate
+            });
+
+            publishSnapshot(
+                {
+                    ...snapshot,
+                    pendingEntryCount: Math.max(snapshot.pendingEntryCount - bucket.entryCount, 0),
+                    processedEntryCount: snapshot.processedEntryCount + bucket.entryCount
+                },
+                onProgress
+            );
+        });
+
+        const valuePendingEntryBatch = Effect.fn('MoneyDataUpgradeService.valuePendingEntryBatch')(function* (
+            batch: PendingBaseValuationBucketInterface[],
+            baseInstrumentId: number,
+            onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
+        ) {
+            yield* Db.transaction(
+                Effect.forEach(batch, bucket => valuePendingEntryBucket(bucket, baseInstrumentId, onProgress), { discard: true })
+            );
+
+            yield* YIELD_TO_UI;
+        });
+
+        const valuePendingEntries = Effect.fn('MoneyDataUpgradeService.valuePendingEntries')(function* (
+            onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
+        ) {
+            const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
+
+            if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
+                return yield* Effect.die(new Error(t`Base instrument not found`));
+            }
+
+            const buckets = yield* transactionEntryRepository.findPendingBaseValuationBuckets(baseInstrument.id);
+            const totalEntryCount = sumBucketEntries(buckets);
+
+            publishSnapshot(
+                {
+                    ...snapshot,
+                    pendingEntryCount: totalEntryCount,
+                    processedEntryCount: 0,
+                    totalEntryCount
+                },
+                onProgress
+            );
+
+            yield* Effect.forEach(toBucketBatches(buckets), batch => valuePendingEntryBatch(batch, baseInstrument.id, onProgress), {
+                discard: true
+            });
+
+            publishSnapshot({ ...snapshot, isUpdatingBalances: true }, onProgress);
+
+            return yield* accountBalanceIncrementalService.updateAllBalances(true);
+        });
+
+        return {
+            getSnapshot: Effect.fn('MoneyDataUpgradeService.getSnapshot')(function* () {
+                if (snapshot.isRunning) {
+                    return snapshot;
+                }
+
+                const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
+
+                if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
+                    const missingBaseSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface = {
+                        ...createInitialSnapshot(),
+                        lastError: t`Base instrument not found`
+                    };
+
+                    return missingBaseSnapshot;
+                }
+
+                const pendingEntryCount = yield* transactionEntryRepository.countPendingBaseValuationEntries(baseInstrument.id);
+                const pendingSnapshot: MoneyDataUpgradeRuntimeSnapshotInterface = {
+                    ...createInitialSnapshot(),
+                    pendingEntryCount,
+                    totalEntryCount: pendingEntryCount
+                };
+
+                return pendingSnapshot;
+            }),
+            run: Effect.fn('MoneyDataUpgradeService.run')(function* (
+                onProgress?: (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface) => void
+            ) {
+                if (snapshot.isRunning) {
+                    return snapshot;
+                }
+
+                publishSnapshot({ ...snapshot, isRunning: true, lastError: null }, onProgress);
+
+                yield* reactivity.withBatch(valuePendingEntries(onProgress)).pipe(
+                    Effect.tapCause(cause =>
+                        Effect.sync(() => {
+                            publishSnapshot(
+                                {
+                                    ...snapshot,
+                                    isRunning: false,
+                                    isUpdatingBalances: false,
+                                    lastError: getErrorMessage(Cause.squash(cause))
+                                },
+                                onProgress
+                            );
+                        })
+                    )
+                );
+                publishSnapshot({ ...snapshot, isRunning: false, isUpdatingBalances: false }, onProgress);
+
+                return snapshot;
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(MoneyDataUpgradeService, MoneyDataUpgradeService.make).pipe(
+        Layer.provide([
+            TransactionEntryRepository.layer,
+            ExchangeRatesService.layer,
+            AccountBalanceIncrementalService.layer,
+            EntryBaseValuationService.layer
+        ])
+    );
 }
-
-export const moneyDataUpgradeService = new MoneyDataUpgradeService();

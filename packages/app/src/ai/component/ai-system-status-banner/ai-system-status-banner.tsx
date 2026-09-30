@@ -1,13 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { cn } from 'cn';
-import { useSyncExternalStore } from 'react';
 import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { aiUmbrellaStatusAtom } from '../../constant/ai-umbrella-status-atom.constant';
 import { AiSystemUmbrellaStateEnum } from '../../enum/ai-system-umbrella-state.enum';
-import { aiUmbrellaStatusService } from '../../service/ai-umbrella-status.service';
 
 const ICON_SIZE = 14;
 
@@ -28,7 +28,7 @@ const BANNER_COLOR: Record<AiSystemUmbrellaStateEnum, string> = {
 };
 
 export const AiSystemStatusBanner = () => {
-    const umbrella = useSyncExternalStore(aiUmbrellaStatusService.subscribe, aiUmbrellaStatusService.getSnapshot);
+    const umbrella = useAtomValue(aiUmbrellaStatusAtom);
     const isHidden = umbrella.state === AiSystemUmbrellaStateEnum.HEALTHY || umbrella.state === AiSystemUmbrellaStateEnum.DISABLED;
 
     if (isHidden) {

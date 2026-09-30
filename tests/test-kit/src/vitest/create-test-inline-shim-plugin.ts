@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 
 import type { TestInlineShimPluginInterface } from './interface/test-inline-shim-plugin.interface';
@@ -44,6 +45,46 @@ const VIRTUAL_SHIMS: Record<string, string> = {
     '@lingui/react/macro': `
         export const useLingui = () => ({ t: parts => (Array.isArray(parts) ? parts.join('') : String(parts)) });
     `,
+    'expo-local-authentication': `
+        export const hasHardwareAsync = async () => false;
+        export const isEnrolledAsync = async () => false;
+        export const authenticateAsync = async () => ({ success: false });
+    `,
+    'expo-notifications': `
+        export const AndroidImportance = { DEFAULT: 3, HIGH: 4 };
+        export const scheduleNotificationAsync = async () => '';
+        export const setNotificationChannelAsync = async () => null;
+        export const getPermissionsAsync = async () => ({ granted: false });
+        export const requestPermissionsAsync = async () => ({ granted: false });
+    `,
+    'expo-haptics': `
+        export const ImpactFeedbackStyle = { Light: 'light', Medium: 'medium', Heavy: 'heavy' };
+        export const NotificationFeedbackType = { Success: 'success', Warning: 'warning', Error: 'error' };
+        export const impactAsync = async () => undefined;
+        export const notificationAsync = async () => undefined;
+    `,
+    'expo-document-picker': `
+        export const getDocumentAsync = async () => ({ canceled: true, assets: null });
+    `,
+    'expo-sharing': `
+        export const isAvailableAsync = async () => false;
+        export const shareAsync = async () => undefined;
+    `,
+    'expo-localization': `
+        export const getLocales = () => [{ languageCode: 'en', languageTag: 'en-US', regionCode: 'US', currencyCode: 'USD' }];
+    `,
+    'expo-sqlite/kv-store': `
+        const store = new Map();
+        export default {
+            getItem: async key => store.get(key) ?? null,
+            setItem: async (key, value) => {
+                store.set(key, value);
+            },
+            removeItem: async key => {
+                store.delete(key);
+            }
+        };
+    `,
     'react-native': `
         export const InteractionManager = {
             runAfterInteractions(cb) {
@@ -51,22 +92,38 @@ const VIRTUAL_SHIMS: Record<string, string> = {
                 return { cancel: () => undefined };
             }
         };
+        export const Platform = { OS: 'ios', select: options => options.ios ?? options.default };
+        export const AppState = { currentState: 'active', addEventListener: () => ({ remove: () => undefined }) };
+        export const Alert = { alert: () => undefined };
+        export const Linking = { openURL: async () => undefined, openSettings: async () => undefined };
+        export const Appearance = { getColorScheme: () => 'light', addChangeListener: () => ({ remove: () => undefined }) };
+        export const StyleSheet = { create: styles => styles, hairlineWidth: 1 };
     `
 };
 
 const DRIZZLE_EXPO_SQLITE_SHIM: Record<string, string> = {
     'drizzle-orm/expo-sqlite': `
-        import { drizzle as drizzleBetterSqlite } from 'drizzle-orm/better-sqlite3';
+        import { drizzle as drizzleBetterSqlite } from ${JSON.stringify(createRequire(import.meta.url).resolve('drizzle-orm/better-sqlite3'))};
 
         export const drizzle = (database, config) => {
             if (database?.$client) {
                 return drizzleBetterSqlite(database.$client, config);
             }
 
+            if (typeof database?.prepare === 'function') {
+                return drizzleBetterSqlite(database, config);
+            }
+
             return {};
         };
     `
 };
+
+const APP_WIDGET_MODULE_PATTERN = /\/widget\/[a-z-]+\.widget$/u;
+
+const APP_WIDGET_SHIM_ID = 'app-widget';
+
+const APP_WIDGET_SHIM = `export default { updateSnapshot: () => undefined, updateTimeline: () => undefined, reload: () => undefined };`;
 
 export const createTestInlineShimPlugin = (includeDrizzleExpoSqlite: boolean = false): TestInlineShimPluginInterface => ({
     name: 'inline-shim',
@@ -78,11 +135,20 @@ export const createTestInlineShimPlugin = (includeDrizzleExpoSqlite: boolean = f
             return `${VIRTUAL_PREFIX}${id}`;
         }
 
+        if (APP_WIDGET_MODULE_PATTERN.test(id)) {
+            return `${VIRTUAL_PREFIX}${APP_WIDGET_SHIM_ID}`;
+        }
+
         return null;
     },
     load: id => {
         if (id.startsWith(VIRTUAL_PREFIX)) {
             const key = id.slice(VIRTUAL_PREFIX.length);
+
+            if (key === APP_WIDGET_SHIM_ID) {
+                return APP_WIDGET_SHIM;
+            }
+
             const virtualShims = includeDrizzleExpoSqlite ? { ...VIRTUAL_SHIMS, ...DRIZZLE_EXPO_SQLITE_SHIM } : VIRTUAL_SHIMS;
 
             return virtualShims[key] ?? null;

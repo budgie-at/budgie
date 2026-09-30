@@ -1,34 +1,28 @@
+import * as Context from 'effect/Context';
+import * as Layer from 'effect/Layer';
+
+import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
+import { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
 import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
+import { makeConsolidationFamilyService } from '../utils/make-consolidation-family-service.util';
 
-import { ConsolidationFamilyStrategyService } from './consolidation-family-strategy.service';
-
-import type { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
-import type { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
-import type { BridgeClaimRepairCandidateInterface } from '@budgie/contracts';
-
-export class BridgeClaimRepairConsolidationFamilyService extends ConsolidationFamilyStrategyService<BridgeClaimRepairCandidateInterface> {
-    readonly key = ConsolidationFamilyKeyEnum.BRIDGE_CLAIM_REPAIR;
-
-    constructor(
-        private readonly transferPairRepository: Pick<TransferPairRepository, 'findBridgeClaimedRepairCandidates'>,
-        private readonly consolidationRepairExecutorService: Pick<
+export class BridgeClaimRepairConsolidationFamilyService extends Context.Service<BridgeClaimRepairConsolidationFamilyService>()(
+    '@budgie/consolidation/BridgeClaimRepairConsolidationFamilyService',
+    {
+        make: makeConsolidationFamilyService(
+            TransferPairRepository,
             ConsolidationRepairExecutorService,
-            'unconsolidateBridgeClaimedTransferPair'
-        >,
-        yieldControl: () => Promise<void>
-    ) {
-        super(yieldControl);
+            (transferPairRepository, consolidationRepairExecutorService) => ({
+                key: ConsolidationFamilyKeyEnum.BRIDGE_CLAIM_REPAIR,
+                findCandidates: _scope => transferPairRepository.findBridgeClaimedRepairCandidates(),
+                consolidateCandidate: candidate => consolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair(candidate),
+                getSourceTransactionIds: candidate => [candidate.canonicalTransferId, candidate.claimedIncomeTransactionId]
+            })
+        )
     }
-
-    protected findCandidates(): Promise<BridgeClaimRepairCandidateInterface[]> {
-        return this.transferPairRepository.findBridgeClaimedRepairCandidates();
-    }
-
-    protected consolidateCandidate(candidate: BridgeClaimRepairCandidateInterface): Promise<boolean> {
-        return this.consolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair(candidate);
-    }
-
-    protected getSourceTransactionIds(candidate: BridgeClaimRepairCandidateInterface): number[] {
-        return [candidate.canonicalTransferId, candidate.claimedIncomeTransactionId];
-    }
+) {
+    static readonly layer = Layer.effect(
+        BridgeClaimRepairConsolidationFamilyService,
+        BridgeClaimRepairConsolidationFamilyService.make
+    ).pipe(Layer.provide([TransferPairRepository.layer, ConsolidationRepairExecutorService.layer]));
 }

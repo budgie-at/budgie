@@ -1,43 +1,71 @@
-import { categoryRepository } from '@app/@generic/drizzle/db/db';
-import { chatService } from '@app/ai/service/chat.service';
-import { translationDrainerService } from '@app/ai/service/translation-drainer.service';
-import { LanguageEnum, UserIconNameEnum } from '@budgie/contracts';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { ChatService } from '@app/ai/service/chat.service';
+import { TranslationDrainerService } from '@app/ai/service/translation-drainer.service';
+import { CategoryRepository, LanguageEnum, UserIconNameEnum } from '@budgie/contracts';
+import { describe, expect, it, vi } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import type { CategoryOrTagRowInterface } from '@app/ai/interface/category-or-tag-row.interface';
+import { getDefined } from '@rnw-community/shared';
 
-const spyOnGenerate = () => vi.spyOn(chatService, 'generate');
+import { AiInvokeError } from '../../../../../packages/ai/src/@generic/error/ai-invoke.error';
+import { TestLayer } from '../../harness';
 
-const createCategoryRow = async (): Promise<CategoryOrTagRowInterface> => {
-    const [category] = await categoryRepository.bulkCreate([{ title: 'Продукти', icon: UserIconNameEnum.ShoppingBasket }]);
+const createPendingCategory = Effect.fnUntraced(function* () {
+    const categoryRepository = yield* CategoryRepository;
 
-    return { kind: 'category', id: category.id, title: category.title };
-};
+    for (const seeded of yield* categoryRepository.findUntranslated(1000)) {
+        yield* categoryRepository.updateTranslation(seeded.id, seeded.title.toLowerCase(), '');
+    }
+    const [category] = yield* categoryRepository.bulkCreate([{ title: 'Продукти', icon: UserIconNameEnum.ShoppingBasket }]);
+
+    return category;
+});
+
+const takePendingTranslation = Effect.flatMap(TranslationDrainerService, translationDrainerService =>
+    Effect.map(translationDrainerService['config'].fetchPending(1), ([translation]) =>
+        getDefined(translation, () => {
+            throw new Error('no pending translation');
+        })
+    )
+);
 
 describe('category/translation-drainer-interrupted-completion', () => {
-    afterEach(() => {
-        vi.restoreAllMocks();
-    });
+    it.effect('leaves titleEn NULL and keeps the row pending when the completion is interrupted mid-generation', () =>
+        Effect.gen(function* () {
+            const categoryRepository = yield* CategoryRepository;
+            const chatService = yield* ChatService;
+            const category = yield* createPendingCategory();
+            vi.spyOn(chatService, 'generate').mockReturnValue(
+                Effect.fail(new AiInvokeError({ cause: new Error('completionInterrupted') }))
+            );
 
-    it('leaves titleEn NULL and keeps the row pending when the completion is interrupted mid-generation', async () => {
-        const row = await createCategoryRow();
-        spyOnGenerate().mockRejectedValue(new Error('completionInterrupted'));
+            const translation = yield* takePendingTranslation;
 
-        await expect(translationDrainerService['processRow'](row)).rejects.toThrow('completionInterrupted');
+            const error = yield* Effect.flip(translation);
 
-        const [persisted] = await categoryRepository.findById(row.id, LanguageEnum.EN);
-        expect(persisted.titleEn).toBeNull();
-        expect(await categoryRepository.findUntranslated(1000)).toContainEqual({ id: row.id, title: row.title });
-    });
+            expect(error.cause).toEqual(new Error('completionInterrupted'));
 
-    it('persists the translation and clears the pending row once generation completes normally', async () => {
-        const row = await createCategoryRow();
-        spyOnGenerate().mockResolvedValueOnce('groceries').mockResolvedValueOnce('food, groceries, shopping');
+            const [persisted] = yield* categoryRepository.findById(category.id, LanguageEnum.EN);
+            expect(persisted.titleEn).toBeNull();
+            expect(yield* categoryRepository.findUntranslated(1000)).toContainEqual({ id: category.id, title: category.title });
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        await translationDrainerService['processRow'](row);
+    it.effect('persists the translation and clears the pending row once generation completes normally', () =>
+        Effect.gen(function* () {
+            const categoryRepository = yield* CategoryRepository;
+            const chatService = yield* ChatService;
+            const category = yield* createPendingCategory();
+            vi.spyOn(chatService, 'generate')
+                .mockReturnValueOnce(Effect.succeed('groceries'))
+                .mockReturnValueOnce(Effect.succeed('food, groceries, shopping'));
 
-        const [persisted] = await categoryRepository.findById(row.id, LanguageEnum.EN);
-        expect(persisted.titleEn).toBe('groceries');
-        expect(await categoryRepository.findUntranslated(1000)).not.toContainEqual(expect.objectContaining({ id: row.id }));
-    });
+            const translation = yield* takePendingTranslation;
+
+            yield* translation;
+
+            const [persisted] = yield* categoryRepository.findById(category.id, LanguageEnum.EN);
+            expect(persisted.titleEn).toBe('groceries');
+            expect(yield* categoryRepository.findUntranslated(1000)).not.toContainEqual(expect.objectContaining({ id: category.id }));
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

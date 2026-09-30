@@ -1,116 +1,95 @@
-import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { AccountRepository, AccountTypeEnum, Db, InstrumentRepository, SettingsRepository, UserIconNameEnum } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 import { getLocales } from 'expo-localization';
 
-import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountRepository, instrumentRepository, settingsRepository } from '../../@generic/drizzle/db/db';
-import { accountService } from '../../account/service/account.service';
+import { AccountService } from '../../account/service/account.service';
 import { i18nGetOSLocale } from '../../i18n/util/i18n.util';
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
-import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
 
 import type { OnboardingAccountInputInterface } from '../interface/onboarding-account-input.interface';
 
-class OnboardingService {
-    private static readonly ONBOARDING_ACCOUNT_ICON: Partial<Record<AccountTypeEnum, UserIconNameEnum>> = {
-        [AccountTypeEnum.CASH]: UserIconNameEnum.Wallet,
-        [AccountTypeEnum.BANK]: UserIconNameEnum.Landmark,
-        [AccountTypeEnum.CRYPTO]: UserIconNameEnum.Bitcoin,
-        [AccountTypeEnum.DEBT]: UserIconNameEnum.HandCoins
-    };
+export class OnboardingService extends Context.Service<OnboardingService>()('@budgie/app/OnboardingService', {
+    make: Effect.gen(function* () {
+        const accountRepository = yield* AccountRepository;
+        const instrumentRepository = yield* InstrumentRepository;
+        const settingsRepository = yield* SettingsRepository;
+        const accountService = yield* AccountService;
 
-    private initializationPromise: Promise<void> | null = null;
+        const onboardingAccountIcon: Partial<Record<AccountTypeEnum, UserIconNameEnum>> = {
+            [AccountTypeEnum.CASH]: UserIconNameEnum.Wallet,
+            [AccountTypeEnum.BANK]: UserIconNameEnum.Landmark,
+            [AccountTypeEnum.CRYPTO]: UserIconNameEnum.Bitcoin,
+            [AccountTypeEnum.DEBT]: UserIconNameEnum.HandCoins
+        };
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async initializeLocale(): Promise<void> {
-        const { onboardingStep, isOnboardingCompleted } = await settingsRepository.getSettings();
-        const [{ count }] = await accountRepository.count();
-
-        if (isOnboardingCompleted || isPositiveNumber(onboardingStep) || isPositiveNumber(count)) {
-            return;
-        }
-
-        this.initializationPromise ??= this.runInitializeLocale().finally(() => {
-            this.initializationPromise = null;
-        });
-
-        return this.initializationPromise;
-    }
-
-    @Log(
-        accounts => `enter accountCount=${accounts.length}`,
-        (_result, accounts) => `done accountCount=${accounts.length}`,
-        (error, accounts) => `throw accountCount=${accounts.length} error=${getErrorMessage(error)}`
-    )
-    async provisionAccounts(accounts: OnboardingAccountInputInterface[]): Promise<void> {
-        const { defaultInstrumentId } = await settingsRepository.getSettings();
-        const instrumentId = defaultInstrumentId ?? DEFAULT_INSTRUMENT.id;
-        const existingAccounts = await accountRepository.getAllActiveAccounts();
-        const existingTypes = new Set(existingAccounts.map(existingAccount => existingAccount.type));
-        const accountsToCreate = accounts.filter(account => !existingTypes.has(account.type));
-
-        await accountsToCreate.reduce(
-            (previousAccountPromise, account) => previousAccountPromise.then(() => this.createOnboardingAccount(account, instrumentId)),
-            Promise.resolve()
-        );
-    }
-
-    @Log(
-        (accountId, instrumentId) => `enter accountId=${accountId} instrumentId=${instrumentId}`,
-        (result, accountId, instrumentId) => `done accountId=${accountId} instrumentId=${instrumentId} updatedId=${result.id}`,
-        (error, accountId, instrumentId) => `throw accountId=${accountId} instrumentId=${instrumentId} error=${getErrorMessage(error)}`
-    )
-    async changeOnboardingCurrency(accountId: number, instrumentId: number) {
-        await updateSettingsMutation({ defaultInstrumentId: instrumentId });
-
-        return accountService.updateById(accountId, { instrumentId });
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async complete(): Promise<void> {
-        await updateSettingsMutation({ isOnboardingCompleted: true });
-    }
-
-    private async createOnboardingAccount(account: OnboardingAccountInputInterface, instrumentId: number): Promise<void> {
-        await accountService.create({
-            type: account.type,
-            title: account.title,
-            currentBalance: 0,
-            icon: OnboardingService.ONBOARDING_ACCOUNT_ICON[account.type] ?? UserIconNameEnum.Wallet,
-            includeInNetWorth: true,
-            instrumentId
-        });
-    }
-
-    private async runInitializeLocale(): Promise<void> {
-        const language = i18nGetOSLocale();
-        const instrumentId = await this.resolveDeviceInstrumentId();
-
-        await updateSettingsMutation({ defaultInstrumentId: instrumentId, language });
-    }
-
-    private async resolveDeviceInstrumentId(): Promise<number> {
-        const code = this.detectDeviceInstrumentCode();
-
-        if (!isDefined(code)) {
-            return DEFAULT_INSTRUMENT.id;
-        }
-
-        const instrument = await instrumentRepository.findByCode(code);
-
-        return instrument?.id ?? DEFAULT_INSTRUMENT.id;
-    }
-
-    private detectDeviceInstrumentCode(): string | null {
-        for (const locale of getLocales()) {
-            if (isNotEmptyString(locale.currencyCode)) {
-                return locale.currencyCode.toUpperCase();
+        const detectDeviceInstrumentCode = (): string | null => {
+            for (const locale of getLocales()) {
+                if (isNotEmptyString(locale.currencyCode)) {
+                    return locale.currencyCode.toUpperCase();
+                }
             }
-        }
 
-        return null;
-    }
+            return null;
+        };
+
+        const resolveDeviceInstrumentId = Effect.fn('OnboardingService.resolveDeviceInstrumentId')(function* () {
+            const code = detectDeviceInstrumentCode();
+
+            if (!isDefined(code)) {
+                return DEFAULT_INSTRUMENT.id;
+            }
+
+            const instrument = yield* instrumentRepository.findByCode(code);
+
+            return instrument?.id ?? DEFAULT_INSTRUMENT.id;
+        });
+
+        const createOnboardingAccount = Effect.fn('OnboardingService.createOnboardingAccount')(function* (
+            account: OnboardingAccountInputInterface,
+            instrumentId: number
+        ) {
+            yield* accountService.create({
+                type: account.type,
+                title: account.title,
+                currentBalance: 0,
+                icon: onboardingAccountIcon[account.type] ?? UserIconNameEnum.Wallet,
+                includeInNetWorth: true,
+                instrumentId
+            });
+        });
+
+        return {
+            initializeLocale: Effect.fn('OnboardingService.initializeLocale')(function* () {
+                const { onboardingStep, isOnboardingCompleted } = yield* settingsRepository.getSettings();
+                const [{ count }] = yield* accountRepository.count();
+
+                if (isOnboardingCompleted || isPositiveNumber(onboardingStep) || isPositiveNumber(count)) {
+                    return;
+                }
+
+                const language = i18nGetOSLocale();
+                const instrumentId = yield* resolveDeviceInstrumentId();
+
+                yield* settingsRepository.update({ defaultInstrumentId: instrumentId, language });
+            }),
+            provisionAccounts: Effect.fn('OnboardingService.provisionAccounts')(function* (accounts: OnboardingAccountInputInterface[]) {
+                const { defaultInstrumentId } = yield* settingsRepository.getSettings();
+                const instrumentId = defaultInstrumentId ?? DEFAULT_INSTRUMENT.id;
+                const existingAccounts = yield* accountRepository.getAllActiveAccounts();
+                const existingTypes = new Set(existingAccounts.map(existingAccount => existingAccount.type));
+                const accountsToCreate = accounts.filter(account => !existingTypes.has(account.type));
+
+                yield* Effect.forEach(accountsToCreate, account => createOnboardingAccount(account, instrumentId), { discard: true });
+            }),
+            complete: () => Db.transaction(settingsRepository.update({ isOnboardingCompleted: true }))
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(OnboardingService, OnboardingService.make).pipe(
+        Layer.provide([AccountRepository.layer, InstrumentRepository.layer, SettingsRepository.layer, AccountService.layer])
+    );
 }
-
-export const onboardingService = new OnboardingService();

@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { MerchantEmbeddingEntityTable } from '../table/merchant-embedding-entity.table';
 
-import type { MerchantEmbeddingEntitySchema } from '../schema/merchant-embedding-entity.schema';
-
-export type MerchantEmbeddingEntityInterface = z.infer<typeof MerchantEmbeddingEntitySchema>;
+export type MerchantEmbeddingEntityInterface = typeof MerchantEmbeddingEntityTable.$inferSelect;

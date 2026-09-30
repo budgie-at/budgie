@@ -1,8 +1,8 @@
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
+import * as Effect from 'effect/Effect';
 import { useEffect, useState } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
-
-import { consolidationCoordinatorService } from '../../sync/service/consolidation-coordinator.service';
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 
 import type { CategorizeInboxRowInterface } from '@budgie/contracts';
 
@@ -10,21 +10,22 @@ export const useMoveToCashTransactionIdsQuery = (rows: readonly CategorizeInboxR
     const [transactionIds, setTransactionIds] = useState<number[]>([]);
 
     useEffect(() => {
-        let isActive = true;
-
-        consolidationCoordinatorService
-            .findAtmCashWithdrawalTransactionIds(rows.map(row => row.transactionId))
-            .then(foundTransactionIds => {
-                if (isActive) {
-                    setTransactionIds(foundTransactionIds);
-                }
-
-                return foundTransactionIds;
-            })
-            .catch(emptyFn);
+        const fiber = appRuntime.runFork(
+            Effect.ignore(
+                Effect.tap(
+                    Effect.flatMap(ConsolidationCoordinatorService, consolidationCoordinatorService =>
+                        consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds(rows.map(row => row.transactionId))
+                    ),
+                    foundTransactionIds =>
+                        Effect.sync(() => {
+                            setTransactionIds(foundTransactionIds);
+                        })
+                )
+            )
+        );
 
         return () => {
-            isActive = false;
+            fiber.interruptUnsafe();
         };
     }, [rows]);
 

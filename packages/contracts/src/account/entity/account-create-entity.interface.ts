@@ -1,5 +1,22 @@
-import { z } from 'zod';
+import type { BaseEntityKeyType } from '../../@generic/type/base-entity-key.type';
+import type { PartialByKeysType } from '../../@generic/type/partial-by-keys.type';
+import type { AccountEntityInterface } from './account-entity.interface';
 
-import type { AccountCreateEntitySchema } from '../schema/account-create-entity.schema';
-
-export type AccountCreateEntityInterface = z.infer<typeof AccountCreateEntitySchema>;
+export type AccountCreateEntityInterface = PartialByKeysType<
+    Omit<AccountEntityInterface, BaseEntityKeyType | 'titleSearch'>,
+    | 'iban'
+    | 'debtType'
+    | 'deadline'
+    | 'parentId'
+    | 'contactId'
+    | 'externalId'
+    | 'targetBalance'
+    | 'targetBaseInstrumentId'
+    | 'targetBaseExchangeRate'
+    | 'targetBaseAmount'
+    | 'interestRate'
+    | 'externalSource'
+    | 'integrationId'
+    | 'includeInNetWorth'
+    | 'isActive'
+>;

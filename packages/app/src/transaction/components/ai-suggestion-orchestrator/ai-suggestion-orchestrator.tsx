@@ -1,8 +1,5 @@
-import { getLogger } from '@budgie/logger';
-
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-const logger = getLogger('AiSuggestionOrchestrator');
 import { SuggestionOrchestratorSharedProps } from '../../interface/suggestion-orchestrator-shared-props.type';
 import { CategorySuggestionRow } from '../category-suggestion-row/category-suggestion-row';
 import { CommentSuggestionRow } from '../comment-suggestion-row/comment-suggestion-row';
@@ -33,18 +30,6 @@ export const AiSuggestionOrchestrator = (props: SuggestionOrchestratorSharedProp
     const hasComment = isNotEmptyString(comment);
 
     const isStageActive = !isSplitActive && hasContext;
-    logger.log('hook:suggestion:orchestrator:state', {
-        isSplitActive,
-        transactionTitle,
-        categoryId,
-        mccCategoryId,
-        comment,
-        aiContext,
-        hasContext,
-        hasCategorySelected,
-        hasTagsSelected,
-        hasComment
-    });
 
     if (isStageActive && !hasCategorySelected) {
         return (

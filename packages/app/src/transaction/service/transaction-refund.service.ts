@@ -1,19 +1,14 @@
 import { RefundConsolidationService } from '@budgie/consolidation';
-import { transactionAsync } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import {
-    db,
-    refundPairRepository,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionTagsRepository
-} from '../../@generic/drizzle/db/db';
-
-export const transactionRefundService = new RefundConsolidationService({
-    database: db,
-    refundPairRepository,
-    runTransaction: transactionAsync,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionTagsRepository
-});
+export class TransactionRefundService extends Context.Service<TransactionRefundService>()('@budgie/app/TransactionRefundService', {
+    make: Effect.gen(function* () {
+        return yield* RefundConsolidationService;
+    })
+}) {
+    static readonly layer = Layer.effect(TransactionRefundService, TransactionRefundService.make).pipe(
+        Layer.provide(RefundConsolidationService.layer)
+    );
+}

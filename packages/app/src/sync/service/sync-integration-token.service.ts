@@ -1,141 +1,126 @@
 /* oxlint-disable lingui/no-unlocalized-strings -- Internal error messages are developer-facing, not user-facing UI text */
-import { Log } from '@budgie/logger';
+import { AccountRepository, BankIntegrationRepository, SyncRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { accountRepository, bankIntegrationRepository, syncRepository } from '../../@generic/drizzle/db/db';
+import type { AccountEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
-import type { AccountEntityInterface, BankIntegrationEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
+export class SyncIntegrationTokenService extends Context.Service<SyncIntegrationTokenService>()('@budgie/app/SyncIntegrationTokenService', {
+    make: Effect.gen(function* () {
+        const accountRepository = yield* AccountRepository;
+        const bankIntegrationRepository = yield* BankIntegrationRepository;
+        const syncRepository = yield* SyncRepository;
 
-class SyncIntegrationTokenService {
-    @Log(
-        (provider, accountId, token) => `enter provider=${provider} accountId=${accountId} tokenLen=${token.length}`,
-        (_result, provider, accountId, token) => `done provider=${provider} accountId=${accountId} tokenLen=${token.length}`,
-        (error, provider, accountId, token) =>
-            `throw provider=${provider} accountId=${accountId} tokenLen=${token.length} error=${getErrorMessage(error)}`
-    )
-    async updateAccountToken(provider: ExternalSourceEnum, accountId: number, token: string): Promise<void> {
-        const sync = await syncRepository.getByAccountId(accountId);
-        if (!isDefined(sync)) {
-            throw new Error('Sync not found');
-        }
-
-        const account = await accountRepository.findById(accountId);
-        if (!isDefined(account)) {
-            throw new Error('Account not found');
-        }
-
-        await this.applyAccountIntegrationToken(provider, account, token);
-        await this.clearCredentialGroupErrors(provider, accountId);
-    }
-
-    @Log(
-        (provider, accountId) => `enter provider=${provider} accountId=${accountId}`,
-        (result, provider, accountId) => `done provider=${provider} accountId=${accountId} tokenLen=${result.length}`,
-        (error, provider, accountId) => `throw provider=${provider} accountId=${accountId} error=${getErrorMessage(error)}`
-    )
-    async resolveAccountToken(provider: ExternalSourceEnum, accountId: number): Promise<string> {
-        const account = await accountRepository.findById(accountId);
-        if (!isDefined(account)) {
-            throw new Error('Account not found');
-        }
-
-        return this.resolveIntegrationToken(provider, account);
-    }
-
-    @Log(
-        (provider, account) => `enter provider=${provider} accountId=${account.id} integrationId=${account.integrationId}`,
-        (result, provider, account) =>
-            `done provider=${provider} accountId=${account.id} integrationId=${account.integrationId} tokenLen=${result.length}`,
-        (error, provider, account) =>
-            `throw provider=${provider} accountId=${account.id} integrationId=${account.integrationId} error=${getErrorMessage(error)}`
-    )
-    async resolveIntegrationToken(provider: ExternalSourceEnum, account: AccountEntityInterface): Promise<string> {
-        if (!isDefined(account.integrationId)) {
-            throw new Error(`Account has no linked ${provider} integration`);
-        }
-
-        const integration = await bankIntegrationRepository.findById(account.integrationId);
-        if (!isDefined(integration)) {
-            throw new Error('Bank integration not found');
-        }
-
-        return integration.token;
-    }
-
-    @Log(
-        (provider, token) => `enter provider=${provider} tokenLen=${token.length}`,
-        (result, provider, token) => `done provider=${provider} tokenLen=${token.length} integrationId=${result.id}`,
-        (error, provider, token) => `throw provider=${provider} tokenLen=${token.length} error=${getErrorMessage(error)}`
-    )
-    async getOrCreateIntegration(provider: ExternalSourceEnum, token: string): Promise<BankIntegrationEntityInterface> {
-        const existingIntegration = await bankIntegrationRepository.findByProviderAndToken(provider, token);
-        if (isDefined(existingIntegration)) {
-            return existingIntegration;
-        }
-
-        return bankIntegrationRepository.create({ provider, token });
-    }
-
-    @Log(
-        (provider, accountId) => `enter provider=${provider} accountId=${accountId}`,
-        (_result, provider, accountId) => `done provider=${provider} accountId=${accountId}`,
-        (error, provider, accountId) => `throw provider=${provider} accountId=${accountId} error=${getErrorMessage(error)}`
-    )
-    private async clearCredentialGroupErrors(provider: ExternalSourceEnum, accountId: number): Promise<void> {
-        const providerSyncs = await syncRepository.getByProvider(provider);
-        const accounts = await accountRepository.findByIds(providerSyncs.map(providerSync => providerSync.accountId));
-        const integrationIdByAccountId = new Map(accounts.map(account => [account.id, account.integrationId]));
-        const credentialGroupIntegrationId = integrationIdByAccountId.get(accountId);
-
-        const groupSyncs = isDefined(credentialGroupIntegrationId)
-            ? providerSyncs.filter(providerSync => integrationIdByAccountId.get(providerSync.accountId) === credentialGroupIntegrationId)
-            : providerSyncs.filter(providerSync => providerSync.accountId === accountId);
-
-        await Promise.all(groupSyncs.map(groupSync => syncRepository.update(groupSync.id, { errorCount: 0, lastError: null })));
-    }
-
-    @Log(
-        (provider, integrationId, token) => `enter provider=${provider} integrationId=${integrationId} tokenLen=${token.length}`,
-        (_result, provider, integrationId, token) => `done provider=${provider} integrationId=${integrationId} tokenLen=${token.length}`,
-        (error, provider, integrationId, token) =>
-            `throw provider=${provider} integrationId=${integrationId} tokenLen=${token.length} error=${getErrorMessage(error)}`
-    )
-    private async updateIntegrationToken(provider: ExternalSourceEnum, integrationId: number, token: string): Promise<void> {
-        await bankIntegrationRepository.updateById(integrationId, { provider, token });
-    }
-
-    @Log(
-        (provider, account, token) =>
-            `enter provider=${provider} accountId=${account.id} integrationId=${account.integrationId} tokenLen=${token.length}`,
-        (_result, provider, account, token) =>
-            `done provider=${provider} accountId=${account.id} integrationId=${account.integrationId} tokenLen=${token.length}`,
-        (error, provider, account, token) =>
-            `throw provider=${provider} accountId=${account.id} integrationId=${account.integrationId} tokenLen=${token.length} error=${getErrorMessage(error)}`
-    )
-    private async applyAccountIntegrationToken(
-        provider: ExternalSourceEnum,
-        account: AccountEntityInterface,
-        token: string
-    ): Promise<void> {
-        const existingIntegration = await bankIntegrationRepository.findByProviderAndToken(provider, token);
-        if (isDefined(existingIntegration)) {
-            if (existingIntegration.id !== account.integrationId) {
-                await accountRepository.updateById(account.id, { integrationId: existingIntegration.id });
+        const resolveIntegrationToken = Effect.fn('SyncIntegrationTokenService.resolveIntegrationToken')(function* (
+            provider: ExternalSourceEnum,
+            account: AccountEntityInterface
+        ) {
+            if (!isDefined(account.integrationId)) {
+                return yield* Effect.die(new Error(`Account has no linked ${provider} integration`));
             }
 
-            return;
-        }
+            const integration = yield* bankIntegrationRepository.findById(account.integrationId);
+            if (!isDefined(integration)) {
+                return yield* Effect.die(new Error('Bank integration not found'));
+            }
 
-        if (isDefined(account.integrationId)) {
-            await this.updateIntegrationToken(provider, account.integrationId, token);
+            return integration.token;
+        });
 
-            return;
-        }
+        const getOrCreateIntegration = Effect.fn('SyncIntegrationTokenService.getOrCreateIntegration')(function* (
+            provider: ExternalSourceEnum,
+            token: string
+        ) {
+            const existingIntegration = yield* bankIntegrationRepository.findByProviderAndToken(provider, token);
+            if (isDefined(existingIntegration)) {
+                return existingIntegration;
+            }
 
-        const integration = await this.getOrCreateIntegration(provider, token);
-        await accountRepository.updateById(account.id, { integrationId: integration.id });
-    }
+            return yield* bankIntegrationRepository.create({ provider, token });
+        });
+
+        const clearCredentialGroupErrors = Effect.fnUntraced(function* (provider: ExternalSourceEnum, accountId: number) {
+            const providerSyncs = yield* syncRepository.getByProvider(provider);
+            const accounts = yield* accountRepository.findByIds(providerSyncs.map(providerSync => providerSync.accountId));
+            const integrationIdByAccountId = new Map(accounts.map(account => [account.id, account.integrationId]));
+            const credentialGroupIntegrationId = integrationIdByAccountId.get(accountId);
+
+            const groupSyncs = isDefined(credentialGroupIntegrationId)
+                ? providerSyncs.filter(
+                      providerSync => integrationIdByAccountId.get(providerSync.accountId) === credentialGroupIntegrationId
+                  )
+                : providerSyncs.filter(providerSync => providerSync.accountId === accountId);
+
+            yield* Effect.all(
+                groupSyncs.map(groupSync => syncRepository.update(groupSync.id, { errorCount: 0, lastError: null })),
+                { concurrency: 'unbounded' }
+            );
+        });
+
+        const applyAccountIntegrationToken = Effect.fnUntraced(function* (
+            provider: ExternalSourceEnum,
+            account: AccountEntityInterface,
+            token: string
+        ) {
+            const existingIntegration = yield* bankIntegrationRepository.findByProviderAndToken(provider, token);
+            if (isDefined(existingIntegration)) {
+                if (existingIntegration.id !== account.integrationId) {
+                    yield* accountRepository.updateById(account.id, { integrationId: existingIntegration.id });
+                }
+
+                return;
+            }
+
+            if (isDefined(account.integrationId)) {
+                yield* bankIntegrationRepository.updateById(account.integrationId, { provider, token });
+
+                return;
+            }
+
+            const integration = yield* getOrCreateIntegration(provider, token);
+            yield* accountRepository.updateById(account.id, { integrationId: integration.id });
+        });
+
+        return {
+            resolveIntegrationToken,
+            getOrCreateIntegration,
+            updateAccountToken: Effect.fn('SyncIntegrationTokenService.updateAccountToken')(function* (
+                provider: ExternalSourceEnum,
+                accountId: number,
+                token: string
+            ) {
+                const sync = yield* syncRepository.getByAccountId(accountId);
+                if (!isDefined(sync)) {
+                    return yield* Effect.die(new Error('Sync not found'));
+                }
+
+                const account = yield* accountRepository.findById(accountId);
+                if (!isDefined(account)) {
+                    return yield* Effect.die(new Error('Account not found'));
+                }
+
+                yield* applyAccountIntegrationToken(provider, account, token);
+
+                return yield* clearCredentialGroupErrors(provider, accountId);
+            }),
+            resolveAccountToken: Effect.fn('SyncIntegrationTokenService.resolveAccountToken')(function* (
+                provider: ExternalSourceEnum,
+                accountId: number
+            ) {
+                const account = yield* accountRepository.findById(accountId);
+                if (!isDefined(account)) {
+                    return yield* Effect.die(new Error('Account not found'));
+                }
+
+                return yield* resolveIntegrationToken(provider, account);
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(SyncIntegrationTokenService, SyncIntegrationTokenService.make).pipe(
+        Layer.provide([AccountRepository.layer, BankIntegrationRepository.layer, SyncRepository.layer])
+    );
 }
-
-export const syncIntegrationTokenService = new SyncIntegrationTokenService();

@@ -1,42 +1,38 @@
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it, vi } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Clock from 'effect/Clock';
+import * as Effect from 'effect/Effect';
 
-import {
-    atmCashWithdrawalRepository,
-    consolidationExecutorService,
-    consolidationRepairExecutorService,
-    existingTransferRepository,
-    ibanBridgeTransferRepository,
-    refundPairRepository,
-    testQueryService,
-    testSeedService,
-    transferPairRepository
-} from '../harness/test-context';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
-describe('consolidation/yielding', () => {
-    it('yields while processing automatic candidate families', async () => {
-        const transferMcc = testQueryService.findMccByCode('4829');
-        testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
+layer(TestLayer)('consolidation/yielding', it => {
+    it.effect('yields while processing automatic candidate families', () =>
+        Effect.gen(function* () {
+            const transferMcc = testQueryService.findMccByCode('4829');
+            testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
-        const yieldControl = vi.fn(async () => undefined);
-        const consolidationCoordinatorService = new ConsolidationCoordinatorService(
-            {
-                atmCashWithdrawalRepository,
-                existingTransferRepository,
-                ibanBridgeTransferRepository,
-                refundPairRepository,
-                transferPairRepository
-            },
-            consolidationExecutorService,
-            consolidationRepairExecutorService,
-            yieldControl
-        );
+            let sleepCount = 0;
+            const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
 
-        const result = await consolidationCoordinatorService.consolidate();
+            const result = yield* Clock.clockWith(clock =>
+                consolidationCoordinatorService.consolidate().pipe(
+                    Effect.provideService(
+                        Clock.Clock,
+                        Object.assign(Object.create(clock), {
+                            sleep: () => {
+                                sleepCount += 1;
 
-        expect(result.consolidated).toBe(1);
-        expect(yieldControl.mock.calls.length).toBeGreaterThan(1);
-        expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
-    });
+                                return Effect.void;
+                            }
+                        })
+                    )
+                )
+            );
+
+            expect(result.consolidated).toBe(1);
+            expect(sleepCount).toBeGreaterThan(1);
+            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
+        })
+    );
 });

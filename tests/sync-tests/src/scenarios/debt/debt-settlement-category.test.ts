@@ -1,5 +1,4 @@
-import { accountBalanceRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
-import { transactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
+import { TransactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
 import {
     AccountDebtTypeEnum,
     AccountTypeEnum,
@@ -14,20 +13,21 @@ import {
     LENDING_CATEGORY_ID,
     LanguageEnum,
     PRECISION,
+    StatisticsRepository,
     TransactionEntryEntityTable,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
     TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { fetchAccountBalance, fetchDebtProgress, seed, testDb, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
-import { testDb } from '../../harness/scenario/setup';
-import { seed } from '../../harness/seed/seed';
 
 import type {
     AccountEntityInterface,
@@ -62,18 +62,6 @@ const fetchDebtEvents = (debtAccountId: number): DebtEventEntityInterface[] =>
 const fetchAccountEntries = (accountId: number): TransactionEntryEntityInterface[] =>
     testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.accountId, accountId)).all();
 
-const fetchLedgerBalance = (accountId: number): number | undefined => accountBalanceRepository.getByAccountId(accountId).get()?.balance;
-
-const fetchDebtProgress = (accountId: number) => {
-    const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(accountId).get();
-
-    if (!isDefined(progress)) {
-        throw new Error(`Debt progress for account ${accountId} not found`);
-    }
-
-    return progress;
-};
-
 const createCashAccount = () => seed.account({ title: 'Category cash account', type: AccountTypeEnum.BANK_SYNC });
 
 const createDebtAccount = (debtType: AccountDebtTypeEnum): AccountEntityInterface => {
@@ -88,6 +76,14 @@ const createDebtAccount = (debtType: AccountDebtTypeEnum): AccountEntityInterfac
     });
 
     return account;
+};
+
+const createUncategorizedIncomeOnLentDebt = (amount = SETTLED_AMOUNT) => {
+    const cashAccount = createCashAccount();
+    const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
+    const transaction = createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, null, amount);
+
+    return { debtAccount, transaction };
 };
 
 const createSettlementTransaction = (
@@ -148,145 +144,181 @@ const createUserCategorizedIncomeFixture = () => {
     return { debtAccount, transaction, userCategory };
 };
 
-const attachAndReadEntry = async (transactionId: number, debtAccountId: number): Promise<TransactionEntryEntityInterface> => {
-    await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+const attachAndReadEntry = Effect.fnUntraced(function* (transactionId: number, debtAccountId: number) {
+    const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+
+    yield* transactionDebtSettlementService.attach({ transactionId, debtAccountId });
 
     return fetchPrimaryEntry(transactionId);
-};
+});
 
 const expectUserCategoryPreserved = (entry: TransactionEntryEntityInterface, userCategoryId: number): void => {
     expect(entry.categoryId).toBe(userCategoryId);
     expect(entry.categorySource).toBe(CategorySourceEnum.USER);
 };
 
-const attachDetachAndReadEntry = async (transactionId: number, debtAccountId: number): Promise<TransactionEntryEntityInterface> => {
-    await transactionDebtSettlementService.attach({ transactionId, debtAccountId });
-    await transactionDebtSettlementService.detach(transactionId);
+const attachDetachAndReadEntry = Effect.fnUntraced(function* (transactionId: number, debtAccountId: number) {
+    const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+
+    yield* transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+    yield* transactionDebtSettlementService.detach(transactionId);
 
     return fetchPrimaryEntry(transactionId);
-};
+});
 
-const readExpenseTotal = (instrumentId: number): number => {
-    const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, instrumentId).get();
+const readExpenseTotal = Effect.fnUntraced(function* (instrumentId: number) {
+    const statisticsRepository = yield* StatisticsRepository;
+    const totals = (yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, instrumentId)).at(0);
 
     return totals?.expense ?? -1;
-};
+});
 
-const fetchNullCategoryExpenseRows = (instrumentId: number) =>
-    statisticsRepository
-        .getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, LanguageEnum.EN)
-        .all()
-        .filter(row => !isDefined(row.category));
+const fetchNullCategoryExpenseRows = Effect.fnUntraced(function* (instrumentId: number) {
+    const statisticsRepository = yield* StatisticsRepository;
+
+    return (yield* statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, LanguageEnum.EN)).filter(
+        row => !isDefined(row.category)
+    );
+});
 
 describe('debt settlement categorization', () => {
-    it.each<[AccountDebtTypeEnum, TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME, number, number]>([
-        [AccountDebtTypeEnum.LENT, TransactionTypeEnum.INCOME, LENDING_CATEGORY_ID, OPENED_AMOUNT - SETTLED_AMOUNT],
-        [AccountDebtTypeEnum.BORROW, TransactionTypeEnum.EXPENSE, BORROWING_CATEGORY_ID, SETTLED_AMOUNT - OPENED_AMOUNT]
-    ])('categorizes and repays a %s debt when attaching an uncategorized %s', async (debtType, type, categoryId, expectedBalance) => {
-        const cashAccount = createCashAccount();
-        const debtAccount = createDebtAccount(debtType);
-        const transaction = createSettlementTransaction(type, cashAccount.id, null);
+    it.effect.each([
+        {
+            debtType: AccountDebtTypeEnum.LENT,
+            type: TransactionTypeEnum.INCOME as const,
+            categoryId: LENDING_CATEGORY_ID,
+            expectedBalance: OPENED_AMOUNT - SETTLED_AMOUNT
+        },
+        {
+            debtType: AccountDebtTypeEnum.BORROW,
+            type: TransactionTypeEnum.EXPENSE as const,
+            categoryId: BORROWING_CATEGORY_ID,
+            expectedBalance: SETTLED_AMOUNT - OPENED_AMOUNT
+        }
+    ])('categorizes and repays a $debtType debt when attaching an uncategorized $type', ({ debtType, type, categoryId, expectedBalance }) =>
+        Effect.gen(function* () {
+            const cashAccount = createCashAccount();
+            const debtAccount = createDebtAccount(debtType);
+            const transaction = createSettlementTransaction(type, cashAccount.id, null);
 
-        const entry = await attachAndReadEntry(transaction.id, debtAccount.id);
-        const progress = fetchDebtProgress(debtAccount.id);
+            const entry = yield* attachAndReadEntry(transaction.id, debtAccount.id);
+            const progress = yield* fetchDebtProgress(debtAccount.id);
 
-        expect(entry.categoryId).toBe(categoryId);
-        expect(entry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
-        expect(fetchDebtEvents(debtAccount.id).at(1)?.direction).toBe(DebtEventDirectionEnum.CLOSE);
-        expect(progress.paidAmount).toBe(SETTLED_AMOUNT);
-        expect(progress.totalAmount).toBe(OPENED_AMOUNT);
-        expect(fetchLedgerBalance(debtAccount.id)).toBe(expectedBalance);
-    });
+            expect(entry.categoryId).toBe(categoryId);
+            expect(entry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
+            expect(fetchDebtEvents(debtAccount.id).at(1)?.direction).toBe(DebtEventDirectionEnum.CLOSE);
+            expect(progress.paidAmount).toBe(SETTLED_AMOUNT);
+            expect(progress.totalAmount).toBe(OPENED_AMOUNT);
+            expect(yield* fetchAccountBalance(debtAccount.id)).toBe(expectedBalance);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('assigns Lending and grows the debt when attaching an uncategorized expense to a lent debt', async () => {
-        const cashAccount = createCashAccount();
-        const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
-        const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
+    it.effect('assigns Lending and grows the debt when attaching an uncategorized expense to a lent debt', () =>
+        Effect.gen(function* () {
+            const cashAccount = createCashAccount();
+            const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
+            const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
 
-        const entry = await attachAndReadEntry(transaction.id, debtAccount.id);
-        const progress = fetchDebtProgress(debtAccount.id);
+            const entry = yield* attachAndReadEntry(transaction.id, debtAccount.id);
+            const progress = yield* fetchDebtProgress(debtAccount.id);
 
-        expect(entry.categoryId).toBe(LENDING_CATEGORY_ID);
-        expect(fetchDebtEvents(debtAccount.id).at(1)?.direction).toBe(DebtEventDirectionEnum.OPEN);
-        expect(progress.totalAmount).toBe(OPENED_AMOUNT + SETTLED_AMOUNT);
-        expect(fetchLedgerBalance(debtAccount.id)).toBe(OPENED_AMOUNT + SETTLED_AMOUNT);
-    });
+            expect(entry.categoryId).toBe(LENDING_CATEGORY_ID);
+            expect(fetchDebtEvents(debtAccount.id).at(1)?.direction).toBe(DebtEventDirectionEnum.OPEN);
+            expect(progress.totalAmount).toBe(OPENED_AMOUNT + SETTLED_AMOUNT);
+            expect(yield* fetchAccountBalance(debtAccount.id)).toBe(OPENED_AMOUNT + SETTLED_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('creates no entry on the debt account when attaching', async () => {
-        const cashAccount = createCashAccount();
-        const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
-        const transaction = createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, null);
+    it.effect('creates no entry on the debt account when attaching', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+            const { debtAccount, transaction } = createUncategorizedIncomeOnLentDebt();
 
-        const settlementEntries = testDb
-            .select()
-            .from(TransactionEntryEntityTable)
-            .all()
-            .filter(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
+            yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
 
-        expect(fetchAccountEntries(debtAccount.id)).toHaveLength(0);
-        expect(settlementEntries).toHaveLength(0);
-    });
+            const settlementEntries = testDb
+                .select()
+                .from(TransactionEntryEntityTable)
+                .all()
+                .filter(entry => entry.kind === TransactionEntryKindEnum.DEBT_SETTLEMENT);
 
-    it('moves the attached expense out of Uncategorized without changing the expense total', async () => {
-        const cashAccount = createCashAccount();
-        const debtAccount = createDebtAccount(AccountDebtTypeEnum.BORROW);
-        const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
-        const expenseBefore = readExpenseTotal(cashAccount.instrumentId);
+            expect(fetchAccountEntries(debtAccount.id)).toHaveLength(0);
+            expect(settlementEntries).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+    it.effect('moves the attached expense out of Uncategorized without changing the expense total', () =>
+        Effect.gen(function* () {
+            const statisticsRepository = yield* StatisticsRepository;
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-        const categoryRows = statisticsRepository
-            .getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, cashAccount.instrumentId, LanguageEnum.EN)
-            .all();
+            const cashAccount = createCashAccount();
+            const debtAccount = createDebtAccount(AccountDebtTypeEnum.BORROW);
+            const transaction = createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
+            const expenseBefore = yield* readExpenseTotal(cashAccount.instrumentId);
 
-        expect(readExpenseTotal(cashAccount.instrumentId)).toBe(expenseBefore);
-        expect(categoryRows.find(row => row.category?.id === BORROWING_CATEGORY_ID)?.amount).toBe(SETTLED_AMOUNT);
-        expect(fetchNullCategoryExpenseRows(cashAccount.instrumentId)).toHaveLength(0);
-    });
+            yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
 
-    it('never clobbers an existing category when attaching', async () => {
-        const { debtAccount, transaction, userCategory } = createUserCategorizedIncomeFixture();
+            const categoryRows = yield* statisticsRepository.getExpenseByCategoryQuery(
+                DEFAULT_TRANSACTION_FILTER,
+                cashAccount.instrumentId,
+                LanguageEnum.EN
+            );
 
-        const entry = await attachAndReadEntry(transaction.id, debtAccount.id);
+            expect(yield* readExpenseTotal(cashAccount.instrumentId)).toBe(expenseBefore);
+            expect(categoryRows.find(row => row.category?.id === BORROWING_CATEGORY_ID)?.amount).toBe(SETTLED_AMOUNT);
+            expect(yield* fetchNullCategoryExpenseRows(cashAccount.instrumentId)).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        expectUserCategoryPreserved(entry, userCategory.id);
-        expect(fetchDebtEvents(debtAccount.id)).toHaveLength(2);
-    });
+    it.effect('never clobbers an existing category when attaching', () =>
+        Effect.gen(function* () {
+            const { debtAccount, transaction, userCategory } = createUserCategorizedIncomeFixture();
 
-    it('reverts only the settlement-sourced category on detach', async () => {
-        const cashAccount = createCashAccount();
-        const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
-        const transaction = createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, null);
+            const entry = yield* attachAndReadEntry(transaction.id, debtAccount.id);
 
-        const entry = await attachDetachAndReadEntry(transaction.id, debtAccount.id);
+            expectUserCategoryPreserved(entry, userCategory.id);
+            expect(fetchDebtEvents(debtAccount.id)).toHaveLength(2);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        expect(entry.categoryId).toBeNull();
-        expect(entry.categorySource).toBe(CategorySourceEnum.USER);
-        expect(fetchLedgerBalance(debtAccount.id)).toBe(OPENED_AMOUNT);
-    });
+    it.effect('reverts only the settlement-sourced category on detach', () =>
+        Effect.gen(function* () {
+            const { debtAccount, transaction } = createUncategorizedIncomeOnLentDebt();
 
-    it('keeps a user category on detach of a categorized income attachment', async () => {
-        const { debtAccount, transaction, userCategory } = createUserCategorizedIncomeFixture();
+            const entry = yield* attachDetachAndReadEntry(transaction.id, debtAccount.id);
 
-        const entry = await attachDetachAndReadEntry(transaction.id, debtAccount.id);
+            expect(entry.categoryId).toBeNull();
+            expect(entry.categorySource).toBe(CategorySourceEnum.USER);
+            expect(yield* fetchAccountBalance(debtAccount.id)).toBe(OPENED_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        expectUserCategoryPreserved(entry, userCategory.id);
-    });
+    it.effect('keeps a user category on detach of a categorized income attachment', () =>
+        Effect.gen(function* () {
+            const { debtAccount, transaction, userCategory } = createUserCategorizedIncomeFixture();
 
-    it('caps an overpaying attachment at a zero ledger balance', async () => {
-        const cashAccount = createCashAccount();
-        const debtAccount = createDebtAccount(AccountDebtTypeEnum.LENT);
-        const transaction = createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, null, OVERPAID_AMOUNT);
+            const entry = yield* attachDetachAndReadEntry(transaction.id, debtAccount.id);
 
-        await transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+            expectUserCategoryPreserved(entry, userCategory.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        const progress = fetchDebtProgress(debtAccount.id);
+    it.effect('caps an overpaying attachment at a zero ledger balance', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-        expect(progress.outstandingAmount).toBe(0);
-        expect(progress.overpaidAmount).toBe(OVERPAID_AMOUNT - OPENED_AMOUNT);
-        expect(progress.percentage).toBe(100);
-        expect(fetchLedgerBalance(debtAccount.id)).toBe(0);
-    });
+            const { debtAccount, transaction } = createUncategorizedIncomeOnLentDebt(OVERPAID_AMOUNT);
+
+            yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+
+            const progress = yield* fetchDebtProgress(debtAccount.id);
+
+            expect(progress.outstandingAmount).toBe(0);
+            expect(progress.overpaidAmount).toBe(OVERPAID_AMOUNT - OPENED_AMOUNT);
+            expect(progress.percentage).toBe(100);
+            expect(yield* fetchAccountBalance(debtAccount.id)).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

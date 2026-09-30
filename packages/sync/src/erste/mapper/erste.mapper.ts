@@ -1,7 +1,6 @@
-import { Log } from '@budgie/logger';
 import { getUnixTime } from 'date-fns/getUnixTime';
 
-import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
@@ -18,11 +17,6 @@ import type { ErsteRowInterface } from '../interface/erste-row.interface';
 class ErsteMapper {
     private static readonly ATM_WITHDRAWAL_DESCRIPTION_REGEX = /^AUTOMAT\s+\d+\s+K\d+\s/u;
 
-    @Log(
-        account => `enter iban=${account.iban} newBalance=${account.newBalance}`,
-        (result, account) => `done iban=${account.iban} accountId=${result.id}`,
-        (error, account) => `throw iban=${account.iban} error=${getErrorMessage(error)}`
-    )
     mapAccount(account: ErsteAccountInfoInterface): SyncAccountInterface {
         return {
             id: account.iban,
@@ -37,11 +31,6 @@ class ErsteMapper {
         };
     }
 
-    @Log(
-        (row, iban) => `enter iban=${iban} date=${row.date.toISOString()} amount=${row.amount} reference="${row.reference}"`,
-        (result, row, iban) => `done iban=${iban} date=${row.date.toISOString()} externalId=${result.id}`,
-        (error, row, iban) => `throw iban=${iban} date=${row.date.toISOString()} amount=${row.amount} error=${getErrorMessage(error)}`
-    )
     mapTransaction(row: ErsteRowInterface, iban: string): SyncTransactionInterface {
         const id = this.generateExternalId(row, iban);
         const legacyExternalIds = this.generateLegacyExternalIds(row, iban, id);

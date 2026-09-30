@@ -2,7 +2,7 @@
     "name": "@budgie/logger",
     "version": "6.86.0",
     "private": true,
-    "description": "Shared logging primitives: console transport, build-time disable gate, @Log decorator, getLogger",
+    "description": "Shared Effect logger layer with a build-time enable gate",
     "sideEffects": false,
     "exports": {
         ".": {
@@ -27,7 +27,6 @@
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
-        "@rnw-community/log-decorator": "^2.2.0",
-        "@rnw-community/shared": "^2.2.0"
+        "effect": "4.0.0-rc.118"
     }
 }

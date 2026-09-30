@@ -1,6 +1,7 @@
 import { AccountEntityInterface, DebtAccountCreateInputInterface, DebtAccountCreateInputSchema } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Resolver, useWatch } from 'react-hook-form';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import * as Schema from 'effect/Schema';
+import { useWatch } from 'react-hook-form';
 
 import { useGetInstrumentByIdQuery } from '../../instrument/query/use-get-instrument-by-id.query';
 
@@ -18,7 +19,7 @@ export const useDebtAccountForm = (
     syncInitialValues = false
 ) => {
     const form = useAccountEntityForm(
-        zodResolver(DebtAccountCreateInputSchema) as Resolver<DebtAccountFormValues>,
+        standardSchemaResolver(Schema.toStandardSchemaV1(DebtAccountCreateInputSchema)),
         initialValues,
         onSubmit,
         syncInitialValues

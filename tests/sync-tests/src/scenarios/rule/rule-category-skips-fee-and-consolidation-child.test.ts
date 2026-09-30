@@ -1,5 +1,4 @@
-import { transactionRuleRepository } from '@app/@generic/drizzle/db/db';
-import { ruleEngineService } from '@app/rule/service/rule-engine.service';
+import { RuleEngineService } from '@app/rule/service/rule-engine.service';
 import {
     CategoryEntityTable,
     RuleActionEntityTable,
@@ -9,14 +8,16 @@ import {
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
     RuleEntityTable,
+    TransactionRuleRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
 import { eq, inArray } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { seed, testDb } from '../../harness';
+import { seed, testDb, TestLayer } from '../../harness';
 
 const RULE_TITLE = 'Rule fee target';
 
@@ -55,38 +56,42 @@ const seedCategoryRule = (categoryId: number) => {
 };
 
 describe('rule/rule-category-skips-fee-and-consolidation-child', () => {
-    it('categorizes only the primary leg of a visible transaction and leaves fee legs and consolidation children untouched', async () => {
-        const [category] = testDb.select().from(CategoryEntityTable).all();
-        const account = seed.account({ title: 'Rule fee account' });
-        const expense = seedTitledExpense(account.id, 'rule-fee-expense');
-        const parent = seedTitledExpense(account.id, 'rule-fee-parent');
-        const child = seedTitledExpense(account.id, 'rule-fee-child');
-        seed.feeEntry(expense.id, 'rule-fee-leg', { accountId: account.id, amount: 500_000 });
-        testDb
-            .update(TransactionEntityTable)
-            .set({ consolidationParentTransactionId: parent.id })
-            .where(eq(TransactionEntityTable.id, child.id))
-            .run();
-        const rule = seedCategoryRule(category.id);
+    it.effect('categorizes only the primary leg of a visible transaction and leaves fee legs and consolidation children untouched', () =>
+        Effect.gen(function* () {
+            const ruleEngineService = yield* RuleEngineService;
+            const transactionRuleRepository = yield* TransactionRuleRepository;
+            const [category] = testDb.select().from(CategoryEntityTable).all();
+            const account = seed.account({ title: 'Rule fee account' });
+            const expense = seedTitledExpense(account.id, 'rule-fee-expense');
+            const parent = seedTitledExpense(account.id, 'rule-fee-parent');
+            const child = seedTitledExpense(account.id, 'rule-fee-child');
+            seed.feeEntry(expense.id, 'rule-fee-leg', { accountId: account.id, amount: 500_000 });
+            testDb
+                .update(TransactionEntityTable)
+                .set({ consolidationParentTransactionId: parent.id })
+                .where(eq(TransactionEntityTable.id, child.id))
+                .run();
+            const rule = seedCategoryRule(category.id);
 
-        const result = await ruleEngineService.applyRuleToMatchingTransactions(rule.id, null);
-        const directlyCategorizedIds = await transactionRuleRepository.setCategoryByTransactionIds([child.id], category.id);
-        const entries = testDb
-            .select()
-            .from(TransactionEntryEntityTable)
-            .where(inArray(TransactionEntryEntityTable.transactionId, [expense.id, child.id]))
-            .all();
-        const categoryByLeg = entries.map(entry => [entry.transactionId, entry.type, entry.categoryId]);
+            const result = yield* ruleEngineService.applyRuleToMatchingTransactions(rule.id, null);
+            const directlyCategorizedIds = yield* transactionRuleRepository.setCategoryByTransactionIds([child.id], category.id);
+            const entries = testDb
+                .select()
+                .from(TransactionEntryEntityTable)
+                .where(inArray(TransactionEntryEntityTable.transactionId, [expense.id, child.id]))
+                .all();
+            const categoryByLeg = entries.map(entry => [entry.transactionId, entry.type, entry.categoryId]);
 
-        expect(result.total).toBe(2);
-        expect(directlyCategorizedIds).toEqual([]);
-        expect(categoryByLeg).toEqual(
-            expect.arrayContaining([
-                [expense.id, TransactionEntryTypeEnum.CREDIT, category.id],
-                [expense.id, TransactionEntryTypeEnum.FEE, null],
-                [child.id, TransactionEntryTypeEnum.CREDIT, null]
-            ])
-        );
-        expect(categoryByLeg).toHaveLength(3);
-    });
+            expect(result.total).toBe(2);
+            expect(directlyCategorizedIds).toEqual([]);
+            expect(categoryByLeg).toEqual(
+                expect.arrayContaining([
+                    [expense.id, TransactionEntryTypeEnum.CREDIT, category.id],
+                    [expense.id, TransactionEntryTypeEnum.FEE, null],
+                    [child.id, TransactionEntryTypeEnum.CREDIT, null]
+                ])
+            );
+            expect(categoryByLeg).toHaveLength(3);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

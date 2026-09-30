@@ -1,26 +1,19 @@
-import { InstrumentTypeEnum } from '@budgie/contracts';
+import { InstrumentEntityTable, InstrumentRepository } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { isDefined } from '@rnw-community/shared';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
-import { instrumentRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import type { InstrumentTypeEnum } from '@budgie/contracts';
+
+const instrumentsByTypeAtom = databaseQueryFamily(
+    [InstrumentEntityTable],
+    InstrumentRepository,
+    (instrumentRepository, type: InstrumentTypeEnum) => instrumentRepository.findByType(type)
+);
 
 export const useGetInstrumentsByTypeQuery = (type: InstrumentTypeEnum) => {
-    const { data, updatedAt, error } = useDatabaseLiveQuery(instrumentRepository.findByType(type), [type]);
+    const result = useLiveAtomValue(instrumentsByTypeAtom(type));
 
-    if (!isDefined(updatedAt)) {
-        return {
-            instruments: [],
-            isLoading: true,
-            updatedAt: null,
-            error: null
-        };
-    }
-
-    return {
-        instruments: data,
-        isLoading: false,
-        updatedAt,
-        error
-    };
+    return { instruments: AsyncResult.getOrElse(result, () => []), isLoading: AsyncResult.isInitial(result) };
 };

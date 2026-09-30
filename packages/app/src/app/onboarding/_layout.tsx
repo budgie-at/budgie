@@ -1,9 +1,16 @@
-import { Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 
 import { ScreenLayout } from '../../@generic/component/screen-layout/screen-layout';
 import { DEFAULT_STACK_OPTIONS } from '../../@generic/constant/default-stack-options.constant';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 
 export default function OnboardingLayout() {
+    const isOnboardingCompleted = useSetting('isOnboardingCompleted');
+
+    if (isOnboardingCompleted) {
+        return <Redirect href="/" />;
+    }
+
     return (
         <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
             <Stack.Screen name="index" />

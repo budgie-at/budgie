@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
@@ -23,7 +24,7 @@ export const DefaultAccountSelector = () => {
         const accountId = await openAccountSelector({ initialAccountId: defaultAccount?.id ?? null });
 
         if (isDefined(accountId)) {
-            await updateSettingsMutation({ defaultAccountId: accountId });
+            await appRuntime.runPromise(updateSettingsMutation({ defaultAccountId: accountId }));
         }
     };
 

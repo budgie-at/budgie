@@ -1,154 +1,78 @@
 import { consolidationScopeService } from '@budgie/consolidation';
-import { Log } from '@budgie/logger';
+import * as Context from 'effect/Context';
+import * as Duration from 'effect/Duration';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+import * as Ref from 'effect/Ref';
 
-import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { foregroundWorkloadService } from '../../@generic/service/foreground-workload.service';
-import { microPause } from '../../@generic/utils/micro-pause.util';
-import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
+import { Workload } from '../../@generic/service/workload.service';
+import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 
-import { syncWorkloadService } from './sync-workload.service';
-import { transferConsolidationService } from './transfer-consolidation.service';
+import { TransferConsolidationService } from './transfer-consolidation.service';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
-class TransferConsolidationDrainerService {
-    private static readonly FOREGROUND_BUSY_RESCHEDULE_MS = 1000;
-    private static readonly DEFAULT_DRAIN_DELAY_MS = TransferConsolidationDrainerService.FOREGROUND_BUSY_RESCHEDULE_MS + 500;
+export class TransferConsolidationDrainerService extends Context.Service<TransferConsolidationDrainerService>()(
+    '@budgie/app/TransferConsolidationDrainerService',
+    {
+        make: Effect.gen(function* () {
+            const workload = yield* Workload;
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const scheduleKey = 'transfer-consolidation-drain';
+            const drainDelay = Duration.seconds(1.5);
+            const hasPendingRun = yield* Ref.make(false);
+            const pendingScope = yield* Ref.make<ConsolidationScanScopeInterface | null>(null);
+            const takePendingScope = Effect.andThen(Ref.set(hasPendingRun, false), Ref.getAndSet(pendingScope, null));
 
-    private hasPendingRun = false;
-    private pendingScope: ConsolidationScanScopeInterface | null = null;
-    private isRunning = false;
-    private timer: ReturnType<typeof setTimeout> | null = null;
-    private timerFiresAt: number | null = null;
-    private cancelIdleCallback: (() => void) | null = null;
+            const addPendingScope = Effect.fnUntraced(function* (scope: ConsolidationScanScopeInterface | null) {
+                if (!(yield* Ref.get(hasPendingRun))) {
+                    yield* Ref.set(pendingScope, scope);
 
-    @Log(
-        scope =>
-            `enter scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (_result, scope) =>
-            `done scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''}`,
-        (error, scope) =>
-            `throw scopeTransactionIds=${scope?.transactionIds.join(',') ?? ''} scopeFrom=${scope?.operatedAtFrom.toISOString() ?? ''} scopeTo=${scope?.operatedAtTo.toISOString() ?? ''} error=${getErrorMessage(error)}`
-    )
-    enqueue(scope: ConsolidationScanScopeInterface | null = null): void {
-        this.addPendingScope(scope);
-        this.hasPendingRun = true;
+                    return;
+                }
 
-        if (this.isRunning) {
-            return;
-        }
+                if (!isDefined(scope)) {
+                    yield* Ref.set(pendingScope, null);
 
-        const incomingFiresAt = Date.now() + TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS;
+                    return;
+                }
 
-        if (isDefined(this.cancelIdleCallback)) {
-            return;
-        }
-
-        if (isDefined(this.timer) && isDefined(this.timerFiresAt) && this.timerFiresAt <= incomingFiresAt) {
-            return;
-        }
-
-        this.scheduleAfter(TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS);
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    cancelPending(): void {
-        this.hasPendingRun = false;
-        this.pendingScope = null;
-        this.cancelScheduledRun();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async run(): Promise<void> {
-        if (foregroundWorkloadService.isActive()) {
-            this.scheduleAfter(TransferConsolidationDrainerService.FOREGROUND_BUSY_RESCHEDULE_MS);
-
-            return;
-        }
-
-        if (this.isRunning) {
-            return;
-        }
-
-        if (!this.hasPendingRun) {
-            return;
-        }
-
-        this.isRunning = true;
-
-        try {
-            await this.drainPendingRun();
-        } finally {
-            this.isRunning = false;
-            this.schedulePendingFollowUpRun();
-        }
-    }
-
-    private async drainPendingRun(): Promise<void> {
-        const scope = this.pendingScope;
-        this.hasPendingRun = false;
-        this.pendingScope = null;
-        await microPause();
-        await syncWorkloadService.run('transfer-consolidation-drain', () => transferConsolidationService.consolidate(scope));
-        await microPause();
-    }
-
-    private addPendingScope(scope: ConsolidationScanScopeInterface | null): void {
-        if (!this.hasPendingRun) {
-            this.pendingScope = scope;
-
-            return;
-        }
-
-        if (!isDefined(scope)) {
-            this.pendingScope = null;
-
-            return;
-        }
-
-        if (!isDefined(this.pendingScope)) {
-            return;
-        }
-
-        this.pendingScope = consolidationScopeService.merge(this.pendingScope, scope);
-    }
-
-    private schedulePendingFollowUpRun(): void {
-        if (!this.hasPendingRun) {
-            return;
-        }
-
-        this.scheduleAfter(TransferConsolidationDrainerService.DEFAULT_DRAIN_DELAY_MS);
-    }
-
-    private scheduleAfter(delay: number): void {
-        this.cancelScheduledRun();
-
-        this.timerFiresAt = Date.now() + delay;
-        this.timer = setTimeout(() => {
-            this.timer = null;
-            this.timerFiresAt = null;
-            this.cancelIdleCallback = scheduleIdleCallback(() => {
-                this.cancelIdleCallback = null;
-                this.run().catch(emptyFn);
+                yield* Ref.update(pendingScope, currentScope =>
+                    isDefined(currentScope) ? consolidationScopeService.merge(currentScope, scope) : currentScope
+                );
             });
-        }, delay);
+
+            const drain = Effect.fn('TransferConsolidationDrainerService.drain')(function* () {
+                while (yield* Ref.get(hasPendingRun)) {
+                    yield* Effect.sleep(drainDelay);
+                    yield* workload.awaitForegroundIdle;
+                    yield* waitForIdle;
+                    const scope = yield* takePendingScope;
+                    yield* Effect.yieldNow;
+                    yield* Effect.exit(workload.run(transferConsolidationService.consolidate(scope)));
+                    yield* Effect.yieldNow;
+                }
+            });
+
+            return {
+                enqueue: Effect.fn('TransferConsolidationDrainerService.enqueue')(function* (
+                    scope: ConsolidationScanScopeInterface | null = null
+                ) {
+                    yield* addPendingScope(scope);
+                    yield* Ref.set(hasPendingRun, true);
+                    yield* workload.schedule(scheduleKey, drain());
+                }),
+                cancelPending: Effect.fn('TransferConsolidationDrainerService.cancelPending')(function* () {
+                    yield* takePendingScope;
+                    yield* workload.cancelScheduled(scheduleKey);
+                })
+            };
+        })
     }
-
-    private cancelScheduledRun(): void {
-        if (isDefined(this.timer)) {
-            clearTimeout(this.timer);
-            this.timer = null;
-        }
-
-        this.timerFiresAt = null;
-
-        if (isDefined(this.cancelIdleCallback)) {
-            this.cancelIdleCallback();
-            this.cancelIdleCallback = null;
-        }
-    }
+) {
+    static readonly layer = Layer.effect(TransferConsolidationDrainerService, TransferConsolidationDrainerService.make).pipe(
+        Layer.provide([Workload.layer, TransferConsolidationService.layer])
+    );
 }
-
-export const transferConsolidationDrainerService = new TransferConsolidationDrainerService();

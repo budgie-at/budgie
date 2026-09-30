@@ -1,5 +1,4 @@
-import { z } from 'zod';
+import type { TransactionTypeEnum } from '../enum/transaction-type.enum';
+import type { TransactionEntityInterface } from './transaction-entity.interface';
 
-import type { ExpenseTransactionEntitySchema } from '../schema/expense-transaction-entity.schema';
-
-export type ExpenseTransactionEntityInterface = z.infer<typeof ExpenseTransactionEntitySchema>;
+export type ExpenseTransactionEntityInterface = Omit<TransactionEntityInterface, 'type'> & { readonly type: TransactionTypeEnum.EXPENSE };

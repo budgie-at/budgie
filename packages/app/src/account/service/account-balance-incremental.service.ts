@@ -1,211 +1,173 @@
-import {
-    AccountTypeEnum,
-    type AccountBalanceCreateEntityInterface,
-    type AccountBalanceEntityInterface,
-    type AccountEntityInterface,
-    type DB,
-    getDebtLedgerBalance,
-    transactionAsync
-} from '@budgie/contracts';
-import { Log } from '@budgie/logger';
-import { i18n } from '@lingui/core';
+import { AccountBalanceRepository, AccountRepository, AccountTypeEnum, Db, getDebtLedgerBalance } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 import * as BackgroundTask from 'expo-background-task';
 import * as TaskManager from 'expo-task-manager';
 
-import { getErrorMessage, isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { accountBalanceRepository, accountRepository, db } from '../../@generic/drizzle/db/db';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../constant/account-balance-incremental-task.constant';
+import { DepositNegativeBalanceError } from '../error/deposit-negative-balance.error';
 
-class AccountBalanceIncrementalService {
-    private static readonly BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES = 7 * 24 * 60;
+import type { AccountBalanceCreateEntityInterface, AccountBalanceEntityInterface, AccountEntityInterface } from '@budgie/contracts';
 
-    @Log(
-        (truncate, tx) => `enter truncate=${String(truncate)} tx=${String(isDefined(tx))}`,
-        (result, truncate, tx) => `done truncate=${String(truncate)} tx=${String(isDefined(tx))} result=${String(result)}`,
-        (error, truncate, tx) => `throw truncate=${String(truncate)} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async updateAllBalances(truncate: boolean, tx?: DB): Promise<void> {
-        if (!isDefined(tx)) {
-            await transactionAsync(db, async innerTx => this.updateAllBalancesInTransaction(truncate, innerTx));
+export class AccountBalanceIncrementalService extends Context.Service<AccountBalanceIncrementalService>()(
+    '@budgie/app/AccountBalanceIncrementalService',
+    {
+        make: Effect.gen(function* () {
+            const accountRepository = yield* AccountRepository;
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const backgroundTaskMinimumIntervalMinutes = 7 * 24 * 60;
 
-            return;
-        }
+            const buildBalancesMap = (balances: AccountBalanceEntityInterface[]) =>
+                balances.reduce((map, { accountId, amount }) => {
+                    map.set(accountId, amount);
 
-        await this.updateAllBalancesInTransaction(truncate, tx);
-    }
+                    return map;
+                }, new Map<number, number>());
 
-    @Log(
-        (accountIds, tx) => `enter accountIds=${accountIds.join(',')} tx=${String(isDefined(tx))}`,
-        (_, accountIds, tx) => `done accountIds=${accountIds.join(',')} tx=${String(isDefined(tx))}`,
-        (error, accountIds, tx) => `throw accountIds=${accountIds.join(',')} tx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async updateBalancesByAccountIds(accountIds: number[], tx?: DB): Promise<void> {
-        const uniqueAccountIds = [...new Set(accountIds)];
+            const buildBalanceInput = (
+                account: AccountEntityInterface,
+                ledgerBalances: Map<number, number>,
+                debtLedgerBalances: Map<number, number>
+            ): AccountBalanceCreateEntityInterface => ({
+                amount: debtLedgerBalances.get(account.id) ?? ledgerBalances.get(account.id) ?? 0,
+                accountId: account.id
+            });
 
-        if (isEmptyArray(uniqueAccountIds)) {
-            return;
-        }
+            const getDebtLedgerBalances = Effect.fn('AccountBalanceIncrementalService.getDebtLedgerBalances')(function* (
+                accounts: AccountEntityInterface[]
+            ) {
+                const debtAccounts = accounts.filter(account => account.type === AccountTypeEnum.DEBT);
 
-        if (!isDefined(tx)) {
-            await transactionAsync(db, async innerTx => this.updateBalancesByUniqueAccountIdsInTransaction(uniqueAccountIds, innerTx));
+                if (isEmptyArray(debtAccounts)) {
+                    return new Map<number, number>();
+                }
 
-            return;
-        }
+                const ledgerAmounts = yield* accountBalanceRepository.getDebtLedgerAmounts(debtAccounts.map(({ id }) => id));
+                const ledgerAmountsMap = new Map(ledgerAmounts.map(ledgerAmount => [ledgerAmount.accountId, ledgerAmount]));
 
-        await this.updateBalancesByUniqueAccountIdsInTransaction(uniqueAccountIds, tx);
-    }
+                return debtAccounts.reduce((map, account) => {
+                    const ledgerAmount = ledgerAmountsMap.get(account.id);
+                    const openedAmount = ledgerAmount?.openedAmount ?? 0;
 
-    @Log('enter', result => `done result=${String(result)}`, error => `throw error=${getErrorMessage(error)}`)
-    async registerBackgroundTask(): Promise<void> {
-        const isRegistered = await TaskManager.isTaskRegisteredAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK);
-        if (isRegistered) {
-            return;
-        }
+                    map.set(
+                        account.id,
+                        getDebtLedgerBalance(
+                            ledgerAmount?.closedAmount ?? 0,
+                            account.debtType,
+                            isPositiveNumber(openedAmount) ? openedAmount : account.targetBalance
+                        )
+                    );
 
-        await BackgroundTask.registerTaskAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK, {
-            minimumInterval: AccountBalanceIncrementalService.BACKGROUND_TASK_MINIMUM_INTERVAL_MINUTES
-        });
-    }
+                    return map;
+                }, new Map<number, number>());
+            });
 
-    private async updateAllBalancesInTransaction(truncate: boolean, tx: DB): Promise<void> {
-        const accounts = await accountRepository.getAllActiveAccountsExceptBankAuthoritative(tx);
-        const previousDepositBalances = await this.getPreviousDepositBalances(accounts, tx);
+            const getPreviousDepositBalances = Effect.fn('AccountBalanceIncrementalService.getPreviousDepositBalances')(function* (
+                accounts: AccountEntityInterface[]
+            ) {
+                const depositAccountIds = accounts.filter(account => account.type === AccountTypeEnum.DEPOSIT).map(({ id }) => id);
 
-        await this.upsertLatestBalances(accounts, truncate, previousDepositBalances, tx);
-    }
+                if (isEmptyArray(depositAccountIds)) {
+                    return new Map<number, number>();
+                }
 
-    private async updateBalancesByUniqueAccountIdsInTransaction(uniqueAccountIds: number[], tx: DB): Promise<void> {
-        const accounts = await accountRepository.findByIdsExceptBankAuthoritative(uniqueAccountIds, tx);
-        if (isEmptyArray(accounts)) {
-            return;
-        }
+                const balances = yield* accountBalanceRepository.getByAccountIds(depositAccountIds);
+                const balancesMap = buildBalancesMap(balances);
 
-        const activeAccountIds = accounts.map(({ id }) => id);
-        const previousDepositBalances = await this.getPreviousDepositBalances(accounts, tx);
+                return depositAccountIds.reduce((map, accountId) => {
+                    map.set(accountId, balancesMap.get(accountId) ?? 0);
 
-        await accountBalanceRepository.deleteByAccountIds(activeAccountIds, tx);
-        await this.upsertLatestBalances(accounts, false, previousDepositBalances, tx);
-    }
+                    return map;
+                }, new Map<number, number>());
+            });
 
-    private async upsertLatestBalances(
-        accounts: AccountEntityInterface[],
-        truncate: boolean,
-        previousDepositBalances: Map<number, number>,
-        tx?: DB
-    ): Promise<void> {
-        if (isEmptyArray(accounts)) {
-            return;
-        }
+            const assertDepositBalancesNotWorsened = Effect.fn('AccountBalanceIncrementalService.assertDepositBalancesNotWorsened')(
+                function* (balances: AccountBalanceCreateEntityInterface[], previousDepositBalances: Map<number, number>) {
+                    for (const balance of balances) {
+                        const previousBalance = previousDepositBalances.get(balance.accountId);
+                        const shouldReject = isDefined(previousBalance) && balance.amount < 0 && balance.amount < previousBalance;
 
-        await this.truncateBalances(truncate, tx);
-
-        const accountIds = accounts.map(({ id }) => id);
-        const ledgerBalances = await accountBalanceRepository.getLedgerBalances(accountIds, tx);
-        const debtLedgerBalances = await this.getDebtLedgerBalances(accounts, tx);
-
-        const balancesToInsert = accounts.map(account => this.buildBalanceInput(account, ledgerBalances, debtLedgerBalances));
-
-        await this.upsertBalances(balancesToInsert, tx);
-        this.assertDepositBalancesNotWorsened(balancesToInsert, previousDepositBalances);
-    }
-
-    private buildBalancesMap(balances: AccountBalanceEntityInterface[]) {
-        return balances.reduce((map, { accountId, amount }) => {
-            map.set(accountId, amount);
-
-            return map;
-        }, new Map<number, number>());
-    }
-
-    private buildBalanceInput(
-        account: AccountEntityInterface,
-        ledgerBalances: Map<number, number>,
-        debtLedgerBalances: Map<number, number>
-    ): AccountBalanceCreateEntityInterface {
-        return {
-            amount: debtLedgerBalances.get(account.id) ?? ledgerBalances.get(account.id) ?? 0,
-            accountId: account.id
-        };
-    }
-
-    private async getDebtLedgerBalances(accounts: AccountEntityInterface[], tx?: DB): Promise<Map<number, number>> {
-        const debtAccounts = accounts.filter(account => account.type === AccountTypeEnum.DEBT);
-
-        if (isEmptyArray(debtAccounts)) {
-            return new Map();
-        }
-
-        const ledgerAmounts = await accountBalanceRepository.getDebtLedgerAmounts(
-            debtAccounts.map(({ id }) => id),
-            tx
-        );
-        const ledgerAmountsMap = new Map(ledgerAmounts.map(ledgerAmount => [ledgerAmount.accountId, ledgerAmount]));
-
-        return debtAccounts.reduce((map, account) => {
-            const ledgerAmount = ledgerAmountsMap.get(account.id);
-            const openedAmount = ledgerAmount?.openedAmount ?? 0;
-
-            map.set(
-                account.id,
-                getDebtLedgerBalance(
-                    ledgerAmount?.closedAmount ?? 0,
-                    account.debtType,
-                    isPositiveNumber(openedAmount) ? openedAmount : account.targetBalance
-                )
+                        if (shouldReject) {
+                            return yield* new DepositNegativeBalanceError();
+                        }
+                    }
+                }
             );
 
-            return map;
-        }, new Map<number, number>());
+            const upsertLatestBalances = Effect.fn('AccountBalanceIncrementalService.upsertLatestBalances')(function* (
+                accounts: AccountEntityInterface[],
+                truncate: boolean,
+                previousDepositBalances: Map<number, number>
+            ) {
+                if (isEmptyArray(accounts)) {
+                    return;
+                }
+
+                if (truncate) {
+                    yield* accountBalanceRepository.truncateExceptBankAuthoritative();
+                }
+
+                const accountIds = accounts.map(({ id }) => id);
+                const ledgerBalances = yield* accountBalanceRepository.getLedgerBalances(accountIds);
+                const debtLedgerBalances = yield* getDebtLedgerBalances(accounts);
+
+                const balancesToInsert = accounts.map(account => buildBalanceInput(account, ledgerBalances, debtLedgerBalances));
+
+                yield* Effect.forEach(balancesToInsert, balance => accountBalanceRepository.upsert(balance), { discard: true });
+                yield* assertDepositBalancesNotWorsened(balancesToInsert, previousDepositBalances);
+            });
+
+            return {
+                updateAllBalances: Effect.fn('AccountBalanceIncrementalService.updateAllBalances')(
+                    function* (truncate: boolean) {
+                        const accounts = yield* accountRepository.getAllActiveAccountsExceptBankAuthoritative();
+                        const previousDepositBalances = yield* getPreviousDepositBalances(accounts);
+
+                        yield* upsertLatestBalances(accounts, truncate, previousDepositBalances);
+                    },
+                    effect => Db.transaction(effect)
+                ),
+                updateBalancesByAccountIds: Effect.fn('AccountBalanceIncrementalService.updateBalancesByAccountIds')(
+                    function* (accountIds: number[]) {
+                        const uniqueAccountIds = [...new Set(accountIds)];
+
+                        if (isEmptyArray(uniqueAccountIds)) {
+                            return;
+                        }
+
+                        const accounts = yield* accountRepository.findByIdsExceptBankAuthoritative(uniqueAccountIds);
+                        if (isEmptyArray(accounts)) {
+                            return;
+                        }
+
+                        const activeAccountIds = accounts.map(({ id }) => id);
+                        const previousDepositBalances = yield* getPreviousDepositBalances(accounts);
+
+                        yield* accountBalanceRepository.deleteByAccountIds(activeAccountIds);
+                        yield* upsertLatestBalances(accounts, false, previousDepositBalances);
+                    },
+                    effect => Db.transaction(effect)
+                ),
+                registerBackgroundTask: Effect.fn('AccountBalanceIncrementalService.registerBackgroundTask')(function* () {
+                    const isRegistered = yield* Effect.promise(() => TaskManager.isTaskRegisteredAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK));
+                    if (isRegistered) {
+                        return;
+                    }
+
+                    yield* Effect.promise(() =>
+                        BackgroundTask.registerTaskAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK, {
+                            minimumInterval: backgroundTaskMinimumIntervalMinutes
+                        })
+                    );
+                })
+            };
+        })
     }
-
-    private async truncateBalances(truncate: boolean, tx?: DB): Promise<void> {
-        if (!truncate) {
-            return;
-        }
-
-        await accountBalanceRepository.truncateExceptBankAuthoritative(tx);
-    }
-
-    private async upsertBalances(balances: AccountBalanceCreateEntityInterface[], tx?: DB): Promise<void> {
-        await balances.reduce<Promise<void>>(async (previousBalancePromise, balance) => {
-            await previousBalancePromise;
-            await accountBalanceRepository.upsert(balance, tx);
-        }, Promise.resolve());
-    }
-
-    private async getPreviousDepositBalances(accounts: AccountEntityInterface[], tx?: DB): Promise<Map<number, number>> {
-        const depositAccountIds = accounts.filter(account => account.type === AccountTypeEnum.DEPOSIT).map(({ id }) => id);
-
-        if (isEmptyArray(depositAccountIds)) {
-            return new Map();
-        }
-
-        const balances = await accountBalanceRepository.getByAccountIds(depositAccountIds, tx);
-        const balancesMap = this.buildBalancesMap(balances);
-
-        return depositAccountIds.reduce((map, accountId) => {
-            map.set(accountId, balancesMap.get(accountId) ?? 0);
-
-            return map;
-        }, new Map<number, number>());
-    }
-
-    private assertDepositBalancesNotWorsened(
-        balances: AccountBalanceCreateEntityInterface[],
-        previousDepositBalances: Map<number, number>
-    ): void {
-        for (const balance of balances) {
-            const previousBalance = previousDepositBalances.get(balance.accountId);
-            const shouldReject = isDefined(previousBalance) && balance.amount < 0 && balance.amount < previousBalance;
-
-            if (shouldReject) {
-                throw new Error(
-                    i18n._({ id: 'account.depositNegativeBalanceDisallowed', message: 'Deposit balance cannot become negative' })
-                );
-            }
-        }
-    }
+) {
+    static readonly layer = Layer.effect(AccountBalanceIncrementalService, AccountBalanceIncrementalService.make).pipe(
+        Layer.provide([AccountRepository.layer, AccountBalanceRepository.layer])
+    );
 }
-
-export const accountBalanceIncrementalService = new AccountBalanceIncrementalService();

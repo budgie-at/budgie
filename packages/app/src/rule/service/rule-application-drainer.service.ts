@@ -1,180 +1,124 @@
-import { Log, getLogger } from '@budgie/logger';
+import * as Cause from 'effect/Cause';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { emptyFn, getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { microPause } from '../../@generic/utils/micro-pause.util';
-import { scheduleIdleCallback } from '../../@generic/utils/schedule-idle-callback.util';
-import { syncWorkloadService } from '../../sync/service/sync-workload.service';
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
+import { Workload } from '../../@generic/service/workload.service';
+import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 
-import { ruleEngineService } from './rule-engine.service';
+import { RuleEngineService } from './rule-engine.service';
 
 import type { ApplyRuleResultInterface } from '../interface/apply-rule-result.interface';
 import type { PendingRuleApplicationInterface } from '../interface/pending-rule-application.interface';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
-const logger = getLogger('RuleApplicationDrainerService');
+export class RuleApplicationDrainerService extends Context.Service<RuleApplicationDrainerService>()(
+    '@budgie/app/RuleApplicationDrainerService',
+    {
+        make: Effect.gen(function* () {
+            const workload = yield* Workload;
+            const ruleEngineService = yield* RuleEngineService;
+            const drainKey = 'rule-application-drain';
+            const drainDelayMs = 250;
+            const pendingRuleApplications: PendingRuleApplicationInterface[] = [];
+            const pendingTransactionIds: number[] = [];
+            const pendingTransactionInputs: TransactionCreateInputInterface[] = [];
 
-class RuleApplicationDrainerService {
-    private static readonly DRAIN_DELAY_MS = 250;
+            const processPendingTransactionBatch = Effect.fn('RuleApplicationDrainerService.processPendingTransactionBatch')(function* () {
+                if (!isNotEmptyArray(pendingTransactionIds)) {
+                    return;
+                }
 
-    private cancelIdleCallback: (() => void) | null = null;
-    private isRunning = false;
-    private pendingRuleApplications: PendingRuleApplicationInterface[] = [];
-    private pendingTransactionIds: number[] = [];
-    private pendingTransactionInputs: TransactionCreateInputInterface[] = [];
-    private runPromise: Promise<void> | null = null;
-    private timer: ReturnType<typeof setTimeout> | null = null;
+                const transactionIds = pendingTransactionIds.splice(0);
+                const transactionInputs = pendingTransactionInputs.splice(0);
 
-    @Log(
-        (transactionIds, transactionInputs) =>
-            `enter queuedTransactionIds="${transactionIds.join(',')}" queuedInputCount=${transactionInputs.length}`,
-        (_result, transactionIds, transactionInputs) =>
-            `done queuedTransactionIds="${transactionIds.join(',')}" queuedInputCount=${transactionInputs.length}`,
-        (error, transactionIds, transactionInputs) =>
-            `throw queuedTransactionIds="${transactionIds.join(',')}" queuedInputCount=${transactionInputs.length} error=${getErrorMessage(error)}`
-    )
-    enqueueTransactions(transactionIds: number[], transactionInputs: TransactionCreateInputInterface[]): void {
-        if (!isNotEmptyArray(transactionIds) || !isNotEmptyArray(transactionInputs)) {
-            return;
-        }
-
-        this.pendingTransactionIds.push(...transactionIds);
-        this.pendingTransactionInputs.push(...transactionInputs);
-        this.scheduleDrain();
-    }
-
-    @Log(
-        (ruleId, onSettled) => `enter ruleId=${ruleId} hasOnSettled=${String(isDefined(onSettled))}`,
-        (_result, ruleId, onSettled) => `done ruleId=${ruleId} hasOnSettled=${String(isDefined(onSettled))}`,
-        (error, ruleId, onSettled) => `throw ruleId=${ruleId} hasOnSettled=${String(isDefined(onSettled))} error=${getErrorMessage(error)}`
-    )
-    enqueueRuleApplication(ruleId: number, onSettled?: (result: ApplyRuleResultInterface | null, error: unknown) => void): void {
-        if (this.pendingRuleApplications.some(pending => pending.ruleId === ruleId)) {
-            return;
-        }
-
-        this.pendingRuleApplications.push({ ruleId, onSettled });
-        this.scheduleDrain();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    cancelPending(): void {
-        this.pendingRuleApplications = [];
-        this.pendingTransactionIds = [];
-        this.pendingTransactionInputs = [];
-        this.cancelScheduledDrain();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async drainPending(): Promise<void> {
-        this.cancelScheduledDrain();
-
-        if (this.isRunning && isDefined(this.runPromise)) {
-            await this.runPromise;
-
-            return;
-        }
-
-        this.runPromise = this.run();
-
-        try {
-            await this.runPromise;
-        } finally {
-            this.runPromise = null;
-        }
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async run(): Promise<void> {
-        this.isRunning = true;
-
-        try {
-            await this.drainNextBatch();
-        } finally {
-            this.isRunning = false;
-        }
-    }
-
-    private async drainNextBatch(): Promise<void> {
-        if (!isNotEmptyArray(this.pendingTransactionIds) && !isNotEmptyArray(this.pendingRuleApplications)) {
-            return;
-        }
-
-        await this.processPendingTransactionBatch();
-        await this.processPendingRuleBatch();
-        await this.drainNextBatch();
-    }
-
-    private async processPendingTransactionBatch(): Promise<void> {
-        if (!isNotEmptyArray(this.pendingTransactionIds)) {
-            return;
-        }
-
-        const transactionIds = this.pendingTransactionIds;
-        const transactionInputs = this.pendingTransactionInputs;
-
-        this.pendingTransactionIds = [];
-        this.pendingTransactionInputs = [];
-
-        await syncWorkloadService
-            .run('rule-application-transactions', () => ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs))
-            .catch((error: unknown) => {
-                logger.error('processPendingTransactionBatch:throw', {
-                    queuedTransactionIds: transactionIds.join(','),
-                    queuedInputCount: transactionInputs.length,
-                    errorMessage: getErrorMessage(error)
-                });
+                yield* workload.run(ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs)).pipe(
+                    Effect.tapCause(cause =>
+                        Effect.logError('processPendingTransactionBatch:throw', {
+                            queuedTransactionIds: transactionIds.join(','),
+                            queuedInputCount: transactionInputs.length,
+                            errorMessage: getErrorMessage(Cause.squash(cause))
+                        })
+                    ),
+                    Effect.ignoreCause
+                );
+                yield* YIELD_TO_UI;
             });
-        await microPause();
-    }
 
-    private async processPendingRuleBatch(): Promise<void> {
-        const pending = this.pendingRuleApplications.shift();
+            const processPendingRuleBatch = Effect.fn('RuleApplicationDrainerService.processPendingRuleBatch')(function* () {
+                const pending = pendingRuleApplications.shift();
 
-        if (!isDefined(pending)) {
-            return;
-        }
+                if (!isDefined(pending)) {
+                    return;
+                }
 
-        try {
-            const result = await syncWorkloadService.run('rule-application-rule', () =>
-                ruleEngineService.applyRuleToMatchingTransactions(pending.ruleId, null)
-            );
-            pending.onSettled?.(result, null);
-        } catch (error: unknown) {
-            logger.error('processPendingRuleBatch:throw', {
-                ruleId: pending.ruleId,
-                errorMessage: getErrorMessage(error)
+                const { ruleId, onSettled } = pending;
+
+                yield* workload.run(ruleEngineService.applyRuleToMatchingTransactions(ruleId, null)).pipe(
+                    Effect.matchCause({
+                        onSuccess: result => {
+                            onSettled?.(result, null);
+                        },
+                        onFailure: cause => {
+                            onSettled?.(null, Cause.squash(cause));
+                        }
+                    })
+                );
+                yield* YIELD_TO_UI;
             });
-            pending.onSettled?.(null, error);
-        }
 
-        await microPause();
-        await this.processPendingRuleBatch();
-    }
+            const drain = Effect.fn('RuleApplicationDrainerService.drain')(function* () {
+                yield* Effect.sleep(drainDelayMs);
+                yield* waitForIdle;
 
-    private scheduleDrain(): void {
-        if (isDefined(this.timer) || this.isRunning) {
-            return;
-        }
-
-        this.timer = setTimeout(() => {
-            this.timer = null;
-            this.cancelIdleCallback = scheduleIdleCallback(() => {
-                this.cancelIdleCallback = null;
-                this.drainPending().catch(emptyFn);
+                while (isNotEmptyArray(pendingTransactionIds) || isNotEmptyArray(pendingRuleApplications)) {
+                    yield* processPendingTransactionBatch();
+                    yield* processPendingRuleBatch();
+                }
             });
-        }, RuleApplicationDrainerService.DRAIN_DELAY_MS);
-    }
 
-    private cancelScheduledDrain(): void {
-        if (isDefined(this.timer)) {
-            clearTimeout(this.timer);
-            this.timer = null;
-        }
+            const scheduleDrain = Effect.fn('RuleApplicationDrainerService.scheduleDrain')(function* () {
+                yield* workload.schedule(drainKey, drain());
+            });
 
-        this.cancelIdleCallback?.();
-        this.cancelIdleCallback = null;
+            return {
+                enqueueTransactions: Effect.fn('RuleApplicationDrainerService.enqueueTransactions')(function* (
+                    transactionIds: number[],
+                    transactionInputs: TransactionCreateInputInterface[]
+                ) {
+                    if (!isNotEmptyArray(transactionIds) || !isNotEmptyArray(transactionInputs)) {
+                        return;
+                    }
+
+                    pendingTransactionIds.push(...transactionIds);
+                    pendingTransactionInputs.push(...transactionInputs);
+                    yield* scheduleDrain();
+                }),
+                enqueueRuleApplication: Effect.fn('RuleApplicationDrainerService.enqueueRuleApplication')(function* (
+                    ruleId: number,
+                    onSettled?: (result: ApplyRuleResultInterface | null, error: unknown) => void
+                ) {
+                    if (pendingRuleApplications.some(pending => pending.ruleId === ruleId)) {
+                        return;
+                    }
+
+                    pendingRuleApplications.push({ ruleId, onSettled });
+                    yield* scheduleDrain();
+                }),
+                cancelPending: Effect.fn('RuleApplicationDrainerService.cancelPending')(function* () {
+                    pendingRuleApplications.splice(0);
+                    pendingTransactionIds.splice(0);
+                    pendingTransactionInputs.splice(0);
+                    yield* workload.cancelScheduled(drainKey);
+                })
+            };
+        })
     }
+) {
+    static readonly layer = Layer.effect(RuleApplicationDrainerService, RuleApplicationDrainerService.make).pipe(
+        Layer.provide([Workload.layer, RuleEngineService.layer])
+    );
 }
-
-export const ruleApplicationDrainerService = new RuleApplicationDrainerService();

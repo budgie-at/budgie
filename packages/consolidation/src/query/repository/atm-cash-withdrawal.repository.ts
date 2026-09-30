@@ -1,11 +1,20 @@
+import { Db } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+
 import { buildAtmCashWithdrawalCandidatesSql } from './sql-factory/transfer-pair-cash-withdrawal-sql.factory';
 
-import type { AtmCashWithdrawalCandidateInterface, ConsolidationScanScopeInterface, DB } from '@budgie/contracts';
+import type { AtmCashWithdrawalCandidateInterface, ConsolidationScanScopeInterface } from '@budgie/contracts';
 
-export class AtmCashWithdrawalRepository {
-    constructor(private db: DB) {}
-
-    async findCandidates(scope: ConsolidationScanScopeInterface | null = null): Promise<AtmCashWithdrawalCandidateInterface[]> {
-        return this.db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(buildAtmCashWithdrawalCandidatesSql(scope));
+export class AtmCashWithdrawalRepository extends Context.Service<AtmCashWithdrawalRepository>()(
+    '@budgie/consolidation/AtmCashWithdrawalRepository',
+    {
+        make: Effect.succeed({
+            findCandidates: (scope: ConsolidationScanScopeInterface | null = null) =>
+                Db.query(db => db.$client.getAllAsync<AtmCashWithdrawalCandidateInterface>(buildAtmCashWithdrawalCandidatesSql(scope)))
+        })
     }
+) {
+    static readonly layer = Layer.effect(AtmCashWithdrawalRepository, AtmCashWithdrawalRepository.make);
 }

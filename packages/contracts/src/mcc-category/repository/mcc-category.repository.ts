@@ -1,37 +1,30 @@
 import { eq } from 'drizzle-orm';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { DB } from '../../@generic/type/db.type';
+import { Db } from '../../@generic/service/db.service';
 import { MccCategoryCreateEntityInterface } from '../entity/mcc-category-create-entity.interface';
 import { MccCategoryEntityTable } from '../table/mcc-category-entity.table';
 
-import type * as schema from '../../schema';
-import type { MccCategoryEntityInterface } from '../entity/mcc-category-entity.interface';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
+export class MccCategoryRepository extends Context.Service<MccCategoryRepository>()('@budgie/contracts/MccCategoryRepository', {
+    make: Effect.sync(() => {
+        const bulkCreate = (inputs: MccCategoryCreateEntityInterface[]) =>
+            Db.query(db => db.insert(MccCategoryEntityTable).values(inputs).returning());
 
-export class MccCategoryRepository {
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+        return {
+            bulkCreate,
+            create: Effect.fn('MccCategoryRepository.create')(function* (input: MccCategoryCreateEntityInterface) {
+                const [mccCategory] = yield* bulkCreate([input]);
 
-    findAll() {
-        return this.db.query.MccCategoryEntityTable.findMany();
-    }
-
-    findById(id: number) {
-        return this.db.query.MccCategoryEntityTable.findFirst({
-            where: eq(MccCategoryEntityTable.id, id)
-        });
-    }
-
-    async create(input: MccCategoryCreateEntityInterface, tx?: DB): Promise<MccCategoryEntityInterface> {
-        const [mccCategory] = await this.bulkCreate([input], tx);
-
-        return mccCategory;
-    }
-
-    async bulkCreate(inputs: MccCategoryCreateEntityInterface[], tx?: DB): Promise<MccCategoryEntityInterface[]> {
-        return await (tx ?? this.db).insert(MccCategoryEntityTable).values(inputs).returning();
-    }
-
-    async truncate(tx?: DB): Promise<void> {
-        await (tx ?? this.db).delete(MccCategoryEntityTable);
-    }
+                return mccCategory;
+            }),
+            truncate: () => Db.query(db => db.delete(MccCategoryEntityTable)),
+            findAll: () => Db.query(db => db.query.MccCategoryEntityTable.findMany()),
+            findById: (id: number) =>
+                Db.query(db => db.query.MccCategoryEntityTable.findFirst({ where: eq(MccCategoryEntityTable.id, id) }))
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(MccCategoryRepository, MccCategoryRepository.make);
 }

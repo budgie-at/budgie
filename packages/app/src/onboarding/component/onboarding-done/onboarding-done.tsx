@@ -1,25 +1,24 @@
-import { getLogger } from '@budgie/logger';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
+import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useHomePageDataQuery } from '../../../account/query/use-home-page-data.query';
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useGetBankIntegrationCountQuery } from '../../../sync/query/use-get-bank-integration-count.query';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
-import { onboardingService } from '../../service/onboarding.service';
+import { OnboardingService } from '../../service/onboarding.service';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 import { OnboardingSuccessRow } from '../onboarding-success-row/onboarding-success-row';
 
 import { OnboardingDoneSelector } from './onboarding-done.selector';
-
-const logger = getLogger('OnboardingDone');
 
 export const OnboardingDone = () => {
     const { t } = useLingui();
@@ -31,12 +30,7 @@ export const OnboardingDone = () => {
     const { defaultInstrument } = useSettingsContext();
 
     const handlePrimary = () => {
-        void onboardingService
-            .complete()
-            .then(() => void router.replace('/'))
-            .catch((error: unknown) => {
-                logger.error('finish onboarding failed', { errorMessage: getErrorMessage(error) });
-            });
+        appRuntime.runFork(logAndContinue(Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete())));
     };
 
     const checklistItems = [

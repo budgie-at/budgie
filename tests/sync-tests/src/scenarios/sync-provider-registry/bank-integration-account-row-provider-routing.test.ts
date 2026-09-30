@@ -1,4 +1,8 @@
 import { BankIntegrationAccountRow } from '@app/sync/component/bank-integration-account-row/bank-integration-account-row';
+import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { PrivatbankSyncService } from '@app/sync/service/privatbank-sync.service';
+import { SyncProviderRegistryService } from '@app/sync/service/sync-provider-registry.service';
 import {
     AccountAssociationEnum,
     ExternalSourceEnum,
@@ -7,21 +11,18 @@ import {
     SyncStatusEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
+import { vi } from 'vitest';
 
 import { isDefined, isRecord } from '@rnw-community/shared';
+
+import { TestLayer } from '../../harness';
 
 const ACCOUNT_ID = 401;
 const INSTRUMENT_ID = 1;
 
 const isToggleCallback = (value: unknown): value is (enabled: boolean) => void => typeof value === 'function';
-
-const serviceSpies = vi.hoisted(() => ({
-    binanceSetAccountSyncEnabled: vi.fn(),
-    monobankSetAccountSyncEnabled: vi.fn(),
-    privatbankSetAccountSyncEnabled: vi.fn(),
-    getServiceForAccount: vi.fn()
-}));
 
 const rowState = vi.hoisted(() => ({
     capabilities: { supportsLiveSync: true, supportsFileImport: false, supportsAddAccounts: true, supportsDeposit: false },
@@ -52,18 +53,6 @@ vi.mock('@app/sync/hook/use-bank-integration-account-row-state.hook', () => ({
         description: '',
         isToggleVisible: true
     })
-}));
-
-vi.mock('@app/sync/service/sync-provider-registry.service', () => ({
-    syncProviderRegistryService: {
-        getServiceForAccount: serviceSpies.getServiceForAccount
-    }
-}));
-
-vi.mock('@app/sync/service/monobank-sync.service', () => ({
-    monobankSyncService: {
-        setAccountSyncEnabled: serviceSpies.monobankSetAccountSyncEnabled
-    }
 }));
 
 vi.mock('@app/@generic/component/circle-icon/circle-icon', () => ({
@@ -160,43 +149,63 @@ describe('BankIntegrationAccountRow', () => {
         vi.clearAllMocks();
     });
 
-    it('routes Binance account toggle through the Binance sync service', async () => {
-        rowState.capabilities = {
-            supportsLiveSync: true,
-            supportsFileImport: false,
-            supportsAddAccounts: false,
-            supportsDeposit: false
-        };
-        rowState.syncProvider = ExternalSourceEnum.BINANCE;
-        serviceSpies.getServiceForAccount.mockResolvedValue({
-            setAccountSyncEnabled: serviceSpies.binanceSetAccountSyncEnabled
-        });
+    it.effect('routes Binance account toggle through the Binance sync service', () =>
+        Effect.gen(function* () {
+            const syncProviderRegistryService = yield* SyncProviderRegistryService;
+            const binanceSyncService = yield* BinanceSyncService;
+            const monobankSyncService = yield* MonobankSyncService;
+            const binanceSetAccountSyncEnabled = vi.spyOn(binanceSyncService, 'setAccountSyncEnabled').mockReturnValue(Effect.void);
+            const monobankSetAccountSyncEnabled = vi.spyOn(monobankSyncService, 'setAccountSyncEnabled').mockReturnValue(Effect.void);
+            const getServiceForAccount = vi
+                .spyOn(syncProviderRegistryService, 'getServiceForAccount')
+                .mockReturnValue(Effect.succeed(binanceSyncService));
+            rowState.capabilities = {
+                supportsLiveSync: true,
+                supportsFileImport: false,
+                supportsAddAccounts: false,
+                supportsDeposit: false
+            };
+            rowState.syncProvider = ExternalSourceEnum.BINANCE;
 
-        captureToggle()(false);
-        await Promise.resolve();
+            captureToggle()(false);
 
-        expect(serviceSpies.getServiceForAccount).toHaveBeenCalledWith(ACCOUNT_ID);
-        expect(serviceSpies.binanceSetAccountSyncEnabled).toHaveBeenCalledWith(ACCOUNT_ID, false);
-        expect(serviceSpies.monobankSetAccountSyncEnabled).not.toHaveBeenCalled();
-    });
+            yield* Effect.promise(() =>
+                vi.waitFor(() => {
+                    expect(binanceSetAccountSyncEnabled).toHaveBeenCalledWith(ACCOUNT_ID, false);
+                })
+            );
+            expect(getServiceForAccount).toHaveBeenCalledWith(ACCOUNT_ID);
+            expect(monobankSetAccountSyncEnabled).not.toHaveBeenCalled();
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('routes file import toggle of a PrivatBank integration through the PrivatBank sync service', async () => {
-        rowState.capabilities = {
-            supportsLiveSync: false,
-            supportsFileImport: true,
-            supportsAddAccounts: false,
-            supportsDeposit: true
-        };
-        rowState.syncProvider = ExternalSourceEnum.PRIVATBANK;
-        serviceSpies.getServiceForAccount.mockResolvedValue({
-            setAccountSyncEnabled: serviceSpies.privatbankSetAccountSyncEnabled
-        });
+    it.effect('routes file import toggle of a PrivatBank integration through the PrivatBank sync service', () =>
+        Effect.gen(function* () {
+            const syncProviderRegistryService = yield* SyncProviderRegistryService;
+            const privatbankSyncService = yield* PrivatbankSyncService;
+            const monobankSyncService = yield* MonobankSyncService;
+            const privatbankSetAccountSyncEnabled = vi.spyOn(privatbankSyncService, 'setAccountSyncEnabled').mockReturnValue(Effect.void);
+            const monobankSetAccountSyncEnabled = vi.spyOn(monobankSyncService, 'setAccountSyncEnabled').mockReturnValue(Effect.void);
+            const getServiceForAccount = vi
+                .spyOn(syncProviderRegistryService, 'getServiceForAccount')
+                .mockReturnValue(Effect.succeed(privatbankSyncService));
+            rowState.capabilities = {
+                supportsLiveSync: false,
+                supportsFileImport: true,
+                supportsAddAccounts: false,
+                supportsDeposit: true
+            };
+            rowState.syncProvider = ExternalSourceEnum.PRIVATBANK;
 
-        captureToggle()(false);
-        await Promise.resolve();
+            captureToggle()(false);
 
-        expect(serviceSpies.getServiceForAccount).toHaveBeenCalledWith(ACCOUNT_ID);
-        expect(serviceSpies.privatbankSetAccountSyncEnabled).toHaveBeenCalledWith(ACCOUNT_ID, false);
-        expect(serviceSpies.monobankSetAccountSyncEnabled).not.toHaveBeenCalled();
-    });
+            yield* Effect.promise(() =>
+                vi.waitFor(() => {
+                    expect(privatbankSetAccountSyncEnabled).toHaveBeenCalledWith(ACCOUNT_ID, false);
+                })
+            );
+            expect(getServiceForAccount).toHaveBeenCalledWith(ACCOUNT_ID);
+            expect(monobankSetAccountSyncEnabled).not.toHaveBeenCalled();
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

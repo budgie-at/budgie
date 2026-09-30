@@ -1,5 +1,5 @@
 import { AccountDebtTypeEnum, getDebtClosedAmount, getDebtLedgerBalance } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
 
 describe('getDebtClosedAmount', () => {
     it('returns the returned amount while it is below the target', () => {

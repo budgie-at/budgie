@@ -1,109 +1,98 @@
-import { Log } from '@budgie/logger';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
+import * as Layer from 'effect/Layer';
 import { Directory, File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { aiModelResidencyService } from '../../ai/service/ai-model-residency.service';
-import { aiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
-import { authService } from '../../auth/service/auth.service';
-import { patternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
+import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
+import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
+import { AuthService } from '../../auth/service/auth.service';
+import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { DB_NAME } from '../drizzle/constant/db-name.constant';
 import { DatabaseLifecycleOperationEnum } from '../drizzle/enum/database-lifecycle-operation.enum';
-import { databaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
+import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
 import { reloadApp } from '../utils/reload-app.util';
 
-class AppResetService {
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async clearAllDataAndRestart(): Promise<void> {
-        await databaseLifecycleService.run(DatabaseLifecycleOperationEnum.RESET, () => this.clearAllAppOwnedStorage());
-        await reloadApp();
-    }
+export class AppResetService extends Context.Service<AppResetService>()('@budgie/app/AppResetService', {
+    make: Effect.gen(function* () {
+        const aiStorageReplacementService = yield* AiStorageReplacementService;
+        const aiModelResidencyService = yield* AiModelResidencyService;
+        const authService = yield* AuthService;
+        const patternCacheService = yield* PatternCacheService;
+        const databaseLifecycleService = yield* DatabaseLifecycleService;
+        const databasePath = `${SQLite.defaultDatabaseDirectory}/${DB_NAME}`;
 
-    private async clearAllAppOwnedStorage(): Promise<void> {
-        const errors: unknown[] = [];
+        const deleteFileIfExists = (file: File): void => {
+            if (file.exists) {
+                file.delete();
+            }
+        };
 
-        await this.runPrimaryResetSteps(errors);
-        await this.runCleanupResetSteps(errors);
+        const deleteDatabaseFiles = (path: string): void => {
+            deleteFileIfExists(new File(path));
+            deleteFileIfExists(new File(`${path}-wal`));
+            deleteFileIfExists(new File(`${path}-shm`));
+        };
 
-        if (isNotEmptyArray(errors)) {
-            throw errors[0];
-        }
-    }
+        const runAllAndFailWithFirstError = Effect.fnUntraced(function* <E, R>(steps: Effect.Effect<void, E, R>[]) {
+            const exits = yield* Effect.forEach(steps, step => Effect.exit(step));
+            const failure = exits.find(Exit.isFailure);
 
-    private async runPrimaryResetSteps(errors: unknown[]): Promise<void> {
-        try {
-            await aiStorageReplacementService.pauseLongLivedRuntime();
-            await aiModelResidencyService.suspend();
-            await databaseLifecycleService.close();
-            this.deleteDatabaseFiles(this.getDatabasePath());
-            this.deleteDatabaseFiles(`${this.getDatabasePath()}.bak`);
-        } catch (error: unknown) {
-            errors.push(error);
-        }
-    }
-
-    private async runCleanupResetSteps(errors: unknown[]): Promise<void> {
-        this.captureSyncError(() => void this.deleteCacheContents(), errors);
-        this.captureSyncError(() => void patternCacheService.invalidate(), errors);
-        await this.captureAsyncError(() => authService.persistPin(null), errors);
-    }
-
-    private captureSyncError(operation: () => void, errors: unknown[]): void {
-        try {
-            operation();
-        } catch (error: unknown) {
-            errors.push(error);
-        }
-    }
-
-    private async captureAsyncError(operation: () => Promise<void>, errors: unknown[]): Promise<void> {
-        try {
-            await operation();
-        } catch (error: unknown) {
-            errors.push(error);
-        }
-    }
-
-    private deleteCacheContents(): void {
-        const cacheDirectory = new Directory(Paths.cache);
-
-        if (!cacheDirectory.exists) {
-            return;
-        }
-
-        let firstError: unknown = null;
-
-        cacheDirectory.list().forEach(item => {
-            try {
-                item.delete();
-            } catch (error: unknown) {
-                if (!isDefined(firstError)) {
-                    firstError = error;
-                }
+            if (isDefined(failure)) {
+                return yield* Effect.failCause(failure.cause);
             }
         });
 
-        if (isDefined(firstError)) {
-            throw firstError;
-        }
-    }
+        const runPrimaryResetSteps = Effect.fn('AppResetService.runPrimaryResetSteps')(function* () {
+            yield* aiStorageReplacementService.pauseLongLivedRuntime();
+            yield* aiModelResidencyService.suspend();
+            yield* databaseLifecycleService.close();
+            deleteDatabaseFiles(databasePath);
+            deleteDatabaseFiles(`${databasePath}.bak`);
+        });
 
-    private deleteDatabaseFiles(databasePath: string): void {
-        this.deleteFileIfExists(new File(databasePath));
-        this.deleteFileIfExists(new File(`${databasePath}-wal`));
-        this.deleteFileIfExists(new File(`${databasePath}-shm`));
-    }
+        const deleteCacheContents = Effect.fn('AppResetService.deleteCacheContents')(function* () {
+            const cacheDirectory = new Directory(Paths.cache);
 
-    private deleteFileIfExists(file: File): void {
-        if (file.exists) {
-            file.delete();
-        }
-    }
+            if (cacheDirectory.exists) {
+                yield* runAllAndFailWithFirstError(
+                    cacheDirectory.list().map(item =>
+                        Effect.sync(() => {
+                            item.delete();
+                        })
+                    )
+                );
+            }
+        });
 
-    private getDatabasePath(): string {
-        return `${SQLite.defaultDatabaseDirectory}/${DB_NAME}`;
-    }
+        return {
+            clearAllDataAndRestart: Effect.fn('AppResetService.clearAllDataAndRestart')(function* () {
+                yield* databaseLifecycleService.run(
+                    DatabaseLifecycleOperationEnum.RESET,
+                    runAllAndFailWithFirstError([
+                        runPrimaryResetSteps(),
+                        deleteCacheContents(),
+                        Effect.sync(() => {
+                            patternCacheService.invalidate();
+                        }),
+                        authService.persistPin(null)
+                    ])
+                );
+                yield* Effect.promise(() => reloadApp());
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(AppResetService, AppResetService.make).pipe(
+        Layer.provide([
+            AiStorageReplacementService.layer,
+            AiModelResidencyService.layer,
+            AuthService.layer,
+            PatternCacheService.layer,
+            DatabaseLifecycleService.layer
+        ])
+    );
 }
-
-export const appResetService = new AppResetService();

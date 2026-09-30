@@ -1,14 +1,10 @@
-import { isDefined } from '@rnw-community/shared';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { ruleRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { enabledRulesAtom } from '../constant/enabled-rules-atom.constant';
 
 export const useGetEnabledRulesQuery = () => {
-    const { data, updatedAt } = useDatabaseLiveQuery(ruleRepository.findEnabledWithRelations());
+    const result = useLiveAtomValue(enabledRulesAtom);
 
-    if (!isDefined(updatedAt)) {
-        return { enabledRules: [], isLoading: true };
-    }
-
-    return { enabledRules: data, isLoading: false };
+    return { enabledRules: AsyncResult.getOrElse(result, () => []), isLoading: AsyncResult.isInitial(result) };
 };

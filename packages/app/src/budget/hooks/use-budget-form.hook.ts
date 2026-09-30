@@ -1,13 +1,16 @@
-import { budgetComputeAllocation } from '@budgie/budget';
+import { BudgetService, budgetComputeAllocation } from '@budgie/budget';
 import { BudgetPeriodEnum } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
@@ -16,7 +19,6 @@ import { BudgetFormSchema, BudgetFormValues } from '../constant/budget-form-sche
 import { BudgetTemplateKindEnum } from '../enum/budget-template-kind.enum';
 import { useGetActiveBudgetQuery } from '../query/use-get-active-budget.query';
 import { useGetBudgetCategoryLimitsQuery } from '../query/use-get-budget-category-limits.query';
-import { budgetService } from '../service/budget.service';
 
 import { useBudgetTemplateDraft } from './use-budget-template-draft.hook';
 
@@ -140,7 +142,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
 
     const form = useForm<BudgetFormValues>({
         mode: 'onChange',
-        resolver: zodResolver(BudgetFormSchema),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(BudgetFormSchema)),
         defaultValues: defaultFormValues,
         values: formValues,
         resetOptions: {
@@ -166,7 +168,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
             return;
         }
         try {
-            await budgetService.deleteBudget(budget.id);
+            await appRuntime.runPromise(Effect.flatMap(BudgetService, budgetService => budgetService.deleteBudget(budget.id)));
             goBackOrReplace('/');
         } catch (error: unknown) {
             Toast.show({ type: 'error', text1: t`Could not delete budget`, text2: getErrorMessage(error) });
@@ -203,9 +205,11 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
                 };
 
                 if (isPositiveNumber(editingId)) {
-                    await budgetService.updateBudget(editingId, basePayload);
+                    await appRuntime.runPromise(
+                        Effect.flatMap(BudgetService, budgetService => budgetService.updateBudget(editingId, basePayload))
+                    );
                 } else {
-                    await budgetService.createBudget(basePayload);
+                    await appRuntime.runPromise(Effect.flatMap(BudgetService, budgetService => budgetService.createBudget(basePayload)));
                 }
 
                 const fallbackRoute = isEditing ? EDITING_FALLBACK_ROUTE : DEFAULT_FALLBACK_ROUTE;

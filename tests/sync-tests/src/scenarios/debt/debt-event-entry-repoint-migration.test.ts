@@ -15,9 +15,11 @@ import {
     TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
 
+import { TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -97,32 +99,43 @@ const seedDebtEvent = (debtAccountId: number, transactionId: number, transaction
     } satisfies DebtEventCreateEntityInterface);
 
 describe('debt event entry repoint migration', () => {
-    it('repoints stale transaction_entry_id references to the live primary entry and leaves correct events untouched', async () => {
-        const migrationSql = readFileSync(MIGRATION_SQL_PATH, 'utf8');
-        const debtAccount = seed.account({ type: AccountTypeEnum.DEBT, debtType: AccountDebtTypeEnum.LENT, title: 'Lent debt account' });
-        const staleCashAccount = seed.account({ type: AccountTypeEnum.BANK_SYNC, title: 'Stale reference cash account' });
-        const correctCashAccount = seed.account({ type: AccountTypeEnum.BANK_SYNC, title: 'Correct reference cash account' });
+    it.effect('repoints stale transaction_entry_id references to the live primary entry and leaves correct events untouched', () =>
+        Effect.gen(function* () {
+            const migrationSql = readFileSync(MIGRATION_SQL_PATH, 'utf8');
+            const debtAccount = seed.account({
+                type: AccountTypeEnum.DEBT,
+                debtType: AccountDebtTypeEnum.LENT,
+                title: 'Lent debt account'
+            });
+            const staleCashAccount = seed.account({ type: AccountTypeEnum.BANK_SYNC, title: 'Stale reference cash account' });
+            const correctCashAccount = seed.account({ type: AccountTypeEnum.BANK_SYNC, title: 'Correct reference cash account' });
 
-        const { transaction: staleTransaction, entry: staleTransactionLiveEntry } = seedExpenseTransactionWithLiveEntry(
-            staleCashAccount.id
-        );
-        const { transaction: correctTransaction, entry: correctTransactionLiveEntry } = seedExpenseTransactionWithLiveEntry(
-            correctCashAccount.id
-        );
+            const { transaction: staleTransaction, entry: staleTransactionLiveEntry } = seedExpenseTransactionWithLiveEntry(
+                staleCashAccount.id
+            );
+            const { transaction: correctTransaction, entry: correctTransactionLiveEntry } = seedExpenseTransactionWithLiveEntry(
+                correctCashAccount.id
+            );
 
-        const staleTransactionEntryId = seedReplacedPrimaryEntry(staleTransaction.id, staleCashAccount.id);
-        const staleDebtEvent = seedDebtEvent(debtAccount.id, staleTransaction.id, staleTransactionEntryId);
-        const correctDebtEvent = seedDebtEvent(debtAccount.id, correctTransaction.id, correctTransactionLiveEntry.id);
+            const staleTransactionEntryId = seedReplacedPrimaryEntry(staleTransaction.id, staleCashAccount.id);
+            const staleDebtEvent = seedDebtEvent(debtAccount.id, staleTransaction.id, staleTransactionEntryId);
+            const correctDebtEvent = seedDebtEvent(debtAccount.id, correctTransaction.id, correctTransactionLiveEntry.id);
 
-        await testDb.$client.execAsync(migrationSql);
+            yield* Effect.promise(() => testDb.$client.execAsync(migrationSql));
 
-        const [repairedStaleEvent] = await testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.id, staleDebtEvent.id));
-        const [unchangedCorrectEvent] = await testDb
-            .select()
-            .from(DebtEventEntityTable)
-            .where(eq(DebtEventEntityTable.id, correctDebtEvent.id));
+            const [repairedStaleEvent] = testDb
+                .select()
+                .from(DebtEventEntityTable)
+                .where(eq(DebtEventEntityTable.id, staleDebtEvent.id))
+                .all();
+            const [unchangedCorrectEvent] = testDb
+                .select()
+                .from(DebtEventEntityTable)
+                .where(eq(DebtEventEntityTable.id, correctDebtEvent.id))
+                .all();
 
-        expect(repairedStaleEvent?.transactionEntryId).toBe(staleTransactionLiveEntry.id);
-        expect(unchangedCorrectEvent?.transactionEntryId).toBe(correctTransactionLiveEntry.id);
-    });
+            expect(repairedStaleEvent?.transactionEntryId).toBe(staleTransactionLiveEntry.id);
+            expect(unchangedCorrectEvent?.transactionEntryId).toBe(correctTransactionLiveEntry.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

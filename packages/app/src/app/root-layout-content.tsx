@@ -1,5 +1,7 @@
 /* eslint-disable react/jsx-max-depth */
+import { RegistryContext } from '@effect/atom-react/RegistryContext';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
+import * as Effect from 'effect/Effect';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -8,8 +10,6 @@ import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-c
 import { enableFreeze, enableScreens } from 'react-native-screens';
 import Toast from 'react-native-toast-message';
 
-import { emptyFn } from '@rnw-community/shared';
-
 import migrations from '../../drizzle/migrations';
 import '../global.css';
 import { DevMenuController } from '../@generic/component/dev-menu-controller/dev-menu-controller';
@@ -17,6 +17,7 @@ import { DrizzleStudioController } from '../@generic/component/drizzle-studio-co
 import { ErrorBoundary } from '../@generic/component/error-boundary/error-boundary';
 import { ScreenLayout } from '../@generic/component/screen-layout/screen-layout';
 import { ScreenshotProtectionController } from '../@generic/component/screenshot-protection-controller/screenshot-protection-controller';
+import { appAtomRegistry } from '../@generic/constant/app-atom-registry.constant';
 import { APP_TOAST_CONFIG } from '../@generic/constant/app-toast-config.constant';
 import { CATEGORY_EDIT_MODAL_OPTIONS } from '../@generic/constant/category-edit-modal-options.constant';
 import { CONSOLIDATION_SOURCE_MODAL_OPTIONS } from '../@generic/constant/consolidation-source-modal-options.constant';
@@ -45,16 +46,16 @@ import { useAppState } from '../@generic/hook/use-app-state.hook';
 import { CreateActionProvider } from '../@generic/provider/create-action.provider';
 import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
+import { appRuntime } from '../@generic/runtime/app.runtime';
+import { Workload } from '../@generic/service/workload.service';
+import { logAndContinue } from '../@generic/utils/log-and-continue.util';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
-import { historicalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
-import { SettingsProvider } from '../settings/provider/settings.provider';
-import { appDataSyncService } from '../sync/service/app-data-sync.service';
-import { monobankSyncService } from '../sync/service/monobank-sync.service';
-import { syncWorkloadService } from '../sync/service/sync-workload.service';
+import { HistoricalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
+import { AppDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -65,22 +66,31 @@ void SplashScreen.preventAutoHideAsync();
 const drizzleStudioEnvironmentVariable = 'EXPO_PUBLIC_DRIZZLE_STUDIO_ENABLE';
 const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVariable] === 'true';
 
-const syncForegroundData = async (): Promise<void> => {
-    const isCompleted = await appDataSyncService.sync();
-    if (isCompleted) {
-        void historicalMarketDataLoaderService.enqueueActiveAccounts().catch(emptyFn);
-    }
-};
-
 const handleAppStateChange = (isActive: boolean): void => {
-    if (!isActive) {
-        monobankSyncService.interruptActiveRun();
-        syncWorkloadService.interruptActiveWork();
+    void appRuntime.runPromise(
+        Effect.gen(function* () {
+            const workload = yield* Workload;
 
-        return;
-    }
+            if (!isActive) {
+                yield* workload.interruptBackground;
 
-    void syncWorkloadService.run('foreground', syncForegroundData).catch(emptyFn);
+                return;
+            }
+
+            const appDataSyncService = yield* AppDataSyncService;
+            const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
+
+            yield* logAndContinue(
+                workload.run(
+                    Effect.gen(function* () {
+                        if (yield* appDataSyncService.sync()) {
+                            yield* Effect.forkDetach(logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts()));
+                        }
+                    })
+                )
+            );
+        })
+    );
 };
 
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
@@ -97,8 +107,8 @@ export const RootLayoutContent = () => {
     const drizzleStudioController = isDrizzleStudioEnabled ? <DrizzleStudioController /> : null;
 
     return (
-        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-            <SettingsProvider>
+        <RegistryContext.Provider value={appAtomRegistry}>
+            <SafeAreaProvider initialMetrics={initialWindowMetrics}>
                 {__DEV__ && <DevMenuController />}
                 {drizzleStudioController}
                 <ScreenshotProtectionController />
@@ -242,7 +252,7 @@ export const RootLayoutContent = () => {
                         </ThemeProvider>
                     </KeyboardProvider>
                 </I18nProvider>
-            </SettingsProvider>
-        </SafeAreaProvider>
+            </SafeAreaProvider>
+        </RegistryContext.Provider>
     );
 };

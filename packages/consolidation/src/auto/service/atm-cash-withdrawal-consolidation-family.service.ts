@@ -1,54 +1,46 @@
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Layer from 'effect/Layer';
 
+import { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
+import { AtmCashWithdrawalRepository } from '../../query/repository/atm-cash-withdrawal.repository';
 import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
+import { makeConsolidationFamilyService } from '../utils/make-consolidation-family-service.util';
 
-import { ConsolidationFamilyStrategyService } from './consolidation-family-strategy.service';
-
-import type { ConsolidationPlanInterface } from '../../executor/interface/consolidation-plan.interface';
-import type { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
-import type { AtmCashWithdrawalRepository } from '../../query/repository/atm-cash-withdrawal.repository';
-import type { AtmCashWithdrawalCandidateInterface, ConsolidationScanScopeInterface } from '@budgie/contracts';
-
-export class AtmCashWithdrawalConsolidationFamilyService extends ConsolidationFamilyStrategyService<AtmCashWithdrawalCandidateInterface> {
-    readonly key = ConsolidationFamilyKeyEnum.ATM_CASH_WITHDRAWAL;
-
-    constructor(
-        private readonly atmCashWithdrawalRepository: Pick<AtmCashWithdrawalRepository, 'findCandidates'>,
-        private readonly consolidationExecutorService: Pick<ConsolidationExecutorService, 'consolidateAtmCashWithdrawal'>,
-        yieldControl: () => Promise<void>
-    ) {
-        super(yieldControl);
+export class AtmCashWithdrawalConsolidationFamilyService extends Context.Service<AtmCashWithdrawalConsolidationFamilyService>()(
+    '@budgie/consolidation/AtmCashWithdrawalConsolidationFamilyService',
+    {
+        make: makeConsolidationFamilyService(
+            AtmCashWithdrawalRepository,
+            ConsolidationExecutorService,
+            (atmCashWithdrawalRepository, consolidationExecutorService) => ({
+                key: ConsolidationFamilyKeyEnum.ATM_CASH_WITHDRAWAL,
+                findCandidates: scope => atmCashWithdrawalRepository.findCandidates(scope),
+                consolidateCandidate: candidate =>
+                    consolidationExecutorService.consolidateAtmCashWithdrawal(candidate, {
+                        sourceTransactionIds: [candidate.transactionId],
+                        allowedMovedSourceTransactionIds: [],
+                        canonicalInput: {
+                            title: candidate.transactionTitle ?? '',
+                            operatedAt: candidate.operatedAt,
+                            fromAccountId: candidate.sourceAccountId,
+                            toAccountId: candidate.targetCashAccountId,
+                            fromAmount: candidate.amount,
+                            toAmount: candidate.amount,
+                            exchangeRate: 1,
+                            consolidationType: TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL,
+                            fromEntryExchangeRate: 1,
+                            toEntryExchangeRate: 1,
+                            fromEntryToIban: null
+                        }
+                    }),
+                getSourceTransactionIds: candidate => [candidate.transactionId]
+            })
+        )
     }
-
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null): Promise<AtmCashWithdrawalCandidateInterface[]> {
-        return this.atmCashWithdrawalRepository.findCandidates(scope);
-    }
-
-    protected consolidateCandidate(candidate: AtmCashWithdrawalCandidateInterface): Promise<boolean> {
-        return this.consolidationExecutorService.consolidateAtmCashWithdrawal(candidate, this.buildConsolidationPlan(candidate));
-    }
-
-    protected getSourceTransactionIds(candidate: AtmCashWithdrawalCandidateInterface): number[] {
-        return [candidate.transactionId];
-    }
-
-    private buildConsolidationPlan(candidate: AtmCashWithdrawalCandidateInterface): ConsolidationPlanInterface {
-        return {
-            sourceTransactionIds: this.getSourceTransactionIds(candidate),
-            allowedMovedSourceTransactionIds: [],
-            canonicalInput: {
-                title: candidate.transactionTitle ?? '',
-                operatedAt: candidate.operatedAt,
-                fromAccountId: candidate.sourceAccountId,
-                toAccountId: candidate.targetCashAccountId,
-                fromAmount: candidate.amount,
-                toAmount: candidate.amount,
-                exchangeRate: 1,
-                consolidationType: TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL,
-                fromEntryExchangeRate: 1,
-                toEntryExchangeRate: 1,
-                fromEntryToIban: null
-            }
-        };
-    }
+) {
+    static readonly layer = Layer.effect(
+        AtmCashWithdrawalConsolidationFamilyService,
+        AtmCashWithdrawalConsolidationFamilyService.make
+    ).pipe(Layer.provide([AtmCashWithdrawalRepository.layer, ConsolidationExecutorService.layer]));
 }

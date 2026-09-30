@@ -1,133 +1,72 @@
 import {
     AccountDebtTypeEnum,
     AccountNatureEnum,
+    AccountRepository,
     BORROWING_CATEGORY_ID,
     CategorySourceEnum,
+    Db,
     DebtEventDirectionEnum,
+    DebtEventRepository,
     DebtEventSourceEnum,
     LENDING_CATEGORY_ID,
     TransactionEntryKindEnum,
+    TransactionEntryRepository,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    transactionAsync
+    TransactionRepository,
+    TransactionTypeEnum
 } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
 import { t } from '@lingui/core/macro';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import {
-    accountRepository,
-    db,
-    debtEventRepository,
-    transactionEntryRepository,
-    transactionRepository
-} from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
-import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
-import { transactionDebtSettlementService } from '../../transaction/service/transaction-debt-settlement.service';
+import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { TransactionDebtSettlementService } from '../../transaction/service/transaction-debt-settlement.service';
 import { getTransactionCategoryEntries } from '../../transaction/utils/get-transaction-category-entries.util';
-import { updateDebtTargetBaseValuation } from '../util/update-debt-target-base-valuation.util';
 
-import { accountBalanceIncrementalService } from './account-balance-incremental.service';
-import { accountService } from './account.service';
+import { AccountBalanceIncrementalService } from './account-balance-incremental.service';
+import { DebtAccountService } from './debt-account.service';
 
 import type {
     AccountEntityInterface,
-    DB,
     DebtAccountCreateInputInterface,
     TransactionEntityInterface,
-    TransactionEntryEntityInterface,
     TransactionWithEntriesEntityInterface
 } from '@budgie/contracts';
 
-class AccountDebtOpeningService {
-    @Log(
-        (input, fundingAccountId) => `enter title="${input.title}" debtType=${input.debtType} fundingAccountId=${fundingAccountId}`,
-        (result, input, fundingAccountId) =>
-            `done accountId=${result.id} title="${input.title}" debtType=${input.debtType} fundingAccountId=${fundingAccountId}`,
-        (error, input, fundingAccountId) =>
-            `throw title="${input.title}" debtType=${input.debtType} fundingAccountId=${fundingAccountId} error=${getErrorMessage(error)}`
-    )
-    async openDebtWithFundingAccount(input: DebtAccountCreateInputInterface, fundingAccountId: number): Promise<AccountEntityInterface> {
-        return transactionAsync(db, async tx => {
-            const fundingAccount = await this.getAccountOrFail(fundingAccountId, tx);
-            const targetAmount = this.getPositiveOpeningAmount(input.targetBalance);
-            const account = await this.createZeroTargetDebtAccount(input, tx);
-            const conversion = await exchangeRatesService.convert(account.instrumentId, fundingAccount.instrumentId, targetAmount);
-            const transaction = await this.createFundingTransaction(input, fundingAccountId, tx);
-            const entry = await this.createFundingEntry(transaction, fundingAccountId, conversion.amount, tx);
-            const valuedAccount = await this.updateDebtTargetAmount(account, targetAmount, transaction.operatedAt, tx);
+export class AccountDebtOpeningService extends Context.Service<AccountDebtOpeningService>()('@budgie/app/AccountDebtOpeningService', {
+    make: Effect.gen(function* () {
+        const accountRepository = yield* AccountRepository;
+        const debtEventRepository = yield* DebtEventRepository;
+        const transactionEntryRepository = yield* TransactionEntryRepository;
+        const transactionRepository = yield* TransactionRepository;
+        const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+        const debtAccountService = yield* DebtAccountService;
+        const entryBaseValuationService = yield* EntryBaseValuationService;
+        const exchangeRatesService = yield* ExchangeRatesService;
+        const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-            await debtEventRepository.create(
-                {
-                    debtAccountId: valuedAccount.id,
-                    transactionId: transaction.id,
-                    transactionEntryId: entry.id,
-                    direction: DebtEventDirectionEnum.OPEN,
-                    source: DebtEventSourceEnum.OPENING,
-                    amount: valuedAccount.targetBalance,
-                    baseInstrumentId: valuedAccount.targetBaseInstrumentId,
-                    baseExchangeRate: valuedAccount.targetBaseExchangeRate,
-                    baseAmount: valuedAccount.targetBaseAmount,
-                    operatedAt: transaction.operatedAt
-                },
-                tx
-            );
-            await accountService.syncManualDebtEvents(valuedAccount, convertToMicroUnits(input.currentBalance), transaction.operatedAt, tx);
-            await accountBalanceIncrementalService.updateBalancesByAccountIds([fundingAccountId, valuedAccount.id], tx);
+        const createZeroTargetDebtAccount = Effect.fn('AccountDebtOpeningService.createZeroTargetDebtAccount')(function* (
+            input: DebtAccountCreateInputInterface
+        ) {
+            const [{ count }] = yield* accountRepository.count();
 
-            return valuedAccount;
+            const nature = input.debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
+
+            return yield* accountRepository.create({ ...input, targetBalance: 0, order: count + 1, nature });
         });
-    }
 
-    @Log(
-        (input, incomeTransactionId) =>
-            `enter title="${input.title}" debtType=${input.debtType} incomeTransactionId=${incomeTransactionId}`,
-        (result, input, incomeTransactionId) =>
-            `done accountId=${result.id} title="${input.title}" debtType=${input.debtType} incomeTransactionId=${incomeTransactionId}`,
-        (error, input, incomeTransactionId) =>
-            `throw title="${input.title}" debtType=${input.debtType} incomeTransactionId=${incomeTransactionId} error=${getErrorMessage(error)}`
-    )
-    async createBorrowedDebtFromIncome(
-        input: DebtAccountCreateInputInterface,
-        incomeTransactionId: number
-    ): Promise<AccountEntityInterface> {
-        return transactionAsync(db, async tx => {
-            this.assertBorrowedDebtType(input.debtType);
+        const createFundingTransaction = Effect.fn('AccountDebtOpeningService.createFundingTransaction')(function* (
+            input: DebtAccountCreateInputInterface,
+            fundingAccountId: number
+        ) {
+            const isLentDebt = input.debtType === AccountDebtTypeEnum.LENT;
 
-            const transaction = await this.getOpeningIncomeTransaction(incomeTransactionId, tx);
-            const primaryEntry = this.getSingleOpeningIncomeEntry(transaction);
-            const primaryAccount = await this.getAccountOrFail(primaryEntry.accountId, tx);
-            const account = await this.createZeroTargetDebtAccount({ ...input, instrumentId: primaryAccount.instrumentId }, tx);
-
-            await transactionDebtSettlementService.attachInTransaction(
-                { transactionId: incomeTransactionId, debtAccountId: account.id },
-                tx
-            );
-
-            return this.updateDebtTargetAmount(account, primaryEntry.amount, transaction.operatedAt, tx);
-        });
-    }
-
-    private async createZeroTargetDebtAccount(input: DebtAccountCreateInputInterface, tx: DB): Promise<AccountEntityInterface> {
-        const [{ count }] = await accountRepository.count();
-
-        const nature = input.debtType === AccountDebtTypeEnum.LENT ? AccountNatureEnum.ASSET : AccountNatureEnum.LIABILITY;
-
-        return accountRepository.create({ ...input, targetBalance: 0, order: count + 1, nature }, tx);
-    }
-
-    private async createFundingTransaction(
-        input: DebtAccountCreateInputInterface,
-        fundingAccountId: number,
-        tx: DB
-    ): Promise<TransactionEntityInterface> {
-        const isLentDebt = input.debtType === AccountDebtTypeEnum.LENT;
-
-        return transactionRepository.create(
-            {
+            return yield* transactionRepository.create({
                 type: isLentDebt ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME,
                 title: input.title,
                 comment: '',
@@ -138,28 +77,23 @@ class AccountDebtOpeningService {
                 fromAccountId: isLentDebt ? fundingAccountId : null,
                 toAccountId: isLentDebt ? null : fundingAccountId,
                 updatedBy: null
-            },
-            tx
-        );
-    }
-
-    private async createFundingEntry(
-        transaction: TransactionEntityInterface,
-        fundingAccountId: number,
-        amount: number,
-        tx: DB
-    ): Promise<TransactionEntryEntityInterface> {
-        const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
-        const valuation = await entryBaseValuationService.valueMicroUnitEntry({
-            accountId: fundingAccountId,
-            amount,
-            operatedAt: transaction.operatedAt,
-            externalSource: null,
-            tx
+            });
         });
 
-        return transactionEntryRepository.create(
-            {
+        const createFundingEntry = Effect.fn('AccountDebtOpeningService.createFundingEntry')(function* (
+            transaction: TransactionEntityInterface,
+            fundingAccountId: number,
+            amount: number
+        ) {
+            const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
+            const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
+                accountId: fundingAccountId,
+                amount,
+                operatedAt: transaction.operatedAt,
+                externalSource: null
+            });
+
+            return yield* transactionEntryRepository.create({
                 transactionId: transaction.id,
                 accountId: fundingAccountId,
                 categoryId: isExpense ? LENDING_CATEGORY_ID : BORROWING_CATEGORY_ID,
@@ -175,72 +109,137 @@ class AccountDebtOpeningService {
                 baseAmount: valuation.baseAmount,
                 toIban: null,
                 originalTransactionId: null
-            },
-            tx
-        );
-    }
+            });
+        });
 
-    private getPositiveOpeningAmount(amount: number): number {
-        const openingAmount = convertToMicroUnits(amount);
+        const getOpeningIncomeTransaction = Effect.fn('AccountDebtOpeningService.getOpeningIncomeTransaction')(function* (id: number) {
+            const transaction = yield* transactionRepository.getByIdWithEntries(id);
 
-        if (!isPositiveNumber(openingAmount)) {
-            throw new Error(t`Enter all amounts`);
-        }
+            if (!isDefined(transaction)) {
+                return yield* Effect.die(new Error(t`Transaction not found`));
+            }
 
-        return openingAmount;
-    }
+            if (transaction.type !== TransactionTypeEnum.INCOME) {
+                return yield* Effect.die(new Error(t`Only income transactions can be converted`));
+            }
 
-    private async getOpeningIncomeTransaction(id: number, tx: DB): Promise<TransactionWithEntriesEntityInterface> {
-        const transaction = await transactionRepository.getByIdWithEntries(id, tx);
+            return transaction;
+        });
 
-        if (!isDefined(transaction)) {
-            throw new Error(t`Transaction not found`);
-        }
+        const getAccountOrFail = Effect.fn('AccountDebtOpeningService.getAccountOrFail')(function* (id: number) {
+            const account = yield* accountRepository.findById(id);
 
-        if (transaction.type !== TransactionTypeEnum.INCOME) {
-            throw new Error(t`Only income transactions can be converted`);
-        }
+            if (!isDefined(account)) {
+                return yield* Effect.die(new Error(t`Account ${id} not found`));
+            }
 
-        return transaction;
-    }
+            return account;
+        });
 
-    private getSingleOpeningIncomeEntry(transaction: TransactionWithEntriesEntityInterface) {
-        const categoryEntries = getTransactionCategoryEntries(transaction.entries);
-        const primaryEntry = categoryEntries.at(0);
+        const updateDebtTargetAmount = Effect.fn('AccountDebtOpeningService.updateDebtTargetAmount')(function* (
+            account: AccountEntityInterface,
+            targetBalance: number,
+            operatedAt: Date
+        ) {
+            const updatedAccount = yield* accountRepository.updateById(account.id, { targetBalance });
 
-        if (!isDefined(primaryEntry) || categoryEntries.length !== 1) {
-            throw new Error(t`Only single-entry incomes can be converted`);
-        }
+            return yield* debtAccountService.updateDebtTargetBaseValuation(updatedAccount, operatedAt);
+        });
 
-        return primaryEntry;
-    }
+        const getPositiveOpeningAmount = Effect.fn('AccountDebtOpeningService.getPositiveOpeningAmount')(function* (amount: number) {
+            const openingAmount = convertToMicroUnits(amount);
 
-    private async getAccountOrFail(id: number, tx: DB): Promise<AccountEntityInterface> {
-        const account = await accountRepository.findById(id, tx);
+            if (!isPositiveNumber(openingAmount)) {
+                return yield* Effect.die(new Error(t`Enter all amounts`));
+            }
 
-        if (!isDefined(account)) {
-            throw new Error(t`Account ${id} not found`);
-        }
+            return openingAmount;
+        });
 
-        return account;
-    }
+        const getSingleOpeningIncomeEntry = Effect.fn('AccountDebtOpeningService.getSingleOpeningIncomeEntry')(function* (
+            transaction: TransactionWithEntriesEntityInterface
+        ) {
+            const categoryEntries = getTransactionCategoryEntries(transaction.entries);
+            const primaryEntry = categoryEntries.at(0);
 
-    private assertBorrowedDebtType(debtType: AccountDebtTypeEnum): void {
-        if (debtType !== AccountDebtTypeEnum.BORROW) {
-            throw new Error(t`Borrowed debt account expected`);
-        }
-    }
+            if (!isDefined(primaryEntry) || categoryEntries.length !== 1) {
+                return yield* Effect.die(new Error(t`Only single-entry incomes can be converted`));
+            }
 
-    private async updateDebtTargetAmount(
-        account: AccountEntityInterface,
-        targetBalance: number,
-        operatedAt: Date,
-        tx: DB
-    ): Promise<AccountEntityInterface> {
-        const updatedAccount = await accountRepository.updateById(account.id, { targetBalance }, tx);
+            return primaryEntry;
+        });
 
-        return updateDebtTargetBaseValuation(updatedAccount, operatedAt, tx);
-    }
+        const assertBorrowedDebtType = Effect.fn('AccountDebtOpeningService.assertBorrowedDebtType')(function* (
+            debtType: AccountDebtTypeEnum
+        ) {
+            if (debtType !== AccountDebtTypeEnum.BORROW) {
+                return yield* Effect.die(new Error(t`Borrowed debt account expected`));
+            }
+        });
+
+        return {
+            openDebtWithFundingAccount: Effect.fn('AccountDebtOpeningService.openDebtWithFundingAccount')(
+                function* (input: DebtAccountCreateInputInterface, fundingAccountId: number) {
+                    const fundingAccount = yield* getAccountOrFail(fundingAccountId);
+                    const targetAmount = yield* getPositiveOpeningAmount(input.targetBalance);
+                    const account = yield* createZeroTargetDebtAccount(input);
+                    const conversion = yield* exchangeRatesService.convert(account.instrumentId, fundingAccount.instrumentId, targetAmount);
+                    const transaction = yield* createFundingTransaction(input, fundingAccountId);
+                    const entry = yield* createFundingEntry(transaction, fundingAccountId, conversion.amount);
+                    const valuedAccount = yield* updateDebtTargetAmount(account, targetAmount, transaction.operatedAt);
+
+                    yield* debtEventRepository.create({
+                        debtAccountId: valuedAccount.id,
+                        transactionId: transaction.id,
+                        transactionEntryId: entry.id,
+                        direction: DebtEventDirectionEnum.OPEN,
+                        source: DebtEventSourceEnum.OPENING,
+                        amount: valuedAccount.targetBalance,
+                        baseInstrumentId: valuedAccount.targetBaseInstrumentId,
+                        baseExchangeRate: valuedAccount.targetBaseExchangeRate,
+                        baseAmount: valuedAccount.targetBaseAmount,
+                        operatedAt: transaction.operatedAt
+                    });
+                    yield* debtAccountService.syncManualDebtEvents(
+                        valuedAccount,
+                        convertToMicroUnits(input.currentBalance),
+                        transaction.operatedAt
+                    );
+                    yield* accountBalanceIncrementalService.updateBalancesByAccountIds([fundingAccountId, valuedAccount.id]);
+
+                    return valuedAccount;
+                },
+                effect => Db.transaction(effect)
+            ),
+            createBorrowedDebtFromIncome: Effect.fn('AccountDebtOpeningService.createBorrowedDebtFromIncome')(
+                function* (input: DebtAccountCreateInputInterface, incomeTransactionId: number) {
+                    yield* assertBorrowedDebtType(input.debtType);
+
+                    const transaction = yield* getOpeningIncomeTransaction(incomeTransactionId);
+                    const primaryEntry = yield* getSingleOpeningIncomeEntry(transaction);
+                    const primaryAccount = yield* getAccountOrFail(primaryEntry.accountId);
+                    const account = yield* createZeroTargetDebtAccount({ ...input, instrumentId: primaryAccount.instrumentId });
+
+                    yield* transactionDebtSettlementService.attach({ transactionId: incomeTransactionId, debtAccountId: account.id });
+
+                    return yield* updateDebtTargetAmount(account, primaryEntry.amount, transaction.operatedAt);
+                },
+                effect => Db.transaction(effect)
+            )
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(AccountDebtOpeningService, AccountDebtOpeningService.make).pipe(
+        Layer.provide([
+            AccountRepository.layer,
+            DebtEventRepository.layer,
+            TransactionEntryRepository.layer,
+            TransactionRepository.layer,
+            AccountBalanceIncrementalService.layer,
+            DebtAccountService.layer,
+            EntryBaseValuationService.layer,
+            ExchangeRatesService.layer,
+            TransactionDebtSettlementService.layer
+        ])
+    );
 }
-
-export const accountDebtOpeningService = new AccountDebtOpeningService();

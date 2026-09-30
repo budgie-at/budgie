@@ -1,6 +1,8 @@
 import { TransactionTypeEnum, TransferTransactionCreateInputSchema } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -10,14 +12,16 @@ import { isDefined } from '@rnw-community/shared';
 
 import { PageHeader } from '../@generic/component/page-header/page-header';
 import { ModalPage } from '../@generic/component/page/modal-page';
+import { appRuntime } from '../@generic/runtime/app.runtime';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
 import { useDepositCreateAction } from '../account/hooks/use-deposit-create-action.hook';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal, useConvertToTransferModalParams } from '../transaction/context/convert-to-transfer-modal.context';
 import { TransferToAccountCreateActionContext } from '../transaction/context/transfer-to-account-create-action.context';
-import { transactionTransferService } from '../transaction/service/transaction-transfer.service';
+import { TransactionTransferService } from '../transaction/service/transaction-transfer.service';
 import { buildTransferEntries } from '../transaction/utils/build-transfer-entries.util';
 import { createTransactionInput } from '../transaction/utils/create-transaction-input.util';
+import { getTransactionFeeEntries } from '../transaction/utils/get-transaction-fee-entries.util';
 
 import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.selector';
 
@@ -47,7 +51,7 @@ export default function ConvertToTransferModal() {
 
     const form = useForm<TransactionCreateInputInterface>({
         mode: 'onSubmit',
-        resolver: zodResolver(TransferTransactionCreateInputSchema),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(TransferTransactionCreateInputSchema)),
         defaultValues: createTransactionInput({
             exchangeRate: 1,
             fromAccountId,
@@ -110,13 +114,20 @@ export default function ConvertToTransferModal() {
             const formValues = form.getValues();
             const selectedAccountId = isExpense ? (formValues.toAccountId ?? 0) : (formValues.fromAccountId ?? 0);
             const customRate = formValues.exchangeRate === 1 ? 0 : formValues.exchangeRate;
-            const convertParams = { id: transactionId, accountId: selectedAccountId, customExchangeRate: customRate };
+            const convertParams = {
+                id: transactionId,
+                accountId: selectedAccountId,
+                customExchangeRate: customRate,
+                feeEntries: getTransactionFeeEntries(formValues.entries)
+            };
 
-            if (isExpense) {
-                await transactionTransferService.convertExpenseToTransfer(convertParams);
-            } else {
-                await transactionTransferService.convertIncomeToTransfer(convertParams);
-            }
+            await appRuntime.runPromise(
+                Effect.flatMap(TransactionTransferService, transactionTransferService =>
+                    isExpense
+                        ? transactionTransferService.convertExpenseToTransfer(convertParams)
+                        : transactionTransferService.convertIncomeToTransfer(convertParams)
+                )
+            );
 
             if (skipPostConvertNavigation) {
                 resolveConvertToTransfer(true);

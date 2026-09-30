@@ -1,12 +1,13 @@
 import { TagCreateEntityInterface, TagCreateEntitySchema } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
+import * as Schema from 'effect/Schema';
 import { useForm, useWatch } from 'react-hook-form';
 
 const DEFAULT_VALUES: TagCreateEntityInterface = { title: '' };
 
 export const useTagForm = (defaultValues: TagCreateEntityInterface | null) => {
     const { reset, control, ...rest } = useForm({
-        resolver: zodResolver(TagCreateEntitySchema),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(TagCreateEntitySchema)),
         defaultValues: defaultValues ?? DEFAULT_VALUES,
         values: defaultValues ?? DEFAULT_VALUES,
         mode: 'onSubmit'

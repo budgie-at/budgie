@@ -1,4 +1,3 @@
-import type { RuleEntitySchema } from '../schema/rule-entity.schema';
-import type { z } from 'zod';
+import type { RuleEntityTable } from '../table/rule-entity.table';
 
-export type RuleEntityInterface = z.infer<typeof RuleEntitySchema>;
+export type RuleEntityInterface = typeof RuleEntityTable.$inferSelect;

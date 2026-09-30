@@ -6,19 +6,22 @@ import {
     RuleCreateInputInterface,
     RuleCreateInputSchema
 } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 import { useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
-import { ruleApplicationDrainerService } from '../service/rule-application-drainer.service';
-import { ruleMatcherService } from '../service/rule-matcher.service';
-import { ruleService } from '../service/rule.service';
+import { RuleApplicationDrainerService } from '../service/rule-application-drainer.service';
+import { RuleMatcherService } from '../service/rule-matcher.service';
+import { RuleService } from '../service/rule.service';
 import { showRuleApplicationToast } from '../util/show-rule-application-toast.util';
 
 import type { RuleFormResultType } from '../context/rule-form-modal.context';
@@ -102,7 +105,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     const isEditing = isDefined(ruleId);
 
     const form = useForm<RuleCreateInputInterface>({
-        resolver: zodResolver(RuleCreateInputSchema),
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(RuleCreateInputSchema)),
         defaultValues,
         mode: 'onSubmit'
     });
@@ -113,10 +116,14 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
             return false;
         }
 
-        const count = await ruleMatcherService.countMatchingTransactions({
-            conditions: values.conditions,
-            conditionMatchType: values.conditionMatchType
-        });
+        const count = await appRuntime.runPromise(
+            Effect.flatMap(RuleMatcherService, ruleMatcherService =>
+                ruleMatcherService.countMatchingTransactions({
+                    conditions: values.conditions,
+                    conditionMatchType: values.conditionMatchType
+                })
+            )
+        );
 
         if (!isPositiveNumber(count)) {
             return false;
@@ -140,7 +147,11 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
             return;
         }
 
-        ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId, showRuleApplicationToast);
+        appRuntime.runFork(
+            Effect.flatMap(RuleApplicationDrainerService, ruleApplicationDrainerService =>
+                ruleApplicationDrainerService.enqueueRuleApplication(targetRuleId, showRuleApplicationToast)
+            )
+        );
     };
 
     const handleSubmit = async (values: RuleCreateInputInterface) => {
@@ -148,10 +159,10 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
             const shouldApply = await confirmApplyToExisting(values);
 
             if (isEditing && isDefined(ruleId)) {
-                await ruleService.updateById(ruleId, values);
+                await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.updateById(ruleId, values)));
                 enqueueApplyToExisting(ruleId, shouldApply);
             } else {
-                const rule = await ruleService.create(values);
+                const rule = await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.create(values)));
                 enqueueApplyToExisting(rule.id, shouldApply);
             }
             onSuccess?.(isEditing ? 'updated' : 'created');
@@ -170,7 +181,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
         }
 
         try {
-            await ruleService.archiveById(ruleId);
+            await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.archiveById(ruleId)));
             onSuccess?.('deleted');
         } catch (error: unknown) {
             Toast.show({

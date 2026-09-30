@@ -1,8 +1,10 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { XLSX_MIME_TYPE } from '../../constant/xlsx-mime-type.constant';
-import { privatbankSyncService } from '../../service/privatbank-sync.service';
+import { PrivatbankSyncService } from '../../service/privatbank-sync.service';
 import { CreateFileBankAccount } from '../create-file-bank-account/create-file-bank-account';
 
 import type { CreateFileBankAccountConfigInterface } from '../../interface/create-file-bank-account-config.interface';
@@ -25,8 +27,14 @@ export const CreatePrivatbankAccount = () => {
         fileTypeLabel: t`XLSX export`,
         selectFileText: t`Select the exported XLSX file`,
         ctaLabel: t`Import`,
-        importPreview: privatbankSyncService.importPreview.bind(privatbankSyncService),
-        executeImportForSelectedAccounts: privatbankSyncService.executeImportForSelectedAccounts.bind(privatbankSyncService)
+        importPreview: uri =>
+            appRuntime.runPromise(Effect.flatMap(PrivatbankSyncService, privatbankSyncService => privatbankSyncService.importPreview(uri))),
+        executeImportForSelectedAccounts: (uri, selectedAccountIds) =>
+            appRuntime.runPromise(
+                Effect.flatMap(PrivatbankSyncService, privatbankSyncService =>
+                    privatbankSyncService.executeImportForSelectedAccounts(uri, selectedAccountIds)
+                )
+            )
     };
 
     return <CreateFileBankAccount config={config} />;

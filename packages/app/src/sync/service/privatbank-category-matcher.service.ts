@@ -1,46 +1,52 @@
-import { Log } from '@budgie/logger';
+import { MccCategoryRepository, SettingsRepository } from '@budgie/contracts';
 import { PRIVATBANK_CATEGORY_TO_MCC_CODE } from '@budgie/sync';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
 
-class PrivatbankCategoryMatcherService {
-    @Log(
-        categories => `enter categoryCount=${categories.length}`,
-        (result, categories) => {
-            const unmatchedCategories = categories.filter(category => !isDefined(result.get(category)));
+export class PrivatbankCategoryMatcherService extends Context.Service<PrivatbankCategoryMatcherService>()(
+    '@budgie/app/PrivatbankCategoryMatcherService',
+    {
+        make: Effect.gen(function* () {
+            const mccCategoryRepository = yield* MccCategoryRepository;
+            const settingsRepository = yield* SettingsRepository;
 
-            return `done categoryCount=${categories.length} matchedCount=${[...result.values()].filter(isDefined).length} unmatchedCount=${unmatchedCategories.length} unmatchedCategories=${unmatchedCategories.join(',')}`;
-        },
-        (error, categories) => `throw categoryCount=${categories.length} error=${getErrorMessage(error)}`
-    )
-    async match(categories: string[]): Promise<Map<string, MccCategoryLookupInterface | null>> {
-        if (!isNotEmptyArray(categories)) {
-            return new Map();
-        }
+            const matchCategories = (
+                categories: string[],
+                mccCodeToLookupMap: Map<string, MccCategoryLookupInterface>
+            ): Map<string, MccCategoryLookupInterface | null> => {
+                const resultMap = new Map<string, MccCategoryLookupInterface | null>();
 
-        const mccCodeToLookupMap = await loadMccCategoryLookupMap();
+                for (const category of categories) {
+                    const mccCode = PRIVATBANK_CATEGORY_TO_MCC_CODE[category];
+                    const mccCategoryLookup = isDefined(mccCode) ? (mccCodeToLookupMap.get(mccCode) ?? null) : null;
+                    resultMap.set(category, mccCategoryLookup);
+                }
 
-        return this.matchCategories(categories, mccCodeToLookupMap);
+                return resultMap;
+            };
+
+            return {
+                match: Effect.fn('PrivatbankCategoryMatcherService.match')(function* (categories: string[]) {
+                    if (!isNotEmptyArray(categories)) {
+                        return new Map<string, MccCategoryLookupInterface | null>();
+                    }
+
+                    const mccCodeToLookupMap = yield* loadMccCategoryLookupMap(mccCategoryRepository, settingsRepository);
+
+                    return matchCategories(categories, mccCodeToLookupMap);
+                })
+            };
+        })
     }
-
-    private matchCategories(
-        categories: string[],
-        mccCodeToLookupMap: Map<string, MccCategoryLookupInterface>
-    ): Map<string, MccCategoryLookupInterface | null> {
-        const resultMap = new Map<string, MccCategoryLookupInterface | null>();
-
-        for (const category of categories) {
-            const mccCode = PRIVATBANK_CATEGORY_TO_MCC_CODE[category];
-            const mccCategoryLookup = isDefined(mccCode) ? (mccCodeToLookupMap.get(mccCode) ?? null) : null;
-            resultMap.set(category, mccCategoryLookup);
-        }
-
-        return resultMap;
-    }
+) {
+    static readonly layer = Layer.effect(PrivatbankCategoryMatcherService, PrivatbankCategoryMatcherService.make).pipe(
+        Layer.provide([MccCategoryRepository.layer, SettingsRepository.layer])
+    );
 }
-
-export const privatbankCategoryMatcherService = new PrivatbankCategoryMatcherService();

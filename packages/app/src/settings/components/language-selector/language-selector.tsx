@@ -1,9 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { CountryFlag } from '../../../@generic/component/country-flag/country-flag';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { LANGUAGES } from '../../../i18n/constant/languages.constant';
 import { useLanguageSelectorModal } from '../../../i18n/context/language-selector-modal.context';
@@ -22,8 +24,9 @@ export const LanguageSelector = () => {
     const handleOpen = async () => {
         const result = await openLanguageSelector({ selectedLanguage: language });
         if (isDefined(result)) {
-            await updateSettingsMutation({ language: result });
-            await i18nEnsureLanguageActivated(result);
+            await appRuntime.runPromise(
+                updateSettingsMutation({ language: result }).pipe(Effect.andThen(i18nEnsureLanguageActivated(result)))
+            );
         }
     };
 

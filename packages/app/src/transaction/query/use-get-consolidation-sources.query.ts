@@ -1,15 +1,16 @@
-import { TransactionEntryTypeEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
-import { useEffect, useState } from 'react';
+import { TransactionConsolidationRepository, TransactionEntryTypeEnum, TransactionViewRepository } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { transactionRepository } from '../../@generic/drizzle/db/db';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 import { useSetting } from '../../settings/hook/use-setting.hook';
+import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
 
-import type { ConsolidationSourceRowInterface, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-
-const logger = getLogger('useGetConsolidationSourcesQuery');
+import type { ConsolidationSourceRowInterface, LanguageEnum } from '@budgie/contracts';
 
 const orderSourcesByTransferChain = (rows: ConsolidationSourceRowInterface[]): ConsolidationSourceRowInterface[] => {
     const sendingAccounts = new Set(rows.filter(row => row.entryType === TransactionEntryTypeEnum.CREDIT).map(row => row.accountId));
@@ -31,44 +32,37 @@ const orderSourcesByTransferChain = (rows: ConsolidationSourceRowInterface[]): C
     return [...rows].sort((left, right) => rankOf(left) - rankOf(right));
 };
 
+const consolidationSourcesAtom = Atom.family(([transactionId, language]: readonly [number, LanguageEnum]) =>
+    databaseQueryAtom(
+        TRANSACTION_LIST_TABLES,
+        Effect.gen(function* () {
+            const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
+            const transactionViewRepository = yield* TransactionViewRepository;
+            const [rows, canonical] = yield* Effect.all(
+                [
+                    transactionConsolidationRepository.findConsolidationSources(transactionId, language),
+                    transactionViewRepository.getById(transactionId, language)
+                ],
+                { concurrency: 'unbounded' }
+            );
+
+            return {
+                sources: orderSourcesByTransferChain(rows),
+                consolidationType: canonical?.consolidationType ?? null
+            };
+        }).pipe(Effect.tapCause(Effect.logError))
+    )
+);
+
 export const useGetConsolidationSourcesQuery = (transactionId: number) => {
     const language = useSetting('language');
-    const [sources, setSources] = useState<ConsolidationSourceRowInterface[]>([]);
-    const [consolidationType, setConsolidationType] = useState<TransactionConsolidationTypeEnum | null>(null);
-    const [hasError, setHasError] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const result = useLiveAtomValue(consolidationSourcesAtom([transactionId, language]));
+    const data = AsyncResult.isSuccess(result) ? result.value : null;
 
-    useEffect(() => {
-        let isActive = true;
-
-        const handleError = (caughtError: unknown) => {
-            logger.error('failed', { transactionId, errorMessage: getErrorMessage(caughtError) });
-            if (isActive) {
-                setHasError(true);
-                setSources([]);
-                setIsLoading(false);
-            }
-        };
-
-        const fetchData = async (): Promise<void> => {
-            const [rows, canonical] = await Promise.all([
-                transactionRepository.findConsolidationSources(transactionId, language),
-                transactionRepository.getById(transactionId, language)
-            ]);
-            if (isActive) {
-                setSources(orderSourcesByTransferChain(rows));
-                setConsolidationType(isDefined(canonical) ? canonical.consolidationType : null);
-                setHasError(false);
-                setIsLoading(false);
-            }
-        };
-
-        void fetchData().catch(handleError);
-
-        return () => {
-            isActive = false;
-        };
-    }, [transactionId, language]);
-
-    return { sources, consolidationType, hasError, isLoading };
+    return {
+        sources: data?.sources ?? [],
+        consolidationType: data?.consolidationType ?? null,
+        hasError: AsyncResult.isFailure(result),
+        isLoading: result.waiting
+    };
 };

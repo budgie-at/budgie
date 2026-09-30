@@ -1,6 +1,6 @@
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
-import { entryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
-import { transactionService } from '@app/transaction/service/transaction.service';
+import { EntryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
+import { TransactionService } from '@app/transaction/service/transaction.service';
 import {
     AccountTypeEnum,
     CurrencyEnum,
@@ -11,10 +11,11 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it, vi } from '@effect/vitest';
 import { BetterSQLiteSession } from 'drizzle-orm/better-sqlite3/session';
-import { describe, expect, it, vi } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { requireInstrument, seed, testDb } from '../../harness';
+import { requireInstrument, seed, testDb, TestLayer } from '../../harness';
 
 const TRANSACTION_COUNT = 200;
 const DISTINCT_DAY_COUNT = 20;
@@ -47,40 +48,44 @@ const buildExpenseInput = (accountId: number, index: number) => ({
 });
 
 describe('batch entry valuation', () => {
-    it('values a 200-row import with a constant number of lookups and per-entry identical results', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
-        const account = seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: hryvnia.id });
-        const inputs = Array.from({ length: TRANSACTION_COUNT }, (_, index) => buildExpenseInput(account.id, index));
+    it.effect('values a 200-row import with a constant number of lookups and per-entry identical results', () =>
+        Effect.gen(function* () {
+            const entryBaseValuationService = yield* EntryBaseValuationService;
+            const transactionService = yield* TransactionService;
+            const euro = yield* requireInstrument(CurrencyEnum.EUR);
+            const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
+            const account = seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: hryvnia.id });
+            const inputs = Array.from({ length: TRANSACTION_COUNT }, (_, index) => buildExpenseInput(account.id, index));
 
-        await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
+            testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
 
-        const prepareSpy = vi.spyOn(BetterSQLiteSession.prototype, 'prepareQuery');
+            const prepareSpy = vi.spyOn(BetterSQLiteSession.prototype, 'prepareQuery');
 
-        await transactionService.bulkCreate(inputs);
+            yield* transactionService.bulkCreate(inputs);
 
-        expect(prepareSpy.mock.calls.length).toBeLessThan(DISTINCT_DAY_COUNT + 20);
-        prepareSpy.mockRestore();
+            expect(prepareSpy.mock.calls.length).toBeLessThan(DISTINCT_DAY_COUNT + 20);
+            prepareSpy.mockRestore();
 
-        const entries = await testDb.select().from(TransactionEntryEntityTable);
-        const expected = await Promise.all(
-            inputs.map(input =>
-                entryBaseValuationService.valueMicroUnitEntry({
-                    accountId: account.id,
-                    amount: convertToMicroUnits(input.amount),
-                    operatedAt: input.operatedAt,
-                    externalSource: input.externalSource
-                })
-            )
-        );
+            const entries = testDb.select().from(TransactionEntryEntityTable).all();
+            const expected = yield* Effect.all(
+                inputs.map(input =>
+                    entryBaseValuationService.valueMicroUnitEntry({
+                        accountId: account.id,
+                        amount: convertToMicroUnits(input.amount),
+                        operatedAt: input.operatedAt,
+                        externalSource: input.externalSource
+                    })
+                )
+            );
 
-        expect(
-            entries.map(({ externalId, baseInstrumentId, baseExchangeRate, baseAmount }) => ({
-                externalId,
-                baseInstrumentId,
-                baseExchangeRate,
-                baseAmount
-            }))
-        ).toStrictEqual(inputs.map((input, index) => ({ externalId: input.externalId, ...expected[index] })));
-    });
+            expect(
+                entries.map(({ externalId, baseInstrumentId, baseExchangeRate, baseAmount }) => ({
+                    externalId,
+                    baseInstrumentId,
+                    baseExchangeRate,
+                    baseAmount
+                }))
+            ).toStrictEqual(inputs.map((input, index) => ({ externalId: input.externalId, ...expected[index] })));
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

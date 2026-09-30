@@ -1,8 +1,11 @@
-import { microPause } from '@app/@generic/utils/micro-pause.util';
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { afterEach, describe, expect, it, vi } from '@effect/vitest';
+import * as Clock from 'effect/Clock';
+import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import { HttpResponse, http } from 'msw';
-import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { TestLayer } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -20,45 +23,54 @@ enum SyncRunResultEnum {
 describe('monobank/forward-sync-run-boundary', () => {
     afterEach(() => {
         vi.useRealTimers();
-        vi.mocked(microPause).mockImplementation((): Promise<void> => Promise.resolve());
     });
 
-    it('does not select the same forward sync again during one sync run', async () => {
-        vi.useFakeTimers();
-        vi.setSystemTime(syncStartedAt);
+    it.effect('does not select the same forward sync again during one sync run', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            vi.useFakeTimers({ toFake: ['Date'] });
+            vi.setSystemTime(syncStartedAt);
 
-        const externalIds = ['mono-acc-1', 'mono-acc-2', 'mono-acc-3'];
-        const requestedAccountIds: string[] = [];
-        let shouldStopSync = false;
+            const externalIds = ['mono-acc-1', 'mono-acc-2', 'mono-acc-3'];
+            const requestedAccountIds: string[] = [];
+            let shouldStopSync = false;
 
-        seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
+            seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
 
-        vi.mocked(microPause).mockImplementation(async (): Promise<void> => {
-            if (shouldStopSync) {
-                throw new Error('duplicate forward sync selected');
-            }
-
-            vi.setSystemTime(new Date(Date.now() + oneMinuteMs));
-        });
-
-        mockServer.use(
-            http.get(statementEndpoint, ({ params }) => {
-                requestedAccountIds.push(String(params[statementAccountParam]));
-                if (requestedAccountIds.length > externalIds.length) {
-                    shouldStopSync = true;
+            const advanceClockOneMinute = Effect.suspend(() => {
+                if (shouldStopSync) {
+                    return Effect.die(new Error('duplicate forward sync selected'));
                 }
 
-                return HttpResponse.json([]);
-            })
-        );
+                return Effect.sync(() => {
+                    vi.setSystemTime(new Date(Date.now() + oneMinuteMs));
+                });
+            });
 
-        const syncRun = monobankSyncService.sync().then(
-            () => SyncRunResultEnum.COMPLETED,
-            () => SyncRunResultEnum.STOPPED
-        );
-        const result = await syncRun;
+            mockServer.use(
+                http.get(statementEndpoint, ({ params }) => {
+                    requestedAccountIds.push(String(params[statementAccountParam]));
+                    if (requestedAccountIds.length > externalIds.length) {
+                        shouldStopSync = true;
+                    }
 
-        expect(result).toBe(SyncRunResultEnum.COMPLETED);
-        expect(requestedAccountIds).toEqual(externalIds);
-    });
+                    return HttpResponse.json([]);
+                })
+            );
+
+            const exit = yield* Effect.exit(
+                Effect.clockWith(clock =>
+                    monobankSyncService
+                        .sync()
+                        .pipe(
+                            Effect.provideService(Clock.Clock, Object.assign(Object.create(clock), { sleep: () => advanceClockOneMinute }))
+                        )
+                )
+            );
+            const result = Exit.isSuccess(exit) ? SyncRunResultEnum.COMPLETED : SyncRunResultEnum.STOPPED;
+
+            expect(result).toBe(SyncRunResultEnum.COMPLETED);
+            expect(requestedAccountIds).toEqual(externalIds);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

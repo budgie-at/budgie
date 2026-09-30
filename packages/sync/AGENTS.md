@@ -19,23 +19,23 @@ src/
 ├── index.ts                  # Public exports
 ├── core/                     # Shared infrastructure
 │   ├── client/
-│   │   └── base-sync-provider.client.ts    # ky transport for SDK-less providers
+│   │   └── base-sync-provider.client.ts    # effect/http transport for SDK-less providers
+│   ├── constant/
+│   │   └── sync-retry-status-codes.constant.ts
 │   ├── enum/
 │   │   ├── sync-account-type.enum.ts
 │   │   ├── sync-provider.enum.ts
-│   │   ├── sync-error-code.enum.ts
 │   │   ├── sync-transaction-type.enum.ts
 │   │   └── cashback-type.enum.ts
 │   ├── error/
-│   │   └── sync.error.ts                   # Error class with factory methods
+│   │   └── sync-*.error.ts                 # Schema.TaggedError classes
 │   ├── interface/
 │   │   ├── sync-account.interface.ts
-│   │   ├── sync-client-info.interface.ts
+│   │   ├── sync-error.type.ts              # SyncError union
 │   │   ├── sync-provider-client.interface.ts
-│   │   ├── sync-result.type.ts
 │   │   └── sync-transaction.interface.ts
 │   └── service/
-│       └── base-sync.service.ts            # Abstract sync service
+│       └── base-sync.service.ts            # Window pagination
 └── monobank/                 # Monobank implementation (wire types come from the SDK)
     ├── client/
     │   └── monobank.client.ts
@@ -79,10 +79,12 @@ For any provider that parses raw input (PDF, XLSX, etc.) into transactions, orga
 
 **Class shapes:**
 
-- **`<Provider>Parser`** — main entry. `@Log` on `parse()`. Holds per-call mutable state internally. Calls smaller classes for sub-steps.
-- **`<Provider>AccountInfoExtractor`** — single coherent unit (find IBAN, dates, balances). `@Log` on `extract()`. Private finders inside.
-- **`<Provider>RowGrouper`** (or analog) — groups raw items into provider-specific row shape. `@Log` on `group()`. Private comparator inside.
-- **`<Provider>ParserState`, `<Provider>TransactionAccumulator`, `<Provider>RowBucket`** — small mutable state classes used internally by the entry classes. No `@Log` (called many times per parse).
+- **`<Provider>Parser`** — main entry. Holds per-call mutable state internally. Calls smaller classes for sub-steps.
+- **`<Provider>AccountInfoExtractor`** — single coherent unit (find IBAN, dates, balances). Private finders inside.
+- **`<Provider>RowGrouper`** (or analog) — groups raw items into provider-specific row shape. Private comparator inside.
+- **`<Provider>ParserState`, `<Provider>TransactionAccumulator`, `<Provider>RowBucket`** — small mutable state classes used internally by the entry classes.
+
+Parsers, extractors, groupers and mappers stay pure synchronous TypeScript. The file client wraps the parse in `Effect.try` and fails with `SyncInvalidResponseError`, so a parser may `throw new Error(message)` internally.
 
 Export each class via a singleton (`export const ersteParser = new ErsteParser()`). Don't export the class itself unless typing demands it. No thin `parse-<provider>-items.util.ts` wrapper.
 
@@ -112,197 +114,59 @@ export const ersteMapper = new ErsteMapper();
 
 ## Provider Clients
 
-Every provider client satisfies `SyncProviderClientInterface`. How it talks to the
-network depends on whether a maintained SDK exists:
+Every client method is an `Effect.fn` field returning `Effect<A, SyncError, R>`.
+Callers run it through the app runtime, which provides `HttpClient` via `FetchHttpClient.layer`.
 
-- **Monobank** delegates every request to `@liaugust/monobank-sdk`, which supplies
-  the fetch transport, runtime response validation, and typed error classes. It
-  implements the interface directly and holds the SDK client as a private field.
-- **Binance** has no usable SDK, so `BinanceSignedClient` extends
-  `BaseSyncProviderClient` — the shared ky transport in `core/client/` that owns
-  retry policy, timeout, HMAC-safe request logging, and `SyncError` mapping.
+- **Monobank** delegates every request to `@liaugust/monobank-sdk` (its own retry config
+  is kept) and wraps each call in `Effect.tryPromise`, mapping SDK errors to `SyncError`.
+  `MonobankClient` implements `SyncProviderClientInterface`; `MonobankSyncService` takes it as a constructor argument.
+- **Binance** has no usable SDK, so `BinanceSignedClient` extends `BaseSyncProviderClient`,
+  the `effect/http` transport in `core/client/`. It owns `Schedule` retry (3 retries, exponential
+  from 300 ms, statuses in `retryStatusCodes`, methods in `retryMethods`), a 30 s `Effect.timeout`,
+  a response tap for rate-limit headers (`onResponseHeaders`) and the mapping to `SyncError`.
+  Responses decode with an Effect `Schema` passed to `fetchJson(schema, endpoint, method)`.
 - **Erste** and **Privatbank** are file-based (PDF/XLSX) and make no HTTP calls.
+  `ErsteFileClient.parse(items)` and `parsePrivatbankXlsx(buffer)` are Effects failing with
+  `SyncInvalidResponseError`; `new PrivatbankFileClient(rows)` takes the parsed rows.
 
-Prefer a maintained SDK for a new HTTP-backed provider. Absent one, extend
-`BaseSyncProviderClient` instead of hand-rolling another transport:
+Prefer a maintained SDK for a new HTTP-backed provider. Absent one, extend `BaseSyncProviderClient`
+and supply `provider`, `baseUrl` and `headers`.
 
-```typescript
-export abstract class BaseSyncProviderClient implements SyncProviderClientInterface {
-    protected abstract readonly provider: SyncProviderEnum;
-    protected abstract readonly baseUrl: string;
+### Errors
 
-    protected async fetchJson<T>(endpoint: string, options?: RequestInit): Promise<SyncResultInterface<T>> {
-        // ky call with retry/timeout, then error mapping to SyncError
-    }
+One tagged union, `SyncError`, of `Schema.TaggedError` classes in `core/error/`. Every error carries
+`provider` and `message`. Branch with `Effect.catchTag` or on `error._tag`.
 
-    protected abstract getDefaultHeaders(): Record<string, string>;
-}
-```
+| Error                      | Source                                                        | Extra fields |
+| -------------------------- | ------------------------------------------------------------- | ------------ |
+| `SyncUnauthorizedError`    | HTTP 401/403, Monobank 401                                    |              |
+| `SyncRateLimitedError`     | HTTP 429                                                      |              |
+| `SyncDeferredError`        | Binance run deadline reached or weight cool-down past it      |              |
+| `SyncNetworkError`         | transport failure, timeout, other HTTP statuses               |              |
+| `SyncInvalidResponseError` | HTTP 400, schema decode failure, unparsable file, bad account | `apiCode?`   |
 
-### Error Handling
+`SyncInvalidResponseError` is meaningful: `BaseSyncService` treats it as an empty batch rather than a
+sync failure, and Binance treats `apiCode -1121` (unknown symbol) as an empty trade page.
 
-All API calls return `SyncResultInterface<T>`:
-
-```typescript
-interface SyncResultInterface<T> {
-    success: boolean;
-    data?: T;
-    error?: SyncError;
-}
-
-// Usage
-const result = await client.getAccounts(token);
-if (!result.success) {
-    // Handle result.error
-    return;
-}
-// Use result.data
-```
-
-## SyncError
-
-### Error Codes
-
-```typescript
-enum SyncErrorCodeEnum {
-    UNAUTHORIZED = 'UNAUTHORIZED',
-    RATE_LIMITED = 'RATE_LIMITED',
-    NETWORK_ERROR = 'NETWORK_ERROR',
-    INVALID_TOKEN = 'INVALID_TOKEN',
-    TOKEN_EXPIRED = 'TOKEN_EXPIRED',
-    ACCOUNT_NOT_FOUND = 'ACCOUNT_NOT_FOUND',
-    INVALID_RESPONSE = 'INVALID_RESPONSE',
-    UNSUPPORTED_OPERATION = 'UNSUPPORTED_OPERATION',
-    UNKNOWN = 'UNKNOWN'
-}
-```
-
-### Factory Methods
-
-Use static factory methods to create errors:
-
-```typescript
-// Creating errors
-throw SyncError.unauthorized('Invalid token');
-throw SyncError.rateLimited('Too many requests');
-throw SyncError.networkError('Connection timeout');
-throw SyncError.invalidResponse('Unexpected API response');
-
-// Translating monobank-sdk exceptions at the client boundary
-try {
-    return await this.personalClient.client.getInfo();
-} catch (error) {
-    if (error instanceof MonobankApiError) {
-        // branch on error.status
-    }
-    if (error instanceof MonobankNetworkError) {
-        return { success: false, error: SyncError.networkError(provider, error) };
-    }
-    // ...
-}
-```
-
-### Error Mapping
-
-`@liaugust/monobank-sdk` throws instead of returning results, so `MonobankClient`
-converts each SDK error class into a `SyncError`:
-
-| SDK error                         | Condition                        | Error Code       |
-| --------------------------------- | -------------------------------- | ---------------- |
-| `MonobankApiError`                | status 401                       | UNAUTHORIZED     |
-| `MonobankApiError`                | status 429                       | RATE_LIMITED     |
-| `MonobankApiError`                | status 400                       | INVALID_RESPONSE |
-| `MonobankApiError`                | any other status                 | UNKNOWN          |
-| `MonobankNetworkError`            | fetch failure, timeout, abort    | NETWORK_ERROR    |
-| `MonobankResponseValidationError` | payload failed schema validation | INVALID_RESPONSE |
-| `MonobankValidationError`         | bad input caught before fetch    | UNKNOWN          |
-
-`INVALID_RESPONSE` is meaningful: `BaseSyncService.fetchTransactions` treats it
-as an empty batch rather than a sync failure.
-
-Retry is scoped to `[408, 500, 502, 503, 504]` via the SDK's `retryableStatusCodes`,
-restoring the status list the previous ky client used. `429` is deliberately excluded:
-Monobank documents these endpoints at one request per 60 seconds, so a rate-limited
-response means the minute's quota is already spent and a short backoff only spends
-more of it. `RATE_LIMITED` is surfaced immediately and the app's own pacing handles it.
-`retry-policy.test.ts` pins both halves of that behaviour.
+Monobank retry stays in the SDK, scoped to `SYNC_RETRY_STATUS_CODES` (`[408, 500, 502, 503, 504]`).
+`429` is deliberately excluded: Monobank documents these endpoints at one request per 60 seconds, so a
+rate-limited response means the minute's quota is already spent. `retry-policy.test.ts` pins this.
 
 ## Base Sync Service
 
-### Abstract Class
+`BaseSyncService(client, options)` pages a `SyncProviderClientInterface` in windows of
+`options.maxPeriodSeconds`:
 
-Extend for provider-specific sync logic:
+- `syncTransactionsForward(accountId, from)` fetches new transactions from the last sync date.
+- `syncTransactionsBackward(accountId, to, firstEmptyFromInStreak, limitAt)` walks history backward until
+  the history limit or the dormancy boundary.
 
-```typescript
-export abstract class BaseSyncService<TClient extends SyncProviderClientInterface> {
-    constructor(protected readonly client: TClient) {}
-
-    async syncAccounts(token: string): Promise<SyncResultInterface<SyncAccountInterface[]>> {
-        const result = await this.client.getAccounts(token);
-        if (!result.success) return result;
-        return { success: true, data: result.data };
-    }
-
-    async syncTransactionsForward(
-        token: string,
-        accountId: string,
-        fromDate: Date
-    ): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        // Forward pagination logic
-    }
-
-    async syncTransactionsBackward(
-        token: string,
-        accountId: string,
-        toDate: Date
-    ): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        // Backward pagination logic
-    }
-}
-```
-
-### Pagination
-
-Handles both forward and backward sync:
-
-- **Forward**: Fetch new transactions from last sync date
-- **Backward**: Fetch historical transactions before first known
-
-```typescript
-// Forward sync (new transactions)
-const result = await syncService.syncTransactionsForward(token, accountId, lastSyncDate);
-
-// Backward sync (historical)
-const result = await syncService.syncTransactionsBackward(token, accountId, earliestKnownDate);
-```
+Both return `Effect<SyncBatchResultInterface, SyncError>`.
 
 ## Monobank Implementation
 
-### Client
-
-Wraps `MonobankPersonalClient` from `@liaugust/monobank-sdk` and translates its
-exceptions into `SyncResultInterface`. Client-info is fetched once and cached
-per instance, since accounts and jars both read from it.
-
-```typescript
-export class MonobankClient implements SyncProviderClientInterface {
-    private readonly personalClient: MonobankPersonalClient;
-
-    constructor(token: string) {
-        this.personalClient = new MonobankPersonalClient({ timeoutMs: MonobankClient.TIMEOUT_MS, token });
-    }
-
-    async getTransactions(accountId: string, from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        try {
-            const statements = await this.personalClient.statements.get({ account: accountId, from, to: to ?? getUnixTime(new Date()) });
-
-            return { success: true, data: statements.map(statement => monobankTransactionMapper(statement, accountId)) };
-        } catch (error) {
-            return this.toFailure(error);
-        }
-    }
-}
-```
+`MonobankClient(token)` holds a `MonobankPersonalClient` and caches client-info per instance, since
+accounts and jars both read from it. Methods: `getAccounts()`, `getJars()`, `getTransactions(accountId, from, to?)`.
 
 ### Constants
 
@@ -393,9 +257,8 @@ interface SyncTransactionInterface {
 
 ```typescript
 interface SyncProviderClientInterface {
-    getClientInfo(): Promise<SyncResultInterface<SyncClientInfoInterface>>;
-    getAccounts(): Promise<SyncResultInterface<SyncAccountInterface[]>>;
-    getTransactions(accountId: string, from: number, to?: number): Promise<SyncResultInterface<SyncTransactionInterface[]>>;
+    getAccounts(): Effect.Effect<SyncAccountInterface[], SyncError>;
+    getTransactions(accountId: string, from: number, to?: number): Effect.Effect<SyncTransactionInterface[], SyncError>;
 }
 ```
 
@@ -422,31 +285,9 @@ src/
 
 ### 2. Implement Client
 
-Satisfy `SyncProviderClientInterface`. With an SDK, implement the interface
-directly and hold the SDK client as a private field; without one, extend
-`BaseSyncProviderClient` and supply the provider's headers:
-
-```typescript
-export class NewProviderClient implements SyncProviderClientInterface {
-    private readonly providerClient: NewProviderSdkClient;
-
-    constructor(token: string) {
-        this.providerClient = new NewProviderSdkClient({ token, timeoutMs: 30_000 });
-    }
-
-    async getClientInfo(): Promise<SyncResultInterface<SyncClientInfoInterface>> {
-        // Provider-specific implementation
-    }
-
-    async getAccounts(): Promise<SyncResultInterface<SyncAccountInterface[]>> {
-        // Provider-specific implementation
-    }
-
-    async getTransactions(...): Promise<SyncResultInterface<SyncTransactionInterface[]>> {
-        // Provider-specific implementation
-    }
-}
-```
+Satisfy `SyncProviderClientInterface` with `Effect.fn` fields. With an SDK, hold the SDK client as a
+private field and wrap its calls in `Effect.tryPromise`, mapping failures to `SyncError`; without one,
+extend `BaseSyncProviderClient`.
 
 ### 3. Create Mappers
 
@@ -494,6 +335,8 @@ Fixtures come from `buildMonobank` in the harness and are typed as SDK types.
 | `date-fns`               | Date manipulation                                        |
 | `xlsx`                   | Privatbank statement parsing                             |
 | `@rnw-community/shared`  | Type guards                                              |
+| `effect`                 | Effects, `effect/http` transport, Schema, tagged errors  |
+| `@noble/hashes`          | Binance HMAC signing                                     |
 
 ## Export Configuration
 
