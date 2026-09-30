@@ -21,6 +21,7 @@ import { TransferToAccountCreateActionContext } from '../transaction/context/tra
 import { TransactionTransferService } from '../transaction/service/transaction-transfer.service';
 import { buildTransferEntries } from '../transaction/utils/build-transfer-entries.util';
 import { createTransactionInput } from '../transaction/utils/create-transaction-input.util';
+import { getTransactionFeeEntries } from '../transaction/utils/get-transaction-fee-entries.util';
 
 import { ConvertToTransferModalSelector } from './convert-to-transfer-modal.selector';
 
@@ -113,7 +114,12 @@ export default function ConvertToTransferModal() {
             const formValues = form.getValues();
             const selectedAccountId = isExpense ? (formValues.toAccountId ?? 0) : (formValues.fromAccountId ?? 0);
             const customRate = formValues.exchangeRate === 1 ? 0 : formValues.exchangeRate;
-            const convertParams = { id: transactionId, accountId: selectedAccountId, customExchangeRate: customRate };
+            const convertParams = {
+                id: transactionId,
+                accountId: selectedAccountId,
+                customExchangeRate: customRate,
+                feeEntries: getTransactionFeeEntries(formValues.entries)
+            };
 
             await appRuntime.runPromise(
                 Effect.flatMap(TransactionTransferService, transactionTransferService =>

@@ -121,7 +121,8 @@ describe('transfers involving a debt account', () => {
                 transactionTransferService.convertExpenseToTransfer({
                     id: transaction.id,
                     accountId: debtAccount.id,
-                    customExchangeRate: 0
+                    customExchangeRate: 0,
+                    feeEntries: []
                 })
             );
 
@@ -154,7 +155,8 @@ describe('transfers involving a debt account', () => {
             yield* transactionTransferService.convertExpenseToTransfer({
                 id: transaction.id,
                 accountId: depositAccount.id,
-                customExchangeRate: 0
+                customExchangeRate: 0,
+                feeEntries: []
             });
 
             expect(

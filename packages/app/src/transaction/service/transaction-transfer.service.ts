@@ -16,7 +16,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
 import { DepositNegativeBalanceError } from '../../account/error/deposit-negative-balance.error';
@@ -33,6 +33,7 @@ import { buildTransferEntries } from '../utils/build-transfer-entries.util';
 import { createTransactionInput } from '../utils/create-transaction-input.util';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 import { getTransactionFeeEntries } from '../utils/get-transaction-fee-entries.util';
+import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 
 import { TransferCreationService } from './transfer-creation.service';
 
@@ -174,6 +175,32 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             } satisfies TransferConversionResultInterface;
         });
 
+        const buildConversionFeeEntries = Effect.fnUntraced(function* (
+            params: ConvertToTransferParamsInterface,
+            conversion: TransferConversionResultInterface
+        ) {
+            if (isNotEmptyArray(params.feeEntries)) {
+                const feeEntries = params.feeEntries.map(entry => ({ ...entry, accountId: conversion.creditAccountId }));
+                const feeValuations = yield* entryBaseValuationService.valueEntries(feeEntries, conversion.operatedAt);
+
+                return feeEntries.map(entry => transactionMapEntryInputToCreateEntity(entry, params.id, feeValuations.get(entry)));
+            }
+
+            return yield* Effect.forEach(
+                conversion.feeEntries,
+                entry =>
+                    entryBaseValuationService
+                        .valueMicroUnitEntry({
+                            accountId: entry.accountId,
+                            amount: entry.amount,
+                            operatedAt: conversion.operatedAt,
+                            externalSource: null
+                        })
+                        .pipe(Effect.map(valuation => buildFeeEntryCreateEntity(params.id, entry, valuation))),
+                { concurrency: 'unbounded' }
+            );
+        });
+
         const convertToTransfer = Effect.fnUntraced(
             function* (params: ConvertToTransferParamsInterface, direction: 'expense' | 'income') {
                 const conversion = yield* buildTransferConversion(direction, params);
@@ -202,17 +229,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                     ],
                     { concurrency: 'unbounded' }
                 );
-                const feeValuations = yield* Effect.forEach(
-                    conversion.feeEntries,
-                    entry =>
-                        entryBaseValuationService.valueMicroUnitEntry({
-                            accountId: entry.accountId,
-                            amount: entry.amount,
-                            operatedAt: conversion.operatedAt,
-                            externalSource: null
-                        }),
-                    { concurrency: 'unbounded' }
-                );
+                const feeEntries = yield* buildConversionFeeEntries(params, conversion);
 
                 yield* debtEventRepository.deleteByTransactionId(params.id);
                 yield* transactionEntryRepository.deleteByTransactionId(params.id);
@@ -231,13 +248,13 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                         amount: conversion.debitAmount,
                         valuation: debitValuation
                     }),
-                    ...conversion.feeEntries.map((entry, index) => buildFeeEntryCreateEntity(params.id, entry, feeValuations[index]))
+                    ...feeEntries
                 ]);
 
                 yield* accountBalanceIncrementalService.updateBalancesByAccountIds([
                     conversion.creditAccountId,
                     conversion.debitAccountId,
-                    ...conversion.feeEntries.map(entry => entry.accountId),
+                    ...feeEntries.map(entry => entry.accountId),
                     ...(isDefined(debtEvent) ? [debtEvent.debtAccountId] : [])
                 ]);
 

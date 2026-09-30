@@ -29,7 +29,7 @@ export const useContacts = () => {
     const { t } = useLingui();
 
     useEffect(() => {
-        appRuntime.runFork(
+        const fiber = appRuntime.runFork(
             Effect.gen(function* () {
                 setState(prev => ({ ...prev, loading: true, error: null }));
                 const { status } = yield* Effect.tryPromise(() => Contacts.requestPermissionsAsync());
@@ -53,6 +53,8 @@ export const useContacts = () => {
                 })
             )
         );
+
+        return () => void fiber.interruptUnsafe();
     }, [t]);
 
     useEffect(() => {
