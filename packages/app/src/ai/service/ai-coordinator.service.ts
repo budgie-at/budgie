@@ -11,9 +11,9 @@ import { AppState } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { Workload } from '../../@generic/service/workload.service';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
-import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
 import { aiCoordinatorSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { EmbeddingProgressStore } from '../store/embedding-progress.store';
 import { TranslationProgressStore } from '../store/translation-progress.store';
@@ -42,7 +42,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
         const drainers = [translationDrainerService, ...embeddingDrainerService.drainers];
         let activeScope: Scope.Closeable | null = null;
 
-        const isActive = (): boolean => isDefined(activeScope) && !aiAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended;
+        const isActive = (): boolean => isDefined(activeScope) && !appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended;
 
         const startSubsystemsWhenIdle = Effect.fn('AiCoordinatorService.startSubsystemsWhenIdle')(function* () {
             yield* waitForIdle;
@@ -97,7 +97,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
             }
             yield* FiberHandle.clear(releaseTimer);
             yield* Effect.forEach(drainers, drainer => drainer.schedule(), { discard: true });
-            if (aiAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended) {
+            if (appAtomRegistry.get(aiCoordinatorSnapshotAtom).isSuspended) {
                 patchAtom(aiCoordinatorSnapshotAtom, { isSuspended: false });
                 yield* startSubsystemsWhenIdle();
             }
@@ -105,7 +105,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
 
         return {
             start: Effect.fn('AiCoordinatorService.start')(function* () {
-                if (isDefined(activeScope) || !aiAtomRegistry.get(aiCoordinatorSnapshotAtom).isAvailable) {
+                if (isDefined(activeScope) || !appAtomRegistry.get(aiCoordinatorSnapshotAtom).isAvailable) {
                     return;
                 }
                 const scope = Scope.makeUnsafe();

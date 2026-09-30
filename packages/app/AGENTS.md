@@ -586,7 +586,7 @@ Toast.show({
 
 ## Provider Architecture
 
-Root layout has 14 nested providers in this order (settings are not a provider: `useSettingsContext` reads `settingsContextAtom`, so screens frozen by `react-native-screens` still see setting changes on reveal):
+Root layout has 14 nested providers in this order (settings are not a provider: `useSettingsContext` reads `settingsContextAtom`, so screens frozen by `react-native-screens` still see setting changes on reveal). The outermost element is `RegistryContext.Provider` with `appAtomRegistry` (`@generic/constant/app-atom-registry.constant.ts`): the whole tree and the services that write atoms share one registry. Never provide a second registry for a subtree, because every atom read inside it gets its own node and starts from `Initial` again:
 
 1. SafeAreaProvider
 2. SQLiteProvider

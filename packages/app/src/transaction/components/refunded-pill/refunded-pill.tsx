@@ -1,10 +1,10 @@
 import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -27,7 +27,7 @@ export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
     const language = useSetting('language');
     const formatDigits = useFormatDigits(decimalPlaces);
     const isRefund = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
-    const result = useAtomValue(refundsTotalAtom([isRefund ? transaction.id : null, language]));
+    const result = useLiveAtomValue(refundsTotalAtom([isRefund ? transaction.id : null, language]));
     const refundsTotal = AsyncResult.isSuccess(result) ? result.value : null;
 
     const summary = isRefund && isDefined(refundsTotal) ? computeRefundedSummary(transaction, refundsTotal) : null;
