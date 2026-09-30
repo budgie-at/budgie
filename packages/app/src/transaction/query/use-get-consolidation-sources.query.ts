@@ -1,13 +1,14 @@
 import { TransactionConsolidationRepository, TransactionEntryTypeEnum, TransactionViewRepository } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 import { useSetting } from '../../settings/hook/use-setting.hook';
+import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
 
 import type { ConsolidationSourceRowInterface, LanguageEnum } from '@budgie/contracts';
 
@@ -32,7 +33,8 @@ const orderSourcesByTransferChain = (rows: ConsolidationSourceRowInterface[]): C
 };
 
 const consolidationSourcesAtom = Atom.family(([transactionId, language]: readonly [number, LanguageEnum]) =>
-    appAtomRuntime.atom(
+    databaseQueryAtom(
+        TRANSACTION_LIST_TABLES,
         Effect.gen(function* () {
             const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
             const transactionViewRepository = yield* TransactionViewRepository;
@@ -54,7 +56,7 @@ const consolidationSourcesAtom = Atom.family(([transactionId, language]: readonl
 
 export const useGetConsolidationSourcesQuery = (transactionId: number) => {
     const language = useSetting('language');
-    const result = useAtomValue(consolidationSourcesAtom([transactionId, language]));
+    const result = useLiveAtomValue(consolidationSourcesAtom([transactionId, language]));
     const data = AsyncResult.isSuccess(result) ? result.value : null;
 
     return {

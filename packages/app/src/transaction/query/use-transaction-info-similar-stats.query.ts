@@ -1,12 +1,13 @@
 import { TransactionViewRepository, TransactionTypeEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
+import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import type {
@@ -88,7 +89,8 @@ const fillSimilarStatsMonths = (stats: SimilarTransactionStatsInterface, operate
 };
 
 const similarStatsAtom = Atom.family((query: SimilarTransactionStatsQueryInterface | null) =>
-    appAtomRuntime.atom(
+    databaseQueryAtom(
+        TRANSACTION_LIST_TABLES,
         isDefined(query)
             ? Effect.flatMap(TransactionViewRepository, transactionViewRepository =>
                   transactionViewRepository.findSimilarStats(query)
@@ -98,7 +100,7 @@ const similarStatsAtom = Atom.family((query: SimilarTransactionStatsQueryInterfa
 );
 
 export const useTransactionInfoSimilarStatsQuery = (transaction: TransactionWithRelationsEntityInterface) => {
-    const result = useAtomValue(similarStatsAtom(buildSimilarStatsQuery(transaction)));
+    const result = useLiveAtomValue(similarStatsAtom(buildSimilarStatsQuery(transaction)));
 
     return { stats: AsyncResult.isSuccess(result) ? result.value : null, isLoading: result.waiting };
 };

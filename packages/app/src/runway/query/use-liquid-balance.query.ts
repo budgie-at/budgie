@@ -1,29 +1,13 @@
-import {
-    AccountBalanceEntityTable,
-    AccountBalanceRepository,
-    AccountEntityTable,
-    DebtEventEntityTable,
-    ExchangeRateEntityTable,
-    HistoricalExchangeRateEntityTable,
-    TransactionEntityTable,
-    TransactionEntryEntityTable
-} from '@budgie/contracts';
+import { AccountBalanceRepository } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../../account/constant/account-balance-tables.constant';
 import { useSettingsContext } from '../../settings/context/settings.context';
 
 const liquidBalanceAtom = databaseQueryFamily(
-    [
-        AccountEntityTable,
-        AccountBalanceEntityTable,
-        TransactionEntityTable,
-        TransactionEntryEntityTable,
-        DebtEventEntityTable,
-        ExchangeRateEntityTable,
-        HistoricalExchangeRateEntityTable
-    ],
+    ACCOUNT_CONVERTED_BALANCE_TABLES,
     AccountBalanceRepository,
     (accountBalanceRepository, [defaultInstrumentId, isRunwayCryptoIncluded]: readonly [number, boolean]) =>
         accountBalanceRepository.getLiquidTotal(defaultInstrumentId, isRunwayCryptoIncluded)

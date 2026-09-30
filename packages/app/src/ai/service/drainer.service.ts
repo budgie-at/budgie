@@ -9,9 +9,9 @@ import { AppState } from 'react-native';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
-import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { DrainerConfigInterface } from '../interface/drainer-config.interface';
 import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interface';
@@ -235,7 +235,7 @@ export class DrainerService<E> {
     }
 
     private get state(): DrainerStateEnum {
-        return aiAtomRegistry.get(this.snapshot).state;
+        return appAtomRegistry.get(this.snapshot).state;
     }
 
     cancelBoost(): void {
@@ -260,7 +260,7 @@ export class DrainerService<E> {
     }
 
     private relaxedDelay(): number {
-        return aiAtomRegistry.get(this.snapshot).pending === 0 ? DrainerService.IDLE_INTERVAL_MS : this.config.relaxedIntervalMs;
+        return appAtomRegistry.get(this.snapshot).pending === 0 ? DrainerService.IDLE_INTERVAL_MS : this.config.relaxedIntervalMs;
     }
 
     private isBoosting(): boolean {

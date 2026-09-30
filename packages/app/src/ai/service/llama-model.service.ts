@@ -5,7 +5,7 @@ import * as Atom from 'effect/reactivity/Atom';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { LlamaConfigInterface } from '../interface/llama-config.interface';
@@ -53,7 +53,7 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
     );
 
     readonly stop = Effect.fn('LlamaModelService.stop')(function* (this: LlamaModelService) {
-        const { status } = aiAtomRegistry.get(this.snapshot);
+        const { status } = appAtomRegistry.get(this.snapshot);
         if (status === AiSubsystemStatusEnum.SUSPENDED || status === AiSubsystemStatusEnum.DISABLED) {
             return;
         }
@@ -70,7 +70,7 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
     }
 
     get isReady(): boolean {
-        return aiAtomRegistry.get(this.snapshot).status === AiSubsystemStatusEnum.READY;
+        return appAtomRegistry.get(this.snapshot).status === AiSubsystemStatusEnum.READY;
     }
 
     private releaseContext(): Effect.Effect<void, Cause.UnknownError> {

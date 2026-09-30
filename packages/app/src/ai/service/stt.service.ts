@@ -7,8 +7,8 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { ManualAudioStreamAdapter } from '../adapter/manual-audio-stream.adapter';
-import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
 import { sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { STT_BEAM_SIZE, STT_MAX_THREADS, STT_MAX_TRANSCRIPTION_LEN, STT_TEMPERATURE } from '../constant/stt-realtime-options.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
@@ -30,7 +30,7 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
         let audioStream: ManualAudioStreamAdapter | null = null;
         let streamLanguage: string | null = null;
 
-        const isReady = (): boolean => aiAtomRegistry.get(sttSnapshotAtom).status === AiSubsystemStatusEnum.READY;
+        const isReady = (): boolean => appAtomRegistry.get(sttSnapshotAtom).status === AiSubsystemStatusEnum.READY;
 
         const transcribe = Effect.fnUntraced(function* (stream: ManualAudioStreamAdapter) {
             const audioData = stream.getCapturedAudio();
@@ -70,7 +70,7 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
             function* (commitFinalText: boolean) {
                 const stream = audioStream;
                 if (!isDefined(stream)) {
-                    return commitFinalText ? aiAtomRegistry.get(sttSnapshotAtom).committedTranscription : '';
+                    return commitFinalText ? appAtomRegistry.get(sttSnapshotAtom).committedTranscription : '';
                 }
                 const finalText = commitFinalText ? yield* transcribe(stream) : '';
                 patchAtom(sttSnapshotAtom, { committedTranscription: finalText, nonCommittedTranscription: '' });
@@ -119,7 +119,7 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                     )
             ),
             stop: Effect.fn('SttService.stop')(function* () {
-                const { status } = aiAtomRegistry.get(sttSnapshotAtom);
+                const { status } = appAtomRegistry.get(sttSnapshotAtom);
                 if (status === AiSubsystemStatusEnum.SUSPENDED || status === AiSubsystemStatusEnum.DISABLED) {
                     return;
                 }

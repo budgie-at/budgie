@@ -1,7 +1,7 @@
 import * as Effect from 'effect/Effect';
 import * as Semaphore from 'effect/Semaphore';
 
-import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { ProgressSnapshotInterface } from '../interface/progress-snapshot.interface';
 
 import type { Db, DbError } from '@budgie/contracts';
@@ -18,7 +18,7 @@ export class ProgressStore {
             this.lastRefreshAt = Date.now();
             const [total, pending] = yield* this.countTotalAndPending;
             const percent = total === 0 ? ProgressStore.FULL_PERCENT : Math.round(((total - pending) / total) * ProgressStore.FULL_PERCENT);
-            aiAtomRegistry.set(this.snapshot, { percent, pending, total });
+            appAtomRegistry.set(this.snapshot, { percent, pending, total });
         },
         effect => this.lock.withPermit(Effect.ignore(effect))
     );

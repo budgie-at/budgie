@@ -5,8 +5,8 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
-import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
@@ -37,7 +37,7 @@ export class AiModelResidencyService extends Context.Service<AiModelResidencySer
         const getLeaseCount = (subsystem: AiSubsystemNameEnum): number => leases.get(subsystem) ?? 0;
 
         const getStatus = (subsystem: AiSubsystemNameEnum): AiSubsystemStatusEnum =>
-            aiAtomRegistry.get(subsystems[subsystem].snapshot).status;
+            appAtomRegistry.get(subsystems[subsystem].snapshot).status;
 
         const clearIdleTimer = (subsystem: AiSubsystemNameEnum): void => {
             idleTimers.get(subsystem)?.interruptUnsafe();

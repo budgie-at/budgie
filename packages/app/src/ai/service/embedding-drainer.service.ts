@@ -6,7 +6,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
-import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { commentEmbeddingDrainerSnapshotAtom, merchantEmbeddingDrainerSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
@@ -147,7 +147,7 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
             }),
             boost: Effect.fn('EmbeddingDrainerService.boost')(function* () {
                 yield* merchant.boost();
-                if (aiAtomRegistry.get(comment.snapshot).state !== DrainerStateEnum.PAUSED) {
+                if (appAtomRegistry.get(comment.snapshot).state !== DrainerStateEnum.PAUSED) {
                     yield* comment.boost();
                 }
             }),

@@ -4,9 +4,9 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useRef, useState } from 'react';
 
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useLocaleInfo } from '../../i18n/hook/use-locale-info.hook';
-import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
 import { sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { SttService } from '../service/stt.service';
@@ -49,7 +49,7 @@ export const useStt = (): UseSttReturn => {
         }
 
         await appRuntime.runPromise(Effect.ignore(Effect.flatMap(SttService, sttService => sttService.stopStream(false))));
-        setBaseTranscription(aiAtomRegistry.get(sttSnapshotAtom).committedTranscription);
+        setBaseTranscription(appAtomRegistry.get(sttSnapshotAtom).committedTranscription);
         const isStreaming = await appRuntime.runPromise(
             Effect.isSuccess(Effect.flatMap(SttService, sttService => sttService.streamStart(language)))
         );

@@ -4,7 +4,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { translationDrainerSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { TranslationProgressStore } from '../store/translation-progress.store';
@@ -59,7 +59,7 @@ export class TranslationDrainerService extends Context.Service<TranslationDraine
                     ),
                 countPending: Effect.map(
                     translationProgressStore.refresh(),
-                    () => aiAtomRegistry.get(translationProgressStore.snapshot).pending
+                    () => appAtomRegistry.get(translationProgressStore.snapshot).pending
                 ),
                 afterBatch: Effect.void
             },

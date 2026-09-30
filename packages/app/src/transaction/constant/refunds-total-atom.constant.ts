@@ -4,12 +4,15 @@ import * as Atom from 'effect/reactivity/Atom';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
+import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
+
+import { TRANSACTION_LIST_TABLES } from './transaction-list-tables.constant';
 
 import type { LanguageEnum } from '@budgie/contracts';
 
 export const refundsTotalAtom = Atom.family(([transactionId, language]: readonly [number | null, LanguageEnum]) =>
-    appAtomRuntime.atom(
+    databaseQueryAtom(
+        TRANSACTION_LIST_TABLES,
         isDefined(transactionId)
             ? Effect.flatMap(TransactionConsolidationRepository, transactionConsolidationRepository =>
                   transactionConsolidationRepository.findConsolidationSources(transactionId, language)

@@ -4,8 +4,8 @@ import { useEffect, useRef } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
 import { sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
@@ -26,7 +26,7 @@ export const useSttResidency = (): UseSttResidencyReturn => {
 
         return appRuntime.runPromise(
             Fiber.join(acquireFiberRef.current).pipe(
-                Effect.map(() => aiAtomRegistry.get(sttSnapshotAtom).status === AiSubsystemStatusEnum.READY)
+                Effect.map(() => appAtomRegistry.get(sttSnapshotAtom).status === AiSubsystemStatusEnum.READY)
             )
         );
     };
