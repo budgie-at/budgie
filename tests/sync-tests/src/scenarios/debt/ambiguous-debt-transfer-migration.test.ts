@@ -4,8 +4,11 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { buildTestDb } from '@budgie-at/test-kit';
+import { describe, expect, it } from '@effect/vitest';
 import Database from 'better-sqlite3';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
+
+import { TestLayer } from '../../harness';
 
 const scenarioDirectory = resolve(fileURLToPath(import.meta.url), '..');
 const preMigrationFixturePath = resolve(scenarioDirectory, '../../../fixtures/debt-migration/pre-0033.db');
@@ -51,44 +54,52 @@ const copyAmbiguousDebtTransferFixture = (temporaryDirectoryPath: string): strin
 };
 
 describe('ambiguous debt transfer migration', () => {
-    it('does not create duplicate transaction-backed events for one ambiguous legacy debt transaction', async () => {
-        const temporaryDirectoryPath = mkdtempSync(join(tmpdir(), 'budgie-ambiguous-debt-transfer-'));
-
-        try {
+    it.effect('does not create duplicate transaction-backed events for one ambiguous legacy debt transaction', () =>
+        Effect.gen(function* () {
+            const temporaryDirectoryPath = mkdtempSync(join(tmpdir(), 'budgie-ambiguous-debt-transfer-'));
+            yield* Effect.addFinalizer(() =>
+                Effect.sync(() => {
+                    rmSync(temporaryDirectoryPath, { recursive: true, force: true });
+                })
+            );
             const db = buildTestDb(copyAmbiguousDebtTransferFixture(temporaryDirectoryPath));
+            yield* Effect.addFinalizer(() => Effect.promise(() => db.$client.closeAsync()));
 
-            try {
-                expect(
-                    await db.$client.getAllAsync<{ id: number }>(
-                        'SELECT id FROM debt_events WHERE transaction_id = ? AND deleted_at IS NULL',
-                        [ambiguousDebtTransactionId]
-                    )
-                ).toHaveLength(0);
-                expect(
-                    await db.$client.getAllAsync<{ id: number }>(
+            expect(
+                yield* Effect.promise(() =>
+                    db.$client.getAllAsync<{ id: number }>('SELECT id FROM debt_events WHERE transaction_id = ? AND deleted_at IS NULL', [
+                        ambiguousDebtTransactionId
+                    ])
+                )
+            ).toHaveLength(0);
+            expect(
+                yield* Effect.promise(() =>
+                    db.$client.getAllAsync<{ id: number }>(
                         'SELECT id FROM debt_events WHERE debt_account_id IN (?, ?) AND transaction_id IS NULL AND source = ? AND direction = ? AND deleted_at IS NULL',
                         [ambiguousDebtAccountId, secondAmbiguousDebtAccountId, 'MANUAL', 'OPEN']
                     )
-                ).toHaveLength(2);
-                expect(
-                    await db.$client.getAllAsync<{ id: number }>('SELECT id FROM transactions WHERE id = ?', [ambiguousDebtTransactionId])
-                ).toHaveLength(1);
-                expect(
-                    await db.$client.getAllAsync<{ id: number }>('SELECT id FROM transaction_entries WHERE transaction_id = ?', [
+                )
+            ).toHaveLength(2);
+            expect(
+                yield* Effect.promise(() =>
+                    db.$client.getAllAsync<{ id: number }>('SELECT id FROM transactions WHERE id = ?', [ambiguousDebtTransactionId])
+                )
+            ).toHaveLength(1);
+            expect(
+                yield* Effect.promise(() =>
+                    db.$client.getAllAsync<{ id: number }>('SELECT id FROM transaction_entries WHERE transaction_id = ?', [
                         ambiguousDebtTransactionId
                     ])
-                ).toHaveLength(2);
-                expect(
-                    await db.$client.getAllAsync<{ targetBalance: number }>(
+                )
+            ).toHaveLength(2);
+            expect(
+                yield* Effect.promise(() =>
+                    db.$client.getAllAsync<{ targetBalance: number }>(
                         'SELECT target_balance AS targetBalance FROM accounts WHERE id IN (?, ?) ORDER BY id',
                         [ambiguousDebtAccountId, secondAmbiguousDebtAccountId]
                     )
-                ).toStrictEqual([{ targetBalance: 700_000_000 }, { targetBalance: 300_000_000 }]);
-            } finally {
-                await db.$client.closeAsync();
-            }
-        } finally {
-            rmSync(temporaryDirectoryPath, { recursive: true, force: true });
-        }
-    });
+                )
+            ).toStrictEqual([{ targetBalance: 700_000_000 }, { targetBalance: 300_000_000 }]);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

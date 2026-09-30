@@ -1,32 +1,33 @@
 import { PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { runRefundScenario } from '../harness/run-refund-scenario';
-import { testQueryService, runEffect } from '../harness/test-context';
+import { testQueryService, TestLayer } from '../harness/test-context';
 
-describe('consolidation/refund-pair-partial', () => {
-    it('moves the partial refund debit entry onto the expense canonical', async () => {
-        const { consolidated, expense, refunds } = await runEffect(
-            runRefundScenario({
+layer(TestLayer)('consolidation/refund-pair-partial', it => {
+    it.effect('moves the partial refund debit entry onto the expense canonical', () =>
+        Effect.gen(function* () {
+            const { consolidated, expense, refunds } = yield* runRefundScenario({
                 expenseAmount: 120 * PRECISION,
                 refundAmounts: [40 * PRECISION]
-            })
-        );
+            });
 
-        expect(consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            expect(consolidated).toBe(1);
+            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
-        const promotedEntries = testQueryService.fetchEntriesByTransactionId(expense.id);
+            const promotedEntries = testQueryService.fetchEntriesByTransactionId(expense.id);
 
-        expect(promotedEntries).toEqual(
-            expect.arrayContaining([
-                expect.objectContaining({ amount: 120 * PRECISION, type: TransactionEntryTypeEnum.CREDIT }),
-                expect.objectContaining({
-                    amount: 40 * PRECISION,
-                    originalTransactionId: refunds[0].id,
-                    type: TransactionEntryTypeEnum.DEBIT
-                })
-            ])
-        );
-    });
+            expect(promotedEntries).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({ amount: 120 * PRECISION, type: TransactionEntryTypeEnum.CREDIT }),
+                    expect.objectContaining({
+                        amount: 40 * PRECISION,
+                        originalTransactionId: refunds[0].id,
+                        type: TransactionEntryTypeEnum.DEBIT
+                    })
+                ])
+            );
+        })
+    );
 });

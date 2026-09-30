@@ -1,28 +1,29 @@
 import { PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { runRefundScenario } from '../harness/run-refund-scenario';
-import { testQueryService, runEffect } from '../harness/test-context';
+import { testQueryService, TestLayer } from '../harness/test-context';
 
-describe('consolidation/refund-pair-multiple-refunds', () => {
-    it('reparents multiple refund incomes under one promoted expense canonical', async () => {
-        const { consolidated, expense, refunds } = await runEffect(
-            runRefundScenario({
+layer(TestLayer)('consolidation/refund-pair-multiple-refunds', it => {
+    it.effect('reparents multiple refund incomes under one promoted expense canonical', () =>
+        Effect.gen(function* () {
+            const { consolidated, expense, refunds } = yield* runRefundScenario({
                 expenseAmount: 120 * PRECISION,
                 refundAmounts: [40 * PRECISION, 30 * PRECISION]
-            })
-        );
+            });
 
-        expect(consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            expect(consolidated).toBe(1);
+            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
-        for (const refund of refunds) {
-            expect(testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId).toBe(expense.id);
-        }
+            for (const refund of refunds) {
+                expect(testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId).toBe(expense.id);
+            }
 
-        const entries = testQueryService.fetchEntriesByTransactionId(expense.id);
-        const debits = entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
-        expect(debits).toHaveLength(2);
-        expect(debits.map(entry => entry.amount).sort((left, right) => left - right)).toEqual([30 * PRECISION, 40 * PRECISION]);
-    });
+            const entries = testQueryService.fetchEntriesByTransactionId(expense.id);
+            const debits = entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
+            expect(debits).toHaveLength(2);
+            expect(debits.map(entry => entry.amount).sort((left, right) => left - right)).toEqual([30 * PRECISION, 40 * PRECISION]);
+        })
+    );
 });

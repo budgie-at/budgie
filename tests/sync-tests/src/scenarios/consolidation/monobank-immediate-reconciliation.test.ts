@@ -1,21 +1,22 @@
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
 import * as Clock from 'effect/Clock';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
-import { describe, expect, it } from 'vitest';
+import * as Fiber from 'effect/Fiber';
 
-import { buildMonobank, fetchCanonicalsOfType, monobankStub, run, seed, setupMonobankFixture } from '../../harness';
+import { buildMonobank, fetchCanonicalsOfType, monobankStub, seed, setupMonobankFixture, TestLayer } from '../../harness';
 
 describe('consolidation/monobank-immediate-reconciliation', () => {
-    it('keeps a synced ATM withdrawal as a bank expense through immediate reconciliation and after sync', async () => {
-        const { account: bankAccount } = setupMonobankFixture();
-        seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
-        const rateLimitWaitEntered = Deferred.makeUnsafe<void>();
-        const releaseRateLimitWait = Deferred.makeUnsafe<void>();
-        let syncPromise: Promise<unknown> = Promise.resolve();
+    it.effect('keeps a synced ATM withdrawal as a bank expense through immediate reconciliation and after sync', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const { account: bankAccount } = setupMonobankFixture();
+            seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
+            const rateLimitWaitEntered = yield* Deferred.make<void>();
+            const releaseRateLimitWait = yield* Deferred.make<void>();
 
-        try {
             monobankStub.statement([
                 buildMonobank.transaction({
                     id: 'privacy-safe-atm-001',
@@ -28,7 +29,7 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                 })
             ]);
 
-            syncPromise = run(
+            const syncFiber = yield* Effect.forkChild(
                 Effect.clockWith(clock =>
                     monobankSyncService.sync().pipe(
                         Effect.provideService(
@@ -41,19 +42,23 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                     )
                 )
             );
-            await Promise.race([
-                run(Deferred.await(rateLimitWaitEntered)),
-                syncPromise.then(() => {
-                    throw new Error('Monobank sync completed before entering its rate-limit wait');
-                })
-            ]);
+
+            yield* Effect.raceFirst(
+                Deferred.await(rateLimitWaitEntered),
+                Fiber.join(syncFiber).pipe(
+                    Effect.andThen(Effect.die(new Error('Monobank sync completed before entering its rate-limit wait')))
+                )
+            ).pipe(
+                Effect.tap(() =>
+                    Effect.sync(() => {
+                        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+                    })
+                ),
+                Effect.ensuring(Deferred.succeed(releaseRateLimitWait, undefined))
+            );
+            yield* Fiber.join(syncFiber);
 
             expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
-        } finally {
-            Deferred.doneUnsafe(releaseRateLimitWait, Effect.void);
-            await syncPromise;
-        }
-
-        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
-    });
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

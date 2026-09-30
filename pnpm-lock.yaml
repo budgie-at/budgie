@@ -788,9 +788,6 @@ importers:
 
   tests/test-kit:
     dependencies:
-      '@budgie/consolidation':
-        specifier: workspace:*
-        version: link:../../packages/consolidation
       '@budgie/contracts':
         specifier: workspace:^
         version: link:../../packages/contracts

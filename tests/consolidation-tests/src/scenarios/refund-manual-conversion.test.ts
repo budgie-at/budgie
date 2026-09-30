@@ -1,15 +1,17 @@
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
+import { RefundConsolidationService } from '@budgie/consolidation';
 import { LanguageEnum, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { refundConsolidationService, testQueryService, testSeedService, TestLayer } from '../harness/test-context';
+import { seedRefundedExpenseOnCard } from '../harness/seed-refunded-expense-on-card';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 layer(TestLayer)('consolidation/refund-manual-conversion', it => {
     it.effect('manually converts when the income and expense already share a tag', () =>
         Effect.gen(function* () {
-            const { expense, refunds } = testSeedService.refundedExpense({
-                accountId: testSeedService.account({ externalId: 'mono-card' }).id,
+            const refundConsolidationService = yield* RefundConsolidationService;
+            const { expense, refunds } = seedRefundedExpenseOnCard('mono-card', {
                 expenseAmount: convertToMicroUnits(120),
                 refundAmounts: [convertToMicroUnits(40)]
             });
@@ -31,8 +33,8 @@ layer(TestLayer)('consolidation/refund-manual-conversion', it => {
 
     it.effect('finds refundable expenses only from refund income transactions', () =>
         Effect.gen(function* () {
-            const { expense, refunds } = testSeedService.refundedExpense({
-                accountId: testSeedService.account({ externalId: 'mono-card' }).id,
+            const refundConsolidationService = yield* RefundConsolidationService;
+            const { expense, refunds } = seedRefundedExpenseOnCard('mono-card', {
                 expenseAmount: convertToMicroUnits(120),
                 externalIdPrefix: 'manual-refund',
                 refundAmounts: [convertToMicroUnits(40)],
@@ -50,8 +52,8 @@ layer(TestLayer)('consolidation/refund-manual-conversion', it => {
 
     it.effect('rejects a sequential refund that exceeds the remaining expense amount', () =>
         Effect.gen(function* () {
-            const { expense, refunds } = testSeedService.refundedExpense({
-                accountId: testSeedService.account({ externalId: 'mono-card' }).id,
+            const refundConsolidationService = yield* RefundConsolidationService;
+            const { expense, refunds } = seedRefundedExpenseOnCard('mono-card', {
                 expenseAmount: convertToMicroUnits(120),
                 refundAmounts: [convertToMicroUnits(80), convertToMicroUnits(50)]
             });

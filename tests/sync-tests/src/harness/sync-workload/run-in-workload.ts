@@ -1,11 +1,8 @@
 import { Workload } from '@app/@generic/service/workload.service';
+import * as Effect from 'effect/Effect';
 
-import { run } from '../scenario/test-runtime';
+import type { Db } from '@budgie/contracts';
+import type * as HttpClient from 'effect/http/HttpClient';
 
-import type { Services } from '../scenario/test-runtime';
-import type * as Effect from 'effect/Effect';
-
-export const inWorkload = <A, E>(effect: Effect.Effect<A, E, Services>): Effect.Effect<A, E, Workload> =>
-    Workload.use(workload => workload.run(effect));
-
-export const runInWorkload = <A, E>(effect: Effect.Effect<A, E, Services>): Promise<A> => run(inWorkload(effect));
+export const inWorkload = <A, E>(effect: Effect.Effect<A, E, Db | HttpClient.HttpClient | Workload>): Effect.Effect<A, E, Workload> =>
+    Effect.flatMap(Workload, workload => workload.run(effect));

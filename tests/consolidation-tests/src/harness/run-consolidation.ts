@@ -1,12 +1,11 @@
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
-
-import { consolidationCoordinatorService } from './test-context';
 
 import type { ConsolidationScanScopeInterface } from '@budgie/contracts';
 
 export const runConsolidation = (scope: ConsolidationScanScopeInterface | null = null) =>
-    consolidationCoordinatorService.consolidate(scope);
+    Effect.flatMap(ConsolidationCoordinatorService, consolidationCoordinatorService => consolidationCoordinatorService.consolidate(scope));
 
 export const expectSecondConsolidationRunStable = Effect.fnUntraced(function* () {
     const secondResult = yield* runConsolidation();

@@ -1,8 +1,9 @@
 import { PRECISION, TRANSFER_PAIR_TIME_WINDOW_SECONDS, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const seedTimeWindowPair = (incomeOffsetSeconds: number): void => {
     const { fromAccount, toAccount } = testSeedService.accountPair('UA-FROM', 'UA-TO');
@@ -18,19 +19,23 @@ const seedTimeWindowPair = (incomeOffsetSeconds: number): void => {
     );
 };
 
-describe('consolidation/time-window-boundary', () => {
-    it('matches a pair right at the time-window edge', async () => {
-        seedTimeWindowPair(TRANSFER_PAIR_TIME_WINDOW_SECONDS - 1);
+layer(TestLayer)('consolidation/time-window-boundary', it => {
+    it.effect('matches a pair right at the time-window edge', () =>
+        Effect.gen(function* () {
+            seedTimeWindowPair(TRANSFER_PAIR_TIME_WINDOW_SECONDS - 1);
 
-        const result = await runEffect(runConsolidation());
-        expect(result.consolidated).toBe(1);
-    });
+            const result = yield* runConsolidation();
+            expect(result.consolidated).toBe(1);
+        })
+    );
 
-    it('leaves a pair outside the time-window edge unconsolidated', async () => {
-        seedTimeWindowPair(TRANSFER_PAIR_TIME_WINDOW_SECONDS + 60);
+    it.effect('leaves a pair outside the time-window edge unconsolidated', () =>
+        Effect.gen(function* () {
+            seedTimeWindowPair(TRANSFER_PAIR_TIME_WINDOW_SECONDS + 60);
 
-        const result = await runEffect(runConsolidation());
-        expect(result.consolidated).toBe(0);
-        expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
-    });
+            const result = yield* runConsolidation();
+            expect(result.consolidated).toBe(0);
+            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
+        })
+    );
 });

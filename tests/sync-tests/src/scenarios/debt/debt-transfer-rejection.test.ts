@@ -1,5 +1,5 @@
-import { transactionTransferService } from '@app/transaction/service/transaction-transfer.service';
-import { transactionService } from '@app/transaction/service/transaction.service';
+import { TransactionTransferService } from '@app/transaction/service/transaction-transfer.service';
+import { TransferCreationService } from '@app/transaction/service/transfer-creation.service';
 import {
     AccountDebtTypeEnum,
     AccountTypeEnum,
@@ -11,9 +11,10 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import { buildTransferInput, seed, testDb, run } from '../../harness';
+import { buildTransferInput, seed, testDb, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 import type { AccountEntityInterface, TransactionCreateEntityInterface, TransactionEntryCreateEntityInterface } from '@budgie/contracts';
@@ -65,39 +66,49 @@ const createExpense = (cashAccountId: number) => {
 };
 
 describe('transfers involving a debt account', () => {
-    it('rejects converting an expense into a transfer to a debt account', async () => {
-        const cashAccount = seed.account({ title: 'Transfer cash account', type: AccountTypeEnum.BANK_SYNC });
-        const debtAccount = createDebtAccount();
-        const transaction = createExpense(cashAccount.id);
+    it.effect('rejects converting an expense into a transfer to a debt account', () =>
+        Effect.gen(function* () {
+            const transactionTransferService = yield* TransactionTransferService;
 
-        await expect(
-            run(
+            const cashAccount = seed.account({ title: 'Transfer cash account', type: AccountTypeEnum.BANK_SYNC });
+            const debtAccount = createDebtAccount();
+            const transaction = createExpense(cashAccount.id);
+
+            const conversionError = yield* Effect.flip(
                 transactionTransferService.convertExpenseToTransfer({
                     id: transaction.id,
                     accountId: debtAccount.id,
                     customExchangeRate: 0
                 })
-            )
-        ).rejects.toThrow(DEBT_TRANSFER_ERROR);
+            );
 
-        const stored = testDb
-            .select()
-            .from(TransactionEntityTable)
-            .all()
-            .find(row => row.id === transaction.id);
+            expect(conversionError.message).toContain(DEBT_TRANSFER_ERROR);
 
-        expect(stored?.type).toBe(TransactionTypeEnum.EXPENSE);
-    });
+            const stored = testDb
+                .select()
+                .from(TransactionEntityTable)
+                .all()
+                .find(row => row.id === transaction.id);
 
-    it('rejects creating a transfer into a debt account and writes no rows', async () => {
-        const cashAccount = seed.account({ title: 'Transfer cash account', type: AccountTypeEnum.BANK_SYNC });
-        const debtAccount = createDebtAccount();
+            expect(stored?.type).toBe(TransactionTypeEnum.EXPENSE);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        await expect(
-            run(transactionService.createInternalTransfer(buildTransferInput(cashAccount.id, debtAccount.id, 250, OPERATED_AT)))
-        ).rejects.toThrow(DEBT_TRANSFER_ERROR);
+    it.effect('rejects creating a transfer into a debt account and writes no rows', () =>
+        Effect.gen(function* () {
+            const transferCreationService = yield* TransferCreationService;
 
-        expect(testDb.select().from(TransactionEntityTable).all()).toHaveLength(0);
-        expect(testDb.select().from(TransactionEntryEntityTable).all()).toHaveLength(0);
-    });
+            const cashAccount = seed.account({ title: 'Transfer cash account', type: AccountTypeEnum.BANK_SYNC });
+            const debtAccount = createDebtAccount();
+
+            const creationError = yield* Effect.flip(
+                transferCreationService.createInternalTransfer(buildTransferInput(cashAccount.id, debtAccount.id, 250, OPERATED_AT))
+            );
+
+            expect(creationError.message).toContain(DEBT_TRANSFER_ERROR);
+
+            expect(testDb.select().from(TransactionEntityTable).all()).toHaveLength(0);
+            expect(testDb.select().from(TransactionEntryEntityTable).all()).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

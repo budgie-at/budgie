@@ -1,8 +1,8 @@
-import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
-import { accountService } from '@app/account/service/account.service';
-import { unpairedOwnCardTransferRepairService } from '@app/sync/service/unpaired-own-card-transfer-repair.service';
-import { transactionTransferService } from '@app/transaction/service/transaction-transfer.service';
+import { AccountArchiveService } from '@app/account/service/account-archive.service';
+import { UnpairedOwnCardTransferRepairService } from '@app/sync/service/unpaired-own-card-transfer-repair.service';
+import { TransactionTransferService } from '@app/transaction/service/transaction-transfer.service';
 import {
+    AccountBalanceRepository,
     AccountEntityTable,
     AccountTypeEnum,
     ExternalSourceEnum,
@@ -10,11 +10,12 @@ import {
     TransactionEntryEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it, vi } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
+import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
-import { describe, expect, it, vi } from 'vitest';
 
-import { fetchTransactionById, seed, testDb, run } from '../../harness';
+import { fetchTransactionById, seed, testDb, TestLayer } from '../../harness';
 
 import type { AccountEntityInterface, TransactionEntityInterface } from '@budgie/contracts';
 
@@ -93,164 +94,202 @@ const seedArchivedCardWithMask = (externalId: string | null, iban: string): Acco
     return archivedCard;
 };
 
-const expectRepairedFromCounterpart = async (archivedCard: AccountEntityInterface, income: TransactionEntityInterface): Promise<void> => {
-    expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(1);
-    expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(1);
+const expectRepairedFromCounterpart = Effect.fnUntraced(function* (
+    archivedCard: AccountEntityInterface,
+    income: TransactionEntityInterface
+) {
+    const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+
+    expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
+    expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
     expect(fetchTransactionById(income.id).fromAccountId).toBe(archivedCard.id);
-};
+});
 
 describe('privatbank/own-card-transfer-repair', () => {
-    it('repairs an own-card income whose counterpart card account was archived', async () => {
-        const { archivedCard, income, liveCard } = seedArchivedOwnCardScenario();
+    it.effect('repairs an own-card income whose counterpart card account was archived', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const { archivedCard, income, liveCard } = seedArchivedOwnCardScenario();
 
-        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(1);
-        expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(1);
+            expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
+            expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
 
-        const repaired = fetchTransactionById(income.id);
+            const repaired = fetchTransactionById(income.id);
 
-        expect(repaired.type).toBe(TransactionTypeEnum.TRANSFER);
-        expect(repaired.fromAccountId).toBe(archivedCard.id);
-        expect(repaired.toAccountId).toBe(liveCard.id);
-    });
+            expect(repaired.type).toBe(TransactionTypeEnum.TRANSFER);
+            expect(repaired.fromAccountId).toBe(archivedCard.id);
+            expect(repaired.toAccountId).toBe(liveCard.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('leaves nothing to repair after a first repair pass', async () => {
-        seedArchivedOwnCardScenario();
+    it.effect('leaves nothing to repair after a first repair pass', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            seedArchivedOwnCardScenario();
 
-        await run(unpairedOwnCardTransferRepairService.repair());
+            yield* unpairedOwnCardTransferRepairService.repair();
 
-        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(0);
-        expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(0);
-    });
+            expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+            expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('counts an own-card income with a fee entry once', async () => {
-        const liveCard = seedPrivatbankCard('1234');
-        const archivedCard = seedPrivatbankCard('4321');
-        const income = seedOwnCardIncome(liveCard.id);
+    it.effect('counts an own-card income with a fee entry once', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const liveCard = seedPrivatbankCard('1234');
+            const archivedCard = seedPrivatbankCard('4321');
+            const income = seedOwnCardIncome(liveCard.id);
 
-        seed.feeEntry(income.id, 'privatbank-own-card-income-fee', { accountId: liveCard.id, amount: OWN_CARD_FEE_AMOUNT });
-        archiveAccount(archivedCard.id);
+            seed.feeEntry(income.id, 'privatbank-own-card-income-fee', { accountId: liveCard.id, amount: OWN_CARD_FEE_AMOUNT });
+            archiveAccount(archivedCard.id);
 
-        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(1);
-        expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(1);
-    });
+            expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
+            expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('ignores a maskless third-party card transfer', async () => {
-        const liveCard = seedPrivatbankCard('1234');
-        const archivedCard = seedPrivatbankCard('4321');
-        const expense = seed.bankPairExpense(
-            { externalId: 'privatbank-third-party-expense', operatedAt: OWN_CARD_OPERATED_AT },
-            { accountId: liveCard.id, amount: OWN_CARD_AMOUNT }
-        );
+    it.effect('ignores a maskless third-party card transfer', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const liveCard = seedPrivatbankCard('1234');
+            const archivedCard = seedPrivatbankCard('4321');
+            const expense = seed.bankPairExpense(
+                { externalId: 'privatbank-third-party-expense', operatedAt: OWN_CARD_OPERATED_AT },
+                { accountId: liveCard.id, amount: OWN_CARD_AMOUNT }
+            );
 
-        seed.updateTransaction(expense.id, { externalSource: ExternalSourceEnum.PRIVATBANK, title: THIRD_PARTY_CARD_TITLE });
-        archiveAccount(archivedCard.id);
+            seed.updateTransaction(expense.id, { externalSource: ExternalSourceEnum.PRIVATBANK, title: THIRD_PARTY_CARD_TITLE });
+            archiveAccount(archivedCard.id);
 
-        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(0);
-    });
+            expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('repairs an own-card income whose counterpart leg was archived together with the card', async () => {
-        const liveCard = seedPrivatbankCard('1234');
-        const archivedCard = seedPrivatbankCard('4321');
-        const income = seedOwnCardIncome(liveCard.id);
+    it.effect('repairs an own-card income whose counterpart leg was archived together with the card', () =>
+        Effect.gen(function* () {
+            const liveCard = seedPrivatbankCard('1234');
+            const archivedCard = seedPrivatbankCard('4321');
+            const income = seedOwnCardIncome(liveCard.id);
 
-        softDeleteTransaction(seedOwnCardCounterpartExpense(archivedCard.id).id);
-        archiveAccount(archivedCard.id);
+            softDeleteTransaction(seedOwnCardCounterpartExpense(archivedCard.id).id);
+            archiveAccount(archivedCard.id);
 
-        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(1);
-        expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(1);
-        expect(fetchTransactionById(income.id).fromAccountId).toBe(archivedCard.id);
-    });
+            yield* expectRepairedFromCounterpart(archivedCard, income);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('ignores an own-card income whose card mask resolves to no archived account', async () => {
-        const liveCard = seedPrivatbankCard('1234');
-        const archivedCard = seedPrivatbankCard('4321');
+    it.effect('ignores an own-card income whose card mask resolves to no archived account', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const liveCard = seedPrivatbankCard('1234');
+            const archivedCard = seedPrivatbankCard('4321');
 
-        seedOwnCardIncome(liveCard.id, UNKNOWN_CARD_INCOME_TITLE);
-        archiveAccount(archivedCard.id);
+            seedOwnCardIncome(liveCard.id, UNKNOWN_CARD_INCOME_TITLE);
+            archiveAccount(archivedCard.id);
 
-        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(0);
-    });
+            expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('rejects when a candidate conversion fails', async () => {
-        seedArchivedOwnCardScenario();
+    it.effect('rejects when a candidate conversion fails', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const transactionTransferService = yield* TransactionTransferService;
+            seedArchivedOwnCardScenario();
 
-        const convertSpy = vi
-            .spyOn(transactionTransferService, 'convertIncomeToTransfer')
-            .mockReturnValue(Effect.die(new Error(CONVERSION_FAILURE_MESSAGE)));
+            yield* Effect.addFinalizer(() => Effect.sync(() => vi.restoreAllMocks()));
+            vi.spyOn(transactionTransferService, 'convertIncomeToTransfer').mockReturnValue(
+                Effect.die(new Error(CONVERSION_FAILURE_MESSAGE))
+            );
 
-        try {
-            await expect(run(unpairedOwnCardTransferRepairService.repair())).rejects.toThrow(CONVERSION_FAILURE_MESSAGE);
-        } finally {
-            convertSpy.mockRestore();
-        }
+            const cause = yield* Effect.flip(Effect.sandbox(unpairedOwnCardTransferRepairService.repair()));
 
-        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(1);
-    });
+            expect(Cause.squash(cause)).toMatchObject({ message: CONVERSION_FAILURE_MESSAGE });
 
-    it('ignores an own-card income that still has a live counterpart leg', async () => {
-        const liveCard = seedPrivatbankCard('1234');
-        const archivedCard = seedPrivatbankCard('4321');
+            expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        seedOwnCardIncome(liveCard.id);
-        seedOwnCardCounterpartExpense(archivedCard.id);
-        archiveAccount(archivedCard.id);
+    it.effect('ignores an own-card income that still has a live counterpart leg', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const liveCard = seedPrivatbankCard('1234');
+            const archivedCard = seedPrivatbankCard('4321');
 
-        expect(await run(unpairedOwnCardTransferRepairService.countCandidates())).toBe(0);
-    });
+            seedOwnCardIncome(liveCard.id);
+            seedOwnCardCounterpartExpense(archivedCard.id);
+            archiveAccount(archivedCard.id);
 
-    it('matches the counterpart card by external_id when its IBAN suffix differs', async () => {
-        const liveCard = seedPrivatbankCard('1234');
-        const archivedCard = seedArchivedCardWithMask('4000 **** **** 4321', 'UA00PRIVATBANK9999');
-        const income = seedOwnCardIncome(liveCard.id);
+            expect(yield* unpairedOwnCardTransferRepairService.countCandidates()).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        await expectRepairedFromCounterpart(archivedCard, income);
-    });
+    it.effect('matches the counterpart card by external_id when its IBAN suffix differs', () =>
+        Effect.gen(function* () {
+            const liveCard = seedPrivatbankCard('1234');
+            const archivedCard = seedArchivedCardWithMask('4000 **** **** 4321', 'UA00PRIVATBANK9999');
+            const income = seedOwnCardIncome(liveCard.id);
 
-    it('falls back to the IBAN suffix when the counterpart card has no external_id', async () => {
-        const liveCard = seedPrivatbankCard('1234');
-        const archivedCard = seedArchivedCardWithMask(null, 'UA00PRIVATBANK4321');
-        const income = seedOwnCardIncome(liveCard.id);
+            yield* expectRepairedFromCounterpart(archivedCard, income);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        await expectRepairedFromCounterpart(archivedCard, income);
-    });
+    it.effect('falls back to the IBAN suffix when the counterpart card has no external_id', () =>
+        Effect.gen(function* () {
+            const liveCard = seedPrivatbankCard('1234');
+            const archivedCard = seedArchivedCardWithMask(null, 'UA00PRIVATBANK4321');
+            const income = seedOwnCardIncome(liveCard.id);
 
-    it('deletes the superseded counterpart leg so restoring the archived card does not double count it', async () => {
-        const liveCard = seedPrivatbankCard('1234');
-        const archivedCard = seedPrivatbankCard('4321');
-        const income = seedOwnCardIncome(liveCard.id);
-        const supersededExpense = seedOwnCardCounterpartExpense(archivedCard.id);
+            yield* expectRepairedFromCounterpart(archivedCard, income);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        softDeleteTransaction(supersededExpense.id);
-        archiveAccount(archivedCard.id);
+    it.effect('deletes the superseded counterpart leg so restoring the archived card does not double count it', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const accountArchiveService = yield* AccountArchiveService;
+            const liveCard = seedPrivatbankCard('1234');
+            const archivedCard = seedPrivatbankCard('4321');
+            const income = seedOwnCardIncome(liveCard.id);
+            const supersededExpense = seedOwnCardCounterpartExpense(archivedCard.id);
 
-        expect(await run(unpairedOwnCardTransferRepairService.repair())).toBe(1);
-        expect(fetchTransactionById(supersededExpense.id)).toBeUndefined();
+            softDeleteTransaction(supersededExpense.id);
+            archiveAccount(archivedCard.id);
 
-        await run(accountService.restoreById(archivedCard.id));
+            expect(yield* unpairedOwnCardTransferRepairService.repair()).toBe(1);
+            expect(fetchTransactionById(supersededExpense.id)).toBeUndefined();
 
-        const liveExpensesOnArchivedCard = testDb
-            .select()
-            .from(TransactionEntityTable)
-            .where(
-                and(
-                    eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
-                    eq(TransactionEntityTable.fromAccountId, archivedCard.id),
-                    isNull(TransactionEntityTable.deletedAt)
+            yield* accountArchiveService.restoreById(archivedCard.id);
+
+            const liveExpensesOnArchivedCard = testDb
+                .select()
+                .from(TransactionEntityTable)
+                .where(
+                    and(
+                        eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
+                        eq(TransactionEntityTable.fromAccountId, archivedCard.id),
+                        isNull(TransactionEntityTable.deletedAt)
+                    )
                 )
-            )
-            .all();
+                .all();
 
-        expect(liveExpensesOnArchivedCard).toHaveLength(0);
-        expect(fetchTransactionById(income.id).type).toBe(TransactionTypeEnum.TRANSFER);
-    });
+            expect(liveExpensesOnArchivedCard).toHaveLength(0);
+            expect(fetchTransactionById(income.id).type).toBe(TransactionTypeEnum.TRANSFER);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('keeps the archived counterpart balance at 0 after the repair leaves a live transfer leg on it', async () => {
-        const { archivedCard } = seedArchivedOwnCardScenario();
+    it.effect('keeps the archived counterpart balance at 0 after the repair leaves a live transfer leg on it', () =>
+        Effect.gen(function* () {
+            const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const { archivedCard } = seedArchivedOwnCardScenario();
 
-        await run(unpairedOwnCardTransferRepairService.repair());
+            yield* unpairedOwnCardTransferRepairService.repair();
 
-        const archivedBalanceRow = accountBalanceRepository.getArchivedAccountBalance(archivedCard.id).get();
+            const archivedBalanceRow = (yield* accountBalanceRepository.getArchivedAccountBalance(archivedCard.id)).at(0);
 
-        expect(archivedBalanceRow?.balance).toBe(0);
-    });
+            expect(archivedBalanceRow?.balance).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

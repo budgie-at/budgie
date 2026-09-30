@@ -1,32 +1,33 @@
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, SyncModeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import { fetchPersistedMonobankTransactions, fetchSyncById, seed, stubEmptyStatements, run } from '../../harness';
+import { expectForwardSyncWithoutHistory, seed, stubEmptyStatements, TestLayer } from '../../harness';
 
 describe('monobank/new-only-history-skips-backward', () => {
-    it('completes the backward sweep with zero statement requests when backwardSyncFromAt equals backwardSyncLimitAt', async () => {
-        const historyBoundary = new Date();
-        const account = seed.account({ externalId: 'mono-acc-new-only', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-        const bankSync = seed.sync({
-            accountId: account.id,
-            mode: SyncModeEnum.BACKWARD,
-            backwardSyncFromAt: historyBoundary,
-            backwardSyncLimitAt: historyBoundary,
-            forwardSyncedAt: historyBoundary
-        });
+    it.effect('completes the backward sweep with zero statement requests when backwardSyncFromAt equals backwardSyncLimitAt', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const historyBoundary = new Date();
+            const account = seed.account({ externalId: 'mono-acc-new-only', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
+            const bankSync = seed.sync({
+                accountId: account.id,
+                mode: SyncModeEnum.BACKWARD,
+                backwardSyncFromAt: historyBoundary,
+                backwardSyncLimitAt: historyBoundary,
+                forwardSyncedAt: historyBoundary
+            });
 
-        const requestedFromValues: number[] = [];
-        stubEmptyStatements(fromUnixSeconds => {
-            requestedFromValues.push(fromUnixSeconds);
-        });
+            const requestedFromValues: number[] = [];
+            stubEmptyStatements(fromUnixSeconds => {
+                requestedFromValues.push(fromUnixSeconds);
+            });
 
-        await run(monobankSyncService.sync());
+            yield* monobankSyncService.sync();
 
-        expect(requestedFromValues).toHaveLength(0);
-        expect(fetchPersistedMonobankTransactions()).toHaveLength(0);
-
-        const finalSync = fetchSyncById(bankSync.id);
-        expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
-    });
+            expect(requestedFromValues).toHaveLength(0);
+            expectForwardSyncWithoutHistory(bankSync.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

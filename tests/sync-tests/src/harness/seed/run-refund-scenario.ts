@@ -1,4 +1,4 @@
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import * as Effect from 'effect/Effect';
 
 import { seed } from './seed';
@@ -16,6 +16,7 @@ interface RunRefundScenarioResult {
 }
 
 export const runRefundScenario = Effect.fnUntraced(function* (input: RunRefundScenarioInput) {
+    const transferConsolidationService = yield* TransferConsolidationService;
     const account = seed.account({ externalId: 'mono-card' });
     const { expense, refunds } = seedRefundedExpense({ ...input, accountId: account.id });
     const result: ConsolidationResultInterface = yield* transferConsolidationService.consolidate(null);

@@ -1,4 +1,4 @@
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { TransactionEntityTable } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -9,6 +9,8 @@ import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } 
 describe('monobank/hold-tx-inserted', () => {
     it.effect('inserts a held transaction (regression: !hold filter must not drop it)', () =>
         Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+
             setupMonobankFixture();
             monobankStub.statement([buildMonobank.transaction({ id: 'tx-hold-1', amount: -2500, hold: true })]);
 

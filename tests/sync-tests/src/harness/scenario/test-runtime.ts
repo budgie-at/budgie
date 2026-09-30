@@ -1,12 +1,10 @@
-import { Workload } from '@app/@generic/service/workload.service';
-import { Db } from '@budgie/contracts';
+import { appServicesLayer } from '@app/@generic/runtime/app-services.layer';
+import { makeTestPlatformLayer } from '@budgie-at/test-kit';
 import { BINANCE_RATE_LIMIT_MS, MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
-import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import * as Layer from 'effect/Layer';
-import * as ManagedRuntime from 'effect/ManagedRuntime';
 import { vi } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
@@ -26,23 +24,9 @@ const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock =>
                 : clock.sleep(duration)
     });
 
-const servicesLayer = Workload.layer.pipe(Layer.provideMerge(Layer.mergeAll(Layer.succeed(Db, testDb), FetchHttpClient.layer)));
+const servicesLayer = appServicesLayer.pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)));
 
-const buildRuntime = () =>
-    ManagedRuntime.make(
-        servicesLayer.pipe(
-            Layer.provideMerge(
-                Layer.effect(
-                    Clock.Clock,
-                    Effect.clockWith(clock => Effect.succeed(withInstantRateLimit(clock)))
-                )
-            )
-        )
-    );
-
-let runtime = buildRuntime();
-
-export type Services = ManagedRuntime.ManagedRuntime.Services<ReturnType<typeof buildRuntime>>;
+export type Services = Layer.Success<typeof servicesLayer>;
 
 let testContext: Context.Context<Services> | null = null;
 
@@ -66,16 +50,15 @@ export const TestLayer = bindAppRuntime.pipe(
     Layer.provideMerge(Layer.succeed(Clock.Clock, withInstantRateLimit(Clock.Clock.defaultValue())))
 );
 
-export const testRuntime = {
-    runPromise: <A, E>(effect: Effect.Effect<A, E, Services>) =>
-        isDefined(testContext) ? Effect.runPromiseWith(testContext)(effect) : runtime.runPromise(effect),
-    runFork: <A, E>(effect: Effect.Effect<A, E, Services>) =>
-        isDefined(testContext) ? Effect.runForkWith(testContext)(effect) : runtime.runFork(effect)
+const requireTestContext = (): Context.Context<Services> => {
+    if (!isDefined(testContext)) {
+        throw new Error('appRuntime was used outside an it.effect test that provides TestLayer or TestClockLayer');
+    }
+
+    return testContext;
 };
 
-export const run = testRuntime.runPromise;
-
-export const resetTestRuntime = async (): Promise<void> => {
-    await runtime.dispose();
-    runtime = buildRuntime();
+export const testRuntime = {
+    runPromise: <A, E>(effect: Effect.Effect<A, E, Services>) => Effect.runPromiseWith(requireTestContext())(effect),
+    runFork: <A, E>(effect: Effect.Effect<A, E, Services>) => Effect.runForkWith(requireTestContext())(effect)
 };

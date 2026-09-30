@@ -2,8 +2,18 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { buildTestDb, createTestRepositories, runWithDb } from '@budgie-at/test-kit';
-import { DebtEventDirectionEnum, DebtEventSourceEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { buildTestDb, makeTestPlatformLayer } from '@budgie-at/test-kit';
+import {
+    AccountBalanceRepository,
+    DebtEventDirectionEnum,
+    DebtEventRepository,
+    DebtEventSourceEnum,
+    TransactionRepository,
+    TransactionTypeEnum,
+    TransactionViewRepository
+} from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 import { expect } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
@@ -30,41 +40,48 @@ export class DebtMigrationRepairScenario {
 
     constructor(private readonly fixturePath: string) {}
 
-    async run(): Promise<void> {
-        const db = buildTestDb(this.fixturePath);
+    run() {
+        return Effect.gen({ self: this }, function* () {
+            const db = buildTestDb(this.fixturePath);
+            yield* Effect.addFinalizer(() => Effect.promise(() => db.$client.closeAsync()));
 
-        try {
-            const repairMigrationSql = await readFile(DebtMigrationRepairScenario.REPAIR_MIGRATION_PATH, 'utf8');
-            const firstExecutionSnapshot = await new DebtMigrationPersistenceAssertions(db).assert();
-            await new DebtMigrationIdempotencyAssertions(db).assert(repairMigrationSql, firstExecutionSnapshot);
-            const repositories = createTestRepositories(db);
-            const runOnFixture = runWithDb(db);
-            await this.assertAmbiguousControl(repositories, runOnFixture);
-            await new DebtMigrationEventAssertions(repositories.debtEventRepository, runOnFixture).assert();
-            await new DebtMigrationTransactionAssertions(repositories.transactionRepository).assert();
-            new DebtMigrationBalanceAssertions(repositories.accountBalanceRepository).assert();
-        } finally {
-            await db.$client.closeAsync();
-        }
+            const repairMigrationSql = yield* Effect.promise(() => readFile(DebtMigrationRepairScenario.REPAIR_MIGRATION_PATH, 'utf8'));
+            const firstExecutionSnapshot = yield* Effect.promise(() => new DebtMigrationPersistenceAssertions(db).assert());
+            yield* Effect.promise(() => new DebtMigrationIdempotencyAssertions(db).assert(repairMigrationSql, firstExecutionSnapshot));
+            yield* Effect.gen({ self: this }, function* () {
+                yield* this.assertAmbiguousControl();
+                yield* new DebtMigrationEventAssertions().assert();
+                yield* new DebtMigrationTransactionAssertions().assert();
+                yield* new DebtMigrationBalanceAssertions().assert();
+            }).pipe(
+                Effect.provide(
+                    Layer.mergeAll(
+                        AccountBalanceRepository.layer,
+                        DebtEventRepository.layer,
+                        TransactionRepository.layer,
+                        TransactionViewRepository.layer
+                    )
+                ),
+                Effect.provide(makeTestPlatformLayer(db))
+            );
+        });
     }
 
-    private async assertAmbiguousControl(
-        repositories: ReturnType<typeof createTestRepositories>,
-        runOnFixture: ReturnType<typeof runWithDb>
-    ): Promise<void> {
-        const [accountBalance] = await runOnFixture(
-            repositories.accountBalanceRepository.getByAccountIds([DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID])
-        );
-        const adjustmentTransaction = await runOnFixture(
-            repositories.transactionRepository.getByIdWithEntries(DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID)
-        );
-        const debtEvents = await runOnFixture(
-            repositories.debtEventRepository.findByAccountId(DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID)
-        );
+    private assertAmbiguousControl() {
+        return Effect.gen({ self: this }, function* () {
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const transactionRepository = yield* TransactionRepository;
+            const debtEventRepository = yield* DebtEventRepository;
+            const [accountBalance] = yield* accountBalanceRepository.getByAccountIds([DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID]);
+            const adjustmentTransaction = yield* transactionRepository.getByIdWithEntries(
+                DebtMigrationRepairScenario.AMBIGUOUS_ADJUSTMENT_TRANSACTION_ID
+            );
+            const debtEvents = yield* debtEventRepository.findByAccountId(DebtMigrationRepairScenario.AMBIGUOUS_ACCOUNT_ID);
 
-        this.assertAmbiguousBalance(accountBalance);
-        this.assertAmbiguousAdjustment(adjustmentTransaction);
-        this.assertAmbiguousEvents(debtEvents);
+            this.assertAmbiguousBalance(accountBalance);
+            this.assertAmbiguousAdjustment(adjustmentTransaction);
+            this.assertAmbiguousEvents(debtEvents);
+        });
     }
 
     private assertAmbiguousBalance(accountBalance: AccountBalanceEntityInterface | undefined): void {

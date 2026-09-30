@@ -1,4 +1,4 @@
-import { binanceSyncService } from '@app/sync/service/binance-sync.service';
+import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import {
     ExternalSourceEnum,
     InstrumentTypeEnum,
@@ -70,11 +70,12 @@ export const stubEmptyBinanceBalances = (): void => {
 };
 
 export const resetBinanceSyncForResync = (): void => {
-    Object.assign(binanceSyncService, { isRunning: false });
     binanceStub.serverTime();
 };
 
 export const expectNoDuplicateAfterResync = Effect.fnUntraced(function* (restubForResync: () => void) {
+    const binanceSyncService = yield* BinanceSyncService;
+
     expect(fetchBinanceTransactions()).toHaveLength(1);
 
     resetBinanceSyncForResync();

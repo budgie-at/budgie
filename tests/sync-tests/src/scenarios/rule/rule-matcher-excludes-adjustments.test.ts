@@ -1,4 +1,4 @@
-import { ruleMatcherService } from '@app/rule/service/rule-matcher.service';
+import { RuleMatcherService } from '@app/rule/service/rule-matcher.service';
 import {
     RuleConditionFieldEnum,
     RuleConditionMatchTypeEnum,
@@ -8,9 +8,10 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import { run } from '../../harness';
+import { TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { seed } from '../../harness/seed/seed';
 
@@ -47,25 +48,28 @@ const insertTransaction = (type: TransactionTypeEnum, accountId: number) => {
 };
 
 describe('rule/rule-matcher excludes adjustments', () => {
-    it('excludes ADJUSTMENT transactions from SQL rule matching while matching the same title on an EXPENSE', async () => {
-        const account = seed.account({ title: 'Rule matcher account' });
-        insertTransaction(TransactionTypeEnum.EXPENSE, account.id);
-        insertTransaction(TransactionTypeEnum.ADJUSTMENT, account.id);
+    it.effect('excludes ADJUSTMENT transactions from SQL rule matching while matching the same title on an EXPENSE', () =>
+        Effect.gen(function* () {
+            const ruleMatcherService = yield* RuleMatcherService;
+            const account = seed.account({ title: 'Rule matcher account' });
+            insertTransaction(TransactionTypeEnum.EXPENSE, account.id);
+            insertTransaction(TransactionTypeEnum.ADJUSTMENT, account.id);
 
-        const params = {
-            conditions: [
-                {
-                    field: RuleConditionFieldEnum.TITLE,
-                    operator: RuleConditionOperatorEnum.CONTAINS,
-                    value: 'correction',
-                    secondaryValue: null
-                }
-            ],
-            conditionMatchType: RuleConditionMatchTypeEnum.ALL
-        };
+            const params = {
+                conditions: [
+                    {
+                        field: RuleConditionFieldEnum.TITLE,
+                        operator: RuleConditionOperatorEnum.CONTAINS,
+                        value: 'correction',
+                        secondaryValue: null
+                    }
+                ],
+                conditionMatchType: RuleConditionMatchTypeEnum.ALL
+            };
 
-        const count = await run(ruleMatcherService.countMatchingTransactions(params));
+            const count = yield* ruleMatcherService.countMatchingTransactions(params);
 
-        expect(count).toBe(1);
-    });
+            expect(count).toBe(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

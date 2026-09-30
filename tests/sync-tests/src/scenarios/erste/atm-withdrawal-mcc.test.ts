@@ -1,8 +1,10 @@
-import { ersteSyncService } from '@app/sync/service/erste-sync.service';
+import { ErsteSyncService } from '@app/sync/service/erste-sync.service';
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
 import { ersteMapper } from '@budgie/sync';
+import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
-import { describe, expect, it, vi } from 'vitest';
+import * as Effect from 'effect/Effect';
+import { vi } from 'vitest';
 
 import {
     expectAtmCashWithdrawalConsolidation,
@@ -11,7 +13,7 @@ import {
     requireInstrument,
     seed,
     testDb,
-    run
+    TestLayer
 } from '../../harness';
 
 import type { ErsteRowInterface } from '@budgie/sync';
@@ -77,25 +79,28 @@ describe('erste/atm-withdrawal-mcc', () => {
         expect(erste.nonAtmRows.map(row => ersteMapper.mapTransaction(row, erste.account.iban).mcc)).toEqual([0, 0, 0, 0]);
     });
 
-    it('imports an AUTOMAT withdrawal with the ATM MCC category so consolidation moves it to cash', async () => {
-        const euro = await run(requireInstrument(CurrencyEnum.EUR));
-        const cashAccount = seed.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH, instrumentId: euro.id });
+    it.effect('imports an AUTOMAT withdrawal with the ATM MCC category so consolidation moves it to cash', () =>
+        Effect.gen(function* () {
+            const ersteSyncService = yield* ErsteSyncService;
+            const euro = yield* requireInstrument(CurrencyEnum.EUR);
+            const cashAccount = seed.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH, instrumentId: euro.id });
 
-        await run(ersteSyncService.executeImportForSelectedAccounts('erste-statement.pdf', [erste.account.iban]));
+            yield* ersteSyncService.executeImportForSelectedAccounts('erste-statement.pdf', [erste.account.iban]);
 
-        const transactions = testDb
-            .select()
-            .from(TransactionEntityTable)
-            .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE))
-            .all();
-        const atmTransaction = transactions.find(transaction => transaction.title === erste.atmRow.description);
-        const nonAtmTransactions = transactions.filter(transaction => transaction.id !== atmTransaction?.id);
-        const [atmEntry] = await fetchExpenseEntries(atmTransaction?.id ?? 0);
-        const nonAtmEntries = await Promise.all(nonAtmTransactions.map(transaction => fetchExpenseEntries(transaction.id)));
+            const transactions = testDb
+                .select()
+                .from(TransactionEntityTable)
+                .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.ERSTE))
+                .all();
+            const atmTransaction = transactions.find(transaction => transaction.title === erste.atmRow.description);
+            const nonAtmTransactions = transactions.filter(transaction => transaction.id !== atmTransaction?.id);
+            const [atmEntry] = fetchExpenseEntries(atmTransaction?.id ?? 0);
+            const nonAtmEntries = nonAtmTransactions.map(transaction => fetchExpenseEntries(transaction.id));
 
-        expect(atmEntry.mccCategoryId).toBe(findMccByCode(String(ATM_MCC)).id);
-        expect(nonAtmEntries.flat().map(entry => entry.mccCategoryId)).toEqual([null, null, null, null]);
+            expect(atmEntry.mccCategoryId).toBe(findMccByCode(String(ATM_MCC)).id);
+            expect(nonAtmEntries.flat().map(entry => entry.mccCategoryId)).toEqual([null, null, null, null]);
 
-        await run(expectAtmCashWithdrawalConsolidation(atmEntry.accountId, cashAccount.id, atmEntry.transactionId));
-    });
+            yield* expectAtmCashWithdrawalConsolidation(atmEntry.accountId, cashAccount.id, atmEntry.transactionId);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });
