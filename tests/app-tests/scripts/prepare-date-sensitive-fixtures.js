@@ -511,7 +511,9 @@ const generateRunwayCryptoFixture = () => {
     const monthlyExpenseBaseAmount = Math.round(monthlyExpenseAmount * eurToUsdRate);
     const monthlyIncomeBaseAmount = Math.round(monthlyIncomeAmount * eurToUsdRate);
     const rateUpdatedAtSql = "unixepoch('now') - 900";
+    const fiatSeedTransactionId = 1;
     const historyMonths = [-1, -2, -3].map(monthOffset => buildMonthlyTimestamp(monthOffset, historyDay));
+    const fiatSeedAmount = runwayFiatBalance + historyMonths.length * (monthlyExpenseAmount - monthlyIncomeAmount);
     const transactionValues = historyMonths
         .flatMap((operatedAt, monthIndex) => [
             `(${firstTransactionId + monthIndex * 2}, ${operatedAt}, ${operatedAt}, 'EXPENSE', 'E2E Runway History', ${operatedAt}, NULL, ${fiatAccountId}, 1.0)`,
@@ -534,6 +536,10 @@ const generateRunwayCryptoFixture = () => {
         UPDATE account_balances
         SET amount = ${runwayFiatBalance}, created_at = unixepoch('now'), updated_at = unixepoch('now')
         WHERE account_id = ${fiatAccountId};
+
+        UPDATE transaction_entries
+        SET amount = ${fiatSeedAmount}, base_amount = ROUND(${fiatSeedAmount} * base_exchange_rate)
+        WHERE transaction_id = ${fiatSeedTransactionId} AND account_id = ${fiatAccountId};
 
         DELETE FROM transaction_entries WHERE transaction_id BETWEEN 2100 AND 2199;
         DELETE FROM transactions WHERE id BETWEEN 2100 AND 2199;
