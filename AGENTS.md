@@ -39,6 +39,7 @@ These rules are vital and apply to every AI agent and orchestrator working in th
 - Set the LOWEST effort level that fits the task; raise effort only for verification/judging stages where correctness is critical.
 - Subagent prompts must be self-contained (paths, rules, constraints, validation steps) so no round-trips are wasted.
 - Do not spawn a top-tier agent for work a cheaper one can verify; prefer cheap execution + targeted verification over expensive single-shot runs.
+- **Effect is mandatory for all logic.** Every agent and subagent MUST load the `effect` skill (`.agents/skills/effect/SKILL.md`, alongside the official `effect-ts` skill) before writing or reviewing any logic, and subagent prompts must say so. All new effectful code is Effect; no Promise/`async` logic outside the runtime edges.
 - For codebase/architecture questions and cross-cutting sweeps that must not miss a reference (renames, model swaps, copy updates across packages and locales), use the `graphify` skill (`/graphify .`) to build or refresh the project knowledge graph and query it instead of burning tokens on repeated broad greps; confirm results with targeted grep. Keep `graphify-out/` uncommitted.
 
 ## Git Commits And Pull Requests
@@ -468,6 +469,8 @@ After modifying user-facing text, run `pnpm i18n:sync` and commit both file type
 
 All effectful logic runs on **Effect v4** (`effect`, pinned exactly). Reference: `https://github.com/Effect-TS/effect/blob/main/LLMS.md` and the installed `node_modules/effect/dist/*.d.ts`, which are authoritative for API names. Rules 22, 32, 35, 41, 57, 58 and 60 are the binding summary.
 
+**Binding:** load the `effect` skill first (it points at `node_modules/effect/AGENTS.md` and `ai-docs`, the official `effect-ts` skill's source of truth). All new logic is Effect: no `async`/`await`, `try`/`throw`, `new Promise`, `setTimeout` loops, or `useEffect` fetches with cancelled flags anywhere except the edges (`appRuntime.runPromise`/`runFork` in hooks, tasks and boot; `Effect.runPromise` in Next.js route edges). Tests are `@effect/vitest` `it.effect` (see below).
+
 ```ts
 import { Db } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
@@ -499,6 +502,7 @@ export const refundService = new RefundService();
 - **Validation.** Effect `Schema` only (`Schema.decodeUnknownEffect` at boundaries; `Schema.toStandardSchemaV1` for form resolvers). Drizzle row types come from `typeof Table.$inferSelect` / `$inferInsert`.
 - **HTTP.** `HttpClient` from `effect/http` with `Schedule` retries and `Effect.timeout`.
 - **Running.** Only edges run effects: the app `ManagedRuntime` (`runtime.runPromise`) in hooks, atoms, background tasks and boot, `Effect.runPromise` in Next.js route edges, `it.effect` in `tests/*`. No `Effect.runPromise`/`runSync` inside services.
+- **Tests.** `tests/*` suites use `@effect/vitest`: every test is `it.effect('...', () => Effect.gen(function* () {...}))` (`it.layer` for shared layers), with `Db` and services provided as layers from `tests/test-kit`. No `async` test bodies, no `runPromise` in tests, no `try`/`catch`; assert failures with `Effect.flip`/`Effect.exit`. Time-dependent tests use `TestClock`.
 - **React.** Service-calling state lives in `@effect/atom-react` atoms; `useDatabaseLiveQuery` reads stay as they are.
 - **Logging.** The `makeLoggerLayer` layer from `@budgie/logger` is the only sink. `EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output; Metro dev bundles still log through `__DEV__`. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
 
