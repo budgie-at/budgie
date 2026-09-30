@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
-import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, notInArray, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, gte, inArray, isNotNull, isNull, lt, ne, notExists, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Effect from 'effect/Effect';
 
@@ -669,7 +669,12 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         }
     );
 
-    readonly archiveByAccountIds = Effect.fn('TransactionRepository.archiveByAccountIds')(function* (accountIds: number[]) {
+    readonly archiveByAccountIds = Effect.fn('TransactionRepository.archiveByAccountIds')(function* (
+        this: TransactionRepository,
+        accountIds: number[]
+    ) {
+        const ledgerEntryCondition = this.buildLedgerEntryCondition();
+
         yield* Db.query(db =>
             db
                 .update(TransactionEntityTable)
@@ -680,7 +685,17 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                             inArray(TransactionEntityTable.toAccountId, accountIds),
                             inArray(TransactionEntityTable.fromAccountId, accountIds)
                         ),
-                        ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                        or(
+                            ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
+                            notExists(
+                                db
+                                    .select({ id: TransactionEntryEntityTable.id })
+                                    .from(TransactionEntryEntityTable)
+                                    .where(
+                                        and(eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id), ledgerEntryCondition)
+                                    )
+                            )
+                        ),
                         isNull(TransactionEntityTable.deletedAt)
                     )
                 )

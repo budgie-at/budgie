@@ -71,10 +71,9 @@ class TransactionService {
         invalidateDatabaseLiveQuery
     );
 
-    readonly update = Effect.fn('TransactionService.update')(
-        function* (input: TransactionCreateInputInterface) {
-            yield* transactionDepositSafetyService.assertNoDepositExpenseImportedUpdate(input);
-            yield* importedTransactionEntryUpdateService.update(input.entries, input);
+    readonly bulkUpdateImported = Effect.fn('TransactionService.bulkUpdateImported')(
+        function* (inputs: TransactionCreateInputInterface[]) {
+            yield* importedTransactionEntryUpdateService.bulkUpdate(inputs);
         },
         effect => Db.transaction(effect),
         invalidateDatabaseLiveQuery
@@ -239,8 +238,8 @@ class TransactionService {
 
             const transaction = yield* transactionRepository.create({ ...input, exchangeRate, externalId: null, externalSource: null });
 
-            yield* this.createTransferEntries(transaction, input, { fromEntry, toEntry, fromAmountInMicroUnits, toAmount });
-            yield* this.finalizeInternalTransfer(input, transaction.id);
+            yield* this.persistPrimaryTransfer(transaction, input, fromEntry, toEntry, fromAmountInMicroUnits, toAmount);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs([input]));
 
             return transaction;
         },
@@ -403,87 +402,6 @@ class TransactionService {
         };
     });
 
-    private readonly createTransferEntries = Effect.fnUntraced(function* (
-        transaction: TransactionEntityInterface,
-        input: TransactionCreateInputInterface,
-        primaryEntryInput: {
-            readonly fromEntry: TransactionEntryCreateInputInterface;
-            readonly toEntry: TransactionEntryCreateInputInterface;
-            readonly fromAmountInMicroUnits: number;
-            readonly toAmount: number;
-        }
-    ) {
-        const additionalEntryValuations = yield* entryBaseValuationService.valueEntries(input.entries, input.operatedAt);
-        const [fromValuation, toValuation] = yield* Effect.all(
-            [
-                entryBaseValuationService.valueMicroUnitEntry({
-                    accountId: primaryEntryInput.fromEntry.accountId,
-                    amount: primaryEntryInput.fromAmountInMicroUnits,
-                    operatedAt: input.operatedAt,
-                    externalSource: input.externalSource
-                }),
-                entryBaseValuationService.valueMicroUnitEntry({
-                    accountId: primaryEntryInput.toEntry.accountId,
-                    amount: primaryEntryInput.toAmount,
-                    operatedAt: input.operatedAt,
-                    externalSource: input.externalSource
-                })
-            ],
-            { concurrency: 'unbounded' }
-        );
-        const primaryEntries = [
-            {
-                entry: primaryEntryInput.fromEntry,
-                type: TransactionEntryTypeEnum.CREDIT,
-                amount: primaryEntryInput.fromAmountInMicroUnits,
-                valuation: fromValuation
-            },
-            {
-                entry: primaryEntryInput.toEntry,
-                type: TransactionEntryTypeEnum.DEBIT,
-                amount: primaryEntryInput.toAmount,
-                valuation: toValuation
-            }
-        ].map(({ entry, type, amount, valuation }) => ({
-            transactionId: transaction.id,
-            accountId: entry.accountId,
-            categoryId: entry.categoryId,
-            mccCategoryId: entry.mccCategoryId,
-            type,
-            kind: TransactionEntryKindEnum.PRIMARY,
-            amount,
-            externalId: entry.externalId ?? null,
-            exchangeRate: entry.exchangeRate ?? 1,
-            baseInstrumentId: valuation.baseInstrumentId,
-            baseExchangeRate: valuation.baseExchangeRate,
-            baseAmount: valuation.baseAmount,
-            toIban: entry.toIban ?? null
-        }));
-
-        return yield* transactionEntryRepository.bulkCreate([
-            ...primaryEntries,
-            ...buildAdditionalTransferEntries({
-                entries: input.entries,
-                fromEntry: primaryEntryInput.fromEntry,
-                toEntry: primaryEntryInput.toEntry,
-                transactionId: transaction.id,
-                valuations: additionalEntryValuations
-            })
-        ]);
-    });
-
-    private readonly finalizeInternalTransfer = Effect.fnUntraced(function* (
-        this: TransactionService,
-        input: TransactionCreateInputInterface,
-        transactionId: number
-    ) {
-        if (isNotEmptyArray(input.tagIds)) {
-            yield* transactionTagsRepository.bulkCreate(transactionMapTagIdsToCreateEntities(input.tagIds, transactionId));
-        }
-
-        yield* accountBalanceIncrementalService.updateBalancesByAccountIds(this.getAccountIdsFromInputs([input]));
-    });
-
     private readonly findPrimaryEntries = Effect.fnUntraced(function* (
         entries: TransactionEntryCreateInputInterface[],
         fromAccountId: number | null,
@@ -520,6 +438,7 @@ class TransactionService {
             categoryId: entry.categoryId,
             mccCategoryId: entry.mccCategoryId,
             type,
+            kind: TransactionEntryKindEnum.PRIMARY,
             amount,
             externalId: entry.externalId ?? null,
             exchangeRate: entry.exchangeRate ?? 1,

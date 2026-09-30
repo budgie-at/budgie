@@ -62,9 +62,10 @@ describe('account/account-balance-scope', () => {
         });
         insertOne(AccountBalanceEntityTable, {
             accountId: untouchedAccount.id,
-            amount: 50_000,
+            amount: -50_000,
             updatedAt: OLD_BALANCE_UPDATED_AT
         });
+        seedExpenseEntry(untouchedAccount.id, 50_000);
         seedExpenseEntry(changedAccount.id, 12_000);
 
         await run(accountBalanceIncrementalService.updateBalancesByAccountIds([changedAccount.id]));
@@ -73,7 +74,7 @@ describe('account/account-balance-scope', () => {
         const untouchedBalance = fetchBalanceRow(untouchedAccount.id);
 
         expect(changedBalance?.balance).toBe(-12_000);
-        expect(untouchedBalance?.amount).toBe(50_000);
+        expect(untouchedBalance?.amount).toBe(-50_000);
         expect(untouchedBalance?.updatedAt).toEqual(OLD_BALANCE_UPDATED_AT);
     });
 });

@@ -38,11 +38,6 @@ type CountConditionsParamsType = {
     readonly conditionMatchType: RuleConditionMatchTypeEnum;
 };
 
-type FindMatchingTransactionsResultType = {
-    readonly transactions: TransactionWithEntriesMccCategoryEntityInterface[];
-    readonly count: number;
-};
-
 class RuleMatcherService {
     private static readonly UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN = /[\\^$.*+?()[\]{}|]/u;
 
@@ -62,52 +57,9 @@ class RuleMatcherService {
             return yield* transactionRuleRepository.countByRuleConditions(sqlWhere);
         }
 
-        if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+        const matchingIds = yield* this.findMatchingIds(conditions, conditionMatchType);
 
-            return yield* this.countWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
-        }
-
-        return yield* this.countMatchingTransactionsLegacy(params);
-    });
-
-    // eslint-disable-next-line max-statements -- Multiple branching paths with SQL and fallback logic
-    readonly findMatchingTransactions = Effect.fn('RuleMatcherService.findMatchingTransactions')(function* (
-        this: RuleMatcherService,
-        params: CountConditionsParamsType,
-        limit: number
-    ) {
-        const { conditions, conditionMatchType } = params;
-        const emptyResult: FindMatchingTransactionsResultType = { transactions: [], count: 0 };
-
-        if (!isNotEmptyArray(conditions)) {
-            return emptyResult;
-        }
-
-        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(conditions, conditionMatchType);
-
-        if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            const allIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-            const count = allIds.length;
-            const slicedIds = allIds.slice(0, limit);
-            const transactions = isNotEmptyArray(slicedIds) ? yield* transactionRepository.findByIdsWithEntries(slicedIds) : [];
-            const result: FindMatchingTransactionsResultType = { transactions, count };
-
-            return result;
-        }
-
-        if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-            const matchingIds = yield* this.filterWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
-            const count = matchingIds.length;
-            const slicedIds = matchingIds.slice(0, limit);
-            const transactions = isNotEmptyArray(slicedIds) ? yield* transactionRepository.findByIdsWithEntries(slicedIds) : [];
-            const result: FindMatchingTransactionsResultType = { transactions, count };
-
-            return result;
-        }
-
-        return yield* this.findMatchingTransactionsLegacy(params, limit);
+        return matchingIds.length;
     });
 
     readonly collectMatchingTransactionIds = Effect.fn('RuleMatcherService.collectMatchingTransactionIds')(function* (
@@ -118,60 +70,36 @@ class RuleMatcherService {
             return [];
         }
 
-        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(rule.conditions, rule.conditionMatchType);
+        return yield* this.findMatchingIds(rule.conditions, rule.conditionMatchType);
+    });
+
+    private readonly findMatchingIds = Effect.fnUntraced(function* (
+        this: RuleMatcherService,
+        conditions: RuleConditionInputInterface[],
+        conditionMatchType: RuleConditionMatchTypeEnum
+    ) {
+        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(conditions, conditionMatchType);
 
         if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
             return yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
         }
 
-        if (isDefined(sqlWhere) && rule.conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
+        if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
             const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
 
-            return yield* this.filterWithFallbackConditions(candidateIds, fallbackConditions, rule.conditionMatchType);
+            return yield* this.filterWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
         }
 
-        return yield* this.collectMatchingTransactionIdsLegacy(rule);
+        return yield* this.scanMatchingIds(conditions, conditionMatchType);
     });
 
-    private readonly countWithFallbackConditions = Effect.fn('RuleMatcherService.countWithFallbackConditions')(function* (
-        this: RuleMatcherService,
-        candidateIds: number[],
-        fallbackConditions: RuleConditionInputInterface[],
-        conditionMatchType: RuleConditionMatchTypeEnum
-    ) {
-        if (!isNotEmptyArray(candidateIds)) {
-            return 0;
-        }
-
-        let count = 0;
-
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
-            const transactions = yield* transactionRepository.findByIdsWithEntries(batchIds);
-
-            const matchCount = transactions.filter(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                return this.evaluateConditions(fallbackConditions, conditionMatchType, input);
-            }).length;
-
-            count += matchCount;
-        }
-
-        return count;
-    });
-
-    private readonly filterWithFallbackConditions = Effect.fn('RuleMatcherService.filterWithFallbackConditions')(function* (
+    private readonly filterWithFallbackConditions = Effect.fnUntraced(function* (
         this: RuleMatcherService,
         candidateIds: number[],
         fallbackConditions: RuleConditionInputInterface[],
         conditionMatchType: RuleConditionMatchTypeEnum
     ) {
         const matchingIds: number[] = [];
-
-        if (!isNotEmptyArray(candidateIds)) {
-            return matchingIds;
-        }
 
         for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
             const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
@@ -189,65 +117,10 @@ class RuleMatcherService {
         return matchingIds;
     });
 
-    private readonly countMatchingTransactionsLegacy = Effect.fn('RuleMatcherService.countMatchingTransactionsLegacy')(function* (
+    private readonly scanMatchingIds = Effect.fnUntraced(function* (
         this: RuleMatcherService,
-        params: CountConditionsParamsType
-    ) {
-        const { conditions, conditionMatchType } = params;
-
-        if (!isNotEmptyArray(conditions)) {
-            return 0;
-        }
-
-        let count = 0;
-
-        yield* this.forEachTransactionBatch(transactions => {
-            count += transactions.filter(transaction => {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                return this.evaluateConditions(conditions, conditionMatchType, input);
-            }).length;
-        });
-
-        return count;
-    });
-
-    private readonly findMatchingTransactionsLegacy = Effect.fn('RuleMatcherService.findMatchingTransactionsLegacy')(function* (
-        this: RuleMatcherService,
-        params: CountConditionsParamsType,
-        limit: number
-    ) {
-        const { conditions, conditionMatchType } = params;
-
-        if (!isNotEmptyArray(conditions)) {
-            const emptyResult: FindMatchingTransactionsResultType = { transactions: [], count: 0 };
-
-            return emptyResult;
-        }
-
-        const matchingIds: number[] = [];
-
-        yield* this.forEachTransactionBatch(transactions => {
-            for (const transaction of transactions) {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
-
-                if (this.evaluateConditions(conditions, conditionMatchType, input)) {
-                    matchingIds.push(transaction.id);
-                }
-            }
-        });
-
-        const count = matchingIds.length;
-        const slicedIds = matchingIds.slice(0, limit);
-        const resultTransactions = isNotEmptyArray(slicedIds) ? yield* transactionRepository.findByIdsWithEntries(slicedIds) : [];
-        const result: FindMatchingTransactionsResultType = { transactions: resultTransactions, count };
-
-        return result;
-    });
-
-    private readonly collectMatchingTransactionIdsLegacy = Effect.fn('RuleMatcherService.collectMatchingTransactionIdsLegacy')(function* (
-        this: RuleMatcherService,
-        rule: RuleWithRelationsEntityInterface
+        conditions: RuleConditionInputInterface[],
+        conditionMatchType: RuleConditionMatchTypeEnum
     ) {
         const matchingIds: number[] = [];
 
@@ -255,7 +128,7 @@ class RuleMatcherService {
             for (const transaction of transactions) {
                 const input = this.convertTransactionForRuleEvaluation(transaction);
 
-                if (this.isRuleMatch(rule, input)) {
+                if (input.type !== TransactionTypeEnum.ADJUSTMENT && this.evaluateConditions(conditions, conditionMatchType, input)) {
                     matchingIds.push(transaction.id);
                 }
             }
@@ -264,7 +137,7 @@ class RuleMatcherService {
         return matchingIds;
     });
 
-    private readonly forEachTransactionBatch = Effect.fn('RuleMatcherService.forEachTransactionBatch')(function* (
+    private readonly forEachTransactionBatch = Effect.fnUntraced(function* (
         callback: (transactions: TransactionWithEntriesMccCategoryEntityInterface[]) => void
     ) {
         let offset = 0;
@@ -287,10 +160,6 @@ class RuleMatcherService {
     });
 
     evaluateRule(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
-        return this.isRuleMatch(rule, input);
-    }
-
-    private isRuleMatch(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
         if (input.type === TransactionTypeEnum.ADJUSTMENT) {
             return false;
         }

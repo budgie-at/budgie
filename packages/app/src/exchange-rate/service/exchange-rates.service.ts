@@ -12,38 +12,13 @@ class ExchangeRatesService {
         toInstrumentId: number,
         fromAmountInMicroUnits: number
     ) {
-        if (fromInstrumentId === toInstrumentId) {
+        const exchangeRate = yield* this.findCurrentConversionRate(toInstrumentId, fromInstrumentId);
+
+        if (!isDefined(exchangeRate)) {
             return { amount: fromAmountInMicroUnits, exchangeRate: 1 };
         }
 
-        const exchangeRate = yield* Db.query(() => exchangeRateRepository.findByBaseAndQuoteIds(toInstrumentId, fromInstrumentId));
-
-        if (isDefined(exchangeRate)) {
-            return { amount: Math.round(fromAmountInMicroUnits / exchangeRate.rate), exchangeRate: exchangeRate.rate };
-        }
-
-        const baseInstrument = yield* this.getBaseInstrument();
-
-        if (!isDefined(baseInstrument)) {
-            return { amount: fromAmountInMicroUnits, exchangeRate: 1 };
-        }
-
-        const [baseFromExchangeRate, baseToExchangeRate] = yield* Effect.all(
-            [
-                Db.query(() => exchangeRateRepository.findByBaseAndQuoteIds(baseInstrument.id, fromInstrumentId)),
-                Db.query(() => exchangeRateRepository.findByBaseAndQuoteIds(toInstrumentId, baseInstrument.id))
-            ],
-            { concurrency: 'unbounded' }
-        );
-
-        if (!isDefined(baseFromExchangeRate) || !isDefined(baseToExchangeRate)) {
-            return { amount: fromAmountInMicroUnits, exchangeRate: 1 };
-        }
-
-        return {
-            amount: Math.round(fromAmountInMicroUnits / baseFromExchangeRate.rate / baseToExchangeRate.rate),
-            exchangeRate: baseToExchangeRate.rate
-        };
+        return { amount: Math.round(fromAmountInMicroUnits / exchangeRate), exchangeRate };
     });
 
     readonly convertStrict = Effect.fn('ExchangeRatesService.convertStrict')(function* (

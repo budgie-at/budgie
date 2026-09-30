@@ -19,6 +19,7 @@ const VIRTUAL_SHIMS: Record<string, string> = {
         export const openDatabaseSync = () => ({});
         export const deleteDatabaseAsync = async () => undefined;
         export const bundledExtensions = {};
+        export const addDatabaseChangeListener = () => ({ remove: () => undefined });
     `,
     'expo-background-task': `
         export const BackgroundTaskResult = Object.freeze({ Success: 'success', Failed: 'failed' });

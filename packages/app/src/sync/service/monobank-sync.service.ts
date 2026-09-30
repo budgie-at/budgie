@@ -16,7 +16,6 @@ import { transactionService } from '../../transaction/service/transaction.servic
 import { MONOBANK_SYNC_TASK } from '../constant/monobank-sync-task.constant';
 import { UNKNOWN_SYNC_ERROR } from '../constant/unknown-sync-error.constant';
 import { SyncHistoryDepthEnum } from '../enum/sync-history-depth.enum';
-import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { loadMccCategoryLookupMap } from '../util/load-mcc-category-lookup-map.util';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
@@ -142,7 +141,7 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
 
         yield* Effect.ensuring(
             transferConsolidationService.consolidate(consolidationScope),
-            transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.MONOBANK_SYNC, consolidationScope)
+            transferConsolidationDrainerService.enqueue(consolidationScope)
         );
     });
 
@@ -160,11 +159,10 @@ class AppMonobankSyncService extends AbstractPollingSyncService {
         const existingTransactions = transactions.filter(bankTransaction => existingTransactionIdMap.has(bankTransaction.id));
 
         const createdTransactions = yield* this.createNewTransactions(newTransactions, accountId);
-        for (const bankTransaction of existingTransactions) {
-            yield* transactionService.update(this.mapBankTransaction(bankTransaction, accountId));
-            yield* Effect.yieldNow;
-        }
         if (isNotEmptyArray(existingTransactions)) {
+            yield* transactionService.bulkUpdateImported(
+                existingTransactions.map(bankTransaction => this.mapBankTransaction(bankTransaction, accountId))
+            );
             yield* transactionService.updateAllBalances();
         }
 

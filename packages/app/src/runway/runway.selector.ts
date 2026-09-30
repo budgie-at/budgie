@@ -1,4 +1,8 @@
-const normalizePart = (value: number | string) => value.toString().replace(/[^a-zA-Z0-9]+/gu, '_');
+const normalizePart = (value: number | string) =>
+    value
+        .toString()
+        .replace(/[-−]/gu, 'minus_')
+        .replace(/[^a-zA-Z0-9]+/gu, '_');
 
 export const RunwaySelector = {
     Pill: 'RunwayPill',

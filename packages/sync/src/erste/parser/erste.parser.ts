@@ -8,7 +8,7 @@ import { ERSTE_PAGE_NOISE_PATTERNS } from '../constant/erste.constant';
 import { parseErsteAmount } from '../util/parse-erste-amount.util';
 
 import { ersteAccountInfoExtractor } from './erste-account-info.extractor';
-import { ErsteParserState } from './erste-parser-state';
+import { ersteCardMerchantParser } from './erste-card-merchant.parser';
 import { ersteRowGrouper } from './erste-row.grouper';
 
 import type { ErsteDateAmountInputInterface } from '../interface/erste-date-amount-input.interface';
@@ -16,6 +16,7 @@ import type { ErsteDateAmountInterface } from '../interface/erste-date-amount.in
 import type { ErsteInlineDateAmountInterface } from '../interface/erste-inline-date-amount.interface';
 import type { ErstePageRowInterface } from '../interface/erste-page-row.interface';
 import type { ErsteParsedDataInterface } from '../interface/erste-parsed-data.interface';
+import type { ErsteRowInterface } from '../interface/erste-row.interface';
 import type { PdfTextItemInterface } from '../interface/pdf-text-item.interface';
 
 class ErsteParser {
@@ -24,7 +25,11 @@ class ErsteParser {
     private static readonly DATE_AMOUNT_RIGHT_REGEX = /^(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
     private static readonly DATE_AMOUNT_TAIL_REGEX = /^(.+?)\s+(\d{2})\.(\d{2})\.(\d{4})\s+(\d{1,3}(?:\.\d{3})*,\d{2})(-?)$/u;
 
-    private state: ErsteParserState = new ErsteParserState();
+    private inSection = false;
+    private currentDateAmount: ErsteDateAmountInterface | null = null;
+    private currentPrimary = '';
+    private continuationLines: string[] = [];
+    private transactions: ErsteRowInterface[] = [];
 
     parse(items: PdfTextItemInterface[]): Result.Result<ErsteParsedDataInterface, string> {
         const account = ersteAccountInfoExtractor.extract(items);
@@ -33,9 +38,14 @@ class ErsteParser {
             return Result.fail(account.failure);
         }
 
-        const rows = ersteRowGrouper.group(items);
-        this.state = new ErsteParserState();
+        this.inSection = false;
+        this.currentDateAmount = null;
+        this.transactions = [];
 
+        return Result.map(this.processRows(ersteRowGrouper.group(items)), transactions => ({ account: account.success, transactions }));
+    }
+
+    private processRows(rows: ErstePageRowInterface[]): Result.Result<ErsteRowInterface[], string> {
         for (const row of rows) {
             const processed = this.processRow(row);
 
@@ -43,9 +53,9 @@ class ErsteParser {
                 return Result.fail(processed.failure);
             }
         }
-        this.state.flush();
+        this.flushTransaction();
 
-        return Result.succeed({ account: account.success, transactions: this.state.getTransactions() });
+        return Result.succeed(this.transactions);
     }
 
     private processRow(row: ErstePageRowInterface): Result.Result<void, string> {
@@ -55,7 +65,7 @@ class ErsteParser {
         if (this.tryHandleSectionTransition(leftText, rightText)) {
             return Result.void;
         }
-        if (!this.state.isInSection()) {
+        if (!this.inSection) {
             return Result.void;
         }
         if (this.isPageNoise(leftText) || this.isPageNoise(rightText)) {
@@ -71,8 +81,8 @@ class ErsteParser {
         if (Result.isFailure(anchored)) {
             return Result.fail(anchored.failure);
         }
-        if (!anchored.success && this.state.hasCurrent() && isNotEmptyString(leftText)) {
-            this.state.addContinuationLine(leftText);
+        if (!anchored.success && isDefined(this.currentDateAmount) && isNotEmptyString(leftText)) {
+            this.continuationLines.push(leftText);
         }
 
         return Result.void;
@@ -80,13 +90,14 @@ class ErsteParser {
 
     private tryHandleSectionTransition(leftText: string, rightText: string): boolean {
         if (leftText.startsWith(ErsteParser.COLUMN_HEADER_PREFIX)) {
-            this.state.enterSection();
+            this.inSection = true;
 
             return true;
         }
 
         if (this.isEndOfSection(leftText, rightText)) {
-            this.state.exitSection();
+            this.flushTransaction();
+            this.inSection = false;
 
             return true;
         }
@@ -105,7 +116,7 @@ class ErsteParser {
             return Result.fail(rightAnchor.failure);
         }
 
-        this.state.startTransaction(rightAnchor.success, leftText);
+        this.startTransaction(rightAnchor.success, leftText);
 
         return Result.succeed(true);
     }
@@ -125,9 +136,51 @@ class ErsteParser {
             return Result.fail(inlineAnchor.failure);
         }
 
-        this.state.startTransaction(inlineAnchor.success, inlineAnchor.success.prefix);
+        this.startTransaction(inlineAnchor.success, inlineAnchor.success.prefix);
 
         return Result.succeed(true);
+    }
+
+    private startTransaction(dateAmount: ErsteDateAmountInterface, primary: string): void {
+        this.flushTransaction();
+        this.currentDateAmount = dateAmount;
+        this.currentPrimary = primary;
+        this.continuationLines = [];
+    }
+
+    private flushTransaction(): void {
+        if (isDefined(this.currentDateAmount)) {
+            this.transactions.push(this.buildTransaction(this.currentDateAmount));
+            this.currentDateAmount = null;
+        }
+    }
+
+    private buildTransaction(dateAmount: ErsteDateAmountInterface): ErsteRowInterface {
+        const description = this.continuationLines.join(' ').trim();
+        const reference = isNotEmptyString(this.currentPrimary) ? this.currentPrimary : description;
+        const finalDescription = isNotEmptyString(description) ? description : reference;
+
+        return {
+            date: dateAmount.date,
+            reference,
+            description: finalDescription,
+            details: '',
+            amount: dateAmount.amount,
+            isCredit: dateAmount.isCredit,
+            ...this.findMerchantInfo()
+        };
+    }
+
+    private findMerchantInfo(): Partial<Pick<ErsteRowInterface, 'city' | 'countryAlpha2'>> {
+        for (const line of this.continuationLines) {
+            const merchant = ersteCardMerchantParser.parse(line);
+
+            if (isDefined(merchant)) {
+                return { city: merchant.city, countryAlpha2: merchant.countryAlpha2 };
+            }
+        }
+
+        return {};
     }
 
     private joinTexts(items: PdfTextItemInterface[]): string {

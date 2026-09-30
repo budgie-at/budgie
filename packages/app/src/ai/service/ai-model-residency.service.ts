@@ -77,12 +77,6 @@ class AiModelResidencyService {
         );
     });
 
-    readonly retry = Effect.fn('AiModelResidencyService.retry')(function* (this: AiModelResidencyService, subsystem: AiSubsystemNameEnum) {
-        yield* this.lock.withPermit(
-            Effect.andThen(AiModelResidencyService.SUBSYSTEMS[subsystem].resetError(), this.loadWhileLeased(subsystem))
-        );
-    });
-
     readonly resume = Effect.fn('AiModelResidencyService.resume')(function* (this: AiModelResidencyService) {
         this.isSuspended = false;
         yield* Effect.forkDetach(

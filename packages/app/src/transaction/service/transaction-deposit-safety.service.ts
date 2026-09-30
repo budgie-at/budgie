@@ -1,7 +1,6 @@
 import {
     AccountTypeEnum,
     type TransactionCreateInputInterface,
-    type TransactionEntryCreateInputInterface,
     type TransactionEntryEntityInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -12,7 +11,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { accountRepository, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { accountRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 
 class TransactionDepositSafetyService {
     readonly assertNoDepositExpenseInputs = Effect.fn('TransactionDepositSafetyService.assertNoDepositExpenseInputs')(function* (
@@ -45,12 +44,8 @@ class TransactionDepositSafetyService {
         }
     });
 
-    readonly assertNoDepositExpenseImportedUpdate = Effect.fn('TransactionDepositSafetyService.assertNoDepositExpenseImportedUpdate')(
-        function* (this: TransactionDepositSafetyService, input: TransactionCreateInputInterface) {
-            const existingEntries = (yield* Effect.forEach(input.entries, entry => this.findExistingImportedUpdateEntry(entry), {
-                concurrency: 'unbounded'
-            })).filter(isDefined);
-
+    readonly assertNoDepositExpenseImportedEntries = Effect.fn('TransactionDepositSafetyService.assertNoDepositExpenseImportedEntries')(
+        function* (this: TransactionDepositSafetyService, existingEntries: readonly TransactionEntryEntityInterface[]) {
             if (!isNotEmptyArray(existingEntries)) {
                 return;
             }
@@ -64,16 +59,6 @@ class TransactionDepositSafetyService {
             yield* this.assertNoDepositExpenseInputs(transactions);
         }
     );
-
-    private readonly findExistingImportedUpdateEntry = Effect.fnUntraced(function* (
-        entry: Pick<TransactionEntryCreateInputInterface, 'accountId' | 'externalId'>
-    ) {
-        if (!isDefined(entry.externalId)) {
-            return null;
-        }
-
-        return (yield* transactionEntryRepository.findByExternalIdAndAccountId(entry.externalId, entry.accountId)) ?? null;
-    });
 
     private readonly findTransactionsByEntries = Effect.fnUntraced(function* (existingEntries: readonly TransactionEntryEntityInterface[]) {
         const transactionIds = [...new Set(existingEntries.map(entry => entry.originalTransactionId ?? entry.transactionId))];

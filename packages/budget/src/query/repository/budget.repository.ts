@@ -1,5 +1,6 @@
 import {
     AccountEntityTable,
+    BaseTransactionFilterRepository,
     BudgetEntityTable,
     Db,
     ExchangeRateEntityTable,
@@ -7,14 +8,14 @@ import {
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    buildSpendingEntryCondition
 } from '@budgie/contracts';
 import { and, between, desc, eq, isNull, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import type { BudgetCreateEntityInterface, BudgetUpdateEntityInterface, DB } from '@budgie/contracts';
 
-export class BudgetRepository {
+export class BudgetRepository extends BaseTransactionFilterRepository {
     readonly create = Effect.fn('BudgetRepository.create')(function* (input: BudgetCreateEntityInterface) {
         const [budget] = yield* Db.query(db => db.insert(BudgetEntityTable).values([input]).returning());
 
@@ -27,17 +28,6 @@ export class BudgetRepository {
         return budget;
     });
 
-    readonly getActive = Effect.fn('BudgetRepository.getActive')(function* () {
-        const budget = yield* Db.query(db =>
-            db.query.BudgetEntityTable.findFirst({
-                where: isNull(BudgetEntityTable.deletedAt),
-                orderBy: [desc(BudgetEntityTable.updatedAt)]
-            })
-        );
-
-        return budget ?? null;
-    });
-
     readonly delete = Effect.fn('BudgetRepository.delete')(function* (id: number) {
         yield* Db.query(db =>
             db
@@ -47,10 +37,8 @@ export class BudgetRepository {
         );
     });
 
-    constructor(private readonly db: DB) {}
-
-    findActive() {
-        return this.db.query.BudgetEntityTable.findFirst({
+    findActive(db: DB = this.db) {
+        return db.query.BudgetEntityTable.findFirst({
             where: isNull(BudgetEntityTable.deletedAt),
             orderBy: [desc(BudgetEntityTable.updatedAt)]
         });
@@ -107,10 +95,11 @@ export class BudgetRepository {
 
     private buildSpentWhere(periodStart: Date, nextPeriodStart: Date) {
         return and(
-            eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
-            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
-            isNull(TransactionEntityTable.deletedAt),
-            isNull(TransactionEntryEntityTable.deletedAt),
+            this.buildVisibleTransactionCondition(),
+            this.buildPrimaryLedgerEntryCondition(),
+            this.buildNonDebtAccountCondition(),
+            this.buildExpenseAnalyticsEntryCondition(),
+            buildSpendingEntryCondition(),
             between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
         );
     }

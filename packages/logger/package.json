@@ -24,7 +24,6 @@
         "lint": "oxlint --type-aware src && eslint src",
         "lint:eslint": "eslint src",
         "lint:fix": "oxlint --type-aware --fix src && eslint --fix src",
-        "test": "jest --passWithNoTests",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {

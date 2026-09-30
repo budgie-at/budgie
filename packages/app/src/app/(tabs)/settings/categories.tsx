@@ -12,6 +12,7 @@ import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
+import { CategoryDefaultIconButton } from '../../../category/components/category-default-icon-button/category-default-icon-button';
 import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
 import { useCategoryFormModal } from '../../../category/context/category-form-modal.context';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
@@ -98,6 +99,7 @@ export default function Categories() {
             onSearchChange={setSearch}
             searchInputTestID={CategoryPageSelector.SearchInput}
             emptyState={<CategoryEmptyState search={search} />}
+            listHeader={<CategoryDefaultIconButton />}
         />
     );
 }

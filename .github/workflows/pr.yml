@@ -70,8 +70,6 @@ jobs:
         timeout-minutes: 60
         permissions:
             contents: read
-        outputs:
-            coverage-artifact-id: ${{ steps.upload-coverage.outputs.artifact-id }}
         steps:
             - name: Checkout repository
               uses: actions/checkout@v7
@@ -118,21 +116,10 @@ jobs:
               run: pnpm build
 
             - name: Unit tests
-              run: pnpm test:coverage
+              run: pnpm test
 
             - name: Verify generated files are committed
               run: git diff --exit-code
-
-            - name: Upload coverage artifact
-              id: upload-coverage
-              uses: actions/upload-artifact@v7
-              with:
-                  name: coverage-reports
-                  path: |
-                      **/coverage/**
-                      !**/node_modules/**
-                  if-no-files-found: ignore
-                  retention-days: 1
 
     e2e-script-tests:
         name: E2E script self-tests
@@ -164,33 +151,6 @@ jobs:
                     echo "== $t"
                     bash "$t"
                   done
-
-    codecov:
-        if: ${{ needs.code-quality.outputs.coverage-artifact-id != '' }}
-        needs: [code-quality]
-        name: Upload coverage reports
-        runs-on: [self-hosted, trf-linux-amd64-2x4]
-        timeout-minutes: 10
-        permissions:
-            contents: read
-            id-token: write
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v7
-              with:
-                  persist-credentials: false
-
-            - name: Download coverage artifact
-              uses: actions/download-artifact@v8
-              with:
-                  name: coverage-reports
-                  path: coverage-reports
-
-            - name: Upload coverage reports to Codecov
-              uses: codecov/codecov-action@v7
-              with:
-                  directory: coverage-reports
-                  use_oidc: true
 
     assert-ai-ota:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'

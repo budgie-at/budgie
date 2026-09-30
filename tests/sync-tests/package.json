@@ -5,12 +5,12 @@
     "type": "module",
     "scripts": {
         "test": "vitest run",
-        "test:coverage": "vitest run",
         "test:watch": "vitest",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc --noEmit"
     },
     "dependencies": {
         "@budgie-at/test-kit": "workspace:*",
+        "@budgie/budget": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/sync": "workspace:*",

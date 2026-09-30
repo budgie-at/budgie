@@ -1,18 +1,16 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { AccountTypeEnum, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import * as Clock from 'effect/Clock';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
 import { describe, expect, it } from 'vitest';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { buildMonobank, fetchCanonicalsOfType, fetchExpenseEntries, monobankStub, run, seed, setupMonobankFixture } from '../../harness';
+import { buildMonobank, fetchCanonicalsOfType, monobankStub, run, seed, setupMonobankFixture } from '../../harness';
 
 describe('consolidation/monobank-immediate-reconciliation', () => {
-    it('reconciles an ATM withdrawal before entering its rate-limit wait', async () => {
+    it('keeps a synced ATM withdrawal as a bank expense through immediate reconciliation and after sync', async () => {
         const { account: bankAccount } = setupMonobankFixture();
-        const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
+        seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
         const rateLimitWaitEntered = Deferred.makeUnsafe<void>();
         const releaseRateLimitWait = Deferred.makeUnsafe<void>();
         let syncPromise: Promise<unknown> = Promise.resolve();
@@ -26,7 +24,7 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                     hold: false,
                     mcc: 6011,
                     operationAmount: -40800,
-                    time: Math.floor(new Date('2026-01-15T12:00:00.000Z').getTime() / 1000)
+                    time: Math.floor(Date.now() / 1000) - 60 * 60
                 })
             ]);
 
@@ -50,22 +48,12 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                 })
             ]);
 
-            const canonicals = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
-
-            expect(canonicals).toHaveLength(1);
-            const [canonical] = canonicals;
-            if (!isDefined(canonical)) {
-                return;
-            }
-
-            expect(canonical.fromAccountId).toBe(bankAccount.id);
-            expect(canonical.toAccountId).toBe(cashAccount.id);
-            expect((await fetchExpenseEntries(canonical.id)).find(entry => entry.type === TransactionEntryTypeEnum.FEE)?.amount).toBe(
-                8000000
-            );
+            expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
         } finally {
             Deferred.doneUnsafe(releaseRateLimitWait, Effect.void);
             await syncPromise;
         }
+
+        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
     });
 });

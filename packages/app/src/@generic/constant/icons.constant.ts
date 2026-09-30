@@ -2,12 +2,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 
 import { ICON_IMPORTS_CHUNK_1 } from './icons/icons-a-arrow-down.constant';
-import { ICON_IMPORTS_CHUNK_2 } from './icons/icons-cable.constant';
-import { ICON_IMPORTS_CHUNK_3 } from './icons/icons-crown.constant';
-import { ICON_IMPORTS_CHUNK_4 } from './icons/icons-glasses.constant';
-import { ICON_IMPORTS_CHUNK_5 } from './icons/icons-mic.constant';
-import { ICON_IMPORTS_CHUNK_6 } from './icons/icons-router.constant';
-import { ICON_IMPORTS_CHUNK_7 } from './icons/icons-tally-2.constant';
+import { ICON_IMPORTS_CHUNK_2 } from './icons/icons-briefcase-business.constant';
+import { ICON_IMPORTS_CHUNK_3 } from './icons/icons-code-xml.constant';
+import { ICON_IMPORTS_CHUNK_4 } from './icons/icons-folder-bookmark.constant';
+import { ICON_IMPORTS_CHUNK_5 } from './icons/icons-link.constant';
+import { ICON_IMPORTS_CHUNK_6 } from './icons/icons-panel-right-open.constant';
+import { ICON_IMPORTS_CHUNK_7 } from './icons/icons-shopping-bag.constant';
+import { ICON_IMPORTS_CHUNK_8 } from './icons/icons-toggle-left.constant';
 
 import type { LucideIconModuleInterface } from '../interface/lucide-icon-module.interface';
 
@@ -18,5 +19,6 @@ export const ICON_IMPORTS: Partial<Record<UserIconNameEnum, () => Promise<Lucide
     ...ICON_IMPORTS_CHUNK_4,
     ...ICON_IMPORTS_CHUNK_5,
     ...ICON_IMPORTS_CHUNK_6,
-    ...ICON_IMPORTS_CHUNK_7
+    ...ICON_IMPORTS_CHUNK_7,
+    ...ICON_IMPORTS_CHUNK_8
 };

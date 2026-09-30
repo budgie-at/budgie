@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '../../@generic/enum/user-icon-name.enum';
+import type { UserIconType } from '../../@generic/type/user-icon.type';
 
 export interface RecurringChargeCandidateInterface {
     readonly transactionId: number;
@@ -9,5 +9,5 @@ export interface RecurringChargeCandidateInterface {
     readonly accountId: number;
     readonly categoryId: number;
     readonly categoryTitle: string;
-    readonly categoryIcon: UserIconNameEnum;
+    readonly categoryIcon: UserIconType;
 }

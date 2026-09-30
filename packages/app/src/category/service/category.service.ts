@@ -2,10 +2,15 @@ import { Db } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { categoryRepository } from '../../@generic/drizzle/db/db';
+import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
 
-import type { CategoryCreateEntityInterface, CategoryEntityInterface } from '@budgie/contracts';
+import type { CategoryCreateEntityInterface, CategoryEntityInterface, UserIconType } from '@budgie/contracts';
 
 class CategoryService {
+    readonly updateIcon = Effect.fn('CategoryService.updateIcon')(function* (categoryId: number, icon: UserIconType) {
+        yield* categoryRepository.updateById(categoryId, { icon });
+    }, invalidateDatabaseLiveQuery);
+
     readonly bulkCreate = Effect.fn('CategoryService.bulkCreate')(function* (
         inputs: CategoryCreateEntityInterface[],
         batchSize: number = 100

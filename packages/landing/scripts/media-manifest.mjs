@@ -89,13 +89,42 @@ const collectMediaAssets = () => {
     return { assets, errors };
 };
 
-const renderAsset = asset =>
-    `    { slug: '${asset.slug}', locale: '${asset.locale}', scene: '${asset.scene}', theme: MediaThemeEnum.${asset.theme.toUpperCase()}, kind: MediaKindEnum.${asset.kind} }`;
+const groupAssets = flatAssets => {
+    const themesByLocale = new Map();
 
-const renderManifestSource = assets => {
+    for (const { slug, scene, kind, locale, theme } of flatAssets) {
+        const key = `${slug}/${scene}/${kind}/${locale}`;
+        const localeGroup = themesByLocale.get(key) ?? { slug, scene, kind, locale, themes: new Set() };
+
+        localeGroup.themes.add(theme);
+        themesByLocale.set(key, localeGroup);
+    }
+
+    const entries = new Map();
+
+    for (const { slug, scene, kind, locale, themes } of themesByLocale.values()) {
+        const sortedThemes = [...themes].sort();
+        const key = `${slug}/${scene}/${kind}/${sortedThemes.join(',')}`;
+        const entry = entries.get(key) ?? { slug, scene, kind, locales: [], themes: sortedThemes };
+
+        entry.locales.push(locale);
+        entries.set(key, entry);
+    }
+
+    return [...entries.values()];
+};
+
+const renderEntry = ({ slug, scene, kind, locales, themes }) => {
+    const renderedLocales = locales.sort().map(locale => `'${locale}'`).join(', ');
+    const renderedThemes = themes.map(theme => `MediaThemeEnum.${theme.toUpperCase()}`).join(', ');
+
+    return `    { slug: '${slug}', scene: '${scene}', kind: MediaKindEnum.${kind}, locales: [${renderedLocales}], themes: [${renderedThemes}] }`;
+};
+
+const renderManifestSource = entries => {
     const lines = [BANNER];
 
-    if (assets.length > 0) {
+    if (entries.length > 0) {
         lines.push(
             "import { MediaKindEnum } from '../enum/media-kind.enum';",
             "import { MediaThemeEnum } from '../enum/media-theme.enum';",
@@ -103,12 +132,12 @@ const renderManifestSource = assets => {
         );
     }
 
-    lines.push("import type { MediaAssetInterface } from '../interface/media-asset.interface';", '');
+    lines.push("import type { MediaManifestEntryInterface } from '../interface/media-manifest-entry.interface';", '');
 
-    if (assets.length === 0) {
-        lines.push('export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [];', '');
+    if (entries.length === 0) {
+        lines.push('export const MEDIA_MANIFEST: readonly MediaManifestEntryInterface[] = [];', '');
     } else {
-        lines.push('export const MEDIA_MANIFEST: readonly MediaAssetInterface[] = [', assets.map(renderAsset).join(',\n'), '];', '');
+        lines.push('export const MEDIA_MANIFEST: readonly MediaManifestEntryInterface[] = [', entries.map(renderEntry).join(',\n'), '];', '');
     }
 
     return lines.join('\n');
@@ -127,7 +156,9 @@ if (errors.length > 0) {
     process.exit(1);
 }
 
-const source = renderManifestSource(assets);
+const entries = groupAssets(assets);
+
+const source = renderManifestSource(entries);
 
 if (process.argv.includes('--check')) {
     const scratchDirectory = mkdtempSync(join(tmpdir(), 'budgie-media-'));
@@ -144,12 +175,12 @@ if (process.argv.includes('--check')) {
             process.exit(1);
         }
 
-        process.stdout.write(`media:manifest  ${assets.length} asset(s) verified\n`);
+        process.stdout.write(`media:manifest  ${assets.length} asset(s) in ${entries.length} entries verified\n`);
     } finally {
         rmSync(scratchDirectory, { recursive: true, force: true });
     }
 } else {
     writeFileSync(MANIFEST_PATH, source, 'utf8');
     formatSource(MANIFEST_PATH);
-    process.stdout.write(`media:manifest  wrote ${assets.length} asset(s) to src/generic/constant/media-manifest.constant.ts\n`);
+    process.stdout.write(`media:manifest  wrote ${entries.length} entries to src/generic/constant/media-manifest.constant.ts\n`);
 }

@@ -9,7 +9,6 @@ import {
     InstrumentEntityInterface,
     LiabilityAccountCreateInputInterface,
     MccCategoryLookupInterface,
-    TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
@@ -25,6 +24,7 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 
 import { instrumentRepository } from '../../@generic/drizzle/db/db';
 import { accountService } from '../../account/service/account.service';
+import { DEFAULT_CATEGORY_ICON } from '../../category/constant/default-category-icon.constant';
 import { categoryService } from '../../category/service/category.service';
 import { ruleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { loadMccCategoryLookupMap } from '../../sync/util/load-mcc-category-lookup-map.util';
@@ -36,6 +36,7 @@ import type { ImportProgressInterface } from '../interface/import-progress.inter
 import type { ImporterColumnMapInterface } from '../interface/importer-column-map.interface';
 import type { ImporterRowInterface } from '../interface/importer-row.interface';
 import type { NormalizedRowType } from '../type/normalized-row.type';
+import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 export class ImporterService {
     readonly process = Effect.fn('ImporterService.process')(function* (this: ImporterService, csvText: string, totalRows: number) {
@@ -85,7 +86,7 @@ export class ImporterService {
             }
 
             if (isNotEmptyString(normalizedRow.category)) {
-                categoryInputs.set(normalizedRow.category, { title: normalizedRow.category, icon: UserIconNameEnum.Home });
+                categoryInputs.set(normalizedRow.category, { title: normalizedRow.category, icon: DEFAULT_CATEGORY_ICON });
             }
         });
 
@@ -241,22 +242,10 @@ export class ImporterService {
     }: CreateEntriesParamsInterface): TransactionEntryCreateInputInterface[] {
         const entryExternalId = externalId ?? null;
 
-        if (type === TransactionTypeEnum.INCOME) {
+        if (type === TransactionTypeEnum.INCOME || type === TransactionTypeEnum.EXPENSE) {
             return [
                 {
-                    type: TransactionEntryTypeEnum.DEBIT,
-                    amount: Math.abs(source.amount),
-                    accountId: source.account.id,
-                    categoryId,
-                    categorySource,
-                    mccCategoryId,
-                    externalId: entryExternalId
-                }
-            ];
-        } else if (type === TransactionTypeEnum.EXPENSE) {
-            return [
-                {
-                    type: TransactionEntryTypeEnum.CREDIT,
+                    type: type === TransactionTypeEnum.INCOME ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
                     amount: Math.abs(source.amount),
                     accountId: source.account.id,
                     categoryId,

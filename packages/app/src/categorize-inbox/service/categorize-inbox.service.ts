@@ -1,10 +1,13 @@
 import { CategorySourceEnum, Db, TransactionUpdatedByEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionCategorizeInboxRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
+import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
+import { unconsolidateByIdInTransaction } from '../../transaction/utils/unconsolidate-by-id-in-transaction.util';
 import { CategorizeInboxLabelKindEnum } from '../enum/categorize-inbox-label-kind.enum';
 
 import type { CategorizeInboxAssignmentInterface } from '../interface/categorize-inbox-assignment.interface';
@@ -34,6 +37,37 @@ class CategorizeInboxService {
         effect => Db.transaction(effect),
         invalidateDatabaseLiveQuery
     );
+
+    readonly moveToCash = Effect.fn('CategorizeInboxService.moveToCash')(function* (
+        this: CategorizeInboxService,
+        transactionIds: number[]
+    ) {
+        const unconsolidatedTransactionIds = yield* this.filterByConsolidation(transactionIds, false);
+
+        yield* transferConsolidationService.moveAtmCashWithdrawalsToCash(unconsolidatedTransactionIds);
+
+        return yield* this.filterByConsolidation(unconsolidatedTransactionIds, true);
+    }, invalidateDatabaseLiveQuery);
+
+    readonly undoMoveToCash = Effect.fn('CategorizeInboxService.undoMoveToCash')(
+        function* (transactionIds: number[]) {
+            const transactions = yield* transactionRepository.findByIds(transactionIds);
+            const transferIds = new Set(transactions.map(transaction => transaction.consolidationParentTransactionId).filter(isDefined));
+
+            yield* Effect.forEach(transferIds, transferId => unconsolidateByIdInTransaction(transferId), { discard: true });
+            yield* accountBalanceIncrementalService.updateAllBalances(true);
+        },
+        effect => Db.transaction(effect),
+        invalidateDatabaseLiveQuery
+    );
+
+    private readonly filterByConsolidation = Effect.fnUntraced(function* (transactionIds: number[], isConsolidated: boolean) {
+        const transactions = yield* transactionRepository.findByIds(transactionIds);
+
+        return transactions
+            .filter(transaction => isDefined(transaction.consolidationParentTransactionId) === isConsolidated)
+            .map(transaction => transaction.id);
+    });
 
     private readonly applyLabel = Effect.fn('CategorizeInboxService.applyLabel')(function* (
         this: CategorizeInboxService,

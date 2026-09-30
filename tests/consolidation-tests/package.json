@@ -5,7 +5,6 @@
     "type": "module",
     "scripts": {
         "test": "vitest run",
-        "test:coverage": "vitest run",
         "test:watch": "vitest",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc --noEmit"
     },
@@ -21,6 +20,7 @@
     "devDependencies": {
         "@types/better-sqlite3": "^7.6.13",
         "@types/node": "22.20.1",
+        "effect": "4.0.0-rc.118",
         "typescript": "npm:@typescript/typescript6@6.0.2"
     }
 }

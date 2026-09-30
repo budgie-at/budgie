@@ -1,8 +1,8 @@
 import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
-import { AccountBalanceEntityTable, AccountTypeEnum, ExchangeRateEntityTable, PRECISION } from '@budgie/contracts';
+import { AccountTypeEnum, ExchangeRateEntityTable, PRECISION } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { seed, seedBitcoinCryptoAccount } from '../../harness';
+import { seed, seedBitcoinCryptoAccount, seedLedgerBalance } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const BITCOIN_EURO_RATE = 50_000;
@@ -14,7 +14,7 @@ const seedLiquidFixture = async () => {
     const { bitcoin, euro } = await seedBitcoinCryptoAccount(BITCOIN_BALANCE);
     const cashAccount = seed.account({ instrumentId: euro.id, type: AccountTypeEnum.CASH });
 
-    insertOne(AccountBalanceEntityTable, { accountId: cashAccount.id, amount: CASH_BALANCE });
+    await seedLedgerBalance(cashAccount.id, CASH_BALANCE);
     insertOne(ExchangeRateEntityTable, {
         source: 'test',
         baseInstrumentId: bitcoin.id,

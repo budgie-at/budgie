@@ -1,4 +1,4 @@
-import { and, count, eq, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
+import { and, asc, count, eq, inArray, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Effect from 'effect/Effect';
 
@@ -25,10 +25,7 @@ export class TransactionEntryRepository {
         yield* Db.query(db =>
             db
                 .update(TransactionEntryEntityTable)
-                .set({
-                    originalTransactionId: TransactionEntryEntityTable.transactionId,
-                    transactionId: canonicalTransactionId
-                })
+                .set({ originalTransactionId: TransactionEntryEntityTable.transactionId, transactionId: canonicalTransactionId })
                 .where(
                     and(
                         inArray(TransactionEntryEntityTable.transactionId, sourceTransactionIds),
@@ -45,10 +42,7 @@ export class TransactionEntryRepository {
         yield* Db.query(db =>
             db
                 .update(TransactionEntryEntityTable)
-                .set({
-                    transactionId: TransactionEntryEntityTable.originalTransactionId,
-                    originalTransactionId: null
-                })
+                .set({ transactionId: TransactionEntryEntityTable.originalTransactionId, originalTransactionId: null })
                 .where(
                     and(
                         eq(TransactionEntryEntityTable.transactionId, canonicalTransactionId),
@@ -178,19 +172,25 @@ export class TransactionEntryRepository {
         return transactionEntry;
     });
 
-    readonly findByExternalIdAndAccountId = Effect.fn('TransactionEntryRepository.findByExternalIdAndAccountId')(function* (
-        externalId: string,
+    readonly findByExternalIdsAndAccountId = Effect.fn('TransactionEntryRepository.findByExternalIdsAndAccountId')(function* (
+        externalIds: string[],
         accountId: number
     ) {
-        return yield* Db.query(db =>
-            db.query.TransactionEntryEntityTable.findFirst({
-                where: and(
-                    eq(TransactionEntryEntityTable.externalId, externalId),
-                    eq(TransactionEntryEntityTable.accountId, accountId),
-                    isNull(TransactionEntryEntityTable.deletedAt)
-                )
-            })
-        );
+        return isNotEmptyArray(externalIds)
+            ? yield* Db.query(db =>
+                  db
+                      .select()
+                      .from(TransactionEntryEntityTable)
+                      .where(
+                          and(
+                              inArray(TransactionEntryEntityTable.externalId, externalIds),
+                              eq(TransactionEntryEntityTable.accountId, accountId),
+                              isNull(TransactionEntryEntityTable.deletedAt)
+                          )
+                      )
+                      .orderBy(asc(TransactionEntryEntityTable.id))
+              )
+            : [];
     });
 
     readonly findByTransactionIdAndExternalId = Effect.fn('TransactionEntryRepository.findByTransactionIdAndExternalId')(function* (

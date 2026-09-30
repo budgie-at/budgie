@@ -10,6 +10,7 @@ import * as Schema from 'effect/Schema';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BaseSyncProviderClient } from '../../core/client/base-sync-provider.client';
+import { HTTP_STATUS_TOO_MANY_REQUESTS } from '../../core/constant/http-status.constant';
 import { SYNC_RETRY_STATUS_CODES } from '../../core/constant/sync-retry-status-codes.constant';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
@@ -95,7 +96,6 @@ const EARN_REWARD_TYPE_ALL = 'ALL';
 const EARN_PAGE_SIZE = 100;
 const TRADES_PER_SYMBOL_LIMIT = 1000;
 const BINANCE_INVALID_SYMBOL_CODE = -1121;
-const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
 
 export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly C2C_HISTORY_MONTHS = 6;

@@ -116,8 +116,6 @@ export const useHomePageDataQuery = () => {
             balance: convertFromMicroUnits(row.balance),
             bankProvider: bankProviderGroup?.provider ?? null,
             convertedBalance: convertFromMicroUnits(row.convertedBalance),
-            convertedCreditAmount: convertFromMicroUnits(row.convertedCreditAmount),
-            convertedDebitAmount: convertFromMicroUnits(row.convertedDebitAmount),
             convertedDebtProgressSummary,
             convertedTargetBalance: convertFromMicroUnits(row.convertedTargetBalance),
             debtProgressSummary,

@@ -46,17 +46,14 @@ import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { Workload } from '../@generic/service/workload.service';
-import { accountBalanceIncrementalService } from '../account/service/account-balance-incremental.service';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
-import { exchangeRatesSyncService } from '../exchange-rate/service/exchange-rates-sync.service';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { historicalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
 import { SettingsProvider } from '../settings/provider/settings.provider';
-import { binanceSyncService } from '../sync/service/binance-sync.service';
-import { monobankSyncService } from '../sync/service/monobank-sync.service';
+import { appDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -70,21 +67,9 @@ const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVa
 const logAndContinue = Effect.catchCause(Effect.logError);
 
 const syncForegroundData = Effect.gen(function* () {
-    const workload = yield* Workload;
-
-    yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
-    yield* logAndContinue(exchangeRatesSyncService.sync());
-    if (yield* workload.hasQueuedWork) {
-        return;
+    if (yield* appDataSyncService.sync()) {
+        yield* Effect.forkDetach(logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts()));
     }
-
-    yield* logAndContinue(monobankSyncService.sync());
-    if (yield* workload.hasQueuedWork) {
-        return;
-    }
-
-    yield* logAndContinue(binanceSyncService.sync());
-    yield* Effect.forkDetach(logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts()));
 });
 
 const handleAppStateChange = (isActive: boolean): void => {

@@ -11,6 +11,7 @@ import { budgetAlertMonitorService } from '../../budget/service/budget-alert-mon
 import { exchangeRatesSyncService } from '../../exchange-rate/service/exchange-rates-sync.service';
 import { historicalMarketDataLoaderService } from '../../market-data/service/historical-market-data-loader.service';
 import { onboardingService } from '../../onboarding/service/onboarding.service';
+import { appDataSyncService } from '../../sync/service/app-data-sync.service';
 import { binanceSyncService } from '../../sync/service/binance-sync.service';
 import { monobankSyncService } from '../../sync/service/monobank-sync.service';
 import { transferConsolidationService } from '../../sync/service/transfer-consolidation.service';
@@ -23,23 +24,6 @@ const SPLASH_HIDE_DELAY_MS = 200;
 const STARTUP_SERVICE_DELAY_MS = 1_000;
 
 const logAndContinue = Effect.catchCause(Effect.logError);
-
-const syncAppData = Effect.gen(function* () {
-    const workload = yield* Workload;
-
-    yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
-    yield* logAndContinue(exchangeRatesSyncService.sync());
-    if (yield* workload.hasQueuedWork) {
-        return;
-    }
-
-    yield* logAndContinue(monobankSyncService.sync());
-    if (yield* workload.hasQueuedWork) {
-        return;
-    }
-
-    yield* logAndContinue(binanceSyncService.sync());
-});
 
 const initializeAppServices = Effect.gen(function* () {
     yield* Effect.all(
@@ -56,7 +40,7 @@ const initializeAppServices = Effect.gen(function* () {
         { concurrency: 'unbounded', discard: true }
     );
     widgetSnapshotService.start();
-    yield* Workload.use(workload => workload.run(syncAppData));
+    yield* Workload.use(workload => workload.run(appDataSyncService.sync()));
     yield* logAndContinue(onboardingService.initializeLocale());
     yield* logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts());
 });

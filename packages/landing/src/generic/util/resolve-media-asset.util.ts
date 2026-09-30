@@ -14,11 +14,14 @@ export const resolveMediaAsset = (
     locale: string,
     kind: MediaKindEnum
 ): Record<MediaThemeEnum, MediaAssetInterface | undefined> => {
-    const candidates = MEDIA_MANIFEST.filter(asset => asset.slug === slug && asset.scene === scene && asset.kind === kind);
-    const resolveTheme = (theme: MediaThemeEnum) =>
-        [locale, FALLBACK_LOCALE]
-            .map(candidateLocale => candidates.find(asset => asset.theme === theme && asset.locale === candidateLocale))
-            .find(isDefined);
+    const entries = MEDIA_MANIFEST.filter(entry => entry.slug === slug && entry.scene === scene && entry.kind === kind);
+    const resolveTheme = (theme: MediaThemeEnum) => {
+        const resolvedLocale = [locale, FALLBACK_LOCALE].find(candidateLocale =>
+            entries.some(entry => entry.themes.includes(theme) && entry.locales.includes(candidateLocale))
+        );
+
+        return [resolvedLocale].filter(isDefined).map(assetLocale => ({ slug, locale: assetLocale, scene, theme, kind }))[0];
+    };
 
     return { [MediaThemeEnum.LIGHT]: resolveTheme(MediaThemeEnum.LIGHT), [MediaThemeEnum.DARK]: resolveTheme(MediaThemeEnum.DARK) };
 };

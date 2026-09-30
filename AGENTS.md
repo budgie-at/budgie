@@ -228,6 +228,12 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 
 Rule 3 ("No comments") applies to every language in this repo, not just TypeScript — shell, SQL, YAML, and config included. At most one single-line header comment per file; explanations belong in the README or the PR description, not inline. Treat these as over-engineering red flags to refactor before shipping, not to ship: a config map that a naming convention would replace, parallel scripts that could share one implementation, a test larger than the code it covers, and single-consumer abstractions.
 
+### Money Safety
+
+- Any PR that adds a data migration or touches consolidation, balance, ledger, or import code must run `pnpm verify:backup <latest backup .db>` locally and report only redacted account ids and the pass/fail totals in the PR description. Never commit backup files or their output, and never paste account titles or balances.
+- Every data migration must pass `tests/sync-tests/src/scenarios/database/data-migration-money-impact.test.ts`; a migration that moves ledger money needs an explicit allowlist entry there with its reason, never a relaxed assertion.
+- `tests/sync-tests` and `tests/consolidation-tests` assert after every test that stored `account_balances` equal `getLedgerBalances`; fix the production path or the seed, never the check.
+
 ### Naming Conventions
 
 | Type        | Convention               | Example                   |

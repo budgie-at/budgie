@@ -1,4 +1,6 @@
 import { accountBalanceRepository, syncRepository, statisticsRepository } from '@app/@generic/drizzle/db/db';
+import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
+import { categorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
@@ -39,7 +41,7 @@ const PRECISION = 1_000_000;
 
 const seedAtmExpense = (bankAccountId: number) =>
     seedBankPair.expense(
-        { externalId: 'tx-atm', operatedAt: new Date(2026, 0, 15, 12, 0, 0) },
+        { externalId: 'tx-atm', operatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
         { accountId: bankAccountId, amount: 500 * PRECISION, mccCategoryId: findMccByCode('6011').id }
     );
 
@@ -107,8 +109,15 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
         await run(monobankSyncService.sync());
         const result = await run(transferConsolidationService.consolidate(null));
+        const [atmExpense] = testDb
+            .select()
+            .from(TransactionEntityTable)
+            .where(eq(TransactionEntityTable.externalId, 'tx-atm-with-fee'))
+            .all();
 
         expect(result.consolidated).toBe(0);
+        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+        expect(await run(categorizeInboxService.moveToCash([atmExpense.id]))).toEqual([atmExpense.id]);
 
         const [canonical] = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
         expect(canonical.fromAccountId).toBe(bankAccount.id);
@@ -219,14 +228,48 @@ describe('consolidation/atm-cash-withdrawal', () => {
         expect(transferConsolidationDrainerService.enqueue).not.toHaveBeenCalled();
     });
 
-    it('does NOT auto-consolidate when more than one cash account shares the currency', async () => {
+    it('moves exactly the chosen ATM withdrawal to cash, keeps stored balances on the ledger and undoes the move', async () => {
+        const { bankAccount, cashAccount, expense } = seedAtmCashWithdrawalFixture();
+        const otherExpense = seedBankPair.expense(
+            { externalId: 'tx-atm-other', operatedAt: new Date() },
+            { accountId: bankAccount.id, amount: 300 * PRECISION, mccCategoryId: findMccByCode('6011').id }
+        );
+        const expectStoredBalancesOnLedger = async (expectedBankBalance: number, expectedCashBalance: number) => {
+            const ledgerBalances = await run(accountBalanceRepository.getLedgerBalances([bankAccount.id, cashAccount.id]));
+
+            expectAccountBalances(bankAccount.id, cashAccount.id, expectedBankBalance, expectedCashBalance);
+            expect(ledgerBalances.get(bankAccount.id)).toBe(expectedBankBalance * PRECISION);
+            expect(ledgerBalances.get(cashAccount.id) ?? 0).toBe(expectedCashBalance * PRECISION);
+        };
+
+        await run(transferConsolidationService.consolidate(null));
+        await run(accountBalanceIncrementalService.updateAllBalances(true));
+        await expectStoredBalancesOnLedger(-800, 0);
+
+        expect(await run(categorizeInboxService.moveToCash([expense.id]))).toEqual([expense.id]);
+        await expectStoredBalancesOnLedger(-800, 500);
+        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(1);
+        expect(fetchTransactionById(otherExpense.id).consolidationParentTransactionId).toBeNull();
+
+        expect(await run(categorizeInboxService.moveToCash([expense.id]))).toEqual([]);
+        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(1);
+        await expectStoredBalancesOnLedger(-800, 500);
+
+        await run(categorizeInboxService.undoMoveToCash([expense.id]));
+        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+        expect(fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
+        await expectStoredBalancesOnLedger(-800, 0);
+    });
+
+    it('does not move to cash when more than one cash account shares the currency', async () => {
         const bankAccount = seed.account({ externalId: 'mono-bank', type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
         seed.account({ title: 'Cash 1', type: AccountTypeEnum.CASH, instrumentId: 1 });
         seed.account({ title: 'Cash 2', type: AccountTypeEnum.CASH, instrumentId: 1 });
-        seedAtmExpense(bankAccount.id);
+        const expense = seedAtmExpense(bankAccount.id);
 
-        const result = await run(transferConsolidationService.consolidate(null));
-        expect(result.consolidated).toBe(0);
+        expect(await run(transferConsolidationService.consolidate(null))).toMatchObject({ consolidated: 0 });
+        expect(await run(categorizeInboxService.moveToCash([expense.id]))).toEqual([]);
+        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
     });
 
     it('reverts an ATM cash withdrawal canonical and restores the source expense', async () => {
@@ -234,7 +277,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
         seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
         const expense = seedAtmExpense(bankAccount.id);
 
-        await run(transferConsolidationService.consolidate(null));
+        await run(categorizeInboxService.moveToCash([expense.id]));
 
         const canonical = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)[0];
         expect(canonical).toBeDefined();

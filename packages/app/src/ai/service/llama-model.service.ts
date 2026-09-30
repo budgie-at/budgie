@@ -65,11 +65,6 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
         patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.SUSPENDED, ...(Exit.isSuccess(exit) && { downloadProgress: 0 }) });
     });
 
-    readonly resetError = Effect.fn('LlamaModelService.resetError')(function* (this: LlamaModelService) {
-        yield* Effect.ignore(this.releaseContext());
-        patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
-    });
-
     context: LlamaContext | null = null;
 
     constructor(private readonly config: LlamaConfigInterface) {}

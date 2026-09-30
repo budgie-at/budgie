@@ -1,7 +1,7 @@
-import type { UserIconNameEnum } from '@budgie/contracts';
+import type { UserIconType } from '@budgie/contracts';
 
 export interface CategorizeInboxLabelInterface {
     readonly id: number;
     readonly title: string;
-    readonly icon: UserIconNameEnum;
+    readonly icon: UserIconType;
 }

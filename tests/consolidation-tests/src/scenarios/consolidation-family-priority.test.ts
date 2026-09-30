@@ -1,4 +1,4 @@
-import { ConsolidationFamilyRegistryService, type ConsolidationFamilyStrategyInterface } from '@budgie/consolidation';
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -11,14 +11,9 @@ import {
     transferPairRepository
 } from '../harness/test-context';
 
-const expectStrategyContract = (family: ConsolidationFamilyStrategyInterface): void => {
-    expect(typeof family.preview).toBe('function');
-    expect(typeof family.process).toBe('function');
-};
-
 describe('consolidation/family-priority', () => {
     it('keeps automatic consolidation family priority explicit and stable', () => {
-        const familyRegistry = new ConsolidationFamilyRegistryService(
+        const familyRegistry = new ConsolidationCoordinatorService(
             {
                 atmCashWithdrawalRepository,
                 existingTransferRepository,
@@ -31,7 +26,7 @@ describe('consolidation/family-priority', () => {
             () => Promise.resolve()
         );
 
-        const families = familyRegistry.buildFamilies();
+        const families = familyRegistry.families;
         const familyKeys = families.map(family => family.key);
 
         expect(familyKeys).toEqual([
@@ -44,11 +39,11 @@ describe('consolidation/family-priority', () => {
             'EXISTING_TRANSFER_INCOME_DUPLICATE',
             'P2P_FIAT_TRANSFER',
             'TRANSFER_PAIR',
-            'ATM_CASH_WITHDRAWAL',
             'REFUND'
         ]);
         for (const family of families) {
-            expectStrategyContract(family);
+            expect(typeof family.preview).toBe('function');
+            expect(typeof family.process).toBe('function');
         }
     });
 });

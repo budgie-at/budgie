@@ -4,7 +4,9 @@ import * as Effect from 'effect/Effect';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_TOO_MANY_REQUESTS, HTTP_STATUS_UNAUTHORIZED } from '../../core/constant/http-status.constant';
 import { SYNC_RETRY_STATUS_CODES } from '../../core/constant/sync-retry-status-codes.constant';
+import { SYNC_TIMEOUT_MS } from '../../core/constant/sync-timeout-ms.constant';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
 import { SyncNetworkError } from '../../core/error/sync-network.error';
@@ -18,12 +20,7 @@ import type { SyncError } from '../../core/interface/sync-error.type';
 import type { SyncProviderClientInterface } from '../../core/interface/sync-provider-client.interface';
 import type { ClientInfo } from '@liaugust/monobank-sdk';
 
-const HTTP_STATUS_BAD_REQUEST = 400;
-const HTTP_STATUS_UNAUTHORIZED = 401;
-const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
-
 export class MonobankClient implements SyncProviderClientInterface {
-    private static readonly TIMEOUT_MS = 30_000;
     private static readonly RETRY_BASE_DELAY_MS = 300;
     private static readonly RETRY_MAX_ATTEMPTS = 4;
     private static readonly RETRY_MAX_DELAY_MS = 2_000;
@@ -68,7 +65,7 @@ export class MonobankClient implements SyncProviderClientInterface {
                 maxDelayMs: MonobankClient.RETRY_MAX_DELAY_MS,
                 retryableStatusCodes: SYNC_RETRY_STATUS_CODES
             },
-            timeoutMs: MonobankClient.TIMEOUT_MS,
+            timeoutMs: SYNC_TIMEOUT_MS,
             token
         });
     }

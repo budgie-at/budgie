@@ -22,10 +22,6 @@ msgstr "Binance P2P-Kauf von {assetCode}"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Binance P2P-Verkauf von {assetCode}"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid " • {embeddingPending} tx queued"
-msgstr " • {embeddingPending} Tx ausstehend"
-
 #. placeholder {0}: accounts.length
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "{0, plural, one {# account created} other {# accounts created}}"
@@ -36,10 +32,17 @@ msgstr "{0, plural, one {# Konto erstellt} other {# Konten erstellt}}"
 msgid "{0, plural, one {# tag} other {# tags}}"
 msgstr "{0, plural, one {# Tag} other {# Tags}}"
 
+#. placeholder {0}: movedToCashTransactionIds.length
 #. placeholder {0}: rows.length
 #: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# Transaktion} other {# Transaktionen}}"
+
+#. placeholder {0}: transactionIds.length
+#: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
+msgid "{0, plural, one {Move # withdrawal to cash} other {Move # withdrawals to cash}}"
+msgstr "{0, plural, one {# Abhebung ins Bargeld verschieben} other {# Abhebungen ins Bargeld verschieben}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
@@ -89,6 +92,10 @@ msgstr "{categoryName}: {threshold}% ausgegeben"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: Limit erreicht"
+
+#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
+msgid "{count, plural, one {# category uses the default icon} other {# categories use the default icon}}"
+msgstr "{count, plural, one {# Kategorie nutzt das Standardsymbol} other {# Kategorien nutzen das Standardsymbol}}"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
@@ -216,10 +223,6 @@ msgstr "{skippedCount, plural, one {# übersprungen} other {# übersprungen}}"
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "{source} error · {message}"
 msgstr "{source}-Fehler · {message}"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "{source} failed: {message}"
-msgstr "{source} fehlgeschlagen: {message}"
 
 #: src/runway/component/runway-history-chart/runway-history-chart.tsx
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
@@ -468,10 +471,6 @@ msgstr "Anpassung"
 msgid "AI"
 msgstr "KI"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "AI disabled"
-msgstr "KI deaktiviert"
-
 #: src/ai/service/ai-umbrella-status.service.ts
 msgid "AI off"
 msgstr "KI aus"
@@ -492,6 +491,10 @@ msgstr "Alle"
 msgid "All accounts already added"
 msgstr "Alle Konten wurden bereits hinzugefügt"
 
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "All categories have icons"
+msgstr "Alle Kategorien haben Symbole"
+
 #: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
 msgid "All caught up"
 msgstr "Alles erledigt"
@@ -503,10 +506,6 @@ msgstr "Alle Spalten wurden zugewiesen"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "All Recurring"
 msgstr "Alle wiederkehrenden"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "All set"
-msgstr "Alles erledigt"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "All Time"
@@ -533,6 +532,10 @@ msgstr "Bereits erhalten"
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
 msgstr "Synchronisiert bereits"
+
+#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+msgid "Already tracked"
+msgstr "Bereits erfasst"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
@@ -845,6 +848,10 @@ msgstr "Abbrechen"
 msgid "Cash"
 msgstr "Bargeld"
 
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Cash withdrawals"
+msgstr "Bargeldabhebungen"
+
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/categories.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
@@ -891,6 +898,10 @@ msgstr "Kategorie"
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Category → {categoryTitle}"
 msgstr "Kategorie → {categoryTitle}"
+
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "Category Icons"
+msgstr "Kategoriesymbole"
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
@@ -1235,6 +1246,10 @@ msgstr "Kategorie konnte nicht zusammengeführt werden"
 msgid "Could not merge tag"
 msgstr "Tag konnte nicht zusammengeführt werden"
 
+#: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
+msgid "Could not move withdrawals to cash"
+msgstr "Abhebungen konnten nicht ins Bargeld verschoben werden"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Could not open GitHub"
 msgstr "GitHub konnte nicht geöffnet werden"
@@ -1303,6 +1318,14 @@ msgstr "Tags konnten nicht hinzugefügt werden"
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Could not unconsolidate transaction."
 msgstr "Transaktion konnte nicht entkonsolidiert werden."
+
+#: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
+msgid "Could not undo the move to cash"
+msgstr "Verschieben ins Bargeld konnte nicht rückgängig gemacht werden"
+
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
+msgid "Could not update category icon"
+msgstr "Kategoriesymbol konnte nicht aktualisiert werden"
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
@@ -1641,10 +1664,6 @@ msgstr "Kontoauszug als PDF herunterladen"
 msgid "Downloading AI models…"
 msgstr "KI-Modelle werden heruntergeladen…"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Downloading models"
-msgstr "Modelle werden heruntergeladen"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Downloads about 2.5 GB of models once"
 msgstr "Lädt einmalig rund 2.5 GB an Modellen herunter"
@@ -1965,10 +1984,6 @@ msgstr "Kontakte konnten nicht geladen werden."
 msgid "Failed to save PIN. Please try again."
 msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Fast-indexing {done} of {total} • tap to pause"
-msgstr "Schnellindexierung {done} von {total} • zum Pausieren tippen"
-
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Gebühr"
@@ -2275,10 +2290,6 @@ msgstr "Einnahmen nach Tag"
 msgid "Incorrect PIN"
 msgstr "Falsche PIN"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Indexing {done} of {total}"
-msgstr "Indexierung {done} von {total}"
-
 #: src/market-data/service/historical-market-data-loader.service.ts
 msgid "Instrument not found"
 msgstr "Instrument nicht gefunden"
@@ -2306,6 +2317,10 @@ msgstr "Italienisch (Italien)"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Sparziele"
+
+#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+msgid "Keep as already tracked cash, not spending"
+msgstr "Als bereits erfasstes Bargeld behalten, keine Ausgabe"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
@@ -2412,10 +2427,6 @@ msgstr "Schuldenfortschritt wird geladen"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Loading market history"
 msgstr "Marktverlauf wird geladen"
-
-#: src/ai/service/ai-system-status.service.ts
-msgid "Loading models"
-msgstr "Modelle werden geladen"
 
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx
 msgid "Loading..."
@@ -2614,6 +2625,14 @@ msgstr "Weitere Tags"
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Most likely balance"
 msgstr "Wahrscheinlichster Kontostand"
+
+#: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
+msgid "Move to cash"
+msgstr "Ins Bargeld"
+
+#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+msgid "Moved to cash"
+msgstr "Ins Bargeld verschoben"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -2873,6 +2892,10 @@ msgstr "Notiz"
 msgid "Nothing from the past is imported"
 msgstr "Nichts aus der Vergangenheit wird importiert"
 
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "Nothing to fix here"
+msgstr "Hier gibt es nichts zu korrigieren"
+
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 #: src/runway/component/runway-meter/runway-meter.tsx
 msgid "now"
@@ -3092,10 +3115,6 @@ msgid "Pick tags for this transaction"
 msgstr "Tags für diese Transaktion wählen"
 
 #: src/auth/hook/use-pin-setup.hook.tsx
-msgid "PIN must be {PIN_LENGTH} digits"
-msgstr "PIN muss {PIN_LENGTH} Ziffern haben"
-
-#: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PINs do not match"
 msgstr "PINs stimmen nicht überein"
 
@@ -3120,6 +3139,7 @@ msgstr "Bitte versuchen Sie es erneut"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/category/components/category-form/category-form.tsx
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Please try again later"
 msgstr "Bitte versuchen Sie es später erneut"
@@ -3336,10 +3356,6 @@ msgstr "Konto wiederherstellen?"
 msgid "Restore from a backup file"
 msgstr "Aus einer Sicherungsdatei wiederherstellen"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Resuming AI…"
-msgstr "KI wird fortgesetzt…"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
 msgstr "Kehren Sie zu Budgie zurück und wählen Sie unten die gespeicherte XLSX-Datei aus"
@@ -3472,8 +3488,8 @@ msgid "Search expenses refunded by this income"
 msgstr "Ausgaben suchen, die diese Einnahme erstattet"
 
 #: src/app/icon-selector.tsx
-msgid "Search icons (e.g., money, travel, food)..."
-msgstr "Symbole durchsuchen (z. B. Geld, Reisen, Essen)..."
+msgid "Search icons and emoji in any language..."
+msgstr "Symbole und Emojis in jeder Sprache suchen..."
 
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Search inactive accounts..."
@@ -3851,6 +3867,7 @@ msgstr "Absenden"
 msgid "Subscriptions"
 msgstr "Abonnements"
 
+#: src/app/icon-selector.tsx
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Suggested"
 msgstr "Vorgeschlagen"
@@ -4200,10 +4217,6 @@ msgstr "Vom Konto übertragen"
 msgid "Transfer To Account"
 msgstr "Auf Konto übertragen"
 
-#: src/ai/service/ai-system-status.service.ts
-msgid "Translating {translationPending} of {total}{trailer}"
-msgstr "Übersetzung {translationPending} von {total}{trailer}"
-
 #: src/ai/service/ai-translation-status.service.ts
 msgid "Translating categories and tags"
 msgstr "Kategorien und Tags werden übersetzt"
@@ -4281,7 +4294,7 @@ msgstr "Entkonsolidieren"
 msgid "Unconsolidate transaction?"
 msgstr "Transaktion entkonsolidieren?"
 
-#: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
+#: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
 msgid "Undo"
 msgstr "Rückgängig"
 

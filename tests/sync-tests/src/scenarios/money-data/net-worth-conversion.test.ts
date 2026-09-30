@@ -1,16 +1,9 @@
 import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
 import { exchangeRatesService } from '@app/exchange-rate/service/exchange-rates.service';
-import {
-    AccountBalanceEntityTable,
-    AccountTypeEnum,
-    CurrencyEnum,
-    ExchangeRateEntityTable,
-    PRECISION,
-    SettingsEntityTable
-} from '@budgie/contracts';
+import { AccountTypeEnum, CurrencyEnum, ExchangeRateEntityTable, PRECISION, SettingsEntityTable } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { requireInstrument, seedBitcoinCryptoAccount, run } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount, seedLedgerBalance, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -25,7 +18,7 @@ const seedHryvniaCashWithBalance = async (balance: number) => {
     const account = seed.account({ instrumentId: hryvnia.id, type: AccountTypeEnum.CASH });
 
     await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
-    insertOne(AccountBalanceEntityTable, { accountId: account.id, amount: balance });
+    await seedLedgerBalance(account.id, balance);
 
     return euro;
 };

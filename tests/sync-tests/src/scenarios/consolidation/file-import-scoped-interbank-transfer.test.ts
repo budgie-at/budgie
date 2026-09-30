@@ -1,4 +1,3 @@
-import { TransferConsolidationDrainReasonEnum } from '@app/sync/enum/transfer-consolidation-drain-reason.enum';
 import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
@@ -135,7 +134,7 @@ const buildSyncService = (target: ImportedIncomeInterface, categoryLookup: MccCa
         new Map([[TRANSFER_CATEGORY, categoryLookup]])
     );
 
-const getQueuedConsolidationScope = (): ConsolidationScanScopeInterface | null => enqueueSpy.mock.calls[0]?.[1] ?? null;
+const getQueuedConsolidationScope = (): ConsolidationScanScopeInterface | null => enqueueSpy.mock.calls[0]?.[0] ?? null;
 
 const buildMccCategoryLookup = (): MccCategoryLookupInterface => {
     const transferMcc = findMccByCode(TRANSFER_MCC_CODE);
@@ -150,7 +149,7 @@ const importAndRunQueuedScope = async (syncService: StubFileBankSyncService, acc
     await run(syncService.executeImportForSelectedAccounts(STATEMENT_FILE_URI, [accountExternalId]));
 
     const scope = getQueuedConsolidationScope();
-    expect(enqueueSpy).toHaveBeenCalledWith(TransferConsolidationDrainReasonEnum.FILE_IMPORT, scope);
+    expect(enqueueSpy).toHaveBeenCalledWith(scope);
     expect(scope).toBeDefined();
     if (!isDefined(scope)) {
         return { consolidated: 0 };

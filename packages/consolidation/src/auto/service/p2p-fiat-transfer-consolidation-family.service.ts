@@ -29,12 +29,10 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
     ) {
         const repairCandidates = yield* this.transferPairRepository.findP2pFiatAuthoritativeRepairCandidates(context.scope);
 
-        yield* Effect.all(
-            repairCandidates.map(candidate =>
-                this.consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId)
-            ),
-            { concurrency: 'unbounded' }
-        );
+        for (const candidate of repairCandidates) {
+            yield* this.consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId);
+            yield* this.yieldNow();
+        }
     });
 
     protected readonly findCandidates = Effect.fn('P2pFiatTransferConsolidationFamilyService.findCandidates')(function* (

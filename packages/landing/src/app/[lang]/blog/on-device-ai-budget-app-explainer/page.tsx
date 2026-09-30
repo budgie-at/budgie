@@ -19,8 +19,8 @@ import { BlogFaqItem } from '../../../../blog/component/blog-faq-item/blog-faq-i
 import { BlogFaqSection } from '../../../../blog/component/blog-faq-section/blog-faq-section';
 import { BlogPostingJsonLd } from '../../../../blog/component/blog-posting-json-ld/blog-posting-json-ld';
 import { RelatedArticles } from '../../../../blog/component/related-articles/related-articles';
-import { buildBlogArticleMetadata } from '../../../../blog/util/build-blog-article-metadata.util';
 import { FeaturePageRelated } from '../../../../feature/component/feature-page-related/feature-page-related';
+import { buildPageMetadata } from '../../../../generic/util/build-page-metadata.util';
 import { getI18nInstance } from '../../../../i18n/app-router-i18n';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 import { Badge } from '../../../../ui/badge';
@@ -34,13 +34,13 @@ export async function generateMetadata(props: PageLangParam): Promise<Metadata> 
     const { lang } = await props.params;
     const i18n = getI18nInstance(lang);
 
-    return buildBlogArticleMetadata({
+    return buildPageMetadata({
         author: ARTICLE_METADATA.author,
-        date: ARTICLE_METADATA.date,
         description: i18n._(ARTICLE_METADATA.seoDescription),
         keywords: t(i18n)`on-device AI budget app, private AI finance, offline AI finance app, offline AI expense tracker`,
         locale: lang,
-        slug: ARTICLE_METADATA.slug,
+        path: `/blog/${ARTICLE_METADATA.slug}`,
+        publishedAt: ARTICLE_METADATA.date,
         title: i18n._(ARTICLE_METADATA.title)
     });
 }

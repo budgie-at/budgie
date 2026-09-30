@@ -9,7 +9,9 @@ import * as Schema from 'effect/Schema';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_TOO_MANY_REQUESTS, HTTP_STATUS_UNAUTHORIZED } from '../constant/http-status.constant';
 import { SYNC_RETRY_STATUS_CODES } from '../constant/sync-retry-status-codes.constant';
+import { SYNC_TIMEOUT_MS } from '../constant/sync-timeout-ms.constant';
 import { SyncInvalidResponseError } from '../error/sync-invalid-response.error';
 import { SyncNetworkError } from '../error/sync-network.error';
 import { SyncRateLimitedError } from '../error/sync-rate-limited.error';
@@ -20,15 +22,11 @@ import type * as Headers from 'effect/http/Headers';
 import type * as HttpClientError from 'effect/http/HttpClientError';
 import type { HttpMethod } from 'effect/http/HttpMethod';
 
-const HTTP_STATUS_BAD_REQUEST = 400;
-const HTTP_STATUS_UNAUTHORIZED = 401;
 const HTTP_STATUS_FORBIDDEN = 403;
-const HTTP_STATUS_TOO_MANY_REQUESTS = 429;
 
 export abstract class BaseSyncProviderClient {
     private static readonly RETRY_LIMIT = 3;
     private static readonly RETRY_BASE_DELAY = '300 millis';
-    private static readonly TIMEOUT = '30 seconds';
 
     private static readonly ApiErrorSchema = Schema.Struct({
         code: Schema.optional(Schema.Union([Schema.String, Schema.Number])),
@@ -57,7 +55,7 @@ export abstract class BaseSyncProviderClient {
 
             return yield* client.execute(HttpClientRequest.make(method)(`${this.baseUrl}${endpoint}`, { headers: this.headers }));
         },
-        Effect.timeout(BaseSyncProviderClient.TIMEOUT),
+        Effect.timeout(SYNC_TIMEOUT_MS),
         effect => effect.pipe(Effect.catch(error => this.toSyncError(error)))
     );
 

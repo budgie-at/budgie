@@ -18,7 +18,7 @@ import type { ErsteRowInterface } from '@budgie/sync';
 
 const erste = vi.hoisted(() => {
     const buildRow = (description: string, amount: number, isCredit: boolean): ErsteRowInterface => ({
-        date: new Date('2026-05-20T12:00:00.000Z'),
+        date: new Date(Date.now() - 24 * 60 * 60 * 1000),
         reference: description,
         description,
         details: '',
@@ -33,7 +33,7 @@ const erste = vi.hoisted(() => {
             currency: 'EUR',
             oldBalance: 0,
             newBalance: 0,
-            statementDate: new Date('2026-05-31T00:00:00.000Z')
+            statementDate: new Date()
         },
         atmRow: buildRow('AUTOMAT 12210014 K1 26.11. 14:51', -200, false),
         nonAtmRows: [

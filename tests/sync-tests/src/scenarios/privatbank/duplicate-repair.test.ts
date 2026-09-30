@@ -503,4 +503,34 @@ describe('privatbank/duplicate-repair', () => {
 
         await expectTransferPairDuplicate(keptTransaction, duplicateTransaction);
     });
+
+    it('soft-deletes the consolidation children of a removed duplicate transfer-pair canonical', async () => {
+        const fromAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-8522' });
+        const toAccount = seed.account({ externalSource: ExternalSourceEnum.PRIVATBANK, externalId: 'privatbank-0356' });
+        const transferPair = {
+            amount: 10_000_000_000,
+            fromAccountId: fromAccount.id,
+            title: 'На свою картку *0356',
+            toAccountId: toAccount.id
+        };
+        seedPrivatbankCanonicalTransferPair({
+            ...transferPair,
+            operatedAt: new Date('2026-01-24T10:44:38.000Z'),
+            sourceExternalIdPrefix: 'privatbank-transfer-kept'
+        });
+        seedPrivatbankCanonicalTransferPair({
+            ...transferPair,
+            operatedAt: new Date('2026-01-24T11:44:38.000Z'),
+            sourceExternalIdPrefix: 'privatbank-transfer-duplicate'
+        });
+
+        await run(syncRepairService.removeDuplicates());
+
+        expect(
+            testDb.all(
+                sql`SELECT child.id FROM transactions child INNER JOIN transactions parent ON parent.id = child.consolidation_parent_transaction_id WHERE child.deleted_at IS NULL AND parent.deleted_at IS NOT NULL`
+            )
+        ).toEqual([]);
+        expect(testDb.all(sql`SELECT id FROM transactions WHERE deleted_at IS NULL`)).toHaveLength(3);
+    });
 });
