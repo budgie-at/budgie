@@ -9,6 +9,7 @@ import {
 } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { File } from 'expo-file-system';
@@ -98,16 +99,16 @@ export default function ImportScreen() {
         appRuntime.runFork(
             Effect.gen(function* () {
                 setIsLoading(true);
-                const text = yield* Effect.tryPromise(() => new File(fileUri).text());
+                const text = yield* Effect.promise(() => new File(fileUri).text());
                 const [parsedHeaders, count] = yield* Effect.all([parseCsvHeaders(text), countCsvRows(text)]);
 
                 setCsvText(text);
                 setHeaders(parsedHeaders);
                 setRowCount(count);
             }).pipe(
-                Effect.catch(error =>
+                Effect.catchCause(cause =>
                     Effect.sync(() => {
-                        showErrorToast(t`Could not read CSV file`, getErrorMessage(error));
+                        showErrorToast(t`Could not read CSV file`, getErrorMessage(Cause.squash(cause)));
                         router.back();
                     })
                 ),

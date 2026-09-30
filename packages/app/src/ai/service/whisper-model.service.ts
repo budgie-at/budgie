@@ -47,7 +47,7 @@ export class WhisperModelService extends Context.Service<WhisperModelService>()(
             const legacyFile = new File(Paths.document, WHISPER_MODEL_FILENAME);
 
             if (isExistingModelFile(legacyFile) && !modelFile.exists) {
-                yield* Effect.tryPromise(() => legacyFile.move(modelFile));
+                yield* Effect.promise(() => legacyFile.move(modelFile));
             }
         });
 
@@ -57,7 +57,7 @@ export class WhisperModelService extends Context.Service<WhisperModelService>()(
                 expectedBytes = progress.totalBytesExpectedToWrite;
                 onProgress(calculateProgress(progress.totalBytesWritten, expectedBytes));
             });
-            const result = yield* Effect.tryPromise(() => download.downloadAsync());
+            const result = yield* Effect.promise(() => download.downloadAsync());
 
             if (!isDefined(result?.uri) || !tempFile.exists || !isPositiveNumber(tempFile.size) || tempFile.size !== expectedBytes) {
                 deleteFileIfExists(tempFile);
@@ -79,7 +79,7 @@ export class WhisperModelService extends Context.Service<WhisperModelService>()(
                 if (!isExistingModelFile(modelFile)) {
                     deleteFileIfExists(modelFile);
                     yield* downloadToTempFile(tempFile, onProgress);
-                    yield* Effect.tryPromise(() => tempFile.move(modelFile));
+                    yield* Effect.promise(() => tempFile.move(modelFile));
                 }
                 onProgress(1);
 

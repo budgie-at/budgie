@@ -67,7 +67,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         });
 
         const loadDeliveredTriggerKeys = Effect.fn('BudgetAlertMonitorService.loadDeliveredTriggerKeys')(function* (storageKey: string) {
-            const raw = yield* Effect.tryPromise(() => Storage.getItem(storageKey));
+            const raw = yield* Effect.promise(() => Storage.getItem(storageKey));
 
             if (!isDefined(raw)) {
                 return new Set<string>();
@@ -91,7 +91,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         ) {
             const fired = yield* loadDeliveredTriggerKeys(storageKey);
             fired.add(buildTriggerKey(trigger));
-            yield* Effect.tryPromise(() => Storage.setItem(storageKey, JSON.stringify([...fired])));
+            yield* Effect.promise(() => Storage.setItem(storageKey, JSON.stringify([...fired])));
         });
 
         const postOverallAlert = Effect.fn('BudgetAlertMonitorService.postOverallAlert')(function* (
@@ -191,10 +191,10 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 }
 
                 if (isDefined(options)) {
-                    yield* Effect.tryPromise(() => BackgroundTask.unregisterTaskAsync(BudgetBackgroundTaskNameEnum.ALERT_MONITOR));
+                    yield* Effect.promise(() => BackgroundTask.unregisterTaskAsync(BudgetBackgroundTaskNameEnum.ALERT_MONITOR));
                 }
 
-                yield* Effect.tryPromise(() =>
+                yield* Effect.promise(() =>
                     BackgroundTask.registerTaskAsync(BudgetBackgroundTaskNameEnum.ALERT_MONITOR, {
                         minimumInterval: backgroundTaskMinimumIntervalMinutes
                     })

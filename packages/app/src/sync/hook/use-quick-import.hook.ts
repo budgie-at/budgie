@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
 import { useState } from 'react';
@@ -57,7 +58,7 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
         setIsLoading(true);
         appRuntime.runFork(
             Effect.gen(function* () {
-                const result = yield* Effect.tryPromise(() =>
+                const result = yield* Effect.promise(() =>
                     DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true })
                 );
                 const uri = result.assets?.at(0)?.uri;
@@ -70,7 +71,7 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
                 showImportDoneToast(yield* config.importHandler(uri));
             }).pipe(
                 Effect.tapCause(Effect.logError),
-                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Import failed`, getErrorMessage(error)))),
+                Effect.catchCause(cause => Effect.sync(() => void showErrorToast(t`Import failed`, getErrorMessage(Cause.squash(cause))))),
                 Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
             )
         );

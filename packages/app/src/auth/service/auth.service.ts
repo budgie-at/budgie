@@ -31,14 +31,14 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
         };
 
         const getPin = Effect.fn('AuthService.getPin')(function* () {
-            return yield* Effect.tryPromise(() => SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
+            return yield* Effect.promise(() => SecureStore.getItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
         });
 
         const persistPin = Effect.fn('AuthService.persistPin')(function* (pin: string | null) {
             if (isNotEmptyString(pin)) {
-                yield* Effect.tryPromise(() => SecureStore.setItemAsync(PIN_KEY, pin, PIN_SECURE_STORE_OPTIONS));
+                yield* Effect.promise(() => SecureStore.setItemAsync(PIN_KEY, pin, PIN_SECURE_STORE_OPTIONS));
             } else {
-                yield* Effect.tryPromise(() => SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
+                yield* Effect.promise(() => SecureStore.deleteItemAsync(PIN_KEY, PIN_SECURE_STORE_OPTIONS));
             }
         });
 

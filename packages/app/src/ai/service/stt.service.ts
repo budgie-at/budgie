@@ -101,9 +101,9 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
                         patchAtom(sttSnapshotAtom, { downloadProgress });
                     });
                     patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.INITIALIZING });
-                    const whisperModule = yield* Effect.tryPromise(() => import('whisper.rn'));
+                    const whisperModule = yield* Effect.promise(() => import('whisper.rn'));
                     whisper = whisperModule;
-                    context = yield* Effect.tryPromise(() => whisperModule.initWhisper({ filePath: modelPath }));
+                    context = yield* Effect.promise(() => whisperModule.initWhisper({ filePath: modelPath }));
                     patchAtom(sttSnapshotAtom, { status: AiSubsystemStatusEnum.READY, errorMessage: null });
                 },
                 effect =>

@@ -121,7 +121,7 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
                     return;
                 }
 
-                yield* Effect.tryPromise(() =>
+                yield* Effect.promise(() =>
                     BackgroundTask.registerTaskAsync(WIDGET_SNAPSHOT_TASK, { minimumInterval: backgroundTaskMinimumIntervalMinutes })
                 );
             }),

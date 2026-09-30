@@ -157,7 +157,7 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
                         return;
                     }
 
-                    yield* Effect.tryPromise(() =>
+                    yield* Effect.promise(() =>
                         BackgroundTask.registerTaskAsync(ACCOUNT_BALANCE_INCREMENTAL_TASK, {
                             minimumInterval: backgroundTaskMinimumIntervalMinutes
                         })

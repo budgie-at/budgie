@@ -18,7 +18,7 @@ class IconSearchService {
     private static readonly STEM_TRIM_DIVISOR = 3;
 
     readonly load = Effect.fn('IconSearchService.load')(function* (this: IconSearchService) {
-        const { default: index } = yield* Effect.tryPromise(() => import('../constant/icon-search-index.json'));
+        const { default: index } = yield* Effect.promise(() => import('../constant/icon-search-index.json'));
         const translations: Record<string, string> = index.translations;
 
         return index.icons.flatMap(([icon, keywords]) =>
