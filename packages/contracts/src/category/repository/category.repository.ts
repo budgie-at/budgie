@@ -4,8 +4,8 @@ import * as Effect from 'effect/Effect';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
-import { TranslatableRepositoryBase } from '../../@generic/repository/translatable-repository.base';
 import { Db } from '../../@generic/service/db.service';
+import { makeTranslatableRepository } from '../../@generic/util/make-translatable-repository.util';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { BORROWING_CATEGORY_ID } from '../constant/borrowing-category-id.constant';
@@ -17,7 +17,21 @@ import { CategoryEntityTable } from '../table/category-entity.table';
 import type * as schema from '../../schema';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
-export class CategoryRepository extends TranslatableRepositoryBase {
+export class CategoryRepository {
+    private static readonly Translatable = makeTranslatableRepository(CategoryEntityTable, {
+        id: CategoryEntityTable.id,
+        title: CategoryEntityTable.title,
+        titleEn: CategoryEntityTable.titleEn,
+        titleTags: CategoryEntityTable.titleTags,
+        tagsGeneratedAt: CategoryEntityTable.tagsGeneratedAt,
+        deletedAt: CategoryEntityTable.deletedAt
+    });
+
+    readonly findUntranslated = CategoryRepository.Translatable.findUntranslated;
+    readonly countUntranslated = CategoryRepository.Translatable.countUntranslated;
+    readonly countAll = CategoryRepository.Translatable.countAll;
+    readonly resetAllTranslations = CategoryRepository.Translatable.resetAllTranslations;
+
     readonly create = Effect.fn('CategoryRepository.create')(function* (this: CategoryRepository, input: CategoryCreateEntityInterface) {
         const [category] = yield* this.bulkCreate([input]);
 
@@ -43,16 +57,7 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         return category;
     });
 
-    constructor(private readonly db: ExpoSQLiteDatabase<typeof schema>) {
-        super(CategoryEntityTable, {
-            id: CategoryEntityTable.id,
-            title: CategoryEntityTable.title,
-            titleEn: CategoryEntityTable.titleEn,
-            titleTags: CategoryEntityTable.titleTags,
-            tagsGeneratedAt: CategoryEntityTable.tagsGeneratedAt,
-            deletedAt: CategoryEntityTable.deletedAt
-        });
-    }
+    constructor(private readonly db: ExpoSQLiteDatabase<typeof schema>) {}
 
     readonly bulkCreate = (inputs: CategoryCreateEntityInterface[]) =>
         Db.query(db =>

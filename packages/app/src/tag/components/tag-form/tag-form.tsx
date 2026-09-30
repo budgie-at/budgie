@@ -1,5 +1,6 @@
 import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -14,7 +15,6 @@ import { ModalFormMergeButton } from '../../../@generic/component/modal-form-mer
 import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ModalPage } from '../../../@generic/component/page/modal-page';
-import { tagRepository } from '../../../@generic/drizzle/db/db';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
@@ -23,7 +23,7 @@ import { useNoteInputModal } from '../../../transaction/context/note-input-modal
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
 import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
-import { tagService } from '../../service/tag.service';
+import { TagService } from '../../service/tag.service';
 
 import { TagFormSelector } from './tag-form.selector';
 
@@ -103,8 +103,9 @@ export const TagForm = (props: Props) => {
         }
 
         try {
-            const [targetTag] = await tagRepository.findByIds([targetTagId]);
-            await appRuntime.runPromise(tagService.mergeInto(tag.id, targetTagId));
+            const targetTag = await appRuntime.runPromise(
+                Effect.flatMap(TagService, tagService => tagService.mergeInto(tag.id, targetTagId))
+            );
 
             if (isDefined(targetTag)) {
                 onSuccess({ tag: targetTag, action: 'merged' });
@@ -114,33 +115,18 @@ export const TagForm = (props: Props) => {
         }
     };
 
-    const saveTagTranslation = async (tagId: number): Promise<void> => {
-        const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
-
-        if (hasTranslationData) {
-            await appRuntime.runPromise(tagRepository.updateTranslation(tagId, titleEn, titleTags));
-        } else {
-            await appRuntime.runPromise(tagRepository.clearTranslation(tagId));
-        }
-    };
-
     const handleEditSubmit = async (tagId: number, values: TagCreateEntityInterface): Promise<void> => {
-        const updatedTag = await appRuntime.runPromise(tagRepository.updateById(tagId, values));
-        await saveTagTranslation(tagId);
-
-        const savedTags = await tagRepository.findByIds([tagId]);
-        const savedTag = savedTags.at(0) ?? updatedTag;
+        const savedTag = await appRuntime.runPromise(
+            Effect.flatMap(TagService, tagService => tagService.update(tagId, values, titleEn, titleTags))
+        );
 
         onSuccess({ tag: savedTag, action: 'updated' });
     };
 
     const handleCreateSubmit = async (values: TagCreateEntityInterface): Promise<void> => {
-        const savedTag = await appRuntime.runPromise(tagRepository.create(values));
-        const hasTranslationData = isNotEmptyString(titleEn) && isNotEmptyString(titleTags);
-
-        if (hasTranslationData) {
-            await appRuntime.runPromise(tagRepository.updateTranslation(savedTag.id, titleEn, titleTags));
-        }
+        const savedTag = await appRuntime.runPromise(
+            Effect.flatMap(TagService, tagService => tagService.create(values, titleEn, titleTags))
+        );
 
         onSuccess({ tag: savedTag, action: 'created' });
     };

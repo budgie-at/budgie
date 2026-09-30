@@ -112,7 +112,7 @@ export const expoDb = dbInit();
 
 export const db: DB = global.__drizzleDb__ ?? (global.__drizzleDb__ = drizzle(expoDb, { schema }));
 
-export const tagRepository = new TagRepository(db);
+export const tagRepository = Effect.runSync(TagRepository.make);
 export const accountRepository = new AccountRepository(db);
 export const settingsRepository = new SettingsRepository(db);
 export const categoryRepository = new CategoryRepository(db);
