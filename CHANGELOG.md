@@ -3,6 +3,45 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
+
+
+### Bug Fixes
+
+* **app:** accept emoji icons in categorize inbox undo layout ([72e07eb](https://github.com/budgie-at/budgie/commit/72e07ebfd8ffbc123905e5da2f2fdc3c35aa48af))
+* **app:** add missing migration for transaction entry account external index ([1da1663](https://github.com/budgie-at/budgie/commit/1da1663c1cf7072f1e2fa6d84efc231ad67df266))
+* **app:** move app data sync out of sync workload to break import cycle ([271a63b](https://github.com/budgie-at/budgie/commit/271a63b91867b4c0c314bcc898c30558f1771a39))
+* **app:** refresh live queries immediately on explicit invalidation ([2810fe1](https://github.com/budgie-at/budgie/commit/2810fe15e99494c1689e29a3e2f3185a707049a2))
+* **app:** retry icon index load and validate whole emoji icons ([86d5e14](https://github.com/budgie-at/budgie/commit/86d5e14f808e9ff07970648851ba16b1899419bc))
+* **app:** return composed rate for bridged conversions ([1b8e370](https://github.com/budgie-at/budgie/commit/1b8e370bd44a1babf8e7dc2b8c8454e1d933244a)), closes [#1297](https://github.com/budgie-at/budgie/issues/1297)
+* **budget:** restore entry type import and cash-withdrawal exclusion in merged spent query ([e461a9e](https://github.com/budgie-at/budgie/commit/e461a9e02d85bd574c00abacdf1c77a42de1244b))
+* **budget:** reuse canonical transaction predicates for spent ([911fc17](https://github.com/budgie-at/budgie/commit/911fc1776c5587fe6ba5b478e7ad6280f6ca566c)), closes [#1298](https://github.com/budgie-at/budgie/issues/1298)
+* **consolidation:** claim legacy-duplicate ATM withdrawals and review historical ones ([c24f931](https://github.com/budgie-at/budgie/commit/c24f9313a1beb67395a7bd0dd7eb302b321a492c))
+* **consolidation:** run P2P canonical repairs sequentially ([90299d2](https://github.com/budgie-at/budgie/commit/90299d205f4a9bb187a76c77257a136a433c9afb)), closes [#1299](https://github.com/budgie-at/budgie/issues/1299)
+* **contracts:** repair orphaned consolidation children and entry-less transfers ([2af13e6](https://github.com/budgie-at/budgie/commit/2af13e6bcccfd71303e2e50f33920f27af8f4499))
+* **landing:** unify metadata builders and JSON-LD, trim hub titles ([a747521](https://github.com/budgie-at/budgie/commit/a7475212a975780917d87c487fe330c936fa9d36)), closes [#1312](https://github.com/budgie-at/budgie/issues/1312)
+
+
+### Features
+
+* **app:** mark ATM withdrawals as already tracked cash outside spending ([22c331c](https://github.com/budgie-at/budgie/commit/22c331c3613657b182ae88a64e9f900b5f0910c5))
+* **app:** move ATM withdrawals to cash from the inbox and never auto-convert them ([a0853a2](https://github.com/budgie-at/budgie/commit/a0853a2799a17da900576f3a151928af070c9e2a))
+* **app:** multilingual icon search, emoji icons and icon suggestions ([11da1a2](https://github.com/budgie-at/budgie/commit/11da1a263ade255b7031dd679185035f3f832604))
+* **landing:** add ai-tag-suggestions basic scroll story ([f9ceb81](https://github.com/budgie-at/budgie/commit/f9ceb816a2731dfe562a86379232386cd7257270)), closes [#779](https://github.com/budgie-at/budgie/issues/779)
+
+
+### Performance Improvements
+
+* **app:** refresh each live query once per write burst ([c02b23d](https://github.com/budgie-at/budgie/commit/c02b23d3fc2fdf6732e5d43b5ec3f20af3eb14d7))
+* **app:** resync existing Monobank rows in one transaction per page ([79e1340](https://github.com/budgie-at/budgie/commit/79e13408357af9ca59796485e3b4a358fa93185e))
+* **contracts:** count pending embeddings with a literal partial-index predicate ([73e0f9c](https://github.com/budgie-at/budgie/commit/73e0f9c275c829526935eaeb8350f997fae4aa03))
+* **contracts:** make home account rows and net worth index-friendly ([6d34a16](https://github.com/budgie-at/budgie/commit/6d34a162e8b4cb864e055fa84b2cfffb8ce9e82a))
+* **contracts:** replace the needs_embedding index that hijacks list plans ([bc65f4e](https://github.com/budgie-at/budgie/commit/bc65f4e1cc357c34264af19385b3b7d7871f3542)), closes [#1255](https://github.com/budgie-at/budgie/issues/1255) [#1241](https://github.com/budgie-at/budgie/issues/1241)
+
+
+
+
+
 ## [6.85.14](https://github.com/budgie-at/budgie/compare/v6.85.13...v6.85.14) (2026-09-29)
 
 

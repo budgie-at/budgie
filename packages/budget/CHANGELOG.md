@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
+
+
+### Bug Fixes
+
+* **budget:** restore entry type import and cash-withdrawal exclusion in merged spent query ([e461a9e](https://github.com/budgie-at/budgie/commit/e461a9e02d85bd574c00abacdf1c77a42de1244b))
+* **budget:** reuse canonical transaction predicates for spent ([911fc17](https://github.com/budgie-at/budgie/commit/911fc1776c5587fe6ba5b478e7ad6280f6ca566c)), closes [#1298](https://github.com/budgie-at/budgie/issues/1298)
+
+
+### Features
+
+* **app:** mark ATM withdrawals as already tracked cash outside spending ([22c331c](https://github.com/budgie-at/budgie/commit/22c331c3613657b182ae88a64e9f900b5f0910c5))
+
+
+
+
+
 ## [6.85.13](https://github.com/budgie-at/budgie/compare/v6.85.12...v6.85.13) (2026-09-29)
 
 **Note:** Version bump only for package @budgie/budget

@@ -4613,6 +4613,10 @@ msgstr "Екран нової витрати в Budgie з цифровою кл�
 msgid "Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts"
 msgstr "Екран нової витрати в Budgie з клавіатурою для суми, вибором рахунку та швидкими кнопками дати, нотатки, тегів і категорії"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Budgie new expense screen with the Groceries category selected and three suggested tag pills above the actions"
+msgstr "Екран нової витрати Budgie з обраною категорією Продукти та трьома запропонованими тегами над діями"
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Budgie New Transfer screen converting 250 US dollars into euros, with the sending-currency pill and the conversion rate row"
 msgstr "Екран «Новий переказ» у Budgie, що конвертує 250 доларів США в євро, із пігулкою валюти відправлення та рядком курсу конвертації"
@@ -5655,6 +5659,10 @@ msgstr "Перевірте Issues та обговорення"
 #: src/app/[lang]/beta/page.tsx
 msgid "Checking for the latest build…"
 msgstr "Пошук останньої збірки…"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Choose a category and up to three tag pills appear above the tag button."
+msgstr "Оберіть категорію, і над кнопкою тегів з'являться до трьох запропонованих тегів."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Actual Budget if:"
@@ -12449,6 +12457,10 @@ msgstr "Особисті фінанси — це ідеальна сфера д�
 msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
 msgstr ""
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Pick a category and Budgie proposes tags you already use, ready to tap."
+msgstr "Оберіть категорію, і Budgie запропонує теги, які ви вже використовуєте, готові до дотику."
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Pick a CSV from Settings and Budgie reads its header row, then offers those headers to every field it needs to write a transaction."
 msgstr "Оберіть CSV у налаштуваннях — Budgie прочитає рядок заголовків і запропонує ці заголовки кожному полю, потрібному для запису операції."
@@ -14543,6 +14555,10 @@ msgstr ""
 msgid "Suggest features and improvements"
 msgstr "Пропонуйте функції та покращення"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Suggested tag pills"
+msgstr "Запропоновані теги"
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Suggestion quality"
 msgstr "Якість підказок"
@@ -14698,6 +14714,14 @@ msgstr "Для тегів є такий самий екран. В аналіти
 msgid "Tags sit next to Category"
 msgstr "Теги — поруч із категорією"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tags still open as usual"
+msgstr "Теги відкриваються як зазвичай"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tags suggested as you save"
+msgstr "Теги пропонуються під час збереження"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tags suggested from your history"
 msgstr "Запропоновані з історії"
@@ -14733,6 +14757,10 @@ msgstr "Візьміть контроль над фінансовою конфі
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections you reach by navigating forward. Cross-currency recurring shows in your home currency; original amount on tap."
 msgstr "Торкніться дня в календарі, щоб побачити транзакції, що надходять. Минулі місяці показують фактичні дані, поточний місяць показує фактичні дані станом на сьогодні плюс прогноз на решту місяця, а майбутні місяці показують прогнози, до яких ви доходите, гортаючи календар вперед. Регулярні платежі в іншій валюті показуються у вашій домашній валюті; оригінальна сума — за дотиком."
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tap a pill to add the tag instead of typing it."
+msgstr "Торкніться запропонованого тегу, щоб додати його замість введення."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Tap a row to categorize it"
@@ -15357,6 +15385,10 @@ msgstr ""
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The obvious pairs merge on import"
 msgstr "Очевидні пари об'єднуються під час імпорту"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "The on-device model answers first, and a lighter lookup covers it while it loads."
+msgstr "Спершу відповідає модель на пристрої, а під час її завантаження допомагає легший пошук."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The open-source security community includes:"

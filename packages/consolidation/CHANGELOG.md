@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
+
+
+### Bug Fixes
+
+* **consolidation:** claim legacy-duplicate ATM withdrawals and review historical ones ([c24f931](https://github.com/budgie-at/budgie/commit/c24f9313a1beb67395a7bd0dd7eb302b321a492c))
+* **consolidation:** run P2P canonical repairs sequentially ([90299d2](https://github.com/budgie-at/budgie/commit/90299d205f4a9bb187a76c77257a136a433c9afb)), closes [#1299](https://github.com/budgie-at/budgie/issues/1299)
+
+
+### Features
+
+* **app:** move ATM withdrawals to cash from the inbox and never auto-convert them ([a0853a2](https://github.com/budgie-at/budgie/commit/a0853a2799a17da900576f3a151928af070c9e2a))
+
+
+
+
+
 ## [6.85.13](https://github.com/budgie-at/budgie/compare/v6.85.12...v6.85.13) (2026-09-29)
 
 **Note:** Version bump only for package @budgie/consolidation
