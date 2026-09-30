@@ -1,12 +1,14 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
 import { Trans, useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { useCurrencySelectorModal } from '../../../@generic/context/currency-selector-modal.context';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -14,13 +16,11 @@ import { updateSettingsMutation } from '../../../settings/mutation/update-settin
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
 import { OnboardingTrackOptionInterface } from '../../interface/onboarding-track-option.interface';
-import { onboardingService } from '../../service/onboarding.service';
+import { OnboardingService } from '../../service/onboarding.service';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 import { OnboardingTrackOptionRow } from '../onboarding-track-option-row/onboarding-track-option-row';
 
 import { OnboardingTrackSelector } from './onboarding-track.selector';
-
-const logger = getLogger('OnboardingTrack');
 
 export const OnboardingTrack = () => {
     const { t } = useLingui();
@@ -47,7 +47,7 @@ export const OnboardingTrack = () => {
         const result = await openCurrencySelector({ selectedInstrumentId: defaultInstrument.id });
 
         if (isDefined(result)) {
-            await updateSettingsMutation({ defaultInstrumentId: result });
+            await appRuntime.runPromise(updateSettingsMutation({ defaultInstrumentId: result }));
         }
     };
 
@@ -56,14 +56,17 @@ export const OnboardingTrack = () => {
     const isPrimaryDisabled = trackOptions.every(option => !isTypeSelected(option.type)) && isEmptyArray(accounts);
 
     const handlePrimary = () => {
-        void onboardingService
-            .provisionAccounts(
-                trackOptions.filter(option => isTypeSelected(option.type)).map(option => ({ type: option.type, title: option.title }))
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.flatMap(OnboardingService, onboardingService =>
+                    onboardingService.provisionAccounts(
+                        trackOptions
+                            .filter(option => isTypeSelected(option.type))
+                            .map(option => ({ type: option.type, title: option.title }))
+                    )
+                ).pipe(Effect.map(() => void goToNextStep(OnboardingStepEnum.TRACK)))
             )
-            .then(() => void goToNextStep(OnboardingStepEnum.TRACK))
-            .catch((error: unknown) => {
-                logger.error('provision accounts failed', { errorMessage: getErrorMessage(error) });
-            });
+        );
     };
 
     return (

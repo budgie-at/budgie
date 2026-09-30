@@ -1,5 +1,8 @@
-import { RuleUpdateInputSchema } from '../schema/rule-update-input.schema';
+import type { RuleActionCreateInputInterface } from '../../rule-action/input/rule-action-create-input.interface';
+import type { RuleConditionCreateInputInterface } from '../../rule-condition/input/rule-condition-create-input.interface';
+import type { RuleUpdateEntityInterface } from '../entity/rule-update-entity.interface';
 
-import type { z } from 'zod';
-
-export type RuleUpdateInputInterface = z.infer<typeof RuleUpdateInputSchema>;
+export type RuleUpdateInputInterface = RuleUpdateEntityInterface & {
+    readonly conditions?: RuleConditionCreateInputInterface[];
+    readonly actions?: RuleActionCreateInputInterface[];
+};

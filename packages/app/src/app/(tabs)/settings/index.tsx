@@ -15,6 +15,7 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { useScrollToAnchor } from '../../../@generic/hook/use-scroll-to-anchor.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
 import { AiSettingsSection } from '../../../ai/component/ai-settings-section/ai-settings-section';
@@ -64,10 +65,10 @@ export default function SettingsPage() {
         });
 
     const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
-        await updateSettingsMutation({ [key]: checked });
+        await appRuntime.runPromise(updateSettingsMutation({ [key]: checked }));
     };
     const handleToggleShowCents = () =>
-        void updateSettingsMutation({ showCents: !showCents }).catch((error: unknown) => {
+        void appRuntime.runPromise(updateSettingsMutation({ showCents: !showCents })).catch((error: unknown) => {
             Toast.show({ type: 'error', text1: t`Could not update settings`, text2: getErrorMessage(error) });
         });
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';

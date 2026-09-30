@@ -1,10 +1,11 @@
-import { UseSuggestionReturnInterface } from '@budgie/ai';
+import { EmbeddingSuggestionService, UseSuggestionReturnInterface } from '@budgie/ai';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import * as Effect from 'effect/Effect';
 
 import { useGetMccCategoryByIdQuery } from '../../mcc-category/query/use-get-mcc-category-by-id.query';
+import { embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-import { embeddingSuggestionService } from '../service/embedding-suggestion.service';
 
-import { useEmbedding } from './use-embedding.hook';
 import { useSuggestionBase } from './use-suggestion-base.hook';
 
 interface UseCommentSuggestionParams {
@@ -19,14 +20,16 @@ interface UseCommentSuggestionParams {
 export const useCommentSuggestion = (params: UseCommentSuggestionParams): UseSuggestionReturnInterface<string> => {
     const { transactionTitle, categoryId, mccCategoryId, comment, aiContext, enabled } = params;
 
-    const { status: embeddingStatus } = useEmbedding();
+    const embeddingStatus = useAtomValue(embeddingModelSnapshotAtom, snapshot => snapshot.status);
     const embeddingReady = embeddingStatus === AiSubsystemStatusEnum.READY;
     const { mccCategory, isLoading: isMccLoading } = useGetMccCategoryByIdQuery(mccCategoryId);
 
-    const fetchSuggestions = async (): Promise<string[]> => {
+    const fetchSuggestions = () => {
         const mccDescription = mccCategory?.fullDescription ?? null;
 
-        return embeddingSuggestionService.suggestComments(categoryId, transactionTitle, mccDescription, comment, aiContext);
+        return Effect.flatMap(EmbeddingSuggestionService, embeddingSuggestionService =>
+            embeddingSuggestionService.suggestComments(categoryId, transactionTitle, mccDescription, comment, aiContext)
+        );
     };
 
     const { status, suggestions } = useSuggestionBase({

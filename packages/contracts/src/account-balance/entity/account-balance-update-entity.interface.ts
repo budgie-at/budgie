@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { AccountBalanceCreateEntityInterface } from './account-balance-create-entity.interface';
 
-import { AccountBalanceUpdateEntitySchema } from '../schema/account-balance-update-entity.schema';
-
-export type AccountBalanceUpdateEntityInterface = z.infer<typeof AccountBalanceUpdateEntitySchema>;
+export type AccountBalanceUpdateEntityInterface = Pick<AccountBalanceCreateEntityInterface, 'amount'>;

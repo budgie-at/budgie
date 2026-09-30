@@ -1,32 +1,21 @@
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { AccountTypeEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Clock from 'effect/Clock';
+import * as Deferred from 'effect/Deferred';
+import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
 
-import { emptyFn } from '@rnw-community/shared';
-
-import { buildMonobank, fetchCanonicalsOfType, monobankStub, seed, setupMonobankFixture } from '../../harness';
+import { buildMonobank, fetchCanonicalsOfType, monobankStub, seed, setupMonobankFixture, TestLayer } from '../../harness';
 
 describe('consolidation/monobank-immediate-reconciliation', () => {
-    it('keeps a synced ATM withdrawal as a bank expense through immediate reconciliation and after sync', async () => {
-        const { account: bankAccount } = setupMonobankFixture();
-        seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
-        let releaseRateLimitWait: () => void = emptyFn;
-        const waitForQueuedUserWorkSpy = vi.spyOn(syncWorkloadService, 'waitForQueuedUserWork');
-        let syncPromise: Promise<unknown> = Promise.resolve();
-
-        try {
-            const rateLimitWaitEntered = new Promise<void>(resolve => {
-                waitForQueuedUserWorkSpy.mockImplementation(async () => {
-                    resolve();
-
-                    return new Promise<boolean>(resolveRateLimitWait => {
-                        releaseRateLimitWait = () => {
-                            resolveRateLimitWait(false);
-                        };
-                    });
-                });
-            });
+    it.effect('keeps a synced ATM withdrawal as a bank expense through immediate reconciliation and after sync', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const { account: bankAccount } = setupMonobankFixture();
+            seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
+            const rateLimitWaitEntered = yield* Deferred.make<void>();
+            const releaseRateLimitWait = yield* Deferred.make<void>();
 
             monobankStub.statement([
                 buildMonobank.transaction({
@@ -40,24 +29,36 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
                 })
             ]);
 
-            syncPromise = monobankSyncService.sync();
-            await Promise.race([
-                rateLimitWaitEntered,
-                syncPromise.then(() => {
-                    throw new Error('Monobank sync completed before entering its rate-limit wait');
-                })
-            ]);
+            const syncFiber = yield* Effect.forkChild(
+                Effect.clockWith(clock =>
+                    monobankSyncService.sync().pipe(
+                        Effect.provideService(
+                            Clock.Clock,
+                            Object.assign(Object.create(clock), {
+                                sleep: () =>
+                                    Effect.andThen(Deferred.succeed(rateLimitWaitEntered, undefined), Deferred.await(releaseRateLimitWait))
+                            })
+                        )
+                    )
+                )
+            );
+
+            yield* Effect.raceFirst(
+                Deferred.await(rateLimitWaitEntered),
+                Fiber.join(syncFiber).pipe(
+                    Effect.andThen(Effect.die(new Error('Monobank sync completed before entering its rate-limit wait')))
+                )
+            ).pipe(
+                Effect.tap(() =>
+                    Effect.sync(() => {
+                        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+                    })
+                ),
+                Effect.ensuring(Deferred.succeed(releaseRateLimitWait, undefined))
+            );
+            yield* Fiber.join(syncFiber);
 
             expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
-        } finally {
-            releaseRateLimitWait();
-            try {
-                await syncPromise;
-            } finally {
-                waitForQueuedUserWorkSpy.mockRestore();
-            }
-        }
-
-        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
-    });
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

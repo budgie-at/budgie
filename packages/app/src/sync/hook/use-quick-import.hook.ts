@@ -1,23 +1,24 @@
-import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
+import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { QuickImportConfigInterface } from '../interface/quick-import-config.interface';
 
 import type { FileBankSyncImportResultInterface } from '../interface/file-bank-sync-import-result.interface';
-
-const logger = getLogger('useQuickImport');
 
 interface QuickImportResult {
     readonly isLoading: boolean;
     readonly handleQuickImport: () => void;
 }
 
-export const useQuickImport = (config: QuickImportConfigInterface | null, triggerAccountExternalId: string | null): QuickImportResult => {
+export const useQuickImport = (config: QuickImportConfigInterface | null): QuickImportResult => {
     const { t } = useLingui();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -47,51 +48,33 @@ export const useQuickImport = (config: QuickImportConfigInterface | null, trigge
 
     const handleQuickImport = () => {
         if (!isDefined(config)) {
-            logger.log('skip:no-config');
-
             return;
         }
 
         if (isLoading) {
-            logger.log('skip:loading', { source: config.source, triggerAccountExternalId });
-
             return;
         }
 
-        const execute = async (): Promise<void> => {
-            setIsLoading(true);
-            logger.log('picker:open', { source: config.source, mimeType: config.mimeType, triggerAccountExternalId });
+        setIsLoading(true);
+        appRuntime.runFork(
+            Effect.gen(function* () {
+                const result = yield* Effect.promise(() =>
+                    DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true })
+                );
+                const uri = result.assets?.at(0)?.uri;
 
-            const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
-            const uri = result.assets?.at(0)?.uri;
-            logger.log('picker:result', {
-                source: config.source,
-                canceled: result.canceled,
-                assetCount: result.assets?.length ?? 0,
-                triggerAccountExternalId,
-                uri
-            });
+                if (result.canceled || !isNotEmptyString(uri)) {
+                    return;
+                }
 
-            if (result.canceled || !isNotEmptyString(uri)) {
-                logger.log('skip:no-uri', { source: config.source, canceled: result.canceled, triggerAccountExternalId, uri });
-
-                return;
-            }
-
-            Toast.show({ type: 'info', text1: t`Import started`, text2: t`Budgie will notify you when it finishes` });
-            const importResult = await config.importHandler(uri);
-            showImportDoneToast(importResult);
-        };
-
-        void execute()
-            .catch((importError: unknown) => {
-                const errorMessage = getErrorMessage(importError);
-                logger.error('import:throw', importError);
-                Toast.show({ type: 'error', text1: t`Import failed`, text2: errorMessage });
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
+                Toast.show({ type: 'info', text1: t`Import started`, text2: t`Budgie will notify you when it finishes` });
+                showImportDoneToast(yield* config.importHandler(uri));
+            }).pipe(
+                Effect.tapCause(Effect.logError),
+                Effect.catchCause(cause => Effect.sync(() => void showErrorToast(t`Import failed`, getErrorMessage(Cause.squash(cause))))),
+                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+            )
+        );
     };
 
     return { isLoading, handleQuickImport };

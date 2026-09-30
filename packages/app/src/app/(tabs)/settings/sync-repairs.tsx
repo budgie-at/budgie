@@ -37,14 +37,12 @@ export default function SyncRepairsPage() {
     const buttonContent = isLoading ? t`Checking` : t`Repair Sync Data`;
     const confirmationCountText = getSyncRepairText(duplicateTransactionCount, t);
 
-    const handleRefresh = () => void refresh();
-
     return (
         <Page testID={SyncRepairsPageSelector.Container} header={<PageHeader title={t`Sync Repairs`} onGoBack={handleGoBack} />}>
             <ScrollView className="flex-1" contentContainerClassName="gap-y-xl pb-5xl pt-3xl" showsVerticalScrollIndicator={false}>
                 <SyncRepairsIntroCard />
 
-                {hasError ? <SyncRepairsErrorCard errorMessage={errorMessage} isLoading={isLoading} onRefresh={handleRefresh} /> : null}
+                {hasError ? <SyncRepairsErrorCard errorMessage={errorMessage} isLoading={isLoading} onRefresh={refresh} /> : null}
 
                 {shouldShowEmptyState ? <SyncRepairsEmptyStateCard /> : null}
 

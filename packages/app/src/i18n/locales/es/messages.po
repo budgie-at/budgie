@@ -13,12 +13,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. js-lingui-explicit-id
-#: src/sync/service/consolidation-coordinator.service.ts
+#: src/sync/layer/consolidation-coordinator.layer.ts
 msgid "Binance P2P buy {assetCode}"
 msgstr "Compra P2P de {assetCode} en Binance"
 
 #. js-lingui-explicit-id
-#: src/sync/service/consolidation-coordinator.service.ts
+#: src/sync/layer/consolidation-coordinator.layer.ts
 msgid "Binance P2P sell {assetCode}"
 msgstr "Venta P2P de {assetCode} en Binance"
 
@@ -105,10 +105,6 @@ msgstr "{count, plural, one {# transacción existente coincide con esta regla.} 
 msgid "{count, plural, one {# missing category} other {# missing categories}}"
 msgstr "{count, plural, one {# categoría faltante} other {# categorías faltantes}}"
 
-#: src/settings/hooks/use-sync-repairs-action.hook.ts
-msgid "{count, plural, one {# sync item repaired} other {# sync items repaired}}"
-msgstr "{count, plural, one {# elemento de sincronización reparado} other {# elementos de sincronización reparados}}"
-
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# reparación de sincronización} other {# reparaciones de sincronización}}"
@@ -121,7 +117,7 @@ msgstr "{count, plural, one {Esta categoría tiene # transacción. Selecciona ot
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Esta etiqueta tiene # transacción. Selecciona otra etiqueta para reasignarla.} other {Esta etiqueta tiene # transacciones. Selecciona otra etiqueta para reasignarlas.}}"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {Queda # día} other {Quedan # días}}"
 
@@ -184,6 +180,10 @@ msgstr "{percentage}% de ingresos"
 msgid "{remainingCount, plural, one {# left} other {# left}}"
 msgstr "{remainingCount, plural, one {Queda #} other {Quedan #}}"
 
+#: src/settings/hooks/use-sync-repairs-action.hook.ts
+msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
+msgstr "{repairedTransactionCount, plural, one {# elemento de sincronización reparado} other {# elementos de sincronización reparados}}"
+
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{rowCount, plural, one {# transacción} other {# transacciones}}"
@@ -220,7 +220,7 @@ msgstr "{similarCount, plural, one {# transacción similar} other {# transaccion
 msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{skippedCount, plural, one {# omitida} other {# omitidas}}"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "{source} error · {message}"
 msgstr "Error de {source} · {message}"
 
@@ -241,7 +241,7 @@ msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transacción} other {# transacciones}}"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
 msgstr "+{formattedNet} / mes"
 
@@ -258,7 +258,7 @@ msgid ">"
 msgstr ">"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} m."
 
@@ -323,7 +323,6 @@ msgstr "Alrededor de un minuto"
 msgid "Account"
 msgstr "Cuenta"
 
-#: src/money-data/service/entry-base-valuation.service.ts
 #: src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Account {accountId} not found"
 msgstr "Cuenta {accountId} no encontrada"
@@ -341,7 +340,7 @@ msgid "Account Name & Icon"
 msgstr "Nombre e icono de la cuenta"
 
 #. js-lingui-explicit-id
-#: src/transaction/service/transaction.service.ts
+#: src/transaction/service/transfer-creation.service.ts
 msgid "transaction.accountNotFound"
 msgstr "Cuenta no encontrada"
 
@@ -471,7 +470,7 @@ msgstr "Ajuste"
 msgid "AI"
 msgstr "IA"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "IA desactivada"
 
@@ -744,7 +743,7 @@ msgid "Borrowed debt account expected"
 msgstr "Se esperaba una cuenta de deuda tomada prestada"
 
 #: src/app/(tabs)/settings/index.tsx
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Budget"
 msgstr "Presupuesto"
 
@@ -891,7 +890,7 @@ msgstr "Categorizar como {categoryTitle}"
 #: src/category/components/category-form-selector/category-form-selector.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Category"
 msgstr "Categoría"
 
@@ -1217,8 +1216,7 @@ msgstr "No se pudo exportar el CSV"
 msgid "Could not export database"
 msgstr "No se pudo exportar la base de datos"
 
-#: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+#: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not fetch accounts"
 msgstr "No se pudieron obtener las cuentas"
 
@@ -1548,7 +1546,7 @@ msgstr "La cuenta de deuda no puede coincidir con la cuenta de la transacción"
 msgid "Debt account not found"
 msgstr "Cuenta de deuda no encontrada"
 
-#: src/transaction/utils/assert-transfer-accounts-are-not-debt.util.ts
+#: src/transaction/error/debt-transfer-not-allowed.error.ts
 msgid "Debt accounts cannot take part in transfers"
 msgstr "Las cuentas de deuda no pueden participar en transferencias"
 
@@ -1613,7 +1611,7 @@ msgid "transaction.depositExpenseDisallowed"
 msgstr "Las cuentas de depósito no pueden financiar gastos"
 
 #. js-lingui-explicit-id
-#: src/account/service/account-balance-incremental.service.ts
+#: src/account/error/deposit-negative-balance.error.ts
 msgid "account.depositNegativeBalanceDisallowed"
 msgstr "El saldo del depósito no puede ser negativo"
 
@@ -1660,7 +1658,7 @@ msgstr "Listo ({count})"
 msgid "Download your statement as PDF"
 msgstr "Descarga tu extracto en PDF"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Downloading AI models…"
 msgstr "Descargando modelos de IA…"
 
@@ -1942,7 +1940,7 @@ msgstr "Fecha de devolución esperada (Opcional)"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Expense"
 msgstr "Gasto"
 
@@ -2268,7 +2266,7 @@ msgstr "Incluye criptomonedas"
 #: src/transaction/components/statistics-content/statistics-content.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 #: src/transaction/constant/transaction-type.constant.ts
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Income"
 msgstr "Ingreso"
 
@@ -2378,15 +2376,15 @@ msgstr "Último año"
 msgid "Learning"
 msgstr "Aprendizaje"
 
-#: src/ai/service/ai-embedding-status.service.ts
+#: src/ai/constant/ai-embedding-status-atom.constant.ts
 msgid "Learning transactions"
 msgstr "Aprendiendo transacciones"
 
-#: src/ai/service/ai-embedding-status.service.ts
+#: src/ai/constant/ai-embedding-status-atom.constant.ts
 msgid "Learning up to date"
 msgstr "Aprendizaje actualizado"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "left"
 msgstr "restante"
 
@@ -2646,7 +2644,7 @@ msgstr "Por revisar"
 msgid "Net"
 msgstr "Neto"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Net worth"
 msgstr "Patrimonio neto"
 
@@ -2696,7 +2694,7 @@ msgstr "Aún no hay cuentas"
 msgid "No Accounts Yet"
 msgstr "Aún no hay cuentas"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "No active budget"
 msgstr "Sin presupuesto activo"
 
@@ -2952,7 +2950,7 @@ msgstr "Solo se pueden convertir ingresos de una sola entrada"
 msgid "Open Binance to get your API key"
 msgstr "Abra Binance para obtener su clave API"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Open Budgie to see your finances"
 msgstr "Abra Budgie para ver sus finanzas"
 
@@ -3022,7 +3020,7 @@ msgstr "Presupuesto de otros: {threshold}% gastado"
 msgid "Other budget: limit reached"
 msgstr "Presupuesto de otros: límite alcanzado"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "over"
 msgstr "de más"
 
@@ -3082,7 +3080,7 @@ msgstr "Pega tu secreto API de Binance:"
 msgid "PDF statement"
 msgstr "Extracto PDF"
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "per day"
 msgstr "por día"
 
@@ -3245,11 +3243,11 @@ msgstr "Reconstruir aprendizaje"
 msgid "Rebuild translations"
 msgstr "Reconstruir traducciones"
 
-#: src/ai/service/ai-embedding-status.service.ts
+#: src/ai/constant/ai-embedding-status-atom.constant.ts
 msgid "Rebuilding learning"
 msgstr "Reconstruyendo aprendizaje"
 
-#: src/ai/service/ai-translation-status.service.ts
+#: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Rebuilding translations"
 msgstr "Reconstruyendo traducciones"
 
@@ -3851,7 +3849,7 @@ msgstr "Empezar a usar Budgie"
 msgid "Start with a blank canvas"
 msgstr "Empezar desde cero"
 
-#: src/ai/service/ai-umbrella-status.service.ts
+#: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "Iniciando IA…"
 
@@ -3897,6 +3895,10 @@ msgstr "Sincronización"
 #: src/app/(main)/create-account/index.tsx
 msgid "Sync crypto balances and transactions from Binance with a read-only API key"
 msgstr "Sincroniza saldos y transacciones cripto desde Binance con una clave API de solo lectura"
+
+#: src/settings/hooks/use-sync-repairs-action.hook.ts
+msgid "Sync data repaired"
+msgstr "Datos de sincronización reparados"
 
 #: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
 msgid "Sync data repairs"
@@ -4017,7 +4019,7 @@ msgstr "Esta copia de seguridad está protegida con un PIN. Al importarla se ree
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Esta transferencia consolidada no tiene movimientos de origen movidos."
 
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Este mes"
 
@@ -4197,7 +4199,7 @@ msgstr "Error de transcripción"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
-#: src/widget/service/widget-snapshot.service.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Transfer"
 msgstr "Transferencia"
 
@@ -4217,7 +4219,7 @@ msgstr "Transferencia desde cuenta"
 msgid "Transfer To Account"
 msgstr "Transferencia a cuenta"
 
-#: src/ai/service/ai-translation-status.service.ts
+#: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Translating categories and tags"
 msgstr "Traduciendo categorías y etiquetas"
 
@@ -4225,7 +4227,7 @@ msgstr "Traduciendo categorías y etiquetas"
 msgid "Translation"
 msgstr "Traducción"
 
-#: src/ai/service/ai-translation-status.service.ts
+#: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Translations ready"
 msgstr "Traducciones listas"
 

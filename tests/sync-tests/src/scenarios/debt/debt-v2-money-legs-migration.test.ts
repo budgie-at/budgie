@@ -1,6 +1,8 @@
 import { BORROWING_CATEGORY_ID, CategorySourceEnum, LENDING_CATEGORY_ID } from '@budgie/contracts';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
+import { TestLayer } from '../../harness';
 import { applyMigration } from '../../harness/db/apply-migration';
 import { testDb } from '../../harness/scenario/setup';
 
@@ -80,146 +82,181 @@ const findEntry = (rows: EntryRowInterface[], id: number) => rows.find(row => ro
 const findEvent = (rows: EventRowInterface[], id: number) => rows.find(row => row.id === id);
 const findBalance = (rows: BalanceRowInterface[], accountId: number) => rows.find(row => row.accountId === accountId);
 
+const arrange = Effect.gen(function* () {
+    yield* Effect.promise(() => new DebtV2LegacyShapeFixture().seed());
+    yield* applyMigration(MIGRATION_FILE_NAME);
+    const firstRun = yield* Effect.promise(fetchSnapshot);
+    yield* applyMigration(MIGRATION_FILE_NAME);
+    const secondRun = yield* Effect.promise(fetchSnapshot);
+
+    return { firstRun, secondRun };
+});
 describe('debt/debt-v2-money-legs-migration', () => {
-    let firstRun: Awaited<ReturnType<typeof fetchSnapshot>>;
-    let secondRun: Awaited<ReturnType<typeof fetchSnapshot>>;
-
-    beforeEach(async () => {
-        await new DebtV2LegacyShapeFixture().seed();
-        await applyMigration(MIGRATION_FILE_NAME);
-        firstRun = await fetchSnapshot();
-        await applyMigration(MIGRATION_FILE_NAME);
-        secondRun = await fetchSnapshot();
-    });
-
-    it('leaves no debt-typed transaction, no debt-account entry and no mirror leg alive', async () => {
-        expect(
-            await testDb.$client.getAllAsync<{ id: number }>("SELECT id FROM transactions WHERE type = 'DEBT' AND deleted_at IS NULL")
-        ).toHaveLength(0);
-        expect(
-            await testDb.$client.getAllAsync<{ id: number }>(
-                `SELECT transaction_entries.id FROM transaction_entries
+    it.effect('leaves no debt-typed transaction, no debt-account entry and no mirror leg alive', () =>
+        Effect.gen(function* () {
+            yield* arrange;
+            expect(
+                yield* Effect.promise(() =>
+                    testDb.$client.getAllAsync<{ id: number }>("SELECT id FROM transactions WHERE type = 'DEBT' AND deleted_at IS NULL")
+                )
+            ).toHaveLength(0);
+            expect(
+                yield* Effect.promise(() =>
+                    testDb.$client.getAllAsync<{ id: number }>(
+                        `SELECT transaction_entries.id FROM transaction_entries
                  INNER JOIN accounts ON accounts.id = transaction_entries.account_id AND accounts.type = 'DEBT'
                  WHERE transaction_entries.deleted_at IS NULL AND accounts.id IN (${FIXTURE_ACCOUNT_IDS.join(',')})`
-            )
-        ).toHaveLength(0);
-        expect(
-            await testDb.$client.getAllAsync<{ id: number }>(
-                "SELECT id FROM transaction_entries WHERE kind = 'DEBT_SETTLEMENT' AND deleted_at IS NULL"
-            )
-        ).toHaveLength(0);
-    });
+                    )
+                )
+            ).toHaveLength(0);
+            expect(
+                yield* Effect.promise(() =>
+                    testDb.$client.getAllAsync<{ id: number }>(
+                        "SELECT id FROM transaction_entries WHERE kind = 'DEBT_SETTLEMENT' AND deleted_at IS NULL"
+                    )
+                )
+            ).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('retypes the lent opening transfer into a funding-account expense carrying Lending', () => {
-        expect(findTransaction(firstRun.transactions, DebtV2LegacyShapeFixture.LENT_OPENING_TRANSACTION_ID)).toMatchObject({
-            fromAccountId: DebtV2LegacyShapeFixture.USD_FUNDING_ACCOUNT_ID,
-            toAccountId: null,
-            type: 'EXPENSE'
-        });
-        expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.LENT_OPENING_FUNDING_ENTRY_ID)).toMatchObject({
-            categoryId: LENDING_CATEGORY_ID,
-            categorySource: CategorySourceEnum.DEBT_SETTLEMENT,
-            deletedAt: null
-        });
-        expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.LENT_OPENING_DEBT_ENTRY_ID)?.deletedAt).not.toBeNull();
-        expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.LENT_OPENING_EVENT_ID)).toMatchObject({
-            amount: DebtV2LegacyShapeFixture.LENT_PRINCIPAL_AMOUNT,
-            source: 'OPENING',
-            transactionEntryId: DebtV2LegacyShapeFixture.LENT_OPENING_FUNDING_ENTRY_ID
-        });
-    });
+    it.effect('retypes the lent opening transfer into a funding-account expense carrying Lending', () =>
+        Effect.gen(function* () {
+            const { firstRun } = yield* arrange;
+            expect(findTransaction(firstRun.transactions, DebtV2LegacyShapeFixture.LENT_OPENING_TRANSACTION_ID)).toMatchObject({
+                fromAccountId: DebtV2LegacyShapeFixture.USD_FUNDING_ACCOUNT_ID,
+                toAccountId: null,
+                type: 'EXPENSE'
+            });
+            expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.LENT_OPENING_FUNDING_ENTRY_ID)).toMatchObject({
+                categoryId: LENDING_CATEGORY_ID,
+                categorySource: CategorySourceEnum.DEBT_SETTLEMENT,
+                deletedAt: null
+            });
+            expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.LENT_OPENING_DEBT_ENTRY_ID)?.deletedAt).not.toBeNull();
+            expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.LENT_OPENING_EVENT_ID)).toMatchObject({
+                amount: DebtV2LegacyShapeFixture.LENT_PRINCIPAL_AMOUNT,
+                source: 'OPENING',
+                transactionEntryId: DebtV2LegacyShapeFixture.LENT_OPENING_FUNDING_ENTRY_ID
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('retypes the borrowed opening transfer into a funding-account income carrying Borrowing', () => {
-        expect(findTransaction(firstRun.transactions, DebtV2LegacyShapeFixture.BORROW_OPENING_TRANSACTION_ID)).toMatchObject({
-            fromAccountId: null,
-            toAccountId: DebtV2LegacyShapeFixture.USD_FUNDING_ACCOUNT_ID,
-            type: 'INCOME'
-        });
-        expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.BORROW_OPENING_FUNDING_ENTRY_ID)).toMatchObject({
-            categoryId: BORROWING_CATEGORY_ID,
-            categorySource: CategorySourceEnum.DEBT_SETTLEMENT
-        });
-        expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.BORROW_OPENING_EVENT_ID)).toMatchObject({
-            source: 'OPENING',
-            transactionEntryId: DebtV2LegacyShapeFixture.BORROW_OPENING_FUNDING_ENTRY_ID
-        });
-    });
+    it.effect('retypes the borrowed opening transfer into a funding-account income carrying Borrowing', () =>
+        Effect.gen(function* () {
+            const { firstRun } = yield* arrange;
+            expect(findTransaction(firstRun.transactions, DebtV2LegacyShapeFixture.BORROW_OPENING_TRANSACTION_ID)).toMatchObject({
+                fromAccountId: null,
+                toAccountId: DebtV2LegacyShapeFixture.USD_FUNDING_ACCOUNT_ID,
+                type: 'INCOME'
+            });
+            expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.BORROW_OPENING_FUNDING_ENTRY_ID)).toMatchObject({
+                categoryId: BORROWING_CATEGORY_ID,
+                categorySource: CategorySourceEnum.DEBT_SETTLEMENT
+            });
+            expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.BORROW_OPENING_EVENT_ID)).toMatchObject({
+                source: 'OPENING',
+                transactionEntryId: DebtV2LegacyShapeFixture.BORROW_OPENING_FUNDING_ENTRY_ID
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('keeps repayment transfers as closing events and never rewrites their amounts', () => {
-        expect(findTransaction(firstRun.transactions, DebtV2LegacyShapeFixture.SAME_INSTRUMENT_REPAYMENT_TRANSACTION_ID)?.type).toBe(
-            'INCOME'
-        );
-        expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.SAME_INSTRUMENT_EVENT_ID)).toMatchObject({
-            amount: DebtV2LegacyShapeFixture.SAME_INSTRUMENT_REAL_EVENT_AMOUNT,
-            direction: 'CLOSE',
-            transactionEntryId: DebtV2LegacyShapeFixture.SAME_INSTRUMENT_FUNDING_ENTRY_ID
-        });
-        expect(findTransaction(firstRun.transactions, DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_REPAYMENT_TRANSACTION_ID)).toMatchObject({
-            fromAccountId: DebtV2LegacyShapeFixture.EUR_FUNDING_ACCOUNT_ID,
-            type: 'EXPENSE'
-        });
-        expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_FUNDING_ENTRY_ID)).toMatchObject({
-            amount: DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_FUNDING_AMOUNT,
-            categoryId: BORROWING_CATEGORY_ID
-        });
-        expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_EVENT_ID)).toMatchObject({
-            amount: DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_DEBT_AMOUNT,
-            transactionEntryId: DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_FUNDING_ENTRY_ID
-        });
-    });
+    it.effect('keeps repayment transfers as closing events and never rewrites their amounts', () =>
+        Effect.gen(function* () {
+            const { firstRun } = yield* arrange;
+            expect(findTransaction(firstRun.transactions, DebtV2LegacyShapeFixture.SAME_INSTRUMENT_REPAYMENT_TRANSACTION_ID)?.type).toBe(
+                'INCOME'
+            );
+            expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.SAME_INSTRUMENT_EVENT_ID)).toMatchObject({
+                amount: DebtV2LegacyShapeFixture.SAME_INSTRUMENT_REAL_EVENT_AMOUNT,
+                direction: 'CLOSE',
+                transactionEntryId: DebtV2LegacyShapeFixture.SAME_INSTRUMENT_FUNDING_ENTRY_ID
+            });
+            expect(
+                findTransaction(firstRun.transactions, DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_REPAYMENT_TRANSACTION_ID)
+            ).toMatchObject({
+                fromAccountId: DebtV2LegacyShapeFixture.EUR_FUNDING_ACCOUNT_ID,
+                type: 'EXPENSE'
+            });
+            expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_FUNDING_ENTRY_ID)).toMatchObject({
+                amount: DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_FUNDING_AMOUNT,
+                categoryId: BORROWING_CATEGORY_ID
+            });
+            expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_EVENT_ID)).toMatchObject({
+                amount: DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_DEBT_AMOUNT,
+                transactionEntryId: DebtV2LegacyShapeFixture.CROSS_INSTRUMENT_FUNDING_ENTRY_ID
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('drops mirror legs, recategorises plumbing categories and preserves user-chosen ones', () => {
-        expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.PLUMBING_MIRROR_FUNDING_ENTRY_ID)).toMatchObject({
-            categoryId: LENDING_CATEGORY_ID,
-            categorySource: CategorySourceEnum.DEBT_SETTLEMENT
-        });
-        expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.PLUMBING_MIRROR_DEBT_ENTRY_ID)?.deletedAt).not.toBeNull();
-        expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.PLUMBING_MIRROR_EVENT_ID)?.transactionEntryId).toBe(
-            DebtV2LegacyShapeFixture.PLUMBING_MIRROR_FUNDING_ENTRY_ID
-        );
-        expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.USER_CATEGORY_FUNDING_ENTRY_ID)).toMatchObject({
-            categoryId: DebtV2LegacyShapeFixture.USER_CATEGORY_ID,
-            categorySource: CategorySourceEnum.USER
-        });
-        expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.USER_CATEGORY_MIRROR_EVENT_ID)?.transactionEntryId).toBe(
-            DebtV2LegacyShapeFixture.USER_CATEGORY_FUNDING_ENTRY_ID
-        );
-    });
+    it.effect('drops mirror legs, recategorises plumbing categories and preserves user-chosen ones', () =>
+        Effect.gen(function* () {
+            const { firstRun } = yield* arrange;
+            expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.PLUMBING_MIRROR_FUNDING_ENTRY_ID)).toMatchObject({
+                categoryId: LENDING_CATEGORY_ID,
+                categorySource: CategorySourceEnum.DEBT_SETTLEMENT
+            });
+            expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.PLUMBING_MIRROR_DEBT_ENTRY_ID)?.deletedAt).not.toBeNull();
+            expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.PLUMBING_MIRROR_EVENT_ID)?.transactionEntryId).toBe(
+                DebtV2LegacyShapeFixture.PLUMBING_MIRROR_FUNDING_ENTRY_ID
+            );
+            expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.USER_CATEGORY_FUNDING_ENTRY_ID)).toMatchObject({
+                categoryId: DebtV2LegacyShapeFixture.USER_CATEGORY_ID,
+                categorySource: CategorySourceEnum.USER
+            });
+            expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.USER_CATEGORY_MIRROR_EVENT_ID)?.transactionEntryId).toBe(
+                DebtV2LegacyShapeFixture.USER_CATEGORY_FUNDING_ENTRY_ID
+            );
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('removes the adjustment parked on a debt account', () => {
-        expect(findTransaction(firstRun.transactions, DebtV2LegacyShapeFixture.PARKED_ADJUSTMENT_TRANSACTION_ID)?.deletedAt).not.toBeNull();
-        expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.PARKED_ADJUSTMENT_ENTRY_ID)?.deletedAt).not.toBeNull();
-    });
+    it.effect('removes the adjustment parked on a debt account', () =>
+        Effect.gen(function* () {
+            const { firstRun } = yield* arrange;
+            expect(
+                findTransaction(firstRun.transactions, DebtV2LegacyShapeFixture.PARKED_ADJUSTMENT_TRANSACTION_ID)?.deletedAt
+            ).not.toBeNull();
+            expect(findEntry(firstRun.entries, DebtV2LegacyShapeFixture.PARKED_ADJUSTMENT_ENTRY_ID)?.deletedAt).not.toBeNull();
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('rebuilds debt ledger balances from events and leaves funding balances alone', () => {
-        const lentBalanceAmount = findBalance(firstRun.balances, DebtV2LegacyShapeFixture.LENT_ACCOUNT_ID)?.amount;
+    it.effect('rebuilds debt ledger balances from events and leaves funding balances alone', () =>
+        Effect.gen(function* () {
+            const { firstRun } = yield* arrange;
+            const lentBalanceAmount = findBalance(firstRun.balances, DebtV2LegacyShapeFixture.LENT_ACCOUNT_ID)?.amount;
 
-        expect(lentBalanceAmount).toBe(800_000_000);
-        expect(Number.isInteger(lentBalanceAmount)).toBe(true);
-        expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.BORROW_ACCOUNT_ID)?.amount).toBe(-380_000_000);
-        expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.MIRROR_ACCOUNT_ID)?.amount).toBe(1_600_000_000);
-        expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.USD_FUNDING_ACCOUNT_ID)?.amount).toBe(
-            DebtV2LegacyShapeFixture.USD_FUNDING_BALANCE_AMOUNT
-        );
-    });
+            expect(lentBalanceAmount).toBe(800_000_000);
+            expect(Number.isInteger(lentBalanceAmount)).toBe(true);
+            expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.BORROW_ACCOUNT_ID)?.amount).toBe(-380_000_000);
+            expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.MIRROR_ACCOUNT_ID)?.amount).toBe(1_600_000_000);
+            expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.USD_FUNDING_ACCOUNT_ID)?.amount).toBe(
+                DebtV2LegacyShapeFixture.USD_FUNDING_BALANCE_AMOUNT
+            );
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('leaves a manual-only debt bit-identical', () => {
-        expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.MANUAL_ACCOUNT_ID)).toEqual({
-            accountId: DebtV2LegacyShapeFixture.MANUAL_ACCOUNT_ID,
-            amount: DebtV2LegacyShapeFixture.MANUAL_PRINCIPAL_AMOUNT - DebtV2LegacyShapeFixture.MANUAL_REPAID_AMOUNT,
-            updatedAt: 1_780_358_400
-        });
-        expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.MANUAL_OPENING_EVENT_ID)).toMatchObject({
-            source: 'MANUAL',
-            transactionEntryId: null
-        });
-        expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.MANUAL_CLOSING_EVENT_ID)).toMatchObject({
-            source: 'MANUAL',
-            transactionEntryId: null
-        });
-    });
+    it.effect('leaves a manual-only debt bit-identical', () =>
+        Effect.gen(function* () {
+            const { firstRun } = yield* arrange;
+            expect(findBalance(firstRun.balances, DebtV2LegacyShapeFixture.MANUAL_ACCOUNT_ID)).toEqual({
+                accountId: DebtV2LegacyShapeFixture.MANUAL_ACCOUNT_ID,
+                amount: DebtV2LegacyShapeFixture.MANUAL_PRINCIPAL_AMOUNT - DebtV2LegacyShapeFixture.MANUAL_REPAID_AMOUNT,
+                updatedAt: 1_780_358_400
+            });
+            expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.MANUAL_OPENING_EVENT_ID)).toMatchObject({
+                source: 'MANUAL',
+                transactionEntryId: null
+            });
+            expect(findEvent(firstRun.events, DebtV2LegacyShapeFixture.MANUAL_CLOSING_EVENT_ID)).toMatchObject({
+                source: 'MANUAL',
+                transactionEntryId: null
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('is a no-op on a second run', () => {
-        expect(secondRun).toEqual(firstRun);
-    });
+    it.effect('is a no-op on a second run', () =>
+        Effect.gen(function* () {
+            const { firstRun, secondRun } = yield* arrange;
+            expect(secondRun).toEqual(firstRun);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

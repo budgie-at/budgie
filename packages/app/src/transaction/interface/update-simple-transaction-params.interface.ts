@@ -1,8 +1,7 @@
-import type { TransactionCreateInputInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import type { ZodType } from 'zod';
+import type { TransactionCreateInputSchema, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export interface UpdateSimpleTransactionParamsInterface {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly transactionId: number;
-    readonly schema: ZodType<TransactionCreateInputInterface, TransactionCreateInputInterface>;
+    readonly schema: typeof TransactionCreateInputSchema;
 }

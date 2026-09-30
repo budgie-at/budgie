@@ -1,18 +1,26 @@
-import { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountEntityTable, AccountRepository, AccountWithInstrumentEntityInterface, InstrumentEntityTable } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useDeferredValue, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
-import { accountRepository } from '../../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { databaseQueryAtom } from '../../../@generic/utils/database-query-atom.util';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ArchivedAccountCard } from '../../../account/component/archived-account-card/archived-account-card';
 import { ArchivedAccountsEmptyState } from '../../../account/component/archived-accounts-empty-state/archived-accounts-empty-state';
-import { accountService } from '../../../account/service/account.service';
+import { AccountArchiveService } from '../../../account/service/account-archive.service';
 import { filterAccountsBySearchQuery } from '../../../account/utils/filter-accounts-by-search-query.util';
 
 import { ArchivedAccountsPageSelector } from './archived-accounts-page.selector';
+
+const archivedAccountsAtom = databaseQueryAtom(
+    [AccountEntityTable, InstrumentEntityTable],
+    Effect.flatMap(AccountRepository, accountRepository => accountRepository.getAllArchived())
+);
 
 const handleGoBack = () => void goBackOrReplace('/settings');
 
@@ -21,8 +29,11 @@ export default function Archived() {
     const [search, setSearch] = useState('');
     const deferredSearch = useDeferredValue(search);
 
-    const { data } = useDatabaseLiveQuery(accountRepository.getAllArchived());
-    const filteredAccounts = filterAccountsBySearchQuery(data, deferredSearch);
+    const result = useLiveAtomValue(archivedAccountsAtom);
+    const filteredAccounts = filterAccountsBySearchQuery(
+        AsyncResult.getOrElse(result, (): AccountWithInstrumentEntityInterface[] => []),
+        deferredSearch
+    );
 
     const renderCard = (account: AccountWithInstrumentEntityInterface) => <ArchivedAccountCard account={account} />;
     const getDeleteConfirmation = (account: AccountWithInstrumentEntityInterface) => {
@@ -37,7 +48,9 @@ export default function Archived() {
 
     const handleDeleteAccount = async (id: number) => {
         try {
-            await accountService.deleteById(id);
+            await appRuntime.runPromise(
+                Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.deleteById(id))
+            );
         } catch (error) {
             Toast.show({
                 type: 'error',

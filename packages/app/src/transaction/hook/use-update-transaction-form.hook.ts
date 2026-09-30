@@ -1,42 +1,38 @@
-import { TransactionCreateInputInterface } from '@budgie/contracts';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { TransactionCreateInputInterface, TransactionCreateInputSchema } from '@budgie/contracts';
+import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
-import { transactionService } from '../service/transaction.service';
+import { TransactionService } from '../service/transaction.service';
 
-import type { ZodType } from 'zod';
-
-interface UseTransactionFormConfig<T extends TransactionCreateInputInterface> {
-    readonly schema: ZodType<T, T>;
-    readonly transaction: T;
+interface UseTransactionFormConfig {
+    readonly schema: typeof TransactionCreateInputSchema;
+    readonly transaction: TransactionCreateInputInterface;
     readonly id: number;
     readonly onAfterSubmit?: (data: TransactionCreateInputInterface) => void;
 }
 
-export const useUpdateTransactionForm = <T extends TransactionCreateInputInterface>({
-    id,
-    schema,
-    transaction,
-    onAfterSubmit
-}: UseTransactionFormConfig<T>) => {
+export const useUpdateTransactionForm = ({ id, schema, transaction, onAfterSubmit }: UseTransactionFormConfig) => {
     const { t } = useLingui();
 
     const form = useForm({
         mode: 'onSubmit',
         values: transaction,
-        resolver: zodResolver<TransactionCreateInputInterface, unknown, TransactionCreateInputInterface>(schema)
+        resolver: standardSchemaResolver(Schema.toStandardSchemaV1(schema))
     });
 
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {
-            await transactionService.updateById(id, data);
+            await appRuntime.runPromise(Effect.flatMap(TransactionService, transactionService => transactionService.updateById(id, data)));
             onAfterSubmit?.(data);
             goBackOrReplace('/');
         } catch (error: unknown) {
@@ -62,7 +58,7 @@ export const useUpdateTransactionForm = <T extends TransactionCreateInputInterfa
         }
 
         try {
-            await transactionService.deleteById(id);
+            await appRuntime.runPromise(Effect.flatMap(TransactionService, transactionService => transactionService.deleteById(id)));
             dismissAllOrReplace('/');
         } catch (error: unknown) {
             Toast.show({

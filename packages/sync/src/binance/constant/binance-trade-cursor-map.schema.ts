@@ -1,5 +1,5 @@
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
-export const BinanceTradeCursorMapSchema = z.record(z.string(), z.number());
+export const BinanceTradeCursorMapSchema = Schema.Record(Schema.String, Schema.Number);
 
-export type BinanceTradeCursorMapInterface = z.infer<typeof BinanceTradeCursorMapSchema>;
+export type BinanceTradeCursorMapInterface = typeof BinanceTradeCursorMapSchema.Type;

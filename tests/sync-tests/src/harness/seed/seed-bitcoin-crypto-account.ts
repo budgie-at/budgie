@@ -1,4 +1,5 @@
 import { AccountTypeEnum, CurrencyEnum, InstrumentTypeEnum, SettingsEntityTable } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -8,8 +9,8 @@ import { testDb } from '../scenario/setup';
 import { seed } from './seed';
 import { seedLedgerBalance } from './seed-ledger-balance';
 
-export const seedBitcoinCryptoAccount = async (balance: number | null = null) => {
-    const euro = await requireInstrument(CurrencyEnum.EUR);
+export const seedBitcoinCryptoAccount = Effect.fnUntraced(function* (balance: number | null = null) {
+    const euro = yield* requireInstrument(CurrencyEnum.EUR);
     const bitcoin = seed.instrument({
         code: 'BTC',
         name: 'Bitcoin',
@@ -18,11 +19,11 @@ export const seedBitcoinCryptoAccount = async (balance: number | null = null) =>
     });
     const account = seed.account({ instrumentId: bitcoin.id, type: AccountTypeEnum.CRYPTO });
 
-    await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
+    testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
 
     if (isDefined(balance)) {
-        await seedLedgerBalance(account.id, balance);
+        yield* seedLedgerBalance(account.id, balance);
     }
 
     return { account, bitcoin, euro };
-};
+});

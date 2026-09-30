@@ -1,25 +1,26 @@
-import { Log } from '@budgie/logger';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { AiCoordinatorService } from './ai-coordinator.service';
+import { EmbeddingDrainerService } from './embedding-drainer.service';
+import { TranslationDrainerService } from './translation-drainer.service';
 
-import { aiCoordinatorService } from './ai-coordinator.service';
-import { aiEmbeddingStatusService } from './ai-embedding-status.service';
-import { aiSystemStatusService } from './ai-system-status.service';
-import { aiTranslationStatusService } from './ai-translation-status.service';
-import { aiUmbrellaStatusService } from './ai-umbrella-status.service';
-import { embeddingDrainerService } from './embedding-drainer.service';
-import { translationDrainerService } from './translation-drainer.service';
+export class AiStorageReplacementService extends Context.Service<AiStorageReplacementService>()('@budgie/app/AiStorageReplacementService', {
+    make: Effect.gen(function* () {
+        const aiCoordinatorService = yield* AiCoordinatorService;
+        const embeddingDrainerService = yield* EmbeddingDrainerService;
+        const translationDrainerService = yield* TranslationDrainerService;
 
-class AiStorageReplacementService {
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async pauseLongLivedRuntime(): Promise<void> {
-        await Promise.all([translationDrainerService.pause(), embeddingDrainerService.pause()]);
-        aiEmbeddingStatusService.stop();
-        aiTranslationStatusService.stop();
-        aiUmbrellaStatusService.stop();
-        aiSystemStatusService.stop();
-        aiCoordinatorService.stop();
-    }
+        return {
+            pauseLongLivedRuntime: Effect.fn('AiStorageReplacementService.pauseLongLivedRuntime')(function* () {
+                yield* Effect.all([translationDrainerService.pause(), embeddingDrainerService.pause()], { concurrency: 'unbounded' });
+                yield* aiCoordinatorService.stop();
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(AiStorageReplacementService, AiStorageReplacementService.make).pipe(
+        Layer.provide([AiCoordinatorService.layer, EmbeddingDrainerService.layer, TranslationDrainerService.layer])
+    );
 }
-
-export const aiStorageReplacementService = new AiStorageReplacementService();

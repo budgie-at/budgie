@@ -1,5 +1,6 @@
-import { z } from 'zod';
+import type { MccCategoryEntityInterface } from './mcc-category-entity.interface';
 
-import type { MccCategoryCreateEntitySchema } from '../schema/mcc-category-create-entity.schema';
-
-export type MccCategoryCreateEntityInterface = z.infer<typeof MccCategoryCreateEntitySchema>;
+export type MccCategoryCreateEntityInterface = Pick<
+    MccCategoryEntityInterface,
+    'mcc' | 'mccGroupId' | 'shortDescription' | 'fullDescription'
+>;

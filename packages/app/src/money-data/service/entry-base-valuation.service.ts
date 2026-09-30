@@ -1,331 +1,302 @@
-import { AccountTypeEnum, CurrencyEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import {
+    AccountRepository,
+    AccountTypeEnum,
+    CurrencyEnum,
+    ExchangeRateRepository,
+    HistoricalExchangeRateRepository,
+    InstrumentRepository
+} from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { format } from 'date-fns/format';
+import { startOfDay } from 'date-fns/startOfDay';
+import * as Cache from 'effect/Cache';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import {
-    accountRepository,
-    exchangeRateRepository,
-    historicalExchangeRateRepository,
-    instrumentRepository
-} from '../../@generic/drizzle/db/db';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { AccountNotFoundError } from '../../account/error/account-not-found.error';
+import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 import type { EntryBaseValuationContextInterface } from '../interface/entry-base-valuation-context.interface';
 import type { EntryBaseValuationInputInterface } from '../interface/entry-base-valuation-input.interface';
 import type { EntryBaseValuationInterface } from '../interface/entry-base-valuation.interface';
+import type { EntryBaseValuationRateKeyType } from '../type/entry-base-valuation-rate-key.type';
 import type {
-    DB,
+    Db,
+    DbError,
     HistoricalExchangeRateEntityInterface,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface
 } from '@budgie/contracts';
 
-class EntryBaseValuationService {
-    private static readonly RATE_DATE_FORMAT = 'yyyy-MM-dd';
+export class EntryBaseValuationService extends Context.Service<EntryBaseValuationService>()('@budgie/app/EntryBaseValuationService', {
+    make: Effect.gen(function* () {
+        const accountRepository = yield* AccountRepository;
+        const exchangeRateRepository = yield* ExchangeRateRepository;
+        const historicalExchangeRateRepository = yield* HistoricalExchangeRateRepository;
+        const instrumentRepository = yield* InstrumentRepository;
+        const exchangeRatesService = yield* ExchangeRatesService;
+        const rateDateFormat = 'yyyy-MM-dd';
 
-    @Log(
-        input =>
-            `enter accountId=${input.accountId} amount=${input.amount} externalSource=${input.externalSource ?? ''} hasTx=${String(isDefined(input.tx))}`,
-        (result, input) =>
-            `done accountId=${input.accountId} baseInstrumentId=${result.baseInstrumentId} baseExchangeRate=${result.baseExchangeRate} baseAmount=${result.baseAmount}`,
-        (error, input) => `throw accountId=${input.accountId} amount=${input.amount} error=${getErrorMessage(error)}`
-    )
-    async valueMicroUnitEntry({
-        accountId,
-        amount,
-        operatedAt,
-        tx
-    }: EntryBaseValuationInputInterface): Promise<EntryBaseValuationInterface> {
-        return await this.valueAccountAmount(accountId, amount, operatedAt, await this.createContext(tx));
-    }
-
-    @Log(
-        (...inputs) => {
-            const [sourceInstrumentId, targetInstrumentId, operatedAt, tx] = inputs;
-
-            return `enter sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))}`;
-        },
-        (result, ...inputs) => {
-            const [sourceInstrumentId, targetInstrumentId, operatedAt, tx] = inputs;
-
-            return `done sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} baseExchangeRate=${result ?? 'missing'} hasTx=${String(isDefined(tx))}`;
-        },
-        (error, ...inputs) => {
-            const [sourceInstrumentId, targetInstrumentId, operatedAt, tx] = inputs;
-
-            return `throw sourceInstrumentId=${sourceInstrumentId} targetInstrumentId=${targetInstrumentId} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`;
-        }
-    )
-    async resolveHistoricalBaseExchangeRateOrNull(
-        sourceInstrumentId: number,
-        targetInstrumentId: number,
-        operatedAt: Date,
-        tx?: DB
-    ): Promise<number | null> {
-        const rateDate = format(operatedAt, EntryBaseValuationService.RATE_DATE_FORMAT);
-        const dateRate = await this.resolveDirectOrInverseRate(
-            (sourceId, targetId) => historicalExchangeRateRepository.findForDateOrBefore(sourceId, targetId, rateDate, tx),
-            sourceInstrumentId,
-            targetInstrumentId
-        );
-
-        if (isDefined(dateRate)) {
-            return dateRate;
-        }
-
-        const oldestRate = await this.resolveDirectOrInverseRate(
-            (sourceId, targetId) => historicalExchangeRateRepository.findEarliest(sourceId, targetId, tx),
-            sourceInstrumentId,
-            targetInstrumentId
-        );
-
-        if (isDefined(oldestRate)) {
-            return oldestRate;
-        }
-
-        const bridgeExchangeRate = await this.resolveHistoricalBridgeExchangeRate(sourceInstrumentId, targetInstrumentId, rateDate, tx);
-
-        if (isDefined(bridgeExchangeRate)) {
-            return bridgeExchangeRate;
-        }
-
-        return await this.resolveCurrentBaseExchangeRate(sourceInstrumentId, targetInstrumentId);
-    }
-
-    @Log(
-        (entries, operatedAt, tx) =>
-            `enter accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))}`,
-        (result, entries, operatedAt, tx) =>
-            `done accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} count=${result.size}`,
-        (error, entries, operatedAt, tx) =>
-            `throw accountIds=${entries.map(entry => entry.accountId).join(',')} operatedAt=${operatedAt.toISOString()} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async valueEntries(
-        entries: TransactionEntryCreateInputInterface[],
-        operatedAt: Date,
-        tx?: DB
-    ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>> {
-        return await this.valueEntriesInContext(entries, operatedAt, await this.createContext(tx));
-    }
-
-    @Log(
-        (transactions, tx) => `enter transactionCount=${transactions.length} hasTx=${String(isDefined(tx))}`,
-        (result, transactions, tx) =>
-            `done transactionCount=${transactions.length} hasTx=${String(isDefined(tx))} valuedTransactionCount=${result.length}`,
-        (error, transactions, tx) =>
-            `throw transactionCount=${transactions.length} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async valueTransactionsEntries(
-        transactions: readonly Pick<TransactionCreateInputInterface, 'entries' | 'operatedAt'>[],
-        tx: DB
-    ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>[]> {
-        const context = await this.createContext(tx);
-
-        return await Promise.all(
-            transactions.map(transaction => this.valueEntriesInContext(transaction.entries, transaction.operatedAt, context))
-        );
-    }
-
-    private async createContext(tx?: DB): Promise<EntryBaseValuationContextInterface> {
-        return {
-            baseInstrument: await exchangeRatesService.getBaseInstrument(),
-            accounts: new Map(),
-            rates: new Map(),
-            tx
-        };
-    }
-
-    private async valueEntriesInContext(
-        entries: TransactionEntryCreateInputInterface[],
-        operatedAt: Date,
-        context: EntryBaseValuationContextInterface
-    ): Promise<Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>> {
-        const valuations = new Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>();
-
-        await Promise.all(
-            entries.map(async entry => {
-                valuations.set(entry, await this.resolveEntryValuation(entry, operatedAt, context));
-            })
-        );
-
-        return valuations;
-    }
-
-    private async valueAccountAmount(
-        accountId: number,
-        amount: number,
-        operatedAt: Date,
-        context: EntryBaseValuationContextInterface
-    ): Promise<EntryBaseValuationInterface> {
-        const { baseInstrument, tx } = context;
-        const account = await this.memoize(
-            context.accounts,
-            accountId,
-            async () => await accountRepository.findByIdIncludingArchived(accountId, tx)
-        );
-
-        if (!isDefined(account)) {
-            throw new Error(t`Account ${accountId} not found`);
-        }
-
-        if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
-            throw new Error(t`Base instrument not found`);
-        }
-
-        if (account.instrumentId === baseInstrument.id) {
-            return {
-                baseInstrumentId: baseInstrument.id,
-                baseExchangeRate: 1,
-                baseAmount: Math.round(amount)
-            };
-        }
-
-        const baseExchangeRate = await this.memoize(
-            context.rates,
-            `${account.instrumentId}:${baseInstrument.id}:${format(operatedAt, EntryBaseValuationService.RATE_DATE_FORMAT)}`,
-            () => this.resolveHistoricalBaseExchangeRateOrNull(account.instrumentId, baseInstrument.id, operatedAt, tx)
-        );
-
-        if (!isDefined(baseExchangeRate)) {
-            return this.resolveMissingBaseValuation(account.type, account.instrumentId, baseInstrument.id);
-        }
-
-        return {
-            baseInstrumentId: baseInstrument.id,
+        const buildBaseValuation = (baseInstrumentId: number, baseExchangeRate: number, amount: number): EntryBaseValuationInterface => ({
+            baseInstrumentId,
             baseExchangeRate,
             baseAmount: Math.round(amount * baseExchangeRate)
-        };
-    }
+        });
 
-    private memoize<TKey, TValue>(cache: Map<TKey, Promise<TValue>>, key: TKey, resolve: () => Promise<TValue>): Promise<TValue> {
-        const cached = cache.get(key);
-
-        if (isDefined(cached)) {
-            return cached;
-        }
-
-        const resolved = resolve();
-
-        cache.set(key, resolved);
-
-        return resolved;
-    }
-
-    private resolveMissingBaseValuation(
-        accountType: AccountTypeEnum,
-        sourceInstrumentId: number,
-        targetInstrumentId: number
-    ): EntryBaseValuationInterface {
-        if (accountType === AccountTypeEnum.CRYPTO || accountType === AccountTypeEnum.CRYPTO_SYNC) {
-            return {
-                baseInstrumentId: null,
-                baseExchangeRate: null,
-                baseAmount: null
-            };
-        }
-
-        throw new Error(t`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`);
-    }
-
-    private async resolveDirectOrInverseRate(
-        lookup: (sourceInstrumentId: number, targetInstrumentId: number) => Promise<HistoricalExchangeRateEntityInterface | undefined>,
-        sourceInstrumentId: number,
-        targetInstrumentId: number
-    ): Promise<number | null> {
-        const direct = await lookup(sourceInstrumentId, targetInstrumentId);
-
-        if (isDefined(direct)) {
-            return direct.rate;
-        }
-
-        const inverse = await lookup(targetInstrumentId, sourceInstrumentId);
-
-        if (isDefined(inverse)) {
-            return 1 / inverse.rate;
-        }
-
-        return null;
-    }
-
-    private async resolveCurrentBaseExchangeRate(sourceInstrumentId: number, targetInstrumentId: number): Promise<number | null> {
-        const directExchangeRate = await exchangeRateRepository.findByBaseAndQuoteIds(sourceInstrumentId, targetInstrumentId);
-
-        if (isDefined(directExchangeRate)) {
-            return directExchangeRate.rate;
-        }
-
-        const inverseExchangeRate = await exchangeRateRepository.findByBaseAndQuoteIds(targetInstrumentId, sourceInstrumentId);
-
-        if (isDefined(inverseExchangeRate)) {
-            return 1 / inverseExchangeRate.rate;
-        }
-
-        return null;
-    }
-
-    private async resolveEntryValuation(
-        entry: TransactionEntryCreateInputInterface,
-        operatedAt: Date,
-        context: EntryBaseValuationContextInterface
-    ): Promise<EntryBaseValuationInterface> {
-        if (
-            isDefined(context.baseInstrument) &&
-            entry.baseInstrumentId === context.baseInstrument.id &&
-            isDefined(entry.baseExchangeRate) &&
-            isDefined(entry.baseAmount)
+        const resolveMissingBaseValuation = Effect.fnUntraced(function* (
+            accountType: AccountTypeEnum,
+            sourceInstrumentId: number,
+            targetInstrumentId: number
         ) {
-            return {
-                baseInstrumentId: entry.baseInstrumentId,
-                baseExchangeRate: entry.baseExchangeRate,
-                baseAmount: entry.baseAmount
-            };
-        }
+            if (accountType === AccountTypeEnum.CRYPTO || accountType === AccountTypeEnum.CRYPTO_SYNC) {
+                const missingValuation: EntryBaseValuationInterface = {
+                    baseInstrumentId: null,
+                    baseExchangeRate: null,
+                    baseAmount: null
+                };
 
-        return await this.valueAccountAmount(entry.accountId, convertToMicroUnits(entry.amount), operatedAt, context);
-    }
+                return missingValuation;
+            }
 
-    private async resolveHistoricalEuroRate(
-        instrumentId: number,
-        euroInstrumentId: number,
-        rateDate: string,
-        tx?: DB
-    ): Promise<number | null> {
-        if (instrumentId === euroInstrumentId) {
-            return 1;
-        }
+            return yield* Effect.die(new Error(t`Exchange rate ${sourceInstrumentId}->${targetInstrumentId} not found`));
+        });
 
-        const exchangeRate = await historicalExchangeRateRepository.findForDateOrBefore(instrumentId, euroInstrumentId, rateDate, tx);
+        const resolveDirectOrInverseRate = Effect.fnUntraced(function* (
+            lookup: (
+                sourceInstrumentId: number,
+                targetInstrumentId: number
+            ) => Effect.Effect<HistoricalExchangeRateEntityInterface | undefined, DbError, Db>,
+            sourceInstrumentId: number,
+            targetInstrumentId: number
+        ) {
+            const direct = yield* lookup(sourceInstrumentId, targetInstrumentId);
 
-        return isDefined(exchangeRate) ? exchangeRate.rate : null;
-    }
+            if (isDefined(direct)) {
+                return direct.rate;
+            }
 
-    private async resolveHistoricalBridgeExchangeRate(
-        sourceInstrumentId: number,
-        targetInstrumentId: number,
-        rateDate: string,
-        tx?: DB
-    ): Promise<number | null> {
-        const euroInstrument = await instrumentRepository.findByCode(CurrencyEnum.EUR);
+            const inverse = yield* lookup(targetInstrumentId, sourceInstrumentId);
 
-        if (!isDefined(euroInstrument)) {
+            if (isDefined(inverse)) {
+                return 1 / inverse.rate;
+            }
+
             return null;
-        }
+        });
 
-        const [sourceToEuroRate, targetToEuroRate] = await Promise.all([
-            this.resolveHistoricalEuroRate(sourceInstrumentId, euroInstrument.id, rateDate, tx),
-            this.resolveHistoricalEuroRate(targetInstrumentId, euroInstrument.id, rateDate, tx)
-        ]);
+        const resolveCurrentBaseExchangeRate = Effect.fnUntraced(function* (sourceInstrumentId: number, targetInstrumentId: number) {
+            const directExchangeRate = yield* exchangeRateRepository.findByBaseAndQuoteIds(sourceInstrumentId, targetInstrumentId);
 
-        if (isDefined(sourceToEuroRate) && isDefined(targetToEuroRate)) {
-            return sourceToEuroRate / targetToEuroRate;
-        }
+            if (isDefined(directExchangeRate)) {
+                return directExchangeRate.rate;
+            }
 
-        return null;
-    }
+            const inverseExchangeRate = yield* exchangeRateRepository.findByBaseAndQuoteIds(targetInstrumentId, sourceInstrumentId);
+
+            if (isDefined(inverseExchangeRate)) {
+                return 1 / inverseExchangeRate.rate;
+            }
+
+            return null;
+        });
+
+        const resolveHistoricalEuroRate = Effect.fnUntraced(function* (instrumentId: number, euroInstrumentId: number, rateDate: string) {
+            if (instrumentId === euroInstrumentId) {
+                return 1;
+            }
+
+            const exchangeRate = yield* historicalExchangeRateRepository.findForDateOrBefore(instrumentId, euroInstrumentId, rateDate);
+
+            return isDefined(exchangeRate) ? exchangeRate.rate : null;
+        });
+
+        const resolveHistoricalBridgeExchangeRate = Effect.fnUntraced(function* (
+            sourceInstrumentId: number,
+            targetInstrumentId: number,
+            rateDate: string
+        ) {
+            const euroInstrument = yield* instrumentRepository.findByCode(CurrencyEnum.EUR);
+
+            if (!isDefined(euroInstrument)) {
+                return null;
+            }
+
+            const [sourceToEuroRate, targetToEuroRate] = yield* Effect.all(
+                [
+                    resolveHistoricalEuroRate(sourceInstrumentId, euroInstrument.id, rateDate),
+                    resolveHistoricalEuroRate(targetInstrumentId, euroInstrument.id, rateDate)
+                ],
+                { concurrency: 'unbounded' }
+            );
+
+            if (isDefined(sourceToEuroRate) && isDefined(targetToEuroRate)) {
+                return sourceToEuroRate / targetToEuroRate;
+            }
+
+            return null;
+        });
+
+        const resolveHistoricalBaseExchangeRateOrNull = Effect.fn('EntryBaseValuationService.resolveHistoricalBaseExchangeRateOrNull')(
+            function* (sourceInstrumentId: number, targetInstrumentId: number, operatedAt: Date) {
+                const rateDate = format(operatedAt, rateDateFormat);
+                const dateRate = yield* resolveDirectOrInverseRate(
+                    (sourceId, targetId) => historicalExchangeRateRepository.findForDateOrBefore(sourceId, targetId, rateDate),
+                    sourceInstrumentId,
+                    targetInstrumentId
+                );
+
+                if (isDefined(dateRate)) {
+                    return dateRate;
+                }
+
+                const oldestRate = yield* resolveDirectOrInverseRate(
+                    (sourceId, targetId) => historicalExchangeRateRepository.findEarliest(sourceId, targetId),
+                    sourceInstrumentId,
+                    targetInstrumentId
+                );
+
+                if (isDefined(oldestRate)) {
+                    return oldestRate;
+                }
+
+                const bridgeExchangeRate = yield* resolveHistoricalBridgeExchangeRate(sourceInstrumentId, targetInstrumentId, rateDate);
+
+                if (isDefined(bridgeExchangeRate)) {
+                    return bridgeExchangeRate;
+                }
+
+                return yield* resolveCurrentBaseExchangeRate(sourceInstrumentId, targetInstrumentId);
+            }
+        );
+
+        const createContext = Effect.fn('EntryBaseValuationService.createContext')(function* () {
+            const context: EntryBaseValuationContextInterface = {
+                baseInstrument: yield* exchangeRatesService.getBaseInstrument(),
+                accounts: yield* Cache.make({
+                    capacity: Number.MAX_SAFE_INTEGER,
+                    lookup: (accountId: number) => accountRepository.findByIdIncludingArchived(accountId)
+                }),
+                rates: yield* Cache.make({
+                    capacity: Number.MAX_SAFE_INTEGER,
+                    lookup: ([sourceInstrumentId, targetInstrumentId, rateDayStart]: EntryBaseValuationRateKeyType) =>
+                        resolveHistoricalBaseExchangeRateOrNull(sourceInstrumentId, targetInstrumentId, new Date(rateDayStart))
+                })
+            };
+
+            return context;
+        });
+
+        const valueAccountAmount = Effect.fnUntraced(function* (
+            { accountId, amount, operatedAt }: Pick<EntryBaseValuationInputInterface, 'accountId' | 'amount' | 'operatedAt'>,
+            context: EntryBaseValuationContextInterface
+        ) {
+            const { baseInstrument } = context;
+            const account = yield* Cache.get(context.accounts, accountId);
+
+            if (!isDefined(account)) {
+                return yield* new AccountNotFoundError({ id: accountId });
+            }
+
+            if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
+                return yield* Effect.die(new Error(t`Base instrument not found`));
+            }
+
+            if (account.instrumentId === baseInstrument.id) {
+                return buildBaseValuation(baseInstrument.id, 1, amount);
+            }
+
+            const baseExchangeRate = yield* Cache.get(context.rates, [
+                account.instrumentId,
+                baseInstrument.id,
+                startOfDay(operatedAt).getTime()
+            ]);
+
+            if (!isDefined(baseExchangeRate)) {
+                return yield* resolveMissingBaseValuation(account.type, account.instrumentId, baseInstrument.id);
+            }
+
+            return buildBaseValuation(baseInstrument.id, baseExchangeRate, amount);
+        });
+
+        const resolveEntryValuation = Effect.fnUntraced(function* (
+            entry: TransactionEntryCreateInputInterface,
+            operatedAt: Date,
+            context: EntryBaseValuationContextInterface
+        ) {
+            if (
+                isDefined(context.baseInstrument) &&
+                entry.baseInstrumentId === context.baseInstrument.id &&
+                isDefined(entry.baseExchangeRate) &&
+                isDefined(entry.baseAmount)
+            ) {
+                const providedValuation: EntryBaseValuationInterface = {
+                    baseInstrumentId: entry.baseInstrumentId,
+                    baseExchangeRate: entry.baseExchangeRate,
+                    baseAmount: entry.baseAmount
+                };
+
+                return providedValuation;
+            }
+
+            return yield* valueAccountAmount(
+                { accountId: entry.accountId, amount: convertToMicroUnits(entry.amount), operatedAt },
+                context
+            );
+        });
+
+        const valueEntriesInContext = Effect.fn('EntryBaseValuationService.valueEntriesInContext')(function* (
+            entries: TransactionEntryCreateInputInterface[],
+            operatedAt: Date,
+            context: EntryBaseValuationContextInterface
+        ) {
+            const entryValuations = yield* Effect.forEach(
+                entries,
+                entry => resolveEntryValuation(entry, operatedAt, context).pipe(Effect.map(valuation => [entry, valuation] as const)),
+                { concurrency: 'unbounded' }
+            );
+
+            return new Map<TransactionEntryCreateInputInterface, EntryBaseValuationInterface>(entryValuations);
+        });
+
+        return {
+            resolveHistoricalBaseExchangeRateOrNull,
+            valueMicroUnitEntry: Effect.fn('EntryBaseValuationService.valueMicroUnitEntry')(function* ({
+                accountId,
+                amount,
+                operatedAt
+            }: EntryBaseValuationInputInterface) {
+                return yield* valueAccountAmount({ accountId, amount, operatedAt }, yield* createContext());
+            }),
+            valueEntries: Effect.fn('EntryBaseValuationService.valueEntries')(function* (
+                entries: TransactionEntryCreateInputInterface[],
+                operatedAt: Date
+            ) {
+                return yield* valueEntriesInContext(entries, operatedAt, yield* createContext());
+            }),
+            valueTransactionsEntries: Effect.fn('EntryBaseValuationService.valueTransactionsEntries')(function* (
+                transactions: readonly Pick<TransactionCreateInputInterface, 'entries' | 'operatedAt'>[]
+            ) {
+                const context = yield* createContext();
+
+                return yield* Effect.all(
+                    transactions.map(transaction => valueEntriesInContext(transaction.entries, transaction.operatedAt, context)),
+                    { concurrency: 'unbounded' }
+                );
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(EntryBaseValuationService, EntryBaseValuationService.make).pipe(
+        Layer.provide([
+            AccountRepository.layer,
+            ExchangeRateRepository.layer,
+            HistoricalExchangeRateRepository.layer,
+            InstrumentRepository.layer,
+            ExchangeRatesService.layer
+        ])
+    );
 }
-
-export const entryBaseValuationService = new EntryBaseValuationService();

@@ -1,10 +1,14 @@
 /* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
 import { SQL, and, desc, eq, getTableColumns, inArray, isNotNull, isNull, ne, notInArray, or, sql } from 'drizzle-orm';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { BaseTransactionFilterRepository } from '../../@generic/repository/base-transaction-filter.repository';
+import { Db } from '../../@generic/service/db.service';
 import { buildTranslatedCategoryRelation } from '../../@generic/util/build-translated-category-relation.util';
 import {
     getDirectExchangeRateSql,
@@ -33,478 +37,109 @@ import { TransactionFilterInterface } from '../../transaction/interface/transact
 import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { StatisticsFilterInterface } from '../interface/statistics-filter.interface';
 
+import type { DB } from '../../@generic/type/db.type';
 import type { SelectedFields } from 'drizzle-orm/sqlite-core';
 
-export class StatisticsRepository extends BaseTransactionFilterRepository {
-    getTransactions(filters: StatisticsFilterInterface, limit: number, language: LanguageEnum) {
-        const transactionIds = this.buildStatisticsTransactionIdsQuery(filters);
+export class StatisticsRepository extends Context.Service<StatisticsRepository>()('@budgie/contracts/StatisticsRepository', {
+    make: Effect.sync(() => {
+        const transactionFilters = new BaseTransactionFilterRepository();
 
-        return this.db.query.TransactionEntityTable.findMany({
-            /* jscpd:ignore-start */
-            with: {
-                [TransactionAssociationEnum.ENTRIES]: {
-                    where: this.buildLedgerEntryCondition(),
-                    with: {
-                        [TransactionEntryAssociationEnum.ACCOUNT]: {
-                            with: {
-                                [AccountAssociationEnum.INSTRUMENT]: true
-                            }
-                        },
-                        [TransactionEntryAssociationEnum.CATEGORY]: buildTranslatedCategoryRelation(language),
-                        [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
-                    }
-                },
-                [TransactionAssociationEnum.TRANSACTION_TAGS]: {
-                    with: {
-                        [TransactionTagsAssociationEnum.TAG]: true
-                    }
-                },
-                [TransactionAssociationEnum.DEBT_EVENTS]: {
-                    where: isNull(DebtEventEntityTable.deletedAt),
-                    with: {
-                        [DebtEventAssociationEnum.DEBT_ACCOUNT]: {
-                            with: {
-                                [AccountAssociationEnum.INSTRUMENT]: true
-                            }
-                        }
-                    }
-                },
-                [TransactionAssociationEnum.FROM_ACCOUNT]: true,
-                [TransactionAssociationEnum.TO_ACCOUNT]: true
-            },
-            /* jscpd:ignore-end */
-            where: inArray(TransactionEntityTable.id, transactionIds),
-            orderBy: (transaction, { desc: descFn }) => [descFn(transaction.operatedAt)],
-            limit
-        });
-    }
+        /* jscpd:ignore-start */
+        const buildStatisticsTransactionsQuery = (db: DB, filters: TransactionFilterInterface, type: TransactionTypeEnum) => {
+            const baseWhere = transactionFilters.buildFilterWhere(filters);
 
-    getTotalIncomeAndExpenseQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        return this.buildLedgerEntriesQuery(this.buildIncomeExpenseFields(defaultInstrumentId))
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(this.buildStatisticsLedgerWhere(filters));
-    }
-
-    getRunwaySeriesQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, months: number) {
-        const monthSql = this.buildRunwayMonthSql();
-
-        return this.buildLedgerEntriesQuery({ month: monthSql.as('month'), ...this.buildIncomeExpenseFields(defaultInstrumentId) })
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(this.buildStatisticsLedgerWhere(filters, this.buildRunwayCompleteMonthsCondition(months)))
-            .groupBy(monthSql)
-            .orderBy(monthSql);
-    }
-
-    // eslint-disable-next-line @typescript-eslint/max-params -- Runway drivers keep the mandated positional signature (filters, defaultInstrumentId, dimension, months, language)
-    getRunwayDriverSeriesQuery(
-        filters: TransactionFilterInterface,
-        defaultInstrumentId: number,
-        dimension: RunwayDriverDimensionEnum,
-        months: number,
-        language: LanguageEnum
-    ) {
-        return dimension === RunwayDriverDimensionEnum.CATEGORY
-            ? this.buildRunwayCategoryDriverSeriesQuery(filters, defaultInstrumentId, months, language)
-            : this.buildRunwayTagDriverSeriesQuery(filters, defaultInstrumentId, months);
-    }
-
-    getIncomeByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
-        return this.buildCategoryBreakdownQuery(
-            this.buildTransactionIdsQuery(filters, TransactionTypeEnum.INCOME),
-            defaultInstrumentId,
-            language
-        );
-    }
-
-    getExpenseByCategoryQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
-        return this.buildExpenseCategoryBreakdownQuery(filters, defaultInstrumentId, language);
-    }
-
-    getIncomeByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        return this.buildTagBreakdownQuery(this.buildTransactionIdsQuery(filters, TransactionTypeEnum.INCOME), defaultInstrumentId);
-    }
-
-    getExpenseByTagQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        return this.buildExpenseTagBreakdownQuery(filters, defaultInstrumentId);
-    }
-
-    getIncomeTransactionsQuery(filters: TransactionFilterInterface) {
-        return this.buildStatisticsTransactionsQuery(filters, TransactionTypeEnum.INCOME);
-    }
-
-    getExpenseTransactionsQuery(filters: TransactionFilterInterface) {
-        return this.buildStatisticsTransactionsQuery(filters, TransactionTypeEnum.EXPENSE);
-    }
-
-    /* jscpd:ignore-start */
-    private buildStatisticsTransactionsQuery(filters: TransactionFilterInterface, type: TransactionTypeEnum) {
-        const baseWhere = this.buildFilterWhere(filters);
-
-        return this.db
-            .selectDistinct({ id: TransactionEntityTable.id })
-            .from(TransactionEntityTable)
-            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(
-                and(
-                    baseWhere,
-                    this.buildPrimaryLedgerEntryCondition(),
-                    this.buildNonDebtAccountCondition(),
-                    buildSpendingEntryCondition(),
-                    eq(TransactionEntityTable.type, type)
-                )
-            );
-    }
-
-    private buildStatisticsTransactionIdsQuery(filters: StatisticsFilterInterface) {
-        const baseWhere = this.buildStatisticsFilterWhere(filters);
-        const typeConditions = isDefined(filters.type) ? [eq(TransactionEntityTable.type, filters.type)] : [];
-
-        return this.db
-            .selectDistinct({ id: TransactionEntityTable.id })
-            .from(TransactionEntityTable)
-            .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(
-                and(
-                    baseWhere,
-                    this.buildPrimaryLedgerEntryCondition(),
-                    this.buildNonDebtAccountCondition(),
-                    buildSpendingEntryCondition(),
-                    ...typeConditions
-                )
-            );
-    }
-    /* jscpd:ignore-end */
-
-    private buildStatisticsFilterWhere(filters: StatisticsFilterInterface) {
-        return and(
-            this.buildFilterWhere(filters),
-            ...(isNotEmptyArray(filters.excludedCategoryIds) ? [this.buildExcludedCategoryCondition(filters.excludedCategoryIds)] : [])
-        );
-    }
-
-    private buildExcludedCategoryCondition(categoryIds: number[]) {
-        return inArray(
-            TransactionEntityTable.id,
-            this.db
-                .select({ transactionId: TransactionEntryEntityTable.transactionId })
-                .from(TransactionEntryEntityTable)
+            return db
+                .selectDistinct({ id: TransactionEntityTable.id })
+                .from(TransactionEntityTable)
+                .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
                 .where(
                     and(
-                        or(isNull(TransactionEntryEntityTable.categoryId), notInArray(TransactionEntryEntityTable.categoryId, categoryIds)),
-                        this.buildLedgerEntryCondition()
+                        baseWhere,
+                        transactionFilters.buildPrimaryLedgerEntryCondition(),
+                        transactionFilters.buildNonDebtAccountCondition(),
+                        buildSpendingEntryCondition(),
+                        eq(TransactionEntityTable.type, type)
                     )
-                )
-        );
-    }
-
-    private buildTransactionIdsQuery(filters: TransactionFilterInterface, type: TransactionTypeEnum) {
-        const baseWhere = this.buildFilterWhere(filters);
-
-        return this.db
-            .selectDistinct({ transactionId: TransactionEntityTable.id })
-            .from(TransactionEntityTable)
-            .where(and(baseWhere, eq(TransactionEntityTable.type, type)));
-    }
-
-    /* jscpd:ignore-start */
-    private buildCategoryBreakdownQuery(
-        transactionIdsSubquery: ReturnType<typeof this.buildTransactionIdsQuery>,
-        defaultInstrumentId: number,
-        language: LanguageEnum
-    ) {
-        const amountSql = this.buildRefundAwareBaseAmountSql(defaultInstrumentId);
-        const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`;
-
-        return this.db
-            .select({
-                category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') },
-                amount: amountSql.as('amount')
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .leftJoin(
-                DefaultCategoryTranslationEntityTable,
-                and(
-                    eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
-                    eq(DefaultCategoryTranslationEntityTable.language, language)
-                )
-            )
-            .where(
-                and(
-                    inArray(TransactionEntityTable.id, transactionIdsSubquery),
-                    this.buildPrimaryLedgerEntryCondition(),
-                    this.buildNonDebtAccountCondition()
-                )
-            )
-            .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
-            .orderBy(desc(amountSql));
-    }
-
-    private buildTagBreakdownQuery(transactionIdsSubquery: ReturnType<typeof this.buildTransactionIdsQuery>, defaultInstrumentId: number) {
-        const amountSql = this.buildRefundAwareBaseAmountSql(defaultInstrumentId);
-
-        return this.db
-            .select({
-                tag: TagEntityTable,
-                amount: amountSql.as('amount')
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .leftJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
-            .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
-            .where(
-                and(
-                    inArray(TransactionEntityTable.id, transactionIdsSubquery),
-                    this.buildPrimaryLedgerEntryCondition(),
-                    this.buildNonDebtAccountCondition()
-                )
-            )
-            .groupBy(TagEntityTable.id)
-            .orderBy(desc(amountSql));
-    }
-
-    private buildExpenseCategoryBreakdownQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) {
-        const amountSql = this.buildRefundAwareBaseAmountSql(defaultInstrumentId);
-        const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`;
-
-        return this.db
-            .select({
-                category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') },
-                amount: amountSql.as('amount')
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .leftJoin(
-                DefaultCategoryTranslationEntityTable,
-                and(
-                    eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
-                    eq(DefaultCategoryTranslationEntityTable.language, language)
-                )
-            )
-            .where(
-                and(
-                    this.buildStatisticsWhere(filters),
-                    this.buildExpenseAnalyticsEntryCondition(),
-                    this.buildPrimaryLedgerEntryCondition(),
-                    this.buildNonDebtAccountCondition()
-                )
-            )
-            .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
-            .orderBy(desc(amountSql));
-    }
-
-    private buildExpenseTagBreakdownQuery(filters: TransactionFilterInterface, defaultInstrumentId: number) {
-        const amountSql = this.buildRefundAwareBaseAmountSql(defaultInstrumentId);
-
-        return this.db
-            .select({
-                tag: TagEntityTable,
-                amount: amountSql.as('amount')
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .leftJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
-            .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
-            .where(
-                and(
-                    this.buildStatisticsWhere(filters),
-                    this.buildExpenseAnalyticsEntryCondition(),
-                    this.buildPrimaryLedgerEntryCondition(),
-                    this.buildNonDebtAccountCondition(),
-                    or(ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), isNotNull(TransactionTagsEntityTable.tagId))
-                )
-            )
-            .groupBy(TagEntityTable.id)
-            .orderBy(desc(amountSql));
-    }
-    /* jscpd:ignore-end */
-
-    private buildVisibleNonDebtEntryCondition(type: TransactionEntryTypeEnum) {
-        return sql`
-            ${TransactionEntryEntityTable.type} = ${type}
-            AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
-            AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.DEBT}
-            AND ${this.buildNonDebtAccountCondition()}
-        `;
-    }
-
-    private buildIncomeEntryValueSql(defaultInstrumentId: number) {
-        return sql<number>`CASE
-            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
-                 AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
-            THEN 0
-            WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.DEBIT)}
-            THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-            ELSE 0
-        END`;
-    }
-
-    private buildExpenseEntryValueSql(defaultInstrumentId: number) {
-        return sql<number>`CASE
-            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
-                 AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-                 AND ${this.buildNonDebtAccountCondition()}
-            THEN ${this.buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}
-            WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
-                 AND ${this.buildNonDebtAccountCondition()}
-            THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-            WHEN ${this.buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.CREDIT)}
-            THEN ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-            ELSE 0
-        END`;
-    }
-
-    private buildIncomeTotalSql(defaultInstrumentId: number) {
-        return sql<number>`COALESCE(SUM(${this.buildIncomeEntryValueSql(defaultInstrumentId)}), 0)`;
-    }
-
-    private buildExpenseTotalSql(defaultInstrumentId: number) {
-        return sql<number>`COALESCE(SUM(${this.buildExpenseEntryValueSql(defaultInstrumentId)}), 0)`;
-    }
-
-    private buildLedgerEntriesQuery<TSelection extends SelectedFields>(selectFields: TSelection) {
-        return this.db.select(selectFields).from(TransactionEntryEntityTable);
-    }
-
-    private buildIncomeExpenseFields(defaultInstrumentId: number) {
-        return {
-            income: this.buildIncomeTotalSql(defaultInstrumentId).as('income'),
-            expense: this.buildExpenseTotalSql(defaultInstrumentId).as('expense')
+                );
         };
-    }
 
-    private buildRunwayDriverFields(monthSql: SQL<string>, amountSql: SQL<number>) {
-        return {
-            month: monthSql.as('month'),
-            amount: amountSql.as('amount')
+        const buildExcludedCategoryCondition = (db: DB, categoryIds: number[]) =>
+            inArray(
+                TransactionEntityTable.id,
+                db
+                    .select({ transactionId: TransactionEntryEntityTable.transactionId })
+                    .from(TransactionEntryEntityTable)
+                    .where(
+                        and(
+                            or(
+                                isNull(TransactionEntryEntityTable.categoryId),
+                                notInArray(TransactionEntryEntityTable.categoryId, categoryIds)
+                            ),
+                            transactionFilters.buildLedgerEntryCondition()
+                        )
+                    )
+            );
+
+        const buildStatisticsFilterWhere = (db: DB, filters: StatisticsFilterInterface) =>
+            and(
+                transactionFilters.buildFilterWhere(filters),
+                ...(isNotEmptyArray(filters.excludedCategoryIds) ? [buildExcludedCategoryCondition(db, filters.excludedCategoryIds)] : [])
+            );
+
+        const buildStatisticsTransactionIdsQuery = (db: DB, filters: StatisticsFilterInterface) => {
+            const baseWhere = buildStatisticsFilterWhere(db, filters);
+            const typeConditions = isDefined(filters.type) ? [eq(TransactionEntityTable.type, filters.type)] : [];
+
+            return db
+                .selectDistinct({ id: TransactionEntityTable.id })
+                .from(TransactionEntityTable)
+                .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                .where(
+                    and(
+                        baseWhere,
+                        transactionFilters.buildPrimaryLedgerEntryCondition(),
+                        transactionFilters.buildNonDebtAccountCondition(),
+                        buildSpendingEntryCondition(),
+                        ...typeConditions
+                    )
+                );
         };
-    }
+        /* jscpd:ignore-end */
 
-    private buildStatisticsLedgerWhere(filters: TransactionFilterInterface, extraCondition?: SQL) {
-        return and(this.buildStatisticsWhere(filters), this.buildPrimaryLedgerEntryCondition(), extraCondition);
-    }
+        const buildTransactionIdsQuery = (db: DB, filters: TransactionFilterInterface, type: TransactionTypeEnum) => {
+            const baseWhere = transactionFilters.buildFilterWhere(filters);
 
-    private buildRunwayMonthSql() {
-        return sql<string>`strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch')`;
-    }
+            return db
+                .selectDistinct({ transactionId: TransactionEntityTable.id })
+                .from(TransactionEntityTable)
+                .where(and(baseWhere, eq(TransactionEntityTable.type, type)));
+        };
 
-    private buildRunwayCompleteMonthsCondition(months: number) {
-        const windowStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now', ${`-${months} months`}))`;
-        const currentMonthStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now'))`;
-
-        return and(
-            sql`${TransactionEntityTable.operatedAt} >= ${windowStartEpoch}`,
-            sql`${TransactionEntityTable.operatedAt} < ${currentMonthStartEpoch}`
-        );
-    }
-
-    private buildRunwayDriverSeriesBaseQuery(
-        idColumn: typeof CategoryEntityTable.id | typeof TagEntityTable.id,
-        titleSql: SQL<string>,
-        monthSql: SQL<string>,
-        amountSql: SQL<number>
-    ) {
-        return this.buildLedgerEntriesQuery({
-            id: idColumn,
-            title: titleSql.as('title'),
-            ...this.buildRunwayDriverFields(monthSql, amountSql)
-        })
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id));
-    }
-
-    private buildRunwayCategoryDriverSeriesQuery(
-        filters: TransactionFilterInterface,
-        defaultInstrumentId: number,
-        months: number,
-        language: LanguageEnum
-    ) {
-        const amountSql = this.buildExpenseTotalSql(defaultInstrumentId);
-        const monthSql = this.buildRunwayMonthSql();
-        const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title}, '')`;
-
-        return this.buildRunwayDriverSeriesBaseQuery(CategoryEntityTable.id, categoryTitleSql, monthSql, amountSql)
-            .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-            .leftJoin(
-                DefaultCategoryTranslationEntityTable,
-                and(
-                    eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
-                    eq(DefaultCategoryTranslationEntityTable.language, language)
-                )
-            )
-            .where(this.buildStatisticsLedgerWhere(filters, this.buildRunwayCompleteMonthsCondition(months)))
-            .groupBy(CategoryEntityTable.id, categoryTitleSql, monthSql)
-            .orderBy(monthSql, desc(amountSql));
-    }
-
-    private buildRunwayTagDriverSeriesQuery(filters: TransactionFilterInterface, defaultInstrumentId: number, months: number) {
-        const amountSql = this.buildExpenseTotalSql(defaultInstrumentId);
-        const monthSql = this.buildRunwayMonthSql();
-        const tagTitleSql = sql<string>`COALESCE(${TagEntityTable.title}, '')`;
-
-        return this.buildRunwayDriverSeriesBaseQuery(TagEntityTable.id, tagTitleSql, monthSql, amountSql)
-            .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
-            .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
-            .where(this.buildStatisticsLedgerWhere(filters, this.buildRunwayCompleteMonthsCondition(months)))
-            .groupBy(TagEntityTable.id, tagTitleSql, monthSql)
-            .orderBy(monthSql, desc(amountSql));
-    }
-
-    private buildConversionRateSql(defaultInstrumentId: number, instrumentIdRef: SQL) {
-        return sql`COALESCE(
+        const buildConversionRateSql = (defaultInstrumentId: number, instrumentIdRef: SQL) =>
+            sql`COALESCE(
             ${getDirectExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getInverseExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)},
             ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
         )`;
-    }
 
-    private buildEntryBaseValueSql(defaultInstrumentId: number) {
-        return sql<number>`CASE
+        const buildEntryBaseValueSql = (defaultInstrumentId: number) =>
+            sql<number>`CASE
             WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${defaultInstrumentId}
             THEN ${TransactionEntryEntityTable.baseAmount}
             WHEN ${AccountEntityTable.instrumentId} = ${defaultInstrumentId}
             THEN ${TransactionEntryEntityTable.amount}
-            ELSE ROUND(${TransactionEntryEntityTable.amount} * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('accounts.instrument_id'))})
+            ELSE ROUND(${TransactionEntryEntityTable.amount} * ${buildConversionRateSql(defaultInstrumentId, sql.raw('accounts.instrument_id'))})
         END`;
-    }
 
-    private buildRefundAwareBaseAmountSql(defaultInstrumentId: number) {
-        return sql<number>`COALESCE(SUM(CASE
-            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
-                 AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
-            THEN ${this.buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}
-            ELSE ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-        END), 0)`;
-    }
-
-    private buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId: number) {
-        return sql<number>`
-            ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-            - (
-                ${this.buildRefundTotalBaseAmountSql(defaultInstrumentId)}
-                * ${this.buildEntryBaseValueSql(defaultInstrumentId)}
-                / NULLIF(${this.buildLedgerCreditBaseAmountTotalSql(defaultInstrumentId)}, 0)
-            )
-        `;
-    }
-
-    private buildRefundTotalBaseAmountSql(defaultInstrumentId: number) {
-        return sql<number>`COALESCE((
+        const buildRefundTotalBaseAmountSql = (defaultInstrumentId: number) =>
+            sql<number>`COALESCE((
             SELECT SUM(CASE
                 WHEN refund_entry.base_instrument_id = ${defaultInstrumentId} THEN refund_entry.base_amount
                 WHEN refund_account.instrument_id = ${defaultInstrumentId} THEN refund_entry.amount
-                ELSE ROUND(refund_entry.amount * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('refund_account.instrument_id'))})
+                ELSE ROUND(refund_entry.amount * ${buildConversionRateSql(defaultInstrumentId, sql.raw('refund_account.instrument_id'))})
             END)
             FROM transaction_entries refund_entry
             INNER JOIN accounts refund_account ON refund_account.id = refund_entry.account_id
@@ -513,14 +148,13 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
               AND refund_entry.deleted_at IS NULL
               AND refund_entry.type = ${TransactionEntryTypeEnum.DEBIT}
         ), 0)`;
-    }
 
-    private buildLedgerCreditBaseAmountTotalSql(defaultInstrumentId: number) {
-        return sql<number>`COALESCE((
+        const buildLedgerCreditBaseAmountTotalSql = (defaultInstrumentId: number) =>
+            sql<number>`COALESCE((
             SELECT SUM(CASE
                 WHEN ledger_credit.base_instrument_id = ${defaultInstrumentId} THEN ledger_credit.base_amount
                 WHEN ledger_account.instrument_id = ${defaultInstrumentId} THEN ledger_credit.amount
-                ELSE ROUND(ledger_credit.amount * ${this.buildConversionRateSql(defaultInstrumentId, sql.raw('ledger_account.instrument_id'))})
+                ELSE ROUND(ledger_credit.amount * ${buildConversionRateSql(defaultInstrumentId, sql.raw('ledger_account.instrument_id'))})
             END)
             FROM transaction_entries ledger_credit
             INNER JOIN accounts ledger_account ON ledger_account.id = ledger_credit.account_id
@@ -529,11 +163,385 @@ export class StatisticsRepository extends BaseTransactionFilterRepository {
               AND ledger_credit.deleted_at IS NULL
               AND ledger_credit.type = ${TransactionEntryTypeEnum.CREDIT}
         ), 0)`;
-    }
 
-    private buildStatisticsWhere(filters: TransactionFilterInterface) {
-        const baseWhere = this.buildFilterWhere(filters);
+        const buildRefundAdjustedCreditBaseAmountSql = (defaultInstrumentId: number) =>
+            sql<number>`
+            ${buildEntryBaseValueSql(defaultInstrumentId)}
+            - (
+                ${buildRefundTotalBaseAmountSql(defaultInstrumentId)}
+                * ${buildEntryBaseValueSql(defaultInstrumentId)}
+                / NULLIF(${buildLedgerCreditBaseAmountTotalSql(defaultInstrumentId)}, 0)
+            )
+        `;
 
-        return and(baseWhere, ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT), buildSpendingEntryCondition());
-    }
+        const buildRefundAwareBaseAmountSql = (defaultInstrumentId: number) =>
+            sql<number>`COALESCE(SUM(CASE
+            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                 AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+            THEN ${buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}
+            ELSE ${buildEntryBaseValueSql(defaultInstrumentId)}
+        END), 0)`;
+
+        /* jscpd:ignore-start */
+        const buildCategoryBreakdownQuery = (
+            db: DB,
+            transactionIdsSubquery: ReturnType<typeof buildTransactionIdsQuery>,
+            defaultInstrumentId: number,
+            language: LanguageEnum
+        ) => {
+            const amountSql = buildRefundAwareBaseAmountSql(defaultInstrumentId);
+            const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`;
+
+            return db
+                .select({
+                    category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') },
+                    amount: amountSql.as('amount')
+                })
+                .from(TransactionEntryEntityTable)
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+                .leftJoin(
+                    DefaultCategoryTranslationEntityTable,
+                    and(
+                        eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
+                        eq(DefaultCategoryTranslationEntityTable.language, language)
+                    )
+                )
+                .where(
+                    and(
+                        inArray(TransactionEntityTable.id, transactionIdsSubquery),
+                        transactionFilters.buildPrimaryLedgerEntryCondition(),
+                        transactionFilters.buildNonDebtAccountCondition()
+                    )
+                )
+                .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
+                .orderBy(desc(amountSql));
+        };
+
+        const buildTagBreakdownQuery = (
+            db: DB,
+            transactionIdsSubquery: ReturnType<typeof buildTransactionIdsQuery>,
+            defaultInstrumentId: number
+        ) => {
+            const amountSql = buildRefundAwareBaseAmountSql(defaultInstrumentId);
+
+            return db
+                .select({
+                    tag: TagEntityTable,
+                    amount: amountSql.as('amount')
+                })
+                .from(TransactionEntryEntityTable)
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                .leftJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
+                .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
+                .where(
+                    and(
+                        inArray(TransactionEntityTable.id, transactionIdsSubquery),
+                        transactionFilters.buildPrimaryLedgerEntryCondition(),
+                        transactionFilters.buildNonDebtAccountCondition()
+                    )
+                )
+                .groupBy(TagEntityTable.id)
+                .orderBy(desc(amountSql));
+        };
+
+        const buildStatisticsWhere = (filters: TransactionFilterInterface) => {
+            const baseWhere = transactionFilters.buildFilterWhere(filters);
+
+            return and(baseWhere, ne(TransactionEntityTable.type, TransactionTypeEnum.ADJUSTMENT), buildSpendingEntryCondition());
+        };
+
+        const buildExpenseCategoryBreakdownQuery = (
+            db: DB,
+            filters: TransactionFilterInterface,
+            defaultInstrumentId: number,
+            language: LanguageEnum
+        ) => {
+            const amountSql = buildRefundAwareBaseAmountSql(defaultInstrumentId);
+            const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`;
+
+            return db
+                .select({
+                    category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') },
+                    amount: amountSql.as('amount')
+                })
+                .from(TransactionEntryEntityTable)
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+                .leftJoin(
+                    DefaultCategoryTranslationEntityTable,
+                    and(
+                        eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
+                        eq(DefaultCategoryTranslationEntityTable.language, language)
+                    )
+                )
+                .where(
+                    and(
+                        buildStatisticsWhere(filters),
+                        transactionFilters.buildExpenseAnalyticsEntryCondition(),
+                        transactionFilters.buildPrimaryLedgerEntryCondition(),
+                        transactionFilters.buildNonDebtAccountCondition()
+                    )
+                )
+                .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
+                .orderBy(desc(amountSql));
+        };
+
+        const buildExpenseTagBreakdownQuery = (db: DB, filters: TransactionFilterInterface, defaultInstrumentId: number) => {
+            const amountSql = buildRefundAwareBaseAmountSql(defaultInstrumentId);
+
+            return db
+                .select({
+                    tag: TagEntityTable,
+                    amount: amountSql.as('amount')
+                })
+                .from(TransactionEntryEntityTable)
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                .leftJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
+                .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
+                .where(
+                    and(
+                        buildStatisticsWhere(filters),
+                        transactionFilters.buildExpenseAnalyticsEntryCondition(),
+                        transactionFilters.buildPrimaryLedgerEntryCondition(),
+                        transactionFilters.buildNonDebtAccountCondition(),
+                        or(ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), isNotNull(TransactionTagsEntityTable.tagId))
+                    )
+                )
+                .groupBy(TagEntityTable.id)
+                .orderBy(desc(amountSql));
+        };
+        /* jscpd:ignore-end */
+
+        const buildVisibleNonDebtEntryCondition = (type: TransactionEntryTypeEnum) =>
+            sql`
+            ${TransactionEntryEntityTable.type} = ${type}
+            AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
+            AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.DEBT}
+            AND ${transactionFilters.buildNonDebtAccountCondition()}
+        `;
+
+        const buildIncomeEntryValueSql = (defaultInstrumentId: number) =>
+            sql<number>`CASE
+            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                 AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT}
+            THEN 0
+            WHEN ${buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.DEBIT)}
+            THEN ${buildEntryBaseValueSql(defaultInstrumentId)}
+            ELSE 0
+        END`;
+
+        const buildExpenseEntryValueSql = (defaultInstrumentId: number) =>
+            sql<number>`CASE
+            WHEN ${TransactionEntityTable.consolidationType} = ${TransactionConsolidationTypeEnum.REFUND}
+                 AND ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT}
+                 AND ${transactionFilters.buildNonDebtAccountCondition()}
+            THEN ${buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}
+            WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
+                 AND ${transactionFilters.buildNonDebtAccountCondition()}
+            THEN ${buildEntryBaseValueSql(defaultInstrumentId)}
+            WHEN ${buildVisibleNonDebtEntryCondition(TransactionEntryTypeEnum.CREDIT)}
+            THEN ${buildEntryBaseValueSql(defaultInstrumentId)}
+            ELSE 0
+        END`;
+
+        const buildIncomeTotalSql = (defaultInstrumentId: number) =>
+            sql<number>`COALESCE(SUM(${buildIncomeEntryValueSql(defaultInstrumentId)}), 0)`;
+
+        const buildExpenseTotalSql = (defaultInstrumentId: number) =>
+            sql<number>`COALESCE(SUM(${buildExpenseEntryValueSql(defaultInstrumentId)}), 0)`;
+
+        const buildLedgerEntriesQuery = <TSelection extends SelectedFields>(db: DB, selectFields: TSelection) =>
+            db.select(selectFields).from(TransactionEntryEntityTable);
+
+        const buildIncomeExpenseFields = (defaultInstrumentId: number) => ({
+            income: buildIncomeTotalSql(defaultInstrumentId).as('income'),
+            expense: buildExpenseTotalSql(defaultInstrumentId).as('expense')
+        });
+
+        const buildRunwayDriverFields = (monthSql: SQL<string>, amountSql: SQL<number>) => ({
+            month: monthSql.as('month'),
+            amount: amountSql.as('amount')
+        });
+
+        const buildStatisticsLedgerWhere = (filters: TransactionFilterInterface, extraCondition?: SQL) =>
+            and(buildStatisticsWhere(filters), transactionFilters.buildPrimaryLedgerEntryCondition(), extraCondition);
+
+        const buildRunwayMonthSql = () => sql<string>`strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch')`;
+
+        const buildRunwayCompleteMonthsCondition = (months: number) => {
+            const windowStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now', ${`-${months} months`}))`;
+            const currentMonthStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now'))`;
+
+            return and(
+                sql`${TransactionEntityTable.operatedAt} >= ${windowStartEpoch}`,
+                sql`${TransactionEntityTable.operatedAt} < ${currentMonthStartEpoch}`
+            );
+        };
+
+        const buildRunwayDriverSeriesBaseQuery = (
+            db: DB,
+            idColumn: typeof CategoryEntityTable.id | typeof TagEntityTable.id,
+            titleSql: SQL<string>,
+            amountSql: SQL<number>
+        ) =>
+            buildLedgerEntriesQuery(db, {
+                id: idColumn,
+                title: titleSql.as('title'),
+                ...buildRunwayDriverFields(buildRunwayMonthSql(), amountSql)
+            })
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id));
+
+        const buildRunwayCategoryDriverSeriesQuery =
+            (filters: TransactionFilterInterface, defaultInstrumentId: number, months: number, language: LanguageEnum) => (db: DB) => {
+                const amountSql = buildExpenseTotalSql(defaultInstrumentId);
+                const monthSql = buildRunwayMonthSql();
+                const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title}, '')`;
+
+                return buildRunwayDriverSeriesBaseQuery(db, CategoryEntityTable.id, categoryTitleSql, amountSql)
+                    .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+                    .leftJoin(
+                        DefaultCategoryTranslationEntityTable,
+                        and(
+                            eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
+                            eq(DefaultCategoryTranslationEntityTable.language, language)
+                        )
+                    )
+                    .where(buildStatisticsLedgerWhere(filters, buildRunwayCompleteMonthsCondition(months)))
+                    .groupBy(CategoryEntityTable.id, categoryTitleSql, monthSql)
+                    .orderBy(monthSql, desc(amountSql));
+            };
+
+        const buildRunwayTagDriverSeriesQuery = (
+            db: DB,
+            filters: TransactionFilterInterface,
+            defaultInstrumentId: number,
+            months: number
+        ) => {
+            const amountSql = buildExpenseTotalSql(defaultInstrumentId);
+            const monthSql = buildRunwayMonthSql();
+            const tagTitleSql = sql<string>`COALESCE(${TagEntityTable.title}, '')`;
+
+            return buildRunwayDriverSeriesBaseQuery(db, TagEntityTable.id, tagTitleSql, amountSql)
+                .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
+                .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
+                .where(buildStatisticsLedgerWhere(filters, buildRunwayCompleteMonthsCondition(months)))
+                .groupBy(TagEntityTable.id, tagTitleSql, monthSql)
+                .orderBy(monthSql, desc(amountSql));
+        };
+
+        return {
+            getTransactions: (filters: StatisticsFilterInterface, limit: number, language: LanguageEnum) =>
+                Db.query(db => {
+                    const transactionIds = buildStatisticsTransactionIdsQuery(db, filters);
+
+                    return db.query.TransactionEntityTable.findMany({
+                        /* jscpd:ignore-start */
+                        with: {
+                            [TransactionAssociationEnum.ENTRIES]: {
+                                where: transactionFilters.buildLedgerEntryCondition(),
+                                with: {
+                                    [TransactionEntryAssociationEnum.ACCOUNT]: {
+                                        with: {
+                                            [AccountAssociationEnum.INSTRUMENT]: true
+                                        }
+                                    },
+                                    [TransactionEntryAssociationEnum.CATEGORY]: buildTranslatedCategoryRelation(language),
+                                    [TransactionEntryAssociationEnum.MCC_CATEGORY]: true
+                                }
+                            },
+                            [TransactionAssociationEnum.TRANSACTION_TAGS]: {
+                                with: {
+                                    [TransactionTagsAssociationEnum.TAG]: true
+                                }
+                            },
+                            [TransactionAssociationEnum.DEBT_EVENTS]: {
+                                where: isNull(DebtEventEntityTable.deletedAt),
+                                with: {
+                                    [DebtEventAssociationEnum.DEBT_ACCOUNT]: {
+                                        with: {
+                                            [AccountAssociationEnum.INSTRUMENT]: true
+                                        }
+                                    }
+                                }
+                            },
+                            [TransactionAssociationEnum.FROM_ACCOUNT]: true,
+                            [TransactionAssociationEnum.TO_ACCOUNT]: true
+                        },
+                        /* jscpd:ignore-end */
+                        where: inArray(TransactionEntityTable.id, transactionIds),
+                        orderBy: (transaction, { desc: descFn }) => [descFn(transaction.operatedAt)],
+                        limit
+                    });
+                }),
+
+            getTotalIncomeAndExpenseQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number) =>
+                Db.query(db =>
+                    buildLedgerEntriesQuery(db, buildIncomeExpenseFields(defaultInstrumentId))
+                        .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                        .where(buildStatisticsLedgerWhere(filters))
+                ),
+
+            getRunwaySeriesQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number, months: number) =>
+                Db.query(db => {
+                    const monthSql = buildRunwayMonthSql();
+
+                    return buildLedgerEntriesQuery(db, { month: monthSql.as('month'), ...buildIncomeExpenseFields(defaultInstrumentId) })
+                        .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                        .where(buildStatisticsLedgerWhere(filters, buildRunwayCompleteMonthsCondition(months)))
+                        .groupBy(monthSql)
+                        .orderBy(monthSql);
+                }),
+
+            // eslint-disable-next-line @typescript-eslint/max-params -- Runway drivers keep the mandated positional signature (filters, defaultInstrumentId, dimension, months, language)
+            getRunwayDriverSeriesQuery: (
+                filters: TransactionFilterInterface,
+                defaultInstrumentId: number,
+                dimension: RunwayDriverDimensionEnum,
+                months: number,
+                language: LanguageEnum
+            ) =>
+                Db.query(db =>
+                    dimension === RunwayDriverDimensionEnum.CATEGORY
+                        ? buildRunwayCategoryDriverSeriesQuery(filters, defaultInstrumentId, months, language)(db)
+                        : buildRunwayTagDriverSeriesQuery(db, filters, defaultInstrumentId, months)
+                ),
+
+            getIncomeByCategoryQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) =>
+                Db.query(db =>
+                    buildCategoryBreakdownQuery(
+                        db,
+                        buildTransactionIdsQuery(db, filters, TransactionTypeEnum.INCOME),
+                        defaultInstrumentId,
+                        language
+                    )
+                ),
+
+            getExpenseByCategoryQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) =>
+                Db.query(db => buildExpenseCategoryBreakdownQuery(db, filters, defaultInstrumentId, language)),
+
+            getIncomeByTagQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number) =>
+                Db.query(db =>
+                    buildTagBreakdownQuery(db, buildTransactionIdsQuery(db, filters, TransactionTypeEnum.INCOME), defaultInstrumentId)
+                ),
+
+            getExpenseByTagQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number) =>
+                Db.query(db => buildExpenseTagBreakdownQuery(db, filters, defaultInstrumentId)),
+
+            getIncomeTransactionsQuery: (filters: TransactionFilterInterface) =>
+                Db.query(db => buildStatisticsTransactionsQuery(db, filters, TransactionTypeEnum.INCOME)),
+
+            getExpenseTransactionsQuery: (filters: TransactionFilterInterface) =>
+                Db.query(db => buildStatisticsTransactionsQuery(db, filters, TransactionTypeEnum.EXPENSE))
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(StatisticsRepository, StatisticsRepository.make);
 }

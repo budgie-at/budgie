@@ -1,5 +1,4 @@
-import { z } from 'zod';
+import type { DepositAccountCreateInputSchema } from '../schema/deposit-account-create-input.schema';
+import type { Mutable } from 'effect/Types';
 
-import { DepositAccountCreateInputSchema } from '../schema/deposit-account-create-input.schema';
-
-export type DepositAccountCreateInputInterface = z.infer<typeof DepositAccountCreateInputSchema>;
+export type DepositAccountCreateInputInterface = Mutable<typeof DepositAccountCreateInputSchema.Type>;

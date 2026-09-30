@@ -26,7 +26,8 @@ const copyFixture = (sourcePath, targetPath) => {
 
 const findBalanceMismatches = databasePath => {
     const query = sql => execFileSync('sqlite3', [databasePath, sql], { encoding: 'utf8' }).trim();
-    const hasConsolidation = query("SELECT COUNT(*) FROM pragma_table_info('transactions') WHERE name = 'consolidation_parent_transaction_id'") === '1';
+    const hasConsolidation =
+        query("SELECT COUNT(*) FROM pragma_table_info('transactions') WHERE name = 'consolidation_parent_transaction_id'") === '1';
     const consolidationCondition = hasConsolidation
         ? "AND t.consolidation_parent_transaction_id IS NULL AND (e.original_transaction_id IS NULL OR t.consolidation_type = 'REFUND')"
         : '';

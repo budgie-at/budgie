@@ -27,13 +27,11 @@
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
-        "@budgie/logger": "workspace:*",
         "@liaugust/monobank-sdk": "^0.7.0",
         "@noble/hashes": "^1.8.0",
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",
-        "ky": "^2.1.0",
-        "xlsx": "^0.18.5",
-        "zod": "4.5.1"
+        "effect": "4.0.0-rc.118",
+        "xlsx": "^0.18.5"
     }
 }

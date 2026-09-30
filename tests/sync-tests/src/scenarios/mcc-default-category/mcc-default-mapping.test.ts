@@ -7,7 +7,7 @@ import {
     TransactionEntryTypeEnum
 } from '@budgie/contracts';
 import { SyncProviderEnum, SyncTransactionTypeEnum } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
 
 import type { MccCategoryLookupInterface } from '@budgie/contracts';
 import type { SyncTransactionInterface } from '@budgie/sync';
@@ -65,51 +65,51 @@ describe('mcc-default-category/mcc-default-mapping', () => {
         expect(Object.keys(MCC_DEFAULT_CATEGORY_SEED).length).toBeGreaterThanOrEqual(1000);
     });
 
-    it('applies defaultCategoryId from lookup when input has no categoryId', async () => {
+    it('applies defaultCategoryId from lookup when input has no categoryId', () => {
         const lookup: MccCategoryLookupInterface = { id: 999, defaultCategoryId: 42 };
         const bankTransaction = makeExpenseTransaction({ mcc: 5411 });
 
-        const result = await mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
+        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
 
         expect(result.entries[0].categoryId).toBe(42);
         expect(result.entries[0].categorySource).toBe(CategorySourceEnum.MCC_DEFAULT);
         expect(result.entries[0].mccCategoryId).toBe(999);
     });
 
-    it('leaves categoryId null when lookup has no defaultCategoryId set', async () => {
+    it('leaves categoryId null when lookup has no defaultCategoryId set', () => {
         const lookup: MccCategoryLookupInterface = { id: 999, defaultCategoryId: null };
         const bankTransaction = makeExpenseTransaction({ mcc: 5411 });
 
-        const result = await mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
+        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
 
         expect(result.entries[0].categoryId).toBeNull();
         expect(result.entries[0].categorySource).toBe(CategorySourceEnum.USER);
         expect(result.entries[0].mccCategoryId).toBe(999);
     });
 
-    it('leaves categoryId and mccCategoryId null when lookup is null (update-path)', async () => {
+    it('leaves categoryId and mccCategoryId null when lookup is null (update-path)', () => {
         const bankTransaction = makeExpenseTransaction({ mcc: 5411 });
 
-        const result = await mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, null, ExternalSourceEnum.MONOBANK);
+        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, null, ExternalSourceEnum.MONOBANK);
 
         expect(result.entries[0].categoryId).toBeNull();
         expect(result.entries[0].categorySource).toBe(CategorySourceEnum.USER);
         expect(result.entries[0].mccCategoryId).toBeNull();
     });
 
-    it('keeps a single entry when there is no fee', async () => {
+    it('keeps a single entry when there is no fee', () => {
         const lookup: MccCategoryLookupInterface = { id: 999, defaultCategoryId: 42 };
         const bankTransaction = makeExpenseTransaction({ feeAmount: 0 });
 
-        const result = await mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
+        const result = mapBankTransactionToCreateInput(bankTransaction, ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
 
         expect(result.entries).toHaveLength(1);
         expect(result.entries[0].amount).toBe(2500);
     });
 
-    it('creates a fee entry without turning the transaction into category splits', async () => {
+    it('creates a fee entry without turning the transaction into category splits', () => {
         const lookup: MccCategoryLookupInterface = { id: 999, defaultCategoryId: 42 };
-        const result = await mapBankTransactionToCreateInput(makeFeeTransaction(), ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
+        const result = mapBankTransactionToCreateInput(makeFeeTransaction(), ACCOUNT_ID, lookup, ExternalSourceEnum.MONOBANK);
 
         expectFeeEntryMapping(result);
     });

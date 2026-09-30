@@ -6,32 +6,35 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
+import * as Effect from 'effect/Effect';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import type { AccountEntityInterface, TransactionCreateInputInterface, TransactionEntryCreateInputInterface } from '@budgie/contracts';
 import type { BinanceTransferInterface } from '@budgie/sync';
 
-export class BinanceTransferInputMapper {
+export class BinanceTransferInputMapper<E, R> {
     private static readonly FEE_ENTRY_EXTERNAL_ID_SUFFIX = ':fee';
     private static readonly MILLISECONDS_PER_SECOND = 1000;
-    private static readonly logger = getLogger('BinanceTransferInputMapper');
 
-    constructor(private readonly resolveAccount: (codecAccountId: string) => Promise<AccountEntityInterface | null>) {}
+    readonly map = Effect.fn('BinanceTransferInputMapper.map')(function* (
+        this: BinanceTransferInputMapper<E, R>,
+        transfers: BinanceTransferInterface[]
+    ) {
+        return (yield* Effect.forEach(transfers, transfer => this.mapTransfer(transfer))).filter(isDefined);
+    });
 
-    async map(transfers: BinanceTransferInterface[]): Promise<TransactionCreateInputInterface[]> {
-        return (await Promise.all(transfers.map(transfer => this.mapTransfer(transfer)))).filter(isDefined);
-    }
-
-    private async mapTransfer(transfer: BinanceTransferInterface): Promise<TransactionCreateInputInterface | null> {
-        const fromAccount = await this.resolveAccount(transfer.fromAssetAccountId);
-        const toAccount = await this.resolveAccount(transfer.toAssetAccountId);
+    private readonly mapTransfer = Effect.fnUntraced(function* (
+        this: BinanceTransferInputMapper<E, R>,
+        transfer: BinanceTransferInterface
+    ) {
+        const fromAccount = yield* this.resolveAccount(transfer.fromAssetAccountId);
+        const toAccount = yield* this.resolveAccount(transfer.toAssetAccountId);
         if (!isDefined(fromAccount) || !isDefined(toAccount)) {
             return null;
         }
 
-        const feeAccount = isDefined(transfer.feeAssetAccountId) ? await this.resolveAccount(transfer.feeAssetAccountId) : null;
+        const feeAccount = isDefined(transfer.feeAssetAccountId) ? yield* this.resolveAccount(transfer.feeAssetAccountId) : null;
         const entries = [
             this.buildEntry(fromAccount.id, TransactionEntryTypeEnum.CREDIT, transfer.fromAmount, transfer.externalId),
             this.buildEntry(toAccount.id, TransactionEntryTypeEnum.DEBIT, transfer.toAmount, transfer.externalId)
@@ -48,14 +51,7 @@ export class BinanceTransferInputMapper {
                 categorySource: CategorySourceEnum.FEE
             });
         }
-        if (isPositiveNumber(transfer.feeAmount) && !isDefined(feeAccount)) {
-            BinanceTransferInputMapper.logger.log('mapTransfer:skip-unresolved-fee-asset', {
-                externalId: transfer.externalId,
-                feeAssetAccountId: transfer.feeAssetAccountId ?? null
-            });
-        }
-
-        return {
+        const input: TransactionCreateInputInterface = {
             amount: transfer.fromAmount,
             title: transfer.description,
             comment: '',
@@ -70,7 +66,11 @@ export class BinanceTransferInputMapper {
             tagIds: [],
             entries
         };
-    }
+
+        return input;
+    });
+
+    constructor(private readonly resolveAccount: (codecAccountId: string) => Effect.Effect<AccountEntityInterface | null, E, R>) {}
 
     private buildEntry(
         accountId: number,

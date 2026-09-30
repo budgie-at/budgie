@@ -1,9 +1,11 @@
+import { AccountBalanceRepository } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { runConsolidation } from './run-consolidation';
-import { accountBalanceRepository, testDb, testQueryService, unconsolidationService } from './test-context';
+import { testQueryService, unconsolidateById } from './test-context';
 
 import type { SourceStateSnapshotInterface } from './interface/source-state-snapshot.interface';
 import type { TransactionConsolidationTypeEnum, TransactionEntryEntityInterface } from '@budgie/contracts';
@@ -100,32 +102,33 @@ export const fetchSingleCanonicalId = (consolidationType: TransactionConsolidati
     return canonicals[0].id;
 };
 
-export const revertSingleCanonical = async (consolidationType: TransactionConsolidationTypeEnum): Promise<number> => {
+export const revertSingleCanonical = Effect.fnUntraced(function* (consolidationType: TransactionConsolidationTypeEnum) {
     const canonicalId = fetchSingleCanonicalId(consolidationType);
 
-    await unconsolidationService.unconsolidateById(canonicalId, testDb);
+    yield* unconsolidateById(canonicalId);
 
     return canonicalId;
-};
+});
 
-export const fetchLedgerBalances = async (accountIds: number[]): Promise<number[][]> => {
-    const balances = await accountBalanceRepository.getLedgerBalances(accountIds);
+export const fetchLedgerBalances = Effect.fnUntraced(function* (accountIds: number[]) {
+    const accountBalanceRepository = yield* AccountBalanceRepository;
+    const balances = yield* accountBalanceRepository.getLedgerBalances(accountIds);
 
     return accountIds.map(accountId => [accountId, balances.get(accountId) ?? 0]);
-};
+});
 
-export const expectRevertRestoresSources = async (input: {
+export const expectRevertRestoresSources = Effect.fnUntraced(function* (input: {
     readonly accountIds: number[];
     readonly consolidationType: TransactionConsolidationTypeEnum;
     readonly sourceTransactionIds: number[];
-}): Promise<void> => {
+}) {
     const stateBeforeConsolidation = snapshotSourceState(input.sourceTransactionIds);
-    const balancesBeforeConsolidation = await fetchLedgerBalances(input.accountIds);
-    const consolidationResult = await runConsolidation();
+    const balancesBeforeConsolidation = yield* fetchLedgerBalances(input.accountIds);
+    const consolidationResult = yield* runConsolidation();
 
     expect(consolidationResult.consolidated).toBe(1);
 
-    expectRevertRemovedCanonical(await revertSingleCanonical(input.consolidationType), input.sourceTransactionIds);
+    expectRevertRemovedCanonical(yield* revertSingleCanonical(input.consolidationType), input.sourceTransactionIds);
     expectSourceStateRestored(stateBeforeConsolidation);
-    expect(await fetchLedgerBalances(input.accountIds)).toEqual(balancesBeforeConsolidation);
-};
+    expect(yield* fetchLedgerBalances(input.accountIds)).toEqual(balancesBeforeConsolidation);
+});

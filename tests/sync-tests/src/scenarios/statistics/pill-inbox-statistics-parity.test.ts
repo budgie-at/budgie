@@ -1,5 +1,4 @@
-import { statisticsRepository, transactionCategorizeInboxRepository, transactionRepository } from '@app/@generic/drizzle/db/db';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     AccountTypeEnum,
     BANK_FEE_CATEGORY_ID,
@@ -8,16 +7,21 @@ import {
     ExternalSourceEnum,
     LanguageEnum,
     PRECISION,
+    StatisticsRepository,
+    TransactionCategorizeInboxRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTypeEnum,
+    TransactionViewRepository,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { seed } from '../../harness/seed/seed';
 
@@ -96,7 +100,8 @@ const seedTransaction = (
     return transaction.id;
 };
 
-const seedParityLedger = async () => {
+const seedParityLedger = Effect.gen(function* () {
+    const transferConsolidationService = yield* TransferConsolidationService;
     const card = seed.account({ title: 'Card', externalId: 'parity-card' });
     const savings = seed.account({ title: 'Savings', externalId: 'parity-savings' });
     const debt = seed.account({ title: 'Friend', type: AccountTypeEnum.DEBT });
@@ -142,10 +147,10 @@ const seedParityLedger = async () => {
     });
     seed.feeEntry(transfer.id, null, { accountId: card.id, amount: PRECISION });
     seed.refundedExpense({ accountId: card.id, expenseAmount: nextAmount(), refundAmounts: [PRECISION * 3] });
-    await transferConsolidationService.consolidate();
+    yield* transferConsolidationService.consolidate(null);
 
     return { card, savings };
-};
+});
 
 const buildFilters = (scope: ScopeInterface): TransactionFilterInterface => ({
     ...DEFAULT_TRANSACTION_FILTER,
@@ -157,8 +162,13 @@ const buildFilters = (scope: ScopeInterface): TransactionFilterInterface => ({
 const countDistinctTransactions = (rows: readonly { readonly transactionId: number }[]): number =>
     new Set(rows.map(row => row.transactionId)).size;
 
-const countStatisticsTransactions = async (scope: ScopeInterface, categoryIds: number[] | null, tagIds: number[] | null) => {
-    const transactions = await statisticsRepository.getTransactions(
+const countStatisticsTransactions = Effect.fnUntraced(function* (
+    scope: ScopeInterface,
+    categoryIds: number[] | null,
+    tagIds: number[] | null
+) {
+    const statisticsRepository = yield* StatisticsRepository;
+    const transactions = yield* statisticsRepository.getTransactions(
         {
             type: scope.type,
             date: scope.date,
@@ -173,16 +183,14 @@ const countStatisticsTransactions = async (scope: ScopeInterface, categoryIds: n
     );
 
     return transactions.length;
-};
+});
 
 describe('pill, inbox and statistics parity', () => {
-    let scopes: ScopeInterface[] = [];
-
-    beforeEach(async () => {
+    const arrangeScopes = Effect.gen(function* () {
         amountSequence = 0;
-        const { card, savings } = await seedParityLedger();
+        const { card, savings } = yield* seedParityLedger;
 
-        scopes = [
+        return [
             { name: 'all time expense', type: TransactionTypeEnum.EXPENSE, accountIds: null, date: null, uncategorized: 4, untagged: 4 },
             { name: 'all time income', type: TransactionTypeEnum.INCOME, accountIds: null, date: null, uncategorized: 1, untagged: 1 },
             { name: 'january expense', type: TransactionTypeEnum.EXPENSE, accountIds: null, date: JANUARY, uncategorized: 3, untagged: 2 },
@@ -195,74 +203,89 @@ describe('pill, inbox and statistics parity', () => {
                 uncategorized: 1,
                 untagged: 2
             }
-        ];
+        ] satisfies ScopeInterface[];
     });
 
-    it('counts the same uncategorized transactions in the pill, the inbox and the statistics bucket', async () => {
-        for (const scope of scopes) {
-            const filters = buildFilters(scope);
-            const [pill] = await transactionRepository.countUncategorized(filters);
-            const inboxRows = await transactionCategorizeInboxRepository.findUncategorizedRows(filters);
-            const statisticsCount = await countStatisticsTransactions(scope, [], null);
+    it.effect('counts the same uncategorized transactions in the pill, the inbox and the statistics bucket', () =>
+        Effect.gen(function* () {
+            const scopes = yield* arrangeScopes;
+            const transactionViewRepository = yield* TransactionViewRepository;
+            const transactionCategorizeInboxRepository = yield* TransactionCategorizeInboxRepository;
+            for (const scope of scopes) {
+                const filters = buildFilters(scope);
+                const [pill] = yield* transactionViewRepository.countUncategorized(filters);
+                const inboxRows = yield* transactionCategorizeInboxRepository.findUncategorizedRows(filters);
+                const statisticsCount = yield* countStatisticsTransactions(scope, [], null);
+
+                expect({
+                    scope: scope.name,
+                    pill: pill.income + pill.expense,
+                    inbox: countDistinctTransactions(inboxRows),
+                    statistics: statisticsCount
+                }).toEqual({
+                    scope: scope.name,
+                    pill: scope.uncategorized,
+                    inbox: scope.uncategorized,
+                    statistics: scope.uncategorized
+                });
+            }
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('counts the same untagged transactions in the tag inbox and the statistics bucket', () =>
+        Effect.gen(function* () {
+            const scopes = yield* arrangeScopes;
+            const transactionCategorizeInboxRepository = yield* TransactionCategorizeInboxRepository;
+            for (const scope of scopes) {
+                const inboxRows = yield* transactionCategorizeInboxRepository.findUntaggedRows(buildFilters(scope));
+                const statisticsCount = yield* countStatisticsTransactions(scope, null, []);
+
+                expect({ scope: scope.name, inbox: countDistinctTransactions(inboxRows), statistics: statisticsCount }).toEqual({
+                    scope: scope.name,
+                    inbox: scope.untagged,
+                    statistics: scope.untagged
+                });
+            }
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('never treats transfers with uncategorized legs as uncategorized', () =>
+        Effect.gen(function* () {
+            yield* arrangeScopes;
+            const transactionViewRepository = yield* TransactionViewRepository;
+            const transactionCategorizeInboxRepository = yield* TransactionCategorizeInboxRepository;
+            const statisticsRepository = yield* StatisticsRepository;
+            const transferFilters = { ...DEFAULT_TRANSACTION_FILTER, types: [TransactionTypeEnum.TRANSFER] };
+            const uncategorizedListFilters = { ...DEFAULT_TRANSACTION_FILTER, categoryIds: [] };
+            const [transferPill] = yield* transactionViewRepository.countUncategorized(transferFilters);
+            const transferInboxRows = yield* transactionCategorizeInboxRepository.findUncategorizedRows(transferFilters);
+            const [transferListCount] = yield* transactionViewRepository.countAll({ ...transferFilters, categoryIds: [] });
+            const [pill] = yield* transactionViewRepository.countUncategorized(DEFAULT_TRANSACTION_FILTER);
+            const uncategorizedList = yield* transactionViewRepository.getAll(1000, uncategorizedListFilters, LanguageEnum.EN);
+            const statisticsTransactions = yield* statisticsRepository.getTransactions(
+                { ...uncategorizedListFilters, type: null, excludedCategoryIds: null },
+                1000,
+                LanguageEnum.EN
+            );
+            const transferTypes = [...uncategorizedList, ...statisticsTransactions].filter(
+                transaction => transaction.type === TransactionTypeEnum.TRANSFER
+            );
 
             expect({
-                scope: scope.name,
-                pill: pill.income + pill.expense,
-                inbox: countDistinctTransactions(inboxRows),
-                statistics: statisticsCount
+                transferPill: transferPill.income + transferPill.expense,
+                transferInbox: transferInboxRows.length,
+                transferList: transferListCount.value,
+                transferTypes,
+                listCount: uncategorizedList.length,
+                statisticsCount: statisticsTransactions.length
             }).toEqual({
-                scope: scope.name,
-                pill: scope.uncategorized,
-                inbox: scope.uncategorized,
-                statistics: scope.uncategorized
+                transferPill: 0,
+                transferInbox: 0,
+                transferList: 0,
+                transferTypes: [],
+                listCount: pill.income + pill.expense,
+                statisticsCount: pill.income + pill.expense
             });
-        }
-    });
-
-    it('counts the same untagged transactions in the tag inbox and the statistics bucket', async () => {
-        for (const scope of scopes) {
-            const inboxRows = await transactionCategorizeInboxRepository.findUntaggedRows(buildFilters(scope));
-            const statisticsCount = await countStatisticsTransactions(scope, null, []);
-
-            expect({ scope: scope.name, inbox: countDistinctTransactions(inboxRows), statistics: statisticsCount }).toEqual({
-                scope: scope.name,
-                inbox: scope.untagged,
-                statistics: scope.untagged
-            });
-        }
-    });
-
-    it('never treats transfers with uncategorized legs as uncategorized', async () => {
-        const transferFilters = { ...DEFAULT_TRANSACTION_FILTER, types: [TransactionTypeEnum.TRANSFER] };
-        const uncategorizedListFilters = { ...DEFAULT_TRANSACTION_FILTER, categoryIds: [] };
-        const [transferPill] = await transactionRepository.countUncategorized(transferFilters);
-        const transferInboxRows = await transactionCategorizeInboxRepository.findUncategorizedRows(transferFilters);
-        const [transferListCount] = await transactionRepository.countAll({ ...transferFilters, categoryIds: [] });
-        const [pill] = await transactionRepository.countUncategorized(DEFAULT_TRANSACTION_FILTER);
-        const uncategorizedList = await transactionRepository.getAll(1000, uncategorizedListFilters, LanguageEnum.EN);
-        const statisticsTransactions = await statisticsRepository.getTransactions(
-            { ...uncategorizedListFilters, type: null, excludedCategoryIds: null },
-            1000,
-            LanguageEnum.EN
-        );
-        const transferTypes = [...uncategorizedList, ...statisticsTransactions].filter(
-            transaction => transaction.type === TransactionTypeEnum.TRANSFER
-        );
-
-        expect({
-            transferPill: transferPill.income + transferPill.expense,
-            transferInbox: transferInboxRows.length,
-            transferList: transferListCount.value,
-            transferTypes,
-            listCount: uncategorizedList.length,
-            statisticsCount: statisticsTransactions.length
-        }).toEqual({
-            transferPill: 0,
-            transferInbox: 0,
-            transferList: 0,
-            transferTypes: [],
-            listCount: pill.income + pill.expense,
-            statisticsCount: pill.income + pill.expense
-        });
-    });
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

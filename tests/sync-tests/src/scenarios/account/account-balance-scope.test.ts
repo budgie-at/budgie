@@ -1,6 +1,6 @@
-import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
-import { accountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
+import { AccountBalanceIncrementalService } from '@app/account/service/account-balance-incremental.service';
 import {
+    AccountBalanceRepository,
     AccountBalanceEntityTable,
     AccountTypeEnum,
     TransactionEntityTable,
@@ -8,10 +8,11 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { seed, testDb } from '../../harness';
+import { seed, testDb, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const OLD_BALANCE_UPDATED_AT = new Date(2026, 0, 1);
@@ -51,30 +52,34 @@ const fetchBalanceRow = (accountId: number) =>
     testDb.select().from(AccountBalanceEntityTable).where(eq(AccountBalanceEntityTable.accountId, accountId)).get();
 
 describe('account/account-balance-scope', () => {
-    it('rebuilds only requested account balances', async () => {
-        const changedAccount = seed.account({ type: AccountTypeEnum.BANK, instrumentId: 1 });
-        const untouchedAccount = seed.account({ type: AccountTypeEnum.CASH, instrumentId: 1 });
+    it.effect('rebuilds only requested account balances', () =>
+        Effect.gen(function* () {
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+            const changedAccount = seed.account({ type: AccountTypeEnum.BANK, instrumentId: 1 });
+            const untouchedAccount = seed.account({ type: AccountTypeEnum.CASH, instrumentId: 1 });
 
-        insertOne(AccountBalanceEntityTable, {
-            accountId: changedAccount.id,
-            amount: 10_000,
-            updatedAt: OLD_BALANCE_UPDATED_AT
-        });
-        insertOne(AccountBalanceEntityTable, {
-            accountId: untouchedAccount.id,
-            amount: -50_000,
-            updatedAt: OLD_BALANCE_UPDATED_AT
-        });
-        seedExpenseEntry(untouchedAccount.id, 50_000);
-        seedExpenseEntry(changedAccount.id, 12_000);
+            insertOne(AccountBalanceEntityTable, {
+                accountId: changedAccount.id,
+                amount: 10_000,
+                updatedAt: OLD_BALANCE_UPDATED_AT
+            });
+            insertOne(AccountBalanceEntityTable, {
+                accountId: untouchedAccount.id,
+                amount: -50_000,
+                updatedAt: OLD_BALANCE_UPDATED_AT
+            });
+            seedExpenseEntry(untouchedAccount.id, 50_000);
+            seedExpenseEntry(changedAccount.id, 12_000);
 
-        await accountBalanceIncrementalService.updateBalancesByAccountIds([changedAccount.id]);
+            yield* accountBalanceIncrementalService.updateBalancesByAccountIds([changedAccount.id]);
 
-        const changedBalance = accountBalanceRepository.getByAccountId(changedAccount.id).get();
-        const untouchedBalance = fetchBalanceRow(untouchedAccount.id);
+            const changedBalance = (yield* accountBalanceRepository.getByAccountId(changedAccount.id)).at(0);
+            const untouchedBalance = fetchBalanceRow(untouchedAccount.id);
 
-        expect(changedBalance?.balance).toBe(-12_000);
-        expect(untouchedBalance?.amount).toBe(-50_000);
-        expect(untouchedBalance?.updatedAt).toEqual(OLD_BALANCE_UPDATED_AT);
-    });
+            expect(changedBalance?.balance).toBe(-12_000);
+            expect(untouchedBalance?.amount).toBe(-50_000);
+            expect(untouchedBalance?.updatedAt).toEqual(OLD_BALANCE_UPDATED_AT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

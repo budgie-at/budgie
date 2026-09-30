@@ -3,6 +3,7 @@ import { VariableContextProvider } from 'nativewind';
 import { Appearance, StatusBar, View } from 'react-native';
 
 import { useSystemTheme } from '../../@generic/hook/use-system-theme.hook';
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
 import { ThemeContext } from '../context/theme.context';
@@ -124,7 +125,7 @@ export const ThemeProvider = ({ children }: Props) => {
     const toggleColorSchema = async () => {
         const nextTheme = getNextTheme();
         Appearance.setColorScheme(nextTheme === ThemeEnum.DARK ? 'dark' : 'light');
-        await updateSettingsMutation({ theme: nextTheme });
+        await appRuntime.runPromise(updateSettingsMutation({ theme: nextTheme }));
     };
 
     const contextValue = {

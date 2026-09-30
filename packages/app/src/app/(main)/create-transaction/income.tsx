@@ -1,6 +1,7 @@
 /* jscpd:ignore-start */
 import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 import { FormProvider } from 'react-hook-form';
 
@@ -8,12 +9,13 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
-import { transactionService } from '../../../transaction/service/transaction.service';
+import { TransactionService } from '../../../transaction/service/transaction.service';
 import { buildIncomeEntry } from '../../../transaction/utils/build-income-entry.util';
 /* jscpd:ignore-end */
 
@@ -28,7 +30,9 @@ export default function CreateIncomeTransactionPage() {
 
     const { form, handleSubmit } = useCreateTransactionForm({
         onSubmit: async data => {
-            const result = await transactionService.createInternal(data);
+            const result = await appRuntime.runPromise(
+                Effect.flatMap(TransactionService, transactionService => transactionService.createInternal(data))
+            );
             markForEmbedding(result.id);
 
             return result;

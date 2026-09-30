@@ -1,11 +1,13 @@
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { syncWorkloadService } from '@app/sync/service/sync-workload.service';
+import { Workload } from '@app/@generic/service/workload.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { describe, expect, it } from '@effect/vitest';
+import * as Deferred from 'effect/Deferred';
+import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
+import * as FiberSet from 'effect/FiberSet';
 import { HttpResponse, http } from 'msw';
-import { describe, expect, it } from 'vitest';
 
-import { emptyFn } from '@rnw-community/shared';
-
-import { buildMonobank, fetchPersistedMonobankTransactions } from '../../harness';
+import { buildMonobank, fetchPersistedMonobankTransactions, inWorkload, TestLayer } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -15,87 +17,80 @@ const staleForwardSyncFromAt = new Date(Date.now() - 10 * 60 * 1000);
 const nextTaskDelayMs = 0;
 
 describe('monobank/suspended-run-lock', () => {
-    it('keeps a sync request made during the active account run', async () => {
-        const externalIds = ['mono-acc-1', 'mono-acc-2'];
-        const requestedAccountIds: string[] = [];
-        let releaseBlocker = emptyFn;
-        let resolveBlockerStarted = emptyFn;
-        const blockerGate = new Promise<void>(resolve => {
-            releaseBlocker = resolve;
-        });
-        const blockerStarted = new Promise<void>(resolve => {
-            resolveBlockerStarted = resolve;
-        });
+    it.effect('keeps a sync request made during the active account run', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const runFork = yield* FiberSet.makeRuntime<Workload>();
+            const externalIds = ['mono-acc-1', 'mono-acc-2'];
+            const requestedAccountIds: string[] = [];
+            const blockerStarted = yield* Deferred.make<void>();
+            const blockerGate = yield* Deferred.make<void>();
 
-        seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
-        const blockerWork = syncWorkloadService.run('blocker', async () => {
-            resolveBlockerStarted();
-            await blockerGate;
-        });
-        await blockerStarted;
-        const queuedWork = syncWorkloadService.run('queued-work', async () => Promise.resolve());
+            seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
+            const blockerWork = yield* Effect.forkChild(
+                inWorkload(Effect.andThen(Deferred.succeed(blockerStarted, undefined), Deferred.await(blockerGate)))
+            );
+            yield* Deferred.await(blockerStarted);
+            const queuedWork = yield* Effect.forkChild(inWorkload(Effect.void));
 
-        mockServer.use(
-            http.get(statementEndpoint, ({ params }) => {
-                requestedAccountIds.push(String(params[statementAccountParam]));
-                if (requestedAccountIds.length === 1) {
-                    void monobankSyncService.sync().catch(emptyFn);
-                }
+            mockServer.use(
+                http.get(statementEndpoint, ({ params }) => {
+                    requestedAccountIds.push(String(params[statementAccountParam]));
+                    if (requestedAccountIds.length === 1) {
+                        runFork(inWorkload(monobankSyncService.sync()).pipe(Effect.ignore));
+                    }
 
-                return HttpResponse.json([]);
-            })
-        );
+                    return HttpResponse.json([]);
+                })
+            );
 
-        await monobankSyncService.sync();
-        releaseBlocker();
-        await blockerWork;
-        await queuedWork;
-        await syncWorkloadService.run('flush', async () => Promise.resolve());
+            yield* monobankSyncService.sync();
+            yield* Deferred.succeed(blockerGate, undefined);
+            yield* Fiber.join(blockerWork);
+            yield* Fiber.join(queuedWork);
+            yield* inWorkload(Effect.void);
 
-        expect(requestedAccountIds).toEqual(externalIds);
-    });
+            expect(requestedAccountIds).toEqual(externalIds);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('starts replacement background work while the foreground request is suspended', async () => {
-        let releaseStatementRequest = emptyFn;
-        let resolveStatementRequestStarted = emptyFn;
-        let requestedStatementCount = 0;
-        const statementRequestGate = new Promise<void>(resolve => {
-            releaseStatementRequest = resolve;
-        });
-        const statementRequestStarted = new Promise<void>(resolve => {
-            resolveStatementRequestStarted = resolve;
-        });
+    it.effect('lets the suspended foreground request finish before queued background work starts', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const workload = yield* Workload;
+            const statementRequestGate = Promise.withResolvers<void>();
+            const statementRequestStarted = Promise.withResolvers<void>();
+            let requestedStatementCount = 0;
 
-        seedMonobankForwardSyncAccounts(['mono-acc-1'], staleForwardSyncFromAt);
-        mockServer.use(
-            http.get(statementEndpoint, async () => {
-                requestedStatementCount += 1;
-                if (requestedStatementCount === 1) {
-                    resolveStatementRequestStarted();
-                    await statementRequestGate;
+            seedMonobankForwardSyncAccounts(['mono-acc-1'], staleForwardSyncFromAt);
+            mockServer.use(
+                http.get(statementEndpoint, () => {
+                    requestedStatementCount += 1;
+                    if (requestedStatementCount === 1) {
+                        statementRequestStarted.resolve();
 
-                    return HttpResponse.json([buildMonobank.transaction({ id: 'stale-run-transaction', amount: -100, hold: false })]);
-                }
+                        return statementRequestGate.promise.then(() =>
+                            HttpResponse.json([buildMonobank.transaction({ id: 'stale-run-transaction', amount: -100, hold: false })])
+                        );
+                    }
 
-                return HttpResponse.json([]);
-            })
-        );
+                    return HttpResponse.json([]);
+                })
+            );
 
-        const foregroundSync = syncWorkloadService.run('foreground', () => monobankSyncService.sync());
-        await statementRequestStarted;
-        monobankSyncService.interruptActiveRun();
-        syncWorkloadService.interruptActiveWork();
-        const backgroundSync = syncWorkloadService.run('background-monobank', () => monobankSyncService.sync());
-        await new Promise<void>(resolve => {
-            setTimeout(resolve, nextTaskDelayMs);
-        });
-        const didReplacementRequestStartWhileForegroundWasSuspended = requestedStatementCount === 2;
+            const foregroundSync = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()).pipe(Effect.ignore));
+            yield* Effect.promise(() => statementRequestStarted.promise);
+            yield* workload.interruptBackground;
+            const backgroundSync = yield* Effect.forkChild(inWorkload(monobankSyncService.sync()));
+            yield* Effect.sleep(nextTaskDelayMs);
+            const didReplacementRequestStartWhileForegroundWasSuspended = requestedStatementCount === 2;
 
-        releaseStatementRequest();
-        await foregroundSync;
-        await backgroundSync;
+            statementRequestGate.resolve();
+            yield* Fiber.join(foregroundSync);
+            yield* Fiber.join(backgroundSync);
 
-        expect(didReplacementRequestStartWhileForegroundWasSuspended).toBe(true);
-        expect(fetchPersistedMonobankTransactions()).toHaveLength(0);
-    });
+            expect(didReplacementRequestStartWhileForegroundWasSuspended).toBe(false);
+            expect(fetchPersistedMonobankTransactions()).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

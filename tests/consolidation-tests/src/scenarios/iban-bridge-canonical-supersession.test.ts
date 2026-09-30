@@ -1,6 +1,7 @@
 import { consolidationScopeService } from '@budgie/consolidation';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -20,7 +21,7 @@ import {
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testDb, testQueryService, testSeedService, unconsolidationService } from '../harness/test-context';
+import { testQueryService, testSeedService, unconsolidateById, TestLayer } from '../harness/test-context';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 
@@ -59,7 +60,7 @@ const seedPrefixArrival = (
     return [prefixIncome.id, prefixExpense.id];
 };
 
-const seedIncrementalBridgeArrival = async ({
+const seedIncrementalBridgeArrival = Effect.fnUntraced(function* ({
     completeSourceAmount = IBAN_BRIDGE_EUR_AMOUNT,
     scopeArrivalToSyncedTransactions = false,
     withCompetingPrefix = false
@@ -67,7 +68,7 @@ const seedIncrementalBridgeArrival = async ({
     readonly completeSourceAmount?: number;
     readonly scopeArrivalToSyncedTransactions?: boolean;
     readonly withCompetingPrefix?: boolean;
-} = {}) => {
+} = {}) {
     const topology = seedIbanBridgeTopology();
     const technicalBridgeAccount = testSeedService.bankSyncAccount('Supersession Technical UAH', null, TECHNICAL_BRIDGE_IBAN);
 
@@ -89,7 +90,7 @@ const seedIncrementalBridgeArrival = async ({
         );
     }
 
-    await runConsolidation();
+    yield* runConsolidation();
     const prefixCanonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
     const [prefixCanonical] = prefixCanonicals;
     const completeExpense = testSeedService.bankPairExpense(
@@ -123,7 +124,7 @@ const seedIncrementalBridgeArrival = async ({
         sourceEntryExchangeRate: 1,
         exchangeRate: 1
     });
-    const result = await runConsolidation(
+    const result = yield* runConsolidation(
         scopeArrivalToSyncedTransactions
             ? consolidationScopeService.buildFromTransactions([completeExpense, completeIncome, existingTransfer])
             : null
@@ -148,72 +149,82 @@ const seedIncrementalBridgeArrival = async ({
         prefixSourceTransactionIds,
         result
     };
-};
+});
 
-describe('consolidation/iban-bridge-canonical-supersession', () => {
-    it('supersedes a partial source-to-bridge canonical when the complete route arrives later', async () => {
-        const { bridgeAccount, canonical, completeIncome, liveCanonicals, prefixCanonical, result, sourceAccount, targetAccount } =
-            await seedIncrementalBridgeArrival();
+layer(TestLayer)('consolidation/iban-bridge-canonical-supersession', it => {
+    it.effect('supersedes a partial source-to-bridge canonical when the complete route arrives later', () =>
+        Effect.gen(function* () {
+            const { bridgeAccount, canonical, completeIncome, liveCanonicals, prefixCanonical, result, sourceAccount, targetAccount } =
+                yield* seedIncrementalBridgeArrival();
 
-        expect(result.consolidated).toBe(2);
-        expect(liveCanonicals).toHaveLength(1);
-        expect(canonical.fromAccountId).toBe(sourceAccount.id);
-        expect(canonical.toAccountId).toBe(targetAccount.id);
-        expect(testQueryService.fetchTransactionById(completeIncome.id).consolidationParentTransactionId).toBe(canonical.id);
-        expectConsolidationParent(prefixCanonical.id, canonical.id);
-        expect(fetchOwnLedgerEntries(prefixCanonical.id)).toHaveLength(0);
-        expect(fetchLedgerEntry(canonical.id, sourceAccount.id).amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
-        expect(fetchLedgerEntry(canonical.id, targetAccount.id).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
-        expect(fetchOwnLedgerEntries(canonical.id).some(entry => entry.accountId === bridgeAccount.id)).toBe(false);
+            expect(result.consolidated).toBe(2);
+            expect(liveCanonicals).toHaveLength(1);
+            expect(canonical.fromAccountId).toBe(sourceAccount.id);
+            expect(canonical.toAccountId).toBe(targetAccount.id);
+            expect(testQueryService.fetchTransactionById(completeIncome.id).consolidationParentTransactionId).toBe(canonical.id);
+            expectConsolidationParent(prefixCanonical.id, canonical.id);
+            expect(fetchOwnLedgerEntries(prefixCanonical.id)).toHaveLength(0);
+            expect(fetchLedgerEntry(canonical.id, sourceAccount.id).amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
+            expect(fetchLedgerEntry(canonical.id, targetAccount.id).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
+            expect(fetchOwnLedgerEntries(canonical.id).some(entry => entry.accountId === bridgeAccount.id)).toBe(false);
 
-        const repeatedResult = await runConsolidation();
+            const repeatedResult = yield* runConsolidation();
 
-        expect(repeatedResult.found).toBe(0);
-        expect(repeatedResult.consolidated).toBe(0);
-    });
+            expect(repeatedResult.found).toBe(0);
+            expect(repeatedResult.consolidated).toBe(0);
+        })
+    );
 
-    it('supersedes the stale prefix inside the sync scope that delivered the completing bridge income', async () => {
-        const { canonical, liveCanonicals, prefixCanonical } = await seedIncrementalBridgeArrival({
-            scopeArrivalToSyncedTransactions: true
-        });
+    it.effect('supersedes the stale prefix inside the sync scope that delivered the completing bridge income', () =>
+        Effect.gen(function* () {
+            const { canonical, liveCanonicals, prefixCanonical } = yield* seedIncrementalBridgeArrival({
+                scopeArrivalToSyncedTransactions: true
+            });
 
-        expect(liveCanonicals).toHaveLength(1);
-        expectConsolidationParent(prefixCanonical.id, canonical.id);
-    });
+            expect(liveCanonicals).toHaveLength(1);
+            expectConsolidationParent(prefixCanonical.id, canonical.id);
+        })
+    );
 
-    it('keeps a distinct same-source transfer with a different amount active', async () => {
-        const { liveCanonicals, prefixCanonical, result } = await seedIncrementalBridgeArrival({
-            completeSourceAmount: DISTINCT_SOURCE_AMOUNT
-        });
+    it.effect('keeps a distinct same-source transfer with a different amount active', () =>
+        Effect.gen(function* () {
+            const { liveCanonicals, prefixCanonical, result } = yield* seedIncrementalBridgeArrival({
+                completeSourceAmount: DISTINCT_SOURCE_AMOUNT
+            });
 
-        expect(result.consolidated).toBe(1);
-        expect(liveCanonicals).toHaveLength(2);
-        expect(testQueryService.fetchTransactionById(prefixCanonical.id).consolidationParentTransactionId).toBeNull();
-    });
+            expect(result.consolidated).toBe(1);
+            expect(liveCanonicals).toHaveLength(2);
+            expect(testQueryService.fetchTransactionById(prefixCanonical.id).consolidationParentTransactionId).toBeNull();
+        })
+    );
 
-    it('keeps two same-amount source-to-bridge canonicals live instead of cross-matching one of them', async () => {
-        const { liveCanonicals, prefixCanonicals } = await seedIncrementalBridgeArrival({ withCompetingPrefix: true });
+    it.effect('keeps two same-amount source-to-bridge canonicals live instead of cross-matching one of them', () =>
+        Effect.gen(function* () {
+            const { liveCanonicals, prefixCanonicals } = yield* seedIncrementalBridgeArrival({ withCompetingPrefix: true });
 
-        expect(prefixCanonicals).toHaveLength(2);
-        expect(liveCanonicals).toHaveLength(3);
-        prefixCanonicals.forEach(competingCanonical =>
-            expect(testQueryService.fetchTransactionById(competingCanonical.id).consolidationParentTransactionId).toBeNull()
-        );
-    });
+            expect(prefixCanonicals).toHaveLength(2);
+            expect(liveCanonicals).toHaveLength(3);
+            prefixCanonicals.forEach(competingCanonical =>
+                expect(testQueryService.fetchTransactionById(competingCanonical.id).consolidationParentTransactionId).toBeNull()
+            );
+        })
+    );
 
-    it('restores the nested prefix and both source groups through sequential reverts', async () => {
-        const { canonical, completeSourceTransactionIds, prefixCanonical, prefixSourceTransactionIds } =
-            await seedIncrementalBridgeArrival();
+    it.effect('restores the nested prefix and both source groups through sequential reverts', () =>
+        Effect.gen(function* () {
+            const { canonical, completeSourceTransactionIds, prefixCanonical, prefixSourceTransactionIds } =
+                yield* seedIncrementalBridgeArrival();
 
-        await unconsolidationService.unconsolidateById(canonical.id, testDb);
+            yield* unconsolidateById(canonical.id);
 
-        expect(testQueryService.fetchTransactionById(prefixCanonical.id).consolidationParentTransactionId).toBeNull();
-        expect(fetchOwnLedgerEntries(prefixCanonical.id)).toHaveLength(2);
-        expectSourcesRestored(completeSourceTransactionIds);
-        prefixSourceTransactionIds.forEach(sourceTransactionId => expectConsolidationParent(sourceTransactionId, prefixCanonical.id));
+            expect(testQueryService.fetchTransactionById(prefixCanonical.id).consolidationParentTransactionId).toBeNull();
+            expect(fetchOwnLedgerEntries(prefixCanonical.id)).toHaveLength(2);
+            expectSourcesRestored(completeSourceTransactionIds);
+            prefixSourceTransactionIds.forEach(sourceTransactionId => expectConsolidationParent(sourceTransactionId, prefixCanonical.id));
 
-        await unconsolidationService.unconsolidateById(prefixCanonical.id, testDb);
+            yield* unconsolidateById(prefixCanonical.id);
 
-        expectSourcesRestored(prefixSourceTransactionIds);
-    });
+            expectSourcesRestored(prefixSourceTransactionIds);
+        })
+    );
 });

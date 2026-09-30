@@ -20,23 +20,25 @@
 These `ExternalSourceEnum` members exist but have no service yet:
 `REVOLUT`, `WISE`, `COINBASE`, `CSV`, `MANUAL`
 
-### Hierarchy
+### Composition
+
+Each provider is a `Context.Service` whose `make` spreads a family factory from `util/`:
 
 ```
-AbstractSyncService (identity: provider + providerTitle + accountType; setAccountSyncEnabled, mapAccountsToPreview,
-                     mapAccountToCreateInput, getOrCreateSyncAccount; overridable generateAccountTitle / accountIcon)
-  ├── AbstractPollingSyncService (loop, hooks, token, preview, background task)
+makeSyncService (identity: provider + accountType + generateAccountTitle + accountIcon; setAccountSyncEnabled,
+                 mapAccountsToPreview, getOrCreateSyncAccount)
+  ├── makePollingSyncService (loop, hooks, token, background task)
   │     ├── MonobankSyncService  — polling-with-history (forward/backward paging, jar/card titles + jar icon)
   │     └── BinanceSyncService   — polling-with-snapshot (balance anchor, sources+transfers, CRYPTO_SYNC + Bitcoin icon)
-  └── AbstractFileSyncService   (importPreview, executeImportForSelectedAccounts, quickImport)
+  └── makeFileSyncService   (importPreview, executeImportForSelectedAccounts, quickImport)
         ├── ErsteSyncService
         └── PrivatbankSyncService
 ```
 
-Registry: `SyncProviderRegistryService` in `service/sync-provider-registry.service.ts`
+Registry: `SyncProviderRegistryService` in `service/sync-provider-registry.service.ts`; static per-provider capabilities live in
+`constant/sync-provider-capabilities.constant.ts`.
 
 ### Adding a provider
 
-Subclass the matching family service, declare the identity fields (`provider`, `providerTitle`, `accountType`),
-override `generateAccountTitle` / `accountIcon` when the defaults don't fit, and register the instance in
-`SyncProviderRegistryService`. No shared utils to edit — account materialization is inherited.
+Create a `Context.Service` whose `make` returns the matching family factory with the identity fields and hooks, add its
+capabilities row, register it in `SyncProviderRegistryService`, and add its layer to `appServicesLayer`.

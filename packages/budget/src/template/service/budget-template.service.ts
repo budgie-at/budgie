@@ -1,12 +1,14 @@
-import { Log } from '@budgie/logger';
 import { getMonth } from 'date-fns/getMonth';
 import { getYear } from 'date-fns/getYear';
 import { subMonths } from 'date-fns/subMonths';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { budgetPeriodService } from '../../period/service/budget-period.service';
-import { budgetSpentService } from '../../spent/service/budget-spent.service';
+import { BudgetSpentService } from '../../spent/service/budget-spent.service';
 import { GENERIC_BUDGET_TEMPLATE_CATEGORIES } from '../constant/generic-budget-template.constant';
 import {
     GENERIC_INITIAL_PRESET_TOTAL_BY_CURRENCY,
@@ -21,222 +23,187 @@ import type { BudgetSuggestedTemplateConfigInterface } from '../interface/budget
 import type { BudgetTemplateDraftInterface } from '../interface/budget-template-draft.interface';
 import type { BudgetTemplateResolutionInterface } from '../interface/budget-template-resolution.interface';
 
-class BudgetTemplateService {
-    private static readonly TOP_CATEGORY_COUNT = 10;
-    private static readonly HUNDRED_STEP = 100;
-    private static readonly THOUSAND_STEP = 1000;
-    private static readonly SPIKE_MULTIPLIER = 2;
-    private static readonly GENERIC_ROUNDING_STEP = 100;
-    private static readonly MICRO_UNIT_PRECISION = BudgetTemplateService.THOUSAND_STEP * BudgetTemplateService.THOUSAND_STEP;
-    private static readonly ZERO_DRAFT: BudgetTemplateDraftInterface = { overallLimit: 0, categoryLimits: [] };
+const TOP_CATEGORY_COUNT = 10;
+const HUNDRED_STEP = 100;
+const THOUSAND_STEP = 1000;
+const SPIKE_MULTIPLIER = 2;
+const GENERIC_ROUNDING_STEP = 100;
+const MICRO_UNIT_PRECISION = THOUSAND_STEP * THOUSAND_STEP;
+const ZERO_DRAFT: BudgetTemplateDraftInterface = { overallLimit: 0, categoryLimits: [] };
 
-    @Log(
-        spentByCategory =>
-            `enter spentByCategory=${spentByCategory.map(entry => `${entry.categoryId}:${entry.monthlyAmounts.join('|')}`).join(',')}`,
-        (result, spentByCategory) =>
-            `done spentByCategory=${spentByCategory.map(entry => `${entry.categoryId}:${entry.monthlyAmounts.join('|')}`).join(',')} overallLimit=${result.overallLimit} categoryLimits=${result.categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')}`,
-        (error, spentByCategory) =>
-            `throw spentByCategory=${spentByCategory.map(entry => `${entry.categoryId}:${entry.monthlyAmounts.join('|')}`).join(',')} error=${getErrorMessage(error)}`
-    )
-    buildSuggestedBudgetTemplate(spentByCategory: readonly BudgetCategoryMonthlySpentInterface[]): BudgetTemplateDraftInterface {
-        const averaged = spentByCategory.map(entry => ({
+const convertFromMicroUnits = (amount: number): number => amount / MICRO_UNIT_PRECISION;
+
+const roundToNiceStep = (value: number): number => {
+    const step = value >= THOUSAND_STEP ? THOUSAND_STEP : HUNDRED_STEP;
+
+    return Math.round(value / step) * step;
+};
+
+const computeSpikeAdjustedMonthlyAverage = (monthlyAmounts: readonly number[]): number => {
+    const total = monthlyAmounts.reduce((sum, amount) => sum + amount, 0);
+    const maxAmount = Math.max(...monthlyAmounts);
+    const restAverage = (total - maxAmount) / (monthlyAmounts.length - 1);
+
+    if (maxAmount > restAverage * SPIKE_MULTIPLIER) {
+        return restAverage;
+    }
+
+    return total / monthlyAmounts.length;
+};
+
+const buildSuggestedBudgetTemplate = (spentByCategory: readonly BudgetCategoryMonthlySpentInterface[]): BudgetTemplateDraftInterface => {
+    const averaged = spentByCategory.map(entry => ({
+        categoryId: entry.categoryId,
+        monthlyAvg: computeSpikeAdjustedMonthlyAverage(entry.monthlyAmounts)
+    }));
+
+    const sorted = [...averaged].sort((first, second) => second.monthlyAvg - first.monthlyAvg).slice(0, TOP_CATEGORY_COUNT);
+
+    const categoryLimits = sorted
+        .map(entry => ({
             categoryId: entry.categoryId,
-            monthlyAvg: this.computeSpikeAdjustedMonthlyAverage(entry.monthlyAmounts)
-        }));
+            limitAmount: roundToNiceStep(convertFromMicroUnits(entry.monthlyAvg))
+        }))
+        .filter(entry => isPositiveNumber(entry.limitAmount));
 
-        const sorted = [...averaged]
-            .sort((first, second) => second.monthlyAvg - first.monthlyAvg)
-            .slice(0, BudgetTemplateService.TOP_CATEGORY_COUNT);
+    const monthlyTotal = averaged.reduce((sum, entry) => sum + entry.monthlyAvg, 0);
+    const monthlyOverallRounded = roundToNiceStep(convertFromMicroUnits(monthlyTotal));
+    const categoryLimitsSum = categoryLimits.reduce((sum, entry) => sum + entry.limitAmount, 0);
+    const overallLimit = Math.max(categoryLimitsSum, monthlyOverallRounded);
 
-        const categoryLimits = sorted
-            .map(entry => ({
-                categoryId: entry.categoryId,
-                limitAmount: this.roundToNiceStep(this.convertFromMicroUnits(entry.monthlyAvg))
-            }))
-            .filter(entry => isPositiveNumber(entry.limitAmount));
+    return { overallLimit, categoryLimits };
+};
 
-        const monthlyTotal = averaged.reduce((sum, entry) => sum + entry.monthlyAvg, 0);
-        const monthlyOverallRounded = this.roundToNiceStep(this.convertFromMicroUnits(monthlyTotal));
-        const categoryLimitsSum = categoryLimits.reduce((sum, entry) => sum + entry.limitAmount, 0);
-        const overallLimit = Math.max(categoryLimitsSum, monthlyOverallRounded);
+const resolveGenericCategoryLimits = (
+    categories: readonly BudgetGenericCategoryRowInterface[],
+    total: number
+): BudgetCategoryLimitInputInterface[] =>
+    GENERIC_BUDGET_TEMPLATE_CATEGORIES.flatMap(template => {
+        const match = categories.find(category => category.isDefault && category.id === template.categoryId);
 
-        return { overallLimit, categoryLimits };
-    }
-
-    @Log(
-        (categories, currencyCode) =>
-            `enter categories=${categories.map(category => `${category.id}:${category.isDefault}`).join(',')} currencyCode="${currencyCode}"`,
-        (result, categories, currencyCode) =>
-            `done categories=${categories.map(category => `${category.id}:${category.isDefault}`).join(',')} currencyCode="${currencyCode}" overallLimit=${result.overallLimit} categoryLimits=${result.categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')}`,
-        (error, categories, currencyCode) =>
-            `throw categories=${categories.map(category => `${category.id}:${category.isDefault}`).join(',')} currencyCode="${currencyCode}" error=${getErrorMessage(error)}`
-    )
-    resolveGenericBudgetTemplate(
-        categories: readonly BudgetGenericCategoryRowInterface[],
-        currencyCode: string
-    ): BudgetTemplateDraftInterface {
-        const total = GENERIC_INITIAL_PRESET_TOTAL_BY_CURRENCY[currencyCode] ?? GENERIC_INITIAL_PRESET_TOTAL_DEFAULT;
-        const categoryLimits = this.resolveGenericCategoryLimits(categories, total);
-        const overallLimit = isNotEmptyArray(categoryLimits) ? categoryLimits.reduce((sum, entry) => sum + entry.limitAmount, 0) : total;
-
-        return { overallLimit, categoryLimits };
-    }
-
-    @Log(
-        (entries, now, baseInstrumentId, config) =>
-            `enter entries=${entries.map(entry => `${entry.amount}:${isDefined(entry.categoryId) ? entry.categoryId : ''}:${entry.instrumentId}:${isDefined(entry.rate) ? entry.rate : ''}:${entry.operatedAt.toISOString()}`).join(',')} now=${now.toISOString()} baseInstrumentId=${baseInstrumentId} minWindowMonths=${config.minWindowMonths} maxWindowMonths=${config.maxWindowMonths} minEntriesPerMonth=${config.minEntriesPerMonth} minDistinctCategories=${config.minDistinctCategories}`,
-        (result, ...[entries, now, baseInstrumentId, config]) =>
-            `done entries=${entries.map(entry => `${entry.amount}:${isDefined(entry.categoryId) ? entry.categoryId : ''}:${entry.instrumentId}:${isDefined(entry.rate) ? entry.rate : ''}:${entry.operatedAt.toISOString()}`).join(',')} now=${now.toISOString()} baseInstrumentId=${baseInstrumentId} minWindowMonths=${config.minWindowMonths} maxWindowMonths=${config.maxWindowMonths} minEntriesPerMonth=${config.minEntriesPerMonth} minDistinctCategories=${config.minDistinctCategories} overallLimit=${result.draft.overallLimit} categoryLimits=${result.draft.categoryLimits.map(limit => `${limit.categoryId}:${limit.limitAmount}`).join(',')} isReady=${result.isReady} isAvailable=${result.isAvailable}`,
-        (error, ...[entries, now, baseInstrumentId, config]) =>
-            `throw entries=${entries.map(entry => `${entry.amount}:${isDefined(entry.categoryId) ? entry.categoryId : ''}:${entry.instrumentId}:${isDefined(entry.rate) ? entry.rate : ''}:${entry.operatedAt.toISOString()}`).join(',')} now=${now.toISOString()} baseInstrumentId=${baseInstrumentId} minWindowMonths=${config.minWindowMonths} maxWindowMonths=${config.maxWindowMonths} minEntriesPerMonth=${config.minEntriesPerMonth} minDistinctCategories=${config.minDistinctCategories} error=${getErrorMessage(error)}`
-    )
-    buildSuggestedBudgetTemplateResolution(
-        entries: readonly BudgetSuggestedSpentEntryInterface[],
-        now: Date,
-        baseInstrumentId: number,
-        config: BudgetSuggestedTemplateConfigInterface
-    ): BudgetTemplateResolutionInterface {
-        const effectiveMonths = this.resolveEffectiveMonths(entries, now, config);
-
-        if (effectiveMonths < config.minWindowMonths) {
-            return this.emptySuggestedResolution(true);
+        if (!isDefined(match)) {
+            return [];
         }
 
-        const hasMinimumHistory = this.hasMinimumHistory(entries, now, config.minWindowMonths);
-        const windowStart = budgetPeriodService.computeTrailingMonthsWindow(now, effectiveMonths).start;
-        const recentEntries = entries.filter(entry => entry.operatedAt.getTime() >= windowStart.getTime());
-        const monthlySpentByCategory = this.groupMonthlySpentByCategory(recentEntries, windowStart, effectiveMonths, baseInstrumentId);
-        const draft = this.buildSuggestedBudgetTemplate(monthlySpentByCategory);
-        const isAvailable = this.isSuggestedTemplateAvailable(
-            draft,
-            monthlySpentByCategory,
-            config.minDistinctCategories,
-            hasMinimumHistory
-        );
-        const stats = this.buildSuggestedStats(effectiveMonths, recentEntries, monthlySpentByCategory);
+        const limitAmount = Math.round((total * template.weight) / GENERIC_ROUNDING_STEP) * GENERIC_ROUNDING_STEP;
 
-        return { draft, isReady: true, isAvailable, stats };
-    }
+        if (!isPositiveNumber(limitAmount)) {
+            return [];
+        }
 
-    private resolveEffectiveMonths(
-        entries: readonly BudgetSuggestedSpentEntryInterface[],
-        now: Date,
-        config: BudgetSuggestedTemplateConfigInterface
-    ): number {
-        const windowStartMax = budgetPeriodService.computeTrailingMonthsWindow(now, config.maxWindowMonths).start;
+        return [{ categoryId: match.id, limitAmount }];
+    });
 
-        return budgetPeriodService.resolveSuggestedWindowMonths(
-            entries.map(entry => entry.operatedAt),
-            windowStartMax,
-            config.maxWindowMonths,
-            config.minEntriesPerMonth
-        );
-    }
+const resolveGenericBudgetTemplate = (
+    categories: readonly BudgetGenericCategoryRowInterface[],
+    currencyCode: string
+): BudgetTemplateDraftInterface => {
+    const total = GENERIC_INITIAL_PRESET_TOTAL_BY_CURRENCY[currencyCode] ?? GENERIC_INITIAL_PRESET_TOTAL_DEFAULT;
+    const categoryLimits = resolveGenericCategoryLimits(categories, total);
+    const overallLimit = isNotEmptyArray(categoryLimits) ? categoryLimits.reduce((sum, entry) => sum + entry.limitAmount, 0) : total;
 
-    private hasMinimumHistory(entries: readonly BudgetSuggestedSpentEntryInterface[], now: Date, minWindowMonths: number): boolean {
-        const minHistoryThreshold = subMonths(now, minWindowMonths).getTime();
+    return { overallLimit, categoryLimits };
+};
 
-        return entries.some(entry => entry.operatedAt.getTime() <= minHistoryThreshold);
-    }
+const hasMinimumHistory = (entries: readonly BudgetSuggestedSpentEntryInterface[], now: Date, minWindowMonths: number): boolean => {
+    const minHistoryThreshold = subMonths(now, minWindowMonths).getTime();
 
-    private isSuggestedTemplateAvailable(
-        draft: BudgetTemplateDraftInterface,
-        monthlySpentByCategory: readonly BudgetCategoryMonthlySpentInterface[],
-        minDistinctCategories: number,
-        hasMinimumHistory: boolean
-    ): boolean {
-        const hasEnoughCategories = monthlySpentByCategory.length >= minDistinctCategories;
+    return entries.some(entry => entry.operatedAt.getTime() <= minHistoryThreshold);
+};
 
-        return isNotEmptyArray(draft.categoryLimits) && hasEnoughCategories && hasMinimumHistory;
-    }
+const isSuggestedTemplateAvailable = (
+    draft: BudgetTemplateDraftInterface,
+    monthlySpentByCategory: readonly BudgetCategoryMonthlySpentInterface[],
+    minDistinctCategories: number,
+    hasHistory: boolean
+): boolean => isNotEmptyArray(draft.categoryLimits) && monthlySpentByCategory.length >= minDistinctCategories && hasHistory;
 
-    private buildSuggestedStats(
-        months: number,
-        recentEntries: readonly BudgetSuggestedSpentEntryInterface[],
-        monthlySpentByCategory: readonly BudgetCategoryMonthlySpentInterface[]
-    ) {
-        return {
-            months,
-            transactionsCount: recentEntries.length,
-            categoriesCount: monthlySpentByCategory.length
+const emptySuggestedResolution = (isReady: boolean): BudgetTemplateResolutionInterface => ({
+    draft: ZERO_DRAFT,
+    isReady,
+    isAvailable: false,
+    stats: null
+});
+
+export class BudgetTemplateService extends Context.Service<BudgetTemplateService>()('@budgie/budget/BudgetTemplateService', {
+    make: Effect.gen(function* () {
+        const budgetSpentService = yield* BudgetSpentService;
+
+        const resolveEffectiveMonths = (
+            entries: readonly BudgetSuggestedSpentEntryInterface[],
+            now: Date,
+            config: BudgetSuggestedTemplateConfigInterface
+        ): number => {
+            const windowStartMax = budgetPeriodService.computeTrailingMonthsWindow(now, config.maxWindowMonths).start;
+
+            return budgetPeriodService.resolveSuggestedWindowMonths(
+                entries.map(entry => entry.operatedAt),
+                windowStartMax,
+                config.maxWindowMonths,
+                config.minEntriesPerMonth
+            );
         };
-    }
 
-    private resolveGenericCategoryLimits(
-        categories: readonly BudgetGenericCategoryRowInterface[],
-        total: number
-    ): BudgetCategoryLimitInputInterface[] {
-        return GENERIC_BUDGET_TEMPLATE_CATEGORIES.flatMap(template => {
-            const match = categories.find(category => category.isDefault && category.id === template.categoryId);
+        const groupMonthlySpentByCategory = (
+            entries: readonly BudgetSuggestedSpentEntryInterface[],
+            windowStart: Date,
+            months: number,
+            baseInstrumentId: number
+        ): BudgetCategoryMonthlySpentInterface[] => {
+            const totalsByCategory = new Map<number, number[]>();
 
-            if (!isDefined(match)) {
-                return [];
+            for (const entry of entries) {
+                const monthIndex =
+                    (getYear(entry.operatedAt) - getYear(windowStart)) * 12 + getMonth(entry.operatedAt) - getMonth(windowStart);
+                const isInsideWindow = monthIndex >= 0 && monthIndex < months;
+
+                if (isDefined(entry.categoryId) && isInsideWindow) {
+                    const convertedAmount = budgetSpentService.convertEntryAmount(entry, baseInstrumentId);
+                    const currentMonthlyAmounts = totalsByCategory.get(entry.categoryId);
+                    const monthlyAmounts = isDefined(currentMonthlyAmounts) ? currentMonthlyAmounts : new Array<number>(months).fill(0);
+                    monthlyAmounts[monthIndex] += convertedAmount;
+                    totalsByCategory.set(entry.categoryId, monthlyAmounts);
+                }
             }
 
-            const limitAmount = this.roundGenericLimit(total * template.weight);
+            return [...totalsByCategory.entries()].map(([categoryId, monthlyAmounts]) => ({ categoryId, monthlyAmounts }));
+        };
 
-            if (!isPositiveNumber(limitAmount)) {
-                return [];
+        return {
+            buildSuggestedBudgetTemplate,
+            resolveGenericBudgetTemplate,
+            buildSuggestedBudgetTemplateResolution: (
+                entries: readonly BudgetSuggestedSpentEntryInterface[],
+                now: Date,
+                baseInstrumentId: number,
+                config: BudgetSuggestedTemplateConfigInterface
+            ): BudgetTemplateResolutionInterface => {
+                const effectiveMonths = resolveEffectiveMonths(entries, now, config);
+
+                if (effectiveMonths < config.minWindowMonths) {
+                    return emptySuggestedResolution(true);
+                }
+
+                const windowStart = budgetPeriodService.computeTrailingMonthsWindow(now, effectiveMonths).start;
+                const recentEntries = entries.filter(entry => entry.operatedAt.getTime() >= windowStart.getTime());
+                const monthlySpentByCategory = groupMonthlySpentByCategory(recentEntries, windowStart, effectiveMonths, baseInstrumentId);
+                const draft = buildSuggestedBudgetTemplate(monthlySpentByCategory);
+                const isAvailable = isSuggestedTemplateAvailable(
+                    draft,
+                    monthlySpentByCategory,
+                    config.minDistinctCategories,
+                    hasMinimumHistory(entries, now, config.minWindowMonths)
+                );
+                const stats = {
+                    months: effectiveMonths,
+                    transactionsCount: recentEntries.length,
+                    categoriesCount: monthlySpentByCategory.length
+                };
+
+                return { draft, isReady: true, isAvailable, stats };
             }
-
-            return [{ categoryId: match.id, limitAmount }];
-        });
-    }
-
-    private groupMonthlySpentByCategory(
-        entries: readonly BudgetSuggestedSpentEntryInterface[],
-        windowStart: Date,
-        months: number,
-        baseInstrumentId: number
-    ): BudgetCategoryMonthlySpentInterface[] {
-        const totalsByCategory = new Map<number, number[]>();
-
-        for (const entry of entries) {
-            const monthIndex = (getYear(entry.operatedAt) - getYear(windowStart)) * 12 + getMonth(entry.operatedAt) - getMonth(windowStart);
-            const isInsideWindow = monthIndex >= 0 && monthIndex < months;
-
-            if (isDefined(entry.categoryId) && isInsideWindow) {
-                const convertedAmount = budgetSpentService.convertEntryAmount(entry, baseInstrumentId);
-                const currentMonthlyAmounts = totalsByCategory.get(entry.categoryId);
-                const monthlyAmounts = isDefined(currentMonthlyAmounts) ? currentMonthlyAmounts : new Array<number>(months).fill(0);
-                monthlyAmounts[monthIndex] += convertedAmount;
-                totalsByCategory.set(entry.categoryId, monthlyAmounts);
-            }
-        }
-
-        return [...totalsByCategory.entries()].map(([categoryId, monthlyAmounts]) => ({ categoryId, monthlyAmounts }));
-    }
-
-    private emptySuggestedResolution(isReady: boolean): BudgetTemplateResolutionInterface {
-        return { draft: BudgetTemplateService.ZERO_DRAFT, isReady, isAvailable: false, stats: null };
-    }
-
-    private computeSpikeAdjustedMonthlyAverage(monthlyAmounts: readonly number[]): number {
-        const total = monthlyAmounts.reduce((sum, amount) => sum + amount, 0);
-        const maxAmount = Math.max(...monthlyAmounts);
-        const restAverage = (total - maxAmount) / (monthlyAmounts.length - 1);
-
-        if (maxAmount > restAverage * BudgetTemplateService.SPIKE_MULTIPLIER) {
-            return restAverage;
-        }
-
-        return total / monthlyAmounts.length;
-    }
-
-    private roundToNiceStep(value: number): number {
-        const step =
-            value >= BudgetTemplateService.THOUSAND_STEP ? BudgetTemplateService.THOUSAND_STEP : BudgetTemplateService.HUNDRED_STEP;
-
-        return Math.round(value / step) * step;
-    }
-
-    private roundGenericLimit(value: number): number {
-        return Math.round(value / BudgetTemplateService.GENERIC_ROUNDING_STEP) * BudgetTemplateService.GENERIC_ROUNDING_STEP;
-    }
-
-    private convertFromMicroUnits(amount: number): number {
-        return amount / BudgetTemplateService.MICRO_UNIT_PRECISION;
-    }
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(BudgetTemplateService, BudgetTemplateService.make).pipe(Layer.provide(BudgetSpentService.layer));
 }
-
-export const budgetTemplateService = new BudgetTemplateService();

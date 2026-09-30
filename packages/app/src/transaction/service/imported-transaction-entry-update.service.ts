@@ -1,279 +1,272 @@
-import { transactionAsync } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { Db, TransactionEntryRepository, TransactionRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { db, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
-import { InvalidateDatabaseLiveQuery } from '../../@generic/drizzle/decorator/invalidate-database-live-query.decorator';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { entryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
+import { EntryBaseValuationService } from '../../money-data/service/entry-base-valuation.service';
 import { transactionMapEntryInputToCreateEntity } from '../utils/transaction-map-entry-input-to-create-entity.util';
 
-import { transactionDepositSafetyService } from './transaction-deposit-safety.service';
+import { TransactionDepositSafetyService } from './transaction-deposit-safety.service';
 
-import type { EntryBaseValuationInterface } from '../../money-data/interface/entry-base-valuation.interface';
 import type { ImportedEntryUpdateContextInterface } from '../interface/imported-entry-update-context.interface';
 import type {
-    DB,
     TransactionCreateInputInterface,
     TransactionEntryCreateInputInterface,
     TransactionEntryEntityInterface,
     TransactionEntryUpdateInputInterface
 } from '@budgie/contracts';
 
-class ImportedTransactionEntryUpdateService {
-    @Log(
-        (transactionId, externalId) => `enter transactionId=${transactionId} externalId=${externalId}`,
-        (result, transactionId, externalId) => `done result=${String(result)} transactionId=${transactionId} externalId=${externalId}`,
-        (error, transactionId, externalId) =>
-            `throw transactionId=${transactionId} externalId=${externalId} error=${getErrorMessage(error)}`
-    )
-    @InvalidateDatabaseLiveQuery()
-    async updateExternalEntryQuote(
-        transactionId: number,
-        externalId: string,
-        quote: Required<Pick<TransactionEntryCreateInputInterface, 'quotedInstrumentId' | 'quotedAmount' | 'quotedUnitPrice'>>
-    ): Promise<boolean> {
-        return transactionAsync(db, async tx => {
-            const existingEntry = await transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId, tx);
-            if (
-                !isDefined(existingEntry) ||
-                (existingEntry.quotedInstrumentId === quote.quotedInstrumentId &&
-                    existingEntry.quotedAmount === quote.quotedAmount &&
-                    existingEntry.quotedUnitPrice === quote.quotedUnitPrice)
-            ) {
-                return false;
-            }
+export class ImportedTransactionEntryUpdateService extends Context.Service<ImportedTransactionEntryUpdateService>()(
+    '@budgie/app/ImportedTransactionEntryUpdateService',
+    {
+        make: Effect.gen(function* () {
+            const transactionEntryRepository = yield* TransactionEntryRepository;
+            const transactionRepository = yield* TransactionRepository;
+            const entryBaseValuationService = yield* EntryBaseValuationService;
+            const transactionDepositSafetyService = yield* TransactionDepositSafetyService;
 
-            await transactionEntryRepository.updateById(existingEntry.id, quote, tx);
+            const buildEntryKey = (accountId: number, externalId: string): string => `${accountId}:${externalId}`;
 
-            return true;
-        });
-    }
+            const findExistingEntry = (
+                existingEntries: Map<string, TransactionEntryEntityInterface>,
+                accountId: number,
+                externalId: string | null | undefined
+            ): TransactionEntryEntityInterface | null => {
+                if (!isDefined(externalId)) {
+                    return null;
+                }
 
-    @Log(
-        (inputs, tx) => `enter transactionCount=${inputs.length} hasTx=${String(isDefined(tx))}`,
-        (_result, inputs, tx) => `done transactionCount=${inputs.length} hasTx=${String(isDefined(tx))}`,
-        (error, inputs, tx) => `throw transactionCount=${inputs.length} hasTx=${String(isDefined(tx))} error=${getErrorMessage(error)}`
-    )
-    async bulkUpdate(inputs: readonly TransactionCreateInputInterface[], tx: DB): Promise<void> {
-        const existingEntries = await this.findExistingEntries(inputs, tx);
+                return existingEntries.get(buildEntryKey(accountId, externalId)) ?? null;
+            };
 
-        await transactionDepositSafetyService.assertNoDepositExpenseImportedEntries(
-            inputs
-                .flatMap(input => input.entries.map(entry => this.findExistingEntry(existingEntries, entry.accountId, entry.externalId)))
-                .filter(isDefined),
-            tx
-        );
+            const needsValuation = (
+                entry: TransactionEntryCreateInputInterface,
+                input: TransactionCreateInputInterface,
+                existingEntries: Map<string, TransactionEntryEntityInterface>
+            ): boolean => {
+                if (!isDefined(entry.externalId)) {
+                    return false;
+                }
 
-        const valuationMaps = await entryBaseValuationService.valueTransactionsEntries(
-            inputs.map(input => ({
-                operatedAt: input.operatedAt,
-                entries: input.entries.filter(entry => this.needsValuation(entry, input, existingEntries))
-            })),
-            tx
-        );
-        const context: ImportedEntryUpdateContextInterface = {
-            existingEntries,
-            valuations: new Map(valuationMaps.flatMap(valuationMap => [...valuationMap])),
-            tx
-        };
+                return (
+                    isDefined(findExistingEntry(existingEntries, entry.accountId, entry.externalId)) ||
+                    isDefined(findExistingEntry(existingEntries, entry.accountId, input.externalId))
+                );
+            };
 
-        await inputs
-            .flatMap(input => input.entries.map(entry => ({ entry, input })))
-            .reduce(
-                (previousEntryPromise, { entry, input }) => previousEntryPromise.then(() => this.updateEntry(entry, input, context)),
-                Promise.resolve()
-            );
-    }
+            const findExistingEntries = Effect.fnUntraced(function* (inputs: readonly TransactionCreateInputInterface[]) {
+                const externalIdsByAccountId = inputs.reduce((result, input) => {
+                    input.entries.forEach(entry => {
+                        const accountExternalIds = result.get(entry.accountId) ?? new Set<string>();
 
-    private async findExistingEntries(
-        inputs: readonly TransactionCreateInputInterface[],
-        tx: DB
-    ): Promise<Map<string, TransactionEntryEntityInterface>> {
-        const externalIdsByAccountId = inputs.reduce((result, input) => {
-            input.entries.forEach(entry => {
-                const accountExternalIds = result.get(entry.accountId) ?? new Set<string>();
+                        [entry.externalId, input.externalId].filter(isDefined).forEach(externalId => accountExternalIds.add(externalId));
+                        result.set(entry.accountId, accountExternalIds);
+                    });
 
-                [entry.externalId, input.externalId].filter(isDefined).forEach(externalId => accountExternalIds.add(externalId));
-                result.set(entry.accountId, accountExternalIds);
+                    return result;
+                }, new Map<number, Set<string>>());
+
+                const accountEntries = yield* Effect.forEach(
+                    [...externalIdsByAccountId],
+                    ([accountId, externalIds]) => transactionEntryRepository.findByExternalIdsAndAccountId([...externalIds], accountId),
+                    { concurrency: 'unbounded' }
+                );
+
+                return accountEntries.flat().reduce((result, entry) => {
+                    if (isDefined(entry.externalId)) {
+                        const key = buildEntryKey(entry.accountId, entry.externalId);
+
+                        if (!result.has(key)) {
+                            result.set(key, entry);
+                        }
+                    }
+
+                    return result;
+                }, new Map<string, TransactionEntryEntityInterface>());
             });
 
-            return result;
-        }, new Map<number, Set<string>>());
+            const resolveValuation = Effect.fnUntraced(function* (
+                entry: TransactionEntryCreateInputInterface,
+                input: TransactionCreateInputInterface,
+                context: ImportedEntryUpdateContextInterface
+            ) {
+                return (
+                    context.valuations.get(entry) ??
+                    (yield* entryBaseValuationService.valueMicroUnitEntry({
+                        accountId: entry.accountId,
+                        amount: convertToMicroUnits(entry.amount),
+                        operatedAt: input.operatedAt,
+                        externalSource: input.externalSource
+                    }))
+                );
+            });
 
-        const accountEntries = await Promise.all(
-            [...externalIdsByAccountId].map(([accountId, externalIds]) =>
-                transactionEntryRepository.findByExternalIdsAndAccountId([...externalIds], accountId, tx)
-            )
-        );
-
-        return accountEntries.flat().reduce((result, entry) => {
-            if (isDefined(entry.externalId)) {
-                const key = ImportedTransactionEntryUpdateService.buildEntryKey(entry.accountId, entry.externalId);
-
-                if (!result.has(key)) {
-                    result.set(key, entry);
+            const applyEntryUpdate = Effect.fnUntraced(function* (
+                existingEntry: TransactionEntryEntityInterface,
+                input: TransactionCreateInputInterface,
+                update: TransactionEntryUpdateInputInterface,
+                context: ImportedEntryUpdateContextInterface
+            ) {
+                if (!isDefined(existingEntry.externalId)) {
+                    return;
                 }
-            }
 
-            return result;
-        }, new Map<string, TransactionEntryEntityInterface>());
-    }
+                const updatedEntry = yield* transactionEntryRepository.updateByExternalIdAndAccountId(
+                    existingEntry.externalId,
+                    existingEntry.accountId,
+                    update
+                );
 
-    private findExistingEntry(
-        existingEntries: Map<string, TransactionEntryEntityInterface>,
-        accountId: number,
-        externalId: string | null | undefined
-    ): TransactionEntryEntityInterface | null {
-        if (!isDefined(externalId)) {
-            return null;
-        }
+                if (isDefined(updatedEntry)) {
+                    context.existingEntries.set(buildEntryKey(existingEntry.accountId, existingEntry.externalId), updatedEntry);
+                }
 
-        return existingEntries.get(ImportedTransactionEntryUpdateService.buildEntryKey(accountId, externalId)) ?? null;
-    }
+                yield* transactionRepository.updateById(existingEntry.originalTransactionId ?? existingEntry.transactionId, {
+                    title: input.title,
+                    comment: input.comment,
+                    operatedAt: input.operatedAt
+                });
+            });
 
-    private needsValuation(
-        entry: TransactionEntryCreateInputInterface,
-        input: TransactionCreateInputInterface,
-        existingEntries: Map<string, TransactionEntryEntityInterface>
-    ): boolean {
-        if (!isDefined(entry.externalId)) {
-            return false;
-        }
+            const createMissingEntry = Effect.fnUntraced(function* (
+                entry: TransactionEntryCreateInputInterface,
+                input: TransactionCreateInputInterface,
+                context: ImportedEntryUpdateContextInterface
+            ) {
+                const primaryEntry = findExistingEntry(context.existingEntries, entry.accountId, input.externalId);
 
-        return (
-            isDefined(this.findExistingEntry(existingEntries, entry.accountId, entry.externalId)) ||
-            isDefined(this.findExistingEntry(existingEntries, entry.accountId, input.externalId))
-        );
-    }
+                if (!isDefined(primaryEntry) || !isDefined(entry.externalId)) {
+                    return;
+                }
 
-    private async resolveValuation(
-        entry: TransactionEntryCreateInputInterface,
-        input: TransactionCreateInputInterface,
-        context: ImportedEntryUpdateContextInterface
-    ): Promise<EntryBaseValuationInterface> {
-        return (
-            context.valuations.get(entry) ??
-            (await entryBaseValuationService.valueMicroUnitEntry({
-                accountId: entry.accountId,
-                amount: convertToMicroUnits(entry.amount),
-                operatedAt: input.operatedAt,
-                externalSource: input.externalSource,
-                tx: context.tx
-            }))
-        );
-    }
+                const createdEntry = yield* transactionEntryRepository.create({
+                    ...transactionMapEntryInputToCreateEntity(
+                        entry,
+                        primaryEntry.transactionId,
+                        yield* resolveValuation(entry, input, context)
+                    ),
+                    originalTransactionId: primaryEntry.originalTransactionId
+                });
 
-    private async updateEntry(
-        entry: TransactionEntryCreateInputInterface,
-        input: TransactionCreateInputInterface,
-        context: ImportedEntryUpdateContextInterface
-    ): Promise<void> {
-        if (!isDefined(entry.externalId)) {
-            return;
-        }
+                context.existingEntries.set(buildEntryKey(entry.accountId, entry.externalId), createdEntry);
+            });
 
-        const existingEntry = this.findExistingEntry(context.existingEntries, entry.accountId, entry.externalId);
+            const updateEntry = Effect.fnUntraced(function* (
+                entry: TransactionEntryCreateInputInterface,
+                input: TransactionCreateInputInterface,
+                context: ImportedEntryUpdateContextInterface
+            ) {
+                if (!isDefined(entry.externalId)) {
+                    return;
+                }
 
-        if (!isDefined(existingEntry)) {
-            return this.createMissingEntry(entry, input, context);
-        }
+                const existingEntry = findExistingEntry(context.existingEntries, entry.accountId, entry.externalId);
 
-        const nextAmount = convertToMicroUnits(entry.amount);
-        const nextBaseValuation = await this.resolveValuation(entry, input, context);
-        const nextMccCategoryId = entry.mccCategoryId ?? existingEntry.mccCategoryId;
+                if (!isDefined(existingEntry)) {
+                    yield* createMissingEntry(entry, input, context);
 
-        if (
-            existingEntry.amount === nextAmount &&
-            existingEntry.mccCategoryId === nextMccCategoryId &&
-            existingEntry.exchangeRate === entry.exchangeRate &&
-            existingEntry.baseInstrumentId === nextBaseValuation.baseInstrumentId &&
-            existingEntry.baseExchangeRate === nextBaseValuation.baseExchangeRate &&
-            existingEntry.baseAmount === nextBaseValuation.baseAmount &&
-            existingEntry.toIban === entry.toIban
-        ) {
-            return;
-        }
+                    return;
+                }
 
-        await this.applyEntryUpdate(
-            existingEntry,
-            input,
-            {
-                amount: nextAmount,
-                exchangeRate: entry.exchangeRate,
-                ...nextBaseValuation,
-                toIban: entry.toIban,
-                mccCategoryId: nextMccCategoryId
-            },
-            context
-        );
-    }
+                const nextAmount = convertToMicroUnits(entry.amount);
+                const nextBaseValuation = yield* resolveValuation(entry, input, context);
+                const nextMccCategoryId = entry.mccCategoryId ?? existingEntry.mccCategoryId;
 
-    private async applyEntryUpdate(
-        existingEntry: TransactionEntryEntityInterface,
-        input: TransactionCreateInputInterface,
-        update: TransactionEntryUpdateInputInterface,
-        context: ImportedEntryUpdateContextInterface
-    ): Promise<void> {
-        if (!isDefined(existingEntry.externalId)) {
-            return;
-        }
+                if (
+                    existingEntry.amount === nextAmount &&
+                    existingEntry.mccCategoryId === nextMccCategoryId &&
+                    existingEntry.exchangeRate === entry.exchangeRate &&
+                    existingEntry.baseInstrumentId === nextBaseValuation.baseInstrumentId &&
+                    existingEntry.baseExchangeRate === nextBaseValuation.baseExchangeRate &&
+                    existingEntry.baseAmount === nextBaseValuation.baseAmount &&
+                    existingEntry.toIban === entry.toIban
+                ) {
+                    return;
+                }
 
-        const updatedEntry = await transactionEntryRepository.updateByExternalIdAndAccountId(
-            existingEntry.externalId,
-            existingEntry.accountId,
-            update,
-            context.tx
-        );
+                yield* applyEntryUpdate(
+                    existingEntry,
+                    input,
+                    {
+                        amount: nextAmount,
+                        exchangeRate: entry.exchangeRate,
+                        ...nextBaseValuation,
+                        toIban: entry.toIban,
+                        mccCategoryId: nextMccCategoryId
+                    },
+                    context
+                );
+            });
 
-        if (isDefined(updatedEntry)) {
-            context.existingEntries.set(
-                ImportedTransactionEntryUpdateService.buildEntryKey(existingEntry.accountId, existingEntry.externalId),
-                updatedEntry
-            );
-        }
+            return {
+                updateExternalEntryQuote: Effect.fn('ImportedTransactionEntryUpdateService.updateExternalEntryQuote')(
+                    function* (
+                        transactionId: number,
+                        externalId: string,
+                        quote: Required<
+                            Pick<TransactionEntryCreateInputInterface, 'quotedInstrumentId' | 'quotedAmount' | 'quotedUnitPrice'>
+                        >
+                    ) {
+                        const existingEntry = yield* transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId);
 
-        await transactionRepository.updateById(
-            existingEntry.originalTransactionId ?? existingEntry.transactionId,
-            {
-                title: input.title,
-                comment: input.comment,
-                operatedAt: input.operatedAt
-            },
-            context.tx
-        );
-    }
+                        if (
+                            !isDefined(existingEntry) ||
+                            (existingEntry.quotedInstrumentId === quote.quotedInstrumentId &&
+                                existingEntry.quotedAmount === quote.quotedAmount &&
+                                existingEntry.quotedUnitPrice === quote.quotedUnitPrice)
+                        ) {
+                            return false;
+                        }
 
-    private async createMissingEntry(
-        entry: TransactionEntryCreateInputInterface,
-        input: TransactionCreateInputInterface,
-        context: ImportedEntryUpdateContextInterface
-    ): Promise<void> {
-        const primaryEntry = this.findExistingEntry(context.existingEntries, entry.accountId, input.externalId);
+                        yield* transactionEntryRepository.updateById(existingEntry.id, quote);
 
-        if (!isDefined(primaryEntry) || !isDefined(entry.externalId)) {
-            return;
-        }
-
-        const createdEntry = await transactionEntryRepository.create(
-            {
-                ...transactionMapEntryInputToCreateEntity(
-                    entry,
-                    primaryEntry.transactionId,
-                    await this.resolveValuation(entry, input, context)
+                        return true;
+                    },
+                    effect => Db.transaction(effect)
                 ),
-                originalTransactionId: primaryEntry.originalTransactionId
-            },
-            context.tx
-        );
+                bulkUpdate: Effect.fn('ImportedTransactionEntryUpdateService.bulkUpdate')(function* (
+                    inputs: readonly TransactionCreateInputInterface[]
+                ) {
+                    const existingEntries = yield* findExistingEntries(inputs);
 
-        context.existingEntries.set(ImportedTransactionEntryUpdateService.buildEntryKey(entry.accountId, entry.externalId), createdEntry);
-    }
+                    yield* transactionDepositSafetyService.assertNoDepositExpenseImportedEntries(
+                        inputs
+                            .flatMap(input =>
+                                input.entries.map(entry => findExistingEntry(existingEntries, entry.accountId, entry.externalId))
+                            )
+                            .filter(isDefined)
+                    );
 
-    private static buildEntryKey(accountId: number, externalId: string): string {
-        return `${accountId}:${externalId}`;
+                    const valuationMaps = yield* entryBaseValuationService.valueTransactionsEntries(
+                        inputs.map(input => ({
+                            operatedAt: input.operatedAt,
+                            entries: input.entries.filter(entry => needsValuation(entry, input, existingEntries))
+                        }))
+                    );
+                    const context: ImportedEntryUpdateContextInterface = {
+                        existingEntries,
+                        valuations: new Map(valuationMaps.flatMap(valuationMap => [...valuationMap]))
+                    };
+
+                    yield* Effect.forEach(
+                        inputs.flatMap(input => input.entries.map(entry => ({ entry, input }))),
+                        ({ entry, input }) => updateEntry(entry, input, context),
+                        { discard: true }
+                    );
+                })
+            };
+        })
     }
+) {
+    static readonly layer = Layer.effect(ImportedTransactionEntryUpdateService, ImportedTransactionEntryUpdateService.make).pipe(
+        Layer.provide([
+            TransactionEntryRepository.layer,
+            TransactionRepository.layer,
+            EntryBaseValuationService.layer,
+            TransactionDepositSafetyService.layer
+        ])
+    );
 }
-
-export const importedTransactionEntryUpdateService = new ImportedTransactionEntryUpdateService();

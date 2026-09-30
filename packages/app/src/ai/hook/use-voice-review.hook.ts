@@ -1,13 +1,15 @@
+import * as Effect from 'effect/Effect';
 import { useReducer, useState } from 'react';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { VoiceReviewActionTypeEnum } from '../enum/voice-review-action-type.enum';
 import { UseVoiceReviewReturnInterface } from '../interface/use-voice-review-return.interface';
 import { VoiceReviewActionInterface } from '../interface/voice-review-action.interface';
 import { VoiceReviewCreateResultInterface } from '../interface/voice-review-create-result.interface';
 import { VoiceReviewRowInterface } from '../interface/voice-review-row.interface';
-import { voiceReviewBatchCreateService } from '../service/voice-review-batch-create.service';
+import { VoiceReviewBatchCreateService } from '../service/voice-review-batch-create.service';
 
 const reducer = (state: VoiceReviewRowInterface[], action: VoiceReviewActionInterface): VoiceReviewRowInterface[] => {
     if (action.type === VoiceReviewActionTypeEnum.EDIT_AMOUNT) {
@@ -38,15 +40,20 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
     const hasMissingCategories = rows.some(row => !isPositiveNumber(row.categoryId));
     const canSave = isNotEmptyArray(rows) && !hasInvalidAmounts && !hasMissingCategories;
 
-    const saveAll = async (accountId: number): Promise<VoiceReviewCreateResultInterface | null> => {
+    const saveAll = (accountId: number): Promise<VoiceReviewCreateResultInterface | null> => {
         setIsSaving(true);
-        try {
-            return await voiceReviewBatchCreateService.create(rows, accountId);
-        } catch {
-            setIsSaving(false);
 
-            return null;
-        }
+        return appRuntime
+            .runPromise(
+                Effect.flatMap(VoiceReviewBatchCreateService, voiceReviewBatchCreateService =>
+                    voiceReviewBatchCreateService.create(rows, accountId)
+                )
+            )
+            .catch(() => {
+                setIsSaving(false);
+
+                return null;
+            });
     };
 
     return { rows, isSaving, canSave, hasInvalidAmounts, hasMissingCategories, editAmount, setCategory, deleteRow, saveAll };

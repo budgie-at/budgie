@@ -1,4 +1,5 @@
 import { budgetPeriodService } from '@budgie/budget';
+import { describe, expect, it } from '@effect/vitest';
 
 const YEAR_2026 = 2026;
 

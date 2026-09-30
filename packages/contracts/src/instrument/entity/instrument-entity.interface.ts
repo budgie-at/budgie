@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { InstrumentEntityTable } from '../table/instrument-entity.table';
 
-import { InstrumentEntitySchema } from '../schema/instrument-entity.schema';
-
-export type InstrumentEntityInterface = z.infer<typeof InstrumentEntitySchema>;
+export type InstrumentEntityInterface = typeof InstrumentEntityTable.$inferSelect;

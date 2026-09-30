@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { BankIntegrationEntityTable } from '../table/bank-integration-entity.table';
 
-import { BankIntegrationEntitySchema } from '../schema/bank-integration-entity.schema';
-
-export type BankIntegrationEntityInterface = z.infer<typeof BankIntegrationEntitySchema>;
+export type BankIntegrationEntityInterface = typeof BankIntegrationEntityTable.$inferSelect;

@@ -1,168 +1,120 @@
-import { Log } from '@budgie/logger';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+import * as Semaphore from 'effect/Semaphore';
 
-import { emptyFn, getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
+import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { isAiEnabled } from '../../@generic/utils/is-ai-enabled.util';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-import { SnapshotWithStatusInterface } from '../interface/snapshot-with-status.interface';
+import { AiSubsystemServiceInterface } from '../interface/ai-subsystem-service.interface';
 import { MODEL_IDLE_RELEASE_DELAY_MS } from '../util/ai-constants.util';
 
-import { BaseSubsystemService } from './base-subsystem.service';
-import { chatService } from './chat.service';
-import { embeddingService } from './embedding.service';
-import { sttService } from './stt.service';
+import { ChatService } from './chat.service';
+import { LocalEmbeddingService } from './embedding.service';
+import { SttService } from './stt.service';
 
-class AiModelResidencyService {
-    private static readonly SUBSYSTEMS: Record<AiSubsystemNameEnum, BaseSubsystemService<SnapshotWithStatusInterface>> = {
-        [AiSubsystemNameEnum.CHAT]: chatService,
-        [AiSubsystemNameEnum.EMBEDDING]: embeddingService,
-        [AiSubsystemNameEnum.STT]: sttService
-    };
+import type * as Fiber from 'effect/Fiber';
 
-    private readonly leases = new Map<AiSubsystemNameEnum, number>();
-    private readonly idleTimers = new Map<AiSubsystemNameEnum, ReturnType<typeof setTimeout>>();
-    private residencyChain: Promise<void> = Promise.resolve();
-    private isSuspended = false;
+export class AiModelResidencyService extends Context.Service<AiModelResidencyService>()('@budgie/app/AiModelResidencyService', {
+    make: Effect.gen(function* () {
+        const chatService = yield* ChatService;
+        const localEmbeddingService = yield* LocalEmbeddingService;
+        const sttService = yield* SttService;
+        const layerScope = yield* Effect.scope;
+        const subsystems: Record<AiSubsystemNameEnum, AiSubsystemServiceInterface> = {
+            [AiSubsystemNameEnum.CHAT]: chatService.model,
+            [AiSubsystemNameEnum.EMBEDDING]: localEmbeddingService.model,
+            [AiSubsystemNameEnum.STT]: sttService
+        };
+        const leases = new Map<AiSubsystemNameEnum, number>();
+        const idleTimers = new Map<AiSubsystemNameEnum, Fiber.Fiber<void>>();
+        const lock = yield* Semaphore.make(1);
+        let isSuspended = false;
 
-    @Log(
-        subsystem => `enter subsystem=${subsystem}`,
-        (result, subsystem) => `done subsystem=${subsystem} isReady=${String(result)}`,
-        (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
-    )
-    async acquire(subsystem: AiSubsystemNameEnum): Promise<boolean> {
-        this.clearIdleTimer(subsystem);
-        this.leases.set(subsystem, this.getLeaseCount(subsystem) + 1);
+        const getLeaseCount = (subsystem: AiSubsystemNameEnum): number => leases.get(subsystem) ?? 0;
 
-        return this.ensureLoaded(subsystem);
-    }
+        const getStatus = (subsystem: AiSubsystemNameEnum): AiSubsystemStatusEnum =>
+            appAtomRegistry.get(subsystems[subsystem].snapshot).status;
 
-    @Log(
-        subsystem => `enter subsystem=${subsystem}`,
-        (result, subsystem) => `done subsystem=${subsystem} result=${String(result)}`,
-        (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
-    )
-    release(subsystem: AiSubsystemNameEnum): void {
-        const remaining = Math.max(0, this.getLeaseCount(subsystem) - 1);
-        this.leases.set(subsystem, remaining);
-        if (isPositiveNumber(remaining)) {
-            return;
-        }
-        this.clearIdleTimer(subsystem);
-        this.idleTimers.set(
-            subsystem,
-            setTimeout(() => {
-                this.idleTimers.delete(subsystem);
-                void this.chain(() => this.unloadWhileUnleased(subsystem));
-            }, MODEL_IDLE_RELEASE_DELAY_MS)
-        );
-    }
+        const clearIdleTimer = (subsystem: AiSubsystemNameEnum): void => {
+            idleTimers.get(subsystem)?.interruptUnsafe();
+            idleTimers.delete(subsystem);
+        };
 
-    @Log(
-        subsystem => `enter subsystem=${subsystem}`,
-        (result, subsystem) => `done subsystem=${subsystem} result=${String(result)}`,
-        (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
-    )
-    releaseNow(subsystem: AiSubsystemNameEnum): void {
-        this.leases.set(subsystem, Math.max(0, this.getLeaseCount(subsystem) - 1));
-        this.clearIdleTimer(subsystem);
-        void this.chain(() => this.unloadWhileUnleased(subsystem));
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async suspend(): Promise<void> {
-        this.isSuspended = true;
-        Object.values(AiSubsystemNameEnum).forEach(subsystem => {
-            this.clearIdleTimer(subsystem);
+        const loadWhileLeased = Effect.fn('AiModelResidencyService.loadWhileLeased')(function* (subsystem: AiSubsystemNameEnum) {
+            if (!isAiEnabled() || isSuspended || !isPositiveNumber(getLeaseCount(subsystem))) {
+                return;
+            }
+            if (getStatus(subsystem) !== AiSubsystemStatusEnum.ERROR) {
+                yield* subsystems[subsystem].start();
+            }
         });
-        await this.chain(() => this.unloadAll());
-    }
 
-    @Log(
-        subsystem => `enter subsystem=${subsystem}`,
-        (result, subsystem) => `done subsystem=${subsystem} result=${String(result)}`,
-        (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
-    )
-    async retry(subsystem: AiSubsystemNameEnum): Promise<void> {
-        await this.chain(async () => {
-            await AiModelResidencyService.SUBSYSTEMS[subsystem].resetError();
-            await this.loadWhileLeased(subsystem);
+        const unloadWhileUnleased = Effect.fn('AiModelResidencyService.unloadWhileUnleased')(function* (subsystem: AiSubsystemNameEnum) {
+            if (!isPositiveNumber(getLeaseCount(subsystem))) {
+                yield* subsystems[subsystem].stop();
+            }
         });
-    }
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    resume(): void {
-        this.isSuspended = false;
-        Object.values(AiSubsystemNameEnum).forEach(subsystem => {
-            void this.chain(() => this.loadWhileLeased(subsystem));
-        });
-    }
+        return {
+            acquire: Effect.fn('AiModelResidencyService.acquire')(function* (subsystem: AiSubsystemNameEnum) {
+                clearIdleTimer(subsystem);
+                leases.set(subsystem, getLeaseCount(subsystem) + 1);
+                if (!isAiEnabled() || isSuspended || getStatus(subsystem) === AiSubsystemStatusEnum.ERROR) {
+                    return false;
+                }
+                yield* lock.withPermit(loadWhileLeased(subsystem));
 
-    @Log(
-        subsystem => `enter subsystem=${subsystem}`,
-        (result, subsystem) => `done subsystem=${subsystem} isReady=${String(result)}`,
-        (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
-    )
-    private async ensureLoaded(subsystem: AiSubsystemNameEnum): Promise<boolean> {
-        const service = AiModelResidencyService.SUBSYSTEMS[subsystem];
-        if (!isAiEnabled() || this.isSuspended || service.getSnapshot().status === AiSubsystemStatusEnum.ERROR) {
-            return false;
-        }
-        await this.chain(() => this.loadWhileLeased(subsystem));
-
-        return service.isReady;
-    }
-
-    @Log(
-        subsystem => `enter subsystem=${subsystem}`,
-        (result, subsystem) => `done subsystem=${subsystem} result=${String(result)}`,
-        (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
-    )
-    private async loadWhileLeased(subsystem: AiSubsystemNameEnum): Promise<void> {
-        const service = AiModelResidencyService.SUBSYSTEMS[subsystem];
-        if (!isAiEnabled() || this.isSuspended || !isPositiveNumber(this.getLeaseCount(subsystem))) {
-            return;
-        }
-        if (service.getSnapshot().status === AiSubsystemStatusEnum.ERROR) {
-            return;
-        }
-        await service.start();
-    }
-
-    @Log(
-        subsystem => `enter subsystem=${subsystem}`,
-        (result, subsystem) => `done subsystem=${subsystem} result=${String(result)}`,
-        (error, subsystem) => `throw subsystem=${subsystem} error=${getErrorMessage(error)}`
-    )
-    private async unloadWhileUnleased(subsystem: AiSubsystemNameEnum): Promise<void> {
-        if (isPositiveNumber(this.getLeaseCount(subsystem))) {
-            return;
-        }
-        await AiModelResidencyService.SUBSYSTEMS[subsystem].stop();
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private async unloadAll(): Promise<void> {
-        await Promise.all(Object.values(AiModelResidencyService.SUBSYSTEMS).map(service => service.stop()));
-    }
-
-    private chain(operation: () => Promise<void>): Promise<void> {
-        this.residencyChain = this.residencyChain.then(operation, operation).catch(emptyFn);
-
-        return this.residencyChain;
-    }
-
-    private getLeaseCount(subsystem: AiSubsystemNameEnum): number {
-        return this.leases.get(subsystem) ?? 0;
-    }
-
-    private clearIdleTimer(subsystem: AiSubsystemNameEnum): void {
-        const timer = this.idleTimers.get(subsystem);
-        if (isDefined(timer)) {
-            clearTimeout(timer);
-            this.idleTimers.delete(subsystem);
-        }
-    }
+                return getStatus(subsystem) === AiSubsystemStatusEnum.READY;
+            }),
+            release: Effect.fn('AiModelResidencyService.release')(function* (subsystem: AiSubsystemNameEnum) {
+                const remaining = Math.max(0, getLeaseCount(subsystem) - 1);
+                leases.set(subsystem, remaining);
+                if (isPositiveNumber(remaining)) {
+                    return;
+                }
+                clearIdleTimer(subsystem);
+                idleTimers.set(
+                    subsystem,
+                    yield* Effect.forkIn(
+                        Effect.delay(Effect.uninterruptible(lock.withPermit(unloadWhileUnleased(subsystem))), MODEL_IDLE_RELEASE_DELAY_MS),
+                        layerScope
+                    )
+                );
+            }),
+            releaseNow: Effect.fn('AiModelResidencyService.releaseNow')(function* (subsystem: AiSubsystemNameEnum) {
+                leases.set(subsystem, Math.max(0, getLeaseCount(subsystem) - 1));
+                clearIdleTimer(subsystem);
+                yield* lock.withPermit(unloadWhileUnleased(subsystem));
+            }),
+            suspend: Effect.fn('AiModelResidencyService.suspend')(function* () {
+                isSuspended = true;
+                Object.values(AiSubsystemNameEnum).forEach(subsystem => {
+                    clearIdleTimer(subsystem);
+                });
+                yield* lock.withPermit(
+                    Effect.forEach(Object.values(subsystems), service => service.stop(), {
+                        concurrency: 'unbounded',
+                        discard: true
+                    })
+                );
+            }),
+            resume: Effect.fn('AiModelResidencyService.resume')(function* () {
+                isSuspended = false;
+                yield* Effect.forkIn(
+                    Effect.forEach(Object.values(AiSubsystemNameEnum), subsystem => lock.withPermit(loadWhileLeased(subsystem)), {
+                        discard: true
+                    }),
+                    layerScope
+                );
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(AiModelResidencyService, AiModelResidencyService.make).pipe(
+        Layer.provide([ChatService.layer, LocalEmbeddingService.layer, SttService.layer])
+    );
 }
-
-export const aiModelResidencyService = new AiModelResidencyService();

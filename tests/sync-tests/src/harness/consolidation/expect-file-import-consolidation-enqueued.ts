@@ -1,7 +1,10 @@
-import { transferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
+import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
-export const expectFileImportConsolidationEnqueued = (transactionId: number | undefined): void => {
+export const expectFileImportConsolidationEnqueued = Effect.fnUntraced(function* (transactionId: number | undefined) {
+    const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
+
     expect(transactionId).toBeTypeOf('number');
     expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledTimes(1);
     expect(transferConsolidationDrainerService.enqueue).toHaveBeenCalledWith(
@@ -9,4 +12,4 @@ export const expectFileImportConsolidationEnqueued = (transactionId: number | un
             transactionIds: [transactionId]
         })
     );
-};
+});

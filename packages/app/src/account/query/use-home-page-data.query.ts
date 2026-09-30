@@ -1,20 +1,31 @@
-import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
+import {
+    AccountBalanceRepository,
+    AccountDebtTypeEnum,
+    AccountTypeEnum,
+    DebtEventEntityTable,
+    InstrumentEntityTable
+} from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { useSettingsContext } from '../../settings/context/settings.context';
+import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';
 import { buildIntegrationProviderMap } from '../utils/build-integration-provider-map.util';
 import { resolveBankProviderGroup } from '../utils/resolve-bank-provider-group.util';
-
-import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
 
 import type { HomeAccountBalanceSummaryInterface } from '../interface/home-account-balance-summary.interface';
 import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
 import type { AccountWithSyncEntityInterface } from '@budgie/contracts';
+
+const homeAccountRowsAtom = databaseQueryFamily(
+    [...ACCOUNT_CONVERTED_BALANCE_TABLES, InstrumentEntityTable, DebtEventEntityTable],
+    AccountBalanceRepository,
+    (accountBalanceRepository, defaultInstrumentId: number) => accountBalanceRepository.getHomeAccountRows(defaultInstrumentId)
+);
 
 const createHomeAccountBalanceSummary = () => ({
     accountTypeTotals: new Map<AccountTypeEnum, number>(),
@@ -77,10 +88,8 @@ const addNetWorthAssetTotals = (
 
 export const useHomePageDataQuery = () => {
     const { defaultInstrument } = useSettingsContext();
-    const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
-    const exchangeRatesUpdatedAt = useExchangeRatesUpdatedAtQuery();
-    const queryDependencies = [defaultInstrument.id, accountBalancesUpdatedAt, exchangeRatesUpdatedAt];
-    const { data } = useDatabaseLiveQuery(accountBalanceRepository.getHomeAccountRows(defaultInstrument.id), queryDependencies);
+    const result = useLiveAtomValue(homeAccountRowsAtom(defaultInstrument.id));
+    const data = AsyncResult.getOrElse(result, () => []);
     const accounts = data.map(row => {
         const account: AccountWithSyncEntityInterface = {
             ...row.account,

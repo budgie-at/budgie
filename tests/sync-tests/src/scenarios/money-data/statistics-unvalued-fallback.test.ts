@@ -1,5 +1,4 @@
-import { statisticsRepository, transactionEntryRepository } from '@app/@generic/drizzle/db/db';
-import { moneyDataUpgradeService } from '@app/money-data/service/money-data-upgrade.service';
+import { MoneyDataUpgradeService } from '@app/money-data/service/money-data-upgrade.service';
 import {
     AccountTypeEnum,
     CategoryEntityTable,
@@ -9,15 +8,18 @@ import {
     LanguageEnum,
     PRECISION,
     SettingsEntityTable,
+    StatisticsRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
+    TransactionEntryRepository,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { requireInstrument } from '../../harness';
+import { requireInstrument, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -26,17 +28,17 @@ import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInte
 
 const UNCONVERTIBLE_EXPENSE_AMOUNT = Number('15000') * PRECISION;
 
-const seedUnconvertibleExpense = async (title: string) => {
-    const euro = await requireInstrument(CurrencyEnum.EUR);
+const seedUnconvertibleExpense = Effect.fnUntraced(function* (title: string) {
+    const euro = yield* requireInstrument(CurrencyEnum.EUR);
     const foreignInstrument = seed.instrument({
         code: 'NOFX',
         name: 'No Rate Currency',
         symbol: 'NF'
     });
     const account = seed.account({ instrumentId: foreignInstrument.id, type: AccountTypeEnum.BANK });
-    const [category] = await testDb.select().from(CategoryEntityTable);
+    const [category] = testDb.select().from(CategoryEntityTable).all();
 
-    await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
+    testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
 
     const transaction = insertOne(TransactionEntityTable, {
         type: TransactionTypeEnum.EXPENSE,
@@ -67,89 +69,107 @@ const seedUnconvertibleExpense = async (title: string) => {
     } satisfies TransactionEntryCreateEntityInterface);
 
     return { category, entry, euro, transaction };
-};
+});
 
-const getExpenseCategoryAmount = (categoryId: number, baseInstrumentId: number) => {
-    const categoryRows = statisticsRepository
-        .getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, baseInstrumentId, LanguageEnum.EN)
-        .all();
+const getExpenseCategoryAmount = Effect.fnUntraced(function* (categoryId: number, baseInstrumentId: number) {
+    const statisticsRepository = yield* StatisticsRepository;
+    const categoryRows = yield* statisticsRepository.getExpenseByCategoryQuery(
+        DEFAULT_TRANSACTION_FILTER,
+        baseInstrumentId,
+        LanguageEnum.EN
+    );
 
     return categoryRows.find(row => row.category?.id === categoryId)?.amount ?? 0;
-};
+});
 
 describe('statistics fallback for unvalued entries', () => {
-    it('includes an unvalued foreign income entry via live conversion instead of dropping it', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
-        const account = seed.account({ instrumentId: hryvnia.id, type: AccountTypeEnum.BANK });
+    it.effect('includes an unvalued foreign income entry via live conversion instead of dropping it', () =>
+        Effect.gen(function* () {
+            const statisticsRepository = yield* StatisticsRepository;
+            const euro = yield* requireInstrument(CurrencyEnum.EUR);
+            const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
+            const account = seed.account({ instrumentId: hryvnia.id, type: AccountTypeEnum.BANK });
 
-        await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
-        insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: hryvnia.id, quoteInstrumentId: euro.id, rate: 0.02 });
+            testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id }).run();
+            insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: hryvnia.id, quoteInstrumentId: euro.id, rate: 0.02 });
 
-        const transaction = insertOne(TransactionEntityTable, {
-            type: TransactionTypeEnum.INCOME,
-            title: 'Unvalued UAH income',
-            operatedAt: new Date('2026-05-15T12:00:00.000Z'),
-            comment: '',
-            fromAccountId: null,
-            toAccountId: account.id,
-            exchangeRate: 1,
-            externalId: null,
-            externalSource: null,
-            updatedBy: null
-        } satisfies TransactionCreateEntityInterface);
+            const transaction = insertOne(TransactionEntityTable, {
+                type: TransactionTypeEnum.INCOME,
+                title: 'Unvalued UAH income',
+                operatedAt: new Date('2026-05-15T12:00:00.000Z'),
+                comment: '',
+                fromAccountId: null,
+                toAccountId: account.id,
+                exchangeRate: 1,
+                externalId: null,
+                externalSource: null,
+                updatedBy: null
+            } satisfies TransactionCreateEntityInterface);
 
-        insertOne(TransactionEntryEntityTable, {
-            transactionId: transaction.id,
-            accountId: account.id,
-            type: TransactionEntryTypeEnum.DEBIT,
-            amount: 1000 * PRECISION,
-            categoryId: null,
-            mccCategoryId: null,
-            externalId: null,
-            exchangeRate: 1,
-            baseInstrumentId: null,
-            baseExchangeRate: null,
-            baseAmount: null,
-            toIban: null
-        } satisfies TransactionEntryCreateEntityInterface);
+            insertOne(TransactionEntryEntityTable, {
+                transactionId: transaction.id,
+                accountId: account.id,
+                type: TransactionEntryTypeEnum.DEBIT,
+                amount: 1000 * PRECISION,
+                categoryId: null,
+                mccCategoryId: null,
+                externalId: null,
+                exchangeRate: 1,
+                baseInstrumentId: null,
+                baseExchangeRate: null,
+                baseAmount: null,
+                toIban: null
+            } satisfies TransactionEntryCreateEntityInterface);
 
-        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id).get();
+            const totals = (yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id)).at(0);
 
-        expect(totals?.income).toBe(20 * PRECISION);
-        expect(totals?.expense).toBe(0);
-    });
+            expect(totals?.income).toBe(20 * PRECISION);
+            expect(totals?.expense).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('does not treat unconvertible foreign expenses as default-currency amounts', async () => {
-        const { category, euro, transaction } = await seedUnconvertibleExpense('Unconvertible foreign expense');
-        const tag = seed.tag('Car');
+    it.effect('does not treat unconvertible foreign expenses as default-currency amounts', () =>
+        Effect.gen(function* () {
+            const statisticsRepository = yield* StatisticsRepository;
+            const { category, euro, transaction } = yield* seedUnconvertibleExpense('Unconvertible foreign expense');
+            const tag = seed.tag('Car');
 
-        seed.transactionTag(transaction.id, tag.id);
+            seed.transactionTag(transaction.id, tag.id);
 
-        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id).get();
-        const tagRows = statisticsRepository.getExpenseByTagQuery(DEFAULT_TRANSACTION_FILTER, euro.id).all();
-        const categoryAmount = getExpenseCategoryAmount(category.id, euro.id);
-        const tagAmount = tagRows.find(row => row.tag?.id === tag.id)?.amount ?? 0;
+            const totals = (yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id)).at(0);
+            const tagRows = yield* statisticsRepository.getExpenseByTagQuery(DEFAULT_TRANSACTION_FILTER, euro.id);
+            const categoryAmount = yield* getExpenseCategoryAmount(category.id, euro.id);
+            const tagAmount = tagRows.find(row => row.tag?.id === tag.id)?.amount ?? 0;
 
-        expect([totals?.expense, categoryAmount, tagAmount]).toStrictEqual([0, 0, 0]);
-    });
+            expect([totals?.expense, categoryAmount, tagAmount]).toStrictEqual([0, 0, 0]);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('completes historical valuation while preserving unconvertible entries as unvalued', async () => {
-        const { category, entry, euro } = await seedUnconvertibleExpense('Unconvertible upgrade expense');
+    it.effect('completes historical valuation while preserving unconvertible entries as unvalued', () =>
+        Effect.gen(function* () {
+            const statisticsRepository = yield* StatisticsRepository;
+            const transactionEntryRepository = yield* TransactionEntryRepository;
+            const moneyDataUpgradeService = yield* MoneyDataUpgradeService;
+            const { category, entry, euro } = yield* seedUnconvertibleExpense('Unconvertible upgrade expense');
 
-        await expect(transactionEntryRepository.countPendingBaseValuationEntries(euro.id)).resolves.toBe(1);
+            expect(yield* transactionEntryRepository.countPendingBaseValuationEntries(euro.id)).toBe(1);
 
-        await moneyDataUpgradeService.run();
+            yield* moneyDataUpgradeService.run();
 
-        const [updatedEntry] = await testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.id, entry.id));
-        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id).get();
-        const categoryAmount = getExpenseCategoryAmount(category.id, euro.id);
+            const [updatedEntry] = testDb
+                .select()
+                .from(TransactionEntryEntityTable)
+                .where(eq(TransactionEntryEntityTable.id, entry.id))
+                .all();
+            const totals = (yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id)).at(0);
+            const categoryAmount = yield* getExpenseCategoryAmount(category.id, euro.id);
 
-        expect(updatedEntry.baseInstrumentId).toBe(euro.id);
-        expect(updatedEntry.baseExchangeRate).toBeNull();
-        expect(updatedEntry.baseAmount).toBeNull();
-        await expect(transactionEntryRepository.countPendingBaseValuationEntries(euro.id)).resolves.toBe(0);
-        expect(totals?.expense).toBe(0);
-        expect(categoryAmount).toBe(0);
-    });
+            expect(updatedEntry.baseInstrumentId).toBe(euro.id);
+            expect(updatedEntry.baseExchangeRate).toBeNull();
+            expect(updatedEntry.baseAmount).toBeNull();
+            expect(yield* transactionEntryRepository.countPendingBaseValuationEntries(euro.id)).toBe(0);
+            expect(totals?.expense).toBe(0);
+            expect(categoryAmount).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

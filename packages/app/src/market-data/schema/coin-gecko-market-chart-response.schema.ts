@@ -1,9 +1,9 @@
-import { array, number, object, tuple } from 'zod';
+import * as Schema from 'effect/Schema';
 
-const CoinGeckoTimedValueSchema = tuple([number(), number()]);
+const CoinGeckoTimedValueSchema = Schema.Tuple([Schema.Number, Schema.Number]);
 
-export const CoinGeckoMarketChartResponseSchema = object({
-    prices: array(CoinGeckoTimedValueSchema),
-    market_caps: array(CoinGeckoTimedValueSchema),
-    total_volumes: array(CoinGeckoTimedValueSchema)
+export const CoinGeckoMarketChartResponseSchema = Schema.Struct({
+    prices: Schema.Array(CoinGeckoTimedValueSchema),
+    market_caps: Schema.Array(CoinGeckoTimedValueSchema),
+    total_volumes: Schema.Array(CoinGeckoTimedValueSchema)
 });

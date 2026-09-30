@@ -1,109 +1,88 @@
-import { Log } from '@budgie/logger';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
+import * as Layer from 'effect/Layer';
+import * as Ref from 'effect/Ref';
+import * as Semaphore from 'effect/Semaphore';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { historicalMarketDataLoaderService } from '../../../market-data/service/historical-market-data-loader.service';
-import { ruleApplicationDrainerService } from '../../../rule/service/rule-application-drainer.service';
-import { syncWorkloadService } from '../../../sync/service/sync-workload.service';
-import { transferConsolidationDrainerService } from '../../../sync/service/transfer-consolidation-drainer.service';
-import { foregroundWorkloadService } from '../../service/foreground-workload.service';
+import { HistoricalMarketDataLoaderService } from '../../../market-data/service/historical-market-data-loader.service';
+import { RuleApplicationDrainerService } from '../../../rule/service/rule-application-drainer.service';
+import { TransferConsolidationDrainerService } from '../../../sync/service/transfer-consolidation-drainer.service';
+import { Workload } from '../../service/workload.service';
 import { expoDb } from '../db/db';
 
 import type { DatabaseLifecycleOperationEnum } from '../enum/database-lifecycle-operation.enum';
+import type { Db } from '@budgie/contracts';
 
-class DatabaseLifecycleService {
-    private static readonly DRAIN_TIMEOUT_MS = 5000;
+export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleService>()('@budgie/app/DatabaseLifecycleService', {
+    make: Effect.gen(function* () {
+        const workload = yield* Workload;
+        const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
+        const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+        const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
+        const drainTimeoutMs = 5000;
+        const semaphore = yield* Semaphore.make(1);
+        const closeLock = yield* Semaphore.make(1);
+        const isClosed = yield* Ref.make(false);
+        const inFlightOperations = new Map<DatabaseLifecycleOperationEnum, Fiber.Fiber<void, unknown>>();
 
-    private readonly inFlightOperations = new Map<DatabaseLifecycleOperationEnum, Promise<void>>();
-    private closeOperation: Promise<void> | null = null;
-    private isClosed = false;
-    private pendingOperation: Promise<unknown> = Promise.resolve();
+        const closeHandle = Effect.fnUntraced(function* () {
+            if (yield* Ref.get(isClosed)) {
+                return;
+            }
 
-    @Log(
-        (operation, work) => `enter operation=${operation} workName="${work.name}"`,
-        (result, operation, work) => `done operation=${operation} workName="${work.name}" result=${String(result)}`,
-        (error, operation, work) => `throw operation=${operation} workName="${work.name}" error=${getErrorMessage(error)}`
-    )
-    async run(operation: DatabaseLifecycleOperationEnum, work: () => Promise<void>): Promise<void> {
-        const inFlightOperation = this.inFlightOperations.get(operation);
-
-        if (isDefined(inFlightOperation)) {
-            return inFlightOperation;
-        }
-
-        const queuedOperation = this.pendingOperation.then(
-            () => this.runExclusively(work),
-            () => this.runExclusively(work)
-        );
-
-        this.inFlightOperations.set(operation, queuedOperation);
-        this.pendingOperation = queuedOperation.then(
-            () => this.inFlightOperations.delete(operation),
-            () => this.inFlightOperations.delete(operation)
-        );
-
-        return queuedOperation;
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    async close(): Promise<void> {
-        if (this.isClosed) {
-            return;
-        }
-
-        this.closeOperation ??= this.closeHandle().finally(() => {
-            this.closeOperation = null;
+            yield* Effect.promise(() => expoDb.closeAsync());
+            yield* Ref.set(isClosed, true);
+            // eslint-disable-next-line no-underscore-dangle, no-undefined
+            global.__expoSqliteDb__ = undefined;
+            // eslint-disable-next-line no-underscore-dangle, no-undefined
+            global.__drizzleDb__ = undefined;
         });
 
-        return await this.closeOperation;
-    }
+        const runExclusively = Effect.fn('DatabaseLifecycleService.runExclusively')(function* (work: Effect.Effect<void, unknown, Db>) {
+            yield* workload.block;
+            yield* transferConsolidationDrainerService.cancelPending();
+            yield* ruleApplicationDrainerService.cancelPending();
+            yield* historicalMarketDataLoaderService.cancelScheduledDrain();
+            yield* workload.awaitForegroundIdle.pipe(Effect.timeoutOption(drainTimeoutMs));
+            yield* workload
+                .runForeground(work)
+                .pipe(Effect.onError(() => Effect.flatMap(Ref.get(isClosed), closed => (closed ? Effect.void : workload.unblock))));
+        });
 
-    private async closeHandle(): Promise<void> {
-        await expoDb.closeAsync();
-        this.isClosed = true;
-        this.clearDatabaseGlobals();
-    }
+        return {
+            run: Effect.fn('DatabaseLifecycleService.run')(function* (
+                operation: DatabaseLifecycleOperationEnum,
+                work: Effect.Effect<void, unknown, Db>
+            ) {
+                const inFlightOperation = inFlightOperations.get(operation);
 
-    private async runExclusively(work: () => Promise<void>): Promise<void> {
-        this.cancelBackgroundWork();
-        await this.waitForForegroundIdle();
+                if (isDefined(inFlightOperation)) {
+                    return yield* Fiber.join(inFlightOperation);
+                }
 
-        try {
-            await foregroundWorkloadService.run(work);
-        } catch (error) {
-            this.resumeBackgroundWorkWhenDatabaseIsOpen();
-            throw error;
-        }
-    }
+                const queuedOperation = yield* semaphore
+                    .withPermit(runExclusively(work))
+                    .pipe(Effect.ensuring(Effect.sync(() => inFlightOperations.delete(operation))), Effect.forkDetach);
 
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private cancelBackgroundWork(): void {
-        syncWorkloadService.cancelPendingAndBlockNewWork();
-        transferConsolidationDrainerService.cancelPending();
-        ruleApplicationDrainerService.cancelPending();
-        historicalMarketDataLoaderService.cancelScheduledDrain();
-    }
+                inFlightOperations.set(operation, queuedOperation);
 
-    @Log('enter', isIdle => `done isIdle=${String(isIdle)}`, error => `throw error=${getErrorMessage(error)}`)
-    private async waitForForegroundIdle(): Promise<boolean> {
-        return await foregroundWorkloadService.whenIdle(DatabaseLifecycleService.DRAIN_TIMEOUT_MS);
-    }
-
-    @Log('enter', 'done', error => `throw error=${getErrorMessage(error)}`)
-    private resumeBackgroundWorkWhenDatabaseIsOpen(): void {
-        if (this.isClosed) {
-            return;
-        }
-
-        syncWorkloadService.resumeAcceptingWork();
-    }
-
-    private clearDatabaseGlobals(): void {
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__expoSqliteDb__ = undefined;
-        // eslint-disable-next-line no-underscore-dangle, no-undefined
-        global.__drizzleDb__ = undefined;
-    }
+                return yield* Fiber.join(queuedOperation);
+            }),
+            close: Effect.fn('DatabaseLifecycleService.close')(function* () {
+                yield* closeLock.withPermit(closeHandle());
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(DatabaseLifecycleService, DatabaseLifecycleService.make).pipe(
+        Layer.provide([
+            Workload.layer,
+            TransferConsolidationDrainerService.layer,
+            RuleApplicationDrainerService.layer,
+            HistoricalMarketDataLoaderService.layer
+        ])
+    );
 }
-
-export const databaseLifecycleService = new DatabaseLifecycleService();

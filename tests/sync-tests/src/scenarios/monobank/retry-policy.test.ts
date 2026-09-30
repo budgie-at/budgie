@@ -1,8 +1,10 @@
-import { MonobankSyncService } from '@budgie/sync';
+import { MonobankClient, MonobankSyncService } from '@budgie/sync';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 import { HttpResponse, http } from 'msw';
-import { describe, expect, it } from 'vitest';
 
-import { buildMonobank } from '../../harness';
+import { buildMonobank, TestLayer } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 const STATEMENT_ENDPOINT = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
@@ -10,37 +12,48 @@ const STATEMENT_ENDPOINT = 'https://api.monobank.ua/personal/statement/:account/
 const SUCCESS_ON_ATTEMPT = 3;
 
 describe('monobank/retry-policy', () => {
-    it('retries a 5xx statement response until it succeeds', async () => {
-        let attempts = 0;
-        mockServer.use(
-            http.get(STATEMENT_ENDPOINT, () => {
-                attempts += 1;
+    it.effect('retries a 5xx statement response until it succeeds', () =>
+        Effect.gen(function* () {
+            let attempts = 0;
+            mockServer.use(
+                http.get(STATEMENT_ENDPOINT, () => {
+                    attempts += 1;
 
-                if (attempts < SUCCESS_ON_ATTEMPT) {
-                    return new HttpResponse(null, { status: 503 });
-                }
+                    if (attempts < SUCCESS_ON_ATTEMPT) {
+                        return new HttpResponse(null, { status: 503 });
+                    }
 
-                return HttpResponse.json([buildMonobank.transaction({ id: 'tx-1', amount: -100, hold: false })]);
-            })
-        );
+                    return HttpResponse.json([buildMonobank.transaction({ id: 'tx-1', amount: -100, hold: false })]);
+                })
+            );
 
-        const result = await new MonobankSyncService('test-token').syncTransactionsForward('mono-card', new Date());
+            const result = yield* new MonobankSyncService(new MonobankClient('test-token')).syncTransactionsForward(
+                'mono-card',
+                new Date()
+            );
 
-        expect(attempts).toBe(SUCCESS_ON_ATTEMPT);
-        expect(result.transactions).toHaveLength(1);
-    });
+            expect(attempts).toBe(SUCCESS_ON_ATTEMPT);
+            expect(result.transactions).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('does not retry a 429 statement response, so the rate limit budget is not spent', async () => {
-        let attempts = 0;
-        mockServer.use(
-            http.get(STATEMENT_ENDPOINT, () => {
-                attempts += 1;
+    it.effect('does not retry a 429 statement response, so the rate limit budget is not spent', () =>
+        Effect.gen(function* () {
+            let attempts = 0;
+            mockServer.use(
+                http.get(STATEMENT_ENDPOINT, () => {
+                    attempts += 1;
 
-                return new HttpResponse(null, { status: 429 });
-            })
-        );
+                    return new HttpResponse(null, { status: 429 });
+                })
+            );
 
-        await expect(new MonobankSyncService('test-token').syncTransactionsForward('mono-card', new Date())).rejects.toThrow();
-        expect(attempts).toBe(1);
-    });
+            const exit = yield* Effect.exit(
+                new MonobankSyncService(new MonobankClient('test-token')).syncTransactionsForward('mono-card', new Date())
+            );
+
+            expect(Exit.isFailure(exit)).toBe(true);
+            expect(attempts).toBe(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

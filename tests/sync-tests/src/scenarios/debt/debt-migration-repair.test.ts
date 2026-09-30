@@ -1,7 +1,10 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { describe, it } from 'vitest';
+import { describe, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
+
+import { TestLayer } from '../../harness';
 
 import { DebtMigrationRepairScenario } from './debt-migration-repair.scenario';
 import { LegacyDebtFixtureShape } from './legacy-debt-fixture-shape';
@@ -14,7 +17,7 @@ describe('debt migration repair', () => {
         new LegacyDebtFixtureShape(preMigrationFixturePath).assert();
     });
 
-    it.each([
+    it.effect.each([
         {
             fixturePath: preMigrationFixturePath,
             history: 'pre-0033'
@@ -27,7 +30,9 @@ describe('debt migration repair', () => {
             fixturePath: resolve(scenarioDirectory, '../../../fixtures/debt-migration/missing-1007-debt-event.db'),
             history: 'missing-1007-debt-event'
         }
-    ])('repairs the $history borrowed debt history', async ({ fixturePath }) => {
-        await new DebtMigrationRepairScenario(fixturePath).run();
-    });
+    ])('repairs the $history borrowed debt history', ({ fixturePath }) =>
+        Effect.gen(function* () {
+            yield* new DebtMigrationRepairScenario(fixturePath).run();
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

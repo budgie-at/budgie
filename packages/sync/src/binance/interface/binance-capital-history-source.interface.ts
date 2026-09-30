@@ -1,7 +1,7 @@
-import type { z } from 'zod';
+import type * as Schema from 'effect/Schema';
 
 export interface BinanceCapitalHistorySourceInterface<T> {
     readonly endpoint: string;
-    readonly schema: z.ZodType<T[]>;
-    readonly cache: Map<string, T[]>;
+    readonly schema: Schema.ConstraintDecoder<readonly T[]>;
+    readonly cache: Map<string, readonly T[]>;
 }

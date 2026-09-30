@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import React, { useEffect, useEffectEvent, useState } from 'react';
 import { View } from 'react-native';
 
@@ -7,10 +8,11 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { GoBackButton } from '../@generic/component/go-back-button/go-back-button';
 import { LoadingOverlay } from '../@generic/component/loading-overlay/loading-overlay';
 import { FullPage } from '../@generic/component/page/full-page';
+import { appRuntime } from '../@generic/runtime/app.runtime';
 import { PinForm } from '../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../auth/constant/pin-length.constant';
 import { useImportBackupPinModal, useImportBackupPinModalParams } from '../import/context/import-backup-pin-modal.context';
-import { databaseImportService } from '../import/service/database-import.service';
+import { DatabaseImportService } from '../import/service/database-import.service';
 
 export default function ImportBackupPinModal() {
     const { t } = useLingui();
@@ -28,7 +30,9 @@ export default function ImportBackupPinModal() {
 
         setIsLoading(true);
 
-        const canOpenBackup = await databaseImportService.canOpenBackup(sourceUri, pin);
+        const canOpenBackup = await appRuntime.runPromise(
+            Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.canOpenBackup(sourceUri, pin))
+        );
 
         setIsLoading(false);
 

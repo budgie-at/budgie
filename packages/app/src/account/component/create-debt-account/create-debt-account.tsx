@@ -1,18 +1,20 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 // jscpd:ignore-start
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 // jscpd:ignore-end
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
-import { accountDebtOpeningService } from '../../service/account-debt-opening.service';
-import { accountService } from '../../service/account.service';
+import { AccountDebtOpeningService } from '../../service/account-debt-opening.service';
+import { DebtAccountService } from '../../service/debt-account.service';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { CreateAccountCoreFields } from '../create-account-core-fields/create-account-core-fields';
@@ -43,10 +45,14 @@ export const CreateDebtAccount = () => {
 
     const { control, handleSubmit, instrument, debtType, isSubmitting } = useDebtAccountForm(initialValues, async values => {
         if (isDefined(openingAccountId)) {
-            return accountDebtOpeningService.openDebtWithFundingAccount(values, openingAccountId);
+            return appRuntime.runPromise(
+                Effect.flatMap(AccountDebtOpeningService, accountDebtOpeningService =>
+                    accountDebtOpeningService.openDebtWithFundingAccount(values, openingAccountId)
+                )
+            );
         }
 
-        return accountService.createDebt(values);
+        return appRuntime.runPromise(Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.createDebt(values)));
     });
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
     const variant = ACCOUNT_COLOR.DEBT;

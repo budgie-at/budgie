@@ -1,13 +1,12 @@
-import { syncRepository } from '@app/@generic/drizzle/db/db';
-import { databaseRefreshService } from '@app/@generic/service/database-refresh.service';
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { transactionService } from '@app/transaction/service/transaction.service';
-import { PRECISION, TransactionEntryEntityTable } from '@budgie/contracts';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { TransactionService } from '@app/transaction/service/transaction.service';
+import { Db, PRECISION, SyncRepository, TransactionEntryEntityTable } from '@budgie/contracts';
+import { describe, expect, it, vi } from '@effect/vitest';
 import Database from 'better-sqlite3';
 import { like } from 'drizzle-orm';
-import { describe, expect, it, vi } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 const SMALL_PAGE_SIZE = 5;
 const LARGE_PAGE_SIZE = 20;
@@ -15,18 +14,27 @@ const LARGE_PAGE_SIZE = 20;
 const buildRows = (count: number, amount: number) =>
     Array.from({ length: count }, (_, index) => buildMonobank.transaction({ id: `tx-resync-${index}`, amount, hold: false }));
 
-const resyncAndMeasure = async (accountId: number, count: number, amount: number) => {
-    await syncRepository.resetForWindowedResync(accountId, new Date(2026, 0, 1));
+const resyncAndMeasure = Effect.fnUntraced(function* (accountId: number, count: number, amount: number) {
+    const syncRepository = yield* SyncRepository;
+    const monobankSyncService = yield* MonobankSyncService;
+    const transactionService = yield* TransactionService;
+
+    yield* syncRepository.resetForWindowedResync(accountId, new Date(2026, 0, 1));
     monobankStub.statementBatches([buildRows(count, amount)]);
     const bulkUpdateSpy = vi.spyOn(transactionService, 'bulkUpdateImported');
+    let topLevelTransactionCount = 0;
     const statementSpy = vi.spyOn(Database.prototype, 'prepare');
-    let invalidationCount = 0;
-    const unsubscribe = databaseRefreshService.subscribe(() => {
-        invalidationCount += 1;
-    });
 
-    await monobankSyncService.sync();
-    unsubscribe();
+    yield* monobankSyncService.sync().pipe(
+        Effect.provideService(Db.TransactionBoundary, transaction =>
+            Effect.ensuring(
+                transaction,
+                Effect.sync(() => {
+                    topLevelTransactionCount += 1;
+                })
+            )
+        )
+    );
     const statements = statementSpy.mock.calls.map(([sqlText]) => sqlText);
     const bulkUpdateCallCount = bulkUpdateSpy.mock.calls.length;
     statementSpy.mockRestore();
@@ -34,33 +42,36 @@ const resyncAndMeasure = async (accountId: number, count: number, amount: number
 
     return {
         bulkUpdateCallCount,
-        invalidationCount,
+        topLevelTransactionCount,
         statementCount: statements.length,
         transactionCount: statements.filter(sqlText => sqlText.startsWith('SAVEPOINT')).length
     };
-};
+});
 
 describe('monobank/resync-existing-batch', () => {
-    it('resyncs a page of existing rows in one transaction and one invalidation without per-row lookups', async () => {
-        const { account } = setupMonobankFixture();
-        monobankStub.statementBatches([buildRows(LARGE_PAGE_SIZE, -1000)]);
-        await monobankSyncService.sync();
+    it.effect('resyncs a page of existing rows in one page transaction plus one balance transaction without per-row lookups', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const { account } = setupMonobankFixture();
+            monobankStub.statementBatches([buildRows(LARGE_PAGE_SIZE, -1000)]);
+            yield* monobankSyncService.sync();
 
-        const small = await resyncAndMeasure(account.id, SMALL_PAGE_SIZE, -2000);
-        const large = await resyncAndMeasure(account.id, LARGE_PAGE_SIZE, -3000);
-        const entries = testDb
-            .select()
-            .from(TransactionEntryEntityTable)
-            .where(like(TransactionEntryEntityTable.externalId, 'tx-resync-%'))
-            .all();
+            const small = yield* resyncAndMeasure(account.id, SMALL_PAGE_SIZE, -2000);
+            const large = yield* resyncAndMeasure(account.id, LARGE_PAGE_SIZE, -3000);
+            const entries = testDb
+                .select()
+                .from(TransactionEntryEntityTable)
+                .where(like(TransactionEntryEntityTable.externalId, 'tx-resync-%'))
+                .all();
 
-        expect(small.bulkUpdateCallCount).toBe(1);
-        expect(large.bulkUpdateCallCount).toBe(1);
-        expect(small.invalidationCount).toBe(1);
-        expect(large.invalidationCount).toBe(1);
-        expect(large.transactionCount).toBe(small.transactionCount);
-        expect(large.statementCount - small.statementCount).toBeLessThanOrEqual(2 * (LARGE_PAGE_SIZE - SMALL_PAGE_SIZE));
-        expect(entries).toHaveLength(LARGE_PAGE_SIZE);
-        expect(entries.every(entry => entry.amount === 30 * PRECISION)).toBe(true);
-    });
+            expect(small.bulkUpdateCallCount).toBe(1);
+            expect(large.bulkUpdateCallCount).toBe(1);
+            expect(small.topLevelTransactionCount).toBe(2);
+            expect(large.topLevelTransactionCount).toBe(2);
+            expect(large.transactionCount).toBe(small.transactionCount);
+            expect(large.statementCount - small.statementCount).toBeLessThanOrEqual(2 * (LARGE_PAGE_SIZE - SMALL_PAGE_SIZE));
+            expect(entries).toHaveLength(LARGE_PAGE_SIZE);
+            expect(entries.every(entry => entry.amount === 30 * PRECISION)).toBe(true);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

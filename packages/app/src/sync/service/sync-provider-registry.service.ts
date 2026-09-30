@@ -1,75 +1,51 @@
-import { ExternalSourceEnum } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
+import { ExternalSourceEnum, SyncRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { syncRepository } from '../../@generic/drizzle/db/db';
-import { BankIntegrationCapabilitiesInterface } from '../interface/bank-integration-capabilities.interface';
+import { BinanceSyncService } from './binance-sync.service';
+import { ErsteSyncService } from './erste-sync.service';
+import { MonobankSyncService } from './monobank-sync.service';
+import { PrivatbankSyncService } from './privatbank-sync.service';
 
-import { AbstractSyncService } from './abstract-sync.service';
-import { binanceSyncService } from './binance-sync.service';
-import { ersteSyncService } from './erste-sync.service';
-import { monobankSyncService } from './monobank-sync.service';
-import { privatbankSyncService } from './privatbank-sync.service';
-
-import type { BankIntegrationEntityInterface } from '@budgie/contracts';
-
-const SERVICE_MAP = new Map<ExternalSourceEnum, AbstractSyncService>([
-    [ExternalSourceEnum.MONOBANK, monobankSyncService],
-    [ExternalSourceEnum.BINANCE, binanceSyncService],
-    [ExternalSourceEnum.ERSTE, ersteSyncService],
-    [ExternalSourceEnum.PRIVATBANK, privatbankSyncService]
-]);
-
-class SyncProviderRegistryService {
-    private static readonly PROVIDER_SUPPORTS_DEPOSIT: Record<ExternalSourceEnum, boolean> = {
-        [ExternalSourceEnum.MANUAL]: false,
-        [ExternalSourceEnum.MONOBANK]: true,
-        [ExternalSourceEnum.PRIVATBANK]: true,
-        [ExternalSourceEnum.ERSTE]: true,
-        [ExternalSourceEnum.REVOLUT]: true,
-        [ExternalSourceEnum.WISE]: true,
-        [ExternalSourceEnum.CSV]: true,
-        [ExternalSourceEnum.BINANCE]: false,
-        [ExternalSourceEnum.COINBASE]: false
-    };
-
-    @Log(
-        accountId => `enter accountId=${accountId}`,
-        (result, accountId) => `done accountId=${accountId} provider=${result?.constructor.name ?? 'null'}`,
-        (error, accountId) => `throw accountId=${accountId} error=${getErrorMessage(error)}`
-    )
-    async getServiceForAccount(accountId: number): Promise<AbstractSyncService | null> {
-        const sync = await syncRepository.getByAccountId(accountId);
-        if (!isDefined(sync)) {
-            return null;
-        }
-
-        return this.getServiceForProvider(sync.provider);
-    }
-
-    getServiceForProvider(provider: ExternalSourceEnum): AbstractSyncService | null {
-        return SERVICE_MAP.get(provider) ?? null;
-    }
-
-    getCapabilities(integration: Pick<BankIntegrationEntityInterface, 'provider' | 'token'>): BankIntegrationCapabilitiesInterface {
-        const service = this.getServiceForProvider(integration.provider);
-        const hasToken = isNotEmptyString(integration.token);
-        const supportsDeposit = SyncProviderRegistryService.PROVIDER_SUPPORTS_DEPOSIT[integration.provider];
-
-        if (!isDefined(service)) {
-            return { supportsLiveSync: false, supportsFileImport: false, supportsAddAccounts: false, supportsDeposit };
-        }
-
-        const supportsLiveSync = hasToken && service.supportsTokenAuth;
+export class SyncProviderRegistryService extends Context.Service<SyncProviderRegistryService>()('@budgie/app/SyncProviderRegistryService', {
+    make: Effect.gen(function* () {
+        const syncRepository = yield* SyncRepository;
+        const monobankSyncService = yield* MonobankSyncService;
+        const binanceSyncService = yield* BinanceSyncService;
+        const ersteSyncService = yield* ErsteSyncService;
+        const privatbankSyncService = yield* PrivatbankSyncService;
+        const serviceByProvider = new Map<
+            ExternalSourceEnum,
+            typeof monobankSyncService | typeof binanceSyncService | typeof ersteSyncService
+        >([
+            [ExternalSourceEnum.MONOBANK, monobankSyncService],
+            [ExternalSourceEnum.BINANCE, binanceSyncService],
+            [ExternalSourceEnum.ERSTE, ersteSyncService],
+            [ExternalSourceEnum.PRIVATBANK, privatbankSyncService]
+        ]);
 
         return {
-            supportsLiveSync,
-            supportsFileImport: !hasToken && service.supportsFileImport,
-            supportsAddAccounts: supportsLiveSync && service.supportsAddAccounts,
-            supportsDeposit
-        };
-    }
-}
+            getServiceForAccount: Effect.fn('SyncProviderRegistryService.getServiceForAccount')(function* (accountId: number) {
+                const sync = yield* syncRepository.getByAccountId(accountId);
+                if (!isDefined(sync)) {
+                    return null;
+                }
 
-export const syncProviderRegistryService = new SyncProviderRegistryService();
+                return serviceByProvider.get(sync.provider) ?? null;
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(SyncProviderRegistryService, SyncProviderRegistryService.make).pipe(
+        Layer.provide([
+            SyncRepository.layer,
+            MonobankSyncService.layer,
+            BinanceSyncService.layer,
+            ErsteSyncService.layer,
+            PrivatbankSyncService.layer
+        ])
+    );
+}

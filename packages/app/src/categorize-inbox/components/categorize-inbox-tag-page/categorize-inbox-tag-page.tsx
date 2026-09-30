@@ -2,11 +2,11 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
-import { tagRepository, transactionCategorizeInboxRepository } from '../../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../../@generic/hook/use-database-live-query.hook';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
+import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
 import { UNTAGGED_TAG_ID_PARAM } from '../../../transaction/constant/untagged-tag-id-param.constant';
 import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
+import { tagEvidenceAtom, untaggedRowsAtom } from '../../constant/categorize-inbox-atoms.constant';
 import { CategorizeInboxLabelKindEnum } from '../../enum/categorize-inbox-label-kind.enum';
 import { useCategorizeInboxLabels } from '../../hook/use-categorize-inbox-labels.hook';
 import { CategorizeInboxPage } from '../categorize-inbox-page/categorize-inbox-page';
@@ -21,14 +21,14 @@ interface Props {
 export const CategorizeInboxTagPage = ({ params }: Props) => {
     const { t } = useLingui();
     const [openTagsSelector] = useTagsSelectorModal();
-    const { data: tags } = useDatabaseLiveQuery(tagRepository.findAll());
-    const labelsById = useCategorizeInboxLabels(tags.map(tag => ({ id: tag.id, title: tag.title, icon: UserIconNameEnum.Tag })));
+    const { tags } = useSearchTagsQuery();
+    const labelsById = useCategorizeInboxLabels((tags ?? []).map(tag => ({ id: tag.id, title: tag.title, icon: UserIconNameEnum.Tag })));
 
     const strategy: CategorizeInboxStrategyInterface = {
         labelKind: CategorizeInboxLabelKindEnum.TAG,
         labelsById,
-        findRows: filters => transactionCategorizeInboxRepository.findUntaggedRows(filters),
-        findEvidence: () => transactionCategorizeInboxRepository.findTagEvidence(),
+        rowsAtom: untaggedRowsAtom,
+        evidenceAtom: tagEvidenceAtom,
         pickLabels: (description, suggestedLabelIds) => openTagsSelector({ description, suggestedTagIds: suggestedLabelIds }),
         pickFollowUpTagIds: null,
         buildRuleActions: tagIds => ({ categoryId: null, tagIds }),

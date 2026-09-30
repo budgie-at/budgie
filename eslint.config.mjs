@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 
-import js from '@eslint/js';
 import { fixupPluginRules } from '@eslint/compat';
+import js from '@eslint/js';
 import importPlugin from 'eslint-plugin-import';
 import pluginLingui from 'eslint-plugin-lingui';
 import eslintPluginOxlint from 'eslint-plugin-oxlint';
@@ -34,6 +34,43 @@ const oxlintFallbackConfigs = eslintPluginOxlint
         ...config,
         rules: Object.fromEntries(Object.entries(config.rules ?? {}).filter(([ruleId]) => !residualRuleIds.includes(ruleId)))
     }));
+
+const guardSelectors = [
+    {
+        selector: "BinaryExpression[operator='==='][right.raw='null']",
+        message: 'Use !isDefined(x) from @rnw-community/shared (CLAUDE.md Canonical Mapping).'
+    },
+    {
+        selector: "BinaryExpression[operator='==='][right.type='Identifier'][right.name='undefined']",
+        message: 'Use !isDefined(x) from @rnw-community/shared.'
+    },
+    {
+        selector: "BinaryExpression[operator='!=='][right.raw='null']",
+        message: 'Use isDefined(x) from @rnw-community/shared.'
+    },
+    {
+        selector: "BinaryExpression[operator='!=='][right.type='Identifier'][right.name='undefined']",
+        message: 'Use isDefined(x) from @rnw-community/shared.'
+    },
+    {
+        selector: "BinaryExpression[operator='==='][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
+        message: 'Use isEmptyArray(x) or isEmptyString(x) from @rnw-community/shared.'
+    },
+    {
+        selector: "BinaryExpression[operator='>'][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
+        message: 'Use isNotEmptyArray(x) or isNotEmptyString(x) from @rnw-community/shared.'
+    },
+    {
+        selector: "BinaryExpression[operator='==='][right.value='']",
+        message: 'Use isEmptyString(x) from @rnw-community/shared.'
+    }
+];
+
+const effectSelectors = [
+    { selector: 'TryStatement', message: 'Use Effect (see AGENTS.md ## Effect)' },
+    { selector: 'ThrowStatement', message: 'Use Effect (see AGENTS.md ## Effect)' },
+    { selector: "NewExpression[callee.name='Promise']", message: 'Use Effect (see AGENTS.md ## Effect)' }
+];
 
 export default defineConfig(
     {
@@ -322,44 +359,21 @@ export default defineConfig(
         }
     },
     {
+        files: ['packages/app/src/**/*.{ts,tsx}', 'packages/contracts/src/**/*.ts', 'packages/ai/src/**/*.ts', 'packages/sync/src/**/*.ts'],
+        rules: {
+            'no-restricted-syntax': ['warn', ...guardSelectors]
+        }
+    },
+    {
         files: [
-            'packages/app/src/**/*.{ts,tsx}',
-            'packages/contracts/src/**/*.ts',
-            'packages/ai/src/**/*.ts',
-            'packages/sync/src/**/*.ts'
+            'packages/{contracts,sync,consolidation,budget,ai}/src/**/*.ts',
+            'packages/app/src/**/service/**/*.ts',
+            'packages/app/src/**/repository/**/*.ts',
+            'packages/app/src/**/*.task.ts',
+            'packages/app/src/**/api/**/*.ts'
         ],
         rules: {
-            'no-restricted-syntax': [
-                'warn',
-                {
-                    selector: "BinaryExpression[operator='==='][right.raw='null']",
-                    message: 'Use !isDefined(x) from @rnw-community/shared (CLAUDE.md Canonical Mapping).'
-                },
-                {
-                    selector: "BinaryExpression[operator='==='][right.type='Identifier'][right.name='undefined']",
-                    message: 'Use !isDefined(x) from @rnw-community/shared.'
-                },
-                {
-                    selector: "BinaryExpression[operator='!=='][right.raw='null']",
-                    message: 'Use isDefined(x) from @rnw-community/shared.'
-                },
-                {
-                    selector: "BinaryExpression[operator='!=='][right.type='Identifier'][right.name='undefined']",
-                    message: 'Use isDefined(x) from @rnw-community/shared.'
-                },
-                {
-                    selector: "BinaryExpression[operator='==='][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
-                    message: 'Use isEmptyArray(x) or isEmptyString(x) from @rnw-community/shared.'
-                },
-                {
-                    selector: "BinaryExpression[operator='>'][left.type='MemberExpression'][left.property.name='length'][right.value=0]",
-                    message: 'Use isNotEmptyArray(x) or isNotEmptyString(x) from @rnw-community/shared.'
-                },
-                {
-                    selector: "BinaryExpression[operator='==='][right.value='']",
-                    message: 'Use isEmptyString(x) from @rnw-community/shared.'
-                }
-            ]
+            'no-restricted-syntax': ['error', ...effectSelectors, ...guardSelectors]
         }
     },
     {

@@ -1,72 +1,25 @@
-import { getLogger } from '@budgie/logger';
+import { TransactionEmbeddingRepository, TransactionRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { emptyFn, getErrorMessage, isDefined } from '@rnw-community/shared';
+import { embeddingProgressSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 
-import { transactionEmbeddingRepository, transactionRepository } from '../../@generic/drizzle/db/db';
+import { ProgressStore } from './progress.store';
 
-const logger = getLogger('embeddingProgressStore');
+export class EmbeddingProgressStore extends Context.Service<EmbeddingProgressStore>()('@budgie/app/EmbeddingProgressStore', {
+    make: Effect.gen(function* () {
+        const transactionRepository = yield* TransactionRepository;
+        const transactionEmbeddingRepository = yield* TransactionEmbeddingRepository;
 
-export interface EmbeddingProgressSnapshotInterface {
-    readonly percent: number;
-    readonly isEmbedding: boolean;
-    readonly pending: number;
-    readonly total: number;
+        return new ProgressStore(
+            embeddingProgressSnapshotAtom,
+            Effect.all([transactionRepository.countAllActive(), transactionEmbeddingRepository.countPending()]),
+            1000
+        );
+    })
+}) {
+    static readonly layer = Layer.effect(EmbeddingProgressStore, EmbeddingProgressStore.make).pipe(
+        Layer.provide([TransactionRepository.layer, TransactionEmbeddingRepository.layer])
+    );
 }
-
-const FULL_PERCENT = 100;
-const REFRESH_THROTTLE_MS = 1000;
-
-let snapshot: EmbeddingProgressSnapshotInterface = { percent: 0, isEmbedding: false, pending: 0, total: 0 };
-let lastRefreshAt = 0;
-let pendingRefresh: Promise<void> | null = null;
-const listeners = new Set<() => void>();
-
-const notify = (): void => {
-    listeners.forEach(listener => {
-        listener();
-    });
-};
-
-const runRefresh = async (): Promise<void> => {
-    try {
-        const total = await transactionRepository.countAllActive();
-        const pending = await transactionEmbeddingRepository.countPending();
-        const percent = total === 0 ? FULL_PERCENT : Math.round(((total - pending) / total) * FULL_PERCENT);
-        const prior = snapshot;
-        snapshot = { percent, isEmbedding: pending > 0, pending, total };
-        if (prior.percent !== percent || prior.isEmbedding !== snapshot.isEmbedding || prior.pending !== pending) {
-            logger.log('embed:progress:refresh', { total, pending, percent, isEmbedding: snapshot.isEmbedding });
-        }
-        notify();
-    } catch (error: unknown) {
-        logger.error('embed:progress:refresh:throw', { errorMessage: getErrorMessage(error) });
-        emptyFn();
-    }
-};
-
-export const embeddingProgressStore = {
-    subscribe: (listener: () => void): (() => void) => {
-        listeners.add(listener);
-
-        return () => {
-            listeners.delete(listener);
-        };
-    },
-    getSnapshot: (): EmbeddingProgressSnapshotInterface => snapshot,
-    async refresh(force = false): Promise<void> {
-        if (isDefined(pendingRefresh)) {
-            await pendingRefresh;
-
-            return;
-        }
-        const elapsed = Date.now() - lastRefreshAt;
-        if (!force && elapsed < REFRESH_THROTTLE_MS) {
-            return;
-        }
-        lastRefreshAt = Date.now();
-        pendingRefresh = runRefresh().finally(() => {
-            pendingRefresh = null;
-        });
-        await pendingRefresh;
-    }
-};

@@ -1,24 +1,26 @@
-import { instrumentDailyMarketPriceRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { InstrumentDailyMarketPriceEntityTable, InstrumentDailyMarketPriceRepository } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
 const MARKET_DATA_HISTORY_LIMIT = 90;
 
-export const useInstrumentMarketDataQuery = (instrumentId: number, quoteInstrumentId: number) => {
-    const dependencies = [instrumentId, quoteInstrumentId];
-    const { data, updatedAt, ...rest } = useDatabaseLiveQuery(
-        instrumentDailyMarketPriceRepository.findRecent(instrumentId, quoteInstrumentId, MARKET_DATA_HISTORY_LIMIT),
-        dependencies
-    );
+const recentMarketPricesAtom = databaseQueryFamily(
+    [InstrumentDailyMarketPriceEntityTable],
+    InstrumentDailyMarketPriceRepository,
+    (instrumentDailyMarketPriceRepository, [instrumentId, quoteInstrumentId]: readonly [number, number]) =>
+        instrumentDailyMarketPriceRepository.findRecent(instrumentId, quoteInstrumentId, MARKET_DATA_HISTORY_LIMIT)
+);
 
-    const prices = [...data].reverse();
-    const latestPrice = prices.at(-1);
-    const previousPrice = prices.at(-2);
+export const useInstrumentMarketDataQuery = (instrumentId: number, quoteInstrumentId: number) => {
+    const prices = [
+        ...AsyncResult.getOrElse(useLiveAtomValue(recentMarketPricesAtom([instrumentId, quoteInstrumentId])), () => [])
+    ].reverse();
 
     return {
-        latestPrice,
-        previousPrice,
-        prices,
-        updatedAt,
-        ...rest
+        latestPrice: prices.at(-1),
+        previousPrice: prices.at(-2),
+        prices
     };
 };

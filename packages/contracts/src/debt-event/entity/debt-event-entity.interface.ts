@@ -1,5 +1,3 @@
-import { z } from 'zod';
+import type { DebtEventEntityTable } from '../table/debt-event-entity.table';
 
-import { DebtEventEntitySchema } from '../schema/debt-event-entity.schema';
-
-export type DebtEventEntityInterface = z.infer<typeof DebtEventEntitySchema>;
+export type DebtEventEntityInterface = typeof DebtEventEntityTable.$inferSelect;

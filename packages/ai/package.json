@@ -28,8 +28,7 @@
     },
     "dependencies": {
         "@budgie/contracts": "workspace:^",
-        "@budgie/logger": "workspace:*",
         "@rnw-community/shared": "^2.2.0",
-        "zod": "4.5.1"
+        "effect": "4.0.0-rc.118"
     }
 }

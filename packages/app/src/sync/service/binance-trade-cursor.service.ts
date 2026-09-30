@@ -1,89 +1,75 @@
-import { SyncModeEnum, SyncWarningEnum } from '@budgie/contracts';
+import { SyncModeEnum, SyncRepository, SyncWarningEnum } from '@budgie/contracts';
+import { BinanceTradeCursorMapSchema } from '@budgie/sync';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
+import * as Result from 'effect/Result';
+import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { syncRepository } from '../../@generic/drizzle/db/db';
-import { getSyncModule } from '../util/load-sync-module.util';
-
 import type { SyncEntityInterface } from '@budgie/contracts';
-import type { BinanceSignedClient, BinanceTradeCursorMapInterface, BinanceTransferInterface } from '@budgie/sync';
+import type { BinanceSignedClient, BinanceTradeCursorMapInterface } from '@budgie/sync';
 
-class BinanceTradeCursorService {
-    async fetchTransferBatch(
-        client: BinanceSignedClient,
-        sync: SyncEntityInterface,
-        externalAccountId: string,
-        window: { readonly fromUnixTime: number; readonly eligibleSoldOffBaseAssets: readonly string[] }
-    ): Promise<BinanceTransferInterface[]> {
-        const result = await client.getTransfers(
-            externalAccountId,
-            window.fromUnixTime,
-            null,
-            window.eligibleSoldOffBaseAssets,
-            this.resolveResumeCursors(sync)
-        );
-        if (result.success) {
-            return result.data;
-        }
+export class BinanceTradeCursorService extends Context.Service<BinanceTradeCursorService>()('@budgie/app/BinanceTradeCursorService', {
+    make: Effect.gen(function* () {
+        const syncRepository = yield* SyncRepository;
+        const decodeCursorMap = Schema.decodeUnknownResult(Schema.fromJsonString(BinanceTradeCursorMapSchema));
 
-        throw getSyncModule().SyncError.from(result.error);
-    }
+        const parse = (binanceTradeCursor: string | null): BinanceTradeCursorMapInterface =>
+            isNotEmptyString(binanceTradeCursor) ? Result.getOrElse(decodeCursorMap(binanceTradeCursor), () => ({})) : {};
 
-    async withPersistedSideEffects<T>(
-        sync: SyncEntityInterface,
-        resolveClient: () => BinanceSignedClient | null,
-        operation: () => Promise<T>
-    ): Promise<T> {
-        try {
-            return await operation();
-        } finally {
-            await this.persistRunSideEffects(sync, resolveClient());
-        }
-    }
+        const resolveResumeCursors = (sync: SyncEntityInterface): BinanceTradeCursorMapInterface => {
+            if (sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt)) {
+                return {};
+            }
 
-    private async persistRunSideEffects(sync: SyncEntityInterface, client: BinanceSignedClient | null): Promise<void> {
-        if (!isDefined(client)) {
-            return;
-        }
+            return parse(sync.binanceTradeCursor);
+        };
 
-        const mergedCursors = this.merge(this.parse(sync.binanceTradeCursor), client.getSymbolTradeCursors());
-        await syncRepository.update(sync.id, {
-            binanceTradeCursor: isNotEmptyArray(Object.keys(mergedCursors)) ? JSON.stringify(mergedCursors) : null,
-            lastWarning: client.isC2cUnavailable() ? SyncWarningEnum.C2C_UNAVAILABLE : null
-        });
-    }
+        const merge = (stored: BinanceTradeCursorMapInterface, current: BinanceTradeCursorMapInterface): BinanceTradeCursorMapInterface => {
+            const merged: Record<string, number> = { ...stored };
+            for (const [symbol, fromId] of Object.entries(current)) {
+                const storedFromId = merged[symbol];
+                merged[symbol] = isDefined(storedFromId) ? Math.max(storedFromId, fromId) : fromId;
+            }
 
-    private resolveResumeCursors(sync: SyncEntityInterface): BinanceTradeCursorMapInterface {
-        if (sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt)) {
-            return {};
-        }
+            return merged;
+        };
 
-        return this.parse(sync.binanceTradeCursor);
-    }
+        return {
+            fetchTransferBatch: Effect.fn('BinanceTradeCursorService.fetchTransferBatch')(function* (
+                client: BinanceSignedClient,
+                sync: SyncEntityInterface,
+                externalAccountId: string,
+                window: { readonly fromUnixTime: number; readonly eligibleSoldOffBaseAssets: readonly string[] }
+            ) {
+                return yield* client.getTransfers(
+                    externalAccountId,
+                    window.fromUnixTime,
+                    null,
+                    window.eligibleSoldOffBaseAssets,
+                    resolveResumeCursors(sync)
+                );
+            }),
+            persistRunSideEffects: Effect.fn('BinanceTradeCursorService.persistRunSideEffects')(function* (
+                sync: SyncEntityInterface,
+                client: BinanceSignedClient | null
+            ) {
+                if (!isDefined(client)) {
+                    return;
+                }
 
-    private parse(binanceTradeCursor: string | null): BinanceTradeCursorMapInterface {
-        if (!isNotEmptyString(binanceTradeCursor)) {
-            return {};
-        }
-
-        try {
-            const parsed = getSyncModule().BinanceTradeCursorMapSchema.safeParse(JSON.parse(binanceTradeCursor));
-
-            return parsed.success ? parsed.data : {};
-        } catch {
-            return {};
-        }
-    }
-
-    private merge(stored: BinanceTradeCursorMapInterface, current: BinanceTradeCursorMapInterface): BinanceTradeCursorMapInterface {
-        const merged: BinanceTradeCursorMapInterface = { ...stored };
-        for (const [symbol, fromId] of Object.entries(current)) {
-            const storedFromId = merged[symbol];
-            merged[symbol] = isDefined(storedFromId) ? Math.max(storedFromId, fromId) : fromId;
-        }
-
-        return merged;
-    }
+                const mergedCursors = merge(parse(sync.binanceTradeCursor), client.getSymbolTradeCursors());
+                yield* syncRepository.update(sync.id, {
+                    binanceTradeCursor: isNotEmptyArray(Object.keys(mergedCursors)) ? JSON.stringify(mergedCursors) : null,
+                    lastWarning: client.isC2cUnavailable() ? SyncWarningEnum.C2C_UNAVAILABLE : null
+                });
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(BinanceTradeCursorService, BinanceTradeCursorService.make).pipe(
+        Layer.provide(SyncRepository.layer)
+    );
 }
-
-export const binanceTradeCursorService = new BinanceTradeCursorService();

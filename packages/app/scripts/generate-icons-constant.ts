@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { z } from 'zod';
+import * as Schema from 'effect/Schema';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -34,9 +34,9 @@ interface IconEntryInterface {
     readonly pascalName: string;
 }
 
-const LucidePackageSchema = z.object({
-    name: z.string(),
-    exports: z.record(z.string(), z.unknown())
+const LucidePackageSchema = Schema.Struct({
+    name: Schema.String,
+    exports: Schema.Record(Schema.String, Schema.Unknown)
 });
 
 const LucideTagsSchema = z.record(z.string(), z.array(z.string()));
@@ -71,7 +71,7 @@ const parseEnumValues = (enumFile: string): string[] => {
 };
 
 const resolveIconSpecifierPrefix = (lucideDir: string): string => {
-    const packageJson = LucidePackageSchema.parse(JSON.parse(readFileSync(join(lucideDir, 'package.json'), 'utf8')));
+    const packageJson = Schema.decodeUnknownSync(LucidePackageSchema)(JSON.parse(readFileSync(join(lucideDir, 'package.json'), 'utf8')));
     const wildcardKey = Object.keys(packageJson.exports).find(key => key.includes('icons') && key.endsWith('*'));
 
     if (!isDefined(wildcardKey)) {

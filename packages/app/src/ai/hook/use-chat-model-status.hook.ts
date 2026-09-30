@@ -1,13 +1,13 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import * as Effect from 'effect/Effect';
 import { useEffect } from 'react';
 
-import { emptyFn } from '@rnw-community/shared';
-
+import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { chatModelSnapshotAtom, embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-import { aiModelResidencyService } from '../service/ai-model-residency.service';
-
-import { useAiDownloadProgress } from './use-ai-download-progress.hook';
-import { useChat } from './use-chat.hook';
+import { AiModelResidencyService } from '../service/ai-model-residency.service';
+import { CHAT_DOWNLOAD_WEIGHT, EMBEDDING_DOWNLOAD_WEIGHT } from '../util/ai-constants.util';
 
 interface ChatModelStatusInterface {
     readonly isReady: boolean;
@@ -22,15 +22,21 @@ interface UseChatModelStatusReturn {
 }
 
 export const useChatModelStatus = (): UseChatModelStatusReturn => {
-    const chat = useChat();
-    const downloadProgress = useAiDownloadProgress();
+    const chat = useAtomValue(chatModelSnapshotAtom);
+    const embedding = useAtomValue(embeddingModelSnapshotAtom);
     const isChatReady = chat.status === AiSubsystemStatusEnum.READY;
 
     useEffect(() => {
-        void aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT).catch(emptyFn);
+        appRuntime.runFork(
+            Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT))
+        );
 
         return () => {
-            aiModelResidencyService.release(AiSubsystemNameEnum.CHAT);
+            appRuntime.runFork(
+                Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                    aiModelResidencyService.release(AiSubsystemNameEnum.CHAT)
+                )
+            );
         };
     }, []);
 
@@ -39,7 +45,7 @@ export const useChatModelStatus = (): UseChatModelStatusReturn => {
         modelStatus: {
             isReady: isChatReady,
             isInitializing: chat.status === AiSubsystemStatusEnum.INITIALIZING || chat.status === AiSubsystemStatusEnum.DOWNLOADING,
-            downloadProgress,
+            downloadProgress: chat.downloadProgress * CHAT_DOWNLOAD_WEIGHT + embedding.downloadProgress * EMBEDDING_DOWNLOAD_WEIGHT,
             error: chat.errorMessage
         }
     };

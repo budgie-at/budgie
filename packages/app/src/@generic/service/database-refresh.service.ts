@@ -1,6 +1,7 @@
+import * as Effect from 'effect/Effect';
 import { addDatabaseChangeListener } from 'expo-sqlite';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import type { DatabaseChangeEvent } from 'expo-sqlite';
 
@@ -56,11 +57,7 @@ class DatabaseRefreshService {
 
     private notifyListeners(): void {
         this.listeners.forEach(listener => {
-            try {
-                listener();
-            } catch {
-                emptyFn();
-            }
+            Effect.runSync(Effect.ignore(Effect.try(listener)));
         });
     }
 }

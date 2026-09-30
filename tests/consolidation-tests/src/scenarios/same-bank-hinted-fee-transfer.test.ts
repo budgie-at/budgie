@@ -1,9 +1,10 @@
 import { ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { expectRevertRestoresSources } from '../harness/consolidation-revert-audit';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const TRANSFER_AMOUNT = 10_000 * PRECISION;
 const TRANSFER_FEE_DELTA_AMOUNT = 300 * PRECISION;
@@ -65,9 +66,9 @@ const expectSameBankHintedFeeConsolidation = (
     ).toEqual([canonicals[0].id, canonicals[0].id]);
 };
 
-const expectPrivatbankFeeTransferConsolidated = async (
+const expectPrivatbankFeeTransferConsolidated = Effect.fnUntraced(function* (
     externalSource: ExternalSourceEnum | null = ExternalSourceEnum.PRIVATBANK
-): Promise<void> => {
+) {
     const { expense, income, sourceAccount, targetAccount } = seedPrivatbankFeeTransfer(
         `Зі своєї картки *${SOURCE_CARD_SUFFIX}`,
         TRANSFER_WITH_FEE_AMOUNT,
@@ -75,58 +76,72 @@ const expectPrivatbankFeeTransferConsolidated = async (
         externalSource
     );
 
-    const result = await runConsolidation();
+    const result = yield* runConsolidation();
     expect(result.consolidated).toBe(1);
     expectSameBankHintedFeeConsolidation(expense.id, income.id, sourceAccount.id, targetAccount.id);
-};
+});
 
-describe('consolidation/same-bank-hinted-fee-transfer', () => {
-    it('auto-consolidates a same-bank own-card transfer when titles point at both account suffixes and the amount delta is fee-sized', async () => {
-        await expectPrivatbankFeeTransferConsolidated();
-    });
+layer(TestLayer)('consolidation/same-bank-hinted-fee-transfer', it => {
+    it.effect(
+        'auto-consolidates a same-bank own-card transfer when titles point at both account suffixes and the amount delta is fee-sized',
+        () =>
+            Effect.gen(function* () {
+                yield* expectPrivatbankFeeTransferConsolidated();
+            })
+    );
 
-    it('auto-consolidates legacy same-bank own-card transfers when account source is missing but IBAN bank prefix matches', async () => {
-        await expectPrivatbankFeeTransferConsolidated(null);
-    });
+    it.effect('auto-consolidates legacy same-bank own-card transfers when account source is missing but IBAN bank prefix matches', () =>
+        Effect.gen(function* () {
+            yield* expectPrivatbankFeeTransferConsolidated(null);
+        })
+    );
 
-    it('restores both hinted fee transfer sides and account balances when the canonical is reverted', async () => {
-        const { expense, income, sourceAccount, targetAccount } = seedPrivatbankFeeTransfer();
+    it.effect('restores both hinted fee transfer sides and account balances when the canonical is reverted', () =>
+        Effect.gen(function* () {
+            const { expense, income, sourceAccount, targetAccount } = seedPrivatbankFeeTransfer();
 
-        await expectRevertRestoresSources({
-            accountIds: [sourceAccount.id, targetAccount.id],
-            consolidationType: TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER,
-            sourceTransactionIds: [expense.id, income.id]
-        });
-    });
+            yield* expectRevertRestoresSources({
+                accountIds: [sourceAccount.id, targetAccount.id],
+                consolidationType: TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER,
+                sourceTransactionIds: [expense.id, income.id]
+            });
+        })
+    );
 
-    it('leaves a hinted transfer unconsolidated when the reciprocal account hint does not match', async () => {
-        const { expense, income } = seedPrivatbankFeeTransfer('Зі своєї картки *9999');
+    it.effect('leaves a hinted transfer unconsolidated when the reciprocal account hint does not match', () =>
+        Effect.gen(function* () {
+            const { expense, income } = seedPrivatbankFeeTransfer('Зі своєї картки *9999');
 
-        const result = await runConsolidation();
+            const result = yield* runConsolidation();
 
-        expect(result.consolidated).toBe(0);
-        expectNoConsolidation(expense.id, income.id);
-    });
+            expect(result.consolidated).toBe(0);
+            expectNoConsolidation(expense.id, income.id);
+        })
+    );
 
-    it('leaves a hinted transfer unconsolidated when the amount delta is larger than the fee window', async () => {
-        const { expense, income } = seedPrivatbankFeeTransfer(`Зі своєї картки *${SOURCE_CARD_SUFFIX}`, TOO_LARGE_FEE_AMOUNT);
+    it.effect('leaves a hinted transfer unconsolidated when the amount delta is larger than the fee window', () =>
+        Effect.gen(function* () {
+            const { expense, income } = seedPrivatbankFeeTransfer(`Зі своєї картки *${SOURCE_CARD_SUFFIX}`, TOO_LARGE_FEE_AMOUNT);
 
-        const result = await runConsolidation();
+            const result = yield* runConsolidation();
 
-        expect(result.consolidated).toBe(0);
-        expectNoConsolidation(expense.id, income.id);
-    });
+            expect(result.consolidated).toBe(0);
+            expectNoConsolidation(expense.id, income.id);
+        })
+    );
 
-    it('leaves a hinted transfer unconsolidated when the matching transactions are not close in time', async () => {
-        const { expense, income } = seedPrivatbankFeeTransfer(
-            `Зі своєї картки *${SOURCE_CARD_SUFFIX}`,
-            TRANSFER_WITH_FEE_AMOUNT,
-            new Date(HINTED_FEE_OPERATED_AT.getTime() + 3 * 60 * 1000)
-        );
+    it.effect('leaves a hinted transfer unconsolidated when the matching transactions are not close in time', () =>
+        Effect.gen(function* () {
+            const { expense, income } = seedPrivatbankFeeTransfer(
+                `Зі своєї картки *${SOURCE_CARD_SUFFIX}`,
+                TRANSFER_WITH_FEE_AMOUNT,
+                new Date(HINTED_FEE_OPERATED_AT.getTime() + 3 * 60 * 1000)
+            );
 
-        const result = await runConsolidation();
+            const result = yield* runConsolidation();
 
-        expect(result.consolidated).toBe(0);
-        expectNoConsolidation(expense.id, income.id);
-    });
+            expect(result.consolidated).toBe(0);
+            expectNoConsolidation(expense.id, income.id);
+        })
+    );
 });

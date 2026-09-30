@@ -1,16 +1,18 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { useImportBackupPinModal } from '../../context/import-backup-pin-modal.context';
-import { databaseImportService } from '../../service/database-import.service';
+import { DatabaseImportService } from '../../service/database-import.service';
 
 export const ImportDatabase = () => {
     const { t } = useLingui();
@@ -33,7 +35,9 @@ export const ImportDatabase = () => {
                 return;
             }
 
-            const isBackupUnencrypted = await databaseImportService.canOpenBackup(uri, null);
+            const isBackupUnencrypted = await appRuntime.runPromise(
+                Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.canOpenBackup(uri, null))
+            );
 
             setIsLoading(false);
 
@@ -59,7 +63,9 @@ export const ImportDatabase = () => {
             }
 
             setIsLoading(true);
-            await databaseImportService.importFromUri(uri, backupPin);
+            await appRuntime.runPromise(
+                Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.importFromUri(uri, backupPin))
+            );
         } catch (error) {
             Toast.show({ type: 'error', text1: t`Could not select database backup`, text2: getErrorMessage(error) });
         } finally {

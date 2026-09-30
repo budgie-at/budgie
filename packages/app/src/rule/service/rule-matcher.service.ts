@@ -9,16 +9,19 @@ import {
     TransactionEntryAssociationEnum,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
+    TransactionRepository,
+    TransactionRuleRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { Log } from '@budgie/logger';
 import { SQL, and, or, sql } from 'drizzle-orm';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { transactionRepository, transactionRuleRepository } from '../../@generic/drizzle/db/db';
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
 import { RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
@@ -38,327 +41,314 @@ type CountConditionsParamsType = {
     readonly conditionMatchType: RuleConditionMatchTypeEnum;
 };
 
-class RuleMatcherService {
-    private static readonly UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN = /[\\^$.*+?()[\]{}|]/u;
+export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@budgie/app/RuleMatcherService', {
+    make: Effect.gen(function* () {
+        const transactionRepository = yield* TransactionRepository;
 
-    @Log(
-        params => `enter conditions=${params.conditions.length} matchType=${params.conditionMatchType}`,
-        result => `done count=${result}`,
-        (error, params) =>
-            `throw conditions=${params.conditions.length} matchType=${params.conditionMatchType} error=${getErrorMessage(error)}`
-    )
-    async countMatchingTransactions(params: CountConditionsParamsType): Promise<number> {
-        const { conditions, conditionMatchType } = params;
+        const transactionRuleRepository = yield* TransactionRuleRepository;
 
-        if (!isNotEmptyArray(conditions)) {
+        const UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN = /[\\^$.*+?()[\]{}|]/u;
+
+        const calculateAmountForRuleEvaluation = (transaction: TransactionWithEntriesMccCategoryEntityInterface): number => {
+            const entries = transaction[TransactionAssociationEnum.ENTRIES];
+
+            if (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.TRANSFER) {
+                return sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT));
+            }
+
+            if (transaction.type === TransactionTypeEnum.INCOME) {
+                return sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT));
+            }
+
+            if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
+                const hasDebit = entries.some(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
+
+                return hasDebit
+                    ? sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT))
+                    : sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT));
+            }
+
             return 0;
-        }
-
-        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(conditions, conditionMatchType);
-
-        if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            return transactionRuleRepository.countByRuleConditions(sqlWhere);
-        }
-
-        const matchingIds = await this.findMatchingIds(conditions, conditionMatchType);
-
-        return matchingIds.length;
-    }
-
-    @Log(
-        rule => `enter ruleId=${rule.id} conditions=${rule.conditions.length} matchType=${rule.conditionMatchType}`,
-        (result, rule) => `done ruleId=${rule.id} matchedCount=${result.length}`,
-        (error, rule) => `throw ruleId=${rule.id} error=${getErrorMessage(error)}`
-    )
-    async collectMatchingTransactionIds(rule: RuleWithRelationsEntityInterface): Promise<number[]> {
-        if (!isNotEmptyArray(rule.conditions)) {
-            return [];
-        }
-
-        return this.findMatchingIds(rule.conditions, rule.conditionMatchType);
-    }
-
-    @Log(
-        (rule, input) => `enter ruleId=${rule.id} matchType=${rule.conditionMatchType} title="${input.title}"`,
-        (result, rule, input) => `done ruleId=${rule.id} title="${input.title}" matched=${result}`,
-        (error, rule, input) => `throw ruleId=${rule.id} title="${input.title}" error=${getErrorMessage(error)}`
-    )
-    evaluateRule(rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean {
-        if (input.type === TransactionTypeEnum.ADJUSTMENT) {
-            return false;
-        }
-
-        if (!isNotEmptyArray(rule.conditions)) {
-            return false;
-        }
-
-        return this.evaluateConditions(rule.conditions, rule.conditionMatchType, input);
-    }
-
-    private async findMatchingIds(
-        conditions: RuleConditionInputInterface[],
-        conditionMatchType: RuleConditionMatchTypeEnum
-    ): Promise<number[]> {
-        const { sqlWhere, fallbackConditions } = this.buildRuleConditionsWhere(conditions, conditionMatchType);
-
-        if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
-            return transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-        }
-
-        if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
-            const candidateIds = await transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
-
-            return this.filterWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
-        }
-
-        return this.scanMatchingIds(conditions, conditionMatchType);
-    }
-
-    private buildRuleConditionsWhere(
-        conditions: RuleConditionInputInterface[],
-        conditionMatchType: RuleConditionMatchTypeEnum
-    ): BuildRuleConditionsWhereResultType {
-        const sqlConditions: SQL[] = [];
-        const fallbackConditions: RuleConditionInputInterface[] = [];
-
-        for (const condition of conditions) {
-            const sqlClause = this.buildRuleConditionSql(condition);
-
-            if (isDefined(sqlClause)) {
-                sqlConditions.push(sqlClause);
-            } else {
-                fallbackConditions.push(condition);
-            }
-        }
-
-        const combiner = conditionMatchType === RuleConditionMatchTypeEnum.ALL ? and : or;
-        const sqlWhere = isNotEmptyArray(sqlConditions) ? (combiner(...sqlConditions) ?? null) : null;
-
-        return { sqlWhere, fallbackConditions };
-    }
-
-    private buildRuleConditionSql(condition: RuleConditionInputInterface): SQL | null {
-        const column = this.getColumnForField(condition.field);
-
-        if (!isDefined(column)) {
-            return null;
-        }
-
-        return this.buildOperatorSql(column, condition.operator, condition.value, condition.secondaryValue);
-    }
-
-    private getColumnForField(field: RuleConditionFieldEnum): Column | SQL | null {
-        switch (field) {
-            case RuleConditionFieldEnum.TITLE:
-                return TransactionEntityTable.title;
-            case RuleConditionFieldEnum.COMMENT:
-                return TransactionEntityTable.comment;
-            case RuleConditionFieldEnum.TRANSACTION_TYPE:
-                return TransactionEntityTable.type;
-            case RuleConditionFieldEnum.EXTERNAL_SOURCE:
-                return TransactionEntityTable.externalSource;
-            case RuleConditionFieldEnum.ACCOUNT_ID:
-                return sql`COALESCE(${TransactionEntityTable.fromAccountId}, ${TransactionEntityTable.toAccountId})`;
-            case RuleConditionFieldEnum.MCC_CODE:
-                return sql`(SELECT ${MccCategoryEntityTable.mcc} FROM ${MccCategoryEntityTable} WHERE ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId})`;
-            case RuleConditionFieldEnum.AMOUNT:
-                return null;
-            default:
-                return null;
-        }
-    }
-
-    private buildOperatorSql(
-        column: Column | SQL,
-        operator: RuleConditionOperatorEnum,
-        value: string,
-        secondaryValue: string | null
-    ): SQL | null {
-        switch (operator) {
-            case RuleConditionOperatorEnum.CONTAINS:
-                return sql`CAST(${column} AS TEXT) LIKE ${`%${this.escapeSqlLikeValue(value)}%`} ESCAPE '\\'`;
-            case RuleConditionOperatorEnum.NOT_CONTAINS:
-                return sql`CAST(${column} AS TEXT) NOT LIKE ${`%${this.escapeSqlLikeValue(value)}%`} ESCAPE '\\'`;
-            case RuleConditionOperatorEnum.EQUALS:
-                return sql`CAST(${column} AS TEXT) COLLATE NOCASE = ${value}`;
-            case RuleConditionOperatorEnum.NOT_EQUALS:
-                return sql`CAST(${column} AS TEXT) COLLATE NOCASE != ${value}`;
-            case RuleConditionOperatorEnum.GREATER_THAN:
-                return sql`${column} > ${Number(value)}`;
-            case RuleConditionOperatorEnum.LESS_THAN:
-                return sql`${column} < ${Number(value)}`;
-            case RuleConditionOperatorEnum.BETWEEN: {
-                if (!isNotEmptyString(secondaryValue)) {
-                    return null;
-                }
-
-                const gteClause = sql`${column} >= ${Number(value)}`;
-                const lteClause = sql`${column} <= ${Number(secondaryValue)}`;
-
-                return and(gteClause, lteClause) ?? null;
-            }
-            case RuleConditionOperatorEnum.IN: {
-                const inValues = value.split(',').map(item => item.trim());
-                const placeholders = inValues.map(item => sql`${item}`);
-
-                return sql`CAST(${column} AS TEXT) COLLATE NOCASE IN (${sql.join(placeholders, sql`, `)})`;
-            }
-            case RuleConditionOperatorEnum.MATCHES_REGEX:
-                return this.buildRegexSql(column, value);
-            default:
-                return null;
-        }
-    }
-
-    private buildRegexSql(column: Column | SQL, value: string): SQL | null {
-        const tokens = this.getFlexibleRegexTokens(value);
-
-        if (!isDefined(tokens)) {
-            return null;
-        }
-
-        const pattern = `%${tokens.map(token => this.escapeSqlLikeValue(token)).join('%')}%`;
-
-        return sql`CAST(${column} AS TEXT) LIKE ${pattern} ESCAPE '\\'`;
-    }
-
-    private getFlexibleRegexTokens(value: string): string[] | null {
-        const tokens = value.split('.*');
-        const hasOnlySqlSafeTokens = tokens.every(
-            token => isNotEmptyString(token) && !RuleMatcherService.UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN.test(token)
-        );
-
-        return isNotEmptyArray(tokens) && hasOnlySqlSafeTokens ? tokens : null;
-    }
-
-    private escapeSqlLikeValue(value: string): string {
-        return value.replace(/\\/gu, '\\\\').replace(/%/gu, '\\%').replace(/_/gu, '\\_');
-    }
-
-    private convertTransactionForRuleEvaluation(
-        transaction: TransactionWithEntriesMccCategoryEntityInterface
-    ): RuleEvaluationInputInterface {
-        const entries = transaction[TransactionAssociationEnum.ENTRIES];
-
-        return {
-            ...transaction,
-            amount: convertFromMicroUnits(this.calculateAmountForRuleEvaluation(transaction)),
-            tagIds: [],
-            entries: entries.map(entry => ({
-                type: entry.type,
-                categoryId: entry.categoryId,
-                accountId: entry.accountId,
-                amount: convertFromMicroUnits(entry.amount),
-                mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null,
-                mccCode: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.mcc ?? null
-            }))
         };
-    }
 
-    private async filterWithFallbackConditions(
-        candidateIds: number[],
-        fallbackConditions: RuleConditionInputInterface[],
-        conditionMatchType: RuleConditionMatchTypeEnum
-    ): Promise<number[]> {
-        if (!isNotEmptyArray(candidateIds)) {
-            return [];
-        }
+        const convertTransactionForRuleEvaluation = (
+            transaction: TransactionWithEntriesMccCategoryEntityInterface
+        ): RuleEvaluationInputInterface => {
+            const entries = transaction[TransactionAssociationEnum.ENTRIES];
 
-        const matchingIds: number[] = [];
+            return {
+                ...transaction,
+                amount: convertFromMicroUnits(calculateAmountForRuleEvaluation(transaction)),
+                tagIds: [],
+                entries: entries.map(entry => ({
+                    type: entry.type,
+                    categoryId: entry.categoryId,
+                    accountId: entry.accountId,
+                    amount: convertFromMicroUnits(entry.amount),
+                    mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null,
+                    mccCode: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.mcc ?? null
+                }))
+            };
+        };
 
-        for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
-            const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.findByIdsWithEntries(batchIds);
+        const evaluateConditions = (
+            conditions: readonly RuleConditionInputInterface[],
+            conditionMatchType: RuleConditionMatchTypeEnum,
+            input: RuleEvaluationInputInterface
+        ): boolean => {
+            const matchesCondition = (condition: RuleConditionInputInterface) => evaluateRuleCondition(condition, input);
 
-            for (const transaction of transactions) {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
+            return conditionMatchType === RuleConditionMatchTypeEnum.ANY
+                ? conditions.some(matchesCondition)
+                : conditions.every(matchesCondition);
+        };
 
-                if (this.evaluateConditions(fallbackConditions, conditionMatchType, input)) {
-                    matchingIds.push(transaction.id);
+        const filterWithFallbackConditions = Effect.fnUntraced(function* (
+            candidateIds: number[],
+            fallbackConditions: RuleConditionInputInterface[],
+            conditionMatchType: RuleConditionMatchTypeEnum
+        ) {
+            const matchingIds: number[] = [];
+
+            for (let batchStart = 0; batchStart < candidateIds.length; batchStart += RULE_SET_BATCH_SIZE) {
+                const batchIds = candidateIds.slice(batchStart, batchStart + RULE_SET_BATCH_SIZE);
+                const transactions = yield* transactionRepository.findByIdsWithEntries(batchIds);
+
+                for (const transaction of transactions) {
+                    const input = convertTransactionForRuleEvaluation(transaction);
+
+                    if (evaluateConditions(fallbackConditions, conditionMatchType, input)) {
+                        matchingIds.push(transaction.id);
+                    }
                 }
             }
-        }
 
-        return matchingIds;
-    }
+            return matchingIds;
+        });
 
-    private async scanMatchingIds(
-        conditions: RuleConditionInputInterface[],
-        conditionMatchType: RuleConditionMatchTypeEnum
-    ): Promise<number[]> {
-        const matchingIds: number[] = [];
+        const forEachTransactionBatch = Effect.fnUntraced(function* (
+            callback: (transactions: TransactionWithEntriesMccCategoryEntityInterface[]) => void
+        ) {
+            let offset = 0;
+            let hasMore = true;
 
-        await this.forEachTransactionBatch(transactions => {
-            for (const transaction of transactions) {
-                const input = this.convertTransactionForRuleEvaluation(transaction);
+            while (hasMore) {
+                yield* YIELD_TO_UI;
 
-                if (input.type !== TransactionTypeEnum.ADJUSTMENT && this.evaluateConditions(conditions, conditionMatchType, input)) {
-                    matchingIds.push(transaction.id);
+                const transactions = yield* transactionRepository.findAllWithMccCategoryOffset(RULE_SET_BATCH_SIZE, offset);
+
+                if (!isNotEmptyArray(transactions)) {
+                    break;
                 }
+
+                callback(transactions);
+
+                hasMore = transactions.length >= RULE_SET_BATCH_SIZE;
+                offset += RULE_SET_BATCH_SIZE;
             }
         });
 
-        return matchingIds;
-    }
+        const scanMatchingIds = Effect.fnUntraced(function* (
+            conditions: RuleConditionInputInterface[],
+            conditionMatchType: RuleConditionMatchTypeEnum
+        ) {
+            const matchingIds: number[] = [];
 
-    private async forEachTransactionBatch(
-        callback: (transactions: TransactionWithEntriesMccCategoryEntityInterface[]) => void
-    ): Promise<void> {
-        let offset = 0;
-        let hasMore = true;
+            yield* forEachTransactionBatch(transactions => {
+                for (const transaction of transactions) {
+                    const input = convertTransactionForRuleEvaluation(transaction);
 
-        while (hasMore) {
-            // eslint-disable-next-line no-await-in-loop
-            await microPause();
+                    if (input.type !== TransactionTypeEnum.ADJUSTMENT && evaluateConditions(conditions, conditionMatchType, input)) {
+                        matchingIds.push(transaction.id);
+                    }
+                }
+            });
 
-            // eslint-disable-next-line no-await-in-loop
-            const transactions = await transactionRepository.findAllWithMccCategoryOffset(RULE_SET_BATCH_SIZE, offset);
+            return matchingIds;
+        });
 
-            if (!isNotEmptyArray(transactions)) {
-                break;
+        const getColumnForField = (field: RuleConditionFieldEnum): Column | SQL | null => {
+            switch (field) {
+                case RuleConditionFieldEnum.TITLE:
+                    return TransactionEntityTable.title;
+                case RuleConditionFieldEnum.COMMENT:
+                    return TransactionEntityTable.comment;
+                case RuleConditionFieldEnum.TRANSACTION_TYPE:
+                    return TransactionEntityTable.type;
+                case RuleConditionFieldEnum.EXTERNAL_SOURCE:
+                    return TransactionEntityTable.externalSource;
+                case RuleConditionFieldEnum.ACCOUNT_ID:
+                    return sql`COALESCE(${TransactionEntityTable.fromAccountId}, ${TransactionEntityTable.toAccountId})`;
+                case RuleConditionFieldEnum.MCC_CODE:
+                    return sql`(SELECT ${MccCategoryEntityTable.mcc} FROM ${MccCategoryEntityTable} WHERE ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId})`;
+                case RuleConditionFieldEnum.AMOUNT:
+                    return null;
+                default:
+                    return null;
+            }
+        };
+
+        const getFlexibleRegexTokens = (value: string): string[] | null => {
+            const tokens = value.split('.*');
+            const hasOnlySqlSafeTokens = tokens.every(token => isNotEmptyString(token) && !UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN.test(token));
+
+            return isNotEmptyArray(tokens) && hasOnlySqlSafeTokens ? tokens : null;
+        };
+
+        const escapeSqlLikeValue = (value: string): string => value.replace(/\\/gu, '\\\\').replace(/%/gu, '\\%').replace(/_/gu, '\\_');
+
+        const buildRegexSql = (column: Column | SQL, value: string): SQL | null => {
+            const tokens = getFlexibleRegexTokens(value);
+
+            if (!isDefined(tokens)) {
+                return null;
             }
 
-            callback(transactions);
+            const pattern = `%${tokens.map(token => escapeSqlLikeValue(token)).join('%')}%`;
 
-            hasMore = transactions.length >= RULE_SET_BATCH_SIZE;
-            offset += RULE_SET_BATCH_SIZE;
-        }
-    }
+            return sql`CAST(${column} AS TEXT) LIKE ${pattern} ESCAPE '\\'`;
+        };
 
-    private evaluateConditions(
-        conditions: readonly RuleConditionInputInterface[],
-        conditionMatchType: RuleConditionMatchTypeEnum,
-        input: RuleEvaluationInputInterface
-    ): boolean {
-        const matchesCondition = (condition: RuleConditionInputInterface) => evaluateRuleCondition(condition, input);
+        const buildOperatorSql = (
+            column: Column | SQL,
+            operator: RuleConditionOperatorEnum,
+            value: string,
+            secondaryValue: string | null
+        ): SQL | null => {
+            switch (operator) {
+                case RuleConditionOperatorEnum.CONTAINS:
+                    return sql`CAST(${column} AS TEXT) LIKE ${`%${escapeSqlLikeValue(value)}%`} ESCAPE '\\'`;
+                case RuleConditionOperatorEnum.NOT_CONTAINS:
+                    return sql`CAST(${column} AS TEXT) NOT LIKE ${`%${escapeSqlLikeValue(value)}%`} ESCAPE '\\'`;
+                case RuleConditionOperatorEnum.EQUALS:
+                    return sql`CAST(${column} AS TEXT) COLLATE NOCASE = ${value}`;
+                case RuleConditionOperatorEnum.NOT_EQUALS:
+                    return sql`CAST(${column} AS TEXT) COLLATE NOCASE != ${value}`;
+                case RuleConditionOperatorEnum.GREATER_THAN:
+                    return sql`${column} > ${Number(value)}`;
+                case RuleConditionOperatorEnum.LESS_THAN:
+                    return sql`${column} < ${Number(value)}`;
+                case RuleConditionOperatorEnum.BETWEEN: {
+                    if (!isNotEmptyString(secondaryValue)) {
+                        return null;
+                    }
 
-        return conditionMatchType === RuleConditionMatchTypeEnum.ANY
-            ? conditions.some(matchesCondition)
-            : conditions.every(matchesCondition);
-    }
+                    const gteClause = sql`${column} >= ${Number(value)}`;
+                    const lteClause = sql`${column} <= ${Number(secondaryValue)}`;
 
-    private calculateAmountForRuleEvaluation(transaction: TransactionWithEntriesMccCategoryEntityInterface): number {
-        const entries = transaction[TransactionAssociationEnum.ENTRIES];
+                    return and(gteClause, lteClause) ?? null;
+                }
+                case RuleConditionOperatorEnum.IN: {
+                    const inValues = value.split(',').map(item => item.trim());
+                    const placeholders = inValues.map(item => sql`${item}`);
 
-        if (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.TRANSFER) {
-            return sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT));
-        }
+                    return sql`CAST(${column} AS TEXT) COLLATE NOCASE IN (${sql.join(placeholders, sql`, `)})`;
+                }
+                case RuleConditionOperatorEnum.MATCHES_REGEX:
+                    return buildRegexSql(column, value);
+                default:
+                    return null;
+            }
+        };
 
-        if (transaction.type === TransactionTypeEnum.INCOME) {
-            return sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT));
-        }
+        const buildRuleConditionSql = (condition: RuleConditionInputInterface): SQL | null => {
+            const column = getColumnForField(condition.field);
 
-        if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
-            const hasDebit = entries.some(entry => entry.type === TransactionEntryTypeEnum.DEBIT);
+            if (!isDefined(column)) {
+                return null;
+            }
 
-            return hasDebit
-                ? sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.DEBIT))
-                : sumEntryAmounts(entries.filter(entry => entry.type === TransactionEntryTypeEnum.CREDIT));
-        }
+            return buildOperatorSql(column, condition.operator, condition.value, condition.secondaryValue);
+        };
 
-        return 0;
-    }
+        const buildRuleConditionsWhere = (
+            conditions: RuleConditionInputInterface[],
+            conditionMatchType: RuleConditionMatchTypeEnum
+        ): BuildRuleConditionsWhereResultType => {
+            const sqlConditions: SQL[] = [];
+            const fallbackConditions: RuleConditionInputInterface[] = [];
+
+            for (const condition of conditions) {
+                const sqlClause = buildRuleConditionSql(condition);
+
+                if (isDefined(sqlClause)) {
+                    sqlConditions.push(sqlClause);
+                } else {
+                    fallbackConditions.push(condition);
+                }
+            }
+
+            const combiner = conditionMatchType === RuleConditionMatchTypeEnum.ALL ? and : or;
+            const sqlWhere = isNotEmptyArray(sqlConditions) ? (combiner(...sqlConditions) ?? null) : null;
+
+            return { sqlWhere, fallbackConditions };
+        };
+
+        const findMatchingIds = Effect.fnUntraced(function* (
+            conditions: RuleConditionInputInterface[],
+            conditionMatchType: RuleConditionMatchTypeEnum
+        ) {
+            const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(conditions, conditionMatchType);
+
+            if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
+                return yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+            }
+
+            if (isDefined(sqlWhere) && conditionMatchType === RuleConditionMatchTypeEnum.ALL) {
+                const candidateIds = yield* transactionRuleRepository.findIdsByRuleConditions(sqlWhere);
+
+                return yield* filterWithFallbackConditions(candidateIds, fallbackConditions, conditionMatchType);
+            }
+
+            return yield* scanMatchingIds(conditions, conditionMatchType);
+        });
+
+        const countMatchingTransactions = Effect.fn('RuleMatcherService.countMatchingTransactions')(function* (
+            params: CountConditionsParamsType
+        ) {
+            const { conditions, conditionMatchType } = params;
+
+            if (!isNotEmptyArray(conditions)) {
+                return 0;
+            }
+
+            const { sqlWhere, fallbackConditions } = buildRuleConditionsWhere(conditions, conditionMatchType);
+
+            if (!isNotEmptyArray(fallbackConditions) && isDefined(sqlWhere)) {
+                return yield* transactionRuleRepository.countByRuleConditions(sqlWhere);
+            }
+
+            const matchingIds = yield* findMatchingIds(conditions, conditionMatchType);
+
+            return matchingIds.length;
+        });
+
+        const collectMatchingTransactionIds = Effect.fn('RuleMatcherService.collectMatchingTransactionIds')(function* (
+            rule: RuleWithRelationsEntityInterface
+        ) {
+            if (!isNotEmptyArray(rule.conditions)) {
+                return [];
+            }
+
+            return yield* findMatchingIds(rule.conditions, rule.conditionMatchType);
+        });
+
+        const evaluateRule = (rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface): boolean => {
+            if (input.type === TransactionTypeEnum.ADJUSTMENT) {
+                return false;
+            }
+
+            if (!isNotEmptyArray(rule.conditions)) {
+                return false;
+            }
+
+            return evaluateConditions(rule.conditions, rule.conditionMatchType, input);
+        };
+
+        return { countMatchingTransactions, collectMatchingTransactionIds, evaluateRule };
+    })
+}) {
+    static readonly layer = Layer.effect(RuleMatcherService, RuleMatcherService.make).pipe(
+        Layer.provide([TransactionRepository.layer, TransactionRuleRepository.layer])
+    );
 }
-
-export const ruleMatcherService = new RuleMatcherService();

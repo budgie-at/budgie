@@ -1,5 +1,4 @@
-import { z } from 'zod';
+import type { LiabilityAccountCreateInputSchema } from '../schema/liability-account-create-input.schema';
+import type { Mutable } from 'effect/Types';
 
-import { LiabilityAccountCreateInputSchema } from '../schema/liability-account-create-input.schema';
-
-export type LiabilityAccountCreateInputInterface = z.infer<typeof LiabilityAccountCreateInputSchema>;
+export type LiabilityAccountCreateInputInterface = Mutable<typeof LiabilityAccountCreateInputSchema.Type>;

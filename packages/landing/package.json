@@ -19,7 +19,6 @@
         "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
     },
     "dependencies": {
-        "@budgie/logger": "workspace:*",
         "@lingui/core": "6.6.0",
         "@lingui/react": "6.6.0",
         "@radix-ui/react-accordion": "^1.2.20",
@@ -30,6 +29,7 @@
         "class-variance-authority": "^0.7.1",
         "cn": "0.2.4",
         "date-fns": "^4.3.0",
+        "effect": "4.0.0-rc.118",
         "framer-motion": "^12.43.0",
         "lucide-react": "^1.35.0",
         "negotiator": "^1.1.0",
@@ -39,12 +39,11 @@
         "react-dom": "19.2.3",
         "redis": "^5.11.0",
         "server-only": "^0.0.1",
-        "tailwindcss-animate": "^1.0.7",
-        "zod": "4.5.1"
+        "tailwindcss-animate": "^1.0.7"
     },
     "devDependencies": {
-        "@lingui/format-po": "6.6.0",
-        "@lingui/loader": "6.6.0",
+        "@lingui/format-po": "6.8.0",
+        "@lingui/loader": "6.8.0",
         "@lingui/swc-plugin": "6.6.0",
         "@tailwindcss/postcss": "^4.3.3",
         "@types/negotiator": "^0.6.5",

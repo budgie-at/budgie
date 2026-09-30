@@ -1,27 +1,28 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { getLogger } from '@budgie/logger';
 import { useLingui } from '@lingui/react/macro';
-import Toast from 'react-native-toast-message';
+import * as Effect from 'effect/Effect';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { SettingSwitch } from '../../../settings/components/setting-switch/setting-switch';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
-const logger = getLogger('AiEnabledToggle');
-
 export const AiEnabledToggle = () => {
     const { t } = useLingui();
     const isAiEnabled = useSetting('isAiEnabled');
 
     const handleValueChange = (next: boolean) => {
-        void updateSettingsMutation({ isAiEnabled: next }).catch((error: unknown) => {
-            logger.error('failed', { isAiEnabled: next, errorMessage: getErrorMessage(error) });
-            Toast.show({ type: 'error', text1: t`Could not update on-device AI`, text2: getErrorMessage(error) });
-        });
+        appRuntime.runFork(
+            updateSettingsMutation({ isAiEnabled: next }).pipe(
+                Effect.tapCause(Effect.logError),
+                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not update on-device AI`, getErrorMessage(error))))
+            )
+        );
     };
 
     const switchSlot = (
