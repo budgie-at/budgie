@@ -51,7 +51,7 @@
         },
         {
             "name": "voice-transaction-entry-1",
-            "flow": "flows/media/voice-transaction-entry-1.flow.yaml"
+            "flow": "flows/media/voice-transaction-entry-1.ai-build-1183.yaml"
         },
         {
             "name": "ai-merchant-translation-1",
