@@ -13,8 +13,8 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useAuthContext } from '../../../auth/context/auth.context';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
+import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
-import { useGetSettingsQuery } from '../../query/use-get-settings.query';
 
 const Gradient = styled(LinearGradient);
 const colors = ['rgba(1, 255, 136, 0.10)', 'rgba(0, 0, 0, 0)'] as const;
@@ -23,10 +23,9 @@ const start = { x: 0, y: 0 };
 const end = { x: 1, y: 1 };
 
 export const PinEnabledCard = () => {
-    const { settings } = useGetSettingsQuery();
     const { isFaceIdAvailable, isTouchIdAvailable, isSomeAvailable } = useAuthContext();
 
-    const isBiometricEnabled = settings?.isBiometricEnabled === true;
+    const isBiometricEnabled = useSetting('isBiometricEnabled');
 
     const changePinHref = { pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CHANGE } } as const;
     const disablePinHref = { pathname: '/settings/pin', params: { mode: PinSetupModeEnum.DISABLE } } as const;

@@ -109,7 +109,12 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
             });
 
             const convertCandidate = Effect.fnUntraced(function* (candidate: UnpairedOwnCardTransferCandidateInterface) {
-                const params = { id: candidate.transactionId, accountId: candidate.counterpartAccountId, customExchangeRate: 1 };
+                const params = {
+                    id: candidate.transactionId,
+                    accountId: candidate.counterpartAccountId,
+                    customExchangeRate: 1,
+                    feeEntries: []
+                };
 
                 if (candidate.transactionType === TransactionTypeEnum.INCOME) {
                     yield* transactionTransferService.convertIncomeToTransfer(params);

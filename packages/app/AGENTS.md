@@ -586,23 +586,22 @@ Toast.show({
 
 ## Provider Architecture
 
-Root layout has 15 nested providers in this order:
+Root layout has 14 nested providers in this order (settings are not a provider: `useSettingsContext` reads `settingsContextAtom`, so screens frozen by `react-native-screens` still see setting changes on reveal):
 
 1. SafeAreaProvider
 2. SQLiteProvider
-3. SettingsProvider
-4. I18nProvider
-5. KeyboardProvider
-6. ThemeProvider
-7. ScreenChromeThemeProvider
-8. GestureHandlerRootView
-9. AuthProvider
-10. AuthGuard
-11. CreateActionProvider
-12. AiProviderWrapper
-13. AiEmbeddingProgressProvider
-14. AiStatusProvider
-15. ModalProvider (wraps all 20 modal providers internally)
+3. I18nProvider
+4. KeyboardProvider
+5. ThemeProvider
+6. ScreenChromeThemeProvider
+7. GestureHandlerRootView
+8. AuthProvider
+9. AuthGuard
+10. CreateActionProvider
+11. AiProviderWrapper
+12. AiEmbeddingProgressProvider
+13. AiStatusProvider
+14. ModalProvider (wraps all 20 modal providers internally)
 
 ## AI/LLM Module Patterns
 
