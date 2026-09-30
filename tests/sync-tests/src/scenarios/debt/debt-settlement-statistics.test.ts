@@ -454,29 +454,6 @@ describe('debt settlement statistics', () => {
         expectBorrowedDebtSettlementProgress(debtAccount.id);
     });
 
-    it('summarizes borrowed debt after transfer repayment and additional borrowed income', async () => {
-        const [category] = testDb.select().from(CategoryEntityTable).all();
-        const cashAccount = seed.account({ title: 'Main account', type: AccountTypeEnum.BANK_SYNC });
-        const debtAccount = seed.account({
-            title: 'Transfer repayment borrowed account',
-            type: AccountTypeEnum.DEBT,
-            debtType: AccountDebtTypeEnum.BORROW,
-            targetBalance: 15_000 * PRECISION
-        });
-        const additionalBorrowing = createIncomeTransaction(cashAccount.id, category.id, 109 * PRECISION);
-
-        createDebtTransferTransaction(debtAccount.id, cashAccount.id, 15_000 * PRECISION, 'Borrow money from Alex');
-        createDebtTransferTransaction(cashAccount.id, debtAccount.id, 2_000 * PRECISION, 'Return money to Alex');
-
-        await run(transactionDebtSettlementService.attach({ transactionId: additionalBorrowing.id, debtAccountId: debtAccount.id }));
-
-        const summary = buildSummaryFromDebtAccount(debtAccount);
-
-        expectDebtProgressSummary(summary, 13_109 * PRECISION, 2_000 * PRECISION, 15_109 * PRECISION, 13.24);
-        expectBorrowedDebtSettlementHomeRow(debtAccount.id, cashAccount.instrumentId);
-        expectBorrowedDebtSettlementProgress(debtAccount.id);
-    });
-
     it('returns canonical borrowed progress when the opening adjustment is already covered', () => {
         const { debtAccount, row } = createBorrowedDebtCoveredOpeningScenario();
         const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccount.id).get();

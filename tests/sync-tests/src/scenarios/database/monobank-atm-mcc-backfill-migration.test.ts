@@ -15,7 +15,7 @@ import {
 
 const MIGRATION_FILE_NAME = '0065_backfill_monobank_atm_mcc.sql';
 const AMOUNT = 408_000_000;
-const OPERATED_AT = new Date(2025, 5, 1, 12, 0, 0);
+const OPERATED_AT = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
 describe('database/monobank-atm-mcc-backfill-migration', () => {
     it('restores MCC 6011 on Monobank ATM withdrawals imported without an MCC so consolidation converts them once', async () => {

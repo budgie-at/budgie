@@ -15,7 +15,7 @@ import {
 import { eq } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { buildTransferInput, seed, testDb, run } from '../../harness';
+import { buildTransferInput, seed, seedLedgerBalance, testDb, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const OPERATED_AT_YEAR = 2026;
@@ -152,13 +152,13 @@ describe('account/deposit-transaction-safety', () => {
     it('rejects creating an expense from a funded deposit without changing rows or balances', async () => {
         const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
 
-        seedBalance(depositAccount.id, 100 * PRECISION);
+        await seedLedgerBalance(depositAccount.id, 100 * PRECISION);
 
         await expect(run(transactionService.createInternal(buildExpenseInput(depositAccount.id, 40)))).rejects.toThrow(
             DEPOSIT_EXPENSE_ERROR
         );
 
-        expect(fetchTransactionCount()).toBe(0);
+        expect(fetchTransactionCount()).toBe(1);
         expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(100 * PRECISION);
         expect(fetchComputedBalance(depositAccount.id)).toBe(100 * PRECISION);
     });
@@ -168,7 +168,7 @@ describe('account/deposit-transaction-safety', () => {
         const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
         const transaction = await run(transactionService.createInternal(buildExpenseInput(bankAccount.id, 20)));
 
-        seedBalance(depositAccount.id, 100 * PRECISION);
+        await seedLedgerBalance(depositAccount.id, 100 * PRECISION);
 
         await expect(run(transactionService.updateById(transaction.id, buildExpenseInput(depositAccount.id, 30)))).rejects.toThrow(
             DEPOSIT_EXPENSE_ERROR
@@ -186,9 +186,11 @@ describe('account/deposit-transaction-safety', () => {
         const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
 
         seedExpenseLedgerTransaction(depositAccount.id, IMPORTED_INITIAL_AMOUNT, IMPORTED_EXTERNAL_ID, ExternalSourceEnum.MONOBANK);
-        seedBalance(depositAccount.id, 100 * PRECISION);
+        await seedLedgerBalance(depositAccount.id, 100 * PRECISION);
 
-        await expect(run(transactionService.update(buildImportedExpenseInput(depositAccount.id)))).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
+        await expect(run(transactionService.bulkUpdateImported([buildImportedExpenseInput(depositAccount.id)]))).rejects.toThrow(
+            DEPOSIT_EXPENSE_ERROR
+        );
 
         const importedTransaction = testDb
             .select()
@@ -211,14 +213,14 @@ describe('account/deposit-transaction-safety', () => {
         const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
         const bankAccount = seed.account({ type: AccountTypeEnum.BANK });
 
-        seedBalance(depositAccount.id, 50 * PRECISION);
+        await seedLedgerBalance(depositAccount.id, 50 * PRECISION);
 
         await expect(
             run(transactionService.createInternalTransfer(buildTransferInput(depositAccount.id, bankAccount.id, 70, OPERATED_AT)))
         ).rejects.toThrow(NEGATIVE_DEPOSIT_BALANCE_ERROR);
 
-        expect(fetchTransactionCount()).toBe(0);
-        expect(fetchTransactionEntryCount()).toBe(0);
+        expect(fetchTransactionCount()).toBe(1);
+        expect(fetchTransactionEntryCount()).toBe(1);
         expect(fetchCachedBalanceAmount(depositAccount.id)).toBe(50 * PRECISION);
         expect(fetchComputedBalance(depositAccount.id)).toBe(50 * PRECISION);
     });

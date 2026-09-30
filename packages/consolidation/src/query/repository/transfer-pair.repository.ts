@@ -24,9 +24,7 @@ export class TransferPairRepository {
     readonly findCandidates = Effect.fn('TransferPairRepository.findCandidates')(function* (
         scope: ConsolidationScanScopeInterface | null = null
     ) {
-        const sql = buildTransferPairCandidatesSql(scope);
-
-        return yield* Db.query(db => db.$client.getAllAsync<TransferPairCandidateInterface>(sql));
+        return yield* Db.query(db => db.$client.getAllAsync<TransferPairCandidateInterface>(buildTransferPairCandidatesSql(scope)));
     });
 
     readonly findBridgeClaimedRepairCandidates = Effect.fn('TransferPairRepository.findBridgeClaimedRepairCandidates')(function* () {
@@ -36,9 +34,7 @@ export class TransferPairRepository {
     readonly findP2pFiatAtomicCandidates = Effect.fn('TransferPairRepository.findP2pFiatAtomicCandidates')(function* (
         scope: ConsolidationScanScopeInterface | null = null
     ) {
-        const sql = buildP2pFiatAtomicCandidateSql(scope);
-
-        return yield* Db.query(db => db.$client.getAllAsync<P2pFiatAtomicCandidateInterface>(sql));
+        return yield* Db.query(db => db.$client.getAllAsync<P2pFiatAtomicCandidateInterface>(buildP2pFiatAtomicCandidateSql(scope)));
     });
 
     readonly findP2pFiatAuthoritativeCandidates = Effect.fn('TransferPairRepository.findP2pFiatAuthoritativeCandidates')(function* (
@@ -58,8 +54,8 @@ export class TransferPairRepository {
     );
 
     readonly findManualReviewCandidates = Effect.fn('TransferPairRepository.findManualReviewCandidates')(function* () {
-        const sql = buildTransferPairManualReviewCandidatesSql();
-
-        return yield* Db.query(db => db.$client.getAllAsync<TransferPairReviewCandidateInterface>(sql));
+        return yield* Db.query(db =>
+            db.$client.getAllAsync<TransferPairReviewCandidateInterface>(buildTransferPairManualReviewCandidatesSql())
+        );
     });
 }

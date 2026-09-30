@@ -3,15 +3,15 @@ import { describe, expect, it } from 'vitest';
 
 import { expectConsolidationParent, fetchLedgerEntry, fetchSingleCanonicalId } from '../harness/consolidation-revert-audit';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { consolidationCoordinatorService, runEffect, testQueryService, testSeedService } from '../harness/test-context';
 
 import type { TransactionEntityInterface } from '@budgie/contracts';
 
-const ERSTE_OPERATED_AT = new Date('2023-11-26T14:51:00');
+const ERSTE_OPERATED_AT = new Date(Date.now() - 24 * 60 * 60 * 1000);
 const ATM_WITHDRAWAL_AMOUNT = 200 * PRECISION;
 
 describe('consolidation/erste-atm-cash-withdrawal', () => {
-    it('moves an Erste AUTOMAT withdrawal to the cash account and leaves cash back and deposits unpaired', async () => {
+    it('moves an Erste AUTOMAT withdrawal to the cash account only on request and leaves cash back and deposits unpaired', async () => {
         const bankAccount = testSeedService.account({ title: 'Erste EUR', type: AccountTypeEnum.BANK_SYNC });
         const cashAccount = testSeedService.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH });
         const seedErsteTransaction = (title: string, transaction: TransactionEntityInterface): TransactionEntityInterface =>
@@ -47,10 +47,18 @@ describe('consolidation/erste-atm-cash-withdrawal', () => {
             )
         ];
 
-        const result = await runConsolidation();
+        expect(await runConsolidation()).toEqual({ consolidated: 0, found: 0 });
+        expect(
+            await runEffect(
+                consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([
+                    atmWithdrawal.id,
+                    ...unpairedTransactions.map(transaction => transaction.id)
+                ])
+            )
+        ).toBe(1);
+
         const canonicalId = fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
 
-        expect(result.consolidated).toBe(1);
         expectConsolidationParent(atmWithdrawal.id, canonicalId);
         expect(fetchLedgerEntry(canonicalId, cashAccount.id).amount).toBe(ATM_WITHDRAWAL_AMOUNT);
         expect(

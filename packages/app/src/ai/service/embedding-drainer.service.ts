@@ -98,17 +98,7 @@ class EmbeddingDrainerService {
         yield* Effect.forEach(this.drainers, drainer => drainer.resume(), { discard: true });
     });
 
-    readonly retry = Effect.fn('EmbeddingDrainerService.retry')(function* (this: EmbeddingDrainerService) {
-        yield* Effect.forEach(this.drainers, drainer => drainer.retry(), { discard: true });
-    });
-
     private residueCleared = false;
-
-    cancelBoost(): void {
-        this.drainers.forEach(drainer => {
-            drainer.cancelBoost();
-        });
-    }
 
     private createDrainer<TContext extends EmbeddingPendingContextBaseInterface>(
         source: EmbeddingDrainerSourceInterface<TContext>

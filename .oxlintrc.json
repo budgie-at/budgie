@@ -66,24 +66,41 @@
     ],
     "overrides": [
         {
-            "files": ["**/*.{ts,tsx}"],
+            "files": [
+                "**/*.{ts,tsx}"
+            ],
             "rules": {
                 "accessor-pairs": "error",
                 "array-callback-return": "error",
-                "arrow-body-style": ["error", "as-needed"],
+                "arrow-body-style": [
+                    "error",
+                    "as-needed"
+                ],
                 "block-scoped-var": "error",
                 "capitalized-comments": "off",
                 "class-methods-use-this": "off",
-                "complexity": ["error", 25],
+                "complexity": [
+                    "error",
+                    25
+                ],
                 "constructor-super": "error",
-                "curly": ["error", "all"],
+                "curly": [
+                    "error",
+                    "all"
+                ],
                 "default-case": "error",
                 "default-case-last": "error",
                 "default-param-last": "error",
                 "eqeqeq": "error",
                 "for-direction": "error",
                 "func-name-matching": "error",
-                "func-names": ["error", "always", { "generators": "never" }],
+                "func-names": [
+                    "error",
+                    "always",
+                    {
+                        "generators": "never"
+                    }
+                ],
                 "func-style": "error",
                 "getter-return": "error",
                 "grouped-accessor-pairs": "error",
@@ -91,7 +108,19 @@
                 "id-length": [
                     "error",
                     {
-                        "exceptions": ["x", "y", "z", "i", "j", "e", "_", "w", "h", "t", "X"],
+                        "exceptions": [
+                            "x",
+                            "y",
+                            "z",
+                            "i",
+                            "j",
+                            "e",
+                            "_",
+                            "w",
+                            "h",
+                            "t",
+                            "X"
+                        ],
                         "checkGeneric": false
                     }
                 ],
@@ -158,7 +187,9 @@
                 "no-empty-function": [
                     "error",
                     {
-                        "allow": ["constructors"]
+                        "allow": [
+                            "constructors"
+                        ]
                     }
                 ],
                 "no-empty-pattern": "error",
@@ -192,13 +223,144 @@
                     "error",
                     {
                         "ignore": [
-                            -20, -10, -2, -4, -3, -6, -5, -1, -0.5, 0, 0.0001, 0.01, 0.05, 0.1, 0.2, 0.3, 0.35, 0.5, 0.6, 0.64, 0.65, 0.66,
-                            0.75, 0.76, 0.79, 0.8, 0.81, 0.83, 1, 1.5, 1.8, 1.97, 2, 2.5, 3, 3.2, 3.25, 4, 4.25, 4.5, 5, 5.5, 6, 6.5, 7,
-                            7.5, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 18, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 31.5, 32, 33,
-                            35, 34, 36, 37, 38, 39, 40, 41, 42, 45, 48, 50, 51, 59, 60, 70, 75, 80, 96, 99, 100, 125, 150, 180, 200, 201,
-                            250, 255, 256, 300, 307, 308, 350, 360, 365, 400, 404, 405, 500, 600, 640, 725, 750, 900, 1000, 1024, 1200,
-                            1600, 2000, 2019, 2500, 3000, 3500, 3600, 5000, 6000, 10000, 10001, 10100, 16000, 30000, 60000, 120000,
-                            1000000000, 999
+                            -20,
+                            -10,
+                            -2,
+                            -4,
+                            -3,
+                            -6,
+                            -5,
+                            -1,
+                            -0.5,
+                            0,
+                            0.0001,
+                            0.01,
+                            0.05,
+                            0.1,
+                            0.2,
+                            0.3,
+                            0.35,
+                            0.5,
+                            0.6,
+                            0.64,
+                            0.65,
+                            0.66,
+                            0.75,
+                            0.76,
+                            0.79,
+                            0.8,
+                            0.81,
+                            0.83,
+                            1,
+                            1.5,
+                            1.8,
+                            1.97,
+                            2,
+                            2.5,
+                            3,
+                            3.2,
+                            3.25,
+                            4,
+                            4.25,
+                            4.5,
+                            5,
+                            5.5,
+                            6,
+                            6.5,
+                            7,
+                            7.5,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12,
+                            13,
+                            14,
+                            15,
+                            16,
+                            17,
+                            19,
+                            18,
+                            20,
+                            21,
+                            22,
+                            23,
+                            24,
+                            25,
+                            26,
+                            27,
+                            28,
+                            29,
+                            30,
+                            31,
+                            31.5,
+                            32,
+                            33,
+                            35,
+                            34,
+                            36,
+                            37,
+                            38,
+                            39,
+                            40,
+                            41,
+                            42,
+                            45,
+                            48,
+                            50,
+                            51,
+                            59,
+                            60,
+                            70,
+                            75,
+                            80,
+                            96,
+                            99,
+                            100,
+                            125,
+                            150,
+                            180,
+                            200,
+                            201,
+                            250,
+                            255,
+                            256,
+                            300,
+                            307,
+                            308,
+                            350,
+                            360,
+                            365,
+                            400,
+                            404,
+                            405,
+                            500,
+                            600,
+                            640,
+                            725,
+                            750,
+                            900,
+                            1000,
+                            1024,
+                            1200,
+                            1600,
+                            2000,
+                            2019,
+                            2500,
+                            3000,
+                            3500,
+                            3600,
+                            5000,
+                            6000,
+                            10000,
+                            10001,
+                            10100,
+                            16000,
+                            30000,
+                            60000,
+                            120000,
+                            1000000000,
+                            999
                         ]
                     }
                 ],
@@ -221,7 +383,10 @@
                 "no-prototype-builtins": "error",
                 "no-redeclare": "error",
                 "no-regex-spaces": "error",
-                "no-restricted-exports": ["error", {}],
+                "no-restricted-exports": [
+                    "error",
+                    {}
+                ],
                 "no-restricted-globals": "error",
                 "no-restricted-imports": [
                     "error",
@@ -231,9 +396,18 @@
                                 "name": "effect",
                                 "message": "Metro does not tree-shake: import Effect modules by subpath, e.g. import * as Effect from 'effect/Effect'"
                             },
-                            { "name": "zod", "message": "Use Effect Schema (import * as Schema from 'effect/Schema')" },
-                            { "name": "ky", "message": "Use Effect HttpClient (effect/unstable/http)" },
-                            { "name": "drizzle-zod", "message": "Derive row types from Table.$inferSelect and validate with Effect Schema" }
+                            {
+                                "name": "zod",
+                                "message": "Use Effect Schema (import * as Schema from 'effect/Schema')"
+                            },
+                            {
+                                "name": "ky",
+                                "message": "Use Effect HttpClient (effect/unstable/http)"
+                            },
+                            {
+                                "name": "drizzle-zod",
+                                "message": "Derive row types from Table.$inferSelect and validate with Effect Schema"
+                            }
                         ]
                     }
                 ],
@@ -298,7 +472,10 @@
                 "no-warning-comments": [
                     "error",
                     {
-                        "terms": ["fixme", "xxx"],
+                        "terms": [
+                            "fixme",
+                            "xxx"
+                        ],
                         "location": "start"
                     }
                 ],
@@ -429,7 +606,10 @@
                         "allowNumber": true
                     }
                 ],
-                "typescript/return-await": ["error", "error-handling-correctness-only"],
+                "typescript/return-await": [
+                    "error",
+                    "error-handling-correctness-only"
+                ],
                 "typescript/triple-slash-reference": "error",
                 "typescript/unbound-method": "error",
                 "typescript/unified-signatures": "error",
@@ -443,10 +623,14 @@
                 "typescript/promise-function-async": "off",
                 "typescript/explicit-function-return-type": "off"
             },
-            "plugins": ["typescript"]
+            "plugins": [
+                "typescript"
+            ]
         },
         {
-            "files": ["**/*.{ts,tsx}"],
+            "files": [
+                "**/*.{ts,tsx}"
+            ],
             "rules": {
                 "@stylistic/lines-between-class-members": [
                     "error",
@@ -500,7 +684,10 @@
             }
         },
         {
-            "files": ["packages/app/**/*.{ts,tsx}", "packages/landing/**/*.{ts,tsx}"],
+            "files": [
+                "packages/app/**/*.{ts,tsx}",
+                "packages/landing/**/*.{ts,tsx}"
+            ],
             "rules": {
                 "lingui/t-call-in-function": "error",
                 "lingui/no-single-variables-to-translate": "error",
@@ -510,8 +697,13 @@
             }
         },
         {
-            "files": ["packages/app/**/*.{ts,tsx}", "packages/landing/**/*.{ts,tsx}"],
-            "excludeFiles": ["packages/app/**/*.selector.ts"],
+            "files": [
+                "packages/app/**/*.{ts,tsx}",
+                "packages/landing/**/*.{ts,tsx}"
+            ],
+            "excludeFiles": [
+                "packages/app/**/*.selector.ts"
+            ],
             "rules": {
                 "lingui/no-unlocalized-strings": [
                     "error",
@@ -580,7 +772,9 @@
             }
         },
         {
-            "files": ["**/*.service.ts"],
+            "files": [
+                "**/*.service.ts"
+            ],
             "rules": {
                 "max-lines": [
                     "error",
@@ -593,7 +787,9 @@
             }
         },
         {
-            "files": ["**/*.{ts,tsx}"],
+            "files": [
+                "**/*.{ts,tsx}"
+            ],
             "rules": {
                 "import/export": "error",
                 "import/namespace": "off",
@@ -608,20 +804,19 @@
                 "es2018": true,
                 "es2026": true
             },
-            "plugins": ["import"]
+            "plugins": [
+                "import"
+            ]
         },
         {
-            "files": ["**/*.ts"],
+            "files": [
+                "**/*.ts"
+            ],
             "rules": {
                 "node/no-exports-assign": "error",
                 "n/hashbang": "error",
                 "n/no-deprecated-api": "error",
-                "n/no-extraneous-import": [
-                    "error",
-                    {
-                        "allowModules": ["@jest/globals"]
-                    }
-                ],
+                "n/no-extraneous-import": "error",
                 "n/no-extraneous-require": "error",
                 "n/no-missing-require": "error",
                 "n/no-process-exit": "error",
@@ -704,14 +899,18 @@
                 "WritableStreamDefaultController": "readonly",
                 "WritableStreamDefaultWriter": "readonly"
             },
-            "plugins": ["node"],
+            "plugins": [
+                "node"
+            ],
             "env": {
                 "commonjs": true,
                 "es2024": true
             }
         },
         {
-            "files": ["**/*.{ts,tsx}"],
+            "files": [
+                "**/*.{ts,tsx}"
+            ],
             "rules": {
                 "promise/always-return": "error",
                 "promise/no-return-wrap": "error",
@@ -725,10 +924,15 @@
                 "promise/no-new-statics": "error",
                 "promise/valid-params": "warn"
             },
-            "plugins": ["promise"]
+            "plugins": [
+                "promise"
+            ]
         },
         {
-            "files": ["**/*.tsx", "**/*.hook.ts"],
+            "files": [
+                "**/*.tsx",
+                "**/*.hook.ts"
+            ],
             "rules": {
                 "react/display-name": "off",
                 "react/jsx-key": "error",
@@ -747,7 +951,11 @@
                 "react/no-unknown-property": [
                     "error",
                     {
-                        "ignore": ["popover", "popoverTarget", "popoverTargetAction"]
+                        "ignore": [
+                            "popover",
+                            "popoverTarget",
+                            "popoverTargetAction"
+                        ]
                     }
                 ],
                 "react/no-unsafe": "off",
@@ -755,7 +963,10 @@
                 "react/require-render-return": "error",
                 "react/rules-of-hooks": "error",
                 "react/exhaustive-deps": "warn",
-                "max-statements": ["error", 15],
+                "max-statements": [
+                    "error",
+                    15
+                ],
                 "@rnw-community/no-complex-jsx-logic": "error",
                 "react-hooks-js/static-components": "error",
                 "react-hooks-js/use-memo": "error",
@@ -783,7 +994,9 @@
                 "react/jsx-filename-extension": [
                     "error",
                     {
-                        "extensions": [".tsx"]
+                        "extensions": [
+                            ".tsx"
+                        ]
                     }
                 ],
                 "react/jsx-props-no-spreading": "off",
@@ -796,46 +1009,9 @@
                 "react/jsx-no-literals": "off",
                 "react/jsx-no-constructed-context-values": "off"
             },
-            "plugins": ["react"]
-        },
-        {
-            "files": ["**/*.spec.ts"],
-            "rules": {
-                "jest/expect-expect": "off",
-                "jest/no-alias-methods": "error",
-                "jest/no-commented-out-tests": "warn",
-                "jest/no-conditional-expect": "error",
-                "jest/no-deprecated-functions": "error",
-                "jest/no-disabled-tests": "warn",
-                "jest/no-done-callback": "off",
-                "jest/no-export": "error",
-                "jest/no-focused-tests": "error",
-                "jest/no-identical-title": "error",
-                "jest/no-interpolation-in-snapshots": "error",
-                "jest/no-jasmine-globals": "error",
-                "jest/no-mocks-import": "error",
-                "jest/no-standalone-expect": "error",
-                "jest/no-test-prefixes": "error",
-                "jest/valid-describe-callback": "error",
-                "jest/valid-expect": "error",
-                "jest/valid-expect-in-promise": "error",
-                "jest/valid-title": "error",
-                "no-await-in-loop": "off",
-                "jest/require-hook": "off",
-                "jest/max-expects": "off",
-                "no-undefined": "off",
-                "max-classes-per-file": "off",
-                "max-lines-per-function": "off",
-                "max-lines": "off",
-                "max-statements": "off",
-                "func-names": "off",
-                "promise/no-nesting": "off",
-                "no-magic-numbers": "warn"
-            },
-            "plugins": ["jest", "promise", "typescript"],
-            "env": {
-                "jest": true
-            }
+            "plugins": [
+                "react"
+            ]
         }
     ]
 }

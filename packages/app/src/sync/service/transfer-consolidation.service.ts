@@ -30,17 +30,35 @@ class TransferConsolidationService {
     });
 
     readonly consolidate = Effect.fn('TransferConsolidationService.consolidate')(
-        function* (scope: ConsolidationScanScopeInterface | null) {
+        function* (this: TransferConsolidationService, scope: ConsolidationScanScopeInterface | null) {
             const result = yield* consolidationCoordinatorService.consolidate(scope);
 
-            if (isPositiveNumber(result.consolidated)) {
-                yield* accountBalanceIncrementalService.updateAllBalances(true);
-            }
+            yield* this.updateBalancesAfterConsolidation(result.consolidated);
 
             return result;
         },
-        effect => TransferConsolidationService.exclusive.withPermit(Workload.use(workload => workload.runForeground(effect)))
+        effect => TransferConsolidationService.runExclusive(effect)
     );
+
+    readonly moveAtmCashWithdrawalsToCash = Effect.fn('TransferConsolidationService.moveAtmCashWithdrawalsToCash')(
+        function* (this: TransferConsolidationService, transactionIds: readonly number[]) {
+            const consolidated = yield* consolidationCoordinatorService.moveAtmCashWithdrawalsToCash(transactionIds);
+
+            yield* this.updateBalancesAfterConsolidation(consolidated);
+
+            return consolidated;
+        },
+        effect => TransferConsolidationService.runExclusive(effect)
+    );
+
+    private readonly updateBalancesAfterConsolidation = Effect.fnUntraced(function* (consolidated: number) {
+        if (isPositiveNumber(consolidated)) {
+            yield* accountBalanceIncrementalService.updateAllBalances(true);
+        }
+    });
+
+    private static readonly runExclusive = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
+        TransferConsolidationService.exclusive.withPermit(Workload.use(workload => workload.runForeground(effect)));
 }
 
 export const transferConsolidationService = new TransferConsolidationService();

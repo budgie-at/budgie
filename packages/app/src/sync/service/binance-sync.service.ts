@@ -28,7 +28,6 @@ import { importedTransactionEntryUpdateService } from '../../transaction/service
 import { transactionService } from '../../transaction/service/transaction.service';
 import { BINANCE_SYNC_TASK } from '../constant/binance-sync-task.constant';
 import { BINANCE_TRANSFER_LOOKBACK_YEARS } from '../constant/binance-transfer-lookback-years.constant';
-import { TransferConsolidationDrainReasonEnum } from '../enum/transfer-consolidation-drain-reason.enum';
 import { BinanceTransferInputMapper } from '../mapper/binance-transfer-input.mapper';
 import { mapBankTransactionToCreateInput } from '../util/map-bank-transaction-to-create-input.util';
 
@@ -120,7 +119,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
         );
         if (isPositiveNumber(changedCount)) {
             yield* transactionService.updateAllBalances();
-            yield* transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC);
+            yield* transferConsolidationDrainerService.enqueue();
         }
 
         const progressDate = this.runDeferred ? (sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date()) : new Date();
@@ -306,7 +305,7 @@ class AppBinanceSyncService extends AbstractPollingSyncService {
 
         const consolidationScope = consolidationScopeService.buildFromTransactions(yield* transactionRepository.findByIds(transactionIds));
         if (isDefined(consolidationScope)) {
-            yield* transferConsolidationDrainerService.enqueue(TransferConsolidationDrainReasonEnum.BINANCE_SYNC, consolidationScope);
+            yield* transferConsolidationDrainerService.enqueue(consolidationScope);
         }
     });
 

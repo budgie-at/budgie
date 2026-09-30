@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-// Generates lazily-importable lucide icon constants from UserIconNameEnum.
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+// Generates UserIconNameEnum, lazily-importable lucide icon constants and the multilingual icon search index.
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,12 +8,22 @@ import * as Schema from 'effect/Schema';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { normalizeIconSearchText } from '../src/@generic/utils/normalize-icon-search-text.util.ts';
+
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const APP_DIR = resolve(SCRIPT_DIR, '..');
 const LUCIDE_DIR = join(APP_DIR, 'node_modules', 'lucide-react-native');
 const ENUM_FILE = resolve(APP_DIR, '..', 'contracts', 'src', '@generic', 'enum', 'user-icon-name.enum.ts');
 const CHUNKS_DIR = join(APP_DIR, 'src', '@generic', 'constant', 'icons');
 const AGGREGATOR_FILE = join(APP_DIR, 'src', '@generic', 'constant', 'icons.constant.ts');
+const SEARCH_INDEX_FILE = join(APP_DIR, 'src', '@generic', 'constant', 'icon-search-index.json');
+const LUCIDE_TAGS_FILE = join(APP_DIR, 'node_modules', 'lucide-static', 'tags.json');
+const EMOJIBASE_DIR = join(APP_DIR, 'node_modules', 'emojibase-data');
+const KEYWORDS_DIR = join(SCRIPT_DIR, 'icon-keywords');
+const EXTRA_TAGS_FILE = join(SCRIPT_DIR, 'icon-tags.json');
+const EMOJI_LANGUAGES = ['en', 'uk', 'ru', 'de', 'es', 'fr'];
+const EMOJI_COMPONENT_GROUP = 2;
+const MIN_TRANSLATED_WORD_LENGTH = 3;
 const INTERFACE_IMPORT_FROM_CHUNKS = '../../interface/lucide-icon-module.interface';
 const INTERFACE_IMPORT_FROM_AGGREGATOR = '../interface/lucide-icon-module.interface';
 const CHUNK_SIZE = 240;
@@ -28,6 +38,14 @@ const LucidePackageSchema = Schema.Struct({
     name: Schema.String,
     exports: Schema.Record(Schema.String, Schema.Unknown)
 });
+
+const LucideTagsSchema = z.record(z.string(), z.array(z.string()));
+
+const WordTranslationsSchema = z.record(z.string(), z.array(z.string()));
+
+const EmojibaseDataSchema = z.array(
+    z.object({ emoji: z.string(), label: z.string(), tags: z.array(z.string()).optional(), group: z.number().optional() })
+);
 
 const parseEnumValues = (enumFile: string): string[] => {
     const source = readFileSync(enumFile, 'utf8');
@@ -142,10 +160,103 @@ const writeChunks = (iconEntries: readonly IconEntryInterface[], specifierPrefix
     return chunkBaseNames;
 };
 
+const toPascalName = (fileName: string): string =>
+    fileName
+        .split('-')
+        .map(part => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+        .join('');
+
+const syncEnumValues = (enumValues: readonly string[], fileNameByExportName: ReadonlyMap<string, string>): string[] => {
+    const coveredFileNames = new Set(enumValues.map(value => fileNameByExportName.get(value)).filter(isDefined));
+    const addedValues = [...new Set(fileNameByExportName.values())]
+        .filter(fileName => !coveredFileNames.has(fileName))
+        .map(toPascalName)
+        .sort();
+    const allValues = [...enumValues, ...addedValues];
+
+    writeFileSync(
+        ENUM_FILE,
+        [
+            '/* eslint-disable max-lines */',
+            'export enum UserIconNameEnum {',
+            allValues.map(value => `    ${value} = '${value}'`).join(',\n'),
+            '}',
+            ''
+        ].join('\n')
+    );
+    console.log(`Added ${addedValues.length} icon names to ${ENUM_FILE}`);
+
+    return allValues;
+};
+
+const joinKeywords = (phrases: readonly string[]): string =>
+    [...new Set(phrases.map(normalizeIconSearchText).filter(phrase => phrase.length > 0 && !phrase.includes('|')))].join('|');
+
+const joinKeywordSections = (namePhrases: readonly string[], otherPhrases: readonly string[]): string =>
+    `${joinKeywords(namePhrases)}||${joinKeywords(otherPhrases)}`;
+
+const readWordTranslations = (): Record<string, string[]>[] =>
+    existsSync(KEYWORDS_DIR)
+        ? readdirSync(KEYWORDS_DIR)
+              .filter(fileName => fileName.endsWith('.json'))
+              .sort()
+              .map(fileName => {
+                  console.log(`Using word translations ${fileName}`);
+
+                  return WordTranslationsSchema.parse(JSON.parse(readFileSync(join(KEYWORDS_DIR, fileName), 'utf8')));
+              })
+        : [];
+
+const buildLucideIndex = (iconEntries: readonly IconEntryInterface[]): [string, string][] => {
+    const tagsByFileName = LucideTagsSchema.parse(JSON.parse(readFileSync(LUCIDE_TAGS_FILE, 'utf8')));
+    const extraTagsByName = LucideTagsSchema.parse(JSON.parse(readFileSync(EXTRA_TAGS_FILE, 'utf8')));
+
+    return iconEntries.map(entry => [
+        entry.pascalName,
+        joinKeywordSections(
+            [entry.fileName.replaceAll('-', ' '), entry.pascalName.replace(/(?<=[a-z0-9])(?=[A-Z])/gu, ' ')],
+            [...(tagsByFileName[entry.fileName] ?? []), ...(extraTagsByName[entry.pascalName] ?? [])]
+        )
+    ]);
+};
+
+const buildWordIndex = (lucideIndex: readonly [string, string][]): Record<string, string> => {
+    const wordTranslations = readWordTranslations();
+    const words = [...new Set(lucideIndex.flatMap(([, keywords]) => keywords.split(/[^a-z]+/u)))].filter(
+        word => word.length >= MIN_TRANSLATED_WORD_LENGTH
+    );
+
+    return Object.fromEntries(
+        words
+            .map(word => [word, joinKeywords(wordTranslations.flatMap(translations => translations[word] ?? []))])
+            .filter(([, keywords]) => keywords.length > 0)
+    );
+};
+
+const buildEmojiIndex = (): [string, string][] => {
+    const itemsByEmoji = new Map<string, z.infer<typeof EmojibaseDataSchema>>();
+
+    for (const language of EMOJI_LANGUAGES) {
+        for (const item of EmojibaseDataSchema.parse(JSON.parse(readFileSync(join(EMOJIBASE_DIR, language, 'data.json'), 'utf8')))) {
+            if (isDefined(item.group) && item.group !== EMOJI_COMPONENT_GROUP) {
+                itemsByEmoji.set(item.emoji, [...(itemsByEmoji.get(item.emoji) ?? []), item]);
+            }
+        }
+    }
+
+    return [...itemsByEmoji].map(([emoji, items]) => [
+        emoji,
+        joinKeywordSections(
+            items.map(item => item.label),
+            items.flatMap(item => item.tags ?? [])
+        )
+    ]);
+};
+
 const main = (): void => {
-    const enumValues = parseEnumValues(ENUM_FILE);
     const specifierPrefix = resolveIconSpecifierPrefix(LUCIDE_DIR);
     const fileNameByExportName = buildIconFileNameByExportName(LUCIDE_DIR);
+    const enumValues = syncEnumValues(parseEnumValues(ENUM_FILE), fileNameByExportName);
     const resolvedValues = enumValues.filter(value => fileNameByExportName.has(value));
     const missingValues = enumValues.filter(value => !fileNameByExportName.has(value));
 
@@ -160,12 +271,19 @@ const main = (): void => {
     const chunkBaseNames = writeChunks(iconEntries, specifierPrefix);
 
     writeFileSync(AGGREGATOR_FILE, renderAggregator(chunkBaseNames));
+    const lucideIndex = buildLucideIndex(iconEntries);
+
+    writeFileSync(
+        SEARCH_INDEX_FILE,
+        `${JSON.stringify({ icons: [...lucideIndex, ...buildEmojiIndex()], translations: buildWordIndex(lucideIndex) })}\n`
+    );
 
     console.log(`Generated ${chunkBaseNames.length} chunks covering ${iconEntries.length} icons:`);
     for (const chunkBaseName of chunkBaseNames) {
         console.log(`  ${CHUNKS_DIR}/${chunkBaseName}.ts`);
     }
     console.log(`  ${AGGREGATOR_FILE}`);
+    console.log(`  ${SEARCH_INDEX_FILE}`);
 };
 
 main();

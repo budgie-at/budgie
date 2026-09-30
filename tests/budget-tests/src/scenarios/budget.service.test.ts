@@ -1,8 +1,10 @@
-import { buildTestDb, runWithDb } from '@budgie-at/test-kit';
+import { runWithDb } from '@budgie-at/test-kit';
 import { BudgetService } from '@budgie/budget';
 import { BudgetCategoryLimitRepository } from '@budgie/budget/query/budget-category-limit-repository';
 import { BudgetRepository } from '@budgie/budget/query/budget-repository';
 import { BudgetPeriodEnum } from '@budgie/contracts';
+
+import { testDb } from '../harness/test-context';
 
 const INITIAL_OVERALL_LIMIT = 100_000_000;
 const INITIAL_OTHER_LIMIT = 20_000_000;
@@ -16,7 +18,6 @@ const SECOND_INITIAL_LIMIT = 40_000_000;
 const FIRST_UPDATED_LIMIT = 35_000_000;
 const THIRD_UPDATED_LIMIT = 45_000_000;
 
-const testDb = buildTestDb();
 const runEffect = runWithDb(testDb);
 
 describe('BudgetService', () => {
@@ -51,7 +52,7 @@ describe('BudgetService', () => {
                 ]
             })
         );
-        const activeBudget = await runEffect(budgetRepository.getActive());
+        const activeBudget = await budgetRepository.findActive();
         const categoryLimits = await runEffect(budgetCategoryLimitRepository.getByBudget(budget.id));
 
         expect(updatedBudget.name).toBe('Updated Budget');

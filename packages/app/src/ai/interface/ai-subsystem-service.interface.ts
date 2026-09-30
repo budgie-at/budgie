@@ -7,5 +7,4 @@ export interface AiSubsystemServiceInterface {
     readonly snapshot: Atom.Atom<SnapshotWithStatusInterface>;
     readonly start: () => Effect.Effect<void>;
     readonly stop: () => Effect.Effect<void>;
-    readonly resetError: () => Effect.Effect<void>;
 }

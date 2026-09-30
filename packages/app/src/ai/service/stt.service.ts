@@ -82,11 +82,6 @@ class SttService implements AiSubsystemServiceInterface {
         );
     });
 
-    readonly resetError = Effect.fn('SttService.resetError')(function* (this: SttService) {
-        yield* Effect.ignore(this.stopStream(false));
-        patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.IDLE, errorMessage: null });
-    });
-
     readonly streamStart = Effect.fn('SttService.streamStart')(function* (this: SttService, language: string | null) {
         if (!this.isReady || !isDefined(this.context)) {
             yield* new AiNotReadyError({ subsystem: AiSubsystemNameEnum.STT });

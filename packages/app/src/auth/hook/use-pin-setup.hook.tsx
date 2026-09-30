@@ -1,42 +1,50 @@
 import { msg } from '@lingui/core/macro';
+import { useState } from 'react';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
 import { PinSetupModeEnum } from '../enum/pin-setup-mode.enum';
-import { PinSetupReducerActionEnum } from '../enum/pin-setup-reducer-action.enum';
 import { PinSetupStepEnum } from '../enum/pin-setup-step.enum';
-import { usePinSetupReducer } from '../reducer/pin-setup.reducer';
 import { authService } from '../service/auth.service';
+
+import type { MessageDescriptor } from '@lingui/core';
 
 interface Params {
     readonly mode: PinSetupModeEnum;
 }
 
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook with multiple state fields and handlers
 export const usePinSetup = ({ mode }: Params) => {
     const { isLoading: biometricLoading, isSomeAvailable } = useAuthContext();
 
-    const [state, dispatch] = usePinSetupReducer({
-        mode,
-        step: mode === PinSetupModeEnum.CREATE ? PinSetupStepEnum.CREATE : PinSetupStepEnum.VERIFY_OLD,
-        input: '',
-        error: null,
-        tempNewPin: '',
-        isLoading: false,
-        justCompleted: false
-    });
+    const [step, setStep] = useState(mode === PinSetupModeEnum.CREATE ? PinSetupStepEnum.CREATE : PinSetupStepEnum.VERIFY_OLD);
+    const [input, setInput] = useState('');
+    const [error, setError] = useState<MessageDescriptor | null>(null);
+    const [tempNewPin, setTempNewPin] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const addDigit = (digit: string) => void dispatch({ type: PinSetupReducerActionEnum.ADD_DIGIT, digit });
+    const deleteDigit = () => {
+        setError(null);
+        setInput(input.slice(0, -1));
+    };
 
-    const deleteDigit = () => void dispatch({ type: PinSetupReducerActionEnum.DELETE_DIGIT });
+    const reset = () => {
+        setStep(
+            mode === PinSetupModeEnum.CHANGE || mode === PinSetupModeEnum.DISABLE ? PinSetupStepEnum.VERIFY_OLD : PinSetupStepEnum.CREATE
+        );
+        setError(null);
+        setInput('');
+        setTempNewPin('');
+        setIsLoading(false);
+    };
 
-    const verifyOldPin = async (): Promise<boolean> => {
-        const isCorrect = await appRuntime.runPromise(authService.verifyPin(state.input));
+    const verifyOldPin = async (pin: string): Promise<boolean> => {
+        const isCorrect = await appRuntime.runPromise(authService.verifyPin(pin));
 
         if (!isCorrect) {
-            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`Incorrect PIN` });
-            dispatch({ type: PinSetupReducerActionEnum.RESET_INPUT });
+            setError(msg`Incorrect PIN`);
+            setInput('');
 
             return false;
         }
@@ -44,8 +52,8 @@ export const usePinSetup = ({ mode }: Params) => {
         return true;
     };
 
-    const handleVerifyOldStep = async () => {
-        const success = await verifyOldPin();
+    const handleVerifyOldStep = async (pin: string) => {
+        const success = await verifyOldPin(pin);
 
         if (!success) {
             return;
@@ -57,13 +65,18 @@ export const usePinSetup = ({ mode }: Params) => {
             return;
         }
 
-        dispatch({ type: PinSetupReducerActionEnum.VERIFY_OLD_SUCCESS });
+        setStep(PinSetupStepEnum.CREATE);
+        setInput('');
     };
 
-    const handleCreateStep = () => void dispatch({ type: PinSetupReducerActionEnum.STORE_NEW_PIN, pin: state.input });
+    const handleCreateStep = (pin: string) => {
+        setTempNewPin(pin);
+        setStep(PinSetupStepEnum.CONFIRM);
+        setInput('');
+    };
 
     const savePinAndContinue = async (isBiometricEnabled: boolean) => {
-        dispatch({ type: PinSetupReducerActionEnum.SET_LOADING, loading: true });
+        setIsLoading(true);
 
         try {
             if (isBiometricEnabled && isSomeAvailable) {
@@ -75,21 +88,21 @@ export const usePinSetup = ({ mode }: Params) => {
             }
 
             if (mode === PinSetupModeEnum.CHANGE) {
-                await appRuntime.runPromise(authService.changePin(state.tempNewPin));
+                await appRuntime.runPromise(authService.changePin(tempNewPin));
             } else {
-                await appRuntime.runPromise(authService.createPin(state.tempNewPin, isBiometricEnabled));
+                await appRuntime.runPromise(authService.createPin(tempNewPin, isBiometricEnabled));
             }
         } catch {
-            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`Failed to save PIN. Please try again.` });
+            setError(msg`Failed to save PIN. Please try again.`);
         } finally {
-            dispatch({ type: PinSetupReducerActionEnum.SET_LOADING, loading: false });
+            setIsLoading(false);
         }
     };
 
-    const handleConfirmStep = async () => {
-        if (state.input !== state.tempNewPin) {
-            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`PINs do not match` });
-            dispatch({ type: PinSetupReducerActionEnum.RESET });
+    const handleConfirmStep = async (pin: string) => {
+        if (pin !== tempNewPin) {
+            setError(msg`PINs do not match`);
+            reset();
 
             return;
         }
@@ -101,44 +114,46 @@ export const usePinSetup = ({ mode }: Params) => {
         }
 
         if (isSomeAvailable && !biometricLoading) {
-            dispatch({ type: PinSetupReducerActionEnum.NEXT_STEP });
+            setStep(PinSetupStepEnum.BIOMETRIC);
         } else {
             await savePinAndContinue(false);
         }
     };
 
-    const handleSubmit = async () => {
-        if (state.input.length < PIN_LENGTH) {
-            dispatch({ type: PinSetupReducerActionEnum.SET_ERROR, error: msg`PIN must be ${PIN_LENGTH} digits` });
-
-            return;
-        }
-
-        dispatch({ type: PinSetupReducerActionEnum.SET_LOADING, loading: true });
+    const submitPin = async (pin: string) => {
+        setIsLoading(true);
 
         try {
-            if (state.step === PinSetupStepEnum.VERIFY_OLD) {
-                await handleVerifyOldStep();
-            } else if (state.step === PinSetupStepEnum.CREATE) {
-                handleCreateStep();
-            } else if (state.step === PinSetupStepEnum.CONFIRM) {
-                await handleConfirmStep();
+            if (step === PinSetupStepEnum.VERIFY_OLD) {
+                await handleVerifyOldStep(pin);
+            } else if (step === PinSetupStepEnum.CREATE) {
+                handleCreateStep(pin);
+            } else if (step === PinSetupStepEnum.CONFIRM) {
+                await handleConfirmStep(pin);
             }
         } finally {
-            dispatch({ type: PinSetupReducerActionEnum.SET_LOADING, loading: false });
+            setIsLoading(false);
         }
     };
 
-    if (state.justCompleted && !state.isLoading && state.step !== PinSetupStepEnum.BIOMETRIC) {
-        dispatch({ type: PinSetupReducerActionEnum.CLEAR_JUST_COMPLETED });
-        void handleSubmit();
-    }
+    const addDigit = (digit: string) => {
+        if (input.length >= PIN_LENGTH) {
+            return;
+        }
+
+        const nextInput = input + digit;
+        setError(null);
+        setInput(nextInput);
+
+        if (nextInput.length === PIN_LENGTH && !isLoading && step !== PinSetupStepEnum.BIOMETRIC) {
+            void submitPin(nextInput);
+        }
+    };
 
     return {
-        state,
+        state: { mode, step, input, error, isLoading },
         addDigit,
         deleteDigit,
-        handleSubmit,
         saveAndContinue: mode === PinSetupModeEnum.DISABLE ? () => appRuntime.runPromise(authService.deletePin()) : savePinAndContinue
     };
 };

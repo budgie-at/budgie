@@ -3,7 +3,6 @@ import { fileURLToPath } from 'node:url';
 import { fixupPluginRules } from '@eslint/compat';
 import js from '@eslint/js';
 import importPlugin from 'eslint-plugin-import';
-import jestPlugin from 'eslint-plugin-jest';
 import pluginLingui from 'eslint-plugin-lingui';
 import eslintPluginOxlint from 'eslint-plugin-oxlint';
 import promisePlugin from 'eslint-plugin-promise';
@@ -387,29 +386,6 @@ export default defineConfig(
         }
     },
     ...oxlintFallbackConfigs,
-    {
-        files: ['**/*.spec.ts'],
-        extends: [jestPlugin.configs['flat/recommended']],
-        rules: {
-            'no-await-in-loop': 'off',
-
-            'jest/require-hook': 'off',
-            'jest/max-expects': 'off',
-            'jest/unbound-method': 'off',
-            'jest/expect-expect': 'off',
-            'jest/no-done-callback': 'off',
-
-            'no-undef': 'off',
-            'no-undefined': 'off',
-            'max-classes-per-file': 'off',
-            'max-lines-per-function': 'off',
-            'max-lines': 'off',
-            'max-statements': 'off',
-            'func-names': 'off',
-            'promise/no-nesting': 'off',
-            '@typescript-eslint/no-magic-numbers': 'warn'
-        }
-    },
     {
         files: ['**/*.{ts,tsx}'],
         rules: {

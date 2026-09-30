@@ -11,6 +11,7 @@ import { eq } from 'drizzle-orm';
 import { expect } from 'vitest';
 
 import { testDb } from '../scenario/setup';
+import { run } from '../scenario/test-runtime';
 import { seed } from '../seed/seed';
 
 import { binanceStub } from './binance-stub';
@@ -78,7 +79,7 @@ export const expectNoDuplicateAfterResync = async (restubForResync: () => void):
 
     resetBinanceSyncForResync();
     restubForResync();
-    await binanceSyncService.sync();
+    await run(binanceSyncService.sync());
 
     expect(fetchBinanceTransactions()).toHaveLength(1);
 };

@@ -1,3 +1,4 @@
+export { assertStoredBalancesMatchLedger } from './balance/assert-stored-balances-match-ledger';
 export { buildTestDb } from './db/build-test-db';
 export { createTestRepositories } from './db/create-test-repositories';
 export { runWithDb } from './db/run-with-db';

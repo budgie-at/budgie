@@ -1,5 +1,5 @@
 import { SuggestionStatus } from '@budgie/ai';
-import { UserIconNameEnum } from '@budgie/contracts';
+import { UserIconType } from '@budgie/contracts';
 
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { SuggestionPillContent } from '../suggestion-pill-content/suggestion-pill-content';
@@ -12,7 +12,7 @@ interface Props<T> {
     readonly enabled: boolean;
     readonly onSelect: (item: T) => void;
     readonly getKey: (item: T) => string | number;
-    readonly getIcon: (item: T) => UserIconNameEnum;
+    readonly getIcon: (item: T) => UserIconType;
     readonly getTitle: (item: T) => string;
     readonly testIDPrefix: string;
 }

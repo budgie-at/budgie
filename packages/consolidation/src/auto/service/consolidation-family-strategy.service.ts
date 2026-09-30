@@ -131,7 +131,7 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
         return this.getSourceTransactionIds(candidate);
     }
 
-    private yieldNow(): Effect.Effect<void> {
+    protected yieldNow(): Effect.Effect<void> {
         return Effect.promise(() => this.yieldControl());
     }
 

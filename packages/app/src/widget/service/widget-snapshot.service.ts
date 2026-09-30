@@ -211,7 +211,7 @@ class WidgetSnapshotService {
         this: WidgetSnapshotService,
         context: WidgetSnapshotContextInterface
     ) {
-        const budget = yield* budgetRepository.getActive();
+        const budget = yield* Db.query(db => budgetRepository.findActive(db));
 
         if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId) || !isPositiveNumber(budget.overallLimit)) {
             return null;

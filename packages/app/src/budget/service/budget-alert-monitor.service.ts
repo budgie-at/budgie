@@ -24,9 +24,12 @@ class BudgetAlertMonitorService {
     private static readonly FiredTriggersSchema = Schema.fromJsonString(Schema.Array(Schema.String));
 
     readonly run = Effect.fn('BudgetAlertMonitorService.run')(function* (this: BudgetAlertMonitorService) {
-        const [budget, settings] = yield* Effect.all([budgetRepository.getActive(), Db.query(() => settingsRepository.findSettings())], {
-            concurrency: 'unbounded'
-        });
+        const [budget, settings] = yield* Effect.all(
+            [Db.query(db => budgetRepository.findActive(db)), Db.query(() => settingsRepository.findSettings())],
+            {
+                concurrency: 'unbounded'
+            }
+        );
         const isBudgetPushEnabled = isDefined(settings) ? settings.isBudgetPushEnabled : false;
 
         if (!isDefined(budget) || !isBudgetPushEnabled) {
