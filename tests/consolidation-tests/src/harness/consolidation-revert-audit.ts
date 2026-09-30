@@ -1,10 +1,11 @@
+import { AccountBalanceRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { runConsolidation } from './run-consolidation';
-import { accountBalanceRepository, testQueryService, unconsolidateById } from './test-context';
+import { testQueryService, unconsolidateById } from './test-context';
 
 import type { SourceStateSnapshotInterface } from './interface/source-state-snapshot.interface';
 import type { TransactionConsolidationTypeEnum, TransactionEntryEntityInterface } from '@budgie/contracts';
@@ -110,6 +111,7 @@ export const revertSingleCanonical = Effect.fnUntraced(function* (consolidationT
 });
 
 export const fetchLedgerBalances = Effect.fnUntraced(function* (accountIds: number[]) {
+    const accountBalanceRepository = yield* AccountBalanceRepository;
     const balances = yield* accountBalanceRepository.getLedgerBalances(accountIds);
 
     return accountIds.map(accountId => [accountId, balances.get(accountId) ?? 0]);

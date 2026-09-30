@@ -1,26 +1,30 @@
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { SyncAccountTypeEnum } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, run } from '../../harness';
+import { buildMonobank, monobankStub, TestLayer } from '../../harness';
 
 import type { ClientInfo } from '@liaugust/monobank-sdk';
 
 describe('monobank/jars-listed-in-preview', () => {
-    it('surfaces jars from client-info as selectable jar previews alongside cards', async () => {
-        const clientInfo: ClientInfo = {
-            ...buildMonobank.clientInfoWith(['mono-card']),
-            jars: [buildMonobank.jar({ id: 'jar-1', title: 'Студія' })]
-        };
-        monobankStub.clientInfo(clientInfo);
+    it.effect('surfaces jars from client-info as selectable jar previews alongside cards', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const clientInfo: ClientInfo = {
+                ...buildMonobank.clientInfoWith(['mono-card']),
+                jars: [buildMonobank.jar({ id: 'jar-1', title: 'Студія' })]
+            };
+            monobankStub.clientInfo(clientInfo);
 
-        const previews = await run(monobankSyncService.fetchAccountsPreview('test-token'));
+            const previews = yield* monobankSyncService.fetchAccountsPreview('test-token');
 
-        const jarPreview = previews.find(preview => preview.type === SyncAccountTypeEnum.JAR);
-        const cardPreview = previews.find(preview => preview.type !== SyncAccountTypeEnum.JAR);
+            const jarPreview = previews.find(preview => preview.type === SyncAccountTypeEnum.JAR);
+            const cardPreview = previews.find(preview => preview.type !== SyncAccountTypeEnum.JAR);
 
-        expect(jarPreview?.externalId).toBe('jar-1');
-        expect(jarPreview?.title).toContain('Студія');
-        expect(cardPreview?.externalId).toBe('mono-card');
-    });
+            expect(jarPreview?.externalId).toBe('jar-1');
+            expect(jarPreview?.title).toContain('Студія');
+            expect(cardPreview?.externalId).toBe('mono-card');
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

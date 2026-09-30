@@ -4,9 +4,12 @@ import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { buildTestDb } from '@budgie-at/test-kit';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { getErrorMessage } from '@rnw-community/shared';
+
+import { TestLayer } from '../../harness';
 
 const scenarioDirectory = resolve(fileURLToPath(import.meta.url), '..');
 const preMigrationFixturePath = resolve(scenarioDirectory, '../../../fixtures/debt-migration/pre-0033.db');
@@ -28,28 +31,30 @@ const copyUniqueSourceDatabase = (sourceDirectoryPath: string, label: string): s
 };
 
 describe('test database lifecycle', () => {
-    it('removes the temporary database after a post-build assertion fails', async () => {
-        const sourceDirectoryPath = mkdtempSync(join(tmpdir(), 'budgie-assertion-source-'));
-        const sourceDatabasePath = copyUniqueSourceDatabase(sourceDirectoryPath, 'assertion');
-        let syntheticAssertionError: unknown;
-
-        try {
-            const db = buildTestDb(sourceDatabasePath);
+    it.effect('removes the temporary database after a post-build assertion fails', () =>
+        Effect.gen(function* () {
+            const sourceDirectoryPath = mkdtempSync(join(tmpdir(), 'budgie-assertion-source-'));
+            const sourceDatabasePath = copyUniqueSourceDatabase(sourceDirectoryPath, 'assertion');
+            let syntheticAssertionError: unknown;
 
             try {
-                throw new Error(syntheticAssertionErrorMessage);
-            } finally {
-                await db.$client.closeAsync();
-            }
-        } catch (error) {
-            syntheticAssertionError = error;
-        } finally {
-            rmSync(sourceDirectoryPath, { recursive: true, force: true });
-        }
+                const db = buildTestDb(sourceDatabasePath);
 
-        expect(getErrorMessage(syntheticAssertionError)).toBe(syntheticAssertionErrorMessage);
-        expect(getTemporaryDatabaseDirectories(sourceDatabasePath)).toHaveLength(0);
-    });
+                try {
+                    throw new Error(syntheticAssertionErrorMessage);
+                } finally {
+                    yield* Effect.promise(() => db.$client.closeAsync());
+                }
+            } catch (error) {
+                syntheticAssertionError = error;
+            } finally {
+                rmSync(sourceDirectoryPath, { recursive: true, force: true });
+            }
+
+            expect(getErrorMessage(syntheticAssertionError)).toBe(syntheticAssertionErrorMessage);
+            expect(getTemporaryDatabaseDirectories(sourceDatabasePath)).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
     it('removes the temporary database after setup fails', () => {
         const sourceDirectoryPath = mkdtempSync(join(tmpdir(), 'budgie-invalid-source-'));

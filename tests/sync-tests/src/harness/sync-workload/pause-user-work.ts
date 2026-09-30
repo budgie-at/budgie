@@ -7,7 +7,7 @@ export const pauseUserWork = Effect.fnUntraced(function* <E, R>(onStart: Effect.
     const started = yield* Deferred.make<void>();
     const released = yield* Deferred.make<void>();
     const work = yield* Effect.forkChild(
-        Workload.use(workload =>
+        Effect.flatMap(Workload, workload =>
             workload.runUser(onStart.pipe(Effect.andThen(Deferred.succeed(started, undefined)), Effect.andThen(Deferred.await(released))))
         )
     );

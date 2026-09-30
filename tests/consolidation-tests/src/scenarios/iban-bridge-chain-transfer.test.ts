@@ -1,5 +1,6 @@
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import {
     expectRevertRestoresSources,
@@ -17,7 +18,7 @@ import {
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { runEffect } from '../harness/test-context';
+import { TestLayer } from '../harness/test-context';
 
 const byTransactionId = (left: number, right: number): number => left - right;
 
@@ -36,44 +37,48 @@ const fetchChainCanonicalId = (): number => fetchSingleCanonicalId(TransactionCo
 
 const revertChainCanonical = () => revertSingleCanonical(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
 
-describe('consolidation/iban-bridge-chain-transfer', () => {
-    it('builds one canonical from the four legs of a bridged chain', async () => {
-        const { bridgeExpense, bridgeIncome, sourceAccount, sourceExpense, targetAccount, targetIncome } = seedIbanBridgeChainFixture();
+layer(TestLayer)('consolidation/iban-bridge-chain-transfer', it => {
+    it.effect('builds one canonical from the four legs of a bridged chain', () =>
+        Effect.gen(function* () {
+            const { bridgeExpense, bridgeIncome, sourceAccount, sourceExpense, targetAccount, targetIncome } = seedIbanBridgeChainFixture();
 
-        const result = await runEffect(runConsolidation());
-        const canonicalId = fetchChainCanonicalId();
+            const result = yield* runConsolidation();
+            const canonicalId = fetchChainCanonicalId();
 
-        expect(result.consolidated).toBe(1);
-        expect(fetchMovedSourceIds(canonicalId)).toEqual(
-            [sourceExpense.id, bridgeIncome.id, bridgeExpense.id, targetIncome.id].sort(byTransactionId)
-        );
-        expect(fetchLedgerEntry(canonicalId, sourceAccount.id).amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
-        expect(fetchLedgerEntry(canonicalId, targetAccount.id).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
-    });
+            expect(result.consolidated).toBe(1);
+            expect(fetchMovedSourceIds(canonicalId)).toEqual(
+                [sourceExpense.id, bridgeIncome.id, bridgeExpense.id, targetIncome.id].sort(byTransactionId)
+            );
+            expect(fetchLedgerEntry(canonicalId, sourceAccount.id).amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
+            expect(fetchLedgerEntry(canonicalId, targetAccount.id).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
+        })
+    );
 
-    it('restores all four chain legs and account balances when the chain canonical is reverted', async () => {
-        const { bridgeAccount, bridgeExpense, bridgeIncome, sourceAccount, sourceExpense, targetAccount, targetIncome } =
-            seedIbanBridgeChainFixture();
+    it.effect('restores all four chain legs and account balances when the chain canonical is reverted', () =>
+        Effect.gen(function* () {
+            const { bridgeAccount, bridgeExpense, bridgeIncome, sourceAccount, sourceExpense, targetAccount, targetIncome } =
+                seedIbanBridgeChainFixture();
 
-        await runEffect(
-            expectRevertRestoresSources({
+            yield* expectRevertRestoresSources({
                 accountIds: [sourceAccount.id, bridgeAccount.id, targetAccount.id],
                 consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
                 sourceTransactionIds: [sourceExpense.id, bridgeIncome.id, bridgeExpense.id, targetIncome.id]
-            })
-        );
-    });
+            });
+        })
+    );
 
-    it('rebuilds the same chain canonical shape after a revert', async () => {
-        const { sourceExpense, bridgeIncome, bridgeExpense, targetIncome } = seedIbanBridgeChainFixture();
+    it.effect('rebuilds the same chain canonical shape after a revert', () =>
+        Effect.gen(function* () {
+            const { sourceExpense, bridgeIncome, bridgeExpense, targetIncome } = seedIbanBridgeChainFixture();
 
-        await runEffect(runConsolidation());
-        await runEffect(revertChainCanonical());
-        const repeatedResult = await runEffect(runConsolidation());
+            yield* runConsolidation();
+            yield* revertChainCanonical();
+            const repeatedResult = yield* runConsolidation();
 
-        expect(repeatedResult.consolidated).toBe(1);
-        expect(fetchMovedSourceIds(fetchChainCanonicalId())).toEqual(
-            [sourceExpense.id, bridgeIncome.id, bridgeExpense.id, targetIncome.id].sort(byTransactionId)
-        );
-    });
+            expect(repeatedResult.consolidated).toBe(1);
+            expect(fetchMovedSourceIds(fetchChainCanonicalId())).toEqual(
+                [sourceExpense.id, bridgeIncome.id, bridgeExpense.id, targetIncome.id].sort(byTransactionId)
+            );
+        })
+    );
 });

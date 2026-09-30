@@ -1,11 +1,13 @@
+import { RefundPairRepository } from '@budgie/consolidation';
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { REJECTED_PAYMENT_PRINCIPAL_TITLE } from '../harness/rejected-payment-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
-import { refundPairRepository, runEffect, testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
-import type { RefundCandidateBaseInterface, RefundCandidateInterface, TransactionEntityInterface } from '@budgie/contracts';
+import type { RefundCandidateBaseInterface, RefundCandidateInterface } from '@budgie/contracts';
 
 const COMPETING_YEAR = 2026;
 
@@ -54,202 +56,209 @@ const COMFY_SMALLER_REFUND_AMOUNT = COMFY_SMALLER_REFUND_AMOUNT_UAH * PRECISION;
 const COMFY_EXPENSE_OPERATED_AT = new Date(COMPETING_YEAR, 5, 20, 9, 0, 0);
 const COMFY_REFUND_DELAY_SECONDS = 4 * 60 * 60;
 
-const seedExactTitleRefunds = async (input: {
+const seedExactTitleRefunds = Effect.fnUntraced(function* (input: {
     readonly expenseAmount: number;
     readonly expenseOperatedAt: Date;
     readonly externalIdPrefix: string;
     readonly refundAmounts: readonly number[];
     readonly refundDelaySeconds: number;
     readonly title: string;
-}): Promise<{
-    readonly autoCandidates: RefundCandidateInterface[];
-    readonly expense: TransactionEntityInterface;
-    readonly refunds: TransactionEntityInterface[];
-    readonly reviewCandidates: RefundCandidateBaseInterface[];
-}> => {
+}) {
+    const refundPairRepository = yield* RefundPairRepository;
     const account = testSeedService.account({ externalId: 'mono-card' });
     const { expense, refunds } = testSeedService.refundedExpense({ ...input, accountId: account.id });
 
     return {
         expense,
         refunds,
-        autoCandidates: await runEffect(refundPairRepository.findCandidates()),
-        reviewCandidates: await runEffect(refundPairRepository.findReviewCandidates())
+        autoCandidates: yield* refundPairRepository.findCandidates(),
+        reviewCandidates: yield* refundPairRepository.findReviewCandidates()
     };
-};
+});
 
 const expectSoleGroup = (candidates: readonly RefundCandidateBaseInterface[], expected: Partial<RefundCandidateInterface>): void => {
     expect(candidates).toEqual([expect.objectContaining(expected)]);
 };
 
-describe('consolidation/refund-pair-competing-refunds', () => {
-    it('auto-consolidates the mutual-best refund and surfaces the over-ceiling loser for review', async () => {
-        const { autoCandidates, expense, refunds, reviewCandidates } = await seedExactTitleRefunds({
-            title: GLOVO_TITLE,
-            expenseAmount: GLOVO_AMOUNT,
-            refundAmounts: [GLOVO_AMOUNT, GLOVO_AMOUNT],
-            expenseOperatedAt: GLOVO_EXPENSE_OPERATED_AT,
-            refundDelaySeconds: GLOVO_REFUND_DELAY_SECONDS,
-            externalIdPrefix: 'glovo'
-        });
+layer(TestLayer)('consolidation/refund-pair-competing-refunds', it => {
+    it.effect('auto-consolidates the mutual-best refund and surfaces the over-ceiling loser for review', () =>
+        Effect.gen(function* () {
+            const { autoCandidates, expense, refunds, reviewCandidates } = yield* seedExactTitleRefunds({
+                title: GLOVO_TITLE,
+                expenseAmount: GLOVO_AMOUNT,
+                refundAmounts: [GLOVO_AMOUNT, GLOVO_AMOUNT],
+                expenseOperatedAt: GLOVO_EXPENSE_OPERATED_AT,
+                refundDelaySeconds: GLOVO_REFUND_DELAY_SECONDS,
+                externalIdPrefix: 'glovo'
+            });
 
-        expectSoleGroup(autoCandidates, {
-            confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
-            expenseTransactionId: expense.id,
-            refundIncomeTransactionIds: [refunds[0].id],
-            refundsTotal: GLOVO_AMOUNT
-        });
-        expectSoleGroup(reviewCandidates, {
-            confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
-            expenseTransactionId: expense.id,
-            refundIncomeTransactionIds: [refunds[1].id],
-            refundsTotal: GLOVO_AMOUNT
-        });
+            expectSoleGroup(autoCandidates, {
+                confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
+                expenseTransactionId: expense.id,
+                refundIncomeTransactionIds: [refunds[0].id],
+                refundsTotal: GLOVO_AMOUNT
+            });
+            expectSoleGroup(reviewCandidates, {
+                confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
+                expenseTransactionId: expense.id,
+                refundIncomeTransactionIds: [refunds[1].id],
+                refundsTotal: GLOVO_AMOUNT
+            });
 
-        const result = await runEffect(runConsolidation());
+            const result = yield* runConsolidation();
 
-        expect(result.consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
-        expect(testQueryService.fetchTransactionById(refunds[1].id).consolidationParentTransactionId).toBeNull();
-    });
+            expect(result.consolidated).toBe(1);
+            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+            expect(testQueryService.fetchTransactionById(refunds[1].id).consolidationParentTransactionId).toBeNull();
+        })
+    );
 
-    it('keeps absorbing unambiguous partial refunds up to the expense ceiling and reviews only the overflow', async () => {
-        const { autoCandidates, expense, refunds, reviewCandidates } = await seedExactTitleRefunds({
-            title: STARBUCKS_TITLE,
-            expenseAmount: STARBUCKS_EXPENSE_AMOUNT,
-            refundAmounts: [STARBUCKS_FIRST_REFUND_AMOUNT, STARBUCKS_SECOND_REFUND_AMOUNT, STARBUCKS_OVERFLOW_REFUND_AMOUNT],
-            expenseOperatedAt: STARBUCKS_EXPENSE_OPERATED_AT,
-            refundDelaySeconds: STARBUCKS_REFUND_DELAY_SECONDS,
-            externalIdPrefix: 'starbucks'
-        });
+    it.effect('keeps absorbing unambiguous partial refunds up to the expense ceiling and reviews only the overflow', () =>
+        Effect.gen(function* () {
+            const { autoCandidates, expense, refunds, reviewCandidates } = yield* seedExactTitleRefunds({
+                title: STARBUCKS_TITLE,
+                expenseAmount: STARBUCKS_EXPENSE_AMOUNT,
+                refundAmounts: [STARBUCKS_FIRST_REFUND_AMOUNT, STARBUCKS_SECOND_REFUND_AMOUNT, STARBUCKS_OVERFLOW_REFUND_AMOUNT],
+                expenseOperatedAt: STARBUCKS_EXPENSE_OPERATED_AT,
+                refundDelaySeconds: STARBUCKS_REFUND_DELAY_SECONDS,
+                externalIdPrefix: 'starbucks'
+            });
 
-        expectSoleGroup(autoCandidates, {
-            expenseTransactionId: expense.id,
-            refundIncomeTransactionIds: [refunds[0].id, refunds[1].id],
-            refundsTotal: STARBUCKS_FIRST_REFUND_AMOUNT + STARBUCKS_SECOND_REFUND_AMOUNT
-        });
-        expectSoleGroup(reviewCandidates, {
-            expenseTransactionId: expense.id,
-            refundIncomeTransactionIds: [refunds[2].id],
-            refundsTotal: STARBUCKS_OVERFLOW_REFUND_AMOUNT
-        });
+            expectSoleGroup(autoCandidates, {
+                expenseTransactionId: expense.id,
+                refundIncomeTransactionIds: [refunds[0].id, refunds[1].id],
+                refundsTotal: STARBUCKS_FIRST_REFUND_AMOUNT + STARBUCKS_SECOND_REFUND_AMOUNT
+            });
+            expectSoleGroup(reviewCandidates, {
+                expenseTransactionId: expense.id,
+                refundIncomeTransactionIds: [refunds[2].id],
+                refundsTotal: STARBUCKS_OVERFLOW_REFUND_AMOUNT
+            });
 
-        const result = await runEffect(runConsolidation());
+            const result = yield* runConsolidation();
 
-        expect(result.consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
-        expect(testQueryService.fetchTransactionById(refunds[1].id).consolidationParentTransactionId).toBe(expense.id);
-        expect(testQueryService.fetchTransactionById(refunds[2].id).consolidationParentTransactionId).toBeNull();
-    });
+            expect(result.consolidated).toBe(1);
+            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
+            expect(testQueryService.fetchTransactionById(refunds[1].id).consolidationParentTransactionId).toBe(expense.id);
+            expect(testQueryService.fetchTransactionById(refunds[2].id).consolidationParentTransactionId).toBeNull();
+        })
+    );
 });
 
-describe('consolidation/refund-pair-competing-refunds expense fill ordering', () => {
-    it('fills the expense with its exact-amount refund and reviews the earlier partial that no longer fits', async () => {
-        const { autoCandidates, expense, refunds, reviewCandidates } = await seedExactTitleRefunds({
-            title: ROZETKA_TITLE,
-            expenseAmount: ROZETKA_EXPENSE_AMOUNT,
-            refundAmounts: [ROZETKA_PARTIAL_REFUND_AMOUNT, ROZETKA_EXPENSE_AMOUNT],
-            expenseOperatedAt: ROZETKA_EXPENSE_OPERATED_AT,
-            refundDelaySeconds: ROZETKA_REFUND_DELAY_SECONDS,
-            externalIdPrefix: 'rozetka'
-        });
+layer(TestLayer)('consolidation/refund-pair-competing-refunds expense fill ordering', it => {
+    it.effect('fills the expense with its exact-amount refund and reviews the earlier partial that no longer fits', () =>
+        Effect.gen(function* () {
+            const { autoCandidates, expense, refunds, reviewCandidates } = yield* seedExactTitleRefunds({
+                title: ROZETKA_TITLE,
+                expenseAmount: ROZETKA_EXPENSE_AMOUNT,
+                refundAmounts: [ROZETKA_PARTIAL_REFUND_AMOUNT, ROZETKA_EXPENSE_AMOUNT],
+                expenseOperatedAt: ROZETKA_EXPENSE_OPERATED_AT,
+                refundDelaySeconds: ROZETKA_REFUND_DELAY_SECONDS,
+                externalIdPrefix: 'rozetka'
+            });
 
-        expectSoleGroup(autoCandidates, {
-            expenseTransactionId: expense.id,
-            refundIncomeTransactionIds: [refunds[1].id],
-            refundsTotal: ROZETKA_EXPENSE_AMOUNT
-        });
-        expectSoleGroup(reviewCandidates, {
-            expenseTransactionId: expense.id,
-            refundIncomeTransactionIds: [refunds[0].id],
-            refundsTotal: ROZETKA_PARTIAL_REFUND_AMOUNT
-        });
+            expectSoleGroup(autoCandidates, {
+                expenseTransactionId: expense.id,
+                refundIncomeTransactionIds: [refunds[1].id],
+                refundsTotal: ROZETKA_EXPENSE_AMOUNT
+            });
+            expectSoleGroup(reviewCandidates, {
+                expenseTransactionId: expense.id,
+                refundIncomeTransactionIds: [refunds[0].id],
+                refundsTotal: ROZETKA_PARTIAL_REFUND_AMOUNT
+            });
 
-        const result = await runEffect(runConsolidation());
+            const result = yield* runConsolidation();
 
-        expect(result.consolidated).toBe(1);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
-        expect(refunds.map(refund => testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId)).toEqual([
-            null,
-            expense.id
-        ]);
-    });
+            expect(result.consolidated).toBe(1);
+            expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
+            expect(refunds.map(refund => testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId)).toEqual([
+                null,
+                expense.id
+            ]);
+        })
+    );
 
-    it('still absorbs both partial refunds when their total fits the expense ceiling', async () => {
-        const { autoCandidates, expense, refunds, reviewCandidates } = await seedExactTitleRefunds({
-            title: COMFY_TITLE,
-            expenseAmount: COMFY_EXPENSE_AMOUNT,
-            refundAmounts: [COMFY_LARGER_REFUND_AMOUNT, COMFY_SMALLER_REFUND_AMOUNT],
-            expenseOperatedAt: COMFY_EXPENSE_OPERATED_AT,
-            refundDelaySeconds: COMFY_REFUND_DELAY_SECONDS,
-            externalIdPrefix: 'comfy'
-        });
+    it.effect('still absorbs both partial refunds when their total fits the expense ceiling', () =>
+        Effect.gen(function* () {
+            const { autoCandidates, expense, refunds, reviewCandidates } = yield* seedExactTitleRefunds({
+                title: COMFY_TITLE,
+                expenseAmount: COMFY_EXPENSE_AMOUNT,
+                refundAmounts: [COMFY_LARGER_REFUND_AMOUNT, COMFY_SMALLER_REFUND_AMOUNT],
+                expenseOperatedAt: COMFY_EXPENSE_OPERATED_AT,
+                refundDelaySeconds: COMFY_REFUND_DELAY_SECONDS,
+                externalIdPrefix: 'comfy'
+            });
 
-        expectSoleGroup(autoCandidates, {
-            expenseTransactionId: expense.id,
-            refundIncomeTransactionIds: [refunds[0].id, refunds[1].id],
-            refundsTotal: COMFY_EXPENSE_AMOUNT
-        });
-        expect(reviewCandidates).toHaveLength(0);
+            expectSoleGroup(autoCandidates, {
+                expenseTransactionId: expense.id,
+                refundIncomeTransactionIds: [refunds[0].id, refunds[1].id],
+                refundsTotal: COMFY_EXPENSE_AMOUNT
+            });
+            expect(reviewCandidates).toHaveLength(0);
 
-        const result = await runEffect(runConsolidation());
+            const result = yield* runConsolidation();
 
-        expect(result.consolidated).toBe(1);
-        expect(refunds.map(refund => testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId)).toEqual([
-            expense.id,
-            expense.id
-        ]);
-    });
+            expect(result.consolidated).toBe(1);
+            expect(refunds.map(refund => testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId)).toEqual([
+                expense.id,
+                expense.id
+            ]);
+        })
+    );
 });
 
-describe('consolidation/refund-pair-competing-refunds rejected best match', () => {
-    it('does not auto-consolidate a worse-ranked sole-candidate refund when the expense best match is rejected', async () => {
-        const account = testSeedService.account({ externalId: 'mono-card' });
+layer(TestLayer)('consolidation/refund-pair-competing-refunds rejected best match', it => {
+    it.effect('does not auto-consolidate a worse-ranked sole-candidate refund when the expense best match is rejected', () =>
+        Effect.gen(function* () {
+            const refundPairRepository = yield* RefundPairRepository;
+            const account = testSeedService.account({ externalId: 'mono-card' });
 
-        testSeedService.refundedExpense({
-            accountId: account.id,
-            title: NETFLIX_TITLE,
-            expenseAmount: NETFLIX_DECOY_AMOUNT,
-            refundAmounts: [],
-            expenseOperatedAt: NETFLIX_DECOY_EXPENSE_OPERATED_AT,
-            externalIdPrefix: 'netflix-decoy'
-        });
-        const { expense: targetExpense, refunds } = testSeedService.refundedExpense({
-            accountId: account.id,
-            title: NETFLIX_TITLE,
-            expenseAmount: NETFLIX_TARGET_AMOUNT,
-            refundAmounts: [NETFLIX_TARGET_AMOUNT, NETFLIX_TARGET_AMOUNT],
-            refundTitles: [NETFLIX_TITLE, REJECTED_PAYMENT_PRINCIPAL_TITLE],
-            expenseOperatedAt: NETFLIX_TARGET_EXPENSE_OPERATED_AT,
-            refundDelaySeconds: NETFLIX_REFUND_DELAY_SECONDS,
-            externalIdPrefix: 'netflix-target'
-        });
+            testSeedService.refundedExpense({
+                accountId: account.id,
+                title: NETFLIX_TITLE,
+                expenseAmount: NETFLIX_DECOY_AMOUNT,
+                refundAmounts: [],
+                expenseOperatedAt: NETFLIX_DECOY_EXPENSE_OPERATED_AT,
+                externalIdPrefix: 'netflix-decoy'
+            });
+            const { expense: targetExpense, refunds } = testSeedService.refundedExpense({
+                accountId: account.id,
+                title: NETFLIX_TITLE,
+                expenseAmount: NETFLIX_TARGET_AMOUNT,
+                refundAmounts: [NETFLIX_TARGET_AMOUNT, NETFLIX_TARGET_AMOUNT],
+                refundTitles: [NETFLIX_TITLE, REJECTED_PAYMENT_PRINCIPAL_TITLE],
+                expenseOperatedAt: NETFLIX_TARGET_EXPENSE_OPERATED_AT,
+                refundDelaySeconds: NETFLIX_REFUND_DELAY_SECONDS,
+                externalIdPrefix: 'netflix-target'
+            });
 
-        const autoCandidates = await runEffect(refundPairRepository.findCandidates());
-        const reviewCandidates = await runEffect(refundPairRepository.findReviewCandidates());
+            const autoCandidates = yield* refundPairRepository.findCandidates();
+            const reviewCandidates = yield* refundPairRepository.findReviewCandidates();
 
-        expect(autoCandidates).toHaveLength(0);
-        expect(reviewCandidates).toEqual(
-            expect.arrayContaining([
-                expect.objectContaining({
-                    confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
-                    expenseTransactionId: targetExpense.id,
-                    refundIncomeTransactionIds: [refunds[0].id]
-                }),
-                expect.objectContaining({
-                    confidenceBucket: 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE',
-                    expenseTransactionId: targetExpense.id,
-                    refundIncomeTransactionIds: [refunds[1].id]
-                })
-            ])
-        );
+            expect(autoCandidates).toHaveLength(0);
+            expect(reviewCandidates).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        confidenceBucket: 'AUTO_REFUND_EXACT_TITLE',
+                        expenseTransactionId: targetExpense.id,
+                        refundIncomeTransactionIds: [refunds[0].id]
+                    }),
+                    expect.objectContaining({
+                        confidenceBucket: 'AUTO_REFUND_REJECTED_PAYMENT_PRINCIPAL_TITLE',
+                        expenseTransactionId: targetExpense.id,
+                        refundIncomeTransactionIds: [refunds[1].id]
+                    })
+                ])
+            );
 
-        const result = await runEffect(runConsolidation());
+            const result = yield* runConsolidation();
 
-        expect(result.consolidated).toBe(0);
-        expect(testQueryService.fetchTransactionById(targetExpense.id).consolidationType).toBeNull();
-        expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
-        expect(testQueryService.fetchTransactionById(refunds[1].id).consolidationParentTransactionId).toBeNull();
-    });
+            expect(result.consolidated).toBe(0);
+            expect(testQueryService.fetchTransactionById(targetExpense.id).consolidationType).toBeNull();
+            expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
+            expect(testQueryService.fetchTransactionById(refunds[1].id).consolidationParentTransactionId).toBeNull();
+        })
+    );
 });

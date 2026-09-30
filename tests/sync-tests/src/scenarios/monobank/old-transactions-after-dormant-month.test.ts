@@ -1,6 +1,7 @@
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { SyncModeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import {
     buildMonobank,
@@ -8,7 +9,7 @@ import {
     fetchSyncById,
     monobankStub,
     setupBackwardSweepFixture,
-    run
+    TestLayer
 } from '../../harness';
 
 import type { StatementItem } from '@liaugust/monobank-sdk';
@@ -20,30 +21,32 @@ const OLD_TRANSACTION_AMOUNT_KOPECKS = -1234;
 const EXPECTED_PERSISTED_COUNT = 1;
 
 describe('monobank/old-transactions-after-dormant-month', () => {
-    // eslint-disable-next-line max-statements -- Backward sweep scenario: fixture + tx fixture + MSW stack + sync + 5 assertions
-    it('surfaces an old transaction sitting beyond two empty 31-day windows, then terminates at the dormancy boundary', async () => {
-        const sweepStart = new Date();
-        const sync = setupBackwardSweepFixture(sweepStart);
+    it.effect('surfaces an old transaction sitting beyond two empty 31-day windows, then terminates at the dormancy boundary', () =>
+        Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const sweepStart = new Date();
+            const sync = setupBackwardSweepFixture(sweepStart);
 
-        const oldTransactionTimeSeconds = Math.floor(sweepStart.getTime() / MS_PER_SECOND) - OLD_TRANSACTION_AGE_DAYS * SECONDS_PER_DAY;
-        const oldTransaction: StatementItem = buildMonobank.transaction({
-            id: 'tx-old-80d',
-            amount: OLD_TRANSACTION_AMOUNT_KOPECKS,
-            hold: false,
-            time: oldTransactionTimeSeconds
-        });
+            const oldTransactionTimeSeconds = Math.floor(sweepStart.getTime() / MS_PER_SECOND) - OLD_TRANSACTION_AGE_DAYS * SECONDS_PER_DAY;
+            const oldTransaction: StatementItem = buildMonobank.transaction({
+                id: 'tx-old-80d',
+                amount: OLD_TRANSACTION_AMOUNT_KOPECKS,
+                hold: false,
+                time: oldTransactionTimeSeconds
+            });
 
-        monobankStub.statementBatches([[], [], [oldTransaction], [], [], []]);
+            monobankStub.statementBatches([[], [], [oldTransaction], [], [], []]);
 
-        await run(monobankSyncService.sync());
+            yield* monobankSyncService.sync();
 
-        const persisted = fetchPersistedMonobankTransactions();
-        expect(persisted).toHaveLength(EXPECTED_PERSISTED_COUNT);
-        const [persistedOld] = persisted;
-        expect(persistedOld.externalId).toBe('tx-old-80d');
+            const persisted = fetchPersistedMonobankTransactions();
+            expect(persisted).toHaveLength(EXPECTED_PERSISTED_COUNT);
+            const [persistedOld] = persisted;
+            expect(persistedOld.externalId).toBe('tx-old-80d');
 
-        const finalSync = fetchSyncById(sync.id);
-        expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
-        expect(finalSync.transactionCount).toBe(EXPECTED_PERSISTED_COUNT);
-    });
+            const finalSync = fetchSyncById(sync.id);
+            expect(finalSync.mode).toBe(SyncModeEnum.FORWARD);
+            expect(finalSync.transactionCount).toBe(EXPECTED_PERSISTED_COUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

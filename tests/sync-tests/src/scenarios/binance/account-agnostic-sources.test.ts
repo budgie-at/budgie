@@ -1,4 +1,4 @@
-import { binanceSyncService } from '@app/sync/service/binance-sync.service';
+import { BinanceSyncService } from '@app/sync/service/binance-sync.service';
 import {
     AccountEntityTable,
     AccountTypeEnum,
@@ -8,9 +8,10 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
+import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
-import { describe, expect, it } from 'vitest';
 
 import {
     binanceStub,
@@ -24,7 +25,7 @@ import {
     setupBinanceFixture,
     stubEmptyBinanceBalances,
     testDb,
-    run
+    TestLayer
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -100,117 +101,145 @@ const expectSourceAccounts = (usdtFundingAccountId: number, eurExternalId: strin
 };
 
 describe('binance/account-agnostic-sources', () => {
-    it('associates orphan Binance sync accounts before requesting provider balances', async () => {
-        const instrument = seedCryptoInstrument('LTC');
-        const orphanExternalId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'LTC' });
-        const orphanAccount = seed.account({
-            externalId: orphanExternalId,
-            externalSource: ExternalSourceEnum.BINANCE,
-            type: AccountTypeEnum.CRYPTO_SYNC,
-            instrumentId: instrument.id
-        });
-        const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-        const integrationIdsAtProviderRequests: Array<number | null> = [];
-        mockServer.use(
-            http.post('https://api.binance.com/sapi/v3/asset/getUserAsset', () => {
-                const [accountAtRequest] = testDb
-                    .select()
-                    .from(AccountEntityTable)
-                    .where(eq(AccountEntityTable.id, orphanAccount.id))
-                    .all();
-                integrationIdsAtProviderRequests.push(accountAtRequest.integrationId);
+    it.effect('associates orphan Binance sync accounts before requesting provider balances', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
 
-                return HttpResponse.json([]);
-            })
-        );
+            const instrument = seedCryptoInstrument('LTC');
+            const orphanExternalId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'LTC' });
+            const orphanAccount = seed.account({
+                externalId: orphanExternalId,
+                externalSource: ExternalSourceEnum.BINANCE,
+                type: AccountTypeEnum.CRYPTO_SYNC,
+                instrumentId: instrument.id
+            });
+            const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+            const integrationIdsAtProviderRequests: Array<number | null> = [];
+            mockServer.use(
+                http.post('https://api.binance.com/sapi/v3/asset/getUserAsset', () => {
+                    const [accountAtRequest] = testDb
+                        .select()
+                        .from(AccountEntityTable)
+                        .where(eq(AccountEntityTable.id, orphanAccount.id))
+                        .all();
+                    integrationIdsAtProviderRequests.push(accountAtRequest.integrationId);
 
-        await run(binanceSyncService.sync());
+                    return HttpResponse.json([]);
+                })
+            );
 
-        const [seededAccount] = fetchAccountByExternalId(externalId);
-        expect(integrationIdsAtProviderRequests[0]).toBe(seededAccount.integrationId);
-    });
+            yield* binanceSyncService.sync();
 
-    it('associates accounts discovered during sync with the active Binance integration', async () => {
-        seedCryptoInstrument('ETH');
-        const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-        stubEmptyBinanceBalances();
-        binanceStub.deposits([buildBinance.deposit({ id: 'eth-dep', coin: 'ETH', amount: '3' })]);
+            const [seededAccount] = fetchAccountByExternalId(externalId);
+            expect(integrationIdsAtProviderRequests[0]).toBe(seededAccount.integrationId);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        await run(binanceSyncService.sync());
+    it.effect('associates accounts discovered during sync with the active Binance integration', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
 
-        const [seededAccount] = fetchAccountByExternalId(externalId);
-        const [discoveredAccount] = fetchAccountByExternalId(encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'ETH' }));
-        expect(discoveredAccount.integrationId).toBe(seededAccount.integrationId);
-    });
+            seedCryptoInstrument('ETH');
+            const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+            stubEmptyBinanceBalances();
+            binanceStub.deposits([buildBinance.deposit({ id: 'eth-dep', coin: 'ETH', amount: '3' })]);
 
-    it('repairs existing Binance accounts without an integration association', async () => {
-        const instrument = seedCryptoInstrument('LTC');
-        const orphanExternalId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'LTC' });
-        seed.account({
-            externalId: orphanExternalId,
-            externalSource: ExternalSourceEnum.BINANCE,
-            type: AccountTypeEnum.CRYPTO_SYNC,
-            instrumentId: instrument.id
-        });
-        const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-        stubEmptyBinanceBalances();
+            yield* binanceSyncService.sync();
 
-        await run(binanceSyncService.sync());
+            const [seededAccount] = fetchAccountByExternalId(externalId);
+            const [discoveredAccount] = fetchAccountByExternalId(encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'ETH' }));
+            expect(discoveredAccount.integrationId).toBe(seededAccount.integrationId);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        const [seededAccount] = fetchAccountByExternalId(externalId);
-        const [repairedAccount] = fetchAccountByExternalId(orphanExternalId);
-        expect(repairedAccount.integrationId).toBe(seededAccount.integrationId);
-    });
+    it.effect('repairs existing Binance accounts without an integration association', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
 
-    it('leaves regular crypto accounts outside the Binance integration', async () => {
-        const instrument = seedCryptoInstrument('ETH');
-        const regularCryptoAccount = seed.account({
-            type: AccountTypeEnum.CRYPTO,
-            instrumentId: instrument.id,
-            externalSource: ExternalSourceEnum.BINANCE
-        });
-        const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-        stubEmptyBinanceBalances();
+            const instrument = seedCryptoInstrument('LTC');
+            const orphanExternalId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'LTC' });
+            seed.account({
+                externalId: orphanExternalId,
+                externalSource: ExternalSourceEnum.BINANCE,
+                type: AccountTypeEnum.CRYPTO_SYNC,
+                instrumentId: instrument.id
+            });
+            const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+            stubEmptyBinanceBalances();
 
-        await run(binanceSyncService.sync());
+            yield* binanceSyncService.sync();
 
-        const [syncedRegularCryptoAccount] = testDb
-            .select()
-            .from(AccountEntityTable)
-            .where(eq(AccountEntityTable.id, regularCryptoAccount.id))
-            .all();
-        const [binanceAccount] = fetchAccountByExternalId(externalId);
-        expect(syncedRegularCryptoAccount.integrationId).toBeNull();
-        expect(binanceAccount.integrationId).not.toBeNull();
-    });
+            const [seededAccount] = fetchAccountByExternalId(externalId);
+            const [repairedAccount] = fetchAccountByExternalId(orphanExternalId);
+            expect(repairedAccount.integrationId).toBe(seededAccount.integrationId);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('creates C2C, earn, fiat, deposit and withdrawal transactions for all assets in a single backward run, not just the first account', async () => {
-        const { eurExternalId, usdtFundingAccount } = seedAccountAgnosticAccounts();
-        const { previousMonth, currentMonth } = stubAccountAgnosticSourceResponses();
+    it.effect('leaves regular crypto accounts outside the Binance integration', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
 
-        await run(binanceSyncService.sync());
+            const instrument = seedCryptoInstrument('ETH');
+            const regularCryptoAccount = seed.account({
+                type: AccountTypeEnum.CRYPTO,
+                instrumentId: instrument.id,
+                externalSource: ExternalSourceEnum.BINANCE
+            });
+            const { externalId } = setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+            stubEmptyBinanceBalances();
 
-        expectAllSourceExternalIds(previousMonth, currentMonth);
-        expectSourceAccounts(usdtFundingAccount.id, eurExternalId);
-        const incomeCount = fetchBinanceTransactions().filter(transaction => transaction.type === TransactionTypeEnum.INCOME).length;
-        expect(incomeCount).toBe(5);
-    });
+            yield* binanceSyncService.sync();
 
-    it('commits C2C and earn income even when fiat returns no orders, proving per-type incremental commit', async () => {
-        const { instrument: usdtInstrument } = setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
-        const usdtFundingAccount = seedUsdtFundingAccount(usdtInstrument.id);
-        stubEmptyBinanceBalances();
-        const earnTime = recentDayInMonthsAgo(0);
-        binanceStub.c2cOrders([buildBinance.c2cOrder({ orderNumber: 'usdt-c2c', tradeType: 'BUY', asset: 'USDT', amount: '100' })], []);
-        binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: earnTime })]);
-        binanceStub.fiatOrders([], []);
+            const [syncedRegularCryptoAccount] = testDb
+                .select()
+                .from(AccountEntityTable)
+                .where(eq(AccountEntityTable.id, regularCryptoAccount.id))
+                .all();
+            const [binanceAccount] = fetchAccountByExternalId(externalId);
+            expect(syncedRegularCryptoAccount.integrationId).toBeNull();
+            expect(binanceAccount.integrationId).not.toBeNull();
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        await run(binanceSyncService.sync());
+    it.effect(
+        'creates C2C, earn, fiat, deposit and withdrawal transactions for all assets in a single backward run, not just the first account',
+        () =>
+            Effect.gen(function* () {
+                const binanceSyncService = yield* BinanceSyncService;
 
-        const externalIds = fetchBinanceTransactions()
-            .map(transaction => transaction.externalId)
-            .sort();
-        expect(externalIds).toStrictEqual([`binance:c2c:usdt-c2c`, `binance:earn:USDT:${buildEarnDayKey(earnTime)}`].sort());
-        expect(fetchBinanceEntriesByExternalId('binance:c2c:usdt-c2c')[0].accountId).toBe(usdtFundingAccount.id);
-    });
+                const { eurExternalId, usdtFundingAccount } = seedAccountAgnosticAccounts();
+                const { previousMonth, currentMonth } = stubAccountAgnosticSourceResponses();
+
+                yield* binanceSyncService.sync();
+
+                expectAllSourceExternalIds(previousMonth, currentMonth);
+                expectSourceAccounts(usdtFundingAccount.id, eurExternalId);
+                const incomeCount = fetchBinanceTransactions().filter(
+                    transaction => transaction.type === TransactionTypeEnum.INCOME
+                ).length;
+                expect(incomeCount).toBe(5);
+            }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('commits C2C and earn income even when fiat returns no orders, proving per-type incremental commit', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+
+            const { instrument: usdtInstrument } = setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.BACKWARD });
+            const usdtFundingAccount = seedUsdtFundingAccount(usdtInstrument.id);
+            stubEmptyBinanceBalances();
+            const earnTime = recentDayInMonthsAgo(0);
+            binanceStub.c2cOrders([buildBinance.c2cOrder({ orderNumber: 'usdt-c2c', tradeType: 'BUY', asset: 'USDT', amount: '100' })], []);
+            binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: earnTime })]);
+            binanceStub.fiatOrders([], []);
+
+            yield* binanceSyncService.sync();
+
+            const externalIds = fetchBinanceTransactions()
+                .map(transaction => transaction.externalId)
+                .sort();
+            expect(externalIds).toStrictEqual([`binance:c2c:usdt-c2c`, `binance:earn:USDT:${buildEarnDayKey(earnTime)}`].sort());
+            expect(fetchBinanceEntriesByExternalId('binance:c2c:usdt-c2c')[0].accountId).toBe(usdtFundingAccount.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

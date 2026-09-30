@@ -1,75 +1,66 @@
-import { ersteSyncService } from '@app/sync/service/erste-sync.service';
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
-import { syncProviderRegistryService } from '@app/sync/service/sync-provider-registry.service';
+import { SYNC_PROVIDER_CAPABILITIES } from '@app/sync/constant/sync-provider-capabilities.constant';
+import { ErsteSyncService } from '@app/sync/service/erste-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { SyncProviderRegistryService } from '@app/sync/service/sync-provider-registry.service';
 import { ExternalSourceEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import { seed, run } from '../../harness';
+import { seed, TestLayer } from '../../harness';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 
 const seedAccount = (): AccountEntityInterface => seed.account({ externalId: `test-${Math.random()}`, instrumentId: 1 });
 
+const resolveServiceForProvider = Effect.fnUntraced(function* (provider: ExternalSourceEnum) {
+    const syncProviderRegistryService = yield* SyncProviderRegistryService;
+    const account = seedAccount();
+    seed.sync({ accountId: account.id, provider });
+
+    return yield* syncProviderRegistryService.getServiceForAccount(account.id);
+});
+
 describe('SyncProviderRegistryService', () => {
     describe('getServiceForAccount', () => {
-        it('returns monobank service for account with MONOBANK bank sync', async () => {
-            const account = seedAccount();
-            seed.sync({ accountId: account.id, provider: ExternalSourceEnum.MONOBANK });
+        it.effect('returns monobank service for account with MONOBANK bank sync', () =>
+            Effect.gen(function* () {
+                const monobankSyncService = yield* MonobankSyncService;
 
-            const service = await run(syncProviderRegistryService.getServiceForAccount(account.id));
+                expect(yield* resolveServiceForProvider(ExternalSourceEnum.MONOBANK)).toBe(monobankSyncService);
+            }).pipe(Effect.provide(TestLayer))
+        );
 
-            expect(service).toBe(monobankSyncService);
-        });
+        it.effect('returns erste service for account with ERSTE bank sync', () =>
+            Effect.gen(function* () {
+                const ersteSyncService = yield* ErsteSyncService;
 
-        it('returns erste service for account with ERSTE bank sync', async () => {
-            const account = seedAccount();
-            seed.sync({ accountId: account.id, provider: ExternalSourceEnum.ERSTE });
+                expect(yield* resolveServiceForProvider(ExternalSourceEnum.ERSTE)).toBe(ersteSyncService);
+            }).pipe(Effect.provide(TestLayer))
+        );
 
-            const service = await run(syncProviderRegistryService.getServiceForAccount(account.id));
+        it.effect('returns null for account with no bank sync record', () =>
+            Effect.gen(function* () {
+                const syncProviderRegistryService = yield* SyncProviderRegistryService;
+                const account = seedAccount();
 
-            expect(service).toBe(ersteSyncService);
-        });
+                expect(yield* syncProviderRegistryService.getServiceForAccount(account.id)).toBeNull();
+            }).pipe(Effect.provide(TestLayer))
+        );
 
-        it('returns null for account with no bank sync record', async () => {
-            const account = seedAccount();
-
-            const service = await run(syncProviderRegistryService.getServiceForAccount(account.id));
-
-            expect(service).toBeNull();
-        });
-    });
-
-    describe('getServiceForProvider', () => {
-        it('returns monobank service for MONOBANK provider', () => {
-            const service = syncProviderRegistryService.getServiceForProvider(ExternalSourceEnum.MONOBANK);
-
-            expect(service).toBe(monobankSyncService);
-        });
-
-        it('returns erste service for ERSTE provider', () => {
-            const service = syncProviderRegistryService.getServiceForProvider(ExternalSourceEnum.ERSTE);
-
-            expect(service).toBe(ersteSyncService);
-        });
-
-        it('returns null for REVOLUT provider (no registered service)', () => {
-            const service = syncProviderRegistryService.getServiceForProvider(ExternalSourceEnum.REVOLUT);
-
-            expect(service).toBeNull();
-        });
+        it.effect('returns null for REVOLUT provider (no registered service)', () =>
+            Effect.gen(function* () {
+                expect(yield* resolveServiceForProvider(ExternalSourceEnum.REVOLUT)).toBeNull();
+            }).pipe(Effect.provide(TestLayer))
+        );
     });
 
     describe('supportsTokenAuth', () => {
-        it('monobank service supports token auth', () => {
-            const service = syncProviderRegistryService.getServiceForProvider(ExternalSourceEnum.MONOBANK);
-
-            expect(service?.supportsTokenAuth).toBe(true);
+        it('monobank provider supports token auth', () => {
+            expect(SYNC_PROVIDER_CAPABILITIES[ExternalSourceEnum.MONOBANK].supportsTokenAuth).toBe(true);
         });
 
-        it('erste service does not support token auth', () => {
-            const service = syncProviderRegistryService.getServiceForProvider(ExternalSourceEnum.ERSTE);
-
-            expect(service?.supportsTokenAuth).toBe(false);
+        it('erste provider does not support token auth', () => {
+            expect(SYNC_PROVIDER_CAPABILITIES[ExternalSourceEnum.ERSTE].supportsTokenAuth).toBe(false);
         });
     });
 });

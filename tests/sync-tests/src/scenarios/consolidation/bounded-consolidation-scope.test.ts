@@ -1,8 +1,9 @@
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import { fetchCanonicalsOfType, seed, seedBankPair, run } from '../../harness';
+import { fetchCanonicalsOfType, seed, seedBankPair, TestLayer } from '../../harness';
 
 const seedScopedTransferPair = (
     externalIdPrefix: string,
@@ -36,27 +37,31 @@ const seedWindowTransferPairs = () => {
 };
 
 describe('consolidation/bounded-consolidation-scope', () => {
-    it('limits a bank-sync triggered scan to candidates inside the provided operated-at scope', async () => {
-        const { changedPair, newOperatedAt } = seedWindowTransferPairs();
+    it.effect('limits a bank-sync triggered scan to candidates inside the provided operated-at scope', () =>
+        Effect.gen(function* () {
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const { changedPair, newOperatedAt } = seedWindowTransferPairs();
 
-        const result = await run(
-            transferConsolidationService.consolidate({
+            const result = yield* transferConsolidationService.consolidate({
                 operatedAtFrom: new Date(newOperatedAt.getTime() - 60_000),
                 operatedAtTo: new Date(newOperatedAt.getTime() + 60_000),
                 transactionIds: [changedPair.expenseId, changedPair.incomeId]
-            })
-        );
+            });
 
-        expect(result).toEqual({ found: 1, consolidated: 1 });
-        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
-    });
+            expect(result).toEqual({ found: 1, consolidated: 1 });
+            expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('keeps settings-triggered consolidation global when no scope is provided', async () => {
-        seedWindowTransferPairs();
+    it.effect('keeps settings-triggered consolidation global when no scope is provided', () =>
+        Effect.gen(function* () {
+            const transferConsolidationService = yield* TransferConsolidationService;
+            seedWindowTransferPairs();
 
-        const result = await run(transferConsolidationService.consolidate(null));
+            const result = yield* transferConsolidationService.consolidate(null);
 
-        expect(result).toEqual({ found: 2, consolidated: 2 });
-        expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(2);
-    });
+            expect(result).toEqual({ found: 2, consolidated: 2 });
+            expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(2);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

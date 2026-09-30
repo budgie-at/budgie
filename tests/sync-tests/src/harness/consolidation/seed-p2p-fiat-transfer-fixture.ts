@@ -1,3 +1,4 @@
+import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     AccountTypeEnum,
     CurrencyEnum,
@@ -130,9 +131,12 @@ export const expectConsolidatedToP2pCanonical = (
     expect(fetchTransactionById(income.id).consolidationParentTransactionId).toBe(canonical.id);
 };
 
-export const expectP2pUnconsolidated = (transactions: readonly TransactionEntityInterface[]): void => {
+export const expectP2pUnconsolidated = Effect.fnUntraced(function* (transactions: readonly TransactionEntityInterface[]) {
+    const transferConsolidationService = yield* TransferConsolidationService;
+
+    expect((yield* transferConsolidationService.consolidate(null)).consolidated).toBe(0);
     expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
     expect(transactions.map(transaction => fetchTransactionById(transaction.id).consolidationParentTransactionId)).toEqual(
         transactions.map(() => null)
     );
-};
+});

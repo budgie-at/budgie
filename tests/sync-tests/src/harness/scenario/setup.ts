@@ -1,12 +1,14 @@
-import { assertStoredBalancesMatchLedger, buildTestDb, createTestRepositories, resetTestDb } from '@budgie-at/test-kit';
+import { assertStoredBalancesMatchLedger, buildTestDb, resetTestDb } from '@budgie-at/test-kit';
 import * as Effect from 'effect/Effect';
 import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
-    transferConsolidationDrainerService: { cancelPending: vi.fn(() => Effect.void), enqueue: vi.fn(() => Effect.void) }
-}));
+vi.mock('@app/sync/service/transfer-consolidation-drainer.service', async () => {
+    const { FakeTransferConsolidationDrainerService } = await import('../fake/fake-transfer-consolidation-drainer.service');
+
+    return { TransferConsolidationDrainerService: FakeTransferConsolidationDrainerService };
+});
 
 vi.mock('@app/@generic/constant/yield-to-ui.constant', () => ({ YIELD_TO_UI: Effect.void }));
 
@@ -24,6 +26,9 @@ const resolveLinguiMessage = (descriptor: unknown): string => {
 
 vi.mock('@lingui/core', () => ({
     i18n: {
+        locale: 'en',
+        load: emptyFn,
+        activate: emptyFn,
         _: (descriptor: unknown, values?: Record<string, string>): string => {
             const message = resolveLinguiMessage(descriptor);
 
@@ -40,12 +45,9 @@ export const backupDatabasePath = isNotEmptyString(process.env['BUDGIE_BACKUP_DB
 
 export const testDb = buildTestDb(backupDatabasePath);
 
-vi.mock('@app/@generic/drizzle/db/db', async () => ({
+vi.mock('@app/@generic/drizzle/db/db', () => ({
     db: testDb,
-    ...createTestRepositories(testDb),
-    budgetRepository: new (await import('@budgie/budget/query/budget-repository')).BudgetRepository(testDb),
-    expoDb: { closeAsync: vi.fn((): Promise<void> => Promise.resolve()) },
-    __REMOVE_ME_RESET_DB: (): Promise<void> => Promise.resolve()
+    expoDb: { closeAsync: vi.fn((): Promise<void> => Promise.resolve()) }
 }));
 
 vi.mock('@app/@generic/runtime/app.runtime', async () => {
@@ -60,14 +62,10 @@ beforeAll(() => {
     mockServer.listen({ onUnhandledRequest: 'error' });
 });
 
-beforeEach(async () => {
+beforeEach(() => {
     if (!isDefined(backupDatabasePath)) {
         resetTestDb(testDb);
     }
-    const { resetTestRuntime } = await import('./test-runtime');
-    await resetTestRuntime();
-    const { resetSingletons } = await import('./reset-singletons');
-    resetSingletons();
 });
 
 afterEach(async () => {

@@ -5,10 +5,11 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const EXPENSE_AMOUNT = 30_317.41 * PRECISION;
 const INCOME_AMOUNT = 29_999 * PRECISION;
@@ -76,54 +77,60 @@ const expectTransferPairConsolidated = (
     expect(testQueryService.fetchTransactionById(incomeTransactionId).consolidationParentTransactionId).toBe(canonicals[0].id);
 };
 
-const expectSeededInterbankFeeTransferConsolidates = async (
+const expectSeededInterbankFeeTransferConsolidates = Effect.fnUntraced(function* (
     sourceAccountExternalSource: ExternalSourceEnum | null,
     targetAccountExternalSource: ExternalSourceEnum | null
-): Promise<void> => {
+) {
     const { expense, income, sourceAccount, targetAccount } = seedInterbankFeeTransfer(
         sourceAccountExternalSource,
         targetAccountExternalSource
     );
 
-    const result = await runEffect(runConsolidation());
+    const result = yield* runConsolidation();
     expect(result.consolidated).toBe(1);
     expectTransferPairConsolidated(expense.id, income.id, sourceAccount.id, targetAccount.id);
-};
+});
 
-describe('consolidation/interbank-hinted-fee-transfer', () => {
-    it('auto-consolidates a first interbank transfer when transfer MCC, time, and fee delta make the pair unambiguous', async () => {
-        await expectSeededInterbankFeeTransferConsolidates(ExternalSourceEnum.MONOBANK, ExternalSourceEnum.PRIVATBANK);
-    });
+layer(TestLayer)('consolidation/interbank-hinted-fee-transfer', it => {
+    it.effect('auto-consolidates a first interbank transfer when transfer MCC, time, and fee delta make the pair unambiguous', () =>
+        Effect.gen(function* () {
+            yield* expectSeededInterbankFeeTransferConsolidates(ExternalSourceEnum.MONOBANK, ExternalSourceEnum.PRIVATBANK);
+        })
+    );
 
-    it('uses transaction bank sources when imported accounts do not carry bank sources', async () => {
-        await expectSeededInterbankFeeTransferConsolidates(null, null);
-    });
+    it.effect('uses transaction bank sources when imported accounts do not carry bank sources', () =>
+        Effect.gen(function* () {
+            yield* expectSeededInterbankFeeTransferConsolidates(null, null);
+        })
+    );
 
-    it('leaves an interbank transfer unconsolidated when another fee-sized income competes for the same expense', async () => {
-        const { expense, income, sourceAccount, transferMcc } = seedInterbankFeeTransfer();
-        const competingAccount = seedAccount('Privatbank •5524', ExternalSourceEnum.PRIVATBANK, 'UA-PRIVATBANK-5524');
-        const competingIncome = testSeedService.bankPairIncome(
-            { externalId: 'interbank-fee-competing-income', operatedAt: new Date(2026, 4, 20, 19, 40, 0) },
-            {
-                accountId: competingAccount.id,
-                amount: COMPETING_INCOME_AMOUNT,
-                mccCategoryId: transferMcc.id
-            }
-        );
+    it.effect('leaves an interbank transfer unconsolidated when another fee-sized income competes for the same expense', () =>
+        Effect.gen(function* () {
+            const { expense, income, sourceAccount, transferMcc } = seedInterbankFeeTransfer();
+            const competingAccount = seedAccount('Privatbank •5524', ExternalSourceEnum.PRIVATBANK, 'UA-PRIVATBANK-5524');
+            const competingIncome = testSeedService.bankPairIncome(
+                { externalId: 'interbank-fee-competing-income', operatedAt: new Date(2026, 4, 20, 19, 40, 0) },
+                {
+                    accountId: competingAccount.id,
+                    amount: COMPETING_INCOME_AMOUNT,
+                    mccCategoryId: transferMcc.id
+                }
+            );
 
-        testSeedService.updateTransaction(competingIncome.id, {
-            title: 'від IHOR YEHOROV',
-            externalSource: ExternalSourceEnum.PRIVATBANK
-        });
+            testSeedService.updateTransaction(competingIncome.id, {
+                title: 'від IHOR YEHOROV',
+                externalSource: ExternalSourceEnum.PRIVATBANK
+            });
 
-        const result = await runEffect(runConsolidation());
+            const result = yield* runConsolidation();
 
-        expect(result.found).toBe(0);
-        expect(result.consolidated).toBe(0);
-        expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
-        expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
-        expect(testQueryService.fetchTransactionById(income.id).consolidationParentTransactionId).toBeNull();
-        expect(testQueryService.fetchTransactionById(competingIncome.id).consolidationParentTransactionId).toBeNull();
-        expect(sourceAccount.id).toBe(expense.fromAccountId);
-    });
+            expect(result.found).toBe(0);
+            expect(result.consolidated).toBe(0);
+            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
+            expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
+            expect(testQueryService.fetchTransactionById(income.id).consolidationParentTransactionId).toBeNull();
+            expect(testQueryService.fetchTransactionById(competingIncome.id).consolidationParentTransactionId).toBeNull();
+            expect(sourceAccount.id).toBe(expense.fromAccountId);
+        })
+    );
 });

@@ -1,5 +1,6 @@
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import {
     expectConsolidationParent,
@@ -18,7 +19,7 @@ import {
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const EXISTING_TRANSFER_LEDGER_ENTRY_COUNT = 2;
 
@@ -45,34 +46,36 @@ const seedExistingTransferBridgeFixture = () => {
 
 const fetchBridgeCanonicalId = (): number => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
 
-describe('consolidation/existing-transfer-bridge', () => {
-    it('nests a hand-created bridge transfer under a new source to target canonical', async () => {
-        const { bridgeIncome, existingTransfer, sourceAccount, sourceExpense, targetAccount } = seedExistingTransferBridgeFixture();
+layer(TestLayer)('consolidation/existing-transfer-bridge', it => {
+    it.effect('nests a hand-created bridge transfer under a new source to target canonical', () =>
+        Effect.gen(function* () {
+            const { bridgeIncome, existingTransfer, sourceAccount, sourceExpense, targetAccount } = seedExistingTransferBridgeFixture();
 
-        const result = await runEffect(runConsolidation());
-        const canonicalId = fetchBridgeCanonicalId();
+            const result = yield* runConsolidation();
+            const canonicalId = fetchBridgeCanonicalId();
 
-        expect(result.consolidated).toBe(1);
-        expectConsolidationParent(sourceExpense.id, canonicalId);
-        expectConsolidationParent(bridgeIncome.id, canonicalId);
-        expectConsolidationParent(existingTransfer.id, canonicalId);
-        expect(fetchLedgerEntry(canonicalId, sourceAccount.id).amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
-        expect(fetchLedgerEntry(canonicalId, targetAccount.id).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
-    });
+            expect(result.consolidated).toBe(1);
+            expectConsolidationParent(sourceExpense.id, canonicalId);
+            expectConsolidationParent(bridgeIncome.id, canonicalId);
+            expectConsolidationParent(existingTransfer.id, canonicalId);
+            expect(fetchLedgerEntry(canonicalId, sourceAccount.id).amount).toBe(IBAN_BRIDGE_EUR_AMOUNT);
+            expect(fetchLedgerEntry(canonicalId, targetAccount.id).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
+        })
+    );
 
-    it('restores the hand-created transfer with its own ledger when the bridge canonical is reverted', async () => {
-        const { bridgeAccount, bridgeIncome, existingTransfer, sourceAccount, sourceExpense, targetAccount } =
-            seedExistingTransferBridgeFixture();
+    it.effect('restores the hand-created transfer with its own ledger when the bridge canonical is reverted', () =>
+        Effect.gen(function* () {
+            const { bridgeAccount, bridgeIncome, existingTransfer, sourceAccount, sourceExpense, targetAccount } =
+                seedExistingTransferBridgeFixture();
 
-        await runEffect(
-            expectRevertRestoresSources({
+            yield* expectRevertRestoresSources({
                 accountIds: [sourceAccount.id, bridgeAccount.id, targetAccount.id],
                 consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
                 sourceTransactionIds: [sourceExpense.id, bridgeIncome.id, existingTransfer.id]
-            })
-        );
+            });
 
-        expect(testQueryService.fetchTransactionById(existingTransfer.id).consolidationType).toBeNull();
-        expect(fetchOwnLedgerEntries(existingTransfer.id)).toHaveLength(EXISTING_TRANSFER_LEDGER_ENTRY_COUNT);
-    });
+            expect(testQueryService.fetchTransactionById(existingTransfer.id).consolidationType).toBeNull();
+            expect(fetchOwnLedgerEntries(existingTransfer.id)).toHaveLength(EXISTING_TRANSFER_LEDGER_ENTRY_COUNT);
+        })
+    );
 });

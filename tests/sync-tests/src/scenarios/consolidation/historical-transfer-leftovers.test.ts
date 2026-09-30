@@ -1,5 +1,5 @@
-import { syncRepairService } from '@app/sync/service/sync-repair.service';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { SyncRepairService } from '@app/sync/service/sync-repair.service';
+import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import {
     AccountEntityTable,
     AccountTypeEnum,
@@ -13,8 +13,9 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
 
 import {
     fetchCanonicalsOfType,
@@ -24,7 +25,7 @@ import {
     seedBankPair,
     seedExchangeRate,
     testDb,
-    run
+    TestLayer
 } from '../../harness';
 
 const SOURCE_IBAN = 'UA-FOP-EUR';
@@ -335,16 +336,17 @@ const expectIncomeDuplicateNested = (existingTransfer: TransactionEntityInterfac
     return canonicals[0].id;
 };
 
-const expectIncomeDuplicateConsolidated = async (
+const expectIncomeDuplicateConsolidated = Effect.fnUntraced(function* (
     existingTransfer: TransactionEntityInterface,
     duplicateIncome: TransactionEntityInterface
-): Promise<number> => {
-    const result = await run(transferConsolidationService.consolidate(null));
+) {
+    const transferConsolidationService = yield* TransferConsolidationService;
+    const result = yield* transferConsolidationService.consolidate(null);
 
     expect(result).toEqual({ found: 1, consolidated: 1 });
 
     return expectIncomeDuplicateNested(existingTransfer, duplicateIncome);
-};
+});
 
 const expectPrivatTargetRouted = (canonicalId: number, privatAccountId: number, amount: number): void => {
     const canonical = fetchTransactionById(canonicalId);
@@ -355,10 +357,11 @@ const expectPrivatTargetRouted = (canonicalId: number, privatAccountId: number, 
     expect(debitEntry?.amount).toBe(amount);
 };
 
-const expectExistingTransferBridgeConsolidated = async (
+const expectExistingTransferBridgeConsolidated = Effect.fnUntraced(function* (
     candidate: ReturnType<typeof seedExistingTransferBridgeCandidate>
-): Promise<number> => {
-    const result = await run(transferConsolidationService.consolidate(null));
+) {
+    const transferConsolidationService = yield* TransferConsolidationService;
+    const result = yield* transferConsolidationService.consolidate(null);
 
     expect(result).toEqual({ found: 1, consolidated: 1 });
 
@@ -372,258 +375,286 @@ const expectExistingTransferBridgeConsolidated = async (
     ]);
 
     return canonicalId;
-};
+});
 
 describe('consolidation/historical-transfer-leftovers', () => {
-    it('consolidates a same-bank FOP currency conversion with bank-derived amounts', async () => {
-        const operatedAt = new Date(2025, 9, 14, 12, 27, 41);
-        const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
-        const sourceAccount = seed.account({
-            title: 'Monobank Fop EUR',
-            type: AccountTypeEnum.BANK_SYNC,
-            externalSource: ExternalSourceEnum.MONOBANK,
-            iban: SOURCE_IBAN,
-            instrumentId: eur.id
-        });
-        const targetAccount = seed.account({
-            title: 'Monobank Fop UAH',
-            type: AccountTypeEnum.BANK_SYNC,
-            iban: BRIDGE_IBAN
-        });
-        const sourceExpense = seedBankPair.expense(
-            { externalId: 'fop-eur-sale', operatedAt },
-            { accountId: sourceAccount.id, amount: SAME_BANK_CURRENCY_SOURCE_AMOUNT }
-        );
-        const targetIncome = seedBankPair.income(
-            { externalId: 'fop-uah-receipt', operatedAt },
-            { accountId: targetAccount.id, amount: SAME_BANK_CURRENCY_TARGET_AMOUNT }
-        );
+    it.effect('consolidates a same-bank FOP currency conversion with bank-derived amounts', () =>
+        Effect.gen(function* () {
+            const operatedAt = new Date(2025, 9, 14, 12, 27, 41);
+            const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
+            const sourceAccount = seed.account({
+                title: 'Monobank Fop EUR',
+                type: AccountTypeEnum.BANK_SYNC,
+                externalSource: ExternalSourceEnum.MONOBANK,
+                iban: SOURCE_IBAN,
+                instrumentId: eur.id
+            });
+            const targetAccount = seed.account({
+                title: 'Monobank Fop UAH',
+                type: AccountTypeEnum.BANK_SYNC,
+                iban: BRIDGE_IBAN
+            });
+            const sourceExpense = seedBankPair.expense(
+                { externalId: 'fop-eur-sale', operatedAt },
+                { accountId: sourceAccount.id, amount: SAME_BANK_CURRENCY_SOURCE_AMOUNT }
+            );
+            const targetIncome = seedBankPair.income(
+                { externalId: 'fop-uah-receipt', operatedAt },
+                { accountId: targetAccount.id, amount: SAME_BANK_CURRENCY_TARGET_AMOUNT }
+            );
 
-        const result = await run(transferConsolidationService.consolidate(null));
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const result = yield* transferConsolidationService.consolidate(null);
 
-        expect(result).toEqual({ found: 1, consolidated: 1 });
-        const canonicalId = expectSingleTransferPairCanonical(sourceAccount.id, targetAccount.id);
-        expectParentedToCanonical(canonicalId, [sourceExpense.id, targetIncome.id]);
-        expect(fetchMovedSourceIds(canonicalId)).toEqual([sourceExpense.id, targetIncome.id]);
-    });
+            expect(result).toEqual({ found: 1, consolidated: 1 });
+            const canonicalId = expectSingleTransferPairCanonical(sourceAccount.id, targetAccount.id);
+            expectParentedToCanonical(canonicalId, [sourceExpense.id, targetIncome.id]);
+            expect(fetchMovedSourceIds(canonicalId)).toEqual([sourceExpense.id, targetIncome.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('folds a past currency-exchange bridge leftover into the existing card transfer', async () => {
-        const candidate = seedExistingTransferBridgeCandidate(
-            'eur-to-uah',
-            'На чорну картку',
-            TransactionConsolidationTypeEnum.TRANSFER_PAIR
-        );
+    it.effect('folds a past currency-exchange bridge leftover into the existing card transfer', () =>
+        Effect.gen(function* () {
+            const candidate = seedExistingTransferBridgeCandidate(
+                'eur-to-uah',
+                'На чорну картку',
+                TransactionConsolidationTypeEnum.TRANSFER_PAIR
+            );
 
-        await expectExistingTransferBridgeConsolidated(candidate);
-    });
+            yield* expectExistingTransferBridgeConsolidated(candidate);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('folds an existing card transfer that already owns same-currency sources', async () => {
-        const candidate = seedExistingTransferBridgeCandidate(
-            'canonical-bridge',
-            'Canonical transfer',
-            TransactionConsolidationTypeEnum.TRANSFER_PAIR
-        );
-        const movedSource = seedMovedSourceEntry(candidate.existingCardTransfer.id, candidate.bridgeAccount.id);
+    it.effect('folds an existing card transfer that already owns same-currency sources', () =>
+        Effect.gen(function* () {
+            const candidate = seedExistingTransferBridgeCandidate(
+                'canonical-bridge',
+                'Canonical transfer',
+                TransactionConsolidationTypeEnum.TRANSFER_PAIR
+            );
+            const movedSource = seedMovedSourceEntry(candidate.existingCardTransfer.id, candidate.bridgeAccount.id);
 
-        await expectExistingTransferBridgeConsolidated(candidate);
-        expect(fetchMovedSourceIds(candidate.existingCardTransfer.id)).toEqual([movedSource.id]);
-    });
+            yield* expectExistingTransferBridgeConsolidated(candidate);
+            expect(fetchMovedSourceIds(candidate.existingCardTransfer.id)).toEqual([movedSource.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('does not fold a leaf source transaction that already owns moved source entries', async () => {
-        const { existingCardTransfer, sourceAccount, sourceExpense, bridgeIncome } = seedExistingTransferBridgeCandidate(
-            'canonical-source',
-            'Canonical transfer',
-            null
-        );
-        const movedSource = seedMovedSourceEntry(sourceExpense.id, sourceAccount.id);
+    it.effect('does not fold a leaf source transaction that already owns moved source entries', () =>
+        Effect.gen(function* () {
+            const { existingCardTransfer, sourceAccount, sourceExpense, bridgeIncome } = seedExistingTransferBridgeCandidate(
+                'canonical-source',
+                'Canonical transfer',
+                null
+            );
+            const movedSource = seedMovedSourceEntry(sourceExpense.id, sourceAccount.id);
 
-        const result = await run(transferConsolidationService.consolidate(null));
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const result = yield* transferConsolidationService.consolidate(null);
 
-        expect(result).toEqual({ found: 1, consolidated: 0 });
-        expect(fetchTransactionById(sourceExpense.id).consolidationParentTransactionId).toBeNull();
-        expect(fetchTransactionById(bridgeIncome.id).consolidationParentTransactionId).toBeNull();
-        expect(fetchTransactionById(existingCardTransfer.id).consolidationParentTransactionId).toBeNull();
-        expect(fetchMovedSourceIds(sourceExpense.id)).toEqual([movedSource.id]);
-    });
+            expect(result).toEqual({ found: 1, consolidated: 0 });
+            expect(fetchTransactionById(sourceExpense.id).consolidationParentTransactionId).toBeNull();
+            expect(fetchTransactionById(bridgeIncome.id).consolidationParentTransactionId).toBeNull();
+            expect(fetchTransactionById(existingCardTransfer.id).consolidationParentTransactionId).toBeNull();
+            expect(fetchMovedSourceIds(sourceExpense.id)).toEqual([movedSource.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('nests the closest past income duplicate with an existing same-currency transfer', async () => {
-        const operatedAt = new Date(2026, 0, 5, 13, 56, 56);
-        const sourceAccount = seed.account({
-            title: 'Monobank Black',
-            type: AccountTypeEnum.BANK_SYNC,
-            iban: BLACK_IBAN
-        });
-        const targetAccount = seed.account({
-            title: 'Privatbank',
-            type: AccountTypeEnum.BANK_SYNC,
-            iban: PRIVAT_IBAN
-        });
-        const transferMcc = findMccByCode('4829');
-        const existingTransfer = seedTransfer('Приват Сина', operatedAt, sourceAccount.id, targetAccount.id, UAH_AMOUNT);
-        const closestIncome = seedBankPair.income(
-            { externalId: 'privat-income-closest', operatedAt: new Date(operatedAt.getTime() + 60 * 60 * 1000) },
-            { accountId: targetAccount.id, amount: UAH_AMOUNT, mccCategoryId: transferMcc.id }
-        );
-        const laterIncome = seedBankPair.income(
-            { externalId: 'privat-income-later', operatedAt: new Date(operatedAt.getTime() + 2 * 60 * 60 * 1000) },
-            { accountId: targetAccount.id, amount: UAH_AMOUNT, mccCategoryId: transferMcc.id }
-        );
+    it.effect('nests the closest past income duplicate with an existing same-currency transfer', () =>
+        Effect.gen(function* () {
+            const operatedAt = new Date(2026, 0, 5, 13, 56, 56);
+            const sourceAccount = seed.account({
+                title: 'Monobank Black',
+                type: AccountTypeEnum.BANK_SYNC,
+                iban: BLACK_IBAN
+            });
+            const targetAccount = seed.account({
+                title: 'Privatbank',
+                type: AccountTypeEnum.BANK_SYNC,
+                iban: PRIVAT_IBAN
+            });
+            const transferMcc = findMccByCode('4829');
+            const existingTransfer = seedTransfer('Приват Сина', operatedAt, sourceAccount.id, targetAccount.id, UAH_AMOUNT);
+            const closestIncome = seedBankPair.income(
+                { externalId: 'privat-income-closest', operatedAt: new Date(operatedAt.getTime() + 60 * 60 * 1000) },
+                { accountId: targetAccount.id, amount: UAH_AMOUNT, mccCategoryId: transferMcc.id }
+            );
+            const laterIncome = seedBankPair.income(
+                { externalId: 'privat-income-later', operatedAt: new Date(operatedAt.getTime() + 2 * 60 * 60 * 1000) },
+                { accountId: targetAccount.id, amount: UAH_AMOUNT, mccCategoryId: transferMcc.id }
+            );
 
-        await expectIncomeDuplicateConsolidated(existingTransfer, closestIncome);
-        expect(fetchTransactionById(laterIncome.id).consolidationParentTransactionId).toBeNull();
-    });
+            yield* expectIncomeDuplicateConsolidated(existingTransfer, closestIncome);
+            expect(fetchTransactionById(laterIncome.id).consolidationParentTransactionId).toBeNull();
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('nests a target income duplicate with an existing cross-currency transfer', async () => {
-        const operatedAt = new Date(2026, 0, 30, 8, 52, 7);
-        const transferMcc = findMccByCode('4829');
-        const { sourceAccount, targetAccount } = seedHistoricalBridgeAccounts();
-        const existingTransfer = seedTransfer('Приват Сина', operatedAt, sourceAccount.id, targetAccount.id, 10_144_000_000);
+    it.effect('nests a target income duplicate with an existing cross-currency transfer', () =>
+        Effect.gen(function* () {
+            const operatedAt = new Date(2026, 0, 30, 8, 52, 7);
+            const transferMcc = findMccByCode('4829');
+            const { sourceAccount, targetAccount } = seedHistoricalBridgeAccounts();
+            const existingTransfer = seedTransfer('Приват Сина', operatedAt, sourceAccount.id, targetAccount.id, 10_144_000_000);
 
-        testDb
-            .update(TransactionEntryEntityTable)
-            .set({ amount: 200_000_000 })
-            .where(
-                and(
-                    eq(TransactionEntryEntityTable.transactionId, existingTransfer.id),
-                    eq(TransactionEntryEntityTable.accountId, sourceAccount.id)
+            testDb
+                .update(TransactionEntryEntityTable)
+                .set({ amount: 200_000_000 })
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.transactionId, existingTransfer.id),
+                        eq(TransactionEntryEntityTable.accountId, sourceAccount.id)
+                    )
                 )
-            )
-            .run();
+                .run();
 
-        const duplicateIncome = seedBankPair.income(
-            { externalId: 'privat-income-cross-currency', operatedAt: new Date(operatedAt.getTime() + 60 * 60 * 1000) },
-            { accountId: targetAccount.id, amount: 10_144_000_000, mccCategoryId: transferMcc.id }
-        );
+            const duplicateIncome = seedBankPair.income(
+                { externalId: 'privat-income-cross-currency', operatedAt: new Date(operatedAt.getTime() + 60 * 60 * 1000) },
+                { accountId: targetAccount.id, amount: 10_144_000_000, mccCategoryId: transferMcc.id }
+            );
 
-        await expectIncomeDuplicateConsolidated(existingTransfer, duplicateIncome);
-    });
+            yield* expectIncomeDuplicateConsolidated(existingTransfer, duplicateIncome);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('routes an approximate cross-currency Privat income through a canonical over an existing Monobank transfer', async () => {
-        const operatedAt = new Date(2026, 0, 28, 18, 17, 48);
-        const transferMcc = findMccByCode('4829');
-        const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
-        const sourceAccount = seed.account({
-            title: 'Monobank Black EUR',
-            type: AccountTypeEnum.BANK_SYNC,
-            iban: SOURCE_IBAN,
-            instrumentId: eur.id
-        });
-        const oldTargetAccount = seed.account({ title: 'приватбанк UAH', type: AccountTypeEnum.BANK });
-        const privatAccount = seed.account({
-            title: 'Privatbank',
-            type: AccountTypeEnum.BANK_SYNC,
-            iban: PRIVAT_IBAN
-        });
-        const existingTransfer = seedTransfer(
-            'приват сина 3',
-            operatedAt,
-            sourceAccount.id,
-            oldTargetAccount.id,
-            APPROXIMATE_TRANSFER_TARGET_AMOUNT
-        );
+    it.effect('routes an approximate cross-currency Privat income through a canonical over an existing Monobank transfer', () =>
+        Effect.gen(function* () {
+            const operatedAt = new Date(2026, 0, 28, 18, 17, 48);
+            const transferMcc = findMccByCode('4829');
+            const eur = seed.instrument({ code: 'EUR', name: 'Euro', symbol: '€' });
+            const sourceAccount = seed.account({
+                title: 'Monobank Black EUR',
+                type: AccountTypeEnum.BANK_SYNC,
+                iban: SOURCE_IBAN,
+                instrumentId: eur.id
+            });
+            const oldTargetAccount = seed.account({ title: 'приватбанк UAH', type: AccountTypeEnum.BANK });
+            const privatAccount = seed.account({
+                title: 'Privatbank',
+                type: AccountTypeEnum.BANK_SYNC,
+                iban: PRIVAT_IBAN
+            });
+            const existingTransfer = seedTransfer(
+                'приват сина 3',
+                operatedAt,
+                sourceAccount.id,
+                oldTargetAccount.id,
+                APPROXIMATE_TRANSFER_TARGET_AMOUNT
+            );
 
-        testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, oldTargetAccount.id)).run();
-        testDb
-            .update(TransactionEntityTable)
-            .set({
-                exchangeRate: APPROXIMATE_SOURCE_AMOUNT / APPROXIMATE_TRANSFER_TARGET_AMOUNT,
-                externalSource: ExternalSourceEnum.MONOBANK
-            })
-            .where(eq(TransactionEntityTable.id, existingTransfer.id))
-            .run();
-        testDb
-            .update(TransactionEntryEntityTable)
-            .set({ amount: APPROXIMATE_SOURCE_AMOUNT })
-            .where(
-                and(
-                    eq(TransactionEntryEntityTable.transactionId, existingTransfer.id),
-                    eq(TransactionEntryEntityTable.accountId, sourceAccount.id)
+            testDb.update(AccountEntityTable).set({ isActive: false }).where(eq(AccountEntityTable.id, oldTargetAccount.id)).run();
+            testDb
+                .update(TransactionEntityTable)
+                .set({
+                    exchangeRate: APPROXIMATE_SOURCE_AMOUNT / APPROXIMATE_TRANSFER_TARGET_AMOUNT,
+                    externalSource: ExternalSourceEnum.MONOBANK
+                })
+                .where(eq(TransactionEntityTable.id, existingTransfer.id))
+                .run();
+            testDb
+                .update(TransactionEntryEntityTable)
+                .set({ amount: APPROXIMATE_SOURCE_AMOUNT })
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.transactionId, existingTransfer.id),
+                        eq(TransactionEntryEntityTable.accountId, sourceAccount.id)
+                    )
                 )
-            )
-            .run();
+                .run();
 
-        const privatIncome = seedBankPair.income(
-            { externalId: 'approximate-privat-income', operatedAt: new Date(operatedAt.getTime() + 60 * 60 * 1000 + 1000) },
-            { accountId: privatAccount.id, amount: APPROXIMATE_PRIVAT_INCOME_AMOUNT, mccCategoryId: transferMcc.id }
-        );
+            const privatIncome = seedBankPair.income(
+                { externalId: 'approximate-privat-income', operatedAt: new Date(operatedAt.getTime() + 60 * 60 * 1000 + 1000) },
+                { accountId: privatAccount.id, amount: APPROXIMATE_PRIVAT_INCOME_AMOUNT, mccCategoryId: transferMcc.id }
+            );
 
-        testDb
-            .update(TransactionEntityTable)
-            .set({ externalSource: ExternalSourceEnum.PRIVATBANK, title: 'від IHOR YEHOROV' })
-            .where(eq(TransactionEntityTable.id, privatIncome.id))
-            .run();
+            testDb
+                .update(TransactionEntityTable)
+                .set({ externalSource: ExternalSourceEnum.PRIVATBANK, title: 'від IHOR YEHOROV' })
+                .where(eq(TransactionEntityTable.id, privatIncome.id))
+                .run();
 
-        const canonicalId = await expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
+            const canonicalId = yield* expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
 
-        expectPrivatTargetRouted(canonicalId, privatAccount.id, APPROXIMATE_PRIVAT_INCOME_AMOUNT);
-    });
+            expectPrivatTargetRouted(canonicalId, privatAccount.id, APPROXIMATE_PRIVAT_INCOME_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('routes a same-currency Privat income from an inactive manual target account to the synced account', async () => {
-        const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedTargetDuplicate();
+    it.effect('routes a same-currency Privat income from an inactive manual target account to the synced account', () =>
+        Effect.gen(function* () {
+            const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedTargetDuplicate();
 
-        const canonicalId = await expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
+            const canonicalId = yield* expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
 
-        expectPrivatTargetRouted(canonicalId, privatAccount.id, UAH_AMOUNT);
-    });
+            expectPrivatTargetRouted(canonicalId, privatAccount.id, UAH_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('routes a same-currency Privat income from an inactive synced target account to the active synced account', async () => {
-        const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedSyncedTargetDuplicate();
+    it.effect('routes a same-currency Privat income from an inactive synced target account to the active synced account', () =>
+        Effect.gen(function* () {
+            const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedSyncedTargetDuplicate();
 
-        const canonicalId = await expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
+            const canonicalId = yield* expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
 
-        expectPrivatTargetRouted(canonicalId, privatAccount.id, UAH_AMOUNT);
-    });
+            expectPrivatTargetRouted(canonicalId, privatAccount.id, UAH_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('routes a legacy CSV transfer from a deleted source account to the active synced Privat account', async () => {
-        const { existingTransfer, privatAccount, privatIncome, sourceAccount } = seedLegacyCsvDeletedSourcePrivatDuplicate();
+    it.effect('routes a legacy CSV transfer from a deleted source account to the active synced Privat account', () =>
+        Effect.gen(function* () {
+            const { existingTransfer, privatAccount, privatIncome, sourceAccount } = seedLegacyCsvDeletedSourcePrivatDuplicate();
 
-        const canonicalId = await expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
+            const canonicalId = yield* expectIncomeDuplicateConsolidated(existingTransfer, privatIncome);
 
-        expect(fetchTransactionById(canonicalId).fromAccountId).toBe(sourceAccount.id);
-        expectPrivatTargetRouted(canonicalId, privatAccount.id, UAH_AMOUNT);
-    });
+            expect(fetchTransactionById(canonicalId).fromAccountId).toBe(sourceAccount.id);
+            expectPrivatTargetRouted(canonicalId, privatAccount.id, UAH_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('does not retarget a legacy CSV transfer when the source account is still active', async () => {
-        const { existingTransfer, privatIncome, sourceAccount } = seedLegacyCsvDeletedSourcePrivatDuplicate();
+    it.effect('does not retarget a legacy CSV transfer when the source account is still active', () =>
+        Effect.gen(function* () {
+            const { existingTransfer, privatIncome, sourceAccount } = seedLegacyCsvDeletedSourcePrivatDuplicate();
 
-        testDb
-            .update(AccountEntityTable)
-            .set({ deletedAt: null, includeInNetWorth: true, isActive: true })
-            .where(eq(AccountEntityTable.id, sourceAccount.id))
-            .run();
-        testDb
-            .update(TransactionEntryEntityTable)
-            .set({ deletedAt: null })
-            .where(
-                and(
-                    eq(TransactionEntryEntityTable.transactionId, existingTransfer.id),
-                    eq(TransactionEntryEntityTable.accountId, sourceAccount.id)
+            testDb
+                .update(AccountEntityTable)
+                .set({ deletedAt: null, includeInNetWorth: true, isActive: true })
+                .where(eq(AccountEntityTable.id, sourceAccount.id))
+                .run();
+            testDb
+                .update(TransactionEntryEntityTable)
+                .set({ deletedAt: null })
+                .where(
+                    and(
+                        eq(TransactionEntryEntityTable.transactionId, existingTransfer.id),
+                        eq(TransactionEntryEntityTable.accountId, sourceAccount.id)
+                    )
                 )
-            )
-            .run();
+                .run();
 
-        const result = await run(transferConsolidationService.consolidate(null));
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const result = yield* transferConsolidationService.consolidate(null);
 
-        expect(result).toEqual({ found: 0, consolidated: 0 });
-        expect(fetchTransactionById(privatIncome.id).consolidationParentTransactionId).toBeNull();
-    });
+            expect(result).toEqual({ found: 0, consolidated: 0 });
+            expect(fetchTransactionById(privatIncome.id).consolidationParentTransactionId).toBeNull();
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('includes inactive manual target consolidation repairs in bank sync repair action', async () => {
-        const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedTargetDuplicate();
+    it.effect('includes inactive manual target consolidation repairs in bank sync repair action', () =>
+        Effect.gen(function* () {
+            const { existingTransfer, privatAccount, privatIncome } = seedSameCurrencyPrivatArchivedTargetDuplicate();
 
-        const preview = await run(syncRepairService.previewDuplicates());
+            const syncRepairService = yield* SyncRepairService;
+            const preview = yield* syncRepairService.previewDuplicates();
 
-        expect(preview.duplicateTransactionCount).toBe(1);
-        expect(preview.sources).toEqual([
-            expect.objectContaining({
-                duplicateTransactionCount: 1,
-                externalSource: ExternalSourceEnum.PRIVATBANK
-            })
-        ]);
+            expect(preview.duplicateTransactionCount).toBe(1);
+            expect(preview.sources).toEqual([
+                expect.objectContaining({
+                    duplicateTransactionCount: 1,
+                    externalSource: ExternalSourceEnum.PRIVATBANK
+                })
+            ]);
 
-        const result = await run(syncRepairService.removeDuplicates());
+            const result = yield* syncRepairService.removeDuplicates();
 
-        expect(result.repairedTransactionCount).toBe(1);
-        expectPrivatTargetRouted(expectIncomeDuplicateNested(existingTransfer, privatIncome), privatAccount.id, UAH_AMOUNT);
-    });
+            expect(result.repairedTransactionCount).toBe(1);
+            expectPrivatTargetRouted(expectIncomeDuplicateNested(existingTransfer, privatIncome), privatAccount.id, UAH_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

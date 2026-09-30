@@ -1,5 +1,5 @@
 import { Workload } from '@app/@generic/service/workload.service';
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { describe, expect, it } from '@effect/vitest';
 import * as Clock from 'effect/Clock';
 import * as Deferred from 'effect/Deferred';
@@ -16,11 +16,12 @@ import { mockServer } from '../../harness/scenario/mock-server';
 const statementEndpoint = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
 const statementAccountParam = 'account';
 const staleForwardSyncFromAt = new Date('2026-01-01T00:00:00.000Z');
-const nextTaskDelayMs = 1;
+const nextTaskDelayMs = 200;
 
 describe('monobank/queued-work-yield', () => {
     it.effect('yields after the current forward sync when user work is queued', () =>
         Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
             const externalIds = ['mono-acc-1', 'mono-acc-2', 'mono-acc-3'];
             const events: string[] = [];
             const runFork = yield* FiberSet.makeRuntime<Workload>();
@@ -57,6 +58,8 @@ describe('monobank/queued-work-yield', () => {
 
     it.effect('wakes the rate-limit wait when user work is queued', () =>
         Effect.gen(function* () {
+            const monobankSyncService = yield* MonobankSyncService;
+            const workload = yield* Workload;
             const events: string[] = [];
             const rateLimitReached = yield* Deferred.make<void>();
             const importRan = yield* Deferred.make<void>();
@@ -85,13 +88,11 @@ describe('monobank/queued-work-yield', () => {
             );
             yield* Deferred.await(rateLimitReached);
             const queuedImport = yield* Effect.forkChild(
-                Workload.use(workload =>
-                    workload.runUser(
-                        Effect.gen(function* () {
-                            events.push('file-import');
-                            yield* Deferred.succeed(importRan, undefined);
-                        })
-                    )
+                workload.runUser(
+                    Effect.gen(function* () {
+                        events.push('file-import');
+                        yield* Deferred.succeed(importRan, undefined);
+                    })
                 )
             );
             const importRanBeforePauseReleased = yield* Deferred.await(importRan).pipe(

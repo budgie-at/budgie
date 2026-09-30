@@ -1,5 +1,4 @@
-import { statisticsRepository } from '@app/@generic/drizzle/db/db';
-import { entryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
+import { EntryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
 import {
     CategoryEntityTable,
     CurrencyEnum,
@@ -8,14 +7,16 @@ import {
     LanguageEnum,
     PRECISION,
     SettingsEntityTable,
+    StatisticsRepository,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import { requireInstrument, seedBitcoinCryptoAccount, run } from '../../harness';
+import { requireInstrument, seedBitcoinCryptoAccount, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -24,36 +25,36 @@ import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInte
 
 const HISTORICAL_ANALYTICS_EXPENSE_AMOUNT = 5_419_222;
 
-const setDefaultInstrument = async (defaultInstrumentId: number): Promise<void> => {
-    await testDb.update(SettingsEntityTable).set({ defaultInstrumentId });
+const setDefaultInstrument = (defaultInstrumentId: number): void => {
+    testDb.update(SettingsEntityTable).set({ defaultInstrumentId }).run();
 };
 
-const expectHistoricalUahValuation = async (externalSource: ExternalSourceEnum | null): Promise<void> => {
-    const euro = await run(requireInstrument(CurrencyEnum.EUR));
-    const hryvnia = await run(requireInstrument(CurrencyEnum.UAH));
+const expectHistoricalUahValuation = Effect.fnUntraced(function* (externalSource: ExternalSourceEnum | null) {
+    const entryBaseValuationService = yield* EntryBaseValuationService;
+    const euro = yield* requireInstrument(CurrencyEnum.EUR);
+    const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
     const account = seed.account({ instrumentId: hryvnia.id });
 
-    await setDefaultInstrument(euro.id);
+    setDefaultInstrument(euro.id);
 
-    const valuation = await run(
-        entryBaseValuationService.valueMicroUnitEntry({
-            accountId: account.id,
-            amount: 50 * PRECISION,
-            operatedAt: new Date('2011-05-25T12:00:00.000Z'),
-            externalSource
-        })
-    );
+    const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
+        accountId: account.id,
+        amount: 50 * PRECISION,
+        operatedAt: new Date('2011-05-25T12:00:00.000Z'),
+        externalSource
+    });
 
     expect(valuation).toStrictEqual({
         baseInstrumentId: euro.id,
         baseExchangeRate: 0.0889028367561666,
         baseAmount: 4_445_142
     });
-};
+});
 
-const dbCategories = async () => await testDb.select().from(CategoryEntityTable);
+const dbCategories = () => testDb.select().from(CategoryEntityTable).all();
 
-const createHistoricalExpense = async (accountId: number, categoryId: number, operatedAt: Date): Promise<void> => {
+const createHistoricalExpense = Effect.fnUntraced(function* (accountId: number, categoryId: number, operatedAt: Date) {
+    const entryBaseValuationService = yield* EntryBaseValuationService;
     const transaction = insertOne(TransactionEntityTable, {
         type: TransactionTypeEnum.EXPENSE,
         title: 'Historical UAH expense',
@@ -66,14 +67,12 @@ const createHistoricalExpense = async (accountId: number, categoryId: number, op
         externalSource: ExternalSourceEnum.CSV,
         updatedBy: null
     } satisfies TransactionCreateEntityInterface);
-    const valuation = await run(
-        entryBaseValuationService.valueMicroUnitEntry({
-            accountId,
-            amount: 50 * PRECISION,
-            operatedAt,
-            externalSource: ExternalSourceEnum.CSV
-        })
-    );
+    const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
+        accountId,
+        amount: 50 * PRECISION,
+        operatedAt,
+        externalSource: ExternalSourceEnum.CSV
+    });
 
     insertOne(TransactionEntryEntityTable, {
         transactionId: transaction.id,
@@ -89,51 +88,63 @@ const createHistoricalExpense = async (accountId: number, categoryId: number, op
         baseAmount: valuation.baseAmount,
         toIban: null
     } satisfies TransactionEntryCreateEntityInterface);
-};
+});
 
 describe('base valuation', () => {
-    it('values imported UAH entries with seeded historical NBU rates', async () => {
-        await expectHistoricalUahValuation(ExternalSourceEnum.CSV);
-    });
+    it.effect('values imported UAH entries with seeded historical NBU rates', () =>
+        Effect.gen(function* () {
+            yield* expectHistoricalUahValuation(ExternalSourceEnum.CSV);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('values a manually back-dated UAH entry with the historical rate, not the current one', async () => {
-        await expectHistoricalUahValuation(null);
-    });
+    it.effect('values a manually back-dated UAH entry with the historical rate, not the current one', () =>
+        Effect.gen(function* () {
+            yield* expectHistoricalUahValuation(null);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('allows manual crypto entries to remain unvalued when no live crypto rate exists', async () => {
-        const { account } = await run(seedBitcoinCryptoAccount());
+    it.effect('allows manual crypto entries to remain unvalued when no live crypto rate exists', () =>
+        Effect.gen(function* () {
+            const entryBaseValuationService = yield* EntryBaseValuationService;
+            const { account } = yield* seedBitcoinCryptoAccount();
 
-        const valuation = await run(
-            entryBaseValuationService.valueMicroUnitEntry({
+            const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
                 accountId: account.id,
                 amount: 100 * PRECISION,
                 operatedAt: new Date('2026-06-04T15:35:37.321Z'),
                 externalSource: null
-            })
-        );
+            });
 
-        expect(valuation).toStrictEqual({
-            baseInstrumentId: null,
-            baseExchangeRate: null,
-            baseAmount: null
-        });
-    });
+            expect(valuation).toStrictEqual({
+                baseInstrumentId: null,
+                baseExchangeRate: null,
+                baseAmount: null
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('sums analytics with historical base amounts from different periods', async () => {
-        const euro = await run(requireInstrument(CurrencyEnum.EUR));
-        const hryvnia = await run(requireInstrument(CurrencyEnum.UAH));
-        const [category] = await dbCategories();
-        const account = seed.account({ instrumentId: hryvnia.id });
+    it.effect('sums analytics with historical base amounts from different periods', () =>
+        Effect.gen(function* () {
+            const statisticsRepository = yield* StatisticsRepository;
+            const euro = yield* requireInstrument(CurrencyEnum.EUR);
+            const hryvnia = yield* requireInstrument(CurrencyEnum.UAH);
+            const [category] = dbCategories();
+            const account = seed.account({ instrumentId: hryvnia.id });
 
-        await setDefaultInstrument(euro.id);
-        await createHistoricalExpense(account.id, category.id, new Date('2011-05-25T12:00:00.000Z'));
-        await createHistoricalExpense(account.id, category.id, new Date('2026-05-25T12:00:00.000Z'));
+            setDefaultInstrument(euro.id);
+            yield* createHistoricalExpense(account.id, category.id, new Date('2011-05-25T12:00:00.000Z'));
+            yield* createHistoricalExpense(account.id, category.id, new Date('2026-05-25T12:00:00.000Z'));
 
-        const totals = statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id).get();
-        const [categoryTotal] = statisticsRepository.getExpenseByCategoryQuery(DEFAULT_TRANSACTION_FILTER, euro.id, LanguageEnum.EN).all();
+            const [totals] = yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, euro.id);
+            const [categoryTotal] = yield* statisticsRepository.getExpenseByCategoryQuery(
+                DEFAULT_TRANSACTION_FILTER,
+                euro.id,
+                LanguageEnum.EN
+            );
 
-        expect(totals?.expense).toBe(HISTORICAL_ANALYTICS_EXPENSE_AMOUNT);
-        expect(totals?.income).toBe(0);
-        expect(categoryTotal.amount).toBe(HISTORICAL_ANALYTICS_EXPENSE_AMOUNT);
-    });
+            expect(totals?.expense).toBe(HISTORICAL_ANALYTICS_EXPENSE_AMOUNT);
+            expect(totals?.income).toBe(0);
+            expect(categoryTotal.amount).toBe(HISTORICAL_ANALYTICS_EXPENSE_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

@@ -1,8 +1,8 @@
-import { accountBalanceRepository } from '@app/@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
-import { transactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
-import { transactionService } from '@app/transaction/service/transaction.service';
+import { TransactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
+import { TransactionService } from '@app/transaction/service/transaction.service';
 import {
+    AccountBalanceRepository,
     AccountDebtTypeEnum,
     AccountTypeEnum,
     BANK_FEE_CATEGORY_ID,
@@ -19,12 +19,14 @@ import {
     TransactionEntityTable,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { run, seed, testDb } from '../../harness';
+import { seed, testDb, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 import type {
@@ -144,6 +146,14 @@ const buildPlainExpenseUpdateInput = (accountId: number, amount: number): Transa
     tagIds: []
 });
 
+const seedFeeBearingDebtScenario = () => {
+    const cashAccount = seedFeeCashAccount();
+    const debtAccount = seedLentDebtAccount();
+    const transaction = seedSyncedExpenseTransaction(cashAccount.id);
+
+    return { debtAccount, transaction, ...seedFeeBearingEntries(transaction.id, cashAccount.id) };
+};
+
 const fetchEntryById = (entryId: number): TransactionEntryEntityInterface | undefined =>
     testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.id, entryId)).get();
 
@@ -163,93 +173,107 @@ const fetchLiveDebtEvent = (transactionId: number): DebtEventEntityInterface | u
         .where(and(eq(DebtEventEntityTable.transactionId, transactionId), isNull(DebtEventEntityTable.deletedAt)))
         .get();
 
-const fetchDebtProgress = (debtAccountId: number) => {
-    const progress = accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccountId).get();
+const fetchDebtProgress = Effect.fnUntraced(function* (debtAccountId: number) {
+    const accountBalanceRepository = yield* AccountBalanceRepository;
+    const progress = (yield* accountBalanceRepository.getDebtAccountProgressByAccountId(debtAccountId)).at(0);
 
     if (!isDefined(progress)) {
         throw new Error(`Debt progress for account ${debtAccountId} not found`);
     }
 
     return { paidAmount: convertFromMicroUnits(progress.paidAmount), totalAmount: convertFromMicroUnits(progress.totalAmount) };
-};
+});
 
 describe('debt settlement fee entries', () => {
-    it('attaches a fee-bearing synced expense to a debt', async () => {
-        const cashAccount = seedFeeCashAccount();
-        const debtAccount = seedLentDebtAccount();
-        const transaction = seedSyncedExpenseTransaction(cashAccount.id);
-        const { creditEntry, feeEntry } = seedFeeBearingEntries(transaction.id, cashAccount.id);
+    it.effect('attaches a fee-bearing synced expense to a debt', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-        await expect(
-            run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }))
-        ).resolves.toBeDefined();
+            const { debtAccount, transaction, creditEntry, feeEntry } = seedFeeBearingDebtScenario();
 
-        const debtEvent = fetchLiveDebtEvent(transaction.id);
+            expect(
+                yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id })
+            ).toBeDefined();
 
-        expect(debtEvent?.transactionEntryId).toBe(creditEntry.id);
-        expect(debtEvent?.amount).toBe(PRIMARY_ENTRY_AMOUNT);
-        expect(debtEvent?.direction).toBe(DebtEventDirectionEnum.OPEN);
-        expect(debtEvent?.source).toBe(DebtEventSourceEnum.INCOME_ATTACHMENT);
+            const debtEvent = fetchLiveDebtEvent(transaction.id);
 
-        const updatedCreditEntry = fetchEntryById(creditEntry.id);
-        const updatedFeeEntry = fetchEntryById(feeEntry.id);
+            expect(debtEvent?.transactionEntryId).toBe(creditEntry.id);
+            expect(debtEvent?.amount).toBe(PRIMARY_ENTRY_AMOUNT);
+            expect(debtEvent?.direction).toBe(DebtEventDirectionEnum.OPEN);
+            expect(debtEvent?.source).toBe(DebtEventSourceEnum.INCOME_ATTACHMENT);
 
-        expect(updatedCreditEntry?.categoryId).toBe(LENDING_CATEGORY_ID);
-        expect(updatedCreditEntry?.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
-        expect(updatedFeeEntry?.categoryId).toBe(BANK_FEE_CATEGORY_ID);
-        expect(updatedFeeEntry?.categorySource).toBe(CategorySourceEnum.FEE);
-        expect(fetchDebtProgress(debtAccount.id)).toEqual({ paidAmount: 0, totalAmount: 400 });
-    });
+            const updatedCreditEntry = fetchEntryById(creditEntry.id);
+            const updatedFeeEntry = fetchEntryById(feeEntry.id);
 
-    it('rejects a transaction with two non-fee primary entries', async () => {
-        const cashAccount = seedFeeCashAccount();
-        const debtAccount = seedLentDebtAccount();
-        const transaction = seedSyncedExpenseTransaction(cashAccount.id);
+            expect(updatedCreditEntry?.categoryId).toBe(LENDING_CATEGORY_ID);
+            expect(updatedCreditEntry?.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
+            expect(updatedFeeEntry?.categoryId).toBe(BANK_FEE_CATEGORY_ID);
+            expect(updatedFeeEntry?.categorySource).toBe(CategorySourceEnum.FEE);
+            expect(yield* fetchDebtProgress(debtAccount.id)).toEqual({ paidAmount: 0, totalAmount: 400 });
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        seedCreditEntry(transaction.id, cashAccount.id, PRIMARY_ENTRY_AMOUNT, null);
-        seedCreditEntry(transaction.id, cashAccount.id, FEE_ENTRY_AMOUNT, null);
+    it.effect('rejects a transaction with two non-fee primary entries', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-        await expect(
-            run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }))
-        ).rejects.toThrow();
-    });
+            const cashAccount = seedFeeCashAccount();
+            const debtAccount = seedLentDebtAccount();
+            const transaction = seedSyncedExpenseTransaction(cashAccount.id);
 
-    it('detach reverts the settlement category on the non-fee entry of a fee-bearing expense', async () => {
-        const cashAccount = seedFeeCashAccount();
-        const debtAccount = seedLentDebtAccount();
-        const transaction = seedSyncedExpenseTransaction(cashAccount.id);
-        const { creditEntry, feeEntry } = seedFeeBearingEntries(transaction.id, cashAccount.id);
+            seedCreditEntry(transaction.id, cashAccount.id, PRIMARY_ENTRY_AMOUNT, null);
+            seedCreditEntry(transaction.id, cashAccount.id, FEE_ENTRY_AMOUNT, null);
 
-        await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }));
-        await run(transactionDebtSettlementService.detach(transaction.id));
+            const attachExit = yield* Effect.exit(
+                transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id })
+            );
 
-        const revertedCreditEntry = fetchEntryById(creditEntry.id);
-        const untouchedFeeEntry = fetchEntryById(feeEntry.id);
+            expect(Exit.isFailure(attachExit)).toBe(true);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-        expect(revertedCreditEntry?.categoryId).toBeNull();
-        expect(revertedCreditEntry?.categorySource).toBe(CategorySourceEnum.USER);
-        expect(untouchedFeeEntry?.categoryId).toBe(BANK_FEE_CATEGORY_ID);
-        expect(untouchedFeeEntry?.categorySource).toBe(CategorySourceEnum.FEE);
-        expect(fetchLiveDebtEvent(transaction.id)).toBeUndefined();
-    });
+    it.effect('detach reverts the settlement category on the non-fee entry of a fee-bearing expense', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
-    it('keeps the debt event pointing at the live entry after the transaction is edited', async () => {
-        const cashAccount = seedFeeCashAccount();
-        const debtAccount = seedLentDebtAccount();
-        const transaction = seedSyncedExpenseTransaction(cashAccount.id);
-        const originalEntry = seedCreditEntry(transaction.id, cashAccount.id, PRIMARY_ENTRY_AMOUNT, null);
+            const { debtAccount, transaction, creditEntry, feeEntry } = seedFeeBearingDebtScenario();
 
-        await run(transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id }));
-        await run(transactionService.updateById(transaction.id, buildPlainExpenseUpdateInput(cashAccount.id, UPDATED_ENTRY_AMOUNT)));
+            yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+            yield* transactionDebtSettlementService.detach(transaction.id);
 
-        const staleEntry = fetchEntryById(originalEntry.id);
-        const [newPrimaryEntry] = fetchLivePrimaryEntries(transaction.id);
-        const debtEvent = fetchLiveDebtEvent(transaction.id);
+            const revertedCreditEntry = fetchEntryById(creditEntry.id);
+            const untouchedFeeEntry = fetchEntryById(feeEntry.id);
 
-        expect(staleEntry).toBeUndefined();
-        expect(debtEvent?.transactionEntryId).toBe(newPrimaryEntry?.id);
-        expect(debtEvent?.amount).toBe(UPDATED_ENTRY_AMOUNT * PRECISION);
-        expect(debtEvent?.baseAmount).toBe(UPDATED_ENTRY_AMOUNT * PRECISION);
-        expect(fetchDebtProgress(debtAccount.id)).toEqual({ paidAmount: 0, totalAmount: 300 + UPDATED_ENTRY_AMOUNT });
-    });
+            expect(revertedCreditEntry?.categoryId).toBeNull();
+            expect(revertedCreditEntry?.categorySource).toBe(CategorySourceEnum.USER);
+            expect(untouchedFeeEntry?.categoryId).toBe(BANK_FEE_CATEGORY_ID);
+            expect(untouchedFeeEntry?.categorySource).toBe(CategorySourceEnum.FEE);
+            expect(fetchLiveDebtEvent(transaction.id)).toBeUndefined();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the debt event pointing at the live entry after the transaction is edited', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const transactionService = yield* TransactionService;
+
+            const cashAccount = seedFeeCashAccount();
+            const debtAccount = seedLentDebtAccount();
+            const transaction = seedSyncedExpenseTransaction(cashAccount.id);
+            const originalEntry = seedCreditEntry(transaction.id, cashAccount.id, PRIMARY_ENTRY_AMOUNT, null);
+
+            yield* transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId: debtAccount.id });
+            yield* transactionService.updateById(transaction.id, buildPlainExpenseUpdateInput(cashAccount.id, UPDATED_ENTRY_AMOUNT));
+
+            const staleEntry = fetchEntryById(originalEntry.id);
+            const [newPrimaryEntry] = fetchLivePrimaryEntries(transaction.id);
+            const debtEvent = fetchLiveDebtEvent(transaction.id);
+
+            expect(staleEntry).toBeUndefined();
+            expect(debtEvent?.transactionEntryId).toBe(newPrimaryEntry?.id);
+            expect(debtEvent?.amount).toBe(UPDATED_ENTRY_AMOUNT * PRECISION);
+            expect(debtEvent?.baseAmount).toBe(UPDATED_ENTRY_AMOUNT * PRECISION);
+            expect(yield* fetchDebtProgress(debtAccount.id)).toEqual({ paidAmount: 0, totalAmount: 300 + UPDATED_ENTRY_AMOUNT });
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

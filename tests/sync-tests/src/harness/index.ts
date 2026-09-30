@@ -9,7 +9,7 @@ export { seedRefundStatisticsScenario } from './seed/seed-refund-statistics-scen
 export { runRefundScenario } from './seed/run-refund-scenario';
 export { seedAmountTransferPair } from './seed/seed-amount-transfer-pair';
 export { buildTransferInput } from './seed/build-transfer-input';
-export { StubFileBankSyncService } from './file-sync/stub-file-bank-sync-service';
+export { makeStubFileBankSyncService } from './file-sync/make-stub-file-bank-sync-service';
 export { expectSingleConsolidation } from './consolidation/expect-single-consolidation';
 export { expectAtmCashWithdrawalConsolidation } from './consolidation/expect-atm-cash-withdrawal-consolidation';
 export { expectFileImportConsolidationEnqueued } from './consolidation/expect-file-import-consolidation-enqueued';
@@ -22,6 +22,9 @@ export { fetchSyncById } from './db/fetch-sync-by-id';
 export { fetchAccountIntegrationToken } from './db/fetch-account-integration-token';
 export { findMccByCode } from './db/find-mcc-by-code';
 export { requireInstrument } from './db/require-instrument';
+export { fetchAccountBalance } from './db/fetch-account-balance';
+export { fetchDebtProgress } from './db/fetch-debt-progress';
+export { upsertCurrencyRate } from './db/upsert-currency-rate';
 export { applyMigration } from './db/apply-migration';
 export { monobankStub } from './monobank/monobank-stub';
 export { buildMonobank } from './monobank/build-monobank';
@@ -51,9 +54,8 @@ export {
     DEPOSIT_URL,
     EMPTY_FIAT_RESPONSE,
     FIAT_ORDERS_URL,
-    WITHDRAW_URL,
     stubBinanceServerTime,
-    stubEmptyC2cAndEarnRewards
+    stubEmptyBinanceSources
 } from './binance/binance-raw-stub';
 export { withCoolDownSpy } from './binance/with-cooldown-spy';
 export { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases } from './scenario/error-recovery';
@@ -71,6 +73,11 @@ export {
     seedP2pIncome,
     seedP2pPair
 } from './consolidation/seed-p2p-fiat-transfer-fixture';
-export { run, TestClockLayer, TestLayer } from './scenario/test-runtime';
-export { flushWorkload } from './sync-workload/flush-workload';
-export { inWorkload, runInWorkload } from './sync-workload/run-in-workload';
+export { TestClockLayer, TestLayer } from './scenario/test-runtime';
+export { inWorkload } from './sync-workload/run-in-workload';
+export { pauseUserWork } from './sync-workload/pause-user-work';
+export { advanceScheduledDrain } from './scheduler/advance-scheduled-drain';
+export { skipRequestedSync } from './sync-workload/skip-requested-sync';
+export { expectForwardSyncWithoutHistory } from './db/expect-forward-sync-without-history';
+export { seedBankAndCashAccounts } from './seed/seed-bank-and-cash-accounts';
+export { explainQueryPlan } from './db/explain-query-plan';

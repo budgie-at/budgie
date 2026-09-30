@@ -1,5 +1,7 @@
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { expect, layer } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
 import {
     BRIDGE_THEFT_FX_EUR_AMOUNT,
@@ -11,11 +13,13 @@ import {
 } from '../harness/bridge-theft-fixture';
 import { fetchLedgerBalances } from '../harness/consolidation-revert-audit';
 import { parentConsolidationSource } from '../harness/iban-bridge-topology';
-import { consolidationCoordinatorService, runEffect, testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
-const repair = async (): Promise<number> => runEffect(consolidationCoordinatorService.repairBridgeClaimedTransferPairs());
+const repair = Effect.flatMap(ConsolidationCoordinatorService, consolidationCoordinatorService =>
+    consolidationCoordinatorService.repairBridgeClaimedTransferPairs()
+);
 
-const seedCanonicalPair = async (params: {
+const seedCanonicalPair = (params: {
     readonly sourceAccountId: number;
     readonly sourceAmount: number;
     readonly targetAccountId: number;
@@ -23,7 +27,7 @@ const seedCanonicalPair = async (params: {
     readonly title: string;
     readonly firstSourceId: number;
     readonly secondSourceId: number;
-}): Promise<number> => {
+}): number => {
     const canonical = testSeedService.directTransfer({
         consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR,
         exchangeRate: 1,
@@ -36,13 +40,13 @@ const seedCanonicalPair = async (params: {
         title: params.title,
         toIban: null
     });
-    await parentConsolidationSource(params.firstSourceId, canonical.id);
-    await parentConsolidationSource(params.secondSourceId, canonical.id);
+    parentConsolidationSource(params.firstSourceId, canonical.id);
+    parentConsolidationSource(params.secondSourceId, canonical.id);
 
     return canonical.id;
 };
 
-const seedStolenPairFixture = async (): Promise<{
+const seedStolenPairFixture = (): {
     readonly bridgeUahAccountId: number;
     readonly canonicalId: number;
     readonly fxBridgeIncomeId: number;
@@ -50,9 +54,9 @@ const seedStolenPairFixture = async (): Promise<{
     readonly interbankExpenseAccountId: number;
     readonly interbankExpenseId: number;
     readonly sourceEurAccountId: number;
-}> => {
+} => {
     const fixture = seedBridgeTheftFixture();
-    const canonicalId = await seedCanonicalPair({
+    const canonicalId = seedCanonicalPair({
         firstSourceId: fixture.interbankExpense.id,
         secondSourceId: fixture.fxBridgeIncome.id,
         sourceAccountId: fixture.interbankExpenseAccountId,
@@ -73,59 +77,63 @@ const seedStolenPairFixture = async (): Promise<{
     };
 };
 
-describe('consolidation/bridge-claim-repair', () => {
-    it('unpairs a stolen bridge income, rebuilds the fx transfer and restores the interbank expense', async () => {
-        const fixture = await seedStolenPairFixture();
+layer(TestLayer)('consolidation/bridge-claim-repair', it => {
+    it.effect('unpairs a stolen bridge income, rebuilds the fx transfer and restores the interbank expense', () =>
+        Effect.gen(function* () {
+            const fixture = seedStolenPairFixture();
 
-        const repairedCount = await repair();
+            const repairedCount = yield* repair;
 
-        expect(repairedCount).toBe(1);
-        expect(testQueryService.findTransactionById(fixture.canonicalId)).toBeUndefined();
-        const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-        expect(canonicals).toHaveLength(1);
-        const rebuilt = canonicals[0];
-        expectFxPairCanonicalChildren(rebuilt.id, {
-            fxExpenseId: fixture.fxExpenseId,
-            fxBridgeIncomeId: fixture.fxBridgeIncomeId,
-            interbankExpenseId: fixture.interbankExpenseId
-        });
-        expect(
-            await runEffect(
-                fetchLedgerBalances([fixture.sourceEurAccountId, fixture.bridgeUahAccountId, fixture.interbankExpenseAccountId])
-            )
-        ).toEqual([
-            [fixture.sourceEurAccountId, -BRIDGE_THEFT_FX_EUR_AMOUNT],
-            [fixture.bridgeUahAccountId, BRIDGE_THEFT_FX_UAH_AMOUNT],
-            [fixture.interbankExpenseAccountId, -BRIDGE_THEFT_FX_UAH_AMOUNT]
-        ]);
-    });
+            expect(repairedCount).toBe(1);
+            expect(testQueryService.findTransactionById(fixture.canonicalId)).toBeUndefined();
+            const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
+            expect(canonicals).toHaveLength(1);
+            const rebuilt = canonicals[0];
+            expectFxPairCanonicalChildren(rebuilt.id, {
+                fxExpenseId: fixture.fxExpenseId,
+                fxBridgeIncomeId: fixture.fxBridgeIncomeId,
+                interbankExpenseId: fixture.interbankExpenseId
+            });
+            expect(
+                yield* fetchLedgerBalances([fixture.sourceEurAccountId, fixture.bridgeUahAccountId, fixture.interbankExpenseAccountId])
+            ).toEqual([
+                [fixture.sourceEurAccountId, -BRIDGE_THEFT_FX_EUR_AMOUNT],
+                [fixture.bridgeUahAccountId, BRIDGE_THEFT_FX_UAH_AMOUNT],
+                [fixture.interbankExpenseAccountId, -BRIDGE_THEFT_FX_UAH_AMOUNT]
+            ]);
+        })
+    );
 
-    it('is stable when the repair runs twice', async () => {
-        await seedStolenPairFixture();
+    it.effect('is stable when the repair runs twice', () =>
+        Effect.gen(function* () {
+            seedStolenPairFixture();
 
-        await repair();
-        const repairedCount = await repair();
+            yield* repair;
+            const repairedCount = yield* repair;
 
-        expect(repairedCount).toBe(0);
-        expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
-    });
+            expect(repairedCount).toBe(0);
+            expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
+        })
+    );
 
-    it('does not unpair a legitimate fx bridge pair whose source expense is already consolidated', async () => {
-        const fixture = seedBridgeTheftFixture();
-        const canonicalId = await seedCanonicalPair({
-            firstSourceId: fixture.fxExpense.id,
-            secondSourceId: fixture.fxBridgeIncome.id,
-            sourceAccountId: fixture.sourceEurAccountId,
-            sourceAmount: BRIDGE_THEFT_FX_EUR_AMOUNT,
-            targetAccountId: fixture.bridgeUahAccountId,
-            targetAmount: BRIDGE_THEFT_FX_UAH_AMOUNT,
-            title: BRIDGE_THEFT_INTERBANK_EXPENSE_TITLE
-        });
+    it.effect('does not unpair a legitimate fx bridge pair whose source expense is already consolidated', () =>
+        Effect.gen(function* () {
+            const fixture = seedBridgeTheftFixture();
+            const canonicalId = seedCanonicalPair({
+                firstSourceId: fixture.fxExpense.id,
+                secondSourceId: fixture.fxBridgeIncome.id,
+                sourceAccountId: fixture.sourceEurAccountId,
+                sourceAmount: BRIDGE_THEFT_FX_EUR_AMOUNT,
+                targetAccountId: fixture.bridgeUahAccountId,
+                targetAmount: BRIDGE_THEFT_FX_UAH_AMOUNT,
+                title: BRIDGE_THEFT_INTERBANK_EXPENSE_TITLE
+            });
 
-        const repairedCount = await repair();
+            const repairedCount = yield* repair;
 
-        expect(repairedCount).toBe(0);
-        expect(testQueryService.findTransactionById(canonicalId)).toBeDefined();
-        expect(testQueryService.findTransactionById(fixture.fxBridgeIncome.id)?.consolidationParentTransactionId).toBe(canonicalId);
-    });
+            expect(repairedCount).toBe(0);
+            expect(testQueryService.findTransactionById(canonicalId)).toBeDefined();
+            expect(testQueryService.findTransactionById(fixture.fxBridgeIncome.id)?.consolidationParentTransactionId).toBe(canonicalId);
+        })
+    );
 });

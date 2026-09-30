@@ -1,11 +1,11 @@
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
-import { DebtEventDirectionEnum, DebtEventSourceEnum } from '@budgie/contracts';
+import { DebtEventDirectionEnum, DebtEventRepository, DebtEventSourceEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
 import { isDefined } from '@rnw-community/shared';
 
-import type { runWithDb } from '@budgie-at/test-kit';
-import type { DebtEventEntityInterface, DebtEventRepository } from '@budgie/contracts';
+import type { DebtEventEntityInterface } from '@budgie/contracts';
 
 export class DebtMigrationEventAssertions {
     private static readonly DEBT_ACCOUNT_ID = Number('101');
@@ -15,20 +15,18 @@ export class DebtMigrationEventAssertions {
     private static readonly EXPECTED_TRANSACTION_CLOSING_TOTAL = Number('3966');
     private static readonly EXPECTED_TRANSACTION_IDS = ['1001', '1002', '1003', '1004', '1005', '1006', '1007'].map(Number);
 
-    constructor(
-        private readonly repository: DebtEventRepository,
-        private readonly runOnFixture: ReturnType<typeof runWithDb>
-    ) {}
+    assert() {
+        return Effect.gen({ self: this }, function* () {
+            const debtEventRepository = yield* DebtEventRepository;
+            const debtEvents = yield* debtEventRepository.findByAccountId(DebtMigrationEventAssertions.DEBT_ACCOUNT_ID);
+            const openingEvents = debtEvents.filter(debtEvent => debtEvent.direction === DebtEventDirectionEnum.OPEN);
+            const closingEvents = debtEvents.filter(debtEvent => debtEvent.direction === DebtEventDirectionEnum.CLOSE);
+            const manualClosingEvents = closingEvents.filter(debtEvent => debtEvent.source === DebtEventSourceEnum.MANUAL);
+            const transactionClosingEvents = closingEvents.filter(debtEvent => isDefined(debtEvent.transactionId));
 
-    async assert(): Promise<void> {
-        const debtEvents = await this.runOnFixture(this.repository.findByAccountId(DebtMigrationEventAssertions.DEBT_ACCOUNT_ID));
-        const openingEvents = debtEvents.filter(debtEvent => debtEvent.direction === DebtEventDirectionEnum.OPEN);
-        const closingEvents = debtEvents.filter(debtEvent => debtEvent.direction === DebtEventDirectionEnum.CLOSE);
-        const manualClosingEvents = closingEvents.filter(debtEvent => debtEvent.source === DebtEventSourceEnum.MANUAL);
-        const transactionClosingEvents = closingEvents.filter(debtEvent => isDefined(debtEvent.transactionId));
-
-        this.assertTotals(closingEvents, manualClosingEvents, transactionClosingEvents);
-        this.assertRows(debtEvents, openingEvents, transactionClosingEvents);
+            this.assertTotals(closingEvents, manualClosingEvents, transactionClosingEvents);
+            this.assertRows(debtEvents, openingEvents, transactionClosingEvents);
+        });
     }
 
     private assertTotals(

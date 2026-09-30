@@ -1,5 +1,5 @@
 import { BinanceWalletEnum, decodeBinanceAccountId, encodeBinanceAccountId } from '@budgie/sync';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from '@effect/vitest';
 
 describe('binance/account-id-codec', () => {
     it('round-trips an encoded (wallet, asset) accountId', () => {

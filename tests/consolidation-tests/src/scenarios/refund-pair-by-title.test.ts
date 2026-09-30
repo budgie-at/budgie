@@ -1,11 +1,13 @@
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
+import { RefundPairRepository } from '@budgie/consolidation';
 import { LanguageEnum, TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { runConsolidation } from '../harness/run-consolidation';
 import { runRefundScenario } from '../harness/run-refund-scenario';
-import { refundPairRepository, testQueryService, testSeedService, TestLayer } from '../harness/test-context';
+import { seedRefundedExpenseOnCard } from '../harness/seed-refunded-expense-on-card';
+import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const APPLE_STORE_AMOUNT_UAH = 120;
 const APPLE_STORE_AMOUNT = convertToMicroUnits(APPLE_STORE_AMOUNT_UAH);
@@ -97,9 +99,8 @@ layer(TestLayer)('consolidation/refund-pair-by-title', it => {
 
     it.effect('finds manual refund candidates only from refund income transactions', () =>
         Effect.gen(function* () {
-            const account = testSeedService.account({ externalId: 'mono-card' });
-            const { expense, refunds } = testSeedService.refundedExpense({
-                accountId: account.id,
+            const refundPairRepository = yield* RefundPairRepository;
+            const { expense, refunds } = seedRefundedExpenseOnCard('mono-card', {
                 expenseAmount: APPLE_STORE_AMOUNT,
                 refundAmounts: [APPLE_STORE_AMOUNT],
                 title: 'Apple Store',

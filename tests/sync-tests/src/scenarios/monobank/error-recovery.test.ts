@@ -1,4 +1,4 @@
-import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { MonobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { describe, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { http, HttpResponse } from 'msw';
@@ -11,6 +11,7 @@ describe('monobank/error-recovery', () => {
         `marks the sync FAILED + disabled after ${SYNC_ERROR_THRESHOLD} consecutive $label errors`,
         ({ status }) =>
             Effect.gen(function* () {
+                const monobankSyncService = yield* MonobankSyncService;
                 const { sync } = setupMonobankFixture();
                 mockServer.use(
                     http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', () => new HttpResponse(null, { status }))

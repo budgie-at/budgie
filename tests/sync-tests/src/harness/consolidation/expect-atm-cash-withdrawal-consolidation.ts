@@ -1,5 +1,5 @@
-import { categorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
-import { transferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
+import { CategorizeInboxService } from '@app/categorize-inbox/service/categorize-inbox.service';
+import { TransferConsolidationService } from '@app/sync/service/transfer-consolidation.service';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
@@ -12,6 +12,9 @@ export const expectAtmCashWithdrawalConsolidation = Effect.fnUntraced(function* 
     cashAccountId: number,
     sourceTransactionId: number
 ) {
+    const transferConsolidationService = yield* TransferConsolidationService;
+    const categorizeInboxService = yield* CategorizeInboxService;
+
     yield* transferConsolidationService.consolidate(null);
 
     expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);

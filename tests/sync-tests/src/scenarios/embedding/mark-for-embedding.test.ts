@@ -1,8 +1,8 @@
-import { transactionRepository } from '@app/@generic/drizzle/db/db';
-import { TransactionEntityTable, TransactionTypeEnum } from '@budgie/contracts';
-import { describe, expect, it } from 'vitest';
+import { TransactionEmbeddingRepository, TransactionEntityTable, TransactionTypeEnum } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
+import * as Effect from 'effect/Effect';
 
-import { fetchTransactionById, run } from '../../harness';
+import { fetchTransactionById, TestLayer } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 
 const seedTransaction = (type: TransactionTypeEnum, needsEmbedding: boolean) =>
@@ -20,19 +20,25 @@ const seedTransaction = (type: TransactionTypeEnum, needsEmbedding: boolean) =>
     });
 
 describe('embedding/mark-for-embedding', () => {
-    it('marks indexable transactions that are not already queued', async () => {
-        const transaction = seedTransaction(TransactionTypeEnum.INCOME, false);
+    it.effect('marks indexable transactions that are not already queued', () =>
+        Effect.gen(function* () {
+            const transactionEmbeddingRepository = yield* TransactionEmbeddingRepository;
+            const transaction = seedTransaction(TransactionTypeEnum.INCOME, false);
 
-        await run(transactionRepository.markForEmbeddingByIds([transaction.id]));
+            yield* transactionEmbeddingRepository.markForEmbeddingByIds([transaction.id]);
 
-        expect(fetchTransactionById(transaction.id).needsEmbedding).toBe(true);
-    });
+            expect(fetchTransactionById(transaction.id).needsEmbedding).toBe(true);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-    it('does not mark transfers for embedding', async () => {
-        const transaction = seedTransaction(TransactionTypeEnum.TRANSFER, false);
+    it.effect('does not mark transfers for embedding', () =>
+        Effect.gen(function* () {
+            const transactionEmbeddingRepository = yield* TransactionEmbeddingRepository;
+            const transaction = seedTransaction(TransactionTypeEnum.TRANSFER, false);
 
-        await run(transactionRepository.markForEmbeddingByIds([transaction.id]));
+            yield* transactionEmbeddingRepository.markForEmbeddingByIds([transaction.id]);
 
-        expect(fetchTransactionById(transaction.id).needsEmbedding).toBe(false);
-    });
+            expect(fetchTransactionById(transaction.id).needsEmbedding).toBe(false);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });
