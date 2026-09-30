@@ -1,15 +1,20 @@
-import { isDefined } from '@rnw-community/shared';
+import { TagEntityTable, TagRepository } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
-import { tagRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
-export const useSearchTagsQuery = (query = '') => {
-    const { data, error, updatedAt } = useDatabaseLiveQuery(tagRepository.findBySearchQuery(query), [query]);
-    const { data: countData } = useDatabaseLiveQuery(tagRepository.count(), []);
+const searchTagsAtom = Atom.family((search: string) =>
+    databaseQueryAtom(
+        [TagEntityTable],
+        Effect.flatMap(TagRepository, tagRepository => tagRepository.findBySearchQuery(search))
+    )
+);
 
-    if (!isDefined(updatedAt)) {
-        return { isLoading: true, tags: null, total: 0, error, updatedAt: null };
-    }
+export const useSearchTagsQuery = (search = '') => {
+    const result = useLiveAtomValue(searchTagsAtom(search));
 
-    return { tags: data, total: countData.at(0)?.count ?? 0, isLoading: false, error, updatedAt };
+    return { tags: AsyncResult.getOrElse(result, () => null), isLoading: AsyncResult.isInitial(result) };
 };

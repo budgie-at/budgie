@@ -11,9 +11,9 @@ import { aiModelResidencyService } from '../../ai/service/ai-model-residency.ser
 import { chatService } from '../../ai/service/chat.service';
 import { appRuntime } from '../runtime/app.runtime';
 
-import type { Db } from '@budgie/contracts';
+import type { AppServices } from '../runtime/app.runtime';
 
-type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Effect.Effect<unknown, unknown, Db>;
+type UpdateTranslationFn = (id: number, titleEn: string, titleTags: string) => Effect.Effect<unknown, unknown, AppServices>;
 
 export interface UseRegenerateTranslationReturn {
     readonly regenerate: (entityId: number, title: string) => Promise<TranslationResultInterface | null>;

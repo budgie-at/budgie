@@ -7,8 +7,13 @@ import * as schema from '../../schema';
 import { DbError } from '../error/db.error';
 
 import type { DB } from '../type/db.type';
+import type { TransactionBoundaryType } from '../type/transaction-boundary.type';
 
 export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
+    static readonly TransactionBoundary = Context.Reference<TransactionBoundaryType>('@budgie/contracts/Db/TransactionBoundary', {
+        defaultValue: () => effect => effect
+    });
+
     private static readonly InTransaction = Context.Reference<boolean>('@budgie/contracts/Db/InTransaction', { defaultValue: () => false });
 
     private static readonly Rollback = new Error('Rollback');
@@ -23,6 +28,14 @@ export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
                 return yield* effect;
             }
 
+            const transactionBoundary = yield* Db.TransactionBoundary;
+
+            return yield* transactionBoundary(Db.runExclusiveTransaction(effect));
+        });
+    }
+
+    private static runExclusiveTransaction<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E | DbError, R | Db> {
+        return Effect.gen(function* () {
             const db = yield* Db;
             const context = yield* Effect.context<R>();
 

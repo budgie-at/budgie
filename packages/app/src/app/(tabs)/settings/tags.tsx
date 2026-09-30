@@ -2,6 +2,7 @@
 import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
@@ -16,7 +17,7 @@ import { TagEmptyState } from '../../../tag/components/tag-empty-state/tag-empty
 import { useTagFormModal } from '../../../tag/context/tag-form-modal.context';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
-import { tagService } from '../../../tag/service/tag.service';
+import { TagService } from '../../../tag/service/tag.service';
 
 import { TagPageSelector } from './tag-page.selector';
 
@@ -38,7 +39,7 @@ export default function Tags() {
     });
 
     const handleDeleteTag = async (id: number) => {
-        const count = await appRuntime.runPromise(tagService.countTransactions(id));
+        const count = await appRuntime.runPromise(Effect.flatMap(TagService, tagService => tagService.countTransactions(id)));
         if (isPositiveNumber(count)) {
             const description = t({
                 message: plural(count, {
@@ -55,7 +56,7 @@ export default function Tags() {
             const targetTagId = isNotEmptyArray(targetTagIds) ? targetTagIds[0] : null;
             if (isDefined(targetTagId)) {
                 try {
-                    await appRuntime.runPromise(tagService.mergeInto(id, targetTagId));
+                    await appRuntime.runPromise(Effect.flatMap(TagService, tagService => tagService.mergeInto(id, targetTagId)));
                 } catch {
                     Toast.show({
                         type: 'error',
@@ -69,7 +70,7 @@ export default function Tags() {
         }
 
         try {
-            await appRuntime.runPromise(tagService.deleteById(id));
+            await appRuntime.runPromise(Effect.flatMap(TagService, tagService => tagService.deleteById(id)));
         } catch (error) {
             Toast.show({
                 type: 'error',
