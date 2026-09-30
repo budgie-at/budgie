@@ -90,7 +90,7 @@ export const useStt = (): UseSttReturn => {
         return appRuntime.runPromise(
             Effect.flatMap(SttService, sttService => sttService.stopStream(true)).pipe(
                 Effect.map(text => filterTranscriptionTokens(text).trim()),
-                Effect.mapError(() => new Error(t`Transcription failed`)),
+                Effect.catch(() => Effect.die(new Error(t`Transcription failed`))),
                 Effect.ensuring(
                     Effect.sync(() => {
                         releaseSttResidency();

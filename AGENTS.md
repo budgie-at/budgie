@@ -18,11 +18,12 @@ pnpm ts                                   # TypeScript check
 pnpm lint                                 # Oxlint + 13-rule ESLint fallback (skip during debug sessions)
 pnpm deadcode                             # Knip dead code detection
 pnpm cpd                                  # Code duplication check
+pnpm effect:check                         # Effect language-service diagnostics (errors fail)
 
 # IMPORTANT: After completing any task, ALWAYS run:
 # During debug sessions (when user says "skip lint"), only run: pnpm ts
 # Otherwise run full validation:
-pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd
+pnpm format && pnpm ts && pnpm lint && pnpm deadcode && pnpm cpd && pnpm effect:check
 
 # Utilities
 pnpm deps:check                           # Check dependency versions
@@ -524,14 +525,14 @@ export class RefundService extends Context.Service<RefundService>()('@budgie/app
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                         |
 | **sync**      | @liaugust/monobank-sdk, date-fns, Effect                                                                                                                 |
 | **logger**    | Effect `Logger` layer (`makeLoggerLayer`)                                                                                                                |
-| **Build**     | pnpm 12.1.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.10.12, native TypeScript 7 + TypeScript 6 API, Oxlint 1.80 JS bridge + 13-rule ESLint 10 fallback |
+| **Build**     | pnpm 11.24.0, Node >= 22.22.1, Lerna 9.0.7, TurboRepo 2.11.5, native TypeScript 7 + TypeScript 6 API, Oxlint 1.86 JS bridge + 13-rule ESLint 10 fallback, `@effect/language-service` 0.87 diagnostics gate |
 
 ## Workflow
 
 1. **Fresh clone:** `pnpm install`
 2. **After contracts changes:** `pnpm build`
 3. **Before commit:** Husky runs `pnpm ts`, then lint-staged applies Oxlint, the 13-rule ESLint fallback, Oxfmt, and package sorting before commitlint validates the message
-4. **Before PR:** Run all validation commands
+4. **Before PR:** Run all validation commands, including `pnpm effect:check`
 5. **Commit after every accepted change.** During interactive/live-tweak sessions, each user-approved fix or feature increment gets its own focused conventional commit immediately (validated via ts + lint first) — do not batch unrelated accepted changes into one commit or leave approved work uncommitted.
 6. **Do not commit new Markdown notes from agent work unless explicitly requested.** If a local instruction, scratch note, report, or generated Markdown file is needed only for the working session, keep it untracked and add the local pattern to `.gitignore` instead of committing it.
 

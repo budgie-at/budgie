@@ -20,14 +20,13 @@ const createPendingCategory = Effect.fnUntraced(function* () {
     return category;
 });
 
-const takePendingTranslation = Effect.fnUntraced(function* () {
-    const translationDrainerService = yield* TranslationDrainerService;
-    const [translation] = yield* translationDrainerService['config'].fetchPending(1);
-
-    return getDefined(translation, () => {
-        throw new Error('no pending translation');
-    });
-});
+const takePendingTranslation = Effect.flatMap(TranslationDrainerService, translationDrainerService =>
+    Effect.map(translationDrainerService['config'].fetchPending(1), ([translation]) =>
+        getDefined(translation, () => {
+            throw new Error('no pending translation');
+        })
+    )
+);
 
 describe('category/translation-drainer-interrupted-completion', () => {
     it.effect('leaves titleEn NULL and keeps the row pending when the completion is interrupted mid-generation', () =>
@@ -39,7 +38,7 @@ describe('category/translation-drainer-interrupted-completion', () => {
                 Effect.fail(new AiInvokeError({ cause: new Error('completionInterrupted') }))
             );
 
-            const translation = yield* takePendingTranslation();
+            const translation = yield* takePendingTranslation;
 
             const error = yield* Effect.flip(translation);
 
@@ -60,7 +59,7 @@ describe('category/translation-drainer-interrupted-completion', () => {
                 .mockReturnValueOnce(Effect.succeed('groceries'))
                 .mockReturnValueOnce(Effect.succeed('food, groceries, shopping'));
 
-            const translation = yield* takePendingTranslation();
+            const translation = yield* takePendingTranslation;
 
             yield* translation;
 

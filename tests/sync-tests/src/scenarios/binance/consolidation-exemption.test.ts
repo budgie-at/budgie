@@ -3,6 +3,7 @@ import { TransferPairRepository } from '@budgie/consolidation';
 import { PRECISION, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import {
     binanceStub,
@@ -44,6 +45,6 @@ describe('binance/consolidation-exemption', () => {
                     candidate.expenseTransactionId === transferTransactionId || candidate.incomeTransactionId === transferTransactionId
             );
             expect(referencesTransfer).toBe(false);
-        }).pipe(Effect.provide(TransferPairRepository.layer), Effect.provide(TestLayer))
+        }).pipe(Effect.provide(Layer.provideMerge(TransferPairRepository.layer, TestLayer)))
     );
 });

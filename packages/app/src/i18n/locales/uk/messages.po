@@ -182,7 +182,7 @@ msgstr "{remainingCount, plural, one {Залишилася #} few {Залиши�
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
-msgstr ""
+msgstr "{repairedTransactionCount, plural, one {# елемент синхронізації виправлено} few {# елементи синхронізації виправлено} many {# елементів синхронізації виправлено} other {# елемента синхронізації виправлено}}"
 
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
@@ -3898,7 +3898,7 @@ msgstr "Синхронізуйте криптобаланси та транза�
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Sync data repaired"
-msgstr ""
+msgstr "Дані синхронізації виправлено"
 
 #: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
 msgid "Sync data repairs"

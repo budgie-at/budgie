@@ -42,7 +42,7 @@ export class AppResetService extends Context.Service<AppResetService>()('@budgie
             const failure = exits.find(Exit.isFailure);
 
             if (isDefined(failure)) {
-                yield* Effect.failCause(failure.cause);
+                return yield* Effect.failCause(failure.cause);
             }
         });
 
