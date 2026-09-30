@@ -22,8 +22,7 @@ describe('consolidation/family-priority', () => {
                 transferPairRepository
             },
             consolidationExecutorService,
-            consolidationRepairExecutorService,
-            () => Promise.resolve()
+            consolidationRepairExecutorService
         );
 
         const families = familyRegistry.families;

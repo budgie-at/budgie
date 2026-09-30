@@ -14,8 +14,6 @@ export const testDb = buildTestDb();
 const repositories = createTestRepositories(testDb);
 export const runEffect = runWithDb(testDb);
 
-const yieldControl = (): Promise<void> => Promise.resolve();
-
 export const { accountBalanceRepository } = repositories;
 export const { accountRepository } = repositories;
 export const { atmCashWithdrawalRepository } = repositories;
@@ -46,8 +44,7 @@ export const consolidationCoordinatorService = new ConsolidationCoordinatorServi
         transferPairRepository: repositories.transferPairRepository
     },
     consolidationExecutorService,
-    consolidationRepairExecutorService,
-    yieldControl
+    consolidationRepairExecutorService
 );
 
 const unconsolidationService = new UnconsolidationService({

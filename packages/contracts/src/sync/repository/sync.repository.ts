@@ -15,18 +15,6 @@ import type { SyncCreateEntityInterface } from '../entity/sync-create-entity.int
 import type { SyncUpdateEntityInterface } from '../entity/sync-update-entity.interface';
 
 export class SyncRepository {
-    readonly update = Effect.fn('SyncRepository.update')(function* (id: number, input: SyncUpdateEntityInterface) {
-        const [sync] = yield* Db.query(db =>
-            db
-                .update(SyncEntityTable)
-                .set({ ...input })
-                .where(eq(SyncEntityTable.id, id))
-                .returning()
-        );
-
-        return sync;
-    });
-
     readonly getPendingForwardSync = Effect.fn('SyncRepository.getPendingForwardSync')(function* (
         this: SyncRepository,
         provider: ExternalSourceEnum,
@@ -48,76 +36,6 @@ export class SyncRepository {
                 )
                 .orderBy(asc(SyncEntityTable.forwardSyncedAt))
         );
-    });
-
-    readonly resetForWindowedResync = Effect.fn('SyncRepository.resetForWindowedResync')(function* (accountId: number, since: Date) {
-        yield* Db.query(db =>
-            db
-                .update(SyncEntityTable)
-                .set({
-                    mode: SyncModeEnum.FORWARD,
-                    status: SyncStatusEnum.IDLE,
-                    forwardSyncFromAt: since,
-                    forwardSyncedAt: null
-                })
-                .where(eq(SyncEntityTable.accountId, accountId))
-        );
-    });
-
-    readonly create = Effect.fn('SyncRepository.create')(function* (input: SyncCreateEntityInterface) {
-        const [sync] = yield* Db.query(db => db.insert(SyncEntityTable).values([input]).returning());
-
-        return sync;
-    });
-
-    readonly getById = Effect.fn('SyncRepository.getById')(function* (id: number) {
-        return yield* Db.query(db =>
-            db.query.SyncEntityTable.findFirst({
-                where: and(eq(SyncEntityTable.id, id), isNull(SyncEntityTable.deletedAt))
-            })
-        );
-    });
-
-    readonly getByAccountId = Effect.fn('SyncRepository.getByAccountId')(function* (accountId: number) {
-        return yield* Db.query(db =>
-            db.query.SyncEntityTable.findFirst({
-                where: and(eq(SyncEntityTable.accountId, accountId), isNull(SyncEntityTable.deletedAt))
-            })
-        );
-    });
-
-    readonly getByProvider = Effect.fn('SyncRepository.getByProvider')(function* (provider: ExternalSourceEnum) {
-        return yield* Db.query(db =>
-            db.query.SyncEntityTable.findMany({
-                where: and(eq(SyncEntityTable.provider, provider), isNull(SyncEntityTable.deletedAt))
-            })
-        );
-    });
-
-    readonly getEnabledByProvider = Effect.fn('SyncRepository.getEnabledByProvider')(function* (
-        this: SyncRepository,
-        provider: ExternalSourceEnum
-    ) {
-        return yield* Db.query(db => this.selectWithActiveAccount(db).where(and(...this.buildEnabledProviderConditions(provider))));
-    });
-
-    readonly getPendingBackwardSync = Effect.fn('SyncRepository.getPendingBackwardSync')(function* (
-        this: SyncRepository,
-        provider: ExternalSourceEnum
-    ) {
-        return yield* Db.query(db =>
-            this.selectWithActiveAccount(db)
-                .where(and(...this.buildEnabledProviderConditions(provider), eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
-                .orderBy(asc(SyncEntityTable.backwardBatchAt), asc(SyncEntityTable.id))
-        );
-    });
-
-    readonly setStatus = Effect.fn('SyncRepository.setStatus')(function* (id: number, status: SyncStatusEnum) {
-        yield* Db.query(db => db.update(SyncEntityTable).set({ status }).where(eq(SyncEntityTable.id, id)));
-    });
-
-    readonly setEnabled = Effect.fn('SyncRepository.setEnabled')(function* (accountId: number, enabled: boolean) {
-        yield* Db.query(db => db.update(SyncEntityTable).set({ enabled }).where(eq(SyncEntityTable.accountId, accountId)));
     });
 
     readonly recordError = Effect.fn('SyncRepository.recordError')(function* (this: SyncRepository, id: number, error: string) {
@@ -160,11 +78,71 @@ export class SyncRepository {
         );
     });
 
-    readonly truncate = Effect.fn('SyncRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(SyncEntityTable));
-    });
-
     constructor(private db: DB) {}
+
+    readonly update = (id: number, input: SyncUpdateEntityInterface) =>
+        Db.query(db =>
+            db
+                .update(SyncEntityTable)
+                .set({ ...input })
+                .where(eq(SyncEntityTable.id, id))
+                .returning()
+        ).pipe(Effect.map(([sync]) => sync));
+
+    readonly resetForWindowedResync = (accountId: number, since: Date) =>
+        Db.query(db =>
+            db
+                .update(SyncEntityTable)
+                .set({
+                    mode: SyncModeEnum.FORWARD,
+                    status: SyncStatusEnum.IDLE,
+                    forwardSyncFromAt: since,
+                    forwardSyncedAt: null
+                })
+                .where(eq(SyncEntityTable.accountId, accountId))
+        );
+
+    readonly create = (input: SyncCreateEntityInterface) =>
+        Db.query(db => db.insert(SyncEntityTable).values([input]).returning()).pipe(Effect.map(([sync]) => sync));
+
+    readonly getById = (id: number) =>
+        Db.query(db =>
+            db.query.SyncEntityTable.findFirst({
+                where: and(eq(SyncEntityTable.id, id), isNull(SyncEntityTable.deletedAt))
+            })
+        );
+
+    readonly getByAccountId = (accountId: number) =>
+        Db.query(db =>
+            db.query.SyncEntityTable.findFirst({
+                where: and(eq(SyncEntityTable.accountId, accountId), isNull(SyncEntityTable.deletedAt))
+            })
+        );
+
+    readonly getByProvider = (provider: ExternalSourceEnum) =>
+        Db.query(db =>
+            db.query.SyncEntityTable.findMany({
+                where: and(eq(SyncEntityTable.provider, provider), isNull(SyncEntityTable.deletedAt))
+            })
+        );
+
+    readonly getEnabledByProvider = (provider: ExternalSourceEnum) =>
+        Db.query(db => this.selectWithActiveAccount(db).where(and(...this.buildEnabledProviderConditions(provider))));
+
+    readonly getPendingBackwardSync = (provider: ExternalSourceEnum) =>
+        Db.query(db =>
+            this.selectWithActiveAccount(db)
+                .where(and(...this.buildEnabledProviderConditions(provider), eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
+                .orderBy(asc(SyncEntityTable.backwardBatchAt), asc(SyncEntityTable.id))
+        );
+
+    readonly setStatus = (id: number, status: SyncStatusEnum) =>
+        Db.query(db => db.update(SyncEntityTable).set({ status }).where(eq(SyncEntityTable.id, id)));
+
+    readonly setEnabled = (accountId: number, enabled: boolean) =>
+        Db.query(db => db.update(SyncEntityTable).set({ enabled }).where(eq(SyncEntityTable.accountId, accountId)));
+
+    readonly truncate = () => Db.query(db => db.delete(SyncEntityTable));
 
     findByAccountId(accountId: number) {
         return this.db.query.SyncEntityTable.findFirst({

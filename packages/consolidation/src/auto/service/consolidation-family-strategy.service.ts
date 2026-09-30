@@ -2,6 +2,8 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
+
 import type { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
 import type { ConsolidationFamilyRunContextInterface } from '../interface/consolidation-family-run-context.interface';
 import type { ConsolidationFamilyRunResultInterface } from '../interface/consolidation-family-run-result.interface';
@@ -75,9 +77,9 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
         context: ConsolidationFamilyRunContextInterface
     ) {
         const candidates = yield* this.findCandidates(context.scope);
-        yield* this.yieldNow();
+        yield* CONSOLIDATION_YIELD;
         const runnableCandidates = candidates.filter(candidate => this.isCandidateRunnable(candidate, context));
-        yield* this.yieldNow();
+        yield* CONSOLIDATION_YIELD;
 
         return runnableCandidates;
     });
@@ -98,7 +100,7 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
         const consolidated = yield* this.processCandidateList(candidates);
 
         context.onProgress?.(found);
-        yield* this.yieldNow();
+        yield* CONSOLIDATION_YIELD;
 
         return { consolidated, found };
     });
@@ -112,13 +114,11 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
         const hasMoreCandidates = processedCandidateCount < candidateCount;
 
         if (hasMoreCandidates && processedCandidateCount % ConsolidationFamilyStrategyService.YIELD_EVERY_CANDIDATES === 0) {
-            yield* this.yieldNow();
+            yield* CONSOLIDATION_YIELD;
         }
     });
 
     abstract readonly key: ConsolidationFamilyKeyEnum;
-
-    constructor(private readonly yieldControl: () => Promise<void>) {}
 
     protected shouldRepeatAfterSuccessfulPass(): boolean {
         return false;
@@ -129,10 +129,6 @@ export abstract class ConsolidationFamilyStrategyService<Candidate> implements C
 
     protected getScopeTransactionIds(candidate: Candidate): number[] {
         return this.getSourceTransactionIds(candidate);
-    }
-
-    protected yieldNow(): Effect.Effect<void> {
-        return Effect.promise(() => this.yieldControl());
     }
 
     private isCandidateRunnable(candidate: Candidate, context: ConsolidationFamilyRunContextInterface): boolean {

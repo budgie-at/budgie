@@ -1,10 +1,13 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
-import { useEffect, useState } from 'react';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
-import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import type {
@@ -85,50 +88,18 @@ const fillSimilarStatsMonths = (stats: SimilarTransactionStatsInterface, operate
     return { ...stats, months };
 };
 
+const similarStatsAtom = Atom.family((query: SimilarTransactionStatsQueryInterface | null) =>
+    appAtomRuntime.atom(
+        isDefined(query)
+            ? transactionRepository
+                  .findSimilarStats(query)
+                  .pipe(Effect.map(result => (isDefined(result) ? fillSimilarStatsMonths(result, query.operatedAt) : null)))
+            : Effect.succeed(null)
+    )
+);
+
 export const useTransactionInfoSimilarStatsQuery = (transaction: TransactionWithRelationsEntityInterface) => {
-    const [stats, setStats] = useState<SimilarTransactionStatsInterface | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const result = useAtomValue(similarStatsAtom(buildSimilarStatsQuery(transaction)));
 
-    useEffect(() => {
-        let isActive = true;
-        const query = buildSimilarStatsQuery(transaction);
-
-        if (!isDefined(query)) {
-            setStats(null);
-            setError(null);
-            setIsLoading(false);
-
-            return () => {
-                isActive = false;
-            };
-        }
-
-        setIsLoading(true);
-        setError(null);
-
-        appRuntime
-            .runPromise(transactionRepository.findSimilarStats(query))
-            .then(result => {
-                if (isActive) {
-                    setStats(isDefined(result) ? fillSimilarStatsMonths(result, transaction.operatedAt) : null);
-                    setIsLoading(false);
-                }
-
-                return null;
-            })
-            .catch((queryError: unknown) => {
-                if (isActive) {
-                    setStats(null);
-                    setError(getErrorMessage(queryError));
-                    setIsLoading(false);
-                }
-            });
-
-        return () => {
-            isActive = false;
-        };
-    }, [transaction]);
-
-    return { stats, error, isLoading };
+    return { stats: AsyncResult.isSuccess(result) ? result.value : null, isLoading: result.waiting };
 };

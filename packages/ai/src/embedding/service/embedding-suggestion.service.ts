@@ -30,16 +30,15 @@ import type {
 export class EmbeddingSuggestionService {
     private static readonly MCC_BLEND_WEIGHT = 7 / 10;
 
+    // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
     readonly suggestCategories = Effect.fn('EmbeddingSuggestionService.suggestCategories')(function* (
         this: EmbeddingSuggestionService,
-        ...[categories, transactionTitle, mccDescription, comment, aiContext, mccCategoryId = null]: [
-            CategoryEntityInterface[],
-            string,
-            string | null,
-            string,
-            string,
-            (number | null)?
-        ]
+        categories: CategoryEntityInterface[],
+        transactionTitle: string,
+        mccDescription: string | null,
+        comment: string,
+        aiContext: string,
+        mccCategoryId: number | null = null
     ) {
         const resolved = yield* this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
         if (!isDefined(resolved)) {
@@ -70,18 +69,18 @@ export class EmbeddingSuggestionService {
         return this.resolveTopCategories(categories, merchantResults, commentResults, mccRows);
     });
 
+    // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
     readonly suggestTags = Effect.fn('EmbeddingSuggestionService.suggestTags')(function* (
         this: EmbeddingSuggestionService,
-        ...[allTags, categoryId, transactionTitle, mccDescription, comment, aiContext]: [
-            TagEntityInterface[],
-            number,
-            string,
-            string | null,
-            string,
-            string
-        ]
+        allTags: TagEntityInterface[],
+        categoryId: number,
+        transactionTitle: string,
+        mccDescription: string | null,
+        comment: string,
+        aiContext: string
     ) {
         const resolved = yield* this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
+
         if (!isDefined(resolved)) {
             return [];
         }
@@ -107,28 +106,34 @@ export class EmbeddingSuggestionService {
         return topTags.map(row => allTags.find(tag => tag.id === row.tagId)).filter(isDefined);
     });
 
+    // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
     readonly suggestComments = Effect.fn('EmbeddingSuggestionService.suggestComments')(function* (
         this: EmbeddingSuggestionService,
-        ...[categoryId, transactionTitle, mccDescription, comment, aiContext]: [number, string, string | null, string, string]
+        categoryId: number,
+        transactionTitle: string,
+        mccDescription: string | null,
+        comment: string,
+        aiContext: string
     ) {
         const resolved = yield* this.prepareSuggestion(transactionTitle, mccDescription, comment, aiContext);
-        if (!isDefined(resolved)) {
-            return [];
-        }
-
-        const commentResults = yield* this.repositories.merchant.findSimilarComments(resolved.serialized, {
-            vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
-            distanceThreshold: resolved.distanceThreshold,
-            categoryId,
-            commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
-        });
+        const commentResults = isDefined(resolved)
+            ? yield* this.repositories.merchant.findSimilarComments(resolved.serialized, {
+                  vecLimit: EMBEDDING_VEC_OVERSAMPLE_LIMIT,
+                  distanceThreshold: resolved.distanceThreshold,
+                  categoryId,
+                  commentLimit: EMBEDDING_COMMENT_SUGGESTION_LIMIT
+              })
+            : [];
 
         return commentResults.map(row => row.comment).filter(isNotEmptyString);
     });
 
     private readonly prepareSuggestion = Effect.fn('EmbeddingSuggestionService.prepareSuggestion')(function* (
         this: EmbeddingSuggestionService,
-        ...[transactionTitle, mccDescription, comment, aiContext]: [string, string | null, string, string]
+        transactionTitle: string,
+        mccDescription: string | null,
+        comment: string,
+        aiContext: string
     ) {
         const { context, distanceThreshold } = this.resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
         const queryEmbedding = yield* this.embeddingService.generateEmbedding(context);

@@ -2,7 +2,7 @@ import * as Effect from 'effect/Effect';
 import { File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
@@ -13,6 +13,7 @@ import { authService } from '../../auth/service/auth.service';
 
 class DatabaseImportService {
     private static readonly PROBE_DATABASE_NAME = 'import-probe.db';
+    private static readonly NOT_A_DATABASE_PATTERN = /not a database/iu;
 
     readonly importFromUri = Effect.fn('DatabaseImportService.importFromUri')(function* (
         this: DatabaseImportService,
@@ -31,9 +32,12 @@ class DatabaseImportService {
 
         this.deleteProbeFiles(probePath);
 
-        return yield* Effect.promise(() => new File(sourceUri).copy(new File(probePath))).pipe(
+        return yield* Effect.tryPromise(() => new File(sourceUri).copy(new File(probePath))).pipe(
             Effect.andThen(this.readProbeDatabase(backupPin)),
-            Effect.catchDefect(() => Effect.succeed(false)),
+            Effect.catchIf(
+                error => DatabaseImportService.NOT_A_DATABASE_PATTERN.test(getErrorMessage(error.cause)),
+                () => Effect.succeed(false)
+            ),
             Effect.ensuring(
                 Effect.sync(() => {
                     this.deleteProbeFiles(probePath);
@@ -61,27 +65,27 @@ class DatabaseImportService {
         const previousPin = yield* authService.getPin();
 
         yield* authService.persistPin(backupPin);
-        yield* this.replaceFromUri(sourceUri).pipe(Effect.onError(() => authService.persistPin(previousPin)));
+        yield* this.replaceFromUri(sourceUri).pipe(Effect.onError(() => authService.persistPin(previousPin).pipe(Effect.orDie)));
         yield* Effect.promise(() => reloadApp());
     });
 
     private readonly readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
         return yield* Effect.acquireUseRelease(
-            Effect.promise(() =>
+            Effect.tryPromise(() =>
                 SQLite.openDatabaseAsync(DatabaseImportService.PROBE_DATABASE_NAME, { useNewConnection: true }, Paths.cache.uri)
             ),
             probeDatabase =>
                 Effect.gen(function* () {
                     if (isNotEmptyString(backupPin)) {
-                        yield* Effect.promise(() => probeDatabase.execAsync(`PRAGMA key = '${backupPin}';`)); // oxlint-disable-line lingui/no-unlocalized-strings
+                        yield* Effect.tryPromise(() => probeDatabase.execAsync(`PRAGMA key = '${backupPin}';`)); // oxlint-disable-line lingui/no-unlocalized-strings
                     }
 
                     // oxlint-disable-next-line lingui/no-unlocalized-strings
-                    const tables = yield* Effect.promise(() => probeDatabase.getAllAsync<unknown>('SELECT name FROM sqlite_master;'));
+                    const tables = yield* Effect.tryPromise(() => probeDatabase.getAllAsync<unknown>('SELECT name FROM sqlite_master;'));
 
                     return isNotEmptyArray(tables);
                 }),
-            probeDatabase => Effect.promise(() => probeDatabase.closeAsync())
+            probeDatabase => Effect.tryPromise(() => probeDatabase.closeAsync()).pipe(Effect.ignore)
         );
     });
 

@@ -1,6 +1,5 @@
 import { ExternalSourceEnum } from '@budgie/contracts';
 
-import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { QuickImportConfigInterface } from '../interface/quick-import-config.interface';
 import { ersteSyncQuickImportFromUri } from '../service/erste-sync.service';
 import { privatbankSyncQuickImportFromUri } from '../service/privatbank-sync.service';
@@ -12,11 +11,11 @@ export const quickImportConfigMap: Partial<Record<ExternalSourceEnum, QuickImpor
     [ExternalSourceEnum.PRIVATBANK]: {
         source: ExternalSourceEnum.PRIVATBANK,
         mimeType: XLSX_MIME_TYPE,
-        importHandler: uri => appRuntime.runPromise(privatbankSyncQuickImportFromUri(uri))
+        importHandler: privatbankSyncQuickImportFromUri
     },
     [ExternalSourceEnum.ERSTE]: {
         source: ExternalSourceEnum.ERSTE,
         mimeType: PDF_MIME_TYPE,
-        importHandler: uri => appRuntime.runPromise(ersteSyncQuickImportFromUri(uri))
+        importHandler: ersteSyncQuickImportFromUri
     }
 };

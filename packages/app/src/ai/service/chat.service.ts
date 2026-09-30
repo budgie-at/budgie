@@ -1,3 +1,4 @@
+import { AiInvokeError } from '@budgie/ai';
 import * as Effect from 'effect/Effect';
 import * as Semaphore from 'effect/Semaphore';
 
@@ -26,17 +27,15 @@ class ChatService implements ChatInvokerInterface {
         return this.model.isReady;
     }
 
-    generate(systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Promise<string> {
-        return Effect.runPromise(
-            this.completionLock.withPermit(
-                Effect.suspend(() => {
-                    const { context } = this.model;
+    generate(systemPrompt: string, userMessage: string, options?: GenerateOptionsInterface): Effect.Effect<string, AiInvokeError> {
+        return this.completionLock.withPermit(
+            Effect.suspend(() => {
+                const { context } = this.model;
 
-                    return this.isReady && isDefined(context)
-                        ? runCompletion(context, systemPrompt, userMessage, options)
-                        : Effect.fail(new AiNotReadyError({ subsystem: AiSubsystemNameEnum.CHAT }));
-                })
-            )
+                return this.isReady && isDefined(context)
+                    ? runCompletion(context, systemPrompt, userMessage, options)
+                    : Effect.fail(new AiInvokeError({ cause: new AiNotReadyError({ subsystem: AiSubsystemNameEnum.CHAT }) }));
+            })
         );
     }
 

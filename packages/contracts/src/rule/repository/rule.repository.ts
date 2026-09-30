@@ -13,8 +13,10 @@ import type * as schema from '../../schema';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class RuleRepository {
-    readonly findAllWithConditions = Effect.fn('RuleRepository.findAllWithConditions')(function* () {
-        return yield* Db.query(db =>
+    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+
+    readonly findAllWithConditions = () =>
+        Db.query(db =>
             db.query.RuleEntityTable.findMany({
                 where: isNull(RuleEntityTable.deletedAt),
                 orderBy: [asc(RuleEntityTable.id)],
@@ -23,29 +25,19 @@ export class RuleRepository {
                 }
             })
         );
-    });
 
-    readonly create = Effect.fn('RuleRepository.create')(function* (input: RuleCreateEntityInterface) {
-        const [rule] = yield* Db.query(db => db.insert(RuleEntityTable).values([input]).returning());
+    readonly create = (input: RuleCreateEntityInterface) =>
+        Db.query(db => db.insert(RuleEntityTable).values([input]).returning()).pipe(Effect.map(([rule]) => rule));
 
-        return rule;
-    });
+    readonly updateById = (id: number, input: RuleUpdateEntityInterface) =>
+        Db.query(db => db.update(RuleEntityTable).set(input).where(eq(RuleEntityTable.id, id)).returning()).pipe(
+            Effect.map(([rule]) => rule)
+        );
 
-    readonly updateById = Effect.fn('RuleRepository.updateById')(function* (id: number, input: RuleUpdateEntityInterface) {
-        const [rule] = yield* Db.query(db => db.update(RuleEntityTable).set(input).where(eq(RuleEntityTable.id, id)).returning());
+    readonly archiveById = (id: number) =>
+        Db.query(db => db.update(RuleEntityTable).set({ deletedAt: new Date() }).where(eq(RuleEntityTable.id, id)));
 
-        return rule;
-    });
-
-    readonly archiveById = Effect.fn('RuleRepository.archiveById')(function* (id: number) {
-        yield* Db.query(db => db.update(RuleEntityTable).set({ deletedAt: new Date() }).where(eq(RuleEntityTable.id, id)));
-    });
-
-    readonly truncate = Effect.fn('RuleRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(RuleEntityTable));
-    });
-
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+    readonly truncate = () => Db.query(db => db.delete(RuleEntityTable));
 
     findAll() {
         return this.db.query.RuleEntityTable.findMany({

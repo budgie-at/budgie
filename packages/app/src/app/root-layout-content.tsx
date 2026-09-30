@@ -46,6 +46,7 @@ import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { Workload } from '../@generic/service/workload.service';
+import { logAndContinue } from '../@generic/utils/log-and-continue.util';
 import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
@@ -63,8 +64,6 @@ void SplashScreen.preventAutoHideAsync();
 
 const drizzleStudioEnvironmentVariable = 'EXPO_PUBLIC_DRIZZLE_STUDIO_ENABLE';
 const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVariable] === 'true';
-
-const logAndContinue = Effect.catchCause(Effect.logError);
 
 const syncForegroundData = Effect.gen(function* () {
     if (yield* appDataSyncService.sync()) {

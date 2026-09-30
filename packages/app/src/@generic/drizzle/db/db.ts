@@ -37,6 +37,7 @@ import {
     TransactionRuleRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
+import { makeLoggerLayer } from '@budgie/logger';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import * as Effect from 'effect/Effect';
 import * as SecureStore from 'expo-secure-store';
@@ -46,6 +47,7 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 
 import { PIN_KEY } from '../../../auth/constant/pin-key.constant';
 import { PIN_SECURE_STORE_OPTIONS } from '../../../auth/constant/pin-secure-store-options.constant';
+import { isLoggingEnabled } from '../../utils/is-logging-enabled.util';
 import { DB_NAME } from '../constant/db-name.constant';
 
 import * as schema from './schema';
@@ -57,18 +59,18 @@ declare global {
     var __drizzleDb__: DB | undefined;
 }
 
-const readPinOrNullIfKeychainUnavailable = (): string | null => {
-    try {
-        return SecureStore.getItem(PIN_KEY, PIN_SECURE_STORE_OPTIONS);
-    } catch (secureStoreError) {
-        Effect.runSync(Effect.logError('secure-store:read-pin-error', { errorMessage: getErrorMessage(secureStoreError) }));
-
-        return null;
-    }
-};
+const readPinOrNullIfKeychainUnavailable = (): string | null =>
+    Effect.runSync(
+        Effect.try(() => SecureStore.getItem(PIN_KEY, PIN_SECURE_STORE_OPTIONS)).pipe(
+            Effect.catch(secureStoreError =>
+                Effect.logError('secure-store:read-pin-error', { errorMessage: getErrorMessage(secureStoreError) }).pipe(Effect.as(null))
+            ),
+            Effect.provide(makeLoggerLayer(isLoggingEnabled()))
+        )
+    );
 
 const dbInit = () => {
-    global.__expoSqliteDb__ ?? (global.__expoSqliteDb__ = SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true }));
+    global.__expoSqliteDb__ ??= SQLite.openDatabaseSync(DB_NAME, { enableChangeListener: true });
 
     const pin = readPinOrNullIfKeychainUnavailable();
     if (isNotEmptyString(pin)) {
@@ -83,20 +85,25 @@ const dbInit = () => {
     global.__expoSqliteDb__.execSync('PRAGMA mmap_size = 268435456;'); // oxlint-disable-line lingui/no-unlocalized-strings
     global.__expoSqliteDb__.execSync('PRAGMA temp_store = MEMORY;'); // oxlint-disable-line lingui/no-unlocalized-strings
 
-    try {
-        const extension = SQLite.bundledExtensions['sqlite-vec']; // oxlint-disable-line lingui/no-unlocalized-strings
+    const sqliteDatabase = global.__expoSqliteDb__;
 
-        if (isDefined(extension)) {
-            if (isNotEmptyString(extension.libPath)) {
-                global.__expoSqliteDb__.loadExtensionSync(extension.libPath, extension.entryPoint);
+    Effect.runSync(
+        Effect.try(() => {
+            const extension = SQLite.bundledExtensions['sqlite-vec']; // oxlint-disable-line lingui/no-unlocalized-strings
+
+            if (isDefined(extension)) {
+                if (isNotEmptyString(extension.libPath)) {
+                    sqliteDatabase.loadExtensionSync(extension.libPath, extension.entryPoint);
+                }
+                sqliteDatabase.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
+                sqliteDatabase.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
+                sqliteDatabase.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
             }
-            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS title_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
-            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS merchant_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
-            global.__expoSqliteDb__.execSync('CREATE VIRTUAL TABLE IF NOT EXISTS comment_embedding_vec USING vec0(embedding float[768])'); // oxlint-disable-line lingui/no-unlocalized-strings
-        }
-    } catch (dbError) {
-        Effect.runSync(Effect.logError('sqlite:vec-init-error', { errorMessage: getErrorMessage(dbError) }));
-    }
+        }).pipe(
+            Effect.catch(dbError => Effect.logError('sqlite:vec-init-error', { errorMessage: getErrorMessage(dbError) })),
+            Effect.provide(makeLoggerLayer(isLoggingEnabled()))
+        )
+    );
 
     return global.__expoSqliteDb__;
 };

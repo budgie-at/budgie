@@ -15,6 +15,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { accountBalanceRepository, transactionEntryRepository, transactionRepository } from '../../@generic/drizzle/db/db';
 import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
+import { DepositNegativeBalanceError } from '../../account/error/deposit-negative-balance.error';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { accountService } from '../../account/service/account.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
@@ -55,8 +56,7 @@ class TransactionTransferService {
             const depositBalanceMicroUnits = depositBalanceRows.at(0)?.balance ?? 0;
 
             if (depositBalanceMicroUnits < 0) {
-                // oxlint-disable-next-line lingui/no-unlocalized-strings -- Internal error, surfaced via caller's Toast
-                yield* Effect.die(new Error('Cannot close a deposit with a negative balance'));
+                yield* new DepositNegativeBalanceError();
             }
 
             if (isPositiveNumber(depositBalanceMicroUnits)) {

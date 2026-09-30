@@ -122,10 +122,10 @@ class WidgetSnapshotService {
 
     private readonly debouncePublish = Effect.fn('WidgetSnapshotService.debouncePublish')(function* (this: WidgetSnapshotService) {
         const workload = yield* Workload;
-        yield* workload.cancelScheduled(WidgetSnapshotService.PUBLISH_KEY);
         yield* workload.schedule(
             WidgetSnapshotService.PUBLISH_KEY,
-            Effect.andThen(Effect.sleep(WidgetSnapshotService.PUBLISH_DEBOUNCE_MS), this.publish()).pipe(Effect.ignore)
+            Effect.andThen(Effect.sleep(WidgetSnapshotService.PUBLISH_DEBOUNCE_MS), this.publish()).pipe(Effect.ignore),
+            { replace: true }
         );
     });
 
@@ -154,7 +154,7 @@ class WidgetSnapshotService {
         const settings = yield* Db.query(() => settingsRepository.findSettings());
         const instrument = settings?.defaultInstrument ?? DEFAULT_INSTRUMENT;
         const language = settings?.language ?? LanguageEnum.EN;
-        const messages = yield* Effect.promise(() => i18nLoadLanguageMessages(language));
+        const messages = yield* Effect.orDie(i18nLoadLanguageMessages(language));
         const context: WidgetSnapshotContextInterface = {
             i18n: setupI18n({ locale: language, messages: { [language]: messages } }),
             language,

@@ -1,5 +1,4 @@
 import { and, eq, isNotNull, isNull } from 'drizzle-orm';
-import * as Effect from 'effect/Effect';
 
 import { Db } from '../../@generic/service/db.service';
 import { InstrumentEntityTable } from '../table/instrument-entity.table';
@@ -10,22 +9,18 @@ import type { InstrumentTypeEnum } from '../enum/instrument-type.enum';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class InstrumentRepository {
-    readonly getAll = Effect.fn('InstrumentRepository.getAll')(function* () {
-        return yield* Db.query(db => db.query.InstrumentEntityTable.findMany());
-    });
+    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
-    readonly findByIdAsync = Effect.fn('InstrumentRepository.findByIdAsync')(function* (id: number) {
-        return yield* Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: eq(InstrumentEntityTable.id, id) }));
-    });
+    readonly getAll = () => Db.query(db => db.query.InstrumentEntityTable.findMany());
 
-    readonly findByCode = Effect.fn('InstrumentRepository.findByCode')(function* (code: string) {
-        return yield* Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: eq(InstrumentEntityTable.code, code) }));
-    });
+    readonly findByIdAsync = (id: number) =>
+        Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: eq(InstrumentEntityTable.id, id) }));
 
-    readonly findByTypeAndPriceProviderWithProviderInstrumentId = Effect.fn(
-        'InstrumentRepository.findByTypeAndPriceProviderWithProviderInstrumentId'
-    )(function* (type: InstrumentTypeEnum, priceProvider: InstrumentPriceProviderEnum) {
-        return yield* Db.query(db =>
+    readonly findByCode = (code: string) =>
+        Db.query(db => db.query.InstrumentEntityTable.findFirst({ where: eq(InstrumentEntityTable.code, code) }));
+
+    readonly findByTypeAndPriceProviderWithProviderInstrumentId = (type: InstrumentTypeEnum, priceProvider: InstrumentPriceProviderEnum) =>
+        Db.query(db =>
             db.query.InstrumentEntityTable.findMany({
                 where: and(
                     eq(InstrumentEntityTable.type, type),
@@ -35,13 +30,8 @@ export class InstrumentRepository {
                 )
             })
         );
-    });
 
-    readonly findAll = Effect.fn('InstrumentRepository.findAll')(function* () {
-        return yield* Db.query(db => db.query.InstrumentEntityTable.findMany());
-    });
-
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+    readonly findAll = () => Db.query(db => db.query.InstrumentEntityTable.findMany());
 
     findById(id: number) {
         return this.db.query.InstrumentEntityTable.findFirst({ where: eq(InstrumentEntityTable.id, id) });

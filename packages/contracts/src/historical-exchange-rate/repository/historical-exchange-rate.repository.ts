@@ -58,8 +58,12 @@ export class HistoricalExchangeRateRepository {
         return yield* this.findFirstRate(where, asc(HistoricalExchangeRateEntityTable.rateDate));
     });
 
-    readonly upsert = Effect.fn('HistoricalExchangeRateRepository.upsert')(function* (input: HistoricalExchangeRateCreateEntityInterface) {
-        yield* Db.query(db =>
+    private readonly findFirstRate = Effect.fnUntraced(function* (where: SQL | undefined, order: SQL) {
+        return yield* Db.query(db => db.query.HistoricalExchangeRateEntityTable.findFirst({ where, orderBy: order }));
+    });
+
+    readonly upsert = (input: HistoricalExchangeRateCreateEntityInterface) =>
+        Db.query(db =>
             db
                 .insert(HistoricalExchangeRateEntityTable)
                 .values(input)
@@ -75,11 +79,6 @@ export class HistoricalExchangeRateRepository {
                     }
                 })
         );
-    });
-
-    private readonly findFirstRate = Effect.fnUntraced(function* (where: SQL | undefined, order: SQL) {
-        return yield* Db.query(db => db.query.HistoricalExchangeRateEntityTable.findFirst({ where, orderBy: order }));
-    });
 
     private buildPairCondition(sourceInstrumentId: number, targetInstrumentId: number): SQL | undefined {
         return and(

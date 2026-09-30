@@ -4,10 +4,11 @@ import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { getErrorMessage, isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useHomePageDataQuery } from '../../../account/query/use-home-page-data.query';
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -30,12 +31,7 @@ export const OnboardingDone = () => {
     const { defaultInstrument } = useSettingsContext();
 
     const handlePrimary = () => {
-        void appRuntime
-            .runPromise(onboardingService.complete())
-            .then(() => void router.replace('/'))
-            .catch((error: unknown) => {
-                appRuntime.runFork(Effect.logError('finish onboarding failed', { errorMessage: getErrorMessage(error) }));
-            });
+        appRuntime.runFork(logAndContinue(onboardingService.complete().pipe(Effect.map(() => void router.replace('/')))));
     };
 
     const checklistItems = [

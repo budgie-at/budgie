@@ -48,7 +48,7 @@ describe('monobank/suspended-run-lock', () => {
         expect(requestedAccountIds).toEqual(externalIds);
     });
 
-    it('starts replacement background work while the foreground request is suspended', async () => {
+    it('lets the suspended foreground request finish before queued background work starts', async () => {
         let releaseStatementRequest = emptyFn;
         let resolveStatementRequestStarted = emptyFn;
         let requestedStatementCount = 0;
@@ -87,7 +87,7 @@ describe('monobank/suspended-run-lock', () => {
         await foregroundSync;
         await backgroundSync;
 
-        expect(didReplacementRequestStartWhileForegroundWasSuspended).toBe(true);
-        expect(fetchPersistedMonobankTransactions()).toHaveLength(0);
+        expect(didReplacementRequestStartWhileForegroundWasSuspended).toBe(false);
+        expect(fetchPersistedMonobankTransactions()).toHaveLength(1);
     });
 });

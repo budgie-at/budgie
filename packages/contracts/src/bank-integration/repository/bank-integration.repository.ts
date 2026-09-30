@@ -10,42 +10,6 @@ import type { BankIntegrationCreateEntityInterface } from '../entity/bank-integr
 import type { BankIntegrationUpdateEntityInterface } from '../entity/bank-integration-update-entity.interface';
 
 export class BankIntegrationRepository {
-    readonly create = Effect.fn('BankIntegrationRepository.create')(function* (input: BankIntegrationCreateEntityInterface) {
-        const [bankIntegration] = yield* Db.query(db => db.insert(BankIntegrationEntityTable).values([input]).returning());
-
-        return bankIntegration;
-    });
-
-    readonly findByProviderAndToken = Effect.fn('BankIntegrationRepository.findByProviderAndToken')(function* (
-        provider: ExternalSourceEnum,
-        token: string
-    ) {
-        return yield* Db.query(db =>
-            db.query.BankIntegrationEntityTable.findFirst({
-                where: and(
-                    eq(BankIntegrationEntityTable.provider, provider),
-                    eq(BankIntegrationEntityTable.token, token),
-                    isNull(BankIntegrationEntityTable.deletedAt)
-                )
-            })
-        );
-    });
-
-    readonly updateById = Effect.fn('BankIntegrationRepository.updateById')(function* (
-        id: number,
-        input: BankIntegrationUpdateEntityInterface
-    ) {
-        const bankIntegrations = yield* Db.query(db =>
-            db
-                .update(BankIntegrationEntityTable)
-                .set({ ...input, updatedAt: new Date() })
-                .where(and(eq(BankIntegrationEntityTable.id, id), isNull(BankIntegrationEntityTable.deletedAt)))
-                .returning()
-        );
-
-        return bankIntegrations.at(0);
-    });
-
     readonly findFileImportIntegration = Effect.fn('BankIntegrationRepository.findFileImportIntegration')(function* (
         this: BankIntegrationRepository,
         provider: ExternalSourceEnum
@@ -54,6 +18,31 @@ export class BankIntegrationRepository {
     });
 
     constructor(private db: DB) {}
+
+    readonly create = (input: BankIntegrationCreateEntityInterface) =>
+        Db.query(db => db.insert(BankIntegrationEntityTable).values([input]).returning()).pipe(
+            Effect.map(([bankIntegration]) => bankIntegration)
+        );
+
+    readonly findByProviderAndToken = (provider: ExternalSourceEnum, token: string) =>
+        Db.query(db =>
+            db.query.BankIntegrationEntityTable.findFirst({
+                where: and(
+                    eq(BankIntegrationEntityTable.provider, provider),
+                    eq(BankIntegrationEntityTable.token, token),
+                    isNull(BankIntegrationEntityTable.deletedAt)
+                )
+            })
+        );
+
+    readonly updateById = (id: number, input: BankIntegrationUpdateEntityInterface) =>
+        Db.query(db =>
+            db
+                .update(BankIntegrationEntityTable)
+                .set({ ...input, updatedAt: new Date() })
+                .where(and(eq(BankIntegrationEntityTable.id, id), isNull(BankIntegrationEntityTable.deletedAt)))
+                .returning()
+        ).pipe(Effect.map(bankIntegrations => bankIntegrations.at(0)));
 
     findById(id: number) {
         return this.db.query.BankIntegrationEntityTable.findFirst({

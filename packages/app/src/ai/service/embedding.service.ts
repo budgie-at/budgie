@@ -1,3 +1,4 @@
+import { AiInvokeError } from '@budgie/ai';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 
@@ -22,28 +23,27 @@ class LocalEmbeddingService implements EmbeddingInvokerInterface {
         return this.model.isReady;
     }
 
-    async embed(text: string): Promise<number[]> {
+    embed(text: string): Effect.Effect<number[], AiInvokeError> {
         const { context } = this.model;
         if (!this.isReady || !isDefined(context)) {
-            return [];
+            return Effect.succeed([]);
         }
 
-        return (await context.embedding(text)).embedding;
+        return Effect.tryPromise({
+            try: () => context.embedding(text),
+            catch: cause => new AiInvokeError({ cause })
+        }).pipe(Effect.map(result => result.embedding));
     }
 
-    batchEmbed(texts: readonly string[]): Promise<Map<string, number[]>> {
+    batchEmbed(texts: readonly string[]): Effect.Effect<Map<string, number[]>, AiInvokeError> {
         const { context } = this.model;
         if (!this.isReady || !isDefined(context)) {
-            return Promise.resolve(new Map<string, number[]>());
+            return Effect.succeed(new Map<string, number[]>());
         }
 
-        return Effect.runPromise(
-            Effect.forEach(texts, text =>
-                Effect.option(
-                    Effect.tryPromise(() => context.embedding(text)).pipe(Effect.map(result => [text, result.embedding] as const))
-                )
-            ).pipe(Effect.map(entries => new Map(entries.flatMap(Option.toArray).filter(([, embedding]) => isNotEmptyArray(embedding)))))
-        );
+        return Effect.forEach(texts, text =>
+            Effect.option(Effect.tryPromise(() => context.embedding(text)).pipe(Effect.map(result => [text, result.embedding] as const)))
+        ).pipe(Effect.map(entries => new Map(entries.flatMap(Option.toArray).filter(([, embedding]) => isNotEmptyArray(embedding)))));
     }
 }
 

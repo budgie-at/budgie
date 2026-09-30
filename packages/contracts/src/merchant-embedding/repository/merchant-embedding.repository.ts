@@ -184,18 +184,6 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
         }));
     });
 
-    readonly countPendingMerchantContexts = Effect.fn('MerchantEmbeddingRepository.countPendingMerchantContexts')(function* () {
-        const [row] = yield* Db.query(db =>
-            db.$client.getAllAsync<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, [])
-        );
-
-        return row.count;
-    });
-
-    readonly rebuildVecIndex = Effect.fn('MerchantEmbeddingRepository.rebuildVecIndex')(function* (this: MerchantEmbeddingRepository) {
-        yield* this.rebuildVec();
-    });
-
     readonly truncate = Effect.fn('MerchantEmbeddingRepository.truncate')(function* (this: MerchantEmbeddingRepository) {
         yield* this.truncateWithTags(MerchantEmbeddingTagEntityTable, MerchantEmbeddingEntityTable);
     });
@@ -208,4 +196,9 @@ export class MerchantEmbeddingRepository extends BaseEmbeddingRepository {
             sourceTableName: 'merchant_embeddings'
         });
     }
+
+    readonly countPendingMerchantContexts = () =>
+        Db.query(db =>
+            db.$client.getAllAsync<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, [])
+        ).pipe(Effect.map(([row]) => row.count));
 }

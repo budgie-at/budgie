@@ -1,16 +1,15 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
-import * as Effect from 'effect/Effect';
-import { useEffect, useState } from 'react';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { transactionRepository } from '../../../@generic/drizzle/db/db';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micro-units.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { refundsTotalAtom } from '../../constant/refunds-total-atom.constant';
 import { RefundedSummaryKindEnum } from '../../enum/refunded-summary-kind.enum';
 import { computeRefundedSummary } from '../../utils/compute-refunded-summary.util';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
@@ -28,37 +27,8 @@ export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
     const language = useSetting('language');
     const formatDigits = useFormatDigits(decimalPlaces);
     const isRefund = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
-    const [refundsTotal, setRefundsTotal] = useState<number | null>(null);
-
-    useEffect(() => {
-        let isActive = true;
-
-        const fetchRefundsTotal = async (): Promise<void> => {
-            const sources = await appRuntime.runPromise(transactionRepository.findConsolidationSources(transaction.id, language));
-            const total = sources
-                .filter(source => source.entryType === TransactionEntryTypeEnum.DEBIT)
-                .reduce((sum, source) => sum + source.amount, 0);
-
-            if (isActive) {
-                setRefundsTotal(total);
-            }
-        };
-
-        const handleError = (error: unknown) => {
-            appRuntime.runFork(Effect.logError('failed', { transactionId: transaction.id, errorMessage: getErrorMessage(error) }));
-            if (isActive) {
-                setRefundsTotal(null);
-            }
-        };
-
-        if (isRefund) {
-            void fetchRefundsTotal().catch(handleError);
-        }
-
-        return () => {
-            isActive = false;
-        };
-    }, [isRefund, transaction.id, language]);
+    const result = useAtomValue(refundsTotalAtom([isRefund ? transaction.id : null, language]));
+    const refundsTotal = AsyncResult.isSuccess(result) ? result.value : null;
 
     const summary = isRefund && isDefined(refundsTotal) ? computeRefundedSummary(transaction, refundsTotal) : null;
     const currencySymbol = transaction.entries[0]?.account.instrument.symbol;

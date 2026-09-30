@@ -3,10 +3,9 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
 import { Icon } from '../../../@generic/component/icon/icon';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
@@ -25,12 +24,9 @@ export const OnboardingAi = () => {
 
     const handlePrimary = () => void goToNextStep(OnboardingStepEnum.AI);
     const handleEnablePress = () => {
-        void appRuntime
-            .runPromise(updateSettingsMutation({ isAiEnabled: true }))
-            .then(() => void goToNextStep(OnboardingStepEnum.AI))
-            .catch((error: unknown) => {
-                appRuntime.runFork(Effect.logError('enable failed', { errorMessage: getErrorMessage(error) }));
-            });
+        appRuntime.runFork(
+            logAndContinue(updateSettingsMutation({ isAiEnabled: true }).pipe(Effect.map(() => void goToNextStep(OnboardingStepEnum.AI))))
+        );
     };
 
     const primaryLabel = isAiEnabled ? t`Continue` : t`Enable on-device AI`;

@@ -3,6 +3,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
 import { TRANSFER_PAIR_P2P_FIAT_RATE_TOLERANCE } from '../../shared/constant/transfer-pair-p2p-fiat.constant';
 import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
 import { P2pFiatDirectionEnum } from '../enum/p2p-fiat-direction.enum';
@@ -31,7 +32,7 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
 
         for (const candidate of repairCandidates) {
             yield* this.consolidationRepairExecutorService.repairP2pFiatCanonical(candidate.canonicalTransactionId);
-            yield* this.yieldNow();
+            yield* CONSOLIDATION_YIELD;
         }
     });
 
@@ -59,10 +60,9 @@ export class P2pFiatTransferConsolidationFamilyService extends ConsolidationFami
     constructor(
         private readonly transferPairRepository: TransferPairRepository,
         private readonly consolidationExecutorService: ConsolidationExecutorService,
-        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
-        yieldControl: () => Promise<void>
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService
     ) {
-        super(yieldControl);
+        super();
     }
 
     protected consolidateCandidate(candidate: P2pFiatTransferCandidateInterface) {

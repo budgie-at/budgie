@@ -1,11 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics/src/Haptics.types';
 import { useState } from 'react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
-import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { categorizeInboxService } from '../service/categorize-inbox.service';
 
 import type { CategorizeInboxLastWriteInterface } from '../interface/categorize-inbox-last-write.interface';
@@ -25,15 +25,15 @@ export const useCategorizeInboxMoveToCash = (
     const moveToCash = (transactionIds: number[]): void => {
         visibility.hideTransactions(transactionIds);
         enqueueWrite(
-            async () => {
-                const movedTransactionIds = await appRuntime.runPromise(categorizeInboxService.moveToCash(transactionIds));
+            Effect.gen(function* () {
+                const movedTransactionIds = yield* categorizeInboxService.moveToCash(transactionIds);
 
                 if (isNotEmptyArray(movedTransactionIds)) {
                     setLastWrite(null);
                     setMovedToCashTransactionIds(movedTransactionIds);
                     hapticNotification(NotificationFeedbackType.Success);
                 }
-            },
+            }),
             () => void visibility.showTransactions(transactionIds),
             t`Could not move withdrawals to cash`
         );
@@ -43,7 +43,7 @@ export const useCategorizeInboxMoveToCash = (
         setMovedToCashTransactionIds([]);
         visibility.showTransactions(transactionIds);
         enqueueWrite(
-            () => appRuntime.runPromise(categorizeInboxService.undoMoveToCash(transactionIds)),
+            categorizeInboxService.undoMoveToCash(transactionIds),
             () => void setMovedToCashTransactionIds(previous => (isNotEmptyArray(previous) ? previous : transactionIds)),
             t`Could not undo the move to cash`
         );

@@ -47,15 +47,6 @@ class OnboardingService {
         yield* Effect.forEach(accountsToCreate, account => this.createOnboardingAccount(account, instrumentId), { discard: true });
     });
 
-    readonly changeOnboardingCurrency = Effect.fn('OnboardingService.changeOnboardingCurrency')(function* (
-        accountId: number,
-        instrumentId: number
-    ) {
-        yield* updateSettingsMutation({ defaultInstrumentId: instrumentId });
-
-        return yield* accountService.updateById(accountId, { instrumentId });
-    });
-
     readonly complete = Effect.fn('OnboardingService.complete')(function* () {
         yield* updateSettingsMutation({ isOnboardingCompleted: true });
     });

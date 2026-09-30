@@ -9,6 +9,7 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { transferConsolidationService } from '../../../sync/service/transfer-consolidation.service';
 import { SettingsCard } from '../settings-card/settings-card';
@@ -26,11 +27,6 @@ const showConsolidationSuccessToast = (consolidated: number, found: number, t: R
         text1: t`Matches consolidated`,
         text2: t`Merged ${consolidated} of ${foundPairsText}.`
     });
-};
-
-const runConsolidation = async (t: ReturnType<typeof useLingui>['t']): Promise<void> => {
-    const { consolidated, found } = await appRuntime.runPromise(transferConsolidationService.consolidate(null));
-    showConsolidationSuccessToast(consolidated, found, t);
 };
 
 export const ConsolidateTransfers = () => {
@@ -51,15 +47,14 @@ export const ConsolidateTransfers = () => {
 
         setIsLoading(true);
 
-        try {
-            await runConsolidation(t);
-        } catch (error) {
-            const errorMessage = getErrorMessage(error);
-            appRuntime.runFork(Effect.logError('failed', { errorMessage }));
-            Toast.show({ type: 'error', text1: t`Could not consolidate matches`, text2: errorMessage });
-        } finally {
-            setIsLoading(false);
-        }
+        await appRuntime.runPromise(
+            transferConsolidationService.consolidate(null).pipe(
+                Effect.map(({ consolidated, found }) => void showConsolidationSuccessToast(consolidated, found, t)),
+                Effect.tapCause(Effect.logError),
+                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not consolidate matches`, getErrorMessage(error)))),
+                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+            )
+        );
     };
 
     return (

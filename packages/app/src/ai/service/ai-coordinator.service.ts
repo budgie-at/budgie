@@ -87,8 +87,8 @@ class AiCoordinatorService {
         releaseTimer: FiberHandle.FiberHandle
     ) {
         if (state !== 'active') {
+            yield* Effect.forEach(AiCoordinatorService.DRAINERS, drainer => drainer.halt(), { discard: true });
             AiCoordinatorService.DRAINERS.forEach(drainer => {
-                drainer.halt();
                 drainer.cancelBoost();
             });
             yield* FiberHandle.run(releaseTimer, this.releaseAfterDelay(), { onlyIfMissing: true });
@@ -124,9 +124,7 @@ class AiCoordinatorService {
     );
 
     private readonly stopSubsystems = Effect.fn('AiCoordinatorService.stopSubsystems')(function* (this: AiCoordinatorService) {
-        AiCoordinatorService.DRAINERS.forEach(drainer => {
-            drainer.stop();
-        });
+        yield* Effect.forEach(AiCoordinatorService.DRAINERS, drainer => drainer.stop(), { discard: true });
         const idle = Effect.forEach(AiCoordinatorService.DRAINERS, drainer => drainer.whenIdle(), {
             concurrency: 'unbounded',
             discard: true

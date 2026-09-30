@@ -60,86 +60,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         return [];
     });
 
-    readonly clearAlreadyIndexedMerchantFlags = Effect.fn('TransactionRepository.clearAlreadyIndexedMerchantFlags')(function* () {
-        yield* Db.query(db =>
-            Promise.resolve(
-                db.run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND title != ''
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
-                JOIN merchant_embeddings me
-                  ON me.title = transactions.title
-                  AND me.mcc_description = COALESCE(mcc.full_description, '')
-                  AND me.category_id = te.category_id
-                  AND me.deleted_at IS NULL
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND te.category_id IS NOT NULL
-              )
-        `)
-            )
-        );
-    });
-
-    readonly clearAlreadyIndexedCommentFlags = Effect.fn('TransactionRepository.clearAlreadyIndexedCommentFlags')(function* () {
-        yield* Db.query(db =>
-            Promise.resolve(
-                db.run(sql`
-            UPDATE transactions SET needs_embedding = 0
-            WHERE needs_embedding = 1
-              AND deleted_at IS NULL
-              AND title = ''
-              AND comment != ''
-              AND EXISTS (
-                SELECT 1 FROM transaction_entries te
-                JOIN comment_embeddings ce
-                  ON ce.comment = transactions.comment
-                  AND ce.category_id = te.category_id
-                  AND ce.deleted_at IS NULL
-                WHERE te.transaction_id = transactions.id
-                  AND te.deleted_at IS NULL
-                  AND te.category_id IS NOT NULL
-              )
-        `)
-            )
-        );
-    });
-
-    readonly findMccCategorySuggestions = Effect.fn('TransactionRepository.findMccCategorySuggestions')(function* (
-        mccCategoryId: number,
-        limit: number
-    ) {
-        return yield* Db.query(db =>
-            db.$client.getAllAsync<{ categoryId: number; count: number }>(
-                `WITH signals AS (
-                SELECT me.category_id AS category_id
-                FROM merchant_embeddings me
-                INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
-                WHERE mcc.id = ? AND me.deleted_at IS NULL
-                UNION ALL
-                SELECT te.category_id
-                FROM transaction_entries te
-                INNER JOIN transactions t ON t.id = te.transaction_id
-                WHERE te.mcc_category_id = ?
-                  AND te.category_id IS NOT NULL
-                  AND t.deleted_at IS NULL
-                  AND te.deleted_at IS NULL
-            )
-            SELECT category_id AS categoryId, COUNT(*) AS count
-            FROM signals
-            WHERE category_id IS NOT NULL
-            GROUP BY category_id
-            ORDER BY COUNT(*) DESC
-            LIMIT ?`,
-                [mccCategoryId, mccCategoryId, limit]
-            )
-        );
-    });
-
     readonly findSimilarStats = Effect.fn('TransactionRepository.findSimilarStats')(function* (
         this: TransactionRepository,
         query: SimilarTransactionStatsQueryInterface
@@ -171,89 +91,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             currencySymbol,
             months: rows
         };
-    });
-
-    readonly findExternalIdsByExternalSource = Effect.fn('TransactionRepository.findExternalIdsByExternalSource')(function* (
-        externalSource: ExternalSourceEnum
-    ) {
-        const results = yield* Db.query(db =>
-            db
-                .select({ externalId: TransactionEntityTable.externalId })
-                .from(TransactionEntityTable)
-                .where(
-                    and(
-                        eq(TransactionEntityTable.externalSource, externalSource),
-                        isNotNull(TransactionEntityTable.externalId),
-                        isNull(TransactionEntityTable.deletedAt)
-                    )
-                )
-        );
-
-        return results.map(row => row.externalId).filter(isDefined);
-    });
-
-    readonly findConsolidationSources = Effect.fn('TransactionRepository.findConsolidationSources')(function* (
-        canonicalTransactionId: number,
-        language: LanguageEnum
-    ) {
-        return yield* Db.query(db =>
-            db.$client.getAllAsync<ConsolidationSourceRowInterface>(
-                `SELECT
-                moved.transaction_id AS canonicalTransactionId,
-                moved.original_transaction_id AS sourceTransactionId,
-                source.type AS sourceType,
-                source.title AS sourceTitle,
-                source.comment AS sourceComment,
-                source.external_id AS sourceExternalId,
-                source.external_source AS sourceExternalSource,
-                source.operated_at * 1000 AS sourceOperatedAtMs,
-                moved.id AS entryId,
-                moved.type AS entryType,
-                moved.amount AS amount,
-                moved.exchange_rate AS exchangeRate,
-                account.id AS accountId,
-                account.title AS accountTitle,
-                account.icon AS accountIcon,
-                source_from_account.title AS sourceFromAccountTitle,
-                source_from_account.icon AS sourceFromAccountIcon,
-                source_to_account.title AS sourceToAccountTitle,
-                source_to_account.icon AS sourceToAccountIcon,
-                canonical_from_account.title AS canonicalFromAccountTitle,
-                canonical_from_account.icon AS canonicalFromAccountIcon,
-                canonical_to_account.title AS canonicalToAccountTitle,
-                canonical_to_account.icon AS canonicalToAccountIcon,
-                instrument.id AS instrumentId,
-                instrument.code AS currencyCode,
-                instrument.symbol AS currencySymbol,
-                COALESCE(
-                    (SELECT translation.title
-                     FROM default_category_translations translation
-                     WHERE translation.category_id = category.id
-                       AND translation.language = ?),
-                    category.title
-                ) AS categoryTitle,
-                category.icon AS categoryIcon,
-                mcc.mcc AS mcc,
-                mcc.short_description AS mccDescription,
-                moved.to_iban AS toIban
-            FROM transaction_entries moved
-            INNER JOIN transactions source ON source.id = moved.original_transaction_id
-            INNER JOIN transactions canonical ON canonical.id = moved.transaction_id
-            INNER JOIN accounts account ON account.id = moved.account_id
-            INNER JOIN instruments instrument ON instrument.id = account.instrument_id
-            LEFT JOIN accounts source_from_account ON source_from_account.id = source.from_account_id
-            LEFT JOIN accounts source_to_account ON source_to_account.id = source.to_account_id
-            LEFT JOIN accounts canonical_from_account ON canonical_from_account.id = canonical.from_account_id
-            LEFT JOIN accounts canonical_to_account ON canonical_to_account.id = canonical.to_account_id
-            LEFT JOIN categories category ON category.id = moved.category_id
-            LEFT JOIN mcc_categories mcc ON mcc.id = moved.mcc_category_id
-            WHERE moved.transaction_id = ?
-              AND moved.original_transaction_id IS NOT NULL
-              AND moved.deleted_at IS NULL
-            ORDER BY source.operated_at ASC, source.id ASC, moved.id ASC`,
-                [language, canonicalTransactionId]
-            )
-        );
     });
 
     readonly findActiveAutoConsolidatedByAccountIds = Effect.fn('TransactionRepository.findActiveAutoConsolidatedByAccountIds')(function* (
@@ -337,29 +174,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         );
     });
 
-    readonly setConsolidationType = Effect.fn('TransactionRepository.setConsolidationType')(function* (
-        transactionId: number,
-        type: TransactionConsolidationTypeEnum | null
-    ) {
-        yield* Db.query(db =>
-            db
-                .update(TransactionEntityTable)
-                .set({ consolidationType: type })
-                .where(and(eq(TransactionEntityTable.id, transactionId), isNull(TransactionEntityTable.consolidationParentTransactionId)))
-        );
-    });
-
-    readonly clearConsolidationParent = Effect.fn('TransactionRepository.clearConsolidationParent')(function* (
-        canonicalTransactionId: number
-    ) {
-        yield* Db.query(db =>
-            db
-                .update(TransactionEntityTable)
-                .set({ consolidationParentTransactionId: null })
-                .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId))
-        );
-    });
-
     readonly touchAndMarkForEmbeddingByIds = Effect.fn('TransactionRepository.touchAndMarkForEmbeddingByIds')(function* (ids: number[]) {
         if (isEmptyArray(ids)) {
             return;
@@ -395,10 +209,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         );
     });
 
-    readonly touchUpdatedAt = Effect.fn('TransactionRepository.touchUpdatedAt')(function* (id: number) {
-        yield* Db.query(db => db.update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id)));
-    });
-
     readonly create = Effect.fn('TransactionRepository.create')(function* (
         this: TransactionRepository,
         input: TransactionCreateEntityInterface
@@ -406,10 +216,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         const [transaction] = yield* this.bulkCreate([input]);
 
         return transaction;
-    });
-
-    readonly deleteById = Effect.fn('TransactionRepository.deleteById')(function* (id: number) {
-        yield* Db.query(db => db.delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)));
     });
 
     readonly updateById = Effect.fn('TransactionRepository.updateById')(function* (id: number, input: TransactionUpdateInputInterface) {
@@ -460,38 +266,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         );
     });
 
-    readonly findAllWithMccCategoryOffset = Effect.fn('TransactionRepository.findAllWithMccCategoryOffset')(function* (
-        limit: number,
-        offset: number
-    ) {
-        return yield* Db.query(db =>
-            db.query.TransactionEntityTable.findMany({
-                with: TransactionRepository.ENTRIES_WITH_MCC_CATEGORY_RELATIONS,
-                orderBy: (transaction, { desc }) => [desc(transaction.id)],
-                limit,
-                offset,
-                where: isNull(TransactionEntityTable.deletedAt)
-            })
-        );
-    });
-
-    readonly getByIdRaw = Effect.fn('TransactionRepository.getByIdRaw')(function* (id: number) {
-        return yield* Db.query(db => db.query.TransactionEntityTable.findFirst({ where: eq(TransactionEntityTable.id, id) }));
-    });
-
-    readonly getByIdWithEntries = Effect.fn('TransactionRepository.getByIdWithEntries')(function* (id: number) {
-        return yield* Db.query(db =>
-            db.query.TransactionEntityTable.findFirst({
-                where: eq(TransactionEntityTable.id, id),
-                with: {
-                    [TransactionAssociationEnum.ENTRIES]: {
-                        where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
-                    }
-                }
-            })
-        );
-    });
-
     readonly findByIds = Effect.fn('TransactionRepository.findByIds')(function* (this: TransactionRepository, ids: number[]) {
         return yield* this.findByIdsWithEntriesWhere(ids, TransactionRepository.LIVE_ENTRY_RELATION_WHERE);
     });
@@ -501,16 +275,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
             return yield* this.findByIdsWithEntriesWhere(ids, isNull(TransactionEntryEntityTable.deletedAt));
         }
     );
-
-    readonly truncate = Effect.fn('TransactionRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(TransactionEntityTable));
-    });
-
-    readonly markAllForEmbedding = Effect.fn('TransactionRepository.markAllForEmbedding')(function* () {
-        yield* Db.query(db =>
-            db.update(TransactionEntityTable).set({ needsEmbedding: true }).where(isNull(TransactionEntityTable.deletedAt))
-        );
-    });
 
     readonly markForEmbeddingByIds = Effect.fn('TransactionRepository.markForEmbeddingByIds')(function* (ids: number[]) {
         if (isEmptyArray(ids)) {
@@ -552,20 +316,17 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
     readonly clearNonIndexableFlags = Effect.fn('TransactionRepository.clearNonIndexableFlags')(function* () {
         yield* Db.query(db =>
-            Promise.resolve(
-                db.run(sql`
+            db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
               AND title = ''
               AND comment = ''
         `)
-            )
         );
 
         yield* Db.query(db =>
-            Promise.resolve(
-                db.run(sql`
+            db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
@@ -576,12 +337,10 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                   AND te.category_id IS NULL
               )
         `)
-            )
         );
 
         yield* Db.query(db =>
-            Promise.resolve(
-                db.run(sql`
+            db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
@@ -593,18 +352,15 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                   AND acc.type = ${AccountTypeEnum.DEBT}
               )
         `)
-            )
         );
 
         yield* Db.query(db =>
-            Promise.resolve(
-                db.run(sql`
+            db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
               AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
         `)
-            )
         );
     });
 
@@ -631,18 +387,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
                 }
 
                 return [[externalId, id] as const];
-            })
-        );
-    });
-
-    readonly findByAccountId = Effect.fn('TransactionRepository.findByAccountId')(function* (
-        this: TransactionRepository,
-        accountId: number
-    ) {
-        return yield* Db.query(db =>
-            db.query.TransactionEntityTable.findMany({
-                where: this.buildSingleAccountCondition(accountId),
-                orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
             })
         );
     });
@@ -702,93 +446,6 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
         );
     });
 
-    readonly restoreByAccountIds = Effect.fn('TransactionRepository.restoreByAccountIds')(function* (accountIds: number[]) {
-        yield* Db.query(db =>
-            db
-                .update(TransactionEntityTable)
-                .set({ deletedAt: null })
-                .where(
-                    or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds))
-                )
-        );
-    });
-
-    readonly findTransfersByAccountId = Effect.fn('TransactionRepository.findTransfersByAccountId')(function* (
-        this: TransactionRepository,
-        accountId: number,
-        language: LanguageEnum
-    ) {
-        return yield* Db.query(db =>
-            db.query.TransactionEntityTable.findMany({
-                where: this.buildTransfersByAccountIdWhere(accountId),
-                with: this.buildFullRelations(language)
-            })
-        );
-    });
-
-    readonly findTransfersForConversion = Effect.fn('TransactionRepository.findTransfersForConversion')(function* (
-        this: TransactionRepository,
-        accountId: number
-    ) {
-        return yield* Db.query(db =>
-            db.query.TransactionEntityTable.findMany({
-                where: this.buildTransfersByAccountIdWhere(accountId),
-                with: {
-                    [TransactionAssociationEnum.ENTRIES]: {
-                        where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
-                    }
-                }
-            })
-        );
-    });
-
-    readonly deleteByAccountId = Effect.fn('TransactionRepository.deleteByAccountId')(function* (accountId: number) {
-        yield* Db.query(db =>
-            db
-                .delete(TransactionEntityTable)
-                .where(
-                    and(
-                        or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
-                        ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
-                    )
-                )
-        );
-    });
-
-    readonly convertTransfersFromAccountToIncome = Effect.fn('TransactionRepository.convertTransfersFromAccountToIncome')(function* (
-        accountId: number
-    ) {
-        yield* Db.query(db =>
-            db
-                .update(TransactionEntityTable)
-                .set({ type: TransactionTypeEnum.INCOME, fromAccountId: sql`NULL`, exchangeRate: 1 })
-                .where(
-                    and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.fromAccountId, accountId))
-                )
-        );
-    });
-
-    readonly convertTransfersToAccountToExpense = Effect.fn('TransactionRepository.convertTransfersToAccountToExpense')(function* (
-        accountId: number
-    ) {
-        yield* Db.query(db =>
-            db
-                .update(TransactionEntityTable)
-                .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
-                .where(
-                    and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId))
-                )
-        );
-    });
-
-    readonly countAllActive = Effect.fn('TransactionRepository.countAllActive')(function* () {
-        const [row] = yield* Db.query(db =>
-            db.select({ value: count() }).from(TransactionEntityTable).where(isNull(TransactionEntityTable.deletedAt))
-        );
-
-        return row.value;
-    });
-
     private readonly selectOperatedAtTime = Effect.fnUntraced(function* (aggregateSql: SQL<number | null>, condition: SQL | undefined) {
         const result = yield* Db.query(db =>
             db
@@ -821,6 +478,269 @@ export class TransactionRepository extends BaseTransactionFilterRepository {
 
         return [];
     });
+
+    readonly clearAlreadyIndexedMerchantFlags = () =>
+        Db.query(db =>
+            db.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title != ''
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                LEFT JOIN mcc_categories mcc ON mcc.id = te.mcc_category_id
+                JOIN merchant_embeddings me
+                  ON me.title = transactions.title
+                  AND me.mcc_description = COALESCE(mcc.full_description, '')
+                  AND me.category_id = te.category_id
+                  AND me.deleted_at IS NULL
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NOT NULL
+              )
+        `)
+        );
+
+    readonly clearAlreadyIndexedCommentFlags = () =>
+        Db.query(db =>
+            db.run(sql`
+            UPDATE transactions SET needs_embedding = 0
+            WHERE needs_embedding = 1
+              AND deleted_at IS NULL
+              AND title = ''
+              AND comment != ''
+              AND EXISTS (
+                SELECT 1 FROM transaction_entries te
+                JOIN comment_embeddings ce
+                  ON ce.comment = transactions.comment
+                  AND ce.category_id = te.category_id
+                  AND ce.deleted_at IS NULL
+                WHERE te.transaction_id = transactions.id
+                  AND te.deleted_at IS NULL
+                  AND te.category_id IS NOT NULL
+              )
+        `)
+        );
+
+    readonly findMccCategorySuggestions = (mccCategoryId: number, limit: number) =>
+        Db.query(db =>
+            db.$client.getAllAsync<{ categoryId: number; count: number }>(
+                `WITH signals AS (
+                SELECT me.category_id AS category_id
+                FROM merchant_embeddings me
+                INNER JOIN mcc_categories mcc ON mcc.full_description = me.mcc_description
+                WHERE mcc.id = ? AND me.deleted_at IS NULL
+                UNION ALL
+                SELECT te.category_id
+                FROM transaction_entries te
+                INNER JOIN transactions t ON t.id = te.transaction_id
+                WHERE te.mcc_category_id = ?
+                  AND te.category_id IS NOT NULL
+                  AND t.deleted_at IS NULL
+                  AND te.deleted_at IS NULL
+            )
+            SELECT category_id AS categoryId, COUNT(*) AS count
+            FROM signals
+            WHERE category_id IS NOT NULL
+            GROUP BY category_id
+            ORDER BY COUNT(*) DESC
+            LIMIT ?`,
+                [mccCategoryId, mccCategoryId, limit]
+            )
+        );
+
+    readonly findExternalIdsByExternalSource = (externalSource: ExternalSourceEnum) =>
+        Db.query(db =>
+            db
+                .select({ externalId: TransactionEntityTable.externalId })
+                .from(TransactionEntityTable)
+                .where(
+                    and(
+                        eq(TransactionEntityTable.externalSource, externalSource),
+                        isNotNull(TransactionEntityTable.externalId),
+                        isNull(TransactionEntityTable.deletedAt)
+                    )
+                )
+        ).pipe(Effect.map(results => results.map(row => row.externalId).filter(isDefined)));
+
+    readonly findConsolidationSources = (canonicalTransactionId: number, language: LanguageEnum) =>
+        Db.query(db =>
+            db.$client.getAllAsync<ConsolidationSourceRowInterface>(
+                `SELECT
+                moved.transaction_id AS canonicalTransactionId,
+                moved.original_transaction_id AS sourceTransactionId,
+                source.type AS sourceType,
+                source.title AS sourceTitle,
+                source.comment AS sourceComment,
+                source.external_id AS sourceExternalId,
+                source.external_source AS sourceExternalSource,
+                source.operated_at * 1000 AS sourceOperatedAtMs,
+                moved.id AS entryId,
+                moved.type AS entryType,
+                moved.amount AS amount,
+                moved.exchange_rate AS exchangeRate,
+                account.id AS accountId,
+                account.title AS accountTitle,
+                account.icon AS accountIcon,
+                source_from_account.title AS sourceFromAccountTitle,
+                source_from_account.icon AS sourceFromAccountIcon,
+                source_to_account.title AS sourceToAccountTitle,
+                source_to_account.icon AS sourceToAccountIcon,
+                canonical_from_account.title AS canonicalFromAccountTitle,
+                canonical_from_account.icon AS canonicalFromAccountIcon,
+                canonical_to_account.title AS canonicalToAccountTitle,
+                canonical_to_account.icon AS canonicalToAccountIcon,
+                instrument.id AS instrumentId,
+                instrument.code AS currencyCode,
+                instrument.symbol AS currencySymbol,
+                COALESCE(
+                    (SELECT translation.title
+                     FROM default_category_translations translation
+                     WHERE translation.category_id = category.id
+                       AND translation.language = ?),
+                    category.title
+                ) AS categoryTitle,
+                category.icon AS categoryIcon,
+                mcc.mcc AS mcc,
+                mcc.short_description AS mccDescription,
+                moved.to_iban AS toIban
+            FROM transaction_entries moved
+            INNER JOIN transactions source ON source.id = moved.original_transaction_id
+            INNER JOIN transactions canonical ON canonical.id = moved.transaction_id
+            INNER JOIN accounts account ON account.id = moved.account_id
+            INNER JOIN instruments instrument ON instrument.id = account.instrument_id
+            LEFT JOIN accounts source_from_account ON source_from_account.id = source.from_account_id
+            LEFT JOIN accounts source_to_account ON source_to_account.id = source.to_account_id
+            LEFT JOIN accounts canonical_from_account ON canonical_from_account.id = canonical.from_account_id
+            LEFT JOIN accounts canonical_to_account ON canonical_to_account.id = canonical.to_account_id
+            LEFT JOIN categories category ON category.id = moved.category_id
+            LEFT JOIN mcc_categories mcc ON mcc.id = moved.mcc_category_id
+            WHERE moved.transaction_id = ?
+              AND moved.original_transaction_id IS NOT NULL
+              AND moved.deleted_at IS NULL
+            ORDER BY source.operated_at ASC, source.id ASC, moved.id ASC`,
+                [language, canonicalTransactionId]
+            )
+        );
+
+    readonly setConsolidationType = (transactionId: number, type: TransactionConsolidationTypeEnum | null) =>
+        Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ consolidationType: type })
+                .where(and(eq(TransactionEntityTable.id, transactionId), isNull(TransactionEntityTable.consolidationParentTransactionId)))
+        );
+
+    readonly clearConsolidationParent = (canonicalTransactionId: number) =>
+        Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ consolidationParentTransactionId: null })
+                .where(eq(TransactionEntityTable.consolidationParentTransactionId, canonicalTransactionId))
+        );
+
+    readonly touchUpdatedAt = (id: number) =>
+        Db.query(db => db.update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id)));
+
+    readonly deleteById = (id: number) => Db.query(db => db.delete(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)));
+
+    readonly findAllWithMccCategoryOffset = (limit: number, offset: number) =>
+        Db.query(db =>
+            db.query.TransactionEntityTable.findMany({
+                with: TransactionRepository.ENTRIES_WITH_MCC_CATEGORY_RELATIONS,
+                orderBy: (transaction, { desc }) => [desc(transaction.id)],
+                limit,
+                offset,
+                where: isNull(TransactionEntityTable.deletedAt)
+            })
+        );
+
+    readonly getByIdRaw = (id: number) =>
+        Db.query(db => db.query.TransactionEntityTable.findFirst({ where: eq(TransactionEntityTable.id, id) }));
+
+    readonly getByIdWithEntries = (id: number) =>
+        Db.query(db =>
+            db.query.TransactionEntityTable.findFirst({
+                where: eq(TransactionEntityTable.id, id),
+                with: {
+                    [TransactionAssociationEnum.ENTRIES]: {
+                        where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
+                    }
+                }
+            })
+        );
+
+    readonly truncate = () => Db.query(db => db.delete(TransactionEntityTable));
+
+    readonly markAllForEmbedding = () =>
+        Db.query(db => db.update(TransactionEntityTable).set({ needsEmbedding: true }).where(isNull(TransactionEntityTable.deletedAt)));
+
+    readonly findByAccountId = (accountId: number) =>
+        Db.query(db =>
+            db.query.TransactionEntityTable.findMany({
+                where: this.buildSingleAccountCondition(accountId),
+                orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
+            })
+        );
+
+    readonly restoreByAccountIds = (accountIds: number[]) =>
+        Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ deletedAt: null })
+                .where(
+                    or(inArray(TransactionEntityTable.toAccountId, accountIds), inArray(TransactionEntityTable.fromAccountId, accountIds))
+                )
+        );
+
+    readonly findTransfersForConversion = (accountId: number) =>
+        Db.query(db =>
+            db.query.TransactionEntityTable.findMany({
+                where: this.buildTransfersByAccountIdWhere(accountId),
+                with: {
+                    [TransactionAssociationEnum.ENTRIES]: {
+                        where: TransactionRepository.LIVE_ENTRY_RELATION_WHERE
+                    }
+                }
+            })
+        );
+
+    readonly deleteByAccountId = (accountId: number) =>
+        Db.query(db =>
+            db
+                .delete(TransactionEntityTable)
+                .where(
+                    and(
+                        or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId)),
+                        ne(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER)
+                    )
+                )
+        );
+
+    readonly convertTransfersFromAccountToIncome = (accountId: number) =>
+        Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ type: TransactionTypeEnum.INCOME, fromAccountId: sql`NULL`, exchangeRate: 1 })
+                .where(
+                    and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.fromAccountId, accountId))
+                )
+        );
+
+    readonly convertTransfersToAccountToExpense = (accountId: number) =>
+        Db.query(db =>
+            db
+                .update(TransactionEntityTable)
+                .set({ type: TransactionTypeEnum.EXPENSE, toAccountId: sql`NULL`, exchangeRate: 1 })
+                .where(
+                    and(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER), eq(TransactionEntityTable.toAccountId, accountId))
+                )
+        );
+
+    readonly countAllActive = () =>
+        Db.query(db => db.select({ value: count() }).from(TransactionEntityTable).where(isNull(TransactionEntityTable.deletedAt))).pipe(
+            Effect.map(([row]) => row.value)
+        );
 
     getAll(limit: number, filters: TransactionFilterInterface, language: LanguageEnum) {
         return this.listOrderedByOperatedAt(limit, language, this.buildWhere(filters));

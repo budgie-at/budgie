@@ -1,14 +1,16 @@
 import { Db, TransactionEntryTypeEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
-import { useEffect, useState } from 'react';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
-import { getErrorMessage, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { transactionRepository } from '../../@generic/drizzle/db/db';
-import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
-import type { ConsolidationSourceRowInterface, TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import type { ConsolidationSourceRowInterface, LanguageEnum } from '@budgie/contracts';
 
 const orderSourcesByTransferChain = (rows: ConsolidationSourceRowInterface[]): ConsolidationSourceRowInterface[] => {
     const sendingAccounts = new Set(rows.filter(row => row.entryType === TransactionEntryTypeEnum.CREDIT).map(row => row.accountId));
@@ -30,49 +32,33 @@ const orderSourcesByTransferChain = (rows: ConsolidationSourceRowInterface[]): C
     return [...rows].sort((left, right) => rankOf(left) - rankOf(right));
 };
 
+const consolidationSourcesAtom = Atom.family(([transactionId, language]: readonly [number, LanguageEnum]) =>
+    appAtomRuntime.atom(
+        Effect.all(
+            [
+                transactionRepository.findConsolidationSources(transactionId, language),
+                Db.query(() => transactionRepository.getById(transactionId, language))
+            ],
+            { concurrency: 'unbounded' }
+        ).pipe(
+            Effect.map(([rows, canonical]) => ({
+                sources: orderSourcesByTransferChain(rows),
+                consolidationType: canonical?.consolidationType ?? null
+            })),
+            Effect.tapCause(Effect.logError)
+        )
+    )
+);
+
 export const useGetConsolidationSourcesQuery = (transactionId: number) => {
     const language = useSetting('language');
-    const [sources, setSources] = useState<ConsolidationSourceRowInterface[]>([]);
-    const [consolidationType, setConsolidationType] = useState<TransactionConsolidationTypeEnum | null>(null);
-    const [hasError, setHasError] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const result = useAtomValue(consolidationSourcesAtom([transactionId, language]));
+    const data = AsyncResult.isSuccess(result) ? result.value : null;
 
-    useEffect(() => {
-        let isActive = true;
-
-        const handleError = (caughtError: unknown) => {
-            appRuntime.runFork(Effect.logError('failed', { transactionId, errorMessage: getErrorMessage(caughtError) }));
-            if (isActive) {
-                setHasError(true);
-                setSources([]);
-                setIsLoading(false);
-            }
-        };
-
-        const fetchData = async (): Promise<void> => {
-            const [rows, canonical] = await appRuntime.runPromise(
-                Effect.all(
-                    [
-                        transactionRepository.findConsolidationSources(transactionId, language),
-                        Db.query(() => transactionRepository.getById(transactionId, language))
-                    ],
-                    { concurrency: 'unbounded' }
-                )
-            );
-            if (isActive) {
-                setSources(orderSourcesByTransferChain(rows));
-                setConsolidationType(isDefined(canonical) ? canonical.consolidationType : null);
-                setHasError(false);
-                setIsLoading(false);
-            }
-        };
-
-        void fetchData().catch(handleError);
-
-        return () => {
-            isActive = false;
-        };
-    }, [transactionId, language]);
-
-    return { sources, consolidationType, hasError, isLoading };
+    return {
+        sources: data?.sources ?? [],
+        consolidationType: data?.consolidationType ?? null,
+        hasError: AsyncResult.isFailure(result),
+        isLoading: result.waiting
+    };
 };

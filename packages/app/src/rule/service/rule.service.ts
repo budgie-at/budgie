@@ -64,7 +64,7 @@ class RuleService {
         const existingRule = yield* Db.query(() => ruleRepository.findByIdWithRelations(id));
         if (!isDefined(existingRule)) {
             // oxlint-disable-next-line lingui/no-unlocalized-strings
-            return yield* Effect.fail(new Error(`Rule ${id} not found`));
+            return yield* Effect.die(new Error(`Rule ${id} not found`));
         }
 
         return existingRule;

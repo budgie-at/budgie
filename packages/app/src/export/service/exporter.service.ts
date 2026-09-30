@@ -15,6 +15,7 @@ import Papa from 'papaparse';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import {
     accountRepository,
     categoryRepository,
@@ -23,7 +24,6 @@ import {
     transactionRepository
 } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { ExportRowInterface } from '../interface/export-row.interface';
 
 type AccountsMap = Map<number, AccountEntityInterface>;
@@ -99,7 +99,7 @@ class ExporterService {
                     }
                 }
 
-                yield* Effect.promise(() => microPause());
+                yield* YIELD_TO_UI;
                 transactions = yield* transactionRepository.getAllAfter(
                     transactions[transactions.length - 1].id,
                     ExporterService.BATCH_SIZE

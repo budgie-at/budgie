@@ -1,4 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { router, useIsFocused, useNavigation } from 'expo-router';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { AppState } from 'react-native';
@@ -13,14 +14,16 @@ import { authService } from '../service/auth.service';
 
 import { useAuthAttemptTracker } from './use-auth-attempt-tracker.hook';
 
+import type * as Fiber from 'effect/Fiber';
 import type { AppStateStatus } from 'react-native';
 
 const usePinFormState = () => {
     const [input, setInput] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const pinVerificationFiberRef = useRef<Fiber.Fiber<boolean> | null>(null);
 
-    return { error, input, isLoading, setError, setInput, setIsLoading };
+    return { error, input, isLoading, pinVerificationFiberRef, setError, setInput, setIsLoading };
 };
 
 const useAuthAttemptFocus = (invalidateAuthAttempts: () => void) => {
@@ -188,7 +191,7 @@ export const usePinAuthentication = () => {
     const { t } = useLingui();
     const { isFaceIdAvailable, isSomeAvailable, setIsUnlocked } = useAuthContext();
     const canUseBiometric = useSetting('isBiometricEnabled') && isSomeAvailable;
-    const { error, input, isLoading, setError, setInput, setIsLoading } = usePinFormState();
+    const { error, input, isLoading, pinVerificationFiberRef, setError, setInput, setIsLoading } = usePinFormState();
     const authAttemptTracker = useAuthAttemptTracker();
 
     const resetAuthLoading = () => {
@@ -213,7 +216,7 @@ export const usePinAuthentication = () => {
     const authAttemptLifecycle = useAuthAttemptLifecycle(resetAuthLoading, setInput, acceptAuthAttempt, authAttemptTracker);
     const { canStartAuthAttempt, completeAuthAttempt, isAppActive, isPinScreenFocused } = authAttemptLifecycle;
 
-    const handlePinSubmit = async (pin: string) => {
+    const handlePinSubmit = (pin: string) => {
         if (!isAppActive || !isPinScreenFocused) {
             return;
         }
@@ -221,7 +224,14 @@ export const usePinAuthentication = () => {
         const authAttemptGeneration = authAttemptTracker.beginAuthAttempt(true);
 
         setIsLoading(true);
-        completeAuthAttempt(authAttemptGeneration, await appRuntime.runPromise(authService.verifyPin(pin)), true);
+        pinVerificationFiberRef.current?.interruptUnsafe();
+        pinVerificationFiberRef.current = appRuntime.runFork(
+            authService.verifyPin(pin).pipe(
+                Effect.tapError(Effect.logError),
+                Effect.orElseSucceed(() => false),
+                Effect.tap(success => Effect.sync(() => void completeAuthAttempt(authAttemptGeneration, success, true)))
+            )
+        );
     };
     const addDigit = (digit: string) => {
         const nextInput = (input + digit).slice(0, PIN_LENGTH);
@@ -230,7 +240,7 @@ export const usePinAuthentication = () => {
         setError(null);
 
         if (input.length === PIN_LENGTH - 1) {
-            void handlePinSubmit(nextInput);
+            handlePinSubmit(nextInput);
         }
     };
     const deleteDigit = () => {

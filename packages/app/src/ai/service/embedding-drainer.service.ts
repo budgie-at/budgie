@@ -108,16 +108,15 @@ class EmbeddingDrainerService {
             Effect.gen(function* () {
                 const embeddingId = isDefined(context.existingEmbeddingId)
                     ? context.existingEmbeddingId
-                    : yield* Effect.tryPromise({
-                          try: () => embeddingService.embed(source.buildPrompt(context)),
-                          catch: cause => new AiInvokeError({ cause })
-                      }).pipe(
-                          Effect.flatMap(rawEmbedding =>
-                              isNotEmptyArray(rawEmbedding)
-                                  ? source.upsert(context, serializeEmbedding(new Float32Array(rawEmbedding)), rawEmbedding.length)
-                                  : Effect.succeed(null)
-                          )
-                      );
+                    : yield* embeddingService
+                          .embed(source.buildPrompt(context))
+                          .pipe(
+                              Effect.flatMap(rawEmbedding =>
+                                  isNotEmptyArray(rawEmbedding)
+                                      ? source.upsert(context, serializeEmbedding(new Float32Array(rawEmbedding)), rawEmbedding.length)
+                                      : Effect.succeed(null)
+                              )
+                          );
                 if (isDefined(embeddingId)) {
                     pendingPersists.push([embeddingId, context]);
                 }

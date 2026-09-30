@@ -1,11 +1,12 @@
 import { Db } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
+import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { transactionEntryRepository } from '../../@generic/drizzle/db/db';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
@@ -53,10 +54,10 @@ class MoneyDataUpgradeService {
         this.publishSnapshot({ ...this.snapshot, isRunning: true, lastError: null }, onProgress);
 
         yield* this.valuePendingEntries(onProgress).pipe(
-            Effect.tapError(error =>
+            Effect.tapCause(cause =>
                 Effect.sync(() => {
                     this.publishSnapshot(
-                        { ...this.snapshot, isRunning: false, isUpdatingBalances: false, lastError: getErrorMessage(error) },
+                        { ...this.snapshot, isRunning: false, isUpdatingBalances: false, lastError: getErrorMessage(Cause.squash(cause)) },
                         onProgress
                     );
                 })
@@ -76,7 +77,7 @@ class MoneyDataUpgradeService {
         const baseInstrument = yield* exchangeRatesService.getBaseInstrument();
 
         if (!isDefined(baseInstrument) || !isPositiveNumber(baseInstrument.id)) {
-            return yield* Effect.fail(new Error(t`Base instrument not found`));
+            return yield* Effect.die(new Error(t`Base instrument not found`));
         }
 
         const buckets = yield* transactionEntryRepository.findPendingBaseValuationBuckets(baseInstrument.id);
@@ -125,7 +126,7 @@ class MoneyDataUpgradeService {
             onProgress
         );
 
-        yield* Effect.promise(() => microPause());
+        yield* YIELD_TO_UI;
     });
 
     private readonly valuePendingEntryBucket = Effect.fn('MoneyDataUpgradeService.valuePendingEntryBucket')(function* (

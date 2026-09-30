@@ -10,12 +10,6 @@ import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.tab
 import { insertTransactionTag } from '../util/insert-transaction-tag.util';
 
 export class TransactionTagsRepository {
-    readonly findByTransactionId = Effect.fn('TransactionTagsRepository.findByTransactionId')(function* (transactionId: number) {
-        return yield* Db.query(db =>
-            db.select().from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, transactionId))
-        );
-    });
-
     readonly findByTransactionIds = Effect.fn('TransactionTagsRepository.findByTransactionIds')(function* (
         transactionIds: readonly number[]
     ) {
@@ -49,11 +43,11 @@ export class TransactionTagsRepository {
         return rows.map(row => row.transactionId);
     });
 
-    readonly deleteByTransactionId = Effect.fn('TransactionTagsRepository.deleteByTransactionId')(function* (id: number) {
-        yield* Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, id)));
-    });
+    readonly findByTransactionId = (transactionId: number) =>
+        Db.query(db => db.select().from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, transactionId)));
 
-    readonly truncate = Effect.fn('TransactionTagsRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(TransactionTagsEntityTable));
-    });
+    readonly deleteByTransactionId = (id: number) =>
+        Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, id)));
+
+    readonly truncate = () => Db.query(db => db.delete(TransactionTagsEntityTable));
 }

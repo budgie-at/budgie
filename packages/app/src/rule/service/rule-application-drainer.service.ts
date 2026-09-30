@@ -1,9 +1,10 @@
+import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 
 import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { Workload } from '../../@generic/service/workload.service';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 
 import { ruleEngineService } from './rule-engine.service';
@@ -75,16 +76,16 @@ class RuleApplicationDrainerService {
 
             const workload = yield* Workload;
             yield* workload.run(ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs)).pipe(
-                Effect.tapError(error =>
+                Effect.tapCause(cause =>
                     Effect.logError('processPendingTransactionBatch:throw', {
                         queuedTransactionIds: transactionIds.join(','),
                         queuedInputCount: transactionInputs.length,
-                        errorMessage: getErrorMessage(error)
+                        errorMessage: getErrorMessage(Cause.squash(cause))
                     })
                 ),
-                Effect.ignore
+                Effect.ignoreCause
             );
-            yield* Effect.promise(() => microPause());
+            yield* YIELD_TO_UI;
         }
     );
 
@@ -100,16 +101,16 @@ class RuleApplicationDrainerService {
             const workload = yield* Workload;
 
             yield* workload.run(ruleEngineService.applyRuleToMatchingTransactions(ruleId, null)).pipe(
-                Effect.match({
+                Effect.matchCause({
                     onSuccess: result => {
                         onSettled?.(result, null);
                     },
-                    onFailure: error => {
-                        onSettled?.(null, error);
+                    onFailure: cause => {
+                        onSettled?.(null, Cause.squash(cause));
                     }
                 })
             );
-            yield* Effect.promise(() => microPause());
+            yield* YIELD_TO_UI;
         }
     );
 

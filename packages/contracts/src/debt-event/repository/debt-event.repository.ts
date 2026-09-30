@@ -26,83 +26,12 @@ export class DebtEventRepository {
         return yield* Db.query(db => db.insert(DebtEventEntityTable).values(inputs).returning());
     });
 
-    readonly findByTransactionId = Effect.fn('DebtEventRepository.findByTransactionId')(function* (transactionId: number) {
-        const debtEvents = yield* Db.query(db =>
-            db
-                .select()
-                .from(DebtEventEntityTable)
-                .where(and(eq(DebtEventEntityTable.transactionId, transactionId), isNull(DebtEventEntityTable.deletedAt)))
-                .limit(1)
-        );
-
-        return debtEvents.at(0);
-    });
-
-    readonly findByAccountId = Effect.fn('DebtEventRepository.findByAccountId')(function* (accountId: number) {
-        return yield* Db.query(db =>
-            db.query.DebtEventEntityTable.findMany({
-                where: and(eq(DebtEventEntityTable.debtAccountId, accountId), isNull(DebtEventEntityTable.deletedAt))
-            })
-        );
-    });
-
-    readonly findByAccountIdAndSource = Effect.fn('DebtEventRepository.findByAccountIdAndSource')(function* (
-        accountId: number,
-        source: DebtEventSourceEnum
-    ) {
-        return yield* Db.query(db =>
-            db.query.DebtEventEntityTable.findMany({
-                where: and(
-                    eq(DebtEventEntityTable.debtAccountId, accountId),
-                    eq(DebtEventEntityTable.source, source),
-                    isNull(DebtEventEntityTable.deletedAt)
-                )
-            })
-        );
-    });
-
-    readonly updateById = Effect.fn('DebtEventRepository.updateById')(function* (
-        id: number,
-        input: Partial<
-            Pick<
-                DebtEventCreateEntityInterface,
-                'transactionEntryId' | 'direction' | 'amount' | 'baseInstrumentId' | 'baseExchangeRate' | 'baseAmount' | 'operatedAt'
-            >
-        >
-    ) {
-        yield* Db.query(db =>
-            db
-                .update(DebtEventEntityTable)
-                .set({ ...input, updatedAt: new Date() })
-                .where(eq(DebtEventEntityTable.id, id))
-        );
-    });
-
     readonly deleteByIds = Effect.fn('DebtEventRepository.deleteByIds')(function* (ids: number[]) {
         if (!isNotEmptyArray(ids)) {
             return;
         }
 
         yield* Db.query(db => db.delete(DebtEventEntityTable).where(inArray(DebtEventEntityTable.id, ids)));
-    });
-
-    readonly deleteByTransactionId = Effect.fn('DebtEventRepository.deleteByTransactionId')(function* (transactionId: number) {
-        yield* Db.query(db => db.delete(DebtEventEntityTable).where(eq(DebtEventEntityTable.transactionId, transactionId)));
-    });
-
-    readonly deleteByAccountIdAndSource = Effect.fn('DebtEventRepository.deleteByAccountIdAndSource')(function* (
-        accountId: number,
-        source: DebtEventSourceEnum
-    ) {
-        yield* Db.query(db =>
-            db
-                .delete(DebtEventEntityTable)
-                .where(and(eq(DebtEventEntityTable.debtAccountId, accountId), eq(DebtEventEntityTable.source, source)))
-        );
-    });
-
-    readonly deleteByAccountId = Effect.fn('DebtEventRepository.deleteByAccountId')(function* (accountId: number) {
-        yield* Db.query(db => db.delete(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, accountId)));
     });
 
     readonly archiveByAccountIds = Effect.fn('DebtEventRepository.archiveByAccountIds')(function* (accountIds: number[]) {
@@ -128,11 +57,58 @@ export class DebtEventRepository {
         );
     });
 
-    readonly truncate = Effect.fn('DebtEventRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(DebtEventEntityTable));
-    });
-
     constructor(private db: DB) {}
+
+    readonly findByTransactionId = (transactionId: number) =>
+        Db.query(db =>
+            db
+                .select()
+                .from(DebtEventEntityTable)
+                .where(and(eq(DebtEventEntityTable.transactionId, transactionId), isNull(DebtEventEntityTable.deletedAt)))
+                .limit(1)
+        ).pipe(Effect.map(debtEvents => debtEvents.at(0)));
+
+    readonly findByAccountId = (accountId: number) =>
+        Db.query(db =>
+            db.query.DebtEventEntityTable.findMany({
+                where: and(eq(DebtEventEntityTable.debtAccountId, accountId), isNull(DebtEventEntityTable.deletedAt))
+            })
+        );
+
+    readonly findByAccountIdAndSource = (accountId: number, source: DebtEventSourceEnum) =>
+        Db.query(db =>
+            db.query.DebtEventEntityTable.findMany({
+                where: and(
+                    eq(DebtEventEntityTable.debtAccountId, accountId),
+                    eq(DebtEventEntityTable.source, source),
+                    isNull(DebtEventEntityTable.deletedAt)
+                )
+            })
+        );
+
+    readonly updateById = (
+        id: number,
+        input: Partial<
+            Pick<
+                DebtEventCreateEntityInterface,
+                'transactionEntryId' | 'direction' | 'amount' | 'baseInstrumentId' | 'baseExchangeRate' | 'baseAmount' | 'operatedAt'
+            >
+        >
+    ) =>
+        Db.query(db =>
+            db
+                .update(DebtEventEntityTable)
+                .set({ ...input, updatedAt: new Date() })
+                .where(eq(DebtEventEntityTable.id, id))
+        );
+
+    readonly deleteByTransactionId = (transactionId: number) =>
+        Db.query(db => db.delete(DebtEventEntityTable).where(eq(DebtEventEntityTable.transactionId, transactionId)));
+
+    readonly deleteByAccountId = (accountId: number) =>
+        Db.query(db => db.delete(DebtEventEntityTable).where(eq(DebtEventEntityTable.debtAccountId, accountId)));
+
+    readonly truncate = () => Db.query(db => db.delete(DebtEventEntityTable));
 
     getManualSettledAmountByAccountId(accountId: number) {
         return this.db

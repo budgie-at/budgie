@@ -24,15 +24,6 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         return category;
     });
 
-    readonly bulkCreate = Effect.fn('CategoryRepository.bulkCreate')(function* (inputs: CategoryCreateEntityInterface[]) {
-        return yield* Db.query(db =>
-            db
-                .insert(CategoryEntityTable)
-                .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
-                .returning()
-        );
-    });
-
     readonly updateById = Effect.fn('CategoryRepository.updateById')(function* (id: number, input: CategoryUpdateEntityInterface) {
         const newTitle = input.title;
         const titleChanged = isDefined(newTitle);
@@ -52,69 +43,6 @@ export class CategoryRepository extends TranslatableRepositoryBase {
         return category;
     });
 
-    readonly findActiveById = Effect.fn('CategoryRepository.findActiveById')(function* (id: number) {
-        const categories = yield* Db.query(db =>
-            db
-                .select()
-                .from(CategoryEntityTable)
-                .where(and(eq(CategoryEntityTable.id, id), isNull(CategoryEntityTable.deletedAt)))
-                .limit(1)
-        );
-
-        return categories.at(0);
-    });
-
-    readonly deleteById = Effect.fn('CategoryRepository.deleteById')(function* (id: number) {
-        yield* Db.query(db => db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id)));
-    });
-
-    readonly countTransactionEntries = Effect.fn('CategoryRepository.countTransactionEntries')(function* (categoryId: number) {
-        const [result] = yield* Db.query(db =>
-            db.select({ count: count() }).from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.categoryId, categoryId))
-        );
-
-        return result.count;
-    });
-
-    readonly reassignTransactionEntries = Effect.fn('CategoryRepository.reassignTransactionEntries')(function* (
-        fromCategoryId: number,
-        toCategoryId: number
-    ) {
-        yield* Db.query(db =>
-            db
-                .update(TransactionEntryEntityTable)
-                .set({ categoryId: toCategoryId })
-                .where(eq(TransactionEntryEntityTable.categoryId, fromCategoryId))
-        );
-    });
-
-    readonly truncate = Effect.fn('CategoryRepository.truncate')(function* (includeDefault: boolean) {
-        yield* Db.query(db =>
-            db
-                .delete(CategoryEntityTable)
-                .where(includeDefault ? eq(CategoryEntityTable.isSystemCategory, false) : eq(CategoryEntityTable.isDefault, false))
-        );
-    });
-
-    readonly updateTranslation = Effect.fn('CategoryRepository.updateTranslation')(function* (
-        id: number,
-        titleEn: string,
-        titleTags: string
-    ) {
-        yield* Db.query(db =>
-            db.update(CategoryEntityTable).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(CategoryEntityTable.id, id))
-        );
-    });
-
-    readonly clearTranslation = Effect.fn('CategoryRepository.clearTranslation')(function* (id: number) {
-        yield* Db.query(db =>
-            db
-                .update(CategoryEntityTable)
-                .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
-                .where(eq(CategoryEntityTable.id, id))
-        );
-    });
-
     constructor(private readonly db: ExpoSQLiteDatabase<typeof schema>) {
         super(CategoryEntityTable, {
             id: CategoryEntityTable.id,
@@ -125,6 +53,58 @@ export class CategoryRepository extends TranslatableRepositoryBase {
             deletedAt: CategoryEntityTable.deletedAt
         });
     }
+
+    readonly bulkCreate = (inputs: CategoryCreateEntityInterface[]) =>
+        Db.query(db =>
+            db
+                .insert(CategoryEntityTable)
+                .values(inputs.map(input => ({ ...input, titleSearch: input.title.toLowerCase() })))
+                .returning()
+        );
+
+    readonly findActiveById = (id: number) =>
+        Db.query(db =>
+            db
+                .select()
+                .from(CategoryEntityTable)
+                .where(and(eq(CategoryEntityTable.id, id), isNull(CategoryEntityTable.deletedAt)))
+                .limit(1)
+        ).pipe(Effect.map(categories => categories.at(0)));
+
+    readonly deleteById = (id: number) => Db.query(db => db.delete(CategoryEntityTable).where(eq(CategoryEntityTable.id, id)));
+
+    readonly countTransactionEntries = (categoryId: number) =>
+        Db.query(db =>
+            db.select({ count: count() }).from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.categoryId, categoryId))
+        ).pipe(Effect.map(([result]) => result.count));
+
+    readonly reassignTransactionEntries = (fromCategoryId: number, toCategoryId: number) =>
+        Db.query(db =>
+            db
+                .update(TransactionEntryEntityTable)
+                .set({ categoryId: toCategoryId })
+                .where(eq(TransactionEntryEntityTable.categoryId, fromCategoryId))
+        );
+
+    readonly truncate = (includeDefault: boolean) =>
+        Db.query(db =>
+            db
+                .delete(CategoryEntityTable)
+                .where(includeDefault ? eq(CategoryEntityTable.isSystemCategory, false) : eq(CategoryEntityTable.isDefault, false))
+        );
+
+    readonly updateTranslation = (id: number, titleEn: string, titleTags: string) =>
+        Db.query(db =>
+            db.update(CategoryEntityTable).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(CategoryEntityTable.id, id))
+        ).pipe(Effect.asVoid);
+
+    readonly clearTranslation = (id: number) =>
+        Db.query(db =>
+            db
+                .update(CategoryEntityTable)
+                .set({ titleEn: null, titleTags: null, tagsGeneratedAt: null })
+                .where(eq(CategoryEntityTable.id, id))
+        );
 
     findAllNonSystemLocalized(language: LanguageEnum) {
         return this.buildLocalizedCategoryBaseQuery(language).where(eq(CategoryEntityTable.isSystemCategory, false));

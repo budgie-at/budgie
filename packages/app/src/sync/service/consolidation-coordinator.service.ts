@@ -16,7 +16,6 @@ import {
     transactionTagsRepository,
     transferPairRepository
 } from '../../@generic/drizzle/db/db';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 
 const consolidationExecutorDependencies = {
     resolveP2pTransferTitle: (direction: P2pFiatDirectionEnum, assetCode: string): string =>
@@ -41,6 +40,5 @@ export const consolidationCoordinatorService = new ConsolidationCoordinatorServi
         transferPairRepository
     },
     consolidationExecutorService,
-    consolidationRepairExecutorService,
-    microPause
+    consolidationRepairExecutorService
 );

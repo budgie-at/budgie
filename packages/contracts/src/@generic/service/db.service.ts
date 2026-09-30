@@ -13,12 +13,8 @@ export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
 
     private static readonly Rollback = new Error('Rollback');
 
-    static query<A>(run: (db: DB) => PromiseLike<A>): Effect.Effect<A, DbError, Db> {
-        return Effect.gen(function* () {
-            const db = yield* Db;
-
-            return yield* Effect.tryPromise({ try: () => run(db), catch: cause => new DbError({ cause }) });
-        });
+    static query<A>(run: (db: DB) => A | PromiseLike<A>): Effect.Effect<A, DbError, Db> {
+        return Db.use(db => Effect.tryPromise({ try: async () => run(db), catch: cause => new DbError({ cause }) }));
     }
 
     static transaction<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E | DbError, R | Db> {
@@ -29,28 +25,35 @@ export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
 
             const db = yield* Db;
             const context = yield* Effect.context<R>();
+
+            const controller = new AbortController();
             const outcome: { exit: Exit.Exit<A, E> | null } = { exit: null };
+            const settlement = db.$client.withExclusiveTransactionAsync(async expoTransaction => {
+                outcome.exit = await Effect.runPromiseExitWith(context)(
+                    effect.pipe(
+                        Effect.provideService(Db, drizzle(expoTransaction, { schema })),
+                        Effect.provideService(Db.InTransaction, true)
+                    ),
+                    { signal: controller.signal }
+                );
 
-            yield* Effect.tryPromise({
-                try: signal =>
-                    db.$client.withExclusiveTransactionAsync(async expoTransaction => {
-                        outcome.exit = await Effect.runPromiseExitWith(context)(
-                            effect.pipe(
-                                Effect.provideService(Db, drizzle(expoTransaction, { schema })),
-                                Effect.provideService(Db.InTransaction, true)
-                            ),
-                            { signal }
-                        );
+                if (Exit.isFailure(outcome.exit)) {
+                    await Promise.reject(Db.Rollback);
+                }
+            });
 
-                        if (Exit.isFailure(outcome.exit)) {
-                            await Promise.reject(Db.Rollback);
-                        }
-                    }),
-                catch: cause => new DbError({ cause })
-            }).pipe(
+            yield* Effect.tryPromise({ try: () => settlement, catch: cause => new DbError({ cause }) }).pipe(
                 Effect.catchIf(
                     error => error.cause === Db.Rollback,
                     () => Effect.void
+                ),
+                Effect.onInterrupt(() =>
+                    Effect.andThen(
+                        Effect.sync(() => {
+                            controller.abort();
+                        }),
+                        Effect.ignoreCause(Effect.promise(() => settlement))
+                    )
                 )
             );
 

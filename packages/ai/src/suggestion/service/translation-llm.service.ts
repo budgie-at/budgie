@@ -2,7 +2,6 @@ import * as Effect from 'effect/Effect';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { generateChatResponse } from '../../@generic/util/generate-chat-response.util';
 import { ChatInvokerInterface } from '../../chat/interface/chat-invoker.interface';
 import { containsNonLatin } from '../../embedding/util/contains-non-latin.util';
 import { TAG_GENERATION_SYSTEM_PROMPT, TRANSLATION_SYSTEM_PROMPT, TRANSLATION_TEMPERATURE } from '../constant/translation-prompt.constant';
@@ -19,7 +18,7 @@ export class TranslationLlmService {
         this: TranslationLlmService,
         titleEn: string
     ) {
-        const tags = yield* generateChatResponse(this.chat, TAG_GENERATION_SYSTEM_PROMPT, titleEn, {
+        const tags = yield* this.chat.generate(TAG_GENERATION_SYSTEM_PROMPT, titleEn, {
             temperature: TRANSLATION_TEMPERATURE,
             throwOnInterrupt: true
         });
@@ -35,7 +34,7 @@ export class TranslationLlmService {
             return title.trim().toLowerCase();
         }
 
-        const titleEn = yield* generateChatResponse(this.chat, TRANSLATION_SYSTEM_PROMPT, title, {
+        const titleEn = yield* this.chat.generate(TRANSLATION_SYSTEM_PROMPT, title, {
             temperature: TRANSLATION_TEMPERATURE,
             throwOnInterrupt: true
         });

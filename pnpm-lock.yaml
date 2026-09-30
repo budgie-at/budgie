@@ -524,9 +524,6 @@ importers:
       '@rnw-community/shared':
         specifier: ^2.2.0
         version: 2.15.0
-      date-fns:
-        specifier: ^4.3.0
-        version: 4.4.0
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(patch_hash=c9bf0eed9322ceab91fa49c1a6f2dc23357ed54213b086860226d733c70f5f50)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(expo-sqlite@57.0.2(expo@57.0.18)(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3))

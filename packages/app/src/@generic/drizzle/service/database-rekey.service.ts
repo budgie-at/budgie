@@ -24,19 +24,8 @@ class DatabaseRekeyService {
         const paths = this.getPaths();
 
         yield* this.prepare(paths, params).pipe(
-            Effect.andThen(this.commit(paths, onCommit)),
-            Effect.onError(() =>
-                Effect.sync(() => {
-                    this.deleteFileIfExists(paths.destinationPath);
-                    this.restoreBackupDatabase(paths.backupPath, paths.destinationPath);
-                })
-            ),
-            Effect.ensuring(
-                Effect.sync(() => {
-                    this.deleteDatabaseFiles(paths.tempDatabasePath);
-                    this.deleteDatabaseFiles(paths.backupPath);
-                })
-            )
+            Effect.andThen(this.commit(paths, onCommit).pipe(Effect.onError(() => this.restoreBackupDatabase(paths)))),
+            Effect.ensuring(Effect.sync(() => this.deleteDatabaseFiles(paths.tempDatabasePath)))
         );
     });
 
@@ -61,10 +50,28 @@ class DatabaseRekeyService {
     ) {
         yield* databaseLifecycleService.close();
         this.deleteDestinationSidecars(paths.destinationPath);
-        this.moveExistingDatabaseToBackup(paths.destinationPath, paths.backupPath);
-        new File(paths.tempDatabasePath).move(new File(paths.destinationPath));
+        if (new File(paths.destinationPath).exists) {
+            yield* this.moveFile(paths.destinationPath, paths.backupPath);
+        }
+        yield* this.moveFile(paths.tempDatabasePath, paths.destinationPath);
         yield* onCommit;
         this.deleteDatabaseFiles(paths.backupPath);
+    });
+
+    private readonly restoreBackupDatabase = Effect.fn('DatabaseRekeyService.restoreBackupDatabase')(function* (
+        this: DatabaseRekeyService,
+        paths: RekeyPathsInterface
+    ) {
+        if (!new File(paths.backupPath).exists) {
+            return;
+        }
+
+        this.deleteDatabaseFiles(paths.destinationPath);
+        yield* this.moveFile(paths.backupPath, paths.destinationPath);
+    });
+
+    private readonly moveFile = Effect.fnUntraced(function* (sourcePath: string, destinationPath: string) {
+        yield* Effect.promise(() => new File(sourcePath).move(new File(destinationPath)));
     });
 
     private readonly exportDatabase = Effect.fn('DatabaseRekeyService.exportDatabase')(function* (
@@ -122,22 +129,6 @@ class DatabaseRekeyService {
             destinationPath,
             backupPath: `${destinationPath}.bak`
         };
-    }
-
-    private moveExistingDatabaseToBackup(destinationPath: string, backupPath: string): void {
-        const destinationFile = new File(destinationPath);
-
-        if (destinationFile.exists) {
-            destinationFile.move(new File(backupPath));
-        }
-    }
-
-    private restoreBackupDatabase(backupPath: string, destinationPath: string): void {
-        const backupFile = new File(backupPath);
-
-        if (backupFile.exists) {
-            backupFile.move(new File(destinationPath));
-        }
     }
 
     private deleteDestinationSidecars(destinationPath: string): void {

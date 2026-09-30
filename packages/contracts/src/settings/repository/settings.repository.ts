@@ -11,12 +11,6 @@ import type { SettingsCreateEntityInterface } from '../entity/settings-create-en
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class SettingsRepository {
-    readonly update = Effect.fn('SettingsRepository.update')(function* (input: Partial<SettingsCreateEntityInterface>) {
-        const [settings] = yield* Db.query(db => db.update(SettingsEntityTable).set(input).returning());
-
-        return settings;
-    });
-
     readonly getSettings = Effect.fn('SettingsRepository.getSettings')(function* () {
         const settings = yield* Db.query(db => db.query.SettingsEntityTable.findFirst());
 
@@ -28,6 +22,9 @@ export class SettingsRepository {
     });
 
     constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+
+    readonly update = (input: Partial<SettingsCreateEntityInterface>) =>
+        Db.query(db => db.update(SettingsEntityTable).set(input).returning()).pipe(Effect.map(([settings]) => settings));
 
     findSettings() {
         return this.db.query.SettingsEntityTable.findFirst({

@@ -11,10 +11,9 @@ export class IbanBridgeCanonicalSupersessionConsolidationFamilyService extends C
 
     constructor(
         private readonly ibanBridgeTransferRepository: IbanBridgeTransferRepository,
-        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService,
-        yieldControl: () => Promise<void>
+        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService
     ) {
-        super(yieldControl);
+        super();
     }
 
     protected findCandidates(scope: ConsolidationScanScopeInterface | null) {

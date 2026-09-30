@@ -1,5 +1,7 @@
 import * as Effect from 'effect/Effect';
 
+import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
+
 import { AtmCashWithdrawalConsolidationFamilyService } from './atm-cash-withdrawal-consolidation-family.service';
 import { BridgeClaimRepairConsolidationFamilyService } from './bridge-claim-repair-consolidation-family.service';
 import { ExistingTransferBridgeConsolidationFamilyService } from './existing-transfer-bridge-consolidation-family.service';
@@ -84,7 +86,7 @@ export class ConsolidationCoordinatorService {
                 ],
                 { concurrency: 'unbounded' }
             );
-            yield* this.yieldNow();
+            yield* CONSOLIDATION_YIELD;
 
             return manualReviewCandidates.length + refundReviewCandidates.length;
         }
@@ -151,11 +153,11 @@ export class ConsolidationCoordinatorService {
     )(function* (this: ConsolidationCoordinatorService) {
         const { existingTransferRepository } = this.repositories;
         const existingTransferBridgeCandidates = yield* existingTransferRepository.findBridgeCandidates(null);
-        yield* this.yieldNow();
+        yield* CONSOLIDATION_YIELD;
         const existingTransferChainReclaimCandidates = yield* existingTransferRepository.findChainReclaimCandidates(null);
-        yield* this.yieldNow();
+        yield* CONSOLIDATION_YIELD;
         const rawExistingTransferIncomeDuplicateCandidates = yield* existingTransferRepository.findIncomeDuplicateCandidates(null);
-        yield* this.yieldNow();
+        yield* CONSOLIDATION_YIELD;
 
         const blockedSourceTransactionIds = this.buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
             existingTransferBridgeCandidates,
@@ -166,7 +168,7 @@ export class ConsolidationCoordinatorService {
                 !blockedSourceTransactionIds.has(candidate.existingTransferId) &&
                 !blockedSourceTransactionIds.has(candidate.duplicateTransactionId)
         );
-        yield* this.yieldNow();
+        yield* CONSOLIDATION_YIELD;
 
         return existingTransferIncomeDuplicateCandidates;
     });
@@ -174,7 +176,7 @@ export class ConsolidationCoordinatorService {
     private readonly findBridgeClaimedRepairCandidates = Effect.fn('ConsolidationCoordinatorService.findBridgeClaimedRepairCandidates')(
         function* (this: ConsolidationCoordinatorService) {
             const candidates = yield* this.repositories.transferPairRepository.findBridgeClaimedRepairCandidates();
-            yield* this.yieldNow();
+            yield* CONSOLIDATION_YIELD;
 
             return candidates;
         }
@@ -191,69 +193,45 @@ export class ConsolidationCoordinatorService {
     constructor(
         private readonly repositories: ConsolidationRepositoriesInterface,
         consolidationExecutorService: ConsolidationExecutorService,
-        consolidationRepairExecutorService: ConsolidationRepairExecutorService,
-        private readonly yieldControl: () => Promise<void>
+        consolidationRepairExecutorService: ConsolidationRepairExecutorService
     ) {
         this.existingTransferIncomeDuplicateFamily = new ExistingTransferIncomeDuplicateConsolidationFamilyService(
             repositories.existingTransferRepository,
-            consolidationRepairExecutorService,
-            yieldControl
+            consolidationRepairExecutorService
         );
         this.bridgeClaimRepairFamily = new BridgeClaimRepairConsolidationFamilyService(
             repositories.transferPairRepository,
-            consolidationRepairExecutorService,
-            yieldControl
+            consolidationRepairExecutorService
         );
         this.atmCashWithdrawalFamily = new AtmCashWithdrawalConsolidationFamilyService(
             repositories.atmCashWithdrawalRepository,
-            consolidationExecutorService,
-            yieldControl
+            consolidationExecutorService
         );
         this.families = [
-            new IbanBridgeChainTransferConsolidationFamilyService(
-                repositories.ibanBridgeTransferRepository,
-                consolidationExecutorService,
-                yieldControl
-            ),
-            new ExistingTransferBridgeConsolidationFamilyService(
-                repositories.existingTransferRepository,
-                consolidationExecutorService,
-                yieldControl
-            ),
+            new IbanBridgeChainTransferConsolidationFamilyService(repositories.ibanBridgeTransferRepository, consolidationExecutorService),
+            new ExistingTransferBridgeConsolidationFamilyService(repositories.existingTransferRepository, consolidationExecutorService),
             new ExistingTransferChainReclaimConsolidationFamilyService(
                 repositories.existingTransferRepository,
-                consolidationRepairExecutorService,
-                yieldControl
+                consolidationRepairExecutorService
             ),
             new IbanBridgeCanonicalDuplicateConsolidationFamilyService(
                 repositories.ibanBridgeTransferRepository,
-                consolidationRepairExecutorService,
-                yieldControl
+                consolidationRepairExecutorService
             ),
-            new IbanBridgeTransferConsolidationFamilyService(
-                repositories.ibanBridgeTransferRepository,
-                consolidationExecutorService,
-                yieldControl
-            ),
+            new IbanBridgeTransferConsolidationFamilyService(repositories.ibanBridgeTransferRepository, consolidationExecutorService),
             new IbanBridgeCanonicalSupersessionConsolidationFamilyService(
                 repositories.ibanBridgeTransferRepository,
-                consolidationRepairExecutorService,
-                yieldControl
+                consolidationRepairExecutorService
             ),
             this.existingTransferIncomeDuplicateFamily,
             new P2pFiatTransferConsolidationFamilyService(
                 repositories.transferPairRepository,
                 consolidationExecutorService,
-                consolidationRepairExecutorService,
-                yieldControl
+                consolidationRepairExecutorService
             ),
-            new TransferPairConsolidationFamilyService(repositories.transferPairRepository, consolidationExecutorService, yieldControl),
-            new RefundPairConsolidationFamilyService(repositories.refundPairRepository, consolidationRepairExecutorService, yieldControl)
+            new TransferPairConsolidationFamilyService(repositories.transferPairRepository, consolidationExecutorService),
+            new RefundPairConsolidationFamilyService(repositories.refundPairRepository, consolidationRepairExecutorService)
         ];
-    }
-
-    private yieldNow(): Effect.Effect<void> {
-        return Effect.promise(() => this.yieldControl());
     }
 
     private buildExistingTransferDuplicateBlockedSourceTransactionIdSet(

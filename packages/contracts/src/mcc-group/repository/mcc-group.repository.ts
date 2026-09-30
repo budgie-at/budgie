@@ -15,12 +15,13 @@ export class MccGroupRepository {
         return mccGroup;
     });
 
-    readonly bulkCreate = Effect.fn('MccGroupRepository.bulkCreate')(function* (inputs: MccGroupCreateEntityInterface[]) {
-        return yield* Db.query(db => db.insert(MccGroupEntityTable).values(inputs).returning());
-    });
+    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
 
-    readonly upsert = Effect.fn('MccGroupRepository.upsert')(function* (input: MccGroupCreateEntityInterface) {
-        const [mccGroup] = yield* Db.query(db =>
+    readonly bulkCreate = (inputs: MccGroupCreateEntityInterface[]) =>
+        Db.query(db => db.insert(MccGroupEntityTable).values(inputs).returning());
+
+    readonly upsert = (input: MccGroupCreateEntityInterface) =>
+        Db.query(db =>
             db
                 .insert(MccGroupEntityTable)
                 .values(input)
@@ -31,20 +32,9 @@ export class MccGroupRepository {
                     }
                 })
                 .returning()
-        );
+        ).pipe(Effect.map(([mccGroup]) => mccGroup));
 
-        return mccGroup;
-    });
-
-    readonly deleteByType = Effect.fn('MccGroupRepository.deleteByType')(function* (type: string) {
-        yield* Db.query(db => db.delete(MccGroupEntityTable).where(eq(MccGroupEntityTable.type, type)));
-    });
-
-    readonly truncate = Effect.fn('MccGroupRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(MccGroupEntityTable));
-    });
-
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
+    readonly truncate = () => Db.query(db => db.delete(MccGroupEntityTable));
 
     findAll() {
         return this.db.query.MccGroupEntityTable.findMany();

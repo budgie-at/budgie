@@ -18,12 +18,11 @@ import { transferConsolidationService } from '../../sync/service/transfer-consol
 import { widgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { appRuntime } from '../runtime/app.runtime';
 import { Workload } from '../service/workload.service';
+import { logAndContinue } from '../utils/log-and-continue.util';
 import { waitForIdle } from '../utils/wait-for-idle.util';
 
 const SPLASH_HIDE_DELAY_MS = 200;
 const STARTUP_SERVICE_DELAY_MS = 1_000;
-
-const logAndContinue = Effect.catchCause(Effect.logError);
 
 const initializeAppServices = Effect.gen(function* () {
     yield* Effect.all(
@@ -40,7 +39,7 @@ const initializeAppServices = Effect.gen(function* () {
         { concurrency: 'unbounded', discard: true }
     );
     widgetSnapshotService.start();
-    yield* Workload.use(workload => workload.run(appDataSyncService.sync()));
+    yield* logAndContinue(Workload.use(workload => workload.run(appDataSyncService.sync())));
     yield* logAndContinue(onboardingService.initializeLocale());
     yield* logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts());
 });

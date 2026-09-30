@@ -1,7 +1,7 @@
 import { Workload } from '@app/@generic/service/workload.service';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { emptyFn } from '@rnw-community/shared';
 
@@ -54,7 +54,6 @@ describe('sync/user-work-priority', () => {
                 events.push('background:cancelled');
             })
         );
-        events.push(`hasQueuedWork:${String(await run(Workload.use(workload => workload.hasQueuedWork)))}`);
         queuedWork.push(
             run(
                 Workload.use(workload =>
@@ -66,13 +65,19 @@ describe('sync/user-work-priority', () => {
                 )
             )
         );
+        await vi.waitFor(async () => {
+            expect(await run(Workload.use(workload => workload.hasQueuedUserWork))).toBe(true);
+        });
+        events.push('hasQueuedUserWork:true');
+        Deferred.doneUnsafe(currentGate, Effect.void);
         await Promise.all([currentWork, ...queuedWork]);
 
         expect(events).toContain('background:cancelled');
         expect(events).toContain('file-import');
         expect(events).not.toContain('background');
+        expect(events).not.toContain('current:interrupted');
         expect(events[0]).toBe('current');
-        expect(events).toContain('hasQueuedWork:true');
+        expect(events.indexOf('hasQueuedUserWork:true')).toBeLessThan(events.indexOf('file-import'));
     });
 
     it('rejects queued work immediately when pending work is cancelled', async () => {

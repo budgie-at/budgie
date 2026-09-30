@@ -16,9 +16,9 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { YIELD_TO_UI } from '../../@generic/constant/yield-to-ui.constant';
 import { transactionRepository, transactionRuleRepository } from '../../@generic/drizzle/db/db';
 import { convertFromMicroUnits } from '../../@generic/utils/convert-from-micro-units.util';
-import { microPause } from '../../@generic/utils/micro-pause.util';
 import { sumEntryAmounts } from '../../transaction/utils/sum-entry-amounts.util';
 import { RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { evaluateRuleCondition } from '../util/evaluate-rule-condition.util';
@@ -144,7 +144,7 @@ class RuleMatcherService {
         let hasMore = true;
 
         while (hasMore) {
-            yield* Effect.promise(() => microPause());
+            yield* YIELD_TO_UI;
 
             const transactions = yield* transactionRepository.findAllWithMccCategoryOffset(RULE_SET_BATCH_SIZE, offset);
 

@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { getDefined } from '@rnw-community/shared';
 
+import { AiInvokeError } from '../../../../../packages/ai/src/@generic/error/ai-invoke.error';
 import { run } from '../../harness';
 
 const spyOnGenerate = () => vi.spyOn(chatService, 'generate');
@@ -39,7 +40,7 @@ describe('category/translation-drainer-interrupted-completion', () => {
 
     it('leaves titleEn NULL and keeps the row pending when the completion is interrupted mid-generation', async () => {
         const category = await createPendingCategory();
-        spyOnGenerate().mockRejectedValue(new Error('completionInterrupted'));
+        spyOnGenerate().mockReturnValue(Effect.fail(new AiInvokeError({ cause: new Error('completionInterrupted') })));
         const translation = await takePendingTranslation();
 
         const error = await run(Effect.flip(translation));
@@ -53,7 +54,7 @@ describe('category/translation-drainer-interrupted-completion', () => {
 
     it('persists the translation and clears the pending row once generation completes normally', async () => {
         const category = await createPendingCategory();
-        spyOnGenerate().mockResolvedValueOnce('groceries').mockResolvedValueOnce('food, groceries, shopping');
+        spyOnGenerate().mockReturnValueOnce(Effect.succeed('groceries')).mockReturnValueOnce(Effect.succeed('food, groceries, shopping'));
         const translation = await takePendingTranslation();
 
         await run(translation);

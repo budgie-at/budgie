@@ -138,18 +138,6 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
         }));
     });
 
-    readonly countPendingCommentContexts = Effect.fn('CommentEmbeddingRepository.countPendingCommentContexts')(function* () {
-        const [row] = yield* Db.query(db =>
-            db.$client.getAllAsync<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_COMMENT_CONTEXTS_BASE})`, [])
-        );
-
-        return row.count;
-    });
-
-    readonly rebuildVecIndex = Effect.fn('CommentEmbeddingRepository.rebuildVecIndex')(function* (this: CommentEmbeddingRepository) {
-        yield* this.rebuildVec();
-    });
-
     readonly truncate = Effect.fn('CommentEmbeddingRepository.truncate')(function* (this: CommentEmbeddingRepository) {
         yield* this.truncateWithTags(CommentEmbeddingTagEntityTable, CommentEmbeddingEntityTable);
     });
@@ -162,4 +150,9 @@ export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
             sourceTableName: 'comment_embeddings'
         });
     }
+
+    readonly countPendingCommentContexts = () =>
+        Db.query(db =>
+            db.$client.getAllAsync<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_COMMENT_CONTEXTS_BASE})`, [])
+        ).pipe(Effect.map(([row]) => row.count));
 }

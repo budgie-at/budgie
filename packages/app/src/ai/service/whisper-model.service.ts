@@ -58,7 +58,7 @@ class WhisperModelService {
 
         if (!isDefined(result?.uri) || !tempFile.exists || !isPositiveNumber(tempFile.size) || tempFile.size !== expectedBytes) {
             this.deleteFileIfExists(tempFile);
-            yield* Effect.fail(new Error(t`Whisper model download failed`));
+            yield* Effect.die(new Error(t`Whisper model download failed`));
         }
     });
 

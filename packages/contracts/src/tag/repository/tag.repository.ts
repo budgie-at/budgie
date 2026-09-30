@@ -14,17 +14,6 @@ import type * as schema from '../../schema';
 import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
 
 export class TagRepository extends TranslatableRepositoryBase {
-    readonly create = Effect.fn('TagRepository.create')(function* (input: TagCreateEntityInterface) {
-        const [tag] = yield* Db.query(db =>
-            db
-                .insert(TagEntityTable)
-                .values([{ ...input, titleSearch: input.title.toLowerCase() }])
-                .returning()
-        );
-
-        return tag;
-    });
-
     readonly updateById = Effect.fn('TagRepository.updateById')(function* (id: number, input: TagUpdateEntityInterface) {
         const newTitle = input.title;
         const titleChanged = isDefined(newTitle);
@@ -41,30 +30,6 @@ export class TagRepository extends TranslatableRepositoryBase {
         );
 
         return tag;
-    });
-
-    readonly updateTranslation = Effect.fn('TagRepository.updateTranslation')(function* (id: number, titleEn: string, titleTags: string) {
-        yield* Db.query(db =>
-            db.update(TagEntityTable).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(TagEntityTable.id, id))
-        );
-    });
-
-    readonly clearTranslation = Effect.fn('TagRepository.clearTranslation')(function* (id: number) {
-        yield* Db.query(db =>
-            db.update(TagEntityTable).set({ titleEn: null, titleTags: null, tagsGeneratedAt: null }).where(eq(TagEntityTable.id, id))
-        );
-    });
-
-    readonly deleteById = Effect.fn('TagRepository.deleteById')(function* (id: number) {
-        yield* Db.query(db => db.delete(TagEntityTable).where(eq(TagEntityTable.id, id)));
-    });
-
-    readonly countTransactions = Effect.fn('TagRepository.countTransactions')(function* (tagId: number) {
-        const [result] = yield* Db.query(db =>
-            db.select({ count: count() }).from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, tagId))
-        );
-
-        return result.count;
     });
 
     readonly reassignTransactions = Effect.fn('TagRepository.reassignTransactions')(function* (fromTagId: number, toTagId: number) {
@@ -87,18 +52,6 @@ export class TagRepository extends TranslatableRepositoryBase {
         yield* Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, fromTagId)));
     });
 
-    readonly findByTitle = Effect.fn('TagRepository.findByTitle')(function* (title: string) {
-        return yield* Db.query(db =>
-            db.query.TagEntityTable.findFirst({
-                where: eq(TagEntityTable.titleSearch, title.toLowerCase())
-            })
-        );
-    });
-
-    readonly truncate = Effect.fn('TagRepository.truncate')(function* () {
-        yield* Db.query(db => db.delete(TagEntityTable));
-    });
-
     constructor(private readonly db: ExpoSQLiteDatabase<typeof schema>) {
         super(TagEntityTable, {
             id: TagEntityTable.id,
@@ -109,6 +62,33 @@ export class TagRepository extends TranslatableRepositoryBase {
             deletedAt: TagEntityTable.deletedAt
         });
     }
+
+    readonly create = (input: TagCreateEntityInterface) =>
+        Db.query(db =>
+            db
+                .insert(TagEntityTable)
+                .values([{ ...input, titleSearch: input.title.toLowerCase() }])
+                .returning()
+        ).pipe(Effect.map(([tag]) => tag));
+
+    readonly updateTranslation = (id: number, titleEn: string, titleTags: string) =>
+        Db.query(db =>
+            db.update(TagEntityTable).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(TagEntityTable.id, id))
+        ).pipe(Effect.asVoid);
+
+    readonly clearTranslation = (id: number) =>
+        Db.query(db =>
+            db.update(TagEntityTable).set({ titleEn: null, titleTags: null, tagsGeneratedAt: null }).where(eq(TagEntityTable.id, id))
+        );
+
+    readonly deleteById = (id: number) => Db.query(db => db.delete(TagEntityTable).where(eq(TagEntityTable.id, id)));
+
+    readonly countTransactions = (tagId: number) =>
+        Db.query(db =>
+            db.select({ count: count() }).from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, tagId))
+        ).pipe(Effect.map(([result]) => result.count));
+
+    readonly truncate = () => Db.query(db => db.delete(TagEntityTable));
 
     findByIds(ids: number[]) {
         return this.db.query.TagEntityTable.findMany({

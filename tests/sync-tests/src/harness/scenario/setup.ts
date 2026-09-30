@@ -8,9 +8,7 @@ vi.mock('@app/sync/service/transfer-consolidation-drainer.service', () => ({
     transferConsolidationDrainerService: { cancelPending: vi.fn(() => Effect.void), enqueue: vi.fn(() => Effect.void) }
 }));
 
-vi.mock('@app/@generic/utils/micro-pause.util', () => ({
-    microPause: vi.fn((): Promise<void> => Promise.resolve())
-}));
+vi.mock('@app/@generic/constant/yield-to-ui.constant', () => ({ YIELD_TO_UI: Effect.void }));
 
 const resolveLinguiMessage = (descriptor: unknown): string => {
     if (typeof descriptor === 'string') {

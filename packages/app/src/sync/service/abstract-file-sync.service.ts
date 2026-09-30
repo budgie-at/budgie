@@ -21,13 +21,7 @@ import { transferConsolidationDrainerService } from './transfer-consolidation-dr
 import type { FileBasedSyncClientInterface } from '../interface/file-based-sync-client.interface';
 import type { ImportContextInterface } from '../interface/import-context.interface';
 import type { ParsedFileResultInterface } from '../interface/parsed-file-result.interface';
-import type {
-    AccountEntityInterface,
-    DbError,
-    MccCategoryLookupInterface,
-    TransactionCreateInputInterface,
-    TransactionEntityInterface
-} from '@budgie/contracts';
+import type { AccountEntityInterface, DbError, MccCategoryLookupInterface } from '@budgie/contracts';
 import type { SyncAccountInterface, SyncError, SyncTransactionInterface } from '@budgie/sync';
 
 export abstract class AbstractFileSyncService extends AbstractSyncService {
@@ -88,7 +82,11 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
 
         const transactions = client.getTransactions(bankAccount.id);
         if (!isNotEmptyArray(transactions)) {
-            return { newTransactions: [], parsedTransactionCount: 0 } satisfies FileBankSyncAccountImportResultInterface;
+            return {
+                newTransactions: [],
+                newTransactionInputs: [],
+                parsedTransactionCount: 0
+            } satisfies FileBankSyncAccountImportResultInterface;
         }
         const transactionInputs = transactions.map(transaction => {
             const lookup = context.mccCategoryLookupMap.get(this.resolveMccCategoryLookupKey(transaction)) ?? null;
@@ -105,13 +103,14 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
             yield* accountBalanceIncrementalService.updateBalancesByAccountIds([account.id]);
         }
 
-        const newTransactions = yield* this.queueRulesForNewlyImportedTransactions(
-            prepared.transactionInputs,
-            upsertedTransactions,
-            prepared.externalIdMap
-        );
+        const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
+            !isDefined(externalId) || !prepared.externalIdMap.has(externalId);
 
-        return { newTransactions, parsedTransactionCount: transactionInputs.length } satisfies FileBankSyncAccountImportResultInterface;
+        return {
+            newTransactions: upsertedTransactions.filter(wasNotPreviouslyImported),
+            newTransactionInputs: prepared.transactionInputs.filter(wasNotPreviouslyImported),
+            parsedTransactionCount: transactionInputs.length
+        } satisfies FileBankSyncAccountImportResultInterface;
     });
 
     private readonly importWork = Effect.fnUntraced(function* (
@@ -127,6 +126,10 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
         const accountImportResults = yield* Db.transaction(this.importAccounts(client, bankAccounts, context));
 
         const newlyImportedTransactions = accountImportResults.flatMap(result => result.newTransactions);
+        yield* ruleApplicationDrainerService.enqueueTransactions(
+            newlyImportedTransactions.map(transaction => transaction.id),
+            accountImportResults.flatMap(result => result.newTransactionInputs)
+        );
         const scope = consolidationScopeService.buildFromTransactions(newlyImportedTransactions);
         if (isDefined(scope)) {
             yield* transferConsolidationDrainerService.enqueue(scope);
@@ -179,25 +182,6 @@ export abstract class AbstractFileSyncService extends AbstractSyncService {
         const integration = existingIntegration ?? (yield* bankIntegrationRepository.create({ provider: this.provider, token: '' }));
 
         yield* accountRepository.updateById(account.id, { integrationId: integration.id });
-    });
-
-    private readonly queueRulesForNewlyImportedTransactions = Effect.fnUntraced(function* (
-        transactionInputs: TransactionCreateInputInterface[],
-        upsertedTransactions: TransactionEntityInterface[],
-        existingTransactionIdMap: Map<string, number>
-    ) {
-        const wasNotPreviouslyImported = ({ externalId }: { externalId: string | null }) =>
-            !isDefined(externalId) || !existingTransactionIdMap.has(externalId);
-
-        const newInputs = transactionInputs.filter(wasNotPreviouslyImported);
-        const newTransactions = upsertedTransactions.filter(wasNotPreviouslyImported);
-        const newTransactionIds = newTransactions.map(transaction => transaction.id);
-
-        if (isNotEmptyArray(newTransactionIds)) {
-            yield* ruleApplicationDrainerService.enqueueTransactions(newTransactionIds, newInputs);
-        }
-
-        return newTransactions;
     });
 
     private readonly getEnabledExternalIds = Effect.fnUntraced(function* (this: AbstractFileSyncService) {

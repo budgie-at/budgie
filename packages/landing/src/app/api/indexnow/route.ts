@@ -1,4 +1,6 @@
 /* oxlint-disable lingui/no-unlocalized-strings */
+import * as Effect from 'effect/Effect';
+import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import { NextResponse } from 'next/server';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -18,7 +20,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const result = await indexnowSubmitter.submit();
+    const result = await Effect.runPromise(indexnowSubmitter.submit().pipe(Effect.provide(FetchHttpClient.layer)));
 
     return NextResponse.json(result, { status: result.status });
 }
