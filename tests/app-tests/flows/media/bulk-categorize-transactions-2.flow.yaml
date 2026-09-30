@@ -17,7 +17,8 @@ appId: ${APP_ID}
       element:
           id: 'TagStatisticsCard.Untagged'
       direction: DOWN
-      centerElement: true
+
+- waitForAnimationToEnd
 
 - tapOn:
       id: 'TagStatisticsCard.Untagged'

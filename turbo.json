@@ -1,18 +1,36 @@
 {
     "$schema": "https://turborepo.com/schema.json",
-    "globalDependencies": ["tsconfig*.json", ".env*"],
+    "globalDependencies": [
+        "tsconfig*.json",
+        ".env*"
+    ],
     "tasks": {
         "release": {
-            "dependsOn": ["^release"],
-            "outputs": ["dist/**", "build/**"]
+            "dependsOn": [
+                "^release"
+            ],
+            "outputs": [
+                "dist/**",
+                "build/**"
+            ]
         },
         "ts": {
-            "dependsOn": ["^ts"],
-            "outputs": ["node_modules/.cache/tsbuildinfo.json", "dist/**"]
+            "dependsOn": [
+                "^ts"
+            ],
+            "outputs": [
+                "node_modules/.cache/tsbuildinfo.json",
+                "dist/**"
+            ]
         },
         "lint:eslint": {
-            "dependsOn": ["^lint:eslint"],
-            "env": ["CI", "ESLINT_USE_FLAT_CONFIG"],
+            "dependsOn": [
+                "^lint:eslint"
+            ],
+            "env": [
+                "CI",
+                "ESLINT_USE_FLAT_CONFIG"
+            ],
             "inputs": [
                 "$TURBO_DEFAULT$",
                 "$TURBO_ROOT$/.oxlintrc.json",
@@ -28,7 +46,9 @@
             "outputs": []
         },
         "build": {
-            "dependsOn": ["^build"],
+            "dependsOn": [
+                "^build"
+            ],
             "env": [
                 "ADMIN_SECRET",
                 "INDEXNOW_KEY",
@@ -38,16 +58,24 @@
                 "KV_URL",
                 "REDIS_URL"
             ],
-            "outputs": ["dist/**", ".next/**"]
+            "outputs": [
+                "dist/**",
+                ".next/**"
+            ]
         },
         "test": {
-            "dependsOn": ["^build"]
+            "dependsOn": [
+                "^build"
+            ]
         },
         "//#cpd": {
-            "outputs": ["report/jscpd/**"]
+            "outputs": [
+                "report/jscpd/**"
+            ]
         },
         "//#deadcode": {
             "outputs": []
         }
-    }
+    },
+    "agentGuidance": false
 }

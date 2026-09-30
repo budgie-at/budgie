@@ -4613,6 +4613,10 @@ msgstr "Pantalla de nuevo gasto de Budgie con el teclado numérico del importe, 
 msgid "Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts"
 msgstr "Pantalla de nuevo gasto de Budgie con el teclado de importe, el selector de cuenta y los accesos directos de fecha, nota, etiquetas y categoría"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Budgie new expense screen with the Groceries category selected and three suggested tag pills above the actions"
+msgstr "Pantalla de nuevo gasto de Budgie con la categoría Supermercado seleccionada y tres etiquetas sugeridas sobre las acciones"
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Budgie New Transfer screen converting 250 US dollars into euros, with the sending-currency pill and the conversion rate row"
 msgstr "Pantalla Nueva transferencia de Budgie convirtiendo 250 dólares estadounidenses a euros, con la píldora de moneda de envío y la fila del tipo de cambio"
@@ -5655,6 +5659,10 @@ msgstr "Revisa los Issues y las discusiones"
 #: src/app/[lang]/beta/page.tsx
 msgid "Checking for the latest build…"
 msgstr "Buscando la última versión…"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Choose a category and up to three tag pills appear above the tag button."
+msgstr "Elige una categoría y aparecen hasta tres etiquetas sugeridas sobre el botón de etiquetas."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Actual Budget if:"
@@ -12449,6 +12457,10 @@ msgstr "Las finanzas personales son un ámbito ideal para la arquitectura local-
 msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
 msgstr ""
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Pick a category and Budgie proposes tags you already use, ready to tap."
+msgstr "Elige una categoría y Budgie propone etiquetas que ya usas, listas para tocar."
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Pick a CSV from Settings and Budgie reads its header row, then offers those headers to every field it needs to write a transaction."
 msgstr "Elige un CSV desde Ajustes y Budgie lee su fila de encabezados, y luego ofrece esos encabezados a cada campo que necesita para escribir una transacción."
@@ -14543,6 +14555,10 @@ msgstr ""
 msgid "Suggest features and improvements"
 msgstr "Sugiere funciones y mejoras"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Suggested tag pills"
+msgstr "Etiquetas sugeridas"
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Suggestion quality"
 msgstr "Calidad de las sugerencias"
@@ -14698,6 +14714,14 @@ msgstr "Las etiquetas tienen su propia bandeja. En Analíticas, abre la <0>pesta
 msgid "Tags sit next to Category"
 msgstr "Etiquetas, junto a Categoría"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tags still open as usual"
+msgstr "Las etiquetas se abren como siempre"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tags suggested as you save"
+msgstr "Etiquetas sugeridas al guardar"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tags suggested from your history"
 msgstr "Sugeridas según tu historial"
@@ -14733,6 +14757,10 @@ msgstr "Toma el control de tu privacidad financiera"
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections you reach by navigating forward. Cross-currency recurring shows in your home currency; original amount on tap."
 msgstr "Toca un día del calendario para ver las transacciones pendientes. Los meses pasados muestran los importes reales, el mes actual muestra lo real hasta la fecha más lo proyectado para el resto del mes, y los meses futuros muestran proyecciones a las que llegas navegando hacia adelante. Los pagos recurrentes en otra moneda se muestran en tu moneda local; el importe original al tocar."
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tap a pill to add the tag instead of typing it."
+msgstr "Toca una etiqueta sugerida para añadirla en lugar de escribirla."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Tap a row to categorize it"
@@ -15357,6 +15385,10 @@ msgstr ""
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The obvious pairs merge on import"
 msgstr "Los pares evidentes se fusionan al importar"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "The on-device model answers first, and a lighter lookup covers it while it loads."
+msgstr "Primero responde el modelo del dispositivo y una búsqueda más ligera lo cubre mientras carga."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The open-source security community includes:"
