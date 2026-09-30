@@ -90,7 +90,9 @@ describe('consolidation/bridge-claim-repair', () => {
             interbankExpenseId: fixture.interbankExpenseId
         });
         expect(
-            await fetchLedgerBalances([fixture.sourceEurAccountId, fixture.bridgeUahAccountId, fixture.interbankExpenseAccountId])
+            await runEffect(
+                fetchLedgerBalances([fixture.sourceEurAccountId, fixture.bridgeUahAccountId, fixture.interbankExpenseAccountId])
+            )
         ).toEqual([
             [fixture.sourceEurAccountId, -BRIDGE_THEFT_FX_EUR_AMOUNT],
             [fixture.bridgeUahAccountId, BRIDGE_THEFT_FX_UAH_AMOUNT],

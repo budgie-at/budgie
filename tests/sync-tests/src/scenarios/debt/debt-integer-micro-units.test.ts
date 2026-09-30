@@ -26,8 +26,8 @@ describe('cross-instrument money legs at a non-terminating rate', () => {
     let eurAccount: AccountEntityInterface;
 
     beforeEach(async () => {
-        const usdInstrument = await requireInstrument(CurrencyEnum.USD);
-        const eurInstrument = await requireInstrument(CurrencyEnum.EUR);
+        const usdInstrument = await run(requireInstrument(CurrencyEnum.USD));
+        const eurInstrument = await run(requireInstrument(CurrencyEnum.EUR));
 
         await run(exchangeRateRepository.upsert(eurInstrument.id, usdInstrument.id, NON_TERMINATING_RATE, 'test'));
         usdAccount = seed.account({ title: 'Dollar card', type: AccountTypeEnum.BANK_SYNC, instrumentId: usdInstrument.id });

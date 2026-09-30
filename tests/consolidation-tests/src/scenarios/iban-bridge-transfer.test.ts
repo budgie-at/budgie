@@ -19,7 +19,7 @@ import {
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 const byTransactionId = (left: number, right: number): number => left - right;
 
@@ -39,7 +39,7 @@ describe('consolidation/iban-bridge-transfer', () => {
     it('builds a source to target canonical from two bridge legs', async () => {
         const { bridgeExpense, bridgeIncome, sourceAccount, targetAccount } = seedIbanBridgeTransferFixture();
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         const canonicalId = fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
 
         expect(result.consolidated).toBe(1);
@@ -54,19 +54,21 @@ describe('consolidation/iban-bridge-transfer', () => {
     it('restores both bridge legs and account balances when the bridge canonical is reverted', async () => {
         const { bridgeAccount, bridgeExpense, bridgeIncome, sourceAccount, targetAccount } = seedIbanBridgeTransferFixture();
 
-        await expectRevertRestoresSources({
-            accountIds: [sourceAccount.id, bridgeAccount.id, targetAccount.id],
-            consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
-            sourceTransactionIds: [bridgeIncome.id, bridgeExpense.id]
-        });
+        await runEffect(
+            expectRevertRestoresSources({
+                accountIds: [sourceAccount.id, bridgeAccount.id, targetAccount.id],
+                consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
+                sourceTransactionIds: [bridgeIncome.id, bridgeExpense.id]
+            })
+        );
     });
 
     it('rebuilds the same bridge canonical shape after a revert', async () => {
         const { bridgeExpense, bridgeIncome } = seedIbanBridgeTransferFixture();
 
-        await runConsolidation();
-        await revertSingleCanonical(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
-        const repeatedResult = await runConsolidation();
+        await runEffect(runConsolidation());
+        await runEffect(revertSingleCanonical(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER));
+        const repeatedResult = await runEffect(runConsolidation());
 
         expect(repeatedResult.consolidated).toBe(1);
         expect(fetchMovedSourceIds(fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER))).toEqual(
@@ -107,7 +109,7 @@ describe('consolidation/iban-bridge-transfer', () => {
             }
         );
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expect(fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toBe(directCanonical.id);
@@ -140,7 +142,7 @@ describe('consolidation/iban-bridge-transfer', () => {
             }
         );
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(2);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER)).toHaveLength(2);

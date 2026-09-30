@@ -9,6 +9,7 @@ import {
     TransactionEntryEntityTable
 } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
 import { getDefined, isDefined } from '@rnw-community/shared';
@@ -53,8 +54,8 @@ export const P2P_OPERATED_AT = new Date('2026-01-15T12:00:00.000Z');
 export const P2P_ONE_HOUR_MS = 60 * 60 * 1000;
 export const P2P_OUT_OF_WINDOW_OFFSET_MS = 3 * P2P_ONE_HOUR_MS;
 
-export const seedP2pFiatTransferFixture = async (): Promise<P2pFiatTransferFixture> => {
-    const uah = await requireInstrument(CurrencyEnum.UAH);
+export const seedP2pFiatTransferFixture = Effect.fnUntraced(function* () {
+    const uah = yield* requireInstrument(CurrencyEnum.UAH);
     const usdt = seed.instrument({ code: 'USDT', name: 'Tether', symbol: 'USDT', type: InstrumentTypeEnum.CRYPTO });
     const bankAccount = seed.account({
         title: 'Monobank UAH',
@@ -69,14 +70,16 @@ export const seedP2pFiatTransferFixture = async (): Promise<P2pFiatTransferFixtu
         instrumentId: usdt.id
     });
 
-    const usd = await requireInstrument(CurrencyEnum.USD);
+    const usd = yield* requireInstrument(CurrencyEnum.USD);
 
     testDb.update(SettingsEntityTable).set({ defaultInstrumentId: usd.id }).run();
     seedExchangeRate(uah.id, usd.id, USD_PER_UAH_RATE);
     seedExchangeRate(usd.id, usdt.id, USD_PER_USDT_RATE);
 
-    return { uah, usdt, bankAccount, binanceAccount };
-};
+    const fixture: P2pFiatTransferFixture = { uah, usdt, bankAccount, binanceAccount };
+
+    return fixture;
+});
 
 export const seedP2pPair = (
     expenseLeg: P2pLeg,

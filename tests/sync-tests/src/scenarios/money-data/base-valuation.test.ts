@@ -29,8 +29,8 @@ const setDefaultInstrument = async (defaultInstrumentId: number): Promise<void> 
 };
 
 const expectHistoricalUahValuation = async (externalSource: ExternalSourceEnum | null): Promise<void> => {
-    const euro = await requireInstrument(CurrencyEnum.EUR);
-    const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+    const euro = await run(requireInstrument(CurrencyEnum.EUR));
+    const hryvnia = await run(requireInstrument(CurrencyEnum.UAH));
     const account = seed.account({ instrumentId: hryvnia.id });
 
     await setDefaultInstrument(euro.id);
@@ -101,7 +101,7 @@ describe('base valuation', () => {
     });
 
     it('allows manual crypto entries to remain unvalued when no live crypto rate exists', async () => {
-        const { account } = await seedBitcoinCryptoAccount();
+        const { account } = await run(seedBitcoinCryptoAccount());
 
         const valuation = await run(
             entryBaseValuationService.valueMicroUnitEntry({
@@ -120,8 +120,8 @@ describe('base valuation', () => {
     });
 
     it('sums analytics with historical base amounts from different periods', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+        const euro = await run(requireInstrument(CurrencyEnum.EUR));
+        const hryvnia = await run(requireInstrument(CurrencyEnum.UAH));
         const [category] = await dbCategories();
         const account = seed.account({ instrumentId: hryvnia.id });
 

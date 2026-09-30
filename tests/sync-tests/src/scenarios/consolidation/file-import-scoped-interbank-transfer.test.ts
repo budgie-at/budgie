@@ -235,7 +235,7 @@ describe('consolidation/file-import-scoped-interbank-transfer', () => {
     });
 
     it.each(INTERBANK_TRANSFER_CASES)('$title', async ({ source, target }) => {
-        const instrument = await requireInstrument(source.currency);
+        const instrument = await run(requireInstrument(source.currency));
         const transferMcc = buildMccCategoryLookup();
         const sourceAccount = seedExistingBankExpense(source, instrument.id, transferMcc.id);
         const syncService = buildSyncService(target, transferMcc);

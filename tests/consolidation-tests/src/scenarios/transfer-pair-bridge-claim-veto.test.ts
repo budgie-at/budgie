@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { BRIDGE_THEFT_FX_OPERATED_AT, expectFxPairCanonicalChildren, seedBridgeTheftFixture } from '../harness/bridge-theft-fixture';
 import { IBAN_BRIDGE_TRANSFER_MCC } from '../harness/iban-bridge-topology';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 const SAME_CURRENCY_AMOUNT = 5_000 * PRECISION;
 const THIRD_PARTY_IBAN = 'UA-THIRD-PARTY-IBAN';
@@ -45,7 +45,7 @@ describe('consolidation/transfer-pair-bridge-claim-veto', () => {
     it('does not pair a same-currency interbank expense with a foreign-currency bridge income by title declaration', async () => {
         const { fxExpense, fxBridgeIncome, interbankExpense, sourceEurAccountId, bridgeUahAccountId } = seedBridgeTheftFixture();
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         const canonicalId = fetchSingleTransferPairCanonical();
@@ -63,7 +63,7 @@ describe('consolidation/transfer-pair-bridge-claim-veto', () => {
     it('does not pair a same-currency expense with an income whose declared source iban belongs to a third account', async () => {
         const fixture = seedSameCurrencyPairFixture(THIRD_PARTY_IBAN);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
@@ -73,7 +73,7 @@ describe('consolidation/transfer-pair-bridge-claim-veto', () => {
     it('still pairs a same-currency expense with an income whose declared source iban matches the expense account', async () => {
         const fixture = seedSameCurrencyPairFixture(FROM_ACCOUNT_IBAN);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         const canonicalId = fetchSingleTransferPairCanonical();
@@ -88,8 +88,8 @@ describe('consolidation/transfer-pair-bridge-claim-veto', () => {
     it('keeps results stable when consolidation runs twice', async () => {
         const { fxExpense, fxBridgeIncome, interbankExpense } = seedBridgeTheftFixture();
 
-        await runConsolidation();
-        await expectSecondConsolidationRunStable();
+        await runEffect(runConsolidation());
+        await runEffect(expectSecondConsolidationRunStable());
         const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
         expect(canonicals).toHaveLength(1);
         expectFxPairCanonicalChildren(canonicals[0].id, {

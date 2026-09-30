@@ -47,7 +47,7 @@ describe('consolidation/erste-atm-cash-withdrawal', () => {
             )
         ];
 
-        expect(await runConsolidation()).toEqual({ consolidated: 0, found: 0 });
+        expect(await runEffect(runConsolidation())).toEqual({ consolidated: 0, found: 0 });
         expect(
             await runEffect(
                 consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([

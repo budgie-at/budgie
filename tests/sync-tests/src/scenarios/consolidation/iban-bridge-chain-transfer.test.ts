@@ -187,7 +187,7 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
         const { bridgeIncome, bridgeExpense } = seedBridgeRows(operatedAt, bridgeAccount.id, transferMcc.id);
         const targetIncome = seedTargetIncome('target-income', operatedAt, targetAccount.id, transferMcc.id);
 
-        await expectSingleConsolidation();
+        await run(expectSingleConsolidation());
 
         const canonicalId = expectCanonicalTransfer(
             TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
@@ -205,7 +205,7 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
             TransactionConsolidationTypeEnum.TRANSFER_PAIR
         );
 
-        await expectSingleConsolidation();
+        await run(expectSingleConsolidation());
 
         expectBridgeReclaimedIntoDirectTransfer(directTransfer.id, sourceAccount.id, targetAccount.id, [bridgeIncome.id, bridgeExpense.id]);
     });
@@ -262,7 +262,7 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
             transferMcc.id
         );
 
-        await expectSingleConsolidation();
+        await run(expectSingleConsolidation());
         expectCanonicalTransfer(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER, sourceAccount.id, targetAccount.id);
         expect(fetchTransactionById(canonicalTransfer.id).consolidationParentTransactionId).toBeNull();
         expectSourcesParented(canonicalTransfer.id, [sourceExpense.id, targetIncome.id]);

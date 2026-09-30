@@ -8,7 +8,7 @@ import {
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 const EXPENSE_AMOUNT = 30_317.41 * PRECISION;
 const INCOME_AMOUNT = 29_999 * PRECISION;
@@ -85,7 +85,7 @@ const expectSeededInterbankFeeTransferConsolidates = async (
         targetAccountExternalSource
     );
 
-    const result = await runConsolidation();
+    const result = await runEffect(runConsolidation());
     expect(result.consolidated).toBe(1);
     expectTransferPairConsolidated(expense.id, income.id, sourceAccount.id, targetAccount.id);
 };
@@ -116,7 +116,7 @@ describe('consolidation/interbank-hinted-fee-transfer', () => {
             externalSource: ExternalSourceEnum.PRIVATBANK
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.found).toBe(0);
         expect(result.consolidated).toBe(0);

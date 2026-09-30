@@ -1,6 +1,7 @@
 import { BORROWING_CATEGORY_ID, CategorySourceEnum, LENDING_CATEGORY_ID } from '@budgie/contracts';
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { run } from '../../harness';
 import { applyMigration } from '../../harness/db/apply-migration';
 import { testDb } from '../../harness/scenario/setup';
 
@@ -86,9 +87,9 @@ describe('debt/debt-v2-money-legs-migration', () => {
 
     beforeEach(async () => {
         await new DebtV2LegacyShapeFixture().seed();
-        await applyMigration(MIGRATION_FILE_NAME);
+        await run(applyMigration(MIGRATION_FILE_NAME));
         firstRun = await fetchSnapshot();
-        await applyMigration(MIGRATION_FILE_NAME);
+        await run(applyMigration(MIGRATION_FILE_NAME));
         secondRun = await fetchSnapshot();
     });
 

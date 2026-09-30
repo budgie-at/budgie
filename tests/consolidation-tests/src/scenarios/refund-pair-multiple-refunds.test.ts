@@ -2,14 +2,16 @@ import { PRECISION, TransactionConsolidationTypeEnum, TransactionEntryTypeEnum }
 import { describe, expect, it } from 'vitest';
 
 import { runRefundScenario } from '../harness/run-refund-scenario';
-import { testQueryService } from '../harness/test-context';
+import { testQueryService, runEffect } from '../harness/test-context';
 
 describe('consolidation/refund-pair-multiple-refunds', () => {
     it('reparents multiple refund incomes under one promoted expense canonical', async () => {
-        const { consolidated, expense, refunds } = await runRefundScenario({
-            expenseAmount: 120 * PRECISION,
-            refundAmounts: [40 * PRECISION, 30 * PRECISION]
-        });
+        const { consolidated, expense, refunds } = await runEffect(
+            runRefundScenario({
+                expenseAmount: 120 * PRECISION,
+                refundAmounts: [40 * PRECISION, 30 * PRECISION]
+            })
+        );
 
         expect(consolidated).toBe(1);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);

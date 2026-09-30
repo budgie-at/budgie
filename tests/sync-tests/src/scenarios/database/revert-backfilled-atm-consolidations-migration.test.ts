@@ -39,11 +39,11 @@ describe('database/revert-backfilled-atm-consolidations-migration', () => {
             `UPDATE transaction_entries SET created_at = (SELECT MIN(created_at) FROM mcc_categories) - 86400 WHERE transaction_id = ${historicalAtm.id}`
         );
 
-        await applyMigration('0065_backfill_monobank_atm_mcc.sql');
+        await run(applyMigration('0065_backfill_monobank_atm_mcc.sql'));
         await run(categorizeInboxService.moveToCash([historicalAtm.id, bankCodedAtm.id]));
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(2);
 
-        await applyMigration('0067_revert_backfilled_atm_consolidations.sql');
+        await run(applyMigration('0067_revert_backfilled_atm_consolidations.sql'));
 
         const [historicalEntry] = await fetchExpenseEntries(historicalAtm.id);
         expect(fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(1);

@@ -104,7 +104,7 @@ describe('consolidation/refund-pair-by-title-candidates', () => {
             externalIdPrefix: 'obb-second'
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         expect(result.consolidated).toBe(2);
         expect(testQueryService.fetchTransactionById(first.expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
         expect(testQueryService.fetchTransactionById(first.refunds[0].id).consolidationParentTransactionId).toBe(first.expense.id);

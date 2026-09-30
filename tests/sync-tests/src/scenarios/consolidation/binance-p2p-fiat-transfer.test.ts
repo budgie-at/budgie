@@ -21,7 +21,7 @@ const consolidateExpectingSingleResult = async (): Promise<void> => {
 
 describe('consolidation/binance-p2p-fiat-transfer basic directions', () => {
     it('auto-consolidates a bank UAH expense with a Binance USDT P2P top-up income via a triangulated rate', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const { expense, income } = seedP2pPair(
             { externalId: 'mono-uah-p2p-out', accountId: bankAccount.id, amount: P2P_UAH_TOTAL },
             { externalId: 'binance:c2c:buy-1', accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT }
@@ -33,7 +33,7 @@ describe('consolidation/binance-p2p-fiat-transfer basic directions', () => {
     });
 
     it('auto-consolidates a Binance USDT P2P sell expense with a bank UAH cash-out income', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const { expense, income } = seedP2pPair(
             { externalId: 'binance:c2c:sell-1', accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT },
             { externalId: 'mono-uah-p2p-in', accountId: bankAccount.id, amount: P2P_UAH_TOTAL }
@@ -47,7 +47,7 @@ describe('consolidation/binance-p2p-fiat-transfer basic directions', () => {
 
 describe('consolidation/binance-p2p-fiat-transfer exchange support', () => {
     it('consolidates a P2P top-up from any synced crypto exchange, not only Binance', async () => {
-        const { bankAccount, binanceAccount: exchangeAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount: exchangeAccount } = await run(seedP2pFiatTransferFixture());
         const { expense, income } = seedP2pPair(
             { externalId: 'mono-uah-okx-out', accountId: bankAccount.id, amount: P2P_UAH_TOTAL },
             { externalId: 'okx:c2c:buy-1', accountId: exchangeAccount.id, amount: P2P_USDT_AMOUNT }
@@ -58,7 +58,7 @@ describe('consolidation/binance-p2p-fiat-transfer exchange support', () => {
     });
 
     it('does not consolidate a pair whose implied rate is far from the market rate', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const offRateAmount = Number('8000') * PRECISION;
         seedP2pPair(
             { externalId: 'mono-uah-off-rate', accountId: bankAccount.id, amount: offRateAmount },

@@ -49,8 +49,8 @@ const buildExpenseInput = (accountId: number, index: number) => ({
 
 describe('batch entry valuation', () => {
     it('values a 200-row import with a constant number of lookups and per-entry identical results', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+        const euro = await run(requireInstrument(CurrencyEnum.EUR));
+        const hryvnia = await run(requireInstrument(CurrencyEnum.UAH));
         const account = seed.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: hryvnia.id });
         const inputs = Array.from({ length: TRANSACTION_COUNT }, (_, index) => buildExpenseInput(account.id, index));
 

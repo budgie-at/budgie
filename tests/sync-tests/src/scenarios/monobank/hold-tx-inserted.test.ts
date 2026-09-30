@@ -1,18 +1,21 @@
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
 import { TransactionEntityTable } from '@budgie/contracts';
+import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
-import { describe, expect, it } from 'vitest';
+import * as Effect from 'effect/Effect';
 
-import { buildMonobank, monobankStub, setupMonobankFixture, testDb, run } from '../../harness';
+import { buildMonobank, monobankStub, setupMonobankFixture, testDb, TestLayer } from '../../harness';
 
 describe('monobank/hold-tx-inserted', () => {
-    it('inserts a held transaction (regression: !hold filter must not drop it)', async () => {
-        setupMonobankFixture();
-        monobankStub.statement([buildMonobank.transaction({ id: 'tx-hold-1', amount: -2500, hold: true })]);
+    it.effect('inserts a held transaction (regression: !hold filter must not drop it)', () =>
+        Effect.gen(function* () {
+            setupMonobankFixture();
+            monobankStub.statement([buildMonobank.transaction({ id: 'tx-hold-1', amount: -2500, hold: true })]);
 
-        await run(monobankSyncService.sync());
+            yield* monobankSyncService.sync();
 
-        const rows = testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-hold-1')).all();
-        expect(rows).toHaveLength(1);
-    });
+            const rows = testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.externalId, 'tx-hold-1')).all();
+            expect(rows).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

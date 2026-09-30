@@ -10,6 +10,7 @@ import {
 import { inArray } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
+import { run } from '../../harness';
 import { applyMigration } from '../../harness/db/apply-migration';
 import { testDb } from '../../harness/scenario/setup';
 
@@ -35,7 +36,7 @@ describe('category/debt-system-categories', () => {
     });
 
     it('stays a no-op when the migration runs twice', async () => {
-        await applyMigration('0057_add_debt_system_categories.sql');
+        await run(applyMigration('0057_add_debt_system_categories.sql'));
 
         expect(await fetchDebtSystemCategories()).toHaveLength(2);
         expect(await fetchDebtSystemTranslations()).toHaveLength(10);

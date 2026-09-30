@@ -8,10 +8,10 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { eq } from 'drizzle-orm';
+import * as Effect from 'effect/Effect';
 import { expect } from 'vitest';
 
 import { testDb } from '../scenario/setup';
-import { run } from '../scenario/test-runtime';
 import { seed } from '../seed/seed';
 
 import { binanceStub } from './binance-stub';
@@ -74,12 +74,12 @@ export const resetBinanceSyncForResync = (): void => {
     binanceStub.serverTime();
 };
 
-export const expectNoDuplicateAfterResync = async (restubForResync: () => void): Promise<void> => {
+export const expectNoDuplicateAfterResync = Effect.fnUntraced(function* (restubForResync: () => void) {
     expect(fetchBinanceTransactions()).toHaveLength(1);
 
     resetBinanceSyncForResync();
     restubForResync();
-    await run(binanceSyncService.sync());
+    yield* binanceSyncService.sync();
 
     expect(fetchBinanceTransactions()).toHaveLength(1);
-};
+});

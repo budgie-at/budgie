@@ -84,8 +84,8 @@ describe('opening a debt from a funding account', () => {
     });
 
     it('keeps the entered target in the debt instrument and converts only the funding entry', async () => {
-        const usdInstrument = await requireInstrument(CurrencyEnum.USD);
-        const eurInstrument = await requireInstrument(CurrencyEnum.EUR);
+        const usdInstrument = await run(requireInstrument(CurrencyEnum.USD));
+        const eurInstrument = await run(requireInstrument(CurrencyEnum.EUR));
         await run(exchangeRateRepository.upsert(eurInstrument.id, usdInstrument.id, 2, 'test'));
 
         const fundingAccount = seed.account({ title: 'Euro account', type: AccountTypeEnum.BANK_SYNC, instrumentId: eurInstrument.id });

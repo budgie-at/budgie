@@ -10,7 +10,7 @@ import {
 import { expectConsolidationParent, expectSourcesRestored, fetchMovedSourceIds } from '../harness/consolidation-revert-audit';
 import { IBAN_BRIDGE_EUR_AMOUNT } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService } from '../harness/test-context';
+import { testQueryService, runEffect } from '../harness/test-context';
 
 const byTransactionId = (left: number, right: number): number => left - right;
 
@@ -20,7 +20,7 @@ describe('consolidation/iban-bridge-chain-reclaim', () => {
             consolidationType: TransactionConsolidationTypeEnum.TRANSFER_PAIR
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.found).toBe(1);
         expect(result.consolidated).toBe(1);
@@ -32,7 +32,7 @@ describe('consolidation/iban-bridge-chain-reclaim', () => {
     it('preserves original moved source rows when reclaiming bridge legs into an existing generated transfer pair', async () => {
         const { bridgeExpense, bridgeIncome, directTransfer, sourceExpense, targetIncome } = await seedNestedChainReclaimFixture();
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.found).toBe(1);
         expect(result.consolidated).toBe(1);
@@ -47,7 +47,7 @@ describe('consolidation/iban-bridge-chain-reclaim', () => {
     it('does not reclaim or duplicate bridge legs when the direct transfer is source-less', async () => {
         const { bridgeIncome, bridgeExpense, directTransfer } = seedChainReclaimFixture({ consolidationType: null });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.found).toBe(0);
         expect(result.consolidated).toBe(0);
@@ -61,7 +61,7 @@ describe('consolidation/iban-bridge-chain-reclaim', () => {
             directSourceAmount: IBAN_BRIDGE_EUR_AMOUNT + CHAIN_RECLAIM_ONE_CENT_AMOUNT
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.found).toBe(1);
         expect(result.consolidated).toBe(1);
@@ -75,8 +75,8 @@ describe('consolidation/iban-bridge-chain-reclaim', () => {
             directSourceAmount: IBAN_BRIDGE_EUR_AMOUNT + CHAIN_RECLAIM_ONE_CENT_AMOUNT
         });
 
-        await runConsolidation();
-        const repeatedResult = await runConsolidation();
+        await runEffect(runConsolidation());
+        const repeatedResult = await runEffect(runConsolidation());
 
         expect(repeatedResult.found).toBe(0);
         expect(repeatedResult.consolidated).toBe(0);

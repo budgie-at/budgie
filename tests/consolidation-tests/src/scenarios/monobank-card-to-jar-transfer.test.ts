@@ -2,7 +2,7 @@ import { ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum, UserIc
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 const TRANSFER_AMOUNT = 250 * PRECISION;
 const INCOME_OFFSET_MS = 5_000;
@@ -23,7 +23,7 @@ describe('consolidation/monobank-card-to-jar-transfer', () => {
             { accountId: jar.id, amount: TRANSFER_AMOUNT, mccCategoryId: transferMcc.id }
         );
 
-        await runConsolidation();
+        await runEffect(runConsolidation());
 
         const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
         expect(canonical?.fromAccountId).toBe(card.id);

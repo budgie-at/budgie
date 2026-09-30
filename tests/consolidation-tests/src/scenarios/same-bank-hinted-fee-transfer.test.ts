@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import { expectRevertRestoresSources } from '../harness/consolidation-revert-audit';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 const TRANSFER_AMOUNT = 10_000 * PRECISION;
 const TRANSFER_FEE_DELTA_AMOUNT = 300 * PRECISION;
@@ -75,7 +75,7 @@ const expectPrivatbankFeeTransferConsolidated = async (
         externalSource
     );
 
-    const result = await runConsolidation();
+    const result = await runEffect(runConsolidation());
     expect(result.consolidated).toBe(1);
     expectSameBankHintedFeeConsolidation(expense.id, income.id, sourceAccount.id, targetAccount.id);
 };
@@ -92,17 +92,19 @@ describe('consolidation/same-bank-hinted-fee-transfer', () => {
     it('restores both hinted fee transfer sides and account balances when the canonical is reverted', async () => {
         const { expense, income, sourceAccount, targetAccount } = seedPrivatbankFeeTransfer();
 
-        await expectRevertRestoresSources({
-            accountIds: [sourceAccount.id, targetAccount.id],
-            consolidationType: TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER,
-            sourceTransactionIds: [expense.id, income.id]
-        });
+        await runEffect(
+            expectRevertRestoresSources({
+                accountIds: [sourceAccount.id, targetAccount.id],
+                consolidationType: TransactionConsolidationTypeEnum.SAME_BANK_HINTED_FEE_TRANSFER,
+                sourceTransactionIds: [expense.id, income.id]
+            })
+        );
     });
 
     it('leaves a hinted transfer unconsolidated when the reciprocal account hint does not match', async () => {
         const { expense, income } = seedPrivatbankFeeTransfer('Зі своєї картки *9999');
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expectNoConsolidation(expense.id, income.id);
@@ -111,7 +113,7 @@ describe('consolidation/same-bank-hinted-fee-transfer', () => {
     it('leaves a hinted transfer unconsolidated when the amount delta is larger than the fee window', async () => {
         const { expense, income } = seedPrivatbankFeeTransfer(`Зі своєї картки *${SOURCE_CARD_SUFFIX}`, TOO_LARGE_FEE_AMOUNT);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expectNoConsolidation(expense.id, income.id);
@@ -124,7 +126,7 @@ describe('consolidation/same-bank-hinted-fee-transfer', () => {
             new Date(HINTED_FEE_OPERATED_AT.getTime() + 3 * 60 * 1000)
         );
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expectNoConsolidation(expense.id, income.id);

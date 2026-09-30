@@ -82,7 +82,7 @@ const seedLedgerFixture = async (): Promise<number[]> => {
 };
 
 const applyAndConsolidate = async (fileName: string): Promise<void> => {
-    await applyMigration(fileName);
+    await run(applyMigration(fileName));
     await run(transferConsolidationService.consolidate(null));
 };
 

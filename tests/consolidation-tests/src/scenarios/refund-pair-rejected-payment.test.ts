@@ -13,7 +13,7 @@ import {
 } from '../harness/rejected-payment-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
 import { runRefundScenario } from '../harness/run-refund-scenario';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 import type { TransactionEntityInterface } from '@budgie/contracts';
 
@@ -48,7 +48,7 @@ const seedRejectedPaymentFullCycle = (accountId: number, externalIdPrefix: strin
     });
 
 const runConsolidationAndAssertSingleRefund = async (expenseId: number, refundId: number) => {
-    const result = await runConsolidation();
+    const result = await runEffect(runConsolidation());
 
     expect(result.consolidated).toBe(1);
     expect(testQueryService.fetchTransactionById(expenseId).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
@@ -66,13 +66,15 @@ const expectBothRefundsConsolidatedToExpense = (expenseId: number, refunds: Tran
 };
 
 const runRejectedPaymentPrincipalRefundScenarioAndAssert = async (refundTitle: string) => {
-    const { consolidated, expense, refunds } = await runRefundScenario({
-        title: 'FOP TESTOVYI PRODUCTS',
-        refundTitle,
-        expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
-        refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT],
-        refundDelaySeconds: 4_380
-    });
+    const { consolidated, expense, refunds } = await runEffect(
+        runRefundScenario({
+            title: 'FOP TESTOVYI PRODUCTS',
+            refundTitle,
+            expenseAmount: REJECTED_PAYMENT_EXPENSE_AMOUNT,
+            refundAmounts: [REJECTED_PAYMENT_EXPENSE_AMOUNT],
+            refundDelaySeconds: 4_380
+        })
+    );
 
     expect(consolidated).toBe(1);
     expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
@@ -149,7 +151,7 @@ describe('consolidation/refund-pair-rejected-payment', () => {
             refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
     });
@@ -166,7 +168,7 @@ describe('consolidation/refund-pair-rejected-payment full cycle', () => {
             { accountId: otherAccount.id, amount: UNRELATED_INCOME_AMOUNT }
         );
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(2);
         expectBothRefundsConsolidatedToExpense(expense.id, refunds);
@@ -188,8 +190,8 @@ describe('consolidation/refund-pair-rejected-payment full cycle', () => {
         const account = testSeedService.account({ externalId: 'privat-card' });
         const { expense, refunds } = seedRejectedPaymentFullCycle(account.id, 'rejected-payment-idempotent');
 
-        const firstResult = await runConsolidation();
-        const secondResult = await runConsolidation();
+        const firstResult = await runEffect(runConsolidation());
+        const secondResult = await runEffect(runConsolidation());
 
         expect(firstResult.consolidated).toBe(2);
         expect(secondResult.consolidated).toBe(0);

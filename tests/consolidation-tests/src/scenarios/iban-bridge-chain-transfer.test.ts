@@ -17,6 +17,7 @@ import {
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
+import { runEffect } from '../harness/test-context';
 
 const byTransactionId = (left: number, right: number): number => left - right;
 
@@ -33,13 +34,13 @@ const seedIbanBridgeChainFixture = () => {
 
 const fetchChainCanonicalId = (): number => fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
 
-const revertChainCanonical = (): Promise<number> => revertSingleCanonical(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
+const revertChainCanonical = () => revertSingleCanonical(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
 
 describe('consolidation/iban-bridge-chain-transfer', () => {
     it('builds one canonical from the four legs of a bridged chain', async () => {
         const { bridgeExpense, bridgeIncome, sourceAccount, sourceExpense, targetAccount, targetIncome } = seedIbanBridgeChainFixture();
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         const canonicalId = fetchChainCanonicalId();
 
         expect(result.consolidated).toBe(1);
@@ -54,19 +55,21 @@ describe('consolidation/iban-bridge-chain-transfer', () => {
         const { bridgeAccount, bridgeExpense, bridgeIncome, sourceAccount, sourceExpense, targetAccount, targetIncome } =
             seedIbanBridgeChainFixture();
 
-        await expectRevertRestoresSources({
-            accountIds: [sourceAccount.id, bridgeAccount.id, targetAccount.id],
-            consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
-            sourceTransactionIds: [sourceExpense.id, bridgeIncome.id, bridgeExpense.id, targetIncome.id]
-        });
+        await runEffect(
+            expectRevertRestoresSources({
+                accountIds: [sourceAccount.id, bridgeAccount.id, targetAccount.id],
+                consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER,
+                sourceTransactionIds: [sourceExpense.id, bridgeIncome.id, bridgeExpense.id, targetIncome.id]
+            })
+        );
     });
 
     it('rebuilds the same chain canonical shape after a revert', async () => {
         const { sourceExpense, bridgeIncome, bridgeExpense, targetIncome } = seedIbanBridgeChainFixture();
 
-        await runConsolidation();
-        await revertChainCanonical();
-        const repeatedResult = await runConsolidation();
+        await runEffect(runConsolidation());
+        await runEffect(revertChainCanonical());
+        const repeatedResult = await runEffect(runConsolidation());
 
         expect(repeatedResult.consolidated).toBe(1);
         expect(fetchMovedSourceIds(fetchChainCanonicalId())).toEqual(

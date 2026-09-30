@@ -49,13 +49,13 @@ describe('consolidation/atm-cash-withdrawal', () => {
     it('never moves a recent or historical ATM expense to cash without the user', async () => {
         const { bankAccount, cashAccount, expense } = seedAtmCashWithdrawalFixture();
         const historicalExpense = seedAtmExpense(bankAccount.id, 'tx-atm-historical', HISTORICAL_ATM_OPERATED_AT);
-        const balancesBefore = await fetchLedgerBalances([bankAccount.id, cashAccount.id]);
+        const balancesBefore = await runEffect(fetchLedgerBalances([bankAccount.id, cashAccount.id]));
 
-        expect(await runConsolidation()).toEqual({ consolidated: 0, found: 0 });
+        expect(await runEffect(runConsolidation())).toEqual({ consolidated: 0, found: 0 });
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
         expect(testQueryService.fetchTransactionById(historicalExpense.id).consolidationParentTransactionId).toBeNull();
-        expect(await fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual(balancesBefore);
+        expect(await runEffect(fetchLedgerBalances([bankAccount.id, cashAccount.id]))).toEqual(balancesBefore);
     });
 
     it('moves only the selected ATM expense to cash with its fee entry and ignores a repeated move', async () => {
@@ -71,12 +71,12 @@ describe('consolidation/atm-cash-withdrawal', () => {
         expect(testQueryService.fetchTransactionById(otherExpense.id).consolidationParentTransactionId).toBeNull();
         expect(fetchOwnLedgerEntries(canonicalId)).toHaveLength(ATM_CANONICAL_LEDGER_ENTRY_COUNT);
         expect(fetchLedgerEntry(canonicalId, cashAccount.id).amount).toBe(ATM_WITHDRAWAL_AMOUNT);
-        expect(await fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual([
+        expect(await runEffect(fetchLedgerBalances([bankAccount.id, cashAccount.id]))).toEqual([
             [bankAccount.id, -2 * (ATM_WITHDRAWAL_AMOUNT + ATM_WITHDRAWAL_FEE_AMOUNT)],
             [cashAccount.id, ATM_WITHDRAWAL_AMOUNT]
         ]);
         expect(await runEffect(consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id]))).toBe(0);
-        expect(await runConsolidation()).toEqual({ consolidated: 0, found: 0 });
+        expect(await runEffect(runConsolidation())).toEqual({ consolidated: 0, found: 0 });
         expect(fetchAtmCanonicalId()).toBe(canonicalId);
     });
 
@@ -92,13 +92,15 @@ describe('consolidation/atm-cash-withdrawal', () => {
     it('restores the ATM expense with its fee entry and clears the cash balance when reverted', async () => {
         const { bankAccount, cashAccount, expense } = seedAtmCashWithdrawalFixture();
         const stateBefore = snapshotSourceState([expense.id]);
-        const balancesBefore = await fetchLedgerBalances([bankAccount.id, cashAccount.id]);
+        const balancesBefore = await runEffect(fetchLedgerBalances([bankAccount.id, cashAccount.id]));
 
         await runEffect(consolidationCoordinatorService.moveAtmCashWithdrawalsToCash([expense.id]));
 
-        expectRevertRemovedCanonical(await revertSingleCanonical(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL), [expense.id]);
+        expectRevertRemovedCanonical(await runEffect(revertSingleCanonical(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)), [
+            expense.id
+        ]);
         expectSourceStateRestored(stateBefore);
-        expect(await fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual(balancesBefore);
+        expect(await runEffect(fetchLedgerBalances([bankAccount.id, cashAccount.id]))).toEqual(balancesBefore);
         expect(fetchOwnLedgerEntries(expense.id)).toHaveLength(ATM_EXPENSE_LEDGER_ENTRY_COUNT);
     });
 });

@@ -36,7 +36,7 @@ const SMALL_P2P_CRYPTO_AMOUNT = Number('11.87') * PRECISION;
 
 describe('consolidation/binance-p2p-fiat-transfer time window', () => {
     it('accepts an expense exactly one hour away', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const { expense, income } = seedP2pPair(
             { externalId: 'mono-uah-one-hour', accountId: bankAccount.id, amount: P2P_UAH_TOTAL },
             { externalId: 'binance:c2c:buy-one-hour', accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT },
@@ -48,7 +48,7 @@ describe('consolidation/binance-p2p-fiat-transfer time window', () => {
     });
 
     it('rejects an expense one second beyond the one-hour window', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const { expense, income } = seedP2pPair(
             { externalId: 'mono-uah-one-hour-one-second', accountId: bankAccount.id, amount: P2P_UAH_TOTAL },
             { externalId: 'binance:c2c:buy-one-hour-one-second', accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT },
@@ -60,7 +60,7 @@ describe('consolidation/binance-p2p-fiat-transfer time window', () => {
     });
 
     it('does not consolidate a correctly-priced pair outside the time window', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         seedP2pPair(
             { externalId: 'mono-uah-late', accountId: bankAccount.id, amount: P2P_UAH_TOTAL },
             { externalId: 'binance:c2c:buy-late', accountId: binanceAccount.id, amount: P2P_USDT_AMOUNT },
@@ -74,7 +74,7 @@ describe('consolidation/binance-p2p-fiat-transfer time window', () => {
 
 describe('consolidation/binance-p2p-fiat-transfer ambiguity', () => {
     it('rejects equal-best expense combinations for one Binance income', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const expenses = TIED_COMBINATION_AMOUNTS.map((amount, index) =>
             seedBankPair.expense(
                 { externalId: `mono-uah-combination-tie-${index}`, operatedAt: P2P_OPERATED_AT },
@@ -88,7 +88,7 @@ describe('consolidation/binance-p2p-fiat-transfer ambiguity', () => {
     });
 
     it('rejects equal ownership of one bank expense by two Binance incomes', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const expense = seedBankPair.expense(
             { externalId: 'mono-uah-overlap-tie', operatedAt: P2P_OPERATED_AT },
             { accountId: bankAccount.id, amount: P2P_UAH_TOTAL }
@@ -110,7 +110,7 @@ describe('consolidation/binance-p2p-fiat-transfer ambiguity', () => {
 
 describe('consolidation/binance-p2p-fiat-transfer ranked ownership', () => {
     it('uses provider fiat totals before considering grouped bank expenses', async () => {
-        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { uah, bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const largeExpense = seedBankPair.expense(
             { externalId: 'mono-uah-authoritative-large', operatedAt: P2P_OPERATED_AT },
             { accountId: bankAccount.id, amount: LARGE_P2P_QUOTE_AMOUNT }
@@ -156,7 +156,7 @@ describe('consolidation/binance-p2p-fiat-transfer ranked ownership', () => {
 
 describe('consolidation/binance-p2p-fiat-transfer ranked heuristic ownership', () => {
     it('assigns an overlapping bank expense to its uniquely better Binance income', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const expense = seedBankPair.expense(
             { externalId: 'mono-uah-overlap-ranked', operatedAt: P2P_OPERATED_AT },
             { accountId: bankAccount.id, amount: P2P_UAH_TOTAL }
@@ -185,7 +185,7 @@ describe('consolidation/binance-p2p-fiat-transfer ranked heuristic ownership', (
     });
 
     it('resolves a newly exposed P2P pair in the same consolidation run', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const firstIncome = seedP2pIncome('binance:c2c:buy-fixed-point-a', binanceAccount.id);
         const secondIncome = seedBankPair.income(
             {

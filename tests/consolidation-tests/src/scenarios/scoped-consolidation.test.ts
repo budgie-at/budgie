@@ -2,7 +2,7 @@ import { PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 describe('consolidation/scoped-consolidation', () => {
     it('only consolidates candidates touching scoped transaction ids inside the same operated-at window', async () => {
@@ -26,11 +26,13 @@ describe('consolidation/scoped-consolidation', () => {
             { accountId: toAccount.id, amount: 200 * PRECISION, mccCategoryId: transferMcc.id }
         );
 
-        const result = await runConsolidation({
-            operatedAtFrom: new Date(operatedAt.getTime() - 60_000),
-            operatedAtTo: new Date(operatedAt.getTime() + 60_000),
-            transactionIds: [scopedExpense.id, scopedIncome.id]
-        });
+        const result = await runEffect(
+            runConsolidation({
+                operatedAtFrom: new Date(operatedAt.getTime() - 60_000),
+                operatedAtTo: new Date(operatedAt.getTime() + 60_000),
+                transactionIds: [scopedExpense.id, scopedIncome.id]
+            })
+        );
 
         const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
