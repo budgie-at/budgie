@@ -4613,6 +4613,10 @@ msgstr "Budgie-Bildschirm für neue Ausgabe mit Zifferntastatur für den Betrag,
 msgid "Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts"
 msgstr "Budgie-Bildschirm für eine neue Ausgabe mit Betragstastatur, Kontoauswahl und den Schnellzugriffen für Datum, Notiz, Tags und Kategorie"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Budgie new expense screen with the Groceries category selected and three suggested tag pills above the actions"
+msgstr "Budgie-Bildschirm für neue Ausgaben mit gewählter Kategorie Lebensmittel und drei vorgeschlagenen Tag-Pills über den Aktionen"
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Budgie New Transfer screen converting 250 US dollars into euros, with the sending-currency pill and the conversion rate row"
 msgstr "Budgie-Bildschirm „Neue Überweisung“, der 250 US-Dollar in Euro umrechnet, mit der Pille für die Sendewährung und der Zeile mit dem Umrechnungskurs"
@@ -5655,6 +5659,10 @@ msgstr "Prüfen Sie die Issues und Diskussionen"
 #: src/app/[lang]/beta/page.tsx
 msgid "Checking for the latest build…"
 msgstr "Suche nach dem neuesten Build…"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Choose a category and up to three tag pills appear above the tag button."
+msgstr "Wähle eine Kategorie, und bis zu drei Tag-Pills erscheinen über der Tag-Schaltfläche."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Actual Budget if:"
@@ -12449,6 +12457,10 @@ msgstr "Persönliche Finanzen sind ein idealer Bereich für die Local-First-Arch
 msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
 msgstr ""
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Pick a category and Budgie proposes tags you already use, ready to tap."
+msgstr "Wähle eine Kategorie, und Budgie schlägt Tags vor, die du schon nutzt, direkt zum Antippen."
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Pick a CSV from Settings and Budgie reads its header row, then offers those headers to every field it needs to write a transaction."
 msgstr "Wähle in den Einstellungen eine CSV-Datei und Budgie liest ihre Kopfzeile, dann bietet es diese Überschriften jedem Feld an, das für eine Transaktion nötig ist."
@@ -14543,6 +14555,10 @@ msgstr ""
 msgid "Suggest features and improvements"
 msgstr "Schlagen Sie Funktionen und Verbesserungen vor"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Suggested tag pills"
+msgstr "Vorgeschlagene Tag-Pills"
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Suggestion quality"
 msgstr "Qualität der Vorschläge"
@@ -14698,6 +14714,14 @@ msgstr "Tags bekommen denselben Bildschirm. Öffnen Sie in der Analyse den <0>Ta
 msgid "Tags sit next to Category"
 msgstr "Tags stehen neben Kategorie"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tags still open as usual"
+msgstr "Tags öffnen sich wie gewohnt"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tags suggested as you save"
+msgstr "Tags beim Speichern vorgeschlagen"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tags suggested from your history"
 msgstr "Vorschläge aus deinem Verlauf"
@@ -14733,6 +14757,10 @@ msgstr "Uebernehmen Sie die Kontrolle über Ihre finanzielle Privatsphäre"
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections you reach by navigating forward. Cross-currency recurring shows in your home currency; original amount on tap."
 msgstr "Auf einen Kalendertag tippen, um die fälligen Transaktionen zu sehen. Vergangene Monate zeigen Ist-Werte, der aktuelle Monat zeigt die bisherigen Ist-Werte plus die Prognose für den Rest des Monats, und zukünftige Monate zeigen Prognosen, zu denen Sie durch Vorwärtsnavigation gelangen. Währungsübergreifende Wiederholungen werden in Ihrer Heimwährung angezeigt; Originalbetrag auf Tipp-Aktion."
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tap a pill to add the tag instead of typing it."
+msgstr "Tippe auf eine Pill, um den Tag hinzuzufügen, statt ihn zu tippen."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Tap a row to categorize it"
@@ -15357,6 +15385,10 @@ msgstr ""
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The obvious pairs merge on import"
 msgstr "Die eindeutigen Paare führen sich beim Import zusammen"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "The on-device model answers first, and a lighter lookup covers it while it loads."
+msgstr "Zuerst antwortet das Modell auf dem Gerät, beim Laden springt eine leichtere Suche ein."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The open-source security community includes:"

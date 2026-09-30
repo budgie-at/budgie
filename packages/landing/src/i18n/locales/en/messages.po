@@ -4612,6 +4612,10 @@ msgstr "Budgie new expense screen with the amount keypad, account row and confir
 msgid "Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts"
 msgstr "Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Budgie new expense screen with the Groceries category selected and three suggested tag pills above the actions"
+msgstr "Budgie new expense screen with the Groceries category selected and three suggested tag pills above the actions"
+
 #: src/app/[lang]/features/account-transfers/page.tsx
 msgid "Budgie New Transfer screen converting 250 US dollars into euros, with the sending-currency pill and the conversion rate row"
 msgstr "Budgie New Transfer screen converting 250 US dollars into euros, with the sending-currency pill and the conversion rate row"
@@ -5654,6 +5658,10 @@ msgstr "Check the Issues and Discussions"
 #: src/app/[lang]/beta/page.tsx
 msgid "Checking for the latest build…"
 msgstr "Checking for the latest build…"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Choose a category and up to three tag pills appear above the tag button."
+msgstr "Choose a category and up to three tag pills appear above the tag button."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Choose Actual Budget if:"
@@ -12448,6 +12456,10 @@ msgstr "Personal finance is an ideal domain for local-first architecture. The re
 msgid "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
 msgstr "Personal Information Protection and Electronic Documents Act (PIPEDA) - Canada"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Pick a category and Budgie proposes tags you already use, ready to tap."
+msgstr "Pick a category and Budgie proposes tags you already use, ready to tap."
+
 #: src/app/[lang]/features/csv-import/page.tsx
 msgid "Pick a CSV from Settings and Budgie reads its header row, then offers those headers to every field it needs to write a transaction."
 msgstr "Pick a CSV from Settings and Budgie reads its header row, then offers those headers to every field it needs to write a transaction."
@@ -14542,6 +14554,10 @@ msgstr "Subscriptions automatically renew unless canceled at least 24 hours befo
 msgid "Suggest features and improvements"
 msgstr "Suggest features and improvements"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Suggested tag pills"
+msgstr "Suggested tag pills"
+
 #: src/app/[lang]/ai-features/page.tsx
 msgid "Suggestion quality"
 msgstr "Suggestion quality"
@@ -14697,6 +14713,14 @@ msgstr "Tags get the same inbox. In Analytics, open the <0>Tags tab</0> and tap 
 msgid "Tags sit next to Category"
 msgstr "Tags sit next to Category"
 
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tags still open as usual"
+msgstr "Tags still open as usual"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tags suggested as you save"
+msgstr "Tags suggested as you save"
+
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Tags suggested from your history"
 msgstr "Tags suggested from your history"
@@ -14732,6 +14756,10 @@ msgstr "Taking Control of Your Financial Privacy"
 #: src/app/[lang]/features/recurring-payments-calendar/page.tsx
 msgid "Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections you reach by navigating forward. Cross-currency recurring shows in your home currency; original amount on tap."
 msgstr "Tap a calendar day to see the transactions due. Past months show actuals, the current month shows actuals to date plus what's projected for the rest of it, and future months show projections you reach by navigating forward. Cross-currency recurring shows in your home currency; original amount on tap."
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "Tap a pill to add the tag instead of typing it."
+msgstr "Tap a pill to add the tag instead of typing it."
 
 #: src/app/[lang]/features/uncategorized-transactions/page.tsx
 msgid "Tap a row to categorize it"
@@ -15356,6 +15384,10 @@ msgstr "The O'Saasy license allows you to:"
 #: src/app/[lang]/features/transfer-pair-detection/page.tsx
 msgid "The obvious pairs merge on import"
 msgstr "The obvious pairs merge on import"
+
+#: src/app/[lang]/features/ai-tag-suggestions/page.tsx
+msgid "The on-device model answers first, and a lighter lookup covers it while it loads."
+msgstr "The on-device model answers first, and a lighter lookup covers it while it loads."
 
 #: src/app/[lang]/blog/open-source-budgeting-transparency/page.tsx
 msgid "The open-source security community includes:"
