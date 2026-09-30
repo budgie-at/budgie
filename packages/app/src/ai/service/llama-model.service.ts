@@ -29,8 +29,8 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
                 patchAtom(this.snapshot, { downloadProgress });
             });
             patchAtom(this.snapshot, { status: AiSubsystemStatusEnum.INITIALIZING });
-            const { initLlama } = yield* Effect.tryPromise(() => import('llama.rn'));
-            this.context = yield* Effect.tryPromise(() =>
+            const { initLlama } = yield* Effect.promise(() => import('llama.rn'));
+            this.context = yield* Effect.promise(() =>
                 initLlama({
                     model: modelPath,
                     n_ctx: this.config.contextSize,

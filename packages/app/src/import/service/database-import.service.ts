@@ -44,14 +44,14 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
 
         const readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
             return yield* Effect.acquireUseRelease(
-                Effect.tryPromise(() => SQLite.openDatabaseAsync(probeDatabaseName, { useNewConnection: true }, Paths.cache.uri)),
+                Effect.promise(() => SQLite.openDatabaseAsync(probeDatabaseName, { useNewConnection: true }, Paths.cache.uri)),
                 probeDatabase =>
                     Effect.gen(function* () {
                         if (isNotEmptyString(backupPin)) {
-                            yield* Effect.tryPromise(() => probeDatabase.execAsync(`PRAGMA key = '${backupPin}';`)); // oxlint-disable-line lingui/no-unlocalized-strings
+                            yield* Effect.promise(() => probeDatabase.execAsync(`PRAGMA key = '${backupPin}';`)); // oxlint-disable-line lingui/no-unlocalized-strings
                         }
 
-                        const tables = yield* Effect.tryPromise(() =>
+                        const tables = yield* Effect.promise(() =>
                             // oxlint-disable-next-line lingui/no-unlocalized-strings
                             probeDatabase.getAllAsync<unknown>('SELECT name FROM sqlite_master;')
                         );
@@ -124,11 +124,10 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
 
                 deleteProbeFiles(probePath);
 
-                return yield* Effect.tryPromise(() => new File(sourceUri).copy(new File(probePath))).pipe(
+                return yield* Effect.promise(() => new File(sourceUri).copy(new File(probePath))).pipe(
                     Effect.andThen(readProbeDatabase(backupPin)),
-                    Effect.catchIf(
-                        error => notADatabasePattern.test(getErrorMessage(error.cause)),
-                        () => Effect.succeed(false)
+                    Effect.catchDefect(defect =>
+                        notADatabasePattern.test(getErrorMessage(defect)) ? Effect.succeed(false) : Effect.die(defect)
                     ),
                     Effect.ensuring(
                         Effect.sync(() => {

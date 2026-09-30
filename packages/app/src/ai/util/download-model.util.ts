@@ -22,7 +22,7 @@ export const downloadModel = Effect.fn('downloadModel')(function* (
         onProgress(progress.totalBytesWritten / progress.totalBytesExpectedToWrite);
     });
 
-    const result = yield* Effect.tryPromise(() => download.downloadAsync());
+    const result = yield* Effect.promise(() => download.downloadAsync());
     if (!isDefined(result?.uri)) {
         return yield* Effect.die(new Error('Model download failed'));
     }
