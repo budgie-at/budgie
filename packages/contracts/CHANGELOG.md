@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
+
+
+### Bug Fixes
+
+* **app:** retry icon index load and validate whole emoji icons ([86d5e14](https://github.com/budgie-at/budgie/commit/86d5e14f808e9ff07970648851ba16b1899419bc))
+* **budget:** reuse canonical transaction predicates for spent ([911fc17](https://github.com/budgie-at/budgie/commit/911fc1776c5587fe6ba5b478e7ad6280f6ca566c)), closes [#1298](https://github.com/budgie-at/budgie/issues/1298)
+* **contracts:** repair orphaned consolidation children and entry-less transfers ([2af13e6](https://github.com/budgie-at/budgie/commit/2af13e6bcccfd71303e2e50f33920f27af8f4499))
+
+
+### Features
+
+* **app:** mark ATM withdrawals as already tracked cash outside spending ([22c331c](https://github.com/budgie-at/budgie/commit/22c331c3613657b182ae88a64e9f900b5f0910c5))
+* **app:** move ATM withdrawals to cash from the inbox and never auto-convert them ([a0853a2](https://github.com/budgie-at/budgie/commit/a0853a2799a17da900576f3a151928af070c9e2a))
+* **app:** multilingual icon search, emoji icons and icon suggestions ([11da1a2](https://github.com/budgie-at/budgie/commit/11da1a263ade255b7031dd679185035f3f832604))
+
+
+### Performance Improvements
+
+* **app:** resync existing Monobank rows in one transaction per page ([79e1340](https://github.com/budgie-at/budgie/commit/79e13408357af9ca59796485e3b4a358fa93185e))
+* **contracts:** count pending embeddings with a literal partial-index predicate ([73e0f9c](https://github.com/budgie-at/budgie/commit/73e0f9c275c829526935eaeb8350f997fae4aa03))
+* **contracts:** make home account rows and net worth index-friendly ([6d34a16](https://github.com/budgie-at/budgie/commit/6d34a162e8b4cb864e055fa84b2cfffb8ce9e82a))
+* **contracts:** replace the needs_embedding index that hijacks list plans ([bc65f4e](https://github.com/budgie-at/budgie/commit/bc65f4e1cc357c34264af19385b3b7d7871f3542)), closes [#1255](https://github.com/budgie-at/budgie/issues/1255) [#1241](https://github.com/budgie-at/budgie/issues/1241)
+
+
+
+
+
 ## [6.85.13](https://github.com/budgie-at/budgie/compare/v6.85.12...v6.85.13) (2026-09-29)
 
 

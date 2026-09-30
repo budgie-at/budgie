@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
+
+
+### Bug Fixes
+
+* **app:** accept emoji icons in categorize inbox undo layout ([72e07eb](https://github.com/budgie-at/budgie/commit/72e07ebfd8ffbc123905e5da2f2fdc3c35aa48af))
+* **app:** add missing migration for transaction entry account external index ([1da1663](https://github.com/budgie-at/budgie/commit/1da1663c1cf7072f1e2fa6d84efc231ad67df266))
+* **app:** move app data sync out of sync workload to break import cycle ([271a63b](https://github.com/budgie-at/budgie/commit/271a63b91867b4c0c314bcc898c30558f1771a39))
+* **app:** refresh live queries immediately on explicit invalidation ([2810fe1](https://github.com/budgie-at/budgie/commit/2810fe15e99494c1689e29a3e2f3185a707049a2))
+* **app:** retry icon index load and validate whole emoji icons ([86d5e14](https://github.com/budgie-at/budgie/commit/86d5e14f808e9ff07970648851ba16b1899419bc))
+* **app:** return composed rate for bridged conversions ([1b8e370](https://github.com/budgie-at/budgie/commit/1b8e370bd44a1babf8e7dc2b8c8454e1d933244a)), closes [#1297](https://github.com/budgie-at/budgie/issues/1297)
+* **contracts:** repair orphaned consolidation children and entry-less transfers ([2af13e6](https://github.com/budgie-at/budgie/commit/2af13e6bcccfd71303e2e50f33920f27af8f4499))
+
+
+### Features
+
+* **app:** mark ATM withdrawals as already tracked cash outside spending ([22c331c](https://github.com/budgie-at/budgie/commit/22c331c3613657b182ae88a64e9f900b5f0910c5))
+* **app:** move ATM withdrawals to cash from the inbox and never auto-convert them ([a0853a2](https://github.com/budgie-at/budgie/commit/a0853a2799a17da900576f3a151928af070c9e2a))
+* **app:** multilingual icon search, emoji icons and icon suggestions ([11da1a2](https://github.com/budgie-at/budgie/commit/11da1a263ade255b7031dd679185035f3f832604))
+
+
+### Performance Improvements
+
+* **app:** refresh each live query once per write burst ([c02b23d](https://github.com/budgie-at/budgie/commit/c02b23d3fc2fdf6732e5d43b5ec3f20af3eb14d7))
+* **app:** resync existing Monobank rows in one transaction per page ([79e1340](https://github.com/budgie-at/budgie/commit/79e13408357af9ca59796485e3b4a358fa93185e))
+* **contracts:** make home account rows and net worth index-friendly ([6d34a16](https://github.com/budgie-at/budgie/commit/6d34a162e8b4cb864e055fa84b2cfffb8ce9e82a))
+* **contracts:** replace the needs_embedding index that hijacks list plans ([bc65f4e](https://github.com/budgie-at/budgie/commit/bc65f4e1cc357c34264af19385b3b7d7871f3542)), closes [#1255](https://github.com/budgie-at/budgie/issues/1255) [#1241](https://github.com/budgie-at/budgie/issues/1241)
+
+
+
+
+
 ## [6.85.14](https://github.com/budgie-at/budgie/compare/v6.85.13...v6.85.14) (2026-09-29)
 
 
