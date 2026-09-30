@@ -197,7 +197,7 @@ jobs:
             install-command: pnpm install --frozen-lockfile
             runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
             build-command: pnpm exec turbo build --filter=@budgie/contracts --filter=@budgie/ai --filter=@budgie/sync --filter=@budgie/consolidation --filter=@budgie/budget
-            release-tag-prefix: ota
+            release-tag-prefix: ota-pr${{ github.event.pull_request.number }}
             prune-keep: '100'
 
     fingerprint-guard:
