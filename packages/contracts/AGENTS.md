@@ -28,7 +28,7 @@ src/
 │   ├── input/                # Form input interfaces
 │   ├── interface/            # Filter interfaces
 │   ├── relations/            # Drizzle relations
-│   ├── repository/           # Repository class
+│   ├── repository/           # Repository service (Context.Service + layer)
 │   ├── schema/               # Effect Schemas (runtime-validated inputs only)
 │   └── table/                # Drizzle table definition
 ├── schema.ts                 # Aggregated schema exports
@@ -135,35 +135,32 @@ export const TransactionEntityRelations = relations(TransactionEntityTable, ({ o
 
 ### Class Structure
 
-Repositories are classes. Methods that execute a query are `Effect.fn` fields and run every query through `Db.query`, so they join the active `Db.transaction` automatically. No method takes a `tx` parameter.
+Repositories are `Context.Service` classes with a `static readonly layer`. Every method is an Effect over `Db.query`, so it joins the active `Db.transaction` automatically. No method takes a `tx` or `db` parameter and there is no constructor.
 
 ```typescript
-export class AccountRepository {
-    readonly create = Effect.fn('AccountRepository.create')(function* (input: AccountCreateEntityInterface) {
-        const [account] = yield* Db.query(db => db.insert(AccountEntityTable).values(input).returning());
+export class AccountRepository extends Context.Service<AccountRepository>()('@budgie/contracts/AccountRepository', {
+    make: Effect.sync(() => {
+        const bulkCreate = (inputs: AccountCreateEntityInterface[]) =>
+            Db.query(db => db.insert(AccountEntityTable).values(inputs).returning());
 
-        return account;
-    });
+        return {
+            create: Effect.fn('AccountRepository.create')(function* (input: AccountCreateEntityInterface) {
+                const [account] = yield* bulkCreate([input]);
 
-    readonly createWithBalance = Effect.fn('AccountRepository.createWithBalance')(function* (
-        this: AccountRepository,
-        input: AccountCreateEntityInterface
-    ) {
-        return yield* this.create(input);
-    });
-
-    constructor(private db: DB) {}
-
-    findById(id: number) {
-        return this.db.query.AccountEntityTable.findFirst({ where: eq(AccountEntityTable.id, id) });
-    }
+                return account;
+            }),
+            bulkCreate,
+            findById: (id: number) => Db.query(db => db.query.AccountEntityTable.findFirst({ where: eq(AccountEntityTable.id, id) }))
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(AccountRepository, AccountRepository.make);
 }
 ```
 
-- Use the `db` handed to the `Db.query` callback, never `this.db`, inside Effect methods.
-- Annotate `this: ClassName` when the generator uses `this`, and always call the field as `repository.method(...)`.
-- Member order (lint): Effect fields, then the constructor, then plain methods.
-- Drop the constructor when no builder method remains.
+- A single-query method is a plain arrow over `Db.query`; a multi-step method is `Effect.fn('Repo.method')`.
+- Private helpers are `make` locals, never `this`. Dependencies on other services are resolved once in `make` with `yield*` and provided in `layer` via `Layer.provide`.
+- Never capture `Db` in `make`; `Db.transaction` swaps it per transaction.
 
 ### Transaction Support
 
@@ -181,49 +178,52 @@ yield *
 
 ### Query API Preference
 
-### Red Flag: Do Not Wrap Query Builders
+### Reads Are Effects
 
-Methods that return a Drizzle query builder stay plain methods on `this.db`: no `Effect.fn`, no decorators. Builders are thenable and `useDatabaseLiveQuery` needs the original query object to read table metadata. Convert a builder method to an `Effect.fn` field only when no caller passes it to a live query. If a builder is also executed by non-React callers, keep the builder and execute it with `Db.query(() => repository.method(...))`; that runs on the root connection, so do not do it inside a transaction.
-
-```typescript
-findRecent(accountId: number) {
-    return this.db.query.AccountEntityTable.findMany({ where: eq(AccountEntityTable.id, accountId) });
-}
-```
+Reads that feed React are `Db.query(db => ...)` Effects run by `databaseQueryAtom([Tables], Effect.flatMap(Repo, repo => repo.method(...)))` in the app; list every table the SQL reads. Repositories never return Drizzle builders.
 
 **Prefer:**
 
 ```typescript
-this.db.query.AccountEntityTable.findMany({
-    where: eq(AccountEntityTable.isActive, true),
-    with: { instrument: true }
-});
+Db.query(db =>
+    db.query.AccountEntityTable.findMany({
+        where: eq(AccountEntityTable.isActive, true),
+        with: { instrument: true }
+    })
+);
 ```
 
 **Use `db.select()` only for complex queries:**
 
 ```typescript
-this.db
-    .select({ total: sql<number>`SUM(amount)` })
-    .from(TransactionEntryEntityTable)
-    .innerJoin(...)
-    .where(...);
+Db.query(db =>
+    db
+        .select({ total: sql<number>`SUM(amount)` })
+        .from(TransactionEntryEntityTable)
+        .innerJoin(...)
+        .where(...)
+);
 ```
 
 ### Base Repository
 
-Extend `BaseTransactionFilterRepository` for filter support:
+`BaseTransactionFilterRepository` is a plain predicate-builder class. Instantiate it inside `make` and reuse its `build*Condition` methods:
 
 ```typescript
-export class TransactionRepository extends BaseTransactionFilterRepository {
-    getAll(limit: number, filters?: TransactionFilterInterface) {
-        return this.db.query.TransactionEntityTable.findMany({
-            where: this.buildFilterWhere(filters),
-            limit,
-            with: { entries: true, transactionTags: true }
-        });
-    }
-}
+make: Effect.sync(() => {
+    const filters = new BaseTransactionFilterRepository();
+
+    return {
+        getAll: (limit: number, transactionFilters?: TransactionFilterInterface) =>
+            Db.query(db =>
+                db.query.TransactionEntityTable.findMany({
+                    where: filters.buildFilterWhere(transactionFilters),
+                    limit,
+                    with: { entries: true, transactionTags: true }
+                })
+            )
+    };
+});
 ```
 
 ## Effect Schemas
@@ -363,13 +363,10 @@ export const isExpenseTransaction = (transaction: TransactionInterface): transac
 All entities support soft delete via `deletedAt`:
 
 ```typescript
-readonly archiveById = Effect.fn('AccountRepository.archiveById')(function* (id: number) {
-    yield* Db.query(db => db.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id)));
-});
-
-readonly restoreById = Effect.fn('AccountRepository.restoreById')(function* (id: number) {
-    yield* Db.query(db => db.update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id)));
-});
+archiveById: (id: number) =>
+    Db.query(db => db.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id))),
+restoreById: (id: number) =>
+    Db.query(db => db.update(AccountEntityTable).set({ deletedAt: null }).where(eq(AccountEntityTable.id, id))),
 
 where: isNull(AccountEntityTable.deletedAt)
 ```

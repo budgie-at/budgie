@@ -172,7 +172,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 19. **Interfaces and types in separate files** - Never define interfaces or type aliases inline above classes, hooks, components, services, or repositories. Put them in the module's `/interface` folder with the proper `.interface.ts` or `.type.ts` suffix. **Exception — React component props:** a component's props type is named exactly `Props` (no `*Interface` suffix) and declared inline in the component file. A named `*PropsInterface` in `/interface` is allowed **only** when the same props shape is consumed by 2+ components (single-consumer = inline, per rule 51). A `*PropsInterface` imported by exactly one component is prohibited — inline it as `interface Props`.
 20. **Type guards in separate files** - Type guards go in `/type-guard` folder with `.type-guard.ts` suffix
 21. **Group useWatch calls together** - In React components, keep all `useWatch` calls together near other hooks, not scattered throughout the component
-22. **Effectful code is Effect.** Anything with IO, state, concurrency, time or failure returns an `Effect`. Service classes keep their shape; their methods become `Effect.fn` fields. `Context.Service` + `static readonly layer` only for swappable dependencies (`Db`, `HttpClient`, native invokers, SecureStore) or owned state (caches, queues, throttles, model lifecycles) - nothing else gets a service or a Layer. Pure code (math, parsers, mappers, SQL/predicate builders) stays plain TypeScript.
+22. **Effectful code is Effect; services are `make` services.** Anything with IO, state, concurrency, time or failure returns an `Effect`. Every service and repository is `export class X extends Context.Service<X>()('@budgie/<pkg>/X', { make: Effect.gen(function* () { const dep = yield* Dep; return { m: Effect.fn('X.m')(...) }; }) }) { static readonly layer = Layer.effect(X, X.make).pipe(Layer.provide([Dep.layer])); }`. No constructors, no `this`: dependencies are resolved once at the top of `make`, helpers and state are `make` locals, and the returned object is the service shape. `Db` stays a per-call requirement and is never captured. Callers use only the tag (`yield* X`, `Effect.flatMap(X, x => ...)`, never `X.use`). Ports without an implementation (`Db`, native invokers) are layer-less tags. Pure code (math, parsers, mappers, SQL/predicate builders) stays plain TypeScript with no tag.
 23. **One utility per file** - Each utility function should be in its own file with `.util.ts` suffix, don't combine multiple utilities
 24. **Re-export from package index** - Don't create intermediate export files (like `erste.ts`), re-export directly from `index.ts`
 25. **Class method ordering** - Public methods come before private methods in class definitions
@@ -182,7 +182,7 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 29. **Interface fields are `readonly` by default.** Interfaces are immutable contracts. If an interface is a mutable accumulator, convert it to a class with explicit mutation methods.
 30. **No re-export-only files.** Import from the canonical source. Thin indirections rot and fragment signatures. Exception: test-harness barrels under `tests/*/src/harness/index.ts` are permitted because per-scenario import-block similarity otherwise trips `pnpm cpd` (jscpd 0% threshold) and the project rule against `jscpd:ignore` and `.jscpd.json` edits prevents an in-source workaround.
 31. **Every manual condition is reviewed against the canonical `@rnw-community/shared` guard table.** See `Type Guards and Validation → Canonical Mapping` below.
-32. **Tracing uses `Effect.fn`.** Every effectful public function or method is `Effect.fn('Owner.method')(function* (...) {...})`, named after its owner and method; internal hot-loop helpers use `Effect.fnUntraced`. Repository methods whose body is a single `Db.query` are plain arrow fields without `Effect.fn`. Add context with `Effect.annotateCurrentSpan` or `Effect.logDebug` only when it names a real debugging handle. Never `console.*`.
+32. **Tracing uses `Effect.fn`.** Every effectful service method is `m: Effect.fn('X.m')(function* (...) {...})` in the object returned by `make`, named after the service and method; internal hot-loop helpers are `make` locals with `Effect.fnUntraced`. A method whose body is a single call (one `Db.query`, or a delegation to a dependency) is a plain arrow (`m: (a: A) => dep.m(a)`) without `Effect.fn`. Add context with `Effect.annotateCurrentSpan` or `Effect.logDebug` only when it names a real debugging handle. Never `console.*`.
 33. **Do not reshape public method arguments to satisfy lint.** Never convert existing positional arguments into an object, array, tuple/rest tuple, or new interface unless explicitly requested. Prefer splitting implementation into smaller private methods when it improves design; otherwise use a narrow `@typescript-eslint/max-params` lint disable with justification.
 34. **No log-only abstractions.** Do not add helpers, wrappers or constants whose only purpose is logging.
 35. **Errors travel in the typed channel.** No `throw`, `try`, `new Promise`, or `.catch(emptyFn)` in `src/`. Expected failures are `Schema.TaggedError` classes in the module `/error` folder (`*.error.ts`), created only when a caller branches on them; everything else is a defect. Wrap foreign Promise/SDK/native calls with `Effect.tryPromise`/`Effect.try` at that boundary only. Recover only at edges (React, background task, boot) with `Effect.catchTag`/`catchTags`/`catch`.
@@ -219,9 +219,9 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 55. **Snapshot Typed Array buffers from native callbacks.** When a native API hands you a `Float32Array`/`Int16Array`/etc. view (`AudioBuffer.getChannelData(0)`, JNI callbacks, FFI), the underlying memory is typically reused on the next callback. Always copy via `new Float32Array(samples)` before storing — otherwise all stored chunks alias the latest buffer.
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.
 57. **Concurrency, time and resources use Effect primitives.** `Schedule` + `Effect.retry`/`repeat`, `Effect.timeout`, `Effect.sleep`, `Semaphore`, `Latch`, `FiberMap`, `Cache`, fiber interruption and `Effect.acquireRelease`. Never `setTimeout` loops, generation counters, promise-chain mutexes, `Promise.race`, or boolean cancel flags.
-58. **Query-builder factory methods stay plain.** A repository method that returns a Drizzle builder for `useDatabaseLiveQuery` stays a plain method on the repository's `db`; executed reads and writes go through `Db.query(db => ...)` and `Db.transaction(effect)` from `@budgie/contracts`, never a transaction argument threaded through method signatures.
+58. **Repositories are services; reads are Effects.** A repository is a `make` service (rule 22) whose methods return Effects over `Db.query(db => ...)`; it holds no `db` and returns no Drizzle builders. Shared repository behaviour is a `make<X>Repository(table, columns)` factory spread into `make`, not a base class. Atomic work is `Db.transaction(effect)` from `@budgie/contracts`, never a transaction argument threaded through method signatures.
 59. **Never change app behavior only to satisfy E2E tests.** E2E must exercise real product behavior, not create test-only product paths. App code may gain stable selectors or accessibility metadata only when that preserves or improves real UI semantics; otherwise fix the Maestro flow, fixture, or test harness.
-60. **Database live-query boundaries are explicit.** React reads that render app database state use `useDatabaseLiveQuery`, not raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. Top-level app database writes pass `invalidateDatabaseLiveQuery` as an `Effect.fn` combinator (`Effect.fn('X.save')(function* () {...}, invalidateDatabaseLiveQuery)`) so subscribers refresh after success. Do not add event names or groups until profiling proves broad invalidation is a real rerender problem.
+60. **Live database reads are atoms; writes carry no keys.** React reads of app database state are `databaseQueryAtom([Tables...], effect)` atoms (`databaseQueryFamily([Tables...], Repo, (repo, key) => repo.x(key))` when parametrised) read with `useLiveAtomValue`, listing every table the SQL reads. Never raw `useLiveQuery` from `drizzle-orm/expo-sqlite`. The expo change listener (`databaseChangeReactivityLayer`) invalidates changed tables once each top-level `Db.transaction` settles; only writes it cannot see (virtual tables, `WITHOUT ROWID`, truncate-optimised deletes, file swaps) wrap themselves in `Reactivity.mutation([tableName], effect)`.
 61. **Component prop budget: more than 8 props is a lint error.** Enforced repo-wide by the local `budgie/max-component-props` rule loaded through Oxlint's JavaScript-plugin bridge (`eslint-rules/max-component-props.mjs`). The `allow` list in `.oxlintrc.json` is a grandfather register that may only shrink — never add a file to it. Prop-relay components, `isVisible` props, and boolean mode props (`isRefund`) are prohibited; use children composition, compound components sharing a context, and explicit variant components instead. Full guide with the reference implementation: [docs/component-composition.md](docs/component-composition.md).
 62. **No delegate-only hooks, no logic above components.** A hook whose body is one call to another hook plus constants (strings, an enum literal, a settings key) gets inlined into its consumers and deleted. Every layer of a hook chain must add real composition (state, refs, effects, 2+ composed sources with branching); single-consumer wrapper hooks are inlined into their component unless that forces a new lint disable. Component files contain imports, the inline `Props`, and the component — free functions with branching, hooks, and inline anonymous object types above a component belong in their proper module folders or in the child component that consumes them. See [docs/component-composition.md](docs/component-composition.md).
 63. **Never force-add ignored files.** If a path matches `.gitignore`, do not use `git add -f` or any equivalent override to commit it. Keep the file untracked unless the ignore rule itself is intentionally changed through normal review.
@@ -472,38 +472,46 @@ All effectful logic runs on **Effect v4** (`effect`, pinned exactly). Reference:
 **Binding:** load the `effect` skill first (it points at `node_modules/effect/AGENTS.md` and `ai-docs`, the official `effect-ts` skill's source of truth). All new logic is Effect: no `async`/`await`, `try`/`throw`, `new Promise`, `setTimeout` loops, or `useEffect` fetches with cancelled flags anywhere except the edges (`appRuntime.runPromise`/`runFork` in hooks, tasks and boot; `Effect.runPromise` in Next.js route edges). Tests are `@effect/vitest` `it.effect` (see below).
 
 ```ts
-import { Db } from '@budgie/contracts';
+import { Db, TransactionRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
 
 export class RefundExceedsExpenseError extends Schema.TaggedError<RefundExceedsExpenseError>()('RefundExceedsExpenseError', {
     transactionId: Schema.Number
 }) {}
 
-class RefundService {
-    readonly apply = Effect.fn('RefundService.apply')(function* (transactionId: number, amount: number) {
-        const expense = yield* transactionRepository.findById(transactionId);
+export class RefundService extends Context.Service<RefundService>()('@budgie/app/RefundService', {
+    make: Effect.gen(function* () {
+        const transactionRepository = yield* TransactionRepository;
 
-        if (amount > expense.amount) {
-            return yield* new RefundExceedsExpenseError({ transactionId });
-        }
+        return {
+            apply: Effect.fn('RefundService.apply')(function* (transactionId: number, amount: number) {
+                const expense = yield* transactionRepository.findById(transactionId);
 
-        return yield* Db.transaction(transactionRepository.createRefund(transactionId, amount));
-    }, invalidateDatabaseLiveQuery);
+                if (amount > expense.amount) {
+                    return yield* new RefundExceedsExpenseError({ transactionId });
+                }
+
+                return yield* Db.transaction(transactionRepository.createRefund(transactionId, amount));
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(RefundService, RefundService.make).pipe(Layer.provide(TransactionRepository.layer));
 }
-
-export const refundService = new RefundService();
 ```
 
-- **Lint guards.** `zod`, `ky` and `drizzle-zod` imports are banned repo-wide. In effectful non-UI code (contracts, sync, consolidation, budget, ai, and app `service`, `repository`, `api` and `.task.ts` files) `try`, `throw` and `new Promise` are lint errors: use Effect.
+- **Lint guards.** `zod`, `ky` and `drizzle-zod` imports are banned repo-wide. In effectful non-UI code (contracts, sync, consolidation, budget, ai, and app `service`, `repository`, `api` and `.task.ts` files) `try`, `throw` and `new Promise` are lint errors: use Effect. `max-lines-per-function` and `max-statements` are off for `*.service.ts`, `*.repository.ts`, `*.layer.ts` and the `make-*` service factories, because they would measure the whole `make` recipe; `complexity`, `max-depth` and `max-nested-callbacks` still apply. Split a service only along a cohesive seam (reads vs writes, import vs sync), never to shrink line counts.
 - **Import by subpath.** `import * as Effect from 'effect/Effect'`, never the `effect` barrel (lint-enforced). Metro does not tree-shake, and the barrel adds about 1.1 MB of Hermes bytecode.
-- **Keep the code minimal.** Pure code stays plain. Do not wrap a pure function in `Effect.sync`, add a Layer to a stateless class, or add a service interface file; the `Context.Service` shape is the contract.
+- **Keep the code minimal.** Pure code stays plain. Do not wrap a pure function in `Effect.sync`, give pure code a tag, or add a service interface file; the object returned by `make` is the contract. Layers are static values (never getters), so each service is built once per runtime. Register every layer in `appServicesLayer`.
 - **Database.** `Db.query(db => builder)` for executed queries, `Db.transaction(effect)` for atomic work. Nested `Db.transaction` calls reuse the outer transaction.
 - **Validation.** Effect `Schema` only (`Schema.decodeUnknownEffect` at boundaries; `Schema.toStandardSchemaV1` for form resolvers). Drizzle row types come from `typeof Table.$inferSelect` / `$inferInsert`.
 - **HTTP.** `HttpClient` from `effect/http` with `Schedule` retries and `Effect.timeout`.
 - **Running.** Only edges run effects: the app `ManagedRuntime` (`runtime.runPromise`) in hooks, atoms, background tasks and boot, `Effect.runPromise` in Next.js route edges, `it.effect` in `tests/*`. No `Effect.runPromise`/`runSync` inside services.
 - **Tests.** `tests/*` suites use `@effect/vitest`: every test is `it.effect('...', () => Effect.gen(function* () {...}))` (`it.layer` for shared layers), with `Db` and services provided as layers from `tests/test-kit`. No `async` test bodies, no `runPromise` in tests, no `try`/`catch`; assert failures with `Effect.flip`/`Effect.exit`. Time-dependent tests use `TestClock`.
-- **React.** Service-calling state lives in `@effect/atom-react` atoms; `useDatabaseLiveQuery` reads stay as they are.
+- **React.** Service-calling state and live database reads live in `@effect/atom-react` atoms (`databaseQueryAtom` for reads).
 - **Logging.** The `makeLoggerLayer` layer from `@budgie/logger` is the only sink. `EXPO_PUBLIC_LOGGING_DISABLE=true` suppresses release-bundle output; Metro dev bundles still log through `__DEV__`. App-specific Metro commands and bundle-id traps live in `packages/app/AGENTS.md`.
 
 ## Tech Stack

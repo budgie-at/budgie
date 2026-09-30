@@ -1,5 +1,7 @@
 import { eq, inArray } from 'drizzle-orm';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -9,45 +11,47 @@ import { TransactionTagsCreateEntityInterface } from '../entity/transaction-tags
 import { TransactionTagsEntityTable } from '../table/transaction-tags-entity.table';
 import { insertTransactionTag } from '../util/insert-transaction-tag.util';
 
-export class TransactionTagsRepository {
-    readonly findByTransactionIds = Effect.fn('TransactionTagsRepository.findByTransactionIds')(function* (
-        transactionIds: readonly number[]
-    ) {
-        if (!isNotEmptyArray(transactionIds)) {
-            return [];
-        }
+export class TransactionTagsRepository extends Context.Service<TransactionTagsRepository>()('@budgie/contracts/TransactionTagsRepository', {
+    make: Effect.succeed({
+        findByTransactionIds: Effect.fn('TransactionTagsRepository.findByTransactionIds')(function* (transactionIds: readonly number[]) {
+            if (!isNotEmptyArray(transactionIds)) {
+                return [];
+            }
 
-        return yield* Db.query(db =>
-            db.select().from(TransactionTagsEntityTable).where(inArray(TransactionTagsEntityTable.transactionId, transactionIds))
-        );
-    });
+            return yield* Db.query(db =>
+                db.select().from(TransactionTagsEntityTable).where(inArray(TransactionTagsEntityTable.transactionId, transactionIds))
+            );
+        }),
 
-    readonly bulkCreate = Effect.fn('TransactionTagsRepository.bulkCreate')(function* (inputs: TransactionTagsCreateEntityInterface[]) {
-        if (!isNotEmptyArray(inputs)) {
-            return [];
-        }
+        bulkCreate: Effect.fn('TransactionTagsRepository.bulkCreate')(function* (inputs: TransactionTagsCreateEntityInterface[]) {
+            if (!isNotEmptyArray(inputs)) {
+                return [];
+            }
 
-        return yield* Db.query(db => db.insert(TransactionTagsEntityTable).values(inputs).returning());
-    });
+            return yield* Db.query(db => db.insert(TransactionTagsEntityTable).values(inputs).returning());
+        }),
 
-    readonly addTagByTransactionIds = Effect.fn('TransactionTagsRepository.addTagByTransactionIds')(function* (
-        transactionIds: number[],
-        tagId: number
-    ) {
-        if (!isNotEmptyArray(transactionIds)) {
-            return [];
-        }
+        addTagByTransactionIds: Effect.fn('TransactionTagsRepository.addTagByTransactionIds')(function* (
+            transactionIds: number[],
+            tagId: number
+        ) {
+            if (!isNotEmptyArray(transactionIds)) {
+                return [];
+            }
 
-        const rows = yield* Db.query(db => insertTransactionTag(db, tagId, inArray(TransactionEntityTable.id, transactionIds)));
+            const rows = yield* Db.query(db => insertTransactionTag(db, tagId, inArray(TransactionEntityTable.id, transactionIds)));
 
-        return rows.map(row => row.transactionId);
-    });
+            return rows.map(row => row.transactionId);
+        }),
 
-    readonly findByTransactionId = (transactionId: number) =>
-        Db.query(db => db.select().from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, transactionId)));
+        findByTransactionId: (transactionId: number) =>
+            Db.query(db => db.select().from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, transactionId))),
 
-    readonly deleteByTransactionId = (id: number) =>
-        Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, id)));
+        deleteByTransactionId: (id: number) =>
+            Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.transactionId, id))),
 
-    readonly truncate = () => Db.query(db => db.delete(TransactionTagsEntityTable));
+        truncate: () => Db.query(db => db.delete(TransactionTagsEntityTable))
+    })
+}) {
+    static readonly layer = Layer.effect(TransactionTagsRepository, TransactionTagsRepository.make);
 }

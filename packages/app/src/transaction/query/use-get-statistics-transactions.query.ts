@@ -1,12 +1,14 @@
+import { StatisticsRepository } from '@budgie/contracts';
+
 import { isDefined } from '@rnw-community/shared';
 
-import { statisticsRepository } from '../../@generic/drizzle/db/db';
-import { useSetting } from '../../settings/hook/use-setting.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 import { buildTransactionFilterKey } from '../utils/build-transaction-filter-key.util';
 
 import { useGetTransactionSectionsQuery } from './use-get-transaction-sections.query';
 
-import type { StatisticsFilterInterface, TransactionFilterInterface } from '@budgie/contracts';
+import type { LanguageEnum, StatisticsFilterInterface, TransactionFilterInterface } from '@budgie/contracts';
 
 const buildTransactionFilter = (filters: StatisticsFilterInterface): TransactionFilterInterface => ({
     accountIds: filters.accountIds,
@@ -17,11 +19,16 @@ const buildTransactionFilter = (filters: StatisticsFilterInterface): Transaction
     types: isDefined(filters.type) ? [filters.type] : null
 });
 
-export const useGetStatisticsTransactionsQuery = (filters: StatisticsFilterInterface) => {
-    const language = useSetting('language');
-    const excludedCategoryKey = filters.excludedCategoryIds?.join(',') ?? 'null';
-    const filterKey = `${buildTransactionFilterKey(buildTransactionFilter(filters))}|${excludedCategoryKey}|${language}`;
-    const buildQuery = (limit: number) => statisticsRepository.getTransactions(filters, limit, language);
+const statisticsTransactionsAtom = databaseQueryFamily(
+    STATISTICS_TABLES,
+    StatisticsRepository,
+    (statisticsRepository, [filters, language, limit]: readonly [StatisticsFilterInterface, LanguageEnum, number]) =>
+        statisticsRepository.getTransactions(filters, limit, language)
+);
 
-    return useGetTransactionSectionsQuery(buildQuery, filterKey);
+export const useGetStatisticsTransactionsQuery = (filters: StatisticsFilterInterface) => {
+    const excludedCategoryKey = filters.excludedCategoryIds?.join(',') ?? 'null';
+    const filterKey = `${buildTransactionFilterKey(buildTransactionFilter(filters))}|${excludedCategoryKey}`;
+
+    return useGetTransactionSectionsQuery((limit, language) => statisticsTransactionsAtom([filters, language, limit]), filterKey);
 };

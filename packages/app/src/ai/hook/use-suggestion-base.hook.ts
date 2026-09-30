@@ -1,5 +1,4 @@
 import { SuggestionInternalStatus, SuggestionStatus, UseSuggestionReturnInterface } from '@budgie/ai';
-import { Db } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import { useEffect, useRef, useState } from 'react';
@@ -8,16 +7,18 @@ import { emptyFn } from '@rnw-community/shared';
 
 import { useFocusRefreshVersion } from '../../@generic/hook/use-focus-refresh-version.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { embeddingProgressSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../constant/embedding-completeness-threshold.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
-import { aiModelResidencyService } from '../service/ai-model-residency.service';
-import { embeddingProgressStore } from '../store/embedding-progress.store';
+import { AiModelResidencyService } from '../service/ai-model-residency.service';
+
+import type { AppServices } from '../../@generic/runtime/app.runtime';
 
 interface UseSuggestionBaseParams<T> {
     readonly enabled: boolean;
     readonly readyChecks: readonly boolean[];
     readonly requestKeyParts: readonly unknown[];
-    readonly fetchSuggestions: () => Effect.Effect<T[], unknown, Db>;
+    readonly fetchSuggestions: () => Effect.Effect<T[], unknown, AppServices>;
 }
 
 interface UseSuggestionBaseReturn<T> extends UseSuggestionReturnInterface<T> {
@@ -43,7 +44,7 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
     });
     const { refresh, refreshVersion } = useFocusRefreshVersion();
     const fetchSuggestionsRef = useRef(fetchSuggestions);
-    const progress = useAtomValue(embeddingProgressStore.snapshot, snapshot => snapshot.percent);
+    const progress = useAtomValue(embeddingProgressSnapshotAtom, snapshot => snapshot.percent);
     const isEmbeddingIncomplete = progress < EMBEDDING_COMPLETENESS_THRESHOLD;
 
     useEffect(() => {
@@ -55,10 +56,18 @@ export const useSuggestionBase = <T>(params: UseSuggestionBaseParams<T>): UseSug
             return emptyFn;
         }
 
-        appRuntime.runFork(aiModelResidencyService.acquire(AiSubsystemNameEnum.EMBEDDING));
+        appRuntime.runFork(
+            Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                aiModelResidencyService.acquire(AiSubsystemNameEnum.EMBEDDING)
+            )
+        );
 
         return () => {
-            appRuntime.runFork(aiModelResidencyService.release(AiSubsystemNameEnum.EMBEDDING));
+            appRuntime.runFork(
+                Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                    aiModelResidencyService.release(AiSubsystemNameEnum.EMBEDDING)
+                )
+            );
         };
     }, [enabled]);
 

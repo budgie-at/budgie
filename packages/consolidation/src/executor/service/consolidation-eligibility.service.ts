@@ -1,55 +1,76 @@
+import { TransactionEntryRepository, TransactionRepository } from '@budgie/contracts';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
-import type { ConsolidationExecutorDependenciesInterface } from '../interface/consolidation-executor-dependencies.interface';
+export class ConsolidationEligibilityService extends Context.Service<ConsolidationEligibilityService>()(
+    '@budgie/consolidation/ConsolidationEligibilityService',
+    {
+        make: Effect.gen(function* () {
+            const transactionRepository = yield* TransactionRepository;
+            const transactionEntryRepository = yield* TransactionEntryRepository;
 
-export class ConsolidationEligibilityService {
-    readonly areCandidatesStillEligible = Effect.fn('ConsolidationEligibilityService.areCandidatesStillEligible')(function* (
-        this: ConsolidationEligibilityService,
-        sourceTransactionIds: number[],
-        allowedMovedSourceTransactionIds: number[] = []
-    ) {
-        return isDefined(yield* this.findEligibleSourceTransactions(sourceTransactionIds, allowedMovedSourceTransactionIds));
-    });
+            const findEligibleSourceTransactions = Effect.fn('ConsolidationEligibilityService.findEligibleSourceTransactions')(function* (
+                sourceTransactionIds: number[],
+                allowedMovedSourceTransactionIds: number[] = []
+            ) {
+                const fresh = yield* transactionRepository.findByIds(sourceTransactionIds);
 
-    readonly findEligibleSourceTransactions = Effect.fn('ConsolidationEligibilityService.findEligibleSourceTransactions')(function* (
-        this: ConsolidationEligibilityService,
-        sourceTransactionIds: number[],
-        allowedMovedSourceTransactionIds: number[] = []
-    ) {
-        const fresh = yield* this.dependencies.transactionRepository.findByIds(sourceTransactionIds);
+                if (fresh.length !== sourceTransactionIds.length) {
+                    return null;
+                }
 
-        if (fresh.length !== sourceTransactionIds.length) {
-            return null;
-        }
+                const movedEntryBlockedTransactionIds = sourceTransactionIds.filter(
+                    transactionId => !allowedMovedSourceTransactionIds.includes(transactionId)
+                );
 
-        const movedEntryBlockedTransactionIds = sourceTransactionIds.filter(
-            transactionId => !allowedMovedSourceTransactionIds.includes(transactionId)
-        );
+                if (yield* transactionEntryRepository.hasMovedSourceEntries(movedEntryBlockedTransactionIds)) {
+                    return null;
+                }
 
-        if (yield* this.dependencies.transactionEntryRepository.hasMovedSourceEntries(movedEntryBlockedTransactionIds)) {
-            return null;
-        }
+                if (
+                    fresh.every(
+                        transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt)
+                    )
+                ) {
+                    return fresh;
+                }
 
-        if (fresh.every(transaction => !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt))) {
-            return fresh;
-        }
+                return null;
+            });
 
-        return null;
-    });
+            const areCandidatesStillEligible = Effect.fn('ConsolidationEligibilityService.areCandidatesStillEligible')(function* (
+                sourceTransactionIds: number[],
+                allowedMovedSourceTransactionIds: number[] = []
+            ) {
+                return isDefined(yield* findEligibleSourceTransactions(sourceTransactionIds, allowedMovedSourceTransactionIds));
+            });
 
-    readonly isExistingTransferConsolidationStillEligible = Effect.fn(
-        'ConsolidationEligibilityService.isExistingTransferConsolidationStillEligible'
-    )(function* (this: ConsolidationEligibilityService, sourceTransactionIds: number[], existingTransferId: number) {
-        if (!(yield* this.areCandidatesStillEligible(sourceTransactionIds))) {
-            return false;
-        }
+            return {
+                areCandidatesStillEligible,
+                findEligibleSourceTransactions,
+                isExistingTransferConsolidationStillEligible: Effect.fn(
+                    'ConsolidationEligibilityService.isExistingTransferConsolidationStillEligible'
+                )(function* (sourceTransactionIds: number[], existingTransferId: number) {
+                    if (!(yield* areCandidatesStillEligible(sourceTransactionIds))) {
+                        return false;
+                    }
 
-        const transaction = yield* this.dependencies.transactionRepository.getByIdRaw(existingTransferId);
+                    const transaction = yield* transactionRepository.getByIdRaw(existingTransferId);
 
-        return isDefined(transaction) && !isDefined(transaction.consolidationParentTransactionId) && !isDefined(transaction.deletedAt);
-    });
-
-    constructor(private readonly dependencies: ConsolidationExecutorDependenciesInterface) {}
+                    return (
+                        isDefined(transaction) &&
+                        !isDefined(transaction.consolidationParentTransactionId) &&
+                        !isDefined(transaction.deletedAt)
+                    );
+                })
+            };
+        })
+    }
+) {
+    static readonly layer = Layer.effect(ConsolidationEligibilityService, ConsolidationEligibilityService.make).pipe(
+        Layer.provide([TransactionRepository.layer, TransactionEntryRepository.layer])
+    );
 }

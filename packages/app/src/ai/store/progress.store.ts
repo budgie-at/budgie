@@ -1,16 +1,14 @@
 import * as Effect from 'effect/Effect';
-import * as Atom from 'effect/reactivity/Atom';
 import * as Semaphore from 'effect/Semaphore';
 
 import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
 import { ProgressSnapshotInterface } from '../interface/progress-snapshot.interface';
 
 import type { Db, DbError } from '@budgie/contracts';
+import type * as Atom from 'effect/reactivity/Atom';
 
 export class ProgressStore {
     private static readonly FULL_PERCENT = 100;
-
-    readonly snapshot = Atom.keepAlive(Atom.make<ProgressSnapshotInterface>({ percent: 0, pending: 0, total: 0 }));
 
     readonly refresh = Effect.fn('ProgressStore.refresh')(
         function* (this: ProgressStore) {
@@ -29,6 +27,7 @@ export class ProgressStore {
     private lastRefreshAt = 0;
 
     constructor(
+        readonly snapshot: Atom.Writable<ProgressSnapshotInterface>,
         private readonly countTotalAndPending: Effect.Effect<readonly [number, number], DbError, Db>,
         private readonly throttleMs: number
     ) {}

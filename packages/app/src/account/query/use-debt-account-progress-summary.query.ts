@@ -1,9 +1,11 @@
+import { AccountBalanceRepository, AccountEntityTable, DebtEventEntityTable } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+
 import { isDefined } from '@rnw-community/shared';
 
-import { accountBalanceRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 
-import { useAccountBalancesUpdatedAtQuery } from './use-account-balances-updated-at.query';
 import { useCachedMicroUnitQuery } from './use-cached-micro-unit.query';
 
 import type { DebtAccountProgressSummaryInterface } from '@budgie/contracts';
@@ -16,19 +18,21 @@ const EMPTY_DEBT_ACCOUNT_PROGRESS_SUMMARY: DebtAccountProgressSummaryInterface =
     totalAmount: 0
 };
 
+const debtAccountProgressAtom = databaseQueryFamily(
+    [AccountEntityTable, DebtEventEntityTable],
+    AccountBalanceRepository,
+    (accountBalanceRepository, accountId: number) => accountBalanceRepository.getDebtAccountProgressByAccountId(accountId)
+);
+
 export const useDebtAccountProgressSummaryQuery = (accountId: number): DebtAccountProgressSummaryInterface | null => {
-    const accountBalancesUpdatedAt = useAccountBalancesUpdatedAtQuery();
-    const { data, updatedAt } = useDatabaseLiveQuery(accountBalanceRepository.getDebtAccountProgressByAccountId(accountId), [
-        accountId,
-        accountBalancesUpdatedAt
-    ]);
-    const row = data.at(0);
+    const result = useLiveAtomValue(debtAccountProgressAtom(accountId));
+    const row = AsyncResult.getOrElse(result, () => []).at(0);
     const outstandingAmount = useCachedMicroUnitQuery(row?.outstandingAmount);
     const overpaidAmount = useCachedMicroUnitQuery(row?.overpaidAmount);
     const paidAmount = useCachedMicroUnitQuery(row?.paidAmount);
     const totalAmount = useCachedMicroUnitQuery(row?.totalAmount);
 
-    if (!isDefined(updatedAt)) {
+    if (AsyncResult.isInitial(result)) {
         return null;
     }
 

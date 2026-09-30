@@ -1,5 +1,11 @@
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
+import { AtmCashWithdrawalRepository } from '../../query/repository/atm-cash-withdrawal.repository';
+import { ExistingTransferRepository } from '../../query/repository/existing-transfer.repository';
+import { RefundPairRepository } from '../../query/repository/refund-pair.repository';
+import { TransferPairRepository } from '../../query/repository/transfer-pair.repository';
 import { CONSOLIDATION_YIELD } from '../../shared/constant/consolidation-yield.constant';
 
 import { AtmCashWithdrawalConsolidationFamilyService } from './atm-cash-withdrawal-consolidation-family.service';
@@ -15,10 +21,7 @@ import { P2pFiatTransferConsolidationFamilyService } from './p2p-fiat-transfer-c
 import { RefundPairConsolidationFamilyService } from './refund-pair-consolidation-family.service';
 import { TransferPairConsolidationFamilyService } from './transfer-pair-consolidation-family.service';
 
-import type { ConsolidationExecutorService } from '../../executor/service/consolidation-executor.service';
-import type { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
 import type { ConsolidationFamilyStrategyInterface } from '../interface/consolidation-family-strategy.interface';
-import type { ConsolidationRepositoriesInterface } from '../interface/consolidation-repositories.interface';
 import type { ConsolidationResultInterface } from '../interface/consolidation-result.interface';
 import type {
     ConsolidationScanScopeInterface,
@@ -26,232 +29,213 @@ import type {
     ExistingTransferChainReclaimCandidateInterface
 } from '@budgie/contracts';
 
-export class ConsolidationCoordinatorService {
-    readonly families: ConsolidationFamilyStrategyInterface[];
+export class ConsolidationCoordinatorService extends Context.Service<ConsolidationCoordinatorService>()(
+    '@budgie/consolidation/ConsolidationCoordinatorService',
+    {
+        make: Effect.gen(function* () {
+            const atmCashWithdrawalRepository = yield* AtmCashWithdrawalRepository;
+            const existingTransferRepository = yield* ExistingTransferRepository;
+            const refundPairRepository = yield* RefundPairRepository;
+            const transferPairRepository = yield* TransferPairRepository;
+            const existingTransferIncomeDuplicateFamily = yield* ExistingTransferIncomeDuplicateConsolidationFamilyService;
+            const bridgeClaimRepairFamily = yield* BridgeClaimRepairConsolidationFamilyService;
+            const atmCashWithdrawalFamily = yield* AtmCashWithdrawalConsolidationFamilyService;
+            const families: ConsolidationFamilyStrategyInterface[] = [
+                yield* IbanBridgeChainTransferConsolidationFamilyService,
+                yield* ExistingTransferBridgeConsolidationFamilyService,
+                yield* ExistingTransferChainReclaimConsolidationFamilyService,
+                yield* IbanBridgeCanonicalDuplicateConsolidationFamilyService,
+                yield* IbanBridgeTransferConsolidationFamilyService,
+                yield* IbanBridgeCanonicalSupersessionConsolidationFamilyService,
+                existingTransferIncomeDuplicateFamily,
+                yield* P2pFiatTransferConsolidationFamilyService,
+                yield* TransferPairConsolidationFamilyService,
+                yield* RefundPairConsolidationFamilyService
+            ];
 
-    readonly consolidate = Effect.fn('ConsolidationCoordinatorService.consolidate')(function* (
-        this: ConsolidationCoordinatorService,
-        scope: ConsolidationScanScopeInterface | null = null,
-        onProgress?: (processedCandidateGroupCount: number) => void
-    ) {
-        const blockedSourceTransactionIds = new Set<number>();
-        let consolidated = 0;
-        let found = 0;
+            const buildExistingTransferDuplicateBlockedSourceTransactionIdSet = (
+                existingTransferBridgeCandidates: ExistingTransferBridgeCandidateInterface[],
+                existingTransferChainReclaimCandidates: ExistingTransferChainReclaimCandidateInterface[]
+            ): Set<number> => {
+                const sourceTransactionIds = new Set(
+                    existingTransferBridgeCandidates.flatMap(candidate => [
+                        candidate.sourceExpenseTransactionId,
+                        candidate.bridgeIncomeTransactionId,
+                        candidate.existingTransferId
+                    ])
+                );
 
-        for (const family of this.families) {
-            const processedCandidateGroupCount = found;
-            const familyResult = yield* family.process({
-                blockedSourceTransactionIds: new Set(blockedSourceTransactionIds),
-                onProgress: processedCount => onProgress?.(processedCandidateGroupCount + processedCount),
-                scope
+                for (const candidate of existingTransferChainReclaimCandidates) {
+                    sourceTransactionIds.add(candidate.existingTransferId);
+                    sourceTransactionIds.add(candidate.bridgeIncomeTransactionId);
+                    sourceTransactionIds.add(candidate.bridgeExpenseTransactionId);
+                }
+
+                return sourceTransactionIds;
+            };
+
+            const findExistingTransferIncomeDuplicateRepairCandidates = Effect.fn(
+                'ConsolidationCoordinatorService.findExistingTransferIncomeDuplicateRepairCandidates'
+            )(function* () {
+                const existingTransferBridgeCandidates = yield* existingTransferRepository.findBridgeCandidates(null);
+                yield* CONSOLIDATION_YIELD;
+                const existingTransferChainReclaimCandidates = yield* existingTransferRepository.findChainReclaimCandidates(null);
+                yield* CONSOLIDATION_YIELD;
+                const rawExistingTransferIncomeDuplicateCandidates = yield* existingTransferRepository.findIncomeDuplicateCandidates(null);
+                yield* CONSOLIDATION_YIELD;
+
+                const blockedSourceTransactionIds = buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
+                    existingTransferBridgeCandidates,
+                    existingTransferChainReclaimCandidates
+                );
+                const existingTransferIncomeDuplicateCandidates = rawExistingTransferIncomeDuplicateCandidates.filter(
+                    candidate =>
+                        !blockedSourceTransactionIds.has(candidate.existingTransferId) &&
+                        !blockedSourceTransactionIds.has(candidate.duplicateTransactionId)
+                );
+                yield* CONSOLIDATION_YIELD;
+
+                return existingTransferIncomeDuplicateCandidates;
             });
 
-            for (const sourceTransactionId of familyResult.blockedSourceTransactionIds) {
-                blockedSourceTransactionIds.add(sourceTransactionId);
-            }
+            const findBridgeClaimedRepairCandidates = Effect.fn('ConsolidationCoordinatorService.findBridgeClaimedRepairCandidates')(
+                function* () {
+                    const candidates = yield* transferPairRepository.findBridgeClaimedRepairCandidates();
+                    yield* CONSOLIDATION_YIELD;
 
-            consolidated += familyResult.consolidated;
-            found += familyResult.found;
-        }
-
-        return { found, consolidated } satisfies ConsolidationResultInterface;
-    });
-
-    readonly countAutoCandidates = Effect.fn('ConsolidationCoordinatorService.countAutoCandidates')(function* (
-        this: ConsolidationCoordinatorService,
-        scope: ConsolidationScanScopeInterface | null = null
-    ) {
-        const blockedSourceTransactionIds = new Set<number>();
-        let found = 0;
-
-        for (const family of this.families) {
-            const preview = yield* family.preview({ blockedSourceTransactionIds: new Set(blockedSourceTransactionIds), scope });
-
-            for (const sourceTransactionId of preview.blockedSourceTransactionIds) {
-                blockedSourceTransactionIds.add(sourceTransactionId);
-            }
-
-            found += preview.found;
-        }
-
-        return found;
-    });
-
-    readonly countManualReviewCandidates = Effect.fn('ConsolidationCoordinatorService.countManualReviewCandidates')(
-        function* (this: ConsolidationCoordinatorService) {
-            const [manualReviewCandidates, refundReviewCandidates] = yield* Effect.all(
-                [
-                    this.repositories.transferPairRepository.findManualReviewCandidates(),
-                    this.repositories.refundPairRepository.findReviewCandidates()
-                ],
-                { concurrency: 'unbounded' }
+                    return candidates;
+                }
             );
-            yield* CONSOLIDATION_YIELD;
 
-            return manualReviewCandidates.length + refundReviewCandidates.length;
-        }
-    );
+            const findAtmCashWithdrawalCandidates = Effect.fn('ConsolidationCoordinatorService.findAtmCashWithdrawalCandidates')(function* (
+                transactionIds: readonly number[]
+            ) {
+                const candidates = yield* atmCashWithdrawalRepository.findCandidates(null);
 
-    readonly findAtmCashWithdrawalTransactionIds = Effect.fn('ConsolidationCoordinatorService.findAtmCashWithdrawalTransactionIds')(
-        function* (this: ConsolidationCoordinatorService, transactionIds: readonly number[]) {
-            const candidates = yield* this.findAtmCashWithdrawalCandidates(transactionIds);
+                return candidates.filter(candidate => transactionIds.includes(candidate.transactionId));
+            });
 
-            return candidates.map(candidate => candidate.transactionId);
-        }
-    );
+            const consolidate = Effect.fn('ConsolidationCoordinatorService.consolidate')(function* (
+                scope: ConsolidationScanScopeInterface | null = null,
+                onProgress?: (processedCandidateGroupCount: number) => void
+            ) {
+                const blockedSourceTransactionIds = new Set<number>();
+                let consolidated = 0;
+                let found = 0;
 
-    readonly moveAtmCashWithdrawalsToCash = Effect.fn('ConsolidationCoordinatorService.moveAtmCashWithdrawalsToCash')(function* (
-        this: ConsolidationCoordinatorService,
-        transactionIds: readonly number[]
-    ) {
-        const candidates = yield* this.findAtmCashWithdrawalCandidates(transactionIds);
+                for (const family of families) {
+                    const processedCandidateGroupCount = found;
+                    const familyResult = yield* family.process({
+                        blockedSourceTransactionIds: new Set(blockedSourceTransactionIds),
+                        onProgress: processedCount => onProgress?.(processedCandidateGroupCount + processedCount),
+                        scope
+                    });
 
-        return yield* this.atmCashWithdrawalFamily.processCandidateList(candidates);
-    });
+                    for (const sourceTransactionId of familyResult.blockedSourceTransactionIds) {
+                        blockedSourceTransactionIds.add(sourceTransactionId);
+                    }
 
-    readonly countExistingTransferIncomeDuplicateRepairCandidates = Effect.fn(
-        'ConsolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates'
-    )(function* (this: ConsolidationCoordinatorService) {
-        return (yield* this.findExistingTransferIncomeDuplicateRepairCandidates()).length;
-    });
+                    consolidated += familyResult.consolidated;
+                    found += familyResult.found;
+                }
 
-    readonly repairExistingTransferIncomeDuplicates = Effect.fn('ConsolidationCoordinatorService.repairExistingTransferIncomeDuplicates')(
-        function* (this: ConsolidationCoordinatorService) {
-            const candidates = yield* this.findExistingTransferIncomeDuplicateRepairCandidates();
+                return { found, consolidated } satisfies ConsolidationResultInterface;
+            });
 
-            return yield* this.existingTransferIncomeDuplicateFamily.processCandidateList(candidates);
-        }
-    );
+            return {
+                consolidate,
+                countAutoCandidates: Effect.fn('ConsolidationCoordinatorService.countAutoCandidates')(function* (
+                    scope: ConsolidationScanScopeInterface | null = null
+                ) {
+                    const blockedSourceTransactionIds = new Set<number>();
+                    let found = 0;
 
-    readonly countBridgeClaimRepairCandidates = Effect.fn('ConsolidationCoordinatorService.countBridgeClaimRepairCandidates')(
-        function* (this: ConsolidationCoordinatorService) {
-            return (yield* this.findBridgeClaimedRepairCandidates()).length;
-        }
-    );
+                    for (const family of families) {
+                        const preview = yield* family.preview({ blockedSourceTransactionIds: new Set(blockedSourceTransactionIds), scope });
 
-    readonly repairBridgeClaimedTransferPairs = Effect.fn('ConsolidationCoordinatorService.repairBridgeClaimedTransferPairs')(
-        function* (this: ConsolidationCoordinatorService) {
-            const candidates = yield* this.findBridgeClaimedRepairCandidates();
-            const repairedCount = yield* this.bridgeClaimRepairFamily.processCandidateList(candidates);
+                        for (const sourceTransactionId of preview.blockedSourceTransactionIds) {
+                            blockedSourceTransactionIds.add(sourceTransactionId);
+                        }
 
-            if (repairedCount > 0) {
-                yield* this.consolidate(null);
-            }
+                        found += preview.found;
+                    }
 
-            return repairedCount;
-        }
-    );
+                    return found;
+                }),
+                countManualReviewCandidates: Effect.fn('ConsolidationCoordinatorService.countManualReviewCandidates')(function* () {
+                    const [manualReviewCandidates, refundReviewCandidates] = yield* Effect.all(
+                        [transferPairRepository.findManualReviewCandidates(), refundPairRepository.findReviewCandidates()],
+                        { concurrency: 'unbounded' }
+                    );
+                    yield* CONSOLIDATION_YIELD;
 
-    private readonly existingTransferIncomeDuplicateFamily: ExistingTransferIncomeDuplicateConsolidationFamilyService;
+                    return manualReviewCandidates.length + refundReviewCandidates.length;
+                }),
+                findAtmCashWithdrawalTransactionIds: Effect.fn('ConsolidationCoordinatorService.findAtmCashWithdrawalTransactionIds')(
+                    function* (transactionIds: readonly number[]) {
+                        const candidates = yield* findAtmCashWithdrawalCandidates(transactionIds);
 
-    private readonly bridgeClaimRepairFamily: BridgeClaimRepairConsolidationFamilyService;
+                        return candidates.map(candidate => candidate.transactionId);
+                    }
+                ),
+                moveAtmCashWithdrawalsToCash: Effect.fn('ConsolidationCoordinatorService.moveAtmCashWithdrawalsToCash')(function* (
+                    transactionIds: readonly number[]
+                ) {
+                    const candidates = yield* findAtmCashWithdrawalCandidates(transactionIds);
 
-    private readonly atmCashWithdrawalFamily: AtmCashWithdrawalConsolidationFamilyService;
+                    return yield* atmCashWithdrawalFamily.processCandidateList(candidates);
+                }),
+                countExistingTransferIncomeDuplicateRepairCandidates: Effect.fn(
+                    'ConsolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates'
+                )(function* () {
+                    return (yield* findExistingTransferIncomeDuplicateRepairCandidates()).length;
+                }),
+                repairExistingTransferIncomeDuplicates: Effect.fn('ConsolidationCoordinatorService.repairExistingTransferIncomeDuplicates')(
+                    function* () {
+                        const candidates = yield* findExistingTransferIncomeDuplicateRepairCandidates();
 
-    private readonly findExistingTransferIncomeDuplicateRepairCandidates = Effect.fn(
-        'ConsolidationCoordinatorService.findExistingTransferIncomeDuplicateRepairCandidates'
-    )(function* (this: ConsolidationCoordinatorService) {
-        const { existingTransferRepository } = this.repositories;
-        const existingTransferBridgeCandidates = yield* existingTransferRepository.findBridgeCandidates(null);
-        yield* CONSOLIDATION_YIELD;
-        const existingTransferChainReclaimCandidates = yield* existingTransferRepository.findChainReclaimCandidates(null);
-        yield* CONSOLIDATION_YIELD;
-        const rawExistingTransferIncomeDuplicateCandidates = yield* existingTransferRepository.findIncomeDuplicateCandidates(null);
-        yield* CONSOLIDATION_YIELD;
+                        return yield* existingTransferIncomeDuplicateFamily.processCandidateList(candidates);
+                    }
+                ),
+                countBridgeClaimRepairCandidates: Effect.fn('ConsolidationCoordinatorService.countBridgeClaimRepairCandidates')(
+                    function* () {
+                        return (yield* findBridgeClaimedRepairCandidates()).length;
+                    }
+                ),
+                repairBridgeClaimedTransferPairs: Effect.fn('ConsolidationCoordinatorService.repairBridgeClaimedTransferPairs')(
+                    function* () {
+                        const candidates = yield* findBridgeClaimedRepairCandidates();
+                        const repairedCount = yield* bridgeClaimRepairFamily.processCandidateList(candidates);
 
-        const blockedSourceTransactionIds = this.buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
-            existingTransferBridgeCandidates,
-            existingTransferChainReclaimCandidates
-        );
-        const existingTransferIncomeDuplicateCandidates = rawExistingTransferIncomeDuplicateCandidates.filter(
-            candidate =>
-                !blockedSourceTransactionIds.has(candidate.existingTransferId) &&
-                !blockedSourceTransactionIds.has(candidate.duplicateTransactionId)
-        );
-        yield* CONSOLIDATION_YIELD;
+                        if (repairedCount > 0) {
+                            yield* consolidate(null);
+                        }
 
-        return existingTransferIncomeDuplicateCandidates;
-    });
-
-    private readonly findBridgeClaimedRepairCandidates = Effect.fn('ConsolidationCoordinatorService.findBridgeClaimedRepairCandidates')(
-        function* (this: ConsolidationCoordinatorService) {
-            const candidates = yield* this.repositories.transferPairRepository.findBridgeClaimedRepairCandidates();
-            yield* CONSOLIDATION_YIELD;
-
-            return candidates;
-        }
-    );
-
-    private readonly findAtmCashWithdrawalCandidates = Effect.fn('ConsolidationCoordinatorService.findAtmCashWithdrawalCandidates')(
-        function* (this: ConsolidationCoordinatorService, transactionIds: readonly number[]) {
-            const candidates = yield* this.repositories.atmCashWithdrawalRepository.findCandidates(null);
-
-            return candidates.filter(candidate => transactionIds.includes(candidate.transactionId));
-        }
-    );
-
-    constructor(
-        private readonly repositories: ConsolidationRepositoriesInterface,
-        consolidationExecutorService: ConsolidationExecutorService,
-        consolidationRepairExecutorService: ConsolidationRepairExecutorService
-    ) {
-        this.existingTransferIncomeDuplicateFamily = new ExistingTransferIncomeDuplicateConsolidationFamilyService(
-            repositories.existingTransferRepository,
-            consolidationRepairExecutorService
-        );
-        this.bridgeClaimRepairFamily = new BridgeClaimRepairConsolidationFamilyService(
-            repositories.transferPairRepository,
-            consolidationRepairExecutorService
-        );
-        this.atmCashWithdrawalFamily = new AtmCashWithdrawalConsolidationFamilyService(
-            repositories.atmCashWithdrawalRepository,
-            consolidationExecutorService
-        );
-        this.families = [
-            new IbanBridgeChainTransferConsolidationFamilyService(repositories.ibanBridgeTransferRepository, consolidationExecutorService),
-            new ExistingTransferBridgeConsolidationFamilyService(repositories.existingTransferRepository, consolidationExecutorService),
-            new ExistingTransferChainReclaimConsolidationFamilyService(
-                repositories.existingTransferRepository,
-                consolidationRepairExecutorService
-            ),
-            new IbanBridgeCanonicalDuplicateConsolidationFamilyService(
-                repositories.ibanBridgeTransferRepository,
-                consolidationRepairExecutorService
-            ),
-            new IbanBridgeTransferConsolidationFamilyService(repositories.ibanBridgeTransferRepository, consolidationExecutorService),
-            new IbanBridgeCanonicalSupersessionConsolidationFamilyService(
-                repositories.ibanBridgeTransferRepository,
-                consolidationRepairExecutorService
-            ),
-            this.existingTransferIncomeDuplicateFamily,
-            new P2pFiatTransferConsolidationFamilyService(
-                repositories.transferPairRepository,
-                consolidationExecutorService,
-                consolidationRepairExecutorService
-            ),
-            new TransferPairConsolidationFamilyService(repositories.transferPairRepository, consolidationExecutorService),
-            new RefundPairConsolidationFamilyService(repositories.refundPairRepository, consolidationRepairExecutorService)
-        ];
+                        return repairedCount;
+                    }
+                )
+            };
+        })
     }
-
-    private buildExistingTransferDuplicateBlockedSourceTransactionIdSet(
-        existingTransferBridgeCandidates: ExistingTransferBridgeCandidateInterface[],
-        existingTransferChainReclaimCandidates: ExistingTransferChainReclaimCandidateInterface[]
-    ): Set<number> {
-        const sourceTransactionIds = new Set(
-            existingTransferBridgeCandidates.flatMap(candidate => [
-                candidate.sourceExpenseTransactionId,
-                candidate.bridgeIncomeTransactionId,
-                candidate.existingTransferId
-            ])
-        );
-
-        for (const candidate of existingTransferChainReclaimCandidates) {
-            sourceTransactionIds.add(candidate.existingTransferId);
-            sourceTransactionIds.add(candidate.bridgeIncomeTransactionId);
-            sourceTransactionIds.add(candidate.bridgeExpenseTransactionId);
-        }
-
-        return sourceTransactionIds;
-    }
+) {
+    static readonly layer = Layer.effect(ConsolidationCoordinatorService, ConsolidationCoordinatorService.make).pipe(
+        Layer.provide([
+            AtmCashWithdrawalRepository.layer,
+            ExistingTransferRepository.layer,
+            RefundPairRepository.layer,
+            TransferPairRepository.layer,
+            AtmCashWithdrawalConsolidationFamilyService.layer,
+            BridgeClaimRepairConsolidationFamilyService.layer,
+            ExistingTransferBridgeConsolidationFamilyService.layer,
+            ExistingTransferChainReclaimConsolidationFamilyService.layer,
+            ExistingTransferIncomeDuplicateConsolidationFamilyService.layer,
+            IbanBridgeCanonicalDuplicateConsolidationFamilyService.layer,
+            IbanBridgeCanonicalSupersessionConsolidationFamilyService.layer,
+            IbanBridgeChainTransferConsolidationFamilyService.layer,
+            IbanBridgeTransferConsolidationFamilyService.layer,
+            P2pFiatTransferConsolidationFamilyService.layer,
+            RefundPairConsolidationFamilyService.layer,
+            TransferPairConsolidationFamilyService.layer
+        ])
+    );
 }

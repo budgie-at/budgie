@@ -1,6 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 
+import { aiSystemStatusAtom } from '../constant/ai-system-status-atom.constant';
 import { AiSystemSnapshotInterface } from '../interface/ai-system-snapshot.interface';
-import { aiSystemStatusService } from '../service/ai-system-status.service';
 
-export const useAiSystemStatus = (): AiSystemSnapshotInterface => useAtomValue(aiSystemStatusService.snapshot);
+export const useAiSystemStatus = (): AiSystemSnapshotInterface => useAtomValue(aiSystemStatusAtom);

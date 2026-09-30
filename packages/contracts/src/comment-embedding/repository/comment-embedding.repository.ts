@@ -1,7 +1,10 @@
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
-import { BaseEmbeddingRepository } from '../../@generic/repository/base-embedding.repository';
+import { EMBEDDING_DIMENSIONS } from '../../@generic/constant/embedding-dimensions.constant';
 import { Db } from '../../@generic/service/db.service';
+import { makeEmbeddingRepository } from '../../@generic/util/make-embedding-repository.util';
 import { parsePendingContextBaseFields } from '../../@generic/util/parse-pending-context-base-fields.util';
 import { UpsertCommentEmbeddingParamsInterface } from '../interface/upsert-comment-embedding-params.interface';
 import { CommentEmbeddingEntityTable } from '../table/comment-embedding-entity.table';
@@ -69,90 +72,71 @@ const PENDING_COMMENT_CONTEXTS_QUERY = `
     LIMIT ?
 `;
 
-export class CommentEmbeddingRepository extends BaseEmbeddingRepository {
-    readonly upsert = Effect.fn('CommentEmbeddingRepository.upsert')(function* (
-        this: CommentEmbeddingRepository,
-        params: UpsertCommentEmbeddingParamsInterface
-    ) {
-        const { comment, categoryId, embedding, dimensions } = params;
+export class CommentEmbeddingRepository extends Context.Service<CommentEmbeddingRepository>()(
+    '@budgie/contracts/CommentEmbeddingRepository',
+    {
+        make: Effect.succeed({
+            ...makeEmbeddingRepository({
+                similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
+                similarTagsQuery: SIMILAR_TAGS_QUERY,
+                vecTableName: 'comment_embedding_vec',
+                embeddingTable: CommentEmbeddingEntityTable,
+                deletedAtColumn: CommentEmbeddingEntityTable.deletedAt,
+                tagTable: CommentEmbeddingTagEntityTable,
+                foreignKeyColumn: CommentEmbeddingTagEntityTable.commentEmbeddingId,
+                createTagRow: (embeddingId, tagId) => ({ commentEmbeddingId: embeddingId, tagId })
+            }),
+            upsert: Effect.fn('CommentEmbeddingRepository.upsert')(function* (params: UpsertCommentEmbeddingParamsInterface) {
+                const { comment, categoryId, embedding, dimensions } = params;
 
-        if (!this.isValidDimensions(dimensions)) {
-            return null;
-        }
+                if (dimensions !== EMBEDDING_DIMENSIONS) {
+                    return null;
+                }
 
-        const [row] = yield* Db.query(db =>
-            db
-                .insert(CommentEmbeddingEntityTable)
-                .values({ comment, categoryId, embedding, dimensions })
-                .onConflictDoUpdate({
-                    target: [CommentEmbeddingEntityTable.comment, CommentEmbeddingEntityTable.categoryId],
-                    set: { embedding, dimensions, updatedAt: new Date() }
-                })
-                .returning({ id: CommentEmbeddingEntityTable.id })
-        );
+                const [row] = yield* Db.query(db =>
+                    db
+                        .insert(CommentEmbeddingEntityTable)
+                        .values({ comment, categoryId, embedding, dimensions })
+                        .onConflictDoUpdate({
+                            target: [CommentEmbeddingEntityTable.comment, CommentEmbeddingEntityTable.categoryId],
+                            set: { embedding, dimensions, updatedAt: new Date() }
+                        })
+                        .returning({ id: CommentEmbeddingEntityTable.id })
+                );
 
-        yield* Db.query(db => db.$client.runAsync('DELETE FROM comment_embedding_vec WHERE rowid = ?', [row.id]));
-        yield* Db.query(db =>
-            db.$client.runAsync(
-                'INSERT INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
-                [row.id]
-            )
-        );
+                yield* Db.query(db => db.$client.runAsync('DELETE FROM comment_embedding_vec WHERE rowid = ?', [row.id]));
+                yield* Db.query(db =>
+                    db.$client.runAsync(
+                        'INSERT INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
+                        [row.id]
+                    )
+                );
 
-        return row.id;
-    });
+                return row.id;
+            }),
+            findPendingCommentContexts: Effect.fn('CommentEmbeddingRepository.findPendingCommentContexts')(function* (limit: number) {
+                const rows = yield* Db.query(db =>
+                    db.$client.getAllAsync<{
+                        comment: string;
+                        categoryId: number;
+                        categoryTitleEn: string | null;
+                        transactionIdsCsv: string;
+                        tagIdsCsv: string | null;
+                        existingEmbeddingId: number | null;
+                    }>(PENDING_COMMENT_CONTEXTS_QUERY, [limit])
+                );
 
-    readonly replaceTags = Effect.fn('CommentEmbeddingRepository.replaceTags')(function* (
-        this: CommentEmbeddingRepository,
-        embeddingId: number,
-        tagIds: number[]
-    ) {
-        yield* this.replaceEmbeddingTags({
-            tagTable: CommentEmbeddingTagEntityTable,
-            foreignKeyColumn: CommentEmbeddingTagEntityTable.commentEmbeddingId,
-            embeddingId,
-            tagIds,
-            createTagRow: tagId => ({ commentEmbeddingId: embeddingId, tagId })
-        });
-    });
-
-    readonly countAll = Effect.fn('CommentEmbeddingRepository.countAll')(function* (this: CommentEmbeddingRepository) {
-        return yield* this.countRows(CommentEmbeddingEntityTable, CommentEmbeddingEntityTable.deletedAt);
-    });
-
-    readonly findPendingCommentContexts = Effect.fn('CommentEmbeddingRepository.findPendingCommentContexts')(function* (limit: number) {
-        const rows = yield* Db.query(db =>
-            db.$client.getAllAsync<{
-                comment: string;
-                categoryId: number;
-                categoryTitleEn: string | null;
-                transactionIdsCsv: string;
-                tagIdsCsv: string | null;
-                existingEmbeddingId: number | null;
-            }>(PENDING_COMMENT_CONTEXTS_QUERY, [limit])
-        );
-
-        return rows.map(row => ({
-            comment: row.comment,
-            ...parsePendingContextBaseFields(row)
-        }));
-    });
-
-    readonly truncate = Effect.fn('CommentEmbeddingRepository.truncate')(function* (this: CommentEmbeddingRepository) {
-        yield* this.truncateWithTags(CommentEmbeddingTagEntityTable, CommentEmbeddingEntityTable);
-    });
-
-    constructor() {
-        super({
-            similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
-            similarTagsQuery: SIMILAR_TAGS_QUERY,
-            vecTableName: 'comment_embedding_vec',
-            sourceTableName: 'comment_embeddings'
-        });
+                return rows.map(row => ({
+                    comment: row.comment,
+                    ...parsePendingContextBaseFields(row)
+                }));
+            }),
+            countPendingCommentContexts: () =>
+                Db.query(db =>
+                    db.$client.getAllAsync<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_COMMENT_CONTEXTS_BASE})`, [])
+                ).pipe(Effect.map(([row]) => row.count))
+        })
     }
-
-    readonly countPendingCommentContexts = () =>
-        Db.query(db =>
-            db.$client.getAllAsync<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_COMMENT_CONTEXTS_BASE})`, [])
-        ).pipe(Effect.map(([row]) => row.count));
+) {
+    static readonly layer = Layer.effect(CommentEmbeddingRepository, CommentEmbeddingRepository.make);
 }

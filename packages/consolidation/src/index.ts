@@ -4,6 +4,7 @@ export { P2pFiatDirectionEnum } from './auto/enum/p2p-fiat-direction.enum';
 export { P2P_ORDER_EXTERNAL_ID_MARKER } from './shared/constant/transfer-pair-p2p-fiat.constant';
 export { ConsolidationExecutorService } from './executor/service/consolidation-executor.service';
 export { ConsolidationRepairExecutorService } from './executor/service/consolidation-repair-executor.service';
+export { P2pTransferTitleResolver } from './executor/service/p2p-transfer-title-resolver.service';
 export { AtmCashWithdrawalRepository } from './query/repository/atm-cash-withdrawal.repository';
 export { ExistingTransferRepository } from './query/repository/existing-transfer.repository';
 export { IbanBridgeTransferRepository } from './query/repository/iban-bridge-transfer.repository';

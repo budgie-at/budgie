@@ -8,9 +8,10 @@ import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
+import { authenticateWithBiometricsEffect } from '../constant/authenticate-with-biometrics-effect.constant';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
-import { authService } from '../service/auth.service';
+import { AuthService } from '../service/auth.service';
 
 import { useAuthAttemptTracker } from './use-auth-attempt-tracker.hook';
 
@@ -172,7 +173,7 @@ const useAutomaticBiometricAuthentication = (
         setHasAttemptedBiometric(true);
         setIsLoading(true);
         void appRuntime
-            .runPromise(authService.authenticateWithBiometrics())
+            .runPromise(authenticateWithBiometricsEffect)
             .then(success => void handleAutomaticBiometricResult(authAttemptGeneration, success))
             .finally(() => void handleAutomaticBiometricSettlement(authAttemptGeneration));
     });
@@ -226,7 +227,7 @@ export const usePinAuthentication = () => {
         setIsLoading(true);
         pinVerificationFiberRef.current?.interruptUnsafe();
         pinVerificationFiberRef.current = appRuntime.runFork(
-            authService.verifyPin(pin).pipe(
+            Effect.flatMap(AuthService, authService => authService.verifyPin(pin)).pipe(
                 Effect.tapError(Effect.logError),
                 Effect.orElseSucceed(() => false),
                 Effect.tap(success => Effect.sync(() => void completeAuthAttempt(authAttemptGeneration, success, true)))
@@ -261,7 +262,7 @@ export const usePinAuthentication = () => {
         setIsLoading(true);
 
         try {
-            completeAuthAttempt(authAttemptGeneration, await appRuntime.runPromise(authService.authenticateWithBiometrics()), false);
+            completeAuthAttempt(authAttemptGeneration, await appRuntime.runPromise(authenticateWithBiometricsEffect), false);
         } finally {
             authAttemptTracker.releaseBiometricAuthAttempt(authAttemptGeneration);
         }

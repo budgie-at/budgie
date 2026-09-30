@@ -1,10 +1,11 @@
 import { RegistryContext } from '@effect/atom-react/RegistryContext';
+import * as Effect from 'effect/Effect';
 import { ReactNode, useEffect } from 'react';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { aiAtomRegistry } from '../constant/ai-atom-registry.constant';
-import { aiCoordinatorService } from '../service/ai-coordinator.service';
+import { AiCoordinatorService } from '../service/ai-coordinator.service';
 
 interface Props {
     readonly children: ReactNode;
@@ -15,11 +16,11 @@ export const AiProvider = ({ children }: Props) => {
 
     useEffect(() => {
         if (isAiEnabled) {
-            appRuntime.runFork(aiCoordinatorService.start());
+            appRuntime.runFork(Effect.flatMap(AiCoordinatorService, aiCoordinatorService => aiCoordinatorService.start()));
         }
 
         return () => {
-            appRuntime.runFork(aiCoordinatorService.stop());
+            appRuntime.runFork(Effect.flatMap(AiCoordinatorService, aiCoordinatorService => aiCoordinatorService.stop()));
         };
     }, [isAiEnabled]);
 

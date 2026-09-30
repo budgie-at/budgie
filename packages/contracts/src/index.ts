@@ -19,7 +19,6 @@ export type { EmbeddingQueryConfigInterface } from './@generic/interface/embeddi
 export type { SimilarTagsParamsInterface } from './@generic/interface/similar-tags-params.interface';
 export type { TagScoreResultInterface } from './@generic/interface/tag-score-result.interface';
 
-export { BaseEmbeddingRepository } from './@generic/repository/base-embedding.repository';
 export { BaseTransactionFilterRepository } from './@generic/repository/base-transaction-filter.repository';
 
 export type { DB, TX } from './@generic/type/db.type';
@@ -251,6 +250,8 @@ export type { SimilarTransactionStatsInterface } from './transaction/interface/s
 export type { SimilarTransactionStatsQueryInterface } from './transaction/interface/similar-transaction-stats-query.interface';
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
+export { TransactionConsolidationRepository } from './transaction/repository/transaction-consolidation.repository';
+export { TransactionViewRepository } from './transaction/repository/transaction-view.repository';
 export { TransactionCategorizeInboxRepository } from './transaction/repository/transaction-categorize-inbox.repository';
 
 export { TransactionEmbeddingRepository } from './transaction-embedding/repository/transaction-embedding.repository';

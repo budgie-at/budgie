@@ -1,5 +1,6 @@
 import { CategoryEntityInterface, UserIconType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -8,7 +9,7 @@ import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizon
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useCategoryFormModal } from '../../context/category-form-modal.context';
-import { categoryService } from '../../service/category.service';
+import { CategoryService } from '../../service/category.service';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 
 import { CategoryIconFixRowSelector } from './category-icon-fix-row.selector';
@@ -25,7 +26,7 @@ export const CategoryIconFixRow = ({ category }: Props) => {
 
     const handleSelect = (icon: UserIconType) => {
         appRuntime
-            .runPromise(categoryService.updateIcon(category.id, icon))
+            .runPromise(Effect.flatMap(CategoryService, categoryService => categoryService.updateIcon(category.id, icon)))
             .catch(() => void showErrorToast(t`Could not update category icon`, t`Please try again later`));
     };
 

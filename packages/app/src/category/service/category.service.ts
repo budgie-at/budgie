@@ -1,42 +1,46 @@
-import { Db } from '@budgie/contracts';
+import { CategoryRepository, Db } from '@budgie/contracts';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
-
-import { categoryRepository } from '../../@generic/drizzle/db/db';
-import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
+import * as Layer from 'effect/Layer';
 
 import type { CategoryCreateEntityInterface, CategoryEntityInterface, UserIconType } from '@budgie/contracts';
 
-class CategoryService {
-    readonly updateIcon = Effect.fn('CategoryService.updateIcon')(function* (categoryId: number, icon: UserIconType) {
-        yield* categoryRepository.updateById(categoryId, { icon });
-    }, invalidateDatabaseLiveQuery);
+export class CategoryService extends Context.Service<CategoryService>()('@budgie/app/CategoryService', {
+    make: Effect.gen(function* () {
+        const categoryRepository = yield* CategoryRepository;
 
-    readonly bulkCreate = Effect.fn('CategoryService.bulkCreate')(function* (
-        inputs: CategoryCreateEntityInterface[],
-        batchSize: number = 100
-    ) {
-        const results: CategoryEntityInterface[] = [];
-        for (let i = 0; i < inputs.length; i += batchSize) {
-            const batch = inputs.slice(i, i + batchSize);
+        return {
+            updateIcon: Effect.fn('CategoryService.updateIcon')(function* (categoryId: number, icon: UserIconType) {
+                yield* categoryRepository.updateById(categoryId, { icon });
+            }),
+            bulkCreate: Effect.fn('CategoryService.bulkCreate')(function* (
+                inputs: CategoryCreateEntityInterface[],
+                batchSize: number = 100
+            ) {
+                const results: CategoryEntityInterface[] = [];
+                for (let i = 0; i < inputs.length; i += batchSize) {
+                    const batch = inputs.slice(i, i + batchSize);
 
-            results.push(...(yield* Db.transaction(categoryRepository.bulkCreate(batch))));
-        }
+                    results.push(...(yield* Db.transaction(categoryRepository.bulkCreate(batch))));
+                }
 
-        return results.reduce<Record<string, CategoryEntityInterface>>((acc, category) => ({ ...acc, [category.title]: category }), {});
-    });
-
-    readonly countTransactionEntries = Effect.fn('CategoryService.countTransactionEntries')(function* (categoryId: number) {
-        return yield* categoryRepository.countTransactionEntries(categoryId);
-    });
-
-    readonly mergeInto = Effect.fn('CategoryService.mergeInto')(function* (fromCategoryId: number, toCategoryId: number) {
-        yield* categoryRepository.reassignTransactionEntries(fromCategoryId, toCategoryId);
-        yield* categoryRepository.deleteById(fromCategoryId);
-    });
-
-    readonly deleteById = Effect.fn('CategoryService.deleteById')(function* (categoryId: number) {
-        yield* categoryRepository.deleteById(categoryId);
-    });
+                return results.reduce<Record<string, CategoryEntityInterface>>(
+                    (acc, category) => ({ ...acc, [category.title]: category }),
+                    {}
+                );
+            }),
+            countTransactionEntries: Effect.fn('CategoryService.countTransactionEntries')(function* (categoryId: number) {
+                return yield* categoryRepository.countTransactionEntries(categoryId);
+            }),
+            mergeInto: Effect.fn('CategoryService.mergeInto')(function* (fromCategoryId: number, toCategoryId: number) {
+                yield* categoryRepository.reassignTransactionEntries(fromCategoryId, toCategoryId);
+                yield* categoryRepository.deleteById(fromCategoryId);
+            }),
+            deleteById: Effect.fn('CategoryService.deleteById')(function* (categoryId: number) {
+                yield* categoryRepository.deleteById(categoryId);
+            })
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(CategoryService, CategoryService.make).pipe(Layer.provide(CategoryRepository.layer));
 }
-
-export const categoryService = new CategoryService();

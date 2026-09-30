@@ -7,7 +7,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { convertToMicroUnits } from '../../@generic/utils/convert-to-micro-units.util';
-import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 interface ConversionState {
     readonly destinationAmount: number;
@@ -52,7 +52,9 @@ export const useCurrencyConversion = (): UseCurrencyConversionResult => {
 
         conversionFiberRef.current?.interruptUnsafe();
         conversionFiberRef.current = appRuntime.runFork(
-            exchangeRatesService.convert(sourceInstrumentId, destinationInstrumentId, convertToMicroUnits(sourceAmount)).pipe(
+            Effect.flatMap(ExchangeRatesService, exchangeRatesService =>
+                exchangeRatesService.convert(sourceInstrumentId, destinationInstrumentId, convertToMicroUnits(sourceAmount))
+            ).pipe(
                 Effect.map(
                     result =>
                         void setState({

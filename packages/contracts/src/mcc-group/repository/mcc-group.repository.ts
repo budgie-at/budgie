@@ -1,48 +1,43 @@
 import { eq } from 'drizzle-orm';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
 import { Db } from '../../@generic/service/db.service';
 import { MccGroupCreateEntityInterface } from '../entity/mcc-group-create-entity.interface';
 import { MccGroupEntityTable } from '../table/mcc-group-entity.table';
 
-import type * as schema from '../../schema';
-import type { ExpoSQLiteDatabase } from 'drizzle-orm/expo-sqlite';
+export class MccGroupRepository extends Context.Service<MccGroupRepository>()('@budgie/contracts/MccGroupRepository', {
+    make: Effect.sync(() => {
+        const bulkCreate = (inputs: MccGroupCreateEntityInterface[]) =>
+            Db.query(db => db.insert(MccGroupEntityTable).values(inputs).returning());
 
-export class MccGroupRepository {
-    readonly create = Effect.fn('MccGroupRepository.create')(function* (this: MccGroupRepository, input: MccGroupCreateEntityInterface) {
-        const [mccGroup] = yield* this.bulkCreate([input]);
+        return {
+            bulkCreate,
+            create: Effect.fn('MccGroupRepository.create')(function* (input: MccGroupCreateEntityInterface) {
+                const [mccGroup] = yield* bulkCreate([input]);
 
-        return mccGroup;
-    });
-
-    constructor(private db: ExpoSQLiteDatabase<typeof schema>) {}
-
-    readonly bulkCreate = (inputs: MccGroupCreateEntityInterface[]) =>
-        Db.query(db => db.insert(MccGroupEntityTable).values(inputs).returning());
-
-    readonly upsert = (input: MccGroupCreateEntityInterface) =>
-        Db.query(db =>
-            db
-                .insert(MccGroupEntityTable)
-                .values(input)
-                .onConflictDoUpdate({
-                    target: MccGroupEntityTable.type,
-                    set: {
-                        description: input.description
-                    }
-                })
-                .returning()
-        ).pipe(Effect.map(([mccGroup]) => mccGroup));
-
-    readonly truncate = () => Db.query(db => db.delete(MccGroupEntityTable));
-
-    findAll() {
-        return this.db.query.MccGroupEntityTable.findMany();
-    }
-
-    findByType(type: string) {
-        return this.db.query.MccGroupEntityTable.findFirst({
-            where: eq(MccGroupEntityTable.type, type)
-        });
-    }
+                return mccGroup;
+            }),
+            upsert: (input: MccGroupCreateEntityInterface) =>
+                Db.query(db =>
+                    db
+                        .insert(MccGroupEntityTable)
+                        .values(input)
+                        .onConflictDoUpdate({
+                            target: MccGroupEntityTable.type,
+                            set: {
+                                description: input.description
+                            }
+                        })
+                        .returning()
+                ).pipe(Effect.map(([mccGroup]) => mccGroup)),
+            truncate: () => Db.query(db => db.delete(MccGroupEntityTable)),
+            findAll: () => Db.query(db => db.query.MccGroupEntityTable.findMany()),
+            findByType: (type: string) =>
+                Db.query(db => db.query.MccGroupEntityTable.findFirst({ where: eq(MccGroupEntityTable.type, type) }))
+        };
+    })
+}) {
+    static readonly layer = Layer.effect(MccGroupRepository, MccGroupRepository.make);
 }

@@ -5,7 +5,7 @@ import * as Atom from 'effect/reactivity/Atom';
 
 import { appAtomRuntime } from '../../@generic/runtime/app.runtime';
 import { useExchangeRatesUpdatedAtQuery } from '../../exchange-rate/query/use-exchange-rates-updated-at.query';
-import { exchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
+import { ExchangeRatesService } from '../../exchange-rate/service/exchange-rates.service';
 
 import type { ConvertedAmountInterface } from '../interface/converted-amount.interface';
 
@@ -14,7 +14,9 @@ const convertedAmountAtom = Atom.family(
         appAtomRuntime.atom(
             fromInstrumentId === toInstrumentId
                 ? Effect.succeed(null)
-                : exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits)
+                : Effect.flatMap(ExchangeRatesService, exchangeRatesService =>
+                      exchangeRatesService.convertStrict(fromInstrumentId, toInstrumentId, amountInMicroUnits)
+                  )
         )
 );
 

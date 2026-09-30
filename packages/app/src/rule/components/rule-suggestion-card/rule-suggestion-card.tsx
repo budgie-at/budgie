@@ -3,6 +3,7 @@ import {
     RuleAssociationEnum,
     RuleConditionMatchTypeEnum,
     RuleCreateInputInterface,
+    RuleRepository,
     RuleWithRelationsEntityInterface
 } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
@@ -12,13 +13,12 @@ import { Alert } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RuleConditionInputInterface } from '../../interface/rule-condition-input.interface';
 import { SuggestRuleDataInterface } from '../../interface/suggest-rule-data.interface';
-import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
-import { ruleService } from '../../service/rule.service';
+import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
+import { RuleService } from '../../service/rule.service';
 import { selectSuggestConditions } from '../../util/select-suggest-condition.util';
 import { showRuleApplicationToast } from '../../util/show-rule-application-toast.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
@@ -85,8 +85,12 @@ interface Props {
 }
 
 const createRule = async (ruleInput: RuleCreateInputInterface): Promise<void> => {
-    const rule = await appRuntime.runPromise(ruleService.create(ruleInput));
-    appRuntime.runFork(ruleApplicationDrainerService.enqueueRuleApplication(rule.id, showRuleApplicationToast));
+    const rule = await appRuntime.runPromise(Effect.flatMap(RuleService, ruleService => ruleService.create(ruleInput)));
+    appRuntime.runFork(
+        Effect.flatMap(RuleApplicationDrainerService, ruleApplicationDrainerService =>
+            ruleApplicationDrainerService.enqueueRuleApplication(rule.id, showRuleApplicationToast)
+        )
+    );
 };
 
 export const RuleSuggestionCard = (props: Props) => {
@@ -134,7 +138,9 @@ export const RuleSuggestionCard = (props: Props) => {
             throw new Error('Invalid rule input');
         }
 
-        const existingRules = await appRuntime.runPromise(ruleRepository.findAllWithConditions());
+        const existingRules = await appRuntime.runPromise(
+            Effect.flatMap(RuleRepository, ruleRepository => ruleRepository.findAllWithConditions())
+        );
         const duplicateRule = findDuplicateRule(ruleInput.conditions, ruleInput.conditionMatchType, existingRules);
 
         if (isDefined(duplicateRule)) {

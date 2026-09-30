@@ -1,15 +1,15 @@
-import { LanguageEnum, RuleActionTypeEnum } from '@budgie/contracts';
+import { LanguageEnum, RuleActionTypeEnum, RuleRepository } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { ruleRepository } from '../../../@generic/drizzle/db/db';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
-import { ruleApplicationDrainerService } from '../../service/rule-application-drainer.service';
-import { ruleService } from '../../service/rule.service';
+import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
+import { RuleService } from '../../service/rule.service';
 import { showRuleApplicationToast } from '../../util/show-rule-application-toast.util';
 import { SwipeableRuleCard } from '../swipeable-rule-card/swipeable-rule-card';
 
@@ -20,7 +20,9 @@ interface Props {
 }
 
 const updateRule = async (updateRuleData: UpdateRuleDataInterface, language: LanguageEnum): Promise<void> => {
-    const allRules = await ruleRepository.findAllWithActionsAndCategories(language);
+    const allRules = await appRuntime.runPromise(
+        Effect.flatMap(RuleRepository, ruleRepository => ruleRepository.findAllWithActionsAndCategories(language))
+    );
     const existingRule = allRules.find(rule => rule.id === updateRuleData.ruleId);
 
     if (!isDefined(existingRule)) {
@@ -50,9 +52,15 @@ const updateRule = async (updateRuleData: UpdateRuleDataInterface, language: Lan
 
     const mergedActions = [...preservedActions, ...categoryAction, ...tagActions];
 
-    await appRuntime.runPromise(ruleService.updateById(updateRuleData.ruleId, { actions: mergedActions }));
+    await appRuntime.runPromise(
+        Effect.flatMap(RuleService, ruleService => ruleService.updateById(updateRuleData.ruleId, { actions: mergedActions }))
+    );
 
-    appRuntime.runFork(ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId, showRuleApplicationToast));
+    appRuntime.runFork(
+        Effect.flatMap(RuleApplicationDrainerService, ruleApplicationDrainerService =>
+            ruleApplicationDrainerService.enqueueRuleApplication(updateRuleData.ruleId, showRuleApplicationToast)
+        )
+    );
 };
 
 export const RuleUpdateCard = (props: Props) => {

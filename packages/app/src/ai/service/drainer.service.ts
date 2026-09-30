@@ -3,7 +3,6 @@ import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as FiberHandle from 'effect/FiberHandle';
 import * as Option from 'effect/Option';
-import * as Atom from 'effect/reactivity/Atom';
 import * as Scope from 'effect/Scope';
 import * as Semaphore from 'effect/Semaphore';
 import { AppState } from 'react-native';
@@ -19,9 +18,10 @@ import { DrainerSnapshotInterface } from '../interface/drainer-snapshot.interfac
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 import { patchAtom } from '../utils/patch-atom.util';
 
-import { aiModelResidencyService } from './ai-model-residency.service';
-
+import type { AiModelResidencyService } from './ai-model-residency.service';
 import type { Db } from '@budgie/contracts';
+import type * as Context from 'effect/Context';
+import type * as Atom from 'effect/reactivity/Atom';
 
 export class DrainerService<E> {
     private static readonly MAX_CONSECUTIVE_FAILURES = 5;
@@ -33,9 +33,7 @@ export class DrainerService<E> {
     private static readonly BLOCKED_STATES = [DrainerStateEnum.BOOSTING, DrainerStateEnum.PAUSED, DrainerStateEnum.ERROR];
     private static readonly mutex = Semaphore.makeUnsafe(1);
 
-    readonly snapshot = Atom.keepAlive(
-        Atom.make<DrainerSnapshotInterface>({ state: DrainerStateEnum.IDLE, pending: 0, errorMessage: null })
-    );
+    readonly snapshot: Atom.Writable<DrainerSnapshotInterface>;
 
     readonly whenIdle = Effect.fn('DrainerService.whenIdle')(function* (this: DrainerService<E>) {
         yield* this.batchLock.withPermit(Effect.void);
@@ -229,7 +227,12 @@ export class DrainerService<E> {
     private readonly loop = Effect.runSync(Scope.provide(FiberHandle.make(), Scope.makeUnsafe()));
     private readonly retryTimer = Effect.runSync(Scope.provide(FiberHandle.make(), Scope.makeUnsafe()));
 
-    constructor(private readonly config: DrainerConfigInterface<E>) {}
+    constructor(
+        private readonly config: DrainerConfigInterface<E>,
+        private readonly modelResidency: Context.Service.Shape<typeof AiModelResidencyService>
+    ) {
+        this.snapshot = config.snapshot;
+    }
 
     private get state(): DrainerStateEnum {
         return aiAtomRegistry.get(this.snapshot).state;
@@ -243,9 +246,9 @@ export class DrainerService<E> {
 
     private withModel(use: Effect.Effect<void, E, Db>): Effect.Effect<boolean, E, Db> {
         return Effect.acquireUseRelease(
-            aiModelResidencyService.acquire(this.config.subsystem),
+            this.modelResidency.acquire(this.config.subsystem),
             isReady => (isReady ? Effect.as(use, true) : Effect.succeed(false)),
-            () => aiModelResidencyService.release(this.config.subsystem)
+            () => this.modelResidency.release(this.config.subsystem)
         );
     }
 

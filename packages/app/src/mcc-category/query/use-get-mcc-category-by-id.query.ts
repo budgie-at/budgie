@@ -1,19 +1,22 @@
+import { MccCategoryEntityTable, MccCategoryRepository } from '@budgie/contracts';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { mccCategoryRepository } from '../../@generic/drizzle/db/db';
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
+
+const mccCategoryByIdAtom = databaseQueryFamily([MccCategoryEntityTable], MccCategoryRepository, (mccCategoryRepository, id: number) =>
+    mccCategoryRepository.findById(id)
+);
 
 export const useGetMccCategoryByIdQuery = (id: number | null) => {
     const shouldFetch = isDefined(id) && isPositiveNumber(id);
-    const { data, updatedAt, error } = useDatabaseLiveQuery(mccCategoryRepository.findById(id ?? 0), [id]);
+    const result = useLiveAtomValue(mccCategoryByIdAtom(id ?? 0));
 
     if (!shouldFetch) {
-        return { isLoading: false, mccCategory: null, updatedAt: null, error: null };
+        return { isLoading: false, mccCategory: null };
     }
 
-    if (!isDefined(data)) {
-        return { isLoading: true, mccCategory: null, updatedAt: null, error };
-    }
-
-    return { mccCategory: data, isLoading: false, updatedAt, error };
+    return { mccCategory: AsyncResult.getOrElse(result, () => null) ?? null, isLoading: AsyncResult.isInitial(result) };
 };

@@ -18,10 +18,6 @@ import { patchAtom } from '../utils/patch-atom.util';
 import type { LlamaContext } from 'llama.rn';
 
 export class LlamaModelService implements AiSubsystemServiceInterface {
-    readonly snapshot = Atom.keepAlive(
-        Atom.make<LlamaSubsystemSnapshotInterface>({ status: AiSubsystemStatusEnum.IDLE, downloadProgress: 0, errorMessage: null })
-    );
-
     readonly start = Effect.fn('LlamaModelService.start')(
         function* (this: LlamaModelService) {
             if (this.isReady) {
@@ -67,7 +63,11 @@ export class LlamaModelService implements AiSubsystemServiceInterface {
 
     context: LlamaContext | null = null;
 
-    constructor(private readonly config: LlamaConfigInterface) {}
+    readonly snapshot: Atom.Writable<LlamaSubsystemSnapshotInterface>;
+
+    constructor(private readonly config: LlamaConfigInterface) {
+        this.snapshot = config.snapshot;
+    }
 
     get isReady(): boolean {
         return aiAtomRegistry.get(this.snapshot).status === AiSubsystemStatusEnum.READY;

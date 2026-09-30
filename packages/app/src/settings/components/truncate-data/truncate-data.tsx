@@ -1,46 +1,26 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
-import Toast from 'react-native-toast-message';
+import * as Effect from 'effect/Effect';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { appResetService } from '../../../@generic/service/app-reset.service';
-import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { AppResetService } from '../../../@generic/service/app-reset.service';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
+import { useConfirmedSettingsAction } from '../../hook/use-confirmed-settings-action.hook';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const TruncateData = () => {
     const { t } = useLingui();
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleTruncate = async () => {
-        const confirmed = await confirmAlert({
+    const { isLoading, run } = useConfirmedSettingsAction(
+        {
             title: t`Clear All Data`,
             message: t`Are you sure you want to delete all your data? This action cannot be undone.`,
             confirmText: t`Delete data`,
             cancelText: t`Cancel`,
             isDestructive: true
-        });
+        },
+        t`Could not clear data`
+    );
 
-        if (!confirmed) {
-            return;
-        }
-
-        setIsLoading(true);
-        try {
-            await appRuntime.runPromise(appResetService.clearAllDataAndRestart());
-        } catch (error) {
-            Toast.show({
-                type: 'error',
-                text1: t`Could not clear data`,
-                text2: getErrorMessage(error)
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const handleTruncate = () => run(Effect.flatMap(AppResetService, appResetService => appResetService.clearAllDataAndRestart()));
 
     return (
         <SettingsCard

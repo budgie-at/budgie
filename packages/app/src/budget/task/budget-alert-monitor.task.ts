@@ -4,8 +4,13 @@ import * as TaskManager from 'expo-task-manager';
 
 import { runBackgroundTask } from '../../sync/utils/run-background-task.util';
 import { BudgetBackgroundTaskNameEnum } from '../enum/budget-background-task-name.enum';
-import { budgetAlertMonitorService } from '../service/budget-alert-monitor.service';
+import { BudgetAlertMonitorService } from '../service/budget-alert-monitor.service';
 
 TaskManager.defineTask(BudgetBackgroundTaskNameEnum.ALERT_MONITOR, () =>
-    runBackgroundTask(Effect.as(budgetAlertMonitorService.run(), BackgroundTask.BackgroundTaskResult.Success))
+    runBackgroundTask(
+        Effect.as(
+            Effect.flatMap(BudgetAlertMonitorService, budgetAlertMonitorService => budgetAlertMonitorService.run()),
+            BackgroundTask.BackgroundTaskResult.Success
+        )
+    )
 );

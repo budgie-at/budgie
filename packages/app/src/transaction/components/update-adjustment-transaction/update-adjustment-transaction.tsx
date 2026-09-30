@@ -8,6 +8,7 @@ import {
     isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -19,7 +20,7 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
-import { transactionService } from '../../service/transaction.service';
+import { TransactionService } from '../../service/transaction.service';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
 import { AdjustmentSignToggle } from '../adjustment-sign-toggle/adjustment-sign-toggle';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -118,7 +119,9 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
         try {
             setIsSubmitting(true);
             await appRuntime.runPromise(
-                transactionService.updateById(transactionId, buildAdjustmentUpdateInput(transaction, details, numericValue, isIncrease))
+                Effect.flatMap(TransactionService, transactionService =>
+                    transactionService.updateById(transactionId, buildAdjustmentUpdateInput(transaction, details, numericValue, isIncrease))
+                )
             );
             void markForEmbedding(transactionId);
             goBackOrReplace('/');

@@ -1,12 +1,12 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
+import * as Effect from 'effect/Effect';
 import { useEffect } from 'react';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { chatModelSnapshotAtom, embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
-import { aiModelResidencyService } from '../service/ai-model-residency.service';
-import { chatService } from '../service/chat.service';
-import { embeddingService } from '../service/embedding.service';
+import { AiModelResidencyService } from '../service/ai-model-residency.service';
 import { CHAT_DOWNLOAD_WEIGHT, EMBEDDING_DOWNLOAD_WEIGHT } from '../util/ai-constants.util';
 
 interface ChatModelStatusInterface {
@@ -22,15 +22,21 @@ interface UseChatModelStatusReturn {
 }
 
 export const useChatModelStatus = (): UseChatModelStatusReturn => {
-    const chat = useAtomValue(chatService.model.snapshot);
-    const embedding = useAtomValue(embeddingService.model.snapshot);
+    const chat = useAtomValue(chatModelSnapshotAtom);
+    const embedding = useAtomValue(embeddingModelSnapshotAtom);
     const isChatReady = chat.status === AiSubsystemStatusEnum.READY;
 
     useEffect(() => {
-        appRuntime.runFork(aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT));
+        appRuntime.runFork(
+            Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.acquire(AiSubsystemNameEnum.CHAT))
+        );
 
         return () => {
-            appRuntime.runFork(aiModelResidencyService.release(AiSubsystemNameEnum.CHAT));
+            appRuntime.runFork(
+                Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                    aiModelResidencyService.release(AiSubsystemNameEnum.CHAT)
+                )
+            );
         };
     }, []);
 

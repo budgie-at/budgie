@@ -1012,6 +1012,19 @@
             "plugins": [
                 "react"
             ]
+        },
+        {
+            "files": [
+                "**/*.service.ts",
+                "**/*.repository.ts",
+                "**/*.layer.ts",
+                "packages/app/src/sync/util/make-*sync-service.util.ts",
+                "packages/consolidation/src/auto/utils/make-consolidation-family-strategy.util.ts"
+            ],
+            "rules": {
+                "max-lines-per-function": "off",
+                "max-statements": "off"
+            }
         }
     ]
 }

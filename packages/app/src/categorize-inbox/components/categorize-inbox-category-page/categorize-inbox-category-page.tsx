@@ -1,15 +1,18 @@
+import { TransactionCategorizeInboxRepository } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { transactionCategorizeInboxRepository } from '../../../@generic/drizzle/db/db';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
+import { categoryEvidenceAtom, uncategorizedRowsAtom } from '../../constant/categorize-inbox-atoms.constant';
 import { CategorizeInboxLabelKindEnum } from '../../enum/categorize-inbox-label-kind.enum';
 import { useCategorizeInboxLabels } from '../../hook/use-categorize-inbox-labels.hook';
 import { categorizeInboxEngineService } from '../../service/categorize-inbox-engine.service';
@@ -39,7 +42,7 @@ export const CategorizeInboxCategoryPage = ({ params }: Props) => {
 
     const handlePickFollowUpTagIds = async (assignment: CategorizeInboxAssignmentInterface): Promise<number[] | null> => {
         const tagContext = categorizeInboxEngineService.buildContext(
-            await transactionCategorizeInboxRepository.findTagEvidence(),
+            await appRuntime.runPromise(Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findTagEvidence())),
             defaultInstrument.id
         );
 
@@ -52,8 +55,8 @@ export const CategorizeInboxCategoryPage = ({ params }: Props) => {
     const strategy: CategorizeInboxStrategyInterface = {
         labelKind: CategorizeInboxLabelKindEnum.CATEGORY,
         labelsById,
-        findRows: filters => transactionCategorizeInboxRepository.findUncategorizedRows(filters),
-        findEvidence: () => transactionCategorizeInboxRepository.findCategoryEvidence(),
+        rowsAtom: uncategorizedRowsAtom,
+        evidenceAtom: categoryEvidenceAtom,
         pickLabels: handlePickLabels,
         pickFollowUpTagIds: handlePickFollowUpTagIds,
         buildRuleActions: labelIds => ({ categoryId: labelIds.at(0) ?? null, tagIds: [] }),

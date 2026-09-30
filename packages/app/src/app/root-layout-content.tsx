@@ -52,9 +52,9 @@ import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
-import { historicalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
+import { HistoricalMarketDataLoaderService } from '../market-data/service/historical-market-data-loader.service';
 import { SettingsProvider } from '../settings/provider/settings.provider';
-import { appDataSyncService } from '../sync/service/app-data-sync.service';
+import { AppDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
 enableScreens();
@@ -64,12 +64,6 @@ void SplashScreen.preventAutoHideAsync();
 
 const drizzleStudioEnvironmentVariable = 'EXPO_PUBLIC_DRIZZLE_STUDIO_ENABLE';
 const isDrizzleStudioEnabled = __DEV__ && process.env[drizzleStudioEnvironmentVariable] === 'true';
-
-const syncForegroundData = Effect.gen(function* () {
-    if (yield* appDataSyncService.sync()) {
-        yield* Effect.forkDetach(logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts()));
-    }
-});
 
 const handleAppStateChange = (isActive: boolean): void => {
     void appRuntime.runPromise(
@@ -82,7 +76,18 @@ const handleAppStateChange = (isActive: boolean): void => {
                 return;
             }
 
-            yield* logAndContinue(workload.run(syncForegroundData));
+            const appDataSyncService = yield* AppDataSyncService;
+            const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
+
+            yield* logAndContinue(
+                workload.run(
+                    Effect.gen(function* () {
+                        if (yield* appDataSyncService.sync()) {
+                            yield* Effect.forkDetach(logAndContinue(historicalMarketDataLoaderService.enqueueActiveAccounts()));
+                        }
+                    })
+                )
+            );
         })
     );
 };

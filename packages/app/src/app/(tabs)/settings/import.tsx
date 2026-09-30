@@ -1,4 +1,12 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import {
+    AccountBalanceRepository,
+    AccountRepository,
+    CategoryRepository,
+    TransactionEntryRepository,
+    TransactionRepository,
+    TransactionTagsRepository,
+    UserIconNameEnum
+} from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -14,17 +22,9 @@ import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-communi
 import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { YIELD_TO_UI } from '../../../@generic/constant/yield-to-ui.constant';
-import {
-    accountBalanceRepository,
-    accountRepository,
-    categoryRepository,
-    transactionEntryRepository,
-    transactionRepository,
-    transactionTagsRepository
-} from '../../../@generic/drizzle/db/db';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
-import { accountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
+import { AccountBalanceIncrementalService } from '../../../account/service/account-balance-incremental.service';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
 import { ImportPresetPicker } from '../../../import/components/import-preset-picker/import-preset-picker';
 import { IMPORT_PRESETS } from '../../../import/constant/import-presets.constant';
@@ -121,6 +121,14 @@ export default function ImportScreen() {
 
         return appRuntime.runPromise(
             Effect.gen(function* () {
+                const accountRepository = yield* AccountRepository;
+                const categoryRepository = yield* CategoryRepository;
+                const transactionTagsRepository = yield* TransactionTagsRepository;
+                const transactionEntryRepository = yield* TransactionEntryRepository;
+                const transactionRepository = yield* TransactionRepository;
+                const accountBalanceRepository = yield* AccountBalanceRepository;
+                const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+
                 yield* YIELD_TO_UI;
                 yield* Effect.all(
                     [
@@ -133,7 +141,7 @@ export default function ImportScreen() {
                     ],
                     { discard: true }
                 );
-                yield* new ImporterService(columnMap).process(csvText, rowCount);
+                yield* Effect.flatMap(ImporterService, importerService => importerService.process(columnMap, csvText, rowCount));
                 yield* accountBalanceIncrementalService.updateAllBalances(true);
 
                 router.back();

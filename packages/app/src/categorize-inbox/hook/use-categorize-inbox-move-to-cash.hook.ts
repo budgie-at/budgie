@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
-import { categorizeInboxService } from '../service/categorize-inbox.service';
+import { CategorizeInboxService } from '../service/categorize-inbox.service';
 
 import type { CategorizeInboxLastWriteInterface } from '../interface/categorize-inbox-last-write.interface';
 import type { CategorizeInboxMoveToCashInterface } from '../interface/categorize-inbox-move-to-cash.interface';
@@ -26,6 +26,7 @@ export const useCategorizeInboxMoveToCash = (
         visibility.hideTransactions(transactionIds);
         enqueueWrite(
             Effect.gen(function* () {
+                const categorizeInboxService = yield* CategorizeInboxService;
                 const movedTransactionIds = yield* categorizeInboxService.moveToCash(transactionIds);
 
                 if (isNotEmptyArray(movedTransactionIds)) {
@@ -43,7 +44,7 @@ export const useCategorizeInboxMoveToCash = (
         setMovedToCashTransactionIds([]);
         visibility.showTransactions(transactionIds);
         enqueueWrite(
-            categorizeInboxService.undoMoveToCash(transactionIds),
+            Effect.flatMap(CategorizeInboxService, categorizeInboxService => categorizeInboxService.undoMoveToCash(transactionIds)),
             () => void setMovedToCashTransactionIds(previous => (isNotEmptyArray(previous) ? previous : transactionIds)),
             t`Could not undo the move to cash`
         );

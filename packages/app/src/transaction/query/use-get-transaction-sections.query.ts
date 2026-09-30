@@ -1,28 +1,31 @@
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useEffect, useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { useDatabaseLiveQuery } from '../../@generic/hook/use-database-live-query.hook';
+import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { groupTransactionsByMonth } from '../utils/group-transactions-by-month.util';
 
-import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import type { SQLiteRelationalQuery } from 'drizzle-orm/sqlite-core/query-builders/query';
+import type { LanguageEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type * as Atom from 'effect/reactivity/Atom';
 
 const DEFAULT_LIMIT = 20;
 
-export const useGetTransactionSectionsQuery = <Transaction extends TransactionWithRelationsEntityInterface>(
-    buildQuery: (limit: number) => SQLiteRelationalQuery<'sync', Transaction[]>,
-    queryKey: string
+export const useGetTransactionSectionsQuery = <Transaction extends TransactionWithRelationsEntityInterface, Failure>(
+    getQueryAtom: (limit: number, language: LanguageEnum) => Atom.Atom<AsyncResult.AsyncResult<Transaction[], Failure>>,
+    filterKey: string
 ) => {
     const { formatMonthAndYear } = useFormatDate();
+    const language = useSetting('language');
+    const queryKey = `${filterKey}|${language}`;
     const [loadedCount, setLoadedCount] = useState(DEFAULT_LIMIT);
 
     useEffect(() => {
         setLoadedCount(DEFAULT_LIMIT);
     }, [queryKey]);
 
-    const { data, error, updatedAt } = useDatabaseLiveQuery(buildQuery(loadedCount + 1), [loadedCount, queryKey]);
+    const result = useLiveAtomValue(getQueryAtom(loadedCount + 1, language));
+    const data = AsyncResult.getOrElse(result, () => []);
     const hasMore = data.length > loadedCount;
     const transactions = hasMore ? data.slice(0, -1) : data;
     const sections = groupTransactionsByMonth(transactions, formatMonthAndYear);
@@ -33,7 +36,7 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
         }
     };
 
-    return isDefined(updatedAt)
-        ? { sections, isLoading: false, hasMore, loadMore, error: error ?? null }
-        : { sections: [], isLoading: true, hasMore: true, loadMore, error: null };
+    return AsyncResult.isInitial(result)
+        ? { sections: [], isLoading: true, hasMore: true, loadMore }
+        : { sections, isLoading: false, hasMore, loadMore };
 };

@@ -1,5 +1,6 @@
 import { AccountDebtTypeEnum, AccountEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useMemo } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
@@ -11,7 +12,7 @@ import { convertFromMicroUnits } from '../../../@generic/utils/convert-from-micr
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { useDebtAccountManualSettledAmountQuery } from '../../query/use-debt-account-manual-settled-amount.query';
-import { accountService } from '../../service/account.service';
+import { DebtAccountService } from '../../service/debt-account.service';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
@@ -59,7 +60,10 @@ export const UpdateDebtAccount = ({ account }: Props) => {
 
     const { control, handleSubmit, instrument, isSubmitting } = useDebtAccountForm(
         initialValues,
-        values => appRuntime.runPromise(accountService.updateDebtById(account.id, values)),
+        values =>
+            appRuntime.runPromise(
+                Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.updateDebtById(account.id, values))
+            ),
         true
     );
 

@@ -1,30 +1,32 @@
+import * as Context from 'effect/Context';
+import * as Layer from 'effect/Layer';
+
+import { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
+import { ExistingTransferRepository } from '../../query/repository/existing-transfer.repository';
 import { ConsolidationFamilyKeyEnum } from '../enum/consolidation-family-key.enum';
+import { makeConsolidationFamilyService } from '../utils/make-consolidation-family-service.util';
 
-import { ConsolidationFamilyStrategyService } from './consolidation-family-strategy.service';
-
-import type { ConsolidationRepairExecutorService } from '../../executor/service/consolidation-repair-executor.service';
-import type { ExistingTransferRepository } from '../../query/repository/existing-transfer.repository';
-import type { ConsolidationScanScopeInterface, ExistingTransferChainReclaimCandidateInterface } from '@budgie/contracts';
-
-export class ExistingTransferChainReclaimConsolidationFamilyService extends ConsolidationFamilyStrategyService<ExistingTransferChainReclaimCandidateInterface> {
-    readonly key = ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_CHAIN_RECLAIM;
-
-    constructor(
-        private readonly existingTransferRepository: ExistingTransferRepository,
-        private readonly consolidationRepairExecutorService: ConsolidationRepairExecutorService
-    ) {
-        super();
+export class ExistingTransferChainReclaimConsolidationFamilyService extends Context.Service<ExistingTransferChainReclaimConsolidationFamilyService>()(
+    '@budgie/consolidation/ExistingTransferChainReclaimConsolidationFamilyService',
+    {
+        make: makeConsolidationFamilyService(
+            ExistingTransferRepository,
+            ConsolidationRepairExecutorService,
+            (existingTransferRepository, consolidationRepairExecutorService) => ({
+                key: ConsolidationFamilyKeyEnum.EXISTING_TRANSFER_CHAIN_RECLAIM,
+                findCandidates: scope => existingTransferRepository.findChainReclaimCandidates(scope),
+                consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateExistingTransferChainReclaim(candidate),
+                getSourceTransactionIds: candidate => [
+                    candidate.existingTransferId,
+                    candidate.bridgeIncomeTransactionId,
+                    candidate.bridgeExpenseTransactionId
+                ]
+            })
+        )
     }
-
-    protected findCandidates(scope: ConsolidationScanScopeInterface | null) {
-        return this.existingTransferRepository.findChainReclaimCandidates(scope);
-    }
-
-    protected consolidateCandidate(candidate: ExistingTransferChainReclaimCandidateInterface) {
-        return this.consolidationRepairExecutorService.consolidateExistingTransferChainReclaim(candidate);
-    }
-
-    protected getSourceTransactionIds(candidate: ExistingTransferChainReclaimCandidateInterface): number[] {
-        return [candidate.existingTransferId, candidate.bridgeIncomeTransactionId, candidate.bridgeExpenseTransactionId];
-    }
+) {
+    static readonly layer = Layer.effect(
+        ExistingTransferChainReclaimConsolidationFamilyService,
+        ExistingTransferChainReclaimConsolidationFamilyService.make
+    ).pipe(Layer.provide([ExistingTransferRepository.layer, ConsolidationRepairExecutorService.layer]));
 }

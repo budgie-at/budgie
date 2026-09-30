@@ -9,7 +9,7 @@ import { useFocusRefreshVersion } from '../../@generic/hook/use-focus-refresh-ve
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { PatternSuggestionsResultInterface } from '../interface/pattern-suggestions-result.interface';
-import { repeatedTransactionService } from '../service/repeated-transaction.service';
+import { RepeatedTransactionService } from '../service/repeated-transaction.service';
 
 const DEBOUNCE_MS = 600;
 
@@ -53,6 +53,7 @@ export const useRepeatedTransactionSuggestion = (params: UseRepeatedTransactionS
 
                 setInternalStatus('loading');
 
+                const repeatedTransactionService = yield* RepeatedTransactionService;
                 const result = yield* repeatedTransactionService.getSuggestions({
                     currentTime: new Date(),
                     type,

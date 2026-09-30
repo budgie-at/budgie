@@ -1,6 +1,7 @@
 import { TransactionCreateInputInterface, TransactionCreateInputSchema } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
@@ -11,7 +12,7 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
-import { transactionService } from '../service/transaction.service';
+import { TransactionService } from '../service/transaction.service';
 
 interface UseTransactionFormConfig {
     readonly schema: typeof TransactionCreateInputSchema;
@@ -31,7 +32,7 @@ export const useUpdateTransactionForm = ({ id, schema, transaction, onAfterSubmi
 
     const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
         try {
-            await appRuntime.runPromise(transactionService.updateById(id, data));
+            await appRuntime.runPromise(Effect.flatMap(TransactionService, transactionService => transactionService.updateById(id, data)));
             onAfterSubmit?.(data);
             goBackOrReplace('/');
         } catch (error: unknown) {
@@ -57,7 +58,7 @@ export const useUpdateTransactionForm = ({ id, schema, transaction, onAfterSubmi
         }
 
         try {
-            await appRuntime.runPromise(transactionService.deleteById(id));
+            await appRuntime.runPromise(Effect.flatMap(TransactionService, transactionService => transactionService.deleteById(id)));
             dismissAllOrReplace('/');
         } catch (error: unknown) {
             Toast.show({

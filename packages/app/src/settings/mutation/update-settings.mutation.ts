@@ -1,7 +1,5 @@
-import { SettingsCreateEntityInterface } from '@budgie/contracts';
-
-import { settingsRepository } from '../../@generic/drizzle/db/db';
-import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
+import { SettingsCreateEntityInterface, SettingsRepository } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 export const updateSettingsMutation = (input: Partial<SettingsCreateEntityInterface>) =>
-    invalidateDatabaseLiveQuery(settingsRepository.update(input));
+    Effect.flatMap(SettingsRepository, settingsRepository => settingsRepository.update(input));

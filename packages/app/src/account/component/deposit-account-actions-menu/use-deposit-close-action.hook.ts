@@ -1,5 +1,6 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
@@ -9,9 +10,9 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { transactionTransferService } from '../../../transaction/service/transaction-transfer.service';
+import { TransactionTransferService } from '../../../transaction/service/transaction-transfer.service';
 import { useAccountSelectorModal } from '../../context/account-selector-modal.context';
-import { accountService } from '../../service/account.service';
+import { AccountService } from '../../service/account.service';
 
 export const useDepositCloseAction = (accountId: number, balance: number, instrumentSymbol: string) => {
     const { t } = useLingui();
@@ -20,7 +21,9 @@ export const useDepositCloseAction = (accountId: number, balance: number, instru
     const [isLoading, setIsLoading] = useState(false);
 
     const confirmDepositClose = async (destinationAccountId: number): Promise<boolean> => {
-        const destinationAccount = await appRuntime.runPromise(accountService.findByIdOrFail(destinationAccountId));
+        const destinationAccount = await appRuntime.runPromise(
+            Effect.flatMap(AccountService, accountService => accountService.findByIdOrFail(destinationAccountId))
+        );
         const formattedBalance = formatDigits(balance, instrumentSymbol);
         const destinationAccountTitle = destinationAccount.title;
 
@@ -56,7 +59,11 @@ export const useDepositCloseAction = (accountId: number, balance: number, instru
                 return;
             }
 
-            await appRuntime.runPromise(transactionTransferService.closeDepositTo(accountId, destinationAccountId));
+            await appRuntime.runPromise(
+                Effect.flatMap(TransactionTransferService, transactionTransferService =>
+                    transactionTransferService.closeDepositTo(accountId, destinationAccountId)
+                )
+            );
             dismissAllOrReplace('/');
         } catch (error) {
             Toast.show({

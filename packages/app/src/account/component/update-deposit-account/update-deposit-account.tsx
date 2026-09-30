@@ -1,4 +1,5 @@
 import { AccountEntityInterface } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -8,7 +9,7 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDepositAccountForm } from '../../hooks/use-deposit-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
-import { accountService } from '../../service/account.service';
+import { AccountService } from '../../service/account.service';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
 import { DepositInterestRateField } from '../deposit-interest-rate-field/deposit-interest-rate-field';
 import { DepositMaturityDateField } from '../deposit-maturity-date-field/deposit-maturity-date-field';
@@ -39,15 +40,17 @@ export const UpdateDepositAccount = ({ account }: Props) => {
         initialValues,
         values =>
             appRuntime.runPromise(
-                accountService.updateDepositById(account.id, {
-                    title: values.title,
-                    icon: values.icon,
-                    currentBalance: values.currentBalance,
-                    interestRate: values.interestRate,
-                    deadline: values.deadline,
-                    includeInNetWorth: values.includeInNetWorth,
-                    isActive: values.isActive
-                })
+                Effect.flatMap(AccountService, accountService =>
+                    accountService.updateDepositById(account.id, {
+                        title: values.title,
+                        icon: values.icon,
+                        currentBalance: values.currentBalance,
+                        interestRate: values.interestRate,
+                        deadline: values.deadline,
+                        includeInNetWorth: values.includeInNetWorth,
+                        isActive: values.isActive
+                    })
+                )
             ),
         true
     );

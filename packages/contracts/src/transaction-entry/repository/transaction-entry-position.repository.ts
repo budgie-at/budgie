@@ -1,5 +1,9 @@
 import { and, asc, eq, inArray, isNull, or, sql } from 'drizzle-orm';
+import * as Context from 'effect/Context';
+import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 
+import { Db } from '../../@generic/service/db.service';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { TransactionConsolidationTypeEnum } from '../../transaction/enum/transaction-consolidation-type.enum';
@@ -8,55 +12,22 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 import { TransactionEntryTypeEnum } from '../enum/transaction-entry-type.enum';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
-import type { DB } from '../../@generic/type/db.type';
 import type { CryptoPositionEntryRowInterface } from '../interface/crypto-position-entry-row.interface';
 
-export class TransactionEntryPositionRepository {
-    private static readonly POSITION_ENTRY_TYPES = [
-        TransactionEntryTypeEnum.DEBIT,
-        TransactionEntryTypeEnum.CREDIT,
-        TransactionEntryTypeEnum.FEE
-    ] as const;
+export class TransactionEntryPositionRepository extends Context.Service<TransactionEntryPositionRepository>()(
+    '@budgie/contracts/TransactionEntryPositionRepository',
+    {
+        make: Effect.sync(() => {
+            const POSITION_ENTRY_TYPES = [
+                TransactionEntryTypeEnum.DEBIT,
+                TransactionEntryTypeEnum.CREDIT,
+                TransactionEntryTypeEnum.FEE
+            ] as const;
 
-    constructor(private db: DB) {}
-
-    findCryptoPositionEntries(instrumentId: number, baseInstrumentId: number) {
-        return this.db
-            .select({
-                type: TransactionEntryEntityTable.type,
-                amount: TransactionEntryEntityTable.amount,
-                baseAmount: sql<CryptoPositionEntryRowInterface['baseAmount']>`
-                    CASE
-                        WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${baseInstrumentId}
-                         AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}
-                        THEN ${TransactionEntryEntityTable.baseAmount}
-                        ELSE NULL
-                    END
-                `
-            })
-            .from(TransactionEntryEntityTable)
-            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-            .where(
-                and(
-                    eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO),
-                    eq(AccountEntityTable.instrumentId, instrumentId),
-                    eq(AccountEntityTable.isActive, true),
-                    isNull(AccountEntityTable.deletedAt),
-                    isNull(TransactionEntityTable.deletedAt),
-                    isNull(TransactionEntryEntityTable.deletedAt),
-                    inArray(TransactionEntryEntityTable.type, TransactionEntryPositionRepository.POSITION_ENTRY_TYPES),
-                    this.buildPositionLedgerEntryCondition(),
-                    this.buildExternalCryptoPositionEntryCondition(instrumentId)
-                )
-            )
-            .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntityTable.id), asc(TransactionEntryEntityTable.id));
-    }
-
-    private buildPositionLedgerEntryCondition() {
-        return or(
-            isNull(TransactionEntryEntityTable.originalTransactionId),
-            sql`
+            const buildPositionLedgerEntryCondition = () =>
+                or(
+                    isNull(TransactionEntryEntityTable.originalTransactionId),
+                    sql`
                 EXISTS (
                     SELECT 1
                     FROM transactions ledger_transaction
@@ -65,11 +36,10 @@ export class TransactionEntryPositionRepository {
                       AND ledger_transaction.deleted_at IS NULL
                 )
             `
-        );
-    }
+                );
 
-    private buildExternalCryptoPositionEntryCondition(instrumentId: number) {
-        return sql`
+            const buildExternalCryptoPositionEntryCondition = (instrumentId: number) =>
+                sql`
             (
                 ${TransactionEntityTable.type} != ${TransactionTypeEnum.TRANSFER}
                 OR ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE}
@@ -89,5 +59,48 @@ export class TransactionEntryPositionRepository {
                 )
             )
         `;
+
+            return {
+                findCryptoPositionEntries: (instrumentId: number, baseInstrumentId: number) =>
+                    Db.query(db =>
+                        db
+                            .select({
+                                type: TransactionEntryEntityTable.type,
+                                amount: TransactionEntryEntityTable.amount,
+                                baseAmount: sql<CryptoPositionEntryRowInterface['baseAmount']>`
+                        CASE
+                            WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${baseInstrumentId}
+                             AND ${TransactionEntityTable.type} != ${TransactionTypeEnum.ADJUSTMENT}
+                            THEN ${TransactionEntryEntityTable.baseAmount}
+                            ELSE NULL
+                        END
+                    `
+                            })
+                            .from(TransactionEntryEntityTable)
+                            .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                            .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                            .where(
+                                and(
+                                    eq(AccountEntityTable.type, AccountTypeEnum.CRYPTO),
+                                    eq(AccountEntityTable.instrumentId, instrumentId),
+                                    eq(AccountEntityTable.isActive, true),
+                                    isNull(AccountEntityTable.deletedAt),
+                                    isNull(TransactionEntityTable.deletedAt),
+                                    isNull(TransactionEntryEntityTable.deletedAt),
+                                    inArray(TransactionEntryEntityTable.type, POSITION_ENTRY_TYPES),
+                                    buildPositionLedgerEntryCondition(),
+                                    buildExternalCryptoPositionEntryCondition(instrumentId)
+                                )
+                            )
+                            .orderBy(
+                                asc(TransactionEntityTable.operatedAt),
+                                asc(TransactionEntityTable.id),
+                                asc(TransactionEntryEntityTable.id)
+                            )
+                    )
+            };
+        })
     }
+) {
+    static readonly layer = Layer.effect(TransactionEntryPositionRepository, TransactionEntryPositionRepository.make);
 }

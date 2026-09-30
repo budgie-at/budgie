@@ -1,165 +1,176 @@
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { Db, ExternalSourceEnum } from '@budgie/contracts';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
+import * as Layer from 'effect/Layer';
 import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { invalidateDatabaseLiveQuery } from '../../@generic/drizzle/utils/invalidate-database-live-query.util';
 import { Workload } from '../../@generic/service/workload.service';
-import { accountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
+import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
 import { ERSTE_DUPLICATE_CANDIDATE_SQL } from '../constant/erste-duplicate-candidate-sql.constant';
 import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '../constant/privatbank-duplicate-candidate-sql.constant';
+import { consolidationCoordinatorLayer } from '../layer/consolidation-coordinator.layer';
 
-import { consolidationCoordinatorService } from './consolidation-coordinator.service';
-import { syncDuplicateSoftDeleteService } from './sync-duplicate-soft-delete.service';
-import { unpairedOwnCardTransferRepairService } from './unpaired-own-card-transfer-repair.service';
+import { SyncDuplicateSoftDeleteService } from './sync-duplicate-soft-delete.service';
+import { UnpairedOwnCardTransferRepairService } from './unpaired-own-card-transfer-repair.service';
 
 import type { SyncDuplicateCandidateRowInterface } from '../interface/sync-duplicate-candidate-row.interface';
 import type { SyncDuplicateRepairPreviewInterface } from '../interface/sync-duplicate-repair-preview.interface';
 import type { SyncDuplicateRepairResultInterface } from '../interface/sync-duplicate-repair-result.interface';
 import type { SyncDuplicateRepairSourcePreviewInterface } from '../interface/sync-duplicate-repair-source-preview.interface';
 
-class SyncRepairService {
-    private static readonly SOURCES = [
-        { externalSource: ExternalSourceEnum.PRIVATBANK, candidateSql: PRIVATBANK_DUPLICATE_CANDIDATE_SQL },
-        { externalSource: ExternalSourceEnum.ERSTE, candidateSql: ERSTE_DUPLICATE_CANDIDATE_SQL }
-    ] as const;
+export class SyncRepairService extends Context.Service<SyncRepairService>()('@budgie/app/SyncRepairService', {
+    make: Effect.gen(function* () {
+        const workload = yield* Workload;
+        const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
+        const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
+        const syncDuplicateSoftDeleteService = yield* SyncDuplicateSoftDeleteService;
+        const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
+        const exclusive = yield* Semaphore.make(1);
+        const sources = [
+            { externalSource: ExternalSourceEnum.PRIVATBANK, candidateSql: PRIVATBANK_DUPLICATE_CANDIDATE_SQL },
+            { externalSource: ExternalSourceEnum.ERSTE, candidateSql: ERSTE_DUPLICATE_CANDIDATE_SQL }
+        ] as const;
 
-    readonly previewDuplicates = Effect.fn('SyncRepairService.previewDuplicates')(function* (this: SyncRepairService) {
-        return yield* this.exclusive.withPermit(this.buildPreview());
-    });
+        const buildSourcePreview = (
+            externalSource: ExternalSourceEnum,
+            candidates: readonly SyncDuplicateCandidateRowInterface[]
+        ): SyncDuplicateRepairSourcePreviewInterface => ({
+            duplicateTransactionCount: candidates.filter(candidate => candidate.externalSource === externalSource).length,
+            externalSource
+        });
 
-    readonly removeDuplicates = Effect.fn('SyncRepairService.removeDuplicates')(function* (this: SyncRepairService) {
-        return yield* this.exclusive.withPermit(Workload.use(workload => workload.runForeground(this.removeDuplicatesInner())));
-    }, invalidateDatabaseLiveQuery);
+        const addConsolidationRepairPreview = (
+            sourcePreviews: readonly SyncDuplicateRepairSourcePreviewInterface[],
+            consolidationRepairCount: number
+        ): SyncDuplicateRepairSourcePreviewInterface[] => {
+            if (!isPositiveNumber(consolidationRepairCount)) {
+                return [...sourcePreviews];
+            }
 
-    private readonly findDuplicateCandidates = Effect.fnUntraced(function* () {
-        const candidateGroups = yield* Effect.all(
-            SyncRepairService.SOURCES.map(({ candidateSql }) =>
-                Db.query(db => db.$client.getAllAsync<SyncDuplicateCandidateRowInterface>(candidateSql))
-            )
-        );
+            const privatbankSource = sourcePreviews.find(source => source.externalSource === ExternalSourceEnum.PRIVATBANK);
 
-        return candidateGroups.flat();
-    });
+            if (!isDefined(privatbankSource)) {
+                return [
+                    ...sourcePreviews,
+                    {
+                        duplicateTransactionCount: consolidationRepairCount,
+                        externalSource: ExternalSourceEnum.PRIVATBANK
+                    }
+                ];
+            }
 
-    private readonly repairConsolidationDuplicates = Effect.fnUntraced(function* () {
-        const incomeDuplicateRepairCount = yield* consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
-        const bridgeClaimRepairCount = yield* consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
-        const ownCardTransferRepairCount = yield* unpairedOwnCardTransferRepairService.repair();
-
-        return incomeDuplicateRepairCount + bridgeClaimRepairCount + ownCardTransferRepairCount;
-    });
-
-    private readonly rebuildBalancesWhenNeeded = Effect.fnUntraced(function* (result: SyncDuplicateRepairResultInterface) {
-        if (isPositiveNumber(result.repairedTransactionCount)) {
-            yield* accountBalanceIncrementalService.updateAllBalances(true);
-        }
-    });
-
-    private readonly removeDuplicatesInTransaction = Effect.fnUntraced(function* (this: SyncRepairService) {
-        const candidates = yield* this.findDuplicateCandidates();
-        const duplicateTransactionIds = candidates.map(candidate => candidate.duplicateTransactionId);
-        const result = yield* syncDuplicateSoftDeleteService.remove(duplicateTransactionIds);
-
-        return {
-            repairedTransactionCount: result.updatedTransactionIds.length
-        } satisfies SyncDuplicateRepairResultInterface;
-    });
-
-    private readonly buildPreview = Effect.fnUntraced(function* (this: SyncRepairService) {
-        const candidates = yield* this.findDuplicateCandidates();
-        const consolidationRepairCount =
-            (yield* consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates()) +
-            (yield* consolidationCoordinatorService.countBridgeClaimRepairCandidates()) +
-            (yield* unpairedOwnCardTransferRepairService.countCandidates());
-
-        return this.buildPreviewFromCandidates(candidates, consolidationRepairCount);
-    });
-
-    private readonly exclusive = Semaphore.makeUnsafe(1);
-
-    private readonly removeDuplicatesInner = Effect.fnUntraced(function* (this: SyncRepairService) {
-        const duplicateResult = yield* Db.transaction(this.removeDuplicatesInTransaction());
-        const consolidationRepairCount = yield* this.repairConsolidationDuplicates().pipe(
-            Effect.onError(() => Effect.ignoreCause(this.rebuildBalancesWhenNeeded(duplicateResult)))
-        );
-        const result = this.mergeConsolidationRepairResult(duplicateResult, consolidationRepairCount);
-
-        yield* this.rebuildBalancesWhenNeeded(result);
-
-        return result;
-    });
-
-    private buildPreviewFromCandidates(
-        candidates: readonly SyncDuplicateCandidateRowInterface[],
-        consolidationRepairCount = 0
-    ): SyncDuplicateRepairPreviewInterface {
-        const duplicateSources = SyncRepairService.SOURCES.map(({ externalSource }) =>
-            this.buildSourcePreview(externalSource, candidates)
-        ).filter(source => isPositiveNumber(source.duplicateTransactionCount));
-        const sources = this.addConsolidationRepairPreview(duplicateSources, consolidationRepairCount);
-        const duplicateTransactionCount = sources.reduce((total, source) => total + source.duplicateTransactionCount, 0);
-
-        return { duplicateTransactionCount, sources };
-    }
-
-    private addConsolidationRepairPreview(
-        sources: readonly SyncDuplicateRepairSourcePreviewInterface[],
-        consolidationRepairCount: number
-    ): SyncDuplicateRepairSourcePreviewInterface[] {
-        if (!isPositiveNumber(consolidationRepairCount)) {
-            return [...sources];
-        }
-
-        const privatbankSource = sources.find(source => source.externalSource === ExternalSourceEnum.PRIVATBANK);
-
-        if (!isDefined(privatbankSource)) {
-            return [
-                ...sources,
-                {
-                    duplicateTransactionCount: consolidationRepairCount,
-                    externalSource: ExternalSourceEnum.PRIVATBANK
+            return sourcePreviews.map(source => {
+                if (source.externalSource !== ExternalSourceEnum.PRIVATBANK) {
+                    return source;
                 }
-            ];
-        }
 
-        return sources.map(source => {
-            if (source.externalSource !== ExternalSourceEnum.PRIVATBANK) {
-                return source;
+                return {
+                    ...source,
+                    duplicateTransactionCount: source.duplicateTransactionCount + consolidationRepairCount
+                };
+            });
+        };
+
+        const buildPreviewFromCandidates = (
+            candidates: readonly SyncDuplicateCandidateRowInterface[],
+            consolidationRepairCount = 0
+        ): SyncDuplicateRepairPreviewInterface => {
+            const duplicateSources = sources
+                .map(({ externalSource }) => buildSourcePreview(externalSource, candidates))
+                .filter(source => isPositiveNumber(source.duplicateTransactionCount));
+            const sourcePreviews = addConsolidationRepairPreview(duplicateSources, consolidationRepairCount);
+            const duplicateTransactionCount = sourcePreviews.reduce((total, source) => total + source.duplicateTransactionCount, 0);
+
+            return { duplicateTransactionCount, sources: sourcePreviews };
+        };
+
+        const mergeConsolidationRepairResult = (
+            result: SyncDuplicateRepairResultInterface,
+            consolidationRepairCount: number
+        ): SyncDuplicateRepairResultInterface => {
+            if (!isPositiveNumber(consolidationRepairCount)) {
+                return result;
             }
 
             return {
-                ...source,
-                duplicateTransactionCount: source.duplicateTransactionCount + consolidationRepairCount
+                repairedTransactionCount: result.repairedTransactionCount + consolidationRepairCount
             };
+        };
+
+        const findDuplicateCandidates = Effect.fnUntraced(function* () {
+            const candidateGroups = yield* Effect.all(
+                sources.map(({ candidateSql }) => Db.query(db => db.$client.getAllAsync<SyncDuplicateCandidateRowInterface>(candidateSql)))
+            );
+
+            return candidateGroups.flat();
         });
-    }
 
-    private buildSourcePreview(
-        externalSource: ExternalSourceEnum,
-        candidates: readonly SyncDuplicateCandidateRowInterface[]
-    ): SyncDuplicateRepairSourcePreviewInterface {
-        const sourceCandidates = candidates.filter(candidate => candidate.externalSource === externalSource);
+        const repairConsolidationDuplicates = Effect.fnUntraced(function* () {
+            const incomeDuplicateRepairCount = yield* consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
+            const bridgeClaimRepairCount = yield* consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
+            const ownCardTransferRepairCount = yield* unpairedOwnCardTransferRepairService.repair();
 
-        return {
-            duplicateTransactionCount: sourceCandidates.length,
-            externalSource
-        };
-    }
+            return incomeDuplicateRepairCount + bridgeClaimRepairCount + ownCardTransferRepairCount;
+        });
 
-    private mergeConsolidationRepairResult(
-        result: SyncDuplicateRepairResultInterface,
-        consolidationRepairCount: number
-    ): SyncDuplicateRepairResultInterface {
-        if (!isPositiveNumber(consolidationRepairCount)) {
+        const rebuildBalancesWhenNeeded = Effect.fnUntraced(function* (result: SyncDuplicateRepairResultInterface) {
+            if (isPositiveNumber(result.repairedTransactionCount)) {
+                yield* accountBalanceIncrementalService.updateAllBalances(true);
+            }
+        });
+
+        const removeDuplicatesInTransaction = Effect.fnUntraced(function* () {
+            const candidates = yield* findDuplicateCandidates();
+            const duplicateTransactionIds = candidates.map(candidate => candidate.duplicateTransactionId);
+            const result = yield* syncDuplicateSoftDeleteService.remove(duplicateTransactionIds);
+
+            return {
+                repairedTransactionCount: result.updatedTransactionIds.length
+            } satisfies SyncDuplicateRepairResultInterface;
+        });
+
+        const buildPreview = Effect.fnUntraced(function* () {
+            const candidates = yield* findDuplicateCandidates();
+            const consolidationRepairCount =
+                (yield* consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates()) +
+                (yield* consolidationCoordinatorService.countBridgeClaimRepairCandidates()) +
+                (yield* unpairedOwnCardTransferRepairService.countCandidates());
+
+            return buildPreviewFromCandidates(candidates, consolidationRepairCount);
+        });
+
+        const removeDuplicatesInner = Effect.fnUntraced(function* () {
+            const duplicateResult = yield* Db.transaction(removeDuplicatesInTransaction());
+            const consolidationRepairCount = yield* repairConsolidationDuplicates().pipe(
+                Effect.onError(() => Effect.ignoreCause(rebuildBalancesWhenNeeded(duplicateResult)))
+            );
+            const result = mergeConsolidationRepairResult(duplicateResult, consolidationRepairCount);
+
+            yield* rebuildBalancesWhenNeeded(result);
+
             return result;
-        }
+        });
 
         return {
-            repairedTransactionCount: result.repairedTransactionCount + consolidationRepairCount
+            previewDuplicates: Effect.fn('SyncRepairService.previewDuplicates')(function* () {
+                return yield* exclusive.withPermit(buildPreview());
+            }),
+            removeDuplicates: Effect.fn('SyncRepairService.removeDuplicates')(function* () {
+                return yield* exclusive.withPermit(workload.runForeground(removeDuplicatesInner()));
+            })
         };
-    }
+    })
+}) {
+    static readonly layer = Layer.effect(SyncRepairService, SyncRepairService.make).pipe(
+        Layer.provide([
+            Workload.layer,
+            consolidationCoordinatorLayer,
+            AccountBalanceIncrementalService.layer,
+            SyncDuplicateSoftDeleteService.layer,
+            UnpairedOwnCardTransferRepairService.layer
+        ])
+    );
 }
-
-export const syncRepairService = new SyncRepairService();
