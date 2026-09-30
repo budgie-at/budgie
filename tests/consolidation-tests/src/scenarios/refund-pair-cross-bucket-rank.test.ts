@@ -105,7 +105,7 @@ describe('consolidation/refund-pair-cross-bucket-rank', () => {
         ]);
         expect(review).toHaveLength(0);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchTransactionById(matchedExpense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
@@ -146,7 +146,7 @@ describe('consolidation/refund-pair-cross-bucket-rank', () => {
             })
         ]);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();
@@ -178,7 +178,7 @@ describe('consolidation/refund-pair-cross-bucket-rank exact-title precedence', (
             })
         ]);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();

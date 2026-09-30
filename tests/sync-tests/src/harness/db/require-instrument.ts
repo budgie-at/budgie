@@ -1,18 +1,15 @@
 import { instrumentRepository } from '@app/@generic/drizzle/db/db';
 import { CurrencyEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { run } from '../scenario/test-runtime';
-
-import type { InstrumentEntityInterface } from '@budgie/contracts';
-
-export const requireInstrument = async (code: CurrencyEnum): Promise<InstrumentEntityInterface> => {
-    const instrument = await run(instrumentRepository.findByCode(code));
+export const requireInstrument = Effect.fnUntraced(function* (code: CurrencyEnum) {
+    const instrument = yield* instrumentRepository.findByCode(code);
 
     if (!isDefined(instrument)) {
-        throw new Error(`Instrument ${code} not found`);
+        return yield* Effect.die(new Error(`Instrument ${code} not found`));
     }
 
     return instrument;
-};
+});

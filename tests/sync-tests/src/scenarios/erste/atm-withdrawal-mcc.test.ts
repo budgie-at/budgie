@@ -78,7 +78,7 @@ describe('erste/atm-withdrawal-mcc', () => {
     });
 
     it('imports an AUTOMAT withdrawal with the ATM MCC category so consolidation moves it to cash', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
+        const euro = await run(requireInstrument(CurrencyEnum.EUR));
         const cashAccount = seed.account({ title: 'Cash EUR', type: AccountTypeEnum.CASH, instrumentId: euro.id });
 
         await run(ersteSyncService.executeImportForSelectedAccounts('erste-statement.pdf', [erste.account.iban]));
@@ -96,6 +96,6 @@ describe('erste/atm-withdrawal-mcc', () => {
         expect(atmEntry.mccCategoryId).toBe(findMccByCode(String(ATM_MCC)).id);
         expect(nonAtmEntries.flat().map(entry => entry.mccCategoryId)).toEqual([null, null, null, null]);
 
-        await expectAtmCashWithdrawalConsolidation(atmEntry.accountId, cashAccount.id, atmEntry.transactionId);
+        await run(expectAtmCashWithdrawalConsolidation(atmEntry.accountId, cashAccount.id, atmEntry.transactionId));
     });
 });

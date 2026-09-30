@@ -8,11 +8,15 @@ import {
     UnconsolidationService
 } from '@budgie/consolidation';
 import { Db } from '@budgie/contracts';
+import * as Clock from 'effect/Clock';
+import * as Layer from 'effect/Layer';
 
 export const testDb = buildTestDb();
 
 const repositories = createTestRepositories(testDb);
 export const runEffect = runWithDb(testDb);
+
+export const TestLayer = Layer.mergeAll(Layer.succeed(Db, testDb), Layer.succeed(Clock.Clock, Clock.Clock.defaultValue()));
 
 export const { accountBalanceRepository } = repositories;
 export const { accountRepository } = repositories;
@@ -64,5 +68,4 @@ export const testQueryService = new TestQueryService(testDb);
 
 export const testSeedService = new TestSeedService(testDb);
 
-export const unconsolidateById = (transactionId: number) =>
-    runEffect(Db.transaction(unconsolidationService.unconsolidateById(transactionId)));
+export const unconsolidateById = (transactionId: number) => Db.transaction(unconsolidationService.unconsolidateById(transactionId));

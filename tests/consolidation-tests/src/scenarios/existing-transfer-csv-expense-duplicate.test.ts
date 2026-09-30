@@ -11,7 +11,7 @@ import { describe, expect, it } from 'vitest';
 
 import { expectConsolidationParent, fetchLedgerBalances } from '../harness/consolidation-revert-audit';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
-import { statisticsRepository, testDb, testQueryService, testSeedService } from '../harness/test-context';
+import { statisticsRepository, testDb, testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 const LEGACY_AMOUNT = 5943 * PRECISION;
 const SYNCED_AMOUNT = Math.round(5870.2 * PRECISION);
@@ -76,7 +76,7 @@ describe('consolidation/existing-transfer-csv-expense-duplicate', () => {
         const { legacyTargetAccount, legacyTransfer, syncedCardAccount } = seedLegacyCsvTransfer(1, LEGACY_AMOUNT, false);
         const expense = seedSyncedExpense(syncedCardAccount.id, SYNCED_AMOUNT, 'приват сина 3');
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
 
         expect(result.consolidated).toBe(1);
@@ -85,11 +85,11 @@ describe('consolidation/existing-transfer-csv-expense-duplicate', () => {
         expect(canonical.toAccountId).toBe(legacyTargetAccount.id);
         expectConsolidationParent(legacyTransfer.id, canonical.id);
         expectConsolidationParent(expense.id, canonical.id);
-        expect(await fetchLedgerBalances([syncedCardAccount.id, legacyTargetAccount.id])).toEqual([
+        expect(await runEffect(fetchLedgerBalances([syncedCardAccount.id, legacyTargetAccount.id]))).toEqual([
             [syncedCardAccount.id, -SYNCED_AMOUNT],
             [legacyTargetAccount.id, LEGACY_AMOUNT]
         ]);
-        await expectSecondConsolidationRunStable();
+        await runEffect(expectSecondConsolidationRunStable());
     });
 
     it('merges a historical ATM withdrawal into the legacy cash transfer it duplicates without moving money', async () => {
@@ -99,17 +99,17 @@ describe('consolidation/existing-transfer-csv-expense-duplicate', () => {
             syncedCardAccount
         } = seedLegacyCsvTransfer(1, LEGACY_AMOUNT, true, AccountTypeEnum.CASH);
         const atmExpense = seedSyncedExpense(syncedCardAccount.id, ATM_AMOUNT, 'Банкомат MONO', '6011');
-        const ledgerBalances = await fetchLedgerBalances([syncedCardAccount.id, cashAccount.id]);
+        const ledgerBalances = await runEffect(fetchLedgerBalances([syncedCardAccount.id, cashAccount.id]));
         const totalExpense = fetchTotalExpense();
 
-        expect(await runConsolidation()).toEqual({ consolidated: 1, found: 1 });
+        expect(await runEffect(runConsolidation())).toEqual({ consolidated: 1, found: 1 });
         const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
         expectConsolidationParent(legacyTransfer.id, canonical.id);
         expectConsolidationParent(atmExpense.id, canonical.id);
-        expect(await fetchLedgerBalances([syncedCardAccount.id, cashAccount.id])).toEqual(ledgerBalances);
+        expect(await runEffect(fetchLedgerBalances([syncedCardAccount.id, cashAccount.id]))).toEqual(ledgerBalances);
         expect(totalExpense - fetchTotalExpense()).toBe(ATM_AMOUNT);
-        await expectSecondConsolidationRunStable();
+        await runEffect(expectSecondConsolidationRunStable());
     });
 
     it('matches the target leg when the legacy source account holds another currency', async () => {
@@ -117,7 +117,7 @@ describe('consolidation/existing-transfer-csv-expense-duplicate', () => {
         const { legacyTargetAccount, legacyTransfer, syncedCardAccount } = seedLegacyCsvTransfer(eur.id, LEGACY_EUR_AMOUNT, true);
         const expense = seedSyncedExpense(syncedCardAccount.id, LEGACY_AMOUNT, '552324****0356');
 
-        expect((await runConsolidation()).consolidated).toBe(1);
+        expect((await runEffect(runConsolidation())).consolidated).toBe(1);
         const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
         expect(canonical.toAccountId).toBe(legacyTargetAccount.id);
         expectConsolidationParent(legacyTransfer.id, canonical.id);
@@ -139,7 +139,7 @@ describe('consolidation/existing-transfer-csv-expense-duplicate', () => {
             )
             .run();
 
-        expect(await runConsolidation()).toEqual({ consolidated: 0, found: 0 });
+        expect(await runEffect(runConsolidation())).toEqual({ consolidated: 0, found: 0 });
         expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
     });
 
@@ -152,7 +152,7 @@ describe('consolidation/existing-transfer-csv-expense-duplicate', () => {
         const { syncedCardAccount } = seedLegacyCsvTransfer(1, LEGACY_AMOUNT, false);
         const expense = seedSyncedExpense(syncedCardAccount.id, amount, title, mcc);
 
-        expect(await runConsolidation()).toEqual({ consolidated: 0, found: 0 });
+        expect(await runEffect(runConsolidation())).toEqual({ consolidated: 0, found: 0 });
         expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
     });
 });

@@ -51,6 +51,6 @@ describe('consolidation/privatbank-cash-withdrawal', () => {
         const cashAccount = seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: 1 });
         const withdrawalTransactionId = await importPrivatbankCashWithdrawal(privatbankAccount.id);
 
-        await expectAtmCashWithdrawalConsolidation(privatbankAccount.id, cashAccount.id, withdrawalTransactionId);
+        await run(expectAtmCashWithdrawalConsolidation(privatbankAccount.id, cashAccount.id, withdrawalTransactionId));
     });
 });

@@ -19,10 +19,12 @@ const PARTIAL_REFUNDED_EXPENSE_AMOUNT = 80 * PRECISION;
 
 describe('consolidation/refund-pair-partial', () => {
     it('moves the partial refund DEBIT entry onto the expense canonical', async () => {
-        const { expense, refunds, result } = await runRefundScenario({
-            expenseAmount: REFUNDED_EXPENSE_AMOUNT,
-            refundAmounts: [PARTIAL_REFUND_AMOUNT]
-        });
+        const { expense, refunds, result } = await run(
+            runRefundScenario({
+                expenseAmount: REFUNDED_EXPENSE_AMOUNT,
+                refundAmounts: [PARTIAL_REFUND_AMOUNT]
+            })
+        );
 
         expect(result.consolidated).toBe(1);
 
@@ -61,10 +63,12 @@ describe('consolidation/refund-pair-partial', () => {
     });
 
     it('keeps moved refund income entries in account balance calculations', async () => {
-        const { account } = await runRefundScenario({
-            expenseAmount: REFUNDED_EXPENSE_AMOUNT,
-            refundAmounts: [PARTIAL_REFUND_AMOUNT]
-        });
+        const { account } = await run(
+            runRefundScenario({
+                expenseAmount: REFUNDED_EXPENSE_AMOUNT,
+                refundAmounts: [PARTIAL_REFUND_AMOUNT]
+            })
+        );
 
         const balance = accountBalanceRepository.getByAccountId(account.id).get();
 
@@ -72,10 +76,12 @@ describe('consolidation/refund-pair-partial', () => {
     });
 
     it('computes refunded summary from an explicit refund total when moved entries are hidden', async () => {
-        const { expense } = await runRefundScenario({
-            expenseAmount: REFUNDED_EXPENSE_AMOUNT,
-            refundAmounts: [PARTIAL_REFUND_AMOUNT]
-        });
+        const { expense } = await run(
+            runRefundScenario({
+                expenseAmount: REFUNDED_EXPENSE_AMOUNT,
+                refundAmounts: [PARTIAL_REFUND_AMOUNT]
+            })
+        );
 
         const promotedExpense = await transactionRepository.getById(expense.id, LanguageEnum.EN);
 

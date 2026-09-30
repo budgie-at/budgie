@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { isDefined } from '@rnw-community/shared';
 
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 const EUR_IBAN = 'UA-FOP-EUR';
 const UAH_IBAN = 'UA-FOP-UAH';
@@ -44,7 +44,7 @@ describe('consolidation/transfer-pair-by-iban', () => {
         testSeedService.transactionTag(expense.id, tag.id);
         testSeedService.transactionTag(income.id, tag.id);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         expect(result.consolidated).toBe(1);
 
         const canonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
@@ -65,7 +65,7 @@ describe('consolidation/transfer-pair-by-iban', () => {
     it('pairs a same-second same-bank currency conversion whose counter-IBAN matches', async () => {
         const { eurAccount, expense, income, uahAccount } = seedSameBankIbanConversion(0);
 
-        expect((await runConsolidation()).consolidated).toBe(1);
+        expect((await runEffect(runConsolidation())).consolidated).toBe(1);
         const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
         expect(canonical.fromAccountId).toBe(eurAccount.id);
         expect(canonical.toAccountId).toBe(uahAccount.id);
@@ -76,7 +76,7 @@ describe('consolidation/transfer-pair-by-iban', () => {
     it('keeps a counter-IBAN currency conversion unpaired when the legs are minutes apart', async () => {
         const { expense, income } = seedSameBankIbanConversion(5 * 60_000);
 
-        expect(await runConsolidation()).toEqual({ consolidated: 0, found: 0 });
+        expect(await runEffect(runConsolidation())).toEqual({ consolidated: 0, found: 0 });
         expect(testQueryService.fetchTransactionById(expense.id).consolidationParentTransactionId).toBeNull();
         expect(testQueryService.fetchTransactionById(income.id).consolidationParentTransactionId).toBeNull();
     });

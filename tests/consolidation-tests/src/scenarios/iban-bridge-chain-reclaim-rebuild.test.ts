@@ -22,7 +22,7 @@ import {
     IBAN_BRIDGE_UAH_TO_EUR_RATE
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, unconsolidateById } from '../harness/test-context';
+import { testQueryService, unconsolidateById, runEffect } from '../harness/test-context';
 
 const RATE_PRECISION_DIGITS = 10;
 const REBUILT_LEDGER_ENTRY_COUNT = 2;
@@ -50,7 +50,7 @@ describe('consolidation/iban-bridge-chain-reclaim-rebuild', () => {
             ...STALE_DIRECT_TRANSFER
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         const rebuiltCanonicalId = fetchRebuiltCanonicalId();
 
         expect(result.found).toBe(1);
@@ -68,8 +68,8 @@ describe('consolidation/iban-bridge-chain-reclaim-rebuild', () => {
             ...STALE_DIRECT_TRANSFER
         });
 
-        await runConsolidation();
-        await unconsolidateById(fetchRebuiltCanonicalId());
+        await runEffect(runConsolidation());
+        await runEffect(unconsolidateById(fetchRebuiltCanonicalId()));
 
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER)).toHaveLength(0);
         expect(testQueryService.fetchTransactionById(directTransfer.id).consolidationType).toBe(
@@ -83,15 +83,15 @@ describe('consolidation/iban-bridge-chain-reclaim-rebuild', () => {
         const { bridgeAccount, bridgeExpense, bridgeIncome, directTransfer, sourceAccount, sourceExpense, targetAccount, targetIncome } =
             await seedNestedChainReclaimFixture();
         const accountIds = [sourceAccount.id, bridgeAccount.id, targetAccount.id];
-        const balancesBeforeConsolidation = await fetchLedgerBalances(accountIds);
+        const balancesBeforeConsolidation = await runEffect(fetchLedgerBalances(accountIds));
 
-        await runConsolidation();
-        await unconsolidateById(directTransfer.id);
+        await runEffect(runConsolidation());
+        await runEffect(unconsolidateById(directTransfer.id));
 
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER)).toHaveLength(0);
         expect(testQueryService.findTransactionById(directTransfer.id)).toBeUndefined();
         expectSourcesRestored([sourceExpense.id, targetIncome.id, bridgeIncome.id, bridgeExpense.id]);
         expect(fetchOwnLedgerEntries(sourceExpense.id)).toHaveLength(1);
-        expect(await fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
+        expect(await runEffect(fetchLedgerBalances(accountIds))).toEqual(balancesBeforeConsolidation);
     });
 });

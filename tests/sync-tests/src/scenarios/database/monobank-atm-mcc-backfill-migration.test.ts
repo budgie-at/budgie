@@ -31,15 +31,15 @@ describe('database/monobank-atm-mcc-backfill-migration', () => {
         );
         await testDb.$client.execAsync(`UPDATE transactions SET title = 'Банкомат Erste Bank' WHERE id = ${atmExpense.id}`);
 
-        await applyMigration(MIGRATION_FILE_NAME);
-        await applyMigration(MIGRATION_FILE_NAME);
+        await run(applyMigration(MIGRATION_FILE_NAME));
+        await run(applyMigration(MIGRATION_FILE_NAME));
 
         const [atmEntry] = await fetchExpenseEntries(atmExpense.id);
         const [shopEntry] = await fetchExpenseEntries(shopExpense.id);
         expect(atmEntry.mccCategoryId).toBe(findMccByCode('6011').id);
         expect(shopEntry.mccCategoryId).toBeNull();
 
-        await expectAtmCashWithdrawalConsolidation(bankAccount.id, cashAccount.id, atmExpense.id);
+        await run(expectAtmCashWithdrawalConsolidation(bankAccount.id, cashAccount.id, atmExpense.id));
         expect(await run(transferConsolidationService.consolidate(null))).toMatchObject({ consolidated: 0, found: 0 });
     });
 });

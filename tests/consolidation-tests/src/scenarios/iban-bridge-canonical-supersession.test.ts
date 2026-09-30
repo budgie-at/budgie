@@ -20,7 +20,7 @@ import {
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService, unconsolidateById } from '../harness/test-context';
+import { testQueryService, testSeedService, unconsolidateById, runEffect } from '../harness/test-context';
 
 import type { AccountEntityInterface } from '@budgie/contracts';
 
@@ -89,7 +89,7 @@ const seedIncrementalBridgeArrival = async ({
         );
     }
 
-    await runConsolidation();
+    await runEffect(runConsolidation());
     const prefixCanonicals = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER);
     const [prefixCanonical] = prefixCanonicals;
     const completeExpense = testSeedService.bankPairExpense(
@@ -123,10 +123,12 @@ const seedIncrementalBridgeArrival = async ({
         sourceEntryExchangeRate: 1,
         exchangeRate: 1
     });
-    const result = await runConsolidation(
-        scopeArrivalToSyncedTransactions
-            ? consolidationScopeService.buildFromTransactions([completeExpense, completeIncome, existingTransfer])
-            : null
+    const result = await runEffect(
+        runConsolidation(
+            scopeArrivalToSyncedTransactions
+                ? consolidationScopeService.buildFromTransactions([completeExpense, completeIncome, existingTransfer])
+                : null
+        )
     );
     const liveCanonicals = testQueryService
         .fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER)
@@ -166,7 +168,7 @@ describe('consolidation/iban-bridge-canonical-supersession', () => {
         expect(fetchLedgerEntry(canonical.id, targetAccount.id).amount).toBe(IBAN_BRIDGE_UAH_AMOUNT);
         expect(fetchOwnLedgerEntries(canonical.id).some(entry => entry.accountId === bridgeAccount.id)).toBe(false);
 
-        const repeatedResult = await runConsolidation();
+        const repeatedResult = await runEffect(runConsolidation());
 
         expect(repeatedResult.found).toBe(0);
         expect(repeatedResult.consolidated).toBe(0);
@@ -205,14 +207,14 @@ describe('consolidation/iban-bridge-canonical-supersession', () => {
         const { canonical, completeSourceTransactionIds, prefixCanonical, prefixSourceTransactionIds } =
             await seedIncrementalBridgeArrival();
 
-        await unconsolidateById(canonical.id);
+        await runEffect(unconsolidateById(canonical.id));
 
         expect(testQueryService.fetchTransactionById(prefixCanonical.id).consolidationParentTransactionId).toBeNull();
         expect(fetchOwnLedgerEntries(prefixCanonical.id)).toHaveLength(2);
         expectSourcesRestored(completeSourceTransactionIds);
         prefixSourceTransactionIds.forEach(sourceTransactionId => expectConsolidationParent(sourceTransactionId, prefixCanonical.id));
 
-        await unconsolidateById(prefixCanonical.id);
+        await runEffect(unconsolidateById(prefixCanonical.id));
 
         expectSourcesRestored(prefixSourceTransactionIds);
     });

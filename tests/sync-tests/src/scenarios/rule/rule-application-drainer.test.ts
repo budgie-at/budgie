@@ -1,13 +1,12 @@
 import { ruleApplicationDrainerService } from '@app/rule/service/rule-application-drainer.service';
 import { ruleEngineService } from '@app/rule/service/rule-engine.service';
 import { CategorySourceEnum, DbError, ExternalSourceEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { afterEach, beforeEach, describe, expect, it, vi } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { run } from '../../harness';
-import { flushScheduledDrain } from '../../harness/scheduler/flush-scheduled-drain';
-import { useFakeDrainTimers } from '../../harness/scheduler/use-fake-drain-timers';
-import { PausedUserWork } from '../../harness/sync-workload/paused-user-work';
+import { TestClockLayer } from '../../harness';
+import { advanceScheduledDrain } from '../../harness/scheduler/advance-scheduled-drain';
+import { pauseUserWork } from '../../harness/sync-workload/pause-user-work';
 
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
@@ -46,7 +45,6 @@ const appliedRulesToTransactions = vi.fn();
 
 describe('rule/rule-application-drainer', () => {
     beforeEach(() => {
-        useFakeDrainTimers();
         Object.assign(ruleApplicationDrainerService, {
             pendingRuleApplications: [],
             pendingTransactionIds: [],
@@ -62,71 +60,74 @@ describe('rule/rule-application-drainer', () => {
         );
     });
 
-    afterEach(async () => {
-        await run(ruleApplicationDrainerService.cancelPending());
-        vi.useRealTimers();
-        vi.unstubAllGlobals();
+    afterEach(() => {
         vi.restoreAllMocks();
     });
 
-    it('waits for active user import work before applying queued transaction rules', async () => {
-        const importWork = new PausedUserWork(() => {
-            void run(ruleApplicationDrainerService.enqueueTransactions([42], [buildTransactionInput()]));
-        });
+    it.effect('waits for active user import work before applying queued transaction rules', () =>
+        Effect.gen(function* () {
+            const releaseImportWork = yield* pauseUserWork(
+                ruleApplicationDrainerService.enqueueTransactions([42], [buildTransactionInput()])
+            );
 
-        await importWork.started;
-        await flushScheduledDrain(drainDelayMs);
-        expect(appliedRulesToTransactions).not.toHaveBeenCalled();
+            yield* advanceScheduledDrain(drainDelayMs);
+            expect(appliedRulesToTransactions).not.toHaveBeenCalled();
 
-        importWork.release();
-        await importWork.work;
-        await flushScheduledDrain(drainDelayMs);
+            yield* releaseImportWork;
+            yield* advanceScheduledDrain(drainDelayMs);
 
-        expect(appliedRulesToTransactions).toHaveBeenCalledTimes(1);
-        expect(appliedRulesToTransactions).toHaveBeenCalledWith([42], [buildTransactionInput()]);
-    });
+            expect(appliedRulesToTransactions).toHaveBeenCalledTimes(1);
+            expect(appliedRulesToTransactions).toHaveBeenCalledWith([42], [buildTransactionInput()]);
+        }).pipe(Effect.provide(TestClockLayer))
+    );
 
-    it('reports the applied result to the enqueueing caller', async () => {
-        const applyRule = vi
-            .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
-            .mockReturnValue(Effect.succeed({ applied: 3, failed: 0, total: 3 }));
-        const onSettled = vi.fn();
+    it.effect('reports the applied result to the enqueueing caller', () =>
+        Effect.gen(function* () {
+            const applyRule = vi
+                .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
+                .mockReturnValue(Effect.succeed({ applied: 3, failed: 0, total: 3 }));
+            const onSettled = vi.fn();
 
-        await run(ruleApplicationDrainerService.enqueueRuleApplication(7, onSettled));
-        await flushScheduledDrain(drainDelayMs);
+            yield* ruleApplicationDrainerService.enqueueRuleApplication(7, onSettled);
+            yield* advanceScheduledDrain(drainDelayMs);
 
-        expect(applyRule).toHaveBeenCalledWith(7, null);
-        expect(onSettled).toHaveBeenCalledWith({ applied: 3, failed: 0, total: 3 }, null);
-    });
+            expect(applyRule).toHaveBeenCalledWith(7, null);
+            expect(onSettled).toHaveBeenCalledWith({ applied: 3, failed: 0, total: 3 }, null);
+        }).pipe(Effect.provide(TestClockLayer))
+    );
 
-    it('reports failures to the enqueueing caller and keeps draining', async () => {
-        const error = new DbError({ cause: new Error('boom') });
-        const applyRule = vi
-            .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
-            .mockReturnValueOnce(Effect.fail(error))
-            .mockReturnValueOnce(Effect.succeed({ applied: 1, failed: 0, total: 1 }));
-        const onSettled = vi.fn();
+    it.effect('reports failures to the enqueueing caller and keeps draining', () =>
+        Effect.gen(function* () {
+            const error = new DbError({ cause: new Error('boom') });
+            const applyRule = vi
+                .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
+                .mockReturnValueOnce(Effect.fail(error))
+                .mockReturnValueOnce(Effect.succeed({ applied: 1, failed: 0, total: 1 }));
+            const onSettled = vi.fn();
 
-        await run(ruleApplicationDrainerService.enqueueRuleApplication(1, onSettled));
-        await run(ruleApplicationDrainerService.enqueueRuleApplication(2, onSettled));
-        await flushScheduledDrain(drainDelayMs);
+            yield* ruleApplicationDrainerService.enqueueRuleApplication(1, onSettled);
+            yield* ruleApplicationDrainerService.enqueueRuleApplication(2, onSettled);
+            yield* advanceScheduledDrain(drainDelayMs);
 
-        expect(applyRule).toHaveBeenCalledTimes(2);
-        expect(onSettled).toHaveBeenNthCalledWith(1, null, error);
-        expect(onSettled).toHaveBeenNthCalledWith(2, { applied: 1, failed: 0, total: 1 }, null);
-    });
+            expect(applyRule).toHaveBeenCalledTimes(2);
+            expect(onSettled).toHaveBeenNthCalledWith(1, null, error);
+            expect(onSettled).toHaveBeenNthCalledWith(2, { applied: 1, failed: 0, total: 1 }, null);
+        }).pipe(Effect.provide(TestClockLayer))
+    );
 
-    it('does not enqueue the same rule twice', async () => {
-        const applyRule = vi
-            .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
-            .mockReturnValue(Effect.succeed({ applied: 0, failed: 0, total: 0 }));
-        const onSettled = vi.fn();
+    it.effect('does not enqueue the same rule twice', () =>
+        Effect.gen(function* () {
+            const applyRule = vi
+                .spyOn(ruleEngineService, 'applyRuleToMatchingTransactions')
+                .mockReturnValue(Effect.succeed({ applied: 0, failed: 0, total: 0 }));
+            const onSettled = vi.fn();
 
-        await run(ruleApplicationDrainerService.enqueueRuleApplication(5, onSettled));
-        await run(ruleApplicationDrainerService.enqueueRuleApplication(5, onSettled));
-        await flushScheduledDrain(drainDelayMs);
+            yield* ruleApplicationDrainerService.enqueueRuleApplication(5, onSettled);
+            yield* ruleApplicationDrainerService.enqueueRuleApplication(5, onSettled);
+            yield* advanceScheduledDrain(drainDelayMs);
 
-        expect(applyRule).toHaveBeenCalledTimes(1);
-        expect(onSettled).toHaveBeenCalledTimes(1);
-    });
+            expect(applyRule).toHaveBeenCalledTimes(1);
+            expect(onSettled).toHaveBeenCalledTimes(1);
+        }).pipe(Effect.provide(TestClockLayer))
+    );
 });

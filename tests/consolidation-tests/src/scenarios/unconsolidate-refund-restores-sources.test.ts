@@ -11,20 +11,22 @@ import {
 } from '../harness/rejected-payment-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
 import { runRefundScenario } from '../harness/run-refund-scenario';
-import { testQueryService, testSeedService, unconsolidateById } from '../harness/test-context';
+import { testQueryService, testSeedService, unconsolidateById, runEffect } from '../harness/test-context';
 
 const STANDALONE_REFUND_EXPENSE_AMOUNT_UAH = 120;
 
 describe('consolidation/unconsolidate-refund-restores-sources', () => {
     it('restores the refund as a standalone income and clears consolidation type on the expense', async () => {
-        const { expense, refunds } = await runRefundScenario({
-            expenseAmount: STANDALONE_REFUND_EXPENSE_AMOUNT_UAH * PRECISION,
-            refundAmounts: [40 * PRECISION]
-        });
+        const { expense, refunds } = await runEffect(
+            runRefundScenario({
+                expenseAmount: STANDALONE_REFUND_EXPENSE_AMOUNT_UAH * PRECISION,
+                refundAmounts: [40 * PRECISION]
+            })
+        );
 
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
-        await unconsolidateById(expense.id);
+        await runEffect(unconsolidateById(expense.id));
 
         const restoredExpense = testQueryService.fetchTransactionById(expense.id);
         expect(restoredExpense.consolidationType).toBeNull();
@@ -35,24 +37,26 @@ describe('consolidation/unconsolidate-refund-restores-sources', () => {
 
     it('keeps tags copied from the refund income on the expense after unconsolidating a refund', async () => {
         const tag = testSeedService.tag('Refunded order');
-        const { account, expense, refunds } = await runRefundScenario({
-            beforeConsolidation: ({ refunds }) => {
-                testSeedService.transactionTag(refunds[0].id, tag.id);
-            },
-            expenseAmount: STANDALONE_REFUND_EXPENSE_AMOUNT_UAH * PRECISION,
-            externalIdPrefix: 'refund-tag-revert',
-            refundAmounts: [STANDALONE_REFUND_EXPENSE_AMOUNT_UAH * PRECISION]
-        });
-        const balancesAfterConsolidation = await fetchLedgerBalances([account.id]);
+        const { account, expense, refunds } = await runEffect(
+            runRefundScenario({
+                beforeConsolidation: ({ refunds }) => {
+                    testSeedService.transactionTag(refunds[0].id, tag.id);
+                },
+                expenseAmount: STANDALONE_REFUND_EXPENSE_AMOUNT_UAH * PRECISION,
+                externalIdPrefix: 'refund-tag-revert',
+                refundAmounts: [STANDALONE_REFUND_EXPENSE_AMOUNT_UAH * PRECISION]
+            })
+        );
+        const balancesAfterConsolidation = await runEffect(fetchLedgerBalances([account.id]));
 
         expect(testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
 
-        await unconsolidateById(expense.id);
+        await runEffect(unconsolidateById(expense.id));
 
         expectSourcesRestored([refunds[0].id]);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBeNull();
         expect(testQueryService.fetchTransactionTagIds(expense.id)).toEqual([tag.id]);
-        expect(await fetchLedgerBalances([account.id])).toEqual(balancesAfterConsolidation);
+        expect(await runEffect(fetchLedgerBalances([account.id]))).toEqual(balancesAfterConsolidation);
     });
 
     it('restores both refund incomes and their original DEBIT entries after unconsolidating a two-income rejected-payment expense', async () => {
@@ -69,11 +73,11 @@ describe('consolidation/unconsolidate-refund-restores-sources', () => {
             externalIdPrefix
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(2);
 
-        await unconsolidateById(expense.id);
+        await runEffect(unconsolidateById(expense.id));
 
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBeNull();
         expect(refunds.map(refund => testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId)).toEqual([

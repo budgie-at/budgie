@@ -62,7 +62,7 @@ describe('consolidation/unconsolidate-p2p-group-restores-sources', () => {
         const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
         expect(canonical).toBeDefined();
 
-        await unconsolidateById(canonical.id);
+        await runEffect(unconsolidateById(canonical.id));
 
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
 

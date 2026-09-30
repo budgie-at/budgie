@@ -92,7 +92,7 @@ describe('import/deposit-import-safety', () => {
         const depositAccount = seed.account({ type: Contracts.AccountTypeEnum.DEPOSIT });
         const prepared = buildPrepared(buildImportInput(depositAccount.id));
 
-        await seedLedgerBalance(depositAccount.id, 100 * Contracts.PRECISION);
+        await run(seedLedgerBalance(depositAccount.id, 100 * Contracts.PRECISION));
 
         await expect(run(transactionImportService.bulkUpsertPreparedImported(prepared))).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
 
@@ -109,7 +109,7 @@ describe('import/deposit-import-safety', () => {
             new Map([[IMPORT_EXTERNAL_ID, transactionId]])
         );
 
-        await seedLedgerBalance(depositAccount.id, 100 * Contracts.PRECISION);
+        await run(seedLedgerBalance(depositAccount.id, 100 * Contracts.PRECISION));
 
         await expect(run(transactionImportService.bulkUpsertPreparedImported(prepared))).rejects.toThrow(DEPOSIT_EXPENSE_ERROR);
 

@@ -81,7 +81,7 @@ describe('binance/c2c-orders reconciliation', () => {
         await run(binanceSyncService.sync());
 
         const entries = fetchBinanceEntriesByExternalId(externalId);
-        const uah = await requireInstrument(CurrencyEnum.UAH);
+        const uah = await run(requireInstrument(CurrencyEnum.UAH));
         expect(entries).toEqual([
             expect.objectContaining({
                 accountId: fundingAccount.id,
@@ -158,7 +158,7 @@ describe('binance/c2c-orders mapping', () => {
         await run(binanceSyncService.sync());
 
         expectSingleBinanceTransaction(TransactionTypeEnum.INCOME, 'binance:c2c:c2c-buy-1');
-        const uah = await requireInstrument(CurrencyEnum.UAH);
+        const uah = await run(requireInstrument(CurrencyEnum.UAH));
         expect(fetchBinanceEntriesByExternalId('binance:c2c:c2c-buy-1')[0]).toMatchObject({
             quotedInstrumentId: uah.id,
             quotedAmount: Number('25842') * PRECISION,

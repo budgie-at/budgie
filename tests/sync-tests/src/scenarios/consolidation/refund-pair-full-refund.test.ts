@@ -13,10 +13,12 @@ import { fetchExpenseEntries, fetchTransactionById, runRefundScenario, seedRefun
 
 describe('consolidation/refund-pair-full-refund', () => {
     it('promotes the expense and reparents the matching-amount refund (full refund)', async () => {
-        const { expense, refunds, result } = await runRefundScenario({
-            expenseAmount: 120 * PRECISION,
-            refundAmounts: [120 * PRECISION]
-        });
+        const { expense, refunds, result } = await run(
+            runRefundScenario({
+                expenseAmount: 120 * PRECISION,
+                refundAmounts: [120 * PRECISION]
+            })
+        );
 
         expect(result.consolidated).toBe(1);
 
@@ -48,10 +50,12 @@ describe('consolidation/refund-pair-full-refund', () => {
     });
 
     it('keeps full refunds neutral in account balance calculations', async () => {
-        const { account } = await runRefundScenario({
-            expenseAmount: 120 * PRECISION,
-            refundAmounts: [120 * PRECISION]
-        });
+        const { account } = await run(
+            runRefundScenario({
+                expenseAmount: 120 * PRECISION,
+                refundAmounts: [120 * PRECISION]
+            })
+        );
 
         const balance = accountBalanceRepository.getByAccountId(account.id).get();
 

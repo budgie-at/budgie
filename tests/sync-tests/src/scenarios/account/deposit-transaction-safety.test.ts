@@ -152,7 +152,7 @@ describe('account/deposit-transaction-safety', () => {
     it('rejects creating an expense from a funded deposit without changing rows or balances', async () => {
         const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
 
-        await seedLedgerBalance(depositAccount.id, 100 * PRECISION);
+        await run(seedLedgerBalance(depositAccount.id, 100 * PRECISION));
 
         await expect(run(transactionService.createInternal(buildExpenseInput(depositAccount.id, 40)))).rejects.toThrow(
             DEPOSIT_EXPENSE_ERROR
@@ -168,7 +168,7 @@ describe('account/deposit-transaction-safety', () => {
         const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
         const transaction = await run(transactionService.createInternal(buildExpenseInput(bankAccount.id, 20)));
 
-        await seedLedgerBalance(depositAccount.id, 100 * PRECISION);
+        await run(seedLedgerBalance(depositAccount.id, 100 * PRECISION));
 
         await expect(run(transactionService.updateById(transaction.id, buildExpenseInput(depositAccount.id, 30)))).rejects.toThrow(
             DEPOSIT_EXPENSE_ERROR
@@ -186,7 +186,7 @@ describe('account/deposit-transaction-safety', () => {
         const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
 
         seedExpenseLedgerTransaction(depositAccount.id, IMPORTED_INITIAL_AMOUNT, IMPORTED_EXTERNAL_ID, ExternalSourceEnum.MONOBANK);
-        await seedLedgerBalance(depositAccount.id, 100 * PRECISION);
+        await run(seedLedgerBalance(depositAccount.id, 100 * PRECISION));
 
         await expect(run(transactionService.bulkUpdateImported([buildImportedExpenseInput(depositAccount.id)]))).rejects.toThrow(
             DEPOSIT_EXPENSE_ERROR
@@ -213,7 +213,7 @@ describe('account/deposit-transaction-safety', () => {
         const depositAccount = seed.account({ type: AccountTypeEnum.DEPOSIT });
         const bankAccount = seed.account({ type: AccountTypeEnum.BANK });
 
-        await seedLedgerBalance(depositAccount.id, 50 * PRECISION);
+        await run(seedLedgerBalance(depositAccount.id, 50 * PRECISION));
 
         await expect(
             run(transactionService.createInternalTransfer(buildTransferInput(depositAccount.id, bankAccount.id, 70, OPERATED_AT)))

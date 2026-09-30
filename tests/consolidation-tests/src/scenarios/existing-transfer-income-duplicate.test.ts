@@ -13,7 +13,7 @@ import {
 } from '../harness/consolidation-revert-audit';
 import { IBAN_BRIDGE_TRANSFER_MCC, parentConsolidationSource } from '../harness/iban-bridge-topology';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService, unconsolidateById } from '../harness/test-context';
+import { testQueryService, testSeedService, unconsolidateById, runEffect } from '../harness/test-context';
 
 import type { TransactionEntityInterface } from '@budgie/contracts';
 
@@ -90,7 +90,7 @@ describe('consolidation/existing-transfer-income-duplicate', () => {
         const { duplicateIncome, existingTransfer, sourceAccount, targetAccount } = seedExistingTransferIncomeDuplicateFixture();
         const accountIds = [sourceAccount.id, targetAccount.id];
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         const canonicalId = fetchIncomeDuplicateCanonicalId();
 
         expect(result.consolidated).toBe(1);
@@ -99,7 +99,7 @@ describe('consolidation/existing-transfer-income-duplicate', () => {
         expectConsolidationParent(duplicateIncome.id, canonicalId);
         expect(testQueryService.fetchTransactionById(existingTransfer.id).consolidationType).toBeNull();
         expect([...new Set(fetchMovedSourceIds(canonicalId))]).toEqual([existingTransfer.id, duplicateIncome.id].sort(byTransactionId));
-        expect(await fetchLedgerBalances(accountIds)).toEqual([
+        expect(await runEffect(fetchLedgerBalances(accountIds))).toEqual([
             [sourceAccount.id, -INCOME_DUPLICATE_AMOUNT],
             [targetAccount.id, INCOME_DUPLICATE_AMOUNT]
         ]);
@@ -109,11 +109,11 @@ describe('consolidation/existing-transfer-income-duplicate', () => {
         const { duplicateIncome, existingTransfer, sourceAccount, targetAccount } = seedExistingTransferIncomeDuplicateFixture();
         const accountIds = [sourceAccount.id, targetAccount.id];
         const stateBeforeConsolidation = snapshotSourceState([existingTransfer.id, duplicateIncome.id]);
-        const balancesBeforeConsolidation = await fetchLedgerBalances(accountIds);
+        const balancesBeforeConsolidation = await runEffect(fetchLedgerBalances(accountIds));
 
-        await runConsolidation();
+        await runEffect(runConsolidation());
         const canonicalId = fetchIncomeDuplicateCanonicalId();
-        await unconsolidateById(canonicalId);
+        await runEffect(unconsolidateById(canonicalId));
 
         expectRevertRemovedCanonical(canonicalId, [existingTransfer.id, duplicateIncome.id]);
         expectSourceStateRestored(stateBeforeConsolidation);
@@ -121,7 +121,7 @@ describe('consolidation/existing-transfer-income-duplicate', () => {
             [sourceAccount.id, -INCOME_DUPLICATE_AMOUNT],
             [targetAccount.id, INCOME_DUPLICATE_AMOUNT + INCOME_DUPLICATE_AMOUNT]
         ]);
-        expect(await fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
+        expect(await runEffect(fetchLedgerBalances(accountIds))).toEqual(balancesBeforeConsolidation);
     });
 
     it('keeps an externally sourced transfer that was absorbed in place when its legacy canonical is reverted', async () => {
@@ -132,20 +132,20 @@ describe('consolidation/existing-transfer-income-duplicate', () => {
 
         testSeedService.updateTransaction(existingTransfer.id, { externalSource: ExternalSourceEnum.MONOBANK });
         const stateBeforeAbsorb = snapshotSourceState([duplicateIncome.id]);
-        const balancesBeforeAbsorb = await fetchLedgerBalances(accountIds);
+        const balancesBeforeAbsorb = await runEffect(fetchLedgerBalances(accountIds));
         await parentConsolidationSource(duplicateIncome.id, existingTransfer.id);
-        await unconsolidateById(existingTransfer.id);
+        await runEffect(unconsolidateById(existingTransfer.id));
 
         expect(testQueryService.fetchTransactionById(existingTransfer.id).consolidationType).toBeNull();
         expectSourcesRestored([duplicateIncome.id]);
         expectSourceStateRestored(stateBeforeAbsorb);
-        expect(await fetchLedgerBalances(accountIds)).toEqual(balancesBeforeAbsorb);
+        expect(await runEffect(fetchLedgerBalances(accountIds))).toEqual(balancesBeforeAbsorb);
     });
 
     it('retargets a monobank transfer to the unique matching income account when the recorded destination is inactive', async () => {
         const { existingTransfer, income, realTargetAccountId, sourceAccountId } = seedWrongDestinationFixture();
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         const canonicalId = fetchIncomeDuplicateCanonicalId();
 
         expect(result.consolidated).toBe(1);
@@ -154,7 +154,7 @@ describe('consolidation/existing-transfer-income-duplicate', () => {
         expect(canonical.toAccountId).toBe(realTargetAccountId);
         expectConsolidationParent(existingTransfer.id, canonicalId);
         expectConsolidationParent(income.id, canonicalId);
-        expect(await fetchLedgerBalances([sourceAccountId, realTargetAccountId])).toEqual([
+        expect(await runEffect(fetchLedgerBalances([sourceAccountId, realTargetAccountId]))).toEqual([
             [sourceAccountId, -WRONG_DESTINATION_AMOUNT],
             [realTargetAccountId, WRONG_DESTINATION_AMOUNT]
         ]);
@@ -163,8 +163,8 @@ describe('consolidation/existing-transfer-income-duplicate', () => {
     it('keeps retarget results stable when consolidation runs twice', async () => {
         seedWrongDestinationFixture();
 
-        await runConsolidation();
-        await expectSecondConsolidationRunStable();
+        await runEffect(runConsolidation());
+        await runEffect(expectSecondConsolidationRunStable());
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
     });
 });

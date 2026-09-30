@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { applyMigration, testDb } from '../../harness';
+import { applyMigration, testDb, run } from '../../harness';
 
 const MIGRATION = '0053_backfill_ai_consent_for_existing_installs.sql';
 
@@ -23,7 +23,7 @@ describe('settings/ai-consent-backfill', () => {
         await markConsentPending();
         await testDb.$client.runAsync(`UPDATE settings SET is_onboarding_completed = 1`);
 
-        await applyMigration(MIGRATION);
+        await run(applyMigration(MIGRATION));
 
         expect(await readAiConsent()).toBe(1);
     });
@@ -32,7 +32,7 @@ describe('settings/ai-consent-backfill', () => {
         await markConsentPending();
         await testDb.$client.runAsync(`UPDATE settings SET onboarding_step = 3`);
 
-        await applyMigration(MIGRATION);
+        await run(applyMigration(MIGRATION));
 
         expect(await readAiConsent()).toBe(1);
     });
@@ -44,7 +44,7 @@ describe('settings/ai-consent-backfill', () => {
              VALUES ('Existing Cash', 'existing cash', 'CASH', 'ASSET', 'Wallet', 1, 910, 1, 1, 0)`
         );
 
-        await applyMigration(MIGRATION);
+        await run(applyMigration(MIGRATION));
 
         expect(await readAiConsent()).toBe(1);
     });
@@ -52,7 +52,7 @@ describe('settings/ai-consent-backfill', () => {
     it('keeps a fresh install disabled when nothing predates the consent gate', async () => {
         await markConsentPending();
 
-        await applyMigration(MIGRATION);
+        await run(applyMigration(MIGRATION));
 
         expect(await readAiConsent()).toBe(0);
     });

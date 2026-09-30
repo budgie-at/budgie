@@ -18,7 +18,7 @@ import {
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 const EXISTING_TRANSFER_LEDGER_ENTRY_COUNT = 2;
 
@@ -49,7 +49,7 @@ describe('consolidation/existing-transfer-bridge', () => {
     it('nests a hand-created bridge transfer under a new source to target canonical', async () => {
         const { bridgeIncome, existingTransfer, sourceAccount, sourceExpense, targetAccount } = seedExistingTransferBridgeFixture();
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         const canonicalId = fetchBridgeCanonicalId();
 
         expect(result.consolidated).toBe(1);
@@ -64,11 +64,13 @@ describe('consolidation/existing-transfer-bridge', () => {
         const { bridgeAccount, bridgeIncome, existingTransfer, sourceAccount, sourceExpense, targetAccount } =
             seedExistingTransferBridgeFixture();
 
-        await expectRevertRestoresSources({
-            accountIds: [sourceAccount.id, bridgeAccount.id, targetAccount.id],
-            consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
-            sourceTransactionIds: [sourceExpense.id, bridgeIncome.id, existingTransfer.id]
-        });
+        await runEffect(
+            expectRevertRestoresSources({
+                accountIds: [sourceAccount.id, bridgeAccount.id, targetAccount.id],
+                consolidationType: TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER,
+                sourceTransactionIds: [sourceExpense.id, bridgeIncome.id, existingTransfer.id]
+            })
+        );
 
         expect(testQueryService.fetchTransactionById(existingTransfer.id).consolidationType).toBeNull();
         expect(fetchOwnLedgerEntries(existingTransfer.id)).toHaveLength(EXISTING_TRANSFER_LEDGER_ENTRY_COUNT);

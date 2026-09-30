@@ -13,7 +13,7 @@ import {
 } from '../harness/consolidation-revert-audit';
 import { IBAN_BRIDGE_SOURCE_IBAN, IBAN_BRIDGE_UAH_TO_EUR_RATE } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, unconsolidateById } from '../harness/test-context';
+import { testQueryService, unconsolidateById, runEffect } from '../harness/test-context';
 
 const NESTED_PAIR_LEDGER_ENTRY_COUNT = 2;
 const STALE_DIRECT_TRANSFER = {
@@ -41,9 +41,9 @@ describe('consolidation/unconsolidate-nested-canonical', () => {
         const { bridgeExpense, bridgeIncome, directTransfer, sourceExpense, targetIncome } =
             await seedNestedChainReclaimFixture(STALE_DIRECT_TRANSFER);
 
-        await runConsolidation();
+        await runEffect(runConsolidation());
         const outerCanonicalId = fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER);
-        await unconsolidateById(outerCanonicalId);
+        await runEffect(unconsolidateById(outerCanonicalId));
 
         expect(outerCanonicalId).not.toBe(directTransfer.id);
         expectCanonicalDeleted(outerCanonicalId);
@@ -55,15 +55,15 @@ describe('consolidation/unconsolidate-nested-canonical', () => {
         const { bridgeAccount, directTransfer, sourceAccount, sourceExpense, targetAccount, targetIncome } =
             await seedNestedChainReclaimFixture(STALE_DIRECT_TRANSFER);
         const accountIds = [sourceAccount.id, bridgeAccount.id, targetAccount.id];
-        const balancesBeforeConsolidation = await fetchLedgerBalances(accountIds);
+        const balancesBeforeConsolidation = await runEffect(fetchLedgerBalances(accountIds));
 
-        await runConsolidation();
-        await unconsolidateById(fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER));
-        expect(await fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
+        await runEffect(runConsolidation());
+        await runEffect(unconsolidateById(fetchSingleCanonicalId(TransactionConsolidationTypeEnum.IBAN_BRIDGE_CHAIN_TRANSFER)));
+        expect(await runEffect(fetchLedgerBalances(accountIds))).toEqual(balancesBeforeConsolidation);
 
-        await unconsolidateById(directTransfer.id);
+        await runEffect(unconsolidateById(directTransfer.id));
 
         expectRevertRemovedCanonical(directTransfer.id, [sourceExpense.id, targetIncome.id]);
-        expect(await fetchLedgerBalances(accountIds)).toEqual(balancesBeforeConsolidation);
+        expect(await runEffect(fetchLedgerBalances(accountIds))).toEqual(balancesBeforeConsolidation);
     });
 });

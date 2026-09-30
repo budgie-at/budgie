@@ -23,7 +23,14 @@ import {
     seedP2pFiatInstrument
 } from '../harness/p2p-fiat-transfer-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
-import { accountBalanceRepository, statisticsRepository, testDb, testQueryService, testSeedService } from '../harness/test-context';
+import {
+    accountBalanceRepository,
+    statisticsRepository,
+    testDb,
+    testQueryService,
+    testSeedService,
+    runEffect
+} from '../harness/test-context';
 
 import type { TransactionEntryCreateEntityInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 
@@ -90,7 +97,7 @@ describe('consolidation/p2p-fiat-transfer fee handling', () => {
     it('preserves fee rows while matching the primary bank expense entry', async () => {
         const { bankAccount, bankExpense } = seedP2pBuyWithFee('Monobank P2P');
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
 
         expect(result.consolidated).toBe(1);
@@ -100,7 +107,7 @@ describe('consolidation/p2p-fiat-transfer fee handling', () => {
         ).toHaveLength(2);
         expectFeeAggregates(bankAccount.id);
 
-        const repairResult = await runScopedBankRepair(bankExpense.id);
+        const repairResult = await runEffect(runScopedBankRepair(bankExpense.id));
         const [repairedCanonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
 
         expect(repairResult.consolidated).toBe(0);
@@ -110,7 +117,7 @@ describe('consolidation/p2p-fiat-transfer fee handling', () => {
     it('ignores non-primary bank entries when checking scoped P2P repair candidates', async () => {
         const { bankAccount, bankExpense } = seedP2pBuyWithFee('Monobank P2P repair');
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         const [canonical] = testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER);
 
         testDb
@@ -133,7 +140,7 @@ describe('consolidation/p2p-fiat-transfer fee handling', () => {
             } satisfies TransactionEntryCreateEntityInterface)
             .run();
 
-        const repairResult = await runScopedBankRepair(bankExpense.id);
+        const repairResult = await runEffect(runScopedBankRepair(bankExpense.id));
 
         expect(result.consolidated).toBe(1);
         expect(repairResult.consolidated).toBe(0);
@@ -168,7 +175,7 @@ describe('consolidation/p2p-fiat-transfer bank candidate constraints', () => {
             .run();
         seedP2pBuy(bankAccount);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
@@ -183,7 +190,7 @@ describe('consolidation/p2p-fiat-transfer bank candidate constraints', () => {
             seedP2pBankBuyExpense(account.id);
             seedP2pBuy(account);
 
-            const result = await runConsolidation();
+            const result = await runEffect(runConsolidation());
 
             expect(result.consolidated).toBe(0);
             expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);

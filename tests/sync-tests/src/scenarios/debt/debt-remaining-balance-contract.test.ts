@@ -202,8 +202,8 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
     });
 
     it('converts the outstanding amount using the seeded exchange rate while keeping the unconverted amount stable', async () => {
-        const usdInstrument = await requireInstrument(CurrencyEnum.USD);
-        const eurInstrument = await requireInstrument(CurrencyEnum.EUR);
+        const usdInstrument = await run(requireInstrument(CurrencyEnum.USD));
+        const eurInstrument = await run(requireInstrument(CurrencyEnum.EUR));
         const exchangeRate = 0.7;
         await run(exchangeRateRepository.upsert(usdInstrument.id, eurInstrument.id, exchangeRate, 'test'));
 

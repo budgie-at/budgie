@@ -1,7 +1,7 @@
 import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { applyMigration, seed, testDb } from '../../harness';
+import { applyMigration, seed, testDb, run } from '../../harness';
 
 const MIGRATION_FILE_NAME = '0063_round_debt_event_micro_units.sql';
 const SEEDED_AT = 1_700_000_000;
@@ -33,9 +33,9 @@ describe('debt/debt-event-integer-micro-units-migration', () => {
             VALUES (${SEEDED_AT}, ${SEEDED_AT}, ${debtAccount.id}, 32333332.9);
         `);
 
-        await applyMigration(MIGRATION_FILE_NAME);
+        await run(applyMigration(MIGRATION_FILE_NAME));
         const firstRun = await fetchSnapshot(debtAccount.id);
-        await applyMigration(MIGRATION_FILE_NAME);
+        await run(applyMigration(MIGRATION_FILE_NAME));
 
         expect(firstRun.fractionalCount).toBe(0);
         expect(firstRun.events.map(({ amount, baseAmount }) => [amount, baseAmount])).toEqual([

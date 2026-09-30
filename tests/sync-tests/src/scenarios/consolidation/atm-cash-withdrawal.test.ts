@@ -90,7 +90,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
     it('promotes an MCC=6011 expense into a TRANSFER to the unique cash account in the same currency', async () => {
         const { bankAccount, cashAccount, expense } = seedAtmCashWithdrawalFixture();
 
-        await expectAtmCashWithdrawalConsolidation(bankAccount.id, cashAccount.id, expense.id);
+        await run(expectAtmCashWithdrawalConsolidation(bankAccount.id, cashAccount.id, expense.id));
     });
 
     it('keeps Monobank ATM commission as a fee entry after cash withdrawal consolidation', async () => {
@@ -183,7 +183,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
             originalTransactionId: null
         } satisfies TransactionEntryCreateEntityInterface);
 
-        await expectAtmCashWithdrawalConsolidation(bankAccount.id, cashAccount.id, expense.id);
+        await run(expectAtmCashWithdrawalConsolidation(bankAccount.id, cashAccount.id, expense.id));
 
         const [canonical] = fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
         const canonicalEntries = await fetchExpenseEntries(canonical.id);

@@ -1,7 +1,7 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, BORROWING_CATEGORY_ID, LENDING_CATEGORY_ID } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { applyMigration, seed, testDb } from '../../harness';
+import { applyMigration, seed, testDb, run } from '../../harness';
 
 const MIGRATION_FILE_NAME = '0066_fix_transfer_and_debt_leg_categories.sql';
 const SEEDED_AT = 1_700_000_000;
@@ -70,9 +70,9 @@ describe('database/transfer-and-debt-leg-categories-migration', () => {
         const userTransfer = await insertTransfer(card.id, cash.id, USER_CATEGORY_ID);
         await insertEntry(systemTransfer, card.id, 'FEE', FEE_CATEGORY_ID, 'FEE');
 
-        await applyMigration(MIGRATION_FILE_NAME);
+        await run(applyMigration(MIGRATION_FILE_NAME));
         const firstRun = await fetchEntries();
-        await applyMigration(MIGRATION_FILE_NAME);
+        await run(applyMigration(MIGRATION_FILE_NAME));
 
         expect(
             firstRun.map(({ transactionId, type, categoryId, categorySource }) => ({ transactionId, type, categoryId, categorySource }))

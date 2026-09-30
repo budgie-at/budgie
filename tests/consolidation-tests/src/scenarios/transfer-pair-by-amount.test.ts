@@ -11,7 +11,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
         const transferMcc = testQueryService.findMccByCode('4829');
         const { expense, income } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         expect(result.found).toBe(1);
         expect(result.consolidated).toBe(1);
 
@@ -25,7 +25,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
         const transferMcc = testQueryService.findMccByCode('4829');
         const { fromAccount, toAccount } = testSeedService.amountTransferPair(250 * PRECISION, transferMcc.id);
 
-        await runConsolidation();
+        await runEffect(runConsolidation());
 
         const fromBalance = accountBalanceRepository.getByAccountId(fromAccount.id).get();
         const toBalance = accountBalanceRepository.getByAccountId(toAccount.id).get();
@@ -49,7 +49,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
             { accountId: toAccount.id, amount: 250 * PRECISION, mccCategoryId: transferMcc.id }
         );
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         expect(result.found).toBe(1);
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(1);
@@ -68,7 +68,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
             { accountId: toAccount.id, amount: 250 * PRECISION }
         );
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         expect(result.consolidated).toBe(0);
     });
 
@@ -78,7 +78,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
 
         await runEffect(accountRepository.updateById(fromAccount.id, { isActive: false }));
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         expect(result.consolidated).toBe(0);
     });
 
@@ -88,7 +88,7 @@ describe('consolidation/transfer-pair-by-amount', () => {
 
         await runEffect(accountRepository.updateById(toAccount.id, { isActive: false }));
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         expect(result.consolidated).toBe(0);
     });
 });

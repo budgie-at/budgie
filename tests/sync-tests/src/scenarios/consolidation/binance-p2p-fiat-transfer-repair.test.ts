@@ -95,7 +95,7 @@ const expectRepairCanonicalPreserved = (canonicalId: number, transactionIds: rea
 
 describe('consolidation/binance-p2p-fiat-transfer authoritative repair', () => {
     it('repairs a system-generated group after provider fiat data is backfilled', async () => {
-        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { uah, bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const primaryExpense = seedBankPair.expense(
             { externalId: 'mono-uah-repair-primary', operatedAt: P2P_OPERATED_AT },
             { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
@@ -119,7 +119,7 @@ describe('consolidation/binance-p2p-fiat-transfer authoritative repair', () => {
     });
 
     it('repairs a system-generated 1:1 heuristic match after provider fiat data is backfilled', async () => {
-        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { uah, bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const { wrongExpense, correctExpense, income } = seedWrongP2pRepairScenario('1-to-1', bankAccount.id, binanceAccount.id);
 
         await consolidateWrongP2pRepairScenario(wrongExpense.id, income.id);
@@ -135,7 +135,7 @@ describe('consolidation/binance-p2p-fiat-transfer authoritative repair', () => {
     });
 
     it('preserves a user-edited 1:1 heuristic match after provider fiat data is backfilled', async () => {
-        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { uah, bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const { wrongExpense, correctExpense, income } = seedWrongP2pRepairScenario('user-1-to-1', bankAccount.id, binanceAccount.id);
         const canonicalId = await consolidateWrongP2pRepairScenario(wrongExpense.id, income.id);
 
@@ -154,7 +154,7 @@ describe('consolidation/binance-p2p-fiat-transfer authoritative repair', () => {
 
 describe('consolidation/binance-p2p-fiat-transfer existing source scope', () => {
     it('does not repair a same-window canonical whose source ids are out of scoped scan ids', async () => {
-        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { uah, bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const historicalPrimaryExpense = seedBankPair.expense(
             { externalId: 'mono-uah-repair-scoped-primary', operatedAt: P2P_OPERATED_AT },
             { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
@@ -194,7 +194,7 @@ describe('consolidation/binance-p2p-fiat-transfer existing source scope', () => 
 
 describe('consolidation/binance-p2p-fiat-transfer grouped source scope', () => {
     it('does not repair a grouped canonical when only a separate replacement-like bank source id is scoped', async () => {
-        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { uah, bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const historicalPrimaryExpense = seedBankPair.expense(
             { externalId: 'mono-uah-repair-grouped-source-primary', operatedAt: P2P_OPERATED_AT },
             { accountId: bankAccount.id, amount: REPAIR_PRIMARY_AMOUNT }
@@ -231,7 +231,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped source scope', () => {
 
 describe('consolidation/binance-p2p-fiat-transfer replacement source scope', () => {
     it('repairs a system-generated 1:1 heuristic match when only the replacement bank source id is scoped', async () => {
-        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { uah, bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const { wrongExpense, correctExpense, income } = seedWrongP2pRepairScenario('replacement-scope', bankAccount.id, binanceAccount.id);
 
         await consolidateWrongP2pRepairScenario(wrongExpense.id, income.id);
@@ -247,7 +247,7 @@ describe('consolidation/binance-p2p-fiat-transfer replacement source scope', () 
     });
 
     it('does not repair a system-generated 1:1 heuristic match through an inactive replacement bank account', async () => {
-        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { uah, bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const inactiveBankAccount = seed.account({
             externalSource: ExternalSourceEnum.MONOBANK,
             instrumentId: uah.id,

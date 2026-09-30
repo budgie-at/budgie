@@ -70,7 +70,7 @@ describe('consolidation/refund-pair-localized-exact-amount', () => {
             })
         ]);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchTransactionById(exactExpense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
@@ -119,7 +119,7 @@ describe('consolidation/refund-pair-localized-exact-amount', () => {
             })
         ]);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
     });

@@ -7,9 +7,9 @@ import { testDb } from '../../harness/scenario/setup';
 
 describe('bridged currency conversion', () => {
     it('returns a composed rate such that amount equals source divided by rate', async () => {
-        const dollar = await requireInstrument(CurrencyEnum.USD);
-        const zloty = await requireInstrument(CurrencyEnum.PLN);
-        const koruna = await requireInstrument(CurrencyEnum.CZK);
+        const dollar = await run(requireInstrument(CurrencyEnum.USD));
+        const zloty = await run(requireInstrument(CurrencyEnum.PLN));
+        const koruna = await run(requireInstrument(CurrencyEnum.CZK));
 
         await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: dollar.id });
         seedExchangeRate(dollar.id, zloty.id, 4);

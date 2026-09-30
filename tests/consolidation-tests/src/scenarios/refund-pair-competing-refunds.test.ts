@@ -106,7 +106,7 @@ describe('consolidation/refund-pair-competing-refunds', () => {
             refundsTotal: GLOVO_AMOUNT
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
@@ -135,7 +135,7 @@ describe('consolidation/refund-pair-competing-refunds', () => {
             refundsTotal: STARBUCKS_OVERFLOW_REFUND_AMOUNT
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBe(expense.id);
@@ -166,7 +166,7 @@ describe('consolidation/refund-pair-competing-refunds expense fill ordering', ()
             refundsTotal: ROZETKA_PARTIAL_REFUND_AMOUNT
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
@@ -193,7 +193,7 @@ describe('consolidation/refund-pair-competing-refunds expense fill ordering', ()
         });
         expect(reviewCandidates).toHaveLength(0);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         expect(refunds.map(refund => testQueryService.fetchTransactionById(refund.id).consolidationParentTransactionId)).toEqual([
@@ -245,7 +245,7 @@ describe('consolidation/refund-pair-competing-refunds rejected best match', () =
             ])
         );
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expect(testQueryService.fetchTransactionById(targetExpense.id).consolidationType).toBeNull();

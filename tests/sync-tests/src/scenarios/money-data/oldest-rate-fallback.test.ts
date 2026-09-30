@@ -8,8 +8,8 @@ import { seed } from '../../harness/seed/seed';
 
 describe('valuation oldest-rate fallback', () => {
     it('values a transaction older than the seeded range using the oldest available historical rate', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+        const euro = await run(requireInstrument(CurrencyEnum.EUR));
+        const hryvnia = await run(requireInstrument(CurrencyEnum.UAH));
         const account = seed.account({ instrumentId: hryvnia.id });
 
         await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });

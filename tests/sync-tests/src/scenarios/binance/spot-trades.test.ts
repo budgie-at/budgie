@@ -271,12 +271,14 @@ describe('binance/spot-trades/resync', () => {
         setupUsdtSpotFixtureWithBalances('ADA', '200');
         stubAdaUsdtTrade(15, '200', '100', true);
         await run(binanceSyncService.sync());
-        await expectNoDuplicateAfterResync(() => {
-            binanceStub.spotBalances([
-                buildBinance.balance({ asset: 'USDT', free: '100' }),
-                buildBinance.balance({ asset: 'ADA', free: '200' })
-            ]);
-            stubAdaUsdtTrade(15, '200', '100', true);
-        });
+        await run(
+            expectNoDuplicateAfterResync(() => {
+                binanceStub.spotBalances([
+                    buildBinance.balance({ asset: 'USDT', free: '100' }),
+                    buildBinance.balance({ asset: 'ADA', free: '200' })
+                ]);
+                stubAdaUsdtTrade(15, '200', '100', true);
+            })
+        );
     });
 });

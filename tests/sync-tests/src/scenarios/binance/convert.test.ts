@@ -101,12 +101,14 @@ describe('binance/convert', () => {
 
         await run(binanceSyncService.sync());
 
-        await expectNoDuplicateAfterResync(() => {
-            binanceStub.spotBalances([
-                buildBinance.balance({ asset: 'USDT', free: '100' }),
-                buildBinance.balance({ asset: 'BTC', free: '1' })
-            ]);
-            stubUsdtToBtcConvert(CONVERT_RESYNC_ORDER_ID);
-        });
+        await run(
+            expectNoDuplicateAfterResync(() => {
+                binanceStub.spotBalances([
+                    buildBinance.balance({ asset: 'USDT', free: '100' }),
+                    buildBinance.balance({ asset: 'BTC', free: '1' })
+                ]);
+                stubUsdtToBtcConvert(CONVERT_RESYNC_ORDER_ID);
+            })
+        );
     });
 });

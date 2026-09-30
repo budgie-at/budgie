@@ -27,7 +27,7 @@ import type { TransactionCreateEntityInterface, TransactionEntryCreateEntityInte
 const UNCONVERTIBLE_EXPENSE_AMOUNT = Number('15000') * PRECISION;
 
 const seedUnconvertibleExpense = async (title: string) => {
-    const euro = await requireInstrument(CurrencyEnum.EUR);
+    const euro = await run(requireInstrument(CurrencyEnum.EUR));
     const foreignInstrument = seed.instrument({
         code: 'NOFX',
         name: 'No Rate Currency',
@@ -79,8 +79,8 @@ const getExpenseCategoryAmount = (categoryId: number, baseInstrumentId: number) 
 
 describe('statistics fallback for unvalued entries', () => {
     it('includes an unvalued foreign income entry via live conversion instead of dropping it', async () => {
-        const euro = await requireInstrument(CurrencyEnum.EUR);
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+        const euro = await run(requireInstrument(CurrencyEnum.EUR));
+        const hryvnia = await run(requireInstrument(CurrencyEnum.UAH));
         const account = seed.account({ instrumentId: hryvnia.id, type: AccountTypeEnum.BANK });
 
         await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });

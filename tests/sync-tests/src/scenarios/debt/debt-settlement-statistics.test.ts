@@ -884,8 +884,8 @@ const expectBorrowedDebtSettlementProgress = (accountId: number): void => {
 };
 
 const setupUsdDebtExchangeRateScenario = async () => {
-    const euroInstrument = await requireInstrument(CurrencyEnum.EUR);
-    const usdInstrument = await requireInstrument(CurrencyEnum.USD);
+    const euroInstrument = await run(requireInstrument(CurrencyEnum.EUR));
+    const usdInstrument = await run(requireInstrument(CurrencyEnum.USD));
 
     await run(settingsRepository.update({ defaultInstrumentId: euroInstrument.id }));
     await run(exchangeRateRepository.upsert(usdInstrument.id, euroInstrument.id, CURRENT_USD_TO_EUR_RATE, 'test'));

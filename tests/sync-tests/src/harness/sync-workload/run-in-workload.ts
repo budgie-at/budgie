@@ -5,5 +5,7 @@ import { run } from '../scenario/test-runtime';
 import type { Services } from '../scenario/test-runtime';
 import type * as Effect from 'effect/Effect';
 
-export const runInWorkload = <A, E>(effect: Effect.Effect<A, E, Services>): Promise<A> =>
-    run(Workload.use(workload => workload.run(effect)));
+export const inWorkload = <A, E>(effect: Effect.Effect<A, E, Services>): Effect.Effect<A, E, Workload> =>
+    Workload.use(workload => workload.run(effect));
+
+export const runInWorkload = <A, E>(effect: Effect.Effect<A, E, Services>): Promise<A> => run(inWorkload(effect));

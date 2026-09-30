@@ -19,7 +19,7 @@ import {
 import { sql } from 'drizzle-orm';
 import { describe, expect, it } from 'vitest';
 
-import { requireInstrument, testDb } from '../../harness';
+import { requireInstrument, testDb, run } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { seed } from '../../harness/seed/seed';
 
@@ -91,7 +91,7 @@ const seedExpense = (accountId: number, categoryId: number, amount: number, mont
 };
 
 const seedScenario = async (): Promise<{ readonly instrumentId: number; readonly accountId: number }> => {
-    const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+    const hryvnia = await run(requireInstrument(CurrencyEnum.UAH));
 
     return { instrumentId: hryvnia.id, accountId: seed.account({ instrumentId: hryvnia.id }).id };
 };

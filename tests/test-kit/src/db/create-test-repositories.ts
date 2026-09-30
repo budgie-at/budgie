@@ -6,11 +6,12 @@ import {
     TransferPairRepository
 } from '@budgie/consolidation';
 import * as contracts from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 
 import type { DB } from '@budgie/contracts';
 
 export const createTestRepositories = (db: DB) => ({
-    tagRepository: new contracts.TagRepository(db),
+    tagRepository: Effect.runSync(contracts.TagRepository.make),
     accountRepository: new contracts.AccountRepository(db),
     settingsRepository: new contracts.SettingsRepository(db),
     categoryRepository: new contracts.CategoryRepository(db),

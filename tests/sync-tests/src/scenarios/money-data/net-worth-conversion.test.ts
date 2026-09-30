@@ -13,18 +13,18 @@ const CRYPTO_BALANCE_UNITS = 100;
 const LIVE_CRYPTO_TOTAL = BITCOIN_EURO_RATE * CRYPTO_BALANCE_UNITS * PRECISION;
 
 const seedHryvniaCashWithBalance = async (balance: number) => {
-    const euro = await requireInstrument(CurrencyEnum.EUR);
-    const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+    const euro = await run(requireInstrument(CurrencyEnum.EUR));
+    const hryvnia = await run(requireInstrument(CurrencyEnum.UAH));
     const account = seed.account({ instrumentId: hryvnia.id, type: AccountTypeEnum.CASH });
 
     await testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
-    await seedLedgerBalance(account.id, balance);
+    await run(seedLedgerBalance(account.id, balance));
 
     return euro;
 };
 
 const seedBitcoinCryptoWithLiveRate = async (balance: number) => {
-    const result = await seedBitcoinCryptoAccount(balance);
+    const result = await run(seedBitcoinCryptoAccount(balance));
 
     insertOne(ExchangeRateEntityTable, {
         source: 'test',
@@ -47,7 +47,7 @@ const expectCryptoTotals = (defaultInstrumentId: number, expectedTotal: number) 
 describe('net worth currency conversion', () => {
     it('converts a foreign balance using the live rate when present', async () => {
         const euro = await seedHryvniaCashWithBalance(1000 * PRECISION);
-        const hryvnia = await requireInstrument(CurrencyEnum.UAH);
+        const hryvnia = await run(requireInstrument(CurrencyEnum.UAH));
 
         insertOne(ExchangeRateEntityTable, { source: 'test', baseInstrumentId: hryvnia.id, quoteInstrumentId: euro.id, rate: 0.02 });
 
@@ -68,7 +68,7 @@ describe('net worth currency conversion', () => {
     });
 
     it('does not value crypto totals or display amounts with fiat fallback when the live rate is missing', async () => {
-        const { bitcoin, euro } = await seedBitcoinCryptoAccount(100 * PRECISION);
+        const { bitcoin, euro } = await run(seedBitcoinCryptoAccount(100 * PRECISION));
 
         const conversion = await run(exchangeRatesService.convertStrict(bitcoin.id, euro.id, 100 * PRECISION));
 

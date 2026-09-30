@@ -27,7 +27,7 @@ const SECOND_SPLIT_OFFSET_MS = 158_000;
 
 describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
     it('auto-consolidates two bank expenses that jointly fund one Binance P2P buy', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const firstExpense = seedBankPair.expense(
             { externalId: 'mono-uah-split-1', operatedAt: new Date(P2P_OPERATED_AT.getTime() + FIRST_SPLIT_OFFSET_MS) },
             { accountId: bankAccount.id, amount: SPLIT_FIRST_AMOUNT }
@@ -55,7 +55,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
     });
 
     it('auto-consolidates three same-account expenses into one P2P buy', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const expenses = THREE_EXPENSE_AMOUNTS.map((amount, index) =>
             seedBankPair.expense(
                 {
@@ -81,7 +81,7 @@ describe('consolidation/binance-p2p-fiat-transfer grouped expenses', () => {
 
 describe('consolidation/binance-p2p-fiat-transfer group limits', () => {
     it('does not combine four expenses into one P2P buy', async () => {
-        const { bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const expenses = [0, 1, 2, 3].map(index =>
             seedBankPair.expense(
                 {
@@ -98,7 +98,7 @@ describe('consolidation/binance-p2p-fiat-transfer group limits', () => {
     });
 
     it('does not combine expenses from different bank accounts', async () => {
-        const { uah, bankAccount, binanceAccount } = await seedP2pFiatTransferFixture();
+        const { uah, bankAccount, binanceAccount } = await run(seedP2pFiatTransferFixture());
         const secondBankAccount = seed.account({
             title: 'Second Monobank UAH',
             type: AccountTypeEnum.BANK_SYNC,

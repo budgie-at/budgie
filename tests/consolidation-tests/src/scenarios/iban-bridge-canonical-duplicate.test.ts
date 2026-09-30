@@ -17,7 +17,7 @@ import {
     seedIbanBridgeTopology
 } from '../harness/iban-bridge-topology';
 import { runConsolidation } from '../harness/run-consolidation';
-import { unconsolidateById } from '../harness/test-context';
+import { unconsolidateById, runEffect } from '../harness/test-context';
 
 const DUPLICATED_LEG_COUNT = 2;
 
@@ -29,7 +29,7 @@ const seedIbanBridgeCanonicalDuplicateFixture = async () => {
     const topology = seedIbanBridgeTopology();
     const legs = seedIbanBridgeLegs(topology.bridgeAccount.id, topology.transferMccId);
 
-    await runConsolidation();
+    await runEffect(runConsolidation());
 
     return {
         ...topology,
@@ -45,9 +45,9 @@ describe('consolidation/iban-bridge-canonical-duplicate', () => {
         const { canonicalId, sourceExpense, targetIncome, bridgeIncome, bridgeExpense, sourceAccount, bridgeAccount, targetAccount } =
             await seedIbanBridgeCanonicalDuplicateFixture();
         const accountIds = [sourceAccount.id, bridgeAccount.id, targetAccount.id];
-        const balancesBeforeAbsorb = await fetchLedgerBalances(accountIds);
+        const balancesBeforeAbsorb = await runEffect(fetchLedgerBalances(accountIds));
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         expect(fetchBridgeCanonicalId()).toBe(canonicalId);
@@ -61,7 +61,7 @@ describe('consolidation/iban-bridge-canonical-duplicate', () => {
             [bridgeAccount.id, 0],
             [targetAccount.id, DUPLICATED_LEG_COUNT * IBAN_BRIDGE_UAH_AMOUNT]
         ]);
-        expect(await fetchLedgerBalances(accountIds)).toEqual([
+        expect(await runEffect(fetchLedgerBalances(accountIds))).toEqual([
             [sourceAccount.id, -IBAN_BRIDGE_EUR_AMOUNT],
             [bridgeAccount.id, 0],
             [targetAccount.id, IBAN_BRIDGE_UAH_AMOUNT]
@@ -73,11 +73,11 @@ describe('consolidation/iban-bridge-canonical-duplicate', () => {
             await seedIbanBridgeCanonicalDuplicateFixture();
         const accountIds = [sourceAccount.id, bridgeAccount.id, targetAccount.id];
 
-        await runConsolidation();
-        const balancesAfterAbsorb = await fetchLedgerBalances(accountIds);
-        await unconsolidateById(canonicalId);
+        await runEffect(runConsolidation());
+        const balancesAfterAbsorb = await runEffect(fetchLedgerBalances(accountIds));
+        await runEffect(unconsolidateById(canonicalId));
 
         expectRevertRemovedCanonical(canonicalId, [bridgeIncome.id, bridgeExpense.id, sourceExpense.id, targetIncome.id]);
-        expect(await fetchLedgerBalances(accountIds)).toEqual(balancesAfterAbsorb);
+        expect(await runEffect(fetchLedgerBalances(accountIds))).toEqual(balancesAfterAbsorb);
     });
 });

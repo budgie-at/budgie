@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { applyMigration, seed, testDb } from '../../harness';
+import { applyMigration, seed, testDb, run } from '../../harness';
 
 const MIGRATION_FILE_NAME = '0070_repair_orphaned_consolidation_children.sql';
 const DELETED_AT = 1_780_342_675;
@@ -49,9 +49,9 @@ describe('database/orphaned-consolidation-children-repair-migration', () => {
         `);
         const before = await fetchSnapshot();
 
-        await applyMigration(MIGRATION_FILE_NAME);
+        await run(applyMigration(MIGRATION_FILE_NAME));
         const firstRun = await fetchSnapshot();
-        await applyMigration(MIGRATION_FILE_NAME);
+        await run(applyMigration(MIGRATION_FILE_NAME));
 
         expect(firstRun.transactions).toEqual([
             { id: 1, deletedAt: DELETED_AT },

@@ -69,7 +69,7 @@ describe('consolidation/refund-pair-manual-review', () => {
         expect(autoCandidates).toHaveLength(0);
         expect(reviewCandidates.length).toBeGreaterThanOrEqual(1);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         expect(result.consolidated).toBe(0);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBeNull();
         expect(testQueryService.fetchTransactionById(refunds[0].id).consolidationParentTransactionId).toBeNull();

@@ -1,119 +1,108 @@
 import { Workload } from '@app/@generic/service/workload.service';
 import { monobankSyncService } from '@app/sync/service/monobank-sync.service';
+import { describe, expect, it } from '@effect/vitest';
 import * as Clock from 'effect/Clock';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
+import * as FiberSet from 'effect/FiberSet';
+import * as Option from 'effect/Option';
 import { HttpResponse, http } from 'msw';
-import { describe, expect, it } from 'vitest';
 
-import { emptyFn } from '@rnw-community/shared';
-
-import { run, runInWorkload } from '../../harness';
+import { inWorkload, TestLayer } from '../../harness';
 import { seedMonobankForwardSyncAccounts } from '../../harness/monobank/seed-monobank-forward-sync-accounts';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 const statementEndpoint = 'https://api.monobank.ua/personal/statement/:account/:from/:to';
 const statementAccountParam = 'account';
 const staleForwardSyncFromAt = new Date('2026-01-01T00:00:00.000Z');
-const nextTaskDelayMs = 0;
-
-const mockStatementRequests = (events: string[]): void => {
-    mockServer.use(
-        http.get(statementEndpoint, ({ params }) => {
-            events.push(`request:${String(params[statementAccountParam])}`);
-
-            return HttpResponse.json([]);
-        })
-    );
-};
-
-const setupForwardSyncScenario = (externalIds: string[], events: string[]): void => {
-    seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
-    mockStatementRequests(events);
-};
-
-const didImportRunBeforeNextTask = (importRan: Deferred.Deferred<void>): Promise<boolean> =>
-    Promise.race([
-        run(Deferred.await(importRan)).then(() => true),
-        new Promise<false>(resolve => {
-            setTimeout(() => {
-                resolve(false);
-            }, nextTaskDelayMs);
-        })
-    ]);
+const nextTaskDelayMs = 1;
 
 describe('monobank/queued-work-yield', () => {
-    it('yields after the current forward sync when user work is queued', async () => {
-        const externalIds = ['mono-acc-1', 'mono-acc-2', 'mono-acc-3'];
-        const events: string[] = [];
-        let queuedImport = Promise.resolve();
-        let hasQueuedImport = false;
+    it.effect('yields after the current forward sync when user work is queued', () =>
+        Effect.gen(function* () {
+            const externalIds = ['mono-acc-1', 'mono-acc-2', 'mono-acc-3'];
+            const events: string[] = [];
+            const runFork = yield* FiberSet.makeRuntime<Workload>();
+            const queuedImport = yield* Deferred.make<void>();
+            let hasQueuedImport = false;
 
-        seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
+            seedMonobankForwardSyncAccounts(externalIds, staleForwardSyncFromAt);
 
-        mockServer.use(
-            http.get(statementEndpoint, ({ params }) => {
-                events.push(`request:${String(params[statementAccountParam])}`);
+            mockServer.use(
+                http.get(statementEndpoint, ({ params }) => {
+                    events.push(`request:${String(params[statementAccountParam])}`);
 
-                if (!hasQueuedImport) {
-                    hasQueuedImport = true;
-                    queuedImport = runInWorkload(
-                        Effect.sync(() => {
-                            events.push('file-import');
-                        })
-                    );
-                }
-
-                return HttpResponse.json([]);
-            })
-        );
-
-        await runInWorkload(monobankSyncService.sync());
-        await queuedImport;
-
-        expect(events).toEqual(['request:mono-acc-1', 'file-import']);
-    });
-
-    it('wakes the rate-limit wait when user work is queued', async () => {
-        const externalIds = ['mono-acc-1', 'mono-acc-2'];
-        const events: string[] = [];
-        const rateLimitReached = Deferred.makeUnsafe<void>();
-        const importRan = Deferred.makeUnsafe<void>();
-
-        setupForwardSyncScenario(externalIds, events);
-
-        const startupSync = run(
-            Effect.clockWith(clock =>
-                Workload.use(workload =>
-                    workload.run(
-                        monobankSyncService.sync().pipe(
-                            Effect.provideService(
-                                Clock.Clock,
-                                Object.assign(Object.create(clock), {
-                                    sleep: () => Effect.andThen(Deferred.succeed(rateLimitReached, undefined), Effect.never)
+                    if (!hasQueuedImport) {
+                        hasQueuedImport = true;
+                        runFork(
+                            inWorkload(
+                                Effect.sync(() => {
+                                    events.push('file-import');
                                 })
-                            )
+                            ).pipe(Deferred.into(queuedImport))
+                        );
+                    }
+
+                    return HttpResponse.json([]);
+                })
+            );
+
+            yield* inWorkload(monobankSyncService.sync());
+            yield* Deferred.await(queuedImport);
+
+            expect(events).toEqual(['request:mono-acc-1', 'file-import']);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('wakes the rate-limit wait when user work is queued', () =>
+        Effect.gen(function* () {
+            const events: string[] = [];
+            const rateLimitReached = yield* Deferred.make<void>();
+            const importRan = yield* Deferred.make<void>();
+            const clock = yield* Effect.clockWith(Effect.succeed);
+
+            seedMonobankForwardSyncAccounts(['mono-acc-1', 'mono-acc-2'], staleForwardSyncFromAt);
+            mockServer.use(
+                http.get(statementEndpoint, ({ params }) => {
+                    events.push(`request:${String(params[statementAccountParam])}`);
+
+                    return HttpResponse.json([]);
+                })
+            );
+
+            const startupSync = yield* Effect.forkChild(
+                inWorkload(
+                    monobankSyncService.sync().pipe(
+                        Effect.provideService(
+                            Clock.Clock,
+                            Object.assign(Object.create(clock), {
+                                sleep: () => Effect.andThen(Deferred.succeed(rateLimitReached, undefined), Effect.never)
+                            })
                         )
                     )
                 )
-            )
-        ).then(emptyFn, emptyFn);
-        await run(Deferred.await(rateLimitReached));
-        const queuedImport = run(
-            Workload.use(workload =>
-                workload.runUser(
-                    Effect.gen(function* () {
-                        events.push('file-import');
-                        yield* Deferred.succeed(importRan, undefined);
-                    })
+            );
+            yield* Deferred.await(rateLimitReached);
+            const queuedImport = yield* Effect.forkChild(
+                Workload.use(workload =>
+                    workload.runUser(
+                        Effect.gen(function* () {
+                            events.push('file-import');
+                            yield* Deferred.succeed(importRan, undefined);
+                        })
+                    )
                 )
-            )
-        );
-        const importRanBeforePauseReleased = await didImportRunBeforeNextTask(importRan);
-        await startupSync;
-        await queuedImport;
+            );
+            const importRanBeforePauseReleased = yield* Deferred.await(importRan).pipe(
+                Effect.timeoutOption(nextTaskDelayMs),
+                Effect.map(Option.isSome)
+            );
+            yield* Fiber.await(startupSync);
+            yield* Fiber.join(queuedImport);
 
-        expect(importRanBeforePauseReleased).toBe(true);
-        expect(events).toEqual(['request:mono-acc-1', 'file-import']);
-    });
+            expect(importRanBeforePauseReleased).toBe(true);
+            expect(events).toEqual(['request:mono-acc-1', 'file-import']);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

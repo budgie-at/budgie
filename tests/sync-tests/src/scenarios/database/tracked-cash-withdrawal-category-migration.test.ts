@@ -1,7 +1,7 @@
 import { AccountTypeEnum, CASH_WITHDRAWAL_TRACKED_CATEGORY_ID, CategorySourceEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { applyMigration, fetchExpenseEntries, fetchTransactionById, seed, seedBankPair, testDb } from '../../harness';
+import { applyMigration, fetchExpenseEntries, fetchTransactionById, seed, seedBankPair, testDb, run } from '../../harness';
 
 const AMOUNT = 408_000_000;
 const OPERATED_AT = new Date(Date.now() - 400 * 24 * 60 * 60 * 1000);
@@ -31,8 +31,8 @@ describe('database/tracked-cash-withdrawal-category-migration', () => {
         );
         await testDb.$client.execAsync(`DELETE FROM categories WHERE id = ${CASH_WITHDRAWAL_TRACKED_CATEGORY_ID}`);
 
-        await applyMigration(MIGRATION);
-        await applyMigration(MIGRATION);
+        await run(applyMigration(MIGRATION));
+        await run(applyMigration(MIGRATION));
 
         const [category] = await testDb.$client.getAllAsync<{ isSystemCategory: number; title: string }>(
             `SELECT is_system_category as isSystemCategory, title FROM categories WHERE id = ${CASH_WITHDRAWAL_TRACKED_CATEGORY_ID}`
@@ -67,7 +67,7 @@ describe('database/tracked-cash-withdrawal-category-migration', () => {
             `UPDATE categories SET is_system_category = 0, title = 'Cigarettes' WHERE id = ${CASH_WITHDRAWAL_TRACKED_CATEGORY_ID}`
         );
 
-        await applyMigration(MIGRATION);
+        await run(applyMigration(MIGRATION));
 
         const [historicalEntry] = await fetchExpenseEntries(historicalAtm.id);
 

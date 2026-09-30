@@ -13,7 +13,7 @@ import {
     seedP2pUsdt
 } from '../harness/p2p-fiat-transfer-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testQueryService, testSeedService } from '../harness/test-context';
+import { testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 describe('consolidation/p2p-fiat-transfer atomic constraints', () => {
     it('does not match a P2P buy against a different instrument than the quoted instrument', async () => {
@@ -26,7 +26,7 @@ describe('consolidation/p2p-fiat-transfer atomic constraints', () => {
         seedP2pExchangeRate(euro.id, usdt.id, 1 / 41);
         seedP2pBuyIncome(binanceAccount.id, 1);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
@@ -42,7 +42,7 @@ describe('consolidation/p2p-fiat-transfer atomic constraints', () => {
         seedP2pExchangeRate(bitcoin.id, usdt.id, 1 / 41);
         seedP2pBuyIncome(binanceAccount.id, null);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(0);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(0);
@@ -57,7 +57,7 @@ describe('consolidation/p2p-fiat-transfer atomic constraints', () => {
         seedP2pExchangeRate(bankAccount.instrumentId, usdt.id, 1 / 41);
         seedP2pBuyIncome(binanceAccount.id, null);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(1);
@@ -79,7 +79,7 @@ describe('consolidation/p2p-fiat-transfer atomic constraints', () => {
         seedP2pExchangeRate(bankAccount.instrumentId, usdt.id, 1 / 41);
         seedP2pBuyIncome(binanceAccount.id, bankAccount.instrumentId);
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
 
         expect(result.consolidated).toBe(1);
         expect(testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.P2P_FIAT_TRANSFER)).toHaveLength(1);

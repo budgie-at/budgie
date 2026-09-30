@@ -9,7 +9,7 @@ import {
     REJECTED_PAYMENT_PRINCIPAL_TITLE
 } from '../harness/rejected-payment-fixture';
 import { runConsolidation } from '../harness/run-consolidation';
-import { testDb, testQueryService, testSeedService } from '../harness/test-context';
+import { testDb, testQueryService, testSeedService, runEffect } from '../harness/test-context';
 
 const DEFAULT_INSTRUMENT_ID = 1;
 
@@ -26,7 +26,7 @@ describe('consolidation/refund-pair-rejected-payment-statistics', () => {
             refundDelaySeconds: REJECTED_PAYMENT_FEE_REFUND_DELAY_SECONDS
         });
 
-        const result = await runConsolidation();
+        const result = await runEffect(runConsolidation());
         expect(result.consolidated).toBe(2);
         expect(testQueryService.fetchTransactionById(expense.id).consolidationType).toBe(TransactionConsolidationTypeEnum.REFUND);
 
