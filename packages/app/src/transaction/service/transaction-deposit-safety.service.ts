@@ -48,7 +48,7 @@ export class TransactionDepositSafetyService extends Context.Service<Transaction
                 const hasDepositAccount = accounts.some(account => account.type === AccountTypeEnum.DEPOSIT);
 
                 if (hasDepositAccount) {
-                    yield* Effect.die(
+                    return yield* Effect.die(
                         new Error(i18n._({ id: 'transaction.depositExpenseDisallowed', message: 'Deposit accounts cannot fund expenses' }))
                     );
                 }

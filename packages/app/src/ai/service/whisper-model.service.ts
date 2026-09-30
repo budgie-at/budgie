@@ -61,7 +61,8 @@ export class WhisperModelService extends Context.Service<WhisperModelService>()(
 
             if (!isDefined(result?.uri) || !tempFile.exists || !isPositiveNumber(tempFile.size) || tempFile.size !== expectedBytes) {
                 deleteFileIfExists(tempFile);
-                yield* Effect.die(new Error(t`Whisper model download failed`));
+
+                return yield* Effect.die(new Error(t`Whisper model download failed`));
             }
         });
 

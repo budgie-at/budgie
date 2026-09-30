@@ -23,6 +23,14 @@
             "specifier": "@stylistic/eslint-plugin"
         },
         {
+            "name": "@react-native",
+            "specifier": "@react-native/eslint-plugin"
+        },
+        {
+            "name": "react-native",
+            "specifier": "eslint-plugin-react-native"
+        },
+        {
             "name": "budgie",
             "specifier": "./eslint-rules/max-component-props.mjs"
         }
@@ -508,7 +516,7 @@
                 "valid-typeof": "error",
                 "vars-on-top": "error",
                 "yoda": "error",
-                "typescript/consistent-return": "error",
+                "typescript/consistent-return": "off",
                 "typescript/dot-notation": "error",
                 "typescript/await-thenable": "error",
                 "typescript/ban-ts-comment": [
@@ -971,7 +979,7 @@
                 "react-hooks-js/static-components": "error",
                 "react-hooks-js/use-memo": "error",
                 "react-hooks-js/preserve-manual-memoization": "error",
-                "react-hooks-js/incompatible-library": "warn",
+                "react-hooks-js/incompatible-library": "error",
                 "react-hooks-js/immutability": "error",
                 "react-hooks-js/globals": "error",
                 "react-hooks-js/refs": "error",
@@ -979,7 +987,7 @@
                 "react-hooks-js/error-boundaries": "error",
                 "react-hooks-js/purity": "error",
                 "react-hooks-js/set-state-in-render": "error",
-                "react-hooks-js/unsupported-syntax": "warn",
+                "react-hooks-js/unsupported-syntax": "error",
                 "react-hooks-js/config": "error",
                 "react-hooks-js/gating": "error",
                 "react/jsx-curly-brace-presence": [
@@ -1024,6 +1032,20 @@
             "rules": {
                 "max-lines-per-function": "off",
                 "max-statements": "off"
+            }
+        },
+        {
+            "files": [
+                "packages/app/**/*.tsx"
+            ],
+            "rules": {
+                "@react-native/no-deep-imports": "error",
+                "react-native/no-raw-text": [
+                    "error",
+                    {
+                        "skip": ["Trans", "ProtectedText"]
+                    }
+                ]
             }
         }
     ]

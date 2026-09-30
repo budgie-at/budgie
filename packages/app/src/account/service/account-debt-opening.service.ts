@@ -173,7 +173,7 @@ export class AccountDebtOpeningService extends Context.Service<AccountDebtOpenin
             debtType: AccountDebtTypeEnum
         ) {
             if (debtType !== AccountDebtTypeEnum.BORROW) {
-                yield* Effect.die(new Error(t`Borrowed debt account expected`));
+                return yield* Effect.die(new Error(t`Borrowed debt account expected`));
             }
         });
 

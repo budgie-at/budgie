@@ -14,5 +14,5 @@ export const pauseUserWork = Effect.fnUntraced(function* <E, R>(onStart: Effect.
 
     yield* Deferred.await(started);
 
-    return Effect.andThen(Deferred.succeed(released, undefined), Fiber.join(work));
+    return () => Effect.andThen(Deferred.succeed(released, undefined), Fiber.join(work));
 });

@@ -55,14 +55,16 @@ export class DebtMigrationRepairScenario {
                 yield* new DebtMigrationBalanceAssertions().assert();
             }).pipe(
                 Effect.provide(
-                    Layer.mergeAll(
-                        AccountBalanceRepository.layer,
-                        DebtEventRepository.layer,
-                        TransactionRepository.layer,
-                        TransactionViewRepository.layer
+                    Layer.provideMerge(
+                        Layer.mergeAll(
+                            AccountBalanceRepository.layer,
+                            DebtEventRepository.layer,
+                            TransactionRepository.layer,
+                            TransactionViewRepository.layer
+                        ),
+                        makeTestPlatformLayer(db)
                     )
-                ),
-                Effect.provide(makeTestPlatformLayer(db))
+                )
             );
         });
     }

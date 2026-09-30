@@ -143,7 +143,7 @@ export class SttService extends Context.Service<SttService>()('@budgie/app/SttSe
             }),
             streamStart: Effect.fn('SttService.streamStart')(function* (language: string | null) {
                 if (!isReady() || !isDefined(context)) {
-                    yield* new AiNotReadyError({ subsystem: AiSubsystemNameEnum.STT });
+                    return yield* new AiNotReadyError({ subsystem: AiSubsystemNameEnum.STT });
                 }
                 if (isDefined(audioStream)) {
                     yield* Effect.ignore(stopStream(false));

@@ -91,7 +91,7 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
                         const shouldReject = isDefined(previousBalance) && balance.amount < 0 && balance.amount < previousBalance;
 
                         if (shouldReject) {
-                            yield* new DepositNegativeBalanceError();
+                            return yield* new DepositNegativeBalanceError();
                         }
                     }
                 }

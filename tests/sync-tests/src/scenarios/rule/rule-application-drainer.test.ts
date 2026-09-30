@@ -72,7 +72,7 @@ describe('rule/rule-application-drainer', () => {
             yield* advanceScheduledDrain(drainDelayMs);
             expect(appliedRulesToTransactions).not.toHaveBeenCalled();
 
-            yield* releaseImportWork;
+            yield* releaseImportWork();
             yield* advanceScheduledDrain(drainDelayMs);
 
             expect(appliedRulesToTransactions).toHaveBeenCalledTimes(1);

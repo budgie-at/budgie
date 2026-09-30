@@ -65,7 +65,7 @@ describe('market-data/historical-market-data-loader', () => {
             yield* advanceScheduledDrain(drainDelayMs);
             expect(claimNextExecutions).not.toHaveBeenCalled();
 
-            yield* releaseImportWork;
+            yield* releaseImportWork();
             yield* advanceScheduledDrain(drainDelayMs);
 
             expect(claimNextExecutions).toHaveBeenCalledTimes(1);
@@ -78,7 +78,7 @@ describe('market-data/historical-market-data-loader', () => {
             const instrumentMarketDataJobRepository = yield* InstrumentMarketDataJobRepository;
             const instrumentRepository = yield* InstrumentRepository;
             const workload = yield* Workload;
-            const importWorkReleases: Array<Effect.Effect<void>> = [];
+            const importWorkReleases: Array<() => Effect.Effect<void>> = [];
 
             vi.spyOn(instrumentMarketDataJobRepository, 'claimNext')
                 .mockReturnValueOnce(recordClaimNext(buildMarketDataJob()))
@@ -106,7 +106,7 @@ describe('market-data/historical-market-data-loader', () => {
                 throw new Error('file import did not start');
             });
 
-            yield* releaseImportWork;
+            yield* releaseImportWork();
             yield* advanceScheduledDrain(drainDelayMs);
 
             expect(markFailedExecutions).toHaveBeenCalledTimes(1);

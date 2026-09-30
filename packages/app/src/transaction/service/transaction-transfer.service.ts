@@ -307,7 +307,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
                     const depositBalanceMicroUnits = depositBalanceRows.at(0)?.balance ?? 0;
 
                     if (depositBalanceMicroUnits < 0) {
-                        yield* new DepositNegativeBalanceError();
+                        return yield* new DepositNegativeBalanceError();
                     }
 
                     if (isPositiveNumber(depositBalanceMicroUnits)) {

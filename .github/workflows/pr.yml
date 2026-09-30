@@ -100,6 +100,9 @@ jobs:
             - name: Typescript checks
               run: pnpm ts
 
+            - name: Effect diagnostics
+              run: pnpm effect:check
+
             - name: Maestro selector checks
               run: pnpm --filter @budgie-at/app-tests selectors:check
 

@@ -77,7 +77,7 @@ describe('database/database-lifecycle-serialization', () => {
                     events.push('import:start');
                     yield* Effect.promise(() => Promise.resolve());
 
-                    return yield* Effect.fail(new Error('import failed'));
+                    return yield* Effect.die(new Error('import failed'));
                 })
             );
             const following = databaseLifecycleService.run(

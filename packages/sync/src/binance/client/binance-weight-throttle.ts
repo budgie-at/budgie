@@ -26,7 +26,7 @@ export class BinanceWeightThrottle {
         function* (this: BinanceWeightThrottle) {
             if (this.shouldCoolDown()) {
                 if (Date.now() + WEIGHT_WINDOW_MS >= this.deadlineAtMs) {
-                    yield* new SyncDeferredError({
+                    return yield* new SyncDeferredError({
                         provider: SyncProviderEnum.BINANCE,
                         message: 'Weight cool-down exceeds deadline'
                     });

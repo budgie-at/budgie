@@ -123,7 +123,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 const debtEvent = yield* debtEventRepository.findByTransactionId(transaction.id);
 
                 if (isDefined(debtEvent)) {
-                    yield* Effect.die(new Error(t`Transaction already has a debt attachment`));
+                    return yield* Effect.die(new Error(t`Transaction already has a debt attachment`));
                 }
             });
 
