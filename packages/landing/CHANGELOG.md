@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
+
+
+### Bug Fixes
+
+* **landing:** unify metadata builders and JSON-LD, trim hub titles ([a747521](https://github.com/budgie-at/budgie/commit/a7475212a975780917d87c487fe330c936fa9d36)), closes [#1312](https://github.com/budgie-at/budgie/issues/1312)
+
+
+### Features
+
+* **landing:** add ai-tag-suggestions basic scroll story ([f9ceb81](https://github.com/budgie-at/budgie/commit/f9ceb816a2731dfe562a86379232386cd7257270)), closes [#779](https://github.com/budgie-at/budgie/issues/779)
+
+
+
+
+
 # [6.85.0](https://github.com/budgie-at/budgie/compare/v6.84.3...v6.85.0) (2026-09-28)
 
 
