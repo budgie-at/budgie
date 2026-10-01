@@ -19,7 +19,6 @@ import { deriveEmbeddingFlag } from '../util/derive-embedding-flag.util';
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import type { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
-import type { Operators } from 'drizzle-orm';
 
 export class TransactionRepository extends Context.Service<TransactionRepository>()('@budgie/contracts/TransactionRepository', {
     make: Effect.sync(() => {
@@ -39,26 +38,6 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 inArray(TransactionEntityTable.id, filters.buildTransactionIdsByEntryAccountIdsQuery([accountId])),
                 inArray(TransactionEntityTable.id, filters.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
             );
-
-        const buildSingleAccountFilter = (accountId: number) => ({
-            OR: [
-                { fromAccountId: accountId },
-                { toAccountId: accountId },
-                {
-                    RAW: (transactionTable: typeof TransactionEntityTable, { inArray: inTransactionIds }: Operators) =>
-                        inTransactionIds(transactionTable.id, filters.buildTransactionIdsByEntryAccountIdsQuery([accountId]))
-                },
-                {
-                    RAW: (transactionTable: typeof TransactionEntityTable, { inArray: inTransactionIds }: Operators) =>
-                        inTransactionIds(transactionTable.id, filters.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
-                }
-            ]
-        });
-
-        const buildTransfersByAccountIdWhere = (accountId: number) => ({
-            type: TransactionTypeEnum.TRANSFER,
-            OR: [{ fromAccountId: accountId }, { toAccountId: accountId }]
-        });
 
         const selectOperatedAtTime = Effect.fnUntraced(function* (aggregateSql: SQL<number | null>, condition: SQL | undefined) {
             const result = yield* Db.query(db =>
@@ -340,7 +319,20 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             findByAccountId: (accountId: number) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findMany({
-                        where: buildSingleAccountFilter(accountId),
+                        where: {
+                            OR: [
+                                { fromAccountId: accountId },
+                                { toAccountId: accountId },
+                                {
+                                    RAW: (table, { inArray: inIds }) =>
+                                        inIds(table.id, filters.buildTransactionIdsByEntryAccountIdsQuery([accountId]))
+                                },
+                                {
+                                    RAW: (table, { inArray: inIds }) =>
+                                        inIds(table.id, filters.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
+                                }
+                            ]
+                        },
                         orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
                     })
                 ),
@@ -361,7 +353,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             findTransfersForConversion: (accountId: number) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findMany({
-                        where: buildTransfersByAccountIdWhere(accountId),
+                        where: { type: TransactionTypeEnum.TRANSFER, OR: [{ fromAccountId: accountId }, { toAccountId: accountId }] },
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
                                 where: filters.buildLedgerEntryFilter()

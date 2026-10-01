@@ -46,16 +46,16 @@ export class SyncDuplicateSoftDeleteService extends Context.Service<SyncDuplicat
                 return updatedIds;
             });
 
-            const softDeleteChunkWithReactivity = (chunk: readonly number[]) =>
-                Db.mutation({ type: 'update', tables: ['transactions', 'transaction_entries'] }, softDeleteChunk(chunk));
-
             return {
                 remove: Effect.fn('SyncDuplicateSoftDeleteService.remove')(function* (duplicateTransactionIds: readonly number[]) {
                     const updatedTransactionIds: number[] = [];
 
                     for (let index = 0; index < duplicateTransactionIds.length; index += sqliteBatchSize) {
                         updatedTransactionIds.push(
-                            ...(yield* softDeleteChunkWithReactivity(duplicateTransactionIds.slice(index, index + sqliteBatchSize)))
+                            ...(yield* Db.mutation(
+                                { type: 'update', tables: ['transactions', 'transaction_entries'] },
+                                softDeleteChunk(duplicateTransactionIds.slice(index, index + sqliteBatchSize))
+                            ))
                         );
                     }
 
