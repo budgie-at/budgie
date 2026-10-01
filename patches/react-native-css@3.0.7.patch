@@ -1,5 +1,5 @@
 diff --git a/dist/commonjs/native/react/useNativeCss.js b/dist/commonjs/native/react/useNativeCss.js
-index b0cd24db473da9892e4d17a328cd9fa178c09066..3253f840a44350cb665fcd57179211a65da52350 100644
+index b0cd24db473da9892e4d17a328cd9fa178c09066..2cc8f10967e7832873b8909363012c6d52a13d86 100644
 --- a/dist/commonjs/native/react/useNativeCss.js
 +++ b/dist/commonjs/native/react/useNativeCss.js
 @@ -36,6 +36,7 @@ function useNativeCss(type, originalProps, configs = [{
@@ -18,7 +18,7 @@ index b0cd24db473da9892e4d17a328cd9fa178c09066..3253f840a44350cb665fcd57179211a6
        run: () => setState(state => ({
          ...state
        }))
-@@ -63,7 +65,15 @@ function useNativeCss(type, originalProps, configs = [{
+@@ -63,15 +65,26 @@ function useNativeCss(type, originalProps, configs = [{
    });
  
    // Both effects share the same observers, so we only need to cleanup one of them
@@ -34,7 +34,20 @@ index b0cd24db473da9892e4d17a328cd9fa178c09066..3253f840a44350cb665fcd57179211a6
 +  }, [state.ruleEffect, state.styleEffect]);
  
    // Check if our derived state has changed (e.g the className prop)
-   if ((0, _guards.testGuards)(state, originalProps, inheritedVariables, inheritedContainers)) {
+-  if ((0, _guards.testGuards)(state, originalProps, inheritedVariables, inheritedContainers)) {
++  if ((0, _guards.testGuards)(state, originalProps, inheritedVariables, inheritedContainers) || state.variables && state.inheritedVariables !== inheritedVariables) {
+     /**
+      * Get the new state
+      * Note, this might result in the same styles, but the guards will now be different
+      */
+-    setState((0, _rules.updateRules)(state, originalProps, inheritedVariables, inheritedContainers, true));
++    setState({
++      ...(0, _rules.updateRules)(state, originalProps, inheritedVariables, inheritedContainers, true),
++      inheritedVariables
++    });
+ 
+     // We can bail on rendering as the result of this render will be discarded
+     return /*#__PURE__*/(0, _react.createElement)(_react.Fragment);
 diff --git a/dist/commonjs/native/reactivity.js b/dist/commonjs/native/reactivity.js
 index 808c2025cd21c4527bac3512541acf714beb1ee1..20bb15caa1667d517f91e31ac047f88c803b4f72 100644
 --- a/dist/commonjs/native/reactivity.js
@@ -104,7 +117,7 @@ index 222296d6bd95a69dd87af100d8387753c54d2095..9401a5644bf501f614e9456739c20507
      }
    });
 diff --git a/dist/module/native/react/useNativeCss.js b/dist/module/native/react/useNativeCss.js
-index 61833ec16e14dcf1a2a91cb1f700c117206deb52..1ebcff427651f5e428bda05ad55a2a5781b9e9fa 100644
+index 61833ec16e14dcf1a2a91cb1f700c117206deb52..fef54837fbd4e0c8ca146c5d215f9252e9933f45 100644
 --- a/dist/module/native/react/useNativeCss.js
 +++ b/dist/module/native/react/useNativeCss.js
 @@ -5,7 +5,7 @@ import { createElement, Fragment, useContext, useEffect, useState } from "react"
@@ -132,7 +145,7 @@ index 61833ec16e14dcf1a2a91cb1f700c117206deb52..1ebcff427651f5e428bda05ad55a2a57
        run: () => setState(state => ({
          ...state
        }))
-@@ -57,7 +59,15 @@ export function useNativeCss(type, originalProps, configs = [{
+@@ -57,15 +59,26 @@ export function useNativeCss(type, originalProps, configs = [{
    });
  
    // Both effects share the same observers, so we only need to cleanup one of them
@@ -148,7 +161,20 @@ index 61833ec16e14dcf1a2a91cb1f700c117206deb52..1ebcff427651f5e428bda05ad55a2a57
 +  }, [state.ruleEffect, state.styleEffect]);
  
    // Check if our derived state has changed (e.g the className prop)
-   if (testGuards(state, originalProps, inheritedVariables, inheritedContainers)) {
+-  if (testGuards(state, originalProps, inheritedVariables, inheritedContainers)) {
++  if (testGuards(state, originalProps, inheritedVariables, inheritedContainers) || state.variables && state.inheritedVariables !== inheritedVariables) {
+     /**
+      * Get the new state
+      * Note, this might result in the same styles, but the guards will now be different
+      */
+-    setState(updateRules(state, originalProps, inheritedVariables, inheritedContainers, true));
++    setState({
++      ...updateRules(state, originalProps, inheritedVariables, inheritedContainers, true),
++      inheritedVariables
++    });
+ 
+     // We can bail on rendering as the result of this render will be discarded
+     return /*#__PURE__*/createElement(Fragment);
 diff --git a/dist/module/native/reactivity.js b/dist/module/native/reactivity.js
 index 7d7a603a39bff32dcae2bde752ecbc639afac9e2..cf67c5c8b7caefa0ed46c865f1dfc251f08c3b91 100644
 --- a/dist/module/native/reactivity.js
