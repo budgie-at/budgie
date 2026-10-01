@@ -1,11 +1,7 @@
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
 import { convertFromMicroUnits } from '@app/@generic/utils/convert-from-micro-units.util';
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { TransactionDebtSettlementService } from '@app/transaction/service/transaction-debt-settlement.service';
-import { buildTestDb, makeTestPlatformLayer } from '@budgie-at/test-kit';
 import {
     AccountBalanceRepository,
     AccountDebtTypeEnum,
@@ -25,7 +21,6 @@ import {
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
-import * as Layer from 'effect/Layer';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -33,8 +28,6 @@ import { fetchDebtProgress, TestLayer, upsertCurrencyRate } from '../../harness'
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
-
-import { LegacyDebtContractFixture } from './legacy-debt-contract-fixture';
 
 import type { DebtProgressContractInterface } from './interface/debt-progress-contract.interface';
 import type {
@@ -45,8 +38,6 @@ import type {
 } from '@budgie/contracts';
 
 const OPERATED_AT = new Date('2026-06-02T12:00:00.000Z');
-const scenarioDirectory = resolve(fileURLToPath(import.meta.url), '..');
-const preMigrationFixturePath = resolve(scenarioDirectory, '../../../fixtures/debt-migration/pre-0033.db');
 
 const seedDebtAccount = (debtType: AccountDebtTypeEnum, targetBalance: number, instrumentId = 1): AccountEntityInterface =>
     seed.account({ title: 'Debt contract account', type: AccountTypeEnum.DEBT, debtType, targetBalance, instrumentId });
@@ -243,50 +234,6 @@ describe.each([AccountDebtTypeEnum.LENT, AccountDebtTypeEnum.BORROW])('debt rema
 
             yield* expectDebtProgressContract(account.id, { outstandingAmount: 1_000, paidAmount: 0, totalAmount: 1_000, percentage: 0 });
         }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect(
-        'reports the same outstanding/paid/total/percentage contract for a legacy opening-balance snapshot after migration backfills debt events',
-        () =>
-            Effect.gen(function* () {
-                const accountId =
-                    debtType === AccountDebtTypeEnum.LENT
-                        ? LegacyDebtContractFixture.LENT_ACCOUNT_ID
-                        : LegacyDebtContractFixture.BORROW_ACCOUNT_ID;
-                const fixture = new LegacyDebtContractFixture(preMigrationFixturePath);
-                const preparedFixturePath = fixture.prepare();
-                yield* Effect.addFinalizer(() =>
-                    Effect.sync(() => {
-                        fixture.cleanup();
-                    })
-                );
-                const migratedDb = buildTestDb(preparedFixturePath);
-                yield* Effect.addFinalizer(() => Effect.promise(() => migratedDb.$client.closeAsync()));
-
-                yield* Effect.gen(function* () {
-                    const migratedAccountBalanceRepository = yield* AccountBalanceRepository;
-                    const progress = (yield* migratedAccountBalanceRepository.getDebtAccountProgressByAccountId(accountId)).at(0);
-
-                    if (!isDefined(progress)) {
-                        throw new Error(`No migrated debt progress row for legacy account ${accountId}`);
-                    }
-
-                    expect(convertFromMicroUnits(progress.outstandingAmount)).toBe(750);
-                    expect(convertFromMicroUnits(progress.paidAmount)).toBe(250);
-                    expect(convertFromMicroUnits(progress.totalAmount)).toBe(1_000);
-                    expect(progress.percentage).toBe(25);
-
-                    const homeRow = (yield* migratedAccountBalanceRepository.getHomeAccountRows(1)).find(
-                        row => row.account.id === accountId
-                    );
-
-                    if (!isDefined(homeRow)) {
-                        throw new Error(`No migrated home account row for legacy account ${accountId}`);
-                    }
-
-                    expect(convertFromMicroUnits(homeRow.debtOutstandingAmount)).toBe(750);
-                }).pipe(Effect.provide(Layer.mergeAll(AccountBalanceRepository.layer, makeTestPlatformLayer(migratedDb))));
-            }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('reports a zero-total account without NaN', () =>

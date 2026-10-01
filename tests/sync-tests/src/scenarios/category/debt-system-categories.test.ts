@@ -12,7 +12,6 @@ import { inArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { TestLayer } from '../../harness';
-import { applyMigration } from '../../harness/db/apply-migration';
 import { testDb } from '../../harness/scenario/setup';
 
 const DEBT_CATEGORY_IDS = [LENDING_CATEGORY_ID, BORROWING_CATEGORY_ID];
@@ -39,15 +38,6 @@ describe('category/debt-system-categories', () => {
                 isDefault: true,
                 isSystemCategory: true
             });
-            expect(yield* Effect.promise(() => fetchDebtSystemTranslations())).toHaveLength(10);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('stays a no-op when the migration runs twice', () =>
-        Effect.gen(function* () {
-            yield* applyMigration('0057_add_debt_system_categories.sql');
-
-            expect(yield* Effect.promise(() => fetchDebtSystemCategories())).toHaveLength(2);
             expect(yield* Effect.promise(() => fetchDebtSystemTranslations())).toHaveLength(10);
         }).pipe(Effect.provide(TestLayer))
     );

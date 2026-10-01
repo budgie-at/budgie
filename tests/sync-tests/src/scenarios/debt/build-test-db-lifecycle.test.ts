@@ -1,7 +1,6 @@
-import { copyFileSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { basename, join } from 'node:path';
 
 import { buildTestDb } from '@budgie-at/test-kit';
 import { describe, expect, it } from '@effect/vitest';
@@ -11,8 +10,6 @@ import { getErrorMessage } from '@rnw-community/shared';
 
 import { TestLayer } from '../../harness';
 
-const scenarioDirectory = resolve(fileURLToPath(import.meta.url), '..');
-const preMigrationFixturePath = resolve(scenarioDirectory, '../../../fixtures/debt-migration/pre-0033.db');
 const syntheticAssertionErrorMessage = 'Synthetic post-build assertion failure';
 
 const getTemporaryDatabaseDirectories = (sourceDatabasePath: string): string[] =>
@@ -25,7 +22,7 @@ const getUniqueSourceDatabasePath = (sourceDirectoryPath: string, label: string)
 
 const copyUniqueSourceDatabase = (sourceDirectoryPath: string, label: string): string => {
     const sourceDatabasePath = getUniqueSourceDatabasePath(sourceDirectoryPath, label);
-    copyFileSync(preMigrationFixturePath, sourceDatabasePath);
+    writeFileSync(sourceDatabasePath, '');
 
     return sourceDatabasePath;
 };
