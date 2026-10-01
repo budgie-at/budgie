@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.87.0](https://github.com/budgie-at/budgie/compare/v6.86.1...v6.87.0) (2026-10-01)
+
+
+### Features
+
+* **app:** redesign debt tile around a progress ring ([13d0537](https://github.com/budgie-at/budgie/commit/13d053722d3fcae120f3731edc26762741b4593c))
+
+
+
+
+
 ## [6.86.1](https://github.com/budgie-at/budgie/compare/v6.86.0...v6.86.1) (2026-10-01)
 
 
