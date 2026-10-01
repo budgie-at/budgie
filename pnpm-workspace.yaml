@@ -51,3 +51,4 @@ minimumReleaseAgeExclude:
   - '@effect/atom-react@4.0.0'
   - '@effect/vitest@4.0.0'
   - effect@4.0.0
+  - llama.rn@0.13.0-rc.6
