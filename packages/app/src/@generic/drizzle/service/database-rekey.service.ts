@@ -5,6 +5,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import { identity } from 'effect/Function';
 import * as Layer from 'effect/Layer';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 import { File } from 'expo-file-system';
 
 import { DATABASE_DIRECTORY } from '../constant/database-directory.constant';
@@ -20,6 +21,7 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
     make: Effect.gen(function* () {
         const databaseLifecycleService = yield* DatabaseLifecycleService;
         const settingsRepository = yield* SettingsRepository;
+        const reactivity = yield* Reactivity.Reactivity;
 
         const deleteFileIfExists = (uri: string): void => {
             const file = new File(uri);
@@ -60,13 +62,15 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             const { $client: client } = yield* Db;
 
             yield* client.unsafe('PRAGMA wal_checkpoint(FULL)').raw;
-            yield* client.unsafe('PRAGMA journal_mode = DELETE').raw;
             yield* client.unsafe(
                 `ATTACH DATABASE '${escapeSqlString(`${DATABASE_LOCATION}/${tempDatabaseName}`)}' AS migrated KEY '${escapeSqlString(nextKey ?? '')}'`
             ).raw;
             yield* client
-                .unsafe(`SELECT sqlcipher_export('migrated')`)
-                .raw.pipe(Effect.ensuring(Effect.ignore(client.unsafe('DETACH DATABASE migrated').raw)));
+                .unsafe('PRAGMA migrated.journal_mode = DELETE')
+                .raw.pipe(
+                    Effect.andThen(client.unsafe(`SELECT sqlcipher_export('migrated')`).raw),
+                    Effect.ensuring(Effect.ignore(client.unsafe('DETACH DATABASE migrated').raw))
+                );
         });
 
         const updateMigratedDatabaseSettings = Effect.fn('DatabaseRekeyService.updateMigratedDatabaseSettings')(function* (
@@ -74,7 +78,7 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             nextKey: string | null,
             nextSettings: NonNullable<RekeyParamsInterface['nextSettings']>
         ) {
-            const client = yield* openSqliteClient(tempDatabaseName, nextKey);
+            const client = yield* openSqliteClient(tempDatabaseName, nextKey).pipe(Effect.provideService(Reactivity.Reactivity, reactivity));
             const database = yield* makeEffectSqliteClientDatabase(client, { onMutate: () => Effect.void, runQuery: identity });
 
             yield* settingsRepository.update(nextSettings).pipe(Effect.provideService(Db, withReplicas(database, [database])));
