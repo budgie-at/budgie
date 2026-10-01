@@ -117,6 +117,10 @@ msgstr "{count, plural, one {Esta categoría tiene # transacción. Selecciona ot
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Esta etiqueta tiene # transacción. Selecciona otra etiqueta para reasignarla.} other {Esta etiqueta tiene # transacciones. Selecciona otra etiqueta para reasignarlas.}}"
 
+#: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
+msgid "{days}d"
+msgstr "{days}d"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {Queda # día} other {Quedan # días}}"
@@ -161,6 +165,10 @@ msgstr "{matchingRulesCount, plural, one {# regla coincidente} other {# reglas c
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# mes} other {# meses}}"
+
+#: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
+msgid "{months}mo"
+msgstr "{months}m"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
@@ -239,6 +247,10 @@ msgstr "{taggedCount, plural, one {# etiquetada en esta sesión} other {# etique
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transacción} other {# transacciones}}"
+
+#: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
+msgid "{years}y"
+msgstr "{years}a"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -1522,6 +1534,10 @@ msgstr "Día {selectedDay}"
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Days Remaining"
 msgstr "Días restantes"
+
+#: src/account/component/debt-account-card/debt-account-card.tsx
+msgid "Deadline"
+msgstr "Fecha límite"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
@@ -2899,6 +2915,10 @@ msgstr "No hay nada que corregir"
 msgid "now"
 msgstr "ahora"
 
+#: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
+msgid "of"
+msgstr "de"
+
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 msgid "On-device AI"
 msgstr "IA en el dispositivo"
@@ -3041,8 +3061,11 @@ msgstr "Presupuesto total: {threshold}% gastado"
 msgid "Overall monthly limit"
 msgstr "Límite mensual total"
 
+#: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
+msgid "Overdue"
+msgstr "Vencida"
+
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
-#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Overpaid"
 msgstr "Pagado de más"
 
@@ -3700,10 +3723,6 @@ msgstr "Configurar Budgie"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
 msgstr "Configuración"
-
-#: src/account/component/debt-account-card/debt-account-card.tsx
-msgid "Settled"
-msgstr "Saldado"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show $1,234.56 instead of $1,235"

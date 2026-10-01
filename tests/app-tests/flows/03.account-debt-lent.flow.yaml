@@ -19,15 +19,11 @@ appId: ${APP_ID}
       timeout: 10000
 
 - assertVisible:
-      id: 'DebtAccountCardSummary.SettledLabel.E2E_Lent_Account'
-- assertVisible:
       id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_Account.1000'
-- assertVisible:
-      id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_Account.0'
 - assertVisible:
       id: 'DebtAccountCardSummary.TotalAmount.E2E_Lent_Account.1000'
 - assertVisible:
-      id: 'DebtAccountCardFooter.Percentage.E2E_Lent_Account.0'
+      id: 'DebtAccountCardRing.Percentage.E2E_Lent_Account.0'
 
 - runFlow:
       file: subflows/accounts/exercise-debt-account.flow.yaml
@@ -69,8 +65,6 @@ appId: ${APP_ID}
 
 - assertVisible:
       id: 'DebtAccountCardSummary.OutstandingAmount.E2E_Lent_From_Cash.400'
-- assertVisible:
-      id: 'DebtAccountCardSummary.PaidAmount.E2E_Lent_From_Cash.0'
 - assertVisible:
       id: 'DebtAccountCardSummary.TotalAmount.E2E_Lent_From_Cash.400'
 
