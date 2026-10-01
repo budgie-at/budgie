@@ -8,7 +8,6 @@ import * as Effect from 'effect/Effect';
 
 import { seed, TestLayer } from '../../harness';
 
-import type {} from '@budgie/contracts';
 
 const seedAccount = () =>
     Effect.gen(function* () {

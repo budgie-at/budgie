@@ -4,7 +4,6 @@ import * as Effect from 'effect/Effect';
 
 import { testDb } from '../scenario/setup';
 
-import type {} from '@budgie/contracts';
 
 export const fetchExpenseEntries = (transactionId: number) =>
     Effect.gen(function* () {

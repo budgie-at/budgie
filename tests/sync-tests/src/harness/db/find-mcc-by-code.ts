@@ -4,7 +4,6 @@ import * as Effect from 'effect/Effect';
 
 import { testDb } from '../scenario/setup';
 
-import type {} from '@budgie/contracts';
 
 export const findMccByCode = (mcc: string) =>
     Effect.gen(function* () {

@@ -7,7 +7,6 @@ import { fetchRankedRefundCandidates } from '../harness/fetch-ranked-refund-cand
 import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
-import type {} from '@budgie/contracts';
 
 const CROSS_BUCKET_YEAR = 2026;
 const CROSS_BUCKET_REFUND_DELAY_SECONDS = 2 * 60 * 60;

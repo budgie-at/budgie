@@ -10,26 +10,24 @@ const SIDECAR_SUFFIXES = ['-wal', '-shm', '-journal'];
 
 export const acquireTestDatabasePath = (sourceDatabasePath: string | null) =>
     Effect.acquireRelease(
-        Effect.sync(() => {
+        Effect.gen(function* () {
             if (!isDefined(sourceDatabasePath)) {
                 return { path: ':memory:', temporaryDirectoryPath: null };
             }
 
-            SIDECAR_SUFFIXES.forEach(suffix => {
-                if (existsSync(`${sourceDatabasePath}${suffix}`)) {
-                    throw new Error(`Source database cannot be migrated while ${sourceDatabasePath}${suffix} exists`);
-                }
-            });
+            const existingSidecar = SIDECAR_SUFFIXES.find(suffix => existsSync(`${sourceDatabasePath}${suffix}`));
+
+            if (isDefined(existingSidecar)) {
+                return yield* Effect.die(new Error(`Source database cannot be migrated while ${sourceDatabasePath}${existingSidecar} exists`));
+            }
 
             const temporaryDirectoryPath = mkdtempSync(join(tmpdir(), `budgie-test-db-${basename(sourceDatabasePath)}-`));
             const path = join(temporaryDirectoryPath, basename(sourceDatabasePath));
 
-            try {
-                copyFileSync(sourceDatabasePath, path);
-            } catch (error) {
-                rmSync(temporaryDirectoryPath, { recursive: true, force: true });
-                throw error;
-            }
+            yield* Effect.try(() => copyFileSync(sourceDatabasePath, path)).pipe(
+                Effect.tapError(() => Effect.sync(() => rmSync(temporaryDirectoryPath, { recursive: true, force: true }))),
+                Effect.orDie
+            );
 
             return { path, temporaryDirectoryPath };
         }),

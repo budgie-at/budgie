@@ -4,16 +4,19 @@ import { TransactionService } from '@app/transaction/service/transaction.service
 import {
     AccountTypeEnum,
     CurrencyEnum,
+    Db,
     ExternalSourceEnum,
     SettingsEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    makeEffectSqliteClientDatabase
 } from '@budgie/contracts';
-import { describe, expect, it, vi } from '@effect/vitest';
-import { BetterSQLiteSession } from 'drizzle-orm/better-sqlite3/session';
+import { describe, expect, it } from '@effect/vitest';
+import { withReplicas } from 'drizzle-orm/sqlite-core/effect';
 import * as Effect from 'effect/Effect';
+import { identity } from 'effect/Function';
 
 import { requireInstrument, seed, testDb, TestLayer } from '../../harness';
 
@@ -59,12 +62,23 @@ describe('batch entry valuation', () => {
 
             yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
 
-            const prepareSpy = vi.spyOn(BetterSQLiteSession.prototype, 'prepareQuery');
+            const executedStatements: string[] = [];
+            const countingClient = new Proxy(testDb.$client, {
+                get: (target, property, receiver) =>
+                    property === 'unsafe'
+                        ? (queryText: string, params?: ReadonlyArray<unknown>) => {
+                              executedStatements.push(queryText);
 
-            yield* transactionService.bulkCreate(inputs);
+                              return target.unsafe(queryText, params);
+                          }
+                        : Reflect.get(target, property, receiver)
+            });
+            const countingPrimary = yield* makeEffectSqliteClientDatabase(countingClient, { onMutate: () => Effect.void, runQuery: identity });
 
-            expect(prepareSpy.mock.calls.length).toBeLessThan(DISTINCT_DAY_COUNT + 20);
-            prepareSpy.mockRestore();
+            yield* transactionService.bulkCreate(inputs).pipe(Effect.provideService(Db, withReplicas(countingPrimary, [countingPrimary])));
+
+            expect(executedStatements.length).toBeGreaterThan(0);
+            expect(executedStatements.length).toBeLessThan(DISTINCT_DAY_COUNT + 20);
 
             const entries = yield* testDb.select().from(TransactionEntryEntityTable);
             const expected = yield* Effect.all(

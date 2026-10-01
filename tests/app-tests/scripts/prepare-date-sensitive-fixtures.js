@@ -495,10 +495,10 @@ const shiftTransactionsFixtureToNow = () => {
         WHERE account_id = 2;
 
         UPDATE settings
-        SET updated_at = unixepoch();
+        SET updated_at = ${now};
 
         UPDATE transaction_entries
-        SET updated_at = unixepoch()
+        SET updated_at = ${now}
         WHERE transaction_id = 3;
 
         UPDATE transactions SET needs_embedding = 1;
@@ -629,7 +629,6 @@ const generateRunwayCryptoFixture = () => {
 };
 
 const generateBudgetMultiCurrencyFixture = () => {
-    const now = Math.floor(Date.now() / 1000);
     const sourcePath = path.join(fixturesDirectoryPath, 'budget-multi-currency.db');
     const targetPath = path.join(outputDirectoryPath, 'budget-multi-currency.db');
     const transactionTimestamp = buildMonthlyTimestamp(0, 19);
@@ -708,7 +707,7 @@ const generateRecurringFixture = () => {
             default_instrument_id = 1,
             language = 'en',
             show_cents = 0,
-            updated_at = unixepoch();
+            updated_at = ${now};
 
         INSERT INTO transactions (
             created_at,
@@ -933,7 +932,7 @@ const generateConsolidationFixture = () => {
             default_instrument_id = ${uahId},
             language = 'en',
             show_cents = 0,
-            updated_at = unixepoch();
+            updated_at = ${now};
 
         UPDATE transactions SET needs_embedding = 1;
 
@@ -1040,7 +1039,7 @@ const generateRefundConsolidationFixture = () => {
             default_instrument_id = ${uahId},
             language = 'en',
             show_cents = 0,
-            updated_at = unixepoch();
+            updated_at = ${now};
 
         UPDATE transactions SET needs_embedding = 1;
 
@@ -1380,7 +1379,7 @@ const generateCategorizeInboxFixture = () => {
             default_instrument_id = ${usdId},
             language = 'en',
             show_cents = 0,
-            updated_at = unixepoch();
+            updated_at = ${now};
 
         UPDATE transactions SET needs_embedding = 1;
 
