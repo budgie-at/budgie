@@ -1,4 +1,3 @@
-import { entityKind } from 'drizzle-orm';
 import { EffectCache } from 'drizzle-orm/cache/core/cache-effect';
 import { EffectLogger } from 'drizzle-orm/effect-core';
 import { SQLiteDialect } from 'drizzle-orm/sqlite-core';
@@ -15,7 +14,6 @@ import type { DbMutationInterface } from '../interface/db-mutation.interface';
 import type { DbQueryEffectHKTInterface } from '../interface/db-query-effect-hkt.interface';
 import type { EffectSqliteClientOptionsInterface } from '../interface/effect-sqlite-client-options.interface';
 import type { EffectSqliteClientSessionOptionsInterface } from '../interface/effect-sqlite-client-session-options.interface';
-import type { DbRelationsType } from '../type/db-relations.type';
 import type { DbConnectionType } from '../type/db.type';
 import type { Query } from 'drizzle-orm';
 import type { WithCacheConfig } from 'drizzle-orm/cache/core/types';
@@ -23,9 +21,7 @@ import type { PreparedQueryConfig, SQLiteExecuteMethod } from 'drizzle-orm/sqlit
 import type * as SqlClient from 'effect/sql/SqlClient';
 import type { SqlError } from 'effect/sql/SqlError';
 
-class EffectSqliteClientSession extends SQLiteEffectSession<unknown, DbQueryEffectHKTInterface, DbRelationsType> {
-    static override readonly [entityKind]: string = 'EffectSqliteClientSession';
-
+class EffectSqliteClientSession extends SQLiteEffectSession<unknown, DbQueryEffectHKTInterface, typeof relations> {
     constructor(
         private readonly client: SqlClient.SqlClient,
         dialect: SQLiteDialect,

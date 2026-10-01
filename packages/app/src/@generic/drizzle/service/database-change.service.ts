@@ -18,7 +18,7 @@ export class DatabaseChangeService extends Context.Service<DatabaseChangeService
         const reactivity = yield* Reactivity.Reactivity;
         const changes = yield* PubSub.unbounded<ReadonlyArray<string>>();
         const changedTableNames = new Set<string>();
-        const openTransactions = new Set<object>();
+        let openTransactionCount = 0;
         const runFlush = yield* FiberHandle.runtime(yield* FiberHandle.make())();
         const deleteDependents = new Map<string, string[]>();
 
@@ -47,7 +47,7 @@ export class DatabaseChangeService extends Context.Service<DatabaseChangeService
         };
 
         const flush = Effect.suspend(() => {
-            if (openTransactions.size > 0 || changedTableNames.size === 0) {
+            if (openTransactionCount > 0 || changedTableNames.size === 0) {
                 return Effect.void;
             }
 
@@ -69,15 +69,14 @@ export class DatabaseChangeService extends Context.Service<DatabaseChangeService
             transactionBoundary: Db.TransactionBoundary.of(effect =>
                 Effect.acquireUseRelease(
                     Effect.sync(() => {
-                        const transaction = {};
-                        openTransactions.add(transaction);
-
-                        return transaction;
+                        openTransactionCount += 1;
                     }),
                     () => effect,
-                    transaction =>
+                    () =>
                         Effect.andThen(
-                            Effect.sync(() => openTransactions.delete(transaction)),
+                            Effect.sync(() => {
+                                openTransactionCount -= 1;
+                            }),
                             flush
                         )
                 )

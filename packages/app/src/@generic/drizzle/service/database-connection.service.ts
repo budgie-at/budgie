@@ -17,6 +17,9 @@ import { readDatabaseKey } from '../utils/read-database-key.util';
 
 import { DatabaseChangeService } from './database-change.service';
 
+import type * as SqlClient from 'effect/sql/SqlClient';
+import type { SqlError } from 'effect/sql/SqlError';
+
 export class DatabaseConnectionService extends Context.Service<DatabaseConnectionService>()('@budgie/app/DatabaseConnectionService', {
     make: Effect.gen(function* () {
         const databaseChangeService = yield* DatabaseChangeService;
@@ -25,40 +28,34 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
 
         yield* Effect.addFinalizer(exit => Scope.close(scope, exit));
 
-        const openConnection = (encryptionKey: string | null) => openSqliteClient(DB_NAME, encryptionKey).pipe(Scope.provide(scope));
-        const encryptionKey = yield* readDatabaseKey;
-        const writer = yield* openConnection(encryptionKey);
+        const applyPragmas = (client: SqlClient.SqlClient, pragmas: ReadonlyArray<Effect.Effect<unknown, SqlError>>) =>
+            Effect.all(
+                [
+                    ...pragmas,
+                    client`PRAGMA busy_timeout = 5000`.raw,
+                    client`PRAGMA cache_size = -20000`.raw,
+                    client`PRAGMA mmap_size = 268435456`.raw,
+                    client`PRAGMA temp_store = MEMORY`.raw
+                ],
+                { discard: true }
+            ).pipe(Effect.mapError(cause => new DatabaseOpenError({ cause })));
+        const openConnection = openSqliteClient(DB_NAME, yield* readDatabaseKey).pipe(Scope.provide(scope));
+        const writer = yield* openConnection;
 
-        yield* Effect.all(
-            [
-                writer`PRAGMA journal_mode = WAL`.raw,
-                writer`PRAGMA foreign_keys = ON`.raw,
-                writer`PRAGMA synchronous = NORMAL`.raw,
-                writer`PRAGMA busy_timeout = 5000`.raw,
-                writer`PRAGMA cache_size = -20000`.raw,
-                writer`PRAGMA mmap_size = 268435456`.raw,
-                writer`PRAGMA temp_store = MEMORY`.raw
-            ],
-            { discard: true }
-        ).pipe(Effect.mapError(cause => new DatabaseOpenError({ cause })));
+        yield* applyPragmas(writer, [
+            writer`PRAGMA journal_mode = WAL`.raw,
+            writer`PRAGMA foreign_keys = ON`.raw,
+            writer`PRAGMA synchronous = NORMAL`.raw
+        ]);
         yield* Effect.forEach(
             vectorTableNames,
             tableName => writer`CREATE VIRTUAL TABLE IF NOT EXISTS ${writer(tableName)} USING vec0(embedding float[768])`.raw,
             { discard: true }
         ).pipe(Effect.catch(vecError => Effect.logError('sqlite:vec-init-error', { errorMessage: getErrorMessage(vecError) })));
 
-        const reader = yield* openConnection(encryptionKey);
+        const reader = yield* openConnection;
 
-        yield* Effect.all(
-            [
-                reader`PRAGMA query_only = 1`.raw,
-                reader`PRAGMA busy_timeout = 5000`.raw,
-                reader`PRAGMA cache_size = -20000`.raw,
-                reader`PRAGMA mmap_size = 268435456`.raw,
-                reader`PRAGMA temp_store = MEMORY`.raw
-            ],
-            { discard: true }
-        ).pipe(Effect.mapError(cause => new DatabaseOpenError({ cause })));
+        yield* applyPragmas(reader, [reader`PRAGMA query_only = 1`.raw]);
 
         const primary = yield* makeEffectSqliteClientDatabase(writer, { onMutate: databaseChangeService.record, runQuery: identity });
         const replica = yield* makeEffectSqliteClientDatabase(reader, { runQuery: SqliteClient.withAsyncQuery });

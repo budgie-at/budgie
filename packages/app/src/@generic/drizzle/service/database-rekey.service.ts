@@ -15,7 +15,6 @@ import { openSqliteClient } from '../utils/open-sqlite-client.util';
 
 import { DatabaseLifecycleService } from './database-lifecycle.service';
 import { RekeyParamsInterface } from './interface/rekey-params.interface';
-import { RekeyPathsInterface } from './interface/rekey-paths.interface';
 
 export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>()('@budgie/app/DatabaseRekeyService', {
     make: Effect.gen(function* () {
@@ -38,27 +37,16 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
         };
 
         const escapeSqlString = (value: string): string => value.replaceAll("'", "''");
+        const tempDatabaseName = 'auth-migration.db';
+        const tempDatabaseUri = new File(DATABASE_DIRECTORY, tempDatabaseName).uri;
+        const destinationUri = new File(DATABASE_DIRECTORY, DB_NAME).uri;
+        const backupUri = `${destinationUri}.bak`;
 
-        const getPaths = (): RekeyPathsInterface => {
-            const tempDatabaseName = 'auth-migration.db';
-            const destinationUri = new File(DATABASE_DIRECTORY, DB_NAME).uri;
-
-            return {
-                tempDatabaseName,
-                tempDatabaseUri: new File(DATABASE_DIRECTORY, tempDatabaseName).uri,
-                destinationUri,
-                backupUri: `${destinationUri}.bak`
-            };
-        };
-
-        const moveFile = Effect.fnUntraced(function* (sourceUri: string, destinationUri: string) {
-            yield* Effect.promise(() => new File(sourceUri).move(new File(destinationUri)));
+        const moveFile = Effect.fnUntraced(function* (sourceUri: string, targetUri: string) {
+            yield* Effect.promise(() => new File(sourceUri).move(new File(targetUri)));
         });
 
-        const exportDatabase = Effect.fn('DatabaseRekeyService.exportDatabase')(function* (
-            tempDatabaseName: string,
-            nextKey: string | null
-        ) {
+        const exportDatabase = Effect.fn('DatabaseRekeyService.exportDatabase')(function* (nextKey: string | null) {
             const { $client: client } = yield* Db;
 
             yield* client.unsafe('PRAGMA wal_checkpoint(FULL)').raw;
@@ -74,7 +62,6 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
         });
 
         const updateMigratedDatabaseSettings = Effect.fn('DatabaseRekeyService.updateMigratedDatabaseSettings')(function* (
-            tempDatabaseName: string,
             nextKey: string | null,
             nextSettings: NonNullable<RekeyParamsInterface['nextSettings']>
         ) {
@@ -86,46 +73,44 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             yield* settingsRepository.update(nextSettings).pipe(Effect.provideService(Db, withReplicas(database, [database])));
         }, Effect.scoped);
 
-        const prepare = Effect.fn('DatabaseRekeyService.prepare')(function* (paths: RekeyPathsInterface, params: RekeyParamsInterface) {
-            deleteDatabaseFiles(paths.tempDatabaseUri);
-            deleteDatabaseFiles(paths.backupUri);
-            yield* exportDatabase(paths.tempDatabaseName, params.nextKey);
+        const prepare = Effect.fn('DatabaseRekeyService.prepare')(function* (params: RekeyParamsInterface) {
+            deleteDatabaseFiles(tempDatabaseUri);
+            deleteDatabaseFiles(backupUri);
+            yield* exportDatabase(params.nextKey);
 
             if (params.nextSettings) {
-                yield* updateMigratedDatabaseSettings(paths.tempDatabaseName, params.nextKey, params.nextSettings);
+                yield* updateMigratedDatabaseSettings(params.nextKey, params.nextSettings);
             }
         });
 
-        const commit = Effect.fn('DatabaseRekeyService.commit')(function* (paths: RekeyPathsInterface, onCommit: Effect.Effect<void>) {
+        const commit = Effect.fn('DatabaseRekeyService.commit')(function* (onCommit: Effect.Effect<void>) {
             yield* databaseLifecycleService.close();
-            deleteFileIfExists(`${paths.destinationUri}-wal`);
-            deleteFileIfExists(`${paths.destinationUri}-shm`);
-            if (new File(paths.destinationUri).exists) {
-                yield* moveFile(paths.destinationUri, paths.backupUri);
+            deleteFileIfExists(`${destinationUri}-wal`);
+            deleteFileIfExists(`${destinationUri}-shm`);
+            if (new File(destinationUri).exists) {
+                yield* moveFile(destinationUri, backupUri);
             }
-            yield* moveFile(paths.tempDatabaseUri, paths.destinationUri);
+            yield* moveFile(tempDatabaseUri, destinationUri);
             yield* onCommit;
-            deleteDatabaseFiles(paths.backupUri);
+            deleteDatabaseFiles(backupUri);
         });
 
-        const restoreBackupDatabase = Effect.fn('DatabaseRekeyService.restoreBackupDatabase')(function* (paths: RekeyPathsInterface) {
-            if (!new File(paths.backupUri).exists) {
+        const restoreBackupDatabase = Effect.fn('DatabaseRekeyService.restoreBackupDatabase')(function* () {
+            if (!new File(backupUri).exists) {
                 return;
             }
 
-            deleteDatabaseFiles(paths.destinationUri);
-            yield* moveFile(paths.backupUri, paths.destinationUri);
+            deleteDatabaseFiles(destinationUri);
+            yield* moveFile(backupUri, destinationUri);
         });
 
         return {
             rekey: Effect.fn('DatabaseRekeyService.rekey')(function* (params: RekeyParamsInterface, onCommit: Effect.Effect<void>) {
-                const paths = getPaths();
-
-                yield* prepare(paths, params).pipe(
-                    Effect.andThen(commit(paths, onCommit).pipe(Effect.onError(() => restoreBackupDatabase(paths)))),
+                yield* prepare(params).pipe(
+                    Effect.andThen(commit(onCommit).pipe(Effect.onError(() => restoreBackupDatabase()))),
                     Effect.ensuring(
                         Effect.sync(() => {
-                            deleteDatabaseFiles(paths.tempDatabaseUri);
+                            deleteDatabaseFiles(tempDatabaseUri);
                         })
                     )
                 );
