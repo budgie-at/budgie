@@ -6,7 +6,7 @@ import type * as SqlClient from 'effect/sql/SqlClient';
 
 export type DbConnectionType = SQLiteEffectDatabase<DbQueryEffectHKTInterface, unknown, DbRelationsType> & {
     readonly $client: SqlClient.SqlClient;
-    readonly $onMutate: EffectSqliteClientOptionsInterface['onMutate'];
+    readonly $onMutate: NonNullable<EffectSqliteClientOptionsInterface['onMutate']>;
 };
 
 export type DB = SQLiteEffectWithReplicas<DbConnectionType>;

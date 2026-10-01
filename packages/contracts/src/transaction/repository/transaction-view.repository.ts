@@ -1,4 +1,4 @@
-import { SQL, and, count, eq, inArray, or, sql } from 'drizzle-orm';
+import { Column, SQL, and, count, eq, getColumnTable, getTableColumns, inArray, is, or, sql } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -29,6 +29,17 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
         const filters = new BaseTransactionFilterRepository();
 
         const queryBuilder = new QueryBuilder();
+
+        const mapTransactionColumns = (query: SQL, transactionTable: typeof TransactionEntityTable): SQL =>
+            sql.join(
+                query.queryChunks.map(chunk => {
+                    if (is(chunk, Column) && getColumnTable(chunk) === TransactionEntityTable) {
+                        return Object.values(getTableColumns(transactionTable)).find(column => column.name === chunk.name) ?? chunk;
+                    }
+
+                    return is(chunk, SQL) ? mapTransactionColumns(chunk, transactionTable) : chunk;
+                })
+            );
 
         const buildSimilarIdentityConditions = (query: SimilarTransactionStatsQueryInterface): string[] => {
             const conditions: string[] = [];
@@ -173,7 +184,13 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                     with: buildFullRelations(language),
                     orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
                     limit,
-                    ...(isDefined(where) ? { where: filters.buildAliasedTransactionFilter(where) } : {})
+                    ...(isDefined(where)
+                        ? {
+                              where: {
+                                  RAW: (transactionTable: typeof TransactionEntityTable) => mapTransactionColumns(where, transactionTable)
+                              }
+                          }
+                        : {})
                 })
             );
 

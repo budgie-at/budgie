@@ -1,21 +1,4 @@
-import {
-    Column,
-    SQL,
-    and,
-    eq,
-    getColumnTable,
-    getTableColumns,
-    gte,
-    inArray,
-    is,
-    isNotNull,
-    isNull,
-    lte,
-    ne,
-    notInArray,
-    or,
-    sql
-} from 'drizzle-orm';
+import { SQL, and, eq, gte, inArray, isNotNull, isNull, lte, ne, notInArray, or } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
@@ -137,16 +120,6 @@ export class BaseTransactionFilterRepository {
         return and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntityTable.consolidationParentTransactionId));
     }
 
-    buildVisibleTransactionFilter() {
-        return { deletedAt: { isNull: true }, consolidationParentTransactionId: { isNull: true } } as const;
-    }
-
-    buildAliasedTransactionFilter(condition: SQL) {
-        return {
-            RAW: (transactionTable: typeof TransactionEntityTable) => this.mapTransactionColumns(condition, transactionTable)
-        };
-    }
-
     buildLedgerEntryFilter() {
         return { originalTransactionId: { isNull: true }, deletedAt: { isNull: true } } as const;
     }
@@ -250,18 +223,6 @@ export class BaseTransactionFilterRepository {
                 .select({ transactionId: TransactionTagsEntityTable.transactionId })
                 .from(TransactionTagsEntityTable)
                 .where(inArray(TransactionTagsEntityTable.tagId, tagIds))
-        );
-    }
-
-    private mapTransactionColumns(query: SQL, transactionTable: typeof TransactionEntityTable): SQL {
-        return sql.join(
-            query.queryChunks.map(chunk => {
-                if (is(chunk, Column) && getColumnTable(chunk) === TransactionEntityTable) {
-                    return Object.values(getTableColumns(transactionTable)).find(column => column.name === chunk.name) ?? chunk;
-                }
-
-                return is(chunk, SQL) ? this.mapTransactionColumns(chunk, transactionTable) : chunk;
-            })
         );
     }
 }

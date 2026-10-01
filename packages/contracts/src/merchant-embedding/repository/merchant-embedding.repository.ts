@@ -145,17 +145,13 @@ export class MerchantEmbeddingRepository extends Context.Service<MerchantEmbeddi
                         .returning({ id: MerchantEmbeddingEntityTable.id })
                 );
 
-                yield* Db.query(db => db.$client.unsafe('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]).raw).pipe(
-                    Effect.andThen(
-                        Db.query(
-                            db =>
-                                db.$client.unsafe(
-                                    'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
-                                    [row.id]
-                                ).raw
-                        )
-                    ),
-                    effect => Db.mutation({ type: 'insert', tables: ['merchant_embedding_vec'] }, effect)
+                yield* Db.query(db => db.$client.unsafe('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]).raw);
+                yield* Db.query(
+                    db =>
+                        db.$client.unsafe(
+                            'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
+                            [row.id]
+                        ).raw
                 );
 
                 return row.id;

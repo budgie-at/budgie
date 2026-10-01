@@ -104,17 +104,13 @@ export class CommentEmbeddingRepository extends Context.Service<CommentEmbedding
                         .returning({ id: CommentEmbeddingEntityTable.id })
                 );
 
-                yield* Db.query(db => db.$client.unsafe('DELETE FROM comment_embedding_vec WHERE rowid = ?', [row.id]).raw).pipe(
-                    Effect.andThen(
-                        Db.query(
-                            db =>
-                                db.$client.unsafe(
-                                    'INSERT INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
-                                    [row.id]
-                                ).raw
-                        )
-                    ),
-                    effect => Db.mutation({ type: 'insert', tables: ['comment_embedding_vec'] }, effect)
+                yield* Db.query(db => db.$client.unsafe('DELETE FROM comment_embedding_vec WHERE rowid = ?', [row.id]).raw);
+                yield* Db.query(
+                    db =>
+                        db.$client.unsafe(
+                            'INSERT INTO comment_embedding_vec(rowid, embedding) SELECT id, embedding FROM comment_embeddings WHERE id = ?',
+                            [row.id]
+                        ).raw
                 );
 
                 return row.id;

@@ -87,19 +87,20 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                     }
                 }),
 
-                clearNonIndexableFlags: Effect.fn('TransactionEmbeddingRepository.clearNonIndexableFlags')(function* () {
-                    yield* Db.query(db =>
-                        db.run(sql`
+                clearNonIndexableFlags: Effect.fn('TransactionEmbeddingRepository.clearNonIndexableFlags')(
+                    function* () {
+                        yield* Db.query(db =>
+                            db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
               AND title = ''
               AND comment = ''
         `)
-                    );
+                        );
 
-                    yield* Db.query(db =>
-                        db.run(sql`
+                        yield* Db.query(db =>
+                            db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
@@ -110,10 +111,10 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                   AND te.category_id IS NULL
               )
         `)
-                    );
+                        );
 
-                    yield* Db.query(db =>
-                        db.run(sql`
+                        yield* Db.query(db =>
+                            db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
@@ -125,21 +126,25 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                   AND acc.type = ${AccountTypeEnum.DEBT}
               )
         `)
-                    );
+                        );
 
-                    yield* Db.query(db =>
-                        db.run(sql`
+                        yield* Db.query(db =>
+                            db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
               AND type IN (${TransactionTypeEnum.TRANSFER}, ${TransactionTypeEnum.ADJUSTMENT})
         `)
-                    );
-                }),
+                        );
+                    },
+                    effect => Db.mutation({ type: 'update', tables: ['transactions'] }, effect)
+                ),
 
                 clearAlreadyIndexedMerchantFlags: () =>
-                    Db.query(db =>
-                        db.run(sql`
+                    Db.mutation(
+                        { type: 'update', tables: ['transactions'] },
+                        Db.query(db =>
+                            db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
@@ -157,11 +162,14 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                   AND te.category_id IS NOT NULL
               )
         `)
+                        )
                     ),
 
                 clearAlreadyIndexedCommentFlags: () =>
-                    Db.query(db =>
-                        db.run(sql`
+                    Db.mutation(
+                        { type: 'update', tables: ['transactions'] },
+                        Db.query(db =>
+                            db.run(sql`
             UPDATE transactions SET needs_embedding = 0
             WHERE needs_embedding = 1
               AND deleted_at IS NULL
@@ -178,6 +186,7 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                   AND te.category_id IS NOT NULL
               )
         `)
+                        )
                     ),
 
                 markAllForEmbedding: () =>

@@ -57,9 +57,7 @@ export const makeEmbeddingRepository = (config: EmbeddingQueryConfigInterface) =
             Effect.gen(function* () {
                 yield* Db.query(db => db.delete(config.tagTable));
                 yield* Db.query(db => db.delete(config.embeddingTable));
-                yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName}`).raw).pipe(effect =>
-                    Db.mutation({ type: 'delete', tables: [config.vecTableName] }, effect)
-                );
+                yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName}`).raw);
             })
         )
 });

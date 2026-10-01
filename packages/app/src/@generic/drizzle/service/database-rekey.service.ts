@@ -81,7 +81,7 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
             const client = yield* openSqliteClient(tempDatabaseName, nextKey).pipe(
                 Effect.provideService(Reactivity.Reactivity, reactivity)
             );
-            const database = yield* makeEffectSqliteClientDatabase(client, { onMutate: () => Effect.void, runQuery: identity });
+            const database = yield* makeEffectSqliteClientDatabase(client, { runQuery: identity });
 
             yield* settingsRepository.update(nextSettings).pipe(Effect.provideService(Db, withReplicas(database, [database])));
         }, Effect.scoped);

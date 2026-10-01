@@ -11,7 +11,6 @@ import { CommentEmbeddingEntityRelations } from './comment-embedding/relations/c
 import { CommentEmbeddingTagEntityRelations } from './comment-embedding/relations/comment-embedding-tag-entity.relations';
 import { DebtEventEntityRelations } from './debt-event/relations/debt-event-entity.relations';
 import { ExchangeRateEntityRelations } from './exchange-rate/relations/exchange-rate-entity.relations';
-import { InstrumentEntityRelations } from './instrument/relations/instrument-entity.relations';
 import { MccCategoryEntityRelations } from './mcc-category/relations/mcc-category-entity.relations';
 import { MccGroupEntityRelations } from './mcc-group/relations/mcc-group-entity.relations';
 import { MerchantEmbeddingEntityRelations } from './merchant-embedding/relations/merchant-embedding-entity.relations';
@@ -35,7 +34,6 @@ export const relations = {
     ...BankIntegrationEntityRelations,
     ...SyncEntityRelations,
     ...TagEntityRelations,
-    ...InstrumentEntityRelations,
     ...CategoryEntityRelations,
     ...DefaultCategoryTranslationEntityRelations,
     ...MccGroupEntityRelations,

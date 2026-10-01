@@ -24,11 +24,10 @@ import type { Operators } from 'drizzle-orm';
 export class TransactionRepository extends Context.Service<TransactionRepository>()('@budgie/contracts/TransactionRepository', {
     make: Effect.sync(() => {
         const filters = new BaseTransactionFilterRepository();
-        const LIVE_ENTRY_RELATION_WHERE = filters.buildLedgerEntryFilter();
         const NOT_DELETED_ENTRY_RELATION_WHERE = { deletedAt: { isNull: true } } as const;
         const ENTRIES_WITH_MCC_CATEGORY_RELATIONS = {
             [TransactionAssociationEnum.ENTRIES]: {
-                where: LIVE_ENTRY_RELATION_WHERE,
+                where: filters.buildLedgerEntryFilter(),
                 with: { [TransactionEntryAssociationEnum.MCC_CATEGORY]: true }
             }
         } as const;
@@ -79,7 +78,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
         const findByIdsWithEntriesWhere = Effect.fnUntraced(function* (
             ids: number[],
-            entriesWhere: typeof LIVE_ENTRY_RELATION_WHERE | typeof NOT_DELETED_ENTRY_RELATION_WHERE
+            entriesWhere: ReturnType<typeof filters.buildLedgerEntryFilter> | typeof NOT_DELETED_ENTRY_RELATION_WHERE
         ) {
             if (isNotEmptyArray(ids)) {
                 return yield* Db.query(db =>
@@ -156,25 +155,26 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 );
             }),
 
-            getAllAfter: Effect.fn('TransactionRepository.getAllAfter')(function* (cursorId: number | null, limit: number) {
-                const where = { ...filters.buildVisibleTransactionFilter(), ...(isDefined(cursorId) && { id: { lt: cursorId } }) };
-
-                return yield* Db.query(db =>
+            getAllAfter: (cursorId: number | null, limit: number) =>
+                Db.query(db =>
                     db.query.TransactionEntityTable.findMany({
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
-                                where: LIVE_ENTRY_RELATION_WHERE
+                                where: filters.buildLedgerEntryFilter()
                             }
                         },
                         orderBy: (transaction, { desc }) => [desc(transaction.id)],
                         limit,
-                        where
+                        where: {
+                            deletedAt: { isNull: true },
+                            consolidationParentTransactionId: { isNull: true },
+                            ...(isDefined(cursorId) && { id: { lt: cursorId } })
+                        }
                     })
-                );
-            }),
+                ),
 
             findByIds: Effect.fn('TransactionRepository.findByIds')(function* (ids: number[]) {
-                return yield* findByIdsWithEntriesWhere(ids, LIVE_ENTRY_RELATION_WHERE);
+                return yield* findByIdsWithEntriesWhere(ids, filters.buildLedgerEntryFilter());
             }),
 
             findByIdsWithRefundConsolidationHistory: Effect.fn('TransactionRepository.findByIdsWithRefundConsolidationHistory')(function* (
@@ -329,7 +329,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         where: { id },
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
-                                where: LIVE_ENTRY_RELATION_WHERE
+                                where: filters.buildLedgerEntryFilter()
                             }
                         }
                     })
@@ -364,7 +364,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         where: buildTransfersByAccountIdWhere(accountId),
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
-                                where: LIVE_ENTRY_RELATION_WHERE
+                                where: filters.buildLedgerEntryFilter()
                             }
                         }
                     })

@@ -86,14 +86,16 @@ export const makeEffectSqliteClientDatabase = Effect.fnUntraced(function* (
     options: EffectSqliteClientOptionsInterface
 ) {
     const dialect = new SQLiteDialect();
+    const onMutate = options.onMutate ?? (() => Effect.void);
     const session = new EffectSqliteClientSession(client, dialect, {
         ...options,
+        onMutate,
         logger: yield* EffectLogger.make,
         cache: yield* EffectCache.make
     });
 
     return Object.assign(new SQLiteEffectDatabase(dialect, session, relations), {
         $client: client,
-        $onMutate: options.onMutate
+        $onMutate: onMutate
     }) satisfies DbConnectionType;
 });

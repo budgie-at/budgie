@@ -169,8 +169,10 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                             .where(buildPendingBaseValuationWhere(baseInstrumentId))
                     ).pipe(Effect.map(([row]) => row.count)),
                 updateBaseValuationBucket: (input: BaseValuationBucketUpdateInterface) =>
-                    Db.query(db =>
-                        db.run(sql`
+                    Db.mutation(
+                        { type: 'update', tables: ['transaction_entries'] },
+                        Db.query(db =>
+                            db.run(sql`
                         UPDATE transaction_entries
                         SET base_instrument_id = ${input.baseInstrumentId},
                             base_exchange_rate = ${input.baseExchangeRate},
@@ -194,6 +196,7 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                               )
                         )
                     `)
+                        )
                     ),
                 findByTransactionIdAndExternalId: (transactionId: number, externalId: string) =>
                     Db.query(db =>

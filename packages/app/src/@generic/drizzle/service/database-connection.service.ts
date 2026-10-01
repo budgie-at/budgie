@@ -17,58 +17,51 @@ import { readDatabaseKey } from '../utils/read-database-key.util';
 
 import { DatabaseChangeService } from './database-change.service';
 
-import type * as SqlClient from 'effect/sql/SqlClient';
-import type { SqlError } from 'effect/sql/SqlError';
-
 export class DatabaseConnectionService extends Context.Service<DatabaseConnectionService>()('@budgie/app/DatabaseConnectionService', {
     make: Effect.gen(function* () {
         const databaseChangeService = yield* DatabaseChangeService;
-        const connectionPragmas = (client: SqlClient.SqlClient) => [
-            client`PRAGMA busy_timeout = 5000`.raw,
-            client`PRAGMA cache_size = -20000`.raw,
-            client`PRAGMA mmap_size = 268435456`.raw,
-            client`PRAGMA temp_store = MEMORY`.raw
-        ];
-        const writerPragmas = (client: SqlClient.SqlClient) => [
-            client`PRAGMA journal_mode = WAL`.raw,
-            client`PRAGMA foreign_keys = ON`.raw,
-            client`PRAGMA synchronous = NORMAL`.raw,
-            ...connectionPragmas(client)
-        ];
-        const readerPragmas = (client: SqlClient.SqlClient) => [client`PRAGMA query_only = 1`.raw, ...connectionPragmas(client)];
         const vectorTableNames = ['title_embedding_vec', 'merchant_embedding_vec', 'comment_embedding_vec'];
         const scope = yield* Scope.make();
 
         yield* Effect.addFinalizer(exit => Scope.close(scope, exit));
 
-        const runStatements = (statements: readonly Effect.Effect<unknown, SqlError>[]) => Effect.all(statements, { discard: true });
-
-        const openConnection = Effect.fnUntraced(function* (
-            encryptionKey: string | null,
-            makePragmas: (client: SqlClient.SqlClient) => readonly Effect.Effect<unknown, SqlError>[]
-        ) {
-            const client = yield* openSqliteClient(DB_NAME, encryptionKey).pipe(Scope.provide(scope));
-
-            yield* runStatements(makePragmas(client)).pipe(Effect.mapError(cause => new DatabaseOpenError({ cause })));
-
-            return client;
-        });
-
+        const openConnection = (encryptionKey: string | null) => openSqliteClient(DB_NAME, encryptionKey).pipe(Scope.provide(scope));
         const encryptionKey = yield* readDatabaseKey;
-        const writer = yield* openConnection(encryptionKey, writerPragmas);
+        const writer = yield* openConnection(encryptionKey);
 
-        yield* runStatements(
-            vectorTableNames.map(
-                tableName => writer`CREATE VIRTUAL TABLE IF NOT EXISTS ${writer(tableName)} USING vec0(embedding float[768])`.raw
-            )
+        yield* Effect.all(
+            [
+                writer`PRAGMA journal_mode = WAL`.raw,
+                writer`PRAGMA foreign_keys = ON`.raw,
+                writer`PRAGMA synchronous = NORMAL`.raw,
+                writer`PRAGMA busy_timeout = 5000`.raw,
+                writer`PRAGMA cache_size = -20000`.raw,
+                writer`PRAGMA mmap_size = 268435456`.raw,
+                writer`PRAGMA temp_store = MEMORY`.raw
+            ],
+            { discard: true }
+        ).pipe(Effect.mapError(cause => new DatabaseOpenError({ cause })));
+        yield* Effect.forEach(
+            vectorTableNames,
+            tableName => writer`CREATE VIRTUAL TABLE IF NOT EXISTS ${writer(tableName)} USING vec0(embedding float[768])`.raw,
+            { discard: true }
         ).pipe(Effect.catch(vecError => Effect.logError('sqlite:vec-init-error', { errorMessage: getErrorMessage(vecError) })));
 
-        const reader = yield* openConnection(encryptionKey, readerPragmas);
+        const reader = yield* openConnection(encryptionKey);
+
+        yield* Effect.all(
+            [
+                reader`PRAGMA query_only = 1`.raw,
+                reader`PRAGMA busy_timeout = 5000`.raw,
+                reader`PRAGMA cache_size = -20000`.raw,
+                reader`PRAGMA mmap_size = 268435456`.raw,
+                reader`PRAGMA temp_store = MEMORY`.raw
+            ],
+            { discard: true }
+        ).pipe(Effect.mapError(cause => new DatabaseOpenError({ cause })));
+
         const primary = yield* makeEffectSqliteClientDatabase(writer, { onMutate: databaseChangeService.record, runQuery: identity });
-        const replica = yield* makeEffectSqliteClientDatabase(reader, {
-            onMutate: () => Effect.void,
-            runQuery: SqliteClient.withAsyncQuery
-        });
+        const replica = yield* makeEffectSqliteClientDatabase(reader, { runQuery: SqliteClient.withAsyncQuery });
 
         return {
             db: withReplicas(primary, [replica]),
