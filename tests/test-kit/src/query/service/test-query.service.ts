@@ -10,18 +10,11 @@ export class TestQueryService {
     constructor(private readonly database: DB) {}
 
     fetchCanonicalsOfType(consolidationType: TransactionConsolidationTypeEnum) {
-        return Effect.gen({ self: this }, function* () {
-            return yield* this.database
-                .select()
-                .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.consolidationType, consolidationType));
-        });
+        return this.database.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.consolidationType, consolidationType));
     }
 
     fetchTransactionById(id: number) {
-        return Effect.gen({ self: this }, function* () {
-            const row = yield* this.findTransactionById(id);
-
+        return Effect.map(this.findTransactionById(id), row => {
             if (!isDefined(row)) {
                 throw new Error(`Transaction ${id} not found`);
             }
@@ -31,63 +24,51 @@ export class TestQueryService {
     }
 
     findTransactionById(id: number) {
-        return Effect.gen({ self: this }, function* () {
-            const [row] = yield* this.database.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)).all();
-
-            return row;
-        });
+        return Effect.map(
+            this.database.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.id, id)).all(),
+            ([row]) => row
+        );
     }
 
     fetchChildTransactionIds(parentTransactionId: number) {
-        return Effect.gen({ self: this }, function* () {
-            const rows = yield* this.database
+        return Effect.map(
+            this.database
                 .select({ id: TransactionEntityTable.id })
                 .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.consolidationParentTransactionId, parentTransactionId));
-
-            return rows.map(row => row.id);
-        });
+                .where(eq(TransactionEntityTable.consolidationParentTransactionId, parentTransactionId)),
+            rows => rows.map(row => row.id)
+        );
     }
 
     fetchEntriesByTransactionId(transactionId: number) {
-        return Effect.gen({ self: this }, function* () {
-            return yield* this.database
-                .select()
-                .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.transactionId, transactionId));
-        });
+        return this.database.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId));
     }
 
     fetchEntryByExternalId(externalId: string) {
-        return Effect.gen({ self: this }, function* () {
-            const [row] = yield* this.database
-                .select()
-                .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, externalId));
+        return Effect.map(
+            this.database.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId)),
+            ([row]) => {
+                if (!isDefined(row)) {
+                    throw new Error(`Transaction entry ${externalId} not found`);
+                }
 
-            if (!isDefined(row)) {
-                throw new Error(`Transaction entry ${externalId} not found`);
+                return row;
             }
-
-            return row;
-        });
+        );
     }
 
     fetchTransactionTagIds(transactionId: number) {
-        return Effect.gen({ self: this }, function* () {
-            const rows = yield* this.database
+        return Effect.map(
+            this.database
                 .select({ tagId: TransactionTagsEntityTable.tagId })
                 .from(TransactionTagsEntityTable)
-                .where(eq(TransactionTagsEntityTable.transactionId, transactionId));
-
-            return rows.map(row => row.tagId);
-        });
+                .where(eq(TransactionTagsEntityTable.transactionId, transactionId)),
+            rows => rows.map(row => row.tagId)
+        );
     }
 
     findMccByCode(mcc: string) {
-        return Effect.gen({ self: this }, function* () {
-            const [row] = yield* this.database.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, mcc)).all();
-
+        return Effect.map(this.database.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, mcc)).all(), ([row]) => {
             if (!isDefined(row)) {
                 throw new Error(`MCC ${mcc} not found`);
             }

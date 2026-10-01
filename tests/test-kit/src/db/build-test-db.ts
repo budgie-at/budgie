@@ -1,13 +1,12 @@
 import { DatabaseMigrationService } from '@app/@generic/drizzle/service/database-migration.service';
-import { Db, makeEffectSqliteClientDatabase } from '@budgie/contracts';
+import { Db } from '@budgie/contracts';
 import * as SqliteClient from '@effect/sql-sqlite-node/SqliteClient';
-import { withReplicas } from 'drizzle-orm/sqlite-core/effect';
 import * as Effect from 'effect/Effect';
-import { identity } from 'effect/Function';
 import * as Layer from 'effect/Layer';
 import * as ManagedRuntime from 'effect/ManagedRuntime';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 
+import { makeTestDatabase } from './make-test-database';
 import { acquireTestDatabasePath } from './test-database-file';
 
 export const makeTestDbLayer = (sourceDatabasePath: string | null) =>
@@ -19,8 +18,7 @@ export const makeTestDbLayer = (sourceDatabasePath: string | null) =>
 
             yield* client.unsafe('PRAGMA foreign_keys = ON');
 
-            const primary = yield* makeEffectSqliteClientDatabase(client, { onMutate: () => Effect.void, runQuery: identity });
-            const database = withReplicas(primary, [primary]);
+            const database = yield* makeTestDatabase(client);
             const migrationService = yield* DatabaseMigrationService.make;
 
             yield* migrationService.migrate().pipe(Effect.provideService(Db, database));

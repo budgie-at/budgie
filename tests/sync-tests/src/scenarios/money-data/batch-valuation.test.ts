@@ -1,6 +1,7 @@
 import { convertToMicroUnits } from '@app/@generic/utils/convert-to-micro-units.util';
 import { EntryBaseValuationService } from '@app/money-data/service/entry-base-valuation.service';
 import { TransactionService } from '@app/transaction/service/transaction.service';
+import { makeTestDatabase } from '@budgie-at/test-kit';
 import {
     AccountTypeEnum,
     CurrencyEnum,
@@ -10,13 +11,10 @@ import {
     TransactionEntryEntityTable,
     TransactionEntryKindEnum,
     TransactionEntryTypeEnum,
-    TransactionTypeEnum,
-    makeEffectSqliteClientDatabase
+    TransactionTypeEnum
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
-import { withReplicas } from 'drizzle-orm/sqlite-core/effect';
 import * as Effect from 'effect/Effect';
-import { identity } from 'effect/Function';
 
 import { requireInstrument, seed, testDb, TestLayer } from '../../harness';
 
@@ -63,22 +61,9 @@ describe('batch entry valuation', () => {
             yield* testDb.update(SettingsEntityTable).set({ defaultInstrumentId: euro.id });
 
             const executedStatements: string[] = [];
-            const countingClient = new Proxy(testDb.$client, {
-                get: (target, property, receiver) =>
-                    property === 'unsafe'
-                        ? (queryText: string, params?: ReadonlyArray<unknown>) => {
-                              executedStatements.push(queryText);
+            const countingDatabase = yield* makeTestDatabase(testDb.$client, queryText => executedStatements.push(queryText));
 
-                              return target.unsafe(queryText, params);
-                          }
-                        : Reflect.get(target, property, receiver)
-            });
-            const countingPrimary = yield* makeEffectSqliteClientDatabase(countingClient, {
-                onMutate: () => Effect.void,
-                runQuery: identity
-            });
-
-            yield* transactionService.bulkCreate(inputs).pipe(Effect.provideService(Db, withReplicas(countingPrimary, [countingPrimary])));
+            yield* transactionService.bulkCreate(inputs).pipe(Effect.provideService(Db, countingDatabase));
 
             expect(executedStatements.length).toBeGreaterThan(0);
             expect(executedStatements.length).toBeLessThan(DISTINCT_DAY_COUNT + 20);
