@@ -51,3 +51,11 @@ patchedDependencies:
 minimumReleaseAgeExclude:
   - '@liaugust/monobank-sdk@0.7.0'
   - cn@0.2.4
+
+ignoredOptionalDependencies:
+  - '@node-llama-cpp/linux-x64-cuda'
+  - '@node-llama-cpp/linux-x64-cuda-ext'
+  - '@node-llama-cpp/linux-x64-vulkan'
+  - '@node-llama-cpp/win-x64-cuda'
+  - '@node-llama-cpp/win-x64-cuda-ext'
+  - '@node-llama-cpp/win-x64-vulkan'
