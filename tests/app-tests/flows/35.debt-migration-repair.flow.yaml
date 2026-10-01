@@ -13,8 +13,6 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'DebtAccountCardSummary.OutstandingAmount.USD_borrowed_debt.36934'
 - assertVisible:
-      id: 'DebtAccountCardSummary.PaidAmount.USD_borrowed_debt.8066'
-- assertVisible:
       id: 'DebtAccountCardSummary.TotalAmount.USD_borrowed_debt.45000'
 
 - runFlow:
@@ -89,8 +87,6 @@ appId: ${APP_ID}
           id: 'DebtAccountCardSummary.OutstandingAmount.Ambiguous_borrowed_debt.9000'
       direction: DOWN
 
-- assertVisible:
-      id: 'DebtAccountCardSummary.PaidAmount.Ambiguous_borrowed_debt.1000'
 - assertVisible:
       id: 'DebtAccountCardSummary.TotalAmount.Ambiguous_borrowed_debt.10000'
 

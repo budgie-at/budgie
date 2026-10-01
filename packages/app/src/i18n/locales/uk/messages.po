@@ -2899,6 +2899,10 @@ msgstr "Тут нічого виправляти"
 msgid "now"
 msgstr "зараз"
 
+#: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
+msgid "of"
+msgstr "з"
+
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 msgid "On-device AI"
 msgstr "ШІ на пристрої"
@@ -3042,7 +3046,6 @@ msgid "Overall monthly limit"
 msgstr "Загальний місячний ліміт"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
-#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Overpaid"
 msgstr "Переплачено"
 
@@ -3700,10 +3703,6 @@ msgstr "Налаштувати Budgie"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
 msgstr "Налаштування"
-
-#: src/account/component/debt-account-card/debt-account-card.tsx
-msgid "Settled"
-msgstr "Закрито"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show $1,234.56 instead of $1,235"
