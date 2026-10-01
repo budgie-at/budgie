@@ -10,9 +10,11 @@ export {
     EMBEDDING_CONTEXT_MAX_LENGTH,
     EMBEDDING_RECENT_TITLE_COUNT,
     EMBEDDING_TAG_SUGGESTION_LIMIT,
+    EMBEDDING_VEC_DISTANCE_THRESHOLD,
     EMBEDDING_VEC_SEARCH_LIMIT
 } from './@generic/constant/embedding.constant';
 
+export { EMBEDDING_DOCUMENT_PREFIX, EMBEDDING_QUERY_PREFIX } from './embedding/constant/embedding-prefix.constant';
 export { AiInvokeError } from './@generic/error/ai-invoke.error';
 export { serializeEmbedding } from './@generic/util/serialize-embedding.util';
 export { stripThinkingTags } from './@generic/util/strip-thinking-tags.util';

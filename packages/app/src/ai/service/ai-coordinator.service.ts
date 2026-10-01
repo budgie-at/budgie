@@ -20,6 +20,7 @@ import { TranslationProgressStore } from '../store/translation-progress.store';
 import { BACKGROUND_RELEASE_DELAY_MS } from '../util/ai-constants.util';
 import { patchAtom } from '../utils/patch-atom.util';
 
+import { AiEmbeddingStatusService } from './ai-embedding-status.service';
 import { AiModelResidencyService } from './ai-model-residency.service';
 import { ChatService } from './chat.service';
 import { EmbeddingDrainerService } from './embedding-drainer.service';
@@ -34,6 +35,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
         const aiModelResidencyService = yield* AiModelResidencyService;
         const chatService = yield* ChatService;
         const embeddingDrainerService = yield* EmbeddingDrainerService;
+        const aiEmbeddingStatusService = yield* AiEmbeddingStatusService;
         const translationDrainerService = yield* TranslationDrainerService;
         const translationProgressStore = yield* TranslationProgressStore;
         const embeddingProgressStore = yield* EmbeddingProgressStore;
@@ -50,6 +52,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
             }
             yield* aiModelResidencyService.resume();
             yield* translationDrainerService.start();
+            yield* aiEmbeddingStatusService.migrateModel();
             yield* embeddingDrainerService.start();
             yield* translationProgressStore.refresh();
             yield* embeddingProgressStore.refresh();
@@ -149,6 +152,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
             AiModelResidencyService.layer,
             ChatService.layer,
             EmbeddingDrainerService.layer,
+            AiEmbeddingStatusService.layer,
             TranslationDrainerService.layer,
             TranslationProgressStore.layer,
             EmbeddingProgressStore.layer

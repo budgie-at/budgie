@@ -1,7 +1,7 @@
 import { categorizeInboxEngineService } from '@app/categorize-inbox/service/categorize-inbox-engine.service';
 import { RuleMatcherService } from '@app/rule/service/rule-matcher.service';
 import { extractRuleActionOutcomes } from '@app/rule/util/extract-rule-action-outcomes.util';
-import { buildCommentContext, buildMerchantContext, buildTransactionContext } from '@budgie/ai';
+import { EMBEDDING_VEC_DISTANCE_THRESHOLD, buildCommentContext, buildMerchantContext, buildTransactionContext } from '@budgie/ai';
 import { CategorySourceEnum, RuleRepository, SettingsRepository } from '@budgie/contracts';
 import { afterAll, describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -24,7 +24,6 @@ const EVAL_WINDOW_MONTHS = 6;
 const TOP_K = 3;
 const DAY_MS = 86_400_000;
 const KNN_OVERSAMPLE_LIMIT = 50;
-const KNN_DISTANCE_THRESHOLD = 1;
 
 const isCategoryEvidence = (entry: EvalEntry): entry is EvalEntry & { readonly categoryId: number } =>
     isDefined(entry.categoryId) &&
@@ -84,7 +83,7 @@ const rankKnn = (
                           }))
                           .sort((first, second) => first.distance - second.distance)
                           .slice(0, KNN_OVERSAMPLE_LIMIT)
-                          .filter(neighbour => neighbour.distance < KNN_DISTANCE_THRESHOLD)
+                          .filter(neighbour => neighbour.distance < EMBEDDING_VEC_DISTANCE_THRESHOLD)
                           .flatMap(neighbour =>
                               labelsOf(neighbour.document).map(labelId => [labelId, 1 / (neighbour.distance + 0.01)] as const)
                           )
