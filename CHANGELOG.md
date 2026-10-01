@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.87.1](https://github.com/budgie-at/budgie/compare/v6.87.0...v6.87.1) (2026-10-01)
+
+
+### Bug Fixes
+
+* **app:** re-color pressable children after a live theme switch ([1855d45](https://github.com/budgie-at/budgie/commit/1855d452fd6802d0c40ae834e94b9581cf683210)), closes [#1334](https://github.com/budgie-at/budgie/issues/1334)
+* **app:** react to Reduce Motion changes while the app is running ([c3a8d3e](https://github.com/budgie-at/budgie/commit/c3a8d3ea677dc9b2ab0c2260946d03e32e893b7c)), closes [#1210](https://github.com/budgie-at/budgie/issues/1210)
+
+
+
+
+
 # [6.87.0](https://github.com/budgie-at/budgie/compare/v6.86.1...v6.87.0) (2026-10-01)
 
 
