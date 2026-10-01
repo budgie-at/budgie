@@ -1,90 +1,91 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { AccountDebtTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { cn } from 'cn';
-import { Text, View } from 'react-native';
+import { ClassValue } from 'cn';
+import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
 import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
-import { isDebtDeadlineUrgent } from '../../utils/is-debt-deadline-urgent.util';
-import { AccountCardBase } from '../account-card-base/account-card-base';
+import { DebtAccountCardDeadline } from '../debt-account-card-deadline/debt-account-card-deadline';
 import { DebtAccountCardEmpty } from '../debt-account-card-empty/debt-account-card-empty';
-import { DebtAccountCardRing } from '../debt-account-card-ring/debt-account-card-ring';
+import { DebtAccountCardFrame } from '../debt-account-card-frame/debt-account-card-frame';
+import { DebtAccountCardSettled } from '../debt-account-card-settled/debt-account-card-settled';
 import { DebtAccountCardSkeleton } from '../debt-account-card-skeleton/debt-account-card-skeleton';
 import { DebtAccountCardSummary } from '../debt-account-card-summary/debt-account-card-summary';
+import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
 
 import type { AccountEntityInterface, DebtAccountProgressSummaryInterface } from '@budgie/contracts';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'createdAt' | 'title' | 'icon' | 'debtType' | 'deadline'> {
-    readonly balance: number;
-    readonly className?: string;
-    readonly debtProgressSummary: DebtAccountProgressSummaryInterface | null;
+interface Props {
+    readonly account: Pick<AccountEntityInterface, 'id' | 'createdAt' | 'title' | 'icon' | 'debtType' | 'deadline'>;
     readonly instrumentSymbol: string;
+    readonly debtProgressSummary: DebtAccountProgressSummaryInterface | null;
+    readonly className?: string;
 }
 
-export const DebtAccountCard = (props: Props) => {
-    const { id, createdAt, title, icon, balance, debtType, deadline, className, debtProgressSummary, instrumentSymbol } = props;
+const PROGRESS_FILL_COLOR: Record<AccountDebtTypeEnum, ClassValue> = {
+    [AccountDebtTypeEnum.BORROW]: 'bg-destructive-foreground',
+    [AccountDebtTypeEnum.LENT]: 'bg-positive-foreground'
+};
+
+export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary, className }: Props) => {
+    const { id, createdAt, title, icon, debtType, deadline } = account;
 
     const { t } = useLingui();
-    const { formatCompactFullDate } = useFormatDate();
     const protectAmount = useProtectedAmountLabel();
+
+    const deadlineBadge = isDefined(deadline) ? <DebtAccountCardDeadline createdAt={createdAt} deadline={deadline} /> : null;
 
     if (!isDefined(debtProgressSummary)) {
         return (
-            <AccountCardBase
+            <DebtAccountCardFrame
                 id={id}
                 title={title}
                 icon={icon}
-                balance={balance}
-                instrumentSymbol={instrumentSymbol}
                 accessibilityLabel={`${title}. ${t`Loading debt progress`}`}
-                leading={<DebtAccountCardRing debtType={debtType} icon={icon} percentage={null} title={title} />}
-                balanceContent={<DebtAccountCardSkeleton />}
+                subtitle={deadlineBadge}
+                trailing={<DebtAccountCardSkeleton />}
                 className={className}
-            />
+            >
+                <View className="h-1 rounded-full bg-secondary-corner" />
+            </DebtAccountCardFrame>
         );
     }
 
     const { outstandingAmount, paidAmount, percentage, totalAmount } = debtProgressSummary;
-    const isSettled = !isPositiveNumber(outstandingAmount) && percentage >= 100;
     const displayPercentage = percentage >= 100 ? 100 : Math.floor(percentage);
-    const hasDebt = isPositiveNumber(totalAmount);
-    const balanceContent = hasDebt ? (
+    const isSettled = !isPositiveNumber(outstandingAmount) && percentage >= 100;
+    const subtitle = isSettled ? <DebtAccountCardSettled debtType={debtType} /> : deadlineBadge;
+    const trailing = isPositiveNumber(totalAmount) ? (
         <DebtAccountCardSummary
+            debtType={debtType}
             instrumentSymbol={instrumentSymbol}
             outstandingAmount={outstandingAmount}
+            percentage={displayPercentage}
             title={title}
             totalAmount={totalAmount}
         />
     ) : (
         <DebtAccountCardEmpty />
     );
-    const isUrgent = isDefined(deadline) && isDebtDeadlineUrgent(createdAt, deadline);
-    const deadlineBackgroundClassName = isUrgent ? 'bg-dark-warning-background' : 'bg-ghost-background';
-    const deadlineTextClassName = isUrgent ? 'text-dark-warning-foreground' : 'text-secondary-foreground';
 
     return (
-        <AccountCardBase
+        <DebtAccountCardFrame
             id={id}
             title={title}
             icon={icon}
-            balance={balance}
-            instrumentSymbol={instrumentSymbol}
             accessibilityLabel={`${title}. ${t(DEBT_REMAINING_LABEL[debtType])}: ${protectAmount(outstandingAmount, instrumentSymbol)}. ${t(DEBT_SETTLED_LABEL[debtType])}: ${protectAmount(paidAmount, instrumentSymbol)}. ${t`Total`}: ${protectAmount(totalAmount, instrumentSymbol)}. ${displayPercentage}%`}
-            leading={<DebtAccountCardRing debtType={debtType} icon={icon} percentage={displayPercentage} title={title} />}
-            balanceContent={balanceContent}
+            subtitle={subtitle}
+            trailing={trailing}
             className={className}
         >
-            {isDefined(deadline) && !isSettled && (
-                <View className={cn('flex-row items-center gap-x-xs self-start rounded-full px-md py-xs', deadlineBackgroundClassName)}>
-                    <Icon icon={UserIconNameEnum.Calendar} className={deadlineTextClassName} size={11} />
-                    <Text className={cn('text-xxs font-medium', deadlineTextClassName)}>{formatCompactFullDate(deadline)}</Text>
-                </View>
-            )}
-        </AccountCardBase>
+            <DebtProgressTrack
+                percentage={displayPercentage}
+                className="h-1 bg-secondary-corner"
+                fillClassName={PROGRESS_FILL_COLOR[debtType]}
+            />
+        </DebtAccountCardFrame>
     );
 };
