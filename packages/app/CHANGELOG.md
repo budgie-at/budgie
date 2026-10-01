@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.86.1](https://github.com/budgie-at/budgie/compare/v6.86.0...v6.86.1) (2026-10-01)
+
+
+### Bug Fixes
+
+* **app:** keep native error messages in failure toasts ([0c39967](https://github.com/budgie-at/budgie/commit/0c399677b4cab4a158e8c105c43e8f476d77a993))
+* **app:** read settings from an atom so frozen tabs see updates ([2df9e68](https://github.com/budgie-at/budgie/commit/2df9e680a1698eac14ad723b2c83073732cbb1b6)), closes [#1318](https://github.com/budgie-at/budgie/issues/1318)
+* **app:** refresh screens before navigation and fix device-found bugs ([ae68349](https://github.com/budgie-at/budgie/commit/ae6834950723e768c07c645a5824910d23d40912)), closes [#1318](https://github.com/budgie-at/budgie/issues/1318)
+* **app:** share one atom registry and keep derived reads live ([11e246b](https://github.com/budgie-at/budgie/commit/11e246bef529b197c806e3aeab022b69ce08b752))
+
+
+
+
+
 # [6.86.0](https://github.com/budgie-at/budgie/compare/v6.85.14...v6.86.0) (2026-09-30)
 
 
