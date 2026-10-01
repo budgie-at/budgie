@@ -1,6 +1,6 @@
 ---
 name: effect
-description: Mandatory before writing or reviewing ANY logic in this repo - async, IO, errors, services, database, HTTP, background work, React data fetching, state, logging, time, concurrency or tests. All logic is Effect v4 (effect@4 rc); load this skill first.
+description: Mandatory before writing or reviewing ANY logic in this repo - async, IO, errors, services, database, HTTP, background work, React data fetching, state, logging, time, concurrency or tests. All logic is Effect v4 (effect@4); load this skill first.
 ---
 
 # Effect in Budgie

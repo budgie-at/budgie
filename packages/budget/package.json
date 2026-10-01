@@ -43,6 +43,6 @@
         "@rnw-community/shared": "^2.2.0",
         "date-fns": "^4.3.0",
         "drizzle-orm": "^0.45.2",
-        "effect": "4.0.0-rc.118"
+        "effect": "4.0.0"
     }
 }
