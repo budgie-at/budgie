@@ -1,7 +1,8 @@
 /* oxlint-disable lingui/no-unlocalized-strings -- NativeWind class names, not user-facing copy */
 import { View, ViewStyle } from 'react-native';
-import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { ONBOARDING_STEP_ORDER } from '../../constant/onboarding-step-order.constant';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 

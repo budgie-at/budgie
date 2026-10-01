@@ -1,15 +1,9 @@
 import { useEffect } from 'react';
-import {
-    Easing,
-    cancelAnimation,
-    useAnimatedStyle,
-    useReducedMotion,
-    useSharedValue,
-    withRepeat,
-    withTiming
-} from 'react-native-reanimated';
+import { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
+
+import { useReducedMotion } from '../../@generic/hook/use-reduced-motion.hook';
 
 const FULL_OPACITY = 1;
 const DIMMED_OPACITY = 0.6;
