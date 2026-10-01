@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm';
+import { defineRelationsPart } from 'drizzle-orm';
 
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -7,21 +7,33 @@ import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { RuleActionAssociationEnum } from '../enum/rule-action-association.enum';
 import { RuleActionEntityTable } from '../table/rule-action-entity.table';
 
-export const RuleActionEntityRelations = relations(RuleActionEntityTable, ({ one }) => ({
-    [RuleActionAssociationEnum.RULE]: one(RuleEntityTable, {
-        fields: [RuleActionEntityTable.ruleId],
-        references: [RuleEntityTable.id]
-    }),
-    [RuleActionAssociationEnum.CATEGORY]: one(CategoryEntityTable, {
-        fields: [RuleActionEntityTable.categoryId],
-        references: [CategoryEntityTable.id]
-    }),
-    [RuleActionAssociationEnum.TAG]: one(TagEntityTable, {
-        fields: [RuleActionEntityTable.tagId],
-        references: [TagEntityTable.id]
-    }),
-    [RuleActionAssociationEnum.ACCOUNT]: one(AccountEntityTable, {
-        fields: [RuleActionEntityTable.accountId],
-        references: [AccountEntityTable.id]
+export const RuleActionEntityRelations = defineRelationsPart(
+    {
+        AccountEntityTable,
+        CategoryEntityTable,
+        RuleActionEntityTable,
+        RuleEntityTable,
+        TagEntityTable
+    },
+    relation => ({
+        RuleActionEntityTable: {
+            [RuleActionAssociationEnum.RULE]: relation.one.RuleEntityTable({
+                from: relation.RuleActionEntityTable.ruleId,
+                to: relation.RuleEntityTable.id,
+                optional: false
+            }),
+            [RuleActionAssociationEnum.CATEGORY]: relation.one.CategoryEntityTable({
+                from: relation.RuleActionEntityTable.categoryId,
+                to: relation.CategoryEntityTable.id
+            }),
+            [RuleActionAssociationEnum.TAG]: relation.one.TagEntityTable({
+                from: relation.RuleActionEntityTable.tagId,
+                to: relation.TagEntityTable.id
+            }),
+            [RuleActionAssociationEnum.ACCOUNT]: relation.one.AccountEntityTable({
+                from: relation.RuleActionEntityTable.accountId,
+                to: relation.AccountEntityTable.id
+            })
+        }
     })
-}));
+);
