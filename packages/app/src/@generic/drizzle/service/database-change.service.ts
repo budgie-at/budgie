@@ -18,6 +18,7 @@ export class DatabaseChangeService extends Context.Service<DatabaseChangeService
         const reactivity = yield* Reactivity.Reactivity;
         const changes = yield* PubSub.unbounded<ReadonlyArray<string>>();
         const changedTableNames = new Set<string>();
+        const deletedTableNames = new Set<string>();
         let openTransactionCount = 0;
         const runFlush = yield* FiberHandle.runtime(yield* FiberHandle.make())();
         const deleteDependents = new Map<string, string[]>();
@@ -33,17 +34,16 @@ export class DatabaseChangeService extends Context.Service<DatabaseChangeService
         });
 
         const addChangedTable = (tableName: string, isDelete: boolean): void => {
-            if (changedTableNames.has(tableName)) {
+            changedTableNames.add(tableName);
+
+            if (!isDelete || deletedTableNames.has(tableName)) {
                 return;
             }
 
-            changedTableNames.add(tableName);
-
-            if (isDelete) {
-                deleteDependents.get(tableName)?.forEach(dependentTableName => {
-                    addChangedTable(dependentTableName, isDelete);
-                });
-            }
+            deletedTableNames.add(tableName);
+            deleteDependents.get(tableName)?.forEach(dependentTableName => {
+                addChangedTable(dependentTableName, isDelete);
+            });
         };
 
         const flush = Effect.suspend(() => {
@@ -53,6 +53,7 @@ export class DatabaseChangeService extends Context.Service<DatabaseChangeService
 
             const tableNames = [...changedTableNames];
             changedTableNames.clear();
+            deletedTableNames.clear();
 
             return Effect.andThen(reactivity.invalidate(tableNames), PubSub.publish(changes, tableNames));
         });
