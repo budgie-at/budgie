@@ -49,7 +49,7 @@ overrides:
   ws@^8.12.1: 8.21.0
 
 patchedDependencies:
-  drizzle-orm@1.0.0-rc.4: 026112bab0bbe2cd72194b99d7be8902231377da3383e2a8c621c2ecdd7cc4f7
+  drizzle-orm@1.0.0-rc.4: 678dfb673717c34eeffe4b889abf4cc4c2adf959610042eda0525c157fba2359
   expo-modules-jsi@58.0.5: 0794db2805abb43f770292fea9afbd80a85726082d33709237182a8d1568f133
   expo-pdf-text-extract@1.1.0: 7d4e3af6870ddd0e3009a17f86172224ce061ec1fc00a6a0250b99ca54daadbd
   react-native-css@3.0.7: 42438072c7c348aae6b5d00ed6fc814dd8c2c08c69045622db6c5286dbc0a902
@@ -264,7 +264,7 @@ importers:
         version: 17.4.2
       drizzle-orm:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(patch_hash=026112bab0bbe2cd72194b99d7be8902231377da3383e2a8c621c2ecdd7cc4f7)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
+        version: 1.0.0-rc.4(patch_hash=678dfb673717c34eeffe4b889abf4cc4c2adf959610042eda0525c157fba2359)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
       effect:
         specifier: 4.0.0
         version: 4.0.0
@@ -511,7 +511,7 @@ importers:
         version: 4.4.0
       drizzle-orm:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(patch_hash=026112bab0bbe2cd72194b99d7be8902231377da3383e2a8c621c2ecdd7cc4f7)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
+        version: 1.0.0-rc.4(patch_hash=678dfb673717c34eeffe4b889abf4cc4c2adf959610042eda0525c157fba2359)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
       effect:
         specifier: 4.0.0
         version: 4.0.0
@@ -535,7 +535,7 @@ importers:
         version: 2.15.0
       drizzle-orm:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(patch_hash=026112bab0bbe2cd72194b99d7be8902231377da3383e2a8c621c2ecdd7cc4f7)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
+        version: 1.0.0-rc.4(patch_hash=678dfb673717c34eeffe4b889abf4cc4c2adf959610042eda0525c157fba2359)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
       effect:
         specifier: 4.0.0
         version: 4.0.0
@@ -679,7 +679,7 @@ importers:
         version: 12.10.0
       drizzle-orm:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(patch_hash=026112bab0bbe2cd72194b99d7be8902231377da3383e2a8c621c2ecdd7cc4f7)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
+        version: 1.0.0-rc.4(patch_hash=678dfb673717c34eeffe4b889abf4cc4c2adf959610042eda0525c157fba2359)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
       vitest:
         specifier: ^5.0.2
         version: 5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(@typescript/typescript6@6.0.2))(vite@8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
@@ -719,7 +719,7 @@ importers:
         version: 12.10.0
       drizzle-orm:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(patch_hash=026112bab0bbe2cd72194b99d7be8902231377da3383e2a8c621c2ecdd7cc4f7)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
+        version: 1.0.0-rc.4(patch_hash=678dfb673717c34eeffe4b889abf4cc4c2adf959610042eda0525c157fba2359)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
       vitest:
         specifier: ^5.0.2
         version: 5.0.2(@types/node@22.20.1)(msw@2.15.0(@types/node@22.20.1)(@typescript/typescript6@6.0.2))(vite@8.0.16(@types/node@22.20.1)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.44.1)(tsx@4.21.0)(yaml@2.9.1))
@@ -768,7 +768,7 @@ importers:
         version: 12.10.0
       drizzle-orm:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(patch_hash=026112bab0bbe2cd72194b99d7be8902231377da3383e2a8c621c2ecdd7cc4f7)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
+        version: 1.0.0-rc.4(patch_hash=678dfb673717c34eeffe4b889abf4cc4c2adf959610042eda0525c157fba2359)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
       msw:
         specifier: ^2.15.0
         version: 2.15.0(@types/node@22.20.1)(@typescript/typescript6@6.0.2)
@@ -805,7 +805,7 @@ importers:
         version: 12.10.0
       drizzle-orm:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(patch_hash=026112bab0bbe2cd72194b99d7be8902231377da3383e2a8c621c2ecdd7cc4f7)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
+        version: 1.0.0-rc.4(patch_hash=678dfb673717c34eeffe4b889abf4cc4c2adf959610042eda0525c157fba2359)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1)
     devDependencies:
       '@types/better-sqlite3':
         specifier: ^7.6.13
@@ -14669,7 +14669,7 @@ snapshots:
       get-tsconfig: 4.14.3
       jiti: 2.7.0
 
-  drizzle-orm@1.0.0-rc.4(patch_hash=026112bab0bbe2cd72194b99d7be8902231377da3383e2a8c621c2ecdd7cc4f7)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1):
+  drizzle-orm@1.0.0-rc.4(patch_hash=678dfb673717c34eeffe4b889abf4cc4c2adf959610042eda0525c157fba2359)(@op-engineering/op-sqlite@18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(@sinclair/typebox@0.34.41)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.10.0)(effect@4.0.0)(expo-sqlite@58.0.7(expo@58.0.0)(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(zod@4.5.1):
     optionalDependencies:
       '@op-engineering/op-sqlite': 18.2.5(react-native@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0-rc.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       '@sinclair/typebox': 0.34.41
