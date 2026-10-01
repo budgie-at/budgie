@@ -3,8 +3,6 @@ import { useRef, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
-import { scheduleIdleCallback } from '../utils/schedule-idle-callback.util';
-
 export const useFocusKey = (): number => {
     const [focusKey, setFocusKey] = useState(0);
     const isFirstFocus = useRef(true);
@@ -16,11 +14,13 @@ export const useFocusKey = (): number => {
             return emptyFn;
         }
 
-        const cancelIdleCallback = scheduleIdleCallback(() => {
+        const idleHandle = requestIdleCallback(() => {
             setFocusKey(prev => prev + 1);
         });
 
-        return cancelIdleCallback;
+        return () => {
+            cancelIdleCallback(idleHandle);
+        };
     });
 
     return focusKey;
