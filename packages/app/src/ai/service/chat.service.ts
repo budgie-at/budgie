@@ -46,11 +46,9 @@ export class ChatService extends Context.Service<ChatService>()('@budgie/app/Cha
                             : Effect.fail(new AiInvokeError({ cause: new AiNotReadyError({ subsystem: AiSubsystemNameEnum.CHAT }) }));
                     })
                 ),
-            interrupt: Effect.suspend(() => {
-                const { context } = model;
-
-                return isDefined(context) ? Effect.promise(() => context.stopCompletion()) : Effect.void;
-            })
+            interrupt: Effect.sync(() => {
+                void model.context?.stopCompletion();
+            }).pipe(Effect.andThen(completionLock.withPermit(Effect.void)))
         };
     })
 }) {
