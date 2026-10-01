@@ -13,7 +13,6 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import { AccountCardBaseSelector } from './account-card-base.selector';
@@ -23,8 +22,7 @@ interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
     readonly className?: string;
     readonly instrumentSymbol: string;
     readonly accessibilityLabel?: string;
-    readonly circleVariant?: ColorPaletteVariant;
-    readonly topRight?: ReactNode;
+    readonly leading?: ReactNode;
     readonly bottomRight?: ReactNode;
     readonly balanceContent?: ReactNode;
     readonly children?: ReactNode;
@@ -40,8 +38,7 @@ export const AccountCardBase = (props: Props) => {
         className,
         instrumentSymbol,
         accessibilityLabel,
-        circleVariant = 'ghost',
-        topRight,
+        leading,
         bottomRight,
         balanceContent,
         children,
@@ -70,10 +67,7 @@ export const AccountCardBase = (props: Props) => {
         >
             <View className="gap-3">
                 <View className="flex-row items-center justify-between">
-                    <View className="flex-row items-center gap-x-lg">
-                        <CircleIcon size={36} iconSize={20} icon={icon} variant={circleVariant} border={false} />
-                        {topRight}
-                    </View>
+                    {leading ?? <CircleIcon size={36} iconSize={20} icon={icon} variant="ghost" border={false} />}
 
                     <HapticPressable
                         className="rounded-full active:bg-secondary-background"

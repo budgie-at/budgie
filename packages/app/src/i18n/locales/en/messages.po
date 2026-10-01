@@ -2900,6 +2900,10 @@ msgstr "Nothing to fix here"
 msgid "now"
 msgstr "now"
 
+#: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
+msgid "of"
+msgstr "of"
+
 #: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
 msgid "On-device AI"
 msgstr "On-device AI"
@@ -3043,7 +3047,6 @@ msgid "Overall monthly limit"
 msgstr "Overall monthly limit"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
-#: src/account/component/debt-account-card/debt-account-card.tsx
 msgid "Overpaid"
 msgstr "Overpaid"
 
@@ -3701,10 +3704,6 @@ msgstr "Set up Budgie"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
 msgstr "Settings"
-
-#: src/account/component/debt-account-card/debt-account-card.tsx
-msgid "Settled"
-msgstr "Settled"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Show $1,234.56 instead of $1,235"
