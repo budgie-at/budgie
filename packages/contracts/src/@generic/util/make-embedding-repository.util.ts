@@ -20,7 +20,7 @@ export const makeEmbeddingRepository = (config: EmbeddingQueryConfigInterface) =
         const { vecLimit, distanceThreshold, categoryId, tagLimit } = params;
 
         return yield* Db.query(db =>
-            db.$client.getAllAsync<TagScoreResultInterface>(config.similarTagsQuery, [
+            db.$client.unsafe<TagScoreResultInterface>(config.similarTagsQuery, [
                 convertEmbeddingToJson(queryEmbedding),
                 vecLimit,
                 distanceThreshold,
@@ -31,7 +31,7 @@ export const makeEmbeddingRepository = (config: EmbeddingQueryConfigInterface) =
     }),
     findSimilarCategories: (queryEmbedding: Uint8Array, vecLimit: number, distanceThreshold: number, categoryLimit: number) =>
         Db.query(db =>
-            db.$client.getAllAsync<CategoryScoreResultInterface>(config.similarCategoriesQuery, [
+            db.$client.unsafe<CategoryScoreResultInterface>(config.similarCategoriesQuery, [
                 convertEmbeddingToJson(queryEmbedding),
                 vecLimit,
                 distanceThreshold,
@@ -57,7 +57,7 @@ export const makeEmbeddingRepository = (config: EmbeddingQueryConfigInterface) =
             Effect.gen(function* () {
                 yield* Db.query(db => db.delete(config.tagTable));
                 yield* Db.query(db => db.delete(config.embeddingTable));
-                yield* Db.query(db => db.$client.runAsync(`DELETE FROM ${config.vecTableName}`, []));
+                yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName}`).raw);
             })
         )
 });

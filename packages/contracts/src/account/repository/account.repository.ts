@@ -110,7 +110,7 @@ export class AccountRepository extends Context.Service<AccountRepository>()('@bu
         getAll: () =>
             Db.query(db =>
                 db.query.AccountEntityTable.findMany({
-                    where: and(isNull(AccountEntityTable.parentId), isNull(AccountEntityTable.deletedAt)),
+                    where: { parentId: { isNull: true }, deletedAt: { isNull: true } },
                     with: { [AccountAssociationEnum.INSTRUMENT]: true }
                 })
             ),
