@@ -16,7 +16,6 @@ import { IBAN_BRIDGE_TRANSFER_MCC, parentConsolidationSource } from '../harness/
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService, unconsolidateById, TestLayer } from '../harness/test-context';
 
-
 const INCOME_DUPLICATE_AMOUNT = 500 * PRECISION;
 const INCOME_DUPLICATE_OPERATED_AT = new Date('2026-05-20T18:38:00');
 const WRONG_DESTINATION_AMOUNT = 40_000 * PRECISION;

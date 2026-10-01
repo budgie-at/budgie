@@ -4,7 +4,6 @@ import * as Effect from 'effect/Effect';
 
 import { testDb } from '../scenario/setup';
 
-
 export const fetchCanonicalsOfType = (consolidationType: TransactionConsolidationTypeEnum) =>
     Effect.gen(function* () {
         return yield* testDb.select().from(TransactionEntityTable).where(eq(TransactionEntityTable.consolidationType, consolidationType));

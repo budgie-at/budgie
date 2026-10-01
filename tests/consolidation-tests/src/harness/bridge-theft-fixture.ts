@@ -6,7 +6,6 @@ import { expect } from 'vitest';
 import { IBAN_BRIDGE_TRANSFER_MCC } from './iban-bridge-topology';
 import { testDb, testQueryService, testSeedService } from './test-context';
 
-
 export interface BridgeTheftPairFixtureInterface {
     readonly fxExpenseId: number;
     readonly fxBridgeIncomeId: number;

@@ -18,7 +18,9 @@ export const acquireTestDatabasePath = (sourceDatabasePath: string | null) =>
             const existingSidecar = SIDECAR_SUFFIXES.find(suffix => existsSync(`${sourceDatabasePath}${suffix}`));
 
             if (isDefined(existingSidecar)) {
-                return yield* Effect.die(new Error(`Source database cannot be migrated while ${sourceDatabasePath}${existingSidecar} exists`));
+                return yield* Effect.die(
+                    new Error(`Source database cannot be migrated while ${sourceDatabasePath}${existingSidecar} exists`)
+                );
             }
 
             const temporaryDirectoryPath = mkdtempSync(join(tmpdir(), `budgie-test-db-${basename(sourceDatabasePath)}-`));

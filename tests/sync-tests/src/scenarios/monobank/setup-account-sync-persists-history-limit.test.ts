@@ -7,7 +7,6 @@ import * as Effect from 'effect/Effect';
 
 import { buildMonobank, monobankStub, seed, skipRequestedSync, subtractMonths, testDb, TestLayer } from '../../harness';
 
-
 const HISTORY_LIMIT_MONTHS = 3;
 const HISTORY_LIMIT_TOLERANCE_MS = 5_000;
 

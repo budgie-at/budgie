@@ -8,7 +8,6 @@ import * as Effect from 'effect/Effect';
 
 import { seed, TestLayer } from '../../harness';
 
-
 const seedAccount = () =>
     Effect.gen(function* () {
         return yield* seed.account({ externalId: `test-${Math.random()}`, instrumentId: 1 });

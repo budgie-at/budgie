@@ -4,7 +4,6 @@ import * as Effect from 'effect/Effect';
 
 import { testDb } from '../scenario/setup';
 
-
 export const findMccByCode = (mcc: string) =>
     Effect.gen(function* () {
         const row = (yield* testDb.select().from(MccCategoryEntityTable).where(eq(MccCategoryEntityTable.mcc, mcc)))[0];

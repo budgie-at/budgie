@@ -73,7 +73,10 @@ describe('batch entry valuation', () => {
                           }
                         : Reflect.get(target, property, receiver)
             });
-            const countingPrimary = yield* makeEffectSqliteClientDatabase(countingClient, { onMutate: () => Effect.void, runQuery: identity });
+            const countingPrimary = yield* makeEffectSqliteClientDatabase(countingClient, {
+                onMutate: () => Effect.void,
+                runQuery: identity
+            });
 
             yield* transactionService.bulkCreate(inputs).pipe(Effect.provideService(Db, withReplicas(countingPrimary, [countingPrimary])));
 
