@@ -1,24 +1,25 @@
+import { Db } from '@budgie/contracts';
 import { format } from 'date-fns/format';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import { File, Paths } from 'expo-file-system';
 import { isAvailableAsync, shareAsync } from 'expo-sharing';
-import * as SQLite from 'expo-sqlite';
 
+import { DATABASE_DIRECTORY } from '../../@generic/drizzle/constant/database-directory.constant';
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
-import { expoDb } from '../../@generic/drizzle/db/db';
 
 export class DatabaseExportService extends Context.Service<DatabaseExportService>()('@budgie/app/DatabaseExportService', {
     make: Effect.succeed({
         exportAndShare: Effect.fn('DatabaseExportService.exportAndShare')(function* () {
-            const sourcePath = `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
             const fileName = `budgie-backup-${format(new Date(), 'yyyy-MM-dd-HHmmss')}.db`;
             const destinationPath = `${Paths.cache.uri}/${fileName}`;
 
-            yield* Effect.promise(() => expoDb.execAsync('PRAGMA wal_checkpoint(FULL)')); // oxlint-disable-line lingui/no-unlocalized-strings
+            const { $client: client } = yield* Db;
 
-            const sourceFile = new File(sourcePath);
+            yield* client.unsafe('PRAGMA wal_checkpoint(FULL)').raw; // oxlint-disable-line lingui/no-unlocalized-strings
+
+            const sourceFile = new File(DATABASE_DIRECTORY, DB_NAME);
             const destinationFile = new File(destinationPath);
 
             if (destinationFile.exists) {

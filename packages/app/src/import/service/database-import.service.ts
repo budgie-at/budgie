@@ -2,13 +2,14 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import { File, Paths } from 'expo-file-system';
-import * as SQLite from 'expo-sqlite';
 
-import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { DATABASE_DIRECTORY } from '../../@generic/drizzle/constant/database-directory.constant';
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
 import { DatabaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
+import { openSqliteClient } from '../../@generic/drizzle/utils/open-sqlite-client.util';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { AuthService } from '../../auth/service/auth.service';
@@ -19,7 +20,6 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const aiStorageReplacementService = yield* AiStorageReplacementService;
         const authService = yield* AuthService;
         const probeDatabaseName = 'import-probe.db';
-        const notADatabasePattern = /not a database/iu;
 
         const deleteFileIfExists = (path: string): void => {
             const file = new File(path);
@@ -43,24 +43,10 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         };
 
         const readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
-            return yield* Effect.acquireUseRelease(
-                Effect.promise(() => SQLite.openDatabaseAsync(probeDatabaseName, { useNewConnection: true }, Paths.cache.uri)),
-                probeDatabase =>
-                    Effect.gen(function* () {
-                        if (isNotEmptyString(backupPin)) {
-                            yield* Effect.promise(() => probeDatabase.execAsync(`PRAGMA key = '${backupPin}';`)); // oxlint-disable-line lingui/no-unlocalized-strings
-                        }
+            const probeClient = yield* openSqliteClient(probeDatabaseName, backupPin);
 
-                        const tables = yield* Effect.promise(() =>
-                            // oxlint-disable-next-line lingui/no-unlocalized-strings
-                            probeDatabase.getAllAsync<unknown>('SELECT name FROM sqlite_master;')
-                        );
-
-                        return isNotEmptyArray(tables);
-                    }),
-                probeDatabase => Effect.tryPromise(() => probeDatabase.closeAsync()).pipe(Effect.ignore)
-            );
-        });
+            return isNotEmptyArray(yield* probeClient.unsafe('SELECT name FROM sqlite_master')); // oxlint-disable-line lingui/no-unlocalized-strings
+        }, Effect.scoped);
 
         const replaceDestinationFile = Effect.fn('DatabaseImportService.replaceDestinationFile')(function* (
             sourceUri: string,
@@ -97,7 +83,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         });
 
         const replaceFromUri = Effect.fn('DatabaseImportService.replaceFromUri')(function* (sourceUri: string) {
-            const destinationPath = `${String(SQLite.defaultDatabaseDirectory)}/${DB_NAME}`;
+            const destinationPath = new File(DATABASE_DIRECTORY, DB_NAME).uri;
             const tempPath = `${Paths.cache.uri}/import-temp.db`;
 
             yield* aiStorageReplacementService.pauseLongLivedRuntime();
@@ -120,15 +106,13 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
                 yield* databaseLifecycleService.run(DatabaseLifecycleOperationEnum.IMPORT, runImport(sourceUri, backupPin));
             }),
             canOpenBackup: Effect.fn('DatabaseImportService.canOpenBackup')(function* (sourceUri: string, backupPin: string | null) {
-                const probePath = `${Paths.cache.uri}/${probeDatabaseName}`;
+                const probePath = new File(DATABASE_DIRECTORY, probeDatabaseName).uri;
 
                 deleteProbeFiles(probePath);
 
                 return yield* Effect.promise(() => new File(sourceUri).copy(new File(probePath))).pipe(
                     Effect.andThen(readProbeDatabase(backupPin)),
-                    Effect.catchDefect(defect =>
-                        notADatabasePattern.test(getErrorMessage(defect)) ? Effect.succeed(false) : Effect.die(defect)
-                    ),
+                    Effect.catch(() => Effect.succeed(false)),
                     Effect.ensuring(
                         Effect.sync(() => {
                             deleteProbeFiles(probePath);

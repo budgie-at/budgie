@@ -1,6 +1,6 @@
 export interface RekeyPathsInterface {
-    readonly backupPath: string;
-    readonly destinationPath: string;
+    readonly backupUri: string;
+    readonly destinationUri: string;
     readonly tempDatabaseName: string;
-    readonly tempDatabasePath: string;
+    readonly tempDatabaseUri: string;
 }

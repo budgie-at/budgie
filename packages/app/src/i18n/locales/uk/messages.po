@@ -771,6 +771,10 @@ msgstr "Budgie вміє категоризувати транзакції, пр�
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie може знайти дублікати імпортів банківської синхронізації та виправити консолідації переказів, що потрапили на неактивні рахунки."
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Budgie could not open your data"
+msgstr "Budgie не вдалося відкрити ваші дані"
+
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie зіткнувся з неочікуваною проблемою. Ви можете перезапустити застосунок або повідомити про проблему, щоб ми її дослідили."
@@ -3357,6 +3361,10 @@ msgstr "Відновити рахунок?"
 msgid "Restore from a backup file"
 msgstr "Відновити з файлу резервної копії"
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Restore from Backup"
+msgstr "Відновити з резервної копії"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
 msgstr "Поверніться до Budgie і виберіть нижче збережений файл XLSX"
@@ -4010,6 +4018,10 @@ msgstr "Цей рахунок буде приховано з головного 
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "This backup could not be opened with your current PIN."
+msgstr "Не вдалося відкрити цю резервну копію з вашим поточним PIN-кодом."
+
 #: src/import/components/import-database/import-database.tsx
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "Ця резервна копія захищена PIN-кодом. Імпорт замінить усі поточні дані, а її PIN стане PIN-кодом застосунку. Після імпорту застосунок перезапуститься. Цю дію не можна скасувати."
@@ -4258,6 +4270,7 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 msgid "Try again"
 msgstr "Спробувати ще раз"
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
@@ -4502,6 +4515,10 @@ msgstr "Усе готово"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Your bank, with nobody in between"
 msgstr "Ваш банк, без посередників"
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Your data stays on this device untouched. Try again, or restore a backup made with your current PIN."
+msgstr "Ваші дані залишаються недоторканими на цьому пристрої. Спробуйте ще раз або відновіть резервну копію, створену з вашим поточним PIN-кодом."
 
 #: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."

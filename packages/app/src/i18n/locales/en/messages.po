@@ -772,6 +772,10 @@ msgstr "Budgie can categorise transactions, suggest tags and transcribe voice no
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Budgie could not open your data"
+msgstr "Budgie could not open your data"
+
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
@@ -3358,6 +3362,10 @@ msgstr "Restore Account?"
 msgid "Restore from a backup file"
 msgstr "Restore from a backup file"
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Restore from Backup"
+msgstr "Restore from Backup"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
 msgstr "Return to Budgie and select the saved XLSX file below"
@@ -4011,6 +4019,10 @@ msgstr "This account will be hidden from your main view and won't be included in
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "This backup could not be opened with your current PIN."
+msgstr "This backup could not be opened with your current PIN."
+
 #: src/import/components/import-database/import-database.tsx
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
@@ -4259,6 +4271,7 @@ msgstr "Try adjusting your filters to see more results"
 msgid "Try again"
 msgstr "Try again"
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
@@ -4503,6 +4516,10 @@ msgstr "You're all set"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Your bank, with nobody in between"
 msgstr "Your bank, with nobody in between"
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Your data stays on this device untouched. Try again, or restore a backup made with your current PIN."
+msgstr "Your data stays on this device untouched. Try again, or restore a backup made with your current PIN."
 
 #: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."

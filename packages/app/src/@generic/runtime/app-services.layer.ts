@@ -117,6 +117,7 @@ import { TransferCreationService } from '../../transaction/service/transfer-crea
 import { WidgetSnapshotBuilderService } from '../../widget/service/widget-snapshot-builder.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
+import { DatabaseMigrationService } from '../drizzle/service/database-migration.service';
 import { DatabaseRekeyService } from '../drizzle/service/database-rekey.service';
 import { AppResetService } from '../service/app-reset.service';
 import { Workload } from '../service/workload.service';
@@ -140,6 +141,7 @@ export const appServicesLayer = Layer.mergeAll(
     AccountDebtOpeningService.layer,
     Workload.layer,
     DatabaseLifecycleService.layer,
+    DatabaseMigrationService.layer,
     DatabaseRekeyService.layer,
     WidgetSnapshotBuilderService.layer,
     WidgetSnapshotService.layer,

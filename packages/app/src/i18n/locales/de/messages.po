@@ -771,6 +771,10 @@ msgstr "Budgie kann Transaktionen kategorisieren, Tags vorschlagen und Sprachnot
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie kann doppelte Bank-Sync-Importe finden und Überweisungskonsolidierungen reparieren, die auf inaktiven Konten gelandet sind."
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Budgie could not open your data"
+msgstr "Budgie konnte deine Daten nicht öffnen"
+
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie ist auf ein unerwartetes Problem gestoßen. Du kannst die App neu starten oder das Problem melden, damit wir es untersuchen können."
@@ -3357,6 +3361,10 @@ msgstr "Konto wiederherstellen?"
 msgid "Restore from a backup file"
 msgstr "Aus einer Sicherungsdatei wiederherstellen"
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Restore from Backup"
+msgstr "Aus Sicherung wiederherstellen"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
 msgstr "Kehren Sie zu Budgie zurück und wählen Sie unten die gespeicherte XLSX-Datei aus"
@@ -4010,6 +4018,10 @@ msgstr "Dieses Konto wird in Ihrer Hauptansicht ausgeblendet und nicht in den Ge
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "This backup could not be opened with your current PIN."
+msgstr "Diese Sicherung konnte mit deiner aktuellen PIN nicht geöffnet werden."
+
 #: src/import/components/import-database/import-database.tsx
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "Diese Sicherung ist mit einer PIN geschützt. Beim Import werden alle aktuellen Daten ersetzt und ihre PIN wird zu deiner App-PIN. Die App startet nach dem Import neu. Diese Aktion kann nicht rückgängig gemacht werden."
@@ -4258,6 +4270,7 @@ msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 msgid "Try again"
 msgstr "Erneut versuchen"
 
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 #: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
@@ -4502,6 +4515,10 @@ msgstr "Alles bereit"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Your bank, with nobody in between"
 msgstr "Ihre Bank, ohne Mittelsmann"
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "Your data stays on this device untouched. Try again, or restore a backup made with your current PIN."
+msgstr "Deine Daten bleiben unverändert auf diesem Gerät. Versuche es erneut oder stelle eine Sicherung wieder her, die mit deiner aktuellen PIN erstellt wurde."
 
 #: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."

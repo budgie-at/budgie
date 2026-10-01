@@ -11,7 +11,8 @@ import { HistoricalMarketDataLoaderService } from '../../../market-data/service/
 import { RuleApplicationDrainerService } from '../../../rule/service/rule-application-drainer.service';
 import { TransferConsolidationDrainerService } from '../../../sync/service/transfer-consolidation-drainer.service';
 import { Workload } from '../../service/workload.service';
-import { expoDb } from '../db/db';
+
+import { DatabaseConnectionService } from './database-connection.service';
 
 import type { DatabaseLifecycleOperationEnum } from '../enum/database-lifecycle-operation.enum';
 import type { Db } from '@budgie/contracts';
@@ -19,6 +20,7 @@ import type { Db } from '@budgie/contracts';
 export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleService>()('@budgie/app/DatabaseLifecycleService', {
     make: Effect.gen(function* () {
         const workload = yield* Workload;
+        const databaseConnectionService = yield* DatabaseConnectionService;
         const transferConsolidationDrainerService = yield* TransferConsolidationDrainerService;
         const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
         const historicalMarketDataLoaderService = yield* HistoricalMarketDataLoaderService;
@@ -33,12 +35,8 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
                 return;
             }
 
-            yield* Effect.promise(() => expoDb.closeAsync());
+            yield* databaseConnectionService.close;
             yield* Ref.set(isClosed, true);
-            // eslint-disable-next-line no-underscore-dangle, no-undefined
-            global.__expoSqliteDb__ = undefined;
-            // eslint-disable-next-line no-underscore-dangle, no-undefined
-            global.__drizzleDb__ = undefined;
         });
 
         const runExclusively = Effect.fn('DatabaseLifecycleService.runExclusively')(function* (work: Effect.Effect<void, unknown, Db>) {
@@ -80,6 +78,7 @@ export class DatabaseLifecycleService extends Context.Service<DatabaseLifecycleS
     static readonly layer = Layer.effect(DatabaseLifecycleService, DatabaseLifecycleService.make).pipe(
         Layer.provide([
             Workload.layer,
+            DatabaseConnectionService.layer,
             TransferConsolidationDrainerService.layer,
             RuleApplicationDrainerService.layer,
             HistoricalMarketDataLoaderService.layer
