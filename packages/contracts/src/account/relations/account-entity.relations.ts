@@ -17,36 +17,36 @@ export const AccountEntityRelations = defineRelationsPart(
         InstrumentEntityTable,
         SyncEntityTable
     },
-    r => ({
+    relation => ({
         AccountEntityTable: {
-            [AccountAssociationEnum.BALANCES]: r.many.AccountBalanceEntityTable({
-                from: r.AccountEntityTable.id,
-                to: r.AccountBalanceEntityTable.accountId
+            [AccountAssociationEnum.BALANCES]: relation.many.AccountBalanceEntityTable({
+                from: relation.AccountEntityTable.id,
+                to: relation.AccountBalanceEntityTable.accountId
             }),
-            [AccountAssociationEnum.DEBT_EVENTS]: r.many.DebtEventEntityTable({
-                from: r.AccountEntityTable.id,
-                to: r.DebtEventEntityTable.debtAccountId
+            [AccountAssociationEnum.DEBT_EVENTS]: relation.many.DebtEventEntityTable({
+                from: relation.AccountEntityTable.id,
+                to: relation.DebtEventEntityTable.debtAccountId
             }),
-            [AccountAssociationEnum.SUB_ACCOUNTS]: r.many.AccountEntityTable({
-                from: r.AccountEntityTable.id,
-                to: r.AccountEntityTable.parentId
+            [AccountAssociationEnum.SUB_ACCOUNTS]: relation.many.AccountEntityTable({
+                from: relation.AccountEntityTable.id,
+                to: relation.AccountEntityTable.parentId
             }),
-            [AccountAssociationEnum.PARENT]: r.one.AccountEntityTable({
-                from: r.AccountEntityTable.parentId,
-                to: r.AccountEntityTable.id
+            [AccountAssociationEnum.PARENT]: relation.one.AccountEntityTable({
+                from: relation.AccountEntityTable.parentId,
+                to: relation.AccountEntityTable.id
             }),
-            [AccountAssociationEnum.INSTRUMENT]: r.one.InstrumentEntityTable({
-                from: r.AccountEntityTable.instrumentId,
-                to: r.InstrumentEntityTable.id,
+            [AccountAssociationEnum.INSTRUMENT]: relation.one.InstrumentEntityTable({
+                from: relation.AccountEntityTable.instrumentId,
+                to: relation.InstrumentEntityTable.id,
                 optional: false
             }),
-            [AccountAssociationEnum.SYNC]: r.one.SyncEntityTable({
-                from: r.AccountEntityTable.id,
-                to: r.SyncEntityTable.accountId
+            [AccountAssociationEnum.SYNC]: relation.one.SyncEntityTable({
+                from: relation.AccountEntityTable.id,
+                to: relation.SyncEntityTable.accountId
             }),
-            [AccountAssociationEnum.INTEGRATION]: r.one.BankIntegrationEntityTable({
-                from: r.AccountEntityTable.integrationId,
-                to: r.BankIntegrationEntityTable.id
+            [AccountAssociationEnum.INTEGRATION]: relation.one.BankIntegrationEntityTable({
+                from: relation.AccountEntityTable.integrationId,
+                to: relation.BankIntegrationEntityTable.id
             })
         }
     })

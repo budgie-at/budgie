@@ -2,40 +2,34 @@ import { entityKind } from 'drizzle-orm';
 import { EffectCache } from 'drizzle-orm/cache/core/cache-effect';
 import { EffectLogger } from 'drizzle-orm/effect-core';
 import { SQLiteDialect } from 'drizzle-orm/sqlite-core';
-import {
-    SQLiteEffectDatabase,
-    SQLiteEffectPreparedQuery,
-    SQLiteEffectSession,
-    SQLiteEffectTransaction
-} from 'drizzle-orm/sqlite-core/effect';
+import { SQLiteEffectDatabase, SQLiteEffectPreparedQuery, SQLiteEffectSession } from 'drizzle-orm/sqlite-core/effect';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { relations } from '../../relations';
 
+import { EffectSqliteClientTransaction } from './effect-sqlite-client.transaction';
+
+import type { DbMutationInterface } from '../interface/db-mutation.interface';
 import type { DbQueryEffectHKTInterface } from '../interface/db-query-effect-hkt.interface';
 import type { EffectSqliteClientOptionsInterface } from '../interface/effect-sqlite-client-options.interface';
+import type { EffectSqliteClientSessionOptionsInterface } from '../interface/effect-sqlite-client-session-options.interface';
+import type { DbRelationsType } from '../type/db-relations.type';
 import type { DbConnectionType } from '../type/db.type';
 import type { Query } from 'drizzle-orm';
-import type { EffectCacheShape } from 'drizzle-orm/cache/core/cache-effect';
 import type { WithCacheConfig } from 'drizzle-orm/cache/core/types';
-import type { EffectLoggerShape } from 'drizzle-orm/effect-core';
 import type { PreparedQueryConfig, SQLiteExecuteMethod } from 'drizzle-orm/sqlite-core';
 import type * as SqlClient from 'effect/sql/SqlClient';
 import type { SqlError } from 'effect/sql/SqlError';
 
-type Relations = typeof relations;
-
-class EffectSqliteClientSession extends SQLiteEffectSession<unknown, DbQueryEffectHKTInterface, Relations> {
+class EffectSqliteClientSession extends SQLiteEffectSession<unknown, DbQueryEffectHKTInterface, DbRelationsType> {
     static override readonly [entityKind]: string = 'EffectSqliteClientSession';
 
     constructor(
         private readonly client: SqlClient.SqlClient,
         dialect: SQLiteDialect,
-        private readonly logger: EffectLoggerShape,
-        private readonly cache: EffectCacheShape,
-        private readonly options: EffectSqliteClientOptionsInterface
+        private readonly options: EffectSqliteClientSessionOptionsInterface
     ) {
         super(dialect);
     }
@@ -50,10 +44,13 @@ class EffectSqliteClientSession extends SQLiteEffectSession<unknown, DbQueryEffe
         cacheConfig?: WithCacheConfig
     ): SQLiteEffectPreparedQuery<T, DbQueryEffectHKTInterface> {
         const { client, options } = this;
-        const mutatedTableNames = isDefined(queryMetadata) && queryMetadata.type !== 'select' ? queryMetadata.tables : [];
+        const mutation: DbMutationInterface | null =
+            isDefined(queryMetadata) && queryMetadata.type !== 'select' && isNotEmptyArray(queryMetadata.tables)
+                ? { type: queryMetadata.type, tables: queryMetadata.tables }
+                : null;
         const execute = <A, E>(statement: Effect.Effect<A, E>) =>
-            isNotEmptyArray(mutatedTableNames)
-                ? options.runQuery(statement).pipe(Effect.tap(() => options.onMutate(mutatedTableNames)))
+            isDefined(mutation)
+                ? options.runQuery(statement).pipe(Effect.tap(() => options.onMutate(mutation)))
                 : options.runQuery(statement);
         const all = (params: unknown[]) =>
             execute(mode === 'arrays' ? client.unsafe(query.sql, params).values : client.unsafe(query.sql, params).withoutTransform);
@@ -69,24 +66,18 @@ class EffectSqliteClientSession extends SQLiteEffectSession<unknown, DbQueryEffe
             query,
             mapper,
             mode,
-            this.logger,
-            this.cache,
+            options.logger,
+            options.cache,
             queryMetadata,
             cacheConfig
         );
     }
 
-    transaction<A, E, R>(
-        transaction: (tx: SQLiteEffectTransaction<DbQueryEffectHKTInterface, unknown, Relations>) => Effect.Effect<A, E, R>
-    ): Effect.Effect<A, E | SqlError, R> {
+    transaction<A, E, R>(transaction: (tx: EffectSqliteClientTransaction) => Effect.Effect<A, E, R>): Effect.Effect<A, E | SqlError, R> {
         return this.client.withTransaction(
             Effect.suspend(() => transaction(new EffectSqliteClientTransaction(this.dialect, this, relations)))
         );
     }
-}
-
-class EffectSqliteClientTransaction extends SQLiteEffectTransaction<DbQueryEffectHKTInterface, unknown, Relations> {
-    static override readonly [entityKind]: string = 'EffectSqliteClientTransaction';
 }
 
 export const makeEffectSqliteClientDatabase = Effect.fnUntraced(function* (
@@ -94,7 +85,11 @@ export const makeEffectSqliteClientDatabase = Effect.fnUntraced(function* (
     options: EffectSqliteClientOptionsInterface
 ) {
     const dialect = new SQLiteDialect();
-    const session = new EffectSqliteClientSession(client, dialect, yield* EffectLogger.make, yield* EffectCache.make, options);
+    const session = new EffectSqliteClientSession(client, dialect, {
+        ...options,
+        logger: yield* EffectLogger.make,
+        cache: yield* EffectCache.make
+    });
 
     return Object.assign(new SQLiteEffectDatabase(dialect, session, relations), { $client: client }) satisfies DbConnectionType;
 });
