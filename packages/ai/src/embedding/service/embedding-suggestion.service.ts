@@ -14,6 +14,7 @@ import {
     EMBEDDING_VEC_VOICE_DISTANCE_THRESHOLD
 } from '../../@generic/constant/embedding.constant';
 import { serializeEmbedding } from '../../@generic/util/serialize-embedding.util';
+import { EMBEDDING_QUERY_PREFIX } from '../constant/embedding-prefix.constant';
 import { buildTransactionContext } from '../util/build-transaction-context.util';
 
 import { EmbeddingService } from './embedding.service';
@@ -59,7 +60,7 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
             aiContext: string
         ) {
             const { context, distanceThreshold } = resolveSuggestionContext(transactionTitle, mccDescription, comment, aiContext);
-            const queryEmbedding = yield* embeddingService.generateEmbedding(context);
+            const queryEmbedding = yield* embeddingService.generateEmbedding(`${EMBEDDING_QUERY_PREFIX}${context}`);
 
             if (!isDefined(queryEmbedding) || !isPositiveNumber(queryEmbedding.length)) {
                 return null;

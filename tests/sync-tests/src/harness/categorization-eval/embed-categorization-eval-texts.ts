@@ -1,16 +1,13 @@
 import { homedir } from 'node:os';
-import { basename, join } from 'node:path';
+import { join } from 'node:path';
 
 import { EMBEDDING_CONTEXT_SIZE, EMBEDDING_MODEL_FILENAME, EMBEDDING_MODEL_URL } from '@app/ai/util/ai-constants.util';
+import { EMBEDDING_DOCUMENT_PREFIX, EMBEDDING_QUERY_PREFIX } from '@budgie/ai';
 import * as Effect from 'effect/Effect';
 import { http, passthrough } from 'msw';
 import { getLlama, resolveModelFile } from 'node-llama-cpp';
 
-import { isNotEmptyString } from '@rnw-community/shared';
-
 import { mockServer } from '../scenario/mock-server';
-
-const modelSource = process.env['BUDGIE_EMBEDDING_MODEL'];
 
 const normalize = (vector: readonly number[]): Float32Array => {
     const norm = Math.hypot(...vector);
@@ -24,11 +21,8 @@ export const embedCategorizationEvalTexts = Effect.fnUntraced(function* (documen
     mockServer.use(http.all('*', () => passthrough()));
 
     const modelPath = yield* Effect.tryPromise(() =>
-        isNotEmptyString(modelSource)
-            ? resolveModelFile(modelSource, directory)
-            : resolveModelFile(EMBEDDING_MODEL_URL, { directory, fileName: EMBEDDING_MODEL_FILENAME })
+        resolveModelFile(EMBEDDING_MODEL_URL, { directory, fileName: EMBEDDING_MODEL_FILENAME })
     );
-    const isEmbeddingGemma = basename(modelPath).toLowerCase().includes('embeddinggemma');
     const llama = yield* Effect.acquireRelease(
         Effect.tryPromise(() => getLlama()),
         instance => Effect.promise(() => instance.dispose())
@@ -44,8 +38,8 @@ export const embedCategorizationEvalTexts = Effect.fnUntraced(function* (documen
         ).pipe(Effect.map(vectors => new Map(vectors)));
 
     return {
-        modelFile: basename(modelPath),
-        documentVectors: yield* embedAll(documents, isEmbeddingGemma ? 'title: none | text: ' : ''),
-        queryVectors: yield* embedAll(queries, isEmbeddingGemma ? 'task: search result | query: ' : '')
+        modelFile: EMBEDDING_MODEL_FILENAME,
+        documentVectors: yield* embedAll(documents, EMBEDDING_DOCUMENT_PREFIX),
+        queryVectors: yield* embedAll(queries, EMBEDDING_QUERY_PREFIX)
     };
 }, Effect.scoped);

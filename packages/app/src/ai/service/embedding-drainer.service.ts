@@ -1,4 +1,4 @@
-import { AiInvokeError, buildCommentContext, buildMerchantContext, serializeEmbedding } from '@budgie/ai';
+import { AiInvokeError, EMBEDDING_DOCUMENT_PREFIX, buildCommentContext, buildMerchantContext, serializeEmbedding } from '@budgie/ai';
 import { CommentEmbeddingRepository, Db, MerchantEmbeddingRepository, TransactionEmbeddingRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -41,7 +41,7 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
                     const embeddingId = isDefined(context.existingEmbeddingId)
                         ? context.existingEmbeddingId
                         : yield* localEmbeddingService
-                              .embed(source.buildPrompt(context))
+                              .embed(`${EMBEDDING_DOCUMENT_PREFIX}${source.buildPrompt(context)}`)
                               .pipe(
                                   Effect.flatMap(rawEmbedding =>
                                       isNotEmptyArray(rawEmbedding)
