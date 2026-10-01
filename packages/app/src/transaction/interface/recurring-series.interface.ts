@@ -4,9 +4,9 @@ import type { RecurringSeriesEventInterface } from './recurring-series-event.int
 
 export interface RecurringSeriesInterface {
     readonly title: string;
-    readonly categoryId: number;
-    readonly categoryTitle: string;
-    readonly categoryIcon: UserIconType;
+    readonly categoryId: number | null;
+    readonly categoryTitle: string | null;
+    readonly categoryIcon: UserIconType | null;
     readonly accountId: number;
     readonly periodMonths: number | null;
     readonly periodDays: number;
