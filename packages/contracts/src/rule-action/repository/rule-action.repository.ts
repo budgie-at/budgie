@@ -23,8 +23,7 @@ export class RuleActionRepository extends Context.Service<RuleActionRepository>(
         deleteByRuleId: (ruleId: number) =>
             Db.query(db => db.delete(RuleActionEntityTable).where(eq(RuleActionEntityTable.ruleId, ruleId))),
         truncate: () => Db.query(db => db.delete(RuleActionEntityTable)),
-        findByRuleId: (ruleId: number) =>
-            Db.query(db => db.query.RuleActionEntityTable.findMany({ where: eq(RuleActionEntityTable.ruleId, ruleId) }))
+        findByRuleId: (ruleId: number) => Db.query(db => db.query.RuleActionEntityTable.findMany({ where: { ruleId } }))
     })
 }) {
     static readonly layer = Layer.effect(RuleActionRepository, RuleActionRepository.make);

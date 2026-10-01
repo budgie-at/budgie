@@ -1,5 +1,6 @@
 import { eq, isNull, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -57,7 +58,9 @@ export const makeEmbeddingRepository = (config: EmbeddingQueryConfigInterface) =
             Effect.gen(function* () {
                 yield* Db.query(db => db.delete(config.tagTable));
                 yield* Db.query(db => db.delete(config.embeddingTable));
-                yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName}`).raw);
+                yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName}`).raw).pipe(
+                    Reactivity.mutation([config.vecTableName])
+                );
             })
         )
 });

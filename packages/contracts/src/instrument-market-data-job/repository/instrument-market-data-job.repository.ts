@@ -15,12 +15,12 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
     '@budgie/contracts/InstrumentMarketDataJobRepository',
     {
         make: Effect.sync(() => {
-            const buildInstrumentQuoteCondition = (instrumentId: number, quoteInstrumentId: number) =>
-                and(
-                    eq(InstrumentMarketDataJobEntityTable.instrumentId, instrumentId),
-                    eq(InstrumentMarketDataJobEntityTable.quoteInstrumentId, quoteInstrumentId),
-                    isNull(InstrumentMarketDataJobEntityTable.deletedAt)
-                );
+            const buildInstrumentQuoteFilter = (instrumentId: number, quoteInstrumentId: number) =>
+                ({
+                    instrumentId,
+                    quoteInstrumentId,
+                    deletedAt: { isNull: true }
+                }) as const;
 
             const buildClaimableCondition = (maxAttempts: number, staleLockedBefore: Date) =>
                 and(
@@ -39,15 +39,16 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                     isNull(InstrumentMarketDataJobEntityTable.deletedAt)
                 );
 
-            const buildOpenInstrumentQuoteCondition = (instrumentId: number, quoteInstrumentId: number) =>
-                and(
-                    buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
-                    inArray(InstrumentMarketDataJobEntityTable.status, [
+            const buildOpenInstrumentQuoteFilter = (instrumentId: number, quoteInstrumentId: number) => ({
+                ...buildInstrumentQuoteFilter(instrumentId, quoteInstrumentId),
+                status: {
+                    in: [
                         InstrumentMarketDataJobStatusEnum.PENDING,
                         InstrumentMarketDataJobStatusEnum.RUNNING,
                         InstrumentMarketDataJobStatusEnum.FAILED
-                    ])
-                );
+                    ]
+                }
+            });
 
             return {
                 enqueueMany: Effect.fn('InstrumentMarketDataJobRepository.enqueueMany')(function* (
@@ -102,7 +103,7 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                 hasOpen: (instrumentId: number, quoteInstrumentId: number) =>
                     Db.query(db =>
                         db.query.InstrumentMarketDataJobEntityTable.findFirst({
-                            where: buildOpenInstrumentQuoteCondition(instrumentId, quoteInstrumentId)
+                            where: buildOpenInstrumentQuoteFilter(instrumentId, quoteInstrumentId)
                         })
                     ).pipe(Effect.map(isDefined)),
                 markCompleted: (jobId: number) =>
@@ -132,8 +133,8 @@ export class InstrumentMarketDataJobRepository extends Context.Service<Instrumen
                 findLatestByInstrumentAndQuote: (instrumentId: number, quoteInstrumentId: number) =>
                     Db.query(db =>
                         db.query.InstrumentMarketDataJobEntityTable.findFirst({
-                            where: buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
-                            orderBy: desc(InstrumentMarketDataJobEntityTable.updatedAt)
+                            where: buildInstrumentQuoteFilter(instrumentId, quoteInstrumentId),
+                            orderBy: { updatedAt: 'desc' }
                         })
                     )
             };

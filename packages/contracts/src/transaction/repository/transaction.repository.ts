@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- Transaction repository is the kitchen sink for tx queries + filter builders + bank-sync helpers */
-import { SQL, and, count, eq, inArray, isNotNull, isNull, lt, ne, notExists, or, sql } from 'drizzle-orm';
+import { SQL, and, count, eq, inArray, isNotNull, isNull, ne, notExists, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -19,14 +19,13 @@ import { deriveEmbeddingFlag } from '../util/derive-embedding-flag.util';
 import type { TransactionCreateEntityInterface } from '../entity/transaction-create-entity.interface';
 import type { TransactionUpdatedByEnum } from '../enum/transaction-updated-by.enum';
 import type { TransactionUpdateInputInterface } from '../input/transaction-update-input.interface';
+import type { Operators } from 'drizzle-orm';
 
 export class TransactionRepository extends Context.Service<TransactionRepository>()('@budgie/contracts/TransactionRepository', {
     make: Effect.sync(() => {
         const filters = new BaseTransactionFilterRepository();
-        const LIVE_ENTRY_RELATION_WHERE = and(
-            isNull(TransactionEntryEntityTable.originalTransactionId),
-            isNull(TransactionEntryEntityTable.deletedAt)
-        );
+        const LIVE_ENTRY_RELATION_WHERE = filters.buildLedgerEntryFilter();
+        const NOT_DELETED_ENTRY_RELATION_WHERE = { deletedAt: { isNull: true } } as const;
         const ENTRIES_WITH_MCC_CATEGORY_RELATIONS = {
             [TransactionAssociationEnum.ENTRIES]: {
                 where: LIVE_ENTRY_RELATION_WHERE,
@@ -42,11 +41,25 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                 inArray(TransactionEntityTable.id, filters.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
             );
 
-        const buildTransfersByAccountIdWhere = (accountId: number) =>
-            and(
-                eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER),
-                or(eq(TransactionEntityTable.fromAccountId, accountId), eq(TransactionEntityTable.toAccountId, accountId))
-            );
+        const buildSingleAccountFilter = (accountId: number) => ({
+            OR: [
+                { fromAccountId: accountId },
+                { toAccountId: accountId },
+                {
+                    RAW: (transactionTable: typeof TransactionEntityTable, { inArray: inTransactionIds }: Operators) =>
+                        inTransactionIds(transactionTable.id, filters.buildTransactionIdsByEntryAccountIdsQuery([accountId]))
+                },
+                {
+                    RAW: (transactionTable: typeof TransactionEntityTable, { inArray: inTransactionIds }: Operators) =>
+                        inTransactionIds(transactionTable.id, filters.buildTransactionIdsByDebtEventAccountIdsQuery([accountId]))
+                }
+            ]
+        });
+
+        const buildTransfersByAccountIdWhere = (accountId: number) => ({
+            type: TransactionTypeEnum.TRANSFER,
+            OR: [{ fromAccountId: accountId }, { toAccountId: accountId }]
+        });
 
         const selectOperatedAtTime = Effect.fnUntraced(function* (aggregateSql: SQL<number | null>, condition: SQL | undefined) {
             const result = yield* Db.query(db =>
@@ -64,11 +77,14 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             return null;
         });
 
-        const findByIdsWithEntriesWhere = Effect.fnUntraced(function* (ids: number[], entriesWhere: SQL | undefined) {
+        const findByIdsWithEntriesWhere = Effect.fnUntraced(function* (
+            ids: number[],
+            entriesWhere: typeof LIVE_ENTRY_RELATION_WHERE | typeof NOT_DELETED_ENTRY_RELATION_WHERE
+        ) {
             if (isNotEmptyArray(ids)) {
                 return yield* Db.query(db =>
                     db.query.TransactionEntityTable.findMany({
-                        where: inArray(TransactionEntityTable.id, ids),
+                        where: { id: { in: ids } },
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
                                 where: entriesWhere
@@ -134,15 +150,14 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
                 return yield* Db.query(db =>
                     db.query.TransactionEntityTable.findMany({
-                        where: inArray(TransactionEntityTable.id, ids),
+                        where: { id: { in: ids } },
                         with: ENTRIES_WITH_MCC_CATEGORY_RELATIONS
                     })
                 );
             }),
 
             getAllAfter: Effect.fn('TransactionRepository.getAllAfter')(function* (cursorId: number | null, limit: number) {
-                const baseFilter = filters.buildVisibleTransactionCondition();
-                const where = isDefined(cursorId) ? and(baseFilter, lt(TransactionEntityTable.id, cursorId)) : baseFilter;
+                const where = { ...filters.buildVisibleTransactionFilter(), ...(isDefined(cursorId) && { id: { lt: cursorId } }) };
 
                 return yield* Db.query(db =>
                     db.query.TransactionEntityTable.findMany({
@@ -165,7 +180,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             findByIdsWithRefundConsolidationHistory: Effect.fn('TransactionRepository.findByIdsWithRefundConsolidationHistory')(function* (
                 ids: number[]
             ) {
-                return yield* findByIdsWithEntriesWhere(ids, isNull(TransactionEntryEntityTable.deletedAt));
+                return yield* findByIdsWithEntriesWhere(ids, NOT_DELETED_ENTRY_RELATION_WHERE);
             }),
 
             findIdMapByExternalSource: Effect.fn('TransactionRepository.findIdMapByExternalSource')(function* (
@@ -251,7 +266,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
 
             findMccCategorySuggestions: (mccCategoryId: number, limit: number) =>
                 Db.query(db =>
-                    db.$client.getAllAsync<{ categoryId: number; count: number }>(
+                    db.$client.unsafe<{ categoryId: number; count: number }>(
                         `WITH signals AS (
                 SELECT me.category_id AS category_id
                 FROM merchant_embeddings me
@@ -302,17 +317,16 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                         orderBy: (transaction, { desc }) => [desc(transaction.id)],
                         limit,
                         offset,
-                        where: isNull(TransactionEntityTable.deletedAt)
+                        where: { deletedAt: { isNull: true } }
                     })
                 ),
 
-            getByIdRaw: (id: number) =>
-                Db.query(db => db.query.TransactionEntityTable.findFirst({ where: eq(TransactionEntityTable.id, id) })),
+            getByIdRaw: (id: number) => Db.query(db => db.query.TransactionEntityTable.findFirst({ where: { id } })),
 
             getByIdWithEntries: (id: number) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findFirst({
-                        where: eq(TransactionEntityTable.id, id),
+                        where: { id },
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
                                 where: LIVE_ENTRY_RELATION_WHERE
@@ -326,7 +340,7 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             findByAccountId: (accountId: number) =>
                 Db.query(db =>
                     db.query.TransactionEntityTable.findMany({
-                        where: buildSingleAccountCondition(accountId),
+                        where: buildSingleAccountFilter(accountId),
                         orderBy: (transaction, { desc }) => [desc(transaction.operatedAt)]
                     })
                 ),

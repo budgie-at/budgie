@@ -1,6 +1,7 @@
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { EMBEDDING_DIMENSIONS } from '../../@generic/constant/embedding-dimensions.constant';
 import { Db } from '../../@generic/service/db.service';
@@ -114,7 +115,7 @@ export class MerchantEmbeddingRepository extends Context.Service<MerchantEmbeddi
                 const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
 
                 return yield* Db.query(db =>
-                    db.$client.getAllAsync<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
+                    db.$client.unsafe<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
                         convertEmbeddingToJson(queryEmbedding),
                         vecLimit,
                         distanceThreshold,
@@ -145,19 +146,24 @@ export class MerchantEmbeddingRepository extends Context.Service<MerchantEmbeddi
                         .returning({ id: MerchantEmbeddingEntityTable.id })
                 );
 
-                yield* Db.query(db => db.$client.runAsync('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]));
-                yield* Db.query(db =>
-                    db.$client.runAsync(
-                        'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
-                        [row.id]
-                    )
+                yield* Db.query(db => db.$client.unsafe('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]).raw).pipe(
+                    Effect.andThen(
+                        Db.query(
+                            db =>
+                                db.$client.unsafe(
+                                    'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
+                                    [row.id]
+                                ).raw
+                        )
+                    ),
+                    Reactivity.mutation(['merchant_embedding_vec'])
                 );
 
                 return row.id;
             }),
             findPendingMerchantContexts: Effect.fn('MerchantEmbeddingRepository.findPendingMerchantContexts')(function* (limit: number) {
                 const rows = yield* Db.query(db =>
-                    db.$client.getAllAsync<{
+                    db.$client.unsafe<{
                         title: string;
                         mccDescription: string;
                         categoryId: number;
@@ -178,7 +184,7 @@ export class MerchantEmbeddingRepository extends Context.Service<MerchantEmbeddi
             }),
             countPendingMerchantContexts: () =>
                 Db.query(db =>
-                    db.$client.getAllAsync<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, [])
+                    db.$client.unsafe<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, [])
                 ).pipe(Effect.map(([row]) => row.count))
         })
     }

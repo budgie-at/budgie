@@ -198,14 +198,11 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                 findByTransactionIdAndExternalId: (transactionId: number, externalId: string) =>
                     Db.query(db =>
                         db.query.TransactionEntryEntityTable.findFirst({
-                            where: and(
-                                eq(TransactionEntryEntityTable.externalId, externalId),
-                                or(
-                                    eq(TransactionEntryEntityTable.transactionId, transactionId),
-                                    eq(TransactionEntryEntityTable.originalTransactionId, transactionId)
-                                ),
-                                isNull(TransactionEntryEntityTable.deletedAt)
-                            )
+                            where: {
+                                externalId,
+                                OR: [{ transactionId }, { originalTransactionId: transactionId }],
+                                deletedAt: { isNull: true }
+                            }
                         })
                     ),
                 updateByExternalIdAndAccountId: (externalId: string, accountId: number, input: TransactionEntryUpdateInputInterface) =>

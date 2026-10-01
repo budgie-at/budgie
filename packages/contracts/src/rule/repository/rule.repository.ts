@@ -1,4 +1,4 @@
-import { and, asc, eq, isNull } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -16,8 +16,8 @@ export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/c
         findAllWithConditions: () =>
             Db.query(db =>
                 db.query.RuleEntityTable.findMany({
-                    where: isNull(RuleEntityTable.deletedAt),
-                    orderBy: [asc(RuleEntityTable.id)],
+                    where: { deletedAt: { isNull: true } },
+                    orderBy: { id: 'asc' },
                     with: {
                         [RuleAssociationEnum.CONDITIONS]: true
                     }
@@ -35,15 +35,15 @@ export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/c
         findAll: () =>
             Db.query(db =>
                 db.query.RuleEntityTable.findMany({
-                    where: isNull(RuleEntityTable.deletedAt),
-                    orderBy: [asc(RuleEntityTable.id)]
+                    where: { deletedAt: { isNull: true } },
+                    orderBy: { id: 'asc' }
                 })
             ),
         findEnabledWithRelations: () =>
             Db.query(db =>
                 db.query.RuleEntityTable.findMany({
-                    where: and(eq(RuleEntityTable.enabled, true), isNull(RuleEntityTable.deletedAt)),
-                    orderBy: [asc(RuleEntityTable.id)],
+                    where: { enabled: true, deletedAt: { isNull: true } },
+                    orderBy: { id: 'asc' },
                     with: {
                         [RuleAssociationEnum.CONDITIONS]: true,
                         [RuleAssociationEnum.ACTIONS]: true
@@ -53,7 +53,7 @@ export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/c
         findByIdWithRelations: (id: number) =>
             Db.query(db =>
                 db.query.RuleEntityTable.findFirst({
-                    where: and(eq(RuleEntityTable.id, id), isNull(RuleEntityTable.deletedAt)),
+                    where: { id, deletedAt: { isNull: true } },
                     with: {
                         [RuleAssociationEnum.CONDITIONS]: true,
                         [RuleAssociationEnum.ACTIONS]: true
@@ -63,8 +63,8 @@ export class RuleRepository extends Context.Service<RuleRepository>()('@budgie/c
         findAllWithActionsAndCategories: (language: LanguageEnum) =>
             Db.query(db =>
                 db.query.RuleEntityTable.findMany({
-                    where: isNull(RuleEntityTable.deletedAt),
-                    orderBy: [asc(RuleEntityTable.id)],
+                    where: { deletedAt: { isNull: true } },
+                    orderBy: { id: 'asc' },
                     with: {
                         [RuleAssociationEnum.CONDITIONS]: true,
                         [RuleAssociationEnum.ACTIONS]: {

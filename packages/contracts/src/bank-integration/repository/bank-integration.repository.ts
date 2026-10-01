@@ -15,11 +15,7 @@ export class BankIntegrationRepository extends Context.Service<BankIntegrationRe
         const findByProviderAndToken = (provider: ExternalSourceEnum, token: string) =>
             Db.query(db =>
                 db.query.BankIntegrationEntityTable.findFirst({
-                    where: and(
-                        eq(BankIntegrationEntityTable.provider, provider),
-                        eq(BankIntegrationEntityTable.token, token),
-                        isNull(BankIntegrationEntityTable.deletedAt)
-                    )
+                    where: { provider, token, deletedAt: { isNull: true } }
                 })
             );
 
@@ -41,7 +37,7 @@ export class BankIntegrationRepository extends Context.Service<BankIntegrationRe
             findById: (id: number) =>
                 Db.query(db =>
                     db.query.BankIntegrationEntityTable.findFirst({
-                        where: and(eq(BankIntegrationEntityTable.id, id), isNull(BankIntegrationEntityTable.deletedAt))
+                        where: { id, deletedAt: { isNull: true } }
                     })
                 ),
             count: () =>

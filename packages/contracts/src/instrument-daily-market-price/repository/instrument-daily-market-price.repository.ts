@@ -1,4 +1,4 @@
-import { and, count, desc, eq, isNull, lte } from 'drizzle-orm';
+import { and, count, eq, isNull } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -20,6 +20,13 @@ export class InstrumentDailyMarketPriceRepository extends Context.Service<Instru
                     isNull(InstrumentDailyMarketPriceEntityTable.deletedAt)
                 );
 
+            const buildInstrumentQuoteFilter = (instrumentId: number, quoteInstrumentId: number) =>
+                ({
+                    instrumentId,
+                    quoteInstrumentId,
+                    deletedAt: { isNull: true }
+                }) as const;
+
             return {
                 bulkUpsert: (inputs: InstrumentDailyMarketPriceCreateEntityInterface[]) =>
                     bulkUpsert(
@@ -35,25 +42,22 @@ export class InstrumentDailyMarketPriceRepository extends Context.Service<Instru
                 findLatest: (instrumentId: number, quoteInstrumentId: number) =>
                     Db.query(db =>
                         db.query.InstrumentDailyMarketPriceEntityTable.findFirst({
-                            where: buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
-                            orderBy: desc(InstrumentDailyMarketPriceEntityTable.priceDate)
+                            where: buildInstrumentQuoteFilter(instrumentId, quoteInstrumentId),
+                            orderBy: { priceDate: 'desc' }
                         })
                     ),
                 findForDateOrBefore: (instrumentId: number, quoteInstrumentId: number, priceDate: string) =>
                     Db.query(db =>
                         db.query.InstrumentDailyMarketPriceEntityTable.findFirst({
-                            where: and(
-                                buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
-                                lte(InstrumentDailyMarketPriceEntityTable.priceDate, priceDate)
-                            ),
-                            orderBy: desc(InstrumentDailyMarketPriceEntityTable.priceDate)
+                            where: { ...buildInstrumentQuoteFilter(instrumentId, quoteInstrumentId), priceDate: { lte: priceDate } },
+                            orderBy: { priceDate: 'desc' }
                         })
                     ),
                 findRecent: (instrumentId: number, quoteInstrumentId: number, limit: number) =>
                     Db.query(db =>
                         db.query.InstrumentDailyMarketPriceEntityTable.findMany({
-                            where: buildInstrumentQuoteCondition(instrumentId, quoteInstrumentId),
-                            orderBy: desc(InstrumentDailyMarketPriceEntityTable.priceDate),
+                            where: buildInstrumentQuoteFilter(instrumentId, quoteInstrumentId),
+                            orderBy: { priceDate: 'desc' },
                             limit
                         })
                     ),

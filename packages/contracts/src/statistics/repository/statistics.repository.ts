@@ -21,7 +21,6 @@ import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 import { DebtEventAssociationEnum } from '../../debt-event/enum/debt-event-association.enum';
-import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { RunwayDriverDimensionEnum } from '../../runway/enum/runway-driver-dimension.enum';
 import { TagEntityTable } from '../../tag/table/tag-entity.table';
 import { TransactionEntryAssociationEnum } from '../../transaction-entry/enum/transaction-entry-association.enum';
@@ -444,7 +443,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                         /* jscpd:ignore-start */
                         with: {
                             [TransactionAssociationEnum.ENTRIES]: {
-                                where: transactionFilters.buildLedgerEntryCondition(),
+                                where: transactionFilters.buildLedgerEntryFilter(),
                                 with: {
                                     [TransactionEntryAssociationEnum.ACCOUNT]: {
                                         with: {
@@ -461,7 +460,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                                 }
                             },
                             [TransactionAssociationEnum.DEBT_EVENTS]: {
-                                where: isNull(DebtEventEntityTable.deletedAt),
+                                where: { deletedAt: { isNull: true } },
                                 with: {
                                     [DebtEventAssociationEnum.DEBT_ACCOUNT]: {
                                         with: {
@@ -474,7 +473,9 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                             [TransactionAssociationEnum.TO_ACCOUNT]: true
                         },
                         /* jscpd:ignore-end */
-                        where: inArray(TransactionEntityTable.id, transactionIds),
+                        where: {
+                            RAW: (transactionTable, { inArray: inTransactionIds }) => inTransactionIds(transactionTable.id, transactionIds)
+                        },
                         orderBy: (transaction, { desc: descFn }) => [descFn(transaction.operatedAt)],
                         limit
                     });

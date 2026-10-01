@@ -1,4 +1,4 @@
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import { isNull, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -51,10 +51,7 @@ export class ExchangeRateRepository extends Context.Service<ExchangeRateReposito
         findByBaseAndQuoteIds: (baseInstrumentId: number, quoteInstrumentId: number) =>
             Db.query(db =>
                 db.query.ExchangeRateEntityTable.findFirst({
-                    where: and(
-                        eq(ExchangeRateEntityTable.baseInstrumentId, baseInstrumentId),
-                        eq(ExchangeRateEntityTable.quoteInstrumentId, quoteInstrumentId)
-                    )
+                    where: { baseInstrumentId, quoteInstrumentId }
                 })
             )
     })

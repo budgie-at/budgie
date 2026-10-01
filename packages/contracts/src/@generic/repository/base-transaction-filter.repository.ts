@@ -17,6 +17,8 @@ import { PRECISION } from '../constant/precision.constant';
 import { AmountRangeInterface } from '../interface/amount-range.interface';
 import { DateRangeInterface } from '../interface/date-range.interface';
 
+import type { Operators } from 'drizzle-orm';
+
 export class BaseTransactionFilterRepository {
     private static readonly CATEGORIZABLE_TYPES = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];
 
@@ -118,6 +120,24 @@ export class BaseTransactionFilterRepository {
 
     buildVisibleTransactionCondition() {
         return and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntityTable.consolidationParentTransactionId));
+    }
+
+    buildVisibleTransactionFilter() {
+        return { deletedAt: { isNull: true }, consolidationParentTransactionId: { isNull: true } } as const;
+    }
+
+    buildTransactionIdsFilter(condition: SQL | undefined) {
+        return {
+            RAW: (transactionTable: typeof TransactionEntityTable, { inArray: inTransactionIds }: Operators) =>
+                inTransactionIds(
+                    transactionTable.id,
+                    this.queryBuilder.select({ id: TransactionEntityTable.id }).from(TransactionEntityTable).where(condition)
+                )
+        };
+    }
+
+    buildLedgerEntryFilter() {
+        return { originalTransactionId: { isNull: true }, deletedAt: { isNull: true } } as const;
     }
 
     buildLedgerEntryCondition() {

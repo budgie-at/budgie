@@ -1,4 +1,3 @@
-import { SQL, and, asc, desc, eq, isNull, lte } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -13,15 +12,12 @@ export class HistoricalExchangeRateRepository extends Context.Service<Historical
     '@budgie/contracts/HistoricalExchangeRateRepository',
     {
         make: Effect.sync(() => {
-            const buildPairCondition = (sourceInstrumentId: number, targetInstrumentId: number): SQL | undefined =>
-                and(
-                    eq(HistoricalExchangeRateEntityTable.sourceInstrumentId, sourceInstrumentId),
-                    eq(HistoricalExchangeRateEntityTable.targetInstrumentId, targetInstrumentId),
-                    isNull(HistoricalExchangeRateEntityTable.deletedAt)
-                );
-
-            const findFirstRate = (where: SQL | undefined, order: SQL) =>
-                Db.query(db => db.query.HistoricalExchangeRateEntityTable.findFirst({ where, orderBy: order }));
+            const buildPairCondition = (sourceInstrumentId: number, targetInstrumentId: number) =>
+                ({
+                    sourceInstrumentId,
+                    targetInstrumentId,
+                    deletedAt: { isNull: true }
+                }) as const;
 
             return {
                 bulkUpsert: (inputs: HistoricalExchangeRateCreateEntityInterface[]) =>
@@ -40,20 +36,22 @@ export class HistoricalExchangeRateRepository extends Context.Service<Historical
                     targetInstrumentId: number,
                     rateDate: string
                 ) {
-                    const where = and(
-                        buildPairCondition(sourceInstrumentId, targetInstrumentId),
-                        lte(HistoricalExchangeRateEntityTable.rateDate, rateDate)
+                    return yield* Db.query(db =>
+                        db.query.HistoricalExchangeRateEntityTable.findFirst({
+                            where: { ...buildPairCondition(sourceInstrumentId, targetInstrumentId), rateDate: { lte: rateDate } },
+                            orderBy: { rateDate: 'desc' }
+                        })
                     );
-
-                    return yield* findFirstRate(where, desc(HistoricalExchangeRateEntityTable.rateDate));
                 }),
                 findEarliest: Effect.fn('HistoricalExchangeRateRepository.findEarliest')(function* (
                     sourceInstrumentId: number,
                     targetInstrumentId: number
                 ) {
-                    return yield* findFirstRate(
-                        buildPairCondition(sourceInstrumentId, targetInstrumentId),
-                        asc(HistoricalExchangeRateEntityTable.rateDate)
+                    return yield* Db.query(db =>
+                        db.query.HistoricalExchangeRateEntityTable.findFirst({
+                            where: buildPairCondition(sourceInstrumentId, targetInstrumentId),
+                            orderBy: { rateDate: 'asc' }
+                        })
                     );
                 }),
                 upsert: (input: HistoricalExchangeRateCreateEntityInterface) =>
