@@ -204,10 +204,14 @@ const mergeSimilarGroups = (groups: ReadonlyMap<string, RecurringChargeCandidate
 
 export const detectRecurringSeries = (candidates: readonly RecurringChargeCandidateInterface[]): RecurringSeriesInterface[] => {
     const series: RecurringSeriesInterface[] = [];
-    for (const group of mergeSimilarGroups(groupCandidatesByLabel(candidates))) {
-        const detected = buildSeries(group);
-        if (isDefined(detected)) {
-            series.push(detected);
+    const incomeCandidates = candidates.filter(candidate => candidate.defaultAmount < 0);
+    const expenseCandidates = candidates.filter(candidate => candidate.defaultAmount >= 0);
+    for (const sideCandidates of [expenseCandidates, incomeCandidates]) {
+        for (const group of mergeSimilarGroups(groupCandidatesByLabel(sideCandidates))) {
+            const detected = buildSeries(group);
+            if (isDefined(detected)) {
+                series.push(detected);
+            }
         }
     }
 

@@ -34,6 +34,12 @@ const TRANSACTION_ENTRY_JOIN_CONDITION = eq(TransactionEntryEntityTable.transact
 const ACCOUNT_JOIN_CONDITION = eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id);
 const CATEGORY_JOIN_CONDITION = eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id);
 
+const buildCategoryTranslationJoinCondition = (language: LanguageEnum) =>
+    and(
+        eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
+        eq(DefaultCategoryTranslationEntityTable.language, language)
+    );
+
 type PatternGroupColumn = 'title' | 'comment';
 
 const PATTERN_GROUP_COLUMNS: PatternGroupColumn[] = ['title', 'comment'];
@@ -162,13 +168,7 @@ export class TransactionPatternRepository extends Context.Service<TransactionPat
                         .innerJoin(TransactionEntryEntityTable, TRANSACTION_ENTRY_JOIN_CONDITION)
                         .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
                         .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
-                        .leftJoin(
-                            DefaultCategoryTranslationEntityTable,
-                            and(
-                                eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
-                                eq(DefaultCategoryTranslationEntityTable.language, language)
-                            )
-                        )
+                        .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
                         .where(and(...conditions))
                         .groupBy(TransactionEntryEntityTable.categoryId, titleSource, localizedCategoryTitle)
                         .having(sql`COUNT(DISTINCT ${TransactionEntityTable.id}) >= ${MIN_OCCURRENCES}`)
@@ -279,7 +279,7 @@ export class TransactionPatternRepository extends Context.Service<TransactionPat
 
                 findRecurringChargeCandidates: (query: RecurringChargeCandidateQueryInterface) =>
                     Db.query(db => {
-                        const defaultAmount = sql<number>`${TransactionEntryEntityTable.amount} * COALESCE(
+                        const defaultAmount = sql<number>`${TransactionEntryEntityTable.amount} * (CASE WHEN ${TransactionEntityTable.type} = ${TransactionTypeEnum.INCOME} THEN -1.0 ELSE 1.0 END) * COALESCE(
             (SELECT ${ExchangeRateEntityTable.rate} * 1.0 FROM ${ExchangeRateEntityTable}
              WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${AccountEntityTable.instrumentId}
                AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${query.defaultInstrumentId}
@@ -301,29 +301,32 @@ export class TransactionPatternRepository extends Context.Service<TransactionPat
                                 comment: TransactionEntityTable.comment,
                                 defaultAmount,
                                 accountId: AccountEntityTable.id,
-                                categoryId: sql<number>`${TransactionEntryEntityTable.categoryId}`,
-                                categoryTitle: sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`,
+                                categoryId: TransactionEntryEntityTable.categoryId,
+                                categoryTitle: sql<
+                                    string | null
+                                >`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`,
                                 categoryIcon: CategoryEntityTable.icon
                             })
                             .from(TransactionEntityTable)
                             .innerJoin(TransactionEntryEntityTable, TRANSACTION_ENTRY_JOIN_CONDITION)
                             .innerJoin(AccountEntityTable, ACCOUNT_JOIN_CONDITION)
-                            .innerJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
-                            .leftJoin(
-                                DefaultCategoryTranslationEntityTable,
-                                and(
-                                    eq(DefaultCategoryTranslationEntityTable.categoryId, CategoryEntityTable.id),
-                                    eq(DefaultCategoryTranslationEntityTable.language, query.language)
-                                )
-                            )
+                            .leftJoin(CategoryEntityTable, CATEGORY_JOIN_CONDITION)
+                            .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(query.language))
                             .where(
                                 and(
-                                    eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
+                                    or(
+                                        and(
+                                            eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
+                                            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
+                                        ),
+                                        and(
+                                            eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
+                                            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT)
+                                        )
+                                    ),
                                     transactionFilters.buildVisibleTransactionCondition(),
-                                    eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
                                     transactionFilters.buildCategorizableEntryCondition(),
                                     transactionFilters.buildNonDebtAccountCondition(),
-                                    isNotNull(TransactionEntryEntityTable.categoryId),
                                     gt(TransactionEntryEntityTable.amount, 0),
                                     gte(TransactionEntityTable.operatedAt, query.since),
                                     or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''))

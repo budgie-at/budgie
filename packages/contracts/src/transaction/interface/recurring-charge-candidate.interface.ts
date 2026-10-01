@@ -7,7 +7,7 @@ export interface RecurringChargeCandidateInterface {
     readonly comment: string;
     readonly defaultAmount: number;
     readonly accountId: number;
-    readonly categoryId: number;
-    readonly categoryTitle: string;
-    readonly categoryIcon: UserIconType;
+    readonly categoryId: number | null;
+    readonly categoryTitle: string | null;
+    readonly categoryIcon: UserIconType | null;
 }
