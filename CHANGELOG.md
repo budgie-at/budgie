@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.88.1](https://github.com/budgie-at/budgie/compare/v6.88.0...v6.88.1) (2026-10-01)
+
+
+### Bug Fixes
+
+* **app:** do not await stopCompletion when interrupting chat ([d1a7cf3](https://github.com/budgie-at/budgie/commit/d1a7cf33e2e50e8f4e15dadca2f7d9079370a1c0))
+* **app:** interrupt chat before releasing AI contexts on background ([5ae5ff1](https://github.com/budgie-at/budgie/commit/5ae5ff10068150eaaa15cd9f95de9449f7f4725f)), closes [#1164](https://github.com/budgie-at/budgie/issues/1164)
+
+
+
+
+
 # [6.88.0](https://github.com/budgie-at/budgie/compare/v6.87.2...v6.88.0) (2026-10-01)
 
 
