@@ -374,7 +374,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
         const buildRunwayMonthSql = () => sql<string>`strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch', 'localtime')`;
 
         const buildRunwayCompleteMonthsCondition = (months: number) => {
-            const windowStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now', 'localtime', ${`-${months} months`}), 'utc')`;
+            const windowStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now', 'localtime', 'start of month', ${`-${months} months`}), 'utc')`;
             const currentMonthStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now', 'localtime'), 'utc')`;
 
             return and(
