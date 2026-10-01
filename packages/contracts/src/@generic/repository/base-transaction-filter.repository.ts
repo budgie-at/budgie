@@ -1,4 +1,21 @@
-import { SQL, and, eq, gte, inArray, isNotNull, isNull, lte, ne, notInArray, or } from 'drizzle-orm';
+import {
+    Column,
+    SQL,
+    and,
+    eq,
+    getColumnTable,
+    getTableColumns,
+    gte,
+    inArray,
+    is,
+    isNotNull,
+    isNull,
+    lte,
+    ne,
+    notInArray,
+    or,
+    sql
+} from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
@@ -16,8 +33,6 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 import { PRECISION } from '../constant/precision.constant';
 import { AmountRangeInterface } from '../interface/amount-range.interface';
 import { DateRangeInterface } from '../interface/date-range.interface';
-
-import type { Operators } from 'drizzle-orm';
 
 export class BaseTransactionFilterRepository {
     private static readonly CATEGORIZABLE_TYPES = [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE];
@@ -126,13 +141,9 @@ export class BaseTransactionFilterRepository {
         return { deletedAt: { isNull: true }, consolidationParentTransactionId: { isNull: true } } as const;
     }
 
-    buildTransactionIdsFilter(condition: SQL | undefined) {
+    buildAliasedTransactionFilter(condition: SQL) {
         return {
-            RAW: (transactionTable: typeof TransactionEntityTable, { inArray: inTransactionIds }: Operators) =>
-                inTransactionIds(
-                    transactionTable.id,
-                    this.queryBuilder.select({ id: TransactionEntityTable.id }).from(TransactionEntityTable).where(condition)
-                )
+            RAW: (transactionTable: typeof TransactionEntityTable) => this.mapTransactionColumns(condition, transactionTable)
         };
     }
 
@@ -239,6 +250,18 @@ export class BaseTransactionFilterRepository {
                 .select({ transactionId: TransactionTagsEntityTable.transactionId })
                 .from(TransactionTagsEntityTable)
                 .where(inArray(TransactionTagsEntityTable.tagId, tagIds))
+        );
+    }
+
+    private mapTransactionColumns(query: SQL, transactionTable: typeof TransactionEntityTable): SQL {
+        return sql.join(
+            query.queryChunks.map(chunk => {
+                if (is(chunk, Column) && getColumnTable(chunk) === TransactionEntityTable) {
+                    return Object.values(getTableColumns(transactionTable)).find(column => column.name === chunk.name) ?? chunk;
+                }
+
+                return is(chunk, SQL) ? this.mapTransactionColumns(chunk, transactionTable) : chunk;
+            })
         );
     }
 }

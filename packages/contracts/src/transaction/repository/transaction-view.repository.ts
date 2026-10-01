@@ -173,7 +173,7 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                     with: buildFullRelations(language),
                     orderBy: (transaction, { desc }) => [desc(transaction.operatedAt), desc(transaction.id)],
                     limit,
-                    ...(isDefined(where) ? { where: filters.buildTransactionIdsFilter(where) } : {})
+                    ...(isDefined(where) ? { where: filters.buildAliasedTransactionFilter(where) } : {})
                 })
             );
 
