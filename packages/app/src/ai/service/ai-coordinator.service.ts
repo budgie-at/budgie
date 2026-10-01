@@ -37,8 +37,7 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
         const translationDrainerService = yield* TranslationDrainerService;
         const translationProgressStore = yield* TranslationProgressStore;
         const embeddingProgressStore = yield* EmbeddingProgressStore;
-        const drainerIdleGraceMs = 5_000;
-        const drainerAbortGraceMs = 2_000;
+        const settleGraceMs = 5_000;
         const drainers = [translationDrainerService, ...embeddingDrainerService.drainers];
         let activeScope: Scope.Closeable | null = null;
 
@@ -58,17 +57,10 @@ export class AiCoordinatorService extends Context.Service<AiCoordinatorService>(
 
         const stopSubsystems = Effect.fn('AiCoordinatorService.stopSubsystems')(function* () {
             yield* Effect.forEach(drainers, drainer => drainer.stop(), { discard: true });
-            const idle = Effect.forEach(drainers, drainer => drainer.whenIdle(), {
-                concurrency: 'unbounded',
-                discard: true
-            });
-            yield* idle.pipe(
-                Effect.timeout(drainerIdleGraceMs),
-                Effect.catch(() =>
-                    Effect.sync(() => {
-                        chatService.interrupt();
-                    }).pipe(Effect.andThen(idle), Effect.timeout(drainerAbortGraceMs), Effect.ignore)
-                )
+            yield* chatService.interrupt.pipe(
+                Effect.andThen(Effect.forEach(drainers, drainer => drainer.whenIdle(), { concurrency: 'unbounded', discard: true })),
+                Effect.timeout(settleGraceMs),
+                Effect.ignore
             );
             if (isActive()) {
                 return;
