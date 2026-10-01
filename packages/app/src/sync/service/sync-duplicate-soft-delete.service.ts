@@ -11,7 +11,7 @@ import type { SyncDuplicateSoftDeleteResultInterface } from '../interface/sync-d
 export class SyncDuplicateSoftDeleteService extends Context.Service<SyncDuplicateSoftDeleteService>()(
     '@budgie/app/SyncDuplicateSoftDeleteService',
     {
-        make: Effect.gen(function* () {
+        make: Effect.sync(() => {
             const sqliteBatchSize = 500;
 
             const buildPlaceholders = (duplicateTransactionIds: readonly number[]): string =>
