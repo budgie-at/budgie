@@ -8,8 +8,11 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 import { DATABASE_DIRECTORY } from '../../@generic/drizzle/constant/database-directory.constant';
 import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
+import { UnsupportedBackupError } from '../../@generic/drizzle/error/unsupported-backup.error';
 import { DatabaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
+import { isSupportedMigrationCreatedAt } from '../../@generic/drizzle/utils/is-supported-migration-created-at.util';
 import { openSqliteClient } from '../../@generic/drizzle/utils/open-sqlite-client.util';
+import { readLastMigrationCreatedAt } from '../../@generic/drizzle/utils/read-last-migration-created-at.util';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { AuthService } from '../../auth/service/auth.service';
@@ -45,7 +48,15 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
         const readProbeDatabase = Effect.fn('DatabaseImportService.readProbeDatabase')(function* (backupPin: string | null) {
             const probeClient = yield* openSqliteClient(probeDatabaseName, backupPin);
 
-            return isNotEmptyArray(yield* probeClient`SELECT name FROM sqlite_master`);
+            if (!isNotEmptyArray(yield* probeClient`SELECT name FROM sqlite_master`)) {
+                return false;
+            }
+
+            if (!isSupportedMigrationCreatedAt(yield* readLastMigrationCreatedAt(probeClient))) {
+                return yield* new UnsupportedBackupError();
+            }
+
+            return true;
         }, Effect.scoped);
 
         const replaceDestinationFile = Effect.fn('DatabaseImportService.replaceDestinationFile')(function* (
@@ -112,7 +123,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
 
                 return yield* Effect.promise(() => new File(sourceUri).copy(new File(probePath))).pipe(
                     Effect.andThen(readProbeDatabase(backupPin)),
-                    Effect.catch(() => Effect.succeed(false)),
+                    Effect.catchTags({ DatabaseOpenError: () => Effect.succeed(false), SqlError: () => Effect.succeed(false) }),
                     Effect.ensuring(
                         Effect.sync(() => {
                             deleteProbeFiles(probePath);

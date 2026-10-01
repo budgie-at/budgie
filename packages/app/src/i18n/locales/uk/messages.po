@@ -4030,6 +4030,15 @@ msgstr "Не вдалося відкрити цю резервну копію з
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "Ця резервна копія захищена PIN-кодом. Імпорт замінить усі поточні дані, а її PIN стане PIN-кодом застосунку. Після імпорту застосунок перезапуститься. Цю дію не можна скасувати."
 
+#: src/app/import-backup-pin.tsx
+#: src/import/components/import-database/import-database.tsx
+msgid "This backup was made by an older Budgie version and cannot be imported."
+msgstr "Цю резервну копію створено старішою версією Budgie, її не можна імпортувати."
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "This backup was made by an older Budgie version and cannot be restored."
+msgstr "Цю резервну копію створено старішою версією Budgie, її не можна відновити."
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Цей консолідований переказ не має перенесених вихідних записів."

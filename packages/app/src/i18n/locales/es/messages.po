@@ -4030,6 +4030,15 @@ msgstr "No se pudo abrir esta copia de seguridad con tu PIN actual."
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "Esta copia de seguridad está protegida con un PIN. Al importarla se reemplazarán todos los datos actuales y su PIN pasará a ser el PIN de la app. La app se reiniciará tras la importación. Esta acción no se puede deshacer."
 
+#: src/app/import-backup-pin.tsx
+#: src/import/components/import-database/import-database.tsx
+msgid "This backup was made by an older Budgie version and cannot be imported."
+msgstr "Esta copia de seguridad se creó con una versión anterior de Budgie y no se puede importar."
+
+#: src/@generic/component/database-restore-screen/database-restore-screen.tsx
+msgid "This backup was made by an older Budgie version and cannot be restored."
+msgstr "Esta copia de seguridad se creó con una versión anterior de Budgie y no se puede restaurar."
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Esta transferencia consolidada no tiene movimientos de origen movidos."

@@ -1,13 +1,17 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { makeLoggerLayer } from '@budgie/logger';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { identity } from 'effect/Function';
+import * as Layer from 'effect/Layer';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { DatabaseRestoreService } from '../../drizzle/service/database-restore.service';
-import { databaseRestoreRuntime } from '../../runtime/database-restore.runtime';
+import { isDefined } from '@rnw-community/shared';
+
+import { restoreDatabaseFromPickedBackup } from '../../drizzle/utils/restore-database-from-picked-backup.util';
+import { isLoggingEnabled } from '../../utils/is-logging-enabled.util';
 import { reloadApp } from '../../utils/reload-app.util';
 import { Button } from '../button/button';
 import { CircleIcon } from '../circle-icon/circle-icon';
@@ -18,7 +22,7 @@ import type { Edge } from 'react-native-safe-area-context';
 export const DatabaseRestoreScreen = () => {
     const { t } = useLingui();
     const [isLoading, setIsLoading] = useState(false);
-    const [isBackupRejected, setIsBackupRejected] = useState(false);
+    const [backupError, setBackupError] = useState<string | null>(null);
     const safeEdges: Edge[] = ['top', 'bottom'];
 
     useEffect(() => {
@@ -27,15 +31,20 @@ export const DatabaseRestoreScreen = () => {
 
     const handleRestore = () => {
         setIsLoading(true);
-        databaseRestoreRuntime.runFork(
-            Effect.flatMap(DatabaseRestoreService, databaseRestoreService => databaseRestoreService.restoreFromPickedBackup()).pipe(
-                Effect.match({ onFailure: () => true, onSuccess: identity }),
-                Effect.tap(isRejected =>
+        Effect.runFork(
+            restoreDatabaseFromPickedBackup().pipe(
+                Effect.as(null),
+                Effect.catchTags({
+                    UnsupportedBackupError: () => Effect.succeed(t`This backup was made by an older Budgie version and cannot be restored.`)
+                }),
+                Effect.catch(() => Effect.succeed(t`This backup could not be opened with your current PIN.`)),
+                Effect.tap(nextBackupError =>
                     Effect.sync(() => {
-                        setIsBackupRejected(isRejected);
+                        setBackupError(nextBackupError);
                         setIsLoading(false);
                     })
-                )
+                ),
+                Effect.provide(Layer.mergeAll(makeLoggerLayer(isLoggingEnabled()), Reactivity.layer))
             )
         );
     };
@@ -56,10 +65,8 @@ export const DatabaseRestoreScreen = () => {
                                 Your data stays on this device untouched. Try again, or restore a backup made with your current PIN.
                             </Trans>
                         </Text>
-                        {isBackupRejected ? (
-                            <Text className="text-center text-sm leading-6 text-destructive-foreground">
-                                <Trans>This backup could not be opened with your current PIN.</Trans>
-                            </Text>
+                        {isDefined(backupError) ? (
+                            <Text className="text-center text-sm leading-6 text-destructive-foreground">{backupError}</Text>
                         ) : null}
                     </View>
                 </View>
