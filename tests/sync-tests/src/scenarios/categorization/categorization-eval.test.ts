@@ -1,13 +1,15 @@
 import { categorizeInboxEngineService } from '@app/categorize-inbox/service/categorize-inbox-engine.service';
 import { RuleMatcherService } from '@app/rule/service/rule-matcher.service';
 import { extractRuleActionOutcomes } from '@app/rule/util/extract-rule-action-outcomes.util';
+import { buildCommentContext, buildMerchantContext, buildTransactionContext } from '@budgie/ai';
 import { CategorySourceEnum, RuleRepository, SettingsRepository } from '@budgie/contracts';
 import { afterAll, describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { testDb, TestLayer } from '../../harness';
+import { embedCategorizationEvalTexts } from '../../harness/categorization-eval/embed-categorization-eval-texts';
 import { fetchCategorizationEvalEntries } from '../../harness/categorization-eval/fetch-categorization-eval-entries';
 import { backupDatabasePath } from '../../harness/scenario/setup';
 import { subtractMonths } from '../../harness/scenario/subtract-months';
@@ -15,11 +17,14 @@ import { subtractMonths } from '../../harness/scenario/subtract-months';
 import type { LabelEvidenceRowInterface } from '@budgie/contracts';
 
 type EvalEntry = Effect.Success<ReturnType<typeof fetchCategorizationEvalEntries>>['entries'][number];
+type KnnDocument = { readonly vector: Float32Array; readonly categoryId: number; readonly tagIds: Set<number> };
 
 const EVAL_TIMEOUT_MS = 600_000;
 const EVAL_WINDOW_MONTHS = 6;
 const TOP_K = 3;
 const DAY_MS = 86_400_000;
+const KNN_OVERSAMPLE_LIMIT = 50;
+const KNN_DISTANCE_THRESHOLD = 1;
 
 const isCategoryEvidence = (entry: EvalEntry): entry is EvalEntry & { readonly categoryId: number } =>
     isDefined(entry.categoryId) &&
@@ -38,6 +43,55 @@ const addEvidence = (evidence: Map<string, LabelEvidenceRowInterface>, entry: Ev
         count: (evidence.get(key)?.count ?? 0) + 1
     });
 };
+
+const buildKnnDocumentText = (entry: EvalEntry): string =>
+    isNotEmptyString(entry.title)
+        ? buildMerchantContext({
+              title: entry.title,
+              mccDescription: entry.mccDescription ?? '',
+              categoryTitle: entry.categoryTitleEn ?? entry.categoryTitle
+          })
+        : buildCommentContext({ comment: entry.comment, categoryTitle: entry.categoryTitleEn ?? entry.categoryTitle });
+
+const buildKnnQueryText = (entry: EvalEntry): string =>
+    buildTransactionContext({ title: entry.title, mccDescription: entry.mccDescription, comment: entry.comment });
+
+const isKnnIndexable = (entry: EvalEntry): boolean => isNotEmptyString(entry.title) || isNotEmptyString(entry.comment);
+
+const sumScores = (scored: readonly (readonly [number, number])[]): [number, number][] => {
+    const scores = new Map<number, number>();
+
+    scored.forEach(([labelId, score]) => scores.set(labelId, (scores.get(labelId) ?? 0) + score));
+
+    return [...scores].sort((first, second) => second[1] - first[1]).slice(0, TOP_K);
+};
+
+const rankKnn = (
+    query: Float32Array | undefined,
+    indexes: readonly (readonly KnnDocument[])[],
+    labelsOf: (document: KnnDocument) => readonly number[]
+): number[] =>
+    isDefined(query)
+        ? sumScores(
+              indexes.flatMap(documents =>
+                  sumScores(
+                      documents
+                          .map(document => ({
+                              document,
+                              distance: Math.sqrt(
+                                  Math.max(0, 2 - 2 * document.vector.reduce((dot, value, index) => dot + value * query[index], 0))
+                              )
+                          }))
+                          .sort((first, second) => first.distance - second.distance)
+                          .slice(0, KNN_OVERSAMPLE_LIMIT)
+                          .filter(neighbour => neighbour.distance < KNN_DISTANCE_THRESHOLD)
+                          .flatMap(neighbour =>
+                              labelsOf(neighbour.document).map(labelId => [labelId, 1 / (neighbour.distance + 0.01)] as const)
+                          )
+                  )
+              )
+          ).map(([labelId]) => labelId)
+        : [];
 
 const mergeRanked = (...rankings: (readonly number[])[]): number[] => [...new Set(rankings.flat())].slice(0, TOP_K);
 
@@ -95,6 +149,13 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                 const evalEntries = labelledEntries.filter(entry => entry.operatedAt >= windowStart);
                 const categoryEvidence = new Map<string, LabelEvidenceRowInterface>();
                 const tagEvidence = new Map<string, LabelEvidenceRowInterface>();
+                const { modelFile, documentVectors, queryVectors } = yield* embedCategorizationEvalTexts(
+                    entries.filter(isCategoryEvidence).filter(isKnnIndexable).map(buildKnnDocumentText),
+                    evalEntries.map(buildKnnQueryText)
+                );
+                const merchantDocuments = new Map<string, KnnDocument>();
+                const commentDocuments = new Map<string, KnnDocument>();
+                let knnIndexes: KnnDocument[][] = [];
                 let historyIndex = 0;
                 let contextDay = Number.NaN;
                 let categoryContext = categorizeInboxEngineService.buildContext([], defaultInstrumentId);
@@ -111,6 +172,24 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
 
                             if (isCategoryEvidence(historyEntry)) {
                                 addEvidence(categoryEvidence, historyEntry, historyEntry.categoryId);
+
+                                const text = buildKnnDocumentText(historyEntry);
+                                const vector = documentVectors.get(text);
+                                const documents = isNotEmptyString(historyEntry.title) ? merchantDocuments : commentDocuments;
+                                const key = `${historyEntry.categoryId}|${text}`;
+
+                                if (isDefined(vector)) {
+                                    const document = documents.get(key) ?? {
+                                        vector,
+                                        categoryId: historyEntry.categoryId,
+                                        tagIds: new Set<number>()
+                                    };
+
+                                    (tagIdsByTransactionId.get(historyEntry.transactionId) ?? []).forEach(tagId =>
+                                        document.tagIds.add(tagId)
+                                    );
+                                    documents.set(key, document);
+                                }
                             }
 
                             (tagIdsByTransactionId.get(historyEntry.transactionId) ?? []).forEach(tagId =>
@@ -120,6 +199,7 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
 
                         categoryContext = categorizeInboxEngineService.buildContext([...categoryEvidence.values()], defaultInstrumentId);
                         tagContext = categorizeInboxEngineService.buildContext([...tagEvidence.values()], defaultInstrumentId);
+                        knnIndexes = [[...merchantDocuments.values()], [...commentDocuments.values()]];
                         contextDay = day;
                     }
 
@@ -130,6 +210,11 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                     const historyCategoryIds = categorizeInboxEngineService.suggestLabelIds([evalEntry], categoryContext);
                     const mccDefaultCategoryIds = isDefined(evalEntry.mccDefaultCategoryId) ? [evalEntry.mccDefaultCategoryId] : [];
                     const historyTagIds = categorizeInboxEngineService.suggestLabelIds([evalEntry], tagContext);
+                    const queryVector = queryVectors.get(buildKnnQueryText(evalEntry));
+                    const knnCategoryIds = rankKnn(queryVector, knnIndexes, document => [document.categoryId]);
+                    const knnTagIds = rankKnn(queryVector, knnIndexes, document =>
+                        document.categoryId === evalEntry.categoryId ? [...document.tagIds] : []
+                    );
 
                     return {
                         categoryId: evalEntry.categoryId,
@@ -138,19 +223,23 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
                             rules: ruleCategoryIds,
                             history: historyCategoryIds,
                             mccDefault: mccDefaultCategoryIds,
-                            combined: mergeRanked(ruleCategoryIds, historyCategoryIds, mccDefaultCategoryIds)
+                            combined: mergeRanked(ruleCategoryIds, historyCategoryIds, mccDefaultCategoryIds),
+                            knn: knnCategoryIds,
+                            combinedKnn: mergeRanked(ruleCategoryIds, historyCategoryIds, knnCategoryIds)
                         },
                         tags: {
                             rules: ruleOutcome.tagIds.slice(0, TOP_K),
                             history: historyTagIds,
-                            combined: mergeRanked(ruleOutcome.tagIds, historyTagIds)
+                            combined: mergeRanked(ruleOutcome.tagIds, historyTagIds),
+                            knn: knnTagIds,
+                            combinedKnn: mergeRanked(ruleOutcome.tagIds, historyTagIds, knnTagIds)
                         }
                     };
                 });
 
                 process.stdout.write(
                     [
-                        `userSetCases=${cases.length} windowMonths=${EVAL_WINDOW_MONTHS} enabledRules=${rules.length}`,
+                        `userSetCases=${cases.length} windowMonths=${EVAL_WINDOW_MONTHS} enabledRules=${rules.length} embeddingModel=${modelFile}`,
                         ['signal', 'coverage', 'top1', 'top3'].join('\t'),
                         ...formatCategoryRows(cases),
                         ['tagSignal', 'precision@3', 'recall@3'].join('\t'),
