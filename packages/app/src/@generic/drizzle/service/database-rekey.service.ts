@@ -123,7 +123,11 @@ export class DatabaseRekeyService extends Context.Service<DatabaseRekeyService>(
 
                 yield* prepare(paths, params).pipe(
                     Effect.andThen(commit(paths, onCommit).pipe(Effect.onError(() => restoreBackupDatabase(paths)))),
-                    Effect.ensuring(Effect.sync(() => deleteDatabaseFiles(paths.tempDatabaseUri)))
+                    Effect.ensuring(
+                        Effect.sync(() => {
+                            deleteDatabaseFiles(paths.tempDatabaseUri);
+                        })
+                    )
                 );
             })
         };

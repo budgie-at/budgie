@@ -3,6 +3,7 @@ import * as schema from '@budgie/contracts/schema';
 import { getTableName } from 'drizzle-orm';
 import { getTableConfig } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
+import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
 import * as FiberHandle from 'effect/FiberHandle';
 import * as Layer from 'effect/Layer';
@@ -63,7 +64,7 @@ export class DatabaseChangeService extends Context.Service<DatabaseChangeService
                     mutation.tables.forEach(tableName => {
                         addChangedTable(tableName, mutation.type === 'delete');
                     });
-                    runFlush(Effect.andThen(Effect.sleep('50 millis'), flush), { onlyIfMissing: true });
+                    runFlush(Effect.andThen(Effect.sleep(Duration.millis(50)), flush), { onlyIfMissing: true });
                 }),
             transactionBoundary: Db.TransactionBoundary.of(effect =>
                 Effect.acquireUseRelease(

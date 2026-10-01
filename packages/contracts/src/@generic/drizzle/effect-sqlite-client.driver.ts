@@ -34,6 +34,7 @@ class EffectSqliteClientSession extends SQLiteEffectSession<unknown, DbQueryEffe
         super(dialect);
     }
 
+    // eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments
     prepareQuery<T extends PreparedQueryConfig = PreparedQueryConfig>(
         query: Query,
         mode: 'arrays' | 'objects' | 'raw',

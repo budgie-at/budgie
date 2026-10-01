@@ -8,7 +8,7 @@ import { DatabaseOpenError } from '../error/database-open.error';
 
 export const openSqliteClient = (filename: string, encryptionKey: string | null) =>
     SqliteClient.make({ filename, location: DATABASE_LOCATION, ...(isNotEmptyString(encryptionKey) && { encryptionKey }) }).pipe(
-        Effect.tap(client => client.unsafe('SELECT count(*) FROM sqlite_master')),
+        Effect.tap(client => client.unsafe('SELECT count(*) FROM sqlite_master')), // oxlint-disable-line lingui/no-unlocalized-strings
         Effect.mapError(cause => new DatabaseOpenError({ cause })),
         Effect.catchDefect(cause => Effect.fail(new DatabaseOpenError({ cause })))
     );

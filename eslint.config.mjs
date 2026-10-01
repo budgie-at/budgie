@@ -86,7 +86,7 @@ export default defineConfig(
             '**/dist/**',
             '**/public/**',
             '**/build/**',
-            '**/drizzle/**',
+            'packages/app/drizzle/**',
 
             '**/*.html',
             '**/*.json',
