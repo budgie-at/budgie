@@ -47,15 +47,17 @@ cp "$BASE_FIXTURE_PATH" "$WORK_DATABASE_PATH"
 
 APPLIED_MIGRATION_TIMESTAMP=$(sqlite3 "$WORK_DATABASE_PATH" 'SELECT COALESCE(MAX(created_at), 0) FROM __drizzle_migrations;')
 
-# Prints "<when>\t<tag>" for every journal entry the base fixture has not run.
 PENDING_MIGRATIONS=$(
     node -e '
-        const journal = require(process.argv[1] + "/meta/_journal.json");
+        const fs = require("node:fs");
         const appliedTimestamp = Number(process.argv[2]);
 
-        for (const entry of journal.entries) {
-            if (entry.when > appliedTimestamp) {
-                process.stdout.write(entry.when + "\t" + entry.tag + "\n");
+        for (const folder of fs.readdirSync(process.argv[1]).filter(name => /^\d{14}_/.test(name)).sort()) {
+            const [, year, month, day, hour, minute, second] = folder.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/);
+            const folderTimestamp = Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second));
+
+            if (folderTimestamp > appliedTimestamp) {
+                process.stdout.write(folderTimestamp + "\t" + folder + "\n");
             }
         }
     ' "$DRIZZLE_DIR" "$APPLIED_MIGRATION_TIMESTAMP"
@@ -63,7 +65,7 @@ PENDING_MIGRATIONS=$(
 
 if [ -n "$PENDING_MIGRATIONS" ]; then
     while IFS=$'\t' read -r MIGRATION_TIMESTAMP MIGRATION_TAG; do
-        MIGRATION_PATH="$DRIZZLE_DIR/$MIGRATION_TAG.sql"
+        MIGRATION_PATH="$DRIZZLE_DIR/$MIGRATION_TAG/migration.sql"
 
         if [ ! -f "$MIGRATION_PATH" ]; then
             echo "build-showcase: migration file is missing: $MIGRATION_PATH" >&2
