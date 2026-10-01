@@ -5,7 +5,7 @@ import type * as Effect from 'effect/Effect';
 
 export interface ConsolidationFamilyDefinitionInterface<Candidate> {
     readonly key: ConsolidationFamilyKeyEnum;
-    readonly findCandidates: (scope: ConsolidationScanScopeInterface | null) => Effect.Effect<Candidate[], DbError, Db>;
+    readonly findCandidates: (scope: ConsolidationScanScopeInterface | null) => Effect.Effect<readonly Candidate[], DbError, Db>;
     readonly consolidateCandidate: (candidate: Candidate) => Effect.Effect<boolean, DbError, Db>;
     readonly getSourceTransactionIds: (candidate: Candidate) => number[];
     readonly getScopeTransactionIds?: (candidate: Candidate) => number[];

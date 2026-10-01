@@ -260,7 +260,9 @@ export class P2pFiatTransferConsolidationFamilyService extends Context.Service<P
                     .filter(isDefined);
             };
 
-            const buildAuthoritativeCandidates = (rows: P2pFiatAuthoritativeCandidateInterface[]): P2pFiatTransferCandidateInterface[] =>
+            const buildAuthoritativeCandidates = (
+                rows: readonly P2pFiatAuthoritativeCandidateInterface[]
+            ): P2pFiatTransferCandidateInterface[] =>
                 rows
                     .map(row => {
                         const candidate =
