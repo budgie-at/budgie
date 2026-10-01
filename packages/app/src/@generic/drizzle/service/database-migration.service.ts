@@ -7,9 +7,10 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
 
-import { isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isEmptyArray } from '@rnw-community/shared';
 
 import bundledMigrations from '../../../../drizzle/migrations';
+import LEGACY_MIGRATION_TIMESTAMPS from '../constant/legacy-migration-timestamps.json';
 
 import type { MigrationMeta } from 'drizzle-orm/migrator';
 import type * as SqlClient from 'effect/sql/SqlClient';
@@ -39,34 +40,23 @@ export class DatabaseMigrationService extends Context.Service<DatabaseMigrationS
                 return;
             }
 
-            const pendingNamesBySecond = new Map<number, string[]>();
-
-            localMigrations.forEach(migration => {
-                pendingNamesBySecond.set(migration.folderMillis, [
-                    ...(pendingNamesBySecond.get(migration.folderMillis) ?? []),
-                    migration.name
-                ]);
-            });
-
             yield* client.withTransaction(
                 Effect.gen(function* () {
-                    yield* client`ALTER TABLE ${client(migrationsTableName)} ADD COLUMN name text`;
-                    yield* client`ALTER TABLE ${client(migrationsTableName)} ADD COLUMN applied_at TEXT`;
+                    const migrationsTable = client(migrationsTableName);
+                    const [{ lastAppliedAt }] = yield* client<{
+                        readonly lastAppliedAt: number | null;
+                    }>`SELECT MAX(created_at) AS lastAppliedAt FROM ${migrationsTable}`;
 
-                    const rows = yield* client<{
-                        readonly id: number;
-                        readonly createdAt: number;
-                    }>`SELECT id, created_at AS createdAt FROM ${client(migrationsTableName)} ORDER BY created_at, id`;
-
+                    yield* client`ALTER TABLE ${migrationsTable} ADD COLUMN name text`;
+                    yield* client`ALTER TABLE ${migrationsTable} ADD COLUMN applied_at TEXT`;
                     yield* Effect.forEach(
-                        rows,
-                        row => {
-                            const name = pendingNamesBySecond.get(Math.floor(row.createdAt / 1000) * 1000)?.shift();
-
-                            return isDefined(name)
-                                ? client`UPDATE ${client(migrationsTableName)} SET name = ${name} WHERE id = ${row.id}`
-                                : Effect.die(new Error(`Applied migration ${row.id} created at ${row.createdAt} has no local migration`));
-                        },
+                        Object.entries(LEGACY_MIGRATION_TIMESTAMPS).filter(([, createdAt]) => createdAt <= (lastAppliedAt ?? 0)),
+                        ([name, createdAt]) =>
+                            client`UPDATE ${migrationsTable} SET name = ${name} WHERE created_at = ${createdAt}`.pipe(
+                                Effect.andThen(
+                                    client`INSERT INTO ${migrationsTable} (hash, created_at, name) SELECT '', ${createdAt}, ${name} WHERE NOT EXISTS (SELECT 1 FROM ${migrationsTable} WHERE name = ${name})`
+                                )
+                            ),
                         { discard: true }
                     );
                 })
