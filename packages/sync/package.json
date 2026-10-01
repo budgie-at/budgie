@@ -1,6 +1,6 @@
 {
     "name": "@budgie/sync",
-    "version": "6.86.0",
+    "version": "6.86.1",
     "private": true,
     "description": "Bank synchronization package with multi-bank support",
     "sideEffects": false,
