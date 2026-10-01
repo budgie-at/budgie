@@ -19,7 +19,10 @@ export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
     }
 
     static mutation<A, E, R>(mutation: DbMutationInterface, effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R | Db> {
-        return Effect.ensuring(effect, Db.use(db => db.$onMutate(mutation)));
+        return Effect.ensuring(
+            effect,
+            Db.use(db => db.$onMutate(mutation))
+        );
     }
 
     static transaction<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E | DbError, R | Db> {
