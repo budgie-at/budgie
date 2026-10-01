@@ -12,6 +12,7 @@ const MAX_EVENTS_PER_MONTH = 2.5;
 const MAX_ROBUST_GAP_CV = 0.8;
 const SAME_EVENT_WINDOW_DAYS = 3;
 const RECENT_AMOUNT_COUNT = 3;
+const MONTHS_PER_YEAR = 12;
 const MAD_SCALE = 1.4826;
 const MIN_FUZZY_LENGTH = 5;
 const FUZZY_DICE_THRESHOLD = 0.85;
@@ -28,14 +29,52 @@ const PERIOD_MONTHS: readonly (readonly [number, number])[] = [
     [6, PERIOD_SEMIANNUAL_DAYS]
 ];
 
-const normalizeLabel = (value: string): string =>
-    value
-        .toUpperCase()
-        .replace(/[^0-9A-ZА-ЯІЇЄҐ]+/gu, ' ')
-        .split(' ')
-        .filter(token => token.length >= 2 && !/^[0-9]+$/u.test(token))
-        .join(' ')
-        .trim();
+const NOISE_TAIL_PATTERN = /(MDID|UID|MREF|MLREF|IBAN|RECHNUNGSNR|BRUTTO)/iu;
+const AUSTRIAN_LEGAL_PATTERN = /\bGES\.?\s*M\.?\s*B\.?\s*H\.?/giu;
+const IBAN_PATTERN = /\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{4}){2,}\b/giu;
+const LONG_DIGIT_RUN_PATTERN = /\d{3,}/u;
+const STOP_TOKENS: ReadonlySet<string> = new Set([
+    'GMBH',
+    'AG',
+    'KG',
+    'CO',
+    'INC',
+    'LTD',
+    'LLC',
+    'OG',
+    'ФОП',
+    'ТОВ',
+    'ПП',
+    'ПАТ',
+    'АТ',
+    'ВІД'
+]);
+const DISPLAY_TOKEN_COUNT = 3;
+const BAND_MAX_RATIO = 1.2;
+const BAND_SPLIT_PERIOD_MONTHS = 1;
+const MIN_PREFIX_TOKENS = 2;
+const MONTHLY_MAX_GAP_DAYS = 45;
+const MIN_MONTH_PRESENCE = 0.75;
+
+const cleanTokens = (value: string): string[] => {
+    const tailIndex = value.search(NOISE_TAIL_PATTERN);
+    const head = tailIndex > 0 ? value.slice(0, tailIndex) : value;
+
+    return head
+        .replace(AUSTRIAN_LEGAL_PATTERN, ' ')
+        .replace(IBAN_PATTERN, ' ')
+        .split(/[^\p{L}\p{N}]+/u)
+        .filter(
+            token =>
+                isNotEmptyString(token) &&
+                !/^\d+$/u.test(token) &&
+                !LONG_DIGIT_RUN_PATTERN.test(token) &&
+                !STOP_TOKENS.has(token.toUpperCase())
+        );
+};
+
+const resolveRawLabel = (candidate: RecurringChargeCandidateInterface): string =>
+    isNotEmptyString(candidate.title) ? candidate.title : candidate.comment;
 
 const buildBigrams = (value: string): Set<string> => {
     const compact = value.replace(/ /gu, '');
@@ -47,9 +86,7 @@ const buildBigrams = (value: string): Set<string> => {
     return bigrams;
 };
 
-const diceCoefficient = (first: string, second: string): number => {
-    const firstBigrams = buildBigrams(first);
-    const secondBigrams = buildBigrams(second);
+const diceCoefficient = (firstBigrams: ReadonlySet<string>, secondBigrams: ReadonlySet<string>): number => {
     if (firstBigrams.size === 0 || secondBigrams.size === 0) {
         return 0;
     }
@@ -94,34 +131,36 @@ const resolvePeriodMonths = (medianGapDays: number): number | null => {
 const toDayStart = (operatedAt: Date): number => new Date(operatedAt.getFullYear(), operatedAt.getMonth(), operatedAt.getDate()).getTime();
 
 const buildEvents = (candidates: readonly RecurringChargeCandidateInterface[]): RecurringSeriesEventInterface[] => {
-    const amountByDay = new Map<number, number>();
-    const transactionByDay = new Map<number, number>();
-    for (const candidate of candidates) {
-        const dayStart = toDayStart(candidate.operatedAt);
-        amountByDay.set(dayStart, (amountByDay.get(dayStart) ?? 0) + candidate.defaultAmount);
-        transactionByDay.set(dayStart, Math.max(transactionByDay.get(dayStart) ?? 0, candidate.transactionId));
-    }
-
     const events: RecurringSeriesEventInterface[] = [];
-    for (const timestamp of [...amountByDay.keys()].sort((first, second) => first - second)) {
-        const amount = amountByDay.get(timestamp) ?? 0;
-        const transactionId = transactionByDay.get(timestamp) ?? 0;
+    for (const candidate of [...candidates].sort((first, second) => first.operatedAt.getTime() - second.operatedAt.getTime())) {
+        const timestamp = toDayStart(candidate.operatedAt);
         const previous = events[events.length - 1];
-        const isSameEvent = isDefined(previous) && Math.round((timestamp - previous.timestamp) / DAY_MS) <= SAME_EVENT_WINDOW_DAYS;
-
-        if (isSameEvent) {
+        if (isDefined(previous) && Math.round((timestamp - previous.timestamp) / DAY_MS) <= SAME_EVENT_WINDOW_DAYS) {
             events[events.length - 1] = {
-                timestamp: previous.timestamp,
-                day: previous.day,
-                amount: previous.amount + amount,
-                transactionId: Math.max(previous.transactionId, transactionId)
+                ...previous,
+                amount: previous.amount + candidate.defaultAmount,
+                transactionId: Math.max(previous.transactionId, candidate.transactionId)
             };
         } else {
-            events.push({ timestamp, day: new Date(timestamp).getDate(), amount, transactionId });
+            events.push({
+                timestamp,
+                day: new Date(timestamp).getDate(),
+                amount: candidate.defaultAmount,
+                transactionId: candidate.transactionId
+            });
         }
     }
 
     return events;
+};
+
+const hasMonthPresence = (events: readonly RecurringSeriesEventInterface[]): boolean => {
+    const monthIndexes = events.map(
+        event => new Date(event.timestamp).getFullYear() * MONTHS_PER_YEAR + new Date(event.timestamp).getMonth()
+    );
+    const calendarSpan = monthIndexes[monthIndexes.length - 1] - monthIndexes[0] + 1;
+
+    return new Set(monthIndexes).size / calendarSpan >= MIN_MONTH_PRESENCE;
 };
 
 const buildSeries = (candidates: readonly RecurringChargeCandidateInterface[]): RecurringSeriesInterface | null => {
@@ -136,7 +175,8 @@ const buildSeries = (candidates: readonly RecurringChargeCandidateInterface[]): 
     if (
         medianGap < MIN_MEDIAN_GAP_DAYS ||
         events.length / spanMonths > MAX_EVENTS_PER_MONTH ||
-        robustGapCv(gaps, medianGap) > MAX_ROBUST_GAP_CV
+        robustGapCv(gaps, medianGap) > MAX_ROBUST_GAP_CV ||
+        (medianGap < MONTHLY_MAX_GAP_DAYS && !hasMonthPresence(events))
     ) {
         return null;
     }
@@ -144,10 +184,9 @@ const buildSeries = (candidates: readonly RecurringChargeCandidateInterface[]): 
     const latest = candidates.reduce((current, candidate) =>
         candidate.operatedAt.getTime() > current.operatedAt.getTime() ? candidate : current
     );
-    const recentAmounts = events.slice(-RECENT_AMOUNT_COUNT).map(event => event.amount);
 
     return {
-        title: isNotEmptyString(latest.title) ? latest.title : latest.comment,
+        title: cleanTokens(resolveRawLabel(latest)).slice(0, DISPLAY_TOKEN_COUNT).join(' '),
         categoryId: latest.categoryId,
         categoryTitle: latest.categoryTitle,
         categoryIcon: latest.categoryIcon,
@@ -155,7 +194,7 @@ const buildSeries = (candidates: readonly RecurringChargeCandidateInterface[]): 
         periodMonths: resolvePeriodMonths(medianGap),
         periodDays: medianGap,
         anchorTimestamp: events[events.length - 1].timestamp,
-        predictedAmount: Math.round(median(recentAmounts)),
+        predictedAmount: Math.round(median(events.slice(-RECENT_AMOUNT_COUNT).map(event => event.amount))),
         events
     };
 };
@@ -165,7 +204,7 @@ const groupCandidatesByLabel = (
 ): Map<string, RecurringChargeCandidateInterface[]> => {
     const groups = new Map<string, RecurringChargeCandidateInterface[]>();
     for (const candidate of candidates) {
-        const label = normalizeLabel(isNotEmptyString(candidate.title) ? candidate.title : candidate.comment);
+        const label = cleanTokens(resolveRawLabel(candidate)).join(' ').toUpperCase();
         if (isNotEmptyString(label)) {
             const existing = groups.get(label) ?? [];
             existing.push(candidate);
@@ -176,30 +215,53 @@ const groupCandidatesByLabel = (
     return groups;
 };
 
+const isTokenPrefix = (prefix: string, label: string): boolean =>
+    prefix.split(' ').length >= MIN_PREFIX_TOKENS && label.startsWith(`${prefix} `);
+
+const areSimilarLabels = (first: string, second: string): boolean =>
+    first.length >= MIN_FUZZY_LENGTH &&
+    second.length >= MIN_FUZZY_LENGTH &&
+    (diceCoefficient(buildBigrams(first), buildBigrams(second)) >= FUZZY_DICE_THRESHOLD ||
+        isTokenPrefix(first, second) ||
+        isTokenPrefix(second, first));
+
 const mergeSimilarGroups = (groups: ReadonlyMap<string, RecurringChargeCandidateInterface[]>): RecurringChargeCandidateInterface[][] => {
-    const mergedGroups: RecurringChargeCandidateInterface[][] = [];
-    let currentKeys: string[] = [];
+    let clusters: string[][] = [];
+    for (const label of groups.keys()) {
+        const linked = clusters.filter(cluster => cluster.some(member => areSimilarLabels(member, label)));
+        clusters = [...clusters.filter(cluster => !linked.includes(cluster)), [label, ...linked.flat()]];
+    }
 
-    for (const label of [...groups.keys()].sort()) {
-        const previousLabel = currentKeys[currentKeys.length - 1];
-        const canMerge =
-            isDefined(previousLabel) &&
-            previousLabel.length >= MIN_FUZZY_LENGTH &&
-            label.length >= MIN_FUZZY_LENGTH &&
-            diceCoefficient(previousLabel, label) >= FUZZY_DICE_THRESHOLD;
+    return clusters.map(cluster => cluster.flatMap(label => groups.get(label) ?? []));
+};
 
-        if (isNotEmptyArray(currentKeys) && !canMerge) {
-            mergedGroups.push(currentKeys.flatMap(key => groups.get(key) ?? []));
-            currentKeys = [];
+const splitIntoAmountBands = (group: readonly RecurringChargeCandidateInterface[]): RecurringChargeCandidateInterface[][] => {
+    const sorted = [...group].sort((first, second) => Math.abs(first.defaultAmount) - Math.abs(second.defaultAmount));
+    const bands: RecurringChargeCandidateInterface[][] = [];
+    for (const candidate of sorted) {
+        const band = bands[bands.length - 1];
+        if (isDefined(band) && Math.abs(candidate.defaultAmount) <= Math.abs(band[0].defaultAmount) * BAND_MAX_RATIO) {
+            band.push(candidate);
+        } else {
+            bands.push([candidate]);
         }
-        currentKeys.push(label);
     }
 
-    if (isNotEmptyArray(currentKeys)) {
-        mergedGroups.push(currentKeys.flatMap(key => groups.get(key) ?? []));
+    return bands;
+};
+
+const detectGroupSeries = (group: readonly RecurringChargeCandidateInterface[]): RecurringSeriesInterface[] => {
+    const whole = buildSeries(group);
+    const monthlyBandSeries = splitIntoAmountBands(group)
+        .map(band => buildSeries(band))
+        .filter(isDefined)
+        .filter(series => series.periodMonths === BAND_SPLIT_PERIOD_MONTHS);
+
+    if (monthlyBandSeries.length > 1 || (!isDefined(whole) && isNotEmptyArray(monthlyBandSeries))) {
+        return monthlyBandSeries;
     }
 
-    return mergedGroups;
+    return isDefined(whole) ? [whole] : [];
 };
 
 export const detectRecurringSeries = (candidates: readonly RecurringChargeCandidateInterface[]): RecurringSeriesInterface[] => {
@@ -208,10 +270,7 @@ export const detectRecurringSeries = (candidates: readonly RecurringChargeCandid
     const expenseCandidates = candidates.filter(candidate => candidate.defaultAmount >= 0);
     for (const sideCandidates of [expenseCandidates, incomeCandidates]) {
         for (const group of mergeSimilarGroups(groupCandidatesByLabel(sideCandidates))) {
-            const detected = buildSeries(group);
-            if (isDefined(detected)) {
-                series.push(detected);
-            }
+            series.push(...detectGroupSeries(group));
         }
     }
 
