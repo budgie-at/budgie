@@ -74,6 +74,7 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
     })
 }) {
     static readonly layer = Layer.effect(DatabaseConnectionService, DatabaseConnectionService.make).pipe(
+        Layer.orDie,
         Layer.provide(DatabaseChangeService.layer)
     );
 }

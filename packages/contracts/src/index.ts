@@ -24,6 +24,8 @@ export { BaseTransactionFilterRepository } from './@generic/repository/base-tran
 export type { DB, DbConnectionType } from './@generic/type/db.type';
 export type { EffectSqliteClientOptionsInterface } from './@generic/interface/effect-sqlite-client-options.interface';
 export type { DbMutationInterface } from './@generic/interface/db-mutation.interface';
+export type { DbQueryEffectHKTInterface } from './@generic/interface/db-query-effect-hkt.interface';
+export type { TransactionBoundaryType } from './@generic/type/transaction-boundary.type';
 export { makeEffectSqliteClientDatabase } from './@generic/drizzle/effect-sqlite-client.driver';
 
 export { convertAmountToBase } from './@generic/util/convert-amount-to-base.util';
