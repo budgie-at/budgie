@@ -503,6 +503,10 @@ msgstr "All caught up"
 msgid "All columns have been assigned"
 msgstr "All columns have been assigned"
 
+#: src/app/icon-selector.tsx
+msgid "All icons"
+msgstr "All icons"
+
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "All Recurring"
 msgstr "All Recurring"

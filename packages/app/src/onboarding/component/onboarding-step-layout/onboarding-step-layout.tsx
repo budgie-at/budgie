@@ -2,13 +2,14 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { FadeIn, FadeInRight, useReducedMotion } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInRight } from 'react-native-reanimated';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { FullPage } from '../../../@generic/component/page/full-page';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ONBOARDING_STEP_ACCENT } from '../../constant/onboarding-step-accent.constant';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';

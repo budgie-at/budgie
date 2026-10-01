@@ -502,6 +502,10 @@ msgstr "Усе оброблено"
 msgid "All columns have been assigned"
 msgstr "Усі стовпці було призначено"
 
+#: src/app/icon-selector.tsx
+msgid "All icons"
+msgstr "Усі іконки"
+
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "All Recurring"
 msgstr "Усі регулярні"
@@ -3875,7 +3879,7 @@ msgstr "Підписки"
 #: src/app/icon-selector.tsx
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Suggested"
-msgstr "Запропонований"
+msgstr "Запропоновані"
 
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Swap accounts"

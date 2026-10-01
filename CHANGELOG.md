@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.88.0](https://github.com/budgie-at/budgie/compare/v6.87.2...v6.88.0) (2026-10-01)
+
+
+### Features
+
+* **app:** single scroll row for suggested icons ([6f2d17d](https://github.com/budgie-at/budgie/commit/6f2d17d591a1fa28606ba79c6524734bb5feb3f7)), closes [#1345](https://github.com/budgie-at/budgie/issues/1345) [#1346](https://github.com/budgie-at/budgie/issues/1346)
+
+
+
+
+
+## [6.87.2](https://github.com/budgie-at/budgie/compare/v6.87.1...v6.87.2) (2026-10-01)
+
+
+### Bug Fixes
+
+* **contracts:** compute runway month window in local time ([1092f84](https://github.com/budgie-at/budgie/commit/1092f84aea1ac7506eb0e3e37587ef9d8a34e2b7)), closes [#1333](https://github.com/budgie-at/budgie/issues/1333)
+* **contracts:** truncate to month start before the runway lookback shift ([f076452](https://github.com/budgie-at/budgie/commit/f07645297d526f69cbe30bbed0c9328a6dadf1b0))
+
+
+
+
+
+## [6.87.1](https://github.com/budgie-at/budgie/compare/v6.87.0...v6.87.1) (2026-10-01)
+
+
+### Bug Fixes
+
+* **app:** re-color pressable children after a live theme switch ([1855d45](https://github.com/budgie-at/budgie/commit/1855d452fd6802d0c40ae834e94b9581cf683210)), closes [#1334](https://github.com/budgie-at/budgie/issues/1334)
+* **app:** react to Reduce Motion changes while the app is running ([c3a8d3e](https://github.com/budgie-at/budgie/commit/c3a8d3ea677dc9b2ab0c2260946d03e32e893b7c)), closes [#1210](https://github.com/budgie-at/budgie/issues/1210)
+
+
+
+
+
 # [6.87.0](https://github.com/budgie-at/budgie/compare/v6.86.1...v6.87.0) (2026-10-01)
 
 
