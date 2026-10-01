@@ -5,12 +5,12 @@ import * as Layer from 'effect/Layer';
 import { File, Paths } from 'expo-file-system';
 import Storage from 'expo-sqlite/kv-store';
 
+import { EMBEDDING_MODEL_STORAGE_KEY } from '../constant/embedding-model-storage-key.constant';
 import { EmbeddingProgressStore } from '../store/embedding-progress.store';
 import { EMBEDDING_MODEL_FILENAME } from '../util/ai-constants.util';
 
 import { EmbeddingDrainerService } from './embedding-drainer.service';
 
-const EMBEDDING_MODEL_STORAGE_KEY = 'ai.embeddingModel';
 const LEGACY_EMBEDDING_MODEL_FILENAME = 'nomic-embed-text-v2-moe.Q8_0.gguf';
 
 export class AiEmbeddingStatusService extends Context.Service<AiEmbeddingStatusService>()('@budgie/app/AiEmbeddingStatusService', {
