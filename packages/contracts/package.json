@@ -36,6 +36,6 @@
         "@rnw-community/shared": "^2.2.0",
         "drizzle-orm": "^0.45.3",
         "effect": "4.0.0",
-        "expo-sqlite": "~57.0.3"
+        "expo-sqlite": "~58.0.7"
     }
 }

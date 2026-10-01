@@ -40,7 +40,7 @@
         "@eslint/js": "10.0.1",
         "@lingui/cli": "6.8.0",
         "@oxlint/migrate": "1.86.0",
-        "@react-native/eslint-plugin": "0.86.3",
+        "@react-native/eslint-plugin": "0.88.0-rc.3",
         "@rnw-community/eslint-plugin": "2.12.7",
         "@stylistic/eslint-plugin": "5.10.0",
         "@types/node": "22.20.1",
