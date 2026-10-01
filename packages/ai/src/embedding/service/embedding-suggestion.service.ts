@@ -69,8 +69,8 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
         });
 
         const buildCategoryScoreMap = (
-            merchantResults: CategoryScoreResultInterface[],
-            commentResults: CategoryScoreResultInterface[]
+            merchantResults: readonly CategoryScoreResultInterface[],
+            commentResults: readonly CategoryScoreResultInterface[]
         ): Map<number, number> => {
             const scoreMap = new Map<number, number>();
 
@@ -98,8 +98,8 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
 
         const resolveTopCategories = (
             categories: CategoryEntityInterface[],
-            merchantResults: CategoryScoreResultInterface[],
-            commentResults: CategoryScoreResultInterface[],
+            merchantResults: readonly CategoryScoreResultInterface[],
+            commentResults: readonly CategoryScoreResultInterface[],
             mccRows: { categoryId: number; count: number }[]
         ): CategoryEntityInterface[] => {
             const scoreMap = buildCategoryScoreMap(merchantResults, commentResults);
@@ -153,8 +153,8 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
         });
 
         const mergeTagScores = (
-            merchantResults: TagScoreResultInterface[],
-            commentResults: TagScoreResultInterface[]
+            merchantResults: readonly TagScoreResultInterface[],
+            commentResults: readonly TagScoreResultInterface[]
         ): TagScoreResultInterface[] => {
             const scoreMap = new Map<number, number>();
 
