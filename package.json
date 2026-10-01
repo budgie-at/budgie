@@ -74,5 +74,10 @@
     "engines": {
         "node": ">=22.22.1"
     },
-    "postinstall": "node ./scripts/after-install.cjs"
+    "postinstall": "node ./scripts/after-install.cjs",
+    "op-sqlite": {
+        "sqlcipher": true,
+        "sqliteVec": true,
+        "fts5": true
+    }
 }

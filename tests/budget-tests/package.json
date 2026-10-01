@@ -14,7 +14,7 @@
         "@budgie/contracts": "workspace:^",
         "@effect/vitest": "4.0.0",
         "better-sqlite3": "^12.10.0",
-        "drizzle-orm": "^0.45.3",
+        "drizzle-orm": "1.0.0-rc.4",
         "vitest": "^5.0.2"
     },
     "devDependencies": {

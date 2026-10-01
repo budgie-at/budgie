@@ -42,12 +42,17 @@ allowBuilds:
   '@parcel/watcher': false
 
 patchedDependencies:
-  drizzle-orm@0.45.3: patches/drizzle-orm@0.45.3.patch
+  drizzle-orm@1.0.0-rc.4: patches/drizzle-orm@1.0.0-rc.4.patch
   expo-modules-jsi@58.0.5: patches/expo-modules-jsi@58.0.5.patch
   expo-pdf-text-extract@1.1.0: patches/expo-pdf-text-extract@1.1.0.patch
   react-native-css@3.0.7: patches/react-native-css@3.0.7.patch
 
+peerDependencyRules:
+  allowedVersions:
+    '@effect/sql-sqlite-react-native>@op-engineering/op-sqlite': 18.2.5
+
 minimumReleaseAgeExclude:
+  - '@effect/sql-sqlite-react-native@4.0.0'
   - '@effect/atom-react@4.0.0'
   - '@effect/vitest@4.0.0'
   - effect@4.0.0

@@ -22,8 +22,7 @@
         "@budgie/contracts": "workspace:^",
         "@rnw-community/shared": "^2.2.0",
         "better-sqlite3": "^12.10.0",
-        "drizzle-orm": "^0.45.3",
-        "expo-sqlite": "~58.0.7"
+        "drizzle-orm": "1.0.0-rc.4"
     },
     "devDependencies": {
         "@types/better-sqlite3": "^7.6.13",
