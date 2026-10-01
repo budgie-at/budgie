@@ -3,6 +3,7 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import { File, Paths } from 'expo-file-system';
 import * as SQLite from 'expo-sqlite';
+import Storage from 'expo-sqlite/kv-store';
 
 import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -10,6 +11,7 @@ import { DB_NAME } from '../../@generic/drizzle/constant/db-name.constant';
 import { DatabaseLifecycleOperationEnum } from '../../@generic/drizzle/enum/database-lifecycle-operation.enum';
 import { DatabaseLifecycleService } from '../../@generic/drizzle/service/database-lifecycle.service';
 import { reloadApp } from '../../@generic/utils/reload-app.util';
+import { EMBEDDING_MODEL_STORAGE_KEY } from '../../ai/constant/embedding-model-storage-key.constant';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
 import { AuthService } from '../../auth/service/auth.service';
 
@@ -112,6 +114,7 @@ export class DatabaseImportService extends Context.Service<DatabaseImportService
 
             yield* authService.persistPin(backupPin);
             yield* replaceFromUri(sourceUri).pipe(Effect.onError(() => authService.persistPin(previousPin).pipe(Effect.orDie)));
+            yield* Effect.promise(() => Storage.removeItem(EMBEDDING_MODEL_STORAGE_KEY));
             yield* Effect.promise(() => reloadApp());
         });
 
