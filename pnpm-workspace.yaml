@@ -42,8 +42,8 @@ allowBuilds:
   '@parcel/watcher': false
 
 patchedDependencies:
-  drizzle-orm@0.45.2: patches/drizzle-orm@0.45.2.patch
-  expo-modules-jsi@57.0.6: patches/expo-modules-jsi@57.0.6.patch
+  drizzle-orm@0.45.3: patches/drizzle-orm@0.45.3.patch
+  expo-modules-jsi@57.1.1: patches/expo-modules-jsi@57.1.1.patch
   expo-pdf-text-extract@1.1.0: patches/expo-pdf-text-extract@1.1.0.patch
   react-native-css@3.0.7: patches/react-native-css@3.0.7.patch
 
