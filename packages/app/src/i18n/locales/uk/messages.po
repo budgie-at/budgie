@@ -1707,7 +1707,7 @@ msgstr "напр. Ощадний рахунок"
 msgid "Edit"
 msgstr "Редагувати"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/component/account-edit-button/account-edit-button.tsx
 msgid "Edit account"
 msgstr "Редагувати рахунок"
 
