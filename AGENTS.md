@@ -129,7 +129,7 @@ pull request build natively again (or, worse, test the wrong binary):
 
 ```
 packages/
-├── app/                # React Native (Expo 57) - main mobile app
+├── app/                # React Native (Expo 58) - main mobile app
 ├── ai/                 # Pure TypeScript AI/LLM services
 ├── budget/             # Budget domain logic
 ├── consolidation/      # Transaction consolidation
@@ -519,7 +519,7 @@ export class RefundService extends Context.Service<RefundService>()('@budgie/app
 
 | Package       | Stack                                                                                                                                                    |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **app**       | Expo 57, React 19 + Compiler, Expo Router 57, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                      |
+| **app**       | Expo 58, React 19 + Compiler, Expo Router 58, Drizzle ORM, NativeWind 5, Lingui 6.5                                                                      |
 | **ai**        | Pure TypeScript, Effect                                                                                                                                  |
 | **contracts** | Drizzle ORM, Effect                                                                                                                                      |
 | **landing**   | Next.js 16, React 19, Tailwind CSS 4, Lingui 6.5                                                                                                         |
@@ -584,7 +584,7 @@ Rules:
     4. `xcodebuild -workspace ios/budgieE2E.xcworkspace -scheme budgieE2E -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,id=<udid>' -derivedDataPath ~/runway-derived CODE_SIGNING_ALLOWED=NO build`. Do not use `expo run:ios` — it mis-detects the simulator UDID as a physical device and demands code signing.
     5. `xcrun simctl boot <udid>`, then `. tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <udid>`, then `xcrun simctl install <udid> …/budgieE2E.app`; inject a DB at `<app-container>/Documents/SQLite/budgie.db`; `xcrun simctl launch <udid> com.vitalyiegorov.budgie.e2e`; deep-link `budgie://<route>` and tap the system "Open?" prompt via serve-sim.
     6. Stream on the Mac (`npx --yes serve-sim -p <port> <udid>`), expose with `cloudflared tunnel --url http://127.0.0.1:<port>`, and open the `*.trycloudflare.com` URL in the T3 preview. Drive with `serve-sim tap -d <udid> <x> <y>` and `serve-sim gesture -d <udid> '{"type":"begin","x":..,"y":..}'`.
-7. **Xcode 26 toolchain** — `expo-modules-jsi@57.1.1` ships invalid `SWIFT_RETURNS_RETAINED` annotations on the `RuntimeScheduler` constructors that newer clang (Xcode 26.2/26.3/26.6) rejects. The repo carries `patches/expo-modules-jsi@57.1.1.patch` (via `pnpm-workspace.yaml` `patchedDependencies`) removing them — do not remove it, and do not try to bump the dependency (all released versions, including 58.0.0, still ship the bug).
+7. **Xcode 26 toolchain** — `expo-modules-jsi@58.0.5` ships invalid `SWIFT_RETURNS_RETAINED` annotations on the `RuntimeScheduler` constructors that newer clang (Xcode 26.2/26.3/26.6) rejects. The repo carries `patches/expo-modules-jsi@58.0.5.patch` (via `pnpm-workspace.yaml` `patchedDependencies`) removing them — do not remove it, and do not try to bump the dependency (all released versions, including 58.0.5, still ship the bug).
 
 Never print `~/.cloudflared` secrets or tunnel tokens; kill Metro/serve-sim/cloudflared when done; restore any shared Mac checkout you touched (`git checkout -f <branch> && git clean -fd`).
 
