@@ -97,95 +97,101 @@ const PENDING_MERCHANT_CONTEXTS_QUERY = `
 export class MerchantEmbeddingRepository extends Context.Service<MerchantEmbeddingRepository>()(
     '@budgie/contracts/MerchantEmbeddingRepository',
     {
-        make: Effect.succeed({
-            ...makeEmbeddingRepository({
-                similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
-                similarTagsQuery: SIMILAR_TAGS_QUERY,
-                vecTableName: 'merchant_embedding_vec',
-                embeddingTable: MerchantEmbeddingEntityTable,
-                deletedAtColumn: MerchantEmbeddingEntityTable.deletedAt,
-                tagTable: MerchantEmbeddingTagEntityTable,
-                foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
-                createTagRow: (embeddingId, tagId) => ({ merchantEmbeddingId: embeddingId, tagId })
-            }),
-            findSimilarComments: Effect.fn('MerchantEmbeddingRepository.findSimilarComments')(function* (
-                queryEmbedding: Uint8Array,
-                params: SimilarCommentsParamsInterface
-            ) {
-                const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
+        make: Effect.gen(function* () {
+            const reactivity = yield* Reactivity.Reactivity;
 
-                return yield* Db.query(db =>
-                    db.$client.unsafe<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
-                        convertEmbeddingToJson(queryEmbedding),
-                        vecLimit,
-                        distanceThreshold,
-                        categoryId,
-                        commentLimit
-                    ])
-                );
-            }),
-            upsert: Effect.fn('MerchantEmbeddingRepository.upsert')(function* (params: UpsertMerchantEmbeddingParamsInterface) {
-                const { title, mccDescription, categoryId, comment, embedding, dimensions } = params;
+            return {
+                ...makeEmbeddingRepository(reactivity, {
+                    similarCategoriesQuery: SIMILAR_CATEGORIES_QUERY,
+                    similarTagsQuery: SIMILAR_TAGS_QUERY,
+                    vecTableName: 'merchant_embedding_vec',
+                    embeddingTable: MerchantEmbeddingEntityTable,
+                    deletedAtColumn: MerchantEmbeddingEntityTable.deletedAt,
+                    tagTable: MerchantEmbeddingTagEntityTable,
+                    foreignKeyColumn: MerchantEmbeddingTagEntityTable.merchantEmbeddingId,
+                    createTagRow: (embeddingId, tagId) => ({ merchantEmbeddingId: embeddingId, tagId })
+                }),
+                findSimilarComments: Effect.fn('MerchantEmbeddingRepository.findSimilarComments')(function* (
+                    queryEmbedding: Uint8Array,
+                    params: SimilarCommentsParamsInterface
+                ) {
+                    const { vecLimit, distanceThreshold, categoryId, commentLimit } = params;
 
-                if (dimensions !== EMBEDDING_DIMENSIONS) {
-                    return null;
-                }
+                    return yield* Db.query(db =>
+                        db.$client.unsafe<CommentDistanceResultInterface>(SIMILAR_COMMENTS_QUERY, [
+                            convertEmbeddingToJson(queryEmbedding),
+                            vecLimit,
+                            distanceThreshold,
+                            categoryId,
+                            commentLimit
+                        ])
+                    );
+                }),
+                upsert: Effect.fn('MerchantEmbeddingRepository.upsert')(function* (params: UpsertMerchantEmbeddingParamsInterface) {
+                    const { title, mccDescription, categoryId, comment, embedding, dimensions } = params;
 
-                const [row] = yield* Db.query(db =>
-                    db
-                        .insert(MerchantEmbeddingEntityTable)
-                        .values({ title, mccDescription, categoryId, comment, embedding, dimensions })
-                        .onConflictDoUpdate({
-                            target: [
-                                MerchantEmbeddingEntityTable.title,
-                                MerchantEmbeddingEntityTable.mccDescription,
-                                MerchantEmbeddingEntityTable.categoryId
-                            ],
-                            set: { comment, embedding, dimensions, updatedAt: new Date() }
-                        })
-                        .returning({ id: MerchantEmbeddingEntityTable.id })
-                );
+                    if (dimensions !== EMBEDDING_DIMENSIONS) {
+                        return null;
+                    }
 
-                yield* Db.query(db => db.$client.unsafe('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]).raw).pipe(
-                    Effect.andThen(
-                        Db.query(
-                            db =>
-                                db.$client.unsafe(
-                                    'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
-                                    [row.id]
-                                ).raw
-                        )
-                    ),
-                    Reactivity.mutation(['merchant_embedding_vec'])
-                );
+                    const [row] = yield* Db.query(db =>
+                        db
+                            .insert(MerchantEmbeddingEntityTable)
+                            .values({ title, mccDescription, categoryId, comment, embedding, dimensions })
+                            .onConflictDoUpdate({
+                                target: [
+                                    MerchantEmbeddingEntityTable.title,
+                                    MerchantEmbeddingEntityTable.mccDescription,
+                                    MerchantEmbeddingEntityTable.categoryId
+                                ],
+                                set: { comment, embedding, dimensions, updatedAt: new Date() }
+                            })
+                            .returning({ id: MerchantEmbeddingEntityTable.id })
+                    );
 
-                return row.id;
-            }),
-            findPendingMerchantContexts: Effect.fn('MerchantEmbeddingRepository.findPendingMerchantContexts')(function* (limit: number) {
-                const rows = yield* Db.query(db =>
-                    db.$client.unsafe<{
-                        title: string;
-                        mccDescription: string;
-                        categoryId: number;
-                        categoryTitleEn: string | null;
-                        comment: string | null;
-                        transactionIdsCsv: string;
-                        tagIdsCsv: string | null;
-                        existingEmbeddingId: number | null;
-                    }>(PENDING_MERCHANT_CONTEXTS_QUERY, [limit])
-                );
+                    yield* Db.query(db => db.$client.unsafe('DELETE FROM merchant_embedding_vec WHERE rowid = ?', [row.id]).raw).pipe(
+                        Effect.andThen(
+                            Db.query(
+                                db =>
+                                    db.$client.unsafe(
+                                        'INSERT INTO merchant_embedding_vec(rowid, embedding) SELECT id, embedding FROM merchant_embeddings WHERE id = ?',
+                                        [row.id]
+                                    ).raw
+                            )
+                        ),
+                        effect => reactivity.mutation(['merchant_embedding_vec'], effect)
+                    );
 
-                return rows.map(row => ({
-                    title: row.title,
-                    mccDescription: row.mccDescription,
-                    comment: row.comment ?? '',
-                    ...parsePendingContextBaseFields(row)
-                }));
-            }),
-            countPendingMerchantContexts: () =>
-                Db.query(db =>
-                    db.$client.unsafe<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, [])
-                ).pipe(Effect.map(([row]) => row.count))
+                    return row.id;
+                }),
+                findPendingMerchantContexts: Effect.fn('MerchantEmbeddingRepository.findPendingMerchantContexts')(function* (
+                    limit: number
+                ) {
+                    const rows = yield* Db.query(db =>
+                        db.$client.unsafe<{
+                            title: string;
+                            mccDescription: string;
+                            categoryId: number;
+                            categoryTitleEn: string | null;
+                            comment: string | null;
+                            transactionIdsCsv: string;
+                            tagIdsCsv: string | null;
+                            existingEmbeddingId: number | null;
+                        }>(PENDING_MERCHANT_CONTEXTS_QUERY, [limit])
+                    );
+
+                    return rows.map(row => ({
+                        title: row.title,
+                        mccDescription: row.mccDescription,
+                        comment: row.comment ?? '',
+                        ...parsePendingContextBaseFields(row)
+                    }));
+                }),
+                countPendingMerchantContexts: () =>
+                    Db.query(db =>
+                        db.$client.unsafe<{ count: number }>(`SELECT COUNT(*) AS count FROM (${PENDING_MERCHANT_CONTEXTS_BASE})`, [])
+                    ).pipe(Effect.map(([row]) => row.count))
+            };
         })
     }
 ) {

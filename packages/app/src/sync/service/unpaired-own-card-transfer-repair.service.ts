@@ -105,7 +105,7 @@ export class UnpairedOwnCardTransferRepairService extends Context.Service<Unpair
             `;
 
             const findCandidates = Effect.fnUntraced(function* () {
-                return yield* Db.query(db => db.$client.getAllAsync<UnpairedOwnCardTransferCandidateInterface>(candidatesSql));
+                return yield* Db.query(db => db.$client.unsafe<UnpairedOwnCardTransferCandidateInterface>(candidatesSql));
             });
 
             const convertCandidate = Effect.fnUntraced(function* (candidate: UnpairedOwnCardTransferCandidateInterface) {

@@ -102,7 +102,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
 
         const findDuplicateCandidates = Effect.fnUntraced(function* () {
             const candidateGroups = yield* Effect.all(
-                sources.map(({ candidateSql }) => Db.query(db => db.$client.getAllAsync<SyncDuplicateCandidateRowInterface>(candidateSql)))
+                sources.map(({ candidateSql }) => Db.query(db => db.$client.unsafe<SyncDuplicateCandidateRowInterface>(candidateSql)))
             );
 
             return candidateGroups.flat();

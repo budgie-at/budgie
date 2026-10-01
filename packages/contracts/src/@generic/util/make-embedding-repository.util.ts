@@ -1,6 +1,5 @@
 import { eq, isNull, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
-import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -12,8 +11,9 @@ import type { CategoryScoreResultInterface } from '../interface/category-score-r
 import type { EmbeddingQueryConfigInterface } from '../interface/embedding-query-config.interface';
 import type { SimilarTagsParamsInterface } from '../interface/similar-tags-params.interface';
 import type { TagScoreResultInterface } from '../interface/tag-score-result.interface';
+import type * as Reactivity from 'effect/reactivity/Reactivity';
 
-export const makeEmbeddingRepository = (config: EmbeddingQueryConfigInterface) => ({
+export const makeEmbeddingRepository = (reactivity: Reactivity.Reactivity, config: EmbeddingQueryConfigInterface) => ({
     findSimilarTags: Effect.fn('BaseEmbeddingRepository.findSimilarTags')(function* (
         queryEmbedding: Uint8Array,
         params: SimilarTagsParamsInterface
@@ -58,8 +58,8 @@ export const makeEmbeddingRepository = (config: EmbeddingQueryConfigInterface) =
             Effect.gen(function* () {
                 yield* Db.query(db => db.delete(config.tagTable));
                 yield* Db.query(db => db.delete(config.embeddingTable));
-                yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName}`).raw).pipe(
-                    Reactivity.mutation([config.vecTableName])
+                yield* Db.query(db => db.$client.unsafe(`DELETE FROM ${config.vecTableName}`).raw).pipe(effect =>
+                    reactivity.mutation([config.vecTableName], effect)
                 );
             })
         )

@@ -2,6 +2,7 @@ import { Db } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -11,7 +12,8 @@ import type { SyncDuplicateSoftDeleteResultInterface } from '../interface/sync-d
 export class SyncDuplicateSoftDeleteService extends Context.Service<SyncDuplicateSoftDeleteService>()(
     '@budgie/app/SyncDuplicateSoftDeleteService',
     {
-        make: Effect.sync(() => {
+        make: Effect.gen(function* () {
+            const reactivity = yield* Reactivity.Reactivity;
             const sqliteBatchSize = 500;
 
             const buildPlaceholders = (duplicateTransactionIds: readonly number[]): string =>
@@ -19,7 +21,7 @@ export class SyncDuplicateSoftDeleteService extends Context.Service<SyncDuplicat
 
             const softDeleteChunk = Effect.fnUntraced(function* (chunk: readonly number[]) {
                 const rows = yield* Db.query(db =>
-                    db.$client.getAllAsync<Pick<SyncDuplicateCandidateRowInterface, 'duplicateTransactionId'>>(
+                    db.$client.unsafe<Pick<SyncDuplicateCandidateRowInterface, 'duplicateTransactionId'>>(
                         String.raw`UPDATE transactions SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IS NULL AND id IN (${buildPlaceholders(chunk)}) RETURNING id AS duplicateTransactionId`,
                         [...chunk]
                     )
@@ -27,22 +29,27 @@ export class SyncDuplicateSoftDeleteService extends Context.Service<SyncDuplicat
                 const updatedIds = rows.map(row => row.duplicateTransactionId);
 
                 if (isNotEmptyArray(updatedIds)) {
-                    yield* Db.query(db =>
-                        db.$client.runAsync(
-                            String.raw`UPDATE transaction_entries SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND transaction_id IN (${buildPlaceholders(updatedIds)})`,
-                            updatedIds
-                        )
+                    yield* Db.query(
+                        db =>
+                            db.$client.unsafe(
+                                String.raw`UPDATE transaction_entries SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND transaction_id IN (${buildPlaceholders(updatedIds)})`,
+                                updatedIds
+                            ).raw
                     );
-                    yield* Db.query(db =>
-                        db.$client.runAsync(
-                            String.raw`UPDATE transactions SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IN (${buildPlaceholders(updatedIds)})`,
-                            updatedIds
-                        )
+                    yield* Db.query(
+                        db =>
+                            db.$client.unsafe(
+                                String.raw`UPDATE transactions SET deleted_at = unixepoch(), updated_at = unixepoch() WHERE deleted_at IS NULL AND consolidation_parent_transaction_id IN (${buildPlaceholders(updatedIds)})`,
+                                updatedIds
+                            ).raw
                     );
                 }
 
                 return updatedIds;
             });
+
+            const softDeleteChunkWithReactivity = (chunk: readonly number[]) =>
+                reactivity.mutation(['transactions', 'transaction_entries'], softDeleteChunk(chunk));
 
             return {
                 remove: Effect.fn('SyncDuplicateSoftDeleteService.remove')(function* (duplicateTransactionIds: readonly number[]) {
@@ -50,7 +57,7 @@ export class SyncDuplicateSoftDeleteService extends Context.Service<SyncDuplicat
 
                     for (let index = 0; index < duplicateTransactionIds.length; index += sqliteBatchSize) {
                         updatedTransactionIds.push(
-                            ...(yield* softDeleteChunk(duplicateTransactionIds.slice(index, index + sqliteBatchSize)))
+                            ...(yield* softDeleteChunkWithReactivity(duplicateTransactionIds.slice(index, index + sqliteBatchSize)))
                         );
                     }
 
