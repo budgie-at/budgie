@@ -502,6 +502,10 @@ msgstr "Alles erledigt"
 msgid "All columns have been assigned"
 msgstr "Alle Spalten wurden zugewiesen"
 
+#: src/app/icon-selector.tsx
+msgid "All icons"
+msgstr "Alle Symbole"
+
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "All Recurring"
 msgstr "Alle wiederkehrenden"
