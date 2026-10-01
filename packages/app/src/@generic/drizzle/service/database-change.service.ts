@@ -73,7 +73,7 @@ export class DatabaseChangeService extends Context.Service<DatabaseChangeService
 
                         return transaction;
                     }),
-                    () => reactivity.withBatch(effect),
+                    () => effect,
                     transaction =>
                         Effect.andThen(
                             Effect.sync(() => openTransactions.delete(transaction)),

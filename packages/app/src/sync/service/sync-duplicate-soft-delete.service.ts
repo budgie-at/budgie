@@ -2,7 +2,6 @@ import { Db } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import * as Reactivity from 'effect/reactivity/Reactivity';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -13,7 +12,6 @@ export class SyncDuplicateSoftDeleteService extends Context.Service<SyncDuplicat
     '@budgie/app/SyncDuplicateSoftDeleteService',
     {
         make: Effect.gen(function* () {
-            const reactivity = yield* Reactivity.Reactivity;
             const sqliteBatchSize = 500;
 
             const buildPlaceholders = (duplicateTransactionIds: readonly number[]): string =>
@@ -49,7 +47,7 @@ export class SyncDuplicateSoftDeleteService extends Context.Service<SyncDuplicat
             });
 
             const softDeleteChunkWithReactivity = (chunk: readonly number[]) =>
-                reactivity.mutation(['transactions', 'transaction_entries'], softDeleteChunk(chunk));
+                Db.mutation({ type: 'update', tables: ['transactions', 'transaction_entries'] }, softDeleteChunk(chunk));
 
             return {
                 remove: Effect.fn('SyncDuplicateSoftDeleteService.remove')(function* (duplicateTransactionIds: readonly number[]) {

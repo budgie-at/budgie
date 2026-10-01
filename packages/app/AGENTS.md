@@ -556,7 +556,7 @@ Family keys are structural, so pass filter objects directly.
 ### Effects and transactions
 
 - Service IO methods are `Effect.fn('Owner.method')` fields in the object returned by `make`. Repository methods are Effects over `Db.query(db => builder)`; atomic work uses `Db.transaction(effect)`; nested transactions reuse the outer one, so there are no `tx` parameters.
-- Writes carry no reactivity keys: the expo change listener (`databaseChangeReactivityLayer`) invalidates the changed tables after each transaction. Only writes it cannot see (virtual tables, `WITHOUT ROWID`, truncate-optimised deletes) use `Reactivity.mutation([tableName], effect)`.
+- Writes carry no reactivity keys: the expo change listener (`databaseChangeReactivityLayer`) invalidates the changed tables after each transaction. Only writes it cannot see (virtual tables, `WITHOUT ROWID`, truncate-optimised deletes) use `Db.mutation({ type, tables: [tableName] }, effect)`, which reports to the same deferred change sink.
 - Long-lived fibers owned by a service are forked in `make` (`Effect.forkScoped`, `FiberSet`), never with `appRuntime.runFork` inside a service.
 - Resources that must close on failure (temp SQLite handles, attached databases) use `Effect.acquireUseRelease` / `Effect.ensuring`.
 - `appRuntime` (`@generic/runtime/app.runtime.ts`) provides `Db`, `HttpClient`, the logger layer, `Reactivity` and every service layer. HTTP calls use `HttpClient` with `retryTransient` + `Schedule`, a per-attempt `Effect.timeout` and `HttpClientResponse.schemaBodyJson`.

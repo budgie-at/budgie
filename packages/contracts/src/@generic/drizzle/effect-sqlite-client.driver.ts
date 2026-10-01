@@ -91,5 +91,8 @@ export const makeEffectSqliteClientDatabase = Effect.fnUntraced(function* (
         cache: yield* EffectCache.make
     });
 
-    return Object.assign(new SQLiteEffectDatabase(dialect, session, relations), { $client: client }) satisfies DbConnectionType;
+    return Object.assign(new SQLiteEffectDatabase(dialect, session, relations), {
+        $client: client,
+        $onMutate: options.onMutate
+    }) satisfies DbConnectionType;
 });

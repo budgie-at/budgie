@@ -5,6 +5,7 @@ import * as Option from 'effect/Option';
 
 import { DbError } from '../error/db.error';
 
+import type { DbMutationInterface } from '../interface/db-mutation.interface';
 import type { DB } from '../type/db.type';
 import type { TransactionBoundaryType } from '../type/transaction-boundary.type';
 
@@ -15,6 +16,10 @@ export class Db extends Context.Service<Db, DB>()('@budgie/contracts/Db') {
 
     static query<A, E>(run: (db: DB) => Effect.Effect<A, E>): Effect.Effect<A, DbError, Db> {
         return Db.use(db => run(db).pipe(Effect.mapError(cause => new DbError({ cause }))));
+    }
+
+    static mutation<A, E, R>(mutation: DbMutationInterface, effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R | Db> {
+        return Effect.ensuring(effect, Db.use(db => db.$onMutate(mutation)));
     }
 
     static transaction<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E | DbError, R | Db> {
