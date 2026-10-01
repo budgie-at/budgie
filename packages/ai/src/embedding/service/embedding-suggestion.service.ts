@@ -85,7 +85,7 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
             return scoreMap;
         };
 
-        const blendMccScores = (scoreMap: Map<number, number>, mccRows: { categoryId: number; count: number }[]): void => {
+        const blendMccScores = (scoreMap: Map<number, number>, mccRows: readonly { categoryId: number; count: number }[]): void => {
             if (isEmptyArray(mccRows)) {
                 return;
             }
@@ -100,7 +100,7 @@ export class EmbeddingSuggestionService extends Context.Service<EmbeddingSuggest
             categories: CategoryEntityInterface[],
             merchantResults: readonly CategoryScoreResultInterface[],
             commentResults: readonly CategoryScoreResultInterface[],
-            mccRows: { categoryId: number; count: number }[]
+            mccRows: readonly { categoryId: number; count: number }[]
         ): CategoryEntityInterface[] => {
             const scoreMap = buildCategoryScoreMap(merchantResults, commentResults);
             blendMccScores(scoreMap, mccRows);
