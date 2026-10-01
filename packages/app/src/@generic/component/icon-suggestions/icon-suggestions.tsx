@@ -1,6 +1,6 @@
 import { UserIconType } from '@budgie/contracts';
 import { ReactNode } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
@@ -27,14 +27,14 @@ export const IconSuggestions = ({ terms, limit, onSelect, testID, children }: Pr
     }
 
     return (
-        <View className="gap-y-md" testID={testID}>
+        <View className="gap-y-sm" testID={testID}>
             {children}
 
-            <View className="flex-row flex-wrap justify-center gap-md">
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-x-md">
                 {suggestions.map(({ icon }) => (
                     <IconSuggestionChip key={icon} icon={icon} onSelect={onSelect} {...testIDProps(testID, icon)} />
                 ))}
-            </View>
+            </ScrollView>
         </View>
     );
 };

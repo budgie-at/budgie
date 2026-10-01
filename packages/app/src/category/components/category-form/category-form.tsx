@@ -7,7 +7,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
-import { IconSuggestions } from '../../../@generic/component/icon-suggestions/icon-suggestions';
 import { ModalFormCancelButton } from '../../../@generic/component/modal-form-cancel-button/modal-form-cancel-button';
 import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
 import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
@@ -207,8 +206,6 @@ export const CategoryForm = (props: Props) => {
                     triggerTestID={CategoryFormSelector.IconTrigger}
                     iconTestID={CategoryFormSelector.CurrentIcon(icon)}
                 />
-
-                <IconSuggestions terms={iconTerms} limit={6} onSelect={handleIconSelect} testID={CategoryFormSelector.IconSuggestions} />
 
                 <CategoryTitleInput
                     value={title}

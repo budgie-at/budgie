@@ -57,11 +57,20 @@ export default function IconSelectorModal() {
         );
 
     const listHeader = hasSearch ? null : (
-        <IconSuggestions terms={keywords} limit={8} onSelect={resolveIconSelector} testID={IconSelectorModalSelector.Suggestions}>
-            <Text className="text-secondary-foreground px-lg text-sm font-medium">
-                <Trans>Suggested</Trans>
-            </Text>
-        </IconSuggestions>
+        <View className="gap-y-xl">
+            <IconSuggestions terms={keywords} limit={8} onSelect={resolveIconSelector} testID={IconSelectorModalSelector.Suggestions}>
+                <Text className="text-secondary-foreground px-xs text-xxs font-semibold uppercase tracking-widest">
+                    <Trans>Suggested</Trans>
+                </Text>
+            </IconSuggestions>
+
+            <View className="flex-row items-center gap-x-md px-xs">
+                <Text className="text-secondary-foreground text-xxs font-semibold uppercase tracking-widest">
+                    <Trans>All icons</Trans>
+                </Text>
+                <View className="h-px flex-1 bg-secondary-corner" />
+            </View>
+        </View>
     );
 
     const listEmptyComponent = isNotEmptyArray(entries) ? (

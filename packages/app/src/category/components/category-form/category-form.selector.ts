@@ -4,6 +4,5 @@ export const CategoryFormSelector = {
     Submit: 'CategoryForm.Submit',
     Merge: 'CategoryForm.Merge',
     IconTrigger: 'CategoryForm.IconTrigger',
-    IconSuggestions: 'CategoryForm.IconSuggestions',
     CurrentIcon: (icon: string) => `CategoryForm.Icon.${icon}` as const
 } as const;
