@@ -4,7 +4,6 @@ packages:
 
 overrides:
   '@typescript/old@npm:typescript@^6': npm:typescript@6.0.2
-  '@expo/metro-config': 58.0.6
   '@lingui/core': 6.5.0
   '@lingui/react': 6.5.0
   '@ungap/structured-clone': 1.3.1
@@ -43,7 +42,7 @@ allowBuilds:
 
 patchedDependencies:
   drizzle-orm@1.0.0-rc.4: patches/drizzle-orm@1.0.0-rc.4.patch
-  expo-modules-jsi@58.0.5: patches/expo-modules-jsi@58.0.5.patch
+  expo-modules-jsi@58.0.6: patches/expo-modules-jsi@58.0.6.patch
   expo-pdf-text-extract@1.1.0: patches/expo-pdf-text-extract@1.1.0.patch
   react-native-css@3.0.7: patches/react-native-css@3.0.7.patch
 
@@ -58,3 +57,19 @@ minimumReleaseAgeExclude:
   - '@effect/vitest@4.0.0'
   - effect@4.0.0
   - llama.rn@0.13.0-rc.6
+  - '@expo/cli@58.1.0'
+  - '@expo/log-box@58.0.8'
+  - '@expo/metro-runtime@58.0.10'
+  - '@expo/router-server@58.0.5'
+  - '@expo/ui@58.0.10'
+  - babel-preset-expo@58.0.7
+  - expo-eas-client@58.0.2
+  - expo-image@58.0.9
+  - expo-modules-core@58.0.10
+  - expo-modules-jsi@58.0.6
+  - expo-notifications@58.0.10
+  - expo-router@58.0.11
+  - expo-splash-screen@58.0.3
+  - expo-updates@58.0.12
+  - expo-widgets@58.0.10
+  - expo@58.0.1
