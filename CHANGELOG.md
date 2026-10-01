@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.87.2](https://github.com/budgie-at/budgie/compare/v6.87.1...v6.87.2) (2026-10-01)
+
+
+### Bug Fixes
+
+* **contracts:** compute runway month window in local time ([1092f84](https://github.com/budgie-at/budgie/commit/1092f84aea1ac7506eb0e3e37587ef9d8a34e2b7)), closes [#1333](https://github.com/budgie-at/budgie/issues/1333)
+* **contracts:** truncate to month start before the runway lookback shift ([f076452](https://github.com/budgie-at/budgie/commit/f07645297d526f69cbe30bbed0c9328a6dadf1b0))
+
+
+
+
+
 ## [6.87.1](https://github.com/budgie-at/budgie/compare/v6.87.0...v6.87.1) (2026-10-01)
 
 
