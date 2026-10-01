@@ -4,13 +4,14 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "eval:categorization": "sh -c 'set -e; if [ \"$1\" = -- ]; then shift; fi; test -f \"$1\"; mkdir -p \"$HOME/.cache\" && BUDGIE_BACKUP_DB=\"$(realpath \"$1\")\" TMPDIR=\"$HOME/.cache\" vitest run src/scenarios/categorization/categorization-eval.test.ts' eval-categorization",
+        "eval:categorization": "sh -c 'set -e; if [ \"$1\" = -- ]; then shift; fi; test -f \"$1\"; if [ \"${2:-}\" = --embedding-model ]; then export BUDGIE_EMBEDDING_MODEL=\"$3\"; fi; mkdir -p \"$HOME/.cache\" && BUDGIE_BACKUP_DB=\"$(realpath \"$1\")\" TMPDIR=\"$HOME/.cache\" vitest run src/scenarios/categorization/categorization-eval.test.ts' eval-categorization",
         "test": "vitest run",
         "test:watch": "vitest",
         "ts": "node ../../node_modules/@typescript/native/bin/tsc --noEmit"
     },
     "dependencies": {
         "@budgie-at/test-kit": "workspace:*",
+        "@budgie/ai": "workspace:*",
         "@budgie/budget": "workspace:*",
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
@@ -28,6 +29,7 @@
         "@types/better-sqlite3": "^7.6.13",
         "@types/node": "22.20.1",
         "effect": "4.0.0-rc.118",
+        "node-llama-cpp": "3.22.1",
         "typescript": "npm:@typescript/typescript6@6.0.2"
     }
 }
