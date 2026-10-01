@@ -48,8 +48,6 @@ patchedDependencies:
   react-native-css@3.0.7: patches/react-native-css@3.0.7.patch
 
 minimumReleaseAgeExclude:
-  - '@liaugust/monobank-sdk@0.7.0'
-  - cn@0.2.4
   - '@effect/atom-react@4.0.0'
   - '@effect/vitest@4.0.0'
   - effect@4.0.0
